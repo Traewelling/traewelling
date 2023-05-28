@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Social;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Exception;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 
 abstract class SocialController extends Controller
@@ -16,6 +17,9 @@ abstract class SocialController extends Controller
         return $socialiteUser->getName();
     }
 
+    /**
+     * @throws Exception
+     */
     public static function getUniqueUsername(string $username): string {
         $existingUser = User::where('username', $username)->first();
         $errorCount   = 0;

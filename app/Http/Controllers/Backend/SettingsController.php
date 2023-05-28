@@ -36,7 +36,7 @@ abstract class SettingsController extends Controller
     }
 
     public static function deleteProfilePicture(User $user): bool {
-        if ($user?->avatar !== null) {
+        if ($user->avatar !== null) {
             File::delete(public_path('/uploads/avatars/' . $user->avatar));
             $user->update(['avatar' => null]);
             return true;

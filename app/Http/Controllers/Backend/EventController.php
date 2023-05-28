@@ -8,6 +8,7 @@ use App\Models\Event;
 use App\Models\EventSuggestion;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
@@ -51,7 +52,7 @@ abstract class EventController extends Controller
                                        ])
                 ]);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             report($e);
         }
 

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Frontend\Transport;
 
 use App\Dto\CheckinSuccess;
 use App\Enum\Business;
-use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
 use App\Exceptions\PermissionException;
@@ -12,6 +11,7 @@ use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\TrainStopover;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -71,6 +71,8 @@ class StatusController extends Controller
                              ->with('success', __('status.update.success'));
         } catch (ModelNotFoundException|PermissionException) {
             return redirect()->back()->with('alert-danger', __('messages.exception.general'));
+        } catch (AuthorizationException) {
+            return redirect()->back()->with('alert-danger', __('error.status.not-authorized'));
         }
     }
 }

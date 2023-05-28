@@ -134,7 +134,7 @@ abstract class MastodonController extends Controller
             return;
         }
 
-        if ($status?->user?->socialProfile?->mastodon_server === null) {
+        if ($status->user?->socialProfile?->mastodon_server === null) {
             return;
         }
 
@@ -200,7 +200,7 @@ abstract class MastodonController extends Controller
                 // Only take posts that are from $OP.
                 && $toot['account']['id'] === $mastodonUserId
 
-                // Only take posts that are direct replies to an post by OP, discarding posts from OP that don't
+                // Only take posts that are direct replies to a post by OP, discarding posts from OP that don't
                 // contribute to the original thread.
                 && (!isset($toot['in_reply_to_account_id']) || $toot['in_reply_to_account_id'] === $mastodonUserId);
         });
