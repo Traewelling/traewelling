@@ -57,7 +57,7 @@ class FollowController extends Controller
     public function createFollow(int $userId): JsonResponse {
         try {
             $userToFollow         = User::findOrFail($userId);
-            $createFollowResponse = UserBackend::createOrRequestFollow(Auth::user(), $userToFollow);
+            $createFollowResponse = FollowBackend::createOrRequestFollow(Auth::user(), $userToFollow);
             return $this->sendResponse(new UserResource($createFollowResponse), 201);
         } catch (ModelNotFoundException) {
             return $this->sendError(['message' => 'User not found'], 404);
