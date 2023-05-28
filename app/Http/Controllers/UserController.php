@@ -219,12 +219,6 @@ class UserController extends Controller
         return self::isFollowing($user, $userToUnfollow) == false;
     }
 
-    public static function registerByDay(Carbon $date): int {
-        return User::where("created_at", ">=", $date->copy()->startOfDay())
-                   ->where("created_at", "<=", $date->copy()->endOfDay())
-                   ->count();
-    }
-
     /**
      * @param string|null $searchQuery
      *
