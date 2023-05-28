@@ -10,7 +10,6 @@ class NotificationController extends Controller
 {
     public static function renderLatest(): JsonResponse {
         $notifications = Auth::user()->notifications()
-                             ->limit(10)
                              ->get()
                              ->map(function($notification) {
                                  $notification->html = $notification->type::render($notification);
