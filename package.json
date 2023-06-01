@@ -27,7 +27,7 @@
         "bootstrap-cookie-alert": "^1.2.1",
         "chart.js": "^2.9.4",
         "croppie": "^2.6.5",
-        "leaflet": "^1.9.2",
+        "leaflet": "^1.9.4",
         "mdb-ui-kit": "^6.3.0",
         "notyf": "^3.10.0"
     }

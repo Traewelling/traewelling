@@ -1,7 +1,7 @@
 @php use App\Repositories\OAuthClientRepository; @endphp
 @extends('layouts.settings')
 
-@section('title', request()->is('dev.apps.create') ? 'Anwendung erstellen' : 'Anwendung bearbeiten') <!-- ToDo: Übersetzen -->
+@section('title', isset($app) ? 'Edit application' : 'Create application')
 
 @section('content')
     <div class="row">
@@ -11,7 +11,7 @@
             >
                 @csrf
 
-                @isset($app->id)
+                @isset($app)
                     <div class="row my-2">
                         <table class="table table-striped table-dark">
                             <tr>
@@ -29,7 +29,7 @@
                     </div>
                 @endisset
                 <div class="alert alert-warning">
-                    @if($app->confidential())
+                    @if($app?->confidential())
                     WARNING: Changing the <code>confidential</code> field will delete your client secret and revoke all existing tokens.
                     @else
                     WARNING: Changing the <code>confidential</code> field will generate a new client secret and revoke all existing tokens.
@@ -80,10 +80,10 @@
                         <input id="enable_webhooks" type="checkbox" name="enable_webhooks"
                                @if($app?->webhooks_enabled)
                                    checked
-                               @if((new OAuthClientRepository)->hasWebhooks($app->id))
-                                   disabled
-                                @endif
-                                @endif
+                                   @if((new OAuthClientRepository)->hasWebhooks($app->id))
+                                       disabled
+                                   @endif
+                               @endif
                         >
                     </div>
                 </div>
