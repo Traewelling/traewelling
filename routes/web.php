@@ -193,12 +193,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/status/update', [StatusController::class, 'updateStatus'])
          ->name('status.update');
 
-    Route::post('/createlike', [FrontendStatusController::class, 'createLike'])
-         ->name('like.create');
-
-    Route::post('/destroylike', [FrontendStatusController::class, 'DestroyLike'])
-         ->name('like.destroy');
-
     Route::prefix('export')->group(function() {
         Route::get('/', [ExportController::class, 'renderForm'])
              ->name('export.landing');

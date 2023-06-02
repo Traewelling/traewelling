@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Like;
+use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class UserBlockTest extends TestCase
@@ -123,14 +126,12 @@ class UserBlockTest extends TestCase
     }
 
     public function testLikesAreDeleted(): void {
-        $this->actingAs($this->bob)
-             ->post(route('like.create'), ['statusId' => $this->checkin->status_id])
-             ->assertStatus(201);
+        //Create like for already given checkin
+        StatusBackend::createLike($this->bob, Status::find($this->checkin->status_id));
 
+        //Create a second checkin and like it
         $this->checkin = TrainCheckin::factory(['user_id' => $this->bob->id])->create();
-        $this->actingAs($this->alice)
-             ->post(route('like.create'), ['statusId' => $this->checkin->status_id])
-             ->assertStatus(201);
+        StatusBackend::createLike($this->alice, Status::find($this->checkin->status_id));
 
         $this->assertEquals(2, Like::all()->count());
 

@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Status;
 
+use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\UserController;
+use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\TrainCheckin;
 use App\Models\User;
 use App\Notifications\StatusLiked;
@@ -19,9 +21,7 @@ class LikeTest extends TestCase
         $status       = $trainCheckIn->status;
         $likingUser   = User::factory(['privacy_ack_at' => Carbon::now()])->create();
 
-        $response = $this->actingAs($likingUser)
-                         ->post(route('like.create'), ['statusId' => $status->id]);
-        $response->assertStatus(201);
+        StatusBackend::createLike($likingUser, $status);
 
         $notifications = $this->actingAs($status->user)
                               ->get(route('notifications.latest'));
@@ -40,10 +40,7 @@ class LikeTest extends TestCase
         $likingUser   = User::factory(['privacy_ack_at' => Carbon::now()])->create();
 
         UserController::muteUser($status->user, $likingUser);
-
-        $response = $this->actingAs($likingUser)
-                         ->post(route('like.create'), ['statusId' => $status->id]);
-        $response->assertStatus(201);
+        StatusBackend::createLike($likingUser, $status);
 
         $notifications = $this->actingAs($status->user)
                               ->get(route('notifications.latest'));
@@ -58,24 +55,15 @@ class LikeTest extends TestCase
 
         $status->user->update(["likes_enabled" => false]);
 
-        $response = $this->actingAs($likingUser)
-                         ->post(route('like.create'), ['statusId' => $status->id]);
-        $response->assertStatus(403);
-
-        $notifications = $this->actingAs($status->user)
-                              ->get(route('notifications.latest'));
-        $notifications->assertOk();
-        $notifications->assertJsonCount(0);
+        $this->expectException(PermissionException::class);
+        StatusBackend::createLike($likingUser, $status);
     }
 
     public function testOldLikesStillAppearInNotificationsIfIHaveDisabledLikes(): void {
         $trainCheckIn = TrainCheckin::factory()->create();
         $status       = $trainCheckIn->status;
         $likingUser   = User::factory(['privacy_ack_at' => Carbon::now()])->create();
-
-        $response = $this->actingAs($likingUser)
-                         ->post(route('like.create'), ['statusId' => $status->id]);
-        $response->assertStatus(201);
+        StatusBackend::createLike($likingUser, $status);
 
         $status->user->update(["likes_enabled" => false]);
 
@@ -90,18 +78,14 @@ class LikeTest extends TestCase
         $status       = $trainCheckIn->status;
         $likingUser   = User::factory(['privacy_ack_at' => Carbon::now()])->create();
 
-        $response = $this->actingAs($likingUser)
-                         ->post(route('like.create'), ['statusId' => $status->id]);
-        $response->assertStatus(201);
+        StatusBackend::createLike($likingUser, $status);
 
         $notifications = $this->actingAs($status->user)
                               ->get(route('notifications.latest'));
         $notifications->assertOk();
         $notifications->assertJsonCount(1);
 
-        $response = $this->actingAs($likingUser)
-                         ->post(route('like.destroy'), ['statusId' => $status->id]);
-        $response->assertStatus(200);
+        StatusBackend::destroyLike($likingUser, $status->id);
 
         $notifications = $this->actingAs($status->user)
                               ->get(route('notifications.latest'));
@@ -129,7 +113,8 @@ class LikeTest extends TestCase
 
         $status->user->update(["likes_enabled" => false]);
 
-        $notifications = $this->get("/status/" . $status->id);
+        $notifications = $this->actingAs($likingUser)
+                              ->get("/status/" . $status->id);
         $notifications->assertOk();
         $notifications->assertDontSee("class=\"like ");
     }

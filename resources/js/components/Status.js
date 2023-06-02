@@ -3,10 +3,6 @@ window.Status = class Status {
     static destroy(statusId) {
         API.request(`/status/${statusId}`, 'delete')
             .then(response => {
-                if (!response.ok) {
-                    return response.json().then(API.handleGenericError);
-                }
-
                 return response.json().then(data => {
                     //delete status card if present
                     let statusCard = document.getElementById(`status-${statusId}`);
@@ -23,5 +19,13 @@ window.Status = class Status {
                 });
             })
             .catch(API.handleGenericError);
+    }
+
+    static like(statusId) {
+        return API.request(`/status/${statusId}/like`, 'POST');
+    }
+
+    static unlike(statusId) {
+        return API.request(`/status/${statusId}/like`, 'DELETE');
     }
 }
