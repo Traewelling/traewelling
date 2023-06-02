@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\User;
 
+use App\Enum\CacheKey;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Controller;
@@ -9,8 +10,12 @@ use App\Http\Controllers\UserController;
 use App\Models\Follow;
 use App\Models\FollowRequest;
 use App\Models\User;
+use App\Notifications\FollowRequestIssued;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Cache;
+use InvalidArgumentException;
 
 abstract class FollowController extends Controller
 {
@@ -59,6 +64,7 @@ abstract class FollowController extends Controller
      * @param int $approverId The id of a to-be-approved follower
      *
      * @throws ModelNotFoundException|AlreadyFollowingException
+     * @throws AuthorizationException
      */
     public static function approveFollower(int $userId, int $approverId): bool {
         $request = FollowRequest::where('user_id', $approverId)->where('follow_id', $userId)->firstOrFail();
@@ -71,4 +77,46 @@ abstract class FollowController extends Controller
         return $follow;
     }
 
+    /**
+     * @param User $user
+     * @param User $userToFollow
+     *
+     * @return User
+     * @throws AlreadyFollowingException
+     * @throws InvalidArgumentException
+     * @throws AuthorizationException
+     * @api v1
+     */
+    public static function createOrRequestFollow(User $user, User $userToFollow): User {
+        if ($user->is($userToFollow)) {
+            throw new InvalidArgumentException();
+        }
+        if ($user->follows->contains('id', $userToFollow->id) || $userToFollow->followRequests->contains('user_id', $user->id)) {
+            throw new AlreadyFollowingException($user, $userToFollow);
+        }
+        if (BlockController::isBlocked($user, $userToFollow) || BlockController::isBlocked($userToFollow, $user)) {
+            throw new AuthorizationException();
+        }
+
+        // Request follow if user is a private profile
+        if ($userToFollow->private_profile) {
+            $followRequest = FollowRequest::create([
+                                                       'user_id'   => $user->id,
+                                                       'follow_id' => $userToFollow->id
+                                                   ]);
+
+            $userToFollow->notify(new FollowRequestIssued($followRequest));
+            $userToFollow->refresh();
+            $user->refresh();
+            return $userToFollow;
+        }
+
+        Follow::create([
+                           'user_id'   => $user->id,
+                           'follow_id' => $userToFollow->id
+                       ]);
+        $userToFollow->fresh();
+        Cache::forget(CacheKey::getFriendsLeaderboardKey($user->id));
+        return $userToFollow;
+    }
 }

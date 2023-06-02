@@ -6,12 +6,11 @@ use App\Enum\StatusVisibility;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\Controller;
 use App\Models\TrainCheckin;
-use App\Models\User;
 use App\Models\TrainStation;
+use App\Models\User;
 use Carbon\Carbon;
-use Doctrine\DBAL\Query;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -236,7 +235,7 @@ abstract class TransportStatsController extends Controller
                    ->first()->delay;
     }
 
-    public static function getTopDestinations(User $user, Carbon $from, Carbon $to, int $limit = null) {
+    public static function getTopDestinations(User $user, Carbon $from, Carbon $to, int $limit = null): Collection {
         $data     = self::getTrainCheckinsBetween($user, $from, $to)
                         ->groupBy('destination')
                         ->select([

@@ -86,6 +86,9 @@ class UserRedirectionTest extends TestCase
              ->assertSee(__('privacy.we-changed'), false);
 
         // At this point, we can sign the new agreement and get redirected again:
-        $this->acceptGDPR($user);
+        $response = $this->actingAs($user)
+                         ->post('/gdpr-ack');
+        $response->assertStatus(302);
+        $response->assertRedirect('/dashboard');
     }
 }

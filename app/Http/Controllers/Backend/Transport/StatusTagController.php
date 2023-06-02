@@ -5,10 +5,8 @@ namespace App\Http\Controllers\Backend\Transport;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\StatusTag;
-use App\Models\TrainStation;
-use App\Models\TrainStopover;
 use App\Models\User;
-use Gate;
+use Illuminate\Support\Facades\Gate;
 
 abstract class StatusTagController extends Controller
 {

@@ -95,7 +95,7 @@ abstract class AbstractTwitterController extends Controller
             Log::error("Was dispatched to post on Twitter, but POST_SOCIAL env variable is not set.");
             return;
         }
-        if ($status?->user?->socialProfile?->twitter_id === null) {
+        if ($status->user?->socialProfile?->twitter_id === null) {
             return;
         }
         $controller = self::getTwitterControllerForUser($status->user);

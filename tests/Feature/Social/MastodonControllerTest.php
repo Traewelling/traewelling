@@ -354,7 +354,7 @@ class MastodonControllerTest extends TestCase
     }
 
     private function setupUserWithMastodonAccount(): User {
-        $user = $this->createGDPRAckedUser();
+        $user = User::factory()->create();
 
         $mastodonServer = MastodonServer
             ::create([

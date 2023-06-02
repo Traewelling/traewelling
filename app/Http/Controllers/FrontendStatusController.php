@@ -12,8 +12,6 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Status;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -29,7 +27,7 @@ class FrontendStatusController extends Controller
     public function getDashboard(): Renderable|RedirectResponse {
         $statuses = DashboardController::getPrivateDashboard(auth()->user());
 
-        if ($statuses->isEmpty() || auth()->user()->follows->count() == 0) {
+        if ($statuses->isEmpty() || auth()->user()->follows->count() === 0) {
             if (Session::has('checkin-success')) {
                 return redirect()->route('globaldashboard')
                                  ->with('checkin-success', Session::get('checkin-success'));
@@ -100,7 +98,7 @@ class FrontendStatusController extends Controller
         }
 
         //TODO: This is a temporary workaround. We should use standarised GeoJSON Format for this (see PR#629)
-        if ($status?->trainCheckin?->HafasTrip?->polyline) {
+        if ($status->trainCheckin?->HafasTrip?->polyline) {
             $polyline = GeoController::getMapLinesForCheckin($status->trainCheckin);
             foreach ($polyline as $element => $elementValue) {
                 $polyline[$element] = [

@@ -77,7 +77,7 @@ abstract class HafasController extends Controller
                                   ]);
 
             $data = json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
-            if (!$response->ok() or empty($data)) {
+            if (empty($data) || !$response->ok()) {
                 return Collection::empty();
             }
 
@@ -98,8 +98,8 @@ abstract class HafasController extends Controller
                                                 'ibnr' => $hafasStop->id
                                             ], [
                                                 'name'      => $hafasStop->name,
-                                                'latitude'  => $hafasStop?->location?->latitude,
-                                                'longitude' => $hafasStop?->location?->longitude,
+                                                'latitude'  => $hafasStop->location?->latitude,
+                                                'longitude' => $hafasStop->location?->longitude,
                                             ]);
     }
 
@@ -238,10 +238,7 @@ abstract class HafasController extends Controller
 
         if ($name === null || $latitude === null || $longitude === null) {
             $dbTrainStation = TrainStation::where('ibnr', $ibnr)->first();
-            if ($dbTrainStation !== null) {
-                return $dbTrainStation;
-            }
-            return HafasController::fetchTrainStation($ibnr);
+            return $dbTrainStation ?? self::fetchTrainStation($ibnr);
         }
         return TrainStation::updateOrCreate([
                                                 'ibnr' => $ibnr
@@ -264,7 +261,7 @@ abstract class HafasController extends Controller
         $response = self::getHttpClient()->get("/stops/$ibnr");
 
         if (!$response->ok()) {
-            throw new HafasException($e->getMessage());
+            throw new HafasException($response->reason());
         }
 
         $data = json_decode($response->body());
@@ -379,7 +376,7 @@ abstract class HafasController extends Controller
 
             //This array is a workaround because Hafas doesn't give
             //us delay-data if the train already passed this station
-            //so.. just save data we really got. :)
+            //so... just save data we really got. :)
             $updatePayload = [
                 'arrival_platform_planned'   => $stopover->plannedArrivalPlatform,
                 'departure_platform_planned' => $stopover->plannedDeparturePlatform,
@@ -417,7 +414,7 @@ abstract class HafasController extends Controller
                 );
             } catch (PDOException) {
                 //do nothing: updateOrCreate will handle duplicate keys, but if the database is a bit laggy
-                // it can be throw an error here. But thats not a big deal.
+                // it can be thrown an error here. But that's not a big deal.
             }
         }
         return $hafasTrip;
@@ -425,7 +422,7 @@ abstract class HafasController extends Controller
 
     public static function refreshStopovers(stdClass $rawHafas): int {
         $payload = [];
-        foreach ($rawHafas?->stopovers ?? [] as $stopover) {
+        foreach ($rawHafas->stopovers ?? [] as $stopover) {
             $timestampToCheck = Carbon::parse($stopover->departure ?? $stopover->arrival);
             if ($timestampToCheck->isPast() || $timestampToCheck->isAfter(now()->addDay())) {
                 //HAFAS doesn't give as real time information on past stopovers, so... don't overwrite our data. :)
@@ -456,7 +453,7 @@ abstract class HafasController extends Controller
     }
 
     /**
-     * This function is used to refresh the departure of an trip, if the planned_departure is in the past and no
+     * This function is used to refresh the departure of a trip, if the planned_departure is in the past and no
      * real-time data is given. The HAFAS stationboard gives us this real-time data even for trips in the past, so give
      * it a chance.
      *
@@ -468,7 +465,7 @@ abstract class HafasController extends Controller
      * @throws HafasException
      */
     public static function refreshStopover(TrainStopover $stopover): void {
-        $departure = HafasController::getDepartures(
+        $departure = self::getDepartures(
             station: $stopover->trainStation,
             when:    $stopover->departure_planned,
         )->filter(function(stdClass $trip) use ($stopover) {

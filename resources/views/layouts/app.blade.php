@@ -245,7 +245,6 @@
              * checkin into components/stationboard.js.
              */
             var token            = '{{ csrf_token() }}';
-            var urlAvatarUpload  = '{{route('settings.upload-image')}}';
             var urlDisconnect    = '{{ route('provider.destroy') }}';
             var urlFollow        = '{{ route('follow.create') }}';
             var urlFollowRequest = '{{ route('follow.request') }}';

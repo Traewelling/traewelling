@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Exceptions\DataOverflowException;
 use App\Http\Controllers\Backend\Export\ExportController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
@@ -347,6 +348,9 @@ class StatisticsController extends Controller
         return $this->sendResponse(data: $data, additional: $additionalData);
     }
 
+    /**
+     * @throws DataOverflowException
+     */
     public function generateTravelExport(Request $request): JsonResponse|StreamedResponse|Response {
         $validated = $request->validate([
                                             'from'     => ['required', 'date', 'before_or_equal:until'],
