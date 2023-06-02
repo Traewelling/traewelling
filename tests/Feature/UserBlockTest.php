@@ -130,7 +130,7 @@ class UserBlockTest extends TestCase
         StatusBackend::createLike($this->bob, Status::find($this->checkin->status_id));
 
         //Create a second checkin and like it
-        $this->checkin = $this->checkin('Frankfurt Hbf', Carbon::parse('-10min'), $this->bob);
+        $this->checkin = TrainCheckin::factory(['user_id' => $this->bob->id])->create();
         StatusBackend::createLike($this->alice, Status::find($this->checkin->status_id));
 
         $this->assertEquals(2, Like::all()->count());
