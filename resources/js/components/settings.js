@@ -1,18 +1,18 @@
 require("croppie/croppie");
 
 var resize = $("#upload-demo").croppie({
-    enableExif: true,
-    enableOrientation: true,
-    viewport: {
-        width: 200,
-        height: 200,
-        type: "square"
-    },
-    boundary: {
-        width: 300,
-        height: 300
-    }
-});
+                                           enableExif: true,
+                                           enableOrientation: true,
+                                           viewport: {
+                                               width: 200,
+                                               height: 200,
+                                               type: "square"
+                                           },
+                                           boundary: {
+                                               width: 300,
+                                               height: 300
+                                           }
+                                       });
 
 $("#image").on("change", function () {
     $("#upload-demo").removeClass("d-none");
@@ -45,11 +45,8 @@ window.Settings = class Settings {
 
     static deleteProfilePicture() {
         API.request('/settings/profilePicture', 'delete')
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(API.handleGenericError);
-                }
-
+            .then(API.handleDefaultResponse)
+            .then(() => {
                 //Remove delete-btn if existing
                 let btnModalDeleteProfilePicture = document.getElementById("btnModalDeleteProfilePicture");
                 btnModalDeleteProfilePicture?.remove();
@@ -57,25 +54,11 @@ window.Settings = class Settings {
                 //Show default profile picture
                 let theProfilePicture = document.getElementById('theProfilePicture');
                 theProfilePicture?.setAttribute('src', `/img/user.png`);
-
-                return response.json().then(data => {
-                    notyf.success(data.data.message);
-                });
-            })
-            .catch(API.handleGenericError);
+            });
     }
 
     static uploadProfilePicture(image) {
         return API.request('/settings/profilePicture', 'POST', {image: image})
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(API.handleGenericError);
-                }
-
-                return response.json().then(data => {
-                    notyf.success(data.data.message);
-                });
-            })
-            .catch(API.handleGenericError);
+            .then(API.handleDefaultResponse);
     }
 }
