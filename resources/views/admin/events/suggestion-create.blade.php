@@ -68,7 +68,7 @@
                         <hr/>
 
                         <button type="submit" class="btn btn-primary">
-                            Save Event
+                            Accept & Save Event
                         </button>
                     </form>
                 </div>
