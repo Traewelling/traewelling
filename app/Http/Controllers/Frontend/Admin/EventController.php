@@ -57,7 +57,7 @@ class EventController extends Controller
         $validated       = $request->validate(['id' => ['required', 'exists:event_suggestions,id']]);
         $eventSuggestion = EventSuggestion::find($validated['id']);
         $eventSuggestion->update(['processed' => true]);
-        if (!App::runningUnitTests()) {
+        if (!App::runningUnitTests() && config('app.admin.webhooks.new_event') !== null) {
             Http::post(config('app.admin.webhooks.new_event'), [
                 auth()->user()->name . ' denied the event "' . $eventSuggestion->name . '".'
             ]);
@@ -104,7 +104,7 @@ class EventController extends Controller
                                ]);
 
         $eventSuggestion->update(['processed' => true]);
-        if (!App::runningUnitTests()) {
+        if (!App::runningUnitTests() && config('app.admin.webhooks.new_event') !== null) {
             Http::post(config('app.admin.webhooks.new_event'), [
                 'content' => auth()->user()->name . ' accepted the event "' . $eventSuggestion->name . '".',
             ]);

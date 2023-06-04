@@ -2,10 +2,10 @@
 
 window.API = class API {
 
-    static request(path, method = 'GET', data = []) {
+    static request(path, method = 'GET', data = {}) {
         let requestBody = undefined;
 
-        if (method !== 'GET' && data.length > 0) {
+        if (method !== 'GET' && data !== {}) {
             requestBody = JSON.stringify(data);
         }
         return fetch('/api/v1' + path, {

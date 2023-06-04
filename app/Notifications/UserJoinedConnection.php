@@ -2,33 +2,21 @@
 
 namespace App\Notifications;
 
-use App\Exceptions\ShouldDeleteNotificationException;
-use App\Http\Resources\StatusResource;
-use App\Http\Resources\UserNotificationMessageResource;
 use App\Models\Status;
 use Illuminate\Bus\Queueable;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Notifications\DatabaseNotification;
-use stdClass;
 
 class UserJoinedConnection extends BaseNotification
 {
     use Queueable;
 
     private Status $status;
-    private int    $status_id;
-    private string $linename;
-    private string $origin;
-    private string $destination;
 
     public function __construct(Status $status) {
-        $this->status_id   = $status->id;
-        $this->linename    = $status->trainCheckin->HafasTrip->linename;
+        $this->status = $status;
+
         $this->origin      = $status->trainCheckin->Origin->name;
         $this->destination = $status->trainCheckin->Destination->name;
     }
-
-
 
     public function via(): array {
         return ['database'];
@@ -36,36 +24,35 @@ class UserJoinedConnection extends BaseNotification
 
     public function toArray(): array {
         return [
-            'status_id'   => $this->status_id,
-            'linename'    => $this->linename,
-            'origin'      => $this->origin,
-            'destination' => $this->destination,
+            'status'  => $this->status->only(['id']),
+            'checkin' => [
+                'linename'    => $this->status->trainCheckin->HafasTrip->linename,
+                'origin'      => $this->status->trainCheckin->Origin->name,
+                'destination' => $this->status->trainCheckin->Destination->name,
+            ],
+            'user'    => $this->status->user->only(['id', 'username', 'name']),
         ];
-    }
-
-    public static function getIcon(): string {
-        return 'fa fa-train';
     }
 
     public static function getLead(array $data): string {
         return __('notifications.userJoinedConnection.lead', [
-            'username' => $data['status_id'], //TODO: Username
+            'username' => $data['user']['username'],
         ]);
     }
 
     public static function getNotice(array $data): ?string {
         return trans_choice(
             'notifications.userJoinedConnection.notice',
-            preg_match('/\s/', $data['linename']), [
-                'username'    => $data['status_id'], //TODO: Username
-                'linename'    => $data['linename'],
-                'origin'      => $data['origin'],
-                'destination' => $data['destination'],
+            preg_match('/\s/', $data['checkin']['linename']), [
+                'username'    => $data['user']['username'],
+                'linename'    => $data['checkin']['linename'],
+                'origin'      => $data['checkin']['origin'],
+                'destination' => $data['checkin']['destination'],
             ]
         );
     }
 
     public static function getLink(array $data): ?string {
-        return route('statuses.get', ['id' => $data['status_id']]);
+        return route('statuses.get', ['id' => $data['status']['id']]);
     }
 }

@@ -10,7 +10,6 @@ use App\Http\Controllers\Controller;
 use App\Models\SocialLoginProfile;
 use App\Models\Status;
 use App\Models\User;
-use App\Notifications\TwitterNotSent;
 use Exception;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Log;
@@ -108,7 +107,7 @@ abstract class AbstractTwitterController extends Controller
         } catch (NotConnectedException $exception) {
             throw $exception;
         } catch (TweetNotSendException $exception) {
-            $status->user->notify(new TwitterNotSent($exception->getStatusCode(), $status));
+            //Notification removed
         } catch (Exception $exception) {
             report($exception);
             throw $exception;

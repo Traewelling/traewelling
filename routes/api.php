@@ -68,15 +68,13 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::post('support/ticket', [SupportController::class, 'createTicket']);
         Route::group(['prefix' => 'notifications'], static function() {
             Route::group(['middleware' => ['scope:read-notifications']], static function() {
-                Route::get('/', [NotificationsController::class, 'index']);
-                Route::get('count', [NotificationsController::class, 'getUnreadCount']);         //TODO: deprecated
+                Route::get('/', [NotificationsController::class, 'listNotifications']);
                 Route::get('/unread/count', [NotificationsController::class, 'getUnreadCount']);
             });
             Route::group(['middleware' => ['scope:write-notifications']], static function() {
-                Route::put('{id}', [NotificationsController::class, 'update']);
-                Route::put('read/{id}', [NotificationsController::class, 'read']);
-                Route::put('unread/{id}', [NotificationsController::class, 'unread']);
-                Route::post('readAll', [NotificationsController::class, 'readAll']);
+                Route::put('read/all', [NotificationsController::class, 'markAllAsRead']);
+                Route::put('read/{id}', [NotificationsController::class, 'markAsRead']);
+                Route::put('unread/{id}', [NotificationsController::class, 'markAsUnread']);
             });
         });
         Route::group(['prefix' => 'trains', 'middleware' => ['scope:write-statuses']], static function() {

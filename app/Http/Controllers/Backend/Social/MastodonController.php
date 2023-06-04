@@ -9,6 +9,7 @@ use App\Models\SocialLoginProfile;
 use App\Models\Status;
 use App\Models\User;
 use App\Notifications\MastodonNotSent;
+use Error;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
@@ -162,7 +163,8 @@ abstract class MastodonController extends Controller
         } catch (GuzzleException $e) {
             $status->user->notify(new MastodonNotSent($e->getCode(), $status));
             throw $e;
-        } catch (Exception $e) {
+        } catch (Exception|Error $e) {
+            $status->user->notify(new MastodonNotSent(0, $status));
             Log::error($e);
             throw $e;
         }

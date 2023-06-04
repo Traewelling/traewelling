@@ -6,8 +6,9 @@
                 <h2 class="modal-title fs-4" id="notifications-board-title">
                     {{ __('notifications.title') }}
                 </h2>
-                <a href="javascript:void(0)" class="text-muted" id="mark-all-read"
-                   aria-label="{{ __('notifications.mark-all-read') }}">
+                <a href="javascript:Notification.toggleAllRead()" class="text-muted"
+                   aria-label="{{ __('notifications.mark-all-read') }}"
+                >
                     <span aria-hidden="true"><i class="fa-solid fa-check-double"></i></span>
                 </a>
                 <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
