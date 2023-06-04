@@ -6,6 +6,7 @@ use App\Exceptions\ShouldDeleteNotificationException;
 use App\Http\Controllers\Controller;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 abstract class NotificationController extends Controller
@@ -45,27 +46,17 @@ abstract class NotificationController extends Controller
         $notification->markAsUnread();
         return $notification;
     }
+
     /**
      * Show all 20 latest notifications
      *
      * @api v1
      */
-    public static function latest(): DatabaseNotificationCollection {
-        return Auth::user()->notifications
-            ->take(20)->map(function($notification) {
-                try {
-                    $notification->type::detail($notification);
-                    return $notification;
-                } catch (ShouldDeleteNotificationException) {
-                    $notification->delete();
-                    return null;
-                }
-            })
-            // We don't need empty notifications
-            ->filter(function($notificationOrNull) {
-                return $notificationOrNull !== null;
-            })
-            ->values();
+    public static function latest(int $limit = 20) {
+        return Auth::user()
+                   ->notifications()
+            //TODO: Delete statuses if status or user is deleted (maybe create another table for relations)
+                   ->paginate($limit);
     }
 
     /**

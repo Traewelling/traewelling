@@ -92,4 +92,24 @@ class TwitterNotSent extends BaseNotification
             'status_id' => $this->status->id,
         ];
     }
+
+    public static function getIcon(): string {
+        return 'fas fa-exclamation-triangle';
+    }
+
+    public static function getLead(array $data): string {
+        return __('notifications.socialNotShared.lead', [
+            'platform' => 'Twitter',
+        ]);
+    }
+
+    public static function getNotice(array $data): ?string {
+        return __('notifications.socialNotShared.twitter.' . $data['error']);
+    }
+
+    public static function getLink(array $data): ?string {
+        return route('statuses.get', [
+            'id' => $data['status_id'],
+        ]);
+    }
 }

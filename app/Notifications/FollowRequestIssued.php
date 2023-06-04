@@ -107,4 +107,22 @@ class FollowRequestIssued extends BaseNotification
             'follow_id' => $this->followRequest->id,
         ];
     }
+
+    public static function getIcon(): string {
+        return 'fas fa-user-plus';
+    }
+
+    public static function getLead(array $data): string {
+        return __('notifications.userRequestedFollow.lead', [
+            'followerRequestUsername' => $detail->sender->username, //TODO: username
+        ]);
+    }
+
+    public static function getNotice(array $data): ?string {
+        return __('notifications.userRequestedFollow.notice');
+    }
+
+    public static function getLink(array $data): ?string {
+        return route('settings.follower');
+    }
 }

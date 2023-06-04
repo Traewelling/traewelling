@@ -102,4 +102,24 @@ class UserFollowed extends BaseNotification
             'follow_id' => $this->follow->id,
         ];
     }
+
+    public static function getIcon(): string {
+        return 'fas fa-user-friends';
+    }
+
+    public static function getLead(array $data): string {
+        return __('notifications.userFollowed.lead', [
+            'followerUsername' => $detail->sender->username, //TODO: username
+        ]);
+    }
+
+    public static function getNotice(array $data): ?string {
+        return null;
+    }
+
+    public static function getLink(array $data): ?string {
+        return route('profile', [
+            'username' => $detail->sender->username, //TODO: username
+        ]);
+    }
 }

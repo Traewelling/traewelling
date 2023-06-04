@@ -129,4 +129,30 @@ class StatusLiked extends BaseNotification
             'liked_by'  => $this->like->user()->first()->id
         ];
     }
+
+    public static function getIcon(): string {
+        return 'fas fa-heart';
+    }
+
+    public static function getLead(array $data): string {
+        return __('notifications.statusLiked.lead', [
+            'likerUsername' => $detail->sender->username, //TODO: username
+        ]);
+    }
+
+    public static function getNotice(array $data): ?string {
+        return trans_choice('notifications.statusLiked.notice',
+                            preg_match('/\s/', $hafas->linename), //TODO: linename
+                            [
+                                'line'        => $hafas->linename,
+                                'createdDate' => Carbon::parse($hafas->departure)->isoFormat(__('date-format')) //TODO: departure
+                            ]
+        );
+    }
+
+    public static function getLink(array $data): ?string {
+        return route('statuses.get', [
+            'id' => $data['status_id'],
+        ]);
+    }
 }

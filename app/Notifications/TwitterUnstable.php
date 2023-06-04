@@ -8,8 +8,9 @@ use Illuminate\Notifications\Notification;
 use JetBrains\PhpStorm\ArrayShape;
 
 /**
- * While we have no intentions to remove the twitter integration in the future, it's always good to have a second way to login besides Twitter.
- * With this notification, we ask our users who have a twitter login but no email/password login, to create that second way of authenticating.
+ * While we have no intentions to remove the twitter integration in the future, it's always good to have a second way
+ * to login besides Twitter. With this notification, we ask our users who have a twitter login but no email/password
+ * login, to create that second way of authenticating.
  *
  * The notification is the same for everyone who gets it, and does not have custom information.
  */
@@ -17,7 +18,8 @@ class TwitterUnstable extends Notification
 {
     use Queueable;
 
-    public function __construct() { }
+    public function __construct() {
+    }
 
     public static function render($notification) {
         return view("includes.notification", [
@@ -33,14 +35,28 @@ class TwitterUnstable extends Notification
         ])->render();
     }
 
-    public function via($notifiable)
-    {
+    public function via($notifiable) {
         return ['database'];
     }
 
     #[ArrayShape([])]
-    public function toArray($notifiable)
-    {
+    public function toArray($notifiable) {
         return [];
+    }
+
+    public static function getIcon(): string {
+        return 'fas fa-exclamation-triangle';
+    }
+
+    public static function getLead(array $data): string {
+        return __('notifications.twitterUnstable.lead');
+    }
+
+    public static function getNotice(array $data): ?string {
+        return __('notifications.twitterUnstable.notice');
+    }
+
+    public static function getLink(array $data): ?string {
+        return route('settings');
     }
 }

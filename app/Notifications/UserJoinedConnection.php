@@ -16,106 +16,56 @@ class UserJoinedConnection extends BaseNotification
     use Queueable;
 
     private Status $status;
+    private int    $status_id;
+    private string $linename;
+    private string $origin;
+    private string $destination;
 
-    /**
-     * Create a new notification instance
-     *
-     * @return void
-     */
     public function __construct(Status $status) {
-        $this->status = $status;
+        $this->status_id   = $status->id;
+        $this->linename    = $status->trainCheckin->HafasTrip->linename;
+        $this->origin      = $status->trainCheckin->Origin->name;
+        $this->destination = $status->trainCheckin->Destination->name;
     }
 
-    /** @deprecated will be handled in frontend */
-    public static function render(mixed $notification): ?string {
-        try {
-            $detail = self::detail($notification);
-        } catch (ShouldDeleteNotificationException) {
-            $notification->delete();
-            return null;
-        }
 
-        return view("includes.notification", [
-            'color'           => "neutral",
-            'icon'            => "fa fa-train",
-            'lead'            => __('notifications.userJoinedConnection.lead', [
-                'username' => $detail->status->user->username
-            ]),
-            "link"            => route('statuses.get', ['id' => $detail->status->id]),
-            'notice'          => trans_choice(
-                'notifications.userJoinedConnection.notice',
-                preg_match('/\s/', $detail->status->trainCheckin->HafasTrip->linename), [
-                    'username'    => $detail->status->user->username,
-                    'linename'    => $detail->status->trainCheckin->HafasTrip->linename,
-                    'origin'      => $detail->status->trainCheckin->Origin->name,
-                    'destination' => $detail->status->trainCheckin->Destination->name,
-                ]
-            ),
-            'date_for_humans' => $notification->created_at->diffForHumans(),
-            'read'            => $notification->read_at !== null,
-            'notificationId'  => $notification->id
-        ])->render();
-    }
 
-    /**
-     * @param DatabaseNotification $notification
-     *
-     * @return stdClass
-     * @throws ShouldDeleteNotificationException
-     */
-    public static function detail(DatabaseNotification $notification): stdClass {
-        $notification->detail = new stdClass();
-        try {
-            $status = Status::findOrFail($notification->data['status_id'] ?? null);
-        } catch (ModelNotFoundException) {
-            throw new ShouldDeleteNotificationException();
-        }
-
-        $notification->detail->status  = new StatusResource($status);
-        $notification->detail->message = new UserNotificationMessageResource(
-            [
-                'icon'   => 'fa fa-train',
-                'lead'   => [
-                    'key'    => 'notifications.userJoinedConnection.lead',
-                    'values' => [
-                        'username' => $status->user->username
-                    ]
-                ],
-                'notice' => [
-                    'key'    => 'notifications.userJoinedConnection.notice',
-                    'values' => [
-                        'username'    => $status->user->username,
-                        'linename'    => $status->trainCheckin->HafasTrip->linename,
-                        'origin'      => $status->trainCheckin->Origin->name,
-                        'destination' => $status->trainCheckin->Destination->name,
-                    ]
-                ]
-            ]
-        );
-        return $notification->detail;
-    }
-
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array
-     */
     public function via(): array {
         return ['database'];
     }
 
-    /**
-     * Get the array representation of the notification.
-     * This array is saved as `data` in the database
-     *
-     * @return array
-     */
     public function toArray(): array {
         return [
-            'status_id'   => $this->status->id,
-            'linename'    => $this->status->trainCheckin->HafasTrip->linename,
-            'origin'      => $this->status->trainCheckin->Origin->name,
-            'destination' => $this->status->trainCheckin->Destination->name,
+            'status_id'   => $this->status_id,
+            'linename'    => $this->linename,
+            'origin'      => $this->origin,
+            'destination' => $this->destination,
         ];
+    }
+
+    public static function getIcon(): string {
+        return 'fa fa-train';
+    }
+
+    public static function getLead(array $data): string {
+        return __('notifications.userJoinedConnection.lead', [
+            'username' => $data['status_id'], //TODO: Username
+        ]);
+    }
+
+    public static function getNotice(array $data): ?string {
+        return trans_choice(
+            'notifications.userJoinedConnection.notice',
+            preg_match('/\s/', $data['linename']), [
+                'username'    => $data['status_id'], //TODO: Username
+                'linename'    => $data['linename'],
+                'origin'      => $data['origin'],
+                'destination' => $data['destination'],
+            ]
+        );
+    }
+
+    public static function getLink(array $data): ?string {
+        return route('statuses.get', ['id' => $data['status_id']]);
     }
 }

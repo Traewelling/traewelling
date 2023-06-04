@@ -227,9 +227,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/trains/setHome/', [FrontendTransportController::class, 'setTrainHome'])
          ->name('user.setHome');
 
-    Route::get('/notifications/latest', [NotificationController::class, 'renderLatest'])
-         ->name('notifications.latest');
-
     Route::post('/notifications/toggleReadState/{id}', [NotificationController::class, 'toggleReadState'])
          ->name('notifications.toggleReadState');
 

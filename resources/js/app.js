@@ -44,6 +44,7 @@ window.addEventListener("load", () => {
     require("./components/alert");
     require("./components/ActiveJourneys");
     require("./components/notifications-board");
+    require("./components/Notification");
     require("./components/progressbar");
     require("./components/settings");
     require("./components/station-autocomplete");

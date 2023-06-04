@@ -298,4 +298,12 @@ class User extends Authenticatable implements MustVerifyEmail
             throw new RateLimitExceededException();
         }
     }
+
+    /**
+     * Laravel default function (e.g. for notifications)
+     * @return string
+     */
+    public function preferredLocale(): string {
+        return $this->language;
+    }
 }

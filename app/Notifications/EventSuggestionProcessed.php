@@ -39,11 +39,34 @@ class EventSuggestionProcessed extends BaseNotification
     }
 
     #[ArrayShape(['accepted' => 'bool', 'event' => Event::class, 'name' => 'string'])]
-    public function toArray($notifiable): array {
+    public function toArray(): array {
         return [
             'accepted' => $this->event !== null,
             'event'    => $this->event,
             'name'     => $this->eventSuggestion->name,
         ];
+    }
+
+    public static function getIcon(): string {
+        return 'fa-regular fa-calendar';
+    }
+
+    public static function getLead(array $data): string {
+        return __('notifications.eventSuggestionProcessed.lead', [
+            'name' => $data['name'],
+        ]);
+    }
+
+    public static function getNotice(array $data): ?string {
+        return __('notifications.eventSuggestionProcessed.' . ($data['accepted'] ? "accepted" : "denied"));
+    }
+
+    public static function getLink(array $data): ?string {
+        if (!$data['accepted']) {
+            return null;
+        }
+        return route('statuses.byEvent', [
+            'eventSlug' => $data['slug'], //TODO: Save slug...
+        ]);
     }
 }

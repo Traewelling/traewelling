@@ -69,7 +69,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::group(['prefix' => 'notifications'], static function() {
             Route::group(['middleware' => ['scope:read-notifications']], static function() {
                 Route::get('/', [NotificationsController::class, 'index']);
-                Route::get('count', [NotificationsController::class, 'count']);
+                Route::get('count', [NotificationsController::class, 'getUnreadCount']);         //TODO: deprecated
+                Route::get('/unread/count', [NotificationsController::class, 'getUnreadCount']);
             });
             Route::group(['middleware' => ['scope:write-notifications']], static function() {
                 Route::put('{id}', [NotificationsController::class, 'update']);

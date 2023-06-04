@@ -73,8 +73,8 @@ class FollowRequestApproved extends BaseNotification
         $notification->detail->sender  = new UserResource($sender);
         $notification->detail->message = new UserNotificationMessageResource
         ([
-             'icon'   => 'fas fa-user-plus',
-             'lead'   => [
+             'icon' => 'fas fa-user-plus',
+             'lead' => [
                  'key'    => 'notifications.userApprovedFollow.lead',
                  'values' => [
                      'followerRequestUsername' => $sender->username
@@ -104,5 +104,25 @@ class FollowRequestApproved extends BaseNotification
         return [
             'follow_id' => $this->follow->id,
         ];
+    }
+
+    public static function getIcon(): string {
+        return 'fas fa-user-plus';
+    }
+
+    public static function getLead(array $data): string {
+        return __('notifications.userApprovedFollow.lead', [
+            'followerRequestUsername' => $detail->sender->username, //TODO: username
+        ]);
+    }
+
+    public static function getNotice(array $data): ?string {
+        return null;
+    }
+
+    public static function getLink(array $data): ?string {
+        return route('profile', [
+            'username' => $detail->sender->username, //TODO: username
+        ]);
     }
 }

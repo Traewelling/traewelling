@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API\v1;
 use App\Http\Controllers\Backend\NotificationController as NotificationBackend;
 use App\Http\Resources\UserNotificationResource;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 
 class NotificationsController extends Controller
@@ -14,17 +13,19 @@ class NotificationsController extends Controller
      * Get the amount of (unread) messages
      * @return JsonResponse
      */
-    public function count(): JsonResponse {
+    public function getUnreadCount(): JsonResponse {
         return $this->sendResponse(NotificationBackend::count());
     }
 
     /**
      * Get all latest Messages
      *
-     * @return AnonymousResourceCollection
+     * @return JsonResponse
      */
-    public function index(): AnonymousResourceCollection {
-        return UserNotificationResource::collection(NotificationBackend::latest());
+    public function index(): JsonResponse {
+        return $this->sendResponse([
+                                       'notifications' => UserNotificationResource::collection(Auth::user()->notifications()->simplePaginate()),
+                                   ]);
     }
 
     /**
@@ -33,9 +34,8 @@ class NotificationsController extends Controller
      * @return UserNotificationResource
      */
     public function update(string $notificationId): UserNotificationResource {
-        $notification = Auth::user()->notifications->where('id', $notificationId)->firstOrFail();
+        $notification = Auth::user()->notifications()->where('id', $notificationId)->firstOrFail();
         return new UserNotificationResource(NotificationBackend::toggleReadState($notification));
-
     }
 
     /**
@@ -44,9 +44,8 @@ class NotificationsController extends Controller
      * @return UserNotificationResource
      */
     public function read(string $notificationId): UserNotificationResource {
-        $notification = Auth::user()->notifications->where('id', $notificationId)->firstOrFail();
+        $notification = Auth::user()->notifications()->where('id', $notificationId)->firstOrFail();
         return new UserNotificationResource(NotificationBackend::toggleReadState($notification));
-
     }
 
     /**
@@ -55,16 +54,13 @@ class NotificationsController extends Controller
      * @return UserNotificationResource
      */
     public function unread(string $notificationId): UserNotificationResource {
-        $notification = Auth::user()->notifications->where('id', $notificationId)->firstOrFail();
+        $notification = Auth::user()->notifications()->where('id', $notificationId)->firstOrFail();
         return new UserNotificationResource(NotificationBackend::toggleReadState($notification));
 
     }
 
-    /**
-     * @return AnonymousResourceCollection
-     */
-    public function readAll(): AnonymousResourceCollection {
+    public function readAll(): JsonResponse {
         NotificationBackend::readAll();
-        return UserNotificationResource::collection(NotificationBackend::latest());
+        return $this->index();
     }
 }
