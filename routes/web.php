@@ -144,9 +144,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/support', [SupportController::class, 'renderSupportPage'])->name('support');
     Route::post('/support/submit', [SupportController::class, 'submit'])->name('support.submit');
 
-    Route::post('/events/suggest', [EventController::class, 'suggestEvent'])
-         ->name('events.suggest');
-
     Route::prefix('settings')->group(function() {
 
         Route::prefix('/applications')->group(function() {

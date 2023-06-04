@@ -2,7 +2,7 @@
 
 window.API = class API {
 
-    static request(path, method = 'GET', data = [], notifyErrors = true) {
+    static request(path, method = 'GET', data = []) {
         return fetch('/api/v1' + path, {
             method: method,
             headers: {
@@ -10,13 +10,17 @@ window.API = class API {
             },
             body: JSON.stringify(data),
         })
-            .then(response => {
-                if (notifyErrors && !response.ok) {
-                    return response.json().then(API.handleGenericError);
-                }
-                return response;
-            })
             .catch(API.handleGenericError);
+    }
+
+    static handleDefaultResponse(response) {
+        if (!response.ok) {
+            return response.json().then(API.handleGenericError);
+        }
+
+        return response.json().then(data => {
+            notyf.success(data.data.message);
+        });
     }
 
     static handleGenericError(error) {
