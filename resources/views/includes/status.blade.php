@@ -2,6 +2,7 @@
     use App\Enum\Business;use App\Http\Controllers\Backend\Transport\StationController;use App\Http\Controllers\Backend\User\ProfilePictureController;
 @endphp
 <div class="card status mb-3" id="status-{{ $status->id }}"
+     data-trwl-id="{{$status->id}}"
      data-trwl-status-body="{{ $status->body }}"
      data-date="{{$status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday'))}}"
      data-trwl-business-id="{{ $status->business->value }}"
@@ -157,8 +158,8 @@
                        data-trwl-status-id="{{ $status->id }}"></a>
                 </li>
                 <li class="like-text list-inline-item">
-                        <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"
-                              id="like-count-{{ $status->id }}">{{ $status->likes->count() }}
+                        <span class="likeCount pl-1 @if($status->likes->count() == 0) d-none @endif">
+                            {{ $status->likes->count() }}
                         </span>
                 </li>
             @endcan
@@ -205,7 +206,7 @@
                                 </li>
                                 <li>
                                     <button class="dropdown-item delete" type="button"
-                                           data-mdb-toggle="modal"
+                                            data-mdb-toggle="modal"
                                             data-mdb-target="#modal-status-delete"
                                             onclick="document.querySelector('#modal-status-delete input[name=\'statusId\']').value = '{{$status->id}}';">
                                         <div class="dropdown-icon-suspense">

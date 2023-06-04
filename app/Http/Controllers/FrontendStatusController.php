@@ -57,31 +57,6 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    public function createLike(Request $request) {
-        $validated = $request->validate([
-                                            'statusId' => ['required', 'exists:statuses,id']
-                                        ]);
-
-        try {
-            $status = Status::findOrFail($validated['statusId']);
-            StatusBackend::createLike(Auth::user(), $status);
-            return response(__('controller.status.like-ok'), 201);
-        } catch (StatusAlreadyLikedException) {
-            return response(__('controller.status.like-already'), 409);
-        } catch (PermissionException) {
-            return response(__('controller.status.not-permitted'), 403);
-        }
-    }
-
-    public function DestroyLike(Request $request): Response {
-        try {
-            StatusBackend::destroyLike(Auth::user(), $request['statusId']);
-            return response(__('controller.status.like-deleted'));
-        } catch (InvalidArgumentException $exception) {
-            return response($exception->getMessage(), 404);
-        }
-    }
-
     public function getActiveStatuses(): Renderable {
         $activeStatusesResponse = StatusBackend::getActiveStatuses();
         $activeEvents           = EventBackend::activeEvents();

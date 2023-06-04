@@ -16,4 +16,12 @@ window.Status = class Status {
                 }
             });
     }
+
+    static like(statusId) {
+        return API.request(`/status/${statusId}/like`, 'POST');
+    }
+
+    static unlike(statusId) {
+        return API.request(`/status/${statusId}/like`, 'DELETE');
+    }
 }
