@@ -137,7 +137,7 @@ class Notification
     /**
      * @OA\Property(
      *     title="createdAtForHumans",
-     *     description="the date when the notification was created, but in human readable form",
+     *     description="DON'T USE THIS ATTRIBUTE! This Attribute will be removed in the future. The date when the notification was created, but in human readable form",
      *     format="string",
      *     example="2 days ago"
      * )
