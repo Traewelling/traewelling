@@ -86,9 +86,9 @@ use Illuminate\Http\JsonResponse;
 class Controller extends \App\Http\Controllers\Controller
 {
     public function sendResponse(
-        array|string|int|object $data = null,
-        int                     $code = 200,
-        array                   $additional = null
+        mixed $data = null,
+        int   $code = 200,
+        array $additional = null
     ): JsonResponse {
         $disclaimer = 'APIv1 is not officially released for use and is also not fully documented. You can find the documentation at https://traewelling.de/api/documentation. Use at your own risk. Data fields may change at any time without notice.';
         if ($data === null) {
