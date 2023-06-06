@@ -2,13 +2,13 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Träwelling API",
-        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
+        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The\n *      API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body\n *      can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
         "contact": {
             "email": "support@traewelling.de"
         },
         "license": {
             "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
         },
         "version": "1.0.0 - alpha"
     },
@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "https://traewelling.de/api/v1",
+            "url": "http://localhost:8000/api/v1",
             "description": "This instance"
         }
     ],
@@ -550,7 +550,7 @@
                     "Events"
                 ],
                 "summary": "Shows current events with basic information",
-                "description": "Returns array of current events, used for a basic overview during checkiused for a basic overview during checkin",
+                "description": "Returns array of current events, used for a basic overview during checkiused for a basic\n     *      overview during checkin",
                 "operationId": "getCurrentEvents",
                 "parameters": [
                     {
@@ -1017,7 +1017,7 @@
                     "Likes"
                 ],
                 "summary": "[Auth optional] Get likes for status",
-                "description": "Returns array of users that liked the status",
+                "description": "Returns array of users that liked the status. Can return an empty dataset when the status\n     *      author or the requesting user has deactivated likes",
                 "operationId": "getLikesForStatus",
                 "parameters": [
                     {
@@ -1165,6 +1165,242 @@
                     {
                         "passport": [
                             "write-likes"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/notifications/unread/count": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get count of unread notifications for authenticated user",
+                "description": "Returns count of unread notifications of a authenticated user",
+                "operationId": "getUnreadCount",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "integer",
+                                            "example": 2
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-notifications"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/notifications": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get paginated notifications for authenticated user",
+                "description": "Returns paginated notifications of a authenticated",
+                "operationId": "listNotifications",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Notification"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-notifications"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/notifications/read/{id}": {
+            "put": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark notification as read",
+                "operationId": "markAsRead",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of notification",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cbf6054e-9c00-4b1f-ab37-7eb18ac8419f"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Notification"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Notification not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-notifications"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/notifications/unread/{id}": {
+            "put": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark notification as unread",
+                "operationId": "markAsUnread",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of notification",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cbf6054e-9c00-4b1f-ab37-7eb18ac8419f"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Notification"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Notification not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-notifications"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/notifications/read/all": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark all notification as read",
+                "operationId": "markAllAsRead",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All notifications marked as read"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-notifications"
                         ]
                     },
                     {
@@ -4132,6 +4368,96 @@
                     "name": "LeaderboardUser"
                 }
             },
+            "Notification": {
+                "title": "Notification",
+                "description": "Notification model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "string",
+                        "format": "string",
+                        "example": "bb1ba9a5-9c2b-43c3-b8c9-2f70651fc51c"
+                    },
+                    "type": {
+                        "title": "type",
+                        "description": "type of notification",
+                        "type": "string",
+                        "example": "UserJoinedConnection"
+                    },
+                    "leadFormatted": {
+                        "title": "leadFormatted",
+                        "description": "the title of notification in html formatted form",
+                        "type": "string",
+                        "format": "string",
+                        "example": "<b>@bob</b> is in your connection!"
+                    },
+                    "lead": {
+                        "title": "lead",
+                        "description": "the title of notification in plain text form",
+                        "type": "string",
+                        "format": "string",
+                        "example": "@bob is in your connection!"
+                    },
+                    "noticeFormatted": {
+                        "title": "noticeFormatted",
+                        "description": "the body of notification in html formatted form",
+                        "type": "string",
+                        "format": "string",
+                        "example": "@bob is on <b>S 81</b> from <b>Karlsruhe Hbf</b> to <b>Freudenstadt Hbf</b>."
+                    },
+                    "notice": {
+                        "title": "notice",
+                        "description": "the body of notification in plain text form",
+                        "type": "string",
+                        "format": "string",
+                        "example": "@bob is on S 81 from Karlsruhe Hbf to Freudenstadt Hbf."
+                    },
+                    "link": {
+                        "title": "link",
+                        "description": "the link to the notification",
+                        "type": "string",
+                        "format": "string",
+                        "example": "https://traewelling.de/status/123456"
+                    },
+                    "data": {
+                        "title": "data",
+                        "description": "the data of the notification",
+                        "type": "array",
+                        "items": {
+                            "example": {
+                                "notice": "every notification type has different data attributes, just try it out"
+                            }
+                        }
+                    },
+                    "readAt": {
+                        "title": "readAt",
+                        "description": "the date when the notification was read, null if not read yet",
+                        "type": "string",
+                        "format": "string",
+                        "example": "2023-01-01T00:00:00+00:00",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "title": "createdAt",
+                        "description": "the date when the notification was created",
+                        "type": "string",
+                        "format": "string",
+                        "example": "2023-01-01T00:00:00+00:00"
+                    },
+                    "updatedAtForHumans": {
+                        "title": "createdAtForHumans",
+                        "description": "DON'T USE THIS ATTRIBUTE! This Attribute will be removed in the future. The date when the notification was created, but in human readable form",
+                        "type": "string",
+                        "format": "string",
+                        "example": "2 days ago"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Notification"
+                }
+            },
             "PaginationPage": {
                 "title": "PaginationPage",
                 "description": "pagination links",
@@ -4324,6 +4650,12 @@
                     "liked": {
                         "title": "liked",
                         "description": "Did the currently authenticated user like this status? (if unauthenticated = false)",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "isLikable": {
+                        "title": "isLikable",
+                        "description": "Do the author of this status and the currently authenticated user allow liking of statuses? Only show the like UI if set to true",
                         "type": "boolean",
                         "example": true
                     },
@@ -4849,6 +5181,12 @@
                         "type": "boolean",
                         "example": false
                     },
+                    "likes_enabled": {
+                        "title": "likes_enabled",
+                        "description": "Does this profile allow likes? Only offer the UI to like any status if this setting is set to true. If set to false, the likes API will return 403.",
+                        "type": "boolean",
+                        "example": true
+                    },
                     "userInvisibleToMe": {
                         "title": "userInvisibleToMe",
                         "description": "Can the currently authenticated user see the statuses of this user?",
@@ -5268,9 +5606,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "https://traewelling.de/oauth/authorize",
-                        "tokenUrl": "https://traewelling.de/oauth/token",
-                        "refreshUrl": "https://traewelling.de/auth/refresh",
+                        "authorizationUrl": "http://localhost/oauth/authorize",
+                        "tokenUrl": "http://localhost/oauth/token",
+                        "refreshUrl": "http://localhost/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",

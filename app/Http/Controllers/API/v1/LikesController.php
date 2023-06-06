@@ -84,7 +84,7 @@ class LikesController extends Controller
      *          response=201,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *                      ref="#/components/schemas/SuccessResponse" //ToDo: Add new count attribute
+     *              ref="#/components/schemas/SuccessResponse"
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),

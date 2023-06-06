@@ -2,105 +2,82 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\Backend\User\FollowController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
 use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
+use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 
-class PrivateProfileFollowerRelationsTest extends TestCase
+class PrivateProfileFollowerRelationsTest extends ApiTestCase
 {
     use RefreshDatabase;
 
     protected User $user;
     protected User $alice;
 
-    protected function setUp(): void {
+    public function setUp(): void {
         parent::setUp();
         $this->user = User::factory()->create();
         $this->user->update(["private_profile" => true]);
         $this->alice = User::factory()->create();
     }
 
-    /**
-     * @test
-     */
-    public function request_private_follow_should_create_a_request_notification(): void {
-        // Given: Users Alice and Bob
-        $alice = $this->alice;
-        $bob   = $this->user;
+    public function testRequestPrivateFollowShouldCreateARequestNotification(): void {
+        //create a user with a private profile
+        $alice = User::factory()->create();
+        $bob   = User::factory(['private_profile' => true])->create();
 
-        // When: Alice follows Bob
-        $follow = $this->actingAs($alice)->post(route('follow.request'), ['follow_id' => $bob->id]);
-        $follow->assertStatus(201);
+        //check that there are no notifications
+        $this->assertDatabaseCount('notifications', 0);
 
-        // Then: Bob should see that in their notifications
-        $notifications = $this->actingAs($bob)
-                              ->get(route('notifications.latest'));
-        $notifications->assertOk();
-        $notifications->assertJsonCount(1); // one follow
-        $notifications->assertJsonFragment([
-                                               'type'            => FollowRequestIssued::class,
-                                               'notifiable_type' => User::class,
-                                               'notifiable_id'   => (string) $bob->id
-                                           ]);
+        //alice requests to follow bob
+        FollowController::createOrRequestFollow($alice, $bob);
+
+        //check if bob has a notification
+        $this->assertDatabaseHas('notifications', [
+            'notifiable_id' => $bob->id,
+            'type'          => FollowRequestIssued::class,
+        ]);
     }
 
-    /**
-     * @test
-     */
-    public function create_private_follow_should_create_a_request_notification(): void {
-        // Given: Users Alice and Bob
-        $alice = $this->alice;
-        $bob   = $this->user;
+    public function testAcceptingAFollowRequestShouldSpawnANotificationForInitiator(): void {
+        //create a user with a private profile
+        $alice      = User::factory()->create();
+        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        $bob        = User::factory(['private_profile' => true])->create();
+        $bobToken   = $bob->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
-        // When: Alice follows Bob
-        $follow = $this->actingAs($alice)->post(route('follow.create'), ['follow_id' => $bob->id]);
-        $follow->assertStatus(201);
+        //check that there are no notifications
+        $this->assertDatabaseCount('notifications', 0);
 
-        // Then: Bob should see that in their notifications
-        $notifications = $this->actingAs($bob)
-                              ->get(route('notifications.latest'));
-        $notifications->assertOk();
-        $notifications->assertJsonCount(1); // one follow
-        $notifications->assertJsonFragment([
-                                               'type'            => FollowRequestIssued::class,
-                                               'notifiable_type' => User::class,
-                                               'notifiable_id'   => (string) $bob->id
-                                           ]);
+        //alice requests to follow bob
+        FollowController::createOrRequestFollow($alice, $bob);
+
+        //bob should have a notification
+        $response = $this->get(
+            uri:     '/api/v1/notifications',
+            headers: ['Authorization' => 'Bearer ' . $bobToken]
+        );
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data'); // one notification
+        $response->assertJsonFragment(['type' => 'FollowRequestIssued']);
+
+        //bob accepts the request
+        FollowController::approveFollower($bob->id, $alice->id);
+
+        //alice should have a notification
+        $response = $this->get(
+            uri:     '/api/v1/notifications',
+            headers: ['Authorization' => 'Bearer ' . $aliceToken]
+        );
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data'); // one notification
     }
 
-    /**
-     * @test
-     */
-    public function accepting_a_follow_request_should_spawn_a_notification_for_initiator(): void {
-        // Given: Users Alice and Bob
-        $alice = $this->alice;
-        $bob   = $this->user;
-
-        // When: Alice follows Bob
-        $request = $this->actingAs($alice)->post(route('follow.request'), ['follow_id' => $bob->id]);
-        $request->assertStatus(201);
-        $follow = $this->actingAs($bob)->post(route('settings.follower.approve'), ['user_id' => $alice->id]);
-        $follow->assertStatus(302);
-
-        // Then: Bob should see that in their notifications
-        $notifications = $this->actingAs($alice)
-                              ->get(route('notifications.latest'));
-        $notifications->assertOk();
-        $notifications->assertJsonCount(1); // one follow
-        $notifications->assertJsonFragment([
-                                               'type'            => FollowRequestApproved::class,
-                                               'notifiable_type' => User::class,
-                                               'notifiable_id'   => (string) $alice->id
-                                           ]);
-    }
-
-    /**
-     * @test
-     */
-    public function accepting_a_follow_request_should_make_a_profile_visible(): void {
+    public function testAcceptingAFollowRequestShouldMakeAProfileVisible(): void {
         // Given: Users Alice and Bob
         $alice = $this->alice;
         $bob   = $this->user;

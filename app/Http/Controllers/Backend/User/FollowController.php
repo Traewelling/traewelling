@@ -11,6 +11,7 @@ use App\Models\Follow;
 use App\Models\FollowRequest;
 use App\Models\User;
 use App\Notifications\FollowRequestIssued;
+use App\Notifications\UserFollowed;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -111,11 +112,12 @@ abstract class FollowController extends Controller
             return $userToFollow;
         }
 
-        Follow::create([
-                           'user_id'   => $user->id,
-                           'follow_id' => $userToFollow->id
-                       ]);
+        $follow = Follow::create([
+                                     'user_id'   => $user->id,
+                                     'follow_id' => $userToFollow->id
+                                 ]);
         $userToFollow->fresh();
+        $userToFollow->notify(new UserFollowed($follow));
         Cache::forget(CacheKey::getFriendsLeaderboardKey($user->id));
         return $userToFollow;
     }

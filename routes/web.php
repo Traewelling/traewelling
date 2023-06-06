@@ -11,7 +11,6 @@
 |
 */
 
-use App\Http\Controllers\Frontend\WebhookController;
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\DevController;
 use App\Http\Controllers\Frontend\EventController;
@@ -28,11 +27,11 @@ use App\Http\Controllers\Frontend\Stats\YearInReviewController;
 use App\Http\Controllers\Frontend\Support\SupportController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
+use App\Http\Controllers\Frontend\WebhookController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendTransportController;
 use App\Http\Controllers\FrontendUserController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PrivacyAgreementController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\UserController;
@@ -223,15 +222,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::get('/trains/setHome/', [FrontendTransportController::class, 'setTrainHome'])
          ->name('user.setHome');
-
-    Route::get('/notifications/latest', [NotificationController::class, 'renderLatest'])
-         ->name('notifications.latest');
-
-    Route::post('/notifications/toggleReadState/{id}', [NotificationController::class, 'toggleReadState'])
-         ->name('notifications.toggleReadState');
-
-    Route::post('/notifications/readAll', [NotificationController::class, 'readAll'])
-         ->name('notifications.readAll');
 
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])
          ->name('userSearch');

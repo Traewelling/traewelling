@@ -6,17 +6,24 @@
                 <h2 class="modal-title fs-4" id="notifications-board-title">
                     {{ __('notifications.title') }}
                 </h2>
-                <a href="javascript:void(0)" class="text-muted" id="mark-all-read"
-                        aria-label="{{ __('notifications.mark-all-read') }}">
+                <a href="javascript:Notification.toggleAllRead()" class="text-muted"
+                   aria-label="{{ __('notifications.mark-all-read') }}"
+                >
                     <span aria-hidden="true"><i class="fa-solid fa-check-double"></i></span>
                 </a>
                 <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="notifications-list">
-                <div id="notifications-empty" class="text-center text-muted">
-                    {{ __('notifications.empty') }}
-                    <br/>¯\_(ツ)_/¯
+            <div class="modal-body">
+                <div id="notifications-loading" class="text-center text-muted">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
                 </div>
+                <div id="notifications-empty" class="d-none text-center text-muted">
+                    <i class="fa-solid fa-envelope fs-1"></i>
+                    <p class="fs-5">{{ __('notifications.empty') }}</p>
+                </div>
+                <div id="notifications-list"></div>
             </div>
         </div>
     </div>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title') {{ __('menu.settings.myFollower') }} @endsection
+@section('title', __('menu.settings.myFollower'))
 
 @section('content')
     <div class="container">
@@ -18,7 +18,7 @@
                                                 <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                     <a href="{{ route('profile', ['username' => $request->user->username]) }}">
                                                         <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($request->user) }}"
-                                                             style="height: 3em;" alt="{{ $request->user->username }}">
+                                                             style="height: 3em;" alt="{{ $request->user->username }}"
                                                         />
                                                     </a>
                                                 </div>
