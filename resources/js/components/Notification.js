@@ -132,8 +132,14 @@ document.querySelectorAll('nav .notifications-board-toggle').forEach(button => {
                     let notifications     = json.data;
                     let notificationsList = document.getElementById('notifications-list');
 
-                    //First remove the loading animation
                     notificationsList.innerHTML = '';
+
+                    document.getElementById('notifications-loading').classList.add('d-none');
+                    if (notifications.length === 0) {
+                        document.getElementById('notifications-empty').classList.remove('d-none');
+                        return;
+                    }
+                    document.getElementById('notifications-empty').classList.add('d-none');
 
                     //Then render the notifications
                     notifications.forEach((notification) => {
