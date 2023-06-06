@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\Backend\NotificationController as NotificationBackend;
 use App\Http\Resources\UserNotificationResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -28,6 +27,7 @@ class NotificationsController extends Controller
      *              ),
      *          )
      *       ),
+     *      @OA\Response(response=401, description="Unauthorized"),
      *       security={
      *           {"passport": {}}, {"token": {}}
      *       },
@@ -60,6 +60,7 @@ class NotificationsController extends Controller
      *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
      *          )
      *       ),
+     *       @OA\Response(response=401, description="Unauthorized"),
      *       security={
      *           {"passport": {}}, {"token": {}}
      *       },
@@ -94,6 +95,7 @@ class NotificationsController extends Controller
      *              @OA\Property(property="data", type="object", ref="#/components/schemas/Notification")
      *         )
      *       ),
+     *       @OA\Response(response=401, description="Unauthorized"),
      *       @OA\Response(response=404, description="Notification not found"),
      *       security={
      *           {"passport": {"write-notifications"}}, {"token": {}}
@@ -131,6 +133,7 @@ class NotificationsController extends Controller
      *              @OA\Property(property="data", type="object", ref="#/components/schemas/Notification")
      *         )
      *       ),
+     *       @OA\Response(response=401, description="Unauthorized"),
      *       @OA\Response(response=404, description="Notification not found"),
      *       security={
      *           {"passport": {"write-notifications"}}, {"token": {}}
@@ -165,6 +168,7 @@ class NotificationsController extends Controller
      *              ),
      *          )
      *      ),
+     *      @OA\Response(response=401, description="Unauthorized"),
      *      security={
      *          {"passport": {"write-notifications"}}, {"token": {}}
      *      }
