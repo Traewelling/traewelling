@@ -4,9 +4,10 @@ namespace App\Notifications;
 
 use App\Models\Like;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Date;
 
-class StatusLiked extends BaseNotification
+class StatusLiked extends Notification implements BaseNotification
 {
     use Queueable;
 

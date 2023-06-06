@@ -5,8 +5,9 @@ namespace App\Notifications;
 use App\Models\Event;
 use App\Models\EventSuggestion;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 
-class EventSuggestionProcessed extends BaseNotification
+class EventSuggestionProcessed extends Notification implements BaseNotification
 {
     use Queueable;
 

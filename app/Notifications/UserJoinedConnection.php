@@ -4,8 +4,9 @@ namespace App\Notifications;
 
 use App\Models\Status;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 
-class UserJoinedConnection extends BaseNotification
+class UserJoinedConnection extends Notification implements BaseNotification
 {
     use Queueable;
 

@@ -4,8 +4,9 @@ namespace App\Notifications;
 
 use App\Models\FollowRequest;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 
-class FollowRequestIssued extends BaseNotification
+class FollowRequestIssued extends Notification implements BaseNotification
 {
     use Queueable;
 
