@@ -54,17 +54,14 @@
                             {{ __('settings.notconnected') }}
                         </td>
                         <td>
-                            <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
-                                <div class="input-group mt-0">
-                                    <input type="text" name="domain" class="form-control"
-                                           placeholder="{{__('user.mastodon-instance-url')}}"
-                                           aria-describedby="button-addon4"/>
-                                    <button class="btn btn-md btn-primary m-0 px-3" type="submit">
-                                        <i class="fab fa-mastodon"></i> {{ __('settings.connect') }}
-                                    </button>
-
-                                </div>
-                            </form>
+                            <a
+                                    href="#"
+                                    data-mdb-target="#mastodon-auth"
+                                    data-mdb-toggle="modal"
+                                    class="btn btn-md btn-primary m-0 px-3"
+                            >
+                                <i class="fab fa-mastodon"></i> {{ __('settings.connect') }}
+                            </a>
                         </td>
                     @endif
                 </tr>
@@ -72,3 +69,5 @@
         </table>
     </div>
 </div>
+
+@include('includes.modals.mastodon-auth')

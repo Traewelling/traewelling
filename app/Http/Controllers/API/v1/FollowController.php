@@ -16,9 +16,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
-use Log;
 
 class FollowController extends Controller
 {
@@ -46,7 +45,7 @@ class FollowController extends Controller
      *       @OA\Response(response=409, description="Already following"),
      *       @OA\Response(response=403, description="User is blocked"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-follows"}}, {"token": {}}
      *       }
      *     )
      *
@@ -57,7 +56,7 @@ class FollowController extends Controller
     public function createFollow(int $userId): JsonResponse {
         try {
             $userToFollow         = User::findOrFail($userId);
-            $createFollowResponse = UserBackend::createOrRequestFollow(Auth::user(), $userToFollow);
+            $createFollowResponse = FollowBackend::createOrRequestFollow(Auth::user(), $userToFollow);
             return $this->sendResponse(new UserResource($createFollowResponse), 201);
         } catch (ModelNotFoundException) {
             return $this->sendError(['message' => 'User not found'], 404);
@@ -94,7 +93,7 @@ class FollowController extends Controller
      *       @OA\Response(response=404, description="User not found"),
      *       @OA\Response(response=409, description="Already following"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-follows"}}, {"token": {}}
      *       }
      *     )
      *
@@ -140,7 +139,7 @@ class FollowController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=409, description="Already following"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-settings-followers"}}, {"token": {}}
      *       }
      *     )
      *
@@ -171,7 +170,7 @@ class FollowController extends Controller
      *          )
      *       ),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-settings-followers"}}, {"token": {}}
      *       }
      *     )
      *
@@ -201,7 +200,7 @@ class FollowController extends Controller
      *          )
      *       ),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-settings-followers"}}, {"token": {}}
      *       }
      *     )
      *
@@ -238,7 +237,7 @@ class FollowController extends Controller
      *       @OA\Response(response=404, description="Follow not found"),
      *       @OA\Response(response=500, description="Unknown error"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-followers"}}, {"token": {}}
      *       }
      *     )
      *
@@ -292,7 +291,7 @@ class FollowController extends Controller
      *     @OA\Response(response=404, description="Request not found"),
      *     @OA\Response(response=500, description="Unknown error"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-followers"}}, {"token": {}}
      *
      *       }
      *     )
@@ -342,7 +341,7 @@ class FollowController extends Controller
      *       @OA\Response(response=403, description="Permission denied"),
      *       @OA\Response(response=404, description="Request not found"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-followers"}}, {"token": {}}
      *
      *       }
      *     )

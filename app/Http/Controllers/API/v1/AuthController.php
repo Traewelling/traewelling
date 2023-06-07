@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Backend\Auth\LoginController;
-use App\Http\Resources\StatusResource;
 use App\Http\Resources\UserSettingsResource;
 use App\Models\User;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\UserController as UserBackend;
+use App\Providers\AuthServiceProvider;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -77,6 +76,7 @@ class AuthController extends Controller
      * @param Request $request
      *
      * @return JsonResponse
+     * @throws ValidationException
      * @api v1
      */
     public function register(Request $request): JsonResponse {
@@ -100,7 +100,7 @@ class AuthController extends Controller
         $user                    = User::create($validated);
 
         if ($user->wasRecentlyCreated) {
-            $userToken = $user->createToken('token');
+            $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes));
             return $this->sendResponse(
                 data: [
                           'token'      => $userToken->accessToken,
@@ -162,7 +162,7 @@ class AuthController extends Controller
         $validated = $request->validate(['login' => ['required', 'max:255'], 'password' => ['required', 'min:8', 'max:255']]);
 
         if (LoginController::login($validated['login'], $validated['password'])) {
-            $token = $request->user()->createToken('token');
+            $token = $request->user()->createToken('token', array_keys(AuthServiceProvider::$scopes));
             return $this->sendResponse(['token'      => $token->accessToken,
                                         'expires_at' => $token->token->expires_at->toIso8601String()])
                         ->header('Authorization', $token->accessToken);
@@ -267,7 +267,7 @@ class AuthController extends Controller
      */
     public function refresh(Request $request): JsonResponse {
         $oldToken = $request->user()->token();
-        $newToken = $request->user()->createToken('token');
+        $newToken = $request->user()->createToken('token', array_keys(AuthServiceProvider::$scopes));
         $oldToken->revoke();
         return $this->sendResponse([
                                        'token'      => $newToken->accessToken,

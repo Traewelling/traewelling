@@ -10,11 +10,9 @@ use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Status;
-use App\Models\TrainStation;
+use App\Notifications\TestNotification;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -30,7 +28,7 @@ class FrontendStatusController extends Controller
     public function getDashboard(): Renderable|RedirectResponse {
         $statuses = DashboardController::getPrivateDashboard(auth()->user());
 
-        if ($statuses->isEmpty() || auth()->user()->follows->count() == 0) {
+        if ($statuses->isEmpty() || auth()->user()->follows->count() === 0) {
             if (Session::has('checkin-success')) {
                 return redirect()->route('globaldashboard')
                                  ->with('checkin-success', Session::get('checkin-success'));
@@ -38,6 +36,10 @@ class FrontendStatusController extends Controller
             if (Session::has('error')) {
                 return redirect()->route('globaldashboard')
                                  ->with('error', Session::get('error'));
+            }
+            if (Session::has('checkin-collision')) {
+                return redirect()->route('globaldashboard')
+                                 ->with('checkin-collision', Session::get('checkin-collision'));
             }
             return redirect()->route('globaldashboard');
         }
@@ -54,49 +56,6 @@ class FrontendStatusController extends Controller
             'latest'   => TransportController::getLatestArrivals(Auth::user()),
             'future'   => StatusBackend::getFutureCheckins()
         ]);
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return JsonResponse|RedirectResponse
-     */
-    public function DeleteStatus(Request $request): JsonResponse|RedirectResponse {
-        try {
-            if (!is_numeric($request['statusId'])) {
-                return redirect()->back()->with('error', __('error.bad-request'));
-            }
-            StatusBackend::DeleteStatus(Auth::user(), (int) $request['statusId']);
-        } catch (PermissionException|ModelNotFoundException) {
-            return redirect()->back()->with('error', __('controller.status.not-permitted'));
-        }
-
-        return response()->json(['message' => __('controller.status.delete-ok')]);
-    }
-
-    public function createLike(Request $request) {
-        $validated = $request->validate([
-                                            'statusId' => ['required', 'exists:statuses,id']
-                                        ]);
-
-        try {
-            $status = Status::findOrFail($validated['statusId']);
-            StatusBackend::createLike(Auth::user(), $status);
-            return response(__('controller.status.like-ok'), 201);
-        } catch (StatusAlreadyLikedException) {
-            return response(__('controller.status.like-already'), 409);
-        } catch (PermissionException) {
-            return response(__('controller.status.not-permitted'), 403);
-        }
-    }
-
-    public function DestroyLike(Request $request): Response {
-        try {
-            StatusBackend::destroyLike(Auth::user(), $request['statusId']);
-            return response(__('controller.status.like-deleted'));
-        } catch (InvalidArgumentException $exception) {
-            return response($exception->getMessage(), 404);
-        }
     }
 
     public function getActiveStatuses(): Renderable {
@@ -140,7 +99,7 @@ class FrontendStatusController extends Controller
         }
 
         //TODO: This is a temporary workaround. We should use standarised GeoJSON Format for this (see PR#629)
-        if ($status?->trainCheckin?->HafasTrip?->polyline) {
+        if ($status->trainCheckin?->HafasTrip?->polyline) {
             $polyline = GeoController::getMapLinesForCheckin($status->trainCheckin);
             foreach ($polyline as $element => $elementValue) {
                 $polyline[$element] = [

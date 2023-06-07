@@ -10,7 +10,6 @@ use App\Http\Controllers\Controller;
 use App\Models\SocialLoginProfile;
 use App\Models\Status;
 use App\Models\User;
-use App\Notifications\TwitterNotSent;
 use Exception;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Log;
@@ -95,7 +94,7 @@ abstract class AbstractTwitterController extends Controller
             Log::error("Was dispatched to post on Twitter, but POST_SOCIAL env variable is not set.");
             return;
         }
-        if ($status?->user?->socialProfile?->twitter_id === null) {
+        if ($status->user?->socialProfile?->twitter_id === null) {
             return;
         }
         $controller = self::getTwitterControllerForUser($status->user);
@@ -108,7 +107,7 @@ abstract class AbstractTwitterController extends Controller
         } catch (NotConnectedException $exception) {
             throw $exception;
         } catch (TweetNotSendException $exception) {
-            $status->user->notify(new TwitterNotSent($exception->getStatusCode(), $status));
+            //Notification removed
         } catch (Exception $exception) {
             report($exception);
             throw $exception;

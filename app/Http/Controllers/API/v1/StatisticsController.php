@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Exceptions\DataOverflowException;
 use App\Http\Controllers\Backend\Export\ExportController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
@@ -13,8 +14,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
-use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StatisticsController extends Controller
@@ -39,7 +40,7 @@ class StatisticsController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-statistics"}}, {"token": {}}
      *
      *       }
      *     )
@@ -70,7 +71,7 @@ class StatisticsController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-statistics"}}, {"token": {}}
      *
      *       }
      *     )
@@ -102,7 +103,7 @@ class StatisticsController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-statistics"}}, {"token": {}}
      *
      *       }
      *     )
@@ -140,7 +141,7 @@ class StatisticsController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-statistics"}}, {"token": {}}
      *
      *       }
      *     )
@@ -235,7 +236,7 @@ class StatisticsController extends Controller
      *     @OA\Response(response=400, description="Bad request"),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     security={
-     *     {"passport": {}}, {"token": {}}
+     *     {"passport": {"read-statistics"}}, {"token": {}}
      *
      *     }
      * )
@@ -263,7 +264,13 @@ class StatisticsController extends Controller
             'purpose'    => $purposes,
             'categories' => $categories,
             'operators'  => $operators,
-            'time'       => $travelTime
+            'time'       => $travelTime->map(function(Collection $row) {
+                return [
+                    'date'     => $row->date->toDateString(),
+                    'count'    => $row->count,
+                    'duration' => $row->duration,
+                ];
+            })
         ];
 
         $additionalData = [
@@ -317,7 +324,7 @@ class StatisticsController extends Controller
      *      ),
      *     ),
      *     security={
-     *        {"passport": {}}, {"token": {}}
+     *        {"passport": {"read-statistics"}}, {"token": {}}
      *
      *     }
      *     )
@@ -341,6 +348,9 @@ class StatisticsController extends Controller
         return $this->sendResponse(data: $data, additional: $additionalData);
     }
 
+    /**
+     * @throws DataOverflowException
+     */
     public function generateTravelExport(Request $request): JsonResponse|StreamedResponse|Response {
         $validated = $request->validate([
                                             'from'     => ['required', 'date', 'before_or_equal:until'],

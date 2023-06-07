@@ -1,60 +1,77 @@
-$(document).on("click", ".delete", function (event) {
+$(document).on("click", ".join", function (event) {
     event.preventDefault();
 
-    statusId = event.target.parentElement.dataset.trwlStatusId;
-    $("#delete-modal").modal("show");
-});
-
-$(document).on("click", "#modal-delete", function () {
-    $.ajax({
-        method: "DELETE",
-        url: urlDelete,
-        data: {statusId: statusId, _token: token}
-    }).done(function () {
-        window.location.replace("/dashboard");
+    const source = getDataset(event);
+    $("#checkinModal").modal("show", function (event) {
+        const modal = $(this);
+        modal
+            .find(".modal-title")
+            .html(
+                source.trwlLinename +
+                ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
+                source.trwlStopName
+            );
+        modal.find("#input-tripID").val(source.trwlTripId);
+        modal.find("#input-destination").val(source.trwlDestination);
+        modal.find("#input-arrival").val(source.trwlArrival);
+        modal.find("#input-start").val(source.trwlStart);
+        modal.find("#input-departure").val(source.trwlDeparture);
     });
 });
 
-$(document).on("click", ".like", function (event) {
-    statusId = event.target.dataset.trwlStatusId;
+document.querySelectorAll('.status .like').forEach((likeButton) => {
+    likeButton.addEventListener('click', (pointerEvent) => {
+        if (!pointerEvent.target.attributes.href.value === "#") {
+            //Unauthenticated users should not like the status
+            return;
+        }
 
-    let $likeCount   = document.getElementById("like-count-" + statusId);
-    let count        = parseInt($likeCount.innerText);
+        let statusId = pointerEvent.srcElement.closest('.status').dataset.trwlId;
 
-    if (event.target.className === "like far fa-star") {
-        $.ajax({
-            method: "POST",
-            url: urlLike,
-            data: {statusId: statusId, _token: token}
-        }).done(function () {
-            event.target.className = "like fas fa-star animated bounceIn";
-            $likeCount.innerText   = ++count;
+        let spanLikeCount = document.querySelector('.status[data-trwl-id=\'' + statusId + '\'] .likeCount');
 
-            if (count === 0) {
-                $likeCount.classList.add("d-none");
-            } else {
-                $likeCount.classList.remove("d-none");
-            }
-        });
-    } else {
-        $.ajax({
-            method: "POST",
-            url: urlDislike,
-            data: {statusId: statusId, _token: token}
-        }).done(function () {
-            event.target.className = "like far fa-star";
-            $likeCount.innerText   = --count;
+        event.preventDefault();
+        event.stopPropagation();
 
-            if (count === 0) {
-                $likeCount.classList.add("d-none");
-            } else {
-                $likeCount.classList.remove("d-none");
-            }
-        });
-    }
+        if (pointerEvent.target.className === "like far fa-star") {
+            Status.like(statusId)
+                .then(response => {
+                    if (!response.ok) {
+                        return;
+                    }
 
-    event.preventDefault();
-    event.stopPropagation();
+                    pointerEvent.target.className = "like fas fa-star animated bounceIn";
+                    response.json().then((data) => {
+                        let likeCount           = data.data.count;
+                        spanLikeCount.innerText = likeCount;
+                        if (likeCount === 0) {
+                            spanLikeCount.classList.add("d-none");
+                        } else {
+                            spanLikeCount.classList.remove("d-none");
+                        }
+                    });
+                });
+            return;
+        }
+
+        Status.unlike(statusId)
+            .then(response => {
+                if (!response.ok) {
+                    return;
+                }
+                pointerEvent.target.className = "like far fa-star";
+
+                response.json().then((data) => {
+                    let likeCount           = data.data.count;
+                    spanLikeCount.innerText = likeCount;
+                    if (likeCount === 0) {
+                        spanLikeCount.classList.add("d-none");
+                    } else {
+                        spanLikeCount.classList.remove("d-none");
+                    }
+                });
+            });
+    })
 });
 
 $(document).on("click", ".follow", function (event) {
@@ -126,3 +143,32 @@ $(document).on("click", ".disconnect", function (event) {
         }
     });
 });
+
+$(document).on("click", ".trwl-share", function (event) {
+    event.preventDefault();
+
+    let shareText = getDataset(event).trwlShareText;
+    let shareUrl  = getDataset(event).trwlShareUrl;
+
+    if (navigator.share) {
+        navigator.share({
+            title: "Träwelling",
+            text: shareText,
+            url: shareUrl
+        })
+            .catch(console.error);
+    } else {
+        navigator.clipboard.writeText(shareText + " " + shareUrl)
+            .then(() => {
+                window.notyf.success('Copied to clipboard');
+            });
+    }
+
+});
+
+function getDataset(event) {
+    let target = event.target.dataset;
+    let parent = event.target.parentElement.dataset;
+
+    return _.size(event.target.dataset) ? target : parent;
+}

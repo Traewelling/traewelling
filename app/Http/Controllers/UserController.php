@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\CacheKey;
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\PermissionException;
-use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
 use App\Http\Controllers\Backend\User\BlockController;
 use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\User\TokenController;
@@ -16,53 +14,21 @@ use App\Models\User;
 use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
 use App\Notifications\UserFollowed;
-use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
-use InvalidArgumentException;
-use JetBrains\PhpStorm\ArrayShape;
-use Mastodon;
 
 /**
  * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
  */
 class UserController extends Controller
 {
-
-    #[ArrayShape(['status' => "string"])]
-    public static function updateProfilePicture($avatar): array {
-        BackendSettingsController::updateProfilePicture($avatar);
-        return ['status' => ':ok'];
-    }
-
-    public static function getProfilePage(string $username): ?array {
-        $user = User::where('username', 'like', $username)->first();
-        if ($user === null) {
-            return null;
-        }
-        try {
-            $statuses = self::statusesForUser($user);
-        } catch (AuthorizationException) {
-            $statuses = null;
-        }
-
-        return [
-            'username'    => $username,
-            'statuses'    => $statuses,
-            'twitterUrl'  => $user->twitterUrl,
-            'mastodonUrl' => $user->mastodonUrl,
-            'user'        => $user
-        ];
-    }
 
     /**
      * @param User     $user
@@ -104,51 +70,6 @@ class UserController extends Controller
     }
 
     /**
-     * @param User $user
-     * @param User $userToFollow
-     *
-     * @return User
-     * @throws AlreadyFollowingException
-     * @throws InvalidArgumentException
-     * @throws AuthorizationException
-     * @api v1
-     */
-    public static function createOrRequestFollow(User $user, User $userToFollow): User {
-        if ($user->is($userToFollow)) {
-            throw new InvalidArgumentException();
-        }
-        if ($user->follows->contains('id', $userToFollow->id) || $userToFollow->followRequests->contains('user_id', $user->id)) {
-            throw new AlreadyFollowingException($user, $userToFollow);
-        }
-        if (BlockController::isBlocked($user, $userToFollow) || BlockController::isBlocked($userToFollow, $user)) {
-            throw new AuthorizationException();
-        }
-
-        // Request follow if user is a private profile
-        if ($userToFollow->private_profile) {
-            $follow = FollowRequest::create([
-                                                'user_id'   => $user->id,
-                                                'follow_id' => $userToFollow->id
-                                            ]);
-
-            $userToFollow->notify(new FollowRequestIssued($follow));
-            $userToFollow->refresh();
-            $user->refresh();
-            return $userToFollow;
-        }
-
-        Follow::create([
-                           'user_id'   => $user->id,
-                           'follow_id' => $userToFollow->id
-                       ]);
-        $userToFollow->fresh();
-        Cache::forget(CacheKey::getFriendsLeaderboardKey($user->id));
-        return $userToFollow;
-    }
-
-    //Save Changes on Settings-Page
-
-    /**
      * Add $userToFollow to $user's Followings
      *
      * @param User $user
@@ -158,7 +79,7 @@ class UserController extends Controller
      * @return bool
      * @throws AlreadyFollowingException
      * @throws AuthorizationException
-     * @deprecated
+     * @deprecated @todo replace frontend by api endpoint
      */
     public static function createFollow(User $user, User $userToFollow, bool $isApprovedRequest = false): bool {
         if ($user->is($userToFollow)) {
@@ -170,7 +91,7 @@ class UserController extends Controller
 
         //disallow re-following, if you already follow them
         //Also disallow following, if user is a private profile
-        if (self::isFollowing($user, $userToFollow)) {
+        if ($user->follows->contains('id', $userToFollow->id)) {
             throw new AlreadyFollowingException($user, $userToFollow);
         }
         // Request follow if user is a private profile
@@ -188,20 +109,7 @@ class UserController extends Controller
             $user->notify(new FollowRequestApproved($follow));
         }
         $user->load('follows');
-        return self::isFollowing($user, $userToFollow);
-    }
-
-    /**
-     * Returnes whether $user follows $userFollow
-     *
-     * @param User $user
-     * @param User $userFollow
-     *
-     * @return bool
-     * @deprecated Following-Attribute
-     */
-    private static function isFollowing(User $user, User $userFollow): bool {
-        return $user->follows->contains('id', $userFollow->id);
+        return $user->follows->contains('id', $userToFollow->id);
     }
 
     /**
@@ -212,7 +120,7 @@ class UserController extends Controller
      *
      * @return bool
      * @throws AlreadyFollowingException
-     * @deprecated
+     * @deprecated @todo replace frontend by api endpoint
      */
     public static function requestFollow(User $user, User $userToFollow): bool {
         if ($userToFollow->followRequests->contains('user_id', $user->id)) {
@@ -235,20 +143,15 @@ class UserController extends Controller
      * @param User $userToUnfollow The user of the person who was followed and now isn't
      *
      * @return bool
+     * @deprecated @todo replace frontend by api endpoint
      */
     public static function destroyFollow(User $user, User $userToUnfollow): bool {
-        if (!self::isFollowing($user, $userToUnfollow)) {
+        if (!$user->follows->contains('id', $userToUnfollow->id)) {
             return false;
         }
         Follow::where('user_id', $user->id)->where('follow_id', $userToUnfollow->id)->delete();
         $user->load('follows');
-        return self::isFollowing($user, $userToUnfollow) == false;
-    }
-
-    public static function registerByDay(Carbon $date): int {
-        return User::where("created_at", ">=", $date->copy()->startOfDay())
-                   ->where("created_at", "<=", $date->copy()->endOfDay())
-                   ->count();
+        return !$user->follows->contains('id', $userToUnfollow->id);
     }
 
     /**
@@ -273,17 +176,6 @@ class UserController extends Controller
                    ->where('name', 'like', '%' . $escapedQuery . '%')
                    ->orWhere('username', 'like', '%' . $escapedQuery . '%')
                    ->simplePaginate(10);
-    }
-
-    public function deleteProfilePicture(): RedirectResponse {
-        $user = Auth::user();
-
-        if ($user->avatar != null) {
-            File::delete(public_path('/uploads/avatars/' . $user->avatar));
-            $user->update(['avatar' => null]);
-        }
-
-        return back();
     }
 
     public function deleteSession(): RedirectResponse {
@@ -311,16 +203,5 @@ class UserController extends Controller
         } catch (PermissionException) {
             return redirect()->route('settings')->withErrors(__('messages.exception.general'));
         }
-    }
-
-    public function SaveAccount(Request $request): RedirectResponse {
-
-        $this->validate($request, [
-            'name' => 'required|max:120'
-        ]);
-        $user       = User::where('id', Auth::user()->id)->first();
-        $user->name = $request['name'];
-        $user->update();
-        return redirect()->route('account');
     }
 }

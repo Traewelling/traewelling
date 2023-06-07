@@ -48,7 +48,7 @@ To set up a Träwelling instance you'll need:
 
 * [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 * [MariaDB](https://mariadb.org/download) or [MySQL](https://www.mysql.com/de/downloads/) (SQLite is used for running
-  tests)
+  tests) (You can use [Docker Compose](https://docs.docker.com/compose/) and the [dev.docker-compose.yml](dev.docker-compose.yml) for that)
 * [Composer](https://getcomposer.org/download/)
 * PHP 8.1 and the dependencies mentioned in composer.json
 

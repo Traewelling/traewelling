@@ -55,8 +55,8 @@ class CreateTrainStopoversTable extends Migration
 
                       TrainStopover::updateOrCreate(
                           [
-                              'trip_id'          => $hafasTrip->trip_id,
-                              'train_station_id' => $hafasStop->id
+                              'trip_id' => $hafasTrip->trip_id,
+                                                                                                                                                                                                'train_station_id' => $hafasStop->id
                           ], [
                               'arrival_planned'            => $stopover?->plannedArrival,
                               'arrival_real'               => $stopover?->arrival,

@@ -22,12 +22,14 @@
                         {{__('settings.upload-image')}}
                     </a>
 
-                    @isset(auth()->user()->avatar)
-                        <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm mb-3"
-                           data-mdb-toggle="modal"
-                           data-mdb-target="#deleteProfilePictureModal"
-                        >{{ __('settings.delete-profile-picture-btn') }}</a>
-                    @endisset
+                    <a href="javascript:void(0)"
+                       class="btn btn-outline-danger btn-sm mb-3 {{isset(auth()->user()->avatar) ? '' : 'd-none'}}"
+                       id="btnModalDeleteProfilePicture"
+                       data-mdb-toggle="modal"
+                       data-mdb-target="#deleteProfilePictureModal"
+                    >
+                        {{ __('settings.delete-profile-picture-btn') }}
+                    </a>
 
                     @error('avatar')
                     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
@@ -111,12 +113,10 @@
                     <input type="file" id="image">
                 </p>
 
-                <div class="d-none text-trwl text-center" id="upload-error" role="alert">
-                    {{ __('settings.something-wrong') }}
-                </div>
-
                 <div id="upload-demo" class="d-none"></div>
-                <button class="btn btn-primary btn-block upload-image d-none" id="upload-button">
+                <button class="btn btn-primary btn-block upload-image d-none" id="upload-button"
+                        data-mdb-dismiss="modal"
+                >
                     {{__('settings.upload-image')}}
                 </button>
             </div>
@@ -140,7 +140,11 @@
                         aria-label="{{ __('settings.delete-profile-picture-no') }}">
                     {{ __('settings.delete-profile-picture-no') }}
                 </button>
-                <a href="{{ route('settings.delete-profile-picture') }}" class="btn btn-danger">
+                <a href="#" class="btn btn-danger"
+                   onclick="Settings.deleteProfilePicture()"
+                   data-mdb-toggle="modal"
+                   data-mdb-target="#deleteProfilePictureModal"
+                >
                     {{ __('settings.delete-profile-picture-yes') }}
                 </a>
             </div>

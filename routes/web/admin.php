@@ -3,7 +3,6 @@
 use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Http\Controllers\Frontend\Admin\DashboardController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
-use App\Http\Controllers\Frontend\Admin\LocationController;
 use App\Http\Controllers\Frontend\Admin\StatusEditController;
 use App\Http\Controllers\Frontend\Admin\TripController;
 use App\Http\Controllers\Frontend\Admin\UserController;
@@ -30,6 +29,8 @@ Route::middleware(['auth', 'userrole:5'])->group(function() {
              ->name('admin.users');
         Route::get('/{id}', [UserController::class, 'renderUser'])
              ->name('admin.users.user');
+        Route::post('/update-mail', [UserController::class, 'updateMail'])
+             ->name('admin.users.update-mail');
     });
 
     Route::prefix('status')->group(function() {

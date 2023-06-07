@@ -200,7 +200,6 @@
       <path value="$PROJECT_DIR$/vendor/swiftmailer/swiftmailer" />
       <path value="$PROJECT_DIR$/vendor/asm89/stack-cors" />
       <path value="$PROJECT_DIR$/vendor/masterminds/html5" />
-      <path value="$PROJECT_DIR$/vendor/mrkriskrisu/db-wagenreihung-php" />
       <path value="$PROJECT_DIR$/vendor/jean85/pretty-package-versions" />
       <path value="$PROJECT_DIR$/vendor/nunomaduro/termwind" />
       <path value="$PROJECT_DIR$/vendor/phpspec/prophecy" />
@@ -223,6 +222,10 @@
       <path value="$PROJECT_DIR$/vendor/paragonie/sodium_compat" />
       <path value="$PROJECT_DIR$/vendor/paragonie/random-lib" />
       <path value="$PROJECT_DIR$/vendor/coderjerk/bird-elephant" />
+      <path value="$PROJECT_DIR$/vendor/spatie/laravel-webhook-server" />
+      <path value="$PROJECT_DIR$/vendor/spatie/laravel-validation-rules" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/uri-template" />
+      <path value="$PROJECT_DIR$/vendor/uwumarie/laravel-bitflags" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

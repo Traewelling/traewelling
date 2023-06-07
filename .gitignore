@@ -48,6 +48,10 @@ Homestead.json
 .idea/**/contentModel.xml
 .idea/commandlinetools/
 .idea/laravel-idea.xml
+.idea/sonarlint.xml
+.idea/phpunit.xml
+.idea/phpspec.xml
+.idea/codeception.xml
 
 # Sensitive or high-churn files
 .idea/dataSources.xml

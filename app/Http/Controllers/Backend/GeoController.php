@@ -18,7 +18,7 @@ abstract class GeoController extends Controller
         TrainStopover $origin,
         TrainStopover $destination
     ): int {
-        if ($hafasTrip->polyline === null || $hafasTrip?->polyline?->polyline === null) {
+        if ($hafasTrip->polyline === null || $hafasTrip->polyline?->polyline === null) {
             return self::calculateDistanceByStopovers($hafasTrip, $origin, $destination);
         }
         $geoJson      = self::getPolylineBetween($hafasTrip, $origin, $destination);
@@ -107,14 +107,17 @@ abstract class GeoController extends Controller
      * @throws JsonException
      */
     private static function getPolylineBetween(HafasTrip $hafasTrip, TrainStopover $origin, TrainStopover $destination) {
-        $geoJson = self::getPolylineWithTimestamps($hafasTrip);
+        $geoJson  = self::getPolylineWithTimestamps($hafasTrip);
+        $features = $geoJson->features;
 
         $originIndex      = null;
         $destinationIndex = null;
-        foreach ($geoJson->features as $key => $data) {
+        $additionalRoutes = [];
+        foreach ($features as $key => $data) {
             if (!isset($data->properties->id)) {
                 continue;
             }
+
             if ($originIndex === null
                 && $origin->trainStation->ibnr === (int) $data->properties->id
                 && isset($data->properties->departure_planned) //Important for ring lines!
@@ -131,8 +134,18 @@ abstract class GeoController extends Controller
                 $destinationIndex = $key;
             }
         }
-
-        $slicedFeatures    = array_slice($geoJson->features, $originIndex, $destinationIndex - $originIndex + 1);
+        $slicedFeatures = array_slice($features, $originIndex, $destinationIndex - $originIndex + 1, true);
+        // Add saved points to polyline
+        if (count($additionalRoutes)) { //TODO: count is always 0?
+            $updatedFeatures = [];
+            foreach ($slicedFeatures as $key => $data) {
+                if (isset($additionalRoutes[$key]) && $key != $originIndex) { // There is a route, but we're at the origin?
+                    $updatedFeatures = [...$updatedFeatures, ...$additionalRoutes[$key]];
+                }
+                $updatedFeatures[] = $data;
+            }
+            $slicedFeatures = $updatedFeatures;
+        }
         $geoJson->features = $slicedFeatures;
         return $geoJson;
     }

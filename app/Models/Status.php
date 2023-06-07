@@ -25,7 +25,7 @@ class Status extends Model
 
     protected $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'tweet_id', 'mastodon_post_id'];
     protected $hidden   = ['user_id', 'business'];
-    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe'];
+    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description'];
     protected $casts    = [
         'id'               => 'integer',
         'user_id'          => 'integer',
@@ -50,6 +50,10 @@ class Status extends Model
 
     public function event(): HasOne {
         return $this->hasOne(Event::class, 'id', 'event_id');
+    }
+
+    public function tags(): HasMany {
+        return $this->hasMany(StatusTag::class, 'status_id', 'id');
     }
 
     public function getFavoritedAttribute(): ?bool {
@@ -103,6 +107,20 @@ class Status extends Model
         }
 
         return $postText;
+    }
+
+    public function getDescriptionAttribute(): string {
+        return __('description.status', [
+            'username'    => $this->user->name,
+            'origin'      => $this->trainCheckin->Origin->name .
+                             ($this->trainCheckin->Origin->rilIdentifier ?
+                                 ' (' . $this->trainCheckin->Origin->rilIdentifier . ')' : ''),
+            'destination' => $this->trainCheckin->Destination->name .
+                             ($this->trainCheckin->Destination->rilIdentifier ?
+                                 ' (' . $this->trainCheckin->Destination->rilIdentifier . ')' : ''),
+            'date'        => $this->trainCheckin->departure->isoFormat(__('datetime-format')),
+            'lineName'    => $this->trainCheckin->HafasTrip->linename
+        ]);
     }
 
     /**

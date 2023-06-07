@@ -17,12 +17,7 @@ class DistanceCalculationTest extends TestCase
 
     use RefreshDatabase;
 
-    protected function setUp(): void {
-        parent::setUp();
-        $this->artisan('db:seed');
-    }
-
-    public function test_distance_calculation_between_hanover_and_karlsruhe() {
+    public function test_distance_calculation_between_hanover_and_karlsruhe(): void {
         $result = GeoController::calculateDistanceBetweenCoordinates(
             latitudeA:  52.376589,
             longitudeA: 9.741083,

@@ -95,7 +95,7 @@
                             {{ __('about.events') }}
                         </h2>
                         <p class="lead mb-2">{{__('about.events.description1')}}</p>
-                        <p class="lead mb-2">{!! __('about.events.description2', ['link' => route('events.suggest')]) !!}</p>
+                        <p class="lead mb-2">{!! __('about.events.description2', ['link' => route('events')]) !!}</p>
                         <p class="lead mb-2">{!! __('about.events.description3') !!}</p>
                         <p class="lead mb-2">{{__('about.events.description4')}}</p>
                     </div>

@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Like;
+use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class UserBlockTest extends TestCase
@@ -19,11 +21,9 @@ class UserBlockTest extends TestCase
 
     protected function setUp(): void {
         parent::setUp();
-
-        $this->alice = $this->createGDPRAckedUser(['username' => 'alice']);
-        $this->bob   = $this->createGDPRAckedUser(['username' => 'bob']);
-
-        $this->checkin = $this->checkin('Frankfurt Hbf', Carbon::parse('-10min'), $this->alice);
+        $this->alice   = User::factory(['username' => 'alice', 'name' => 'Alice'])->create();
+        $this->bob     = User::factory(['username' => 'bob', 'name' => 'Bob'])->create();
+        $this->checkin = TrainCheckin::factory(['user_id' => $this->alice->id])->create();
     }
 
     private function aliceBlocksBob(): void {
@@ -35,13 +35,13 @@ class UserBlockTest extends TestCase
 
     public function testStatusesAreBlocked(): void {
         $this->actingAs($this->bob)
-             ->get('/status/' . $this->checkin['statusId'])
+             ->get('/status/' . $this->checkin->status_id)
              ->assertSee($this->alice->name);
 
         $this->aliceBlocksBob();
 
         $this->actingAs($this->bob)
-             ->get('/status/' . $this->checkin['statusId'])
+             ->get('/status/' . $this->checkin->status_id)
              ->assertForbidden();
     }
 
@@ -59,43 +59,42 @@ class UserBlockTest extends TestCase
     }
 
     public function testBobsStatusIsHiddenFromAlicesGlobalDashboard(): void {
-        $this->checkin('Frankfurt Hbf', Carbon::parse('-10min'), $this->bob);
+        TrainCheckin::factory(['user_id' => $this->bob->id])->create();
+
+        $this->actingAs($this->alice)
+             ->get(route('globaldashboard'))
+             ->assertOk()
+             ->assertSee(route('profile.picture', ['username' => $this->bob->username]))
+             ->assertSee(route('profile.picture', ['username' => $this->alice->username]));
 
         $this->aliceBlocksBob();
 
         $this->actingAs($this->alice)
              ->get(route('globaldashboard'))
              ->assertOk()
-             // Bob's name is present in the session bag due the "you successfully blocked bob' message. Instead, we
-             // check that Bob's profile picture is not there, while Alice's picture is still there (from the checkin
-             // in self::setUp).
+            // Bob's name is present in the session bag due the "you successfully blocked bob' message. Instead, we
+            // check that Bob's profile picture is not there, while Alice's picture is still there (from the checkin
+            // in self::setUp).
              ->assertDontSee(route('profile.picture', ['username' => $this->bob->username]))
              ->assertSee(route('profile.picture', ['username' => $this->alice->username]));
     }
 
     public function testAlicesStatusIsHiddenFromBobsActiveJourneys(): void {
-        $trainCheckin          = TrainCheckin::where('status_id', $this->checkin['statusId'])->firstOrFail();
-        $trainCheckin->arrival = Carbon::parse('+10min');
-        $trainCheckin->save();
-
         $this->actingAs($this->bob)
              ->get(route('statuses.active'))
              ->assertOk()
-             ->assertSee('Frankfurt');
+             ->assertSee($this->checkin->destinationStation->name);
 
         $this->aliceBlocksBob();
 
         $this->actingAs($this->bob)
              ->get(route('statuses.active'))
              ->assertOk()
-             ->assertDontSee('Frankfurt');
+             ->assertDontSee($this->checkin->destinationStation->name);
     }
 
     public function testBobsStatusIsHiddenFromAlicesActiveJourneys(): void {
-        $this->checkin         = $this->checkin('Frankfurt Hbf', Carbon::parse('-10min'), $this->bob);
-        $trainCheckin          = TrainCheckin::where('status_id', $this->checkin['statusId'])->firstOrFail();
-        $trainCheckin->arrival = Carbon::parse('+10min');
-        $trainCheckin->save();
+        TrainCheckin::factory(['user_id' => $this->bob->id])->create();
 
         $this->actingAs($this->alice)
              ->get(route('statuses.active'))
@@ -127,14 +126,12 @@ class UserBlockTest extends TestCase
     }
 
     public function testLikesAreDeleted(): void {
-        $this->actingAs($this->bob)
-             ->post(route('like.create'), ['statusId' => $this->checkin['statusId']])
-             ->assertStatus(201);
+        //Create like for already given checkin
+        StatusBackend::createLike($this->bob, Status::find($this->checkin->status_id));
 
-        $this->checkin = $this->checkin('Frankfurt Hbf', Carbon::parse('-10min'), $this->bob);
-        $this->actingAs($this->alice)
-             ->post(route('like.create'), ['statusId' => $this->checkin['statusId']])
-             ->assertStatus(201);
+        //Create a second checkin and like it
+        $this->checkin = TrainCheckin::factory(['user_id' => $this->bob->id])->create();
+        StatusBackend::createLike($this->alice, Status::find($this->checkin->status_id));
 
         $this->assertEquals(2, Like::all()->count());
 

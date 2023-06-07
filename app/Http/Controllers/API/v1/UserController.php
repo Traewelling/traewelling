@@ -7,13 +7,11 @@ use App\Exceptions\UserAlreadyBlockedException;
 use App\Exceptions\UserAlreadyMutedException;
 use App\Exceptions\UserNotBlockedException;
 use App\Exceptions\UserNotMutedException;
-use App\Http\Controllers\Backend\User\BlockController;
 use App\Http\Controllers\Backend\UserController as BackendUserBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Error;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -53,7 +51,7 @@ class UserController extends Controller
      * @OA\Response(response=401, description="Not logged in"),
      * @OA\Response(response=403, description="User not authorized to do this action"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"extra-delete"}}, {"token": {}}
      *
      *       }
      * )
@@ -65,11 +63,10 @@ class UserController extends Controller
     public function deleteAccount(Request $request): JsonResponse {
         $request->validate(['confirmation' => ['required', Rule::in([auth()->user()->username])]]);
 
-        try {
-            return $this->sendResponse(BackendUserBackend::deleteUserAccount(user: auth()->user()));
-        } catch (Error) {
-            return $this->sendError('', 409);
+        if(!BackendUserBackend::deleteUserAccount(user: auth()->user())) {
+            return $this->sendError(__('messages.exception.general'), 500);
         }
+        return $this->sendResponse(true);
     }
 
     /**
@@ -111,7 +108,7 @@ class UserController extends Controller
      *       },
      *       @OA\Response(response=403, description="Forbidden, User is blocked"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-statuses"}}, {"token": {}}
      *       }
      *     )
      *
@@ -176,7 +173,7 @@ class UserController extends Controller
      *       @OA\Response(response=403, description="Forbidden, User is blocked"),
      *       @OA\Response(response=404, description="User not found"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-statuses"}}, {"token": {}}
      *       }
      *     )
      * Returns Model of user
@@ -231,7 +228,7 @@ class UserController extends Controller
      *       @OA\Response(response=404, description="User not found"),
      *       @OA\Response(response=409, description="User is already blocked"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-block"}}, {"token": {}}
      *
      *       }
      *     )
@@ -295,7 +292,7 @@ class UserController extends Controller
      *       @OA\Response(response=404, description="User not found"),
      *       @OA\Response(response=409, description="User is not blocked"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-block"}}, {"token": {}}
      *
      *       }
      *     )
@@ -353,7 +350,7 @@ class UserController extends Controller
      *       @OA\Response(response=409, description="User is already muted"),
      *       @OA\Response(response=403, description="User not authorized"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-block"}}, {"token": {}}
      *
      *       }
      *     )
@@ -411,7 +408,7 @@ class UserController extends Controller
      *       @OA\Response(response=409, description="User is not muted"),
      *       @OA\Response(response=403, description="User not authorized"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-block"}}, {"token": {}}
      *
      *       }
      *     )
@@ -477,7 +474,7 @@ class UserController extends Controller
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-search"}}, {"token": {}}
      *       }
      *     )
      *

@@ -34,6 +34,7 @@ use Mastodon;
  * @property integer default_status_visibility
  * @property boolean private_profile
  * @property boolean prevent_index
+ * @property boolean likes_enabled
  * @property int     privacy_hide_days
  * @property string  language
  * @property Carbon  last_login
@@ -45,7 +46,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
-        'default_status_visibility', 'private_profile', 'prevent_index', 'privacy_hide_days',
+        'default_status_visibility', 'likes_enabled', 'private_profile', 'prevent_index', 'privacy_hide_days',
         'language', 'last_login',
     ];
     protected $hidden   = [
@@ -62,6 +63,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'privacy_ack_at'            => 'datetime',
         'home_id'                   => 'integer',
         'private_profile'           => 'boolean',
+        'likes_enabled'             => 'boolean',
         'default_status_visibility' => StatusVisibility::class,
         'prevent_index'             => 'boolean',
         'privacy_hide_days'         => 'integer',
@@ -153,6 +155,10 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function icsTokens(): HasMany {
         return $this->hasMany(IcsToken::class, 'user_id', 'id');
+    }
+
+    public function webhooks(): HasMany {
+        return $this->hasMany(Webhook::class);
     }
 
     public function getPointsAttribute(): int {
@@ -267,21 +273,37 @@ class User extends Authenticatable implements MustVerifyEmail
      * @throws RateLimitExceededException
      */
     public function sendEmailVerificationNotification(): void {
-        Log::info("Attempting to send verification email for user#" . $this->id);
+        Log::info(sprintf("Attempting to send verification email for user#%s w/ mail %s", $this->id, $this->email));
 
         $executed = RateLimiter::attempt(
-            key:          'verification-mail-sent-' . $this->id,
+            key:          'verification-mail-sent-' . $this->email,
             maxAttempts:  1,
             callback: function() {
                 SendVerificationEmail::dispatch($this);
-                Log::info("Sent the verification email for user#" . $this->id . " successfully.");
+                Log::info(sprintf(
+                              "Sent the verification email for user#%s w/ mail %s successfully.",
+                              $this->id,
+                              $this->email
+                          ));
             },
             decaySeconds: 5 * 60,
         );
 
         if (!$executed) {
-            Log::info("Sending the verification email for user#" . $this->id . " was rate-limited.");
+            Log::info(sprintf(
+                          "Sending the verification email for user#%s w/mail %s was rate-limited.",
+                          $this->id,
+                          $this->email
+                      ));
             throw new RateLimitExceededException();
         }
+    }
+
+    /**
+     * Laravel default function (e.g. for notifications)
+     * @return string
+     */
+    public function preferredLocale(): string {
+        return $this->language;
     }
 }

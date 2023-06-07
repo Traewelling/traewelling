@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Frontend\Admin;
 
+use App\Exceptions\RateLimitExceededException;
 use App\Models\User;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class UserController
 {
+    use SendsPasswordResetEmails;
 
     public function renderIndex(Request $request): View|RedirectResponse {
         $validated = $request->validate(['query' => ['nullable']]);
@@ -17,6 +20,7 @@ class UserController
             $users = User::where('id', $validated['query'])
                          ->orWhere('name', 'like', '%' . $validated['query'] . '%')
                          ->orWhere('username', 'like', '%' . $validated['query'] . '%')
+                         ->orWhere('email', 'like', '%' . $validated['query'] . '%')
                          ->orderByDesc('last_login')
                          ->simplePaginate(10);
         } else {
@@ -39,5 +43,24 @@ class UserController
         return view('admin.users.show', [
             'user' => $user
         ]);
+    }
+
+    public function updateMail(Request $request): RedirectResponse {
+        $validated   = $request->validate([
+                                              'id'    => ['required', 'integer', 'exists:users,id'],
+                                              'email' => ['required', 'email', 'unique:users,email']
+                                          ]);
+        $user        = User::findOrFail($validated['id']);
+        $user->email = $validated['email'];
+        $user->save();
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (RateLimitExceededException) {
+            // Ignore
+        }
+        if ($user->password === null) {
+            $this->sendResetLinkEmail($request);
+        }
+        return redirect()->route('admin.users.user', ['id' => $validated['id']]);
     }
 }

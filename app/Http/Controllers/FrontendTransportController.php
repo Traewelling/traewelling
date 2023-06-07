@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Dto\CheckinSuccess;
 use App\Enum\Business;
-use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
@@ -11,7 +11,6 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
-use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController as TransportBackend;
@@ -142,7 +141,6 @@ class FrontendTransportController extends Controller
 
             return view('trip', [
                 'hafasTrip'       => $hafasTrip,
-                'events'          => EventBackend::activeEvents(),
                 'stopovers'       => $stopovers,
                 'startStation'    => $startStation,
                 'searchedStation' => isset($validated['searchedStation']) ? TrainStation::findOrFail($validated['searchedStation']) : null,
@@ -191,16 +189,19 @@ class FrontendTransportController extends Controller
 
             $trainCheckin = $backendResponse['status']->trainCheckin;
 
-            return redirect()->route('dashboard')->with('checkin-success', [
-                'distance'                => $trainCheckin->distance,
-                'duration'                => $trainCheckin->duration,
-                'points'                  => $trainCheckin->points,
-                'lineName'                => $trainCheckin->HafasTrip->linename,
-                'alsoOnThisConnection'    => $trainCheckin->alsoOnThisConnection,
-                'event'                   => $trainCheckin->event,
-                'forced'                  => isset($validated['force']),
-                'pointsCalculationReason' => PointReason::from($backendResponse['points']['calculation']['reason'])
-            ]);
+            $checkinSuccess = new CheckinSuccess(
+                id: $backendResponse['status']->id,
+                distance: $trainCheckin->distance,
+                duration: $trainCheckin->duration,
+                points: $trainCheckin->points,
+                pointReason: $backendResponse['points']->reason,
+                lineName: $trainCheckin->HafasTrip->linename,
+                socialText: $backendResponse['status']->socialText,
+                alsoOnThisConnection: $trainCheckin->alsoOnThisConnection,
+                event: $trainCheckin->event,
+                forced: isset($validated['force'])
+            );
+            return redirect()->route('dashboard')->with('checkin-success', (clone $checkinSuccess));
 
         } catch (CheckInCollisionException $exception) {
             return redirect()
@@ -241,9 +242,5 @@ class FrontendTransportController extends Controller
         } catch (HafasException) {
             return redirect()->back()->with(['error' => __('messages.exception.generalHafas')]);
         }
-    }
-
-    private function isCancelled(mixed $param): bool {
-        return $param['cancelled'] && $param['arrival'] == null && $param['departure'] == null;
     }
 }

@@ -29,4 +29,11 @@ enum HafasTravelType: string
             default                       => '',
         };
     }
+
+    public function onRails(): bool {
+        return match ($this) {
+            static::BUS, static::FERRY, static::TAXI => false,
+            default                                  => true,
+        };
+    }
 }

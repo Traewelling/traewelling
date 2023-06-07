@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers\Backend\Transport;
 
+use App\Dto\PointCalculation;
 use App\Enum\Business;
 use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
+use App\Events\StatusUpdateEvent;
 use App\Events\UserCheckedIn;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\DistanceDeviationException;
 use App\Exceptions\HafasException;
-use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
-use App\Http\Resources\PointsCalculationResource;
 use App\Http\Resources\StatusResource;
-use App\Jobs\FetchCarriageSequence;
+use App\Jobs\RefreshStopover;
 use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\Status;
@@ -42,12 +43,11 @@ abstract class TrainCheckinController extends Controller
     /**
      * @throws StationNotOnTripException
      * @throws CheckInCollisionException
-     * @throws NotConnectedException
      * @throws AlreadyCheckedInException
      */
     #[ArrayShape([
         'status'               => Status::class,
-        'points'               => PointsCalculationResource::class,
+        'points'               => PointCalculation::class,
         'alsoOnThisConnection' => AnonymousResourceCollection::class
     ])]
     public static function checkin(
@@ -120,7 +120,7 @@ abstract class TrainCheckinController extends Controller
      */
     #[ArrayShape([
         'status'               => Status::class,
-        'points'               => PointsCalculationResource::class,
+        'points'               => PointCalculation::class,
         'alsoOnThisConnection' => AnonymousResourceCollection::class
     ])]
     private static function createTrainCheckin(
@@ -160,7 +160,7 @@ abstract class TrainCheckinController extends Controller
 
         $distance = GeoController::calculateDistance(hafasTrip: $trip, origin: $firstStop, destination: $lastStop);
 
-        $pointsResource = PointsCalculationController::calculatePoints(
+        $pointCalculation = PointsCalculationController::calculatePoints(
             distanceInMeter: $distance,
             hafasTravelType: $trip->category,
             departure:       $firstStop->departure,
@@ -175,7 +175,7 @@ abstract class TrainCheckinController extends Controller
                                                              'origin'      => $firstStop->trainStation->ibnr,
                                                              'destination' => $lastStop->trainStation->ibnr,
                                                              'distance'    => $distance,
-                                                             'points'      => $pointsResource['points'],
+                                                             'points'      => $pointCalculation->points,
                                                              'departure'   => $firstStop->departure_planned,
                                                              'arrival'     => $lastStop->arrival_planned
                                                          ]);
@@ -187,11 +187,9 @@ abstract class TrainCheckinController extends Controller
                 }
             }
 
-            FetchCarriageSequence::dispatch($firstStop);
-
             return [
                 'status'               => $status,
-                'points'               => $pointsResource,
+                'points'               => $pointCalculation,
                 'alsoOnThisConnection' => StatusResource::collection($alsoOnThisConnection)
             ];
         } catch (PDOException $exception) {
@@ -227,11 +225,13 @@ abstract class TrainCheckinController extends Controller
                              'arrival'     => $newDestinationStopover->arrival_planned->toIso8601String(),
                              'destination' => $newDestinationStopover->trainStation->ibnr,
                              'distance'    => $newDistance,
-                             'points'      => $pointsResource['points'],
+                             'points'      => $pointsResource->points,
                          ]);
         $checkin->refresh();
 
-        return PointReason::tryFrom($pointsResource['calculation']['reason']);
+        StatusUpdateEvent::dispatch($checkin->status);
+
+        return $pointsResource->reason;
     }
 
     /**
@@ -257,12 +257,54 @@ abstract class TrainCheckinController extends Controller
         }
 
         //try to refresh the departure time of the origin station
-        if ($originStopover && !str_starts_with($tripId, 'manual-')) {
-            dispatch(function() use ($originStopover) {
-                HafasController::refreshStopover($originStopover);
-            })->afterResponse();
-        }
+        RefreshStopover::dispatchIf($originStopover && !str_starts_with($tripId, 'manual-'), $originStopover);
 
         return $hafasTrip;
+    }
+
+    /**
+     * @throws DistanceDeviationException
+     */
+    public static function refreshDistanceAndPoints(Status $status, bool $resetPolyline = false): void {
+        $trainCheckin = $status->trainCheckin;
+        if ($resetPolyline) {
+            $trainCheckin->HafasTrip->update(['polyline_id' => null]);
+        }
+        $firstStop   = $trainCheckin->origin_stopover;
+        $lastStop    = $trainCheckin->destination_stopover;
+        $distance    = GeoController::calculateDistance(
+            hafasTrip:   $trainCheckin->HafasTrip,
+            origin:      $firstStop,
+            destination: $lastStop
+        );
+        $oldPoints   = $trainCheckin->points;
+        $oldDistance = $trainCheckin->distance;
+
+        if ($trainCheckin->distance === 0 || $distance / $trainCheckin->distance >= 1.15) {
+            Log::error(sprintf('Distance deviation for status #%d is greater than 15 percent. Original: %d, new: %d',
+                               $status->id,
+                               $oldDistance,
+                               $distance));
+            throw new DistanceDeviationException();
+        }
+
+        $pointsResource = PointsCalculationController::calculatePoints(
+            distanceInMeter: $distance,
+            hafasTravelType: $trainCheckin->HafasTrip->category,
+            departure:       $firstStop->departure,
+            arrival:         $lastStop->arrival
+        );
+        $payload        = [
+            'distance' => $distance,
+            'points'   => $pointsResource->points,
+        ];
+        $trainCheckin->update($payload);
+        Log::debug(sprintf('Updated distance and points of status #%d: Old: %dm %dp New: %dm %dp',
+                           $status->id,
+                           $oldDistance,
+                           $oldPoints,
+                           $distance,
+                           $pointsResource->points,
+                   ));
     }
 }

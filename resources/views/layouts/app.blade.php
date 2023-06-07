@@ -245,13 +245,9 @@
              * checkin into components/stationboard.js.
              */
             var token            = '{{ csrf_token() }}';
-            var urlAvatarUpload  = '{{route('settings.upload-image')}}';
-            var urlDelete        = '{{ route('status.delete') }}';
             var urlDisconnect    = '{{ route('provider.destroy') }}';
-            var urlDislike       = '{{ route('like.destroy') }}';
             var urlFollow        = '{{ route('follow.create') }}';
             var urlFollowRequest = '{{ route('follow.request') }}';
-            var urlLike          = '{{ route('like.create') }}';
             var urlTrainTrip     = '{{ route('trains.trip') }}';
             var urlUnfollow      = '{{ route('follow.destroy') }}';
             var urlAutocomplete  = '{{ url('transport/train/autocomplete') }}';
@@ -264,6 +260,7 @@
         </script>
     </body>
 
+    @include('includes.check-in-modal')
     @include('includes.modals.notifications-board')
     @yield('footer')
 </html>

@@ -10,6 +10,7 @@ use App\Http\Controllers\Backend\User\FollowController;
 use App\Http\Controllers\Backend\User\FollowController as SettingsBackend;
 use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\User\TokenController;
+use App\Http\Controllers\Backend\WebhookController;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -55,6 +56,7 @@ class SettingsController extends Controller
 
     public function updatePrivacySettings(Request $request): RedirectResponse {
         $validated = $request->validate([
+                                            'likes_enabled'             => ['nullable'],
                                             'private_profile'           => ['nullable'],
                                             'prevent_index'             => ['required', 'gte:0', 'lte:1'],
                                             'privacy_hide_days'         => ['nullable', 'gte:1',],
@@ -68,8 +70,12 @@ class SettingsController extends Controller
                                             ]
                                         ]);
 
+
+
         $user = auth()->user();
         $user->update([
+                          'likes_enabled'             => isset($validated['likes_enabled'])
+                                                         && $validated['likes_enabled'] === 'on',
                           'prevent_index'             => $validated['prevent_index'],
                           'private_profile'           => isset($validated['private_profile'])
                                                          && $validated['private_profile'] === 'on',
@@ -104,7 +110,8 @@ class SettingsController extends Controller
     public function renderSettings(): Renderable {
         return view('settings.settings', [
             'sessions' => SessionController::index(user: auth()->user()),
-            'tokens'   => TokenController::index(user: auth()->user())
+            'tokens'   => TokenController::index(user: auth()->user()),
+            'webhooks' => WebhookController::index(user: auth()->user()),
         ]);
     }
 

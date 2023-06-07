@@ -2,12 +2,29 @@
 
 namespace App\Providers;
 
+use App\Events\StatusDeleteEvent;
+use App\Events\StatusUpdateEvent;
 use App\Events\UserCheckedIn;
 use App\Jobs\PostStatusOnMastodon;
-use App\Jobs\PostStatusOnTwitter;
+use App\Listeners\NotificationSentWebhookListener;
+use App\Listeners\StatusCreateCheckPolylineListener;
+use App\Listeners\StatusCreateWebhookListener;
+use App\Listeners\StatusDeleteWebhookListener;
+use App\Listeners\StatusUpdateWebhookListener;
+use App\Models\Follow;
+use App\Models\Like;
+use App\Models\Status;
+use App\Models\User;
+use App\Observers\FollowObserver;
+use App\Observers\LikeObserver;
+use App\Observers\StatusObserver;
+use App\Observers\UserObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
+use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -17,12 +34,29 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        Registered::class    => [
+        Registered::class        => [
             //SendEmailVerificationNotification::class,
         ],
-        UserCheckedIn::class => [
-
+        UserCheckedIn::class     => [
+            StatusCreateWebhookListener::class,
+            StatusCreateCheckPolylineListener::class,
+        ],
+        StatusUpdateEvent::class => [
+            StatusUpdateWebhookListener::class
+        ],
+        StatusDeleteEvent::class => [
+            StatusDeleteWebhookListener::class
+        ],
+        NotificationSent::class  => [
+            NotificationSentWebhookListener::class
         ]
+    ];
+
+    protected $observers = [
+        Follow::class => [FollowObserver::class],
+        Like::class   => [LikeObserver::class],
+        Status::class => [StatusObserver::class],
+        User::class   => [UserObserver::class],
     ];
 
     /**
@@ -34,7 +68,7 @@ class EventServiceProvider extends ServiceProvider
         parent::boot();
 
         // Dispatch Jobs from Events
-        Event::listen(fn(UserCheckedIn $event)
-            => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status, $event->shouldChain));
+        Event::listen(fn(UserCheckedIn $event) => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status, $event->shouldChain));
+        Event::listen(fn(WebhookCallFailedEvent $event) => Log::error("Webhook call failed", ['event' => $event]));
     }
 }

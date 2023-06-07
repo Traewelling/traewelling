@@ -6,6 +6,7 @@ import {Notyf} from 'notyf';
 require("./bootstrap");
 require("awesomplete/awesomplete");
 require("leaflet/dist/leaflet.js");
+require("./api/api");
 
 document.addEventListener("DOMContentLoaded", function () {
     window.notyf = new Notyf({
@@ -42,12 +43,14 @@ document.addEventListener("DOMContentLoaded", function () {
 window.addEventListener("load", () => {
     require("./components/alert");
     require("./components/ActiveJourneys");
-    require("./components/notifications-board");
+    require("./components/Event");
+    require("./components/Notification");
     require("./components/progressbar");
     require("./components/settings");
     require("./components/station-autocomplete");
     require("./components/stationboard");
     require("./components/stationboard-gps");
+    require("./components/Status");
     require("./components/statusMap");
     require("./components/timepicker");
     require("./components/business-check-in");

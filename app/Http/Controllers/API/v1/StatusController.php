@@ -60,7 +60,7 @@ class StatusController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Not logged in"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-statuses"}}, {"token": {}}
      *       }
      *     )
      *
@@ -99,7 +99,7 @@ class StatusController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Not logged in"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-statuses"}}, {"token": {}}
      *       }
      *     )
      *
@@ -139,7 +139,7 @@ class StatusController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Not logged in"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-statuses"}}, {"token": {}}
      *       }
      *     )
      *
@@ -168,7 +168,7 @@ class StatusController extends Controller
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-statuses"}}, {"token": {}}
      *
      *       }
      *     )
@@ -205,7 +205,7 @@ class StatusController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=403, description="User not authorized to access this status"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-statuses"}}, {"token": {}}
      *
      *       }
      *     )
@@ -251,7 +251,7 @@ class StatusController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=403, description="User not authorized to manipulate this status"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-statuses"}}, {"token": {}}
      *
      *       }
      *     )
@@ -263,7 +263,7 @@ class StatusController extends Controller
     public function destroy(int $statusId): JsonResponse {
         try {
             StatusBackend::DeleteStatus(Auth::user(), $statusId);
-            return $this->sendResponse();
+            return $this->sendResponse(['message' => __('controller.status.delete-ok')]);
         } catch (PermissionException) {
             return $this->sendError('You are not allowed to delete this status.', 403);
         } catch (ModelNotFoundException) {
@@ -304,7 +304,7 @@ class StatusController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=403, description="User not authorized to manipulate this status"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-statuses"}}, {"token": {}}
      *
      *       }
      *     )
@@ -417,7 +417,7 @@ class StatusController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=403, description="User not authorized to access this status"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-statuses"}}, {"token": {}}
      *
      *       }
      *     )
@@ -435,7 +435,12 @@ class StatusController extends Controller
                                  ->with('trainCheckin.HafasTrip.polyline')
                                  ->get()
                                  ->filter(function(Status $status) {
-                                     return \request()?->user()->can('view', $status);
+                                     try {
+                                         $this->authorize('view', $status);
+                                     } catch (AuthorizationException) {
+                                         return false;
+                                     }
+                                     return true;
                                  })
                                  ->map(function($status) {
                                      return [
@@ -485,8 +490,7 @@ class StatusController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=403, description="User not authorized to access this status"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
-     *
+     *           {"passport": {"read-statuses"}}, {"token": {}}
      *       }
      *     )
      *
@@ -521,7 +525,7 @@ class StatusController extends Controller
      *       @OA\Response(response=401, description="Unauthorized"),
      *       @OA\Response(response=404, description="No active checkin"),
      *       security={
-     *          {"passport": {}}, {"token": {}}
+     *          {"passport": {"read-statuses"}}, {"token": {}}
      *
      *       }
      *     )

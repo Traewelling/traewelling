@@ -6,14 +6,12 @@ use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\UserResource;
-use App\Models\Like;
 use App\Models\Status;
-use App\Models\User;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use InvalidArgumentException;
 
 class LikesController extends Controller
@@ -24,7 +22,8 @@ class LikesController extends Controller
      *      operationId="getLikesForStatus",
      *      tags={"Likes"},
      *      summary="[Auth optional] Get likes for status",
-     *      description="Returns array of users that liked the status",
+     *      description="Returns array of users that liked the status. Can return an empty dataset when the status
+     *      author or the requesting user has deactivated likes",
      *      @OA\Parameter (
      *          name="id",
      *          in="path",
@@ -47,19 +46,24 @@ class LikesController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=403, description="User not authorized to access this status"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"read-statuses"}}, {"token": {}}
      *
      *       }
      *     )
-     * @param int $status
+     * @param int $statusId
      *
      * @return AnonymousResourceCollection
      * @todo maybe put this in separate controller?
      */
-    public function show(int $status): AnonymousResourceCollection {
-        return UserResource::collection(
-            User::whereIn('id', Like::where('status_id', $status)->select('user_id'))->get()
-        );
+    public function show(int $statusId): AnonymousResourceCollection {
+        $status = Status::with('likes.user')->findOrFail($statusId);
+
+        if (!Gate::allows('like', $status)) {
+            //Return empty array if current user or status owner disabled likes
+            return UserResource::collection([]);
+        }
+
+        return UserResource::collection($status->likes->pluck('user'));
     }
 
     /**
@@ -80,7 +84,7 @@ class LikesController extends Controller
      *          response=201,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *                      ref="#/components/schemas/SuccessResponse"
+     *              ref="#/components/schemas/SuccessResponse"
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
@@ -88,8 +92,7 @@ class LikesController extends Controller
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=409, description="Status already liked by user"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
-     *
+     *           {"passport": {"write-likes"}}, {"token": {}}
      *       }
      *     )
      *
@@ -101,9 +104,15 @@ class LikesController extends Controller
         try {
             $status = Status::findOrFail($statusId);
             StatusBackend::createLike(Auth::user(), $status);
-            return $this->sendResponse(code: 201);
+            return $this->sendResponse(
+                data: ['count' => $status->likes->count()],
+                code: 201,
+            );
         } catch (StatusAlreadyLikedException) {
-            return $this->sendError(code: 409);
+            return $this->sendError(
+                error: __('controller.status.like-already'),
+                code:  409,
+            );
         } catch (PermissionException) {
             return $this->sendError(code: 403);
         } catch (ModelNotFoundException) {
@@ -135,7 +144,7 @@ class LikesController extends Controller
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No status found for this id"),
      *       security={
-     *           {"passport": {}}, {"token": {}}
+     *           {"passport": {"write-likes"}}, {"token": {}}
      *
      *       }
      *     )
@@ -146,10 +155,14 @@ class LikesController extends Controller
      */
     public function destroy(int $statusId): JsonResponse {
         try {
+            $status = Status::findOrFail($statusId);
             StatusBackend::destroyLike(Auth::user(), $statusId);
-            return $this->sendResponse();
-        } catch (InvalidArgumentException) {
-            return $this->sendError('No status found for this id', 404);
+            $status->refresh();
+            return $this->sendResponse(
+                data: ['count' => $status->likes->count()],
+            );
+        } catch (InvalidArgumentException|ModelNotFoundException) {
+            return $this->sendError('No status found for this id');
         }
     }
 }

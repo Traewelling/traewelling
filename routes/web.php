@@ -27,11 +27,11 @@ use App\Http\Controllers\Frontend\Stats\YearInReviewController;
 use App\Http\Controllers\Frontend\Support\SupportController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
+use App\Http\Controllers\Frontend\WebhookController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendTransportController;
 use App\Http\Controllers\FrontendUserController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PrivacyAgreementController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\UserController;
@@ -143,9 +143,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/support', [SupportController::class, 'renderSupportPage'])->name('support');
     Route::post('/support/submit', [SupportController::class, 'submit'])->name('support.submit');
 
-    Route::post('/events/suggest', [EventController::class, 'suggestEvent'])
-         ->name('events.suggest');
-
     Route::prefix('settings')->group(function() {
 
         Route::prefix('/applications')->group(function() {
@@ -175,15 +172,12 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         Route::post('/follower/reject', [SettingsController::class, 'rejectFollower'])
              ->name('settings.follower.reject');
 
-        Route::post('/uploadProfileImage', [FrontendUserController::class, 'updateProfilePicture'])
-             ->name('settings.upload-image');
-        Route::get('/deleteProfilePicture', [UserController::class, 'deleteProfilePicture'])
-             ->name('settings.delete-profile-picture');
-
         Route::post('/delsession', [UserController::class, 'deleteSession'])
              ->name('delsession');
         Route::post('/deltoken', [UserController::class, 'deleteToken'])
              ->name('deltoken');
+        Route::post('/delwebhook', [WebhookController::class, 'deleteWebhook'])
+             ->name('delwebhook');
     });
 
     Route::get('/dashboard', [FrontendStatusController::class, 'getDashboard'])
@@ -192,17 +186,8 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/dashboard/global', [FrontendStatusController::class, 'getGlobalDashboard'])
          ->name('globaldashboard');
 
-    Route::delete('/destroystatus', [FrontendStatusController::class, 'DeleteStatus'])
-         ->name('status.delete');
-
     Route::post('/status/update', [StatusController::class, 'updateStatus'])
          ->name('status.update');
-
-    Route::post('/createlike', [FrontendStatusController::class, 'createLike'])
-         ->name('like.create');
-
-    Route::post('/destroylike', [FrontendStatusController::class, 'DestroyLike'])
-         ->name('like.destroy');
 
     Route::prefix('export')->group(function() {
         Route::get('/', [ExportController::class, 'renderForm'])
@@ -237,15 +222,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::get('/trains/setHome/', [FrontendTransportController::class, 'setTrainHome'])
          ->name('user.setHome');
-
-    Route::get('/notifications/latest', [NotificationController::class, 'renderLatest'])
-         ->name('notifications.latest');
-
-    Route::post('/notifications/toggleReadState/{id}', [NotificationController::class, 'toggleReadState'])
-         ->name('notifications.toggleReadState');
-
-    Route::post('/notifications/readAll', [NotificationController::class, 'readAll'])
-         ->name('notifications.readAll');
 
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])
          ->name('userSearch');

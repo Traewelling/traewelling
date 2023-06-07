@@ -40,7 +40,7 @@ abstract class ExportController extends Controller
         // overflows. Thus, if the database returns 2001 entries (which is the limit),
         // there are `>2000` statuses in this time frame and the user must choose a
         // smaller time frame.
-        if ($statuses->count() == 2001) {
+        if ($statuses->count() === 2001) {
             throw new DataOverflowException();
         }
         return $statuses;

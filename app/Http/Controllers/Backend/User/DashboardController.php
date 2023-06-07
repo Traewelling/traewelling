@@ -70,6 +70,7 @@ abstract class DashboardController extends Controller
                                    ]);
                          });
                      })
+                     ->where('users.shadow_banned', false)
                      ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
                      ->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
                      ->whereNotIn('statuses.user_id', $user->blockedUsers()->select('blocked_id'))

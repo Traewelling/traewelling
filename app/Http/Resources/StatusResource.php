@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Gate;
 
 class StatusResource extends JsonResource
 {
@@ -28,6 +29,7 @@ class StatusResource extends JsonResource
             'visibility'     => (int) $this->visibility->value,
             'likes'          => (int) $this->likes->count(),
             'liked'          => (bool) $this->favorited,
+            'isLikable'      => Gate::allows('like', $this->resource),
             'createdAt'      => $this->created_at->toIso8601String(),
             'train'          => [
                 'trip'        => (int) $this->trainCheckin->HafasTrip->id,
@@ -42,7 +44,7 @@ class StatusResource extends JsonResource
                 'origin'      => new StopoverResource($this->trainCheckin->origin_stopover),
                 'destination' => new StopoverResource($this->trainCheckin->destination_stopover),
             ],
-            'event'          => new EventResource($this?->event)
+            'event'          => new EventResource($this?->event),
         ];
     }
 }

@@ -2,13 +2,13 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Träwelling API",
-        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
+        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The\n *      API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body\n *      can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
         "contact": {
             "email": "support@traewelling.de"
         },
         "license": {
             "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
         },
         "version": "1.0.0 - alpha"
     },
@@ -312,7 +312,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -364,7 +366,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -434,7 +438,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -489,7 +495,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -542,7 +550,7 @@
                     "Events"
                 ],
                 "summary": "Shows current events with basic information",
-                "description": "Returns array of current events, used for a basic overview during checkiused for a basic overview during checkin",
+                "description": "Returns array of current events, used for a basic overview during checkiused for a basic\n     *      overview during checkin",
                 "operationId": "getCurrentEvents",
                 "parameters": [
                     {
@@ -583,7 +591,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -637,7 +647,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-follows"
+                        ]
                     },
                     {
                         "token": []
@@ -689,7 +701,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-follows"
+                        ]
                     },
                     {
                         "token": []
@@ -739,7 +753,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-settings-followers"
+                        ]
                     },
                     {
                         "token": []
@@ -783,7 +799,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-settings-followers"
+                        ]
                     },
                     {
                         "token": []
@@ -827,7 +845,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-settings-followers"
+                        ]
                     },
                     {
                         "token": []
@@ -879,7 +899,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-followers"
+                        ]
                     },
                     {
                         "token": []
@@ -928,7 +950,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-followers"
+                        ]
                     },
                     {
                         "token": []
@@ -977,7 +1001,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-followers"
+                        ]
                     },
                     {
                         "token": []
@@ -991,7 +1017,7 @@
                     "Likes"
                 ],
                 "summary": "[Auth optional] Get likes for status",
-                "description": "Returns array of users that liked the status",
+                "description": "Returns array of users that liked the status. Can return an empty dataset when the status\n     *      author or the requesting user has deactivated likes",
                 "operationId": "getLikesForStatus",
                 "parameters": [
                     {
@@ -1035,7 +1061,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1088,7 +1116,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-likes"
+                        ]
                     },
                     {
                         "token": []
@@ -1133,7 +1163,245 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-likes"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/notifications/unread/count": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get count of unread notifications for authenticated user",
+                "description": "Returns count of unread notifications of a authenticated user",
+                "operationId": "getUnreadCount",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "integer",
+                                            "example": 2
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-notifications"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/notifications": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get paginated notifications for authenticated user",
+                "description": "Returns paginated notifications of a authenticated",
+                "operationId": "listNotifications",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Notification"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-notifications"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/notifications/read/{id}": {
+            "put": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark notification as read",
+                "operationId": "markAsRead",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of notification",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cbf6054e-9c00-4b1f-ab37-7eb18ac8419f"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Notification"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Notification not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-notifications"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/notifications/unread/{id}": {
+            "put": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark notification as unread",
+                "operationId": "markAsUnread",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of notification",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cbf6054e-9c00-4b1f-ab37-7eb18ac8419f"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Notification"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Notification not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-notifications"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/notifications/read/all": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark all notification as read",
+                "operationId": "markAllAsRead",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All notifications marked as read"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-notifications"
+                        ]
                     },
                     {
                         "token": []
@@ -1238,7 +1506,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-settings"
+                        ]
                     },
                     {
                         "token": []
@@ -1286,6 +1556,10 @@
                                     "defaultStatusVisibility": {
                                         "type": "integer",
                                         "nullable": true
+                                    },
+                                    "mastodonVisibility": {
+                                        "type": "integer",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -1321,7 +1595,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-settings"
+                        ]
                     },
                     {
                         "token": []
@@ -1364,7 +1640,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1407,7 +1685,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1450,7 +1730,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1504,7 +1786,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1642,7 +1926,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1704,7 +1990,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statistics"
+                        ]
                     },
                     {
                         "token": []
@@ -1765,7 +2053,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1826,7 +2116,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1887,7 +2179,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1928,7 +2222,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -1983,7 +2279,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2046,7 +2344,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2094,7 +2394,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2160,7 +2462,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2215,7 +2519,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2256,7 +2562,277 @@
                 },
                 "security": [
                     {
+                        "passport": [
+                            "read-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/status/{statusId}/tags": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Show all tags for a status which are visible for the current user",
+                "description": "Returns a collection of all visible tags for the given status, if user is authorized",
+                "operationId": "getTagsForStatus",
+                "parameters": [
+                    {
+                        "name": "statusId",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/StatusTag"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
                         "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Create a StatusTag",
+                "description": "Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free\n     *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b>\n     *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions\n     *      we recommend the following tags in the trwl namespace:<br><ul><li>trwl:seat (i.e. 61)</li><li>trwl:wagon\n     *      (i.e. 25)</li><li>trwl:ticket (i.e. BahnCard 100 first))</li><li>trwl:travel_class (i.e. 1, 2, business,\n     *      economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li></ul>",
+                "operationId": "createSingleStatusTag",
+                "parameters": [
+                    {
+                        "name": "statusId",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StatusTag"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/StatusTag"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to manipulate this status"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/status/{statusId}/tags/{tagKey}": {
+            "put": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Update a StatusTag",
+                "description": "Updates a single StatusTag Object, if user is authorized to",
+                "operationId": "updateSingleStatusTag",
+                "parameters": [
+                    {
+                        "name": "statusId",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    },
+                    {
+                        "name": "tagKey",
+                        "in": "path",
+                        "description": "Key of StatusTag",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "seat"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StatusTag"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/StatusTag"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to manipulate this status"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Destroy a StatusTag",
+                "description": "Deletes a single StatusTag Object, if user is authorized to",
+                "operationId": "destroySingleStatusTag",
+                "parameters": [
+                    {
+                        "name": "statusId",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    },
+                    {
+                        "name": "tagKey",
+                        "in": "path",
+                        "description": "Key of StatusTag",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "trwl:seat"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No status found for this id and statusId"
+                    },
+                    "403": {
+                        "description": "User not authorized to manipulate this status"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2451,7 +3027,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2553,7 +3131,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2619,7 +3199,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2667,7 +3249,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2722,7 +3306,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2774,7 +3360,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2815,7 +3403,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "create-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2867,7 +3457,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "extra-delete"
+                        ]
                     },
                     {
                         "token": []
@@ -2935,7 +3527,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -2996,7 +3590,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "read-statuses"
+                        ]
                     },
                     {
                         "token": []
@@ -3064,7 +3660,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-block"
+                        ]
                     },
                     {
                         "token": []
@@ -3130,7 +3728,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-block"
+                        ]
                     },
                     {
                         "token": []
@@ -3188,7 +3788,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-block"
+                        ]
                     },
                     {
                         "token": []
@@ -3244,7 +3846,9 @@
                 },
                 "security": [
                     {
-                        "passport": []
+                        "passport": [
+                            "write-block"
+                        ]
                     },
                     {
                         "token": []
@@ -3304,6 +3908,149 @@
                     },
                     "400": {
                         "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-search"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/webhooks": {
+            "get": {
+                "tags": [
+                    "Webhooks"
+                ],
+                "summary": "Get webhooks for current user and current application",
+                "description": "Returns all webhooks which are created for the current user and which the current authorized applicaton has access to.",
+                "operationId": "getWebhooks",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Webhook"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/webhooks/{id}": {
+            "get": {
+                "tags": [
+                    "Webhooks"
+                ],
+                "summary": "Get single webhook",
+                "description": "Returns a single webhook Object, if user and application is authorized to see it",
+                "operationId": "getSingleWebhook",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Webhook-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Webhook"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No webhook found or unauthorized for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Webhooks"
+                ],
+                "summary": "Delete a webhook if the user and application are authorized to do",
+                "description": "",
+                "operationId": "deleteWebhook",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "No webhook found for this id"
+                    },
+                    "403": {
+                        "description": "User or application not authorized to delete this webhook"
                     }
                 },
                 "security": [
@@ -3621,6 +4368,96 @@
                     "name": "LeaderboardUser"
                 }
             },
+            "Notification": {
+                "title": "Notification",
+                "description": "Notification model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "string",
+                        "format": "string",
+                        "example": "bb1ba9a5-9c2b-43c3-b8c9-2f70651fc51c"
+                    },
+                    "type": {
+                        "title": "type",
+                        "description": "type of notification",
+                        "type": "string",
+                        "example": "UserJoinedConnection"
+                    },
+                    "leadFormatted": {
+                        "title": "leadFormatted",
+                        "description": "the title of notification in html formatted form",
+                        "type": "string",
+                        "format": "string",
+                        "example": "<b>@bob</b> is in your connection!"
+                    },
+                    "lead": {
+                        "title": "lead",
+                        "description": "the title of notification in plain text form",
+                        "type": "string",
+                        "format": "string",
+                        "example": "@bob is in your connection!"
+                    },
+                    "noticeFormatted": {
+                        "title": "noticeFormatted",
+                        "description": "the body of notification in html formatted form",
+                        "type": "string",
+                        "format": "string",
+                        "example": "@bob is on <b>S 81</b> from <b>Karlsruhe Hbf</b> to <b>Freudenstadt Hbf</b>."
+                    },
+                    "notice": {
+                        "title": "notice",
+                        "description": "the body of notification in plain text form",
+                        "type": "string",
+                        "format": "string",
+                        "example": "@bob is on S 81 from Karlsruhe Hbf to Freudenstadt Hbf."
+                    },
+                    "link": {
+                        "title": "link",
+                        "description": "the link to the notification",
+                        "type": "string",
+                        "format": "string",
+                        "example": "https://traewelling.de/status/123456"
+                    },
+                    "data": {
+                        "title": "data",
+                        "description": "the data of the notification",
+                        "type": "array",
+                        "items": {
+                            "example": {
+                                "notice": "every notification type has different data attributes, just try it out"
+                            }
+                        }
+                    },
+                    "readAt": {
+                        "title": "readAt",
+                        "description": "the date when the notification was read, null if not read yet",
+                        "type": "string",
+                        "format": "string",
+                        "example": "2023-01-01T00:00:00+00:00",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "title": "createdAt",
+                        "description": "the date when the notification was created",
+                        "type": "string",
+                        "format": "string",
+                        "example": "2023-01-01T00:00:00+00:00"
+                    },
+                    "updatedAtForHumans": {
+                        "title": "createdAtForHumans",
+                        "description": "DON'T USE THIS ATTRIBUTE! This Attribute will be removed in the future. The date when the notification was created, but in human readable form",
+                        "type": "string",
+                        "format": "string",
+                        "example": "2 days ago"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Notification"
+                }
+            },
             "PaginationPage": {
                 "title": "PaginationPage",
                 "description": "pagination links",
@@ -3816,6 +4653,12 @@
                         "type": "boolean",
                         "example": true
                     },
+                    "isLikable": {
+                        "title": "isLikable",
+                        "description": "Do the author of this status and the currently authenticated user allow liking of statuses? Only show the like UI if set to true",
+                        "type": "boolean",
+                        "example": true
+                    },
                     "createdAt": {
                         "title": "createdAt",
                         "description": "creation date of this status",
@@ -3827,12 +4670,42 @@
                         "$ref": "#/components/schemas/Train"
                     },
                     "event": {
-                        "$ref": "#/components/schemas/Event"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Event"
+                            }
+                        ],
+                        "nullable": true
                     }
                 },
                 "type": "object",
                 "xml": {
                     "name": "Status"
+                }
+            },
+            "StatusTag": {
+                "title": "StatusTag",
+                "description": "StatusTag model",
+                "properties": {
+                    "key": {
+                        "title": "key",
+                        "description": "Key of tag",
+                        "type": "string",
+                        "example": "trwl:ticket"
+                    },
+                    "value": {
+                        "title": "value",
+                        "description": "Value of tag",
+                        "type": "string",
+                        "example": "BahnCard 100"
+                    },
+                    "visibility": {
+                        "$ref": "#/components/schemas/VisibilityEnum"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "StatusTag"
                 }
             },
             "Stopovers": {
@@ -3962,7 +4835,7 @@
                     },
                     "tweet": {
                         "title": "tweet",
-                        "description": "Should this status be posted to twitter?",
+                        "description": "The tweet flag is deprecated and will be removed in a future version. For now, it is ignored and check-ins are not tweeted.",
                         "type": "boolean",
                         "example": "false",
                         "nullable": true
@@ -4308,6 +5181,12 @@
                         "type": "boolean",
                         "example": false
                     },
+                    "likes_enabled": {
+                        "title": "likes_enabled",
+                        "description": "Does this profile allow likes? Only offer the UI to like any status if this setting is set to true. If set to false, the likes API will return 403.",
+                        "type": "boolean",
+                        "example": true
+                    },
                     "userInvisibleToMe": {
                         "title": "userInvisibleToMe",
                         "description": "Can the currently authenticated user see the statuses of this user?",
@@ -4440,7 +5319,12 @@
                         "example": 0
                     },
                     "home": {
-                        "$ref": "#/components/schemas/TrainStation"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/TrainStation"
+                            }
+                        ],
+                        "nullable": true
                     },
                     "language": {
                         "title": "language",
@@ -4537,11 +5421,63 @@
                         "description": "Mastodon URL of user",
                         "type": "string",
                         "example": "https://chaos.social/@traewelling"
+                    },
+                    "mastodonVisibility": {
+                        "$ref": "#/components/schemas/VisibilityEnum"
                     }
                 },
                 "type": "object",
                 "xml": {
                     "name": "UserProfileSettings"
+                }
+            },
+            "Webhook": {
+                "title": "Webhook",
+                "description": "Webhook model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12345
+                    },
+                    "clientId": {
+                        "title": "ClientID",
+                        "description": "ID of the client which created this webhook",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12345
+                    },
+                    "userId": {
+                        "title": "UserID",
+                        "description": "ID of the user which created this webhook",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12345
+                    },
+                    "url": {
+                        "title": "url",
+                        "description": "URL where the webhook gets sent to",
+                        "example": "https://example.com/webhook"
+                    },
+                    "createdAt": {
+                        "title": "createdAt",
+                        "description": "creation date of this webhook",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2022-07-17T13:37:00+02:00"
+                    },
+                    "events": {
+                        "title": "events",
+                        "description": "array of events this webhook receives",
+                        "type": "array",
+                        "items": {}
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Webhook"
                 }
             },
             "StatusUpdateBody": {
@@ -4577,6 +5513,18 @@
                     2
                 ],
                 "example": 0
+            },
+            "MastodonVisibilityEnum": {
+                "title": "visibility",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for\n *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "example": 1
             },
             "PointsReasonEnum": {
                 "title": "PointsReason",
@@ -4658,14 +5606,39 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
-                        "tokenUrl": "http://localhost:8000/oauth/token",
-                        "refreshUrl": "http://localhost:8000/auth/refresh",
-                        "scopes": []
+                        "authorizationUrl": "http://localhost/oauth/authorize",
+                        "tokenUrl": "http://localhost/oauth/token",
+                        "refreshUrl": "http://localhost/auth/refresh",
+                        "scopes": {
+                            "read-statuses": "see all statuses",
+                            "read-notifications": "see your notifications",
+                            "read-statistics": "see your statistics",
+                            "read-search": "search in Träwelling",
+                            "write-statuses": "create, edit, delete statuses",
+                            "write-likes": "create and remove likes",
+                            "write-notifications": "mark notifications as read, clear notifications",
+                            "write-exports": "request data exports",
+                            "write-follows": "follow and unfollow users",
+                            "write-followers": "accept follow requests and remove followers",
+                            "write-blocks": "block and unblock users, mute and unmute users",
+                            "write-event-suggestions": "suggest events in your name",
+                            "write-support-tickets": "create support tickets in your name",
+                            "read-settings": "see your settings, email, etc.",
+                            "write-settings-profile": "edit your profile",
+                            "read-settings-profile": "see your profile data, e.g. email",
+                            "write-settings-mail": "edit your email",
+                            "write-settings-profile-picture": "edit your profile picture",
+                            "write-settings-privacy": "change your privacy settings",
+                            "read-settings-followers": "show follow-requests and followers",
+                            "write-settings-calendar": "create and delete new calendar-tokens",
+                            "extra-write-password": "change your password",
+                            "extra-terminate-sessions": "log you out of other sessions and apps",
+                            "extra-delete": "delete your account"
+                        }
                     }
                 }
             },
-            "token_old": {
+            "token": {
                 "type": "apiKey",
                 "description": "Enter token in format \"Bearer \\<token\\>\"",
                 "name": "Authorization",
@@ -4721,6 +5694,10 @@
         {
             "name": "Settings",
             "description": "User/Profile-Settings"
+        },
+        {
+            "name": "Webhooks",
+            "description": "Manage Webhooks for third party applications"
         }
     ]
 }

@@ -25,8 +25,6 @@
     </head>
     <body class="bg-dark">
         <main>
-            <div class="d-flex flex-column col-3 d-none d-md-flex"></div>
-
             <div class="d-flex flex-column flex-shrink-0 p-2 text-white bg-dark" style="max-width: 280px;">
                 <a href="{{ route('dashboard') }}"
                    class="justify-content-center mb-3 mx-auto text-white text-decoration-none">
@@ -40,29 +38,6 @@
                             <span class="d-none d-lg-inline">Zurück zu Träwelling</span>
                         </a>
                     </li>
-                    <!--
-                    <li>
-                        <a href="#"
-                           class="nav-link text-white {{ request()->is('admin') ? 'active' : '' }}">
-                            <i class="fas fa-user me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Profil</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                           class="nav-link text-white {{ request()->is('admin/events*') ? 'active' : '' }}">
-                            <i class="fas fa-lock me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Privacy</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                           class="nav-link text-white {{ request()->is('admin/status*') ? 'active' : '' }}">
-                            <i class="fas fa-lock me-2" aria-hidden="true"></i>
-                            <span class="d-none d-lg-inline">Zugänge</span>
-                        </a>
-                    </li>
-                    -->
                     <li>
                         <a href="{{ route('dev.apps') }}"
                            class="nav-link text-white {{ request()->is('settings/applications*') ? 'active' : '' }}">

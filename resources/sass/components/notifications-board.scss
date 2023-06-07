@@ -19,9 +19,11 @@
         }
     }
 
-    .modal-body#notifications-list {
+    .modal-body {
         padding: 0;
+    }
 
+    #notifications-list {
         .row {
             background-color: white;
             padding: 1rem 0;
