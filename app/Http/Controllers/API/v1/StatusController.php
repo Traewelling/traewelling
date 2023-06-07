@@ -287,8 +287,7 @@ class StatusController extends Controller
      *      ),
      *      @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/StatusUpdateBody") TODO: Implement real_departure and
-     *                                                                       real_arrival: But... in this model?
+     *          @OA\JsonContent(ref="#/components/schemas/StatusUpdateBody")
      *      ),
      *      @OA\Response(
      *          response=200,
@@ -323,8 +322,8 @@ class StatusController extends Controller
             'visibility'                => ['required', new Enum(StatusVisibility::class)],
 
             //Changing of TrainCheckin-Metadata
-            'real_departure'            => ['nullable', 'date'],
-            'real_arrival'              => ['nullable', 'date'],
+            'realDeparture'             => ['nullable', 'date'],
+            'realArrival'               => ['nullable', 'date'],
 
             //Following attributes are needed, if user want's to change the destination
             'destinationId'             => ['required_with:destinationArrivalPlanned', 'exists:train_stations,id'],
@@ -361,15 +360,14 @@ class StatusController extends Controller
                                 'visibility' => StatusVisibility::from($validated['visibility']),
                             ]);
 
-            if (isset($validated['real_departure'])) {
-                $status->trainCheckin->update(['real_departure' => $validated['real_departure']]);
+            if (isset($validated['realDeparture'])) {
+                $status->trainCheckin->update(['real_departure' => $validated['realDeparture']]);
             }
-            if (isset($validated['real_arrival'])) {
-                $status->trainCheckin->update(['real_arrival' => $validated['real_arrival']]);
+            if (isset($validated['realArrival'])) {
+                $status->trainCheckin->update(['real_arrival' => $validated['realArrival']]);
             }
 
-            $status->fresh();
-            return $this->sendResponse(new StatusResource($status));
+            return $this->sendResponse(new StatusResource($status->fresh()));
         } catch (ModelNotFoundException) {
             return $this->sendError('Status not found');
         } catch (PermissionException|AuthorizationException) {

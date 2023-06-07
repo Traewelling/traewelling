@@ -5496,6 +5496,33 @@
                     },
                     "visibility": {
                         "$ref": "#/components/schemas/VisibilityEnum"
+                    },
+                    "realDeparture": {
+                        "title": "realDeparture",
+                        "description": "Real departure time",
+                        "format": "date",
+                        "example": "2020-01-01 12:00:00",
+                        "nullable": true
+                    },
+                    "realArrival": {
+                        "title": "realArrival",
+                        "description": "Real arrival time",
+                        "format": "date",
+                        "example": "2020-01-01 13:00:00",
+                        "nullable": true
+                    },
+                    "destinationId": {
+                        "title": "destinationId",
+                        "description": "Destination station id",
+                        "example": "1",
+                        "nullable": true
+                    },
+                    "destinationArrivalPlanned": {
+                        "title": "destinationArrivalPlanned",
+                        "description": "Destination arrival time",
+                        "format": "date",
+                        "example": "2020-01-01 13:00:00",
+                        "nullable": true
                     }
                 },
                 "type": "object",
