@@ -2,11 +2,27 @@
  * Here, we include all of our external dependencies
  */
 import {Notyf} from 'notyf';
+import {createApp} from 'vue';
+import Test from '../views/components/Test.vue';
+import NotificationList from "../vue/components/NotificationList.vue";
 
 require("./bootstrap");
 require("awesomplete/awesomplete");
 require("leaflet/dist/leaflet.js");
 require("./api/api");
+
+const app = createApp({
+	data() {
+		return{
+			count: 0
+		}
+	}
+});
+
+app.component('notificationlist', NotificationList);
+app.config.devtools = true;
+app.mount('#app');
+
 
 document.addEventListener("DOMContentLoaded", function () {
     window.notyf = new Notyf({

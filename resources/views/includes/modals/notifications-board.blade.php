@@ -14,16 +14,7 @@
                 <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div id="notifications-loading" class="text-center text-muted">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-                <div id="notifications-empty" class="d-none text-center text-muted">
-                    <i class="fa-solid fa-envelope fs-1"></i>
-                    <p class="fs-5">{{ __('notifications.empty') }}</p>
-                </div>
-                <div id="notifications-list"></div>
+               <notificationlist empty-text="{{__('notifications.empty')}}"></notificationlist>
             </div>
         </div>
     </div>

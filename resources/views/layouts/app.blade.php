@@ -7,7 +7,6 @@
         @include('layouts.includes.meta')
 
         <!-- Scripts -->
-        <script src="{{ mix('js/app.js') }}"></script>
 
         <!-- Fonts -->
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
@@ -227,6 +226,7 @@
                     </p>
                 </div>
             </footer>
+            @include('includes.modals.notifications-board')
         </div>
 
         <div class="alert text-center cookiealert" role="alert">
@@ -258,9 +258,9 @@
                 }
             };
         </script>
+        <script src="{{ mix('js/app.js') }}"></script>
     </body>
 
     @include('includes.check-in-modal')
-    @include('includes.modals.notifications-board')
     @yield('footer')
 </html>
