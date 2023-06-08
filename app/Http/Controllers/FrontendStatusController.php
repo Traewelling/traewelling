@@ -2,23 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\PermissionException;
-use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
-use App\Models\Status;
-use App\Notifications\TestNotification;
+use App\Models\Event;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use InvalidArgumentException;
 
 /**
  * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
@@ -70,8 +64,9 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    public function statusesByEvent(string $event): Renderable {
-        $response = StatusController::getStatusesByEvent($event, null);
+    public function statusesByEvent(string $slug): Renderable {
+        $event    = Event::where('slug', $slug)->firstOrFail();
+        $response = StatusController::getStatusesByEvent($event);
 
         if ($response['event']->end->isPast() && $response['statuses']->count() === 0) {
             abort(404);

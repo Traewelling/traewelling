@@ -6,10 +6,12 @@ use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Resources\EventDetailsResource;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\StatusResource;
+use App\Models\Event;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Http\Controllers\StatusController;
 
 class EventController extends Controller
 {
@@ -148,7 +150,9 @@ class EventController extends Controller
      * @return AnonymousResourceCollection
      */
     public static function statuses(string $slug): AnonymousResourceCollection {
-        return StatusResource::collection(EventBackend::getBySlug($slug)->statuses()->paginate());
+        $event    = Event::where('slug', $slug)->firstOrFail();
+        $statuses = StatusController::getStatusesByEvent($event);
+        return StatusResource::collection($statuses['statuses']->paginate());
     }
 
     /**
