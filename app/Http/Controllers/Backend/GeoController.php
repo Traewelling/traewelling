@@ -18,7 +18,11 @@ abstract class GeoController extends Controller
         TrainStopover $origin,
         TrainStopover $destination
     ): int {
-        if ($hafasTrip->polyline === null || $hafasTrip->polyline?->polyline === null) {
+        if (
+            $hafasTrip->polyline === null ||
+            $hafasTrip->polyline?->polyline === null ||
+            strlen($hafasTrip->polyline?->polyline) < 10
+        ) {
             return self::calculateDistanceByStopovers($hafasTrip, $origin, $destination);
         }
         $geoJson      = self::getPolylineBetween($hafasTrip, $origin, $destination);
