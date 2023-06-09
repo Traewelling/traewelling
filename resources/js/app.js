@@ -7,6 +7,7 @@ require("./bootstrap");
 require("awesomplete/awesomplete");
 require("leaflet/dist/leaflet.js");
 require("./api/api");
+require("./components/maps");
 
 document.addEventListener("DOMContentLoaded", function () {
     window.notyf = new Notyf({

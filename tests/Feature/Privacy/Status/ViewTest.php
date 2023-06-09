@@ -3,14 +3,15 @@
 namespace Tests\Feature\Privacy\Status;
 
 use App\Enum\StatusVisibility;
+use App\Models\Event;
 use App\Models\Follow;
 use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\ApiTestCase;
 
-class ViewTest extends TestCase
+class ViewTest extends ApiTestCase
 {
 
     use RefreshDatabase;
@@ -128,5 +129,23 @@ class ViewTest extends TestCase
                                            'visibility' => StatusVisibility::AUTHENTICATED
                                        ])->create();
         $this->assertTrue($user->can('view', $status));
+    }
+
+    public function testPublicStatusFromPrivateProfileIsNotDisplayedOnEventsPage(): void {
+        //create test scenario: Public Status with Event and Private Profile
+        $event  = Event::factory()->create();
+        $trainCheckin = TrainCheckin::factory()->create();
+        $trainCheckin->status->update([
+                                          'visibility' => StatusVisibility::PUBLIC,
+                                          'event_id'   => $event->id,
+                                      ]);
+        $trainCheckin->user->update(['private_profile' => true]);
+
+        //request statuses for event
+        $response = $this->get("/api/v1/event/{$event->slug}/statuses");
+        $response->assertOk();
+
+        //check if status is not displayed
+        $response->assertJsonCount(0, 'data');
     }
 }

@@ -678,5 +678,8 @@
     "user.blocked.text": "Du kannst die Check-Ins von :username nicht sehen, da du blockiert wurdest.",
     "events.disclaimer.organizer": "Träwelling ist nicht der Veranstalter.",
     "events.disclaimer.source": "Dieser Termin wurde von einem Träwelling User vorgeschlagen und durch uns genehmigt.",
-    "events.disclaimer.warranty": "Träwelling übernimmt keine Gewähr auf die Korrektheit oder Vollständigkeit der Daten."
+    "events.disclaimer.warranty": "Träwelling übernimmt keine Gewähr auf die Korrektheit oder Vollständigkeit der Daten.",
+    "user.mapprovider": "Karten-Anbieter",
+    "map-providers.cargo": "Cargo",
+    "map-providers.open-railway-map": "Open Railway Map"
 }
