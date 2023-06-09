@@ -27,6 +27,9 @@ services:
       - ./storage:/var/www/html/storage
       - ./tests:/var/www/html/tests
       - ./avatars:/var/www/html/public/uploads/avatars
+      - ./public/css:/var/www/html/public/css
+      - ./public/js:/var/www/html/public/js
+      - ./public/mix-manifest.json:/var/www/html/public/mix-manifest.json
 
   scheduler:
     build: .
