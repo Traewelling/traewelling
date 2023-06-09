@@ -1,12 +1,96 @@
-# Docker Compose environment for local development
 version: '3'
+
 services:
-  mysql:
-    image: docker.io/bitnami/mysql
+  app:
+    build: .
+    image: ghcr.io/traewelling/traewelling:latest
+    container_name: traewelling-app
+    restart: always
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
     environment:
-      MYSQL_DATABASE: homestead
-      MYSQL_USER: homestead
-      MYSQL_PASSWORD: secret
-      ALLOW_EMPTY_PASSWORD: yes
+      - CONTAINER_ROLE=app
+      - DB_REST="https://v5.db.transport.rest/"
+#      - SEED_DB=true
+    env_file:
+      - docker/.env.app
+      - .env
+    networks:
+      - internal
+    volumes:
+      - ./app:/var/www/html/app
+      - ./config:/var/www/html/config
+      - ./resources:/var/www/html/resources
+      - ./routes:/var/www/html/routes
+      - ./storage:/var/www/html/storage
+      - ./tests:/var/www/html/tests
+      - ./avatars:/var/www/html/public/uploads/avatars
+
+  scheduler:
+    build: .
+    container_name: traewelling-scheduler
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - CONTAINER_ROLE=scheduler
+      - DB_REST="https://v5.db.transport.rest/"
+    env_file:
+      - docker/.env.app
+      - .env
+    networks:
+      - internal
+    volumes:
+      - ./app:/var/www/html/app
+      - ./config:/var/www/html/config
+      - ./resources:/var/www/html/resources
+      - ./routes:/var/www/html/routes
+      - ./storage:/var/www/html/storage
+      - ./tests:/var/www/html/tests
+      - ./avatars:/var/www/html/public/uploads/avatars
+
+  queue:
+    build: .
+    container_name: traewelling-queue
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - CONTAINER_ROLE=queue
+      - DB_REST="https://v5.db.transport.rest/"
+    env_file:
+      - docker/.env.app
+      - .env
+    networks:
+      - internal
+    volumes:
+      - ./app:/var/www/html/app
+      - ./config:/var/www/html/config
+      - ./resources:/var/www/html/resources
+      - ./routes:/var/www/html/routes
+      - ./storage:/var/www/html/storage
+      - ./tests:/var/www/html/tests
+      - ./avatars:/var/www/html/public/uploads/avatars
+
+  db:
+    image: mariadb:10
+    container_name: traewelling-db
+    restart: always
+    env_file:
+      - docker/.env.db
+    command:
+      - --innodb-buffer-pool-size=2G
+      - --innodb-log-file-size=1G
     ports:
       - "3306:3306"
+    networks:
+      - internal
+    volumes:
+      - ./database-data:/var/lib/mysql
+
+
+networks:
+  internal:
+    external: false

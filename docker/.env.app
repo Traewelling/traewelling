@@ -9,4 +9,4 @@ DB_DATABASE=traewelling
 DB_USERNAME=traewelling_u
 DB_PASSWORD=unsecurepassword
 
-DB_REST=http://db-rest:3000
+# DB_REST=http://db-rest:3000
