@@ -1,0 +1,3 @@
+.leaflet-tile-container img[src*="tiles.openrailwaymap.org"] {
+	filter: grayscale(80%) opacity(0.5);
+}

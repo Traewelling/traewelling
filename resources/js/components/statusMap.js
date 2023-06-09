@@ -13,15 +13,7 @@ Array.from(document.getElementsByClassName("statusMap")).forEach(elem => {
         tap: mapInStatusView
     });
 
-    L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-        {
-            attribution:
-                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>',
-            subdomains: "abcd",
-            maxZoom: 19
-        }
-    ).addTo(map);
+    setTilingLayer(mapprovider, map);
 
     let coordinates = JSON.parse(elem.dataset.polygon);
     let polyline    = L.polyline(coordinates)
