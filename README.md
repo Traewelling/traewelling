@@ -32,12 +32,11 @@
 
 ### Option 1: Using docker compose
 
-In the `docker` folder you will find a sample docker-compose.yml and minimal settings in the .env files. Adjust the
-values according to your requirements and start the containers:
+In the `docker` folder you will find a sample number of docker-compose files and minimal settings in the .env files. A `dev.docker-compose.yml` file is useful if you want to develop Träwelling locally. Adjust the values according to your requirements and start the containers:
 
 ```bash
 cd docker
-docker-compose up
+docker compose -f dev.docker-compose.yml up
 ```
 
 You can have sample data created if you set the environment variable `SEED_DB=true`.
