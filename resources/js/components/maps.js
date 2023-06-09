@@ -2,8 +2,6 @@
  * Set the tiling layers for the current map.
  */
 
-console.log("HELLO");
-
 window.setTilingLayer = (mapprovider, map) => {
     switch (mapprovider) {
         case "open-railway-map":
