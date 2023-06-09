@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\MapProvider;
 use App\Enum\StatusVisibility;
 use App\Exceptions\RateLimitExceededException;
 use App\Jobs\SendVerificationEmail;
@@ -23,21 +24,22 @@ use Mastodon;
 
 /**
  * @property int     id
- * @property string  username
- * @property string  name
- * @property string  avatar
- * @property string  email
- * @property Carbon  email_verified_at
- * @property string  password
- * @property int     home_id
- * @property Carbon  privacy_ack_at
- * @property integer default_status_visibility
- * @property boolean private_profile
- * @property boolean prevent_index
- * @property boolean likes_enabled
- * @property int     privacy_hide_days
- * @property string  language
- * @property Carbon  last_login
+ * @property string      username
+ * @property string      name
+ * @property string      avatar
+ * @property string      email
+ * @property Carbon      email_verified_at
+ * @property string      password
+ * @property int         home_id
+ * @property Carbon      privacy_ack_at
+ * @property integer     default_status_visibility
+ * @property boolean     private_profile
+ * @property boolean     prevent_index
+ * @property boolean     likes_enabled
+ * @property MapProvider mapprovider
+ * @property int         privacy_hide_days
+ * @property string      language
+ * @property Carbon      last_login
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -47,7 +49,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
         'default_status_visibility', 'likes_enabled', 'private_profile', 'prevent_index', 'privacy_hide_days',
-        'language', 'last_login',
+        'language', 'last_login', 'mapprovider',
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
@@ -69,6 +71,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'privacy_hide_days'         => 'integer',
         'role'                      => 'integer',
         'last_login'                => 'datetime',
+        'mapprovider'               => MapProvider::class,
     ];
 
     public function getTrainDistanceAttribute(): float {
