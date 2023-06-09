@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enum\MapProvider;
 use App\Enum\MastodonVisibility;
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
@@ -28,6 +29,7 @@ class SettingsController extends Controller
                                             'username' => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'],
                                             'name'     => ['required', 'string', 'max:50'],
                                             'email'    => ['required', 'string', 'email:rfc,dns', 'max:255'],
+                                            'mapprovider' => ['required', new Enum(MapProvider::class)]
                                         ]);
 
         if (auth()->user()->username !== $validated['username']) {
