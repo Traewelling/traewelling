@@ -141,7 +141,12 @@
     </div>
     <div class="progress">
         <div
-            class="progress-bar progress-time"
+            @php
+            $event_name_lowercase = strtolower($status->event?->name ?? "");
+            $pride_progress_bar = str_contains($event_name_lowercase, 'csd')
+                            || str_contains($event_name_lowercase, 'pride');
+            @endphp
+            class="progress-bar progress-time {{ $pride_progress_bar ? 'progress-pride' : '' }}"
             role="progressbar"
             style="width: 0"
             data-valuenow="{{ time() }}"
