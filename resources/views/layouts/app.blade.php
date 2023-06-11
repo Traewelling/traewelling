@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <title>@yield('title') - {{ config('app.name', 'Träwelling') }}</title>
@@ -14,6 +14,7 @@
 
         <!-- Styles -->
         <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+        <link href="{{ mix('css/app-dark.css') }}" rel="stylesheet">
         <link rel="mask-icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}">
         <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
@@ -183,17 +184,28 @@
             </main>
             <footer class="footer mt-auto py-3">
                 <div class="container">
-                    <div class="btn-group dropup float-end">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-dropdown-animation="off"
-                                data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
-                        </button>
-                        <div class="dropdown-menu">
-                            @foreach(config('app.locales') as $key => $lang)
-                                <a class="dropdown-item" href="{{request()->fullUrlWithQuery(['language' => $key])}}">
-                                    {{ $lang }}
-                                </a>
-                            @endforeach
+
+                    <div class="float-end">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="colorModeOptions" id="colorModeOptionsLight" value="light">
+                            <label class="form-check-label" for="colorModeOptionsLight">Light-Mode</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="colorModeOptions" id="colorModeOptionsDark" value="dark">
+                            <label class="form-check-label" for="colorModeOptionsDark">Dark-Mode</label>
+                        </div>
+                        <div class="btn-group dropup">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-dropdown-animation="off"
+                                    data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
+                            </button>
+                            <div class="dropdown-menu">
+                                @foreach(config('app.locales') as $key => $lang)
+                                    <a class="dropdown-item" href="{{request()->fullUrlWithQuery(['language' => $key])}}">
+                                        {{ $lang }}
+                                    </a>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                     <p class="text-muted mb-0">

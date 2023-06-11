@@ -8,18 +8,18 @@
 @import "variables";
 
 // mdbootstrap
-@import '~mdb-ui-kit/src/scss/mdb.free.scss';
+@import "~mdb-ui-kit/src/scss/mdb.free.scss";
 
 body {
-  font-family: "Nunito", sans-serif;
-  font-weight: 300;
+    font-family: "Nunito", sans-serif;
+    font-weight: 300;
 }
 
 .card {
-  box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
 }
 
-@import '~notyf/notyf.min.css';
+@import "~notyf/notyf.min.css";
 
 // Overall site layout
 @import "site";
@@ -51,9 +51,9 @@ body {
 @import "./components/dailyStats";
 
 .table-vertical-center td {
-  vertical-align: middle;
+    vertical-align: middle;
 }
 
 .color-main {
-  color: $trwlRot;
+    color: $trwlRot;
 }
