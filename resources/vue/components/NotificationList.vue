@@ -4,6 +4,7 @@ import NotificationEntry from "./NotificationEntry.vue";
 
 export default {
     components: {NotificationEntry},
+    emits: ['toggle-read'],
     data() {
         return {
             notifications: [],
@@ -20,17 +21,32 @@ export default {
                 .then(async (response) => {
                     const data              = await response.json();
                     this.notifications[key] = data.data;
+                    this.$emit('toggle-read');
                 })
+        },
+        toggleAllRead() {
+            return API.request('/notifications/read/all', 'PUT')
+                .then(API.handleDefaultResponse)
+                .then(() => {
+                    this.notifications.map((notification) => {
+                        notification.readAt = new Date().toISOString();
+                        return notification
+                    });
+                    this.$emit('toggle-read');
+                });
+        },
+        fetchNotifications() {
+            this.loading = true;
+            API.request('/notifications')
+                .then(async (response) => {
+                    const data         = await response.json();
+                    this.notifications = data.data;
+                    this.loading = false;
+                });
         }
     },
     mounted() {
-        this.loading = true;
-        API.request('/notifications')
-            .then(async (response) => {
-                const data         = await response.json();
-                this.notifications = data.data;
-                this.loading = false;
-            });
+        this.fetchNotifications();
     }
 }
 </script>
@@ -49,12 +65,24 @@ export default {
             @toggleRead="toggleRead(item, index)">
         </NotificationEntry>
     </div>
-    <div id="notifications-empty" class="text-center text-muted" v-else>
+    <div class="text-center text-muted notifications-empty" v-else>
         <i class="fa-solid fa-envelope fs-1"></i>
         <p class="fs-5">{{ emptyText }}</p>
     </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 
+@import "../../sass/variables";
+
+.row {
+    background-color: white;
+    padding: 1rem 0;
+    border-bottom: 0.5rem solid $body-bg;
+    margin: 0;
+}
+
+.notifications-empty {
+    padding: 2rem 0;
+}
 </style>

@@ -29,16 +29,15 @@
                     <a class="navbar-brand" href="{{ url('/') }}">
                         {{ config('app.name') }}
                     </a>
+
                     <div class="navbar-toggler">
                         @auth
-                            <button class="navbar-toggler notifications-board-toggle" type="button"
-                                    data-mdb-toggle="modal"
-                                    data-mdb-target="#notifications-board" aria-controls="navbarSupportedContent"
-                                    aria-expanded="false"
-                                    aria-label="{{ __('Show notifications') }}">
-                                <span class="notifications-bell far fa-bell"></span>
-                                <span class="notifications-pill badge rounded-pill badge-notification" hidden>0</span>
-                            </button>
+                            <NotificationBell
+                                i18n-empty="{{ __('notifications.empty') }}"
+                                i18n-title="{{ __('notifications.title') }}"
+                                label="{{ __('Show notifications') }}"
+                                count="5">
+                            </NotificationBell>
                         @endauth
                         <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
                                 data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -102,16 +101,22 @@
                                         </button>
                                     </div>
                                 </form>
-                                <li class="nav-item d-none d-md-inline-block">
-                                    <a href="javascript:void(0)" id="notifications-toggle"
-                                       class="nav-link notifications-board-toggle"
-                                       data-mdb-toggle="modal"
-                                       data-mdb-target="#notifications-board">
-                                        <span class="notifications-bell far fa-bell"></span>
-                                        <span class="notifications-pill badge rounded-pill badge-notification" hidden>
-                                            0
-                                        </span>
-                                    </a>
+                                <li class="nav-item d-md-inline-block">
+                                    <NotificationBell
+                                        i18n-empty="{{__('notifications.empty')}}"
+                                        i18n-title="{{ __('notifications.title') }}"
+                                        :link="true"
+                                        label="{{ __('Show notifications') }}"
+                                        count="5">
+                                    </NotificationBell>
+                                    <modal>
+                                        <template v-slot:header>
+                                            <h3> Hello world</h3>
+                                        </template>
+                                        <template v-slot:body>
+                                            <h3> Say Hi</h3>
+                                        </template>
+                                    </modal>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" href="#" class="nav-link dropdown-toggle mdb-select"
@@ -147,14 +152,14 @@
                                             </li>
                                         @endif
                                         @admin
-                                            <li>
-                                                <a class="dropdown-item" href="{{route('admin.dashboard')}}">
-                                                    <i class="fas fa-tools"></i> {{__('menu.admin')}}
-                                                </a>
-                                            </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{{route('admin.dashboard')}}">
+                                                <i class="fas fa-tools"></i> {{__('menu.admin')}}
+                                            </a>
+                                        </li>
                                         @endadmin
                                         <li>
-                                            <hr class="dropdown-divider" />
+                                            <hr class="dropdown-divider"/>
                                         </li>
 
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST"
@@ -226,7 +231,6 @@
                     </p>
                 </div>
             </footer>
-            @include('includes.modals.notifications-board')
         </div>
 
         <div class="alert text-center cookiealert" role="alert">

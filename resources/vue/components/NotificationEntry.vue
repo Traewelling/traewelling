@@ -1,6 +1,4 @@
 <script>
-import {warn} from "vue";
-
 export default {
     props: {
         "id": String,
@@ -77,6 +75,52 @@ export default {
     </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@import "../../sass/_variables.scss";
+
+div {
+    font-size: var(--mdb-body-font-size);
+    line-height: var(--mdb-body-line-height);
+}
+
+a {
+    color: $text-color;
+}
+
+.unread {
+    &.warning {
+        background-color: lighten($bahnrot, 40%);
+    }
+
+    &.neutral {
+        background-color: lighten($blue, 40%);
+    }
+}
+
+.col-1 i,
+.interact {
+    font-weight: 700;
+    line-height: 1;
+    color: $dark;
+    text-shadow: 0 1px 0 #fff;
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-size: 1.25rem;
+}
+
+p.lead {
+    margin-bottom: 0.5rem;
+
+    i {
+        padding-right: 0.5rem;
+    }
+}
+
+a ::v-deep(b) {
+    font-weight: bold;
+}
 
 </style>

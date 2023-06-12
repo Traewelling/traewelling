@@ -3,8 +3,8 @@
  */
 import {Notyf} from 'notyf';
 import {createApp} from 'vue';
-import Test from '../views/components/Test.vue';
 import NotificationList from "../vue/components/NotificationList.vue";
+import NotificationBell from "../vue/components/NotificationBell.vue";
 
 require("./bootstrap");
 require("awesomplete/awesomplete");
@@ -20,6 +20,7 @@ const app = createApp({
 });
 
 app.component('notificationlist', NotificationList);
+app.component('notificationbell', NotificationBell);
 app.config.devtools = true;
 app.mount('#app');
 
@@ -60,7 +61,6 @@ window.addEventListener("load", () => {
     require("./components/alert");
     require("./components/ActiveJourneys");
     require("./components/Event");
-    require("./components/Notification");
     require("./components/progressbar");
     require("./components/settings");
     require("./components/station-autocomplete");
