@@ -1,7 +1,7 @@
 {
     "about.basepoints": "Base points",
     "about.block1": "Träwelling is a free check-in service that lets you tell your friends where you are and where you can log your public transit journeys. In short, you can check into trains and get points for it.",
-    "about.calculation": "The distance is rounded to the nearest 10km and then divided by 10. Afterwards the base points are added.<br />An ICE journey of 143km thus earns you <code>10 + round up(143/10) = 10 + 15 = 25</code>&nbsp;Points, for an S-Bahn journey of 8km you get <code>2 + round up(8/10) = 2 + 1 = 3</code>&nbsp;Points.<br />We want you to check in as soon as possible so that the platform always has an up-to-date status of your journeys. reasonTherefore, you will only receive full points if you check in during your journey or 20min before live departure (scheduled departure + delay). If you check in 1h before or after the travel period, you can still get 1/4 of the points. If you check in earlier or later on a connection, you will receive the full kilometres and hours, but only one pity point.",
+    "about.calculation": "The distance is rounded to the nearest 10km and then divided by 10. Afterwards the base points are added.<br />An ICE journey of 143km thus earns you <code>10 + round up(143/10) = 10 + 15 = 25</code>&nbsp;Points, for an S-Bahn journey of 8km you get <code>2 + round up(8/10) = 2 + 1 = 3</code>&nbsp;Points.<br />We want you to check in as soon as possible so that the platform always has an up-to-date status of your journeys. Therefore, you will only receive full points if you check in during your journey or 20min before live departure (scheduled departure + delay). If you check in 1h before or after the travel period, you can still get 1/4 of the points. If you check in earlier or later on a connection, you will receive the full kilometres and hours, but only one pity point.",
     "about.express": "InterCity, EuroCity",
     "about.events": "What are events?",
     "about.events.description1": "Träwelling brings people together who use the same public transport. Sometimes those people even ride to the same events, without knowing from another!",
@@ -678,5 +678,8 @@
     "settings.profilePicture.deleted": "Your profile picture was deleted successfully.",
     "events.disclaimer.organizer": "Träwelling is not the organizer.",
     "events.disclaimer.source": "This event was suggested by a Träwelling user and approved by us.",
-    "events.disclaimer.warranty": "Träwelling does not guarantee the correctness or completeness of the data."
+    "events.disclaimer.warranty": "Träwelling does not guarantee the correctness or completeness of the data.",
+    "user.mapprovider": "Provider of map data",
+    "map-providers.cargo": "Cargo",
+    "map-providers.open-railway-map": "Open Railway Map"
 }

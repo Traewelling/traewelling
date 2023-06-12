@@ -141,7 +141,7 @@
     </div>
     <div class="progress">
         <div
-            class="progress-bar progress-time"
+            class="progress-bar progress-time {{ $status->event?->isPride ? 'progress-pride' : '' }}"
             role="progressbar"
             style="width: 0"
             data-valuenow="{{ time() }}"

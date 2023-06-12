@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 
 class Event extends Model
 {
@@ -14,7 +15,7 @@ class Event extends Model
 
     protected $fillable = ['name', 'hashtag', 'station_id', 'slug', 'host', 'url', 'begin', 'end'];
     protected $hidden   = ['created_at', 'updated_at'];
-    protected $appends  = ['trainDistance', 'trainDuration'];
+    protected $appends  = ['trainDistance', 'trainDuration', 'isPride'];
     protected $casts    = [
         'id'         => 'integer',
         'station_id' => 'integer',
@@ -41,5 +42,10 @@ class Event extends Model
                            ->select(['arrival', 'departure'])
                            ->get()
                            ->sum('duration');
+    }
+
+    public function getIsPrideAttribute(): bool {
+        $event_name_lowercase = strtolower($this->name);
+        return Str::contains($event_name_lowercase, ['csd', 'pride']);    
     }
 }

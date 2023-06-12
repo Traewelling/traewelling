@@ -124,6 +124,8 @@ fabric.properties
 
 # End of https://www.gitignore.io/api/phpstorm
 
+database-data/
+
 public/js/*.js
 public/js/*.js.map
 public/js/*.js.LICENSE.txt

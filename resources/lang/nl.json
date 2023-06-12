@@ -677,5 +677,10 @@
     "scopes.write-settings-calendar": "Maak en verwijder agendasleutels",
     "scopes.extra-write-password": "Wijzig je wachtwoord",
     "scopes.extra-terminate-sessions": "Log uit op andere sessies en apps",
-    "scopes.extra-delete": "Verwijder je Träwelling-account"
+    "scopes.extra-delete": "Verwijder je Träwelling-account",
+    "notifications.readAll.success": "Alle meldingen zijn als gelezen gemarkeerd.",
+    "notifications.socialNotShared.mastodon.0": "Er is een onbekende fout opgetreden tijdens het tooten.",
+    "map-providers.cargo": "Cargo",
+    "map-providers.open-railway-map": "Open Railway Map",
+    "user.mapprovider": "Kaartleverancier"
 }

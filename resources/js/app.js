@@ -10,6 +10,7 @@ require("./bootstrap");
 require("awesomplete/awesomplete");
 require("leaflet/dist/leaflet.js");
 require("./api/api");
+require("./components/maps");
 
 const app = createApp({
 	data() {
