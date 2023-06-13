@@ -56,7 +56,7 @@ export default {
 </script>
 
 <template>
-    <div class="row notification" :class="[warnType, read ? '' : 'unread']">
+    <div class="row notification" :class="[warnType, { unread: !read }]">
         <a class="col-1 col-sm-1 align-left lead" :href="link">
             <i :class="icon"></i>
         </a>
