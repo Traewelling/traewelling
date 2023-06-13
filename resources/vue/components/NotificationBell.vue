@@ -77,7 +77,7 @@ function fetchCount() {
         </template>
         <template #header-extra>
             <button
-                href="#"
+                type="button"
                 class="btn btn-sm btn-link py-0 px-1 fs-5 text-muted"
                 @click="$refs.notifications.toggleAllRead"
                 v-show="state.count"
