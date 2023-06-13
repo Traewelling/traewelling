@@ -22,8 +22,8 @@ class EventResource extends JsonResource
             "hashtag"       => $this->hashtag,
             "host"          => $this->host,
             "url"           => $this->url,
-            "begin"         => $this->begin?->toIso8601String(),
-            "end"           => $this->end?->toIso8601String(),
+            "begin"         => ($this->event_start ?? $this->begin)->toIso8601String(),
+            "end"           => ($this->event_end ?? $this->end)->toIso8601String(),
             "station"       => new TrainStationResource($this->station)
         ];
     }
