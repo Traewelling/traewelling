@@ -1,6 +1,6 @@
 <script setup>
 import ModalComponent from "./ModalComponent.vue";
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, onUnmounted, reactive, ref} from "vue";
 import NotificationList from "./NotificationList.vue";
 
 defineProps({
@@ -20,9 +20,15 @@ defineProps({
     }
 });
 
+let fetchInterval = null;
+
 onMounted(() => {
     fetchCount();
-    setInterval(fetchCount, 30000);
+    fetchInterval = setInterval(fetchCount, 30000);
+});
+
+onUnmounted(() => {
+    clearInterval(fetchInterval);
 });
 
 let thisModal = ref(null);
@@ -47,7 +53,7 @@ function fetchCount() {
 </script>
 
 <template>
-    <a @click="showModal" class="notifications-board-toggle"
+    <button @click="showModal" class="btn btn-link btn-transparent text-white notifications-board-toggle" style=""
        :class="{'nav-link': link, 'navbar-toggler': !link}" type="button"
        aria-expanded="false"
        :aria-label="label">
@@ -55,7 +61,7 @@ function fetchCount() {
         <span class="notifications-pill badge rounded-pill badge-notification" v-show="state.count">{{
                 state.count
             }}</span>
-    </a>
+    </button>
     <ModalComponent
         :title="i18nTitle"
         ref="thisModal"
@@ -70,14 +76,14 @@ function fetchCount() {
             />
         </template>
         <template #header-extra>
-            <a
+            <button
                 href="#"
-                class="text-muted"
+                class="btn btn-sm btn-link py-0 px-1 fs-5 text-muted"
                 @click="$refs.notifications.toggleAllRead"
                 v-show="state.count"
                 aria-label="{{ __('notifications.mark-all-read') }}">
                 <span aria-hidden="true"><i class="fa-solid fa-check-double"></i></span>
-            </a>
+            </button>
         </template>
     </ModalComponent>
 </template>
@@ -107,4 +113,7 @@ function fetchCount() {
     padding: 0;
 }
 
+.btn-transparent {
+    background-color: transparent;
+}
 </style>

@@ -32,12 +32,12 @@
 
                     <div class="navbar-toggler">
                         @auth
-                            <NotificationBell
+                            <notification-bell
                                 i18n-empty="{{ __('notifications.empty') }}"
                                 i18n-title="{{ __('notifications.title') }}"
                                 label="{{ __('Show notifications') }}"
                                 count="5">
-                            </NotificationBell>
+                            </notification-bell>
                         @endauth
                         <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
                                 data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -102,21 +102,13 @@
                                     </div>
                                 </form>
                                 <li class="nav-item d-md-inline-block">
-                                    <NotificationBell
+                                    <notification-bell
                                         i18n-empty="{{__('notifications.empty')}}"
                                         i18n-title="{{ __('notifications.title') }}"
                                         :link="true"
                                         label="{{ __('Show notifications') }}"
                                         count="5">
-                                    </NotificationBell>
-                                    <modal>
-                                        <template v-slot:header>
-                                            <h3> Hello world</h3>
-                                        </template>
-                                        <template v-slot:body>
-                                            <h3> Say Hi</h3>
-                                        </template>
-                                    </modal>
+                                    </notification-bell>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" href="#" class="nav-link dropdown-toggle mdb-select"

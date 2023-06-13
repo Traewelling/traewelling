@@ -3,7 +3,6 @@
  */
 import {Notyf} from 'notyf';
 import {createApp} from 'vue';
-import NotificationList from "../vue/components/NotificationList.vue";
 import NotificationBell from "../vue/components/NotificationBell.vue";
 
 require("./bootstrap");
@@ -20,8 +19,7 @@ const app = createApp({
 	}
 });
 
-app.component('notificationlist', NotificationList);
-app.component('notificationbell', NotificationBell);
+app.component('NotificationBell', NotificationBell);
 app.config.devtools = true;
 app.mount('#app');
 
