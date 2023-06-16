@@ -2,12 +2,27 @@
  * Here, we include all of our external dependencies
  */
 import {Notyf} from 'notyf';
+import {createApp} from 'vue';
+import NotificationBell from "../vue/components/NotificationBell.vue";
 
 require("./bootstrap");
 require("awesomplete/awesomplete");
 require("leaflet/dist/leaflet.js");
 require("./api/api");
 require("./components/maps");
+
+const app = createApp({
+	data() {
+		return{
+			count: 0
+		}
+	}
+});
+
+app.component('NotificationBell', NotificationBell);
+app.config.devtools = true;
+app.mount('#app');
+
 
 document.addEventListener("DOMContentLoaded", function () {
     window.notyf = new Notyf({
@@ -45,7 +60,6 @@ window.addEventListener("load", () => {
     require("./components/alert");
     require("./components/ActiveJourneys");
     require("./components/Event");
-    require("./components/Notification");
     require("./components/progressbar");
     require("./components/settings");
     require("./components/station-autocomplete");
