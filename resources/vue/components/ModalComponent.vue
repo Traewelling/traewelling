@@ -1,5 +1,6 @@
 <script>
-import { Modal } from "bootstrap";
+import {Modal} from "bootstrap";
+
 export default {
     props: {
         title: {
@@ -41,12 +42,14 @@ export default {
         <div class="modal-dialog" :class="dialogClass">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title text-dark" :class="{'flex-grow-1': !!this.$slots['header-extra']}">{{ title }}</h5>
-                    <slot name="header-extra" />
+                    <h5 class="modal-title text-dark" :class="{'flex-grow-1': !!this.$slots['header-extra']}">{{
+                            title
+                        }}</h5>
+                    <slot name="header-extra"/>
                     <button type="button" class="btn-close" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" :class="bodyClass">
-                    <slot name="body" />
+                    <slot name="body"/>
                 </div>
                 <div class="modal-footer" v-if="!hideFooter">
                     <slot name="footer"></slot>
