@@ -22,15 +22,18 @@ export default {
     },
     data() {
         return {
-            thisModalObj: null
+            modalObj: null
         }
     },
     mounted() {
-        this.thisModalObj = new Modal(this.$refs.modalComponent);
+        this.modalObj = new Modal(this.$refs.modalComponent);
     },
     methods: {
         show() {
-            this.thisModalObj.show();
+            this.modalObj.show();
+        },
+        hide() {
+            this.modalObj.hide()
         }
     }
 }
@@ -42,11 +45,11 @@ export default {
         <div class="modal-dialog" :class="dialogClass">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title text-dark" :class="{'flex-grow-1': !!this.$slots['header-extra']}">{{
-                            title
-                        }}</h5>
+                    <h5 class="modal-title text-dark" :class="{'flex-grow-1': !!this.$slots['header-extra']}">
+                        {{ title }}
+                    </h5>
                     <slot name="header-extra"/>
-                    <button type="button" class="btn-close" aria-label="Close"></button>
+                    <button type="button" class="btn-close" aria-label="Close" @click="hide"></button>
                 </div>
                 <div class="modal-body" :class="bodyClass">
                     <slot name="body"/>
