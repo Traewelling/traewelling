@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enum\EventRejectionReason;
 use App\Models\Event;
 use App\Models\EventSuggestion;
 use Illuminate\Bus\Queueable;
@@ -11,12 +12,14 @@ class EventSuggestionProcessed extends Notification implements BaseNotification
 {
     use Queueable;
 
-    private EventSuggestion $eventSuggestion;
-    private ?Event          $event;
+    private EventSuggestion      $eventSuggestion;
+    private ?Event               $event;
+    private ?EventRejectionReason $reason;
 
-    public function __construct(EventSuggestion $eventSuggestion, ?Event $event) {
+    public function __construct(EventSuggestion $eventSuggestion, ?Event $event, ?EventRejectionReason $reason = null) {
         $this->eventSuggestion = $eventSuggestion;
         $this->event           = $event;
+        $this->reason          = $reason;
     }
 
     public function via(): array {
@@ -28,6 +31,7 @@ class EventSuggestionProcessed extends Notification implements BaseNotification
             'accepted'      => $this->event !== null,
             'event'         => $this->event?->only(['id', 'slug', 'name', 'begin', 'end']),
             'suggestedName' => $this->eventSuggestion->name,
+            'reason'        => $this->reason,
         ];
     }
 
@@ -38,7 +42,13 @@ class EventSuggestionProcessed extends Notification implements BaseNotification
     }
 
     public static function getNotice(array $data): ?string {
-        return __('notifications.eventSuggestionProcessed.' . ($data['accepted'] ? 'accepted' : 'denied'));
+        if ($data['accepted']) {
+            return __('notifications.eventSuggestionProcessed.accepted');
+        }
+        if (!empty($data['reason'])) {
+            return __(EventRejectionReason::tryFrom($data['reason'])->getReason());
+        }
+        return __(EventRejectionReason::DEFAULT->getReason());
     }
 
     public static function getLink(array $data): ?string {

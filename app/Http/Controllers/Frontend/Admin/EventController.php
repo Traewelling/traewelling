@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Admin;
 
+use App\Enum\EventRejectionReason;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Admin\EventController as AdminEventBackend;
 use App\Http\Controllers\Backend\Admin\TelegramController;
@@ -16,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
 
 class EventController extends Controller
@@ -54,7 +56,10 @@ class EventController extends Controller
     }
 
     public function denySuggestion(Request $request): RedirectResponse {
-        $validated       = $request->validate(['id' => ['required', 'exists:event_suggestions,id']]);
+        $validated = $request->validate([
+                                            'id'      => ['required', 'exists:event_suggestions,id'],
+                                            'decline' => ['required', new Enum(EventRejectionReason::class)]
+                                        ]);
         $eventSuggestion = EventSuggestion::find($validated['id']);
         $eventSuggestion->update(['processed' => true]);
         if (!App::runningUnitTests() && config('app.admin.webhooks.new_event') !== null) {
@@ -62,9 +67,11 @@ class EventController extends Controller
                 auth()->user()->name . ' denied the event "' . $eventSuggestion->name . '".'
             ]);
         }
-        $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, null));
+        $eventSuggestion->user->notify(
+            new EventSuggestionProcessed($eventSuggestion, null, EventRejectionReason::from($validated['decline']))
+        );
 
-        return back()->with('alert-success', 'Event denied.');
+        return redirect()->route('admin.events.suggestions')->with('alert-success', 'Event denied.');
     }
 
     /**
