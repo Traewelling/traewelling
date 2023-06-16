@@ -29,8 +29,8 @@ class EventController extends Controller
         'nearest_station_name' => ['required', 'max:255'],
         'begin'                => ['required', 'date'],
         'end'                  => ['required', 'date'],
-        'event_start'          => ['required', 'date', 'after_or_equal:begin'],
-        'event_end'            => ['required', 'date', 'before_or_equal:end'],
+        'event_start'          => ['nullable', 'date', 'after_or_equal:begin'],
+        'event_end'            => ['nullable', 'date', 'before_or_equal:end'],
     ];
 
     public function renderList(Request $request): View {
@@ -93,8 +93,8 @@ class EventController extends Controller
                                             'nearest_station_name' => ['nullable', 'max:255'],
                                             'begin'                => ['required', 'date'],
                                             'end'                  => ['required', 'date'],
-                                            'event_start'          => ['required', 'date', 'after_or_equal:begin'],
-                                            'event_end'            => ['required', 'date', 'before_or_equal:end'],
+                                            'event_start'          => ['nullable', 'date', 'after_or_equal:begin'],
+                                            'event_end'            => ['nullable', 'date', 'before_or_equal:end'],
                                         ]);
 
         $eventSuggestion = EventSuggestion::find($validated['suggestionId']);

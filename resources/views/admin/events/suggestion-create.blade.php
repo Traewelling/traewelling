@@ -65,7 +65,7 @@
                                 <div class="form-floating mb-2">
                                     <input id="event-start"
                                            type="datetime-local" class="form-control" name="event_start"
-                                           value="{{ $event->begin->toDateTimeLocalString() }}" required
+                                           value="{{ $event->begin->toDateTimeLocalString() }}"
                                     />
                                     <label for="event-start">Event Begin</label>
                                 </div>
@@ -74,7 +74,6 @@
                                 <div class="form-floating mb-2">
                                     <input id="event-end" type="datetime-local" class="form-control" name="event_end"
                                            value="{{ $event->end->clone()->endOfDay()->toDateTimeLocalString() }}"
-                                           required
                                     />
                                     <label for="event-end">Event End</label>
                                 </div>

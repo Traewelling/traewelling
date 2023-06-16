@@ -25,10 +25,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('events', static function (Blueprint $table) {
-            $table->dropColumn('event_start');
-            $table->dropColumn('event_end');
             $table->dropForeign('events_approved_by_foreign');
-            $table->dropColumn('approved_by');
+            $table->dropColumn(['event_start', 'event_end', 'approved_by']);
         });
     }
 };
