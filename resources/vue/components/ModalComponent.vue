@@ -1,34 +1,38 @@
-<script setup>
-import { onMounted, ref } from "vue";
+<script>
 import { Modal } from "bootstrap";
-defineProps({
-    title: {
-        type: String,
-        default: "<<Title goes here>>",
+export default {
+    props: {
+        title: {
+            type: String,
+            default: "<<Title goes here>>",
+        },
+        bodyClass: {
+            type: String,
+            default: null
+        },
+        dialogClass: {
+            type: String,
+            default: null
+        },
+        hideFooter: {
+            type: Boolean,
+            default: false
+        }
     },
-    bodyClass: {
-        type: String,
-        default: null
+    data() {
+        return {
+            thisModalObj: null
+        }
     },
-    dialogClass: {
-        type: String,
-        default: null
+    mounted() {
+        this.thisModalObj = new Modal(this.$refs.modalComponent);
     },
-    hideFooter: {
-        type: Boolean,
-        default: false
+    methods: {
+        show() {
+            this.thisModalObj.show();
+        }
     }
-});
-let modalComponent = ref(null);
-let thisModalObj = null;
-
-onMounted(() => {
-    thisModalObj = new Modal(modalComponent.value);
-});
-function _show() {
-    thisModalObj.show();
 }
-defineExpose({ show: _show });
 </script>
 
 <template>
@@ -39,14 +43,14 @@ defineExpose({ show: _show });
                 <div class="modal-header">
                     <h5 class="modal-title text-dark" :class="{'flex-grow-1': !!this.$slots['header-extra']}">{{ title }}</h5>
                     <slot name="header-extra" />
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" :class="bodyClass">
                     <slot name="body" />
                 </div>
                 <div class="modal-footer" v-if="!hideFooter">
                     <slot name="footer"></slot>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary">
                         Close
                     </button>
                 </div>
