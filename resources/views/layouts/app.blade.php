@@ -20,6 +20,8 @@
         <link rel="author" href="/humans.txt">
         <link rel="manifest" href="/manifest.json"/>
 
+        <script src="{{ mix('js/app.js') }}"></script>
+
         @yield('head')
     </head>
     <body>
@@ -256,7 +258,6 @@
                 }
             };
         </script>
-        <script src="{{ mix('js/app.js') }}"></script>
     </body>
 
     @include('includes.check-in-modal')
