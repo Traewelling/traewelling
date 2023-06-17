@@ -11,20 +11,21 @@ require("leaflet/dist/leaflet.js");
 require("./api/api");
 require("./components/maps");
 
-const app = createApp({
-	data() {
-		return{
-			count: 0
-		}
-	}
-});
-
-app.component('NotificationBell', NotificationBell);
-app.config.devtools = true;
-app.mount('#nav-main');
-
 
 document.addEventListener("DOMContentLoaded", function () {
+
+    const app = createApp({
+        data() {
+            return{
+                count: 0
+            }
+        }
+    });
+
+    app.component('NotificationBell', NotificationBell);
+    app.config.devtools = true;
+    app.mount('#nav-main');
+
     window.notyf = new Notyf({
         duration: 5000,
         position: {x: "right", y: "top"},
