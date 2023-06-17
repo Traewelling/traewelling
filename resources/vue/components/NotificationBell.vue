@@ -57,7 +57,7 @@ function fetchCount() {
        :class="{'nav-link': link, 'navbar-toggler': !link}" type="button"
        aria-expanded="false"
        :aria-label="label">
-        <span class="notifications-bell far fa-bell"></span>
+        <span class="notifications-bell fa-bell" :class="{'fas': !!state.count,  'far': !state.count}"></span>
         <span class="notifications-pill badge rounded-pill badge-notification" v-show="state.count">{{
                 state.count
             }}</span>
