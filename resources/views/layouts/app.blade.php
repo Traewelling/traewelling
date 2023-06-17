@@ -101,7 +101,7 @@
                                         </button>
                                     </div>
                                 </form>
-                                <li class="nav-item d-md-inline-block">
+                                <li class="nav-item d-none d-md-inline-block">
                                     <notification-bell
                                         i18n-empty="{{__('notifications.empty')}}"
                                         i18n-title="{{ __('notifications.title') }}"

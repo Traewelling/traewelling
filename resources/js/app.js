@@ -21,7 +21,7 @@ const app = createApp({
 
 app.component('NotificationBell', NotificationBell);
 app.config.devtools = true;
-app.mount('#app');
+app.mount('#nav-main');
 
 
 document.addEventListener("DOMContentLoaded", function () {
