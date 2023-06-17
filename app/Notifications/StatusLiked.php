@@ -44,10 +44,10 @@ class StatusLiked extends Notification implements BaseNotification
 
     public static function getNotice(array $data): ?string {
         return trans_choice('notifications.statusLiked.notice',
-                            preg_match('/\s/', $data['trip']['lineName'] ?? ''),
+                            preg_match('/\s/', $data['trip']['lineName']),
                             [
-                                'line'        => $data['trip']['lineName'] ?? '',
-                                'createdDate' => Date::parse($data['trip']['departure'] ?? '')->isoFormat(__('date-format'))
+                                'line'        => $data['trip']['lineName'],
+                                'createdDate' => Date::parse($data['trip']['plannedDeparture'])->isoFormat(__('date-format'))
                             ]
         );
     }
