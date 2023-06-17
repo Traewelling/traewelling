@@ -120,11 +120,11 @@ class TrainCheckin extends Model
      * @return int
      */
     public function getDurationAttribute(): int {
-        return $this->arrival->diffInMinutes($this->departure);
+        return ($this->real_arrival ?? $this->arrival)->diffInMinutes($this->real_departure ?? $this->departure);
     }
 
     public function getSpeedAttribute(): float {
-        return $this->duration == 0 ? 0 : ($this->distance / 1000) / ($this->duration / 60);
+        return $this->duration === 0 ? 0 : ($this->distance / 1000) / ($this->duration / 60);
     }
 
     /**
