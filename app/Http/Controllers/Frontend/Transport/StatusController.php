@@ -25,7 +25,9 @@ class StatusController extends Controller
         $validated = $request->validate([
                                             'statusId'              => ['required', 'exists:statuses,id'],
                                             'body'                  => ['nullable', 'max:280'],
-                                            'business_check'        => ['required', new Enum(Business::class)],
+                                            'realDeparture'         => ['nullable', 'date'],
+                                            'realArrival'           => ['nullable', 'date'],
+                                            'business_check'        => ['required', new Enum(Business::class)], //TODO: Why is this not CamelCase?
                                             'checkinVisibility'     => ['required', new Enum(StatusVisibility::class)],
                                             'destinationStopoverId' => ['nullable', 'exists:train_stopovers,id'],
                                         ]);
@@ -39,6 +41,11 @@ class StatusController extends Controller
                                 'visibility' => StatusVisibility::from($validated['checkinVisibility']),
                             ]);
 
+            $status->trainCheckin->update([
+                                              'real_departure' => $validated['realDeparture'] ?? null,
+                                              'real_arrival'   => $validated['realArrival'] ?? null,
+                                          ]);
+
             StatusUpdateEvent::dispatch($status->refresh());
 
             if (isset($validated['destinationStopoverId'])
@@ -50,17 +57,17 @@ class StatusController extends Controller
                 $status->fresh();
 
                 $checkinSuccess = new CheckinSuccess(
-                    id: $status->id,
-                    distance: $status->trainCheckin->distance,
-                    duration: $status->trainCheckin->duration,
-                    points: $status->trainCheckin->points,
-                    pointReason: $pointReason,
-                    lineName: $status->trainCheckin->HafasTrip->linename,
-                    socialText: $status->socialText,
+                    id:                   $status->id,
+                    distance:             $status->trainCheckin->distance,
+                    duration:             $status->trainCheckin->duration,
+                    points:               $status->trainCheckin->points,
+                    pointReason:          $pointReason,
+                    lineName:             $status->trainCheckin->HafasTrip->linename,
+                    socialText:           $status->socialText,
                     alsoOnThisConnection: $status->trainCheckin->alsoOnThisConnection,
-                    event: $status->trainCheckin->event,
-                    forced:  false,
-                    reason:  'status-updated'
+                    event:                $status->trainCheckin->event,
+                    forced:               false,
+                    reason:               'status-updated'
                 );
 
                 return redirect()->route('statuses.get', ['id' => $status->id])

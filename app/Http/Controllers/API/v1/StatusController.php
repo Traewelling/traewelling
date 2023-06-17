@@ -316,9 +316,16 @@ class StatusController extends Controller
      */
     public function update(Request $request, int $statusId): JsonResponse {
         $validator = Validator::make($request->all(), [
+            //Just changing of metadata
             'body'                      => ['nullable', 'max:280', 'nullable'],
             'business'                  => ['required', new Enum(Business::class)],
             'visibility'                => ['required', new Enum(StatusVisibility::class)],
+
+            //Changing of TrainCheckin-Metadata
+            'realDeparture'             => ['nullable', 'date'],
+            'realArrival'               => ['nullable', 'date'],
+
+            //Following attributes are needed, if user want's to change the destination
             'destinationId'             => ['required_with:destinationArrivalPlanned', 'exists:train_stations,id'],
             'destinationArrivalPlanned' => ['required_with:destinationId', 'date'],
         ]);
@@ -353,8 +360,14 @@ class StatusController extends Controller
                                 'visibility' => StatusVisibility::from($validated['visibility']),
                             ]);
 
-            $status->fresh();
-            return $this->sendResponse(new StatusResource($status));
+            if (isset($validated['realDeparture'])) {
+                $status->trainCheckin->update(['real_departure' => $validated['realDeparture']]);
+            }
+            if (isset($validated['realArrival'])) {
+                $status->trainCheckin->update(['real_arrival' => $validated['realArrival']]);
+            }
+
+            return $this->sendResponse(new StatusResource($status->fresh()));
         } catch (ModelNotFoundException) {
             return $this->sendError('Status not found');
         } catch (PermissionException|AuthorizationException) {
