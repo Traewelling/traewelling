@@ -323,7 +323,9 @@ class NotificationsTest extends ApiTestCase
                                        'hashtag'      => $eventSuggestion->name,
                                        'host'         => $eventSuggestion->host,
                                        'begin'        => $eventSuggestion->begin,
+                                       'event_start'  => $eventSuggestion->begin,
                                        'end'          => $eventSuggestion->end,
+                                       'event_end'    => $eventSuggestion->end
                                    ]
                          );
         $response->assertOk();

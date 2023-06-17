@@ -98,6 +98,5 @@
         </main>
     </body>
 
-    @include('includes.modals.notifications-board')
     @yield('footer')
 </html>
