@@ -38,7 +38,7 @@
                                 i18n-empty="{{ __('notifications.empty') }}"
                                 i18n-title="{{ __('notifications.title') }}"
                                 label="{{ __('Show notifications') }}"
-                                count="5">
+                            >
                             </notification-bell>
                         @endauth
                         <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
@@ -109,7 +109,7 @@
                                         i18n-title="{{ __('notifications.title') }}"
                                         :link="true"
                                         label="{{ __('Show notifications') }}"
-                                        count="5">
+                                    >
                                     </notification-bell>
                                 </li>
                                 <li class="nav-item dropdown">
