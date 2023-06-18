@@ -14,16 +14,16 @@ class EventSuggestionProcessed extends Notification implements BaseNotification
 
     private EventSuggestion       $eventSuggestion;
     private ?Event                $event;
-    private ?EventRejectionReason $declineReason;
+    private ?EventRejectionReason $rejectionReason;
 
     public function __construct(
         EventSuggestion      $eventSuggestion,
         ?Event               $event,
-        EventRejectionReason $declineReason = null
+        EventRejectionReason $rejectionReason = null
     ) {
         $this->eventSuggestion = $eventSuggestion;
         $this->event           = $event;
-        $this->declineReason   = $declineReason;
+        $this->rejectionReason   = $rejectionReason;
     }
 
     public function via(): array {
@@ -35,7 +35,7 @@ class EventSuggestionProcessed extends Notification implements BaseNotification
             'accepted'      => $this->event !== null,
             'event'         => $this->event?->only(['id', 'slug', 'name', 'begin', 'end']),
             'suggestedName' => $this->eventSuggestion->name,
-            'declineReason' => $this->declineReason,
+            'rejectionReason' => $this->rejectionReason,
         ];
     }
 
@@ -49,8 +49,8 @@ class EventSuggestionProcessed extends Notification implements BaseNotification
         if ($data['accepted']) {
             return __('notifications.eventSuggestionProcessed.accepted');
         }
-        if (!empty($data['declineReason'])) {
-            return EventRejectionReason::tryFrom($data['declineReason'])->getReason();
+        if (!empty($data['rejectionReason'])) {
+            return EventRejectionReason::tryFrom($data['rejectionReason'])->getReason();
         }
         return EventRejectionReason::DEFAULT->getReason();
     }

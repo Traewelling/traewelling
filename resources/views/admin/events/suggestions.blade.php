@@ -54,7 +54,7 @@
                                                href="{{route('admin.events.suggestions.accept', ['id' => $event->id])}}">
                                                 Edit & accept
                                             </a>
-                                            <x-event-decline-button/>
+                                            <x-event-rejection-button/>
                                         </div>
                                     </form>
                                 </td>

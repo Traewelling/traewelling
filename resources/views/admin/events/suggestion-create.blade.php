@@ -80,7 +80,7 @@
                 <input type="hidden" name="id" value="{{$event->id}}"/>
 
                 <div class="btn-group float-end mt-2">
-                    <x-event-decline-button />
+                    <x-event-rejection-button/>
                 </div>
             </form>
         </div>

@@ -6,22 +6,22 @@
     </button>
     <ul class="dropdown-menu">
         <li>
-            <button class="btn-link dropdown-item" name="declineReason"
+            <button class="btn-link dropdown-item" name="rejectionReason"
                     value="{{EventRejectionReason::LATE}}">Too late
             </button>
         </li>
         <li>
-            <button class="btn-link dropdown-item" name="declineReason"
+            <button class="btn-link dropdown-item" name="rejectionReason"
                     value="{{EventRejectionReason::DUPLICATE}}">Duplicate
             </button>
         </li>
         <li>
-            <button class="btn-link dropdown-item" name="declineReason"
+            <button class="btn-link dropdown-item" name="rejectionReason"
                     value="{{EventRejectionReason::NOT_APPLICABLE}}">No Value
             </button>
         </li>
         <li>
-            <button class="btn-link dropdown-item" name="declineReason"
+            <button class="btn-link dropdown-item" name="rejectionReason"
                     value="{{EventRejectionReason::DEFAULT}}">No Reason
             </button>
         </li>

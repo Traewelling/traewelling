@@ -56,10 +56,12 @@ class EventController extends Controller
     }
 
     public function denySuggestion(Request $request): RedirectResponse {
-        $validated = $request->validate([
-                                            'id'            => ['required', 'exists:event_suggestions,id'],
-                                            'declineReason' => ['required', new Enum(EventRejectionReason::class)]
-                                        ]);
+        $validated       = $request->validate([
+                                                  'id'              => ['required', 'exists:event_suggestions,id'],
+                                                  'rejectionReason' => [
+                                                      'required', new Enum(EventRejectionReason::class)
+                                                  ]
+                                              ]);
         $eventSuggestion = EventSuggestion::find($validated['id']);
         $eventSuggestion->update(['processed' => true]);
         if (!App::runningUnitTests() && config('app.admin.webhooks.new_event') !== null) {
@@ -71,7 +73,7 @@ class EventController extends Controller
             new EventSuggestionProcessed(
                 $eventSuggestion,
                 null,
-                EventRejectionReason::from($validated['declineReason'])
+                EventRejectionReason::from($validated['rejectionReason'])
             )
         );
 
