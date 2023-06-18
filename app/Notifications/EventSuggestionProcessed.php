@@ -12,14 +12,18 @@ class EventSuggestionProcessed extends Notification implements BaseNotification
 {
     use Queueable;
 
-    private EventSuggestion      $eventSuggestion;
-    private ?Event               $event;
-    private ?EventRejectionReason $reason;
+    private EventSuggestion       $eventSuggestion;
+    private ?Event                $event;
+    private ?EventRejectionReason $declineReason;
 
-    public function __construct(EventSuggestion $eventSuggestion, ?Event $event, ?EventRejectionReason $reason = null) {
+    public function __construct(
+        EventSuggestion      $eventSuggestion,
+        ?Event               $event,
+        EventRejectionReason $declineReason = null
+    ) {
         $this->eventSuggestion = $eventSuggestion;
         $this->event           = $event;
-        $this->reason          = $reason;
+        $this->declineReason   = $declineReason;
     }
 
     public function via(): array {
@@ -31,7 +35,7 @@ class EventSuggestionProcessed extends Notification implements BaseNotification
             'accepted'      => $this->event !== null,
             'event'         => $this->event?->only(['id', 'slug', 'name', 'begin', 'end']),
             'suggestedName' => $this->eventSuggestion->name,
-            'reason'        => $this->reason,
+            'declineReason' => $this->declineReason,
         ];
     }
 
@@ -45,10 +49,10 @@ class EventSuggestionProcessed extends Notification implements BaseNotification
         if ($data['accepted']) {
             return __('notifications.eventSuggestionProcessed.accepted');
         }
-        if (!empty($data['reason'])) {
-            return __(EventRejectionReason::tryFrom($data['reason'])->getReason());
+        if (!empty($data['declineReason'])) {
+            return EventRejectionReason::tryFrom($data['declineReason'])->getReason();
         }
-        return __(EventRejectionReason::DEFAULT->getReason());
+        return EventRejectionReason::DEFAULT->getReason();
     }
 
     public static function getLink(array $data): ?string {

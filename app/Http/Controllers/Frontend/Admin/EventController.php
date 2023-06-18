@@ -57,8 +57,8 @@ class EventController extends Controller
 
     public function denySuggestion(Request $request): RedirectResponse {
         $validated = $request->validate([
-                                            'id'      => ['required', 'exists:event_suggestions,id'],
-                                            'decline' => ['required', new Enum(EventRejectionReason::class)]
+                                            'id'            => ['required', 'exists:event_suggestions,id'],
+                                            'declineReason' => ['required', new Enum(EventRejectionReason::class)]
                                         ]);
         $eventSuggestion = EventSuggestion::find($validated['id']);
         $eventSuggestion->update(['processed' => true]);
@@ -68,7 +68,11 @@ class EventController extends Controller
             ]);
         }
         $eventSuggestion->user->notify(
-            new EventSuggestionProcessed($eventSuggestion, null, EventRejectionReason::from($validated['decline']))
+            new EventSuggestionProcessed(
+                $eventSuggestion,
+                null,
+                EventRejectionReason::from($validated['declineReason'])
+            )
         );
 
         return redirect()->route('admin.events.suggestions')->with('alert-success', 'Event denied.');

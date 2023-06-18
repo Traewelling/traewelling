@@ -10,6 +10,6 @@ enum EventRejectionReason: string
     case NOT_APPLICABLE = 'not-applicable';
 
     public function getReason(): string {
-        return sprintf('notifications.eventSuggestionProcessed.%s', $this->value);
+        return __(sprintf('notifications.eventSuggestionProcessed.%s', $this->value));
     }
 }

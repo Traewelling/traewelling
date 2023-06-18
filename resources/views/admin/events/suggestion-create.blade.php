@@ -80,34 +80,7 @@
                 <input type="hidden" name="id" value="{{$event->id}}"/>
 
                 <div class="btn-group float-end mt-2">
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-primary dropdown-toggle"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                            Decline
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <button class="btn-link dropdown-item" name="decline"
-                                        value="{{EventRejectionReason::LATE}}">Too late
-                                </button>
-                            </li>
-                            <li>
-                                <button class="btn-link dropdown-item" name="decline"
-                                        value="{{EventRejectionReason::DUPLICATE}}">Duplicate
-                                </button>
-                            </li>
-                            <li>
-                                <button class="btn-link dropdown-item" name="decline"
-                                        value="{{EventRejectionReason::NOT_APPLICABLE}}">No Value
-                                </button>
-                            </li>
-                            <li>
-                                <button class="btn-link dropdown-item" name="decline"
-                                        value="{{EventRejectionReason::DEFAULT}}">No Reason
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
+                    <x-event-decline-button />
                 </div>
             </form>
         </div>
