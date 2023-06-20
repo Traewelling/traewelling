@@ -23,7 +23,7 @@ class EventSuggestionProcessed extends Notification implements BaseNotification
     ) {
         $this->eventSuggestion = $eventSuggestion;
         $this->event           = $event;
-        $this->rejectionReason   = $rejectionReason;
+        $this->rejectionReason = $rejectionReason;
     }
 
     public function via(): array {
