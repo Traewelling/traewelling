@@ -50,9 +50,9 @@
                         <span class="small font-weight-lighter">
                             {{__('profile.points-abbr')}}
                         </span>
-                        @if($mastodonUrl)
+                        @if($user->mastodonUrl)
                             <span class="font-weight-bold ps-sm-2">
-                                <a href="{{ $mastodonUrl }}" rel="me" class="text-white" target="_blank">
+                                <a href="{{ $user->mastodonUrl }}" rel="me" class="text-white" target="_blank">
                                     <i class="fab fa-mastodon d-inline"></i>
                                 </a>
                             </span>

@@ -72,8 +72,7 @@
                         </h2>
                         <hr/>
                         @auth
-                            <form method="POST" action="{{route('events.suggest')}}">
-                                @csrf
+                            <form id="event-suggest">
                                 <div class="form-outline mb-4">
                                     <input type="text" id="event-requester-name" name="name" class="form-control"
                                            required/>
@@ -109,6 +108,7 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary">{{__('events.request-button')}}</button>
                             </form>
+
                             <hr/>
                             <small class="text-muted">{{__('events.notice')}}</small>
                         @else

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -15,17 +16,6 @@
                 line-height: 24px;
                 font-family: 'Helvetica Neue', 'Helvetica', 'Helvetica', 'Arial', sans-serif;
                 color: #555;
-            }
-
-            .product-icon {
-                width: 16px;
-                height: 16px;
-                margin-right: -100%;
-            }
-
-            td > .product-icon {
-                padding: 0;
-                max-width: 20px;
             }
 
             .export-container .top {
@@ -48,6 +38,7 @@
                 width: 100%;
                 line-height: inherit;
                 text-align: left;
+                font-size: 0.8em;
             }
 
             .export-container table thead tr {
@@ -84,8 +75,8 @@
             .footer-wrapper {
                 position: fixed;
                 bottom: -60px;
-                left: 0px;
-                right: 0px;
+                left: 0;
+                right: 0;
                 height: 50px;
             }
 
@@ -102,7 +93,6 @@
                 text-align: center;
                 font-style: italic;
             }
-
         </style>
     </head>
     <body>
@@ -159,9 +149,33 @@
                             <td>{{ __('transport_types.' . $status->trainCheckin->HafasTrip->category->value) }}</td>
                             <td>{{ $status->trainCheckin->HafasTrip->linename }}</td>
                             <td>{{ $status->trainCheckin->Origin->name }}</td>
-                            <td>{{ $status->trainCheckin->origin_stopover->departure_planned?->isoFormat(__('datetime-format')) }}</td>
+                            <td>
+                                @if(isset($status->trainCheckin->real_departure))
+                                    {{ $status->trainCheckin->real_departure->isoFormat(__('datetime-format')) }}
+                                @elseif($status->trainCheckin->origin_stopover->isDepartureDelayed)
+                                    <span style="text-decoration: line-through;">
+                                        {{ $status->trainCheckin->origin_stopover->departure_planned?->isoFormat(__('datetime-format')) }}
+                                    </span>
+                                    <br/>
+                                    {{ $status->trainCheckin->origin_stopover->departure_real?->isoFormat(__('datetime-format')) }}
+                                @else
+                                    {{ $status->trainCheckin->origin_stopover->departure_planned?->isoFormat(__('datetime-format')) }}
+                                @endif
+                            </td>
                             <td>{{ $status->trainCheckin->Destination->name }}</td>
-                            <td>{{ $status->trainCheckin->destination_stopover->arrival_planned?->isoFormat(__('datetime-format')) }}</td>
+                            <td>
+                                @if(isset($status->trainCheckin->real_arrival))
+                                    {{ $status->trainCheckin->real_arrival->isoFormat(__('datetime-format')) }}
+                                @elseif($status->trainCheckin->origin_stopover->isArrivalDelayed)
+                                    <span style="text-decoration: line-through;">
+                                        {{ $status->trainCheckin->destination_stopover->arrival_planned?->isoFormat(__('datetime-format')) }}
+                                    </span>
+                                    <br/>
+                                    {{ $status->trainCheckin->destination_stopover->arrival_real?->isoFormat(__('datetime-format')) }}
+                                @else
+                                    {{ $status->trainCheckin->destination_stopover->arrival_planned?->isoFormat(__('datetime-format')) }}
+                                @endif
+                            </td>
                             <td class="number-field">{{ $status->trainCheckin->duration }} min</td>
                             <td class="number-field">{{ number($status->trainCheckin->distance / 1000) }} km</td>
                             <td class="number-field"><i>{{ $status->business->value }}</i></td>

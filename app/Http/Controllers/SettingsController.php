@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Follow;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ class SettingsController extends Controller
     }
 
     /**
+     * @throws AuthorizationException
      * @deprecated
      */
     public function removeFollower(Request $request): RedirectResponse {

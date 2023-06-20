@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Backend\EventController as EventBackend;
-use App\Http\Resources\EventResource;
 use App\Http\Resources\EventDetailsResource;
+use App\Http\Resources\EventResource;
 use App\Http\Resources\StatusResource;
+use App\Models\Event;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Http\Controllers\StatusController;
 
 class EventController extends Controller
 {
@@ -148,11 +150,13 @@ class EventController extends Controller
      * @return AnonymousResourceCollection
      */
     public static function statuses(string $slug): AnonymousResourceCollection {
-        return StatusResource::collection(EventBackend::getBySlug($slug)->statuses()->paginate());
+        $event    = Event::where('slug', $slug)->firstOrFail();
+        $statuses = StatusController::getStatusesByEvent($event);
+        return StatusResource::collection($statuses['statuses']->paginate());
     }
 
     /**
-     *  @OA\Get(
+     * @OA\Get(
      *      path="/events",
      *      operationId="getUpcomingEvent",
      *      tags={"Events"},
@@ -230,27 +234,28 @@ class EventController extends Controller
                                         ]);
 
         $eventSuggestion = EventBackend::suggestEvent(
-            user: auth()->user(),
-            name: $validated['name'],
+            user:  auth()->user(),
+            name:  $validated['name'],
             begin: Carbon::parse($validated['begin']),
-            end: Carbon::parse($validated['end']),
-            url: $validated['url'] ?? null,
-            host: $validated['host'] ?? null
+            end:   Carbon::parse($validated['end']),
+            url:   $validated['url'] ?? null,
+            host:  $validated['host'] ?? null
         );
 
         if ($eventSuggestion->wasRecentlyCreated) {
-            return $this->sendResponse(data: null, code: 201);
+            return $this->sendResponse(data: ['message' => __('events.request.success')], code: 201);
         }
-        return $this->sendError(error: null, code: 500);
+        return $this->sendError(error: __('messages.exception.general'), code: 500);
     }
 
     /**
-     *   @OA\Get(
+     * @OA\Get(
      *      path="/activeEvents",
      *      operationId="getCurrentEvents",
      *      tags={"Events"},
      *      summary="Shows current events with basic information",
-     *      description="Returns array of current events, used for a basic overview during checkiused for a basic overview during checkin",
+     *      description="Returns array of current events, used for a basic overview during checkiused for a basic
+     *      overview during checkin",
      *      @OA\Parameter (
      *          name="slug",
      *          in="path",

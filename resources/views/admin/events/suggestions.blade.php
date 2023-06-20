@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\Date; @endphp
 @extends('admin.layout')
 
 @section('title', 'Veranstaltungsvorschläge')
@@ -12,23 +13,37 @@
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Veranstalter</th>
-                            <th>Beginn</th>
-                            <th>Ende</th>
-                            <th>Externe URL</th>
-                            <th>Vorschlagender Nutzer</th>
+                            <th>Organizer</th>
+                            <th>Begin</th>
+                            <th>End</th>
+                            <th>External URL</th>
+                            <th>Suggesting user</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($suggestions as $event)
-                            <tr>
+                            <tr class="{{$event->begin->isPast() ? 'table-danger' : ''}}">
                                 <td>{{$event->name}}</td>
                                 <td>{{$event->host}}</td>
-                                <td>{{$event->begin->format('d.m.Y')}}</td>
+                                <td>
+                                    {{$event->begin->format('d.m.Y')}}
+                                    @if($event->begin->isPast())
+                                        <div class="spinner-grow text-danger" style="width: 1rem; height: 1rem;"></div>
+                                    @elseif($event->begin->isBefore(Date::today()->addDays(3)))
+                                        <div class="spinner-grow text-info" style="width: 1rem; height: 1rem;"></div>
+                                    @endif
+                                </td>
                                 <td>{{$event->end->format('d.m.Y')}}</td>
                                 <td>{{$event->url}}</td>
-                                <td>{{$event->user?->username}}</td>
+                                <td>
+                                    @isset($event->user)
+                                        <a href="{{route('admin.users.user', ['id' => $event->user->id])}}"
+                                           target="_blank">
+                                            {{$event->user->username}}
+                                        </a>
+                                    @endisset
+                                </td>
                                 <td class="text-end">
                                     <form method="POST" action="{{route('admin.events.suggestions.deny')}}">
                                         @csrf

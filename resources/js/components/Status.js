@@ -2,26 +2,26 @@ window.Status = class Status {
 
     static destroy(statusId) {
         API.request(`/status/${statusId}`, 'delete')
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(API.handleGenericError);
+            .then(API.handleDefaultResponse)
+            .then(() => {
+                //delete status card if present
+                let statusCard = document.getElementById(`status-${statusId}`);
+                if (statusCard) {
+                    statusCard.remove();
                 }
 
-                return response.json().then(data => {
-                    //delete status card if present
-                    let statusCard = document.getElementById(`status-${statusId}`);
-                    if (statusCard) {
-                        statusCard.remove();
-                    }
+                //redirect to dashboard, if user is on status page which is deleted
+                if (window.location.pathname === `/status/${statusId}`) {
+                    window.location.href = '/dashboard';
+                }
+            });
+    }
 
-                    notyf.success(data.data.message);
+    static like(statusId) {
+        return API.request(`/status/${statusId}/like`, 'POST');
+    }
 
-                    //redirect to dashboard, if user is on status page which is deleted
-                    if (window.location.pathname === `/status/${statusId}`) {
-                        window.location.href = '/dashboard';
-                    }
-                });
-            })
-            .catch(API.handleGenericError);
+    static unlike(statusId) {
+        return API.request(`/status/${statusId}/like`, 'DELETE');
     }
 }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Dto\CheckinSuccess;
 use App\Enum\Business;
-use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
@@ -243,9 +242,5 @@ class FrontendTransportController extends Controller
         } catch (HafasException) {
             return redirect()->back()->with(['error' => __('messages.exception.generalHafas')]);
         }
-    }
-
-    private function isCancelled(mixed $param): bool {
-        return $param['cancelled'] && $param['arrival'] == null && $param['departure'] == null;
     }
 }

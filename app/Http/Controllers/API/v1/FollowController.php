@@ -16,9 +16,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
-use Log;
 
 class FollowController extends Controller
 {
@@ -57,7 +56,7 @@ class FollowController extends Controller
     public function createFollow(int $userId): JsonResponse {
         try {
             $userToFollow         = User::findOrFail($userId);
-            $createFollowResponse = UserBackend::createOrRequestFollow(Auth::user(), $userToFollow);
+            $createFollowResponse = FollowBackend::createOrRequestFollow(Auth::user(), $userToFollow);
             return $this->sendResponse(new UserResource($createFollowResponse), 201);
         } catch (ModelNotFoundException) {
             return $this->sendError(['message' => 'User not found'], 404);

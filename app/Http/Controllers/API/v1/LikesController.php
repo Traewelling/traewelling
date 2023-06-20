@@ -84,7 +84,7 @@ class LikesController extends Controller
      *          response=201,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *                      ref="#/components/schemas/SuccessResponse"
+     *              ref="#/components/schemas/SuccessResponse"
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
@@ -104,9 +104,15 @@ class LikesController extends Controller
         try {
             $status = Status::findOrFail($statusId);
             StatusBackend::createLike(Auth::user(), $status);
-            return $this->sendResponse(code: 201);
+            return $this->sendResponse(
+                data: ['count' => $status->likes->count()],
+                code: 201,
+            );
         } catch (StatusAlreadyLikedException) {
-            return $this->sendError(code: 409);
+            return $this->sendError(
+                error: __('controller.status.like-already'),
+                code:  409,
+            );
         } catch (PermissionException) {
             return $this->sendError(code: 403);
         } catch (ModelNotFoundException) {
@@ -149,10 +155,14 @@ class LikesController extends Controller
      */
     public function destroy(int $statusId): JsonResponse {
         try {
+            $status = Status::findOrFail($statusId);
             StatusBackend::destroyLike(Auth::user(), $statusId);
-            return $this->sendResponse();
-        } catch (InvalidArgumentException) {
-            return $this->sendError('No status found for this id', 404);
+            $status->refresh();
+            return $this->sendResponse(
+                data: ['count' => $status->likes->count()],
+            );
+        } catch (InvalidArgumentException|ModelNotFoundException) {
+            return $this->sendError('No status found for this id');
         }
     }
 }

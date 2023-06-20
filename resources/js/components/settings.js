@@ -1,18 +1,18 @@
 require("croppie/croppie");
 
 var resize = $("#upload-demo").croppie({
-    enableExif: true,
-    enableOrientation: true,
-    viewport: {
-        width: 200,
-        height: 200,
-        type: "square"
-    },
-    boundary: {
-        width: 300,
-        height: 300
-    }
-});
+                                           enableExif: true,
+                                           enableOrientation: true,
+                                           viewport: {
+                                               width: 200,
+                                               height: 200,
+                                               type: "square"
+                                           },
+                                           boundary: {
+                                               width: 300,
+                                               height: 300
+                                           }
+                                       });
 
 $("#image").on("change", function () {
     $("#upload-demo").removeClass("d-none");
@@ -32,26 +32,11 @@ $(".upload-image").on("click", function (ev) {
         type: "canvas",
         size: "viewport"
     }).then(function (img) {
-        $.ajaxSetup({
-            headers: {
-                "X-CSRF-TOKEN": token
-            }
-        });
-
-        $.ajax({
-            url: urlAvatarUpload,
-            type: "POST",
-            data: {image: img},
-            success: function (data) {
-                // Bestehendes Bild noch ändern
-                $("#theProfilePicture").attr("src", img);
-                $("#uploadAvatarModal").modal("hide");
-                $("#deleteProfilePictureButton").removeClass("d-none");
-            },
-            error: function () {
-                $("#upload-error").removeClass("d-none");
-            }
-        });
+        Settings.uploadProfilePicture(img)
+            .then(() => {
+                document.getElementById("theProfilePicture").src = img;
+                document.getElementById("btnModalDeleteProfilePicture")?.classList.remove("d-none");
+            });
     });
 });
 
@@ -60,11 +45,8 @@ window.Settings = class Settings {
 
     static deleteProfilePicture() {
         API.request('/settings/profilePicture', 'delete')
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(API.handleGenericError);
-                }
-
+            .then(API.handleDefaultResponse)
+            .then(() => {
                 //Remove delete-btn if existing
                 let btnModalDeleteProfilePicture = document.getElementById("btnModalDeleteProfilePicture");
                 btnModalDeleteProfilePicture?.remove();
@@ -72,11 +54,11 @@ window.Settings = class Settings {
                 //Show default profile picture
                 let theProfilePicture = document.getElementById('theProfilePicture');
                 theProfilePicture?.setAttribute('src', `/img/user.png`);
+            });
+    }
 
-                return response.json().then(data => {
-                    notyf.success(data.data.message);
-                });
-            })
-            .catch(API.handleGenericError);
+    static uploadProfilePicture(image) {
+        return API.request('/settings/profilePicture', 'POST', {image: image})
+            .then(API.handleDefaultResponse);
     }
 }
