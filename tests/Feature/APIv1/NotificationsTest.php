@@ -352,7 +352,7 @@ class NotificationsTest extends ApiTestCase
                                                   'end'   => $event->end,
                                               ],
                                               'suggestedName' => $eventSuggestion->name,
-                                              'reason' => null
+                                              'rejectionReason' => null
                                           ]
                                       ]
         );
@@ -371,7 +371,7 @@ class NotificationsTest extends ApiTestCase
                          ->followingRedirects()
                          ->post(
                              uri:  '/admin/events/suggestions/deny',
-                             data: ['id' => $eventSuggestion->id, 'decline' => 'denied']
+                             data: ['id' => $eventSuggestion->id, 'rejectionReason' => 'denied']
                          );
         $response->assertOk();
 
@@ -390,7 +390,7 @@ class NotificationsTest extends ApiTestCase
                                               'accepted'      => false,
                                               'event'         => null,
                                               'suggestedName' => $eventSuggestion->name,
-                                              'reason'        => "denied"
+                                              'rejectionReason'        => "denied"
                                           ]
                                       ]
         );
