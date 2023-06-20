@@ -297,8 +297,13 @@ $dm-body: hsl(224, 10%, 75%);
         color: #ffc659 !important;
     }
 
+    .alert-success {
+        background-color: hsl(160, 100%, 13%);
+        color: hsl(0, 0%, 85%);
+    }
+
     .alert-warning {
-        background-color: rgb(115, 76, 0);
+        background-color: hsl(40, 100%, 23%);
         color: rgb(251, 251, 251);
     }
 
@@ -307,7 +312,7 @@ $dm-body: hsl(224, 10%, 75%);
     }
 
     .alert-danger {
-        background-color: rgb(132, 46, 60);
+        background-color: hsl(350, 48%, 25%);
         color: rgb(238, 238, 238);
     }
 
