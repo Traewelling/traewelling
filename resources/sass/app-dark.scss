@@ -5,6 +5,7 @@ $dm-base-5: lighten($dm-base, 5%);
 $dm-base-20: lighten($dm-base, 20%);
 
 $dm-trwlRot: hsl(6, 100%, 73%);
+$dm-trwlRot-shape: hsl(6, 100%, 65%);
 $dm-trwlBlue: hsl(217, 100%, 81%);
 $dm-lightblue: hsl(209, 81%, 67%);
 
@@ -102,7 +103,7 @@ $dm-body: hsl(224, 10%, 75%);
         --mdb-btn-focus-bg: transparent;
         --mdb-btn-focus-color: #{lighten($dm-base, 61%)};
         --mdb-btn-active-bg: transparent;
-        --mdb-btn-active-color:  #{lighten($dm-base, 61%)};
+        --mdb-btn-active-color: #{lighten($dm-base, 61%)};
         border-color: lighten($dm-base, 45%);
     }
 
@@ -111,14 +112,14 @@ $dm-body: hsl(224, 10%, 75%);
     }
     .trwl-bulletpoint {
         background: lighten($dm-base, 30%) !important;
-        border-color: darken($dm-trwlRot, 10%) !important;
+        border-color: $dm-trwlRot-shape;
     }
     .text-trwl {
         color: $dm-trwlRot !important;
     }
 
     ul.timeline > li:first-child:before {
-        background-color: lighten($dm-base, 30%);
+        background-color: lighten($dm-base, 45%);
     }
 
     .map,
@@ -131,7 +132,7 @@ $dm-body: hsl(224, 10%, 75%);
     .status {
         .progress {
             .progress-bar {
-                background: darken($dm-trwlRot, 10%);
+                background: $dm-trwlRot-shape;
             }
         }
 
@@ -271,7 +272,8 @@ $dm-body: hsl(224, 10%, 75%);
         color: $dm-body !important;
     }
 
-    .image-box img, .img-thumbnail {
+    .image-box img,
+    .img-thumbnail {
         filter: brightness(0.8) saturate(0.8);
     }
 
@@ -314,8 +316,9 @@ $dm-body: hsl(224, 10%, 75%);
         filter: invert(1);
     }
 
-    ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    ::placeholder {
+        /* Chrome, Firefox, Opera, Safari 10.1+ */
         color: lighten($dm-base, 45%) !important;
         opacity: 1; /* Firefox */
-      }
+    }
 }
