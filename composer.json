@@ -21,7 +21,6 @@
         "ext-pdo_mysql": "*",
         "ext-sodium": "*",
         "barryvdh/laravel-dompdf": "^2.0",
-        "coderjerk/bird-elephant": "^0.6.1",
         "darkaonline/l5-swagger": "^8.3",
         "doctrine/dbal": "^3.1.4",
         "fruitcake/laravel-cors": "^3.0",

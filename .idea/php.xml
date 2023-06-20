@@ -220,6 +220,9 @@
       <path value="$PROJECT_DIR$/vendor/spatie/laravel-validation-rules" />
       <path value="$PROJECT_DIR$/vendor/guzzlehttp/uri-template" />
       <path value="$PROJECT_DIR$/vendor/uwumarie/laravel-bitflags" />
+      <path value="$PROJECT_DIR$/vendor/mrkriskrisu/db-wagenreihung-php" />
+      <path value="$PROJECT_DIR$/vendor/league/flysystem-local" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php83" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />
