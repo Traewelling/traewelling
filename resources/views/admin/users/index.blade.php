@@ -86,17 +86,6 @@
                                         </td>
                                         <td class="text-end">
                                             <div class="btn-group">
-                                                @isset($user->twitterUrl)
-                                                    <a href="{{ $user->twitterUrl }}" class="btn btn-small btn-info"
-                                                       target="twitter{{$user->id}}">
-                                                        <i class="fab fa-twitter"></i>
-                                                    </a>
-                                                @else
-                                                    <a href="javascript:void(0)"
-                                                       class="btn btn-small btn-secondary disabled">
-                                                        <i class="fab fa-twitter"></i>
-                                                    </a>
-                                                @endif
                                                 @isset($user->mastodonUrl)
                                                     <a href="{{ $user->mastodonUrl }}" target="mastodon{{$user->id}}"
                                                        class="btn btn-small btn-info">

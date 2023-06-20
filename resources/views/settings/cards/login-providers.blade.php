@@ -7,12 +7,9 @@
                 <tr>
                     <td>
                         <i class="fab fa-twitter"></i>
-                        Twitter <br>
-                        <a href="https://blog.traewelling.de/posts/twitter-deprecation/" target="_blank">
-                            <i class="fa fa-link"></i> {{ __('settings.twitter-deprecated') }}
-                        </a>
+                        Twitter
                     </td>
-                    @if (auth()->user()?->socialProfile?->twitter_id != null)
+                    @if (auth()->user()?->socialProfile?->twitter_id !== null)
                         <td class="text-success align-middle">
                             <i class="fas fa-check"></i>
                             {{ __('settings.connected') }}
@@ -24,11 +21,10 @@
                             </a>
                         </td>
                     @else
-                        <td class="text-danger align-middle">
-                            <i class="fas fa-times"></i>
-                            {{ __('settings.notconnected') }}
-                        </td>
-                        <td class="align-middle">
+                        <td class="text-danger align-middle" colspan="2">
+                            <a href="https://blog.traewelling.de/posts/twitter-deprecation/" target="_blank">
+                                <i class="fa fa-link"></i> {{ __('settings.twitter-deprecated') }}
+                            </a>
                         </td>
                     @endif
                 </tr>

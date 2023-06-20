@@ -1,5 +1,5 @@
 <div class="btn-group">
-    <button class="btn btn-sm btn-outline-twitter dropdown-toggle"
+    <button class="btn btn-sm btn-outline-primary dropdown-toggle"
             type="button"
             id="businessDropdownButton"
             data-mdb-dropdown-animation="off"

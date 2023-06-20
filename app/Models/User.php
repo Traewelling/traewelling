@@ -235,10 +235,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @deprecated
      */
     public function getTwitterUrlAttribute(): ?string {
-        if ($this->socialProfile->twitter_id) {
-            return "https://twitter.com/i/user/" . $this->socialProfile->twitter_id;
-        }
-        return null;
+        return null; //Twitter isn't used by traewelling anymore
     }
 
     public function getMastodonUrlAttribute(): ?string {
