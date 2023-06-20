@@ -4,6 +4,8 @@
 <div class="card status mb-3" id="status-{{ $status->id }}"
      data-trwl-id="{{$status->id}}"
      data-trwl-status-body="{{ $status->body }}"
+     data-trwl-real-departure="{{ $status->trainCheckin?->real_departure }}"
+     data-trwl-real-arrival="{{ $status->trainCheckin?->real_arrival }}"
      data-date="{{$status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday'))}}"
      data-trwl-business-id="{{ $status->business->value }}"
      data-trwl-visibility="{{ $status->visibility->value }}"
@@ -32,7 +34,13 @@
                 <li>
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
-                        @if($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
+                        @isset($status->trainCheckin->real_departure)
+                            <small style="text-decoration: line-through;" class="text-muted">
+                                {{ $status->trainCheckin->origin_stopover->departure_planned->isoFormat(__('time-format')) }}
+                            </small>
+                            &nbsp;
+                            {{ $status->trainCheckin->real_departure->isoFormat(__('time-format')) }}
+                        @elseif($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
                             <small style="text-decoration: line-through;" class="text-muted">
                                 {{ $status->trainCheckin->origin_stopover->departure_planned->isoFormat(__('time-format')) }}
                             </small>
@@ -121,7 +129,13 @@
                 <li>
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
-                        @if($status->trainCheckin?->destination_stopover?->isArrivalDelayed)
+                        @isset($status->trainCheckin->real_arrival)
+                            <small style="text-decoration: line-through;" class="text-muted">
+                                {{ $status->trainCheckin->destination_stopover->arrival_planned->isoFormat(__('time-format')) }}
+                            </small>
+                            &nbsp;
+                            {{ $status->trainCheckin->real_arrival->isoFormat(__('time-format')) }}
+                        @elseif($status->trainCheckin?->destination_stopover?->isArrivalDelayed)
                             <small style="text-decoration: line-through;" class="text-muted">
                                 {{ $status->trainCheckin->destination_stopover->arrival_planned->isoFormat(__('time-format')) }}
                             </small>
@@ -233,23 +247,21 @@
                                     </button>
                                 </li>
                                 <x-mute-button :user="$status->user" :dropdown="true"/>
-                                <x-block-button :user="$status->user" :dropdown="true"/>
-                            @endif
-                            @admin
-                            <li>
+                                <x-block-button :user="$status->user" :dropdown="true"/>@endif
+                @admin
+                <li>
                                 <hr class="dropdown-divider"/>
                             </li>
                             <li>
-                                <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}"
-                                   class="dropdown-item">
+                    <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}"class="dropdown-item">
                                     <div class="dropdown-icon-suspense">
-                                        <i class="fas fa-tools" aria-hidden="true"></i>
-                                    </div>
+                        <i class="fas fa-tools" aria-hidden="true"></i>
+                    </div>
                                     Admin-Interface
                                 </a>
-                            </li>
-                            @endadmin
-                        @endauth
+                </li>
+                @endadmin
+            @endauth
                     </ul>
                 </div>
             </li>

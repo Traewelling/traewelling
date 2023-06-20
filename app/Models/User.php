@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enum\MapProvider;
 use App\Enum\StatusVisibility;
 use App\Exceptions\RateLimitExceededException;
+use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
 use App\Jobs\SendVerificationEmail;
 use Carbon\Carbon;
 use Exception;
@@ -234,33 +235,11 @@ class User extends Authenticatable implements MustVerifyEmail
      * @deprecated
      */
     public function getTwitterUrlAttribute(): ?string {
-        if ($this->socialProfile->twitter_id) {
-            return "https://twitter.com/i/user/" . $this->socialProfile->twitter_id;
-        }
-        return null;
+        return null; //Twitter isn't used by traewelling anymore
     }
 
     public function getMastodonUrlAttribute(): ?string {
-        $mastodonUrl = null;
-        if (!empty($this->socialProfile)
-            && !empty($this->socialProfile->mastodon_token)
-            && !empty($this->socialProfile->mastodon_id)) {
-            try {
-                $mastodonServer = MastodonServer::where('id', $this->socialProfile->mastodon_server)->first();
-                if ($mastodonServer) {
-                    $mastodonDomain      = $mastodonServer->domain;
-                    $mastodonAccountInfo = Mastodon::domain($mastodonDomain)
-                                                   ->token($this->socialProfile->mastodon_token)
-                                                   ->get("/accounts/" . $this->socialProfile->mastodon_id);
-                    $mastodonUrl         = $mastodonAccountInfo["url"];
-                }
-            } catch (Exception $exception) {
-                // The connection might be broken, or the instance is down, or $user has removed the api rights
-                // but has not told us yet.
-                Log::warning($exception);
-            }
-        }
-        return $mastodonUrl;
+        return (new MastodonProfileDetails($this))->getProfileUrl();
     }
 
     /**

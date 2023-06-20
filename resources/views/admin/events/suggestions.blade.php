@@ -1,4 +1,5 @@
 @php use App\Enum\EventRejectionReason; @endphp
+@php use Illuminate\Support\Facades\Date; @endphp
 @extends('admin.layout')
 
 @section('title', 'Veranstaltungsvorschläge')
@@ -30,7 +31,7 @@
                                     {{$event->begin->format('d.m.Y')}}
                                     @if($event->begin->isPast())
                                         <div class="spinner-grow text-danger" style="width: 1rem; height: 1rem;"></div>
-                                    @elseif($event->begin->isBefore(\Illuminate\Support\Facades\Date::today()->addDays(3)))
+                                    @elseif($event->begin->isBefore(Date::today()->addDays(3)))
                                         <div class="spinner-grow text-info" style="width: 1rem; height: 1rem;"></div>
                                     @endif
                                 </td>

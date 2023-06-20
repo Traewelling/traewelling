@@ -45,26 +45,41 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-floating mb-2">
-                                    <input id="event-begin" type="datetime-local" class="form-control" name="begin"
+                                    <input id="checkin-begin" type="datetime-local" class="form-control" name="begin"
                                            value="{{ $event->begin->toDateTimeLocalString() }}" required
                                     />
-                                    <label for="event-begin">Begin</label>
+                                    <label for="checkin-begin">Checkin Begin</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating mb-2">
-                                    <input id="event-end" type="datetime-local" class="form-control" name="end"
+                                    <input id="checkin-end" type="datetime-local" class="form-control" name="end"
                                            value="{{ $event->end->clone()->endOfDay()->toDateTimeLocalString() }}"
                                            required
                                     />
-                                    <label for="event-end">End</label>
+                                    <label for="checkin-end">Checkin End</label>
                                 </div>
                             </div>
                         </div>
-                        <small class="text-muted">
-                            Träwelling User can only check into this event between begin and end!
-                            Please be aware!
-                        </small>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-2">
+                                    <input id="event-start"
+                                           type="datetime-local" class="form-control" name="event_start"
+                                           value="{{ $event->begin->toDateTimeLocalString() }}"
+                                    />
+                                    <label for="event-start">Event Begin</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-2">
+                                    <input id="event-end" type="datetime-local" class="form-control" name="event_end"
+                                           value="{{ $event->end->clone()->endOfDay()->toDateTimeLocalString() }}"
+                                    />
+                                    <label for="event-end">Event End</label>
+                                </div>
+                            </div>
+                        </div>
 
                         <hr/>
 

@@ -65,16 +65,6 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Twitter</th>
-                            <td>
-                                @if($user->twitterUrl)
-                                    <a href="{{ $user->twitterUrl }}" target="_blank">
-                                        {{ $user->twitterUrl }} <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                    </a>
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
                             <th>Mastodon</th>
                             <td>
                                 @if($user->mastodonUrl)

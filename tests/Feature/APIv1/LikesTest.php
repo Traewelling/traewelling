@@ -60,7 +60,6 @@ class LikesTest extends ApiTestCase
                                                    'trainDuration',
                                                    'trainSpeed',
                                                    'points',
-                                                   'twitterUrl',
                                                    'mastodonUrl',
                                                    'privateProfile',
                                                    'preventIndex',

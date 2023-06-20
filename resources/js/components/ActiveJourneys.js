@@ -30,8 +30,8 @@ window.ActiveJourneys = class ActiveJourneys {
 
             statuses.forEach(status => {
                 try {
-                    let i   = 0;
-                    let j   = 0;
+                    let i            = 0;
+                    let j            = 0;
                     status.stopovers = status.stopovers.filter(status => !status.cancelled)
                         .map(status => {
                             status.evaIdentifier = i++ + "_" + status.evaIdentifier;
@@ -50,14 +50,14 @@ window.ActiveJourneys = class ActiveJourneys {
                         f.properties.id = j++ + "_" + f.properties.id;
                         return f;
                     });
-                    const behindUs      = status.stopovers
+                    const behindUs           = status.stopovers
                         .filter(
                             stopover =>
                                 (stopover.departure != null && stopover.departure < now) ||
                                 (stopover.arrival != null && stopover.arrival < now)
                         )
                         .map(stopover => stopover.evaIdentifier);
-                    const infrontofUs   = status.stopovers
+                    const infrontofUs        = status.stopovers
                         .filter(
                             (stopover => stopover.arrival != null && stopover.arrival > now) ||
                             (stopover => stopover.departure != null && stopover.departure > now)
@@ -168,10 +168,6 @@ window.ActiveJourneys = class ActiveJourneys {
 
         };
         updateMap();
-        setInterval(() => {
-            updateMap();
-        }, 5 * 1000);
-
 
         /////////// Events ///////////
 
@@ -199,18 +195,17 @@ ${event.closestLink}`);
      * This one is stolen from https://snipplr.com/view/25479/calculate-distance-between-two-points-with-latitude-and-longitude-coordinates/
      */
     static distance(lat1, lon1, lat2, lon2) {
-        var R    = 6371; // km (change this constant to get miles)
-        var dLat = ((lat2 - lat1) * Math.PI) / 180;
-        var dLon = ((lon2 - lon1) * Math.PI) / 180;
-        var a    =
+        let R    = 6371; // km (change this constant to get miles)
+        let dLat = ((lat2 - lat1) * Math.PI) / 180;
+        let dLon = ((lon2 - lon1) * Math.PI) / 180;
+        let a    =
                 Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos((lat1 * Math.PI) / 180) *
                 Math.cos((lat2 * Math.PI) / 180) *
                 Math.sin(dLon / 2) *
                 Math.sin(dLon / 2);
-        var c    = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        var d    = R * c;
-        return d;
+        let c    = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
     }
 
 }

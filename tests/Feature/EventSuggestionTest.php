@@ -69,7 +69,9 @@ class EventSuggestionTest extends TestCase
                         'url'                  => 'https://traewelling.de/events',
                         'nearest_station_name' => 'Hannover Hbf',
                         'begin'                => $this->eventSuggestion->begin,
+                        'event_start'          => $this->eventSuggestion->begin,
                         'end'                  => $this->eventSuggestion->end,
+                        'event_end'            => $this->eventSuggestion->end,
                     ]);
         $res->assertSee('alert-success');
 

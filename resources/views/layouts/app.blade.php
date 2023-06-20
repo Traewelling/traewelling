@@ -20,6 +20,8 @@
         <link rel="author" href="/humans.txt">
         <link rel="manifest" href="/manifest.json"/>
 
+        <script src="{{ mix('js/app.js') }}"></script>
+
         @yield('head')
     </head>
     <body>
@@ -36,7 +38,7 @@
                                 i18n-empty="{{ __('notifications.empty') }}"
                                 i18n-title="{{ __('notifications.title') }}"
                                 label="{{ __('Show notifications') }}"
-                                count="5">
+                            >
                             </notification-bell>
                         @endauth
                         <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
@@ -101,13 +103,13 @@
                                         </button>
                                     </div>
                                 </form>
-                                <li class="nav-item d-md-inline-block">
+                                <li class="nav-item d-none d-md-inline-block">
                                     <notification-bell
                                         i18n-empty="{{__('notifications.empty')}}"
                                         i18n-title="{{ __('notifications.title') }}"
                                         :link="true"
                                         label="{{ __('Show notifications') }}"
-                                        count="5">
+                                    >
                                     </notification-bell>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -256,7 +258,6 @@
                 }
             };
         </script>
-        <script src="{{ mix('js/app.js') }}"></script>
     </body>
 
     @include('includes.check-in-modal')
