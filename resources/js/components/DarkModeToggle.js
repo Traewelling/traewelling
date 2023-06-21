@@ -1,40 +1,78 @@
 // TODO: make this less redundant
 
 function getDarkMode() {
-    // use system default if no preference is set
-    if (localStorage.getItem("darkMode") == null) {
-        localStorage.setItem(
-            "darkMode",
-            window.matchMedia("(prefers-color-scheme: dark)").matches
-        );
+    if (localStorage.getItem("darkMode") === null) {
+        localStorage.setItem("darkMode", "auto");
     }
 
-    return localStorage.getItem("darkMode") === "true";
+    return localStorage.getItem("darkMode");
 }
 
 function setDarkMode(darkMode) {
     localStorage.setItem("darkMode", darkMode);
 }
 
+function updateDarkModeMenu(colorMode) {
+    document.getElementById("colorModeToggleLight").classList.remove("active");
+    document.getElementById("colorModeToggleDark").classList.remove("active");
+    document.getElementById("colorModeToggleAuto").classList.remove("active");
+
+    if (getDarkMode() === "light") {
+        document.getElementById("colorModeToggleLight").classList.add("active");
+    } else if (getDarkMode() === "dark") {
+        document.getElementById("colorModeToggleDark").classList.add("active");
+    } else {
+        document.getElementById("colorModeToggleAuto").classList.add("active");
+    }
+}
+
 function updateDarkMode() {
-    if (getDarkMode()) {
-        document.getElementById("colorModeOptionsLight").checked = false;
-        document.getElementById("colorModeOptionsDark").checked = true;
+    let darkModeSetting = getDarkMode();
+
+    if (darkModeSetting === "auto") {
+        darkModeSetting = window.matchMedia("(prefers-color-scheme: dark)")
+            .matches
+            ? "dark"
+            : "light";
+    }
+
+    console.log(darkModeSetting);
+
+    if (darkModeSetting === "dark") {
         document.documentElement.classList.add("dark");
     } else {
-        document.getElementById("colorModeOptionsLight").checked = true;
-        document.getElementById("colorModeOptionsDark").checked = false;
         document.documentElement.classList.remove("dark");
     }
 }
 
 getDarkMode();
+updateDarkModeMenu();
 updateDarkMode();
 
-document.getElementsByName("colorModeOptions").forEach((element) => {
-    console.log(element.value);
-    element.addEventListener("change", (event) => {
-        setDarkMode(event.target.value === "dark");
+document
+    .getElementById("colorModeToggleLight")
+    .addEventListener("click", () => {
+        setDarkMode("light");
+        updateDarkModeMenu();
         updateDarkMode();
     });
+
+document.getElementById("colorModeToggleDark").addEventListener("click", () => {
+    setDarkMode("dark");
+    updateDarkModeMenu();
+    updateDarkMode();
 });
+
+document.getElementById("colorModeToggleAuto").addEventListener("click", () => {
+    setDarkMode("auto");
+    updateDarkModeMenu();
+    updateDarkMode();
+});
+
+window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", ({ matches }) => {
+        if (getDarkMode() === "auto") {
+            updateDarkMode(matches ? "dark" : "light");
+        }
+    });

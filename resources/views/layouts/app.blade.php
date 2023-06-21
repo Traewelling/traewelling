@@ -186,13 +186,16 @@
                 <div class="container">
 
                     <div class="float-end">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="colorModeOptions" id="colorModeOptionsLight" value="light">
-                            <label class="form-check-label" for="colorModeOptionsLight">Light-Mode</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="colorModeOptions" id="colorModeOptionsDark" value="dark">
-                            <label class="form-check-label" for="colorModeOptionsDark">Dark-Mode</label>
+                        <div class="btn-group dropup">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-dropdown-animation="off"
+                                    data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-circle-half-stroke"></i></i> {{__('settings.colorscheme.set')}}
+                            </button>
+                            <div class="dropdown-menu">
+                                    <div class="dropdown-item" id="colorModeToggleLight"><i class="fas fa-sun"></i> {{__('settings.colorscheme.light')}}</div>
+                                    <div class="dropdown-item" id="colorModeToggleDark"><i class="fas fa-moon"></i> {{__('settings.colorscheme.dark')}}</div>
+                                    <div class="dropdown-item" id="colorModeToggleAuto"><i class="fas fa-circle-half-stroke"></i> {{__('settings.colorscheme.auto')}}</div>
+                            </div>
                         </div>
                         <div class="btn-group dropup">
                             <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-dropdown-animation="off"

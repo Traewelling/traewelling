@@ -247,6 +247,12 @@ $dm-body: hsl(224, 10%, 75%);
         background-color: lighten($dm-base, 15%) !important;
     }
 
+    .dropdown-item.active,
+    .dropdown-item:active {
+        background-color: lighten($dm-base, 20%) !important;
+        color: lighten($dm-body, 5%) !important;
+    }
+
     .awesomplete > ul {
         background: lighten($dm-base, 10%);
     }
