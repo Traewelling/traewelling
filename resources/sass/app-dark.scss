@@ -288,7 +288,7 @@ $dm-body: hsl(224, 10%, 75%);
     }
 
     .bg-trwl {
-        background-color: rgb(165 35 41) !important;
+        background-color: desaturate(darken($dm-trwlRot, 45%), 20%) !important;
     }
 
     .navbar-brand {
@@ -335,5 +335,14 @@ $dm-body: hsl(224, 10%, 75%);
         /* Chrome, Firefox, Opera, Safari 10.1+ */
         color: lighten($dm-base, 45%) !important;
         opacity: 1; /* Firefox */
+    }
+
+    .profile-banner {
+        background: linear-gradient(
+                #{rgba(darken($dm-trwlRot, 60%), 0.4)},
+                #{rgba(darken($dm-trwlRot, 60%), 0.4)}
+            ),
+            url("/images/covers/profile-background.png");
+        background-position: center;
     }
 }
