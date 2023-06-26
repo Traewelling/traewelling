@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Enum\EventCategory;
 use App\Http\Controllers\Backend\EventController as EventBackend;
+use App\Http\Controllers\StatusController;
 use App\Http\Resources\EventDetailsResource;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Event;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use App\Http\Controllers\StatusController;
+use Illuminate\Validation\Rules\Enum;
 
 class EventController extends Controller
 {
@@ -287,5 +291,50 @@ class EventController extends Controller
      */
     public function activeEvents(): AnonymousResourceCollection {
         return EventResource::collection(EventBackend::activeEvents());
+    }
+
+    /**
+     * UNDOCUMENTED ADMIN ENDPOINT
+     *
+     * @param int     $eventId
+     * @param Request $request
+     *
+     * @return EventResource
+     * @throws AuthorizationException
+     * @throws ModelNotFoundException
+     */
+    public function addCategory(int $eventId, Request $request): EventResource {
+        $event = Event::findOrFail($eventId);
+        $this->authorize('update', $event);
+        $validated = $request->validate([
+                                            'category_id' => ['required', 'numeric', new Enum(EventCategory::class)],
+                                        ]);
+        \App\Models\EventCategory::insertOrIgnore([
+                                                      'event_id' => $event->id,
+                                                      'category' => $validated['category_id'],
+                                                  ]);
+        return new EventResource($event->fresh());
+    }
+
+    /**
+     * UNDOCUMENTED ADMIN ENDPOINT
+     *
+     * @param int     $eventId
+     * @param Request $request
+     *
+     * @return EventResource
+     * @throws AuthorizationException
+     * @throws ModelNotFoundException
+     */
+    public function removeCategory(int $eventId, Request $request): EventResource {
+        $event = Event::findOrFail($eventId);
+        $this->authorize('update', $event);
+        $validated = $request->validate([
+                                            'category_id' => ['required', 'numeric', new Enum(EventCategory::class)],
+                                        ]);
+        \App\Models\EventCategory::where('event_id', $event->id)
+                                 ->where('category', $validated['category_id'])
+                                 ->delete();
+        return new EventResource($event->fresh());
     }
 }

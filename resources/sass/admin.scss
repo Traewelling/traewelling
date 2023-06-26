@@ -21,6 +21,7 @@ $dark: #000;
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";
 
 @import "~leaflet";
+@import '~notyf/notyf.min.css';
 
 #navbar-top {
     background-color: $primary;

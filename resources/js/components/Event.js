@@ -25,4 +25,14 @@ window.TrwlEvent = class TrwlEvent {
             name, host, begin, end, url,
         }).then(API.handleDefaultResponse);
     }
+
+    static deleteCategory(id, categoryId) {
+        API.request(`/event/${id}/category`, "DELETE", {category_id: categoryId})
+            .then(API.handleDefaultResponse);
+    }
+
+    static addCategory(id, categoryId) {
+        API.request(`/event/${id}/category`, "POST", {category_id: categoryId})
+            .then(API.handleDefaultResponse);
+    }
 }

@@ -35,6 +35,11 @@ class Event extends Model
         return $this->hasMany(Status::class);
     }
 
+    public function categories(): HasMany {
+        return $this->hasMany(EventCategory::class, 'event_id', 'id')
+                    ->orderBy('category');
+    }
+
     public function getTrainDistanceAttribute(): float {
         return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
                            ->select('distance')

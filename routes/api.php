@@ -45,7 +45,13 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
          ->name('api.v1.getPrivacyPolicy');
 
     Route::group(['middleware' => ['auth:api', 'privacy-policy']], static function() {
-        Route::post('event', [EventController::class, 'suggest'])->middleware(['scope:write-event-suggestions']);
+        Route::prefix('event')->group(static function() {
+            Route::post('/', [EventController::class, 'suggest'])->middleware(['scope:write-event-suggestions']);
+            Route::prefix('{id}')->group(static function() {
+                Route::post('category', [EventController::class, 'addCategory']);      //not public!
+                Route::delete('category', [EventController::class, 'removeCategory']); //not public!
+            });
+        });
         Route::get('activeEvents', [EventController::class, 'activeEvents'])->middleware(['scope:read-statuses']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends'])
              ->middleware(['scope:read-statistics']);

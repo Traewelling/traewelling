@@ -5,11 +5,13 @@ namespace App\Providers;
 use App\Http\Controllers\Backend\Auth\AccessTokenController;
 use App\Http\Controllers\Backend\Auth\ApproveAuthorizationController;
 use App\Http\Controllers\Backend\Auth\AuthorizationController;
+use App\Models\Event;
 use App\Models\Follow;
 use App\Models\OAuthClient;
 use App\Models\Status;
 use App\Models\User;
 use App\Models\Webhook;
+use App\Policies\EventPolicy;
 use App\Policies\FollowPolicy;
 use App\Policies\StatusPolicy;
 use App\Policies\UserPolicy;
@@ -18,13 +20,15 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Illuminate\Support\Facades\Route;
 use Laravel\Passport\Passport;
 
-class AuthServiceProvider extends ServiceProvider {
+class AuthServiceProvider extends ServiceProvider
+{
     /**
      * The policy mappings for the application.
      *
      * @var array
      */
     protected $policies = [
+        Event::class   => EventPolicy::class,
         Status::class  => StatusPolicy::class,
         User::class    => UserPolicy::class,
         Follow::class  => FollowPolicy::class,
@@ -70,16 +74,16 @@ class AuthServiceProvider extends ServiceProvider {
         Passport::useClientModel(OAuthClient::class);
 
         // Override passport routes
-        Route::group(['prefix' => 'oauth', 'as' => 'oauth.'], function () {
+        Route::group(['prefix' => 'oauth', 'as' => 'oauth.'], function() {
             Route::get('authorize', [AuthorizationController::class, 'authorize'])
-                ->middleware(['web'])
-                ->name('authorizations.authorize');
+                 ->middleware(['web'])
+                 ->name('authorizations.authorize');
             Route::post('/authorize', [ApproveAuthorizationController::class, 'approve'])
-                ->middleware(['web'])
-                ->name('authorizations.approve');
+                 ->middleware(['web'])
+                 ->name('authorizations.approve');
             Route::post("/token", [AccessTokenController::class, 'issueToken'])
-                ->middleware("throttle")
-                ->name("authorizations.token");
+                 ->middleware("throttle")
+                 ->name("authorizations.token");
         });
         Passport::tokensCan(self::$scopes);
         Passport::setDefaultScope([

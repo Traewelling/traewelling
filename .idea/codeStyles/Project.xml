@@ -20,6 +20,7 @@
       <option name="LOWER_CASE_NULL_CONST" value="true" />
       <option name="VARIABLE_NAMING_STYLE" value="CAMEL_CASE" />
       <option name="ALIGN_CLASS_CONSTANTS" value="true" />
+      <option name="ALIGN_ENUM_CASES" value="true" />
       <option name="SPACE_BEFORE_CLOSURE_LEFT_PARENTHESIS" value="false" />
       <option name="FORCE_SHORT_DECLARATION_ARRAY_STYLE" value="true" />
     </PHPCodeStyleSettings>
