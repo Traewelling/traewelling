@@ -1,4 +1,4 @@
-name: Resources build with `prod`
+name: Check for node vulnerabilities
 
 on: [ push, pull_request ]
 
@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ 18.x, 19.x ]
+        node-version: [ 19.x ]
 
     steps:
       - uses: actions/checkout@v3
@@ -17,10 +17,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install dependencies
-        run: npm install
-      - name: Run production build
-        run: npm run production
+      - name: Check for vulnerabilities
+        run: npm audit
 
         env:
           CI: true
