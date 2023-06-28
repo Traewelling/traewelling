@@ -677,5 +677,8 @@
     "map-providers.cargo": "Cargo",
     "map-providers.open-railway-map": "Open Railway Map",
     "user.mapprovider": "Kaartleverancier",
-    "settings.twitter-deprecated": "Lees de verouderingsmelding"
+    "settings.twitter-deprecated": "Lees de verouderingsmelding",
+    "notifications.eventSuggestionProcessed.duplicate": "Je suggestie is al bekend bij ons.",
+    "notifications.eventSuggestionProcessed.too-late": "Helaas was je voorstel te laat ingediend.",
+    "notifications.eventSuggestionProcessed.not-applicable": "Je suggestie heeft helaas geen toegevoegde waarde voor de gemeenschap."
 }
