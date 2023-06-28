@@ -1,3 +1,4 @@
+@php use App\Enum\EventRejectionReason; @endphp
 @extends('admin.layout')
 
 @section('title', 'Veranstaltungsvorschlag akzeptieren')
@@ -88,6 +89,15 @@
                     </form>
                 </div>
             </div>
+
+            <form method="POST" action="{{route('admin.events.suggestions.deny')}}">
+                @csrf
+                <input type="hidden" name="id" value="{{$event->id}}"/>
+
+                <div class="btn-group float-end mt-2">
+                    <x-event-rejection-button/>
+                </div>
+            </form>
         </div>
     </div>
 @endsection

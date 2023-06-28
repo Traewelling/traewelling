@@ -32,7 +32,10 @@ class EventSuggestionTest extends TestCase
 
         // Admin denies the event suggestion
         $res = $this->followingRedirects()
-                    ->post('/admin/events/suggestions/deny', ['id' => $this->eventSuggestion->id]);
+                    ->post('/admin/events/suggestions/deny', [
+                        'id'              => $this->eventSuggestion->id,
+                        'rejectionReason' => 'denied'
+                    ]);
         $res->assertSee('alert-success');
 
         // List is empty after declining

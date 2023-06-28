@@ -1,3 +1,4 @@
+@php use App\Enum\EventRejectionReason; @endphp
 @php use Illuminate\Support\Facades\Date; @endphp
 @extends('admin.layout')
 
@@ -54,9 +55,7 @@
                                                href="{{route('admin.events.suggestions.accept', ['id' => $event->id])}}">
                                                 Edit & accept
                                             </a>
-                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                Decline
-                                            </button>
+                                            <x-event-rejection-button/>
                                         </div>
                                     </form>
                                 </td>
