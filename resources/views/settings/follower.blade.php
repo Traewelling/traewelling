@@ -17,7 +17,7 @@
                                             <td>
                                                 <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                     <a href="{{ route('profile', ['username' => $request->user->username]) }}">
-                                                        <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($request->user) }}"
+                                                        <img loading="lazy" decoding="async" src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($request->user) }}"
                                                              style="height: 3em;" alt="{{ $request->user->username }}"
                                                         />
                                                     </a>
@@ -88,6 +88,8 @@
                                                         <img
                                                             src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($follower->user) }}"
                                                             style="height: 4em;"
+                                                            loading="lazy"
+                                                            decoding="async"
                                                         />
                                                     </a>
                                                 </div>
@@ -133,7 +135,10 @@
                                                 <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                     <a href="{{ route('profile', ['username' => $user->username]) }}">
                                                         <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($user) }}"
-                                                             style="height: 3em;" alt="{{$user->username}}"
+                                                             style="height: 3em;"
+                                                             alt="{{$user->username}}"
+                                                             loading="lazy"
+                                                             decoding="async"
                                                         />
                                                     </a>
                                                 </div>
@@ -178,7 +183,10 @@
                                                 <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
                                                     <a href="{{ route('profile', ['username' => $user->username]) }}">
                                                         <img src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($user) }}"
-                                                             style="height: 3em;" alt="{{$user->username}}"
+                                                             style="height: 3em;"
+                                                             alt="{{$user->username}}"
+                                                             loading="lazy"
+                                                             decoding="async"
                                                         />
                                                     </a>
                                                 </div>
