@@ -54,7 +54,8 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
-        'home_id', 'avatar', 'role', 'social_profile', 'created_at', 'updated_at', 'userInvisibleToMe'
+        'home_id', 'avatar', 'role', 'social_profile', 'created_at', 'updated_at', 'userInvisibleToMe',
+        'moderation_reputation',
     ];
     protected $appends  = [
         'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl', 'train_distance', 'train_duration',
@@ -73,6 +74,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'role'                      => 'integer',
         'last_login'                => 'datetime',
         'mapprovider'               => MapProvider::class,
+        'moderation_reputation'     => 'integer',
     ];
 
     public function getTrainDistanceAttribute(): float {
