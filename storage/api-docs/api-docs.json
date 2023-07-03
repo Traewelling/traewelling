@@ -268,6 +268,132 @@
                 ]
             }
         },
+        "/contribution/events/getSuggestion": {
+            "get": {
+                "tags": [
+                    "Contribution"
+                ],
+                "summary": "Get the next event suggestion to be approved",
+                "description": "Returns an event suggestion to be moderated and approved",
+                "operationId": "contributionGetEventSuggestion",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ContributionEventSuggestion"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Currently no event suggestions available to fetch"
+                    },
+                    "403": {
+                        "description": "User does not have the rights for this route"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "contribution"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/contribution/event/approve": {
+            "post": {
+                "tags": [
+                    "Contribution"
+                ],
+                "summary": "Submit a moderated event suggestion",
+                "operationId": "submitEventModeration",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContributionEventSuggestion"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/contribution/event/deny": {
+            "post": {
+                "tags": [
+                    "Contribution"
+                ],
+                "summary": "Deny a moderated event suggestion",
+                "operationId": "denyEventModeration",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "example": 1234
+                                    },
+                                    "reason": {
+                                        "type": "string",
+                                        "enum": [
+                                            "duplicate",
+                                            "too-late",
+                                            "not-applicable",
+                                            "denied"
+                                        ],
+                                        "example": "not-applicable"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
         "/event/{slug}": {
             "get": {
                 "tags": [
@@ -4087,6 +4213,79 @@
                     "name": "BearerTokenResponse"
                 }
             },
+            "ContributionEventSuggestion": {
+                "title": "ContributionEventSuggestion",
+                "description": "All required properties to make an event out of an event suggestion",
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "type": "integer",
+                        "example": 1234
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "name of the event",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Eröffnung der Nebenbahn in Knuffingen"
+                    },
+                    "hashtag": {
+                        "title": "hashtag",
+                        "description": "hashtag of the event",
+                        "type": "string",
+                        "maxLength": 25,
+                        "example": "NebenbahnKnuffingen"
+                    },
+                    "host": {
+                        "title": "host",
+                        "description": "host of the event",
+                        "type": "string",
+                        "example": "MiWuLa",
+                        "nullable": true
+                    },
+                    "nearestStation": {
+                        "title": "nearestStation",
+                        "description": "station nearest to the event",
+                        "type": "string",
+                        "example": "Hamburg Hbf",
+                        "nullable": true
+                    },
+                    "url": {
+                        "title": "url",
+                        "description": "external URL for this event",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756",
+                        "nullable": true
+                    },
+                    "begin": {
+                        "title": "begin",
+                        "description": "Timestamp for the start of the event",
+                        "example": "2022-06-01T00:00:00+02:00"
+                    },
+                    "end": {
+                        "title": "end",
+                        "description": "Timestamp for the end of the event",
+                        "example": "2022-08-31T23:59:00+02:00"
+                    },
+                    "checkinBegin": {
+                        "title": "checkinBegin",
+                        "description": "Timestamp for the start of the event showing up in the checkin modal",
+                        "example": "2022-06-01T00:00:00+02:00",
+                        "nullable": true
+                    },
+                    "checkinEnd": {
+                        "title": "checkinEnd",
+                        "description": "Timestamp for the end of the event showing up in the checkin modal",
+                        "example": "2022-08-31T23:59:00+02:00",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "ContributionEventSuggestion"
+                }
+            },
             "Event": {
                 "title": "Event",
                 "description": "Event model",
@@ -5163,9 +5362,9 @@
                     },
                     "twitterUrl": {
                         "title": "twitterUrl",
-                        "description": "URL to the Twitter profile of the user",
+                        "description": "Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
                         "type": "string",
-                        "example": "https://twitter.com/i/user/843458335",
+                        "example": "null",
                         "nullable": true
                     },
                     "mastodonUrl": {
@@ -5281,9 +5480,9 @@
                     },
                     "twitterUrl": {
                         "title": "twitterUrl",
-                        "description": "URL to the Twitter profile of the user",
+                        "description": "Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
                         "type": "string",
-                        "example": "https://twitter.com/i/user/843458335",
+                        "example": "null",
                         "nullable": true
                     },
                     "mastodonUrl": {
@@ -5412,9 +5611,10 @@
                     },
                     "twitter": {
                         "title": "twitter",
-                        "description": "Twitter URL of user",
+                        "description": "Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
                         "type": "string",
-                        "example": "https://twitter.com/i/user/843458335"
+                        "example": "null",
+                        "nullable": true
                     },
                     "mastodon": {
                         "title": "mastodon",
