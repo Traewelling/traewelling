@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
+use App\Http\Controllers\API\v1\ContributionController;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\FollowController;
 use App\Http\Controllers\API\v1\IcsController;
@@ -156,6 +157,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('/', [WebhookController::class, 'getWebhooks']);
             Route::get('/{webhookId}', [WebhookController::class, 'getWebhook']);
             Route::delete('/{webhookId}', [WebhookController::class, 'deleteWebhook']);
+        });
+
+        Route::group([['middleware' => 'userrole:2']], static function () {
+            Route::get('contribution/events/getSuggestion', [ContributionController::class, 'getSuggestion']);
         });
     });
 

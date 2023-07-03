@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Http\Controllers\Backend\ContributionController as ContributionBackend;
+use App\Http\Resources\ContributionEventSuggestionResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Annotations as OA;
@@ -32,7 +34,7 @@ class ContributionController extends Controller
      * )
      */
     public function getSuggestion() {
-        return "1";
+        return new ContributionEventSuggestionResource(ContributionBackend::getEventSuggestion());
     }
 
     /**
