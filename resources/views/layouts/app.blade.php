@@ -185,8 +185,8 @@
             <footer class="footer mt-auto py-3">
                 <div class="container">
 
-                    <div class="float-end">
-                        <div class="btn-group dropup">
+                    <div class="float-end row gy-3 mb-4 mb-md-0 gx-2">
+                        <div class="btn-group dropup col">
                             <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-dropdown-animation="off"
                                     data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-circle-half-stroke"></i></i> {{__('settings.colorscheme.set')}}
@@ -197,7 +197,7 @@
                                     <div class="dropdown-item" id="colorModeToggleAuto"><i class="fas fa-circle-half-stroke"></i> {{__('settings.colorscheme.auto')}}</div>
                             </div>
                         </div>
-                        <div class="btn-group dropup">
+                        <div class="btn-group dropup col">
                             <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-dropdown-animation="off"
                                     data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
