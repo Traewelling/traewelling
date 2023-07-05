@@ -1,16 +1,5 @@
 @import "variables";
 
-$dm-base: hsl(224, 15%, 7%);
-$dm-base-5: lighten($dm-base, 5%);
-$dm-base-20: lighten($dm-base, 20%);
-
-$dm-trwlRot: hsl(6, 100%, 73%);
-$dm-trwlRot-shape: hsl(6, 100%, 65%);
-$dm-trwlBlue: hsl(217, 100%, 81%);
-$dm-lightblue: hsl(209, 81%, 67%);
-
-$dm-body: hsl(224, 10%, 75%);
-
 :root.dark {
     --mdb-body-color: #{$dm-body};
     --mdb-modal-bg: #{$dm-base};
@@ -114,6 +103,11 @@ $dm-body: hsl(224, 10%, 75%);
     .text-muted {
         color: hsl(224, 10%, 67%) !important;
     }
+
+    .text-dark {
+        color: hsl(224, 10%, 67%) !important;
+    }
+
     .trwl-bulletpoint {
         background: lighten($dm-base, 30%) !important;
         border-color: $dm-trwlRot-shape;

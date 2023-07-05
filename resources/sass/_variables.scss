@@ -34,3 +34,15 @@ $secondary: #6c757d;
 //$danger: #dc3545;
 $light: #f8f9fa;
 $dark: #343a40;
+
+// Dark Mode
+$dm-base: hsl(224, 15%, 7%);
+$dm-base-5: lighten($dm-base, 5%);
+$dm-base-20: lighten($dm-base, 20%);
+
+$dm-trwlRot: hsl(6, 100%, 73%);
+$dm-trwlRot-shape: hsl(6, 100%, 65%);
+$dm-trwlBlue: hsl(217, 100%, 81%);
+$dm-lightblue: hsl(209, 81%, 67%);
+
+$dm-body: hsl(224, 10%, 75%);
