@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1",
+            "url": "https://traewelling.de/api/v1",
             "description": "This instance"
         }
     ],
@@ -4766,6 +4766,13 @@
                         "type": "string",
                         "example": "4-a6s4-4"
                     },
+                    "journeyNumber": {
+                        "title": "journeyNumber",
+                        "description": "Journey number of train",
+                        "type": "integer",
+                        "example": "3697",
+                        "nullable": true
+                    },
                     "lineName": {
                         "title": "lineName",
                         "description": "name of the transport line",
@@ -5163,9 +5170,9 @@
                     },
                     "twitterUrl": {
                         "title": "twitterUrl",
-                        "description": "URL to the Twitter profile of the user",
+                        "description": "Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
                         "type": "string",
-                        "example": "https://twitter.com/i/user/843458335",
+                        "example": "null",
                         "nullable": true
                     },
                     "mastodonUrl": {
@@ -5281,9 +5288,9 @@
                     },
                     "twitterUrl": {
                         "title": "twitterUrl",
-                        "description": "URL to the Twitter profile of the user",
+                        "description": "Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
                         "type": "string",
-                        "example": "https://twitter.com/i/user/843458335",
+                        "example": "null",
                         "nullable": true
                     },
                     "mastodonUrl": {
@@ -5412,9 +5419,10 @@
                     },
                     "twitter": {
                         "title": "twitter",
-                        "description": "Twitter URL of user",
+                        "description": "Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
                         "type": "string",
-                        "example": "https://twitter.com/i/user/843458335"
+                        "example": "null",
+                        "nullable": true
                     },
                     "mastodon": {
                         "title": "mastodon",
