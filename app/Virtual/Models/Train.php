@@ -58,7 +58,7 @@ class Train
     /**
      * @OA\Property (
      *     title="journeyNumber",
-     *     description="Journey number of train",
+     *     description="The number of the journey. Given by the transport company.",
      *     example="3697",
      *     nullable=true
      * )
