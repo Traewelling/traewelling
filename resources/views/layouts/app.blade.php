@@ -7,7 +7,24 @@
         @include('layouts.includes.meta')
 
         <!-- Scripts -->
-
+        <!-- Run this blocking script as early as possible to prevent flickering -->
+        <script>
+            if (localStorage.getItem("darkMode") === null) {
+                localStorage.setItem("darkMode", "auto");
+            }
+            var darkModeSetting = localStorage.getItem("darkMode");
+            if (darkModeSetting === "auto") {
+                darkModeSetting = window.matchMedia("(prefers-color-scheme: dark)")
+                    .matches
+                    ? "dark"
+                    : "light";
+            }
+            if (darkModeSetting === "dark") {
+                document.documentElement.classList.add("dark");
+            } else {
+                document.documentElement.classList.remove("dark");
+            }
+        </script>
         <!-- Fonts -->
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
 

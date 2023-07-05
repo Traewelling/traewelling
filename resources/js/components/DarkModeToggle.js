@@ -36,8 +36,6 @@ function updateDarkMode() {
             : "light";
     }
 
-    console.log(darkModeSetting);
-
     if (darkModeSetting === "dark") {
         document.documentElement.classList.add("dark");
     } else {
@@ -47,7 +45,6 @@ function updateDarkMode() {
 
 getDarkMode();
 updateDarkModeMenu();
-updateDarkMode();
 
 document
     .getElementById("colorModeToggleLight")
