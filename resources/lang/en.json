@@ -679,5 +679,6 @@
     "events.disclaimer.warranty": "Träwelling does not guarantee the correctness or completeness of the data.",
     "user.mapprovider": "Provider of map data",
     "map-providers.cargo": "Cargo",
-    "map-providers.open-railway-map": "Open Railway Map"
+    "map-providers.open-railway-map": "Open Railway Map",
+    "active-journeys": "active journey|active journeys"
 }

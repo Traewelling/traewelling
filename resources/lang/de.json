@@ -679,5 +679,6 @@
     "user.mapprovider": "Karten-Anbieter",
     "map-providers.cargo": "Cargo",
     "map-providers.open-railway-map": "Open Railway Map",
-    "stationboard.check-tweet": "Twittern"
+    "stationboard.check-tweet": "Twittern",
+    "active-journeys": "aktive Fahrt|aktive Fahrten"
 }
