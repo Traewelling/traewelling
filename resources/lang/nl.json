@@ -681,5 +681,9 @@
     "notifications.eventSuggestionProcessed.duplicate": "Je suggestie is al bekend bij ons.",
     "notifications.eventSuggestionProcessed.too-late": "Helaas was je voorstel te laat ingediend.",
     "notifications.eventSuggestionProcessed.not-applicable": "Je suggestie heeft helaas geen toegevoegde waarde voor de gemeenschap.",
-    "active-journeys": "huidige reis|huidige reizen"
+    "active-journeys": "huidige reis|huidige reizen",
+    "settings.colorscheme.set": "Thema wijzigen",
+    "settings.colorscheme.light": "Licht thema",
+    "settings.colorscheme.dark": "Donker thema",
+    "settings.colorscheme.auto": "Systeemthema"
 }
