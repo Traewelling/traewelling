@@ -58,7 +58,11 @@ class StatusPolicy
         }
 
         // Case 6: Status is unlisted
-        // This isn't checked here. This is done in the query from the (global/private) dashboard.
+        if ($status->visibility === StatusVisibility::UNLISTED) {
+            //This isn't checked here. This is done in the query from the (global/private) dashboard.
+            //But in general, unlisted statuses are visible to everyone.
+            return Response::allow();
+        }
 
         // Case 7: Status is public or authenticated
         if ($status->visibility === StatusVisibility::PUBLIC || $status->visibility === StatusVisibility::AUTHENTICATED) {
