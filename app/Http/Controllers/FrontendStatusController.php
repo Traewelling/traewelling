@@ -65,7 +65,7 @@ class FrontendStatusController extends Controller
     }
 
     public function statusesByEvent(string $slug): Renderable {
-        $event    = Event::where('slug', $slug)->firstOrFail();
+        $event    = Event::where('slug', $slug)->where('approved', true)->firstOrFail();
         $response = StatusController::getStatusesByEvent($event);
 
         if ($response['event']->end->isPast() && $response['statuses']->count() === 0) {

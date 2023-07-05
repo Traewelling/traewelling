@@ -14,9 +14,9 @@ class Event extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'hashtag', 'station_id', 'slug', 'host', 'url', 'begin', 'end', 'event_start', 'event_end'
+        'name', 'hashtag', 'station_id', 'slug', 'host', 'url', 'begin', 'end', 'event_start', 'event_end', 'approved'
     ];
-    protected $hidden   = ['created_at', 'updated_at'];
+    protected $hidden   = ['created_at', 'updated_at', 'approved'];
     protected $appends  = ['trainDistance', 'trainDuration', 'isPride'];
     protected $casts    = [
         'id'          => 'integer',

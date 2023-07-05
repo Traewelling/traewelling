@@ -160,7 +160,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
 
         Route::group([['middleware' => 'userrole:2']], static function () {
-            Route::get('contribution/events/getSuggestion', [ContributionController::class, 'getSuggestion']);
+            Route::get('contribution/event/getSuggestion', [ContributionController::class, 'getSuggestion']);
+            Route::post('contribution/event/approve', [ContributionController::class, 'approveSuggestion']);
         });
     });
 

@@ -150,7 +150,7 @@ class EventController extends Controller
      * @return AnonymousResourceCollection
      */
     public static function statuses(string $slug): AnonymousResourceCollection {
-        $event    = Event::where('slug', $slug)->firstOrFail();
+        $event    = Event::where('slug', $slug)->where('approved', true)->firstOrFail();
         $statuses = StatusController::getStatusesByEvent($event);
         return StatusResource::collection($statuses['statuses']->paginate());
     }

@@ -66,16 +66,18 @@ abstract class EventController extends Controller
 
         return Event::where([
                                 ['begin', '<=', $timestamp->toIso8601String()],
-                                ['end', '>=', $timestamp->toIso8601String()]
+                                ['end', '>=', $timestamp->toIso8601String()],
+                                ['approved', true]
                             ])->get();
     }
 
     public static function getBySlug(string $slug): ?Event {
-        return Event::where('slug', '=', $slug)->firstOrFail();
+        return Event::where('slug', '=', $slug)->where('approved', true)->firstOrFail();
     }
 
     public static function getUpcomingEvents(): Paginator {
         return Event::where('end', '>=', Carbon::now()->toIso8601String())
+                    ->where('approved', true)
                     ->orderBy('begin')
                     ->simplePaginate(15);
     }
