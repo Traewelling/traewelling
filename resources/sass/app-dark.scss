@@ -339,4 +339,30 @@
             url("/images/covers/profile-background.png");
         background-position: center;
     }
+
+    .pagination {
+        --mdb-pagination-hover-color: #{$dm-body} !important;
+        --mdb-pagination-hover-bg: #{$dm-base-20} !important;
+        --mdb-pagination-hover-border-color: #{$dm-base-20} !important;
+        --mdb-pagination-focus-color: #{$dm-body} !important;
+        --mdb-pagination-focus-bg: #{$dm-base-30} !important;
+        --mdb-pagination-focus-box-shadow: 0 0 0 0.25rem
+            rgba(59, 113, 202, 0.25);
+        --mdb-pagination-active-color: #{$dm-body} !important;
+        --mdb-pagination-active-bg: #{$dm-base-30} !important;
+        --mdb-pagination-active-border-color: #{$dm-base-30} !important;
+        --mdb-pagination-disabled-color: hsl(224, 10%, 67%) !important;
+        --mdb-pagination-disabled-bg: #{$dm-base} !important;
+        --mdb-pagination-disabled-border-color: #{$dm-base} !important;
+    }
+    a.page-link {
+        color: #{$dm-body} !important;
+    }
+    .page-item {
+        &.disabled {
+            .page-link {
+                color: hsl(224, 10%, 55%) !important;
+            }
+        }
+    }
 }
