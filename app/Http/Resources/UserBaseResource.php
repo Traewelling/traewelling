@@ -26,7 +26,7 @@ class UserBaseResource extends JsonResource
             'trainDuration'  => (int) $this->train_duration,
             'trainSpeed'     => (float) $this->averageSpeed,
             'points'         => (int) $this->points,
-            'twitterUrl'     => $this->twitterUrl ?? null,
+            'twitterUrl'     => null, //deprecated
             'mastodonUrl'    => $this->mastodonUrl ?? null,
             'privateProfile' => (bool) $this->private_profile,
             'preventIndex'   => $this->prevent_index,

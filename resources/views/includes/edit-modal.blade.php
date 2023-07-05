@@ -19,6 +19,31 @@
                         </label>
                     </div>
 
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-floating mb-2">
+                                <input class="form-control" name="realDeparture" id="real_departure"
+                                       type="datetime-local"
+                                       placeholder="{{__('export.title.origin.time.real')}}"
+                                />
+                                <label for="real_departure">
+                                    {{__('export.title.origin.time.real')}}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-floating mb-2">
+                                <input class="form-control" name="realArrival" id="real_arrival"
+                                       type="datetime-local"
+                                       placeholder="{{__('export.title.destination.time.real')}}"
+                                />
+                                <label for="real_arrival">
+                                    {{__('export.title.destination.time.real')}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="form-outline">
                         <textarea class="form-control" name="body" id="status-body" maxlength="280"
                                   placeholder="{{__('modals.editStatus-label')}}"
@@ -32,6 +57,9 @@
                         document.querySelector('#status-body').addEventListener('input', function (e) {
                             document.querySelector('#body-length').innerText = e.target.value.length;
                         });
+
+
+
                     </script>
 
                     <div class="mt-2">

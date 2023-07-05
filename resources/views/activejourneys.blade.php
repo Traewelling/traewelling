@@ -46,6 +46,14 @@
                         ActiveJourneys.renderMap(statuses, events);
                     });
                 </script>
+
+                <div class="row text-center fs-5 mt-3">
+                    <div class="col mb-3">
+                        <i class="fa-solid fa-train"></i>
+                        {{$statuses->count()}}
+                        {{trans_choice('active-journeys', $statuses->count())}}
+                    </div>
+                </div>
             </div>
             <div class="col-md-6">
                 @if($statuses->count() === 0)

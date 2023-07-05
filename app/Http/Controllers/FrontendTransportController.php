@@ -119,7 +119,14 @@ class FrontendTransportController extends Controller
 
         try {
             $startStation = TrainStation::where('ibnr', $validated['start'])->firstOrFail();
-            $departure    = Carbon::parse($validated['departure']);
+
+            // If we get a string with a timezone, remove it, so we can parse it "correctly"
+            // This needs to be removed once we can handle UTC and timezones.
+            if (str_contains(substr($validated['departure'], -6), '+')) {
+                $departure = Carbon::parse(substr($validated['departure'], 0, -6));
+            } else {
+                $departure = Carbon::parse($validated['departure']);
+            }
 
             $hafasTrip = TrainCheckinController::getHafasTrip(
                 $validated['tripID'],
@@ -190,15 +197,15 @@ class FrontendTransportController extends Controller
             $trainCheckin = $backendResponse['status']->trainCheckin;
 
             $checkinSuccess = new CheckinSuccess(
-                id: $backendResponse['status']->id,
-                distance: $trainCheckin->distance,
-                duration: $trainCheckin->duration,
-                points: $trainCheckin->points,
-                pointReason: $backendResponse['points']->reason,
-                lineName: $trainCheckin->HafasTrip->linename,
-                socialText: $backendResponse['status']->socialText,
+                id:                   $backendResponse['status']->id,
+                distance:             $trainCheckin->distance,
+                duration:             $trainCheckin->duration,
+                points:               $trainCheckin->points,
+                pointReason:          $backendResponse['points']->reason,
+                lineName:             $trainCheckin->HafasTrip->linename,
+                socialText:           $backendResponse['status']->socialText,
                 alsoOnThisConnection: $trainCheckin->alsoOnThisConnection,
-                event: $trainCheckin->event,
+                event:                $trainCheckin->event,
                 forced: isset($validated['force'])
             );
             return redirect()->route('dashboard')->with('checkin-success', (clone $checkinSuccess));

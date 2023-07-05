@@ -144,8 +144,9 @@ class UserProfileSettings
     /**
      * @OA\Property (
      *     title="twitter",
-     *     description="Twitter URL of user",
-     *     example="https://twitter.com/i/user/843458335"
+     *     description="Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
+     *     nullable=true,
+     *     example="null"
      * )
      *
      * @var string

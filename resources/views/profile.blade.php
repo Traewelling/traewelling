@@ -49,14 +49,6 @@
                         <span class="small font-weight-lighter">
                             {{__('profile.points-abbr')}}
                         </span>
-                        @isset($user?->socialProfile?->twitter_id)
-                            <span class="font-weight-bold ps-sm-2">
-                                <a href="https://twitter.com/i/user/{{ $user->socialProfile->twitter_id }}" rel="me"
-                                   class="text-white" target="_blank">
-                                    <i class="fab fa-twitter d-inline"></i>
-                                </a>
-                            </span>
-                        @endisset
                         @if($user->mastodonUrl)
                             <span class="font-weight-bold ps-sm-2">
                                 <a href="{{ $user->mastodonUrl }}" rel="me" class="text-white" target="_blank">

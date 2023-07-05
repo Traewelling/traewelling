@@ -13,7 +13,7 @@
                         <img
                                 src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
                                 style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2"
-                                id="theProfilePicture"
+                                id="theProfilePicture"  loading="lazy" decoding="async"
                         />
                     </div>
 
@@ -88,6 +88,27 @@
                     @enderror
                 </div>
             </div>
+
+            <div class="form-group row">
+                <label for="mapprovider" class="col-md-4 col-form-label text-md-right">
+                    {{ __('user.mapprovider') }}
+                </label>
+                <div class="col-md-6">
+                    <select class="form-control" name="mapprovider">
+                        <option value="{{ App\Enum\MapProvider::CARGO->value }}" @if(auth()->user()->mapprovider == App\Enum\MapProvider::CARGO) selected @endif>
+                            {{__('map-providers.cargo')}}
+                        </option>
+                        <option value="{{ App\Enum\MapProvider::OPEN_RAILWAY_MAP->value }}" @if(auth()->user()->mapprovider == App\Enum\MapProvider::OPEN_RAILWAY_MAP) selected @endif>
+                            {{__('map-providers.open-railway-map')}}
+                        </option>
+                    </select>
+
+                    @error('email')
+                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                    @enderror
+                </div>
+            </div>
+
 
             <div class="form-group row mb-0">
                 <div class="col-md-6 offset-md-4">

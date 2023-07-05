@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Admin;
 
+use App\Enum\EventRejectionReason;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Admin\EventController as AdminEventBackend;
 use App\Http\Controllers\Backend\Admin\TelegramController;
@@ -16,10 +17,24 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
 
 class EventController extends Controller
 {
+
+    private const VALIDATOR_RULES = [
+        'name'                 => ['required', 'max:255'],
+        'hashtag'              => ['required', 'max:30'],
+        'host'                 => ['required', 'max:255'],
+        'url'                  => ['nullable', 'url'],
+        'nearest_station_name' => ['required', 'max:255'],
+        'begin'                => ['required', 'date'],
+        'end'                  => ['required', 'date'],
+        'event_start'          => ['nullable', 'date', 'after_or_equal:begin'],
+        'event_end'            => ['nullable', 'date', 'before_or_equal:end'],
+    ];
+
     public function renderList(Request $request): View {
         $events = Event::orderByDesc('end');
         if ($request->has('query')) {
@@ -54,7 +69,12 @@ class EventController extends Controller
     }
 
     public function denySuggestion(Request $request): RedirectResponse {
-        $validated       = $request->validate(['id' => ['required', 'exists:event_suggestions,id']]);
+        $validated       = $request->validate([
+                                                  'id'              => ['required', 'exists:event_suggestions,id'],
+                                                  'rejectionReason' => [
+                                                      'required', new Enum(EventRejectionReason::class)
+                                                  ]
+                                              ]);
         $eventSuggestion = EventSuggestion::find($validated['id']);
         $eventSuggestion->update(['processed' => true]);
         if (!App::runningUnitTests() && config('app.admin.webhooks.new_event') !== null) {
@@ -62,28 +82,37 @@ class EventController extends Controller
                 auth()->user()->name . ' denied the event "' . $eventSuggestion->name . '".'
             ]);
         }
-        $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, null));
+        $eventSuggestion->user->notify(
+            new EventSuggestionProcessed(
+                $eventSuggestion,
+                null,
+                EventRejectionReason::from($validated['rejectionReason'])
+            )
+        );
 
-        return back()->with('alert-success', 'Event denied.');
+        return redirect()->route('admin.events.suggestions')->with('alert-success', 'Event denied.');
     }
 
     /**
      * @throws HafasException
      */
     public function acceptSuggestion(Request $request): RedirectResponse {
-        $validated       = $request->validate([
-                                                  'suggestionId'         => ['required', 'exists:event_suggestions,id'],
-                                                  'name'                 => ['required', 'max:255'],
-                                                  'hashtag'              => ['required', 'max:30'],
-                                                  'host'                 => ['required', 'max:255'],
-                                                  'url'                  => ['nullable', 'url'],
-                                                  'nearest_station_name' => ['nullable', 'max:255'],
-                                                  'begin'                => ['required', 'date'],
-                                                  'end'                  => ['required', 'date'],
-                                              ]);
-        $eventSuggestion = EventSuggestion::find($validated['suggestionId']);
+        $validated = $request->validate([
+                                            'suggestionId'         => ['required', 'exists:event_suggestions,id'],
+                                            'name'                 => ['required', 'max:255'],
+                                            'hashtag'              => ['required', 'max:30'],
+                                            'host'                 => ['required', 'max:255'],
+                                            'url'                  => ['nullable', 'url'],
+                                            'nearest_station_name' => ['nullable', 'max:255'],
+                                            'begin'                => ['required', 'date'],
+                                            'end'                  => ['required', 'date'],
+                                            'event_start'          => ['nullable', 'date', 'after_or_equal:begin'],
+                                            'event_end'            => ['nullable', 'date', 'before_or_equal:end'],
+                                        ]);
 
-        $trainStation = null;
+        $eventSuggestion = EventSuggestion::find($validated['suggestionId']);
+        $trainStation    = null;
+
         if (isset($validated['nearest_station_name'])) {
             $trainStation = HafasController::getStations($validated['nearest_station_name'], 1)->first();
 
@@ -93,14 +122,17 @@ class EventController extends Controller
         }
 
         $event = Event::create([
-                                   'name'       => $validated['name'],
-                                   'slug'       => AdminEventBackend::createSlugFromName($validated['name']),
-                                   'hashtag'    => $validated['hashtag'],
-                                   'host'       => $validated['host'],
-                                   'station_id' => $trainStation?->id,
-                                   'begin'      => Carbon::parse($validated['begin'])->toIso8601String(),
-                                   'end'        => Carbon::parse($validated['end'])->toIso8601String(),
-                                   'url'        => $validated['url'] ?? null,
+                                   'name'        => $validated['name'],
+                                   'slug'        => AdminEventBackend::createSlugFromName($validated['name']),
+                                   'hashtag'     => $validated['hashtag'],
+                                   'host'        => $validated['host'],
+                                   'station_id'  => $trainStation?->id,
+                                   'begin'       => Carbon::parse($validated['begin'])->toIso8601String(),
+                                   'end'         => Carbon::parse($validated['end'])->toIso8601String(),
+                                   'event_start' => Carbon::parse($validated['event_start'])->toIso8601String(),
+                                   'event_end'   => Carbon::parse($validated['event_end'])->toIso8601String(),
+                                   'url'         => $validated['url'] ?? null,
+                                   'accepted_by' => auth()->user()->id,
                                ]);
 
         $eventSuggestion->update(['processed' => true]);
@@ -119,15 +151,7 @@ class EventController extends Controller
      * @throws HafasException
      */
     public function create(Request $request): RedirectResponse {
-        $validated = $request->validate([
-                                            'name'                 => ['required', 'max:255'],
-                                            'hashtag'              => ['required', 'max:30'],
-                                            'host'                 => ['required', 'max:255'],
-                                            'url'                  => ['nullable', 'url'],
-                                            'nearest_station_name' => ['nullable', 'max:255'],
-                                            'begin'                => ['required', 'date'],
-                                            'end'                  => ['required', 'date'],
-                                        ]);
+        $validated = $request->validate(self::VALIDATOR_RULES);
 
         $trainStation = null;
         if (isset($validated['nearest_station_name'])) {
@@ -139,29 +163,24 @@ class EventController extends Controller
         }
 
         Event::create([
-                          'name'       => $validated['name'],
-                          'slug'       => AdminEventBackend::createSlugFromName($validated['name']),
-                          'hashtag'    => $validated['hashtag'],
-                          'host'       => $validated['host'],
-                          'station_id' => $trainStation?->id,
-                          'begin'      => Carbon::parse($validated['begin'])->toIso8601String(),
-                          'end'        => Carbon::parse($validated['end'])->toIso8601String(),
-                          'url'        => $validated['url'] ?? null,
+                          'name'        => $validated['name'],
+                          'slug'        => AdminEventBackend::createSlugFromName($validated['name']),
+                          'hashtag'     => $validated['hashtag'],
+                          'host'        => $validated['host'],
+                          'station_id'  => $trainStation?->id,
+                          'begin'       => Carbon::parse($validated['begin'])->toIso8601String(),
+                          'end'         => Carbon::parse($validated['end'])->toIso8601String(),
+                          'event_start' => Carbon::parse($validated['event_start'])->toIso8601String(),
+                          'event_end'   => Carbon::parse($validated['event_end'])->toIso8601String(),
+                          'url'         => $validated['url'] ?? null,
+                          'accepted_by' => auth()->user()->id
                       ]);
 
         return redirect()->route('admin.events')->with('alert-success', 'The event was created!');
     }
 
     public function edit(int $id, Request $request): RedirectResponse {
-        $validated = $request->validate([
-                                            'name'                 => ['required', 'max:255'],
-                                            'hashtag'              => ['required', 'max:30'],
-                                            'host'                 => ['required', 'max:255'],
-                                            'url'                  => ['nullable', 'url'],
-                                            'nearest_station_name' => ['required', 'max:255'],
-                                            'begin'                => ['required', 'date'],
-                                            'end'                  => ['required', 'date'],
-                                        ]);
+        $validated = $request->validate(self::VALIDATOR_RULES);
 
         $event = Event::findOrFail($id);
 

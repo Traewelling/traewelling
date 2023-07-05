@@ -18,21 +18,23 @@ class TrainCheckin extends Model
 
     protected $fillable = [
         'status_id', 'user_id', 'trip_id', 'origin', 'destination',
-        'distance', 'departure', 'arrival', 'points', 'forced',
+        'distance', 'departure', 'real_departure', 'arrival', 'real_arrival', 'points', 'forced',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $appends  = ['duration', 'origin_stopover', 'destination_stopover', 'speed'];
     protected $casts    = [
-        'id'          => 'integer',
-        'status_id'   => 'integer',
-        'user_id'     => 'integer',
-        'origin'      => 'integer',
-        'destination' => 'integer',
-        'distance'    => 'integer',
-        'departure'   => 'datetime',
-        'arrival'     => 'datetime',
-        'points'      => 'integer',
-        'forced'      => 'boolean',
+        'id'             => 'integer',
+        'status_id'      => 'integer',
+        'user_id'        => 'integer',
+        'origin'         => 'integer',
+        'destination'    => 'integer',
+        'distance'       => 'integer',
+        'departure'      => 'datetime',
+        'real_departure' => 'datetime',
+        'arrival'        => 'datetime',
+        'real_arrival'   => 'datetime',
+        'points'         => 'integer',
+        'forced'         => 'boolean',
     ];
 
     public function status(): BelongsTo {
@@ -118,11 +120,11 @@ class TrainCheckin extends Model
      * @return int
      */
     public function getDurationAttribute(): int {
-        return $this->arrival->diffInMinutes($this->departure);
+        return ($this->real_arrival ?? $this->arrival)->diffInMinutes($this->real_departure ?? $this->departure);
     }
 
     public function getSpeedAttribute(): float {
-        return $this->duration == 0 ? 0 : ($this->distance / 1000) / ($this->duration / 60);
+        return $this->duration === 0 ? 0 : ($this->distance / 1000) / ($this->duration / 60);
     }
 
     /**
