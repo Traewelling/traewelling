@@ -13,7 +13,7 @@
                         <img
                                 src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
                                 style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2"
-                                id="theProfilePicture"
+                                id="theProfilePicture"  loading="lazy" decoding="async"
                         />
                     </div>
 

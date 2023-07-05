@@ -24,7 +24,7 @@
     <div class="card-body row">
         <div class="col-2 image-box pe-0 d-none d-lg-flex">
             <a href="{{ route('profile', ['username' => $status->user->username]) }}">
-                <img src="{{ ProfilePictureController::getUrl($status->user) }}"
+                <img loading="lazy" decoding="async" src="{{ ProfilePictureController::getUrl($status->user) }}"
                      alt="{{ $status->user->username }}">
             </a>
         </div>
