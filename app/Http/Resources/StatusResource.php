@@ -37,6 +37,7 @@ class StatusResource extends JsonResource
                 'category'            => (string) $this->trainCheckin->HafasTrip->category->value,
                 'number'              => (string) $this->trainCheckin->HafasTrip->number,
                 'lineName'            => (string) $this->trainCheckin->HafasTrip->linename,
+                'journeyNumber'       => $this->trainCheckin->HafasTrip->journey_number,  
                 'distance'            => (int) $this->trainCheckin->distance,
                 'points'              => (int) $this->trainCheckin->points,
                 'duration'            => (int) $this->trainCheckin->duration,

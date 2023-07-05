@@ -55,6 +55,18 @@ class Train
      */
     private $number;
 
+    /**
+     * @OA\Property (
+     *     title="journeyNumber",
+     *     description="Journey number of train",
+     *     example="3697",
+     *     nullable=true
+     * )
+     *
+     * @var int
+     */
+    private $journeyNumber;
+
 
     /**
      * @OA\Property (
