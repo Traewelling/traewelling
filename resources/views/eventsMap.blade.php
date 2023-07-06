@@ -4,8 +4,7 @@
 @section('canonical', route('statuses.byEvent', ['eventSlug' => $event->slug]))
 
 @section('content')
-    <div class="px-4 py-5 mt-n4"
-         style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
+    <div class="px-4 py-5 mt-n4 profile-banner">
         <div class="container" id="event-header">
             <div class="row justify-content-center">
                 <div class="text-white col-md-8 col-lg-7">

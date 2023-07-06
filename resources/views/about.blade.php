@@ -6,8 +6,7 @@
 @section('canonical', route('static.about'))
 
 @section('content')
-    <div class="px-4 py-5 mt-n4 mb-4"
-         style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
+    <div class="px-4 py-5 mt-n4 mb-4 profile-banner">
         <div class="container">
             <div class="text-white">
                 <h1>F.A.Q. <br/><span class="fs-3">{{ __('about.faq-heading') }}</span></h1>
