@@ -40,9 +40,9 @@ export default {
             API.request('/notifications')
                 .then(async (response) => {
                     const data         = await response.json();
-                    this.notifications = data.data;
-                    this.loading = false;
-                });
+                this.notifications = data.data;
+                this.loading = false;
+            });
         }
     },
     mounted() {
@@ -84,5 +84,12 @@ export default {
 
 .notifications-empty {
     padding: 2rem 0;
+}
+
+.dark {
+    .row {
+        background-color: $dm-base-5;
+        border-bottom-color: $dm-base-5;
+    }
 }
 </style>

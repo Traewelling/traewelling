@@ -57,7 +57,7 @@ export default {
         read() {
             return this.readAt ?? false;
         }
-    },
+        },
 }
 </script>
 
@@ -129,4 +129,13 @@ a ::v-deep(b) {
     font-weight: bold;
 }
 
+.dark {
+    .fas,
+    .far {
+        filter: invert(1);
+    }
+    a {
+        color: $dm-body;
+    }
+}
 </style>
