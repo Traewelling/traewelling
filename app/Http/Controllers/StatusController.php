@@ -63,7 +63,7 @@ class StatusController extends Controller
                                      'trainCheckin.Origin',
                                      'trainCheckin.Destination',
                                      'trainCheckin.HafasTrip.polyline',
-                                     'trainCheckin.HafasTrip.stopoversNEW.trainStation',
+                                     'trainCheckin.HafasTrip.stopovers.trainStation',
                                      'event'
                                  ])
                           ->whereHas('trainCheckin', function($query) {

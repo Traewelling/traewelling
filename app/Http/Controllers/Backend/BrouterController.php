@@ -82,7 +82,7 @@ abstract class BrouterController extends Controller
         }
         //1. Prepare coordinates from stations
         $coordinates = [];
-        foreach ($trip->stopoversNEW as $stopover) {
+        foreach ($trip->stopovers as $stopover) {
             $coordinates[] = new Coordinate($stopover->trainStation->latitude, $stopover->trainStation->longitude);
         }
 
@@ -112,7 +112,7 @@ abstract class BrouterController extends Controller
 
         //4. Try to map stations to GeoJSON
         $highestMappedKey = null;
-        foreach ($trip->stopoversNEW as $stopover) {
+        foreach ($trip->stopovers as $stopover) {
             $properties = [
                 'id'                => $stopover->trainStation->ibnr,
                 'name'              => $stopover->trainStation->name,

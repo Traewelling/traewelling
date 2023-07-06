@@ -41,6 +41,7 @@ use Mastodon;
  * @property int         privacy_hide_days
  * @property string      language
  * @property Carbon      last_login
+ * @property Status[]    $statuses
  */
 class User extends Authenticatable implements MustVerifyEmail
 {

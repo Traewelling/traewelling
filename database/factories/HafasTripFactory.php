@@ -96,7 +96,7 @@ class HafasTripFactory extends Factory
     public static function createPolyline(HafasTrip $hafasTrip) {
         $time     = Carbon::now()->subMinutes(15);
         $features = [];
-        foreach ($hafasTrip->stopoversNEW as $stopover) {
+        foreach ($hafasTrip->stopovers as $stopover) {
             $products = [];
             foreach (HafasTravelType::cases() as $hafasTravelType) {
                 $products[$hafasTravelType->value] = rand(0, 1);
