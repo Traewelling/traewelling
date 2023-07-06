@@ -316,6 +316,14 @@
         color: rgb(238, 238, 238);
     }
 
+    .alert-info {
+        background-color: hsl(194, 80%, 20%);
+        color: rgb(238, 238, 238);
+        i {
+            color: hsl(195, 63%, 70%);
+        }
+    }
+
     #stationboard .stationboardDivider {
         border-top-color: $dm-base-20;
     }
