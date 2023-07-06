@@ -22,7 +22,7 @@
                                 origin: {{$status->trainCheckin->origin}},
                                 destination: {{$status->trainCheckin->destination}},
                                 polyline: {!! $status->trainCheckin->HafasTrip?->polyline?->polyline ?? '[]' !!}, // Stored as JSON in DB
-                                stopovers: {!! \App\Http\Resources\StopoverResource::collection($status->trainCheckin->HafasTrip->stopoversNEW)->toJson() !!},
+                                stopovers: {!! \App\Http\Resources\StopoverResource::collection($status->trainCheckin->HafasTrip->stopovers)->toJson() !!},
                                 percentage: 0,
                             },
                             @endforeach

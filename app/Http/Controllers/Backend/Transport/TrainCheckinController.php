@@ -132,15 +132,15 @@ abstract class TrainCheckinController extends Controller
         Carbon       $arrival,
         bool         $force = false,
     ): array {
-        $trip->load('stopoversNEW');
+        $trip->load('stopovers');
 
         //Note: Compare with ->format because of timezone differences!
-        $firstStop = $trip->stopoversNEW->where('train_station_id', $origin->id)
-                                        ->where('departure_planned', $departure->format('Y-m-d H:i:s'))
-                                        ->first();
-        $lastStop  = $trip->stopoversNEW->where('train_station_id', $destination->id)
-                                        ->where('arrival_planned', $arrival->format('Y-m-d H:i:s'))
-                                        ->first();
+        $firstStop = $trip->stopovers->where('train_station_id', $origin->id)
+                                     ->where('departure_planned', $departure->format('Y-m-d H:i:s'))
+                                     ->first();
+        $lastStop  = $trip->stopovers->where('train_station_id', $destination->id)
+                                     ->where('arrival_planned', $arrival->format('Y-m-d H:i:s'))
+                                     ->first();
 
         if (empty($firstStop) || empty($lastStop)) {
             Log::debug('TrainCheckin: No stop found for origin or destination (HafasTrip ' . $trip->trip_id . ')');
@@ -203,7 +203,7 @@ abstract class TrainCheckinController extends Controller
     public static function changeDestination(TrainCheckin $checkin, TrainStopover $newDestinationStopover): PointReason {
         if ($newDestinationStopover->arrival_planned->isBefore($checkin->origin_stopover->arrival_planned)
             || $newDestinationStopover->is($checkin->origin_stopover)
-            || !$checkin->HafasTrip->stopoversNEW->contains('id', $newDestinationStopover->id)
+            || !$checkin->HafasTrip->stopovers->contains('id', $newDestinationStopover->id)
         ) {
             throw new InvalidArgumentException();
         }
@@ -246,9 +246,9 @@ abstract class TrainCheckinController extends Controller
      */
     public static function getHafasTrip(string $tripId, string $lineName, int $startId): HafasTrip {
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
-        $hafasTrip->loadMissing(['stopoversNEW', 'originStation', 'destinationStation']);
+        $hafasTrip->loadMissing(['stopovers', 'originStation', 'destinationStation']);
 
-        $originStopover = $hafasTrip->stopoversNEW->filter(function(TrainStopover $stopover) use ($startId) {
+        $originStopover = $hafasTrip->stopovers->filter(function(TrainStopover $stopover) use ($startId) {
             return $stopover->train_station_id === $startId || $stopover->trainStation->ibnr === $startId;
         })->first();
 

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
  * @property Business         business
  * @property int              event_id
  * @property StatusVisibility visibility
+ * @property TrainCheckin $trainCheckin
  */
 class Status extends Model
 {

@@ -58,8 +58,8 @@ class StatusEditController extends Controller
         $originStation      = TrainStation::find($validated['origin']);
         $destinationStation = TrainStation::find($validated['destination']);
 
-        $newOrigin      = $status->trainCheckIn->HafasTrip->stopoversNew->where('train_station_id', $originStation->id)->first();
-        $newDestination = $status->trainCheckIn->HafasTrip->stopoversNew->where('train_station_id', $destinationStation->id)->first();
+        $newOrigin      = $status->trainCheckIn->HafasTrip->stopovers->where('train_station_id', $originStation->id)->first();
+        $newDestination = $status->trainCheckIn->HafasTrip->stopovers->where('train_station_id', $destinationStation->id)->first();
 
         $newDeparture = $newOrigin->departure_planned ?? $newOrigin->arrival_planned;
         $newArrival   = $newDestination->arrival_planned ?? $newDestination->departure_planned;

@@ -134,13 +134,13 @@ class FrontendTransportController extends Controller
                 $startStation->id,
             );
 
-            $stopovers = $hafasTrip->stopoversNEW
+            $stopovers = $hafasTrip->stopovers
                 ->filter(function(TrainStopover $trainStopover) use ($departure): bool {
                     return $trainStopover->departure_planned->isAfter($departure);
                 });
 
             // Find out where this train terminates and offer this as a "fast check-in" option.
-            $lastStopover = $hafasTrip->stopoversNEW
+            $lastStopover = $hafasTrip->stopovers
                 ->filter(function(TrainStopover $stopover) {
                     return !$stopover->isArrivalCancelled;
                 })
