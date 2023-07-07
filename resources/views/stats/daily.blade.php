@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('title', __('stats-day', ['date' => $date->isoFormat(__('dateformat.with-weekday'))]))
 
 @section('content')
@@ -8,17 +7,17 @@
             <div class="col-12 mb-3">
                 <h1 class="fs-4">{{__('stats-day', ['date' => $date->isoFormat(__('dateformat.with-weekday'))])}}</h1>
 
-                <a href="{{route('stats.daily', ['dateString' => $date->clone()->subDay()->format('Y-m-d')])}}"
+                <a href="{{route('stats.daily', ['dateString' => userTime($date->clone()->subDay(), 'Y-m-d', false)])}}"
                    class="btn btn-primary"
                 >
                     <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-                    {{$date->clone()->subDay()->isoFormat(__('date-format'))}}
+                    {{userTime($date->clone()->subDay(),__('date-format'))}}
                 </a>
                 @if($date->clone()->addDay()->isBefore(\Illuminate\Support\Facades\Date::today()->endOfDay()))
                     <a href="{{route('stats.daily', ['dateString' => $date->clone()->addDay()->format('Y-m-d')])}}"
                        class="btn btn-primary float-end"
                     >
-                        {{$date->clone()->addDay()->isoFormat(__('date-format'))}}
+                        {{userTime($date->clone()->addDay(), __('date-format'))}}
                         <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                     </a>
                 @endif

@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Carbon;
+
 /**
  * @see https://stackoverflow.com/a/437642
  */
@@ -39,4 +41,13 @@ function durationToSpan($duration): string {
     }
 
     return $return;
+}
+
+function userTime(null|Carbon|\Carbon\Carbon|string $time=null, ?string $format=null, bool $iso=true): string {
+    $format = $format ?? __('time-format');
+    $time = $time instanceof \Carbon\Carbon ? $time : Carbon::parse($time);
+    if ($iso) {
+        return $time->tz(auth()->user()->timezone)->isoFormat($format);
+    }
+    return $time->tz(auth()->user()->timezone)->format($format);
 }

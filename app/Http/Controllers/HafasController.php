@@ -206,9 +206,9 @@ abstract class HafasController extends Controller
             $data = self::fetchDepartures($station, $when, $duration, $type);
             foreach ($data as $departure) {
                 if ($departure?->when) {
-                    $offset = Carbon::parse($departure->when)->tz('UTC')->hour - (clone $when)->tz('UTC')->hour;
+                    $offset = Carbon::parse($departure->when)->tz('UTC')->hour - $when->tz('UTC')->hour;
                     if ($offset !== 0) {
-                        $data = self::fetchDepartures($station, $when->subHours($offset), $duration, $type);
+                        $data = self::fetchDepartures($station, (clone $when)->subHours($offset), $duration, $type);
                     }
                     break;
                 }

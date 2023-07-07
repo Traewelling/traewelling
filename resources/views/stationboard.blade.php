@@ -34,7 +34,7 @@
                             <div class="input-group mb-3 mx-auto">
                                 <input type="datetime-local" class="form-control" id="timepicker" name="when"
                                        aria-describedby="button-addontime"
-                                       value="{{ $times['now']->format("Y-m-d\TH:i") }}"/>
+                                       value="{{ userTime($times['now'], 'Y-m-d\TH:i') }}"/>
                                 <button class="btn btn-outline-primary" type="submit" id="button-addontime"
                                         data-mdb-ripple-color="dark">
                                     {{__('stationboard.set-time')}}
@@ -54,7 +54,7 @@
                         {{ $station->name }}
                         <small>
                             <i class="far fa-clock fa-sm"></i>
-                            {{ $times['now']->isoFormat(__('time-format.with-day')) }}
+                            {{ userTime($times['now'], __('time-format.with-day')) }}
                         </small>
                     </div>
 
@@ -86,7 +86,7 @@
                                         @if(!$loop->first && !$loop->last && \Carbon\Carbon::parse($departures[$loop->index - 1]->when)->isPast() && \Carbon\Carbon::parse($departures[$loop->index]->when)->isAfter(\Carbon\Carbon::now()->setSecond(0)))
                                             <tr>
                                                 <td colspan="3" class="stationboardDivider">
-                                                    <small>{{__('request-time', ['time' => \Carbon\Carbon::now()->isoFormat(__('time-format'))])}}</small>
+                                                    <small>{{__('request-time', ['time' => userTime()])}}</small>
                                                 </td>
                                             </tr>
                                         @endif
@@ -103,25 +103,25 @@
                                             <td class="ps-2 ps-md-4">
                                                 @if($departure->delay === null)
                                                     <span class="text-white">
-                                                        {{\Carbon\Carbon::parse($departure->plannedWhen)->isoFormat(__('time-format'))}}
+                                                        {{userTime($departure->plannedWhen)}}
                                                     </span>
                                                 @elseif($departure->delay === 0)
                                                     <span class="text-success">
-                                                        {{\Carbon\Carbon::parse($departure->plannedWhen)->isoFormat(__('time-format'))}}
+                                                        {{userTime($departure->plannedWhen)}}
                                                     </span>
                                                 @elseif($departure->delay < (5*60))
                                                     <span class="text-warning">
-                                                        {{\Carbon\Carbon::parse($departure->when)->isoFormat(__('time-format'))}}
+                                                        {{userTime($departure->when)}}
                                                     </span>
                                                     <small class="text-muted text-decoration-line-through">
-                                                        {{\Carbon\Carbon::parse($departure->plannedWhen)->isoFormat(__('time-format'))}}
+                                                        {{userTime($departure->plannedWhen)}}
                                                     </small>
                                                 @else
                                                     <span class="text-danger">
-                                                        {{\Carbon\Carbon::parse($departure->when)->isoFormat(__('time-format'))}}
+                                                        {{userTime($departure->when)}}
                                                     </span>
                                                     <small class="text-muted text-decoration-line-through">
-                                                        {{\Carbon\Carbon::parse($departure->plannedWhen)->isoFormat(__('time-format'))}}
+                                                        {{userTime($departure->plannedWhen)}}
                                                     </small>
                                                 @endif
                                             </td>
