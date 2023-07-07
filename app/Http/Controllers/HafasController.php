@@ -10,6 +10,7 @@ use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use App\Models\TrainStopover;
 use Carbon\Carbon;
+use Carbon\CarbonTimeZone;
 use Exception;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Collection;
@@ -159,12 +160,14 @@ abstract class HafasController extends Controller
         TrainStation $station,
         Carbon       $when,
         int          $duration = 15,
-        TravelType   $type = null
+        TravelType   $type = null,
+        bool         $skipTimeShift = false
     ) {
         $client   = self::getHttpClient();
+        $time     = $skipTimeShift ? $when : (clone $when)->shiftTimezone("Europe/Berlin");
         // DB-Rest is very wonky when
         $query    = [
-            'when'                       => (clone $when)->shiftTimezone("Europe/Berlin")->toIso8601String(),
+            'when'                       => $time->toIso8601String(),
             'duration'                   => $duration,
             HTT::NATIONAL_EXPRESS->value => (is_null($type) || $type === TravelType::EXPRESS) ? 'true' : 'false',
             HTT::NATIONAL->value         => (is_null($type) || $type === TravelType::EXPRESS) ? 'true' : 'false',
@@ -206,7 +209,16 @@ abstract class HafasController extends Controller
             $data = self::fetchDepartures($station, $when, $duration, $type);
             foreach ($data as $departure) {
                 if ($departure?->when) {
-                    $offset = Carbon::parse($departure->when)->tz('UTC')->hour - $when->tz('UTC')->hour;
+                    // Check if the timezone for this station is equal in its offset to Europe/Berlin.
+                    // If so, fetch again **without** adjusting the timezone
+                    $time = Carbon::parse($departure->when);
+                    if ($time->tz->toOffsetName() === CarbonTimeZone::create("Europe/Berlin")->toOffsetName()) {
+                        $data = self::fetchDepartures($station, $when, $duration, $type, true);
+                        break;
+                    }
+
+                    // If the timezone is not equal to Europe/Berlin, check for a possible UTC-offset
+                    $offset = $time->tz('UTC')->hour - $when->tz('UTC')->hour;
                     if ($offset !== 0) {
                         $data = self::fetchDepartures($station, (clone $when)->subHours($offset), $duration, $type);
                     }
