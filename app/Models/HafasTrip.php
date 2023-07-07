@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\UTCDateTime;
 use App\Enum\HafasTravelType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -33,8 +34,8 @@ class HafasTrip extends Model
         'origin'         => 'integer',
         'destination'    => 'integer',
         'polyline_id'    => 'integer',
-        'departure'      => 'datetime',
-        'arrival'        => 'datetime',
+        'departure'      => UTCDateTime::class,
+        'arrival'        => UTCDateTime::class,
         'last_refreshed' => 'datetime',
     ];
 

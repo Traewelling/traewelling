@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\UTCDateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,10 +37,10 @@ class TrainCheckin extends Model
         'origin'         => 'integer',
         'destination'    => 'integer',
         'distance'       => 'integer',
-        'departure'      => 'datetime',
-        'real_departure' => 'datetime',
-        'arrival'        => 'datetime',
-        'real_arrival'   => 'datetime',
+        'departure'      => UTCDateTime::class,
+        'real_departure' => UTCDateTime::class,
+        'arrival'        => UTCDateTime::class,
+        'real_arrival'   => UTCDateTime::class,
         'points'         => 'integer',
         'forced'         => 'boolean',
     ];

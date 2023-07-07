@@ -407,8 +407,8 @@ abstract class HafasController extends Controller
                     [
                         'trip_id'           => $tripID,
                         'train_station_id'  => $trainStations->where('ibnr', $stopover->stop->id)->first()->id,
-                        'arrival_planned'   => isset($stopover->plannedArrival) ? $plannedArrival?->toDateTimeString() : $plannedDeparture?->toDateTimeString(),
-                        'departure_planned' => isset($stopover->plannedDeparture) ? $plannedDeparture?->toDateTimeString() : $plannedArrival?->toDateTimeString(),
+                        'arrival_planned'   => isset($stopover->plannedArrival) ? $plannedArrival : $plannedDeparture,
+                        'departure_planned' => isset($stopover->plannedDeparture) ? $plannedDeparture : $plannedArrival,
                     ],
                     $updatePayload
                 );

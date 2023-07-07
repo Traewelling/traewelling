@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\UTCDateTime;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,12 +28,12 @@ class TrainStopover extends Model
     protected $casts    = [
         'id'                         => 'integer',
         'train_station_id'           => 'integer',
-        'arrival_planned'            => 'datetime',
-        'arrival_real'               => 'datetime',
+        'arrival_planned'            => UTCDateTime::class,
+        'arrival_real'               => UTCDateTime::class,
         'arrival_platform_planned'   => 'string',
         'arrival_platform_real'      => 'string',
-        'departure_planned'          => 'datetime',
-        'departure_real'             => 'datetime',
+        'departure_planned'          => UTCDateTime::class,
+        'departure_real'             => UTCDateTime::class,
         'departure_platform_planned' => 'string',
         'departure_platform_real'    => 'string'
     ];
