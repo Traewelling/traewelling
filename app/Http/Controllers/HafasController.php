@@ -152,6 +152,41 @@ abstract class HafasController extends Controller
     }
 
     /**
+     * @throws HafasException
+     * @throws JsonException
+     */
+    public static function fetchDepartures(
+        TrainStation $station,
+        Carbon       $when,
+        int          $duration = 15,
+        TravelType   $type = null
+    ) {
+        $client   = self::getHttpClient();
+        // DB-Rest is very wonky when
+        $query    = [
+            'when'                       => (clone $when)->shiftTimezone("Europe/Berlin")->toIso8601String(),
+            'duration'                   => $duration,
+            HTT::NATIONAL_EXPRESS->value => (is_null($type) || $type === TravelType::EXPRESS) ? 'true' : 'false',
+            HTT::NATIONAL->value         => (is_null($type) || $type === TravelType::EXPRESS) ? 'true' : 'false',
+            HTT::REGIONAL_EXP->value     => (is_null($type) || $type === TravelType::REGIONAL) ? 'true' : 'false',
+            HTT::REGIONAL->value         => (is_null($type) || $type === TravelType::REGIONAL) ? 'true' : 'false',
+            HTT::SUBURBAN->value         => (is_null($type) || $type === TravelType::SUBURBAN) ? 'true' : 'false',
+            HTT::BUS->value              => (is_null($type) || $type === TravelType::BUS) ? 'true' : 'false',
+            HTT::FERRY->value            => (is_null($type) || $type === TravelType::FERRY) ? 'true' : 'false',
+            HTT::SUBWAY->value           => (is_null($type) || $type === TravelType::SUBWAY) ? 'true' : 'false',
+            HTT::TRAM->value             => (is_null($type) || $type === TravelType::TRAM) ? 'true' : 'false',
+            HTT::TAXI->value             => 'false',
+        ];
+        $response = $client->get('/stops/' . $station->ibnr . '/departures', $query);
+
+        if (!$response->ok()) {
+            throw new HafasException(__('messages.exception.generalHafas'));
+        }
+
+        return json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
+    }
+
+    /**
      * @param TrainStation    $station
      * @param Carbon          $when
      * @param int             $duration
@@ -167,28 +202,17 @@ abstract class HafasController extends Controller
         TravelType   $type = null
     ): Collection {
         try {
-            $client   = self::getHttpClient();
-            $query    = [
-                'when'                       => $when->toIso8601String(),
-                'duration'                   => $duration,
-                HTT::NATIONAL_EXPRESS->value => (is_null($type) || $type === TravelType::EXPRESS) ? 'true' : 'false',
-                HTT::NATIONAL->value         => (is_null($type) || $type === TravelType::EXPRESS) ? 'true' : 'false',
-                HTT::REGIONAL_EXP->value     => (is_null($type) || $type === TravelType::REGIONAL) ? 'true' : 'false',
-                HTT::REGIONAL->value         => (is_null($type) || $type === TravelType::REGIONAL) ? 'true' : 'false',
-                HTT::SUBURBAN->value         => (is_null($type) || $type === TravelType::SUBURBAN) ? 'true' : 'false',
-                HTT::BUS->value              => (is_null($type) || $type === TravelType::BUS) ? 'true' : 'false',
-                HTT::FERRY->value            => (is_null($type) || $type === TravelType::FERRY) ? 'true' : 'false',
-                HTT::SUBWAY->value           => (is_null($type) || $type === TravelType::SUBWAY) ? 'true' : 'false',
-                HTT::TRAM->value             => (is_null($type) || $type === TravelType::TRAM) ? 'true' : 'false',
-                HTT::TAXI->value             => 'false',
-            ];
-            $response = $client->get('/stops/' . $station->ibnr . '/departures', $query);
-
-            if (!$response->ok()) {
-                throw new HafasException(__('messages.exception.generalHafas'));
+            //ToDo: save offset in TrainStations to reduce this mechanism
+            $data = self::fetchDepartures($station, $when, $duration, $type);
+            foreach ($data as $departure) {
+                if ($departure?->when) {
+                    $offset = Carbon::parse($departure->when)->tz('UTC')->hour - (clone $when)->tz('UTC')->hour;
+                    if ($offset !== 0) {
+                        $data = self::fetchDepartures($station, $when->subHours($offset), $duration, $type);
+                    }
+                    break;
+                }
             }
-
-            $data = json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
 
             //First fetch all stations in one request
             $trainStationPayload = [];
