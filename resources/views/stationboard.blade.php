@@ -44,6 +44,18 @@
                     </div>
                 </div>
 
+                @if (
+                    !empty($departures) &&
+                    \Carbon\Carbon::parse($departures[0]->when)->tz->toOffsetName()
+                    !== \Carbon\CarbonTimeZone::create(auth()->user()->timezone)->toOffsetName()
+                )
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        {!! __("stationboard.timezone", ['timezone' => auth()->user()->timezone]) !!}
+                        <p>{!! __("stationboard.timezone.settings", ['url' => route('settings')]) !!}</p>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
                 <div class="card">
                     <div class="card-header">
                         <div class="float-end">

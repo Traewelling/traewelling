@@ -396,6 +396,8 @@
     "sr.dropdown.toggle": "Toggle dropdown",
     "ril100": "Ril 100 identifier",
     "or-alternative": "or",
+    "stationboard.timezone": "We have detected that your time zone is different from that of this station. The times shown here are displayed with your set timezone <i>:timezone</i>.",
+    "stationboard.timezone.settings": "If you want, you can change it in the <a href=\":url\">settings</a>.",
     "stationboard.arr": "arr",
     "stationboard.btn-checkin": "Check in!",
     "stationboard.check-business": "Business trip",
@@ -682,6 +684,7 @@
     "events.disclaimer.source": "This event was suggested by a Träwelling user and approved by us.",
     "events.disclaimer.warranty": "Träwelling does not guarantee the correctness or completeness of the data.",
     "user.mapprovider": "Provider of map data",
+    "user.timezone": "Timezone",
     "map-providers.cargo": "Cargo",
     "map-providers.open-railway-map": "Open Railway Map",
     "active-journeys": "active journey|active journeys"
