@@ -22,6 +22,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
@@ -361,10 +362,14 @@ class StatusController extends Controller
                             ]);
 
             if (isset($validated['realDeparture'])) {
-                $status->trainCheckin->update(['real_departure' => $validated['realDeparture']]);
+                $status->trainCheckin->update([
+                    'real_departure' => Carbon::parse($validated['realDeparture'], auth()->user()->timezone)
+                                              ]);
             }
             if (isset($validated['realArrival'])) {
-                $status->trainCheckin->update(['real_arrival' => $validated['realArrival']]);
+                $status->trainCheckin->update([
+                    'real_arrival' => Carbon::parse($validated['realArrival'], auth()->user()->timezone)
+                                              ]);
             }
 
             return $this->sendResponse(new StatusResource($status->fresh()));
