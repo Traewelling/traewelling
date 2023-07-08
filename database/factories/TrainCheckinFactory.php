@@ -21,8 +21,8 @@ class TrainCheckinFactory extends Factory
             'origin'      => TrainStation::factory()->create()->ibnr,
             'destination' => TrainStation::factory()->create()->ibnr,
             'distance'    => $this->faker->randomFloat(2, 0, 100),
-            'departure'   => Date::now()->subHour()->toIso8601String(),
-            'arrival'     => Date::now()->addHour()->toIso8601String(),
+            'departure'   => Date::now()->subHour(),
+            'arrival'     => Date::now()->addHour(),
             'points'      => $this->faker->numberBetween(0, 100),
         ];
     }

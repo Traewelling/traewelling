@@ -46,8 +46,9 @@ function durationToSpan($duration): string {
 function userTime(null|Carbon|\Carbon\Carbon|string $time=null, ?string $format=null, bool $iso=true): string {
     $format = $format ?? __('time-format');
     $time = $time instanceof \Carbon\Carbon ? $time : Carbon::parse($time);
+    $timezone = auth()->user()->timezone ?? config('app.timezone');
     if ($iso) {
-        return $time->tz(auth()->user()->timezone)->isoFormat($format);
+        return $time->tz($timezone)->isoFormat($format);
     }
-    return $time->tz(auth()->user()->timezone)->format($format);
+    return $time->tz($timezone)->format($format);
 }

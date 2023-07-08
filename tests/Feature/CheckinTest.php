@@ -202,48 +202,48 @@ class CheckinTest extends TestCase
         $nonCollisionTrips = [];
         $baseTrip          = HafasTrip::factory()->create(
             [
-                'departure' => date('Y-m-d H:i:s', strtotime('12:00')),
-                'arrival'   => date('Y-m-d H:i:s', strtotime('13:00'))
+                'departure' => date('Y-m-d H:i:sP', strtotime('12:00')),
+                'arrival'   => date('Y-m-d H:i:sP', strtotime('13:00'))
             ]
         );
 
         //Trips Case 1 - 4 for which a collisionException should be thrown
         $collisionTrips[] = HafasTrip::factory()->create(
             [
-                'departure' => date('Y-m-d H:i:s', strtotime('11:45')),
-                'arrival'   => date('Y-m-d H:i:s', strtotime('12:15'))
+                'departure' => date('Y-m-d H:i:sP', strtotime('11:45')),
+                'arrival'   => date('Y-m-d H:i:sP', strtotime('12:15'))
             ]
         );
         $collisionTrips[] = HafasTrip::factory()->create(
             [
-                'departure' => date('Y-m-d H:i:s', strtotime('12:45')),
-                'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))
+                'departure' => date('Y-m-d H:i:sP', strtotime('12:45')),
+                'arrival'   => date('Y-m-d H:i:sP', strtotime('13:15'))
             ]
         );
         $collisionTrips[] = HafasTrip::factory()->create(
             [
-                'departure' => date('Y-m-d H:i:s', strtotime('12:15')),
-                'arrival'   => date('Y-m-d H:i:s', strtotime('12:45'))
+                'departure' => date('Y-m-d H:i:sP', strtotime('12:15')),
+                'arrival'   => date('Y-m-d H:i:sP', strtotime('12:45'))
             ]
         );
         $collisionTrips[] = HafasTrip::factory()->create(
             [
-                'departure' => date('Y-m-d H:i:s', strtotime('11:45')),
-                'arrival'   => date('Y-m-d H:i:s', strtotime('13:15'))
+                'departure' => date('Y-m-d H:i:sP', strtotime('11:45')),
+                'arrival'   => date('Y-m-d H:i:sP', strtotime('13:15'))
             ]
         );
 
         //Trips case 5 & 6 for which no Exception should be thrown
         $nonCollisionTrips[] = HafasTrip::factory()->create(
             [
-                'departure' => date('Y-m-d H:i:s', strtotime('11:15')),
-                'arrival'   => date('Y-m-d H:i:s', strtotime('11:45'))
+                'departure' => date('Y-m-d H:i:sP', strtotime('11:15')),
+                'arrival'   => date('Y-m-d H:i:sP', strtotime('11:45'))
             ]
         );
         $nonCollisionTrips[] = HafasTrip::factory()->create(
             [
-                'departure' => date('Y-m-d H:i:s', strtotime('13:30')),
-                'arrival'   => date('Y-m-d H:i:s', strtotime('13:45'))
+                'departure' => date('Y-m-d H:i:sP', strtotime('13:30')),
+                'arrival'   => date('Y-m-d H:i:sP', strtotime('13:45'))
             ]
         );
 

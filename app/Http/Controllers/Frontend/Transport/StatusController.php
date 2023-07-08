@@ -43,10 +43,10 @@ class StatusController extends Controller
                             ]);
 
             $status->trainCheckin->update([
-                                              'real_departure' => $validated['realDeparture'] ?
+                                              'real_departure' => isset($validated['realDeparture']) ?
                                                   Carbon::parse($validated['realDeparture'], auth()->user()->timezone) :
                                                   null,
-                                              'real_arrival'   => $validated['realArrival'] ?
+                                              'real_arrival'   => isset($validated['realArrival']) ?
                                                   Carbon::parse($validated['realArrival'], auth()->user()->timezone) :
                                                   null,
                                           ]);

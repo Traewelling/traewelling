@@ -45,7 +45,7 @@
                 </div>
 
                 @if (
-                    !empty($departures) &&
+                    count($departures) > 0 &&
                     \Carbon\Carbon::parse($departures[0]->when)->tz->toOffsetName()
                     !== \Carbon\CarbonTimeZone::create(auth()->user()->timezone)->toOffsetName()
                 )
@@ -71,7 +71,7 @@
                     </div>
 
                     <div class="card-body p-0 table-responsive">
-                        @if(empty($departures))
+                        @if(count($departures) === 0)
                             <table class="table table-dark table-borderless m-0">
                                 <tr>
                                     <td>{{ __('stationboard.no-departures') }}</td>
