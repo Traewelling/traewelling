@@ -202,24 +202,30 @@
 
                     <div class="float-end row gy-3 mb-4 mb-md-0 gx-2">
                         <div class="btn-group dropup col">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-dropdown-animation="off"
+                            <button type="button" class="btn btn-primary dropdown-toggle"
+                                    data-mdb-dropdown-animation="off"
                                     data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-circle-half-stroke"></i></i> {{__('settings.colorscheme.set')}}
+                                <i class="fas fa-circle-half-stroke"></i></i> {{__('settings.colorscheme.set')}}
                             </button>
                             <div class="dropdown-menu">
-                                    <div class="dropdown-item" id="colorModeToggleLight"><i class="fas fa-sun"></i> {{__('settings.colorscheme.light')}}</div>
-                                    <div class="dropdown-item" id="colorModeToggleDark"><i class="fas fa-moon"></i> {{__('settings.colorscheme.dark')}}</div>
-                                    <div class="dropdown-item" id="colorModeToggleAuto"><i class="fas fa-circle-half-stroke"></i> {{__('settings.colorscheme.auto')}}</div>
+                                <div class="dropdown-item" id="colorModeToggleLight"><i
+                                        class="fas fa-sun"></i> {{__('settings.colorscheme.light')}}</div>
+                                <div class="dropdown-item" id="colorModeToggleDark"><i
+                                        class="fas fa-moon"></i> {{__('settings.colorscheme.dark')}}</div>
+                                <div class="dropdown-item" id="colorModeToggleAuto"><i
+                                        class="fas fa-circle-half-stroke"></i> {{__('settings.colorscheme.auto')}}</div>
                             </div>
                         </div>
                         <div class="btn-group dropup col">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-dropdown-animation="off"
+                            <button type="button" class="btn btn-primary dropdown-toggle"
+                                    data-mdb-dropdown-animation="off"
                                     data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
                             </button>
                             <div class="dropdown-menu">
                                 @foreach(config('app.locales') as $key => $lang)
-                                    <a class="dropdown-item" href="{{request()->fullUrlWithQuery(['language' => $key])}}">
+                                    <a class="dropdown-item"
+                                       href="{{request()->fullUrlWithQuery(['language' => $key])}}">
                                         {{ $lang }}
                                     </a>
                                 @endforeach
@@ -254,6 +260,8 @@
                            class="text-muted">
                             {{ \App\Http\Controllers\Backend\VersionController::getVersion() }}
                         </a>
+                        -
+                        <a href="{{route('changelog')}}" class="text-muted">{{__('changelog')}}</a>
                     </p>
                 </div>
             </footer>

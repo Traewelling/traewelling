@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\Frontend\AccountController;
+use App\Http\Controllers\Frontend\ChangelogController;
 use App\Http\Controllers\Frontend\DevController;
 use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\Export\ExportController;
@@ -74,6 +75,9 @@ Route::get('/statuses/event/{eventSlug}', [FrontendStatusController::class, 'sta
 
 Route::get('/events', [EventController::class, 'renderEventOverview'])
      ->name('events');
+
+Route::get('/changelog', [ChangelogController::class, 'renderChangelog'])
+     ->name('changelog');
 
 Auth::routes(['verify' => true]);
 
