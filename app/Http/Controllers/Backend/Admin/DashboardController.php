@@ -12,8 +12,8 @@ abstract class DashboardController extends Controller
 {
     public static function getStatusesByDate(Carbon $since, Carbon $until): Collection {
         $data = DB::table('statuses')
-                  ->where('created_at', '>=', $since->toIso8601String())
-                  ->where('created_at', '<=', $until->toIso8601String())
+                  ->where('created_at', '>=', $since)
+                  ->where('created_at', '<=', $until)
                   ->groupBy(DB::raw('DATE(created_at)'))
                   ->select([
                                DB::raw('DATE(created_at) AS date'),
@@ -58,7 +58,8 @@ abstract class DashboardController extends Controller
                                        DB::raw('DATE(created_at) AS date'),
                                        DB::raw('COUNT(*) AS polyLineCount'),
                                    ])
-                          ->get();
+                          ;
+        $polyLineData = $polyLineData->get();
         $data         = DB::table('hafas_trips')
                           ->where('created_at', '>=', $since->toIso8601String())
                           ->where('created_at', '<=', $until->toIso8601String())

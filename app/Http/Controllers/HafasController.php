@@ -163,10 +163,9 @@ abstract class HafasController extends Controller
         TravelType   $type = null,
         bool         $skipTimeShift = false
     ) {
-        $client   = self::getHttpClient();
-        $time     = $skipTimeShift ? $when : (clone $when)->shiftTimezone("Europe/Berlin");
-        // DB-Rest is very wonky when
-        $query    = [
+        $client = self::getHttpClient();
+        $time   = $skipTimeShift ? $when : (clone $when)->shiftTimezone("Europe/Berlin");
+        $query  = [
             'when'                       => $time->toIso8601String(),
             'duration'                   => $duration,
             HTT::NATIONAL_EXPRESS->value => self::checkTravelType($type, TravelType::EXPRESS),

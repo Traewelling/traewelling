@@ -23,7 +23,7 @@ abstract class DashboardController extends Controller
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
-                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
+                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20))
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('statuses.user_id', $followingIDs)
                      ->whereNotIn('statuses.user_id', $user->mutedUsers->pluck('id'))
@@ -71,7 +71,7 @@ abstract class DashboardController extends Controller
                          });
                      })
                      ->where('users.shadow_banned', false)
-                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20)->toIso8601String())
+                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20))
                      ->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
                      ->whereNotIn('statuses.user_id', $user->blockedUsers()->select('blocked_id'))
                      ->whereNotIn('statuses.user_id', $user->blockedByUsers()->select('user_id'))

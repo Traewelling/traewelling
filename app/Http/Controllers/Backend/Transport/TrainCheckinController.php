@@ -222,7 +222,7 @@ abstract class TrainCheckinController extends Controller
         );
 
         $checkin->update([
-                             'arrival'     => $newDestinationStopover->arrival_planned->toIso8601String(),
+                             'arrival'     => $newDestinationStopover->arrival_planned,
                              'destination' => $newDestinationStopover->trainStation->ibnr,
                              'distance'    => $newDistance,
                              'points'      => $pointsResource->points,

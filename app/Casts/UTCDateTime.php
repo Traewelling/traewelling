@@ -2,7 +2,7 @@
 
 namespace App\Casts;
 
-use Exception;
+use Carbon\Exceptions\InvalidTimeZoneException;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -25,7 +25,7 @@ class UTCDateTime implements CastsAttributes
      * @param array  $attributes
      *
      * @return Carbon|null
-     * @throws Exception
+     * @throws InvalidTimeZoneException
      */
     public function set($model, string $key, $value, array $attributes): Carbon|null {
         if ($value === null) {
@@ -33,7 +33,7 @@ class UTCDateTime implements CastsAttributes
         }
         if (!$value instanceof Carbon) {
             if (is_string($value) && !str_contains($value, '+')) {
-                throw new Exception("THIS IS A WONKY LOCAL TIME!!1 -> $value");
+                throw new InvalidTimeZoneException("Given timestamp has no valid timezone in it -> $value");
             }
             $value = Carbon::parse($value);
         }
