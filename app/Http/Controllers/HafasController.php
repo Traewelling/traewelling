@@ -169,15 +169,15 @@ abstract class HafasController extends Controller
         $query    = [
             'when'                       => $time->toIso8601String(),
             'duration'                   => $duration,
-            HTT::NATIONAL_EXPRESS->value => (is_null($type) || $type === TravelType::EXPRESS) ? 'true' : 'false',
-            HTT::NATIONAL->value         => (is_null($type) || $type === TravelType::EXPRESS) ? 'true' : 'false',
-            HTT::REGIONAL_EXP->value     => (is_null($type) || $type === TravelType::REGIONAL) ? 'true' : 'false',
-            HTT::REGIONAL->value         => (is_null($type) || $type === TravelType::REGIONAL) ? 'true' : 'false',
-            HTT::SUBURBAN->value         => (is_null($type) || $type === TravelType::SUBURBAN) ? 'true' : 'false',
-            HTT::BUS->value              => (is_null($type) || $type === TravelType::BUS) ? 'true' : 'false',
-            HTT::FERRY->value            => (is_null($type) || $type === TravelType::FERRY) ? 'true' : 'false',
-            HTT::SUBWAY->value           => (is_null($type) || $type === TravelType::SUBWAY) ? 'true' : 'false',
-            HTT::TRAM->value             => (is_null($type) || $type === TravelType::TRAM) ? 'true' : 'false',
+            HTT::NATIONAL_EXPRESS->value => self::checkTravelType($type, TravelType::EXPRESS),
+            HTT::NATIONAL->value         => self::checkTravelType($type, TravelType::EXPRESS),
+            HTT::REGIONAL_EXP->value     => self::checkTravelType($type, TravelType::REGIONAL),
+            HTT::REGIONAL->value         => self::checkTravelType($type, TravelType::REGIONAL),
+            HTT::SUBURBAN->value         => self::checkTravelType($type, TravelType::SUBURBAN),
+            HTT::BUS->value              => self::checkTravelType($type, TravelType::BUS),
+            HTT::FERRY->value            => self::checkTravelType($type, TravelType::FERRY),
+            HTT::SUBWAY->value           => self::checkTravelType($type, TravelType::SUBWAY),
+            HTT::TRAM->value             => self::checkTravelType($type, TravelType::TRAM),
             HTT::TAXI->value             => 'false',
         ];
         $response = $client->get('/stops/' . $station->ibnr . '/departures', $query);
@@ -187,6 +187,10 @@ abstract class HafasController extends Controller
         }
 
         return json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
+    }
+
+    public static function checkTravelType(?TravelType $type, TravelType $travelType): string {
+        return (is_null($type) || $type === $travelType) ? 'true' : 'false';
     }
 
     /**
@@ -206,10 +210,10 @@ abstract class HafasController extends Controller
     ): Collection {
         try {
             $requestTime = is_null($station->time_offset) ? $when : (clone $when)->subHours($station->time_offset);
-            $data = self::fetchDepartures($station, $requestTime, $duration, $type, !$station->shift_time);
+            $data        = self::fetchDepartures($station, $requestTime, $duration, $type, !$station->shift_time);
             foreach ($data as $departure) {
                 if ($departure?->when) {
-                    $time = Carbon::parse($departure->when);
+                    $time     = Carbon::parse($departure->when);
                     $timezone = $time->tz->toOffsetName();
 
                     // check for an offset between results
@@ -219,12 +223,14 @@ abstract class HafasController extends Controller
                         // If so, fetch again **without** adjusting the timezone
                         if ($timezone === CarbonTimeZone::create("Europe/Berlin")->toOffsetName()) {
                             $data = self::fetchDepartures($station, $when, $duration, $type, true);
+
                             $station->shift_time = false;
                             $station->save();
                             break;
                         }
                         // if the timezone is not equal to Europe/Berlin, fetch the offset
                         $data = self::fetchDepartures($station, (clone $when)->subHours($offset), $duration, $type);
+
                         $station->time_offset = $offset;
                         $station->save();
                     }

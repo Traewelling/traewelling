@@ -27,8 +27,7 @@ class UTCDateTime implements CastsAttributes
      * @return Carbon|null
      * @throws Exception
      */
-    public function set($model, string $key, $value, array $attributes): Carbon|null
-    {
+    public function set($model, string $key, $value, array $attributes): Carbon|null {
         if ($value === null) {
             return null;
         }
