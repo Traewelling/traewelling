@@ -133,3 +133,7 @@ public/js/*.js.LICENSE.txt
 public/css/*.css
 public/css/*.css.map
 .phpunit.result.cache
+
+# Nix
+.devenv
+.direnv
