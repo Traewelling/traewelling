@@ -131,6 +131,18 @@
         .progress {
             .progress-bar {
                 background: $dm-trwlRot-shape;
+                &.progress-pride {
+                    background: linear-gradient(
+                        66deg,
+                        hsl(0, 75%, 60%) 0 14.28%,
+                        hsl(39, 75%, 47%) 0 28.57%,
+                        hsl(60, 65%, 50%) 0 42.85%,
+                        hsl(120, 75%, 40%) 0 57.14%,
+                        hsl(181, 75%, 40%) 0 71.42%,
+                        hsl(240, 75%, 60%) 0 85.71%,
+                        hsl(275, 75%, 35%) 0
+                    );
+                }
             }
         }
 
