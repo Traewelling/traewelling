@@ -214,8 +214,6 @@
       <path value="$PROJECT_DIR$/vendor/_laravel_idea" />
       <path value="$PROJECT_DIR$/vendor/psr/clock" />
       <path value="$PROJECT_DIR$/vendor/fidry/cpu-core-counter" />
-      <path value="$PROJECT_DIR$/vendor/guzzlehttp/oauth-subscriber" />
-      <path value="$PROJECT_DIR$/vendor/coderjerk/bird-elephant" />
       <path value="$PROJECT_DIR$/vendor/spatie/laravel-webhook-server" />
       <path value="$PROJECT_DIR$/vendor/spatie/laravel-validation-rules" />
       <path value="$PROJECT_DIR$/vendor/guzzlehttp/uri-template" />
@@ -223,6 +221,8 @@
       <path value="$PROJECT_DIR$/vendor/mrkriskrisu/db-wagenreihung-php" />
       <path value="$PROJECT_DIR$/vendor/league/flysystem-local" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php83" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php81" />
+      <path value="$PROJECT_DIR$/vendor/stella-maris/clock" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />
