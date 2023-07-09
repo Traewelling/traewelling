@@ -131,11 +131,21 @@ a ::v-deep(b) {
 
 .dark {
     .fas,
-    .far {
+    .far,
+    .fa {
         filter: invert(1);
     }
     a {
         color: $dm-body;
+    }
+    .unread {
+        &.warning {
+            background-color: mix($dm-base, $bahnrot, 78%);
+        }
+
+        &.neutral {
+            background-color: mix($dm-base, $blue, 78%);
+        }
     }
 }
 </style>
