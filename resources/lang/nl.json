@@ -685,5 +685,8 @@
     "settings.colorscheme.set": "Thema wijzigen",
     "settings.colorscheme.light": "Licht thema",
     "settings.colorscheme.dark": "Donker thema",
-    "settings.colorscheme.auto": "Systeemthema"
+    "settings.colorscheme.auto": "Systeemthema",
+    "page-only-available-in-language": "Deze pagina is alleen beschikbaar in het :language.",
+    "language.en": "Engels",
+    "changelog": "Wijzigingslog"
 }
