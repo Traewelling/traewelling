@@ -25,7 +25,7 @@ class EventController extends Controller
 
     private const VALIDATOR_RULES = [
         'name'                 => ['required', 'max:255'],
-        'hashtag'              => ['required', 'max:30'],
+        'hashtag'              => ['nullable', 'max:30'],
         'host'                 => ['required', 'max:255'],
         'url'                  => ['nullable', 'url'],
         'nearest_station_name' => ['required', 'max:255'],

@@ -50,7 +50,7 @@
                                 <tr>
                                     <td>{{$event->id}}</td>
                                     <td>
-                                        <a href="{{route('statuses.byEvent', ['eventSlug' => $event->slug])}}"
+                                        <a href="{{route('event', ['slug' => $event->slug])}}"
                                            target="{{$event->slug}}">
                                             {{$event->name}}
                                         </a>

@@ -48,7 +48,7 @@
                                                 </td>
                                                 <td>
                                                     <a class="btn btn-primary btn-sm"
-                                                       href="{{route('statuses.byEvent', ['eventSlug' => $event->slug])}}">
+                                                       href="{{route('event', ['slug' => $event->slug])}}">
                                                         {{__('menu.show-more')}}
                                                         <em class="fas fa-angle-double-right"></em>
                                                     </a>

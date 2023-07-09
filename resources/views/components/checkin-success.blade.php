@@ -65,7 +65,7 @@
             <p>
                 {!!  __('events.on-your-way', [
                     "name" => $event['name'],
-                    "url" => route('statuses.byEvent', ['eventSlug' => $event['slug']])
+                    "url" => route('event', ['slug' => $event['slug']])
                 ]) !!}
             </p>
         @endif

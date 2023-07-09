@@ -202,25 +202,25 @@ class PrivateProfileVisibilityTest extends ApiTestCase
 
         // Can a guest see the statuses of bob on the dashboard? => no
         Auth::logout();
-        $guest = $this->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+        $guest = $this->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $this->assertGuest();
         $guest->assertDontSee($this->users->bob->user->username);
 
         // Can Bob see the statuses of bob on the event page? => yes
         $bob = $this->actingAs($this->users->bob->user, 'web')
-                    ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+                    ->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $bob->assertSee($this->users->bob->user->username);
         $bob->assertSuccessful();
 
         // Can Alice see the statuses of bob on the dashboard? => no
         $alice = $this->actingAs($this->users->alice->user, 'web')
-                      ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+                      ->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $alice->assertDontSee($this->users->bob->user->username);
         $alice->assertSuccessful();
 
         // Can Gertrud see the statuses of bob on the dashboard? => yes
         $gertrud = $this->actingAs($this->users->gertrud->user, 'web')
-                        ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+                        ->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $gertrud->assertSee($this->users->bob->user->username);
         $gertrud->assertSuccessful();
     }

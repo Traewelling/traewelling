@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
  * @property Business         business
  * @property int              event_id
  * @property StatusVisibility visibility
- * @property TrainCheckin $trainCheckin
+ * @property TrainCheckin     $trainCheckin
  */
 class Status extends Model
 {
@@ -65,15 +65,7 @@ class Status extends Model
     }
 
     public function getSocialTextAttribute(): string {
-        $postText = trans_choice(
-            key:     'controller.transport.social-post',
-            number:  preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
-            replace: [
-                         'lineName'    => $this->trainCheckin->HafasTrip->linename,
-                         'destination' => $this->trainCheckin->destinationStation->name
-                     ]
-        );
-        if ($this->event !== null) {
+        if (isset($this->event) && $this->event->hashtag !== null) {
             $postText = trans_choice(
                 key:     'controller.transport.social-post-with-event',
                 number:  preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
@@ -83,11 +75,20 @@ class Status extends Model
                              'hashtag'     => $this->event->hashtag
                          ]
             );
+        } else {
+            $postText = trans_choice(
+                key:     'controller.transport.social-post',
+                number:  preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
+                replace: [
+                             'lineName'    => $this->trainCheckin->HafasTrip->linename,
+                             'destination' => $this->trainCheckin->destinationStation->name
+                         ]
+            );
         }
 
 
         if (isset($this->body)) {
-            if ($this->event !== null) {
+            if ($this->event?->hashtag !== null) {
                 $eventIntercept = __('controller.transport.social-post-for', [
                     'hashtag' => $this->event->hashtag
                 ]);

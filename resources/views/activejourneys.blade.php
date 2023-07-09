@@ -38,7 +38,7 @@
                                 @isset($event->station)
                                 "ts": {!! $event->station !!},
                                 @endisset
-                                "mapLink": "{{ route('statuses.byEvent', ['eventSlug' => $event->slug]) }}",
+                                "mapLink": "{{ route('event', ['slug' => $event->slug]) }}",
                                 "closestLink": "@isset($event->station) <a href=\"{{route('trains.stationboard', ['provider' => 'train', 'station' => $event->station->ibnr])}}\" class=\"text-trwl clearfix\">{{$event->station->name}}</a> @endisset"
                             },
                             @endforeach
