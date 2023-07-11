@@ -85,6 +85,7 @@ Route::get('/auth/redirect/mastodon', [MastodonController::class, 'redirect']);
 Route::get('/callback/mastodon', [MastodonController::class, 'callback']);
 
 Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
+     ->whereNumber('id')
      ->name('statuses.get');
 
 Route::prefix('blog')->group(function() {
