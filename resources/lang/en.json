@@ -687,5 +687,8 @@
     "active-journeys": "active journey|active journeys",
     "page-only-available-in-language": "This page is only available in :language.",
     "language.en": "English",
-    "changelog": "Changelog"
+    "changelog": "Changelog",
+    "time-is-planned": "Planned time",
+    "time-is-real": "Real time (as of time table api)",
+    "time-is-manual": "Time was overwritten manually"
 }
