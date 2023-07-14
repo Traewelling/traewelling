@@ -120,11 +120,6 @@
         background-color: lighten($dm-base, 45%);
     }
 
-    .map,
-    #activeJourneys #map {
-        filter: grayscale(100%) invert(100%);
-    }
-
     // status
 
     .status {
@@ -414,5 +409,19 @@
 
     .color-main {
         color: $dm-trwlRot;
+    }
+
+    .leaflet-tile {
+        filter: invert(1) grayscale(100%) sepia(100%) hue-rotate(180deg)
+            saturate(0.7);
+    }
+
+    .leaflet-control-attribution {
+        color: $dm-body;
+        background: opacify($color: $dm-base, $amount: 0.8);
+    }
+
+    .leaflet-interactive {
+        stroke: $dm-trwlRot-shape;
     }
 }
