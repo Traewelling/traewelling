@@ -8,14 +8,20 @@ $(document).on("click", ".join", function (event) {
             .find(".modal-title")
             .html(
                 source.trwlLinename +
-                ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
-                source.trwlStopName
+                    ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
+                    source.trwlStopName
             );
         modal.find("#input-tripID").val(source.trwlTripId);
         modal.find("#input-destination").val(source.trwlDestination);
         modal.find("#input-arrival").val(source.trwlArrival);
         modal.find("#input-start").val(source.trwlStart);
         modal.find("#input-departure").val(source.trwlDeparture);
+        // case for small number of events
+        modal.find("#event_check").each(function () {
+            $(this).prop("checked", $(this).val() == source.trwlEventId);
+        });
+        // case for large number of events
+        modal.find("#event-dropdown").val(source.trwlEventId);
     });
 });
 
@@ -36,33 +42,13 @@ document.querySelectorAll('.status .like').forEach((likeButton) => {
         if (pointerEvent.target.className === "like far fa-star") {
             Status.like(statusId)
                 .then(response => {
-                    if (!response.ok) {
-                        return;
-                    }
-
-                    pointerEvent.target.className = "like fas fa-star animated bounceIn";
-                    response.json().then((data) => {
-                        let likeCount           = data.data.count;
-                        spanLikeCount.innerText = likeCount;
-                        if (likeCount === 0) {
-                            spanLikeCount.classList.add("d-none");
-                        } else {
-                            spanLikeCount.classList.remove("d-none");
-                        }
-                    });
-                });
-            return;
-        }
-
-        Status.unlike(statusId)
-            .then(response => {
                 if (!response.ok) {
                     return;
                 }
-                pointerEvent.target.className = "like far fa-star";
 
+                    pointerEvent.target.className = "like fas fa-star animated bounceIn";
                 response.json().then((data) => {
-                    let likeCount           = data.data.count;
+                        let likeCount           = data.data.count;
                     spanLikeCount.innerText = likeCount;
                     if (likeCount === 0) {
                         spanLikeCount.classList.add("d-none");
@@ -71,6 +57,26 @@ document.querySelectorAll('.status .like').forEach((likeButton) => {
                     }
                 });
             });
+            return;
+        }
+
+        Status.unlike(statusId)
+            .then(response => {
+            if (!response.ok) {
+                return;
+            }
+            pointerEvent.target.className = "like far fa-star";
+
+            response.json().then((data) => {
+                    let likeCount           = data.data.count;
+                spanLikeCount.innerText = likeCount;
+                if (likeCount === 0) {
+                    spanLikeCount.classList.add("d-none");
+                } else {
+                    spanLikeCount.classList.remove("d-none");
+                }
+            });
+        });
     })
 });
 
@@ -152,16 +158,16 @@ $(document).on("click", ".trwl-share", function (event) {
 
     if (navigator.share) {
         navigator.share({
-            title: "Träwelling",
-            text: shareText,
+                title: "Träwelling",
+                text: shareText,
             url: shareUrl
-        })
+            })
             .catch(console.error);
     } else {
         navigator.clipboard.writeText(shareText + " " + shareUrl)
             .then(() => {
                 window.notyf.success('Copied to clipboard');
-            });
+        });
     }
 
 });

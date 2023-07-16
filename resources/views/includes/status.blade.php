@@ -251,6 +251,7 @@
                                             data-trwl-arrival="{{$status->trainCheckIn->arrival}}"
                                             data-trwl-start="{{$status->trainCheckIn->origin}}"
                                             data-trwl-departure="{{$status->trainCheckIn->departure}}"
+                                            data-trwl-event-id="{{$status->event?->id}}"
                                     >
                                         <div class="dropdown-icon-suspense">
                                             <i class="fas fa-user-plus" aria-hidden="true"></i>
