@@ -411,9 +411,14 @@
         color: $dm-trwlRot;
     }
 
-    .leaflet-tile {
-        filter: invert(1) grayscale(100%) sepia(100%) hue-rotate(180deg)
-            saturate(0.7);
+    .leaflet-layer {
+        &:nth-child(1) .leaflet-tile {
+            filter: invert(1) grayscale(100%) sepia(100%) hue-rotate(180deg)
+                saturate(0.7);
+        }
+        &:nth-child(2) .leaflet-tile {
+            filter: invert(1) hue-rotate(180deg) grayscale(70%) opacity(0.65);
+        }
     }
 
     .leaflet-control-attribution {
