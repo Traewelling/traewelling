@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use App\Casts\UTCDateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,11 +17,21 @@ use Illuminate\Support\Facades\Log;
 /**
  * @property int           $id
  * @property int           $status_id
+ * @property int           $user_id
+ * @property string        $trip_id
+ * @property int           $origin
+ * @property int           $destination
+ * @property int           $distance
+ * @property UTCDateTime   $departure
+ * @property UTCDateTime   $real_departure
+ * @property UTCDateTime   $arrival
+ * @property UTCDateTime   $real_arrival
+ * @property int           $points
+ * @property bool          $forced
+ * @property int           $duration
  * @property HafasTrip     $HafasTrip
  * @property TrainStopover $origin_stopover
  * @property TrainStopover $destination_stopover
- * @property TrainStation  $originStation
- * @property TrainStation  $destinationStation
  */
 class TrainCheckin extends Model
 {
@@ -32,11 +43,12 @@ class TrainCheckin extends Model
         'distance', 'duration', 'departure', 'real_departure', 'arrival', 'real_arrival', 'points', 'forced',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
-    protected $appends  = ['origin_stopover', 'destination_stopover', 'speed'];
+    protected $appends  = ['origin_stopover', 'destination_stopover', 'speed', 'alsoOnThisConnection'];
     protected $casts    = [
         'id'             => 'integer',
         'status_id'      => 'integer',
         'user_id'        => 'integer',
+        'trip_id'        => 'string',
         'origin'         => 'integer',
         'destination'    => 'integer',
         'distance'       => 'integer',

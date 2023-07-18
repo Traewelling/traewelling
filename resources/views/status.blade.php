@@ -37,6 +37,51 @@
                         {{$status->trainCheckin->HafasTrip->last_refreshed->diffForHumans()}}
                     </small>
                 @endif
+
+                @if($status->trainCheckin->alsoOnThisConnection->count() > 0)
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="fs-4 text-trwl">
+                                <i class="fa-solid fa-users-between-lines"></i>
+                                Also on this connection
+                            </h3>
+                            <div class="table-responsive">
+                                <table class="table text-center align-middle">
+                                    @foreach($status->trainCheckin->alsoOnThisConnection as $otherStatus)
+                                        <tr>
+                                            <td>
+                                                <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
+                                                    <a href="{{ route('statuses.get', ['id' => $otherStatus->id]) }}">
+                                                        <img
+                                                            src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($otherStatus->user) }}"
+                                                            alt="{{$otherStatus->user->username}}"
+                                                            loading="lazy"
+                                                            decoding="async"
+                                                        />
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('statuses.get', ['id' => $otherStatus->id]) }}">
+                                                    {{ $otherStatus->user->name }} <br/>
+                                                    <small>{{ '@' . $otherStatus->user->username }}</small>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                {{$otherStatus->trainCheckin->originStation->name}}
+                                            </td>
+                                            <td><i class="fa-solid fa-arrow-right"></i></td>
+                                            <td>
+                                                {{$otherStatus->trainCheckin->destinationStation->name}}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
         @if(auth()->check() && auth()->user()->id == $status->user_id)

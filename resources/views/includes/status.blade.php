@@ -38,7 +38,7 @@
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
                         @if(isset($status->trainCheckin->real_departure) && $status->trainCheckin->real_departure->toString() !== $status->trainCheckin->origin_stopover->departure_planned->toString())
-                        <small style="text-decoration: line-through;" class="text-muted">
+                            <small style="text-decoration: line-through;" class="text-muted">
                                 {{ userTime($status->trainCheckin->origin_stopover->departure_planned) }}
                             </small>
                             &nbsp;
