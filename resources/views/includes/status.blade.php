@@ -34,20 +34,26 @@
                 <li>
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
-                        @isset($status->trainCheckin->real_departure)
-                            <small style="text-decoration: line-through;" class="text-muted">
+                        @if(isset($status->trainCheckin->real_departure) && $status->trainCheckin->real_departure->toString() !== $status->trainCheckin->origin_stopover->departure_planned->toString())
+                        <small style="text-decoration: line-through;" class="text-muted">
                                 {{ userTime($status->trainCheckin->origin_stopover->departure_planned, __('time-format')) }}
                             </small>
                             &nbsp;
-                            {{ userTime($status->trainCheckin->real_departure, __('time-format')) }}
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-manual')}}">
+                                {{ userTime($status->trainCheckin->real_departure, __('time-format')) }}
+                            </span>
                         @elseif($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
                             <small style="text-decoration: line-through;" class="text-muted">
                                 {{ userTime($status->trainCheckin->origin_stopover->departure_planned, __('time-format')) }}
                             </small>
                             &nbsp;
-                            {{ userTime($status->trainCheckin->origin_stopover->departure_real, __('time-format')) }}
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-real')}}">
+                                {{ userTime($status->trainCheckin->origin_stopover->departure_real, __('time-format')) }}
+                            </span>
                         @else
-                            {{ userTime($status->trainCheckin?->origin_stopover?->departure->isoFormat(__('time-format')) ?? $status->trainCheckin->departure, __('time-format')) }}
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-planned')}}">
+                                {{ userTime($status->trainCheckin?->origin_stopover?->departure->isoFormat(__('time-format')) ?? $status->trainCheckin->departure, __('time-format')) }}
+                            </span>
                         @endif
                     </span>
 
@@ -129,20 +135,26 @@
                 <li>
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
-                        @isset($status->trainCheckin->real_arrival)
+                        @if(isset($status->trainCheckin->real_arrival) && $status->trainCheckin->real_arrival->toString() !== $status->trainCheckin->destination_stopover->arrival_planned->toString())
                             <small style="text-decoration: line-through;" class="text-muted">
                                 {{ userTime($status->trainCheckin->destination_stopover->arrival_planned, __('time-format')) }}
                             </small>
                             &nbsp;
-                            {{ userTime($status->trainCheckin->real_arrival, __('time-format')) }}
-                        @elseif($status->trainCheckin?->destination_stopover?->isArrivalDelayed)
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-manual')}}">
+                                {{ userTime($status->trainCheckin->real_arrival, __('time-format')) }}
+                            </span>
+                        @elseif($status->trainCheckin?->destination_stopover?->isArrivalDelayed && !isset($status->trainCheckin->real_arrival))
                             <small style="text-decoration: line-through;" class="text-muted">
                                 {{ userTime($status->trainCheckin->destination_stopover->arrival_planned, __('time-format')) }}
                             </small>
                             &nbsp;
-                            {{ userTime($status->trainCheckin->destination_stopover->arrival_real, __('time-format')) }}
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-real')}}">
+                                {{ userTime($status->trainCheckin->destination_stopover->arrival_real, __('time-format')) }}
+                            </span>
                         @else
-                            {{ userTime($status->trainCheckin?->destination_stopover?->arrival?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival, __('time-format')) }}
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-planned')}}">
+                                {{ userTime($status->trainCheckin?->destination_stopover?->arrival?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival, __('time-format')) }}
+                            </span>
                         @endif
                     </span>
                     <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Destination->ibnr])}}"
@@ -247,21 +259,23 @@
                                     </button>
                                 </li>
                                 <x-mute-button :user="$status->user" :dropdown="true"/>
-                                <x-block-button :user="$status->user" :dropdown="true"/>@endif
-                @admin
-                <li>
+                                <x-block-button :user="$status->user" :dropdown="true"/>
+                            @endif
+                            @admin
+                            <li>
                                 <hr class="dropdown-divider"/>
                             </li>
                             <li>
-                    <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}"class="dropdown-item">
+                                <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}"
+                                   class="dropdown-item">
                                     <div class="dropdown-icon-suspense">
-                        <i class="fas fa-tools" aria-hidden="true"></i>
-                    </div>
+                                        <i class="fas fa-tools" aria-hidden="true"></i>
+                                    </div>
                                     Admin-Interface
                                 </a>
-                </li>
-                @endadmin
-            @endauth
+                            </li>
+                            @endadmin
+                        @endauth
                     </ul>
                 </div>
             </li>

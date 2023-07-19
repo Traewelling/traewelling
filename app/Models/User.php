@@ -92,7 +92,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getTrainDurationAttribute(): float {
         return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
-                           ->select(['arrival', 'departure'])
+                           ->select(['trip_id', 'origin', 'destination', 'arrival', 'departure'])
                            ->get()
                            ->sum('duration');
     }

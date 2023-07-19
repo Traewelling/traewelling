@@ -687,5 +687,11 @@
     "map-providers.cargo": "Cargo",
     "map-providers.open-railway-map": "Open Railway Map",
     "stationboard.check-tweet": "Twittern",
-    "active-journeys": "aktive Fahrt|aktive Fahrten"
+    "active-journeys": "aktive Fahrt|aktive Fahrten",
+    "page-only-available-in-language": "Diese Seite ist nur auf :language verfügbar.",
+    "language.en": "Englisch",
+    "changelog": "Changelog",
+    "time-is-planned": "Planmäßige Zeit",
+    "time-is-real": "Echtzeit (laut Fahrplanschnittstelle)",
+    "time-is-manual": "Zeit wurde manuell überschrieben"
 }

@@ -4,12 +4,12 @@ namespace Database\Factories;
 
 use App\Enum\HafasTravelType;
 use App\Http\Controllers\TransportController;
+use App\Models\HafasOperator;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use App\Models\TrainStopover;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use JsonException;
 
 class HafasTripFactory extends Factory
 {
@@ -23,15 +23,18 @@ class HafasTripFactory extends Factory
         }
 
         return [
-            'trip_id'     => $this->faker->unique()->numerify('1|######|##|##|') . Carbon::now()->format('dmY'),
-            'category'    => $this->faker->randomElement(HafasTravelType::cases())->value,
-            'number'      => $this->faker->bothify('??-##'),
-            'linename'    => $this->faker->bothify('?? ##'),
-            'origin'      => $origin->ibnr,
-            'destination' => $destination->ibnr,
-            'departure'   => Carbon::now()->subMinutes(15)->format('c'),
-            'arrival'     => Carbon::now()->addMinutes(80)->format('c'),
-            'polyline_id' => null, //Will be set in the configure function
+            'trip_id'        => $this->faker->unique()->numerify('1|######|##|##|') . Carbon::now()->format('dmY'),
+            'category'       => $this->faker->randomElement(HafasTravelType::cases())->value,
+            'number'         => $this->faker->bothify('??-##'),
+            'linename'       => $this->faker->bothify('?? ##'),
+            'journey_number' => $this->faker->numberBetween(10000, 99999),
+            'operator_id'    => HafasOperator::factory()->create()->id,
+            'origin'         => $origin->ibnr,
+            'destination'    => $destination->ibnr,
+            'polyline_id'    => null, //Will be set in the configure function
+            'departure'      => Carbon::now()->subMinutes(15)->format('c'),
+            'arrival'        => Carbon::now()->addMinutes(80)->format('c'),
+            'delay'          => 0, //TODO: is deprecated? used?
         ];
     }
 

@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 
 /**
- * @property int $id
- * @property int $status_id
- * @property HafasTrip $HafasTrip
+ * @property int           $id
+ * @property int           $status_id
+ * @property HafasTrip     $HafasTrip
  * @property TrainStopover $origin_stopover
  * @property TrainStopover $destination_stopover
  */
@@ -128,7 +128,9 @@ class TrainCheckin extends Model
      * @return int
      */
     public function getDurationAttribute(): int {
-        return ($this->real_arrival ?? $this->arrival)->diffInMinutes($this->real_departure ?? $this->departure);
+        $departure = $this->real_departure ?? $this->origin_stopover->departure ?? $this->departure;
+        $arrival   = $this->real_arrival ?? $this->destination_stopover?->arrival ?? $this->arrival;
+        return $arrival->diffInMinutes($departure);
     }
 
     public function getSpeedAttribute(): float {
