@@ -5,18 +5,14 @@ namespace Tests\Unit;
 use App\Enum\HafasTravelType;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-class TransportControllerTest extends TestCase
+class TransportControllerTest extends UnitTestCase
 {
-
-    use RefreshDatabase;
 
     /**
      * Just the good things.
      */
-    public function testCalculateTrainPoints_positive_tests() {
+    public function testCalculateTrainPoints_positive_tests(): void {
         // 50km in an IC/ICE => 50/10 + 10 = 15 points
         $this->assertEquals(15, PointsCalculationController::calculatePoints(
             distanceInMeter: 50000,
@@ -43,7 +39,7 @@ class TransportControllerTest extends TestCase
     /**
      * I'm trying to check-into trains that depart in the future.
      */
-    public function testCalculateTrainPoints_early_checkins() {
+    public function testCalculateTrainPoints_early_checkins(): void {
         // < 20min before
         // 50/10 + 10 = 15
         $this->assertEquals(15, PointsCalculationController::calculatePoints(
@@ -74,7 +70,7 @@ class TransportControllerTest extends TestCase
     }
 
     /**
-     * I'm trying to check-into trains that have depart in the past.
+     * I'm trying to check-into trains that have departed in the past.
      */
     public function testCalculateTrainPoints_late_checkins(): void {
         // just before the Arrival
