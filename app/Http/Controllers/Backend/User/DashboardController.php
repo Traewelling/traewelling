@@ -33,7 +33,6 @@ abstract class DashboardController extends Controller
                          StatusVisibility::AUTHENTICATED->value
                      ])
                      ->orWhere('statuses.user_id', $user->id)
-                     ->withCount('likes')
                      ->latest()
                      ->simplePaginate(15);
     }
