@@ -42,8 +42,8 @@ class StatusController extends Controller
     public static function getStatus(int $statusId): Status {
         return Status::where('id', $statusId)
                      ->with([
-                                'user', 'trainCheckin', 'trainCheckin.Origin',
-                                'trainCheckin.Destination', 'trainCheckin.HafasTrip', 'event',
+                                'user', 'trainCheckin', 'trainCheckin.originStation',
+                                'trainCheckin.destinationStation', 'trainCheckin.HafasTrip', 'event',
                             ])
                      ->withCount('likes')
                      ->firstOrFail();
@@ -60,8 +60,8 @@ class StatusController extends Controller
         $statuses = Status::with([
                                      'likes',
                                      'user',
-                                     'trainCheckin.Origin',
-                                     'trainCheckin.Destination',
+                                     'trainCheckin.originStation',
+                                     'trainCheckin.destinationStation',
                                      'trainCheckin.HafasTrip.polyline',
                                      'trainCheckin.HafasTrip.stopovers.trainStation',
                                      'event'
@@ -231,8 +231,8 @@ class StatusController extends Controller
         return auth()->user()->statuses()
                      ->with('user',
                             'trainCheckin',
-                            'trainCheckin.Origin',
-                            'trainCheckin.Destination',
+                            'trainCheckin.originStation',
+                            'trainCheckin.destinationStation',
                             'trainCheckin.HafasTrip',
                             'event')
                      ->orderBy('created_at', 'DESC')

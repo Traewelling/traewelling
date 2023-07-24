@@ -129,7 +129,7 @@ class TransportTest extends ApiTestCase
                                                    'id', 'body', 'type', 'user', //and more...
                                                ],
                                                'points' => [
-                                                   'points', //TODO: should be renamed... this sounds weird duplictated.
+                                                   'points', //TODO: should be renamed... this sounds weird duplicated.
                                                    'calculation' => [
                                                        'base', 'distance', 'factor', 'reason',
                                                    ],
