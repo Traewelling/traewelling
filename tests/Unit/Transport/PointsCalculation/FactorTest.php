@@ -4,8 +4,9 @@ namespace Tests\Unit\Transport\PointsCalculation;
 
 use App\Enum\PointReason;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
+use Tests\Unit\UnitTestCase;
 
-class FactorTest
+class FactorTest extends UnitTestCase
 {
     public function testInTimeFactor(): void {
         $this->assertEquals(1, PointsCalculationController::getFactorByReason(PointReason::IN_TIME));
