@@ -129,7 +129,7 @@ class TrainCheckin extends Model
      */
     public function getDurationAttribute(): int {
         $departure = $this->real_departure ?? $this->origin_stopover->departure ?? $this->departure;
-        $arrival   = $this->real_arrival ?? $this->destination_stopover?->arrival ?? $this->arrival;
+        $arrival   = $this->real_arrival ?? $this->destination_stopover->arrival ?? $this->arrival;
         return $arrival->diffInMinutes($departure);
     }
 
