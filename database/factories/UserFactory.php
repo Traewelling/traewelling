@@ -48,6 +48,8 @@ class UserFactory extends Factory
                                                'stock_ssb.png',
                                                'stock_uestra.png',
                                                'stock_vy.png',
+                                               'stock_wikopf_sandwich.png',
+                                               'stock_schienenbus.png',
                                            ]);
     }
 }
