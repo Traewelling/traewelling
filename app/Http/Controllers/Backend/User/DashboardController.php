@@ -17,7 +17,7 @@ abstract class DashboardController extends Controller
         $followingIDs   = $user->follows->pluck('id');
         $followingIDs[] = $user->id;
         return Status::with([
-                                'event', 'likes', 'user', 'trainCheckin',
+                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'trainCheckin',
                                 'trainCheckin.originStation', 'trainCheckin.destinationStation',
                                 'trainCheckin.HafasTrip.stopovers.trainStation'
                             ])
@@ -39,7 +39,7 @@ abstract class DashboardController extends Controller
 
     public static function getGlobalDashboard(User $user): Paginator {
         return Status::with([
-                                'event', 'likes', 'user', 'trainCheckin',
+                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'trainCheckin',
                                 'trainCheckin.originStation', 'trainCheckin.destinationStation',
                                 'trainCheckin.HafasTrip.stopovers.trainStation'
                             ])
