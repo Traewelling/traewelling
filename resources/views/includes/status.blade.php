@@ -244,13 +244,13 @@
                             @else
                                 <li>
                                     <button type="button" class="dropdown-item join"
-                                            data-trwl-linename="{{$status->trainCheckIn->HafasTrip->linename}}"
-                                            data-trwl-stop-name="{{$status->trainCheckIn->destinationStation->name}}"
-                                            data-trwl-trip-id="{{$status->trainCheckIn->trip_id}}"
-                                            data-trwl-destination="{{$status->trainCheckIn->destination}}"
-                                            data-trwl-arrival="{{$status->trainCheckIn->arrival}}"
-                                            data-trwl-start="{{$status->trainCheckIn->origin}}"
-                                            data-trwl-departure="{{$status->trainCheckIn->departure}}"
+                                            data-trwl-linename="{{$status->trainCheckin->HafasTrip->linename}}"
+                                            data-trwl-stop-name="{{$status->trainCheckin->destinationStation->name}}"
+                                            data-trwl-trip-id="{{$status->trainCheckin->trip_id}}"
+                                            data-trwl-destination="{{$status->trainCheckin->destination}}"
+                                            data-trwl-arrival="{{$status->trainCheckin->arrival}}"
+                                            data-trwl-start="{{$status->trainCheckin->origin}}"
+                                            data-trwl-departure="{{$status->trainCheckin->departure}}"
                                     >
                                         <div class="dropdown-icon-suspense">
                                             <i class="fas fa-user-plus" aria-hidden="true"></i>
