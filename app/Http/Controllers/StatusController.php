@@ -229,16 +229,15 @@ class StatusController extends Controller
 
     public static function getFutureCheckins(): Paginator {
         return auth()->user()->statuses()
-                     ->with('user',
-                            'trainCheckin',
-                            'trainCheckin.originStation',
-                            'trainCheckin.destinationStation',
-                            'trainCheckin.HafasTrip',
-                            'event')
-                     ->orderBy('created_at', 'DESC')
+                     ->with([
+                                'user', 'trainCheckin.originStation', 'trainCheckin.destinationStation',
+                                'trainCheckin.HafasTrip', 'event',
+                            ])
+                     ->orderByDesc('created_at')
                      ->whereHas('trainCheckin', function($query) {
                          $query->where('departure', '>=', date('Y-m-d H:i:s', strtotime("+20min")));
-                     })->simplePaginate(15);
+                     })
+                     ->simplePaginate(15);
     }
 
     public static function createStatus(
