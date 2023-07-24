@@ -70,7 +70,7 @@ class Status extends Model
             number:  preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
             replace: [
                          'lineName'    => $this->trainCheckin->HafasTrip->linename,
-                         'destination' => $this->trainCheckin->Destination->name
+                         'destination' => $this->trainCheckin->destinationStation->name
                      ]
         );
         if ($this->event !== null) {
@@ -79,7 +79,7 @@ class Status extends Model
                 number:  preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
                 replace: [
                              'lineName'    => $this->trainCheckin->HafasTrip->linename,
-                             'destination' => $this->trainCheckin->Destination->name,
+                             'destination' => $this->trainCheckin->destinationStation->name,
                              'hashtag'     => $this->event->hashtag
                          ]
             );
@@ -95,7 +95,7 @@ class Status extends Model
 
             $appendix = strtr(' (@ :linename ➜ :destination:eventIntercept) #NowTräwelling', [
                 ':linename'       => $this->trainCheckin->HafasTrip->linename,
-                ':destination'    => $this->trainCheckin->Destination->name,
+                ':destination'    => $this->trainCheckin->destinationStation->name,
                 ':eventIntercept' => isset($eventIntercept) ? ' ' . $eventIntercept : ''
             ]);
 
@@ -113,12 +113,12 @@ class Status extends Model
     public function getDescriptionAttribute(): string {
         return __('description.status', [
             'username'    => $this->user->name,
-            'origin'      => $this->trainCheckin->Origin->name .
-                             ($this->trainCheckin->Origin->rilIdentifier ?
-                                 ' (' . $this->trainCheckin->Origin->rilIdentifier . ')' : ''),
-            'destination' => $this->trainCheckin->Destination->name .
-                             ($this->trainCheckin->Destination->rilIdentifier ?
-                                 ' (' . $this->trainCheckin->Destination->rilIdentifier . ')' : ''),
+            'origin'      => $this->trainCheckin->originStation->name .
+                             ($this->trainCheckin->originStation->rilIdentifier ?
+                                 ' (' . $this->trainCheckin->originStation->rilIdentifier . ')' : ''),
+            'destination' => $this->trainCheckin->destinationStation->name .
+                             ($this->trainCheckin->destinationStation->rilIdentifier ?
+                                 ' (' . $this->trainCheckin->destinationStation->rilIdentifier . ')' : ''),
             'date'        => $this->trainCheckin->departure->isoFormat(__('datetime-format')),
             'lineName'    => $this->trainCheckin->HafasTrip->linename
         ]);

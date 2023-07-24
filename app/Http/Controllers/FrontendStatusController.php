@@ -110,8 +110,8 @@ class FrontendStatusController extends Controller
             'description' => trans_choice('status.ogp-description', preg_match('/\s/', $status->trainCheckin->HafasTrip->linename), [
                 'linename'    => $status->trainCheckin->HafasTrip->linename,
                 'distance'    => number($status->trainCheckin->distance / 1000, 1),
-                'destination' => $status->trainCheckin->Destination->name,
-                'origin'      => $status->trainCheckin->Origin->name
+                'destination' => $status->trainCheckin->destinationStation->name,
+                'origin'      => $status->trainCheckin->originStation->name
             ]),
             'image'       => ProfilePictureController::getUrl($status->user),
             'polyline'    => isset($polyline) ? json_encode($polyline, JSON_THROW_ON_ERROR) : null,

@@ -57,9 +57,9 @@
                         @endif
                     </span>
 
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Origin->ibnr])}}"
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->originStation->ibnr])}}"
                        class="text-trwl clearfix">
-                        {{$status->trainCheckin->Origin->name}}
+                        {{$status->trainCheckin->originStation->name}}
                     </a>
 
                     <p class="train-status text-muted">
@@ -157,9 +157,9 @@
                             </span>
                         @endif
                     </span>
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Destination->ibnr])}}"
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->destinationStation->ibnr])}}"
                        class="text-trwl clearfix">
-                        {{$status->trainCheckin->Destination->name}}
+                        {{$status->trainCheckin->destinationStation->name}}
                     </a>
                 </li>
             </ul>
