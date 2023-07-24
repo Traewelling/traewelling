@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\Frontend\AccountController;
+use App\Http\Controllers\Frontend\ChangelogController;
 use App\Http\Controllers\Frontend\DevController;
 use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\Export\ExportController;
@@ -75,12 +76,16 @@ Route::get('/statuses/event/{eventSlug}', [FrontendStatusController::class, 'sta
 Route::get('/events', [EventController::class, 'renderEventOverview'])
      ->name('events');
 
+Route::get('/changelog', [ChangelogController::class, 'renderChangelog'])
+     ->name('changelog');
+
 Auth::routes(['verify' => true]);
 
 Route::get('/auth/redirect/mastodon', [MastodonController::class, 'redirect']);
 Route::get('/callback/mastodon', [MastodonController::class, 'callback']);
 
 Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
+     ->whereNumber('id')
      ->name('statuses.get');
 
 Route::prefix('blog')->group(function() {
@@ -121,12 +126,12 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('year-in-review', [YearInReviewController::class, 'show']);
 
     Route::post('/ics/createToken', [IcsController::class, 'createIcsToken'])
-         ->name('ics.createToken');
+         ->name('ics.createToken'); //TODO: Replace with API Endpoint
     Route::post('/ics/revokeToken', [IcsController::class, 'revokeIcsToken'])
-         ->name('ics.revokeToken');
+         ->name('ics.revokeToken'); //TODO: Replace with API Endpoint
 
     Route::post('/destroy/provider', [SocialController::class, 'destroyProvider'])
-         ->name('provider.destroy');
+         ->name('provider.destroy'); //TODO: Replace with API Endpoint
 
     Route::prefix('stats')->group(static function() {
         Route::get('/', [StatisticController::class, 'renderMainStats'])
@@ -138,7 +143,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     });
 
     Route::get('/support', [SupportController::class, 'renderSupportPage'])->name('support');
-    Route::post('/support/submit', [SupportController::class, 'submit'])->name('support.submit');
+    Route::post('/support/submit', [SupportController::class, 'submit'])->name('support.submit'); //TODO: Replace with API Endpoint
 
     Route::prefix('settings')->group(function() {
 
@@ -146,9 +151,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
             Route::get('/', [DevController::class, 'renderAppList'])->name('dev.apps');
             Route::get('/create', [DevController::class, 'renderCreateApp'])->name('dev.apps.create');
             Route::get('/{appId}', [DevController::class, 'renderUpdateApp'])->name('dev.apps.edit');
-            Route::post('/{appId}', [DevController::class, 'updateApp'])->name('dev.apps.update');
-            Route::post('/{appId}/destroy', [DevController::class, 'destroyApp'])->name('dev.apps.destroy');
-            Route::post('/', [DevController::class, 'createApp'])->name('dev.apps.create.post');
+            Route::post('/{appId}', [DevController::class, 'updateApp'])->name('dev.apps.update'); //TODO: Replace with API Endpoint
+            Route::post('/{appId}/destroy', [DevController::class, 'destroyApp'])->name('dev.apps.destroy'); //TODO: Replace with API Endpoint
+            Route::post('/', [DevController::class, 'createApp'])->name('dev.apps.create.post'); //TODO: Replace with API Endpoint
         });
 
         Route::get('/', [SettingsController::class, 'renderSettings'])
@@ -163,18 +168,18 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         Route::get('/follower', [\App\Http\Controllers\SettingsController::class, 'renderFollowerSettings'])
              ->name('settings.follower');
         Route::post('/follower/remove', [\App\Http\Controllers\SettingsController::class, 'removeFollower'])
-             ->name('settings.follower.remove');
+             ->name('settings.follower.remove'); //TODO: Replace with API Endpoint
         Route::post('/follower/approve', [SettingsController::class, 'approveFollower'])
-             ->name('settings.follower.approve');
+             ->name('settings.follower.approve'); //TODO: Replace with API Endpoint
         Route::post('/follower/reject', [SettingsController::class, 'rejectFollower'])
-             ->name('settings.follower.reject');
+             ->name('settings.follower.reject'); //TODO: Replace with API Endpoint
 
         Route::post('/delsession', [UserController::class, 'deleteSession'])
-             ->name('delsession');
+             ->name('delsession'); //TODO: Replace with API Endpoint
         Route::post('/deltoken', [UserController::class, 'deleteToken'])
-             ->name('deltoken');
+             ->name('deltoken'); //TODO: Replace with API Endpoint
         Route::post('/delwebhook', [WebhookController::class, 'deleteWebhook'])
-             ->name('delwebhook');
+             ->name('delwebhook'); //TODO: Replace with API Endpoint
     });
 
     Route::get('/dashboard', [FrontendStatusController::class, 'getDashboard'])
@@ -184,7 +189,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
          ->name('globaldashboard');
 
     Route::post('/status/update', [StatusController::class, 'updateStatus'])
-         ->name('status.update');
+         ->name('status.update'); //TODO: Replace with API Endpoint
 
     Route::prefix('export')->group(function() {
         Route::get('/', [ExportController::class, 'renderForm'])
@@ -194,13 +199,13 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     });
 
     Route::post('/createfollow', [FrontendUserController::class, 'CreateFollow'])
-         ->name('follow.create');
+         ->name('follow.create'); //TODO: Replace with API Endpoint
 
     Route::post('/requestfollow', [FrontendUserController::class, 'requestFollow'])
-         ->name('follow.request');
+         ->name('follow.request'); //TODO: Replace with API Endpoint
 
     Route::post('/destroyfollow', [FrontendUserController::class, 'destroyFollow'])
-         ->name('follow.destroy');
+         ->name('follow.destroy'); //TODO: Replace with API Endpoint
 
     Route::get('/transport/train/autocomplete/{station}', [FrontendTransportController::class, 'TrainAutocomplete'])
          ->name('transport.train.autocomplete');
@@ -215,22 +220,22 @@ Route::middleware(['auth', 'privacy'])->group(function() {
          ->name('trains.trip');
 
     Route::post('/trains/checkin', [FrontendTransportController::class, 'TrainCheckin'])
-         ->name('trains.checkin');
+         ->name('trains.checkin'); //TODO: Replace with API Endpoint
 
     Route::get('/trains/setHome/', [FrontendTransportController::class, 'setTrainHome'])
-         ->name('user.setHome');
+         ->name('user.setHome'); //TODO: Replace with API Endpoint // why is this a GET request?
 
     Route::get('/search/', [FrontendUserController::class, 'searchUser'])
          ->name('userSearch');
 
     Route::post('/user/block', [\App\Http\Controllers\Frontend\UserController::class, 'blockUser'])
-         ->name('user.block');
+         ->name('user.block'); //TODO: Replace with API Endpoint
     Route::post('/user/unblock', [\App\Http\Controllers\Frontend\UserController::class, 'unblockUser'])
-         ->name('user.unblock');
+         ->name('user.unblock'); //TODO: Replace with API Endpoint
     Route::post('/user/mute', [\App\Http\Controllers\Frontend\UserController::class, 'muteUser'])
-         ->name('user.mute');
+         ->name('user.mute'); //TODO: Replace with API Endpoint
     Route::post('/user/unmute', [\App\Http\Controllers\Frontend\UserController::class, 'unmuteUser'])
-         ->name('user.unmute');
+         ->name('user.unmute'); //TODO: Replace with API Endpoint
 });
 
 Route::get('/sitemap.xml', [SitemapController::class, 'renderSitemap']);

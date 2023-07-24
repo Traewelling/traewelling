@@ -680,5 +680,16 @@
     "settings.twitter-deprecated": "Lees de verouderingsmelding",
     "notifications.eventSuggestionProcessed.duplicate": "Je suggestie is al bekend bij ons.",
     "notifications.eventSuggestionProcessed.too-late": "Helaas was je voorstel te laat ingediend.",
-    "notifications.eventSuggestionProcessed.not-applicable": "Je suggestie heeft helaas geen toegevoegde waarde voor de gemeenschap."
+    "notifications.eventSuggestionProcessed.not-applicable": "Je suggestie heeft helaas geen toegevoegde waarde voor de gemeenschap.",
+    "active-journeys": "huidige reis|huidige reizen",
+    "settings.colorscheme.set": "Thema wijzigen",
+    "settings.colorscheme.light": "Licht thema",
+    "settings.colorscheme.dark": "Donker thema",
+    "settings.colorscheme.auto": "Systeemthema",
+    "page-only-available-in-language": "Deze pagina is alleen beschikbaar in het :language.",
+    "language.en": "Engels",
+    "changelog": "Wijzigingslog",
+    "time-is-planned": "Geplande vertrektĳd",
+    "time-is-real": "Daadwerkelĳke vertrektĳd (volgens de api)",
+    "time-is-manual": "De vertrektĳd is handmatig aangepast"
 }

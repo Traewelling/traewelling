@@ -404,6 +404,10 @@
     "settings.request.accept-success": "Folgen-Anfrage erfolgreich akzeptiert.",
     "settings.request.reject-success": "Folgen-Anfrage erfolgreich abgelehnt.",
     "settings.language.set": "Sprache ändern",
+    "settings.colorscheme.set": "Farbschema ändern",
+    "settings.colorscheme.light": "Hell",
+    "settings.colorscheme.dark": "Dunkel",
+    "settings.colorscheme.auto": "Systemeinstellung",
     "generic.change": "Ändern",
     "generic.why": "Warum?",
     "sr.dropdown.toggle": "Dropdown ein- und ausblenden",
@@ -679,5 +683,12 @@
     "user.mapprovider": "Karten-Anbieter",
     "map-providers.cargo": "Cargo",
     "map-providers.open-railway-map": "Open Railway Map",
-    "stationboard.check-tweet": "Twittern"
+    "stationboard.check-tweet": "Twittern",
+    "active-journeys": "aktive Fahrt|aktive Fahrten",
+    "page-only-available-in-language": "Diese Seite ist nur auf :language verfügbar.",
+    "language.en": "Englisch",
+    "changelog": "Changelog",
+    "time-is-planned": "Planmäßige Zeit",
+    "time-is-real": "Echtzeit (laut Fahrplanschnittstelle)",
+    "time-is-manual": "Zeit wurde manuell überschrieben"
 }

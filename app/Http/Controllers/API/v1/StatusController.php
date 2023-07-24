@@ -499,7 +499,7 @@ class StatusController extends Controller
     public function getStopovers(string $parameters): JsonResponse {
         $tripIds = explode(',', $parameters, 50);
         $trips   = HafasTrip::whereIn('id', $tripIds)->get()->mapWithKeys(function($trip) {
-            return [$trip->id => StopoverResource::collection($trip->stopoversNEW)];
+            return [$trip->id => StopoverResource::collection($trip->stopovers)];
         });
         return $this->sendResponse($trips);
     }

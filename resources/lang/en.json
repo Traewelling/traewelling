@@ -387,6 +387,10 @@
     "settings.request.accept-success": "Successfully accepted follow request.",
     "settings.request.reject-success": "Successfully rejected follow request.",
     "settings.language.set": "Change language",
+    "settings.colorscheme.set": "Change colorscheme",
+    "settings.colorscheme.light": "Light",
+    "settings.colorscheme.dark": "Dark",
+    "settings.colorscheme.auto": "System preference",
     "generic.change": "Change",
     "generic.why": "Why?",
     "sr.dropdown.toggle": "Toggle dropdown",
@@ -679,5 +683,12 @@
     "events.disclaimer.warranty": "Träwelling does not guarantee the correctness or completeness of the data.",
     "user.mapprovider": "Provider of map data",
     "map-providers.cargo": "Cargo",
-    "map-providers.open-railway-map": "Open Railway Map"
+    "map-providers.open-railway-map": "Open Railway Map",
+    "active-journeys": "active journey|active journeys",
+    "page-only-available-in-language": "This page is only available in :language.",
+    "language.en": "English",
+    "changelog": "Changelog",
+    "time-is-planned": "Planned time",
+    "time-is-real": "Real time (as of time table api)",
+    "time-is-manual": "Time was overwritten manually"
 }

@@ -57,7 +57,7 @@ export default {
         read() {
             return this.readAt ?? false;
         }
-    },
+        },
 }
 </script>
 
@@ -129,4 +129,23 @@ a ::v-deep(b) {
     font-weight: bold;
 }
 
+.dark {
+    .fas,
+    .far,
+    .fa {
+        filter: invert(1);
+    }
+    a {
+        color: $dm-body;
+    }
+    .unread {
+        &.warning {
+            background-color: mix($dm-base, $bahnrot, 78%);
+        }
+
+        &.neutral {
+            background-color: mix($dm-base, $blue, 78%);
+        }
+    }
+}
 </style>

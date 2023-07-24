@@ -11,6 +11,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @property int           $id
+ * @property int           $status_id
+ * @property HafasTrip     $HafasTrip
+ * @property TrainStopover $origin_stopover
+ * @property TrainStopover $destination_stopover
+ */
 class TrainCheckin extends Model
 {
 
@@ -72,9 +79,9 @@ class TrainCheckin extends Model
     }
 
     public function getOriginStopoverAttribute(): TrainStopover {
-        $stopOver = $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Origin->id)
-                                                  ->where('departure_planned', $this->departure)
-                                                  ->first();
+        $stopOver = $this->HafasTrip->stopovers->where('train_station_id', $this->Origin->id)
+                                               ->where('departure_planned', $this->departure)
+                                               ->first();
         if ($stopOver == null) {
             //To support legacy data, where we don't save the stopovers in the stopovers table, yet.
             Log::error('TrainCheckin #' . $this->id . ': Origin stopover not found. Created a new one.');
@@ -88,15 +95,15 @@ class TrainCheckin extends Model
                     "arrival_planned"   => $this->departure,
                 ]
             );
-            $this->HafasTrip->load('stopoversNEW');
+            $this->HafasTrip->load('stopovers');
         }
         return $stopOver;
     }
 
     public function getDestinationStopoverAttribute(): TrainStopover {
-        $stopOver = $this->HafasTrip->stopoversNEW->where('train_station_id', $this->Destination->id)
-                                                  ->where('arrival_planned', $this->arrival)
-                                                  ->first();
+        $stopOver = $this->HafasTrip->stopovers->where('train_station_id', $this->Destination->id)
+                                               ->where('arrival_planned', $this->arrival)
+                                               ->first();
         if ($stopOver == null) {
             //To support legacy data, where we don't save the stopovers in the stopovers table, yet.
             Log::error('TrainCheckin #' . $this->id . ': Destination stopover not found. Created a new one.');
@@ -110,7 +117,7 @@ class TrainCheckin extends Model
                     "arrival_planned"   => $this->arrival,
                 ]
             );
-            $this->HafasTrip->load('stopoversNEW');
+            $this->HafasTrip->load('stopovers');
         }
         return $stopOver;
     }
@@ -120,7 +127,9 @@ class TrainCheckin extends Model
      * @return int
      */
     public function getDurationAttribute(): int {
-        return ($this->real_arrival ?? $this->arrival)->diffInMinutes($this->real_departure ?? $this->departure);
+        $departure = $this->real_departure ?? $this->origin_stopover->departure ?? $this->departure;
+        $arrival   = $this->real_arrival ?? $this->destination_stopover?->arrival ?? $this->arrival;
+        return $arrival->diffInMinutes($departure);
     }
 
     public function getSpeedAttribute(): float {

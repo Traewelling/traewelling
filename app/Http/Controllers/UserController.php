@@ -44,7 +44,7 @@ class UserController extends Controller
                     ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                     ->with([
                                'user', 'likes', 'trainCheckin.Origin', 'trainCheckin.Destination',
-                               'trainCheckin.HafasTrip.stopoversNEW', 'event'
+                               'trainCheckin.HafasTrip.stopovers', 'event'
                            ])
                     ->where(function($query) {
                         $user = Auth::check() ? auth()->user()->id : null;

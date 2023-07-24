@@ -63,7 +63,7 @@ class StatusController extends Controller
                                      'trainCheckin.Origin',
                                      'trainCheckin.Destination',
                                      'trainCheckin.HafasTrip.polyline',
-                                     'trainCheckin.HafasTrip.stopoversNEW.trainStation',
+                                     'trainCheckin.HafasTrip.stopovers.trainStation',
                                      'event'
                                  ])
                           ->whereHas('trainCheckin', function($query) {
@@ -72,7 +72,7 @@ class StatusController extends Controller
                           })
                           ->get()
                           ->filter(function(Status $status) {
-                              return Gate::allows('view', $status) && !$status->user->shadow_banned;
+                              return Gate::allows('view', $status) && !$status->user->shadow_banned && $status->visibility !== StatusVisibility::UNLISTED;
                           })
                           ->sortByDesc(function(Status $status) {
                               return $status->trainCheckin->departure;

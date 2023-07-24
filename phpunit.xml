@@ -11,6 +11,8 @@
     <testsuites>
         <testsuite name="Unit">
             <directory suffix="Test.php">./tests/Unit</directory>
+            <directory suffix="Test.php">./tests/Unit/*</directory>
+            <directory suffix="Test.php">./tests/Unit/*/*</directory>
         </testsuite>
 
         <testsuite name="Feature">
@@ -36,6 +38,6 @@
         <server name="MAIL_DRIVER" value="array"/>
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
-        <server name="WEBHOOKS_ACTIVE" value="true" />
+        <server name="WEBHOOKS_ACTIVE" value="true"/>
     </php>
 </phpunit>

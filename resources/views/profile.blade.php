@@ -14,8 +14,7 @@
 @endif
 
 @section('content')
-    <div class="px-4 py-5 mt-n4"
-         style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
+    <div class="px-4 py-5 mt-n4 profile-banner">
         <div class="container">
             <img alt="{{ __('settings.picture') }}"
                  src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($user) }}"

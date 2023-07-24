@@ -101,7 +101,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($trip->stopoversNew as $stopover)
+                            @foreach($trip->stopovers as $stopover)
                                 <tr>
                                     <td>{{$stopover->trainStation?->name}}</td>
                                     <td>{{$stopover->trainStation?->id}}</td>

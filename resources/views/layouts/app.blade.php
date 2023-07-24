@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <title>@yield('title') - {{ config('app.name', 'Träwelling') }}</title>
@@ -7,12 +7,30 @@
         @include('layouts.includes.meta')
 
         <!-- Scripts -->
-
+        <!-- Run this blocking script as early as possible to prevent flickering -->
+        <script>
+            if (localStorage.getItem("darkMode") === null) {
+                localStorage.setItem("darkMode", "auto");
+            }
+            var darkModeSetting = localStorage.getItem("darkMode");
+            if (darkModeSetting === "auto") {
+                darkModeSetting = window.matchMedia("(prefers-color-scheme: dark)")
+                    .matches
+                    ? "dark"
+                    : "light";
+            }
+            if (darkModeSetting === "dark") {
+                document.documentElement.classList.add("dark");
+            } else {
+                document.documentElement.classList.remove("dark");
+            }
+        </script>
         <!-- Fonts -->
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
 
         <!-- Styles -->
         <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+        <link href="{{ mix('css/app-dark.css') }}" rel="stylesheet">
         <link rel="mask-icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}">
         <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
@@ -181,17 +199,37 @@
             </main>
             <footer class="footer mt-auto py-3">
                 <div class="container">
-                    <div class="btn-group dropup float-end">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-dropdown-animation="off"
-                                data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
-                        </button>
-                        <div class="dropdown-menu">
-                            @foreach(config('app.locales') as $key => $lang)
-                                <a class="dropdown-item" href="{{request()->fullUrlWithQuery(['language' => $key])}}">
-                                    {{ $lang }}
-                                </a>
-                            @endforeach
+
+                    <div class="float-end row gy-3 mb-4 mb-md-0 gx-2">
+                        <div class="btn-group dropup col">
+                            <button type="button" class="btn btn-primary dropdown-toggle"
+                                    data-mdb-dropdown-animation="off"
+                                    data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-circle-half-stroke"></i></i> {{__('settings.colorscheme.set')}}
+                            </button>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-item" id="colorModeToggleLight"><i
+                                        class="fas fa-sun"></i> {{__('settings.colorscheme.light')}}</div>
+                                <div class="dropdown-item" id="colorModeToggleDark"><i
+                                        class="fas fa-moon"></i> {{__('settings.colorscheme.dark')}}</div>
+                                <div class="dropdown-item" id="colorModeToggleAuto"><i
+                                        class="fas fa-circle-half-stroke"></i> {{__('settings.colorscheme.auto')}}</div>
+                            </div>
+                        </div>
+                        <div class="btn-group dropup col">
+                            <button type="button" class="btn btn-primary dropdown-toggle"
+                                    data-mdb-dropdown-animation="off"
+                                    data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
+                            </button>
+                            <div class="dropdown-menu">
+                                @foreach(config('app.locales') as $key => $lang)
+                                    <a class="dropdown-item"
+                                       href="{{request()->fullUrlWithQuery(['language' => $key])}}">
+                                        {{ $lang }}
+                                    </a>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                     <p class="text-muted mb-0">
@@ -222,6 +260,8 @@
                            class="text-muted">
                             {{ \App\Http\Controllers\Backend\VersionController::getVersion() }}
                         </a>
+                        -
+                        <a href="{{route('changelog')}}" class="text-muted">{{__('changelog')}}</a>
                     </p>
                 </div>
             </footer>

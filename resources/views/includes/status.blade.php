@@ -24,7 +24,7 @@
     <div class="card-body row">
         <div class="col-2 image-box pe-0 d-none d-lg-flex">
             <a href="{{ route('profile', ['username' => $status->user->username]) }}">
-                <img src="{{ ProfilePictureController::getUrl($status->user) }}"
+                <img loading="lazy" decoding="async" src="{{ ProfilePictureController::getUrl($status->user) }}"
                      alt="{{ $status->user->username }}">
             </a>
         </div>
@@ -34,20 +34,26 @@
                 <li>
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
-                        @isset($status->trainCheckin->real_departure)
-                            <small style="text-decoration: line-through;" class="text-muted">
+                        @if(isset($status->trainCheckin->real_departure) && $status->trainCheckin->real_departure->toString() !== $status->trainCheckin->origin_stopover->departure_planned->toString())
+                        <small style="text-decoration: line-through;" class="text-muted">
                                 {{ $status->trainCheckin->origin_stopover->departure_planned->isoFormat(__('time-format')) }}
                             </small>
                             &nbsp;
-                            {{ $status->trainCheckin->real_departure->isoFormat(__('time-format')) }}
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-manual')}}">
+                                {{ $status->trainCheckin->real_departure->isoFormat(__('time-format')) }}
+                            </span>
                         @elseif($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
                             <small style="text-decoration: line-through;" class="text-muted">
                                 {{ $status->trainCheckin->origin_stopover->departure_planned->isoFormat(__('time-format')) }}
                             </small>
                             &nbsp;
-                            {{ $status->trainCheckin->origin_stopover->departure_real->isoFormat(__('time-format')) }}
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-real')}}">
+                                {{ $status->trainCheckin->origin_stopover->departure_real->isoFormat(__('time-format')) }}
+                            </span>
                         @else
-                            {{ $status->trainCheckin?->origin_stopover?->departure->isoFormat(__('time-format')) ?? $status->trainCheckin->departure->isoFormat(__('time-format')) }}
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-planned')}}">
+                                {{ $status->trainCheckin?->origin_stopover?->departure_planned->isoFormat(__('time-format')) ?? $status->trainCheckin->departure->isoFormat(__('time-format')) }}
+                            </span>
                         @endif
                     </span>
 
@@ -129,20 +135,26 @@
                 <li>
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
-                        @isset($status->trainCheckin->real_arrival)
+                        @if(isset($status->trainCheckin->real_arrival) && $status->trainCheckin->real_arrival->toString() !== $status->trainCheckin->destination_stopover->arrival_planned->toString())
                             <small style="text-decoration: line-through;" class="text-muted">
                                 {{ $status->trainCheckin->destination_stopover->arrival_planned->isoFormat(__('time-format')) }}
                             </small>
                             &nbsp;
-                            {{ $status->trainCheckin->real_arrival->isoFormat(__('time-format')) }}
-                        @elseif($status->trainCheckin?->destination_stopover?->isArrivalDelayed)
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-manual')}}">
+                                {{ $status->trainCheckin->real_arrival->isoFormat(__('time-format')) }}
+                            </span>
+                        @elseif($status->trainCheckin?->destination_stopover?->isArrivalDelayed && !isset($status->trainCheckin->real_arrival))
                             <small style="text-decoration: line-through;" class="text-muted">
                                 {{ $status->trainCheckin->destination_stopover->arrival_planned->isoFormat(__('time-format')) }}
                             </small>
                             &nbsp;
-                            {{ $status->trainCheckin->destination_stopover->arrival_real->isoFormat(__('time-format')) }}
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-real')}}">
+                                {{ $status->trainCheckin->destination_stopover->arrival_real->isoFormat(__('time-format')) }}
+                            </span>
                         @else
-                            {{ $status->trainCheckin?->destination_stopover?->arrival?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival->isoFormat(__('time-format')) }}
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-planned')}}">
+                                {{ $status->trainCheckin?->destination_stopover?->arrival_planned?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival->isoFormat(__('time-format')) }}
+                            </span>
                         @endif
                     </span>
                     <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Destination->ibnr])}}"
@@ -247,21 +259,23 @@
                                     </button>
                                 </li>
                                 <x-mute-button :user="$status->user" :dropdown="true"/>
-                                <x-block-button :user="$status->user" :dropdown="true"/>@endif
-                @admin
-                <li>
+                                <x-block-button :user="$status->user" :dropdown="true"/>
+                            @endif
+                            @admin
+                            <li>
                                 <hr class="dropdown-divider"/>
                             </li>
                             <li>
-                    <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}"class="dropdown-item">
+                                <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}"
+                                   class="dropdown-item">
                                     <div class="dropdown-icon-suspense">
-                        <i class="fas fa-tools" aria-hidden="true"></i>
-                    </div>
+                                        <i class="fas fa-tools" aria-hidden="true"></i>
+                                    </div>
                                     Admin-Interface
                                 </a>
-                </li>
-                @endadmin
-            @endauth
+                            </li>
+                            @endadmin
+                        @endauth
                     </ul>
                 </div>
             </li>

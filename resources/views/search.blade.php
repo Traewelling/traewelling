@@ -18,7 +18,9 @@
                                 <a href="{{ route('profile', ['username' => $user->username]) }}">
                                     <img
                                         src="{{\App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($user)}}"
-                                        alt="Profile picture"/>
+                                        alt="Profile picture"
+                                        loading="lazy"
+                                        decoding="async"/>
                                 </a>
                             </div>
 

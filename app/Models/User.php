@@ -41,6 +41,7 @@ use Mastodon;
  * @property int         privacy_hide_days
  * @property string      language
  * @property Carbon      last_login
+ * @property Status[]    $statuses
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -91,7 +92,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getTrainDurationAttribute(): float {
         return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
-                           ->select(['arrival', 'departure'])
+                           ->select(['trip_id', 'origin', 'destination', 'arrival', 'departure'])
                            ->get()
                            ->sum('duration');
     }

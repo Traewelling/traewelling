@@ -2,17 +2,12 @@
 
 namespace Tests\Unit;
 
-use App;
-use DOMDocument;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Illuminate\Support\Facades\App;
 
-class HelperMethodTest extends TestCase
+class HelperMethodTest extends UnitTestCase
 {
 
-    use RefreshDatabase;
-
-    public function testNumberFunction() {
+    public function testNumberFunction(): void {
         App::setLocale('de');
 
         // Thousands with a rounding decimal
@@ -35,7 +30,7 @@ class HelperMethodTest extends TestCase
         $this->assertEquals("-4.294.967.296,00", number(-1 * 2 ** 32));
     }
 
-    public function test_secondsToDuration_and_durationToSpan() {
+    public function test_secondsToDuration_and_durationToSpan(): void {
         $testcases = [
             0            => "0<small>min</small>",
             45           => "0<small>min</small>",
