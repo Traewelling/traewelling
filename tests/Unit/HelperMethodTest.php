@@ -2,6 +2,10 @@
 
 namespace Tests\Unit;
 
+use Carbon\Carbon;
+use Illuminate\Support\Carbon as IlluminateCarbon;
+use Illuminate\Support\Facades\Auth;
+use stdClass;
 use Illuminate\Support\Facades\App;
 
 class HelperMethodTest extends UnitTestCase
@@ -48,5 +52,44 @@ class HelperMethodTest extends UnitTestCase
         foreach ($testcases as $input => $output) {
             $this->assertEquals($output, durationToSpan(\secondsToDuration($input)));
         }
+    }
+
+    /**
+     * @dataProvider userTimeDataProvider
+     */
+    public function testUserTimeWithTimezoneOffset($time, $format, $iso): void {
+        $userMockObject           = new stdClass();
+        $userMockObject->timezone = 'Europe/Berlin';
+        Auth::shouldReceive('user')->andReturn($userMockObject);
+
+        $this->assertEquals('01:00', userTime($time, $format, $iso));
+    }
+
+
+    /**
+     * @dataProvider userTimeDataProvider
+     */
+    public function testUserTimeWithoutTimezoneOffset($time, $format, $iso): void {
+        Auth::shouldReceive('user')->andReturn(null);
+
+        $this->assertEquals('00:00', userTime($time, $format, $iso));
+    }
+
+    public function userTimeDataProvider(): array {
+        $defaultTime                 = '2023-01-01T00:00:00';
+        $carbonDefaultTime           = new Carbon($defaultTime, "UTC");
+        $illuminateCarbonDefaultTime = new IlluminateCarbon($defaultTime);
+
+        return [
+            [$defaultTime, null, true],
+            [$defaultTime, 'HH:mm', true],
+            [$defaultTime, 'H:i', false],
+            [$carbonDefaultTime, null, true],
+            [$carbonDefaultTime, 'HH:mm', true],
+            [$carbonDefaultTime, 'H:i', false],
+            [$illuminateCarbonDefaultTime, null, true],
+            [$illuminateCarbonDefaultTime, 'HH:mm', true],
+            [$illuminateCarbonDefaultTime, 'H:i', false],
+        ];
     }
 }
