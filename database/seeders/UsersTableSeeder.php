@@ -30,6 +30,7 @@ class UsersTableSeeder extends Seeder
             ->create([
                          'username'        => 'bob',
                          'name'            => 'Bob from Alice & Bob',
+                         'avatar'          => null, // no avatar
                          'email'           => 'bob@example.com',
                          'private_profile' => true,
                          'password'        => Hash::make('thisisnotasecurepassword123')

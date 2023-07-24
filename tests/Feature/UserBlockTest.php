@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Like;
 use App\Models\Status;
@@ -64,8 +65,8 @@ class UserBlockTest extends TestCase
         $this->actingAs($this->alice)
              ->get(route('globaldashboard'))
              ->assertOk()
-             ->assertSee(route('profile.picture', ['username' => $this->bob->username]))
-             ->assertSee(route('profile.picture', ['username' => $this->alice->username]));
+             ->assertSee(ProfilePictureController::getUrl($this->bob))
+             ->assertSee(ProfilePictureController::getUrl($this->alice));
 
         $this->aliceBlocksBob();
 
@@ -75,8 +76,8 @@ class UserBlockTest extends TestCase
             // Bob's name is present in the session bag due the "you successfully blocked bob' message. Instead, we
             // check that Bob's profile picture is not there, while Alice's picture is still there (from the checkin
             // in self::setUp).
-             ->assertDontSee(route('profile.picture', ['username' => $this->bob->username]))
-             ->assertSee(route('profile.picture', ['username' => $this->alice->username]));
+             ->assertDontSee(ProfilePictureController::getUrl($this->bob))
+             ->assertSee(ProfilePictureController::getUrl($this->alice));
     }
 
     public function testAlicesStatusIsHiddenFromBobsActiveJourneys(): void {
@@ -99,16 +100,16 @@ class UserBlockTest extends TestCase
         $this->actingAs($this->alice)
              ->get(route('statuses.active'))
              ->assertOk()
-             ->assertSee(route('profile.picture', ['username' => $this->bob->username]))
-             ->assertSee(route('profile.picture', ['username' => $this->alice->username]));
+             ->assertSee(ProfilePictureController::getUrl($this->bob))
+             ->assertSee(ProfilePictureController::getUrl($this->alice));
 
         $this->aliceBlocksBob();
 
         $this->actingAs($this->alice)
              ->get(route('statuses.active'))
              ->assertOk()
-             ->assertDontSee(route('profile.picture', ['username' => $this->bob->username]))
-             ->assertSee(route('profile.picture', ['username' => $this->alice->username]));
+             ->assertDontSee(ProfilePictureController::getUrl($this->bob))
+             ->assertSee(ProfilePictureController::getUrl($this->alice));
     }
 
     public function testProfileShowsLimitedInfo(): void {
