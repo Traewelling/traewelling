@@ -42,10 +42,10 @@ class StatusController extends Controller
     public static function getStatus(int $statusId): Status {
         return Status::where('id', $statusId)
                      ->with([
-                                'user', 'trainCheckin', 'trainCheckin.originStation',
-                                'trainCheckin.destinationStation', 'trainCheckin.HafasTrip', 'event',
+                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'trainCheckin',
+                                'trainCheckin.originStation', 'trainCheckin.destinationStation',
+                                'trainCheckin.HafasTrip.stopovers.trainStation',
                             ])
-                     ->withCount('likes')
                      ->firstOrFail();
     }
 
@@ -58,13 +58,10 @@ class StatusController extends Controller
      */
     public static function getActiveStatuses(): array|stdClass|null {
         $statuses = Status::with([
-                                     'likes',
-                                     'user',
-                                     'trainCheckin.originStation',
-                                     'trainCheckin.destinationStation',
-                                     'trainCheckin.HafasTrip.polyline',
+                                     'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
+                                     'trainCheckin.originStation', 'trainCheckin.destinationStation',
                                      'trainCheckin.HafasTrip.stopovers.trainStation',
-                                     'event'
+                                     'trainCheckin.HafasTrip.polyline',
                                  ])
                           ->whereHas('trainCheckin', function($query) {
                               $query->where('departure', '<', date('Y-m-d H:i:s'))
