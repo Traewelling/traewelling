@@ -18,7 +18,7 @@ $(document).on("click", ".join", function (event) {
         modal.find("#input-departure").val(source.trwlDeparture);
         // case for small number of events
         modal.find("#event_check").each(function () {
-            $(this).prop("checked", $(this).val() == source.trwlEventId);
+            $(this).prop("checked", $(this).val() === source.trwlEventId);
         });
         // case for large number of events
         modal.find("#event-dropdown").val(source.trwlEventId);
