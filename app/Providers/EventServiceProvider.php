@@ -14,7 +14,9 @@ use App\Listeners\StatusUpdateWebhookListener;
 use App\Models\Follow;
 use App\Models\Like;
 use App\Models\Status;
+use App\Models\TrainCheckin;
 use App\Models\User;
+use App\Observers\CheckinObserver;
 use App\Observers\FollowObserver;
 use App\Observers\LikeObserver;
 use App\Observers\StatusObserver;
@@ -53,10 +55,11 @@ class EventServiceProvider extends ServiceProvider
     ];
 
     protected $observers = [
-        Follow::class => [FollowObserver::class],
-        Like::class   => [LikeObserver::class],
-        Status::class => [StatusObserver::class],
-        User::class   => [UserObserver::class],
+        Follow::class       => [FollowObserver::class],
+        Like::class         => [LikeObserver::class],
+        Status::class       => [StatusObserver::class],
+        TrainCheckin::class => [CheckinObserver::class],
+        User::class         => [UserObserver::class],
     ];
 
     /**

@@ -27,10 +27,10 @@ class TrainCheckin extends Model
 
     protected $fillable = [
         'status_id', 'user_id', 'trip_id', 'origin', 'destination',
-        'distance', 'departure', 'real_departure', 'arrival', 'real_arrival', 'points', 'forced',
+        'distance', 'duration', 'departure', 'real_departure', 'arrival', 'real_arrival', 'points', 'forced',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
-    protected $appends  = ['duration', 'origin_stopover', 'destination_stopover', 'speed'];
+    protected $appends  = ['origin_stopover', 'destination_stopover', 'speed'];
     protected $casts    = [
         'id'             => 'integer',
         'status_id'      => 'integer',
@@ -38,6 +38,7 @@ class TrainCheckin extends Model
         'origin'         => 'integer',
         'destination'    => 'integer',
         'distance'       => 'integer',
+        'duration'       => 'integer',
         'departure'      => 'datetime',
         'real_departure' => 'datetime',
         'arrival'        => 'datetime',
@@ -111,13 +112,21 @@ class TrainCheckin extends Model
     }
 
     /**
-     * The duration of the journey in minutes
+     * Overwrite the default getter to return the cached value if available
      * @return int
      */
     public function getDurationAttribute(): int {
+        //If the duration is already calculated and saved, return it
+        if (isset($this->attributes['duration']) && $this->attributes['duration'] !== null) {
+            return $this->attributes['duration'];
+        }
+
+        //Else calculate and cache it
         $departure = $this->real_departure ?? $this->origin_stopover->departure ?? $this->departure;
         $arrival   = $this->real_arrival ?? $this->destination_stopover?->arrival ?? $this->arrival;
-        return $arrival->diffInMinutes($departure);
+        $duration  = $arrival->diffInMinutes($departure);
+        $this->update(['duration' => $duration]);
+        return $duration;
     }
 
     public function getSpeedAttribute(): float {

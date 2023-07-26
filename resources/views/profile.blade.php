@@ -38,7 +38,7 @@
                 </span>
                 <br/>
 
-                @if(!$user->isAuthUserBlocked)
+                @if(!$user->isAuthUserBlocked && !$user->isBlockedByAuthUser && !$user->muted)
                     <span class="fs-2">
                         <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance / 1000) }}</span><span
                             class="small font-weight-lighter">km</span>
@@ -70,14 +70,6 @@
 
                     <x-mute-button :user="$user" :showText="true"/>
                 </div>
-            @elseif($user->private_profile && !$user->following && (!auth()->check() || $user->id !== auth()->id()))
-                <div class="col-md-8 col-lg-7 text-center mb-5">
-                    <span class="fs-3">{{__('profile.private-profile-text')}}</span>
-                    <br/>
-                    <span class="fs-5">
-                        {{__('profile.private-profile-information-text', ['username' => $user->username, 'request' => __('profile.follow_req')])}}
-                    </span>
-                </div>
             @elseif($user->isAuthUserBlocked)
                 <div class="col-md-8 col-lg-7 text-center mb-5">
                     <span class="fs-3">{{__('profile.youre-blocked-text')}}</span>
@@ -94,7 +86,15 @@
                         {{__('profile.youre-blocking-information-text')}}
                     </span>
                 </div>
-            @elseif($statuses->count() > 0)
+            @elseif($user->private_profile && !$user->following && (!auth()->check() || $user->id !== auth()->id()))
+                <div class="col-md-8 col-lg-7 text-center mb-5">
+                    <span class="fs-3">{{__('profile.private-profile-text')}}</span>
+                    <br/>
+                    <span class="fs-5">
+                        {{__('profile.private-profile-information-text', ['username' => $user->username, 'request' => __('profile.follow_req')])}}
+                    </span>
+                </div>
+            @elseif(isset($statuses) && $statuses->count() > 0)
                 <div class="col-md-8 col-lg-7">
                     <h1 class="fs-3">{{__('profile.last-journeys-of')}} {{ $user->name }}:</h1>
                     @include('includes.statuses', ['statuses' => $statuses, 'showDates' => true])

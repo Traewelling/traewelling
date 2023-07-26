@@ -27,7 +27,7 @@ abstract class DashboardController extends Controller
                      ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('statuses.user_id', $followingIDs)
                      ->whereNotIn('statuses.user_id', $user->mutedUsers->pluck('id'))
-                     ->whereIn('visibility', [
+                     ->whereIn('statuses.visibility', [
                          StatusVisibility::PUBLIC->value,
                          StatusVisibility::FOLLOWERS->value,
                          StatusVisibility::AUTHENTICATED->value
@@ -63,7 +63,7 @@ abstract class DashboardController extends Controller
                          //Option 3: Status is from a followed BUT not unlisted or private
                          $query->orWhere(function(Builder $query) use ($user) {
                              $query->whereIn('users.id', $user->follows()->select('follow_id'))
-                                   ->whereNotIn('visibility', [
+                                   ->whereNotIn('statuses.visibility', [
                                        StatusVisibility::UNLISTED->value,
                                        StatusVisibility::PRIVATE->value,
                                    ]);
@@ -75,8 +75,7 @@ abstract class DashboardController extends Controller
                      ->whereNotIn('statuses.user_id', $user->blockedUsers()->select('blocked_id'))
                      ->whereNotIn('statuses.user_id', $user->blockedByUsers()->select('user_id'))
                      ->select('statuses.*')
-                     ->orderBy('train_checkins.departure', 'desc')
-                     ->withCount('likes')
+                     ->orderByDesc('train_checkins.departure')
                      ->simplePaginate(15);
     }
 }
