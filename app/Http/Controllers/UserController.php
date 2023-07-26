@@ -154,30 +154,6 @@ class UserController extends Controller
         return !$user->follows->contains('id', $userToUnfollow->id);
     }
 
-    /**
-     * @param string|null $searchQuery
-     *
-     * @return Paginator
-     * @deprecated is now in backend/usercontroller for api v1
-     */
-    public static function searchUser(?string $searchQuery): Paginator {
-        $validator = Validator::make(
-            ['searchQuery' => $searchQuery],
-            ['searchQuery' => ['required', 'regex:/^[äöüÄÖÜa-zA-Z0-9_\-]+$/', 'max:50']]
-        );
-        if ($validator->fails()) {
-            abort(400);
-        }
-        $escapedQuery = str_replace('_', "\_", $searchQuery);
-        return User::join('train_checkins', 'train_checkins.user_id', '=', 'users.id')
-                   ->groupBy(['users.id', 'users.username', 'users.name'])
-                   ->select(['users.id', 'users.username', 'users.name'])
-                   ->orderByDesc(DB::raw('MAX(train_checkins.created_at)'))
-                   ->where('name', 'like', '%' . $escapedQuery . '%')
-                   ->orWhere('username', 'like', '%' . $escapedQuery . '%')
-                   ->simplePaginate(10);
-    }
-
     public function deleteSession(): RedirectResponse {
         $user = Auth::user();
         Auth::logout();

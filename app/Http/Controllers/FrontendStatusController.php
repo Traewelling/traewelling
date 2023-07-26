@@ -74,8 +74,6 @@ class FrontendStatusController extends Controller
 
         return view('eventsMap', [
             'statuses' => $response['statuses']->simplePaginate(15),
-            'distance' => $response['distance'],
-            'duration' => $response['duration'],
             'event'    => $response['event']
         ]);
     }

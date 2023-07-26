@@ -10,7 +10,8 @@ use Illuminate\Contracts\Support\Renderable;
 class EventController extends Controller
 {
     public function renderEventOverview(): Renderable {
-        $liveAndUpcomingEvents = Event::where('end', '>=', Carbon::now()->toIso8601String())
+        $liveAndUpcomingEvents = Event::with(['station'])
+                                      ->where('end', '>=', Carbon::now()->toIso8601String())
                                       ->orderBy('begin')
                                       ->paginate(15);
         return view('events.overview', [

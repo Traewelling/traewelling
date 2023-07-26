@@ -113,6 +113,7 @@ abstract class GeoController extends Controller
      * @throws JsonException
      */
     private static function getPolylineBetween(HafasTrip $hafasTrip, TrainStopover $origin, TrainStopover $destination) {
+        $hafasTrip->loadMissing(['stopovers.trainStation']);
         $geoJson  = self::getPolylineWithTimestamps($hafasTrip);
         $features = $geoJson->features;
 
