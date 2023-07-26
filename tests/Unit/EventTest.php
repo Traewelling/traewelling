@@ -3,8 +3,6 @@
 namespace Tests\Unit;
 
 use App\Models\Event;
-use Database\Factories\EventFactory;
-use Database\Seeders\EventSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

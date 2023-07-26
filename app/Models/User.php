@@ -8,7 +8,6 @@ use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
 use App\Jobs\SendVerificationEmail;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -24,7 +23,7 @@ use Laravel\Passport\HasApiTokens;
 use Mastodon;
 
 /**
- * @property int     id
+ * @property int         id
  * @property string      username
  * @property string      name
  * @property string      avatar
@@ -59,7 +58,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
     protected $appends  = [
         'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl', 'train_distance', 'train_duration',
-        'following', 'followPending', 'muted'
+        'following', 'followPending', 'muted', 'isAuthUserBlocked', 'isBlockedByAuthUser',
     ];
     protected $casts    = [
         'id'                        => 'integer',
@@ -77,9 +76,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     public function getTrainDistanceAttribute(): float {
-        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
-                           ->select('distance')
-                           ->sum('distance');
+        return TrainCheckin::where('user_id', $this->id)->sum('distance');
     }
 
     public function statuses(): HasMany {
@@ -90,11 +87,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(TrainCheckin::class, 'user_id', 'id');
     }
 
+    /**
+     * Since duration is a cached and calculated value, it can happen that some checkins are not included in the sum.
+     * @return float
+     */
     public function getTrainDurationAttribute(): float {
-        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
-                           ->select(['trip_id', 'origin', 'destination', 'arrival', 'departure'])
-                           ->get()
-                           ->sum('duration');
+        return TrainCheckin::where('user_id', $this->id)->sum('duration');
     }
 
     /**
@@ -221,14 +219,14 @@ class User extends Authenticatable implements MustVerifyEmail
      * The auth-user is blocked by $this user. auth-user can not see $this's statuses.
      */
     public function getIsAuthUserBlockedAttribute(): bool {
-        return (auth()->check() && $this->blockedUsers->contains('id', auth()->user()->id));
+        return auth()->check() && $this->blockedUsers->contains('id', auth()->user()->id);
     }
 
     /**
      * The auth-user has blocked $this user. $this can not see auth-user's statuses.
      */
     public function getIsBlockedByAuthUserAttribute(): bool {
-        return (auth()->check() && $this->blockedByUsers->contains('id', auth()->user()->id));
+        return auth()->check() && $this->blockedByUsers->contains('id', auth()->user()->id);
     }
 
     /**

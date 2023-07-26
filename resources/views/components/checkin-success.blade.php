@@ -52,9 +52,9 @@
                                     </a>
                                 </td>
                                 <td>-</td>
-                                <td>{{ $otherStatus->trainCheckin->Origin->name }}</td>
+                                <td>{{ $otherStatus->trainCheckin->originStation->name }}</td>
                                 <td>➜</td>
-                                <td>{{ $otherStatus->trainCheckin->Destination->name }}</td>
+                                <td>{{ $otherStatus->trainCheckin->destinationStation->name }}</td>
                             </tr>
                         @endif
                     @endforeach

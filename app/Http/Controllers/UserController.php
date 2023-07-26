@@ -43,16 +43,16 @@ class UserController extends Controller
         return $user->statuses()
                     ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                     ->with([
-                               'user', 'likes', 'trainCheckin.Origin', 'trainCheckin.Destination',
-                               'trainCheckin.HafasTrip.stopovers', 'event'
+                               'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'trainCheckin',
+                               'trainCheckin.originStation', 'trainCheckin.destinationStation',
+                               'trainCheckin.HafasTrip.stopovers.trainStation',
                            ])
                     ->where(function($query) {
-                        $user = Auth::check() ? auth()->user()->id : null;
                         $query->whereIn('statuses.visibility', [
                             StatusVisibility::PUBLIC->value,
                             StatusVisibility::UNLISTED->value,
                         ])
-                              ->orWhere('statuses.user_id', $user)
+                              ->orWhere('statuses.user_id', Auth::check() ? auth()->user()->id : null)
                               ->orWhere(function($query) {
                                   $followings = Auth::check() ? auth()->user()->follows()->select('follow_id') : [];
                                   $query->where('statuses.visibility', StatusVisibility::FOLLOWERS->value)

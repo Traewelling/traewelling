@@ -44,12 +44,12 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="card-title fs-5">Checkins</h2>
-                    @if($trip->checkIns->count() === 0)
+                    @if($trip->checkins->count() === 0)
                         <span class="fw-bold text-danger">No checkins for this trip.</span>
                     @else
                         <div class="table-responsive">
                             <table class="table">
-                                @foreach($trip->checkIns as $checkin)
+                                @foreach($trip->checkins as $checkin)
                                     <tr>
                                         <td>
                                             {{$checkin->user->name}}

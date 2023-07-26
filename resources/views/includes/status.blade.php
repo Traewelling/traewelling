@@ -57,9 +57,9 @@
                         @endif
                     </span>
 
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Origin->ibnr])}}"
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->originStation->ibnr])}}"
                        class="text-trwl clearfix">
-                        {{$status->trainCheckin->Origin->name}}
+                        {{$status->trainCheckin->originStation->name}}
                     </a>
 
                     <p class="train-status text-muted">
@@ -157,9 +157,9 @@
                             </span>
                         @endif
                     </span>
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Destination->ibnr])}}"
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->destinationStation->ibnr])}}"
                        class="text-trwl clearfix">
-                        {{$status->trainCheckin->Destination->name}}
+                        {{$status->trainCheckin->destinationStation->name}}
                     </a>
                 </li>
             </ul>
@@ -244,13 +244,13 @@
                             @else
                                 <li>
                                     <button type="button" class="dropdown-item join"
-                                            data-trwl-linename="{{$status->trainCheckIn->HafasTrip->linename}}"
-                                            data-trwl-stop-name="{{$status->trainCheckIn->destinationStation->name}}"
-                                            data-trwl-trip-id="{{$status->trainCheckIn->trip_id}}"
-                                            data-trwl-destination="{{$status->trainCheckIn->destination}}"
-                                            data-trwl-arrival="{{$status->trainCheckIn->arrival}}"
-                                            data-trwl-start="{{$status->trainCheckIn->origin}}"
-                                            data-trwl-departure="{{$status->trainCheckIn->departure}}"
+                                            data-trwl-linename="{{$status->trainCheckin->HafasTrip->linename}}"
+                                            data-trwl-stop-name="{{$status->trainCheckin->destinationStation->name}}"
+                                            data-trwl-trip-id="{{$status->trainCheckin->trip_id}}"
+                                            data-trwl-destination="{{$status->trainCheckin->destination}}"
+                                            data-trwl-arrival="{{$status->trainCheckin->arrival}}"
+                                            data-trwl-start="{{$status->trainCheckin->origin}}"
+                                            data-trwl-departure="{{$status->trainCheckin->departure}}"
                                             data-trwl-event-id="{{$status->event?->id}}"
                                     >
                                         <div class="dropdown-icon-suspense">
