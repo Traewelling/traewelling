@@ -4,17 +4,21 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\DataOverflowException;
 use App\Http\Controllers\Backend\Export\ExportController;
+use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Http\Resources\LeaderboardUserResource;
 use App\Http\Resources\StatisticsGlobalData;
 use App\Http\Resources\StatisticsTravelPurposeResource;
+use App\Http\Resources\StatusResource;
+use App\Models\Status;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -281,6 +285,177 @@ class StatisticsController extends Controller
         ];
 
         return $this->sendResponse(data: $returnData, additional: $additionalData);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/statistics/daily",
+     *      operationId="getDailyStatistics",
+     *      tags={"Statistics"},
+     *      summary="Get statistics and statuses of one day",
+     *      description="Returns all statuses and statistics for the requested day",
+     *      @OA\Parameter (
+     *          name="date",
+     *          in="query",
+     *          description="Date for which the statistics should be delivered",
+     *          example="2023-07-25",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="object",
+     *                  @OA\Property (
+     *                      property="statuses", type="array",
+     *                      @OA\Items (
+     *                          ref="#/components/schemas/Status"
+     *                      ),
+     *                  ),
+     *                  @OA\Property(
+     *                      property="count",
+     *                      example="2",
+     *                      type="integer"
+     *                  ),
+     *                  @OA\Property(
+     *                      property="distance",
+     *                      example="74026",
+     *                      type="integer"
+     *                  ),
+     *                  @OA\Property(
+     *                      property="duration",
+     *                      example="4711",
+     *                      type="integer"
+     *                  ),
+     *                  @OA\Property(
+     *                      property="points",
+     *                      example="42",
+     *                      type="integer"
+     *                  ),
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No statuses found"),
+     *       @OA\Response(response=403, description="User not authorized to access this"),
+     *       security={
+     *           {"passport": {"read-statistics"}}, {"token": {}}
+     *       }
+     *     )
+     *
+     *
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function getPersonalDailyStatistics(Request $request): JsonResponse {
+        $validated = $request->validate([
+                                            'date' => 'required|date'
+                                        ]);
+
+        $date = Carbon::parse($validated['date']);
+        $statuses = StatusResource::collection(
+            Status::with(['trainCheckin'])
+                  ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
+                  ->where('statuses.user_id', Auth::user()->id)
+                  ->where('train_checkins.departure', '>=', $date->clone()->startOfDay()->toIso8601String())
+                  ->where('train_checkins.departure', '<=', $date->clone()->endOfDay()->toIso8601String())
+                  ->select('statuses.*')
+                  ->get()
+                  ->sortBy('trainCheckin.departure')
+        );
+
+        if ($statuses->isEmpty()) {
+            return $this->sendError("No statuses found");
+        }
+
+        return $this->sendResponse(data: [
+                                            'statuses'  => $statuses,
+                                            'count'     => $statuses->count(),
+                                            'distance'  => $statuses->sum('trainCheckin.distance'),
+                                            'duration'  => $statuses->sum('trainCheckin.duration'),
+                                            'points'    => $statuses->sum('trainCheckin.points')
+                                         ]
+        );
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/statistics/daily/polylines",
+     *      operationId="getDailyStatisticPolylines",
+     *      tags={"Statistics"},
+     *      summary="Get GeoJSON for statuses",
+     *      description="Returns GeoJSON for all requested status IDs",
+     *      @OA\Parameter (
+     *          name="date",
+     *          in="query",
+     *          description="Date for which the polylines should be delivered",
+     *          example="2023-07-25",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="object",
+     *                  @OA\Property(
+     *                      property="type",
+     *                      example="FeatureCollection"
+     *                  ),
+     *                  @OA\Property (
+     *                      property="features", type="array",
+     *                      @OA\Items (
+     *                          ref="#/components/schemas/Polyline"
+     *                      ),
+     *                  ),
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=404, description="No statuses found"),
+     *       @OA\Response(response=403, description="User not authorized to access this"),
+     *       security={
+     *           {"passport": {"read-statistics"}}, {"token": {}}
+     *       }
+     *     )
+     *
+     *
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function getPersonalDailyStatisticPolylines(Request $request): JsonResponse {
+        $validated = $request->validate([
+                                            'date' => 'required|date'
+                                        ]);
+        $date = Carbon::parse($validated['date']);
+
+
+        $features = Status::with(['trainCheckin'])
+              ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
+              ->where('statuses.user_id', Auth::user()->id)
+              ->where('train_checkins.departure', '>=', $date->clone()->startOfDay()->toIso8601String())
+              ->where('train_checkins.departure', '<=', $date->clone()->endOfDay()->toIso8601String())
+              ->select('statuses.id')
+              ->get()
+              ->sortBy('trainCheckin.departure')
+              ->map(function(Status $status) {
+                  return GeoController::getGeoJsonFeatureForStatus($status);
+              });
+
+        if ($features->isEmpty()) {
+            return $this->sendError("No statuses found");
+        }
+
+        $geoJson = GeoController::getGeoJsonFeatureCollection($features);
+
+        return $this->sendResponse(data: $geoJson);
     }
 
     /**

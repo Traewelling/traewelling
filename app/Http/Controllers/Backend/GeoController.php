@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\HafasTrip;
+use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\TrainStopover;
 use Exception;
+use Illuminate\Support\Collection;
 use JsonException;
 use stdClass;
 
@@ -211,5 +213,25 @@ abstract class GeoController extends Controller
                 [$checkin->destinationStation->latitude, $checkin->destinationStation->longitude]
             ];
         }
+    }
+
+    public static function getGeoJsonFeatureForStatus(Status $status): array {
+        return [
+            'type'       => 'Feature',
+            'geometry'   => [
+                'type'        => 'LineString',
+                'coordinates' => self::getMapLinesForCheckin($status->trainCheckin)
+            ],
+            'properties' => [
+                'statusId' => $status->id
+            ]
+        ];
+    }
+
+    public static function getGeoJsonFeatureCollection(Collection $features): array {
+        return [
+            'type'     => 'FeatureCollection',
+            'features' => $features
+        ];
     }
 }
