@@ -75,6 +75,10 @@ class HelperMethodTest extends UnitTestCase
         $this->assertEquals('00:00', userTime($time, $format, $iso));
     }
 
+    public function testUserTimeWithNull(): void {
+        $this->assertEquals('', userTime(null));
+    }
+
     public function userTimeDataProvider(): array {
         $defaultTime                 = '2023-01-01T00:00:00';
         $carbonDefaultTime           = new Carbon($defaultTime, "UTC");
