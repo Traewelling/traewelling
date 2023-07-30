@@ -485,10 +485,10 @@ abstract class HafasController extends Controller
             $payload[] = [
                 'trip_id'           => $rawHafas->id,
                 'train_station_id'  => $stop->id,
-                'arrival_planned'   => isset($stopover->plannedArrival) ? $arrivalPlanned->toDateTimeString() : $departurePlanned->toDateTimeString(),
-                'arrival_real'      => $arrivalReal->toDateTimeString(),
-                'departure_planned' => isset($stopover->plannedDeparture) ? $departurePlanned->toDateTimeString() : $arrivalPlanned->toDateTimeString(),
-                'departure_real'    => $departureReal->toDateTimeString(),
+                'arrival_planned'   => isset($stopover->plannedArrival) ? $arrivalPlanned : $departurePlanned,
+                'arrival_real'      => $arrivalReal,
+                'departure_planned' => isset($stopover->plannedDeparture) ? $departurePlanned : $arrivalPlanned,
+                'departure_real'    => $departureReal,
             ];
         }
 
