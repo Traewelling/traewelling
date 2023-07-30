@@ -36,23 +36,23 @@
                     <span class="text-trwl float-end">
                         @if(isset($status->trainCheckin->real_departure) && $status->trainCheckin->real_departure->toString() !== $status->trainCheckin->origin_stopover->departure_planned->toString())
                         <small style="text-decoration: line-through;" class="text-muted">
-                                {{ userTime($status->trainCheckin->origin_stopover->departure_planned, __('time-format')) }}
+                                {{ userTime($status->trainCheckin->origin_stopover->departure_planned) }}
                             </small>
                             &nbsp;
                             <span data-mdb-toggle="tooltip" title="{{__('time-is-manual')}}">
-                                {{ userTime($status->trainCheckin->real_departure, __('time-format')) }}
+                                {{ userTime($status->trainCheckin->real_departure) }}
                             </span>
                         @elseif($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
                             <small style="text-decoration: line-through;" class="text-muted">
-                                {{ userTime($status->trainCheckin->origin_stopover->departure_planned, __('time-format')) }}
+                                {{ userTime($status->trainCheckin->origin_stopover->departure_planned) }}
                             </small>
                             &nbsp;
                             <span data-mdb-toggle="tooltip" title="{{__('time-is-real')}}">
-                                {{ userTime($status->trainCheckin->origin_stopover->departure_real, __('time-format')) }}
+                                {{ userTime($status->trainCheckin->origin_stopover->departure_real) }}
                             </span>
                         @else
                             <span data-mdb-toggle="tooltip" title="{{__('time-is-planned')}}">
-                                {{ userTime($status->trainCheckin?->origin_stopover?->departure->isoFormat(__('time-format')) ?? $status->trainCheckin->departure, __('time-format')) }}
+                                {{ userTime($status->trainCheckin?->origin_stopover?->departure ?? $status->trainCheckin->departure) }}
                             </span>
                         @endif
                     </span>
@@ -137,23 +137,23 @@
                     <span class="text-trwl float-end">
                         @if(isset($status->trainCheckin->real_arrival) && $status->trainCheckin->real_arrival->toString() !== $status->trainCheckin->destination_stopover->arrival_planned->toString())
                             <small style="text-decoration: line-through;" class="text-muted">
-                                {{ userTime($status->trainCheckin->destination_stopover->arrival_planned, __('time-format')) }}
+                                {{ userTime($status->trainCheckin->destination_stopover->arrival_planned) }}
                             </small>
                             &nbsp;
                             <span data-mdb-toggle="tooltip" title="{{__('time-is-manual')}}">
-                                {{ userTime($status->trainCheckin->real_arrival, __('time-format')) }}
+                                {{ userTime($status->trainCheckin->real_arrival) }}
                             </span>
                         @elseif($status->trainCheckin?->destination_stopover?->isArrivalDelayed && !isset($status->trainCheckin->real_arrival))
                             <small style="text-decoration: line-through;" class="text-muted">
-                                {{ userTime($status->trainCheckin->destination_stopover->arrival_planned, __('time-format')) }}
+                                {{ userTime($status->trainCheckin->destination_stopover->arrival_planned) }}
                             </small>
                             &nbsp;
                             <span data-mdb-toggle="tooltip" title="{{__('time-is-real')}}">
-                                {{ userTime($status->trainCheckin->destination_stopover->arrival_real, __('time-format')) }}
+                                {{ userTime($status->trainCheckin->destination_stopover->arrival_real) }}
                             </span>
                         @else
                             <span data-mdb-toggle="tooltip" title="{{__('time-is-planned')}}">
-                                {{ userTime($status->trainCheckin?->destination_stopover?->arrival?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival, __('time-format')) }}
+                                {{ userTime($status->trainCheckin?->destination_stopover?->arrival ?? $status->trainCheckin->arrival) }}
                             </span>
                         @endif
                     </span>
@@ -300,7 +300,7 @@
                 </a>
                 {{__('dates.-on-')}}
                 <a href="{{ route('statuses.get', ['id' => $status->id]) }}">
-                    {{ userTime($status->created_at, __('time-format')) }}
+                    {{ userTime($status->created_at) }}
                 </a>
             </li>
         </ul>
