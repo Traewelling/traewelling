@@ -524,7 +524,7 @@ abstract class HafasController extends Controller
         }
 
         $stopover->update([
-                              'departure_real' => Carbon::parse($departure->when)->toIso8601String(),
+                              'departure_real' => Carbon::parse($departure->when),
                           ]);
     }
 }
