@@ -119,14 +119,7 @@ class FrontendTransportController extends Controller
 
         try {
             $startStation = TrainStation::where('ibnr', $validated['start'])->firstOrFail();
-
-            // If we get a string with a timezone, remove it, so we can parse it "correctly"
-            // This needs to be removed once we can handle UTC and timezones.
-            if (str_contains(substr($validated['departure'], -6), '+')) {
-                $departure = Carbon::parse(substr($validated['departure'], 0, -6));
-            } else {
-                $departure = Carbon::parse($validated['departure']);
-            }
+            $departure    = Carbon::parse($validated['departure']);
 
             $hafasTrip = TrainCheckinController::getHafasTrip(
                 $validated['tripID'],

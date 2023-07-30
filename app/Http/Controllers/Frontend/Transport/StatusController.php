@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\TrainStopover;
+use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -42,8 +43,12 @@ class StatusController extends Controller
                             ]);
 
             $status->trainCheckin->update([
-                                              'real_departure' => $validated['realDeparture'] ?? null,
-                                              'real_arrival'   => $validated['realArrival'] ?? null,
+                                              'real_departure' => isset($validated['realDeparture']) ?
+                                                  Carbon::parse($validated['realDeparture'], auth()->user()->timezone) :
+                                                  null,
+                                              'real_arrival'   => isset($validated['realArrival']) ?
+                                                  Carbon::parse($validated['realArrival'], auth()->user()->timezone) :
+                                                  null,
                                           ]);
 
             StatusUpdateEvent::dispatch($status->refresh());

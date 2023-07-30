@@ -81,8 +81,8 @@ class StatusEditController extends Controller
         $status->trainCheckIn->update([
                                           'origin'      => $originStation->ibnr,
                                           'destination' => $destinationStation->ibnr,
-                                          'departure'   => $newDeparture->toIso8601String(),
-                                          'arrival'     => $newArrival->toIso8601String(),
+                                          'departure'   => $newDeparture,
+                                          'arrival'     => $newArrival,
                                           'distance'    => $distanceInMeters,
                                           'points'      => $pointCalculation->points,
                                       ]);

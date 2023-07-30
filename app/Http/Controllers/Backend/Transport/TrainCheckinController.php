@@ -136,10 +136,10 @@ abstract class TrainCheckinController extends Controller
 
         //Note: Compare with ->format because of timezone differences!
         $firstStop = $trip->stopovers->where('train_station_id', $origin->id)
-                                     ->where('departure_planned', $departure->format('Y-m-d H:i:s'))
+                                     ->where('departure_planned', $departure)
                                      ->first();
         $lastStop  = $trip->stopovers->where('train_station_id', $destination->id)
-                                     ->where('arrival_planned', $arrival->format('Y-m-d H:i:s'))
+                                     ->where('arrival_planned', $arrival)
                                      ->first();
 
         if (empty($firstStop) || empty($lastStop)) {
@@ -222,7 +222,7 @@ abstract class TrainCheckinController extends Controller
         );
 
         $checkin->update([
-                             'arrival'     => $newDestinationStopover->arrival_planned->toIso8601String(),
+                             'arrival'     => $newDestinationStopover->arrival_planned,
                              'destination' => $newDestinationStopover->trainStation->ibnr,
                              'distance'    => $newDistance,
                              'points'      => $pointsResource->points,

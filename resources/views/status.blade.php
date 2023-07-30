@@ -28,7 +28,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
-                <h2 class="fs-5">{{ $status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday')) }}</h2>
+                <h2 class="fs-5">{{ userTime($status->trainCheckin->departure,__('dateformat.with-weekday')) }}</h2>
                 @include('includes.status')
 
                 @if(isset($status->trainCheckin->HafasTrip->last_refreshed) && \Illuminate\Support\Facades\Date::now()->isBefore($status->created_at->clone()->addDay()))

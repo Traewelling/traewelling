@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\UTCDateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -39,10 +40,10 @@ class TrainCheckin extends Model
         'destination'    => 'integer',
         'distance'       => 'integer',
         'duration'       => 'integer',
-        'departure'      => 'datetime',
-        'real_departure' => 'datetime',
-        'arrival'        => 'datetime',
-        'real_arrival'   => 'datetime',
+        'departure'      => UTCDateTime::class,
+        'real_departure' => UTCDateTime::class,
+        'arrival'        => UTCDateTime::class,
+        'real_arrival'   => UTCDateTime::class,
         'points'         => 'integer',
         'forced'         => 'boolean',
     ];
@@ -123,7 +124,7 @@ class TrainCheckin extends Model
 
         //Else calculate and cache it
         $departure = $this->real_departure ?? $this->origin_stopover->departure ?? $this->departure;
-        $arrival   = $this->real_arrival ?? $this->destination_stopover?->arrival ?? $this->arrival;
+        $arrival   = $this->real_arrival ?? $this->destination_stopover->arrival ?? $this->arrival;
         $duration  = $arrival->diffInMinutes($departure);
         $this->update(['duration' => $duration]);
         return $duration;

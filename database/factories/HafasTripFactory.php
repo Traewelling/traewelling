@@ -38,11 +38,6 @@ class HafasTripFactory extends Factory
         ];
     }
 
-    /**
-     * Configure the model factory.
-     *
-     * @return $this
-     */
     public function configure(): static {
         return $this->afterCreating(function(HafasTrip $hafasTrip) {
             $stops = TrainStation::inRandomOrder()
@@ -61,34 +56,27 @@ class HafasTripFactory extends Factory
             TrainStopover::factory([
                                        'trip_id'           => $hafasTrip->trip_id,
                                        'train_station_id'  => $hafasTrip->originStation->id,
-                                       'arrival_planned'   => $hafasTrip->departure->toIso8601String(),
-                                       'arrival_real'      => $hafasTrip->departure->toIso8601String(),
-                                       'departure_planned' => $hafasTrip->departure->toIso8601String(),
-                                       'departure_real'    => $hafasTrip->departure->toIso8601String(),
+                                       'arrival_planned'   => $hafasTrip->departure,
+                                       'departure_planned' => $hafasTrip->departure,
                                    ])->create();
 
             // Create intermediate stopovers
             foreach ($stops as $stop) {
-                $time->addMinutes(15);
+                $time = $time->clone()->addMinutes(15);
                 TrainStopover::factory([
                                            'trip_id'           => $hafasTrip->trip_id,
                                            'train_station_id'  => $stop->id,
-                                           'arrival_planned'   => $time->toIso8601String(),
-                                           'arrival_real'      => $time->toIso8601String(),
-                                           'departure_planned' => $time->toIso8601String(),
-                                           'departure_real'    => $time->toIso8601String(),
+                                           'arrival_planned'   => $time,
+                                           'departure_planned' => $time,
                                        ])->create();
             }
 
             // Create destination stopover
-            $time->addMinutes(15);
             TrainStopover::factory([
                                        'trip_id'           => $hafasTrip->trip_id,
                                        'train_station_id'  => $hafasTrip->destinationStation->id,
-                                       'arrival_planned'   => $hafasTrip->arrival->toIso8601String(),
-                                       'arrival_real'      => $hafasTrip->arrival->toIso8601String(),
-                                       'departure_planned' => $hafasTrip->arrival->toIso8601String(),
-                                       'departure_real'    => $hafasTrip->arrival->toIso8601String(),
+                                       'arrival_planned'   => $hafasTrip->arrival,
+                                       'departure_planned' => $hafasTrip->arrival,
                                    ])->create();
 
             self::createPolyline($hafasTrip);

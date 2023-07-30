@@ -32,10 +32,10 @@ abstract class IcsController extends Controller
                                      ->limit($limit);
 
         if ($from !== null) {
-            $trainCheckIns->where('departure', '>=', $from->toIso8601String());
+            $trainCheckIns->where('departure', '>=', $from);
         }
         if ($until !== null) {
-            $trainCheckIns->where('departure', '<=', $until->toIso8601String());
+            $trainCheckIns->where('departure', '<=', $until);
         }
 
         $calendar = Calendar::create()

@@ -109,6 +109,26 @@
                 </div>
             </div>
 
+            <div class="form-group row">
+                <label for="timezone" class="col-md-4 col-form-label text-md-right">
+                    {{ __('user.timezone') }}
+                </label>
+                <div class="col-md-6">
+                    <input
+                        class="form-control"
+                        list="datalistOptions"
+                        id="timezone"
+                        name="timezone"
+                        value="{{auth()->user()->timezone}}"
+                    >
+                    <datalist id="datalistOptions">
+                        @foreach(DateTimeZone::listIdentifiers() as $timezone)
+                            <option value="{{$timezone}}">
+                        @endforeach
+                    </datalist>
+                </div>
+            </div>
+
 
             <div class="form-group row mb-0">
                 <div class="col-md-6 offset-md-4">
