@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 
@@ -126,7 +127,7 @@ class TrainCheckin extends Model
         $departure = $this->real_departure ?? $this->origin_stopover->departure ?? $this->departure;
         $arrival   = $this->real_arrival ?? $this->destination_stopover->arrival ?? $this->arrival;
         $duration  = $arrival->diffInMinutes($departure);
-        $this->update(['duration' => $duration]);
+        DB::table('train_checkins')->where('id', $this->id)->update(['duration' => $duration]);
         return $duration;
     }
 
