@@ -477,10 +477,10 @@ abstract class HafasController extends Controller
             }
 
             $stop             = self::parseHafasStopObject($stopover->stop);
-            $arrivalPlanned   = Carbon::parse($stopover->plannedArrival);
-            $arrivalReal      = Carbon::parse($stopover->arrival);
-            $departurePlanned = Carbon::parse($stopover->plannedDeparture);
-            $departureReal    = Carbon::parse($stopover->departure);
+            $arrivalPlanned   = Carbon::parse($stopover->plannedArrival)->tz(config('app.timezone'));
+            $arrivalReal      = Carbon::parse($stopover->arrival)->tz(config('app.timezone'));
+            $departurePlanned = Carbon::parse($stopover->plannedDeparture)->tz(config('app.timezone'));
+            $departureReal    = Carbon::parse($stopover->departure)->tz(config('app.timezone'));
 
             $payload[] = [
                 'trip_id'           => $rawHafas->id,
