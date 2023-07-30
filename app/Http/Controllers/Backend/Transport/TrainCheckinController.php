@@ -169,15 +169,15 @@ abstract class TrainCheckinController extends Controller
         );
         try {
             $trainCheckin         = TrainCheckin::create([
-                                                             'status_id'   => $status->id,
-                                                             'user_id'     => $status->user_id,
-                                                             'trip_id'     => $trip->trip_id,
-                                                             'origin'      => $firstStop->trainStation->ibnr,
-                                                             'destination' => $lastStop->trainStation->ibnr,
-                                                             'distance'    => $distance,
-                                                             'points'      => $pointCalculation->points,
-                                                             'departure'   => $firstStop->departure_planned,
-                                                             'arrival'     => $lastStop->arrival_planned
+                                                             'status_id'      => $status->id,
+                                                             'user_id'        => $status->user_id,
+                                                             'trip_id'        => $trip->trip_id,
+                                                             'origin_id'      => $firstStop->trainStation->id,
+                                                             'destination_id' => $lastStop->trainStation->id,
+                                                             'distance'       => $distance,
+                                                             'points'         => $pointCalculation->points,
+                                                             'departure'      => $firstStop->departure_planned,
+                                                             'arrival'        => $lastStop->arrival_planned
                                                          ]);
             $alsoOnThisConnection = $trainCheckin->alsoOnThisConnection;
 

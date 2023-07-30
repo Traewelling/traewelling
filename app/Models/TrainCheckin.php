@@ -28,7 +28,7 @@ class TrainCheckin extends Model
     use HasFactory;
 
     protected $fillable = [
-        'status_id', 'user_id', 'trip_id', 'origin', 'destination',
+        'status_id', 'user_id', 'trip_id', 'origin_id', 'destination_id',
         'distance', 'duration', 'departure', 'real_departure', 'arrival', 'real_arrival', 'points', 'forced',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
@@ -37,8 +37,8 @@ class TrainCheckin extends Model
         'id'             => 'integer',
         'status_id'      => 'integer',
         'user_id'        => 'integer',
-        'origin'         => 'integer',
-        'destination'    => 'integer',
+        'origin_id'      => 'integer',
+        'destination_id' => 'integer',
         'distance'       => 'integer',
         'duration'       => 'integer',
         'departure'      => UTCDateTime::class,
@@ -58,11 +58,11 @@ class TrainCheckin extends Model
     }
 
     public function originStation(): HasOne {
-        return $this->hasOne(TrainStation::class, 'ibnr', 'origin');
+        return $this->hasOne(TrainStation::class, 'id', 'origin_id');
     }
 
     public function destinationStation(): HasOne {
-        return $this->hasOne(TrainStation::class, 'ibnr', 'destination');
+        return $this->hasOne(TrainStation::class, 'id', 'destination_id');
     }
 
     public function HafasTrip(): HasOne {

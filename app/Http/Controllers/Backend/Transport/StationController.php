@@ -59,7 +59,7 @@ abstract class StationController extends Controller
             'train_stations.id', 'train_stations.ibnr', 'train_stations.name',
             'train_stations.latitude', 'train_stations.longitude', 'train_stations.rilIdentifier',
         ];
-        return TrainStation::join('train_checkins', 'train_checkins.destination', '=', 'train_stations.ibnr')
+        return TrainStation::join('train_checkins', 'train_checkins.destination_id', '=', 'train_stations.id')
                            ->where('train_checkins.user_id', $user->id)
                            ->groupBy($groupAndSelect)
                            ->select($groupAndSelect)
