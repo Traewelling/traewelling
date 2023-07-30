@@ -123,7 +123,7 @@
                         {{ userTime($begin, __('date-format')) }} &ndash; {{ userTime($end, __('date-format')) }}
                     </td>
                     <td class="username">
-                        {{ userTime(null, __('date-format')) }}
+                        {{ userTime(now(), __('date-format')) }}
                         <br>
                         {{ auth()->user()->username }}
                     </td>

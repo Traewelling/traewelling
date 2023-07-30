@@ -98,7 +98,7 @@
                                         @if(!$loop->first && !$loop->last && \Carbon\Carbon::parse($departures[$loop->index - 1]->when)->isPast() && \Carbon\Carbon::parse($departures[$loop->index]->when)->isAfter(\Carbon\Carbon::now()->setSecond(0)))
                                             <tr>
                                                 <td colspan="3" class="stationboardDivider">
-                                                    <small>{{__('request-time', ['time' => userTime()])}}</small>
+                                                    <small>{{__('request-time', ['time' => userTime(now())])}}</small>
                                                 </td>
                                             </tr>
                                         @endif

@@ -44,6 +44,9 @@ function durationToSpan($duration): string {
 }
 
 function userTime(null|Carbon|\Carbon\Carbon|string $time=null, ?string $format=null, bool $iso=true): string {
+    if ($time === null) {
+        return '';
+    }
     $format   = $format ?? __('time-format');
     $time     = $time instanceof \Carbon\Carbon ? $time : Carbon::parse($time);
     $timezone = auth()->user()->timezone ?? config('app.timezone');
