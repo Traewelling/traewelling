@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "https://traewelling.de/api/v1",
+            "url": "http://localhost:8000/api/v1",
             "description": "This instance"
         }
     ],
@@ -4768,7 +4768,7 @@
                     },
                     "journeyNumber": {
                         "title": "journeyNumber",
-                        "description": "Journey number of train",
+                        "description": "The number of the journey. Given by the transport company.",
                         "type": "integer",
                         "example": "3697",
                         "nullable": true

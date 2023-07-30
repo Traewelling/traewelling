@@ -50,7 +50,9 @@ class FrontendTransportController extends Controller
                                             'travelType' => ['nullable', new Enum(TravelType::class)]
                                         ]);
 
-        $when = isset($validated['when']) ? Carbon::parse($validated['when']) : null;
+        $when = isset($validated['when'])
+            ? Carbon::parse($validated['when'], auth()->user()->timezone ?? config('app.timezone'))
+            : null;
 
         try {
             //Per default: Use the given station query for lookup

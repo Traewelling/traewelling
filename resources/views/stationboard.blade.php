@@ -34,7 +34,7 @@
                             <div class="input-group mb-3 mx-auto">
                                 <input type="datetime-local" class="form-control" id="timepicker" name="when"
                                        aria-describedby="button-addontime"
-                                       value="{{ userTime($times['now'], 'Y-m-d\TH:i') }}"/>
+                                       value="{{ userTime($times['now'], 'Y-m-d\TH:i', false) }}"/>
                                 <button class="btn btn-outline-primary" type="submit" id="button-addontime"
                                         data-mdb-ripple-color="dark">
                                     {{__('stationboard.set-time')}}
