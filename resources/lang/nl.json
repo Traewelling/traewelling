@@ -691,5 +691,8 @@
     "changelog": "Wijzigingslog",
     "time-is-planned": "Geplande vertrektĳd",
     "time-is-real": "Daadwerkelĳke vertrektĳd (volgens de api)",
-    "time-is-manual": "De vertrektĳd is handmatig aangepast"
+    "time-is-manual": "De vertrektĳd is handmatig aangepast",
+    "stationboard.timezone": "Er is vastgesteld dat je tĳdzone verschilt met die van dit station. De getoonde tĳden zĳn op basis van je ingestelde tĳdzone: <i>:timezone</i>.",
+    "stationboard.timezone.settings": "Je kunt dit aanpassen in de <a href=\":url\">instellingen</a>.",
+    "user.timezone": "Tĳdzone"
 }
