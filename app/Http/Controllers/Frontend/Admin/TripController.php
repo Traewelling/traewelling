@@ -15,7 +15,7 @@ class TripController
 {
 
     public function renderTrip(string $id): View {
-        $trip = HafasTrip::with(['checkIns'])
+        $trip = HafasTrip::with(['checkins'])
                          ->where('trip_id', $id)->firstOrFail();
         return view('admin.trip.show', [
             'trip' => $trip

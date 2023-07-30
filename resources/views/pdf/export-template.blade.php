@@ -148,7 +148,7 @@
                         <tr>
                             <td>{{ __('transport_types.' . $status->trainCheckin->HafasTrip->category->value) }}</td>
                             <td>{{ $status->trainCheckin->HafasTrip->linename }}</td>
-                            <td>{{ $status->trainCheckin->Origin->name }}</td>
+                            <td>{{ $status->trainCheckin->originStation->name }}</td>
                             <td>
                                 @if(isset($status->trainCheckin->real_departure))
                                     {{ userTime($status->trainCheckin->real_departure, __('datetime-format')) }}
@@ -162,7 +162,7 @@
                                     {{ userTime($status->trainCheckin->origin_stopover->departure_planned, __('datetime-format')) }}
                                 @endif
                             </td>
-                            <td>{{ $status->trainCheckin->Destination->name }}</td>
+                            <td>{{ $status->trainCheckin->destinationStation->name }}</td>
                             <td>
                                 @if(isset($status->trainCheckin->real_arrival))
                                     {{ userTime($status->trainCheckin->real_arrival, __('datetime-format')) }}

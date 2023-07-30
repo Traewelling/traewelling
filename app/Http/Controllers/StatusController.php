@@ -42,10 +42,10 @@ class StatusController extends Controller
     public static function getStatus(int $statusId): Status {
         return Status::where('id', $statusId)
                      ->with([
-                                'user', 'trainCheckin', 'trainCheckin.Origin',
-                                'trainCheckin.Destination', 'trainCheckin.HafasTrip', 'event',
+                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'trainCheckin',
+                                'trainCheckin.originStation', 'trainCheckin.destinationStation',
+                                'trainCheckin.HafasTrip.stopovers.trainStation',
                             ])
-                     ->withCount('likes')
                      ->firstOrFail();
     }
 
@@ -58,13 +58,10 @@ class StatusController extends Controller
      */
     public static function getActiveStatuses(): array|stdClass|null {
         $statuses = Status::with([
-                                     'likes',
-                                     'user',
-                                     'trainCheckin.Origin',
-                                     'trainCheckin.Destination',
-                                     'trainCheckin.HafasTrip.polyline',
+                                     'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
+                                     'trainCheckin.originStation', 'trainCheckin.destinationStation',
                                      'trainCheckin.HafasTrip.stopovers.trainStation',
-                                     'event'
+                                     'trainCheckin.HafasTrip.polyline',
                                  ])
                           ->whereHas('trainCheckin', function($query) {
                               $query->where('departure', '<', date('Y-m-d H:i:s'))
@@ -229,16 +226,15 @@ class StatusController extends Controller
 
     public static function getFutureCheckins(): Paginator {
         return auth()->user()->statuses()
-                     ->with('user',
-                            'trainCheckin',
-                            'trainCheckin.Origin',
-                            'trainCheckin.Destination',
-                            'trainCheckin.HafasTrip',
-                            'event')
-                     ->orderBy('created_at', 'DESC')
+                     ->with([
+                                'user', 'trainCheckin.originStation', 'trainCheckin.destinationStation',
+                                'trainCheckin.HafasTrip', 'event',
+                            ])
+                     ->orderByDesc('created_at')
                      ->whereHas('trainCheckin', function($query) {
                          $query->where('departure', '>=', date('Y-m-d H:i:s', strtotime("+20min")));
-                     })->simplePaginate(15);
+                     })
+                     ->simplePaginate(15);
     }
 
     public static function createStatus(

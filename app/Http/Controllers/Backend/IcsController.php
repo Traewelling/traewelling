@@ -51,8 +51,8 @@ abstract class IcsController extends Controller
                 $name .= __(
                     key:     'export.journey-from-to',
                     replace: [
-                                 'origin'      => $checkIn->Origin->name,
-                                 'destination' => $checkIn->Destination->name
+                                 'origin'      => $checkIn->originStation->name,
+                                 'destination' => $checkIn->destinationStation->name
                              ],
                     locale:  $user->language
                 );
