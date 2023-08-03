@@ -52,7 +52,7 @@
     "settings.title-ics": "Exportation du calendrier",
     "messages.cookie-notice-button": "D’accord",
     "notifications.socialNotShared.mastodon.401": "Ton instance nous a envoyé une erreur <code>401 Unauthorized</code> en pouétant ton enregistrement. Peut-être qu’il faut connecter Mastodon à nouveau avec Träwelling ?",
-    "settings.delete-profile-picture-yes": "Supprimer",
+    "settings.delete-profile-picture-yes": "Oui, supprimer cela",
     "admin.usage-board": "Évalutation d’usage",
     "export.kilometers": "Kilomètre(s)",
     "user.reset-pw-link": "Envoyer le lien de réinitialisation",
@@ -296,7 +296,7 @@
     "user.password": "Mot de passe",
     "menu.leaderboard": "Tableau d’honneur",
     "export.type": "Type",
-    "settings.delete-account-btn-confirm": "Supprimer",
+    "settings.delete-account-btn-confirm": "Supprimer vraiment",
     "stationboard.search-by-location": "Recherche basée sur la position",
     "user.register": "S’inscrire",
     "menu.logout": "Se déconnecter",
@@ -691,5 +691,8 @@
     "notifications.eventSuggestionProcessed.duplicate": "Votre suggestion existe déjà .",
     "settings.colorscheme.light": "Clair",
     "settings.colorscheme.dark": "Sombre",
-    "stationboard.check-tweet": "Tweet"
+    "stationboard.check-tweet": "Tweet",
+    "stationboard.timezone": "Nous avons détecté que votre fuseau horaire est différent de celui de cette station. Les heures indiquées ici sont affichées avec le fuseau horaire que vous avez défini <i>:timezone</i>.",
+    "stationboard.timezone.settings": "Si vous le souhaitez, vous pouvez le modifier dans les <a href=\":url\">paramètres</a>.",
+    "user.timezone": "Fuseau horaire"
 }
