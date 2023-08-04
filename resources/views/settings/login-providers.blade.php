@@ -4,8 +4,8 @@
     <div class="card mt-3">
         <div class="card-header">{{ __('settings.title-loginservices') }}</div>
 
-        <div class="card-body">
-            <table class="table table-responsive">
+        <div class="card-body table-responsive px-0">
+            <table class="table">
                 <tbody>
                     <tr>
                         <td>
