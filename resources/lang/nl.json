@@ -695,5 +695,8 @@
     "stationboard.timezone": "Er is vastgesteld dat je tĳdzone verschilt met die van dit station. De getoonde tĳden zĳn op basis van je ingestelde tĳdzone: <i>:timezone</i>.",
     "stationboard.timezone.settings": "Je kunt dit aanpassen in de <a href=\":url\">instellingen</a>.",
     "user.timezone": "Tĳdzone",
-    "settings.title-appdevelopment": "Appontwikkeling"
+    "settings.title-appdevelopment": "Appontwikkeling",
+    "settings.back-to-traewelling": "Terug naar Träwelling",
+    "settings.title-security": "Beveiliging",
+    "settings.title-extra": "Aanvullend"
 }
