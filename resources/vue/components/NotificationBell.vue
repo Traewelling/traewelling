@@ -2,6 +2,7 @@
 import ModalComponent from "./ModalComponent.vue";
 import {onMounted, onUnmounted, reactive, ref} from "vue";
 import NotificationList from "./NotificationList.vue";
+import API from "../../js/api/api";
 
 defineProps({
     label: {
@@ -43,14 +44,14 @@ function showModal() {
 }
 
 function fetchCount() {
-    API.request('/notifications/unread/count')
+    API.request("/notifications/unread/count", "GET", {}, true)
         .then(function (request) {
             request.json().then(function (json) {
                 state.count = json.data;
             });
         })
         .catch(() => {
-            // Hopefully prevent error messages from happening
+            // Do nothing and ignore this error for better ux
         });
 }
 </script>
