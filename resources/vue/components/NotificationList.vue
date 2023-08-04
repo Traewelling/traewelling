@@ -1,5 +1,5 @@
 <script>
-
+import API from "../../js/api/api";
 import NotificationEntry from "./NotificationEntry.vue";
 
 export default {

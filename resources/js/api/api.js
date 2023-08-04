@@ -1,6 +1,6 @@
 'use strict';
 
-window.API = class API {
+export default class API {
 
     static request(path, method = 'GET', data = {}, customErrorHandling = false) {
         let requestBody = undefined;
@@ -16,14 +16,14 @@ window.API = class API {
             body: requestBody,
         });
         if (!customErrorHandling) {
-            request.catch(API.handleGenericError)
+            request.catch(this.handleGenericError);
         }
         return request;
     }
 
     static handleDefaultResponse(response) {
         if (!response.ok) {
-            return response.json().then(API.handleGenericError);
+            return response.json().then(this.handleGenericError);
         }
 
         return response.json().then(data => {

@@ -1,4 +1,5 @@
 'use strict';
+import API from "../api/api";
 
 document.querySelector('form#event-suggest')?.addEventListener('submit', function (event) {
     event.preventDefault();
