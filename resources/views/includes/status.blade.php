@@ -1,17 +1,20 @@
 @php
-    use App\Enum\Business;use App\Http\Controllers\Backend\Transport\StationController;use App\Http\Controllers\Backend\User\ProfilePictureController;
+    use App\Enum\Business;
+    use App\Http\Controllers\Backend\Transport\StationController;
+    use App\Http\Controllers\Backend\User\ProfilePictureController;
 @endphp
 <div class="card status mb-3" id="status-{{ $status->id }}"
      data-trwl-id="{{$status->id}}"
-     data-trwl-status-body="{{ $status->body }}"
-     data-trwl-real-departure="{{ userTime($status->trainCheckin?->real_departure, 'Y-m-d\TH:i:s', false)}}"
-     data-trwl-real-arrival="{{ userTime($status->trainCheckin?->real_arrival, 'Y-m-d\TH:i:s', false)}}"
      data-date="{{userTime($status->trainCheckin->departure, __('dateformat.with-weekday'))}}"
-     data-trwl-business-id="{{ $status->business->value }}"
-     data-trwl-visibility="{{ $status->visibility->value }}"
      @if(auth()->check() && auth()->id() === $status->user_id)
+         data-trwl-status-body="{{ $status->body }}"
+         data-trwl-real-departure="{{ userTime($status->trainCheckin?->real_departure, 'Y-m-d\TH:i:s', false)}}"
+         data-trwl-real-arrival="{{ userTime($status->trainCheckin?->real_arrival, 'Y-m-d\TH:i:s', false)}}"
+         data-trwl-business-id="{{ $status->business->value }}"
+         data-trwl-visibility="{{ $status->visibility->value }}"
          data-trwl-destination-stopover="{{$status->trainCheckin->destination_stopover->id}}"
-     data-trwl-alternative-destinations="{{json_encode(StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
+         data-trwl-alternative-destinations=
+             "{{json_encode(StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
     @endif
 >
     @if (isset($polyline) && $polyline !== '[]' && Route::current()->uri == "status/{id}")
