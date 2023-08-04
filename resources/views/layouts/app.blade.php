@@ -197,74 +197,123 @@
 
                 @yield('content')
             </main>
-            <footer class="footer mt-auto py-3">
-                <div class="container">
 
-                    <div class="float-end row gy-3 mb-4 mb-md-0 gx-2">
-                        <div class="btn-group dropup col">
-                            <button type="button" class="btn btn-primary dropdown-toggle"
-                                    data-mdb-dropdown-animation="off"
-                                    data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-circle-half-stroke"></i></i> {{__('settings.colorscheme.set')}}
-                            </button>
-                            <div class="dropdown-menu">
-                                <div class="dropdown-item" id="colorModeToggleLight"><i
-                                        class="fas fa-sun"></i> {{__('settings.colorscheme.light')}}</div>
-                                <div class="dropdown-item" id="colorModeToggleDark"><i
-                                        class="fas fa-moon"></i> {{__('settings.colorscheme.dark')}}</div>
-                                <div class="dropdown-item" id="colorModeToggleAuto"><i
-                                        class="fas fa-circle-half-stroke"></i> {{__('settings.colorscheme.auto')}}</div>
-                            </div>
-                        </div>
-                        <div class="btn-group dropup col">
-                            <button type="button" class="btn btn-primary dropdown-toggle"
-                                    data-mdb-dropdown-animation="off"
-                                    data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
-                            </button>
-                            <div class="dropdown-menu">
-                                @foreach(config('app.locales') as $key => $lang)
-                                    <a class="dropdown-item"
-                                       href="{{request()->fullUrlWithQuery(['language' => $key])}}">
-                                        {{ $lang }}
+            <div class="container">
+                <footer class="py-5">
+                    <div class="row">
+                        <div class="col-6 col-md-2 mb-3">
+                            <h5>Section</h5>
+                            <ul class="nav flex-column">
+                                <li class="nav-item mb-2">
+                                    <a href="{{ route('globaldashboard') }}" class="nav-link p-0 text-body-secondary">
+                                        {{ __('menu.globaldashboard') }}
                                     </a>
-                                @endforeach
-                            </div>
+                                </li>
+                                <li class="nav-item mb-2">
+                                    <a href="{{ route('events') }}" class="nav-link p-0 text-body-secondary">
+                                        {{ __('events') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item mb-2">
+                                    <a href="{{ route('static.about') }}" class="nav-link p-0 text-body-secondary">
+                                        {{ __('menu.about') }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="col-6 col-md-2 mb-3">
+                            <h5>Section</h5>
+                            <ul class="nav flex-column">
+                                <li class="nav-item mb-2">
+                                    <a href="{{ route('legal.privacy') }}" class="nav-link p-0 text-body-secondary">
+                                        {{ __('menu.privacy') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item mb-2">
+                                    <a href="{{ route('legal.notice') }}" class="nav-link p-0 text-body-secondary">
+                                        {{ __('menu.legal-notice') }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="col-6 col-md-2 mb-3">
+                            <h5>Section</h5>
+                            <ul class="nav flex-column">
+                                <li class="nav-item mb-2">
+                                    <a href="https://blog.traewelling.de"
+                                       target="blog"
+                                       class="nav-link p-0 text-body-secondary"
+                                    >
+                                        {{ __('menu.blog') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item mb-2">
+                                    <a href="https://chaos.social/@traewelling"
+                                       target="_blank"
+                                       class="nav-link p-0 text-body-secondary">
+                                        Mastodon
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="col-md-2 offset-md-3 mb-3">
+                            <ul class="nav flex-column">
+                                <li class="nav item mb-2">
+                                <div class="btn-group dropup w-100">
+                                    <button type="button" class="btn btn-primary btn-block dropdown-toggle"
+                                            data-mdb-dropdown-animation="off"
+                                            data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        @foreach(config('app.locales') as $key => $lang)
+                                            <a class="dropdown-item"
+                                               href="{{request()->fullUrlWithQuery(['language' => $key])}}">
+                                                {{ $lang }}
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                </li>
+                                <li class="nav item mb-2">
+                                <div class="btn-group dropup w-100">
+                                    <button type="button" class="btn btn-primary btn-block dropdown-toggle"
+                                            data-mdb-dropdown-animation="off"
+                                            data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-circle-half-stroke"></i></i> {{__('settings.colorscheme.set')}}
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <div class="dropdown-item" id="colorModeToggleLight"><i
+                                                class="fas fa-sun"></i> {{__('settings.colorscheme.light')}}</div>
+                                        <div class="dropdown-item" id="colorModeToggleDark"><i
+                                                class="fas fa-moon"></i> {{__('settings.colorscheme.dark')}}</div>
+                                        <div class="dropdown-item" id="colorModeToggleAuto">
+                                            <i class="fas fa-circle-half-stroke"></i>
+                                            {{__('settings.colorscheme.auto')}}
+                                        </div>
+                                    </div>
+                                </div>
+                                </li>
+                            </ul>
+
                         </div>
                     </div>
-                    <p class="text-muted mb-0">
-                <span class="footer-nav-link">
-                    <a href="{{ route('static.about') }}">{{ __('menu.about')}}</a>
-                </span>
-                        <span class="footer-nav-link">
-                    / <a href="{{ route('globaldashboard') }}">{{ __('menu.globaldashboard')}}</a>
-                </span>
-                        <span class="footer-nav-link">
-                    / <a href="{{ route('events') }}">{{ __('events') }}</a>
-                </span>
-                        <span class="footer-nav-link">
-                    / <a href="{{ route('legal.privacy') }}">{{ __('menu.privacy') }}</a>
-                </span>
-                        <span class="footer-nav-link">
-                    / <a href="{{ route('legal.notice') }}">{{ __('menu.legal-notice') }}</a>
-                </span>
-                        <span class="footer-nav-link">
-                    / <a href="https://blog.traewelling.de" target="blog">{{ __('menu.blog') }}</a>
-                </span>
-                    </p>
-                    <p class="mb-0">{!! __('menu.developed') !!}</p>
-                    <p class="mb-0">&copy; {{date('Y')}} Tr&auml;welling</p>
-                    <p class="mb-0 text-muted small">
-                        Version
-                        <a href="https://github.com/Traewelling/traewelling/commit/{{ \App\Http\Controllers\Backend\VersionController::getVersion() }}"
-                           class="text-muted">
-                            {{ \App\Http\Controllers\Backend\VersionController::getVersion() }}
-                        </a>
-                        -
-                        <a href="{{route('changelog')}}" class="text-muted">{{__('changelog')}}</a>
-                    </p>
-                </div>
-            </footer>
+
+                    <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
+                        <p class="mb-0">&copy; {{date('Y')}} Tr&auml;welling</p>
+                        <p class="mb-0">{!! __('menu.developed') !!}</p>
+                        <p class="mb-0 text-muted small">
+                            Version
+                            <a href="{{route('changelog')}}">
+                                {{ \App\Http\Controllers\Backend\VersionController::getVersion() }}
+                            </a>
+                        </p>
+                    </div>
+                </footer>
+            </div>
         </div>
 
         <div class="alert text-center cookiealert" role="alert">
