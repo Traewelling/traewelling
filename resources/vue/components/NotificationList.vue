@@ -22,7 +22,7 @@ export default {
                     const data              = await response.json();
                     this.notifications[key] = data.data;
                     this.$emit('toggle-read');
-                })
+                });
         },
         toggleAllRead() {
             return API.request('/notifications/read/all', 'PUT')
@@ -42,6 +42,9 @@ export default {
                     const data         = await response.json();
                 this.notifications = data.data;
                 this.loading = false;
+            }).catch(() => {
+                this.loading = false;
+                this.notifications = null;
             });
         }
     },

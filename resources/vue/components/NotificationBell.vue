@@ -48,6 +48,9 @@ function fetchCount() {
             request.json().then(function (json) {
                 state.count = json.data;
             });
+        })
+        .catch(() => {
+            // Hopefully prevent error messages from happening
         });
 }
 </script>
