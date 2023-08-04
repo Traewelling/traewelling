@@ -14,9 +14,9 @@
                     <div class="col-md-6 text-center">
                         <div class="image-box">
                             <img
-                                    src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
-                                    style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2"
-                                    id="theProfilePicture"
+                                src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
+                                style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2"
+                                id="theProfilePicture"  loading="lazy" decoding="async"
                             />
                         </div>
 
@@ -25,15 +25,14 @@
                             {{__('settings.upload-image')}}
                         </a>
 
-                        @isset(auth()->user()->avatar)
-                            <a href="javascript:void(0)" class="btn btn-outline-danger btn-sm mb-3"
-                               id="btnModalDeleteProfilePicture"
-                               data-mdb-toggle="modal"
-                               data-mdb-target="#deleteProfilePictureModal"
-                            >
-                                {{ __('settings.delete-profile-picture-btn') }}
-                            </a>
-                        @endisset
+                        <a href="javascript:void(0)"
+                           class="btn btn-outline-danger btn-sm mb-3 {{isset(auth()->user()->avatar) ? '' : 'd-none'}}"
+                           id="btnModalDeleteProfilePicture"
+                           data-mdb-toggle="modal"
+                           data-mdb-target="#deleteProfilePictureModal"
+                        >
+                            {{ __('settings.delete-profile-picture-btn') }}
+                        </a>
 
                         @error('avatar')
                         <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
@@ -93,6 +92,47 @@
                     </div>
                 </div>
 
+                <div class="form-group row">
+                    <label for="mapprovider" class="col-md-4 col-form-label text-md-right">
+                        {{ __('user.mapprovider') }}
+                    </label>
+                    <div class="col-md-6">
+                        <select class="form-control" name="mapprovider">
+                            <option value="{{ App\Enum\MapProvider::CARGO->value }}" @if(auth()->user()->mapprovider == App\Enum\MapProvider::CARGO) selected @endif>
+                                {{__('map-providers.cargo')}}
+                            </option>
+                            <option value="{{ App\Enum\MapProvider::OPEN_RAILWAY_MAP->value }}" @if(auth()->user()->mapprovider == App\Enum\MapProvider::OPEN_RAILWAY_MAP) selected @endif>
+                                {{__('map-providers.open-railway-map')}}
+                            </option>
+                        </select>
+
+                        @error('email')
+                        <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="timezone" class="col-md-4 col-form-label text-md-right">
+                        {{ __('user.timezone') }}
+                    </label>
+                    <div class="col-md-6">
+                        <input
+                            class="form-control"
+                            list="datalistOptions"
+                            id="timezone"
+                            name="timezone"
+                            value="{{auth()->user()->timezone}}"
+                        >
+                        <datalist id="datalistOptions">
+                            @foreach(DateTimeZone::listIdentifiers() as $timezone)
+                                <option value="{{$timezone}}">
+                            @endforeach
+                        </datalist>
+                    </div>
+                </div>
+
+
                 <div class="form-group row mb-0">
                     <div class="col-md-6 offset-md-4">
                         <button type="submit" class="btn btn-primary">
@@ -117,12 +157,10 @@
                         <input type="file" id="image">
                     </p>
 
-                    <div class="d-none text-trwl text-center" id="upload-error" role="alert">
-                        {{ __('settings.something-wrong') }}
-                    </div>
-
                     <div id="upload-demo" class="d-none"></div>
-                    <button class="btn btn-primary btn-block upload-image d-none" id="upload-button">
+                    <button class="btn btn-primary btn-block upload-image d-none" id="upload-button"
+                            data-mdb-dismiss="modal"
+                    >
                         {{__('settings.upload-image')}}
                     </button>
                 </div>

@@ -26,7 +26,6 @@
             }
         </script>
 
-        <script src="{{ mix('js/app.js') }}"></script>
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
         <link href="{{ mix('css/app.css') }}" rel="stylesheet">
         <link href="{{ mix('css/app-dark.css') }}" rel="stylesheet">
@@ -36,6 +35,8 @@
         <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
         <link rel="author" href="/humans.txt">
         <link rel="manifest" href="/manifest.json"/>
+
+        <script src="{{ mix('js/app.js') }}"></script>
 
         @yield('head')
 
@@ -297,6 +298,8 @@
                     <div class="container">
                         <div class="row justify-content-center">
                             <div class="col-md-8 col-lg-7">
+                                @include('includes.message-block')
+
                                 @yield('content')
                             </div>
                         </div>
@@ -304,5 +307,9 @@
                 </main>
             </div>
         </div>
+        <script>
+            var token            = '{{ csrf_token() }}';
+            var urlDisconnect    = '{{ route('provider.destroy') }}';
+        </script>
     </body>
 </html>

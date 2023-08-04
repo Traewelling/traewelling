@@ -5,7 +5,7 @@
         <div class="card-header">{{ __('settings.title-privacy') }}</div>
 
         <div class="card-body">
-            <form method="POST" action="{{ route('settings.privacy') }}">
+            <form method="POST" action="{{ route('settings.privacy.update') }}">
                 @csrf
 
                 <div class="form-group row">
