@@ -3,9 +3,9 @@
 
 @section('title', isset($app) ? 'Edit application' : 'Create application')
 
-@section('content')
-    <div class="row">
-        <div class="col-12">
+@section('big-content')
+    <div class="card mt-3">
+        <div class="card-body">
             <form enctype="multipart/form-data" method="POST"
                   action="{{Route::currentRouteName() === 'dev.apps.create' ? route('dev.apps.create.post') : route('dev.apps.edit', ['appId' => $app->id]) }}"
             >
@@ -27,7 +27,6 @@
                         </table>
                         <hr>
                     </div>
-                @endisset
                 <div class="alert alert-warning">
                     @if($app?->confidential())
                     WARNING: Changing the <code>confidential</code> field will delete your client secret and revoke all existing tokens.
@@ -35,6 +34,7 @@
                     WARNING: Changing the <code>confidential</code> field will generate a new client secret and revoke all existing tokens.
                     @endif
                 </div>
+                @endisset
                 <div class="form-group row my-1">
                     <label for="name" class="col-md-4 col-form-label text-md-right">
                         Name

@@ -14,15 +14,6 @@ use Illuminate\Validation\Rule;
  */
 class SettingsController extends Controller
 {
-    /**
-     * @deprecated
-     */
-    public function renderFollowerSettings(): Renderable {
-        return view('settings.follower', [
-            'requests'  => auth()->user()->followRequests()->with('user')->paginate(15),
-            'followers' => auth()->user()->followers()->with('user')->paginate(15)
-        ]);
-    }
 
     /**
      * @throws AuthorizationException

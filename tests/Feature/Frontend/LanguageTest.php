@@ -68,9 +68,9 @@ class LanguageTest extends TestCase
     public function testLoggedInUsersWithSavedLanguageInProfile(): void {
         $user     = User::factory(['language' => 'de'])->create();
         $response = $this->actingAs($user)
-                         ->get(route('settings'));
+                         ->get(route('settings.profile'));
         $response->assertOk();
-        $response->assertViewIs('settings.settings');
+        $response->assertViewIs('settings.profile');
         $response->assertSee(__('menu.settings', [], 'de'));
     }
 }

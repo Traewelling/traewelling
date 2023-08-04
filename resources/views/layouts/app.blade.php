@@ -283,7 +283,6 @@
              * checkin into components/stationboard.js.
              */
             var token            = '{{ csrf_token() }}';
-            var urlDisconnect    = '{{ route('provider.destroy') }}';
             var urlFollow        = '{{ route('follow.create') }}';
             var urlFollowRequest = '{{ route('follow.request') }}';
             var urlTrainTrip     = '{{ route('trains.trip') }}';

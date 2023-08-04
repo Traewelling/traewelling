@@ -3,14 +3,20 @@
 @section('title', 'Deine Anwendungen')
 
 @section('additional-content-end')
-    <a href="{{ route('dev.apps.create') }}" class="btn btn-outline-success">
-        Anwendung erstellen
-    </a>
+
 @endsection
 
-@section('content')
-    <div class="row">
-        <div class="col-12">
+@section('big-content')
+    <div class="card mt-3 my-0">
+        <div class="card-header">
+            <a href="/api/documentation" target="_blank" class="btn btn-outline-info">
+                API Docs
+            </a>
+            <a href="{{ route('dev.apps.create') }}" class="btn btn-outline-success float-end">
+                Anwendung erstellen
+            </a>
+        </div>
+        <div class="card-body table-responsive px-0">
             @if($apps->count() > 0)
                 <table class="table table-striped table-dark">
                     <thead>

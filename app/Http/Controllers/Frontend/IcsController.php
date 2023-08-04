@@ -49,7 +49,7 @@ class IcsController extends Controller
 
         $icsToken = BackendIcsController::createIcsToken(user: auth()->user(), name: $validated['name']);
 
-        return redirect()->route('settings', ['#ics'])
+        return redirect()->route('settings.ics')
                          ->with('ics-success', strtr(__('settings.create-ics-token-success'), [
                              ':link' => route('ics', [
                                  'user_id'  => $icsToken->user_id,

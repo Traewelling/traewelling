@@ -13,16 +13,24 @@ function setDarkMode(darkMode) {
 }
 
 function updateDarkModeMenu(colorMode) {
-    document.getElementById("colorModeToggleLight").classList.remove("active");
-    document.getElementById("colorModeToggleDark").classList.remove("active");
-    document.getElementById("colorModeToggleAuto").classList.remove("active");
+    let toggleLight = document.getElementById("colorModeToggleLight");
+    let toggleDark  = document.getElementById("colorModeToggleDark");
+    let toggleAuto  = document.getElementById("colorModeToggleAuto");
+
+    if (!(toggleLight && toggleDark && toggleAuto)) {
+        return;
+    }
+
+    toggleLight.classList.remove("active");
+    toggleDark.classList.remove("active");
+    toggleAuto.classList.remove("active");
 
     if (getDarkMode() === "light") {
-        document.getElementById("colorModeToggleLight").classList.add("active");
+        toggleLight.classList.add("active");
     } else if (getDarkMode() === "dark") {
-        document.getElementById("colorModeToggleDark").classList.add("active");
+        toggleDark.classList.add("active");
     } else {
-        document.getElementById("colorModeToggleAuto").classList.add("active");
+        toggleAuto.classList.add("active");
     }
 }
 
@@ -43,32 +51,43 @@ function updateDarkMode() {
     }
 }
 
-getDarkMode();
-updateDarkModeMenu();
+function mountListeners() {
+    let toggleLight = document.getElementById("colorModeToggleLight");
+    let toggleDark  = document.getElementById("colorModeToggleDark");
+    let toggleAuto  = document.getElementById("colorModeToggleAuto");
 
-document
-    .getElementById("colorModeToggleLight")
-    .addEventListener("click", () => {
+
+    if (!(toggleLight && toggleDark && toggleAuto)) {
+        return;
+    }
+
+    toggleLight.addEventListener("click", () => {
         setDarkMode("light");
         updateDarkModeMenu();
         updateDarkMode();
     });
 
-document.getElementById("colorModeToggleDark").addEventListener("click", () => {
-    setDarkMode("dark");
-    updateDarkModeMenu();
-    updateDarkMode();
-});
+    toggleDark.addEventListener("click", () => {
+        setDarkMode("dark");
+        updateDarkModeMenu();
+        updateDarkMode();
+    });
 
-document.getElementById("colorModeToggleAuto").addEventListener("click", () => {
-    setDarkMode("auto");
-    updateDarkModeMenu();
-    updateDarkMode();
-});
+    toggleAuto.addEventListener("click", () => {
+        setDarkMode("auto");
+        updateDarkModeMenu();
+        updateDarkMode();
+    });
+}
+
+getDarkMode();
+updateDarkModeMenu();
+mountListeners();
+
 
 window
     .matchMedia("(prefers-color-scheme: dark)")
-    .addEventListener("change", ({ matches }) => {
+    .addEventListener("change", ({matches}) => {
         if (getDarkMode() === "auto") {
             updateDarkMode(matches ? "dark" : "light");
         }
