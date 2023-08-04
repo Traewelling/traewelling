@@ -3,11 +3,11 @@
 @section('content')
     <div class="card mt-3">
         <div class="card-header">{{ __('settings.title-tokens') }}</div>
-        <div class="card-body">
+        <div class="card-body table-responsive px-0">
             @if(count($tokens) == 0)
-                <p class="text-danger">{{__('settings.no-tokens')}}</p>
+                <p class="text-danger mx-4">{{__('settings.no-tokens')}}</p>
             @else
-                <table class="table table-responsive">
+                <table class="table">
                     <thead>
                         <tr>
                             <th>{{ __('settings.client-name') }}</th>

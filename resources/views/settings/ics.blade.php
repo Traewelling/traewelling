@@ -4,17 +4,17 @@
     <div class="card mt-3" id="ics">
         <div class="card-header">{{ __('settings.title-ics') }}</div>
 
-        <div class="card-body">
+        <div class="card-body px-0">
             @if(session()->has('ics-success'))
-                <div class="alert alert-success">
+                <div class="alert alert-success mx-2">
                     {!! session()->get('ics-success') !!}
                 </div>
             @endif
 
             @if(auth()->user()->icsTokens->count() === 0)
-                <p class="text-danger">{{__('settings.no-ics-tokens')}}</p>
+                <p class="text-danger mx-2">{{__('settings.no-ics-tokens')}}</p>
             @else
-                <div class="table-responsive">
+                <div class="table-responsive ">
                     <table class="table">
                         <thead>
                             <tr>
@@ -47,7 +47,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{route('ics.createToken')}}">
+            <form method="POST" class="mx-2" action="{{route('ics.createToken')}}">
                 @csrf
                 <div class="input-group mt-0">
                     <input type="text" name="name" class="form-control" required

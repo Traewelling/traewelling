@@ -6,7 +6,7 @@
             @if($requests->count() > 0)
                     <div class="card mt-3">
                         <div class="card-header">{{ __('menu.settings.follower-requests') }}</div>
-                        <div class="card-body table-responsive">
+                        <div class="card-body table-responsive px-0">
                             <table class="table table-striped table-hover">
                                 <tbody>
                                     @foreach($requests as $request)
@@ -64,10 +64,10 @@
                 <div class="card mt-3">
                     <div class="card-header">{{ __('menu.settings.myFollower') }}</div>
 
-                    <div class="card-body table-responsive">
+                    <div class="card-body table-responsive px-0">
 
                         @if($followers->count() == 0)
-                            <b class="text-danger">
+                            <b class="text-danger mx-5">
                                 <i class="fas fa-users-slash"></i>
                                 {{__('settings.follower.no-follower')}}
                             </b>

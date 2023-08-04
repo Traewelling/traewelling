@@ -10,15 +10,13 @@
                     <tr>
                         <td>
                             <i class="fab fa-twitter"></i>
-                            Twitter <br>
-                            <a href="https://blog.traewelling.de/posts/twitter-deprecation/" target="_blank">
-                                <i class="fa fa-link"></i> {{ __('settings.twitter-deprecated') }}
-                            </a>
+                            Twitter
                         </td>
                         @if (auth()->user()?->socialProfile?->twitter_id != null)
-                            <td class="text-success align-middle">
-                                <i class="fas fa-check"></i>
-                                {{ __('settings.connected') }}
+                            <td class="align-middle d-none d-md-table-cell">
+                                <a href="https://blog.traewelling.de/posts/twitter-deprecation/" target="_blank">
+                                    <i class="fa fa-link"></i> {{ __('settings.twitter-deprecated') }}
+                                </a>
                             </td>
                             <td class="align-middle">
                                 <a href="javascript:void(0)" data-provider="twitter"
@@ -27,12 +25,12 @@
                                 </a>
                             </td>
                         @else
-                            <td class="text-danger align-middle">
-                                <i class="fas fa-times"></i>
-                                {{ __('settings.notconnected') }}
-                            </td>
                             <td class="align-middle">
+                                <a href="https://blog.traewelling.de/posts/twitter-deprecation/" target="_blank">
+                                    <i class="fa fa-link"></i> {{ __('settings.twitter-deprecated') }}
+                                </a>
                             </td>
+                            <td class="align-middle d-none d-md-table-cell"></td>
                         @endif
                     </tr>
                     <tr>
@@ -41,7 +39,7 @@
                             Mastodon
                         </td>
                         @if (auth()->user()?->socialProfile?->mastodon_id != null)
-                            <td class="text-success">
+                            <td class="text-success d-none d-md-table-cell">
                                 <i class="fas fa-check"></i>
                                 {{ __('settings.connected') }}
                             </td>
@@ -52,7 +50,7 @@
                                 </a>
                             </td>
                         @else
-                            <td class="text-danger">
+                            <td class="text-danger d-none d-md-table-cell">
                                 <i class="fas fa-times"></i>
                                 {{ __('settings.notconnected') }}
                             </td>

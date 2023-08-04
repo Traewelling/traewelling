@@ -7,14 +7,14 @@
 @section('content')
     <div class="card mt-3">
         <div class="card-header">{{ __('settings.title-webhooks') }}</div>
-        <div class="card-body">
-            <p>
+        <div class="card-body table-responsive px-0">
+            <p class="mx-4">
                 {{ __('settings.webhook-description') }}
             </p>
             @if(count($webhooks) == 0)
-                <p class="text-danger">{{__('settings.no-webhooks')}}</p>
+                <p class="text-danger mx-4">{{__('settings.no-webhooks')}}</p>
             @else
-                <table class="table table-responsive">
+                <table class="table">
                     <thead>
                         <tr>
                             <th>{{ __('settings.client-name') }}</th>

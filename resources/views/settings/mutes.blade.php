@@ -7,7 +7,7 @@
 @section('content')
     <div class="card mt-3">
         <div class="card-header">{{ __('user.muted.heading2') }}</div>
-        <div class="card-body table-responsive">
+        <div class="card-body table-responsive px-0">
             <table class="table table-striped table-hover">
                 <tbody>
                     @foreach(auth()->user()->mutedUsers as $user)

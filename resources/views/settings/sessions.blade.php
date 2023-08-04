@@ -4,8 +4,8 @@
     <div class="card mt-3">
         <div class="card-header">{{ __('settings.title-sessions') }}</div>
 
-        <div class="card-body">
-            <table class="table table-responsive">
+        <div class="card-body table-responsive px-0">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>{{ __('settings.device') }}</th>
@@ -25,9 +25,9 @@
                     @endforeach
                 </tbody>
             </table>
-            <form method="POST" action="{{ route('delsession') }}">
+            <form method="POST" class="mx-3" action="{{ route('delsession') }}">
                 @csrf
-                <button type="submit" class="btn btn-block btn-outline-danger mx-0">
+                <button type="submit" class="btn btn-block btn-outline-danger">
                     {{ __('settings.deleteallsessions') }}
                 </button>
             </form>
