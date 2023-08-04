@@ -5,6 +5,7 @@ namespace App\View\Components;
 use App\Interfaces\UserActionButtonComponentInterface;
 use App\Models\User;
 use Illuminate\View\Component;
+use Illuminate\View\View;
 
 abstract class AbstractUserActionButton extends Component
 {
@@ -20,7 +21,7 @@ abstract class AbstractUserActionButton extends Component
         $this->disabled = $disabled;
     }
 
-    public function render() {
+    public function render(): View {
         return view('components.user-action-button');
     }
 

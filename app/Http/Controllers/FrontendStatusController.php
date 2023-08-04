@@ -2,24 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\PermissionException;
-use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
-use App\Models\Status;
+use App\Models\Event;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use InvalidArgumentException;
 
 /**
  * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
@@ -29,7 +22,7 @@ class FrontendStatusController extends Controller
     public function getDashboard(): Renderable|RedirectResponse {
         $statuses = DashboardController::getPrivateDashboard(auth()->user());
 
-        if ($statuses->isEmpty() || auth()->user()->follows->count() == 0) {
+        if ($statuses->isEmpty() || auth()->user()->follows->count() === 0) {
             if (Session::has('checkin-success')) {
                 return redirect()->route('globaldashboard')
                                  ->with('checkin-success', Session::get('checkin-success'));
@@ -59,31 +52,6 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    public function createLike(Request $request) {
-        $validated = $request->validate([
-                                            'statusId' => ['required', 'exists:statuses,id']
-                                        ]);
-
-        try {
-            $status = Status::findOrFail($validated['statusId']);
-            StatusBackend::createLike(Auth::user(), $status);
-            return response(__('controller.status.like-ok'), 201);
-        } catch (StatusAlreadyLikedException) {
-            return response(__('controller.status.like-already'), 409);
-        } catch (PermissionException) {
-            return response(__('controller.status.not-permitted'), 403);
-        }
-    }
-
-    public function DestroyLike(Request $request): Response {
-        try {
-            StatusBackend::destroyLike(Auth::user(), $request['statusId']);
-            return response(__('controller.status.like-deleted'));
-        } catch (InvalidArgumentException $exception) {
-            return response($exception->getMessage(), 404);
-        }
-    }
-
     public function getActiveStatuses(): Renderable {
         $activeStatusesResponse = StatusBackend::getActiveStatuses();
         $activeEvents           = EventBackend::activeEvents();
@@ -96,8 +64,9 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    public function statusesByEvent(string $event): Renderable {
-        $response = StatusController::getStatusesByEvent($event, null);
+    public function statusesByEvent(string $slug): Renderable {
+        $event    = Event::where('slug', $slug)->firstOrFail();
+        $response = StatusController::getStatusesByEvent($event);
 
         if ($response['event']->end->isPast() && $response['statuses']->count() === 0) {
             abort(404);
@@ -125,7 +94,7 @@ class FrontendStatusController extends Controller
         }
 
         //TODO: This is a temporary workaround. We should use standarised GeoJSON Format for this (see PR#629)
-        if ($status?->trainCheckin?->HafasTrip?->polyline) {
+        if ($status->trainCheckin?->HafasTrip?->polyline) {
             $polyline = GeoController::getMapLinesForCheckin($status->trainCheckin);
             foreach ($polyline as $element => $elementValue) {
                 $polyline[$element] = [
@@ -141,8 +110,8 @@ class FrontendStatusController extends Controller
             'description' => trans_choice('status.ogp-description', preg_match('/\s/', $status->trainCheckin->HafasTrip->linename), [
                 'linename'    => $status->trainCheckin->HafasTrip->linename,
                 'distance'    => number($status->trainCheckin->distance / 1000, 1),
-                'destination' => $status->trainCheckin->Destination->name,
-                'origin'      => $status->trainCheckin->Origin->name
+                'destination' => $status->trainCheckin->destinationStation->name,
+                'origin'      => $status->trainCheckin->originStation->name
             ]),
             'image'       => ProfilePictureController::getUrl($status->user),
             'polyline'    => isset($polyline) ? json_encode($polyline, JSON_THROW_ON_ERROR) : null,

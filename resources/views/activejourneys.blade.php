@@ -22,7 +22,7 @@
                                 origin: {{$status->trainCheckin->origin}},
                                 destination: {{$status->trainCheckin->destination}},
                                 polyline: {!! $status->trainCheckin->HafasTrip?->polyline?->polyline ?? '[]' !!}, // Stored as JSON in DB
-                                stopovers: {!! \App\Http\Resources\StopoverResource::collection($status->trainCheckin->HafasTrip->stopoversNEW)->toJson() !!},
+                                stopovers: {!! \App\Http\Resources\StopoverResource::collection($status->trainCheckin->HafasTrip->stopovers)->toJson() !!},
                                 percentage: 0,
                             },
                             @endforeach
@@ -46,6 +46,14 @@
                         ActiveJourneys.renderMap(statuses, events);
                     });
                 </script>
+
+                <div class="row text-center fs-5 mt-3">
+                    <div class="col mb-3">
+                        <i class="fa-solid fa-train"></i>
+                        {{$statuses->count()}}
+                        {{trans_choice('active-journeys', $statuses->count())}}
+                    </div>
+                </div>
             </div>
             <div class="col-md-6">
                 @if($statuses->count() === 0)

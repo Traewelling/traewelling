@@ -99,7 +99,7 @@ class WebhookStatusTest extends TestCase
             lineName: self::ICE802['line']['name'],
             startId:  self::FRANKFURT_HBF['id']
         );
-        $aachen    = $hafasTrip->stopoversNew->where('trainStation.ibnr', self::AACHEN_HBF['id'])->first();
+        $aachen    = $hafasTrip->stopovers->where('trainStation.ibnr', self::AACHEN_HBF['id'])->first();
         TrainCheckinController::changeDestination($checkin, $aachen);
 
         Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {

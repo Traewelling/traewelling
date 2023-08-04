@@ -69,7 +69,7 @@ abstract class StationController extends Controller
     }
 
     public static function getAlternativeDestinationsForCheckin(TrainCheckin $checkin): Collection {
-        return $checkin->HafasTrip->stopoversNEW
+        return $checkin->HafasTrip->stopovers
             ->filter(function(TrainStopover $stopover) use ($checkin) {
                 return ($stopover->arrival_planned ?? $stopover->departure_planned)->isAfter($checkin->departure);
             })
@@ -77,7 +77,7 @@ abstract class StationController extends Controller
                 return [
                     'id'              => $stopover->id,
                     'name'            => $stopover->trainStation->name,
-                    'arrival_planned' => ($stopover->arrival_planned ?? $stopover->departure_planned)->format('H:i'),
+                    'arrival_planned' => userTime($stopover->arrival_planned ?? $stopover->departure_planned),
                 ];
             });
     }

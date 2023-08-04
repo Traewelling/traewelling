@@ -35,10 +35,13 @@
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Veranstalter</th>
-                                <th>Beginn</th>
-                                <th>Ende</th>
+                                <th>Checkin Beginn</th>
+                                <th>Checkin Ende</th>
+                                <th>Event Beginn</th>
+                                <th>Event Ende</th>
                                 <th>Externe URL</th>
                                 <th>Station</th>
+                                <th>Approved by</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -55,8 +58,17 @@
                                     <td>{{$event->host}}</td>
                                     <td>{{$event->begin->format('d.m.Y')}}</td>
                                     <td>{{$event->end->format('d.m.Y')}}</td>
+                                    <td>{{$event->event_start?->format('d.m.Y')}}</td>
+                                    <td>{{$event->event_end?->format('d.m.Y')}}</td>
                                     <td>{{$event->url}}</td>
                                     <td>{{$event->station?->name}}</td>
+                                    <td>
+                                        @if($event->approved_by)
+                                            <a href="{{ route('admin.users.user', ['id' => $event->approved_by]) }}">
+                                                {{ '@'.$event->approvedBy?->username }}
+                                            </a>
+                                        @endif
+                                    </td>
                                     <td class="text-end">
                                         <form method="POST" action="{{route('admin.events.delete')}}">
                                             @csrf

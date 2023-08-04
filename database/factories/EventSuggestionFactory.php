@@ -18,7 +18,6 @@ class EventSuggestionFactory extends Factory
         return [
             'user_id'          => User::factory(),
             'name'             => $this->faker->word,
-            'hashtag'          => $this->faker->word,
             'host'             => $this->faker->company,
             'url'              => $this->faker->url,
             'train_station_id' => TrainStation::factory(),

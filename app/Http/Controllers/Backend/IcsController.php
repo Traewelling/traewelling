@@ -27,16 +27,15 @@ abstract class IcsController extends Controller
         $icsToken = IcsToken::where([['token', $token], ['user_id', $user->id]])->firstOrFail();
 
         $trainCheckIns = TrainCheckin::where('user_id', $user->id)
-            //::with(['HafasTrip.stopoversNEW'])
             //I don't know why, but the "with" eager loading doesn't work in prod. "HafasTrip" is always null then
                                      ->orderByDesc('departure')
                                      ->limit($limit);
 
         if ($from !== null) {
-            $trainCheckIns->where('departure', '>=', $from->toIso8601String());
+            $trainCheckIns->where('departure', '>=', $from);
         }
         if ($until !== null) {
-            $trainCheckIns->where('departure', '<=', $until->toIso8601String());
+            $trainCheckIns->where('departure', '<=', $until);
         }
 
         $calendar = Calendar::create()
@@ -52,8 +51,8 @@ abstract class IcsController extends Controller
                 $name .= __(
                     key:     'export.journey-from-to',
                     replace: [
-                                 'origin'      => $checkIn->Origin->name,
-                                 'destination' => $checkIn->Destination->name
+                                 'origin'      => $checkIn->originStation->name,
+                                 'destination' => $checkIn->destinationStation->name
                              ],
                     locale:  $user->language
                 );

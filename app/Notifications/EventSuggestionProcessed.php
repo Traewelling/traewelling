@@ -2,48 +2,65 @@
 
 namespace App\Notifications;
 
+use App\Enum\EventRejectionReason;
 use App\Models\Event;
 use App\Models\EventSuggestion;
 use Illuminate\Bus\Queueable;
-use JetBrains\PhpStorm\ArrayShape;
+use Illuminate\Notifications\Notification;
 
-class EventSuggestionProcessed extends BaseNotification
+class EventSuggestionProcessed extends Notification implements BaseNotification
 {
     use Queueable;
 
-    private EventSuggestion $eventSuggestion;
-    private ?Event          $event;
+    private EventSuggestion       $eventSuggestion;
+    private ?Event                $event;
+    private ?EventRejectionReason $rejectionReason;
 
-    public function __construct(EventSuggestion $eventSuggestion, ?Event $event) {
+    public function __construct(
+        EventSuggestion      $eventSuggestion,
+        ?Event               $event,
+        EventRejectionReason $rejectionReason = null
+    ) {
         $this->eventSuggestion = $eventSuggestion;
         $this->event           = $event;
+        $this->rejectionReason = $rejectionReason;
     }
 
-    public static function render(mixed $notification): ?string {
-        return view("includes.notification", [
-            'color'           => 'neutral',
-            'icon'            => 'fa-regular fa-calendar',
-            'lead'            => __('notifications.eventSuggestionProcessed.lead', ["name" => $notification->data["name"]]),
-            'link'            => $notification->data["accepted"] ? route('statuses.byEvent', [
-                'eventSlug' => $notification->data["event"]["slug"]
-            ]) : "#",
-            'notice'          => __('notifications.eventSuggestionProcessed.' . ($notification->data["accepted"] ? "accepted" : "denied")),
-            'date_for_humans' => $notification->created_at->diffForHumans(),
-            'read'            => $notification->read_at != null,
-            'notificationId'  => $notification->id
-        ])->render();
-    }
-
-    public function via($notifiable): array {
+    public function via(): array {
         return ['database'];
     }
 
-    #[ArrayShape(['accepted' => 'bool', 'event' => Event::class, 'name' => 'string'])]
-    public function toArray($notifiable): array {
+    public function toArray(): array {
         return [
-            'accepted' => $this->event !== null,
-            'event'    => $this->event,
-            'name'     => $this->eventSuggestion->name,
+            'accepted'      => $this->event !== null,
+            'event'         => $this->event?->only(['id', 'slug', 'name', 'begin', 'end']),
+            'suggestedName' => $this->eventSuggestion->name,
+            'rejectionReason' => $this->rejectionReason,
         ];
+    }
+
+    public static function getLead(array $data): string {
+        return __('notifications.eventSuggestionProcessed.lead', [
+            'name' => $data['suggestedName'],
+        ]);
+    }
+
+    public static function getNotice(array $data): ?string {
+        if ($data['accepted']) {
+            return __('notifications.eventSuggestionProcessed.accepted');
+        }
+        if (!empty($data['rejectionReason'])) {
+            return EventRejectionReason::tryFrom($data['rejectionReason'])->getReason();
+        }
+        return EventRejectionReason::DEFAULT->getReason();
+    }
+
+    public static function getLink(array $data): ?string {
+        if (!$data['accepted']) {
+            return null;
+        }
+        return route('statuses.byEvent', [
+            'eventSlug' => $data['event']['slug'],
+        ]);
     }
 }

@@ -22,6 +22,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
@@ -316,9 +317,16 @@ class StatusController extends Controller
      */
     public function update(Request $request, int $statusId): JsonResponse {
         $validator = Validator::make($request->all(), [
+            //Just changing of metadata
             'body'                      => ['nullable', 'max:280', 'nullable'],
             'business'                  => ['required', new Enum(Business::class)],
             'visibility'                => ['required', new Enum(StatusVisibility::class)],
+
+            //Changing of TrainCheckin-Metadata
+            'realDeparture'             => ['nullable', 'date'],
+            'realArrival'               => ['nullable', 'date'],
+
+            //Following attributes are needed, if user want's to change the destination
             'destinationId'             => ['required_with:destinationArrivalPlanned', 'exists:train_stations,id'],
             'destinationArrivalPlanned' => ['required_with:destinationId', 'date'],
         ]);
@@ -353,8 +361,18 @@ class StatusController extends Controller
                                 'visibility' => StatusVisibility::from($validated['visibility']),
                             ]);
 
-            $status->fresh();
-            return $this->sendResponse(new StatusResource($status));
+            if (isset($validated['realDeparture'])) {
+                $status->trainCheckin->update([
+                    'real_departure' => Carbon::parse($validated['realDeparture'], auth()->user()->timezone)
+                                              ]);
+            }
+            if (isset($validated['realArrival'])) {
+                $status->trainCheckin->update([
+                    'real_arrival' => Carbon::parse($validated['realArrival'], auth()->user()->timezone)
+                                              ]);
+            }
+
+            return $this->sendResponse(new StatusResource($status->fresh()));
         } catch (ModelNotFoundException) {
             return $this->sendError('Status not found');
         } catch (PermissionException|AuthorizationException) {
@@ -486,7 +504,7 @@ class StatusController extends Controller
     public function getStopovers(string $parameters): JsonResponse {
         $tripIds = explode(',', $parameters, 50);
         $trips   = HafasTrip::whereIn('id', $tripIds)->get()->mapWithKeys(function($trip) {
-            return [$trip->id => StopoverResource::collection($trip->stopoversNEW)];
+            return [$trip->id => StopoverResource::collection($trip->stopovers)];
         });
         return $this->sendResponse($trips);
     }

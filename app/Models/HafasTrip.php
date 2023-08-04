@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\UTCDateTime;
 use App\Enum\HafasTravelType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,6 +10,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @property $stopovers
+ * @property PolyLine $polyLine
+ * @property PolyLine $polyline
+ */
 class HafasTrip extends Model
 {
 
@@ -16,7 +22,7 @@ class HafasTrip extends Model
 
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'journey_number', 'operator_id', 'origin', 'destination',
-        'stopovers', 'polyline_id', 'departure', 'arrival', 'delay', 'last_refreshed',
+        'polyline_id', 'departure', 'arrival', 'delay', 'last_refreshed',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $casts    = [
@@ -28,8 +34,8 @@ class HafasTrip extends Model
         'origin'         => 'integer',
         'destination'    => 'integer',
         'polyline_id'    => 'integer',
-        'departure'      => 'datetime',
-        'arrival'        => 'datetime',
+        'departure'      => UTCDateTime::class,
+        'arrival'        => UTCDateTime::class,
         'last_refreshed' => 'datetime',
     ];
 
@@ -49,14 +55,13 @@ class HafasTrip extends Model
         return $this->belongsTo(HafasOperator::class, 'operator_id', 'id');
     }
 
-    public function stopoversNEW(): HasMany {
-        //TODO: Rename to ->stopovers when old attribute is gone
+    public function stopovers(): HasMany {
         return $this->hasMany(TrainStopover::class, 'trip_id', 'trip_id')
                     ->orderBy('arrival_planned')
                     ->orderBy('departure_planned');
     }
 
-    public function checkIns(): HasMany {
+    public function checkins(): HasMany {
         return $this->hasMany(TrainCheckin::class, 'trip_id', 'trip_id');
     }
 }

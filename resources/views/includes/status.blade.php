@@ -1,14 +1,20 @@
 @php
-    use App\Enum\Business;use App\Http\Controllers\Backend\Transport\StationController;use App\Http\Controllers\Backend\User\ProfilePictureController;
+    use App\Enum\Business;
+    use App\Http\Controllers\Backend\Transport\StationController;
+    use App\Http\Controllers\Backend\User\ProfilePictureController;
 @endphp
 <div class="card status mb-3" id="status-{{ $status->id }}"
-     data-trwl-status-body="{{ $status->body }}"
-     data-date="{{$status->trainCheckin->departure->isoFormat(__('dateformat.with-weekday'))}}"
-     data-trwl-business-id="{{ $status->business->value }}"
-     data-trwl-visibility="{{ $status->visibility->value }}"
+     data-trwl-id="{{$status->id}}"
+     data-date="{{userTime($status->trainCheckin->departure, __('dateformat.with-weekday'))}}"
      @if(auth()->check() && auth()->id() === $status->user_id)
+         data-trwl-status-body="{{ $status->body }}"
+         data-trwl-real-departure="{{ userTime($status->trainCheckin?->real_departure, 'Y-m-d\TH:i:s', false)}}"
+         data-trwl-real-arrival="{{ userTime($status->trainCheckin?->real_arrival, 'Y-m-d\TH:i:s', false)}}"
+         data-trwl-business-id="{{ $status->business->value }}"
+         data-trwl-visibility="{{ $status->visibility->value }}"
          data-trwl-destination-stopover="{{$status->trainCheckin->destination_stopover->id}}"
-     data-trwl-alternative-destinations="{{json_encode(StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
+         data-trwl-alternative-destinations=
+             "{{json_encode(StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
     @endif
 >
     @if (isset($polyline) && $polyline !== '[]' && Route::current()->uri == "status/{id}")
@@ -21,7 +27,7 @@
     <div class="card-body row">
         <div class="col-2 image-box pe-0 d-none d-lg-flex">
             <a href="{{ route('profile', ['username' => $status->user->username]) }}">
-                <img src="{{ ProfilePictureController::getUrl($status->user) }}"
+                <img loading="lazy" decoding="async" src="{{ ProfilePictureController::getUrl($status->user) }}"
                      alt="{{ $status->user->username }}">
             </a>
         </div>
@@ -31,20 +37,32 @@
                 <li>
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
-                        @if($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
-                            <small style="text-decoration: line-through;" class="text-muted">
-                                {{ $status->trainCheckin->origin_stopover->departure_planned->isoFormat(__('time-format')) }}
+                        @if(isset($status->trainCheckin->real_departure) && $status->trainCheckin->real_departure->toString() !== $status->trainCheckin->origin_stopover->departure_planned->toString())
+                        <small style="text-decoration: line-through;" class="text-muted">
+                                {{ userTime($status->trainCheckin->origin_stopover->departure_planned) }}
                             </small>
                             &nbsp;
-                            {{ $status->trainCheckin->origin_stopover->departure_real->isoFormat(__('time-format')) }}
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-manual')}}">
+                                {{ userTime($status->trainCheckin->real_departure) }}
+                            </span>
+                        @elseif($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
+                            <small style="text-decoration: line-through;" class="text-muted">
+                                {{ userTime($status->trainCheckin->origin_stopover->departure_planned) }}
+                            </small>
+                            &nbsp;
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-real')}}">
+                                {{ userTime($status->trainCheckin->origin_stopover->departure_real) }}
+                            </span>
                         @else
-                            {{ $status->trainCheckin?->origin_stopover?->departure->isoFormat(__('time-format')) ?? $status->trainCheckin->departure->isoFormat(__('time-format')) }}
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-planned')}}">
+                                {{ userTime($status->trainCheckin?->origin_stopover?->departure ?? $status->trainCheckin->departure) }}
+                            </span>
                         @endif
                     </span>
 
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Origin->ibnr])}}"
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->originStation->ibnr])}}"
                        class="text-trwl clearfix">
-                        {{$status->trainCheckin->Origin->name}}
+                        {{$status->trainCheckin->originStation->name}}
                     </a>
 
                     <p class="train-status text-muted">
@@ -120,19 +138,31 @@
                 <li>
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
-                        @if($status->trainCheckin?->destination_stopover?->isArrivalDelayed)
+                        @if(isset($status->trainCheckin->real_arrival) && $status->trainCheckin->real_arrival->toString() !== $status->trainCheckin->destination_stopover->arrival_planned->toString())
                             <small style="text-decoration: line-through;" class="text-muted">
-                                {{ $status->trainCheckin->destination_stopover->arrival_planned->isoFormat(__('time-format')) }}
+                                {{ userTime($status->trainCheckin->destination_stopover->arrival_planned) }}
                             </small>
                             &nbsp;
-                            {{ $status->trainCheckin->destination_stopover->arrival_real->isoFormat(__('time-format')) }}
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-manual')}}">
+                                {{ userTime($status->trainCheckin->real_arrival) }}
+                            </span>
+                        @elseif($status->trainCheckin?->destination_stopover?->isArrivalDelayed && !isset($status->trainCheckin->real_arrival))
+                            <small style="text-decoration: line-through;" class="text-muted">
+                                {{ userTime($status->trainCheckin->destination_stopover->arrival_planned) }}
+                            </small>
+                            &nbsp;
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-real')}}">
+                                {{ userTime($status->trainCheckin->destination_stopover->arrival_real) }}
+                            </span>
                         @else
-                            {{ $status->trainCheckin?->destination_stopover?->arrival?->isoFormat(__('time-format')) ?? $status->trainCheckin->arrival->isoFormat(__('time-format')) }}
+                            <span data-mdb-toggle="tooltip" title="{{__('time-is-planned')}}">
+                                {{ userTime($status->trainCheckin?->destination_stopover?->arrival ?? $status->trainCheckin->arrival) }}
+                            </span>
                         @endif
                     </span>
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->Destination->ibnr])}}"
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->destinationStation->ibnr])}}"
                        class="text-trwl clearfix">
-                        {{$status->trainCheckin->Destination->name}}
+                        {{$status->trainCheckin->destinationStation->name}}
                     </a>
                 </li>
             </ul>
@@ -140,7 +170,7 @@
     </div>
     <div class="progress">
         <div
-            class="progress-bar progress-time"
+            class="progress-bar progress-time {{ $status->event?->isPride ? 'progress-pride' : '' }}"
             role="progressbar"
             style="width: 0"
             data-valuenow="{{ time() }}"
@@ -157,8 +187,8 @@
                        data-trwl-status-id="{{ $status->id }}"></a>
                 </li>
                 <li class="like-text list-inline-item">
-                        <span class="pl-1 @if($status->likes->count() == 0) d-none @endif"
-                              id="like-count-{{ $status->id }}">{{ $status->likes->count() }}
+                        <span class="likeCount pl-1 @if($status->likes->count() == 0) d-none @endif">
+                            {{ $status->likes->count() }}
                         </span>
                 </li>
             @endcan
@@ -205,7 +235,7 @@
                                 </li>
                                 <li>
                                     <button class="dropdown-item delete" type="button"
-                                           data-mdb-toggle="modal"
+                                            data-mdb-toggle="modal"
                                             data-mdb-target="#modal-status-delete"
                                             onclick="document.querySelector('#modal-status-delete input[name=\'statusId\']').value = '{{$status->id}}';">
                                         <div class="dropdown-icon-suspense">
@@ -217,13 +247,14 @@
                             @else
                                 <li>
                                     <button type="button" class="dropdown-item join"
-                                            data-trwl-linename="{{$status->trainCheckIn->HafasTrip->linename}}"
-                                            data-trwl-stop-name="{{$status->trainCheckIn->destinationStation->name}}"
-                                            data-trwl-trip-id="{{$status->trainCheckIn->trip_id}}"
-                                            data-trwl-destination="{{$status->trainCheckIn->destination}}"
-                                            data-trwl-arrival="{{$status->trainCheckIn->arrival}}"
-                                            data-trwl-start="{{$status->trainCheckIn->origin}}"
-                                            data-trwl-departure="{{$status->trainCheckIn->departure}}"
+                                            data-trwl-linename="{{$status->trainCheckin->HafasTrip->linename}}"
+                                            data-trwl-stop-name="{{$status->trainCheckin->destinationStation->name}}"
+                                            data-trwl-trip-id="{{$status->trainCheckin->trip_id}}"
+                                            data-trwl-destination="{{$status->trainCheckin->destination}}"
+                                            data-trwl-arrival="{{$status->trainCheckin->arrival}}"
+                                            data-trwl-start="{{$status->trainCheckin->origin}}"
+                                            data-trwl-departure="{{$status->trainCheckin->departure}}"
+                                            data-trwl-event-id="{{$status->event?->id}}"
                                     >
                                         <div class="dropdown-icon-suspense">
                                             <i class="fas fa-user-plus" aria-hidden="true"></i>
@@ -272,7 +303,7 @@
                 </a>
                 {{__('dates.-on-')}}
                 <a href="{{ route('statuses.get', ['id' => $status->id]) }}">
-                    {{ $status->created_at->isoFormat(__('time-format')) }}
+                    {{ userTime($status->created_at) }}
                 </a>
             </li>
         </ul>

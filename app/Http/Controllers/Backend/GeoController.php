@@ -7,7 +7,6 @@ use App\Models\HafasTrip;
 use App\Models\TrainCheckin;
 use App\Models\TrainStopover;
 use Exception;
-use Illuminate\Support\Facades\Log;
 use JsonException;
 use stdClass;
 
@@ -19,7 +18,11 @@ abstract class GeoController extends Controller
         TrainStopover $origin,
         TrainStopover $destination
     ): int {
-        if ($hafasTrip->polyline === null || $hafasTrip?->polyline?->polyline === null) {
+        if (
+            $hafasTrip->polyline === null ||
+            $hafasTrip->polyline?->polyline === null ||
+            strlen($hafasTrip->polyline?->polyline) < 10
+        ) {
             return self::calculateDistanceByStopovers($hafasTrip, $origin, $destination);
         }
         $geoJson      = self::getPolylineBetween($hafasTrip, $origin, $destination);
@@ -54,7 +57,7 @@ abstract class GeoController extends Controller
         TrainStopover $origin,
         TrainStopover $destination
     ): int {
-        $stopovers                = $hafasTrip->stopoversNEW->sortBy('departure');
+        $stopovers                = $hafasTrip->stopovers->sortBy('departure');
         $originStopoverIndex      = $stopovers->search(function($item) use ($origin) {
             return $item->is($origin);
         });
@@ -137,10 +140,10 @@ abstract class GeoController extends Controller
         }
         $slicedFeatures = array_slice($features, $originIndex, $destinationIndex - $originIndex + 1, true);
         // Add saved points to polyline
-        if (count($additionalRoutes)) {
+        if (count($additionalRoutes)) { //TODO: count is always 0?
             $updatedFeatures = [];
             foreach ($slicedFeatures as $key => $data) {
-                if (isset($additionalRoutes[$key]) && $key != $originIndex) { // There is a route but we're at the origin?
+                if (isset($additionalRoutes[$key]) && $key != $originIndex) { // There is a route, but we're at the origin?
                     $updatedFeatures = [...$updatedFeatures, ...$additionalRoutes[$key]];
                 }
                 $updatedFeatures[] = $data;
@@ -161,7 +164,7 @@ abstract class GeoController extends Controller
      */
     private static function getPolylineWithTimestamps(HafasTrip $hafasTrip): stdClass {
         $geoJsonObj = json_decode($hafasTrip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
-        $stopovers  = $hafasTrip->stopoversNEW;
+        $stopovers  = $hafasTrip->stopovers;
 
         $stopovers = $stopovers->map(function($stopover) {
             $stopover['passed'] = false;
@@ -190,7 +193,7 @@ abstract class GeoController extends Controller
 
     public static function getMapLinesForCheckin(TrainCheckin $checkin, bool $invert = false): array {
         try {
-            $geoJson  = self::getPolylineBetween($checkin->hafasTrip, $checkin->origin_stopover, $checkin->destination_stopover);
+            $geoJson  = self::getPolylineBetween($checkin->HafasTrip, $checkin->origin_stopover, $checkin->destination_stopover);
             $mapLines = [];
             foreach ($geoJson->features as $feature) {
                 if (isset($feature->geometry->coordinates[0], $feature->geometry->coordinates[1])) {

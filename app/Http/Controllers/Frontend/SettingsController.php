@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enum\MapProvider;
 use App\Enum\MastodonVisibility;
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\User\TokenController;
 use App\Http\Controllers\Backend\WebhookController;
 use App\Http\Controllers\Controller;
+use DateTimeZone;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
@@ -44,9 +46,13 @@ class SettingsController extends Controller
 
     public function updateMainSettings(Request $request): RedirectResponse {
         $validated = $request->validate([
-                                            'username' => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'],
-                                            'name'     => ['required', 'string', 'max:50'],
-                                            'email'    => ['required', 'string', 'email:rfc,dns', 'max:255'],
+                                            'username'    => [
+                                                'required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'
+                                            ],
+                                            'name'        => ['required', 'string', 'max:50'],
+                                            'email'       => ['required', 'string', 'email:rfc,dns', 'max:255'],
+                                            'mapprovider' => ['required', new Enum(MapProvider::class)],
+                                            'timezone'    => ['required', Rule::in(DateTimeZone::listIdentifiers())]
                                         ]);
 
         if (auth()->user()->username !== $validated['username']) {

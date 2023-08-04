@@ -6,8 +6,7 @@
 @section('canonical', route('static.about'))
 
 @section('content')
-    <div class="px-4 py-5 mt-n4 mb-4"
-         style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
+    <div class="px-4 py-5 mt-n4 mb-4 profile-banner">
         <div class="container">
             <div class="text-white">
                 <h1>F.A.Q. <br/><span class="fs-3">{{ __('about.faq-heading') }}</span></h1>
@@ -95,7 +94,7 @@
                             {{ __('about.events') }}
                         </h2>
                         <p class="lead mb-2">{{__('about.events.description1')}}</p>
-                        <p class="lead mb-2">{!! __('about.events.description2', ['link' => route('events.suggest')]) !!}</p>
+                        <p class="lead mb-2">{!! __('about.events.description2', ['link' => route('events')]) !!}</p>
                         <p class="lead mb-2">{!! __('about.events.description3') !!}</p>
                         <p class="lead mb-2">{{__('about.events.description4')}}</p>
                     </div>

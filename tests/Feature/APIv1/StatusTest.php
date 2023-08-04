@@ -4,6 +4,7 @@ namespace Tests\Feature\APIv1;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
+use App\Models\HafasTrip;
 use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
@@ -83,11 +84,15 @@ class StatusTest extends ApiTestCase
 
         $departure = Date::now()->addHour();
         $arrival   = Date::now()->addHours(2);
+        $trip = HafasTrip::factory(['departure' => $departure, 'arrival' => $arrival])->create();
 
         TrainCheckin::factory([
-                                  'user_id'   => $user->id,
-                                  'departure' => $departure,
-                                  'arrival'   => $arrival,
+                                  'user_id'     => $user->id,
+                                  'departure'   => $trip->departure,
+                                  'arrival'     => $trip->arrival,
+                                  'origin'      => $trip->originStation->ibnr,
+                                  'destination' => $trip->destinationStation->ibnr,
+                                  'trip_id'     => $trip->trip_id,
                               ])->create();
 
         $response = $this->get(

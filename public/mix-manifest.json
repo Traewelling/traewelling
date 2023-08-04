@@ -4,5 +4,6 @@
     "/js/admin.js": "/js/admin.js",
     "/css/app.css": "/css/app.css",
     "/css/welcome.css": "/css/welcome.css",
-    "/css/admin.css": "/css/admin.css"
+    "/css/admin.css": "/css/admin.css",
+    "/css/app-dark.css": "/css/app-dark.css"
 }

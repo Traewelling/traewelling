@@ -7,9 +7,8 @@
 
     Name: Kristian Stöckel
     Site: https://k118.de
-    Twitter: @MrKrisKrisu
     Mastodon: @MrKrisKrisu@chaos.social
-    Location: Hanover, Germany
+    Location: Karlsruhe, Germany
 
     Name: Jannik Volkland
     Site: https://iamjannik.me

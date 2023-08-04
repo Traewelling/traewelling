@@ -8,14 +8,8 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use InvalidArgumentException;
 use Tests\TestCase;
 
-class PrivacyHelperTest extends TestCase
+class PrivacyHelperTest extends UnitTestCase
 {
-
-    protected function setUp(): void {
-        //Don't setUp() on TestCase, because the seeder will not work
-        // -> this test class doesn't use database, because it's a unit test.
-        BaseTestCase::setUp();
-    }
 
     public function testIPv4Masking(): void {
         $masked = PrivacyHelper::maskIpAddress('127.0.0.1');

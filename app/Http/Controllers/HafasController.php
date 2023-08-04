@@ -10,6 +10,7 @@ use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use App\Models\TrainStopover;
 use Carbon\Carbon;
+use Carbon\CarbonTimeZone;
 use Exception;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Collection;
@@ -77,7 +78,7 @@ abstract class HafasController extends Controller
                                   ]);
 
             $data = json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
-            if (!$response->ok() or empty($data)) {
+            if (empty($data) || !$response->ok()) {
                 return Collection::empty();
             }
 
@@ -98,8 +99,8 @@ abstract class HafasController extends Controller
                                                 'ibnr' => $hafasStop->id
                                             ], [
                                                 'name'      => $hafasStop->name,
-                                                'latitude'  => $hafasStop?->location?->latitude,
-                                                'longitude' => $hafasStop?->location?->longitude,
+                                                'latitude'  => $hafasStop->location?->latitude,
+                                                'longitude' => $hafasStop->location?->longitude,
                                             ]);
     }
 
@@ -152,6 +153,46 @@ abstract class HafasController extends Controller
     }
 
     /**
+     * @throws HafasException
+     * @throws JsonException
+     */
+    public static function fetchDepartures(
+        TrainStation $station,
+        Carbon       $when,
+        int          $duration = 15,
+        TravelType   $type = null,
+        bool         $skipTimeShift = false
+    ) {
+        $client = self::getHttpClient();
+        $time   = $skipTimeShift ? $when : (clone $when)->shiftTimezone("Europe/Berlin");
+        $query  = [
+            'when'                       => $time->toIso8601String(),
+            'duration'                   => $duration,
+            HTT::NATIONAL_EXPRESS->value => self::checkTravelType($type, TravelType::EXPRESS),
+            HTT::NATIONAL->value         => self::checkTravelType($type, TravelType::EXPRESS),
+            HTT::REGIONAL_EXP->value     => self::checkTravelType($type, TravelType::REGIONAL),
+            HTT::REGIONAL->value         => self::checkTravelType($type, TravelType::REGIONAL),
+            HTT::SUBURBAN->value         => self::checkTravelType($type, TravelType::SUBURBAN),
+            HTT::BUS->value              => self::checkTravelType($type, TravelType::BUS),
+            HTT::FERRY->value            => self::checkTravelType($type, TravelType::FERRY),
+            HTT::SUBWAY->value           => self::checkTravelType($type, TravelType::SUBWAY),
+            HTT::TRAM->value             => self::checkTravelType($type, TravelType::TRAM),
+            HTT::TAXI->value             => 'false',
+        ];
+        $response = $client->get('/stops/' . $station->ibnr . '/departures', $query);
+
+        if (!$response->ok()) {
+            throw new HafasException(__('messages.exception.generalHafas'));
+        }
+
+        return json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
+    }
+
+    public static function checkTravelType(?TravelType $type, TravelType $travelType): string {
+        return (is_null($type) || $type === $travelType) ? 'true' : 'false';
+    }
+
+    /**
      * @param TrainStation    $station
      * @param Carbon          $when
      * @param int             $duration
@@ -167,28 +208,34 @@ abstract class HafasController extends Controller
         TravelType   $type = null
     ): Collection {
         try {
-            $client   = self::getHttpClient();
-            $query    = [
-                'when'                       => $when->toIso8601String(),
-                'duration'                   => $duration,
-                HTT::NATIONAL_EXPRESS->value => (is_null($type) || $type === TravelType::EXPRESS) ? 'true' : 'false',
-                HTT::NATIONAL->value         => (is_null($type) || $type === TravelType::EXPRESS) ? 'true' : 'false',
-                HTT::REGIONAL_EXP->value     => (is_null($type) || $type === TravelType::REGIONAL) ? 'true' : 'false',
-                HTT::REGIONAL->value         => (is_null($type) || $type === TravelType::REGIONAL) ? 'true' : 'false',
-                HTT::SUBURBAN->value         => (is_null($type) || $type === TravelType::SUBURBAN) ? 'true' : 'false',
-                HTT::BUS->value              => (is_null($type) || $type === TravelType::BUS) ? 'true' : 'false',
-                HTT::FERRY->value            => (is_null($type) || $type === TravelType::FERRY) ? 'true' : 'false',
-                HTT::SUBWAY->value           => (is_null($type) || $type === TravelType::SUBWAY) ? 'true' : 'false',
-                HTT::TRAM->value             => (is_null($type) || $type === TravelType::TRAM) ? 'true' : 'false',
-                HTT::TAXI->value             => 'false',
-            ];
-            $response = $client->get('/stops/' . $station->ibnr . '/departures', $query);
+            $requestTime = is_null($station->time_offset) ? $when : (clone $when)->subHours($station->time_offset);
+            $data        = self::fetchDepartures($station, $requestTime, $duration, $type, !$station->shift_time);
+            foreach ($data as $departure) {
+                if ($departure?->when) {
+                    $time     = Carbon::parse($departure->when);
+                    $timezone = $time->tz->toOffsetName();
 
-            if (!$response->ok()) {
-                throw new HafasException(__('messages.exception.generalHafas'));
+                    // check for an offset between results
+                    $offset = $time->tz('UTC')->hour - $when->tz('UTC')->hour;
+                    if ($offset !== 0) {
+                        // Check if the timezone for this station is equal in its offset to Europe/Berlin.
+                        // If so, fetch again **without** adjusting the timezone
+                        if ($timezone === CarbonTimeZone::create("Europe/Berlin")->toOffsetName()) {
+                            $data = self::fetchDepartures($station, $when, $duration, $type, true);
+
+                            $station->shift_time = false;
+                            $station->save();
+                            break;
+                        }
+                        // if the timezone is not equal to Europe/Berlin, fetch the offset
+                        $data = self::fetchDepartures($station, (clone $when)->subHours($offset), $duration, $type);
+
+                        $station->time_offset = $offset;
+                        $station->save();
+                    }
+                    break;
+                }
             }
-
-            $data = json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
 
             //First fetch all stations in one request
             $trainStationPayload = [];
@@ -238,10 +285,7 @@ abstract class HafasController extends Controller
 
         if ($name === null || $latitude === null || $longitude === null) {
             $dbTrainStation = TrainStation::where('ibnr', $ibnr)->first();
-            if ($dbTrainStation !== null) {
-                return $dbTrainStation;
-            }
-            return HafasController::fetchTrainStation($ibnr);
+            return $dbTrainStation ?? self::fetchTrainStation($ibnr);
         }
         return TrainStation::updateOrCreate([
                                                 'ibnr' => $ibnr
@@ -264,7 +308,7 @@ abstract class HafasController extends Controller
         $response = self::getHttpClient()->get("/stops/$ibnr");
 
         if (!$response->ok()) {
-            throw new HafasException($e->getMessage());
+            throw new HafasException($response->reason());
         }
 
         $data = json_decode($response->body());
@@ -355,7 +399,7 @@ abstract class HafasController extends Controller
                                                    'operator_id'    => $operator?->id,
                                                    'origin'         => $origin->ibnr,
                                                    'destination'    => $destination->ibnr,
-                                                   'stopovers'      => json_encode($tripJson->stopovers),
+                                                   'stopoversOLD'      => json_encode($tripJson->stopovers),
                                                    'polyline_id'    => $polyline->id,
                                                    'departure'      => $tripJson->plannedDeparture,
                                                    'arrival'        => $tripJson->plannedArrival,
@@ -379,7 +423,7 @@ abstract class HafasController extends Controller
 
             //This array is a workaround because Hafas doesn't give
             //us delay-data if the train already passed this station
-            //so.. just save data we really got. :)
+            //so... just save data we really got. :)
             $updatePayload = [
                 'arrival_platform_planned'   => $stopover->plannedArrivalPlatform,
                 'departure_platform_planned' => $stopover->plannedDeparturePlatform,
@@ -410,14 +454,14 @@ abstract class HafasController extends Controller
                     [
                         'trip_id'           => $tripID,
                         'train_station_id'  => $trainStations->where('ibnr', $stopover->stop->id)->first()->id,
-                        'arrival_planned'   => isset($stopover->plannedArrival) ? $plannedArrival?->toDateTimeString() : $plannedDeparture?->toDateTimeString(),
-                        'departure_planned' => isset($stopover->plannedDeparture) ? $plannedDeparture?->toDateTimeString() : $plannedArrival?->toDateTimeString(),
+                        'arrival_planned'   => isset($stopover->plannedArrival) ? $plannedArrival : $plannedDeparture,
+                        'departure_planned' => isset($stopover->plannedDeparture) ? $plannedDeparture : $plannedArrival,
                     ],
                     $updatePayload
                 );
             } catch (PDOException) {
                 //do nothing: updateOrCreate will handle duplicate keys, but if the database is a bit laggy
-                // it can be throw an error here. But thats not a big deal.
+                // it can be thrown an error here. But that's not a big deal.
             }
         }
         return $hafasTrip;
@@ -425,7 +469,7 @@ abstract class HafasController extends Controller
 
     public static function refreshStopovers(stdClass $rawHafas): int {
         $payload = [];
-        foreach ($rawHafas?->stopovers ?? [] as $stopover) {
+        foreach ($rawHafas->stopovers ?? [] as $stopover) {
             $timestampToCheck = Carbon::parse($stopover->departure ?? $stopover->arrival);
             if ($timestampToCheck->isPast() || $timestampToCheck->isAfter(now()->addDay())) {
                 //HAFAS doesn't give as real time information on past stopovers, so... don't overwrite our data. :)
@@ -433,18 +477,18 @@ abstract class HafasController extends Controller
             }
 
             $stop             = self::parseHafasStopObject($stopover->stop);
-            $arrivalPlanned   = Carbon::parse($stopover->plannedArrival);
-            $arrivalReal      = Carbon::parse($stopover->arrival);
-            $departurePlanned = Carbon::parse($stopover->plannedDeparture);
-            $departureReal    = Carbon::parse($stopover->departure);
+            $arrivalPlanned   = Carbon::parse($stopover->plannedArrival)->tz(config('app.timezone'));
+            $arrivalReal      = Carbon::parse($stopover->arrival)->tz(config('app.timezone'));
+            $departurePlanned = Carbon::parse($stopover->plannedDeparture)->tz(config('app.timezone'));
+            $departureReal    = Carbon::parse($stopover->departure)->tz(config('app.timezone'));
 
             $payload[] = [
                 'trip_id'           => $rawHafas->id,
                 'train_station_id'  => $stop->id,
-                'arrival_planned'   => isset($stopover->plannedArrival) ? $arrivalPlanned->toDateTimeString() : $departurePlanned->toDateTimeString(),
-                'arrival_real'      => $arrivalReal->toDateTimeString(),
-                'departure_planned' => isset($stopover->plannedDeparture) ? $departurePlanned->toDateTimeString() : $arrivalPlanned->toDateTimeString(),
-                'departure_real'    => $departureReal->toDateTimeString(),
+                'arrival_planned'   => isset($stopover->plannedArrival) ? $arrivalPlanned : $departurePlanned,
+                'arrival_real'      => $arrivalReal,
+                'departure_planned' => isset($stopover->plannedDeparture) ? $departurePlanned : $arrivalPlanned,
+                'departure_real'    => $departureReal,
             ];
         }
 
@@ -456,7 +500,7 @@ abstract class HafasController extends Controller
     }
 
     /**
-     * This function is used to refresh the departure of an trip, if the planned_departure is in the past and no
+     * This function is used to refresh the departure of a trip, if the planned_departure is in the past and no
      * real-time data is given. The HAFAS stationboard gives us this real-time data even for trips in the past, so give
      * it a chance.
      *
@@ -468,7 +512,7 @@ abstract class HafasController extends Controller
      * @throws HafasException
      */
     public static function refreshStopover(TrainStopover $stopover): void {
-        $departure = HafasController::getDepartures(
+        $departure = self::getDepartures(
             station: $stopover->trainStation,
             when:    $stopover->departure_planned,
         )->filter(function(stdClass $trip) use ($stopover) {
@@ -480,7 +524,7 @@ abstract class HafasController extends Controller
         }
 
         $stopover->update([
-                              'departure_real' => Carbon::parse($departure->when)->toIso8601String(),
+                              'departure_real' => Carbon::parse($departure->when),
                           ]);
     }
 }

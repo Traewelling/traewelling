@@ -6,20 +6,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 
 class Event extends Model
 {
 
     use HasFactory;
 
-    protected $fillable = ['name', 'hashtag', 'station_id', 'slug', 'host', 'url', 'begin', 'end'];
+    protected $fillable = [
+        'name', 'hashtag', 'station_id', 'slug', 'host', 'url', 'begin', 'end', 'event_start', 'event_end'
+    ];
     protected $hidden   = ['created_at', 'updated_at'];
-    protected $appends  = ['trainDistance', 'trainDuration'];
+    protected $appends  = ['trainDistance', 'trainDuration', 'isPride'];
     protected $casts    = [
-        'id'         => 'integer',
-        'station_id' => 'integer',
-        'begin'      => 'datetime',
-        'end'        => 'datetime',
+        'id'          => 'integer',
+        'station_id'  => 'integer',
+        'begin'       => 'datetime',
+        'end'         => 'datetime',
+        'event_start' => 'datetime',
+        'event_end'   => 'datetime',
     ];
 
     public function station(): HasOne {
@@ -41,5 +46,14 @@ class Event extends Model
                            ->select(['arrival', 'departure'])
                            ->get()
                            ->sum('duration');
+    }
+
+    public function getIsPrideAttribute(): bool {
+        $eventNameLowercase = strtolower($this->name);
+        return Str::contains($eventNameLowercase, ['csd', 'pride']);
+    }
+
+    public function approvedBy(): HasOne {
+        return $this->hasOne(User::class, 'id', 'approved_by');
     }
 }

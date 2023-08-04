@@ -1,4 +1,3 @@
-
 $(document).on("click", ".join", function (event) {
     event.preventDefault();
 
@@ -17,52 +16,68 @@ $(document).on("click", ".join", function (event) {
         modal.find("#input-arrival").val(source.trwlArrival);
         modal.find("#input-start").val(source.trwlStart);
         modal.find("#input-departure").val(source.trwlDeparture);
+        // case for small number of events
+        modal.find("#event_check").each(function () {
+            $(this).prop("checked", $(this).val() === source.trwlEventId);
+        });
+        // case for large number of events
+        modal.find("#event-dropdown").val(source.trwlEventId);
     });
 });
 
-$(document).on("click", ".like", function (event) {
-    statusId = getDataset(event).trwlStatusId;
+document.querySelectorAll('.status .like').forEach((likeButton) => {
+    likeButton.addEventListener('click', (pointerEvent) => {
+        if (!pointerEvent.target.attributes.href.value === "#") {
+            //Unauthenticated users should not like the status
+            return;
+        }
 
-    let $likeCount = document.getElementById("like-count-" + statusId);
-    let count      = parseInt($likeCount.innerText);
-    let auth       = event.target.attributes.href.value === "#";
+        let statusId = pointerEvent.srcElement.closest('.status').dataset.trwlId;
 
-    if (auth && event.target.className === "like far fa-star") {
-        $.ajax({
-            method: "POST",
-            url: urlLike,
-            data: {statusId: statusId, _token: token}
-        }).done(function () {
-            event.target.className = "like fas fa-star animated bounceIn";
-            $likeCount.innerText   = ++count;
+        let spanLikeCount = document.querySelector('.status[data-trwl-id=\'' + statusId + '\'] .likeCount');
 
-            if (count === 0) {
-                $likeCount.classList.add("d-none");
-            } else {
-                $likeCount.classList.remove("d-none");
-            }
-        });
-    } else if (auth) {
-        $.ajax({
-            method: "POST",
-            url: urlDislike,
-            data: {statusId: statusId, _token: token}
-        }).done(function () {
-            event.target.className = "like far fa-star";
-            $likeCount.innerText   = --count;
-
-            if (count === 0) {
-                $likeCount.classList.add("d-none");
-            } else {
-                $likeCount.classList.remove("d-none");
-            }
-        });
-    }
-
-    if (auth) {
         event.preventDefault();
         event.stopPropagation();
-    }
+
+        if (pointerEvent.target.className === "like far fa-star") {
+            Status.like(statusId)
+                .then(response => {
+                    if (!response.ok) {
+                        return;
+                    }
+
+                    pointerEvent.target.className = "like fas fa-star animated bounceIn";
+                    response.json().then((data) => {
+                        let likeCount           = data.data.count;
+                        spanLikeCount.innerText = likeCount;
+                        if (likeCount === 0) {
+                            spanLikeCount.classList.add("d-none");
+                        } else {
+                            spanLikeCount.classList.remove("d-none");
+                        }
+                    });
+                });
+            return;
+        }
+
+        Status.unlike(statusId)
+            .then(response => {
+                if (!response.ok) {
+                    return;
+                }
+                pointerEvent.target.className = "like far fa-star";
+
+                response.json().then((data) => {
+                    let likeCount           = data.data.count;
+                    spanLikeCount.innerText = likeCount;
+                    if (likeCount === 0) {
+                        spanLikeCount.classList.add("d-none");
+                    } else {
+                        spanLikeCount.classList.remove("d-none");
+                    }
+                });
+            });
+    })
 });
 
 $(document).on("click", ".follow", function (event) {

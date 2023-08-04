@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-bs-theme="dark">
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -72,7 +72,7 @@
         </nav>
         <main class="container-fluid pt-3">
             @hasSection('title')
-                <h1 class="mb-3 text-dark fs-3" id="pageTitle">@yield('title')</h1>
+                <h1 class="mb-3 text-white fs-3" id="pageTitle">@yield('title')</h1>
             @endif
             @if ($errors->any())
                 <div class="row">

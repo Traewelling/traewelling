@@ -3,13 +3,6 @@
 return [
     'post_social'           => env('POST_SOCIAL', false),
 
-    # Twitter
-    'twitter_redirect'      => env('TWITTER_REDIRECT'),
-    'twitter_id'            => env('TWITTER_ID'),
-    'twitter_secret'        => env('TWITTER_SECRET'),
-    'twitter_oauth1_id'     => env('TWITTER_OAUTH1_ID'),
-    'twitter_oauth1_secret' => env('TWITTER_OAUTH1_SECRET'),
-
     # Mastodon
     'mastodon_domain'       => env('MASTODON_DOMAIN'),
     'mastodon_id'           => env('MASTODON_ID'),

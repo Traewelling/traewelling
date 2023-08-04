@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Notifications\StatusLiked;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Gate;
 use InvalidArgumentException;
@@ -41,10 +42,10 @@ class StatusController extends Controller
     public static function getStatus(int $statusId): Status {
         return Status::where('id', $statusId)
                      ->with([
-                                'user', 'trainCheckin', 'trainCheckin.Origin',
-                                'trainCheckin.Destination', 'trainCheckin.HafasTrip', 'event',
+                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'trainCheckin',
+                                'trainCheckin.originStation', 'trainCheckin.destinationStation',
+                                'trainCheckin.HafasTrip.stopovers.trainStation',
                             ])
-                     ->withCount('likes')
                      ->firstOrFail();
     }
 
@@ -57,13 +58,10 @@ class StatusController extends Controller
      */
     public static function getActiveStatuses(): array|stdClass|null {
         $statuses = Status::with([
-                                     'likes',
-                                     'user',
-                                     'trainCheckin.Origin',
-                                     'trainCheckin.Destination',
+                                     'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
+                                     'trainCheckin.originStation', 'trainCheckin.destinationStation',
+                                     'trainCheckin.HafasTrip.stopovers.trainStation',
                                      'trainCheckin.HafasTrip.polyline',
-                                     'trainCheckin.HafasTrip.stopoversNEW.trainStation',
-                                     'event'
                                  ])
                           ->whereHas('trainCheckin', function($query) {
                               $query->where('departure', '<', date('Y-m-d H:i:s'))
@@ -71,7 +69,7 @@ class StatusController extends Controller
                           })
                           ->get()
                           ->filter(function(Status $status) {
-                              return Gate::allows('view', $status) && !$status->user->shadow_banned;
+                              return Gate::allows('view', $status) && !$status->user->shadow_banned && $status->visibility !== StatusVisibility::UNLISTED;
                           })
                           ->sortByDesc(function(Status $status) {
                               return $status->trainCheckin->departure;
@@ -166,41 +164,40 @@ class StatusController extends Controller
     }
 
     /**
-     * @param string|null $slug
-     * @param int|null    $id
+     * @param Event $event
      *
      * @return array
      */
-    public static function getStatusesByEvent(?string $slug, ?int $id): array {
-        if ($slug !== null) {
-            $event = Event::where('slug', $slug)->firstOrFail();
-        }
-        if ($id !== null) {
-            $event = Event::findOrFail($id);
-        }
-
+    public static function getStatusesByEvent(Event $event): array {
         $statuses = $event->statuses()
                           ->with('user')
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
                           ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
-                          ->where(function($query) {
-                              $query->where('users.private_profile', 0)
-                                    ->whereIn('statuses.visibility', [
-                                        StatusVisibility::PUBLIC->value,
-                                        StatusVisibility::AUTHENTICATED->value
-                                    ]);
+                          ->where(function(Builder $query) {
+                              //Visibility checks: One of the following options must be true
+
+                              //Option 1: User is public AND status is public
+                              $query->where(function(Builder $query) {
+                                  $query->where('users.private_profile', 0)
+                                        ->whereIn('visibility', [
+                                            StatusVisibility::PUBLIC->value,
+                                            StatusVisibility::AUTHENTICATED->value
+                                        ]);
+                              });
+
                               if (auth()->check()) {
-                                  $query->orWhere('statuses.user_id', auth()->user()->id)
-                                        ->orWhere(function($query) {
-                                            $followIds = auth()->user()->follows()->select('follow_id');
-                                            $query->where('statuses.visibility', StatusVisibility::FOLLOWERS->value)
-                                                  ->whereIn('statuses.user_id', $followIds)
-                                                  ->orWhereIn('statuses.visibility', [
-                                                      StatusVisibility::PUBLIC->value,
-                                                      StatusVisibility::AUTHENTICATED->value
-                                                  ]);
-                                        });
+                                  //Option 2: Status is from oneself
+                                  $query->orWhere('users.id', auth()->id());
+
+                                  //Option 3: Status is from a followed BUT not unlisted or private
+                                  $query->orWhere(function(Builder $query) {
+                                      $query->whereIn('users.id', auth()->user()->follows()->select('follow_id'))
+                                            ->whereNotIn('visibility', [
+                                                StatusVisibility::UNLISTED->value,
+                                                StatusVisibility::PRIVATE->value,
+                                            ]);
+                                  });
                               }
                           })
                           ->orderBy('train_checkins.departure', 'desc');
@@ -229,16 +226,15 @@ class StatusController extends Controller
 
     public static function getFutureCheckins(): Paginator {
         return auth()->user()->statuses()
-                     ->with('user',
-                            'trainCheckin',
-                            'trainCheckin.Origin',
-                            'trainCheckin.Destination',
-                            'trainCheckin.HafasTrip',
-                            'event')
-                     ->orderBy('created_at', 'DESC')
+                     ->with([
+                                'user', 'trainCheckin.originStation', 'trainCheckin.destinationStation',
+                                'trainCheckin.HafasTrip', 'event',
+                            ])
+                     ->orderByDesc('created_at')
                      ->whereHas('trainCheckin', function($query) {
                          $query->where('departure', '>=', date('Y-m-d H:i:s', strtotime("+20min")));
-                     })->simplePaginate(15);
+                     })
+                     ->simplePaginate(15);
     }
 
     public static function createStatus(

@@ -3,6 +3,7 @@
 namespace Tests\Feature\APIv1;
 
 use App\Models\Status;
+use App\Models\TrainCheckin;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,7 +18,8 @@ class LikesTest extends ApiTestCase
     public function testCreateShowAndDestroyLike(): void {
         $user      = User::factory()->create();
         $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
-        $status    = Status::factory()->create();
+        $checkin   = TrainCheckin::factory()->create();
+        $status    = $checkin->status;
 
         $this->assertDatabaseMissing('likes', [
             'user_id'   => $user->id,
@@ -58,7 +60,6 @@ class LikesTest extends ApiTestCase
                                                    'trainDuration',
                                                    'trainSpeed',
                                                    'points',
-                                                   'twitterUrl',
                                                    'mastodonUrl',
                                                    'privateProfile',
                                                    'preventIndex',
@@ -112,22 +113,22 @@ class LikesTest extends ApiTestCase
     }
 
     public function testBobDoesntSeeLikesIfBobHasDisabledLikes(): void {
-        $status     = Status::factory()->create();
-        $alice      = $status->user;
+        $checkin    = TrainCheckin::factory()->create();
+        $alice      = $checkin->status->user;
         $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         $response = $this->postJson(
-            uri:     '/api/v1/status/' . $status->id . '/like',
+            uri:     '/api/v1/status/' . $checkin->status->id . '/like',
             headers: ['Authorization' => 'Bearer ' . $aliceToken]
         );
         $response->assertCreated();
-        $this->assertSeeNumberOfLikes($status, $aliceToken, 1);
+        $this->assertSeeNumberOfLikes($checkin->status, $aliceToken, 1);
 
         Auth::forgetUser();
 
         $bob      = User::factory(["likes_enabled" => false])->create();
         $bobToken = $bob->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
-        $this->assertSeeNumberOfLikes($status, $bobToken, 0);
+        $this->assertSeeNumberOfLikes($checkin->status, $bobToken, 0);
     }
 
     private function assertSeeNumberOfLikes(Status $status, string $token, int $expectedLikeCount): void {

@@ -8,7 +8,7 @@
             data: {
                 labels: [
                     @foreach($statusesByDate as $row)
-                    '{{$row->date->format('d.m.Y')}}',
+                    '{{userTime($row->date, 'd.m.Y', false)}}',
                     @endforeach
                 ],
                 datasets: [{

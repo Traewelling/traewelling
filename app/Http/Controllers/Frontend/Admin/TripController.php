@@ -15,7 +15,7 @@ class TripController
 {
 
     public function renderTrip(string $id): View {
-        $trip = HafasTrip::with(['checkIns'])
+        $trip = HafasTrip::with(['checkins'])
                          ->where('trip_id', $id)->firstOrFail();
         return view('admin.trip.show', [
             'trip' => $trip
@@ -54,7 +54,7 @@ class TripController
         $trip = HafasTrip::create([
                                       'trip_id'        => strtr('manual-userId-uuid', [
                                           'userId' => auth()->id(),
-                                          'uuid'   => uniqid(),
+                                          'uuid'   => uniqid('', true),
                                       ]),
                                       'category'       => $validated['category'],
                                       'number'         => $validated['number'],

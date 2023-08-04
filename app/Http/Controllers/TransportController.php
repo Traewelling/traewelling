@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enum\TravelType;
 use App\Exceptions\HafasException;
-use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\StationController;
-use App\Http\Resources\HafasTripResource;
 use App\Models\PolyLine;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
@@ -14,7 +12,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\ArrayShape;
-use Mastodon;
 
 /**
  * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
@@ -126,10 +123,10 @@ class TransportController extends Controller
             return collect();
         }
 
-        $checkInsToCheck = TrainCheckin::with(['HafasTrip.stopoversNEW', 'Origin', 'Destination'])
+        $checkInsToCheck = TrainCheckin::with(['HafasTrip.stopovers', 'originStation', 'destinationStation'])
                                        ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
                                        ->where('statuses.user_id', $user->id)
-                                       ->where('departure', '>=', $start->clone()->subDays(3)->toIso8601String())
+                                       ->where('departure', '>=', $start->clone()->subDays(3))
                                        ->get();
 
         return $checkInsToCheck->filter(function($trainCheckIn) use ($start, $end) {

@@ -9,6 +9,7 @@ use App\Models\SocialLoginProfile;
 use App\Models\Status;
 use App\Models\User;
 use App\Notifications\MastodonNotSent;
+use Error;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
@@ -134,7 +135,7 @@ abstract class MastodonController extends Controller
             return;
         }
 
-        if ($status?->user?->socialProfile?->mastodon_server === null) {
+        if ($status->user?->socialProfile?->mastodon_server === null) {
             return;
         }
 
@@ -162,7 +163,8 @@ abstract class MastodonController extends Controller
         } catch (GuzzleException $e) {
             $status->user->notify(new MastodonNotSent($e->getCode(), $status));
             throw $e;
-        } catch (Exception $e) {
+        } catch (Exception|Error $e) {
+            $status->user->notify(new MastodonNotSent(0, $status));
             Log::error($e);
             throw $e;
         }
@@ -200,7 +202,7 @@ abstract class MastodonController extends Controller
                 // Only take posts that are from $OP.
                 && $toot['account']['id'] === $mastodonUserId
 
-                // Only take posts that are direct replies to an post by OP, discarding posts from OP that don't
+                // Only take posts that are direct replies to a post by OP, discarding posts from OP that don't
                 // contribute to the original thread.
                 && (!isset($toot['in_reply_to_account_id']) || $toot['in_reply_to_account_id'] === $mastodonUserId);
         });
