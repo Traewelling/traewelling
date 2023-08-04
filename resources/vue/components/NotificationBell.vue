@@ -44,16 +44,14 @@ function showModal() {
 }
 
 function fetchCount() {
-    API.request("/notifications/unread/count", 'GET', {}, true)
+    API.request("/notifications/unread/count", "GET", {}, true)
         .then(function (request) {
             request.json().then(function (json) {
                 state.count = json.data;
             });
         })
-        .catch((error) => {
-            if (error.name !== "TypeError") {
-                API.handleGenericError(error);
-            }
+        .catch(() => {
+            // Do nothing and ignore this error for better ux
         });
 }
 </script>
