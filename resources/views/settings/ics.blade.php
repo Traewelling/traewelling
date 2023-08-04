@@ -14,7 +14,7 @@
             @if(auth()->user()->icsTokens->count() === 0)
                 <p class="text-danger mx-2">{{__('settings.no-ics-tokens')}}</p>
             @else
-                <div class="table-responsive ">
+                <div class="table-responsive">
                     <table class="table">
                         <thead>
                             <tr>
@@ -27,10 +27,10 @@
                         <tbody>
                             @foreach(auth()->user()->icsTokens as $icsToken)
                                 <tr>
-                                    <td>{{$icsToken->name}}</td>
+                                    <td>{{ $icsToken->name }}</td>
                                     <td>{{ substr($icsToken->token, 0, 8) }}<small>*****</small></td>
-                                    <td>{{ $icsToken->created_at->isoFormat(__('datetime-format')) }}</td>
-                                    <td>{{ $icsToken?->last_accessed?->isoFormat(__('datetime-format')) ?? __('settings.never') }}</td>
+                                    <td>{{ userTime($icsToken->created_at, __('datetime-format')) }}</td>
+                                    <td>{{ $icsToken?->last_accessed ? userTime($icsToken->last_accessed,__('datetime-format')) : __('settings.never') }}</td>
                                     <td>
                                         <form method="POST" action="{{route('ics.revokeToken')}}">
                                             @csrf

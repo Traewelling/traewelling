@@ -16,7 +16,7 @@
                             <img
                                 src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
                                 style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2"
-                                id="theProfilePicture"  loading="lazy" decoding="async"
+                                id="theProfilePicture" loading="lazy" decoding="async"
                             />
                         </div>
 
@@ -98,10 +98,12 @@
                     </label>
                     <div class="col-md-6">
                         <select class="form-control" name="mapprovider">
-                            <option value="{{ App\Enum\MapProvider::CARGO->value }}" @if(auth()->user()->mapprovider == App\Enum\MapProvider::CARGO) selected @endif>
+                            <option value="{{ App\Enum\MapProvider::CARGO->value }}"
+                                    @if(auth()->user()->mapprovider == App\Enum\MapProvider::CARGO) selected @endif>
                                 {{__('map-providers.cargo')}}
                             </option>
-                            <option value="{{ App\Enum\MapProvider::OPEN_RAILWAY_MAP->value }}" @if(auth()->user()->mapprovider == App\Enum\MapProvider::OPEN_RAILWAY_MAP) selected @endif>
+                            <option value="{{ App\Enum\MapProvider::OPEN_RAILWAY_MAP->value }}"
+                                    @if(auth()->user()->mapprovider == App\Enum\MapProvider::OPEN_RAILWAY_MAP) selected @endif>
                                 {{__('map-providers.open-railway-map')}}
                             </option>
                         </select>
