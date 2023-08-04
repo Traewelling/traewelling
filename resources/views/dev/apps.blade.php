@@ -6,9 +6,9 @@
 
 @endsection
 
-@section('content')
-    <div class="row mt-3">
-        <div class="col-12 mb-2">
+@section('big-content')
+    <div class="card mt-3 my-0">
+        <div class="card-header">
             <a href="/api/documentation" target="_blank" class="btn btn-outline-info">
                 API Docs
             </a>
@@ -16,7 +16,7 @@
                 Anwendung erstellen
             </a>
         </div>
-        <div class="col-12">
+        <div class="card-body table-responsive px-0">
             @if($apps->count() > 0)
                 <table class="table table-striped table-dark">
                     <thead>

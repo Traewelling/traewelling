@@ -3,9 +3,9 @@
 
 @section('title', isset($app) ? 'Edit application' : 'Create application')
 
-@section('content')
-    <div class="row mt-3">
-        <div class="col-12">
+@section('big-content')
+    <div class="card mt-3">
+        <div class="card-body">
             <form enctype="multipart/form-data" method="POST"
                   action="{{Route::currentRouteName() === 'dev.apps.create' ? route('dev.apps.create.post') : route('dev.apps.edit', ['appId' => $app->id]) }}"
             >

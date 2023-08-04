@@ -302,6 +302,9 @@
 
                                 @yield('content')
                             </div>
+                            <div class="col-8">
+                                @yield('big-content')
+                            </div>
                         </div>
                     </div>
                 </main>
