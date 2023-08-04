@@ -1,14 +1,35 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-mdb-theme="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <title>{{__('menu.settings')}} - {{ config('app.name', 'Träwelling') }}</title>
 
         @include('layouts.includes.meta')
 
+        <!-- Scripts -->
+        <!-- Run this blocking script as early as possible to prevent flickering -->
+        <script>
+            if (localStorage.getItem("darkMode") === null) {
+                localStorage.setItem("darkMode", "auto");
+            }
+            var darkModeSetting = localStorage.getItem("darkMode");
+            if (darkModeSetting === "auto") {
+                darkModeSetting = window.matchMedia("(prefers-color-scheme: dark)")
+                    .matches
+                    ? "dark"
+                    : "light";
+            }
+            if (darkModeSetting === "dark") {
+                document.documentElement.classList.add("dark");
+            } else {
+                document.documentElement.classList.remove("dark");
+            }
+        </script>
+
         <script src="{{ mix('js/app.js') }}"></script>
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
         <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+        <link href="{{ mix('css/app-dark.css') }}" rel="stylesheet">
         <link rel="mask-icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}">
         <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
@@ -181,7 +202,7 @@
 
         <div class="container-fluid">
             <div class="row">
-                <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-body sidebar collapse">
                     <div class="position-sticky pt-3 sidebar-sticky">
                         <ul class="nav flex-column">
                             <li class="nav-item">

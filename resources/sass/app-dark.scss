@@ -292,6 +292,10 @@
         background-color: desaturate(darken($dm-trwlRot, 45%), 20%) !important;
     }
 
+    .bg-body {
+        background-color: $dm-base !important;
+    }
+
     .navbar-brand {
         color: #dddddd !important;
     }

@@ -156,7 +156,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
             Route::post('/', [DevController::class, 'createApp'])->name('dev.apps.create.post'); //TODO: Replace with API Endpoint
         });
 
-        Route::redirect('/', 'settings.profile')->name('settings');
+        Route::redirect('/', 'settings/profile')->name('settings');
         Route::get('/profile', [SettingsController::class, 'renderProfile'])->name('settings.profile');
         Route::get('/privacy', [SettingsController::class, 'renderPrivacy'])->name('settings.privacy');
         Route::post('/', [SettingsController::class, 'updateMainSettings']);
@@ -184,7 +184,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
              ->name('settings.follower.approve'); //TODO: Replace with API Endpoint
         Route::post('/follower/reject', [SettingsController::class, 'rejectFollower'])
              ->name('settings.follower.reject'); //TODO: Replace with API Endpoint
-             ->name('settings.follower.reject');
 
         Route::get('/blocks', [SettingsController::class, 'renderBlockedUsers'])->name('settings.blocks');
         Route::get('/mutes', [SettingsController::class, 'renderMutedUsers'])->name('settings.mutes');
