@@ -93,8 +93,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('/global', [StatisticsController::class, 'getGlobalStatistics']);
             Route::post('export', [StatisticsController::class, 'generateTravelExport'])
                  ->middleware(['scope:write-exports'])->withoutMiddleware(['scope:read-statistics']);
-            Route::get('/daily', [StatisticsController::class, 'getPersonalDailyStatistics']);
-            Route::get('/daily/polylines', [StatisticsController::class, 'getPersonalDailyStatisticPolylines']);
+            Route::get('/daily/{date}', [StatisticsController::class, 'getPersonalDailyStatistics']);
         });
         Route::group(['prefix' => 'user'], static function() {
             Route::group(['middleware' => ['scope:write-follows']], static function() {
