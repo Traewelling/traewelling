@@ -52,6 +52,7 @@ Homestead.json
 .idea/phpunit.xml
 .idea/phpspec.xml
 .idea/codeception.xml
+.idea/php-test-framework.xml
 
 # Sensitive or high-churn files
 .idea/dataSources.xml
