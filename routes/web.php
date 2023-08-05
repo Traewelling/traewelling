@@ -70,8 +70,9 @@ Route::get('/leaderboard/{date}', [LeaderboardController::class, 'renderMonthlyL
 Route::get('/statuses/active', [FrontendStatusController::class, 'getActiveStatuses'])
      ->name('statuses.active');
 
-Route::get('/statuses/event/{eventSlug}', [FrontendStatusController::class, 'statusesByEvent'])
-     ->name('statuses.byEvent');
+Route::permanentRedirect('/statuses/event/{slug}', '/event/{slug}');
+Route::get('/event/{slug}', [FrontendStatusController::class, 'statusesByEvent'])
+     ->name('event');
 
 Route::get('/events', [EventController::class, 'renderEventOverview'])
      ->name('events');

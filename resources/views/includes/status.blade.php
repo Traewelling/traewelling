@@ -108,7 +108,7 @@
                             <br/>
                             <span class="pl-sm-2">
                                 <i class="fa fa-calendar-day" aria-hidden="true"></i>
-                                <a href="{{ route('statuses.byEvent', ['eventSlug' => $status->event->slug]) }}">
+                                <a href="{{ route('event', ['slug' => $status->event->slug]) }}">
                                     {{ $status->event->name }}
                                 </a>
                             </span>

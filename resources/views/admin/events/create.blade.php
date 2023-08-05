@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Veranstaltung erstellen')
+@section('title', 'Create event')
 
 @section('content')
     <div class="card">
@@ -22,7 +22,7 @@
                             {{ __('events.hashtag') }}:
                         </label>
                         <div class="col-md-6 text-center">
-                            <input id="hashtag" type="text" class="form-control" name="hashtag" required/>
+                            <input id="hashtag" type="text" class="form-control" name="hashtag"/>
                         </div>
                     </div>
                     <div class="form-group row">

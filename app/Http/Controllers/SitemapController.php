@@ -71,7 +71,7 @@ class SitemapController extends Controller
                                      ->get();
 
         foreach ($events as $event) {
-            $sitemap->add(Url::create(route('statuses.byEvent', ['eventSlug' => $event->slug]))
+            $sitemap->add(Url::create(route('event', ['slug' => $event->slug]))
                              ->setPriority(0.6));
         }
     }
