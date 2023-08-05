@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1",
+            "url": "https://traewelling.de/api/v1",
             "description": "This instance"
         }
     ],
@@ -1922,6 +1922,92 @@
                     },
                     "401": {
                         "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-statistics"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/statistics/daily/{date}": {
+            "get": {
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get statistics and statuses of one day",
+                "description": "Returns all statuses and statistics for the requested day",
+                "operationId": "getDailyStatistics",
+                "parameters": [
+                    {
+                        "name": "withPolylines",
+                        "in": "query",
+                        "description": "If this parameter is set, the polylines will be returned as well. Otherwise attribute is null.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "statuses": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Status"
+                                                    }
+                                                },
+                                                "polylines": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Polyline"
+                                                    }
+                                                },
+                                                "totalDistance": {
+                                                    "type": "integer",
+                                                    "example": "74026"
+                                                },
+                                                "totalDuration": {
+                                                    "type": "integer",
+                                                    "example": "4711"
+                                                },
+                                                "totalPoints": {
+                                                    "type": "integer",
+                                                    "example": "42"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No statuses found"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this"
                     }
                 },
                 "security": [

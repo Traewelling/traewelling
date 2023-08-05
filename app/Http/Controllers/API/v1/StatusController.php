@@ -447,21 +447,9 @@ class StatusController extends Controller
                                      return true;
                                  })
                                  ->map(function($status) {
-                                     return [
-                                         'type'       => 'Feature',
-                                         'geometry'   => [
-                                             'type'        => 'LineString',
-                                             'coordinates' => GeoController::getMapLinesForCheckin($status->trainCheckin)
-                                         ],
-                                         'properties' => [
-                                             'statusId' => $status->id
-                                         ]
-                                     ];
+                                     return GeoController::getGeoJsonFeatureForStatus($status);
                                  });
-        $geoJson         = [
-            'type'     => 'FeatureCollection',
-            'features' => $geoJsonFeatures
-        ];
+        $geoJson = GeoController::getGeoJsonFeatureCollection($geoJsonFeatures);
         return $ids ? $this->sendResponse($geoJson) : $this->sendError("");
     }
 

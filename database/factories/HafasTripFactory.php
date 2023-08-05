@@ -8,7 +8,6 @@ use App\Models\HafasOperator;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use App\Models\TrainStopover;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class HafasTripFactory extends Factory
@@ -23,7 +22,7 @@ class HafasTripFactory extends Factory
         }
 
         return [
-            'trip_id'        => $this->faker->unique()->numerify('1|######|##|##|') . Carbon::now()->format('dmY'),
+            'trip_id'        => $this->faker->unique()->numerify('1|######|##|##|') . now()->format('dmY'),
             'category'       => $this->faker->randomElement(HafasTravelType::cases())->value,
             'number'         => $this->faker->bothify('??-##'),
             'linename'       => $this->faker->bothify('?? ##'),
@@ -32,8 +31,8 @@ class HafasTripFactory extends Factory
             'origin'         => $origin->ibnr,
             'destination'    => $destination->ibnr,
             'polyline_id'    => null, //Will be set in the configure function
-            'departure'      => Carbon::now()->subMinutes(15)->format('c'),
-            'arrival'        => Carbon::now()->addMinutes(80)->format('c'),
+            'departure'      => now()->subMinutes(15)->format('c'),
+            'arrival'        => now()->addMinutes(80)->format('c'),
             'delay'          => 0, //TODO: is deprecated? used?
         ];
     }
@@ -85,7 +84,7 @@ class HafasTripFactory extends Factory
     }
 
     public static function createPolyline(HafasTrip $hafasTrip) {
-        $time     = Carbon::now()->subMinutes(15);
+        $time     = now()->subMinutes(15);
         $features = [];
         foreach ($hafasTrip->stopovers as $stopover) {
             $products = [];
