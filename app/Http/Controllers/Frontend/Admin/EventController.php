@@ -26,9 +26,9 @@ class EventController extends Controller
     private const VALIDATOR_RULES = [
         'name'                 => ['required', 'max:255'],
         'hashtag'              => ['nullable', 'max:30'],
-        'host'                 => ['required', 'max:255'],
+        'host'                 => ['nullable', 'max:255'],
         'url'                  => ['nullable', 'url'],
-        'nearest_station_name' => ['required', 'max:255'],
+        'nearest_station_name' => ['nullable', 'max:255'],
         'begin'                => ['required', 'date'],
         'end'                  => ['required', 'date'],
         'event_start'          => ['nullable', 'date', 'after_or_equal:begin'],
@@ -100,8 +100,8 @@ class EventController extends Controller
         $validated = $request->validate([
                                             'suggestionId'         => ['required', 'exists:event_suggestions,id'],
                                             'name'                 => ['required', 'max:255'],
-                                            'hashtag'              => ['required', 'max:30'],
-                                            'host'                 => ['required', 'max:255'],
+                                            'hashtag'              => ['nullable', 'max:30'],
+                                            'host'                 => ['nullable', 'max:255'],
                                             'url'                  => ['nullable', 'url'],
                                             'nearest_station_name' => ['nullable', 'max:255'],
                                             'begin'                => ['required', 'date'],
@@ -129,8 +129,8 @@ class EventController extends Controller
                                    'station_id'  => $trainStation?->id,
                                    'begin'       => Carbon::parse($validated['begin'])->toIso8601String(),
                                    'end'         => Carbon::parse($validated['end'])->toIso8601String(),
-                                   'event_start' => Carbon::parse($validated['event_start'])->toIso8601String(),
-                                   'event_end'   => Carbon::parse($validated['event_end'])->toIso8601String(),
+                                   'event_start' => Carbon::parse($validated['event_start'] ?? $validated['begin'])->toIso8601String(),
+                                   'event_end'   => Carbon::parse($validated['event_end'] ?? $validated['end'])->toIso8601String(),
                                    'url'         => $validated['url'] ?? null,
                                    'accepted_by' => auth()->user()->id,
                                ]);
@@ -170,8 +170,8 @@ class EventController extends Controller
                           'station_id'  => $trainStation?->id,
                           'begin'       => Carbon::parse($validated['begin'])->toIso8601String(),
                           'end'         => Carbon::parse($validated['end'])->toIso8601String(),
-                          'event_start' => Carbon::parse($validated['event_start'])->toIso8601String(),
-                          'event_end'   => Carbon::parse($validated['event_end'])->toIso8601String(),
+                          'event_start' => Carbon::parse($validated['event_start'] ?? $validated['begin'])->toIso8601String(),
+                          'event_end'   => Carbon::parse($validated['event_end'] ?? $validated['end'])->toIso8601String(),
                           'url'         => $validated['url'] ?? null,
                           'accepted_by' => auth()->user()->id
                       ]);
