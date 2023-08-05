@@ -212,7 +212,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function getMutedAttribute(): bool {
-        return (auth()->check() && auth()->user()->mutedUsers->contains('id', $this->id));
+        return auth()->check() && auth()->user()->mutedUsers->contains('id', $this->id);
     }
 
     /**

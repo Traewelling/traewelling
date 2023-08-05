@@ -144,10 +144,9 @@ abstract class UserController extends Controller
             throw new InvalidArgumentException();
         }
 
-        return User::where(
-            'name', 'like', "%{$searchQuery}%"
-        )->orWhere(
-            'username', 'like', "%{$searchQuery}%"
-        )->simplePaginate(10);
+        return User::where('name', 'like', "%{$searchQuery}%")
+                   ->orWhere('username', 'like', "%{$searchQuery}%")
+                   ->orderByDesc('last_login')
+                   ->simplePaginate(10);
     }
 }

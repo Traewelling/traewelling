@@ -103,14 +103,12 @@ class FrontendUserController extends Controller
 
     public function searchUser(Request $request): Renderable|RedirectResponse {
         try {
-            $userSearchResponse = UserBackend::searchUser($request['searchQuery']);
-
-            if ($userSearchResponse->count() === 1) {
-                return redirect()->route('profile', ['username' => $userSearchResponse->first()->username]);
+            $users = \App\Http\Controllers\Backend\UserController::searchUser($request['searchQuery']);
+            if ($users->count() === 1) {
+                return redirect()->route('profile', ['username' => $users->first()->username]);
             }
-
             return view('search', [
-                'userSearchResponse' => $userSearchResponse
+                'users' => $users,
             ]);
         } catch (HttpException) {
             //abort(400) is triggered.

@@ -170,7 +170,10 @@ class StatusController extends Controller
      */
     public static function getStatusesByEvent(Event $event): array {
         $statuses = $event->statuses()
-                          ->with('user')
+                          ->with([
+                                     'user.blockedUsers', 'trainCheckin.originStation',
+                                     'trainCheckin.destinationStation', 'trainCheckin.HafasTrip.stopovers', 'event', 'likes',
+                                 ])
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
                           ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
@@ -206,20 +209,8 @@ class StatusController extends Controller
             $statuses->whereNotIn('statuses.user_id', auth()->user()->mutedUsers()->select('muted_id'));
         }
 
-        $distance = (clone $statuses)->get()->sum('trainCheckin.distance');
-        $duration = (clone $statuses)->select(['train_checkins.departure', 'train_checkins.arrival'])
-                                     ->get()
-                                     ->map(function($row) {
-                                         $arrival   = Carbon::parse($row->arrival);
-                                         $departure = Carbon::parse($row->departure);
-                                         return $arrival->diffInSeconds($departure);
-                                     })
-                                     ->sum();
-
         return [
             'event'    => $event,
-            'distance' => $distance,
-            'duration' => $duration,
             'statuses' => $statuses,
         ];
     }

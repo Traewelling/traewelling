@@ -6,12 +6,12 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
-                @if($userSearchResponse->count() === 0)
+                @if($users->count() === 0)
                     <div class="alert alert-danger" role="alert">
                         {{ __('user.no-user') }}
                     </div>
                 @endif
-                @foreach($userSearchResponse as $user)
+                @foreach($users as $user)
                     <div class="card status mt-3">
                         <div class="card-body row">
                             <div class="col-2 image-box search-image-box d-lg-flex">
@@ -34,7 +34,7 @@
                                     @if($user->private_profile)
                                         <i class="fas fa-user-lock"></i>
                                     @endif
-                                    <small class="text-muted">{{ '@'.$user->username }}</small>
+                                    <small class="text-muted">{{ '@' . $user->username }}</small>
                                 </a>
                                 <br/>
                                 <span style="font-size: 0.875em;">
@@ -60,9 +60,7 @@
             </div>
         </div>
         <div class="row justify-content-center mt-5">
-            {{ $userSearchResponse->withQueryString()->links() }}
+            {{ $users->withQueryString()->links() }}
         </div>
-        @include('includes.edit-modal')
-        @include('includes.delete-modal')
     </div>
 @endsection

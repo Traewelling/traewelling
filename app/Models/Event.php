@@ -37,14 +37,11 @@ class Event extends Model
 
     public function getTrainDistanceAttribute(): float {
         return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
-                           ->select('distance')
                            ->sum('distance');
     }
 
     public function getTrainDurationAttribute(): int {
         return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
-                           ->select(['arrival', 'departure'])
-                           ->get()
                            ->sum('duration');
     }
 
