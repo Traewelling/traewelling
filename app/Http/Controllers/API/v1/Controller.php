@@ -6,11 +6,9 @@ use Illuminate\Http\JsonResponse;
 
 /**
  * @OA\Info(
- *      version="1.0.0 - alpha",
+ *      version="1.0.0",
  *      title="Träwelling API",
- *      description="Träwelling user API description. This is an incomplete documentation with still many errors. The
- *      API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body
- *      can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
+ *      description="Träwelling user API description. This is an incomplete documentation. No guarantees are made for the correctness of the documentation. Please note the release notes on GitHub for breaking changes.",
  *      @OA\Contact(
  *          email="support@traewelling.de"
  *      ),

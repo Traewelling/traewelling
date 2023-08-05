@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Träwelling API",
-        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The\n *      API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body\n *      can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
+        "description": "Träwelling user API description. This is an incomplete documentation. No guarantees are made for the correctness of the documentation. Please note the release notes on GitHub for breaking changes.",
         "contact": {
             "email": "support@traewelling.de"
         },
@@ -10,7 +10,7 @@
             "name": "Apache 2.0",
             "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "version": "1.0.0 - alpha"
+        "version": "1.0.0"
     },
     "servers": [
         {
