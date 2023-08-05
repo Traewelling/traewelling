@@ -43,7 +43,7 @@ function durationToSpan($duration): string {
     return $return;
 }
 
-function userTime(null|Carbon|\Carbon\Carbon|string $time=null, ?string $format=null, bool $iso=true): string {
+function userTime(null|Carbon|\Carbon\Carbon|string $time = null, ?string $format = null, bool $iso = true): string {
     if ($time === null) {
         return '';
     }

@@ -43,7 +43,7 @@ class TrainCheckin extends Model
         'distance', 'duration', 'departure', 'real_departure', 'arrival', 'real_arrival', 'points', 'forced',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
-    protected $appends  = ['origin_stopover', 'destination_stopover', 'speed', 'alsoOnThisConnection'];
+    protected $appends  = ['origin_stopover', 'destination_stopover', 'speed', 'alsoOnThisConnection', 'stopovers'];
     protected $casts    = [
         'id'             => 'integer',
         'status_id'      => 'integer',
@@ -79,6 +79,15 @@ class TrainCheckin extends Model
 
     public function HafasTrip(): HasOne {
         return $this->hasOne(HafasTrip::class, 'trip_id', 'trip_id');
+    }
+
+    /**
+     * Get the stopovers for this trip from the HafasTrip
+     */
+    public function getStopoversAttribute(): Collection {
+        return $this->HafasTrip->stopovers->filter(function(TrainStopover $stopover) {
+            return $stopover->departure_planned >= $this->departure && $stopover->arrival_planned <= $this->arrival;
+        });
     }
 
     public function getOriginStopoverAttribute(): TrainStopover {

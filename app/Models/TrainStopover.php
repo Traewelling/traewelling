@@ -42,7 +42,15 @@ class TrainStopover extends Model
         return $this->belongsTo(HafasTrip::class, 'trip_id', 'trip_id');
     }
 
+    /**
+     * @return BelongsTo
+     * @deprecated Use `station()` instead. (we have more than just trains ;) )
+     */
     public function trainStation(): BelongsTo {
+        return $this->belongsTo(TrainStation::class, 'train_station_id', 'id');
+    }
+
+    public function station(): BelongsTo {
         return $this->belongsTo(TrainStation::class, 'train_station_id', 'id');
     }
 

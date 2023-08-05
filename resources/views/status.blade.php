@@ -38,46 +38,64 @@
                     </small>
                 @endif
 
-                @if($status->trainCheckin->alsoOnThisConnection->count() > 0)
+            </div>
+            <div class="col-md-4 col-lg-5">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <!-- ToDo: make this beautiful -->
+                        <b>Operator:</b>
+                        {{$status->trainCheckin->HafasTrip->operator->name}}
+                    </div>
+                </div>
 
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h3 class="fs-5 text-trwl">
+                            <i class="fa-solid fa-list-ul"></i>
+                            Stopovers
+                        </h3>
+
+                        @foreach($status->trainCheckin->stopovers as $stopover)
+                            <div class="row">
+                                <div class="col-6">
+                                    <a href="{{ route('trains.stationboard', ['ibnr' => $stopover->station->ibnr, 'when' => $stopover->departure]) }}">
+                                        {{$stopover->station->name}}
+                                    </a>
+                                </div>
+                                <div class="col-6 text-end">
+                                    {{ userTime($stopover->departure) }}
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                @if($status->trainCheckin->alsoOnThisConnection->count() > 0)
                     <div class="card">
                         <div class="card-body">
-                            <h3 class="fs-4 text-trwl">
+                            <h3 class="fs-5 text-trwl">
                                 <i class="fa-solid fa-users-between-lines"></i>
                                 Also on this connection
                             </h3>
-                            <div class="table-responsive">
-                                <table class="table text-center align-middle">
-                                    @foreach($status->trainCheckin->alsoOnThisConnection as $otherStatus)
-                                        <tr>
-                                            <td>
-                                                <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
-                                                    <a href="{{ route('statuses.get', ['id' => $otherStatus->id]) }}">
-                                                        <img
-                                                            src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($otherStatus->user) }}"
-                                                            alt="{{$otherStatus->user->username}}"
-                                                            loading="lazy"
-                                                            decoding="async"
-                                                        />
-                                                    </a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <a href="{{ route('statuses.get', ['id' => $otherStatus->id]) }}">
-                                                    {{ $otherStatus->user->name }} <br/>
-                                                    <small>{{ '@' . $otherStatus->user->username }}</small>
-                                                </a>
-                                            </td>
-                                            <td>
-                                                {{$otherStatus->trainCheckin->originStation->name}}
-                                            </td>
-                                            <td><i class="fa-solid fa-arrow-right"></i></td>
-                                            <td>
-                                                {{$otherStatus->trainCheckin->destinationStation->name}}
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </table>
+                            <div class="row">
+                                @foreach($status->trainCheckin->alsoOnThisConnection as $otherStatus)
+                                    <!-- TODO: bring image to the center - i'm too dumb for this :c -->
+                                    <div class="col">
+                                        <div class="image-box pe-0 d-lg-flex" style="width: 4em; height: 4em;">
+                                            <a href="{{ route('statuses.get', ['id' => $otherStatus->id]) }}">
+                                                <img
+                                                    src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($otherStatus->user) }}"
+                                                    alt="{{$otherStatus->user->username}}"
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                    data-mdb-toggle="tooltip"
+                                                    data-mdb-placement="bottom"
+                                                    title="{{$otherStatus->user->name}} ({{$otherStatus->trainCheckin->originStation->name}} - {{$otherStatus->trainCheckin->destinationStation->name}})"
+                                                />
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>
