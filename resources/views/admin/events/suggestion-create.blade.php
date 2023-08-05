@@ -1,103 +1,140 @@
-@php use App\Enum\EventRejectionReason; @endphp
 @extends('admin.layout')
 
-@section('title', 'Veranstaltungsvorschlag akzeptieren')
+@section('title', 'Accept event suggestion')
 
 @section('content')
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <form method="POST" action="{{ route('admin.events.suggestions.accept.do') }}">
-                        @csrf
-                        <input type="hidden" name="suggestionId" value="{{$event->id}}"/>
+    <form method="POST" action="{{ route('admin.events.suggestions.accept.do') }}">
+        @csrf
+        <input type="hidden" name="suggestionId" value="{{$event->id}}"/>
+        <div class="row">
 
-                        <div class="form-floating mb-2">
-                            <input id="event-title" type="text" class="form-control" name="name"
-                                   value="{{$event->name}}"
-                                   required/>
-                            <label for="event-title">Title *</label>
-                        </div>
-                        <div class="form-floating mb-2">
-                            <input id="event-hashtag" type="text" class="form-control" name="hashtag"
-                                   value="{{$event->hashtag}}" required/>
-                            <label for="event-hashtag">Hashtag (without # character) *</label>
-                        </div>
-                        <div class="form-floating mb-2">
-                            <input id="event-host" type="text" class="form-control" name="host" value="{{$event->host}}"
-                                   required/>
-                            <label for="event-host">Organizer *</label>
-                        </div>
-                        <div class="form-floating mb-2">
-                            <input id="event-url" type="url" class="form-control" name="url" value="{{$event->url}}"/>
-                            <label for="event-url">URL (optional)</label>
-                        </div>
-                        <div class="form-floating mb-2">
-                            <input type="text" id="event-station" name="nearest_station_name"
-                                   class="form-control" placeholder="Closest Träwelling station"
-                                   value="{{$event->nearest_station_name}}"
-                            />
-                            <label for="event-station">Closest Träwelling station (optional)</label>
-                        </div>
 
-                        <hr/>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-floating mb-2">
-                                    <input id="checkin-begin" type="datetime-local" class="form-control" name="begin"
-                                           value="{{ $event->begin->toDateTimeLocalString() }}" required
-                                    />
-                                    <label for="checkin-begin">Checkin Begin</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating mb-2">
-                                    <input id="checkin-end" type="datetime-local" class="form-control" name="end"
-                                           value="{{ $event->end->clone()->endOfDay()->toDateTimeLocalString() }}"
-                                           required
-                                    />
-                                    <label for="checkin-end">Checkin End</label>
-                                </div>
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label text-md-right">
+                                {{ __('events.name') }}<span class="text-danger">*</span>:
+                            </label>
+                            <div class="col-md-8 text-center">
+                                <input id="name" type="text" class="form-control" name="name"
+                                       required
+                                       value="{{$event->name}}"
+                                />
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-floating mb-2">
-                                    <input id="event-start"
-                                           type="datetime-local" class="form-control" name="event_start"
-                                           value="{{ $event->begin->toDateTimeLocalString() }}"
-                                    />
-                                    <label for="event-start">Event Begin</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating mb-2">
-                                    <input id="event-end" type="datetime-local" class="form-control" name="event_end"
-                                           value="{{ $event->end->clone()->endOfDay()->toDateTimeLocalString() }}"
-                                    />
-                                    <label for="event-end">Event End</label>
-                                </div>
+                        <div class="form-group row">
+                            <label for="hashtag" class="col-md-4 col-form-label text-md-right">
+                                {{ __('events.hashtag') }}:
+                            </label>
+                            <div class="col-md-8 text-center">
+                                <input id="hashtag" type="text" class="form-control" name="hashtag"
+                                       value="{{$event->hashtag}}"
+                                />
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="host" class="col-md-4 col-form-label text-md-right">
+                                {{ __('events.host') }}:
+                            </label>
+                            <div class="col-md-8 text-center">
+                                <input id="host" type="text" class="form-control" name="host"
+                                       value="{{$event->host}}"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="url" class="col-md-4 col-form-label text-md-right">{{ __('events.url') }}
+                                :</label>
+                            <div class="col-md-8 text-center">
+                                <input id="url" type="url" class="form-control" name="url"
+                                       value="{{$event->url}}"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="nearest_station_name" class="col-md-4 col-form-label text-md-right">
+                                {{ __('events.closestStation') }}:
+                            </label>
+                            <div class="col-md-8 text-left" id="autocomplete-form">
+                                <input type="text" id="station-autocomplete" name="nearest_station_name"
+                                       class="form-control" placeholder="{{ __('stationboard.station-placeholder') }}"
 
-                        <hr/>
-
-                        <button type="submit" class="btn btn-primary">
-                            Accept & Save Event
-                        </button>
-                    </form>
+                                       value="{{$event->nearest_station_name}}"
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <form method="POST" action="{{route('admin.events.suggestions.deny')}}">
-                @csrf
-                <input type="hidden" name="id" value="{{$event->id}}"/>
-
-                <div class="btn-group float-end mt-2">
-                    <x-event-rejection-button/>
+            <div class="col-md-3">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h2 class="fs-5">
+                            Checkin is possible between the following dates<span class="text-danger">*</span>:
+                        </h2>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input id="begin" type="datetime-local" class="form-control" name="begin"
+                                           value="{{ $event->begin->toDateTimeLocalString() }}"
+                                           required
+                                    />
+                                    <label for="begin">Checkin {{ __('events.begin') }}:</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input id="end" type="datetime-local" class="form-control" name="end"
+                                           value="{{ $event->begin->toDateTimeLocalString() }}"
+                                           required
+                                    />
+                                    <label for="end">Checkin {{ __('events.end') }}:</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </form>
+            </div>
+            <div class="col-md-3">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h2 class="fs-5">
+                            Does the event start and end differently than the check-in times listed?
+                            <i>[optionally]</i>
+                        </h2>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input id="event-start" type="datetime-local" class="form-control"
+                                           name="event_start"
+                                    />
+                                    <label for="event-begin">{{ __('events.begin') }}</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input id="event-end" type="datetime-local" class="form-control" name="event_end"
+                                    />
+                                    <label for="event-end">{{ __('events.end') }}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa-regular fa-square-check"></i>
+                            Accept & Save Event
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </form>
 @endsection

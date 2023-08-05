@@ -6,6 +6,7 @@
         <cache>
           <versions>
             <info id="Local" version="7.5.20" />
+            <info id="Local/home/mrkriskrisu/Dev/traewelling/vendor/autoload.php" version="9.6.10" />
             <info id="interpreter-9111d13a-04fd-4d80-9f00-bc2cc6d38496" version="9.5.25" />
           </versions>
         </cache>
