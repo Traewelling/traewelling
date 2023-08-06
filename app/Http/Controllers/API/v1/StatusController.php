@@ -323,9 +323,9 @@ class StatusController extends Controller
             'visibility'                => ['required', new Enum(StatusVisibility::class)],
 
             //Changing of TrainCheckin-Metadata
-            'realDeparture'             => ['nullable', 'date'],//TODO: deprecated: remove after 2023-10
+            'realDeparture'             => ['nullable', 'date'], //TODO: deprecated: remove after 2023-10 (#1809)
             'manualDeparture'           => ['nullable', 'date'],
-            'realArrival'               => ['nullable', 'date'], //TODO: deprecated: remove after 2023-10
+            'realArrival'               => ['nullable', 'date'], //TODO: deprecated: remove after 2023-10 (#1809)
             'manualArrival'             => ['nullable', 'date'],
 
             //Following attributes are needed, if user want's to change the destination
@@ -364,12 +364,12 @@ class StatusController extends Controller
                                 'visibility' => StatusVisibility::from($validated['visibility']),
                             ]);
 
-            if (isset($validated['realDeparture']) || isset($validated['manualDeparture'])) {
+            if (isset($validated['realDeparture']) || isset($validated['manualDeparture'])) { //TODO: remove realDeparture after 2023-10 (#1809)
                 $status->trainCheckin->update([
                                                   'manual_departure' => Carbon::parse($validated['manualDeparture'] ?? $validated['realDeparture'], auth()->user()->timezone)
                                               ]);
             }
-            if (isset($validated['realArrival']) || isset($validated['manualArrival'])) {
+            if (isset($validated['realArrival']) || isset($validated['manualArrival'])) { //TODO: remove realArrival after 2023-10 (#1809)
                 $status->trainCheckin->update([
                                                   'manual_arrival' => Carbon::parse($validated['manualArrival'] ?? $validated['realArrival'], auth()->user()->timezone)
                                               ]);
