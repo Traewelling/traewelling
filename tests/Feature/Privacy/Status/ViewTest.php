@@ -25,7 +25,7 @@ class ViewTest extends ApiTestCase
                         ->create();
 
         $this->assertGuest();
-        $statusRequest = $this->get(route('statuses.get', ['id' => $status->id]));
+        $statusRequest = $this->get(route('status', ['id' => $status->id]));
         $statusRequest->assertStatus(200);
     }
 
@@ -36,7 +36,7 @@ class ViewTest extends ApiTestCase
                         ->create();
 
         $this->assertGuest();
-        $statusRequest = $this->get(route('statuses.get', ['id' => $status->id]));
+        $statusRequest = $this->get(route('status', ['id' => $status->id]));
         $statusRequest->assertStatus(403);
     }
 
@@ -47,7 +47,7 @@ class ViewTest extends ApiTestCase
                         ->create();
 
         $this->assertGuest();
-        $statusRequest = $this->get(route('statuses.get', ['id' => $status->id]));
+        $statusRequest = $this->get(route('status', ['id' => $status->id]));
         $statusRequest->assertStatus(200);
     }
 
@@ -58,7 +58,7 @@ class ViewTest extends ApiTestCase
                         ->create();
 
         $this->assertGuest();
-        $statusRequest = $this->get(route('statuses.get', ['id' => $status->id]));
+        $statusRequest = $this->get(route('status', ['id' => $status->id]));
         $statusRequest->assertStatus(403);
     }
 
@@ -69,7 +69,7 @@ class ViewTest extends ApiTestCase
                         ->create();
 
         $this->assertGuest();
-        $statusRequest = $this->get(route('statuses.get', ['id' => $status->id]));
+        $statusRequest = $this->get(route('status', ['id' => $status->id]));
         $statusRequest->assertStatus(403);
     }
 

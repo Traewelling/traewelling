@@ -87,7 +87,7 @@ Route::get('/callback/mastodon', [MastodonController::class, 'callback']);
 
 Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
      ->whereNumber('id')
-     ->name('statuses.get');
+     ->name('status');
 
 Route::prefix('blog')->group(function() {
     Route::permanentRedirect('/', 'https://blog.traewelling.de')
