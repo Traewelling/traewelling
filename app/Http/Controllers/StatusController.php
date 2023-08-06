@@ -206,7 +206,9 @@ class StatusController extends Controller
                           ->orderBy('train_checkins.departure', 'desc');
 
         if (auth()->check()) {
-            $statuses->whereNotIn('statuses.user_id', auth()->user()->mutedUsers()->select('muted_id'));
+            $statuses->whereNotIn('statuses.user_id', auth()->user()?->mutedUsers()->select('muted_id'))
+                     ->whereNotIn('statuses.user_id', auth()->user()?->blockedUsers()->select('blocked_id'))
+                     ->whereNotIn('statuses.user_id', auth()->user()?->blockedByUsers()->select('user_id'));
         }
 
         return [
