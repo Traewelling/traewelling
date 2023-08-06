@@ -124,7 +124,7 @@ abstract class BrouterController extends Controller
             $minDistance       = null;
             $closestFeatureKey = null;
             foreach ($geoJson['features'] as $key => $feature) {
-                if ($highestMappedKey !== null && $key <= $highestMappedKey) {
+                if (($highestMappedKey !== null && $key <= $highestMappedKey) || !isset($feature['geometry']['coordinates'])) {
                     //Don't look again at the same stations.
                     //This is required and very important to prevent bugs for ring lines!
                     continue;
