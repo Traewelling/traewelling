@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
+use Spatie\PersonalDataExport\Jobs\CreatePersonalDataExportJob;
 
 class SettingsController extends Controller
 {
@@ -217,5 +218,11 @@ class SettingsController extends Controller
             return back()->with('success', __('settings.request.reject-success'));
         }
         return back()->with('danger', __('messages.exception.general'));
+    }
+
+    public function renderDataExports() {
+        //TODO: implement this correct :) - just for testing
+        dispatch(new CreatePersonalDataExportJob(auth()->user()));
+        return $this->renderProfile();
     }
 }

@@ -64,6 +64,11 @@ return [
             'url'    => env('AWS_URL'),
         ],
 
+        'personal-data-exports' => [
+            'driver' => 'local',
+            'root' => storage_path('app/personal-data-exports'),
+        ],
+
     ],
 
 ];

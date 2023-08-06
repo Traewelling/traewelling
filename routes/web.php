@@ -110,10 +110,10 @@ Route::middleware(['auth'])->group(function() {
          ->name('gdpr.intercept');
 
     Route::post('/gdpr-ack', [PrivacyAgreementController::class, 'ack'])
-         ->name('gdpr.ack');
+         ->name('gdpr.ack'); //TODO: Replace with API Endpoint
 
     Route::post('/settings/destroy', [AccountController::class, 'deleteUserAccount'])
-         ->name('account.destroy');
+         ->name('account.destroy'); //TODO: Replace with API Endpoint
 });
 
 
@@ -170,6 +170,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
              ->name('settings.account');
         Route::post('/account/update', [SettingsController::class, 'updatePassword'])
              ->name('password.change');
+
+        Route::get('/data-exports', [SettingsController::class, 'renderDataExports']);
+        Route::personalDataExports('data-exports');
 
         Route::get('/security/login-providers', [SettingsController::class, 'renderLoginProviders'])
              ->name('settings.login-providers');

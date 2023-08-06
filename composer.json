@@ -35,6 +35,7 @@
         "revolution/laravel-mastodon-api": "^3.0",
         "romanzipp/laravel-queue-monitor": "^4.0",
         "spatie/icalendar-generator": "^2.0",
+        "spatie/laravel-personal-data-export": "^4.2",
         "spatie/laravel-sitemap": "^6.0",
         "spatie/laravel-validation-rules": "^3.2",
         "spatie/laravel-webhook-server": "^3.4",

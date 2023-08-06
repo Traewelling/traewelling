@@ -6,6 +6,8 @@ use App\Enum\MapProvider;
 use App\Enum\StatusVisibility;
 use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
+use App\Http\Controllers\Backend\User\PrivacyExportController;
+use App\Http\Resources\StatusResource;
 use App\Jobs\SendVerificationEmail;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -19,8 +21,11 @@ use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Laravel\Passport\HasApiTokens;
 use Mastodon;
+use Spatie\PersonalDataExport\ExportsPersonalData;
+use Spatie\PersonalDataExport\PersonalDataSelection;
 
 /**
  * @property int         id
@@ -42,7 +47,7 @@ use Mastodon;
  * @property Carbon      last_login
  * @property Status[]    $statuses
  */
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, ExportsPersonalData
 {
 
     use Notifiable, HasApiTokens, HasFactory;
@@ -286,5 +291,37 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function preferredLocale(): string {
         return $this->language;
+    }
+
+    public function selectPersonalData(PersonalDataSelection $export): void {
+        $export->add('user.json', $this->only([
+                                                  'username', 'name', 'avatar', 'email', 'email_verified_at', 'home_id', 'privacy_ack_at',
+                                                  'default_status_visibility', 'likes_enabled', 'private_profile', 'prevent_index', 'privacy_hide_days',
+                                                  'language', 'last_login', 'mapprovider', 'timezone',
+                                              ]));
+        if (isset($this->avatar)) {
+            $export->addFile(public_path('/uploads/avatars/' . $this->avatar));
+        }
+        $export->add('user-social.json', [
+            'twitter_id'      => $this->socialProfile->twitter_id,
+            'mastodon_id'     => $this->socialProfile->mastodon_id,
+            'mastodon_server' => $this->socialProfile?->mastodonServer?->domain,
+        ]);
+
+        $export->add('follows.json', $this->follows->pluck('id'));
+        $export->add('followers.json', $this->followers->pluck('id'));
+
+        $i = 0;
+        $this->statuses()->with(['user', 'trainCheckin.HafasTrip.stopovers', 'event'])->chunk(1000, function($statuses) use (&$i, $export) {
+            $export->add("statuses_{$i}.json", $statuses->map(function($status) {
+                return new StatusResource($status);
+            }));
+            $i++;
+        });
+    }
+
+    public function personalDataExportName(): string {
+        $username = Str::slug($this->username);
+        return "personal-data-{$username}.zip";
     }
 }

@@ -36,6 +36,9 @@ class Kernel extends ConsoleKernel
         if (config('trwl.year_in_review_active')) {
             $schedule->command('trwl:cache-year-in-review')->withoutOverlapping()->dailyAt('2:00');
         }
+
+        $schedule->command('personal-data-export:clean')->daily();
+        $schedule->command('queue:work --queue=gdpr --timeout=3600 --once')->everyMinute()->withoutOverlapping();
     }
 
     /**
