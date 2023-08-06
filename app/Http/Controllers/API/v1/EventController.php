@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Backend\EventController as EventBackend;
+use App\Http\Controllers\HafasController;
+use App\Http\Controllers\StatusController;
 use App\Http\Resources\EventDetailsResource;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\StatusResource;
@@ -11,7 +13,6 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use App\Http\Controllers\StatusController;
 
 class EventController extends Controller
 {
@@ -226,20 +227,31 @@ class EventController extends Controller
      */
     public function suggest(Request $request): JsonResponse {
         $validated = $request->validate([
-                                            'name'  => ['required', 'max:255'],
-                                            'host'  => ['nullable', 'max:255'],
-                                            'begin' => ['required', 'date'],
-                                            'end'   => ['required', 'date'],
-                                            'url'   => ['nullable', 'max:255'],
+                                            'name'           => ['required', 'string', 'max:255'],
+                                            'host'           => ['nullable', 'string', 'max:255'],
+                                            'begin'          => ['required', 'date'],
+                                            'end'            => ['required', 'date'],
+                                            'url'            => ['nullable', 'url', 'max:255'],
+                                            'hashtag'        => ['nullable', 'string', 'max:40'],
+                                            'nearestStation' => ['nullable', 'string', 'max:255'],
                                         ]);
 
+        if (isset($validated['nearestStation'])) {
+            $stations = HafasController::getStations($validated['nearestStation'], 1);
+            if (count($stations) === 0) {
+                return $this->sendError(error: __('events.request.station_not_found'), code: 400);
+            }
+            $nearestStation = $stations->first();
+        }
         $eventSuggestion = EventBackend::suggestEvent(
-            user:  auth()->user(),
-            name:  $validated['name'],
-            begin: Carbon::parse($validated['begin']),
-            end:   Carbon::parse($validated['end']),
-            url:   $validated['url'] ?? null,
-            host:  $validated['host'] ?? null
+            user:    auth()->user(),
+            name:    $validated['name'],
+            begin:   Carbon::parse($validated['begin']),
+            end:     Carbon::parse($validated['end']),
+            station: $nearestStation ?? null,
+            url:     $validated['url'] ?? null,
+            host:    $validated['host'] ?? null,
+            hashtag: $validated['hashtag'] ?? null,
         );
 
         if ($eventSuggestion->wasRecentlyCreated) {

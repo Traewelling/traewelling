@@ -6,6 +6,7 @@ use App\Http\Controllers\Backend\Admin\TelegramController;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventSuggestion;
+use App\Models\TrainStation;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -16,34 +17,35 @@ use Illuminate\Support\Facades\Http;
 abstract class EventController extends Controller
 {
     public static function suggestEvent(
-        User   $user,
-        string $name,
-        Carbon $begin,
-        Carbon $end,
-        string $url = null,
-        string $host = null
+        User         $user,
+        string       $name,
+        Carbon       $begin,
+        Carbon       $end,
+        TrainStation $station = null,
+        string       $url = null,
+        string       $host = null,
+        string       $hashtag = null,
     ): EventSuggestion {
         $eventSuggestion = EventSuggestion::create([
-                                                       'user_id' => $user->id,
-                                                       'name'    => $name,
-                                                       'begin'   => $begin->toIso8601String(),
-                                                       'end'     => $end->toIso8601String(),
-                                                       'url'     => $url,
-                                                       'host'    => $host
+                                                       'user_id'    => $user->id,
+                                                       'name'       => $name,
+                                                       'begin'      => $begin->toIso8601String(),
+                                                       'end'        => $end->toIso8601String(),
+                                                       'station_id' => $station?->id,
+                                                       'url'        => $url,
+                                                       'host'       => $host,
+                                                       'hashtag'    => $hashtag,
                                                    ]);
 
         try {
             if (config('app.admin.webhooks.new_event') !== null) {
                 Http::post(config('app.admin.webhooks.new_event'), [
-                    'content' => strtr("<b>Neuer Veranstaltungsvorschlag</b>" . PHP_EOL .
+                    'content' => strtr("<b>New event suggestion:</b>" . PHP_EOL .
                                        "Title: :name" . PHP_EOL .
-                                       "Veranstalter: :host" . PHP_EOL .
-                                       "Beginn: :begin" . PHP_EOL .
-                                       "Ende: :end" . PHP_EOL .
-                                       "Benutzer: :username\n" . PHP_EOL .
-                                       "Der Vorschlag kann im <a href=\"" .
-                                       route('admin.events.suggestions') .
-                                       "\">Adminpanel</a> bearbeitet werden.", [
+                                       "Organized by: :host" . PHP_EOL .
+                                       "Begin: :begin" . PHP_EOL .
+                                       "End: :end" . PHP_EOL .
+                                       "Suggested by user: :username", [
                                            ':name'     => $eventSuggestion->name,
                                            ':host'     => $eventSuggestion->host,
                                            ':begin'    => $eventSuggestion->begin->format('d.m.Y'),

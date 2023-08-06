@@ -4302,14 +4302,6 @@
                         "example": "MiWuLa",
                         "nullable": true
                     },
-                    "url": {
-                        "title": "url",
-                        "description": "external URL for this event",
-                        "type": "string",
-                        "maxLength": 255,
-                        "example": "https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756",
-                        "nullable": true
-                    },
                     "begin": {
                         "title": "begin",
                         "description": "Timestamp for the start of the event",
@@ -4319,6 +4311,30 @@
                         "title": "end",
                         "description": "Timestamp for the end of the event",
                         "example": "2022-08-31T23:59:00+02:00"
+                    },
+                    "url": {
+                        "title": "url",
+                        "description": "external URL for this event",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756",
+                        "nullable": true
+                    },
+                    "hashtag": {
+                        "title": "hashtag",
+                        "description": "hashtag for this event",
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "gpn21",
+                        "nullable": true
+                    },
+                    "nearestStation": {
+                        "title": "nearestStation",
+                        "description": "Query string for the nearest station to this event",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Berlin Hbf",
+                        "nullable": true
                     }
                 },
                 "type": "object",

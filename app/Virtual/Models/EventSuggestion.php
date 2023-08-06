@@ -42,20 +42,6 @@ class EventSuggestion
 
     /**
      * @OA\Property (
-     *     title="url",
-     *     nullable=true,
-     *     description="external URL for this event",
-     *     type="string",
-     *     maxLength=255,
-     *     example="https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756"
-     * )
-     *
-     * @var string
-     */
-    private $url;
-
-    /**
-     * @OA\Property (
      *     title="begin",
      *     description="Timestamp for the start of the event",
      *     example="2022-06-01T00:00:00+02:00"
@@ -75,5 +61,47 @@ class EventSuggestion
      * @var Carbon
      */
     private $end;
+
+    /**
+     * @OA\Property (
+     *     title="url",
+     *     nullable=true,
+     *     description="external URL for this event",
+     *     type="string",
+     *     maxLength=255,
+     *     example="https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756"
+     * )
+     *
+     * @var string
+     */
+    private $url;
+
+    /**
+     * @OA\Property (
+     *     title="hashtag",
+     *     nullable=true,
+     *     description="hashtag for this event",
+     *     type="string",
+     *     maxLength=40,
+     *     example="gpn21"
+     * )
+     *
+     * @var string
+     */
+    private $hashtag;
+
+    /**
+     * @OA\Property (
+     *     title="nearestStation",
+     *     nullable=true,
+     *     description="Query string for the nearest station to this event",
+     *     type="string",
+     *     maxLength=255,
+     *     example="Berlin Hbf"
+     * )
+     *
+     * @var string
+     */
+    private $nearestStation;
 
 }
