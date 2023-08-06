@@ -43,25 +43,25 @@ class StatusUpdateBody
 
     /**
      * @OA\Property (
-     *      title="realDeparture",
-     *      description="Real departure time",
+     *      title="manualDeparture",
+     *      description="Manual departure time set by the user",
      *      format="date",
      *      example="2020-01-01 12:00:00",
      *      nullable=true
      * )
      */
-    public $realDeparture;
+    public $manualDeparture;
 
     /**
      * @OA\Property (
-     *      title="realArrival",
-     *      description="Real arrival time",
+     *      title="manualArrival",
+     *      description="Manual arrival time set by the user",
      *      format="date",
      *      example="2020-01-01 13:00:00",
      *      nullable=true
      * )
      */
-    public $realArrival;
+    public $manualArrival;
 
     /**
      * @OA\Property (

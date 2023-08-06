@@ -8,8 +8,8 @@
      data-date="{{userTime($status->trainCheckin->departure, __('dateformat.with-weekday'))}}"
      @if(auth()->check() && auth()->id() === $status->user_id)
          data-trwl-status-body="{{ $status->body }}"
-         data-trwl-real-departure="{{ userTime($status->trainCheckin?->real_departure, 'Y-m-d\TH:i:s', false)}}"
-         data-trwl-real-arrival="{{ userTime($status->trainCheckin?->real_arrival, 'Y-m-d\TH:i:s', false)}}"
+         data-trwl-manual-departure="{{ userTime($status->trainCheckin?->manual_departure, 'Y-m-d\TH:i:s', false)}}"
+         data-trwl-manual-arrival="{{ userTime($status->trainCheckin?->manual_arrival, 'Y-m-d\TH:i:s', false)}}"
          data-trwl-business-id="{{ $status->business->value }}"
          data-trwl-visibility="{{ $status->visibility->value }}"
          data-trwl-destination-stopover="{{$status->trainCheckin->destination_stopover->id}}"
@@ -37,13 +37,13 @@
                 <li>
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
-                        @if(isset($status->trainCheckin->real_departure) && $status->trainCheckin->real_departure->toString() !== $status->trainCheckin->origin_stopover->departure_planned->toString())
+                        @if(isset($status->trainCheckin->manual_departure) && $status->trainCheckin->manual_departure->toString() !== $status->trainCheckin->origin_stopover->departure_planned->toString())
                         <small style="text-decoration: line-through;" class="text-muted">
                                 {{ userTime($status->trainCheckin->origin_stopover->departure_planned) }}
                             </small>
                             &nbsp;
                             <span data-mdb-toggle="tooltip" title="{{__('time-is-manual')}}">
-                                {{ userTime($status->trainCheckin->real_departure) }}
+                                {{ userTime($status->trainCheckin->manual_departure) }}
                             </span>
                         @elseif($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
                             <small style="text-decoration: line-through;" class="text-muted">
@@ -138,15 +138,15 @@
                 <li>
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
-                        @if(isset($status->trainCheckin->real_arrival) && $status->trainCheckin->real_arrival->toString() !== $status->trainCheckin->destination_stopover->arrival_planned->toString())
+                        @if(isset($status->trainCheckin->manual_arrival) && $status->trainCheckin->manual_arrival->toString() !== $status->trainCheckin->destination_stopover->arrival_planned->toString())
                             <small style="text-decoration: line-through;" class="text-muted">
                                 {{ userTime($status->trainCheckin->destination_stopover->arrival_planned) }}
                             </small>
                             &nbsp;
                             <span data-mdb-toggle="tooltip" title="{{__('time-is-manual')}}">
-                                {{ userTime($status->trainCheckin->real_arrival) }}
+                                {{ userTime($status->trainCheckin->manual_arrival) }}
                             </span>
-                        @elseif($status->trainCheckin?->destination_stopover?->isArrivalDelayed && !isset($status->trainCheckin->real_arrival))
+                        @elseif($status->trainCheckin?->destination_stopover?->isArrivalDelayed && !isset($status->trainCheckin->manual_arrival))
                             <small style="text-decoration: line-through;" class="text-muted">
                                 {{ userTime($status->trainCheckin->destination_stopover->arrival_planned) }}
                             </small>

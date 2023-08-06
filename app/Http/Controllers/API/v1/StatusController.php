@@ -323,8 +323,10 @@ class StatusController extends Controller
             'visibility'                => ['required', new Enum(StatusVisibility::class)],
 
             //Changing of TrainCheckin-Metadata
-            'realDeparture'             => ['nullable', 'date'],
-            'realArrival'               => ['nullable', 'date'],
+            'realDeparture'             => ['nullable', 'date'], //TODO: deprecated: remove after 2023-10 (#1809)
+            'manualDeparture'           => ['nullable', 'date'],
+            'realArrival'               => ['nullable', 'date'], //TODO: deprecated: remove after 2023-10 (#1809)
+            'manualArrival'             => ['nullable', 'date'],
 
             //Following attributes are needed, if user want's to change the destination
             'destinationId'             => ['required_with:destinationArrivalPlanned', 'exists:train_stations,id'],
@@ -341,7 +343,7 @@ class StatusController extends Controller
             $this->authorize('update', $status);
 
             if (isset($validated['destinationId'], $validated['destinationArrivalPlanned'])) {
-                $arrival = Carbon::parse($validated['destinationArrivalPlanned'])->timezone(config('app.timezone'));
+                $arrival  = Carbon::parse($validated['destinationArrivalPlanned'])->timezone(config('app.timezone'));
                 $stopover = TrainStopover::where('train_station_id', $validated['destinationId'])
                                          ->where('arrival_planned', $arrival)
                                          ->first();
@@ -362,14 +364,14 @@ class StatusController extends Controller
                                 'visibility' => StatusVisibility::from($validated['visibility']),
                             ]);
 
-            if (isset($validated['realDeparture'])) {
+            if (isset($validated['realDeparture']) || isset($validated['manualDeparture'])) { //TODO: remove realDeparture after 2023-10 (#1809)
                 $status->trainCheckin->update([
-                    'real_departure' => Carbon::parse($validated['realDeparture'], auth()->user()->timezone)
+                                                  'manual_departure' => Carbon::parse($validated['manualDeparture'] ?? $validated['realDeparture'], auth()->user()->timezone)
                                               ]);
             }
-            if (isset($validated['realArrival'])) {
+            if (isset($validated['realArrival']) || isset($validated['manualArrival'])) { //TODO: remove realArrival after 2023-10 (#1809)
                 $status->trainCheckin->update([
-                    'real_arrival' => Carbon::parse($validated['realArrival'], auth()->user()->timezone)
+                                                  'manual_arrival' => Carbon::parse($validated['manualArrival'] ?? $validated['realArrival'], auth()->user()->timezone)
                                               ]);
             }
 
@@ -449,7 +451,7 @@ class StatusController extends Controller
                                  ->map(function($status) {
                                      return GeoController::getGeoJsonFeatureForStatus($status);
                                  });
-        $geoJson = GeoController::getGeoJsonFeatureCollection($geoJsonFeatures);
+        $geoJson         = GeoController::getGeoJsonFeatureCollection($geoJsonFeatures);
         return $ids ? $this->sendResponse($geoJson) : $this->sendError("");
     }
 

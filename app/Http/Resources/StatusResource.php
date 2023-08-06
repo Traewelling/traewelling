@@ -37,13 +37,15 @@ class StatusResource extends JsonResource
                 'category'            => (string) $this->trainCheckin->HafasTrip->category->value,
                 'number'              => (string) $this->trainCheckin->HafasTrip->number,
                 'lineName'            => (string) $this->trainCheckin->HafasTrip->linename,
-                'journeyNumber'       => $this->trainCheckin->HafasTrip->journey_number,  
+                'journeyNumber'       => $this->trainCheckin->HafasTrip->journey_number,
                 'distance'            => (int) $this->trainCheckin->distance,
                 'points'              => (int) $this->trainCheckin->points,
                 'duration'            => (int) $this->trainCheckin->duration,
                 'speed'               => (float) $this->trainCheckin->speed,
-                'overriddenDeparture' => $this->trainCheckin->real_departure?->toIso8601String(),
-                'overriddenArrival'   => $this->trainCheckin->real_arrival?->toIso8601String(),
+                'overriddenDeparture' => $this->trainCheckin->manual_departure?->toIso8601String(), //TODO: deprecated: remove after 2023-10 (#1809)
+                'manualDeparture'     => $this->trainCheckin->manual_departure?->toIso8601String(),
+                'overriddenArrival'   => $this->trainCheckin->manual_arrival?->toIso8601String(), //TODO: deprecated: remove after 2023-10 (#1809)
+                'manualArrival'       => $this->trainCheckin->manual_arrival?->toIso8601String(),
                 'origin'              => new StopoverResource($this->trainCheckin->origin_stopover),
                 'destination'         => new StopoverResource($this->trainCheckin->destination_stopover),
             ],
