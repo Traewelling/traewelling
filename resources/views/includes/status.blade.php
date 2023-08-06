@@ -209,7 +209,7 @@
                         <li>
                             <button class="dropdown-item trwl-share"
                                     type="button"
-                                    data-trwl-share-url="{{ route('statuses.get', ['id' => $status->id]) }}"
+                                    data-trwl-share-url="{{ route('status', ['id' => $status->id]) }}"
                                     @if(auth()->user() && $status->user_id == auth()->user()->id)
                                         data-trwl-share-text="{{ $status->socialText }}"
                                     @else
@@ -302,7 +302,7 @@
                     @endif
                 </a>
                 {{__('dates.-on-')}}
-                <a href="{{ route('statuses.get', ['id' => $status->id]) }}">
+                <a href="{{ route('status', ['id' => $status->id]) }}">
                     {{ userTime($status->created_at) }}
                 </a>
             </li>

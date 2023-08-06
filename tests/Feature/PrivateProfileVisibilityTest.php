@@ -67,7 +67,7 @@ class PrivateProfileVisibilityTest extends ApiTestCase
 
         // Can a guest see the status of bob? => no
         Auth::logout();
-        $guest = $this->get(route('statuses.get', ['id' => $this->users->bob->checkin['statusId']]));
+        $guest = $this->get(route('status', ['id' => $this->users->bob->checkin['statusId']]));
         $this->assertGuest();
         $guest->assertStatus(403);
 

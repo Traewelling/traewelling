@@ -75,11 +75,11 @@ class StatusController extends Controller
                     reason:               'status-updated'
                 );
 
-                return redirect()->route('statuses.get', ['id' => $status->id])
+                return redirect()->route('status', ['id' => $status->id])
                                  ->with('checkin-success', (clone $checkinSuccess));
             }
 
-            return redirect()->route('statuses.get', ['id' => $status->id])
+            return redirect()->route('status', ['id' => $status->id])
                              ->with('success', __('status.update.success'));
         } catch (ModelNotFoundException|PermissionException) {
             return redirect()->back()->with('alert-danger', __('messages.exception.general'));

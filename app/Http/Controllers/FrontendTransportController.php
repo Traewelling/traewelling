@@ -203,7 +203,7 @@ class FrontendTransportController extends Controller
                 event:                $trainCheckin->event,
                 forced: isset($validated['force'])
             );
-            return redirect()->route('statuses.get', ['id' => $backendResponse['status']->id])
+            return redirect()->route('status', ['id' => $backendResponse['status']->id])
                              ->with('checkin-success', (clone $checkinSuccess));
 
         } catch (CheckInCollisionException $exception) {
