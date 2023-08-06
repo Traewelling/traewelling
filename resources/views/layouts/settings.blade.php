@@ -80,7 +80,7 @@
         </style>
     </head>
     <body>
-        <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <header class="navbar navbar-dark sticky-top bg-trwl flex-md-nowrap p-0 shadow">
             <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="/">
                 <i class="fas fa-arrow-left" aria-hidden="true"></i>&nbsp;{{ __('settings.back-to-traewelling') }}
             </a>
