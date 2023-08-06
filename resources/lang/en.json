@@ -700,11 +700,13 @@
     "time-is-manual": "Time was overwritten manually",
     "no-own-apps": "You have not created an application yet.",
     "create-app": "Create application",
+    "edit-app": "Edit application",
     "your-apps": "Your applications",
     "generate-token": "Generate token",
     "access-token-generated-success": "Your AccessToken was generated successfully.",
     "access-token-remove-at": "You can remove the AccessToken at any time in the settings under 'API Tokens'.",
     "your-access-token": "Your AccessToken",
     "your-access-token-description": "You can generate an AccessToken to access your own account.",
-    "access-token-is-private": "Treat your AccessToken like a password. Never give it to third parties."
+    "access-token-is-private": "Treat your AccessToken like a password. Never give it to third parties.",
+    "refresh": "Refresh"
 }

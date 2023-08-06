@@ -77,22 +77,10 @@
                 top: .25rem;
                 right: 1rem;
             }
-
-            .nav-scroller .nav {
-                display: flex;
-                flex-wrap: nowrap;
-                padding-bottom: 1rem;
-                margin-top: -1px;
-                overflow-x: auto;
-                text-align: center;
-                white-space: nowrap;
-                -webkit-overflow-scrolling: touch;
-            }
-
         </style>
     </head>
     <body>
-        <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <header class="navbar navbar-dark sticky-top bg-trwl flex-md-nowrap p-0 shadow">
             <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="/">
                 <i class="fas fa-arrow-left" aria-hidden="true"></i>&nbsp;{{ __('settings.back-to-traewelling') }}
             </a>
