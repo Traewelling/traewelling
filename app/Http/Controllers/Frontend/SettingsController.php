@@ -139,10 +139,6 @@ class SettingsController extends Controller
         return view('settings.privacy');
     }
 
-    public function renderAccount(): Renderable {
-        return view('settings.account');
-    }
-
     public function renderLoginProviders(): Renderable {
         return view('settings.login-providers');
     }
