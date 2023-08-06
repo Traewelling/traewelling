@@ -150,11 +150,13 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
         Route::prefix('/applications')->group(function() {
             Route::get('/', [DevController::class, 'renderAppList'])->name('dev.apps');
+            Route::post('/createPersonalAccessToken', [DevController::class, 'createPersonalAccessToken'])
+                 ->name('dev.apps.createPersonalAccessToken');
             Route::get('/create', [DevController::class, 'renderCreateApp'])->name('dev.apps.create');
             Route::get('/{appId}', [DevController::class, 'renderUpdateApp'])->name('dev.apps.edit');
-            Route::post('/{appId}', [DevController::class, 'updateApp'])->name('dev.apps.update'); //TODO: Replace with API Endpoint
+            Route::post('/{appId}', [DevController::class, 'updateApp'])->name('dev.apps.update');           //TODO: Replace with API Endpoint
             Route::post('/{appId}/destroy', [DevController::class, 'destroyApp'])->name('dev.apps.destroy'); //TODO: Replace with API Endpoint
-            Route::post('/', [DevController::class, 'createApp'])->name('dev.apps.create.post'); //TODO: Replace with API Endpoint
+            Route::post('/', [DevController::class, 'createApp'])->name('dev.apps.create.post');             //TODO: Replace with API Endpoint
         });
 
         Route::redirect('/', 'settings/profile')->name('settings');
@@ -164,7 +166,8 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         Route::post('/update/privacy', [SettingsController::class, 'updatePrivacySettings'])
              ->name('settings.privacy.update');
 
-        Route::get('/account', [SettingsController::class, 'renderAccount'])->name('settings.account');
+        Route::view('/account', 'settings.account')
+             ->name('settings.account');
         Route::post('/account/update', [SettingsController::class, 'updatePassword'])
              ->name('password.change');
 

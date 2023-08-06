@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <title>{{__('menu.settings')}} - {{ config('app.name', 'Träwelling') }}</title>
+        <title>@yield('title') - {{__('menu.settings')}} - {{ config('app.name', 'Träwelling') }}</title>
 
         @include('layouts.includes.meta')
 
@@ -41,53 +41,53 @@
         @yield('head')
 
         <style>
-          .sidebar {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            z-index: 100; /* Behind the navbar */
-            padding: 48px 0 0; /* Height of navbar */
-            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-          }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                z-index: 100; /* Behind the navbar */
+                padding: 48px 0 0; /* Height of navbar */
+                box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+            }
 
-          .sidebar-sticky {
-            height: calc(100vh - 48px);
-            overflow-x: hidden;
-            overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-          }
+            .sidebar-sticky {
+                height: calc(100vh - 48px);
+                overflow-x: hidden;
+                overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+            }
 
-          .sidebar .nav-link {
-            font-weight: 500;
-            color: #333;
-          }
+            .sidebar .nav-link {
+                font-weight: 500;
+                color: #333;
+            }
 
-          .sidebar-heading {
-            font-size: .75rem;
-          }
+            .sidebar-heading {
+                font-size: .75rem;
+            }
 
-          .navbar-brand {
-            padding-top: .75rem;
-            padding-bottom: .75rem;
-            background-color: rgba(0, 0, 0, .25);
-            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
-          }
+            .navbar-brand {
+                padding-top: .75rem;
+                padding-bottom: .75rem;
+                background-color: rgba(0, 0, 0, .25);
+                box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+            }
 
-          .navbar .navbar-toggler {
-            top: .25rem;
-            right: 1rem;
-          }
+            .navbar .navbar-toggler {
+                top: .25rem;
+                right: 1rem;
+            }
 
-          .nav-scroller .nav {
-            display: flex;
-            flex-wrap: nowrap;
-            padding-bottom: 1rem;
-            margin-top: -1px;
-            overflow-x: auto;
-            text-align: center;
-            white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
-          }
+            .nav-scroller .nav {
+                display: flex;
+                flex-wrap: nowrap;
+                padding-bottom: 1rem;
+                margin-top: -1px;
+                overflow-x: auto;
+                text-align: center;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
 
         </style>
     </head>
@@ -190,31 +190,25 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{route('dev.apps')}}">
                                     <i class="fas fa-flask"></i>
-                                    {{ __('settings.title-appdevelopment') }}
+                                    {{ __('your-apps') }}
                                 </a>
                             </li>
                         </ul>
                     </div>
                 </nav>
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-md-8 col-lg-7">
-                                @include('includes.message-block')
-
-                                @yield('content')
-                            </div>
-                            <div class="col-md-9 col-lg-8">
-                                @yield('big-content')
-                            </div>
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            @include('includes.message-block')
                         </div>
                     </div>
+                    @yield('content')
                 </main>
             </div>
         </div>
         <script>
-            var token            = '{{ csrf_token() }}';
-            var urlDisconnect    = '{{ route('provider.destroy') }}';
+            var token         = '{{ csrf_token() }}';
+            var urlDisconnect = '{{ route('provider.destroy') }}';
         </script>
     </body>
 </html>

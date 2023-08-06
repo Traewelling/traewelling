@@ -10,15 +10,22 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Laravel\Passport\ClientRepository;
 
-class DevController extends Controller {
+class DevController extends Controller
+{
     public function renderAppList(): View {
         $clients = new ClientRepository();
 
-        $userId = request()->user()->getAuthIdentifier();
+        $userId = auth()->user()->getAuthIdentifier();
 
         return view('dev.apps', [
-            'apps' => $clients->activeForUser($userId),
+            'apps' => $clients->activeForUser($userId)
         ]);
+    }
+
+    public function createPersonalAccessToken(): RedirectResponse {
+        $token = auth()->user()->createToken('PAT@' . auth()->user()->username, ['*']);
+        $token->token->update(['expires_at' => now()->addMonths(3)]);
+        return back()->with('token', $token->accessToken);
     }
 
     public function renderUpdateApp(int $appId): View {
@@ -29,27 +36,25 @@ class DevController extends Controller {
             abort(404);
         }
         return view('dev.apps-edit', [
-            'title' => 'Anwendung bearbeiten', //ToDo Übersetzen
-            'app'   => $app,
+            'app' => $app,
         ]);
     }
 
     public function renderCreateApp(): View {
         return view('dev.apps-edit', [
-            'title' => 'Anwendung erstellen', //ToDo Übersetzen
-            'app'   => null
+            'app' => null
         ]);
     }
 
     public function updateApp(int $appId, Request $request): RedirectResponse {
         $validated = $request->validate([
-            'name'                   => ['required', 'string'],
-            'redirect'               => ['required', 'string'],
-            'confidential'           => ['nullable'],
-            'enable_webhooks'        => ['nullable'],
-            'authorized_webhook_url' => ['nullable', 'url', new SecureUrl()],
-            'privacy_policy_url'     => ['nullable', 'url', new SecureUrl()],
-        ]);
+                                            'name'                   => ['required', 'string'],
+                                            'redirect'               => ['required', 'string'],
+                                            'confidential'           => ['nullable'],
+                                            'enable_webhooks'        => ['nullable'],
+                                            'authorized_webhook_url' => ['nullable', 'url', new SecureUrl()],
+                                            'privacy_policy_url'     => ['nullable', 'url', new SecureUrl()],
+                                        ]);
 
         $clients = new OAuthClientRepository();
         $app     = $clients->findForUser($appId, auth()->user()->id);
@@ -69,21 +74,21 @@ class DevController extends Controller {
 
     public function createApp(Request $request): RedirectResponse {
         $validated = $request->validate([
-            'name'                   => ['required', 'string'],
-            'redirect'               => ['required', 'string'],
-            'confidential'           => ['nullable'],
-            'enable_webhooks'        => ['nullable'],
-            'authorized_webhook_url' => ['nullable', 'url', new SecureUrl()],
-            'privacy_policy_url'     => ['nullable', 'url', new SecureUrl()],
-        ]);
+                                            'name'                   => ['required', 'string'],
+                                            'redirect'               => ['required', 'string'],
+                                            'confidential'           => ['nullable'],
+                                            'enable_webhooks'        => ['nullable'],
+                                            'authorized_webhook_url' => ['nullable', 'url', new SecureUrl()],
+                                            'privacy_policy_url'     => ['nullable', 'url', new SecureUrl()],
+                                        ]);
 
         $clients = new OAuthClientRepository();
         $clients->create(
-            userId: auth()->user()->id,
-            name: $validated['name'],
-            redirect: $validated['redirect'],
+            userId:               auth()->user()->id,
+            name:                 $validated['name'],
+            redirect:             $validated['redirect'],
             confidential: isset($validated['confidential']),
-            privacyPolicyUrl: $validated['privacy_policy_url'],
+            privacyPolicyUrl:     $validated['privacy_policy_url'],
             webhooksEnabled: isset($validated['enable_webhooks']),
             authorizedWebhookUrl: $validated['authorized_webhook_url'],
         );
