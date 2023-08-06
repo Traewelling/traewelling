@@ -5591,16 +5591,16 @@
                     "visibility": {
                         "$ref": "#/components/schemas/VisibilityEnum"
                     },
-                    "realDeparture": {
-                        "title": "realDeparture",
-                        "description": "Real departure time",
+                    "manualDeparture": {
+                        "title": "manualDeparture",
+                        "description": "Manual departure time set by the user",
                         "format": "date",
                         "example": "2020-01-01 12:00:00",
                         "nullable": true
                     },
-                    "realArrival": {
-                        "title": "realArrival",
-                        "description": "Real arrival time",
+                    "manualArrival": {
+                        "title": "manualArrival",
+                        "description": "Manual arrival time set by the user",
                         "format": "date",
                         "example": "2020-01-01 13:00:00",
                         "nullable": true

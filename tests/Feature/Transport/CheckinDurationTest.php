@@ -56,7 +56,7 @@ class CheckinDurationTest extends TestCase
     public function testCheckinDurationWithManualDeparture(): void {
         $checkin = TrainCheckin::factory([
                                              'departure'      => '2021-01-01T00:00:00+01:00',
-                                             'real_departure' => '2021-01-01T00:10:00+01:00',
+                                             'manual_departure' => '2021-01-01T00:10:00+01:00',
                                              'arrival'        => '2021-01-01T01:00:00+01:00',
                                          ])->create();
 
@@ -67,7 +67,7 @@ class CheckinDurationTest extends TestCase
         $checkin = TrainCheckin::factory([
                                              'departure'    => '2021-01-01T00:00:00+01:00',
                                              'arrival'      => '2021-01-01T01:00:00+01:00',
-                                             'real_arrival' => '2021-01-01T01:10:00+01:00',
+                                             'manual_arrival' => '2021-01-01T01:10:00+01:00',
                                          ])->create();
 
         $this->assertEquals(70, $checkin->duration);
@@ -76,9 +76,9 @@ class CheckinDurationTest extends TestCase
     public function testCheckinDurationWithManualDepartureAndArrival(): void {
         $checkin = TrainCheckin::factory([
                                              'departure'      => '2021-01-01T00:00:00+01:00',
-                                             'real_departure' => '2021-01-01T00:05:00+01:00',
+                                             'manual_departure' => '2021-01-01T00:05:00+01:00',
                                              'arrival'        => '2021-01-01T01:00:00+01:00',
-                                             'real_arrival'   => '2021-01-01T01:10:00+01:00',
+                                             'manual_arrival'   => '2021-01-01T01:10:00+01:00',
                                          ])->create();
 
         $this->assertEquals(65, $checkin->duration);
@@ -87,9 +87,9 @@ class CheckinDurationTest extends TestCase
     public function testCheckinDurationWithManualDepartureAndArrivalAndGeneralDelayedDeparture(): void {
         $checkin = TrainCheckin::factory([
                                              'departure'      => '2021-01-01T00:00:00+01:00',
-                                             'real_departure' => '2021-01-01T00:05:00+01:00',
+                                             'manual_departure' => '2021-01-01T00:05:00+01:00',
                                              'arrival'        => '2021-01-01T01:00:00+01:00',
-                                             'real_arrival'   => '2021-01-01T01:10:00+01:00',
+                                             'manual_arrival'   => '2021-01-01T01:10:00+01:00',
                                          ])->create();
 
         //This should be ignored, because the real departure is already set by user
@@ -102,9 +102,9 @@ class CheckinDurationTest extends TestCase
     public function testCheckinDurationWithManualDepartureAndArrivalAndGeneralDelayedArrival(): void {
         $checkin = TrainCheckin::factory([
                                              'departure'      => '2021-01-01T00:00:00+01:00',
-                                             'real_departure' => '2021-01-01T00:05:00+01:00',
+                                             'manual_departure' => '2021-01-01T00:05:00+01:00',
                                              'arrival'        => '2021-01-01T01:00:00+01:00',
-                                             'real_arrival'   => '2021-01-01T01:10:00+01:00',
+                                             'manual_arrival'   => '2021-01-01T01:10:00+01:00',
                                          ])->create();
 
         //This should be ignored, because the real arrival is already set by user

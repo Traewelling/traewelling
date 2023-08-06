@@ -22,22 +22,22 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-floating mb-2">
-                                <input class="form-control" name="realDeparture" id="real_departure"
+                                <input class="form-control" name="manualDeparture" id="manual_departure"
                                        type="datetime-local"
                                        placeholder="{{__('export.title.origin.time.real')}}"
                                 />
-                                <label for="real_departure">
+                                <label for="manual_departure">
                                     {{__('export.title.origin.time.real')}}
                                 </label>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-floating mb-2">
-                                <input class="form-control" name="realArrival" id="real_arrival"
+                                <input class="form-control" name="manualArrival" id="manual_arrival"
                                        type="datetime-local"
                                        placeholder="{{__('export.title.destination.time.real')}}"
                                 />
-                                <label for="real_arrival">
+                                <label for="manual_arrival">
                                     {{__('export.title.destination.time.real')}}
                                 </label>
                             </div>

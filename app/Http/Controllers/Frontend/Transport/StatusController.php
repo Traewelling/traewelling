@@ -26,8 +26,8 @@ class StatusController extends Controller
         $validated = $request->validate([
                                             'statusId'              => ['required', 'exists:statuses,id'],
                                             'body'                  => ['nullable', 'max:280'],
-                                            'realDeparture'         => ['nullable', 'date'],
-                                            'realArrival'           => ['nullable', 'date'],
+                                            'manualDeparture'       => ['nullable', 'date'],
+                                            'manualArrival'         => ['nullable', 'date'],
                                             'business_check'        => ['required', new Enum(Business::class)], //TODO: Why is this not CamelCase?
                                             'checkinVisibility'     => ['required', new Enum(StatusVisibility::class)],
                                             'destinationStopoverId' => ['nullable', 'exists:train_stopovers,id'],
@@ -43,11 +43,11 @@ class StatusController extends Controller
                             ]);
 
             $status->trainCheckin->update([
-                                              'real_departure' => isset($validated['realDeparture']) ?
-                                                  Carbon::parse($validated['realDeparture'], auth()->user()->timezone) :
+                                              'manual_departure' => isset($validated['manualDeparture']) ?
+                                                  Carbon::parse($validated['manualDeparture'], auth()->user()->timezone) :
                                                   null,
-                                              'real_arrival'   => isset($validated['realArrival']) ?
-                                                  Carbon::parse($validated['realArrival'], auth()->user()->timezone) :
+                                              'manual_arrival'   => isset($validated['manualArrival']) ?
+                                                  Carbon::parse($validated['manualArrival'], auth()->user()->timezone) :
                                                   null,
                                           ]);
 
