@@ -11,7 +11,7 @@
                 <div id="timepicker-wrapper">
                     <div class="text-center">
                         <div class="btn-group" role="group">
-                            <a href="{{ route('trains.stationboard', ['provider' => request()->provider, 'ibnr' => $station->ibnr, 'when' => $times['prev']->toIso8601String(), 'travelType' => request()->travelType]) }}"
+                            <a href="{{ route('trains.stationboard', ['provider' => request()->provider, 'ibnr' => $station->ibnr, 'when' => $when->clone()->subMinutes(15)->toIso8601String(), 'travelType' => request()->travelType]) }}"
                                title="{{__('stationboard.minus-15')}}"
                                class="btn btn-light">
                                 <i class="fas fa-arrow-circle-left"></i>
@@ -20,7 +20,7 @@
                                class="btn btn-light btn-rounded c-datepicker-btn">
                                 <i class="fas fa-clock"></i>
                             </a>
-                            <a href="{{ route('trains.stationboard', ['provider' => request()->provider, 'ibnr' => $station->ibnr, 'when' => $times['next']->toIso8601String(), 'travelType' => request()->travelType]) }}"
+                            <a href="{{ route('trains.stationboard', ['provider' => request()->provider, 'ibnr' => $station->ibnr, 'when' => $when->clone()->addMinutes(15)->toIso8601String(), 'travelType' => request()->travelType]) }}"
                                title="{{__('stationboard.plus-15')}}"
                                class="btn btn-light">
                                 <i class="fas fa-arrow-circle-right"></i>
@@ -34,7 +34,7 @@
                             <div class="input-group mb-3 mx-auto">
                                 <input type="datetime-local" class="form-control" id="timepicker" name="when"
                                        aria-describedby="button-addontime"
-                                       value="{{ userTime($times['now'], 'Y-m-d\TH:i', false) }}"/>
+                                       value="{{ userTime($when, 'Y-m-d\TH:i', false) }}"/>
                                 <button class="btn btn-outline-primary" type="submit" id="button-addontime"
                                         data-mdb-ripple-color="dark">
                                     {{__('stationboard.set-time')}}
@@ -66,7 +66,7 @@
                         {{ $station->name }}
                         <small>
                             <i class="far fa-clock fa-sm"></i>
-                            {{ userTime($times['now'], __('time-format.with-day')) }}
+                            {{ userTime($when, __('time-format.with-day')) }}
                         </small>
                     </div>
 

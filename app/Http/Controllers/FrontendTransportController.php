@@ -52,7 +52,7 @@ class FrontendTransportController extends Controller
 
         $when = isset($validated['when'])
             ? Carbon::parse($validated['when'], auth()->user()->timezone ?? config('app.timezone'))
-            : null;
+            : now();
 
         try {
             //Per default: Use the given station query for lookup
@@ -75,7 +75,7 @@ class FrontendTransportController extends Controller
             return view('stationboard', [
                                           'station'    => $stationboardResponse['station'],
                                           'departures' => $stationboardResponse['departures'],
-                                          'times'      => $stationboardResponse['times'],
+                                          'when'       => $when,
                                           'latest'     => TransportController::getLatestArrivals(Auth::user())
                                       ]
             );

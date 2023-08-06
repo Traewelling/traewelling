@@ -78,7 +78,6 @@ class CheckinController
         return view('admin.checkin.stationboard', [
             'station'      => $station ?? null,
             'departures'   => $departures ?? null,
-            'times'        => $times ?? null,
             'when'         => $when,
             'user'         => $user,
             'lastStatuses' => $lastStatuses,

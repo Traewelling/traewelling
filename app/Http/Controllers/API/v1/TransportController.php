@@ -102,29 +102,7 @@ class TransportController extends Controller
      *              @OA\Property(
      *                  property="station",
      *                  ref="#/components/schemas/TrainStation"
-     *              ),
-     *              @OA\Property(
-     *                  property="times",
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="now",
-     *                     type="string",
-     *                     format="date-time",
-     *                     example="2020-01-01T12:00:00.000Z"
-     *                ),
-     *                @OA\Property(
-     *                    property="prev",
-     *                    type="string",
-     *                    format="date-time",
-     *                    example="2020-01-01T11:45:00.000Z"
-     *               ),
-     *               @OA\Property(
-     *                   property="next",
-     *                   type="string",
-     *                   format="date-time",
-     *                   example="2020-01-01T12:15:00.000Z"
      *              )
-     *         )
      *         )
      *        )
      *     ),
@@ -173,9 +151,11 @@ class TransportController extends Controller
 
         return $this->sendResponse(
             data:       $trainStationboardResponse['departures'],
-            additional: ["meta" => ['station' => $trainStationboardResponse['station'],
-                                    'times'   => $trainStationboardResponse['times'],
-                        ]]
+            additional: [
+                            "meta" => [
+                                'station' => $trainStationboardResponse['station'],
+                            ]
+                        ]
         );
     }
 

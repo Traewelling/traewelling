@@ -66,11 +66,6 @@ class TransportController extends Controller
         $station = StationController::lookupStation($stationQuery);
 
         $when  = $when ?? Carbon::now()->subMinutes(5);
-        $times = [
-            'now'  => $when,
-            'prev' => $when->clone()->subMinutes(15),
-            'next' => $when->clone()->addMinutes(15)
-        ];
 
         $departures = HafasController::getDepartures(
             station: $station,
@@ -80,7 +75,7 @@ class TransportController extends Controller
             return $departure->when ?? $departure->plannedWhen;
         });
 
-        return ['station' => $station, 'departures' => $departures->values(), 'times' => $times];
+        return ['station' => $station, 'departures' => $departures->values()];
     }
 
     // Train with cancelled stops show up in the stationboard sometimes with when == 0.
