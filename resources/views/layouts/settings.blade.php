@@ -77,18 +77,6 @@
                 top: .25rem;
                 right: 1rem;
             }
-
-            .nav-scroller .nav {
-                display: flex;
-                flex-wrap: nowrap;
-                padding-bottom: 1rem;
-                margin-top: -1px;
-                overflow-x: auto;
-                text-align: center;
-                white-space: nowrap;
-                -webkit-overflow-scrolling: touch;
-            }
-
         </style>
     </head>
     <body>
