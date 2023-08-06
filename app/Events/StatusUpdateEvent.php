@@ -7,12 +7,14 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class StatusUpdateEvent {
+class StatusUpdateEvent
+{
     use Dispatchable, SerializesModels;
 
     public Status $status;
+
     public function __construct(Status $status) {
-        $this->status               = $status;
-        Log::info("Dispatching StatusUpdateEvent event for status#" . $status->id);
+        $this->status = $status;
+        Log::debug("Dispatching StatusUpdateEvent event for status#" . $status->id);
     }
 }
