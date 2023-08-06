@@ -7,8 +7,6 @@
         @csrf
         <input type="hidden" name="suggestionId" value="{{$event->id}}"/>
         <div class="row">
-
-
             <div class="col-md-6">
                 <div class="card mb-3">
                     <div class="card-body">
@@ -52,15 +50,14 @@
                                 />
                             </div>
                         </div>
-                        <div class="form-group row">
+                        <div class="form-group row" id="station-autocomplete-container">
                             <label for="nearest_station_name" class="col-md-4 col-form-label text-md-right">
                                 {{ __('events.closestStation') }}:
                             </label>
-                            <div class="col-md-8 text-left" id="autocomplete-form">
+                            <div class="col-md-8 text-left">
                                 <input type="text" id="station-autocomplete" name="nearest_station_name"
                                        class="form-control" placeholder="{{ __('stationboard.station-placeholder') }}"
-
-                                       value="{{$event->nearest_station_name}}"
+                                       value="{{$event->station?->name}}"
                                 />
                             </div>
                         </div>

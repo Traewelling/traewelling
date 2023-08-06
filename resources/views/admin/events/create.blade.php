@@ -45,7 +45,7 @@
                             <label for="nearest_station_name" class="col-md-4 col-form-label text-md-right">
                                 {{ __('events.closestStation') }}:
                             </label>
-                            <div class="col-md-8 text-left" id="autocomplete-form">
+                            <div class="col-md-8 text-left" id="station-autocomplete-container">
                                 <input type="text" id="station-autocomplete" name="nearest_station_name"
                                        class="form-control" placeholder="{{ __('stationboard.station-placeholder') }}"
                                 />
