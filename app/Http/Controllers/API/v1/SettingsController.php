@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Enum\MapProvider;
 use App\Enum\MastodonVisibility;
 use App\Enum\StatusVisibility;
 use App\Exceptions\RateLimitExceededException;
@@ -114,12 +115,18 @@ class SettingsController extends Controller
      *                  nullable=true,
      *                  @OA\Schema(ref="#/components/schemas/VisibilityEnum")
      *              ),
-     *             @OA\Property(
-     *                  property="mastodonVisibility",
-     *                  type="integer",
-     *                  nullable=true,
-     *                  @OA\Schema(ref="#/components/schemas/MastodonVisibilityEnum")
-     *              )
+     *              @OA\Property(
+     *                   property="mastodonVisibility",
+     *                   type="integer",
+     *                   nullable=true,
+     *                   @OA\Schema(ref="#/components/schemas/MastodonVisibilityEnum")
+     *               ),
+     *              @OA\Property(
+     *                   property="mapProvider",
+     *                   type="string",
+     *                   nullable=true,
+     *                   @OA\Schema(ref="#/components/schemas/MapProviderEnum")
+     *               )
      *         )
      *    ),
      *     @OA\Response(
@@ -154,7 +161,8 @@ class SettingsController extends Controller
                                             'mastodonVisibility'      => [
                                                 'nullable',
                                                 new Enum(MastodonVisibility::class),
-                                            ]
+                                            ],
+                                            'mapProvider'             => ['nullable', new Enum(MapProvider::class)],
                                         ]);
 
         try {
