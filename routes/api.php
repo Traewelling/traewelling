@@ -82,6 +82,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::post('checkin', [TransportController::class, 'create']);
             Route::group(['prefix' => 'station'], static function() {
                 Route::get('{name}/departures', [TransportController::class, 'departures']);
+                Route::get('{stationId}/departuresNEW', [TransportController::class, 'departuresNEW'])->whereNumber('stationId');
                 Route::put('{name}/home', [TransportController::class, 'setHome']);
                 Route::get('nearby', [TransportController::class, 'getNextStationByCoordinates']);
                 Route::get('autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);

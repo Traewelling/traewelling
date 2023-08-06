@@ -2935,8 +2935,8 @@
                 "tags": [
                     "Checkin"
                 ],
-                "summary": "Get departures from a station",
-                "description": "Get departures from a station",
+                "summary": "DEPRECATED! See API_CHANGELOG.md for more information!",
+                "description": "DEPRECATED! See API_CHANGELOG.md for more information!",
                 "operationId": "getDepartures",
                 "parameters": [
                     {
@@ -3101,6 +3101,71 @@
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "description": "Station not found"
+                    },
+                    "502": {
+                        "description": "Error with our data provider"
+                    },
+                    "422": {
+                        "description": "Invalid input"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "create-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/trains/station/{id}/departuresNEW": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Get departures from a station",
+                "description": "Get departures from a station",
+                "operationId": "getDeparturesNEW",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Träwelling ID of the station",
+                        "required": true
+                    },
+                    {
+                        "name": "timestamp",
+                        "in": "query",
+                        "description": "When to get the departures (default: now)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2020-01-01T12:00:00.000Z"
+                        }
+                    },
+                    {
+                        "name": "travelType",
+                        "in": "query",
+                        "description": "Means of transport (default: all)",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/components/schemas/TravelTypeEnum"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
                     },
                     "404": {
                         "description": "Station not found"

@@ -16,6 +16,7 @@ use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Http\Resources\HafasTripResource;
+use App\Http\Resources\JourneyResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\TrainStationResource;
 use App\Models\Event;
@@ -35,8 +36,8 @@ class TransportController extends Controller
      *     path="/trains/station/{name}/departures",
      *     operationId="getDepartures",
      *     tags={"Checkin"},
-     *     summary="Get departures from a station",
-     *     description="Get departures from a station",
+     *     summary="DEPRECATED! See API_CHANGELOG.md for more information!",
+     *     description="DEPRECATED! See API_CHANGELOG.md for more information!",
      *     @OA\Parameter(
      *         name="name",
      *         in="path",
@@ -102,7 +103,29 @@ class TransportController extends Controller
      *              @OA\Property(
      *                  property="station",
      *                  ref="#/components/schemas/TrainStation"
+     *              ),
+     *              @OA\Property(
+     *                  property="times",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="now",
+     *                     type="string",
+     *                     format="date-time",
+     *                     example="2020-01-01T12:00:00.000Z"
+     *                ),
+     *                @OA\Property(
+     *                    property="prev",
+     *                    type="string",
+     *                    format="date-time",
+     *                    example="2020-01-01T11:45:00.000Z"
+     *               ),
+     *               @OA\Property(
+     *                   property="next",
+     *                   type="string",
+     *                   format="date-time",
+     *                   example="2020-01-01T12:15:00.000Z"
      *              )
+     *         )
      *         )
      *        )
      *     ),
@@ -137,12 +160,109 @@ class TransportController extends Controller
                                             'travelType' => ['nullable', new Enum(TravelType::class)],
                                         ]);
 
+        $timestamp = isset($validated['when']) ? Carbon::parse($validated['when']) : now();
+
         try {
             $trainStationboardResponse = TransportBackend::getDepartures(
                 stationQuery: $name,
+                when:         $timestamp,
+                travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
+            );
+        } catch (HafasException) {
+            return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 502);
+        } catch (ModelNotFoundException) {
+            return $this->sendError(__('controller.transport.no-station-found', [], 'en'));
+        }
+
+        return $this->sendResponse(
+            data:       $trainStationboardResponse['departures'],
+            additional: [
+                            "meta" => [
+                                'station' => $trainStationboardResponse['station'],
+                                'times'   => [
+                                    'now'  => $timestamp,
+                                    'prev' => $timestamp->clone()->subMinutes(15),
+                                    'next' => $timestamp->clone()->addMinutes(15)
+                                ],
+                            ]]
+        );
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/trains/station/{stationId}/departuresNEW",
+     *     operationId="getDeparturesNEW",
+     *     tags={"Checkin"},
+     *     summary="Get departures from a station",
+     *     description="Get departures from a station",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Träwelling ID of the station",
+     *         required=true,
+     *     ),
+     *     @OA\Parameter(
+     *         name="timestamp",
+     *         in="query",
+     *         description="When to get the departures (default: now)",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             format="date-time",
+     *             example="2020-01-01T12:00:00.000Z"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="travelType",
+     *         in="query",
+     *         description="Means of transport (default: all)",
+     *         required=false,
+     *         @OA\Schema(
+     *              ref="#/components/schemas/TravelTypeEnum"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Station not found",
+     *     ),
+     *     @OA\Response(
+     *         response=502,
+     *         description="Error with our data provider",
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Invalid input",
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     security={
+     *        {"passport": {"create-statuses"}}, {"token": {}}
+     *     }
+     * )
+     *
+     * @param Request $request
+     * @param int     $stationId
+     *
+     * @return JsonResponse
+     */
+    public function departuresNEW(Request $request, int $stationId): JsonResponse {
+        $validated = $request->validate([
+                                            'when'       => ['nullable', 'date'],
+                                            'travelType' => ['nullable', new Enum(TravelType::class)],
+                                        ]);
+
+        try {
+            $trainStationboardResponse = TransportBackend::getDepartures(
+                stationQuery: TrainStation::findOrFail($stationId),
                 when:         isset($validated['when']) ? Carbon::parse($validated['when']) : null,
                 travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
             );
+
+            $journeys   = [];
+            $journeys[] = new JourneyResource([]); //TODO
         } catch (HafasException) {
             return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 502);
         } catch (ModelNotFoundException) {

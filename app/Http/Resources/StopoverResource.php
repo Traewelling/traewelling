@@ -9,7 +9,8 @@ class StopoverResource extends JsonResource
 
     public function toArray($request): array {
         return [
-            'id'                       => (int) $this->train_station_id,
+            'type'                     => 'stopover',
+            'id'                       => (int) $this->train_station_id, //TODO: should be renamed to "stop" as of FPTF and be a stop object
             'name'                     => $this->trainStation->name,
             'rilIdentifier'            => $this->trainStation->rilIdentifier ?? null,
             'evaIdentifier'            => $this->trainStation->ibnr,

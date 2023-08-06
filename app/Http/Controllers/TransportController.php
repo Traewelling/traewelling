@@ -59,13 +59,17 @@ class TransportController extends Controller
         'times'      => "array"
     ])]
     public static function getDepartures(
-        string|int $stationQuery,
-        Carbon     $when = null,
-        TravelType $travelType = null
+        string|int|TrainStation $stationQuery,
+        Carbon                  $when = null,
+        TravelType              $travelType = null
     ): array {
-        $station = StationController::lookupStation($stationQuery);
-
-        $when  = $when ?? Carbon::now()->subMinutes(5);
+        if ($stationQuery instanceof TrainStation) {
+            $station = $stationQuery;
+        } else {
+            $station = StationController::lookupStation($stationQuery);
+        }
+        
+        $when = $when ?? Carbon::now()->subMinutes(5);
 
         $departures = HafasController::getDepartures(
             station: $station,

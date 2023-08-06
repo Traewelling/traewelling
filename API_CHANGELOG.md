@@ -8,6 +8,27 @@ This is to help you keep track of the changes and to help you update your code a
 
 ### `GET /api/v1/trains/station/{name}/departures`
 
+Source of this change: https://github.com/Traewelling/traewelling/issues/1527
+
+Currently this endpoint returns a raw response from DB-Rest.
+This is not ideal, because it is not documented and can change at any time.
+Also we can't simply upgrade the DB-Rest version, because it might break your code.
+
+To fix this we will change the response to a more structured one - our own.
+
+We don't want you to be unprepared. Thats why we created a second
+endpoint `GET /api/v1/trains/station/{name}/departuresNEW`.
+This endpoint will return the new response format.
+Please migrate your code to use this endpoint as soon as possible.
+
+The old endpoint will be removed on 2023-10-01.
+
+When the old endpoint is removed, the new endpoint will be renamed to `GET /api/v1/trains/station/{name}/departures`.
+The `departuresNEW` endpoint will be available then for a few more months, but will be removed also in the future, so in
+the end we just have the correct endpoint.
+
+### the changes
+
 - Doesn't return `meta->times` anymore. Was a useless field anyway. You know the time you requested. And then just
   subtract or add 15 minutes.
 
