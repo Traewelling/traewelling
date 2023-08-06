@@ -698,5 +698,16 @@
     "settings.title-appdevelopment": "Appontwikkeling",
     "settings.back-to-traewelling": "Terug naar Träwelling",
     "settings.title-security": "Beveiliging",
-    "settings.title-extra": "Aanvullend"
+    "settings.title-extra": "Aanvullend",
+    "access-token-generated-success": "De toegangssleutel is gegenereerd.",
+    "your-access-token": "Mĳn toegangssleutel",
+    "your-access-token-description": "Je kunt een toegangssleutel genereren om toegang te krĳgen tot je account.",
+    "no-own-apps": "Je hebt nog geen app gemaakt.",
+    "create-app": "App maken",
+    "your-apps": "Mĳn apps",
+    "generate-token": "Toegangssleutel genereren",
+    "access-token-remove-at": "Je kunt de toegangssleutel te allen tĳde intrekken in de sectie ‘Api-toegangssleutels’ in de instellingen.",
+    "edit-app": "App bewerken",
+    "access-token-is-private": "Behandel je toegangssleutel als een wachtwoord en deel hem niet met anderen.",
+    "refresh": "Herladen"
 }
