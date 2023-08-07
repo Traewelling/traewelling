@@ -14,7 +14,7 @@ class SocialController extends Controller
 
     public function destroyProvider(Request $request): Response|Application|ResponseFactory {
         $validated = $request->validate([
-                                            'provider' => ['required', Rule::in(['mastodon'])]
+                                            'provider' => ['required', Rule::in(['mastodon', 'twitter'])]
                                         ]);
 
         $user = auth()->user();
