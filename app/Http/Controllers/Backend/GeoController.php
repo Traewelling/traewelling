@@ -141,19 +141,21 @@ abstract class GeoController extends Controller
                 $destinationIndex = $key;
             }
         }
-        $slicedFeatures = array_slice($features, $originIndex, $destinationIndex - $originIndex + 1, true);
-        // Add saved points to polyline
-        if (count($additionalRoutes)) { //TODO: count is always 0?
-            $updatedFeatures = [];
-            foreach ($slicedFeatures as $key => $data) {
-                if (isset($additionalRoutes[$key]) && $key != $originIndex) { // There is a route, but we're at the origin?
-                    $updatedFeatures = [...$updatedFeatures, ...$additionalRoutes[$key]];
+        if (is_array($features)) { // object is a rarely contentless stdClass if no features in the GeoJSON
+            $slicedFeatures = array_slice($features, $originIndex, $destinationIndex - $originIndex + 1, true);
+            // Add saved points to polyline
+            if (count($additionalRoutes)) { //TODO: count is always 0?
+                $updatedFeatures = [];
+                foreach ($slicedFeatures as $key => $data) {
+                    if (isset($additionalRoutes[$key]) && $key != $originIndex) { // There is a route, but we're at the origin?
+                        $updatedFeatures = [...$updatedFeatures, ...$additionalRoutes[$key]];
+                    }
+                    $updatedFeatures[] = $data;
                 }
-                $updatedFeatures[] = $data;
+                $slicedFeatures = $updatedFeatures;
             }
-            $slicedFeatures = $updatedFeatures;
+            $geoJson->features = $slicedFeatures;
         }
-        $geoJson->features = $slicedFeatures;
         return $geoJson;
     }
 
