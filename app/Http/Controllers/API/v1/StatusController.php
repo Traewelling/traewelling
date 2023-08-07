@@ -342,7 +342,8 @@ class StatusController extends Controller
             $status = Status::findOrFail($statusId);
             $this->authorize('update', $status);
 
-            if (isset($validated['destinationId'], $validated['destinationArrivalPlanned'])) {
+            if (isset($validated['destinationId'], $validated['destinationArrivalPlanned'])
+                && ((int) $validated['destinationId']) !== $status->trainCheckin->destinationStation->id) {
                 $arrival  = Carbon::parse($validated['destinationArrivalPlanned'])->timezone(config('app.timezone'));
                 $stopover = TrainStopover::where('train_station_id', $validated['destinationId'])
                                          ->where('arrival_planned', $arrival)
