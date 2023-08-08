@@ -15,8 +15,8 @@ class IcsController extends Controller
 {
     public function renderIcs(Request $request): ?Response {
         $validated = $request->validate([
-                                            'user_id'  => ['required', 'exists:users,id'],
-                                            'token'    => ['required', 'exists:ics_tokens,token'],
+                                            'user_id'  => ['required', 'numeric'],
+                                            'token'    => ['required', 'string'],
                                             'limit'    => ['nullable', 'numeric', 'gte:1', 'lte:10000'],
                                             'from'     => ['nullable', 'date'],
                                             'until'    => ['nullable', 'date'],
@@ -31,8 +31,8 @@ class IcsController extends Controller
                 user:        $user,
                 token:       $validated['token'],
                 limit:       $validated['limit'] ?? 1000,
-                from:        Carbon::parse($validated['from']),
-                until:       Carbon::parse($validated['until']),
+                from:        isset($validated['from']) ? Carbon::parse($validated['from']) : null,
+                until:       isset($validated['until']) ? Carbon::parse($validated['until']) : null,
                 useEmojis:   $validated['emojis'] ?? true,
                 useRealTime: $validated['realtime'] ?? false,
             );
@@ -40,7 +40,7 @@ class IcsController extends Controller
                 ->header('Content-Type', 'text/calendar')
                 ->header('charset', 'utf-8');
         } catch (ModelNotFoundException) {
-            return response(null, 404);
+            abort(404);
         }
     }
 

@@ -26,50 +26,52 @@ abstract class IcsController extends Controller
     ): Calendar {
         $icsToken = IcsToken::where([['token', $token], ['user_id', $user->id]])->firstOrFail();
 
-        $trainCheckIns = TrainCheckin::where('user_id', $user->id)
-            //I don't know why, but the "with" eager loading doesn't work in prod. "HafasTrip" is always null then
-                                     ->orderByDesc('departure')
-                                     ->limit($limit);
+        $checkinQuery = TrainCheckin::with(['originStation', 'destinationStation', 'HafasTrip.stopovers'])
+                                    ->where('user_id', $user->id)
+                                    ->orderByDesc('departure')
+                                    ->limit($limit);
 
         if ($from !== null) {
-            $trainCheckIns->where('departure', '>=', $from);
+            $checkinQuery->where('departure', '>=', $from);
         }
         if ($until !== null) {
-            $trainCheckIns->where('departure', '<=', $until);
+            $checkinQuery->where('departure', '<=', $until);
         }
 
         $calendar = Calendar::create()
                             ->name(__('profile.last-journeys-of') . ' ' . $user->name)
                             ->description(__('ics.description', [], $user->language));
 
-        foreach ($trainCheckIns->get() as $checkIn) {
-            try {
-                $name = '';
-                if ($useEmojis) {
-                    $name .= $checkIn?->HafasTrip?->category?->getEmoji() . ' ';
+        $checkinQuery->chunk(1000, function($checkins) use ($calendar, $useRealTime, $user, $useEmojis) {
+            foreach ($checkins as $checkin) {
+                try {
+                    $name = '';
+                    if ($useEmojis) {
+                        $name .= $checkin?->HafasTrip?->category?->getEmoji() . ' ';
+                    }
+                    $name .= __(
+                        key:     'export.journey-from-to',
+                        replace: [
+                                     'origin'      => $checkin->originStation->name,
+                                     'destination' => $checkin->destinationStation->name
+                                 ],
+                        locale:  $user->language
+                    );
+
+                    $event = Event::create()
+                                  ->name($name)
+                                  ->uniqueIdentifier($checkin->id)
+                                  ->createdAt($checkin->created_at)
+                                  ->startsAt($useRealTime ? $checkin->origin_stopover->departure : $checkin->origin_stopover->departure_planned)
+                                  ->endsAt($useRealTime ? $checkin->destination_stopover->arrival : $checkin->destination_stopover->arrival_planned);
+                    $calendar->event($event);
+                } catch (Throwable $throwable) {
+                    report($throwable);
                 }
-                $name .= __(
-                    key:     'export.journey-from-to',
-                    replace: [
-                                 'origin'      => $checkIn->originStation->name,
-                                 'destination' => $checkIn->destinationStation->name
-                             ],
-                    locale:  $user->language
-                );
-
-                $event = Event::create()
-                              ->name($name)
-                              ->uniqueIdentifier($checkIn->id)
-                              ->createdAt($checkIn->created_at)
-                              ->startsAt($useRealTime ? $checkIn->origin_stopover->departure : $checkIn->origin_stopover->departure_planned)
-                              ->endsAt($useRealTime ? $checkIn->destination_stopover->arrival : $checkIn->destination_stopover->arrival_planned);
-                $calendar->event($event);
-            } catch (Throwable $throwable) {
-                report($throwable);
             }
-        }
+        });
 
-        $icsToken->update(['last_accessed' => Carbon::now()]);
+        $icsToken->update(['last_accessed' => now()]);
         return $calendar;
     }
 
