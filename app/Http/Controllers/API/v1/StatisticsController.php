@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\Export\ExportController;
 use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
+use App\Http\Controllers\Backend\Stats\DailyStatsController;
 use App\Http\Resources\LeaderboardUserResource;
 use App\Http\Resources\StatisticsGlobalData;
 use App\Http\Resources\StatisticsTravelPurposeResource;
@@ -343,7 +344,6 @@ class StatisticsController extends Controller
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Unauthorized"),
-     *       @OA\Response(response=404, description="No statuses found"),
      *       @OA\Response(response=403, description="User not authorized to access this"),
      *       security={
      *           {"passport": {"read-statistics"}}, {"token": {}}
@@ -358,18 +358,7 @@ class StatisticsController extends Controller
      * @return JsonResponse
      */
     public function getPersonalDailyStatistics(Request $request, string $dateString): JsonResponse {
-        $date     = Date::parse($dateString);
-        $statuses = Status::with(['trainCheckin'])
-                          ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                          ->where('train_checkins.user_id', Auth::user()->id)
-                          ->where('train_checkins.departure', '>=', $date->clone()->startOfDay())
-                          ->where('train_checkins.departure', '<=', $date->clone()->endOfDay())
-                          ->orderBy('train_checkins.departure')
-                          ->get();
-
-        if ($statuses->isEmpty()) {
-            return $this->sendError('No statuses found');
-        }
+        $statuses = DailyStatsController::getStatusesOnDate(auth()->user(), Date::parse($dateString));
 
         if ($request->has('withPolylines')) {
             $polylines = [];
