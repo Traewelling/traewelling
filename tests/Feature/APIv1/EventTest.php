@@ -3,7 +3,6 @@
 namespace Tests\Feature\APIv1;
 
 use App\Models\Event;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\ApiTestCase;
