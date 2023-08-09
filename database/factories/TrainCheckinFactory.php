@@ -32,13 +32,13 @@ class TrainCheckinFactory extends Factory
         return $this->afterCreating(static function(TrainCheckin $checkin) {
             $checkin->status->update(['user_id' => $checkin->user_id]);
 
-            $checkin->origin_stopover->update([
+            $checkin->originStopover->update([
                                                   'departure_planned' => $checkin->departure,
                                                   'departure_real'    => $checkin->departure,
                                                   'arrival_planned'   => $checkin->departure,
                                                   'arrival_real'      => $checkin->departure,
                                               ]);
-            $checkin->destination_stopover->update([
+            $checkin->destinationStopover->update([
                                                        'departure_planned' => $checkin->arrival,
                                                        'departure_real'    => $checkin->arrival,
                                                        'arrival_planned'   => $checkin->arrival,

@@ -131,8 +131,8 @@ class TransportController extends Controller
 
         return $checkInsToCheck->filter(function($trainCheckIn) use ($start, $end) {
             //use realtime-data or use planned if not available
-            $departure = $trainCheckIn?->origin_stopover?->departure ?? $trainCheckIn->departure;
-            $arrival   = $trainCheckIn?->destination_stopover?->arrival ?? $trainCheckIn->arrival;
+            $departure = $trainCheckIn?->originStopover?->departure ?? $trainCheckIn->departure;
+            $arrival   = $trainCheckIn?->destinationStopover?->arrival ?? $trainCheckIn->arrival;
 
             return (
                        $arrival->isAfter($start) &&

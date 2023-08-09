@@ -63,16 +63,16 @@
                                             {{$checkin->originStation->name}}
                                             <br/>
                                             <small>
-                                                dep {{$checkin->origin_stopover->departure_planned->format('H:i')}}
-                                                +{{$checkin->origin_stopover->departure_planned->diffInMinutes($checkin->origin_stopover->departure)}}
+                                                dep {{$checkin->originStopover->departure_planned->format('H:i')}}
+                                                +{{$checkin->originStopover->departure_planned->diffInMinutes($checkin->originStopover->departure)}}
                                             </small>
                                         </td>
                                         <td>
                                             {{$checkin->destinationStation->name}}
                                             <br/>
                                             <small>
-                                                arr {{$checkin->destination_stopover->arrival_planned->format('H:i')}}
-                                                +{{$checkin->destination_stopover->arrival_planned->diffInMinutes($checkin->destination_stopover->arrival)}}
+                                                arr {{$checkin->destinationStopover->arrival_planned->format('H:i')}}
+                                                +{{$checkin->destinationStopover->arrival_planned->diffInMinutes($checkin->destinationStopover->arrival)}}
                                             </small>
                                         </td>
                                     </tr>

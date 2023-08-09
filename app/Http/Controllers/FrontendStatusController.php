@@ -13,6 +13,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 
 /**
  * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
@@ -78,15 +79,18 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    public function getStatus($statusId): Renderable {
+    public function getStatus(int $statusId): View {
         $status = StatusBackend::getStatus($statusId);
 
         try {
             $this->authorize('view', $status);
         } catch (AuthorizationException) {
-            session(["extraLink" => [
-                        'url'  => route('profile', ['username' => $status->user->username]),
-                        'text' => "@" . $status->user->username]]
+            session([
+                        'extraLink' => [
+                            'url'  => route('profile', ['username' => $status->user->username]),
+                            'text' => "@" . $status->user->username
+                        ]
+                    ]
             );
             abort(403, __('error.status.not-authorized'));
         }

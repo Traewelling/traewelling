@@ -481,12 +481,12 @@ class BackendCheckinTest extends TestCase
             arrival:     $originalDestination->arrival_planned,
         )['status'];
 
-        $this->assertEquals($originStopover->id, $status->trainCheckin->origin_stopover->id);
-        $this->assertEquals($originalDestination->id, $status->trainCheckin->destination_stopover->id);
+        $this->assertEquals($originStopover->id, $status->trainCheckin->originStopover->id);
+        $this->assertEquals($originalDestination->id, $status->trainCheckin->destinationStopover->id);
 
         TrainCheckinController::changeDestination($status->trainCheckin, $changedDestination);
 
-        $this->assertEquals($originStopover->id, $status->trainCheckin->origin_stopover->id);
-        $this->assertEquals($changedDestination->id, $status->trainCheckin->destination_stopover->id);
+        $this->assertEquals($originStopover->id, $status->trainCheckin->originStopover->id);
+        $this->assertEquals($changedDestination->id, $status->trainCheckin->destinationStopover->id);
     }
 }

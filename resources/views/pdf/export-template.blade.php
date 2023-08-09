@@ -152,28 +152,28 @@
                             <td>
                                 @if(isset($status->trainCheckin->manual_departure))
                                     {{ userTime($status->trainCheckin->manual_departure, __('datetime-format')) }}
-                                @elseif($status->trainCheckin->origin_stopover->isDepartureDelayed)
+                                @elseif($status->trainCheckin->originStopover->isDepartureDelayed)
                                     <span style="text-decoration: line-through;">
-                                        {{ userTime($status->trainCheckin->origin_stopover->departure_planned, __('datetime-format')) }}
+                                        {{ userTime($status->trainCheckin->originStopover->departure_planned, __('datetime-format')) }}
                                     </span>
                                     <br/>
-                                    {{ userTime($status->trainCheckin->origin_stopover->departure_real, __('datetime-format')) }}
+                                    {{ userTime($status->trainCheckin->originStopover->departure_real, __('datetime-format')) }}
                                 @else
-                                    {{ userTime($status->trainCheckin->origin_stopover->departure_planned, __('datetime-format')) }}
+                                    {{ userTime($status->trainCheckin->originStopover->departure_planned, __('datetime-format')) }}
                                 @endif
                             </td>
                             <td>{{ $status->trainCheckin->destinationStation->name }}</td>
                             <td>
                                 @if(isset($status->trainCheckin->manual_arrival))
                                     {{ userTime($status->trainCheckin->manual_arrival, __('datetime-format')) }}
-                                @elseif($status->trainCheckin->origin_stopover->isArrivalDelayed)
+                                @elseif($status->trainCheckin->originStopover->isArrivalDelayed)
                                     <span style="text-decoration: line-through;">
-                                        {{ userTime($status->trainCheckin->destination_stopover->arrival_planned, __('datetime-format')) }}
+                                        {{ userTime($status->trainCheckin->destinationStopover->arrival_planned, __('datetime-format')) }}
                                     </span>
                                     <br/>
-                                    {{ userTime($status->trainCheckin->destination_stopover->arrival_real, __('datetime-format')) }}
+                                    {{ userTime($status->trainCheckin->destinationStopover->arrival_real, __('datetime-format')) }}
                                 @else
-                                    {{ userTime($status->trainCheckin->destination_stopover->arrival_planned, __('datetime-format')) }}
+                                    {{ userTime($status->trainCheckin->destinationStopover->arrival_planned, __('datetime-format')) }}
                                 @endif
                             </td>
                             <td class="number-field">{{ $status->trainCheckin->duration }} min</td>

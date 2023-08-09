@@ -198,7 +198,7 @@ abstract class GeoController extends Controller
 
     public static function getMapLinesForCheckin(TrainCheckin $checkin, bool $invert = false): array {
         try {
-            $geoJson  = self::getPolylineBetween($checkin->HafasTrip, $checkin->origin_stopover, $checkin->destination_stopover);
+            $geoJson  = self::getPolylineBetween($checkin->HafasTrip, $checkin->originStopover, $checkin->destinationStopover);
             $mapLines = [];
             foreach ($geoJson->features as $feature) {
                 if (isset($feature->geometry->coordinates[0], $feature->geometry->coordinates[1])) {

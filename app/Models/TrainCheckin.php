@@ -11,14 +11,13 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Log;
 
 /**
  * @property int           $id
  * @property int           $status_id
  * @property HafasTrip     $HafasTrip
- * @property TrainStopover $origin_stopover
- * @property TrainStopover $destination_stopover
+ * @property TrainStopover $originStopover
+ * @property TrainStopover $destinationStopover
  * @property TrainStation  $originStation
  * @property TrainStation  $destinationStation
  */
@@ -69,48 +68,16 @@ class TrainCheckin extends Model
         return $this->hasOne(HafasTrip::class, 'trip_id', 'trip_id');
     }
 
-    public function getOriginStopoverAttribute(): TrainStopover {
-        $stopOver = $this->HafasTrip->stopovers->where('train_station_id', $this->originStation->id)
-                                               ->where('departure_planned', $this->departure)
-                                               ->first();
-        if ($stopOver == null) {
-            //To support legacy data, where we don't save the stopovers in the stopovers table, yet.
-            Log::error('TrainCheckin #' . $this->id . ': Origin stopover not found. Created a new one.');
-            $stopOver = TrainStopover::updateOrCreate(
-                [
-                    "trip_id"          => $this->trip_id,
-                    "train_station_id" => $this->originStation->id
-                ],
-                [
-                    "departure_planned" => $this->departure,
-                    "arrival_planned"   => $this->departure,
-                ]
-            );
-            $this->HafasTrip->load('stopovers');
-        }
-        return $stopOver;
+    public function originStopover(): HasOne {
+        return $this->hasOne(TrainStopover::class, 'trip_id', 'trip_id')
+                    ->where('train_station_id', $this->originStation->id) //TODO: REFACTOR THIS TO USE ID INSTEAD OF IBNR!!!!! IMPORTANT FOR PERFORMANCE
+                    ->where('departure_planned', $this->departure);
     }
 
-    public function getDestinationStopoverAttribute(): TrainStopover {
-        $stopOver = $this->HafasTrip->stopovers->where('train_station_id', $this->destinationStation->id)
-                                               ->where('arrival_planned', $this->arrival)
-                                               ->first();
-        if ($stopOver == null) {
-            //To support legacy data, where we don't save the stopovers in the stopovers table, yet.
-            Log::error('TrainCheckin #' . $this->id . ': Destination stopover not found. Created a new one.');
-            $stopOver = TrainStopover::updateOrCreate(
-                [
-                    "trip_id"          => $this->trip_id,
-                    "train_station_id" => $this->destinationStation->id
-                ],
-                [
-                    "departure_planned" => $this->arrival,
-                    "arrival_planned"   => $this->arrival,
-                ]
-            );
-            $this->HafasTrip->load('stopovers');
-        }
-        return $stopOver;
+    public function destinationStopover(): HasOne {
+        return $this->hasOne(TrainStopover::class, 'trip_id', 'trip_id')
+                    ->where('train_station_id', $this->destinationStation->id) //TODO: REFACTOR THIS TO USE ID INSTEAD OF IBNR!!!!! IMPORTANT FOR PERFORMANCE
+                    ->where('arrival_planned', $this->arrival);
     }
 
     /**
@@ -124,8 +91,8 @@ class TrainCheckin extends Model
         }
 
         //Else calculate and cache it
-        $departure = $this->manual_departure ?? $this->origin_stopover->departure ?? $this->departure;
-        $arrival   = $this->manual_arrival ?? $this->destination_stopover->arrival ?? $this->arrival;
+        $departure = $this->manual_departure ?? $this->originStopover->departure ?? $this->departure;
+        $arrival   = $this->manual_arrival ?? $this->destinationStopover->arrival ?? $this->arrival;
         $duration  = $arrival->diffInMinutes($departure);
         DB::table('train_checkins')->where('id', $this->id)->update(['duration' => $duration]);
         return $duration;
