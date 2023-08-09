@@ -23,137 +23,6 @@
         }
     ],
     "paths": {
-        "/auth/signup": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "register new user",
-                "operationId": "registerUser",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "username": {
-                                        "description": "Username",
-                                        "type": "string",
-                                        "maxLength": 25,
-                                        "minLength": 3,
-                                        "pattern": "^[a-zA-Z0-9_]*$",
-                                        "example": "Gertrud123"
-                                    },
-                                    "name": {
-                                        "type": "string",
-                                        "maxLength": 50
-                                    },
-                                    "email": {
-                                        "example": "mail@example.com"
-                                    },
-                                    "password": {
-                                        "description": "password",
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "minLength": 8,
-                                        "example": "thisisnotasecurepassword123"
-                                    },
-                                    "password_confirmation": {
-                                        "description": "confirmation of the password-field.",
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "minLength": 8,
-                                        "example": "thisisnotasecurepassword123"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/components/schemas/BearerTokenResponse"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Other (not specified) error occured"
-                    },
-                    "422": {
-                        "description": "Username or email is already taken, or other input error"
-                    }
-                }
-            }
-        },
-        "/auth/login": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Login with username & password",
-                "operationId": "loginUser",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "login": {
-                                        "description": "Username or email",
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "minLength": 8,
-                                        "example": "gertrud@traewelling.de"
-                                    },
-                                    "password": {
-                                        "description": "password",
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "minLength": 8,
-                                        "example": "thisisnotasecurepassword123"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/components/schemas/BearerTokenResponse"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "401": {
-                        "description": "Non-matching credentials"
-                    }
-                }
-            }
-        },
         "/auth/logout": {
             "post": {
                 "tags": [
@@ -2006,9 +1875,6 @@
                     },
                     "401": {
                         "description": "Unauthorized"
-                    },
-                    "404": {
-                        "description": "No statuses found"
                     },
                     "403": {
                         "description": "User not authorized to access this"
@@ -5757,9 +5623,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost/oauth/authorize",
-                        "tokenUrl": "http://localhost/oauth/token",
-                        "refreshUrl": "http://localhost/auth/refresh",
+                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
+                        "tokenUrl": "http://localhost:8000/oauth/token",
+                        "refreshUrl": "http://localhost:8000/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",
