@@ -319,10 +319,17 @@ class StatisticsController extends Controller
      *                      ),
      *                  ),
      *                  @OA\Property (
-     *                      property="polylines", type="array",
-     *                      @OA\Items (
-     *                          ref="#/components/schemas/Polyline"
-     *                      ),
+     *                      property="polylines", type="object",
+     *                      @OA\Property(
+     *                      property="type",
+     *                      example="FeatureCollection"
+         *                  ),
+         *                  @OA\Property (
+         *                      property="features", type="array",
+         *                      @OA\Items (
+         *                          ref="#/components/schemas/Polyline"
+         *                      ),
+         *                  ),
      *                  ),
      *                  @OA\Property(
      *                      property="totalDistance",
