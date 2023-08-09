@@ -280,11 +280,13 @@ abstract class TrainCheckinController extends Controller
         $oldPoints   = $trainCheckin->points;
         $oldDistance = $trainCheckin->distance;
 
-        if ($trainCheckin->distance === 0 || $distance / $trainCheckin->distance >= 1.15) {
-            Log::error(sprintf('Distance deviation for status #%d is greater than 15 percent. Original: %d, new: %d',
-                               $status->id,
-                               $oldDistance,
-                               $distance));
+        if ($distance === 0 || $oldDistance !== 0 && $distance / $oldDistance >= 1.15) {
+            Log::error(sprintf(
+                           'Distance deviation for status #%d is greater than 15 percent. Original: %d, new: %d',
+                           $status->id,
+                           $oldDistance,
+                           $distance
+                       ));
             throw new DistanceDeviationException();
         }
 
