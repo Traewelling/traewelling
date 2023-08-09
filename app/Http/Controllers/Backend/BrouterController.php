@@ -15,10 +15,10 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use JsonException;
 use stdClass;
-use Str;
 
 abstract class BrouterController extends Controller
 {
@@ -31,13 +31,13 @@ abstract class BrouterController extends Controller
      * @param array          $coordinates Array of App\Dto\Coordinate objects
      * @param BrouterProfile $profile
      *
-     * @return null|stdClass
-     * @throws JsonException
+     * @return stdClass
+     * @throws JsonException|InvalidArgumentException
      */
     public static function getGeoJSONForRoute(
         array          $coordinates,
         BrouterProfile $profile = BrouterProfile::RAIL //Maybe extend this for other travel types later
-    ): ?stdClass {
+    ): stdClass {
         $lonlats = [];
         foreach ($coordinates as $coord) {
             $lonlats[] = $coord->longitude . ',' . $coord->latitude; //brouter needs order lon,lat
@@ -49,10 +49,10 @@ abstract class BrouterController extends Controller
                             ':coords'  => $coordinateString,
                             ':profile' => $profile->value,
                         ]));
-        Log::debug('Brouter URL is ' . $response->effectiveUri());
+        Log::debug('[RefreshPolyline] Brouter URL is ' . $response->effectiveUri());
         if (!$response->ok()) {
-            Log::debug('Brouter response was not okay.', ['body' => $response->body()]);
-            return null;
+            Log::debug('[RefreshPolyline] Brouter response was not okay.', ['body' => $response->body()]);
+            throw new InvalidArgumentException('Brouter response was not okay.');
         }
 
         $geoJson = json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
@@ -67,7 +67,7 @@ abstract class BrouterController extends Controller
     }
 
     /**
-     * 1. Fetch route for all stations of a trip at brouter
+     * 1. Fetch route for all stations of a trip at Brouter
      * 2. split the route by stations (we need the GeoJSON split!)
      * 3. Create features for every station and route between
      *
@@ -90,7 +90,7 @@ abstract class BrouterController extends Controller
             //2. Request route at brouter
             $brouterGeoJSON = self::getGeoJSONForRoute($coordinates);
         } catch (InvalidArgumentException) {
-            Log::error('Error while getting Polyline for HafasTrip#' . $trip->trip_id . ' (Required data is missing in Brouter response)');
+            Log::error('[RefreshPolyline] Error while getting Polyline for HafasTrip#' . $trip->trip_id . ' (Required data is missing in Brouter response)');
             return;
         }
         //3. Create "new" GeoJSON split by stations (as features)
@@ -140,7 +140,6 @@ abstract class BrouterController extends Controller
                     $closestFeatureKey = $key;
                 }
             }
-
             $highestMappedKey                                      = $closestFeatureKey;
             $geoJson['features'][$closestFeatureKey]['properties'] = $properties;
         }
