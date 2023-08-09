@@ -361,15 +361,16 @@ class StatisticsController extends Controller
         $statuses = DailyStatsController::getStatusesOnDate(auth()->user(), Date::parse($dateString));
 
         if ($request->has('withPolylines')) {
-            $polylines = [];
+            $polylines = collect();
             $statuses->each(function(Status $status) use (&$polylines) {
-                $polylines[$status->id] = GeoController::getGeoJsonFeatureForStatus($status);
+                $polylines->add(GeoController::getGeoJsonFeatureForStatus($status));
             });
+            $featureCollection = GeoController::getGeoJsonFeatureCollection($polylines);
         }
 
         return $this->sendResponse([
                                        'statuses'      => StatusResource::collection($statuses),
-                                       'polylines'     => $polylines ?? null,
+                                       'polylines'     => $featureCollection ?? null,
                                        'totalDistance' => $statuses->sum('trainCheckin.distance'),
                                        'totalDuration' => $statuses->sum('trainCheckin.duration'),
                                        'totalPoints'   => $statuses->sum('trainCheckin.points')
