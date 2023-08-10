@@ -26,8 +26,8 @@
                         @endif
                     </strong>
                 </h1>
-                <span class="fs-2">
-                    <small class="font-weight-light">{{ '@'. $user->username }}</small>
+                <span class="d-flex justify-content-start align-items-center gap-2 pt-1">
+                    <small class="font-weight-light fs-2">{{ '@'. $user->username }}</small>
                     @auth
                         @include('includes.follow-button')
                         @if(auth()->user()->id != $user->id)
@@ -36,7 +36,6 @@
                         @endif
                     @endauth
                 </span>
-                <br/>
 
                 @if(!$user->isAuthUserBlocked && !$user->isBlockedByAuthUser && !$user->muted)
                     <span class="fs-2">
