@@ -56,7 +56,7 @@ class StatusController extends Controller
      * @api v1
      * @frontend
      */
-    public static function getActiveStatuses(): array|stdClass|null {
+    public static function getActiveStatuses(bool $getPolylines = false): array|stdClass|null {
         $statuses = Status::with([
                                      'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
                                      'trainCheckin.originStation', 'trainCheckin.destinationStation',
@@ -78,11 +78,107 @@ class StatusController extends Controller
         if ($statuses === null) {
             return null;
         }
-        $polylines = $statuses->map(function($status) {
-            return json_encode(GeoController::getMapLinesForCheckin($status->trainCheckin));
-        });
+        $polylines = [];
+        if ($getPolylines) {
+            $polylines = $statuses->map(function($status) {
+                return GeoController::getMapLinesForCheckin($status->trainCheckin);
+            });
+        }
+
 
         return ['statuses' => $statuses, 'polylines' => $polylines];
+    }
+
+    public static function getLivePositions() {
+        $statuses = self::getActiveStatuses(true)['statuses'];
+
+        $stopovers = $statuses[0]->trainCheckin->HafasTrip->stopovers;
+
+        foreach ($stopovers as $key => $stopover) {
+            if ($stopover->departure->isFuture()) {
+                if ($stopover->arrival->isPast()) {
+                    $newStopovers =  [$stopover];
+                    break;
+                }
+                $newStopovers = [
+                    $stopovers[$key - 1],
+                    $stopover
+                ];
+                break;
+            }
+        }
+
+        if (count($newStopovers) === 1) {
+            return ['point' => self::createPoint([$newStopovers[0]->trainStation->longitude, $newStopovers[0]->trainStation->latitude])];
+        }
+
+        $now = Carbon::now()->timestamp;
+        $percentage = ($now - $newStopovers[0]->departure->timestamp) / ($newStopovers[1]->arrival->timestamp - $newStopovers[0]->departure->timestamp);
+        $polylines = GeoController::getPolylineBetween($statuses[0]->trainCheckin->HafasTrip, $newStopovers[0], $newStopovers[1], false);
+        $fullD = 0;
+        $lastStopover = null;
+        foreach ($polylines->features as $stopover) {
+            if ($lastStopover === null) {
+                $lastStopover = $stopover;
+                continue;
+            }
+            $fullD += GeoController::calculateDistanceBetweenCoordinates(
+                latitudeA:  $lastStopover->geometry->coordinates[0],
+                longitudeA: $lastStopover->geometry->coordinates[1],
+                latitudeB:  $stopover->geometry->coordinates[0],
+                longitudeB: $stopover->geometry->coordinates[1]
+            );
+            $lastStopover = $stopover;
+        }
+
+        $meters = $fullD * $percentage;
+        $recentPoint = null;
+        $distance = 0;
+        foreach ($polylines->features as $point) {
+            if (
+                $recentPoint !== null
+                && isset($point->geometry->coordinates)
+                && isset($recentPoint->geometry->coordinates)
+            ) {
+                $d = GeoController::calculateDistanceBetweenCoordinates(
+                    $point->geometry->coordinates[1],
+                    $point->geometry->coordinates[0],
+                    $recentPoint->geometry->coordinates[1],
+                    $recentPoint->geometry->coordinates[0]
+                );
+                $distance += $d;
+                if ($distance >= $meters) {
+
+                    $lastDistance = $distance - $d;
+
+                    $lat = $recentPoint->geometry->coordinates[1] + $meters/$distance * ($point->geometry->coordinates[1] - $recentPoint->geometry->coordinates[1]);
+                    $lon = $recentPoint->geometry->coordinates[0] + $meters/$distance * ($point->geometry->coordinates[0] - $recentPoint->geometry->coordinates[0]);
+
+                    $pointS = [$lon, $lat];
+                    break;
+                }
+            }
+            $recentPoint = $point;
+        }
+
+
+
+        return ['polyline' => $polylines, 'point' => self::createPoint($pointS)];
+    }
+
+    private static function createPoint($point) {
+        return     [
+            "type" => "Feature",
+            "properties" => [
+                "marker-color" => "#FF0000",
+                "marker-size" => "medium",
+                "marker-symbol" => "circle"
+            ],
+            "geometry"=> [
+                "type"=> "Point",
+                "coordinates" => $point
+            ]
+        ];
     }
 
     /**

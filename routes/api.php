@@ -162,6 +162,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
     Route::group(['middleware' => ['privacy-policy']], static function() {
         Route::group(['middleware' => ['semiscope:read-statuses']], static function() {
             Route::get('statuses', [StatusController::class, 'enRoute']);
+            Route::get('positions', [StatusController::class, 'livePositions']);
             Route::get('status/{id}', [StatusController::class, 'show']);
             Route::get('status/{id}/likes', [LikesController::class, 'show']);
             Route::get('status/{statusId}/tags', [StatusTagController::class, 'index']);

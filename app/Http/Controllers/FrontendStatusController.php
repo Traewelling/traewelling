@@ -53,7 +53,7 @@ class FrontendStatusController extends Controller
     }
 
     public function getActiveStatuses(): Renderable {
-        $activeStatusesResponse = StatusBackend::getActiveStatuses();
+        $activeStatusesResponse = StatusBackend::getActiveStatuses(true);
         $activeEvents           = EventBackend::activeEvents();
         return view('activejourneys', [
             'currentUser' => Auth::user(),

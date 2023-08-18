@@ -112,14 +112,13 @@ abstract class GeoController extends Controller
     /**
      * @throws JsonException
      */
-    private static function getPolylineBetween(HafasTrip $hafasTrip, TrainStopover $origin, TrainStopover $destination) {
+    public static function getPolylineBetween(HafasTrip $hafasTrip, TrainStopover $origin, TrainStopover $destination, bool $preserveKeys = true) {
         $hafasTrip->loadMissing(['stopovers.trainStation']);
         $geoJson  = self::getPolylineWithTimestamps($hafasTrip);
         $features = $geoJson->features;
 
         $originIndex      = null;
         $destinationIndex = null;
-        $additionalRoutes = [];
         foreach ($features as $key => $data) {
             if (!isset($data->properties->id)) {
                 continue;
@@ -142,18 +141,7 @@ abstract class GeoController extends Controller
             }
         }
         if (is_array($features)) { // object is a rarely contentless stdClass if no features in the GeoJSON
-            $slicedFeatures = array_slice($features, $originIndex, $destinationIndex - $originIndex + 1, true);
-            // Add saved points to polyline
-            if (count($additionalRoutes)) { //TODO: count is always 0?
-                $updatedFeatures = [];
-                foreach ($slicedFeatures as $key => $data) {
-                    if (isset($additionalRoutes[$key]) && $key != $originIndex) { // There is a route, but we're at the origin?
-                        $updatedFeatures = [...$updatedFeatures, ...$additionalRoutes[$key]];
-                    }
-                    $updatedFeatures[] = $data;
-                }
-                $slicedFeatures = $updatedFeatures;
-            }
+            $slicedFeatures = array_slice($features, $originIndex, $destinationIndex - $originIndex + 1, $preserveKeys);
             $geoJson->features = $slicedFeatures;
         }
         return $geoJson;
@@ -195,10 +183,9 @@ abstract class GeoController extends Controller
         }
         return $geoJsonObj;
     }
-
-    public static function getMapLinesForCheckin(TrainCheckin $checkin, bool $invert = false): array {
+    public static function getMapLinesForCheckin(TrainCheckin $checkin, bool $invert = false){
         try {
-            $geoJson  = self::getPolylineBetween($checkin->HafasTrip, $checkin->origin_stopover, $checkin->destination_stopover);
+            return self::getPolylineBetween($checkin->HafasTrip, $checkin->origin_stopover, $checkin->destination_stopover);
             $mapLines = [];
             foreach ($geoJson->features as $feature) {
                 if (isset($feature->geometry->coordinates[0], $feature->geometry->coordinates[1])) {
