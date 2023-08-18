@@ -12,40 +12,7 @@
                 <h1 class="fs-4">{{ __('menu.active') }}</h1>
             </div>
             <div class="col-md-6 mb-4" id="activeJourneys">
-                <div id="map" class="embed-responsive embed-responsive-1by1" style="min-height: 600px;"></div>
-                <script>
-                    window.addEventListener("load", () => {
-                        const statuses = [
-                                @foreach($statuses as $status)
-                            {
-                                id: {{$status->id}},
-                                origin: {{$status->trainCheckin->origin}},
-                                destination: {{$status->trainCheckin->destination}},
-                                polyline: {!! $status->trainCheckin->HafasTrip?->polyline?->polyline ?? '[]' !!}, // Stored as JSON in DB
-                                stopovers: {!! \App\Http\Resources\StopoverResource::collection($status->trainCheckin->HafasTrip->stopovers)->toJson() !!},
-                                percentage: 0,
-                            },
-                            @endforeach
-                        ];
-                        const events = [
-                                @foreach($events as $event)
-                            {
-                                "name": "{{$event->name}}",
-                                "host": "{{$event->host}}",
-                                "url": "{{$event->url}}",
-                                "begin": "{{ $event->begin->format('Y-m-d') }}",
-                                "end": "{{ $event->end->format('Y-m-d') }}",
-                                @isset($event->station)
-                                "ts": {!! $event->station !!},
-                                @endisset
-                                "mapLink": "{{ route('event', ['slug' => $event->slug]) }}",
-                                "closestLink": "@isset($event->station) <a href=\"{{route('trains.stationboard', ['provider' => 'train', 'station' => $event->station->ibnr])}}\" class=\"text-trwl clearfix\">{{$event->station->name}}</a> @endisset"
-                            },
-                            @endforeach
-                        ];
-                        ActiveJourneys.renderMap(statuses, events);
-                    });
-                </script>
+                <active-journey-map map-provider="{{ Auth::user()->mapprovider ?? "default" }}"/>
 
                 <div class="row text-center fs-5 mt-3">
                     <div class="col mb-3">

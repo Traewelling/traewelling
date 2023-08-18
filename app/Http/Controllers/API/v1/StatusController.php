@@ -183,6 +183,10 @@ class StatusController extends Controller
         return StatusBackend::getLivePositions();
     }
 
+    public function getLivePositionForStatus($ids) {
+        return StatusBackend::getLivePositionForStatus($ids);
+    }
+
     /**
      * @OA\Get(
      *      path="/status/{id}",

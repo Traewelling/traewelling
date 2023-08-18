@@ -10,6 +10,7 @@ use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\Backend\GeoController;
 use App\Models\Event;
+use App\Models\HafasTrip;
 use App\Models\Like;
 use App\Models\Status;
 use App\Models\User;
@@ -94,12 +95,45 @@ class StatusController extends Controller
 
         $result = [];
         foreach ($statuses as $status) {
-            $result[] = self::calculateLivePosition($status->trainCheckin->HafasTrip->stopovers, $status);
+            $position = self::calculateLivePosition($status);
+            if ($position) {
+                $result[] = $position;
+            }
         }
         return $result;
     }
 
-    private static function calculateLivePosition($stopovers, $status) {
+    public static function getLivePositionForStatus(string $ids) {
+        $ids = explode(',', $ids);
+
+        $statuses = Status::with([
+                                     'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
+                                     'trainCheckin.originStation', 'trainCheckin.destinationStation',
+                                     'trainCheckin.HafasTrip.stopovers.trainStation',
+                                     'trainCheckin.HafasTrip.polyline',
+                                 ])
+                          ->whereIn('id', $ids)
+                          ->get()
+                          ->filter(function(Status $status) {
+                              return Gate::allows('view', $status) && !$status->user->shadow_banned && $status->visibility !== StatusVisibility::UNLISTED;
+                          })
+                          ->values();
+
+        $result = [];
+        foreach ($statuses as $status) {
+            $position = self::calculateLivePosition($status);
+            if ($position) {
+                $result[] = $position;
+            }
+        }
+
+        return $result;
+    }
+
+    private static function calculateLivePosition(Status $status) {
+        $newStopovers = null;
+        $hafasTrip = $status->trainCheckin->HafasTrip;
+        $stopovers = $hafasTrip->stopovers;
         foreach ($stopovers as $key => $stopover) {
             if ($stopover->departure->isFuture()) {
                 if ($stopover->arrival->isPast()) {
@@ -114,8 +148,17 @@ class StatusController extends Controller
             }
         }
 
+        if (!$newStopovers) {
+            return null;
+        }
         if (count($newStopovers) === 1) {
-            return ['point' => self::createPoint([$newStopovers[0]->trainStation->longitude, $newStopovers[0]->trainStation->latitude])];
+            return [
+                'point' => self::createPoint([$newStopovers[0]->trainStation->longitude, $newStopovers[0]->trainStation->latitude]),
+                'arrival' => $newStopovers[0]->arrival->timestamp,
+                'departure' => $newStopovers[0]->departure->timestamp,
+                'lineName' => $hafasTrip->linename,
+                'statusId' => $status->id,
+            ];
         }
 
         $now = Carbon::now()->timestamp;
@@ -159,10 +202,8 @@ class StatusController extends Controller
                 }
             }
 
-
             $recentPoint = $point;
         }
-        $lastDistance = $distance - $d;
 
         $lat = $recentPoint->geometry->coordinates[1] + $meters/$distance * ($point->geometry->coordinates[1] - $recentPoint->geometry->coordinates[1]);
         $lon = $recentPoint->geometry->coordinates[0] + $meters/$distance * ($point->geometry->coordinates[0] - $recentPoint->geometry->coordinates[0]);
@@ -172,7 +213,15 @@ class StatusController extends Controller
         $polylines->features = array_slice($polylines->features, $key);
         array_unshift($polylines->features, self::createPoint($pointS));
 
-        return ['polyline' => $polylines, 'point' => self::createPoint($pointS), 'nextStop' => $newStopovers[1]->arrival->timestamp];
+        return [
+            'polyline' => $polylines,
+            'point' => null,
+            'nextStop' => $newStopovers[1]->arrival->timestamp,
+            'arrival' => $newStopovers[1]->arrival->timestamp,
+            'departure' => $newStopovers[1]->departure->timestamp,
+            'lineName' => $hafasTrip->linename,
+            'statusId' => $status->id,
+        ];
     }
 
     private static function createPoint($point) {

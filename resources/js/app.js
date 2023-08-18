@@ -4,6 +4,7 @@
 import {Notyf} from 'notyf';
 import {createApp} from 'vue';
 import NotificationBell from "../vue/components/NotificationBell.vue";
+import ActiveJourneyMap from "../vue/components/ActiveJourneyMap.vue";
 
 require("./bootstrap");
 require("awesomplete/awesomplete");
@@ -14,17 +15,14 @@ require("./components/maps");
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const app = createApp({
-        data() {
-            return{
-                count: 0
-            }
-        }
-    });
-
+    const app = createApp({});
     app.component('NotificationBell', NotificationBell);
     app.config.devtools = true;
     app.mount('#nav-main');
+
+    const app2 = createApp({});
+    app2.component('ActiveJourneyMap', ActiveJourneyMap);
+    app2.mount('#activeJourneys');
 
     window.notyf = new Notyf({
         duration: 5000,
