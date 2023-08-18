@@ -86,6 +86,23 @@ php artisan passport:install
 Use your webserver of choice or the in php included dev server (`php artisan serve`) to boot the application.
 You should see the Träwelling homepage at http://localhost:8000.
 
+### Option 3: Local Development using [Nix](https://nixos.org/)
+
+Nix is a cross-platform package manager for Linux and macOS systems.
+It also provides per project development environments.
+There is a also a Linux Distribution called NixOS which builds on top of nix,
+but it's not required to use nix and this development environment.
+
+Our [nix flake](flake.nix) includes such an environment with a pre configured MySQL instance.
+
+If you want to use it:
+
+- [Install nix](https://github.com/DeterminateSystems/nix-installer) if you haven't already. (Make sure you've [enabled flakes and the nix command](https://nixos.wiki/wiki/Flakes#Permanent))
+- Activate the environment either by using the [direnv](https://direnv.net/) shell hook or by executing `nix develop --impure` ([why-impure?](https://devenv.sh/guides/using-with-flakes/#getting-started)) in every terminal where you need the dev environment
+- Run `devenv up` in another terminal
+- Run `setup-devenv` in your terminal to install composer and npm packages and migrate and seed the database
+- Run `serve` to start serving the application on http://127.0.0.1:8000/
+
 ## Developing and contributing
 
 We want to let you know that Träwelling is a leisure project, developed and maintained by a team of volunteers who
