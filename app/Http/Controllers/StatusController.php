@@ -92,8 +92,14 @@ class StatusController extends Controller
     public static function getLivePositions() {
         $statuses = self::getActiveStatuses(true)['statuses'];
 
-        $stopovers = $statuses[0]->trainCheckin->HafasTrip->stopovers;
+        $result = [];
+        foreach ($statuses as $status) {
+            $result[] = self::calculateLivePosition($status->trainCheckin->HafasTrip->stopovers, $status);
+        }
+        return $result;
+    }
 
+    private static function calculateLivePosition($stopovers, $status) {
         foreach ($stopovers as $key => $stopover) {
             if ($stopover->departure->isFuture()) {
                 if ($stopover->arrival->isPast()) {
@@ -114,7 +120,7 @@ class StatusController extends Controller
 
         $now = Carbon::now()->timestamp;
         $percentage = ($now - $newStopovers[0]->departure->timestamp) / ($newStopovers[1]->arrival->timestamp - $newStopovers[0]->departure->timestamp);
-        $polylines = GeoController::getPolylineBetween($statuses[0]->trainCheckin->HafasTrip, $newStopovers[0], $newStopovers[1], false);
+        $polylines = GeoController::getPolylineBetween($status->trainCheckin->HafasTrip, $newStopovers[0], $newStopovers[1], false);
         $fullD = 0;
         $lastStopover = null;
         foreach ($polylines->features as $stopover) {
@@ -149,19 +155,19 @@ class StatusController extends Controller
                 $distance += $d;
                 if ($distance >= $meters) {
 
-                    $lastDistance = $distance - $d;
-
-                    $lat = $recentPoint->geometry->coordinates[1] + $meters/$distance * ($point->geometry->coordinates[1] - $recentPoint->geometry->coordinates[1]);
-                    $lon = $recentPoint->geometry->coordinates[0] + $meters/$distance * ($point->geometry->coordinates[0] - $recentPoint->geometry->coordinates[0]);
-
-                    $pointS = [$lon, $lat];
                     break;
                 }
             }
+
+
             $recentPoint = $point;
         }
+        $lastDistance = $distance - $d;
 
+        $lat = $recentPoint->geometry->coordinates[1] + $meters/$distance * ($point->geometry->coordinates[1] - $recentPoint->geometry->coordinates[1]);
+        $lon = $recentPoint->geometry->coordinates[0] + $meters/$distance * ($point->geometry->coordinates[0] - $recentPoint->geometry->coordinates[0]);
 
+        $pointS = [$lon, $lat];
 
         return ['polyline' => $polylines, 'point' => self::createPoint($pointS)];
     }
