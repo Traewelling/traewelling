@@ -11,11 +11,17 @@
 require("leaflet/dist/leaflet.js");
 require('Leaflet-MovingMaker/MovingMarker');
 
-let myIcon = L.divIcon({
+const trainIcon = L.divIcon({
     className: 'custom-div-icon',
     html: '<div style="background-color:#c30b82;" class="marker-pin">&nbsp;</div>',
     iconSize: [30, 30],
     iconAnchor: [15, 30]
+});
+
+const eventIcon = L.divIcon({
+    html: '<i class="fa fa-calendar-day" style="line-height: 48px; font-size: 36px;"></i>',
+    iconSize: [48, 48],
+    className: 'text-trwl text-center'
 });
 
 export default {
@@ -28,7 +34,6 @@ export default {
     data() {
         return {
             map: null,
-            lines: [], //ToDo: Remove after development
             points: []
         }
     },
@@ -38,31 +43,31 @@ export default {
         let temp = this;
         setInterval(function () {
             temp.refreshMarkers();
-        }, 5000)
+        }, 20000);
+        setInterval(function () {
+            temp.initializeMap();
+        }, 30000);
     },
     methods: {
         renderMap() {
-            console.info("moin")
             this.map = L.map(this.$refs.map, {
                 center: [50.3, 10.47],
                 zoom: 5
             });
             setTilingLayer(this.$props.mapProvider, this.map);
-            this.drawShit();
+            this.initializeMap();
+            this.fetchEvents();
         },
         clearAllElements() {
             this.points.forEach(point => {
-                point.remove()
+                if (point.marker) {
+                    point.marker.remove()
+                }
             });
             this.points = [];
-            this.lines.forEach(line => {
-                line.remove()
-            });
-            this.lines = [];
-
         },
-        drawShit() {
-            fetch('http://localhost:8000/api/v1/positions?' + Date.now()).then((response) => {
+        initializeMap() {
+            fetch('/api/v1/positions?' + Date.now()).then((response) => {
                 response.json().then((results) => {
                     this.clearAllElements();
 
@@ -72,10 +77,10 @@ export default {
                             marker = this.createPointObject(
                                 result,
                                 L.geoJSON(result.point, {
-                                pointToLayer: function(point, latlng) {
-                                    return L.marker(latlng, {icon: myIcon});
-                                }
-                            }).addTo(this.map)
+                                    pointToLayer: function (point, latlng) {
+                                        return L.marker(latlng, {icon: trainIcon});
+                                    }
+                                }).addTo(this.map)
                             );
                         }
 
@@ -84,9 +89,29 @@ export default {
                         }
 
                         this.points.push(marker);
-                    })
+                    });
                 });
             });
+        },
+        fetchEvents() {
+            fetch('/api/v1/activeEvents').then((response) => {
+                response.json().then((results) => {
+                    results.data.forEach(this.addEventMarker);
+                });
+            });
+        },
+        addEventMarker(event) {
+            let marker = L.marker([event.station.latitude, event.station.longitude], {
+                title: event.name,
+                icon: eventIcon
+            }).addTo(this.map);
+
+            marker.bindPopup(`
+                <strong><a href="${event.url}">${event.name}</a></strong><br />
+                <i class="fa fa-user-clock"></i> ${event.host}<br />
+                <i class="fa fa-calendar-day"></i> ${event.begin} - ${event.end}<br />
+                <a href="${event.url}">Alle Reisen zum Event anzeigen</a>`
+            );
         },
         addMarker(data, oldMarker = null) {
             if (oldMarker) {
@@ -97,18 +122,16 @@ export default {
                 line.push([point.geometry.coordinates[1], point.geometry.coordinates[0]]);
             });
 
-            this.lines.push(L.polyline(line).addTo(this.map)); //ToDo: Remove after development
-
             let marker = L.Marker.movingMarker(
                 line,
                 data.arrival * 1000 - Date.now(),
-                {icon: myIcon, autostart: true}
+                {icon: trainIcon, autostart: true}
             ).addTo(this.map);
             marker.start();
 
             return this.createPointObject(data, marker);
         },
-        createPointObject(point, marker=null) {
+        createPointObject(point, marker = null) {
             return {
                 statusId: point.statusId,
                 arrival: point.arrival,
@@ -118,12 +141,10 @@ export default {
             }
         },
         refreshMarkers() {
-            console.info("REFRESH MARKERS");
             let refreshIds = [];
             this.points.forEach((point) => {
                 if (point.departure * 1000 <= Date.now()) {
                     refreshIds.push(point.statusId);
-                    console.log('refresh:', point.statusId);
                 }
             })
 
@@ -134,7 +155,7 @@ export default {
         fetchPositions(refreshIds) {
             fetch('/api/v1/positions/' + refreshIds.join(',')).then((response) => {
                 response.json().then((result) => {
-                    let tmpResult = [];
+                    let tmpResult  = [];
                     let updatedIds = [];
                     result.forEach((stop) => {
                         tmpResult.push(stop);
@@ -146,20 +167,20 @@ export default {
                         }
                     })
 
-                    let interim = this.points.map((entry) => {
+                    this.points = this.points.map((entry) => {
                         if (refreshIds.indexOf(entry.statusId) > -1) {
+                            entry.marker.remove();
                             return false;
                         }
                         if (updatedIds.indexOf(entry.statusId) > -1) {
                             tmpResult.forEach((result) => {
-                                if (result.statusId === entry.statusId) {
+                                if (result.polyline && result.statusId === entry.statusId) {
                                     entry = this.addMarker(result, entry.marker);
                                 }
                             })
                         }
                         return entry;
                     });
-                    this.points = interim;
                 });
             });
         }
@@ -172,6 +193,8 @@ export default {
     width: 30px;
     height: 30px;
     border-radius: 50% 50% 50% 0;
+    border-color: #830b62;
+    border-width: 1px;
     background: #c30b82;
     position: absolute;
     transform: rotate(-45deg);
@@ -179,6 +202,7 @@ export default {
     top: 50%;
     margin: -15px 0 0 -15px;
 }
+
 // to draw white circle
 .marker-pin::after {
     content: '';

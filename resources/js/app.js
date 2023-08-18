@@ -58,7 +58,6 @@ document.addEventListener("DOMContentLoaded", function () {
 window.addEventListener("load", () => {
     require("./components/DarkModeToggle");
     require("./components/alert");
-    require("./components/ActiveJourneys");
     require("./components/Event");
     require("./components/progressbar");
     require("./components/settings");
