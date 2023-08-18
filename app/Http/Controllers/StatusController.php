@@ -140,7 +140,7 @@ class StatusController extends Controller
         $meters = $fullD * $percentage;
         $recentPoint = null;
         $distance = 0;
-        foreach ($polylines->features as $point) {
+        foreach ($polylines->features as $key => $point) {
             if (
                 $recentPoint !== null
                 && isset($point->geometry->coordinates)
@@ -169,7 +169,10 @@ class StatusController extends Controller
 
         $pointS = [$lon, $lat];
 
-        return ['polyline' => $polylines, 'point' => self::createPoint($pointS)];
+        $polylines->features = array_slice($polylines->features, $key);
+        array_unshift($polylines->features, self::createPoint($pointS));
+
+        return ['polyline' => $polylines, 'point' => self::createPoint($pointS), 'nextStop' => $newStopovers[1]->arrival->timestamp];
     }
 
     private static function createPoint($point) {
