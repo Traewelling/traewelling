@@ -177,11 +177,11 @@ class WebhookStatusTest extends TestCase
         StatusController::DeleteStatus($user, $status['id']);
 
         Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
-            // assertEquals(
-            //     WebhookEvent::CHECKIN_DELETE->name(),
-            //     $job->payload['event']
-            // );
-            // assertEquals($status->id, $job->payload['status']->id);
+            assertEquals(
+                WebhookEvent::CHECKIN_DELETE->value,
+                $job->payload['event']
+            );
+            assertEquals($status->id, $job->payload['status']->id);
             return true;
         });
     }
