@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use AwStudio\Bitflags\Casts\Bitflags;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Passport\Passport;
 
 /**
@@ -15,7 +15,7 @@ use Laravel\Passport\Passport;
 class Webhook extends Model {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'oauth_client_id', 'url', 'secret', 'events'];
+    protected $fillable = ['user_id', 'oauth_client_id', 'url', 'secret'];
     protected $hidden   = ['oauth_client_id', 'secret', 'created_at', 'updated_at'];
     protected $casts    = [
         'id'              => 'integer',
@@ -23,7 +23,6 @@ class Webhook extends Model {
         'url'             => 'string',
         'secret'          => 'string',
         'user_id'         => 'integer',
-        'events'          => Bitflags::class,
     ];
 
     public function client(): BelongsTo {
@@ -32,5 +31,9 @@ class Webhook extends Model {
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);
+    }
+
+    public function events(): HasMany {
+        return $this->hasMany(WebhookEvent::class, 'webhook_id', 'id');
     }
 }
