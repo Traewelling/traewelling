@@ -173,7 +173,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/_laravel_idea" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/fidry/cpu-core-counter" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-webhook-server" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/uwumarie/laravel-bitflags" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-validation-rules" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/uri-template" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/league/flysystem-local" />

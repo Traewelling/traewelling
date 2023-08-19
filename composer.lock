@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "09004b0bd6e0ac7b964886638f74837e",
+    "content-hash": "c6e72b7803f0b298299643977cb81f4a",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -9085,73 +9085,6 @@
             "time": "2019-09-23T15:32:10+00:00"
         },
         {
-            "name": "uwumarie/laravel-bitflags",
-            "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/NyCodeGHG/laravel-bitflags.git",
-                "reference": "66b487decbe0cd9f04e47e0048dc3588f7308b25"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/NyCodeGHG/laravel-bitflags/zipball/66b487decbe0cd9f04e47e0048dc3588f7308b25",
-                "reference": "66b487decbe0cd9f04e47e0048dc3588f7308b25",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": "^9",
-                "php": "^8.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "^1.5",
-                "orchestra/testbench": "^7.19",
-                "phpunit/phpunit": "^9.5"
-            },
-            "default-branch": true,
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "AwStudio\\Bitflags\\BitflagsServiceProvider"
-                    ]
-                },
-                "branch-alias": {
-                    "dev-master": "1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "AwStudio\\Bitflags\\": "src"
-                },
-                "files": [
-                    "src/helpers.php"
-                ]
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "AwStudio\\Bitflags\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "vendor/bin/phpunit"
-                ]
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "jannescb",
-                    "email": "jannes@aw-studio.de"
-                }
-            ],
-            "support": {
-                "source": "https://github.com/NyCodeGHG/laravel-bitflags/tree/main"
-            },
-            "time": "2023-01-30T18:11:18+00:00"
-        },
-        {
             "name": "vlucas/phpdotenv",
             "version": "v5.5.0",
             "source": {
@@ -12870,7 +12803,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "uwumarie/laravel-bitflags": 20,
         "beyondcode/laravel-dump-server": 20,
         "roave/security-advisories": 20
     },
