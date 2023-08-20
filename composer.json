@@ -23,11 +23,10 @@
         "barryvdh/laravel-dompdf": "^2.0",
         "darkaonline/l5-swagger": "^8.3",
         "doctrine/dbal": "^3.1.4",
-        "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.1",
         "intervention/image": "^2.5",
         "jenssegers/agent": "^2.6",
-        "laravel/framework": "^9.0",
+        "laravel/framework": "^10.0",
         "laravel/passport": "^11.2",
         "laravel/socialite": "^5.0",
         "laravel/tinker": "^2.0",
@@ -44,14 +43,14 @@
         "ext-pdo_sqlite": "*",
         "barryvdh/laravel-debugbar": "^3.5",
         "beyondcode/laravel-dump-server": "dev-master",
-        "brianium/paratest": "^6.9",
+        "brianium/paratest": "^7.0",
         "fakerphp/faker": "^1.9",
         "filp/whoops": "^2.0",
         "mockery/mockery": "^1.0",
-        "nunomaduro/collision": "^6.1",
-        "phpunit/phpunit": "^9.0",
+        "nunomaduro/collision": "^7.0",
+        "phpunit/phpunit": "^10.0",
         "roave/security-advisories": "dev-latest",
-        "spatie/laravel-ignition": "^1.0"
+        "spatie/laravel-ignition": "2.0"
     },
     "config": {
         "optimize-autoloader": true,
@@ -78,7 +77,7 @@
             "Tests\\": "tests/"
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "scripts": {
         "post-autoload-dump": [
