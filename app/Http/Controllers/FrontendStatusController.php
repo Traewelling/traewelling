@@ -90,16 +90,6 @@ class FrontendStatusController extends Controller
             abort(403, __('error.status.not-authorized'));
         }
 
-        //TODO: This is a temporary workaround. We should use standarised GeoJSON Format for this (see PR#629)
-        if ($status->trainCheckin?->HafasTrip?->polyline) {
-            $polyline = LocationController::getMapLinesForCheckin($status->trainCheckin);
-            foreach ($polyline as $element => $elementValue) {
-                $polyline[$element] = [
-                    $elementValue[1], $elementValue[0]
-                ];
-            }
-        }
-
         return view('status', [
             'status'      => $status,
             'time'        => time(),
@@ -111,7 +101,6 @@ class FrontendStatusController extends Controller
                 'origin'      => $status->trainCheckin->originStation->name
             ]),
             'image'       => ProfilePictureController::getUrl($status->user),
-            'polyline'    => isset($polyline) ? json_encode($polyline, JSON_THROW_ON_ERROR) : null,
         ]);
     }
 }

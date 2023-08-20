@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Dto\GeoJson\Feature;
 use App\Exceptions\DataOverflowException;
 use App\Http\Controllers\Backend\Export\ExportController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
@@ -363,7 +364,7 @@ class StatisticsController extends Controller
         if ($request->has('withPolylines')) {
             $polylines = [];
             $statuses->each(function(Status $status) use (&$polylines) {
-                $polylines[$status->id] = LocationController::getGeoJsonFeatureForStatus($status);
+                $polylines[$status->id] = new Feature(LocationController::getMapLinesForCheckin($status->trainCheckin));
             });
         }
 

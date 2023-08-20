@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Support;
 
 use App\Dto\Coordinate;
+use App\Dto\GeoJson\Feature;
 use App\Dto\LivePointDto;
 use App\Models\HafasTrip;
 use App\Models\Status;
@@ -36,26 +37,6 @@ class LocationController
 
     public static function forStatus(Status $status): LocationController {
         return new self($status->trainCheckin->HafasTrip, null, null, $status->id);
-    }
-
-    public static function getGeoJsonFeatureForStatus(Status $status): array {
-        return [
-            'type'       => 'Feature',
-            'geometry'   => [
-                'type'        => 'LineString',
-                'coordinates' => self::getMapLinesForCheckin($status->trainCheckin)
-            ],
-            'properties' => [
-                'statusId' => $status->id
-            ]
-        ];
-    }
-
-    public static function getGeoJsonFeatureCollection(Collection $features): array {
-        return [
-            'type'     => 'FeatureCollection',
-            'features' => $features
-        ];
     }
 
     private function filterStopOversFromStatus(): ?array {
@@ -132,7 +113,7 @@ class LocationController
         $pointS = $lineSegment->interpolatePoint($meters / $distance);
 
         $polyline->features = array_slice($polyline->features, $key);
-        array_unshift($polyline->features, $pointS->toGeoJsonPoint());
+        array_unshift($polyline->features, Feature::fromCoordinate($pointS));
 
         return new LivePointDto(
             null,

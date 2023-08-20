@@ -45,18 +45,4 @@ class Coordinate
      * )
      *
      */
-    public function toGeoJsonPoint(): array {
-        return [
-            "type"       => "Feature",
-            "properties" => [],
-            "geometry"   => [
-                "type"        => "Point",
-                "coordinates" => [
-                    $this->longitude,
-                    $this->latitude
-                ]
-            ]
-        ];
-    }
-
 }

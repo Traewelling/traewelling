@@ -3,6 +3,8 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Dto\GeoJson\Feature;
+use App\Dto\GeoJson\FeatureCollection;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
@@ -505,11 +507,11 @@ class StatusController extends Controller
      *
      * @param string $parameters
      *
-     * @return JsonResponse
+     * @return JsonResource
      * @todo extract this to backend
      * @todo does this conform to the private checkin-shit?
      */
-    public function getPolyline(string $parameters): JsonResponse {
+    public function getPolyline(string $parameters): JsonResource {
         $ids             = explode(',', $parameters, 50);
         $geoJsonFeatures = Status::whereIn('id', $ids)
                                  ->with('trainCheckin.HafasTrip.polyline')
@@ -523,10 +525,12 @@ class StatusController extends Controller
                                      return true;
                                  })
                                  ->map(function($status) {
-                                     return LocationController::getGeoJsonFeatureForStatus($status);
+                                     return new Feature(
+                                         LocationController::getMapLinesForCheckin($status->trainCheckin)
+                                     );
                                  });
-        $geoJson         = LocationController::getGeoJsonFeatureCollection($geoJsonFeatures);
-        return $ids ? $this->sendResponse($geoJson) : $this->sendError("");
+        $geoJson         = new FeatureCollection($geoJsonFeatures);
+        return $ids ? new JsonResource($geoJson) : $this->sendError("");
     }
 
     /**

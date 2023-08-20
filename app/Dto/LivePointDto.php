@@ -2,6 +2,7 @@
 
 namespace App\Dto;
 
+use App\Dto\GeoJson\Feature;
 use OpenApi\Annotations as OA;
 
 /**
@@ -91,7 +92,7 @@ class LivePointDto implements \JsonSerializable
 
     public function toArray(): array {
         return [
-            'point'     => $this?->point?->toGeoJsonPoint(),
+            'point'     => $this->point ? Feature::fromCoordinate($this->point) : null,
             'polyline'  => $this->polyline,
             'arrival'   => $this->arrival,
             'departure' => $this->departure,

@@ -17,7 +17,7 @@
              "{{json_encode(StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
     @endif
 >
-    @if (isset($polyline) && $polyline !== '[]' && Route::current()->uri == "status/{id}")
+    @if (Route::current()->uri == "status/{id}")
         <div class="card-img-top">
             <div id="activeJourneys" class="map statusMap embed-responsive embed-responsive-16by9">
                 <active-journey-map
