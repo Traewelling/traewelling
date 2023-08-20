@@ -19,8 +19,12 @@
 >
     @if (isset($polyline) && $polyline !== '[]' && Route::current()->uri == "status/{id}")
         <div class="card-img-top">
-            <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-16by9"
-                 data-polygon="{{ $polyline }}"></div>
+            <div id="activeJourneys" class="map statusMap embed-responsive embed-responsive-16by9">
+                <active-journey-map
+                    map-provider="{{ Auth::user()->mapprovider ?? "default" }}"
+                    :status-id="{{ $status->id }}"
+                />
+            </div>
         </div>
     @endif
 

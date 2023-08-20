@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -180,11 +181,11 @@ class StatusController extends Controller
     }
 
     public function livePositions() {
-        return StatusBackend::getLivePositions();
+        return JsonResource::collection(StatusBackend::getLivePositions());
     }
 
     public function getLivePositionForStatus($ids) {
-        return StatusBackend::getLivePositionForStatus($ids);
+        return JsonResource::collection(StatusBackend::getLivePositionForStatus($ids));
     }
 
     /**

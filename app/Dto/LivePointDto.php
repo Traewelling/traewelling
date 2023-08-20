@@ -2,6 +2,8 @@
 
 namespace App\Dto;
 
+use Illuminate\Contracts\Support\Responsable;
+
 class LivePointDto implements \JsonSerializable
 {
     public readonly ?Coordinate $point;
@@ -28,6 +30,10 @@ class LivePointDto implements \JsonSerializable
     }
 
     public function jsonSerialize(): mixed {
+        return $this->toArray();
+    }
+
+    public function toArray(): array {
         return [
             'point'     => $this?->point?->toGeoJsonPoint(),
             'polyline'  => $this->polyline,

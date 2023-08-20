@@ -65,7 +65,6 @@ window.addEventListener("load", () => {
     require("./components/stationboard");
     require("./components/stationboard-gps");
     require("./components/Status");
-    require("./components/statusMap");
     require("./components/timepicker");
     require("./components/business-check-in");
     require("./../../node_modules/bootstrap/js/dist/modal");

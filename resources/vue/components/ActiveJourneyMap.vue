@@ -14,8 +14,8 @@ require('Leaflet-MovingMaker/MovingMarker');
 const trainIcon = L.divIcon({
     className: 'custom-div-icon',
     html: '<div style="background-color:#c30b82;" class="marker-pin">&nbsp;</div>',
-    iconSize: [30, 30],
-    iconAnchor: [15, 30]
+    iconSize: [20, 20],
+    iconAnchor: [10, 20]
 });
 
 const eventIcon = L.divIcon({
@@ -29,24 +29,35 @@ export default {
         mapProvider: {
             type: String,
             default: 'default'
+        },
+        statusId: {
+            type: Number,
+            default: null
         }
     },
     data() {
         return {
             map: null,
-            points: []
+            points: [],
         }
     },
     mounted() {
         this.renderMap();
-
+        if (this.$props.statusId) {
+            this.fetchStatusPolyline();
+        }
+        this.initializeMap();
+        this.fetchEvents();
         let temp = this;
         setInterval(function () {
             temp.refreshMarkers();
         }, 20000);
-        setInterval(function () {
-            temp.initializeMap();
-        }, 30000);
+
+        if(!this.$props.statusId) {
+            setInterval(function () {
+                temp.initializeMap();
+            }, 30000);
+        }
     },
     methods: {
         renderMap() {
@@ -55,8 +66,6 @@ export default {
                 zoom: 5
             });
             setTilingLayer(this.$props.mapProvider, this.map);
-            this.initializeMap();
-            this.fetchEvents();
         },
         clearAllElements() {
             this.points.forEach(point => {
@@ -66,12 +75,26 @@ export default {
             });
             this.points = [];
         },
+        fetchStatusPolyline() {
+            fetch('/api/v1/polyline/' + this.$props.statusId).then((response) => {
+                response.json().then((results) => {
+                    let polyline = L.geoJSON(results.data)
+                        .setStyle({color: "rgb(192, 57, 43)", weight: 5})
+                        .addTo(this.map);
+                    this.map.fitBounds(polyline.getBounds());
+                });
+            });
+        },
         initializeMap() {
-            fetch('/api/v1/positions?' + Date.now()).then((response) => {
+            let url = '/api/v1/positions';
+            if (this.$props.statusId) {
+                url = url + '/' + this.$props.statusId;
+            }
+            fetch(url).then((response) => {
                 response.json().then((results) => {
                     this.clearAllElements();
 
-                    results.forEach((result) => {
+                    results.data.forEach((result) => {
                         let marker = null;
                         if (result.point) {
                             marker = this.createPointObject(
@@ -110,7 +133,7 @@ export default {
                 <strong><a href="${event.url}">${event.name}</a></strong><br />
                 <i class="fa fa-user-clock"></i> ${event.host}<br />
                 <i class="fa fa-calendar-day"></i> ${event.begin} - ${event.end}<br />
-                <a href="${event.url}">Alle Reisen zum Event anzeigen</a>`
+                <a href="/event/${event.slug}">Alle Reisen zum Event anzeigen</a>`
             );
         },
         addMarker(data, oldMarker = null) {
@@ -157,7 +180,7 @@ export default {
                 response.json().then((result) => {
                     let tmpResult  = [];
                     let updatedIds = [];
-                    result.forEach((stop) => {
+                    result.data.forEach((stop) => {
                         tmpResult.push(stop);
 
                         let removeIdx = refreshIds.indexOf(stop.statusId);
@@ -190,8 +213,8 @@ export default {
 
 <style>
 .marker-pin {
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
     border-radius: 50% 50% 50% 0;
     border-color: #830b62;
     border-width: 1px;
