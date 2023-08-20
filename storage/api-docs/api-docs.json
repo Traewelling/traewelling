@@ -1846,7 +1846,7 @@
                                                 "polylines": {
                                                     "type": "array",
                                                     "items": {
-                                                        "$ref": "#/components/schemas/Polyline"
+                                                        "$ref": "#/components/schemas/FeatureCollection"
                                                     }
                                                 },
                                                 "totalDistance": {
@@ -4122,6 +4122,33 @@
             "Coordinate": {
                 "title": "Coordinate",
                 "description": "GeoJson Coordinates",
+                "properties": {
+                    "type": {
+                        "type": "number",
+                        "format": "float",
+                        "example": "Feature"
+                    },
+                    "properties": {
+                        "type": "object",
+                        "example": "{}"
+                    },
+                    "geometry": {
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "example": "Point"
+                            },
+                            "coordinates": {
+                                "type": "array",
+                                "items": {
+                                    "example": "[8.39767,49.01625]"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object",
                 "xml": {
                     "name": "Coordinate"
                 }

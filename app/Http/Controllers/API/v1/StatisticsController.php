@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Dto\GeoJson\Feature;
+use App\Dto\GeoJson\FeatureCollection;
 use App\Exceptions\DataOverflowException;
 use App\Http\Controllers\Backend\Export\ExportController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
@@ -322,7 +323,7 @@ class StatisticsController extends Controller
      *                  @OA\Property (
      *                      property="polylines", type="array",
      *                      @OA\Items (
-     *                          ref="#/components/schemas/Polyline"
+     *                          ref="#/components/schemas/FeatureCollection"
      *                      ),
      *                  ),
      *                  @OA\Property(
@@ -361,16 +362,18 @@ class StatisticsController extends Controller
     public function getPersonalDailyStatistics(Request $request, string $dateString): JsonResponse {
         $statuses = DailyStatsController::getStatusesOnDate(auth()->user(), Date::parse($dateString));
 
+        $polylines = null;
         if ($request->has('withPolylines')) {
-            $polylines = [];
+            $polylines = collect();
             $statuses->each(function(Status $status) use (&$polylines) {
-                $polylines[$status->id] = new Feature(LocationController::forStatus($status)->getMapLines());
+                $polylines->add(new Feature(LocationController::forStatus($status)->getMapLines()));
             });
+            $featureCollection = new FeatureCollection($polylines);
         }
 
         return $this->sendResponse([
                                        'statuses'      => StatusResource::collection($statuses),
-                                       'polylines'     => $polylines ?? null,
+                                       'polylines'     => $polylines && count($polylines) ? $featureCollection : null,
                                        'totalDistance' => $statuses->sum('trainCheckin.distance'),
                                        'totalDuration' => $statuses->sum('trainCheckin.duration'),
                                        'totalPoints'   => $statuses->sum('trainCheckin.points')

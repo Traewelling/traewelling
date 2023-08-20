@@ -14,6 +14,21 @@ use OpenApi\Annotations as OA;
  */
 class Coordinate
 {
+    /**
+     *
+     * @OA\Property(property="type", example="Feature"),
+     * @OA\Property(property="properties", type="object", example="{}"),
+     * @OA\Property(
+     *     property="geometry",
+     *     type="object",
+     *     @OA\Property(property="type", type="string", example="Point"),
+     *     @OA\Property(property="coordinates", type="array",
+     *         @OA\Items(
+     *             example="[8.39767,49.01625]"
+     *         )
+     *     )
+     * )
+     */
     public readonly float $latitude;
     public readonly float $longitude;
 
@@ -29,20 +44,5 @@ class Coordinate
         return null;
     }
 
-    /**
-     *
-     * @OA\Property(property="type", example="Feature"),
-     * @OA\Property(property="properties", type="object", example="{}"),
-     * @OA\Property(
-     *     property="geometry",
-     *     type="object",
-     *     @OA\Property(property="type", type="string", example="Point"),
-     *     @OA\Property(property="coordinates", type="array",
-     *         @OA\Items(
-     *             example="[8.39767,49.01625]"
-     *         )
-     *     )
-     * )
-     *
-     */
+
 }
