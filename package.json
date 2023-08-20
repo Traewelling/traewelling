@@ -22,7 +22,7 @@
         "vue-loader": "^16.8.3"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^6.4.0",
+        "@fortawesome/fontawesome-free": "^6.4.2",
         "apexcharts": "^3.41.1",
         "awesomplete": "^1.1.5",
         "bootstrap-cookie-alert": "^1.2.1",
@@ -30,7 +30,7 @@
         "croppie": "^2.6.5",
         "leaflet": "^1.9.4",
         "Leaflet-MovingMaker": "^0.0.1",
-        "mdb-ui-kit": "^6.4.0",
+        "mdb-ui-kit": "^6.4.1",
         "notyf": "^3.10.0",
         "vue": "^3.3.4"
     }
