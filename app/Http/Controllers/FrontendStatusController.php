@@ -57,7 +57,6 @@ class FrontendStatusController extends Controller
         return view('activejourneys', [
             'currentUser' => Auth::user(),
             'statuses'    => StatusBackend::getActiveStatuses(),
-            'polylines'   => [],
             'events'      => $activeEvents,
             'event'       => null
         ]);

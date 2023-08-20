@@ -15,7 +15,7 @@ const trainIcon = L.divIcon({
     className: 'custom-div-icon',
     html: '<div style="background-color:#c30b82;" class="marker-pin">&nbsp;</div>',
     iconSize: [20, 20],
-    iconAnchor: [10, 20]
+    iconAnchor: [9, 18]
 });
 
 const eventIcon = L.divIcon({
@@ -224,25 +224,5 @@ export default {
     left: 50%;
     top: 50%;
     margin: -15px 0 0 -15px;
-}
-
-.marker-pin::after {
-    content: '';
-    width: 24px;
-    height: 24px;
-    margin: 3px 0 0 3px;
-    background: #fff;
-    position: absolute;
-    border-radius: 50%;
-}
-
-.custom-div-icon i {
-    position: absolute;
-    width: 22px;
-    font-size: 22px;
-    left: 0;
-    right: 0;
-    margin: 10px auto;
-    text-align: center;
 }
 </style>

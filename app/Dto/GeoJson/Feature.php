@@ -27,8 +27,6 @@ class Feature implements \JsonSerializable
                 'type'        => $this->type,
                 'coordinates' => $this->coordinates
             ],
-
-
         ];
         if ($this->statusId) {
             $response['properties'] = ['statusId' => $this->statusId];

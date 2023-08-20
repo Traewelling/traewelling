@@ -211,7 +211,7 @@ class StatusController extends Controller
      *     )
      * )
      */
-    public function livePositions() {
+    public function livePositions(): JsonResource {
         return JsonResource::collection(StatusBackend::getLivePositions());
     }
 
@@ -250,7 +250,7 @@ class StatusController extends Controller
      *     )
      * )
      */
-    public function getLivePositionForStatus($ids) {
+    public function getLivePositionForStatus($ids): AnonymousResourceCollection {
         return JsonResource::collection(StatusBackend::getLivePositionForStatus($ids));
     }
 

@@ -44,7 +44,7 @@ class LocationController
         );
     }
 
-    private function filterStopOversFromStatus(): ?array {
+    private function filterStopoversFromStatus(): ?array {
         $stopovers    = $this->hafasTrip->stopovers;
         $newStopovers = null;
         foreach ($stopovers as $key => $stopover) {
@@ -69,13 +69,12 @@ class LocationController
      */
     public function calculateLivePosition(): ?LivePointDto {
         $hafasTrip    = $this->hafasTrip;
-        $newStopovers = $this->filterStopOversFromStatus();
+        $newStopovers = $this->filterStopoversFromStatus();
 
         if (!$newStopovers) {
             return null;
         }
         if (count($newStopovers) === 1) {
-
             return new LivePointDto(
                 (new Coordinate(
                     $newStopovers[0]->trainStation->latitude,
@@ -106,19 +105,16 @@ class LocationController
 
                 $distance += $lineSegment->calculateDistance();
                 if ($distance >= $meters) {
-
                     break;
                 }
             }
-
             $recentPoint = $point ?? $recentPoint;
         }
 
-
-        $pointS = $lineSegment->interpolatePoint($meters / $distance);
+        $currentPosition = $lineSegment->interpolatePoint($meters / $distance);
 
         $polyline->features = array_slice($polyline->features, $key);
-        array_unshift($polyline->features, Feature::fromCoordinate($pointS));
+        array_unshift($polyline->features, Feature::fromCoordinate($currentPosition ));
 
         return new LivePointDto(
             null,
