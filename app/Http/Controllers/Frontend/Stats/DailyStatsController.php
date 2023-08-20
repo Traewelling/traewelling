@@ -16,7 +16,7 @@ class DailyStatsController extends Controller
         $date     = Date::parse($dateString);
         $statuses = DailyStatsBackend::getStatusesOnDate(Auth::user(), $date)
                                      ->map(function(Status $status) {
-                                         $status->mapLines = LocationController::getMapLinesForCheckin($status->trainCheckin, true);
+                                         $status->mapLines = LocationController::forStatus($status)->getMapLines(true);
                                          return $status;
                                      });
 

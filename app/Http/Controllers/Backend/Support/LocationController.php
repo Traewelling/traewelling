@@ -36,7 +36,12 @@ class LocationController
     }
 
     public static function forStatus(Status $status): LocationController {
-        return new self($status->trainCheckin->HafasTrip, null, null, $status->id);
+        return new self(
+            $status->trainCheckin->HafasTrip,
+            $status->trainCheckin->origin_stopover,
+            $status->trainCheckin->destination_stopover,
+            $status->id
+        );
     }
 
     private function filterStopOversFromStatus(): ?array {
@@ -148,7 +153,7 @@ class LocationController
         $geoJsonObj = json_decode($this->hafasTrip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
         $stopovers  = $this->hafasTrip->stopovers;
 
-        $stopovers = $stopovers->map(function($stopover) {
+        $stopovers = $stopovers->map(function ($stopover) {
             $stopover['passed'] = false;
             return $stopover;
         });
@@ -173,10 +178,9 @@ class LocationController
         return $geoJsonObj;
     }
 
-    public static function getMapLinesForCheckin(TrainCheckin $checkin, bool $invert = false): array {
+    public function getMapLines(bool $invert = false): array {
         try {
-            $geoJson  = (new self($checkin->HafasTrip, $checkin->origin_stopover, $checkin->destination_stopover))
-                ->getPolylineBetween();
+            $geoJson  = $this->getPolylineBetween();
             $mapLines = [];
             foreach ($geoJson->features as $feature) {
                 if (isset($feature->geometry->coordinates[0], $feature->geometry->coordinates[1])) {
@@ -190,8 +194,8 @@ class LocationController
         } catch (Exception $exception) {
             report($exception);
             return [
-                [$checkin->originStation->latitude, $checkin->originStation->longitude],
-                [$checkin->destinationStation->latitude, $checkin->destinationStation->longitude]
+                [$this->origin->latitude, $this->origin->longitude],
+                [$this->destination->latitude, $this->destination->longitude]
             ];
         }
     }
@@ -275,10 +279,10 @@ class LocationController
 
     private function calculateDistanceByStopovers(): int {
         $stopovers                = $this->hafasTrip->stopovers->sortBy('departure');
-        $originStopoverIndex      = $stopovers->search(function($item) {
+        $originStopoverIndex      = $stopovers->search(function ($item) {
             return $item->is($this->origin);
         });
-        $destinationStopoverIndex = $stopovers->search(function($item) {
+        $destinationStopoverIndex = $stopovers->search(function ($item) {
             return $item->is($this->destination);
         });
 

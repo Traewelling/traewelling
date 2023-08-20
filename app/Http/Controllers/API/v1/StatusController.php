@@ -526,7 +526,7 @@ class StatusController extends Controller
                                  })
                                  ->map(function($status) {
                                      return new Feature(
-                                         LocationController::getMapLinesForCheckin($status->trainCheckin)
+                                         LocationController::forStatus($status)->getMapLines()
                                      );
                                  });
         $geoJson         = new FeatureCollection($geoJsonFeatures);

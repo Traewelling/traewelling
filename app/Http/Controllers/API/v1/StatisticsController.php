@@ -364,7 +364,7 @@ class StatisticsController extends Controller
         if ($request->has('withPolylines')) {
             $polylines = [];
             $statuses->each(function(Status $status) use (&$polylines) {
-                $polylines[$status->id] = new Feature(LocationController::getMapLinesForCheckin($status->trainCheckin));
+                $polylines[$status->id] = new Feature(LocationController::forStatus($status)->getMapLines());
             });
         }
 
