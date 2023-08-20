@@ -4122,33 +4122,29 @@
             "Coordinate": {
                 "title": "Coordinate",
                 "description": "GeoJson Coordinates",
+                "xml": {
+                    "name": "Coordinate"
+                }
+            },
+            "FeatureCollection": {
+                "title": "FeatureCollection",
+                "description": "featurecollection of multiple GeoJson points",
                 "properties": {
                     "type": {
-                        "example": "Feature"
+                        "title": "type",
+                        "type": "string",
+                        "example": "FeatureCollection"
                     },
-                    "properties": {
-                        "type": "object",
-                        "example": "{}"
-                    },
-                    "geometry": {
-                        "properties": {
-                            "type": {
-                                "type": "string",
-                                "example": "Point"
-                            },
-                            "coordinates": {
-                                "type": "array",
-                                "items": {
-                                    "example": "[8.39767,49.01625]"
-                                }
-                            }
-                        },
-                        "type": "object"
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Coordinate"
+                        }
                     }
                 },
                 "type": "object",
                 "xml": {
-                    "name": "Coordinate"
+                    "name": "FeatureCollection"
                 }
             },
             "LivePointDto": {
@@ -4379,27 +4375,6 @@
                 "type": "object",
                 "xml": {
                     "name": "EventSuggestion"
-                }
-            },
-            "FeatureCollection": {
-                "title": "FeatureCollection",
-                "description": "featurecollection of multiple GeoJson points",
-                "properties": {
-                    "type": {
-                        "title": "type",
-                        "type": "string",
-                        "example": "FeatureCollection"
-                    },
-                    "features": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Coordinate"
-                        }
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "FeatureCollection"
                 }
             },
             "Links": {
