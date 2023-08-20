@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Träwelling API",
-        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The\r\n *      API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body\r\n *      can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
+        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The\n *      API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body\n *      can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
         "contact": {
             "email": "support@traewelling.de"
         },
@@ -105,7 +105,7 @@
                     "Auth"
                 ],
                 "summary": "Refresh Bearer Token",
-                "description": "This request issues a new Bearer-Token with a new expiration date while also revoking the old\r\n     *      token.",
+                "description": "This request issues a new Bearer-Token with a new expiration date while also revoking the old\n     *      token.",
                 "operationId": "refreshToken",
                 "responses": {
                     "200": {
@@ -419,7 +419,7 @@
                     "Events"
                 ],
                 "summary": "Shows current events with basic information",
-                "description": "Returns array of current events, used for a basic overview during checkiused for a basic\r\n     *      overview during checkin",
+                "description": "Returns array of current events, used for a basic overview during checkiused for a basic\n     *      overview during checkin",
                 "operationId": "getCurrentEvents",
                 "parameters": [
                     {
@@ -886,7 +886,7 @@
                     "Likes"
                 ],
                 "summary": "[Auth optional] Get likes for status",
-                "description": "Returns array of users that liked the status. Can return an empty dataset when the status\r\n     *      author or the requesting user has deactivated likes",
+                "description": "Returns array of users that liked the status. Can return an empty dataset when the status\n     *      author or the requesting user has deactivated likes",
                 "operationId": "getLikesForStatus",
                 "parameters": [
                     {
@@ -1847,7 +1847,7 @@
                                                     "type": "array",
                                                     "items": {
                                                         "$ref": "#/components/schemas/FeatureCollection"
-                                                    
+                                                    }
                                                 },
                                                 "totalDistance": {
                                                     "type": "integer",
@@ -2088,7 +2088,7 @@
                     "Dashboard"
                 ],
                 "summary": "Get paginated future statuses of current user",
-                "description": "Returns paginated statuses of the authenticated user, that are more than 20 minutes in the\r\n     *      future",
+                "description": "Returns paginated statuses of the authenticated user, that are more than 20 minutes in the\n     *      future",
                 "operationId": "getFutureDashboard",
                 "parameters": [
                     {
@@ -2690,7 +2690,7 @@
                     "Status"
                 ],
                 "summary": "Create a StatusTag",
-                "description": "Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free\r\n     *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b>\r\n     *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions\r\n     *      we recommend the following tags in the trwl namespace:<br><ul><li>trwl:seat (i.e. 61)</li><li>trwl:wagon\r\n     *      (i.e. 25)</li><li>trwl:ticket (i.e. BahnCard 100 first))</li><li>trwl:travel_class (i.e. 1, 2, business,\r\n     *      economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li></ul>",
+                "description": "Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free\n     *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b>\n     *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions\n     *      we recommend the following tags in the trwl namespace:<br><ul><li>trwl:seat (i.e. 61)</li><li>trwl:wagon\n     *      (i.e. 25)</li><li>trwl:ticket (i.e. BahnCard 100 first))</li><li>trwl:travel_class (i.e. 1, 2, business,\n     *      economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li></ul>",
                 "operationId": "createSingleStatusTag",
                 "parameters": [
                     {
@@ -2939,7 +2939,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "description": "HAFAS Train model. This model might be subject to unexpected changes. See also\r\n     *                     external documentation at\r\n     *                     [https://v5.db.transport.rest/api.html#get-stopsiddepartures](https://v5.db.transport.rest/api.html#get-stopsiddepartures).",
+                                                "description": "HAFAS Train model. This model might be subject to unexpected changes. See also\n     *                     external documentation at\n     *                     [https://v5.db.transport.rest/api.html#get-stopsiddepartures](https://v5.db.transport.rest/api.html#get-stopsiddepartures).",
                                                 "externalDocs": "https://v5.db.transport.rest/api.html#get-stopsiddepartures",
                                                 "example": {
                                                     "tripId": "1|200513|0|81|6012023",
@@ -3375,7 +3375,7 @@
                     "Checkin"
                 ],
                 "summary": "Autocomplete for trainstations",
-                "description": "This request returns an array of max. 10 station objects matching the query. **CAUTION:** All\r\n     *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
+                "description": "This request returns an array of max. 10 station objects matching the query. **CAUTION:** All\n     *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
                 "operationId": "trainStationAutocomplete",
                 "parameters": [
                     {
@@ -3429,7 +3429,7 @@
                     "Checkin"
                 ],
                 "summary": "History for trainstations",
-                "description": "This request returns an array of max. 10 most recent station objects that the user has arrived\r\n     *      at.",
+                "description": "This request returns an array of max. 10 most recent station objects that the user has arrived\n     *      at.",
                 "operationId": "trainStationHistory",
                 "responses": {
                     "200": {
@@ -3482,7 +3482,7 @@
                                 "properties": {
                                     "confirmation": {
                                         "title": "confirmation",
-                                        "description": "Username of the to be deleted account (needs to match the currently logged in\r\n     *                  user)",
+                                        "description": "Username of the to be deleted account (needs to match the currently logged in\n     *                  user)",
                                         "example": "Gertrud123"
                                     }
                                 },
@@ -3659,7 +3659,7 @@
                     "User/Hide and Block"
                 ],
                 "summary": "Block a user",
-                "description": "Block a specific user. That user will not be able to see your statuses or profile information,\r\n     *      and cannot send you follow requests. Public statuses are still visible through the incognito mode.",
+                "description": "Block a specific user. That user will not be able to see your statuses or profile information,\n     *      and cannot send you follow requests. Public statuses are still visible through the incognito mode.",
                 "operationId": "createBlock",
                 "requestBody": {
                     "required": true,
@@ -3727,7 +3727,7 @@
                     "User/Hide and Block"
                 ],
                 "summary": "Unmute a user",
-                "description": "Unblock a specific user. They are now able to see your statuses and profile information again,\r\n     *      and send you follow requests.",
+                "description": "Unblock a specific user. They are now able to see your statuses and profile information again,\n     *      and send you follow requests.",
                 "operationId": "destroyBlock",
                 "requestBody": {
                     "required": true,
@@ -3797,7 +3797,7 @@
                     "User/Hide and Block"
                 ],
                 "summary": "Mute a user",
-                "description": "Mute a specific user. That way they will not be shown on your dashboard and in the active\r\n     *      journeys tab",
+                "description": "Mute a specific user. That way they will not be shown on your dashboard and in the active\n     *      journeys tab",
                 "operationId": "createMute",
                 "parameters": [
                     {
@@ -3855,7 +3855,7 @@
                     "User/Hide and Block"
                 ],
                 "summary": "Unmute a user",
-                "description": "Unmute a specific user. That way they will be shown on your dashboard and in the active\r\n     *      journeys tab again",
+                "description": "Unmute a specific user. That way they will be shown on your dashboard and in the active\n     *      journeys tab again",
                 "operationId": "destroyMute",
                 "parameters": [
                     {
@@ -5031,7 +5031,7 @@
                     },
                     "ibnr": {
                         "title": "ibnr",
-                        "description": "If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they\r\n     *     should be given as the Träwelling-ID. Default behavior is `false`.",
+                        "description": "If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they\n     *     should be given as the Träwelling-ID. Default behavior is `false`.",
                         "type": "boolean",
                         "example": "true",
                         "nullable": true
@@ -5070,7 +5070,7 @@
                     },
                     "force": {
                         "title": "force",
-                        "description": "If true, the checkin will be created, even if a colliding checkin exists. No points will be\r\n     *     awarded.",
+                        "description": "If true, the checkin will be created, even if a colliding checkin exists. No points will be\n     *     awarded.",
                         "type": "boolean",
                         "example": "false",
                         "nullable": true
@@ -5219,7 +5219,7 @@
                     },
                     "departure": {
                         "title": "departure",
-                        "description": "currently known departure time. Equal to departureReal if known. Else equal to\r\n     *     departurePlanned.",
+                        "description": "currently known departure time. Equal to departureReal if known. Else equal to\n     *     departurePlanned.",
                         "example": "2022-07-17T14:17:00+02:00",
                         "nullable": true
                     },
@@ -5729,7 +5729,7 @@
             },
             "MastodonVisibilityEnum": {
                 "title": "visibility",
-                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for\r\n *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for\n *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.",
                 "type": "integer",
                 "enum": [
                     0,
@@ -5788,7 +5788,7 @@
             },
             "VisibilityEnum": {
                 "title": "visibility",
-                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the\r\n *     user specify?",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the\n *     user specify?",
                 "type": "integer",
                 "enum": [
                     0,
