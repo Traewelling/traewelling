@@ -22,7 +22,7 @@
         "vue-loader": "^16.8.3"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^6.4.0",
+        "@fortawesome/fontawesome-free": "^6.4.2",
         "apexcharts": "^3.41.1",
         "awesomplete": "^1.1.5",
         "bootstrap-cookie-alert": "^1.2.1",
