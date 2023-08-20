@@ -4,12 +4,11 @@ namespace Tests\Feature;
 
 use App\Dto\Coordinate;
 use App\Enum\HafasTravelType;
-use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use App\Models\TrainStopover;
 use App\Objects\LineSegment;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Tests\TestCase;
@@ -71,7 +70,7 @@ class DistanceCalculationTest extends TestCase
 
         $hafasTrip->load(['stopovers']);
 
-        $result = GeoController::calculateDistance($hafasTrip, $originStopover, $destinationStopover);
+        $result = (new LocationController($hafasTrip, $originStopover, $destinationStopover))->calculateDistance();
         $this->assertEquals(4526, $result);
     }
 
@@ -114,7 +113,7 @@ class DistanceCalculationTest extends TestCase
 
         $hafasTrip->load(['stopovers']);
 
-        $result = GeoController::calculateDistance($hafasTrip, $originStopover, $destinationStopover);
+        $result = (new LocationController($hafasTrip, $originStopover, $destinationStopover))->calculateDistance();
         $this->assertEquals(202210, $result);
     }
 }

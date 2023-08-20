@@ -13,7 +13,7 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\DistanceDeviationException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
-use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -158,7 +158,7 @@ abstract class TrainCheckinController extends Controller
             throw new CheckInCollisionException($overlapping->first());
         }
 
-        $distance = GeoController::calculateDistance(hafasTrip: $trip, origin: $firstStop, destination: $lastStop);
+        $distance = (new LocationController($trip, $firstStop, $lastStop))->calculateDistance();
 
         $pointCalculation = PointsCalculationController::calculatePoints(
             distanceInMeter: $distance,
@@ -200,7 +200,10 @@ abstract class TrainCheckinController extends Controller
         }
     }
 
-    public static function changeDestination(TrainCheckin $checkin, TrainStopover $newDestinationStopover): PointReason {
+    public static function changeDestination(
+        TrainCheckin $checkin,
+        TrainStopover $newDestinationStopover
+    ): PointReason {
         if ($newDestinationStopover->arrival_planned->isBefore($checkin->origin_stopover->arrival_planned)
             || $newDestinationStopover->is($checkin->origin_stopover)
             || !$checkin->HafasTrip->stopovers->contains('id', $newDestinationStopover->id)
@@ -208,11 +211,8 @@ abstract class TrainCheckinController extends Controller
             throw new InvalidArgumentException();
         }
 
-        $newDistance = GeoController::calculateDistance(
-            hafasTrip:   $checkin->HafasTrip,
-            origin:      $checkin->origin_stopover,
-            destination: $newDestinationStopover,
-        );
+        $newDistance = (new LocationController($checkin->HafasTrip, $checkin->origin_stopover, $newDestinationStopover))
+        ->calculateDistance();
 
         $pointsResource = PointsCalculationController::calculatePoints(
             distanceInMeter: $newDistance,
@@ -272,11 +272,11 @@ abstract class TrainCheckinController extends Controller
         }
         $firstStop   = $trainCheckin->origin_stopover;
         $lastStop    = $trainCheckin->destination_stopover;
-        $distance    = GeoController::calculateDistance(
+        $distance    = (new LocationController(
             hafasTrip:   $trainCheckin->HafasTrip,
             origin:      $firstStop,
             destination: $lastStop
-        );
+        ))->calculateDistance();
         $oldPoints   = $trainCheckin->points;
         $oldDistance = $trainCheckin->distance;
 

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\DataOverflowException;
 use App\Http\Controllers\Backend\Export\ExportController;
-use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Http\Controllers\Backend\Stats\DailyStatsController;

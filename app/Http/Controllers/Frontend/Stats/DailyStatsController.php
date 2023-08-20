@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Frontend\Stats;
 
-use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;

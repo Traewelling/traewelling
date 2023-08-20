@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Backend\EventController as EventBackend;
-use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;

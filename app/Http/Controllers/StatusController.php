@@ -8,10 +8,8 @@ use App\Events\StatusDeleteEvent;
 use App\Events\StatusUpdateEvent;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
-use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Models\Event;
-use App\Models\HafasTrip;
 use App\Models\Like;
 use App\Models\Status;
 use App\Models\User;
@@ -19,6 +17,7 @@ use App\Notifications\StatusLiked;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Gate;
 use InvalidArgumentException;
@@ -58,7 +57,7 @@ class StatusController extends Controller
      * @api v1
      * @frontend
      */
-    public static function getActiveStatuses(bool $getPolylines = false): ?array {
+    public static function getActiveStatuses(): ?Collection {
         return Status::with([
                                      'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
                                      'trainCheckin.originStation', 'trainCheckin.destinationStation',

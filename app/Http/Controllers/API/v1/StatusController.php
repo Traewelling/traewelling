@@ -6,7 +6,6 @@ namespace App\Http\Controllers\API\v1;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
-use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Backend\User\DashboardController;
