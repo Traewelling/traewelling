@@ -17,16 +17,16 @@ return new class extends Migration {
                 $id = $webhook->id;
                 $events_bits = $webhook->events;
                 if ($events_bits & self::CHECKIN_CREATE) {
-                    self::insertWebhookEvent($id, 'CHECKIN_CREATE');
+                    self::insertWebhookEvent($id, 'checkin_create');
                 }
                 if ($events_bits & self::CHECKIN_UPDATE) {
-                    self::insertWebhookEvent($id, 'CHECKIN_UPDATE');
+                    self::insertWebhookEvent($id, 'checkin_update');
                 }
                 if ($events_bits & self::CHECKIN_DELETE) {
-                    self::insertWebhookEvent($id, 'CHECKIN_DELETE');
+                    self::insertWebhookEvent($id, 'checkin_delete');
                 }
                 if ($events_bits & self::NOTIFICATION) {
-                    self::insertWebhookEvent($id, 'NOTIFICATION');
+                    self::insertWebhookEvent($id, 'notification');
                 }
             }
         });
