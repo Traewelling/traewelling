@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
+use OpenApi\Annotations as OA;
 
 class StatusController extends Controller
 {
@@ -180,10 +181,73 @@ class StatusController extends Controller
         return StatusResource::collection(StatusBackend::getActiveStatuses());
     }
 
+    /**
+     * @OA\Get(
+     *     path="/positions",
+     *     operationId="getLivePositionsForActiveStatuses",
+     *     tags={"Status"},
+     *     summary="[Auth optional] get live positions for active statuses",
+     *     description="Returns an array of live position objects for active statuses",
+     *     @OA\Response(
+     *         response="200",
+     *         description="successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     ref="#/components/schemas/LivePointDto"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=403, description="User not authorized to access this status"),
+     *       security={
+     *           {"passport": {"read-statuses"}}, {"token": {}}
+     *
+     *       }
+     *     )
+     * )
+     */
     public function livePositions() {
         return JsonResource::collection(StatusBackend::getLivePositions());
     }
 
+    /**
+     * @OA\Get(
+     *     path="/positions/{ids}",
+     *     operationId="getLivePositionsForStatuses",
+     *     tags={"Status"},
+     *     summary="[Auth optional] get live positions for given statuses",
+     *     description="Returns an array of live position objects for given status IDs",
+     *     @OA\Parameter(
+     *         name="ids",
+     *         in="path",
+     *         description="Status-IDs separated by comma",
+     *         example="1337,1338",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     ref="#/components/schemas/LivePointDto"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=403, description="User not authorized to access this status"),
+     *       security={
+     *           {"passport": {"read-statuses"}}, {"token": {}}
+     *
+     *       }
+     *     )
+     * )
+     */
     public function getLivePositionForStatus($ids) {
         return JsonResource::collection(StatusBackend::getLivePositionForStatus($ids));
     }

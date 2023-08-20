@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "https://traewelling.de/api/v1",
+            "url": "http://localhost:8000/api/v1",
             "description": "This instance"
         }
     ],
@@ -2188,6 +2188,103 @@
                 ]
             }
         },
+        "/positions": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "[Auth optional] get live positions for active statuses",
+                "description": "Returns an array of live position objects for active statuses",
+                "operationId": "getLivePositionsForActiveStatuses",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LivePointDto"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/positions/{ids}": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "[Auth optional] get live positions for given statuses",
+                "description": "Returns an array of live position objects for given status IDs",
+                "operationId": "getLivePositionsForStatuses",
+                "parameters": [
+                    {
+                        "name": "ids",
+                        "in": "path",
+                        "description": "Status-IDs separated by comma",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1337,1338"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LivePointDto"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/status/{id}": {
             "get": {
                 "tags": [
@@ -4022,6 +4119,82 @@
     },
     "components": {
         "schemas": {
+            "Coordinate": {
+                "title": "Coordinate",
+                "description": "GeoJson Coordinates",
+                "properties": {
+                    "type": {
+                        "example": "Feature"
+                    },
+                    "properties": {
+                        "type": "object",
+                        "example": "{}"
+                    },
+                    "geometry": {
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "example": "Point"
+                            },
+                            "coordinates": {
+                                "type": "array",
+                                "items": {
+                                    "example": "[8.39767,49.01625]"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Coordinate"
+                }
+            },
+            "LivePointDto": {
+                "title": "LivePointDto",
+                "description": "All necessary information to calculate live position",
+                "properties": {
+                    "point": {
+                        "$ref": "#/components/schemas/Coordinate"
+                    },
+                    "polyline": {
+                        "$ref": "#/components/schemas/FeatureCollection"
+                    },
+                    "arrival": {
+                        "title": "arrival",
+                        "description": "arrival at end of polyline in UNIX time format",
+                        "type": "integer",
+                        "format": "integer",
+                        "example": 1692538680
+                    },
+                    "departure": {
+                        "title": "departure",
+                        "description": "departure at start of polyline in UNIX time format",
+                        "type": "integer",
+                        "format": "integer",
+                        "example": 1692538740
+                    },
+                    "lineName": {
+                        "title": "lineName",
+                        "description": "name of line",
+                        "type": "string",
+                        "format": "string",
+                        "example": "ICE 123"
+                    },
+                    "statusId": {
+                        "title": "statusId",
+                        "description": "ID of status",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12345
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "LivePointDto"
+                }
+            },
             "BearerTokenResponse": {
                 "title": "BearerTokenResponse",
                 "properties": {
@@ -4206,6 +4379,27 @@
                 "type": "object",
                 "xml": {
                     "name": "EventSuggestion"
+                }
+            },
+            "FeatureCollection": {
+                "title": "FeatureCollection",
+                "description": "featurecollection of multiple GeoJson points",
+                "properties": {
+                    "type": {
+                        "title": "type",
+                        "type": "string",
+                        "example": "FeatureCollection"
+                    },
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Coordinate"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "FeatureCollection"
                 }
             },
             "Links": {
@@ -5623,9 +5817,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
-                        "tokenUrl": "http://localhost:8000/oauth/token",
-                        "refreshUrl": "http://localhost:8000/auth/refresh",
+                        "authorizationUrl": "http://localhost/oauth/authorize",
+                        "tokenUrl": "http://localhost/oauth/token",
+                        "refreshUrl": "http://localhost/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",
