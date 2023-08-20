@@ -226,7 +226,6 @@ export default {
     margin: -15px 0 0 -15px;
 }
 
-// to draw white circle
 .marker-pin::after {
     content: '';
     width: 24px;
@@ -237,7 +236,6 @@ export default {
     border-radius: 50%;
 }
 
-// to align icon
 .custom-div-icon i {
     position: absolute;
     width: 22px;
