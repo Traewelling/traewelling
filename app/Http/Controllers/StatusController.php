@@ -96,7 +96,7 @@ class StatusController extends Controller
 
         $result = [];
         foreach ($statuses as $status) {
-            $position = (new LocationController($status))->calculateLivePosition();
+            $position = LocationController::forStatus($status)->calculateLivePosition();
             if ($position) {
                 $result[] = $position;
             }
@@ -122,7 +122,7 @@ class StatusController extends Controller
 
         $result = [];
         foreach ($statuses as $status) {
-            $position = (new LocationController($status))->calculateLivePosition();
+            $position = LocationController::forStatus($status)->calculateLivePosition();
             if ($position) {
                 $result[] = $position;
             }
