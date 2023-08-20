@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('settings.title-profile') }}</div>
 
                 <div class="card-body">
-                    <form enctype="multipart/form-data" method="POST" action="{{ route('settings') }}">
+                    <form enctype="multipart/form-data" method="POST" action="{{ route('settings.profile') }}">
                         @csrf
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">
