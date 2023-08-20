@@ -7,9 +7,15 @@ use App\Dto\LivePointDto;
 use App\Http\Controllers\Backend\GeoController;
 use App\Models\HafasTrip;
 use App\Models\Status;
+use App\Models\TrainCheckin;
 use App\Models\TrainStopover;
 use App\Objects\LineSegment;
+use App\Virtual\Models\Train;
 use Carbon\Carbon;
+use Exception;
+use Illuminate\Support\Collection;
+use JsonException;
+use stdClass;
 
 class LocationController
 {
@@ -23,6 +29,26 @@ class LocationController
 
     public static function forStatus(Status $status): LocationController {
         return new self($status->trainCheckin->HafasTrip, $status->id);
+    }
+
+    public static function getGeoJsonFeatureForStatus(Status $status): array {
+        return [
+            'type'       => 'Feature',
+            'geometry'   => [
+                'type'        => 'LineString',
+                'coordinates' => self::getMapLinesForCheckin($status->trainCheckin)
+            ],
+            'properties' => [
+                'statusId' => $status->id
+            ]
+        ];
+    }
+
+    public static function getGeoJsonFeatureCollection(Collection $features): array {
+        return [
+            'type'     => 'FeatureCollection',
+            'features' => $features
+        ];
     }
 
     private function filterStopOversFromStatus(): ?array {
@@ -45,6 +71,9 @@ class LocationController
         return $newStopovers;
     }
 
+    /**
+     * @throws JsonException
+     */
     public function calculateLivePosition(): ?LivePointDto {
         $hafasTrip    = $this->hafasTrip;
         $newStopovers = $this->filterStopOversFromStatus();
@@ -56,8 +85,8 @@ class LocationController
 
             return new LivePointDto(
                 (new Coordinate(
-                    $newStopovers[0]->trainStation->longitude,
-                    $newStopovers[0]->trainStation->latitude
+                    $newStopovers[0]->trainStation->latitude,
+                    $newStopovers[0]->trainStation->longitude
                 )),
                 null,
                 $newStopovers[0]->arrival->timestamp,
@@ -70,12 +99,7 @@ class LocationController
         $now        = Carbon::now()->timestamp;
         $percentage = ($now - $newStopovers[0]->departure->timestamp)
                       / ($newStopovers[1]->arrival->timestamp - $newStopovers[0]->departure->timestamp);
-        $polyline   = GeoController::getPolylineBetween(
-            $this->hafasTrip,
-            $newStopovers[0], $newStopovers[1],
-            false
-        );
-
+        $polyline   = $this->getPolylineBetween($newStopovers[0], $newStopovers[1], false);
 
         $meters      = $this->getDistanceFromGeoJson($polyline) * $percentage;
         $recentPoint = null;
@@ -127,9 +151,72 @@ class LocationController
         return $fullD;
     }
 
-    private function getPolylineBetween(TrainStopover $origin, TrainStopover $destination, bool $preservedKeys = true) {
-        $hafasTrip->loadMissing(['stopovers.trainStation']);
-        $geoJson  = self::getPolylineWithTimestamps($hafasTrip);
+    /**
+     * @throws JsonException
+     */
+    private function getPolylineWithTimestamps(): stdClass {
+        $geoJsonObj = json_decode($this->hafasTrip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
+        $stopovers  = $this->hafasTrip->stopovers;
+
+        $stopovers = $stopovers->map(function ($stopover) {
+            $stopover['passed'] = false;
+            return $stopover;
+        });
+
+        foreach ($geoJsonObj->features as $polylineFeature) {
+            if (!isset($polylineFeature->properties->id)) {
+                continue;
+            }
+
+            $stopover = $stopovers->where('trainStation.ibnr', $polylineFeature->properties->id)
+                                  ->where('passed', false)
+                                  ->first();
+
+            if (is_null($stopover)) {
+                continue;
+            }
+
+            $stopover->passed                               = true;
+            $polylineFeature->properties->departure_planned = $stopover->departure_planned?->clone();
+            $polylineFeature->properties->arrival_planned   = $stopover->arrival_planned?->clone();
+        }
+        return $geoJsonObj;
+    }
+
+    public static function getMapLinesForCheckin(TrainCheckin $checkin, bool $invert = false): array {
+        try {
+            $geoJson = (new self($checkin->HafasTrip))
+                ->getPolylineBetween($checkin->origin_stopover, $checkin->destination_stopover);
+            $mapLines = [];
+            foreach ($geoJson->features as $feature) {
+                if (isset($feature->geometry->coordinates[0], $feature->geometry->coordinates[1])) {
+                    $mapLines[] = [
+                        $feature->geometry->coordinates[$invert ? 1 : 0],
+                        $feature->geometry->coordinates[$invert ? 0 : 1]
+                    ];
+                }
+            }
+            return $mapLines;
+        } catch (Exception $exception) {
+            report($exception);
+            return [
+                [$checkin->originStation->latitude, $checkin->originStation->longitude],
+                [$checkin->destinationStation->latitude, $checkin->destinationStation->longitude]
+            ];
+        }
+    }
+
+    /**
+     * @throws JsonException
+     * @todo make private
+     */
+    public function getPolylineBetween(
+        TrainStopover $origin,
+        TrainStopover $destination,
+        bool $preserveKeys = true
+    ): stdClass {
+        $this->hafasTrip->loadMissing(['stopovers.trainStation']);
+        $geoJson  = $this->getPolylineWithTimestamps();
         $features = $geoJson->features;
 
         $originIndex      = null;
@@ -156,10 +243,15 @@ class LocationController
             }
         }
         if (is_array($features)) { // object is a rarely contentless stdClass if no features in the GeoJSON
-            $slicedFeatures    = array_slice($features, $originIndex, $destinationIndex - $originIndex + 1, $preserveKeys);
+            $slicedFeatures    = array_slice(
+                $features,
+                $originIndex,
+                $destinationIndex - $originIndex + 1,
+                $preserveKeys
+            );
             $geoJson->features = $slicedFeatures;
         }
-        return $geoJson;
 
+        return $geoJson;
     }
 }

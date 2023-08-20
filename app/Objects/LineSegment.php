@@ -27,12 +27,11 @@ class LineSegment
 
         $latA     = $this->start->latitude / 180 * M_PI;
         $lonA     = $this->start->longitude / 180 * M_PI;
-        $latB     = $this->finish->longitude / 180 * M_PI;
+        $latB     = $this->finish->latitude / 180 * M_PI;
         $lonB     = $this->finish->longitude / 180 * M_PI;
-        $this->distance = acos(sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA))
-                    * $equatorialRadiusInMeters;
+        $this->distance = round(acos(sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA))
+                    * $equatorialRadiusInMeters);
 
-        $this->distance = round($this->distance);
         return $this->distance;
     }
 

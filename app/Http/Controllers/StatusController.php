@@ -58,8 +58,8 @@ class StatusController extends Controller
      * @api v1
      * @frontend
      */
-    public static function getActiveStatuses(bool $getPolylines = false): array|stdClass|null {
-        $statuses = Status::with([
+    public static function getActiveStatuses(bool $getPolylines = false): ?array {
+        return Status::with([
                                      'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
                                      'trainCheckin.originStation', 'trainCheckin.destinationStation',
                                      'trainCheckin.HafasTrip.stopovers.trainStation',
@@ -76,23 +76,10 @@ class StatusController extends Controller
                           ->sortByDesc(function(Status $status) {
                               return $status->trainCheckin->departure;
                           })->values();
-
-        if ($statuses === null) {
-            return null;
-        }
-        $polylines = [];
-        if ($getPolylines) {
-            $polylines = $statuses->map(function($status) {
-                return GeoController::getMapLinesForCheckin($status->trainCheckin);
-            });
-        }
-
-
-        return ['statuses' => $statuses, 'polylines' => $polylines];
     }
 
     public static function getLivePositions(): array {
-        $statuses = self::getActiveStatuses(true)['statuses'];
+        $statuses = self::getActiveStatuses();
 
         $result = [];
         foreach ($statuses as $status) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\Stats;
 
 use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ class DailyStatsController extends Controller
         $date     = Date::parse($dateString);
         $statuses = DailyStatsBackend::getStatusesOnDate(Auth::user(), $date)
                                      ->map(function(Status $status) {
-                                         $status->mapLines = GeoController::getMapLinesForCheckin($status->trainCheckin, true);
+                                         $status->mapLines = LocationController::getMapLinesForCheckin($status->trainCheckin, true);
                                          return $status;
                                      });
 

@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Dto\Coordinate;
 use App\Enum\HafasTravelType;
 use App\Http\Controllers\Backend\GeoController;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use App\Models\TrainStopover;
+use App\Objects\LineSegment;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
@@ -18,23 +20,19 @@ class DistanceCalculationTest extends TestCase
     use RefreshDatabase;
 
     public function test_distance_calculation_between_hanover_and_karlsruhe(): void {
-        $result = GeoController::calculateDistanceBetweenCoordinates(
-            latitudeA:  52.376589,
-            longitudeA: 9.741083,
-            latitudeB:  48.993962,
-            longitudeB: 8.401107,
+        $result = new LineSegment(
+            new Coordinate(52.376589, 9.741083),
+            new Coordinate(48.993962,  8.401107)
         );
-        $this->assertEquals(388213, $result);
+        $this->assertEquals(388213, $result->calculateDistance());
     }
 
     public function test_distance_calculation_between_hanover_hbf_and_hanover_kroepcke() {
-        $result = GeoController::calculateDistanceBetweenCoordinates(
-            latitudeA:  52.376589,
-            longitudeA: 9.741083,
-            latitudeB:  52.374497,
-            longitudeB: 9.738573,
+        $result = new LineSegment(
+            new Coordinate(52.376589, 9.741083),
+            new Coordinate(52.374497, 9.738573)
         );
-        $this->assertEquals(289, $result);
+        $this->assertEquals(289, $result->calculateDistance());
     }
 
     public function test_distance_calculation_between_simple_stopovers() {

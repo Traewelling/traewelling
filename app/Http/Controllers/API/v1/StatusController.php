@@ -7,6 +7,7 @@ use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -176,7 +177,7 @@ class StatusController extends Controller
      *
      */
     public function enRoute(): AnonymousResourceCollection {
-        return StatusResource::collection(StatusBackend::getActiveStatuses()['statuses']);
+        return StatusResource::collection(StatusBackend::getActiveStatuses());
     }
 
     public function livePositions() {
@@ -458,9 +459,9 @@ class StatusController extends Controller
                                      return true;
                                  })
                                  ->map(function($status) {
-                                     return GeoController::getGeoJsonFeatureForStatus($status);
+                                     return LocationController::getGeoJsonFeatureForStatus($status);
                                  });
-        $geoJson         = GeoController::getGeoJsonFeatureCollection($geoJsonFeatures);
+        $geoJson         = LocationController::getGeoJsonFeatureCollection($geoJsonFeatures);
         return $ids ? $this->sendResponse($geoJson) : $this->sendError("");
     }
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Http\Controllers\Backend\Stats\DailyStatsController;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Resources\LeaderboardUserResource;
 use App\Http\Resources\StatisticsGlobalData;
 use App\Http\Resources\StatisticsTravelPurposeResource;
@@ -363,7 +364,7 @@ class StatisticsController extends Controller
         if ($request->has('withPolylines')) {
             $polylines = [];
             $statuses->each(function(Status $status) use (&$polylines) {
-                $polylines[$status->id] = GeoController::getGeoJsonFeatureForStatus($status);
+                $polylines[$status->id] = LocationController::getGeoJsonFeatureForStatus($status);
             });
         }
 

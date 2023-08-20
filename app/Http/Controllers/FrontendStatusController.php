@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -53,11 +54,10 @@ class FrontendStatusController extends Controller
     }
 
     public function getActiveStatuses(): Renderable {
-        $activeStatusesResponse = StatusBackend::getActiveStatuses();
         $activeEvents           = EventBackend::activeEvents();
         return view('activejourneys', [
             'currentUser' => Auth::user(),
-            'statuses'    => $activeStatusesResponse['statuses'],
+            'statuses'    => StatusBackend::getActiveStatuses(),
             'polylines'   => [],
             'events'      => $activeEvents,
             'event'       => null
@@ -93,7 +93,7 @@ class FrontendStatusController extends Controller
 
         //TODO: This is a temporary workaround. We should use standarised GeoJSON Format for this (see PR#629)
         if ($status->trainCheckin?->HafasTrip?->polyline) {
-            $polyline = GeoController::getMapLinesForCheckin($status->trainCheckin);
+            $polyline = LocationController::getMapLinesForCheckin($status->trainCheckin);
             foreach ($polyline as $element => $elementValue) {
                 $polyline[$element] = [
                     $elementValue[1], $elementValue[0]
