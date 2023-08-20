@@ -33,10 +33,8 @@
                                         <td>{{ Carbon::parse($webhook->created_at)->isoFormat(__('datetime-format')) }}</td>
                                         <td>
                                             <ul>
-                                                @foreach(WebhookEvent::cases() as $event)
-                                                    @if(inBitmask($event->value, $webhook->events))
-                                                        <li>{{ __('settings.webhook_event.' . $event->name())}}</li>
-                                                    @endif
+                                                @foreach($webhook->events()->get() as $event)
+                                                    <li>{{ __('settings.webhook_event.' . $event->event->value) }}</li>
                                                 @endforeach
                                             </ul>
                                         </td>

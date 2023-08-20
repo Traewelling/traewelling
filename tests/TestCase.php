@@ -170,11 +170,10 @@ abstract class TestCase extends BaseTestCase
     }
 
     public function createWebhook(User $user, OAuthClient $client, array $events): Webhook {
-        $bitflag = 0;
-        foreach ($events as $event) {
-            $bitflag |= $event->value;
-        }
-        $request = WebhookController::createWebhookRequest($user, $client, 'stub', "https://example.com", $bitflag);
+        $events = array_map(function ($event) {
+            return $event->value;
+        }, $events);
+        $request = WebhookController::createWebhookRequest($user, $client, 'stub', "https://example.com", $events);
         return WebhookController::createWebhook($request);
     }
 }

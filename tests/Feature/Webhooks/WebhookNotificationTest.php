@@ -28,7 +28,7 @@ class WebhookNotificationTest extends TestCase {
         $follow->assertStatus(201);
 
         Bus::assertDispatched(function (CallWebhookJob $job) {
-            assertEquals(WebhookEvent::NOTIFICATION->name(), $job->payload['event']);
+            assertEquals(WebhookEvent::NOTIFICATION->value, $job->payload['event']);
             return true;
         });
     }

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use AwStudio\Bitflags\Casts\Bitflags;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -21,7 +20,7 @@ class WebhookCreationRequest extends Model {
         'oauth_client_id' => 'integer',
         'revoked' => 'boolean',
         'expires_at' => 'datetime',
-        'events' => Bitflags::class,
+        'events' => 'string',
         'url' => 'string',
     ];
 
