@@ -13,5 +13,8 @@ return new class extends Migration
     }
 
     public function down(): void {
+        Schema::table('webhooks', static function (Blueprint $table) {
+            $table->addColumn('uint', 'events');
+        });
     }
 };
