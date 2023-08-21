@@ -624,6 +624,7 @@
     "support.go-to-github": "Please report software bugs and improvement suggestions on GitHub. Use the buttons below to do so. We can help you with this form if you have problems with your account or checkins on traewelling.de.",
     "no-journeys-day": "You didn't check into any journeys that day.",
     "stats-day": "Your journeys at :date",
+    "stats-year": "Your journeys in :year",
     "stats.stations.description": "Map of your passed stations",
     "stats.stations.passed": "Passed station",
     "stats.stations.changed": "Entry / Exit / Change",

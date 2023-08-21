@@ -24,6 +24,7 @@ use App\Http\Controllers\Frontend\Social\SocialController;
 use App\Http\Controllers\Frontend\StatisticController;
 use App\Http\Controllers\Frontend\Stats\DailyStatsController;
 use App\Http\Controllers\Frontend\Stats\YearInReviewController;
+use App\Http\Controllers\Frontend\Stats\YearlyStatsController;
 use App\Http\Controllers\Frontend\Support\SupportController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
@@ -141,6 +142,8 @@ Route::middleware(['auth', 'privacy'])->group(function() {
              ->name('stats.stations');
         Route::get('/daily/{dateString}', [DailyStatsController::class, 'renderDailyStats'])
              ->name('stats.daily');
+        Route::get('/yearly/{year}', [YearlyStatsController::class, 'renderYearlyStats'])
+             ->name('stats.yearly');
     });
 
     Route::get('/support', [SupportController::class, 'renderSupportPage'])->name('support');

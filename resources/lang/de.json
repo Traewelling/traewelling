@@ -623,6 +623,7 @@
     "support.go-to-github": "Bitte melde uns Softwarefehler und Verbesserungsvorschläge auf GitHub. Nutze dafür die folgenden Buttons. Über dieses Formular können wir dir helfen, wenn du Probleme mit deinem Account oder Checkins auf traewelling.de hast.",
     "no-journeys-day": "An diesem Tag hast du in keine Fahrt eingecheckt.",
     "stats-day": "Deine Fahrten am :date",
+    "stats-year": "Deine Fahrten in :year",
     "stats.stations.description": "Karte deiner durchfahrenen Stationen",
     "stats.stations.passed": "Durchgefahrene Station",
     "stats.stations.changed": "Einstieg / Ausstieg / Umstieg",
