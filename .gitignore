@@ -137,3 +137,4 @@ public/css/*.css.map
 # Nix
 .devenv
 .direnv
+result*
