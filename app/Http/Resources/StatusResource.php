@@ -48,6 +48,10 @@ class StatusResource extends JsonResource
                 'manualArrival'       => $this->trainCheckin->manual_arrival?->toIso8601String(),
                 'origin'              => new StopoverResource($this->trainCheckin->origin_stopover),
                 'destination'         => new StopoverResource($this->trainCheckin->destination_stopover),
+                'operator'            => [
+                    'id'              => $this->trainCheckin->HafasTrip->operator->hafas_id,
+                    'name'            => $this->trainCheckin->HafasTrip->operator->name
+                ]
             ],
             'event'          => new EventResource($this?->event),
         ];

@@ -142,4 +142,14 @@ class Train
      * @var TrainStopover
      */
     private $destination;
+
+    /**
+     * @OA\Property (
+     *     title="operator",
+     *     description="Operator of the mean of transport"
+     * )
+     *
+     * @var Operator
+     */
+    private $operator;
 }
