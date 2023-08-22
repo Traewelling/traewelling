@@ -7,8 +7,8 @@
 </template>
 
 <script>
-require("leaflet/dist/leaflet.js");
-require('Leaflet-MovingMaker/MovingMarker');
+import 'leaflet'
+import 'Leaflet-MovingMaker/MovingMarker'
 
 const trainIcon = L.divIcon({
     className: 'custom-div-icon',

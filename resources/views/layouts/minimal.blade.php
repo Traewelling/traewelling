@@ -4,7 +4,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <title>@yield('title') | Träwelling</title>
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet"/>
-        <link href="{{ mix('css/app.css') }}" rel="stylesheet"/>
+        @vite('resources/sass/app.scss')
         <link rel="shortcut icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}"/>
     </head>
     <body>

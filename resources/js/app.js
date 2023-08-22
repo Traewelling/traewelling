@@ -1,17 +1,15 @@
 /**
  * Here, we include all of our external dependencies
  */
-import {Notyf} from 'notyf';
-import {createApp} from 'vue';
+import { Notyf } from 'notyf';
+import { createApp } from 'vue';
 import NotificationBell from "../vue/components/NotificationBell.vue";
 import ActiveJourneyMap from "../vue/components/ActiveJourneyMap.vue";
-
-require("./bootstrap");
-require("awesomplete/awesomplete");
-require("leaflet/dist/leaflet.js");
-require("./api/api");
-require("./components/maps");
-
+import "./bootstrap";
+import "awesomplete/awesomplete";
+import "leaflet/dist/leaflet.js";
+import "./api/api";
+import "./components/maps";
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -56,18 +54,18 @@ document.addEventListener("DOMContentLoaded", function () {
  * Once the page is loaded, we can load our frontend components.
  */
 window.addEventListener("load", () => {
-    require("./components/DarkModeToggle");
-    require("./components/alert");
-    require("./components/Event");
-    require("./components/progressbar");
-    require("./components/settings");
-    require("./components/station-autocomplete");
-    require("./components/stationboard");
-    require("./components/stationboard-gps");
-    require("./components/Status");
-    require("./components/timepicker");
-    require("./components/business-check-in");
-    require("./../../node_modules/bootstrap/js/dist/modal");
-    require("./appControls");
-    require("bootstrap-cookie-alert/cookiealert");
+    import("./components/DarkModeToggle");
+    import("./components/alert");
+    import("./components/Event");
+    import("./components/progressbar");
+    import("./components/settings");
+    import("./components/station-autocomplete");
+    import("./components/stationboard");
+    import("./components/stationboard-gps");
+    import("./components/Status");
+    import("./components/timepicker");
+    import("./components/business-check-in");
+    import("bootstrap/js/dist/modal");
+    import("./appControls");
+    import("bootstrap-cookie-alert/cookiealert");
 });

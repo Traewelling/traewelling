@@ -10,9 +10,8 @@
         <!-- Fonts -->
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
 
-        <link rel="stylesheet" href="{{ mix('css/admin.css') }}">
+        @vite(['resources/sass/admin.scss', 'resources/js/admin.js'])
         <link rel="shortcut icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}"/>
-        <script src="{{ mix('js/admin.js') }}"></script>
     </head>
 
     <body>
