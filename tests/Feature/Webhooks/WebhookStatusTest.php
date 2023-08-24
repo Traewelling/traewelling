@@ -32,8 +32,8 @@ class WebhookStatusTest extends TestCase
 
         Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
             assertEquals([
-                             'event' => WebhookEvent::CHECKIN_CREATE->name(),
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          'status' => new StatusResource($status),
+                             'event' => WebhookEvent::CHECKIN_CREATE->value,
+                             'status' => new StatusResource($status),
                          ], $job->payload);
             return true;
         });
@@ -56,7 +56,7 @@ class WebhookStatusTest extends TestCase
 
         Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
             assertEquals(
-                WebhookEvent::CHECKIN_UPDATE->name(),
+                WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
             );
             assertEquals($status->id, $job->payload['status']['id']);
@@ -77,7 +77,7 @@ class WebhookStatusTest extends TestCase
         // For self-likes, a CHECKIN_UPDATE is sent, but no notification.
         Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
             assertEquals(
-                WebhookEvent::CHECKIN_UPDATE->name(),
+                WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
             );
             assertEquals($status->id, $job->payload['status']['id']);
@@ -104,7 +104,7 @@ class WebhookStatusTest extends TestCase
 
         Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
             assertEquals(
-                WebhookEvent::CHECKIN_UPDATE->name(),
+                WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
             );
             assertEquals($status->id, $job->payload['status']->id);
@@ -132,7 +132,7 @@ class WebhookStatusTest extends TestCase
 
         Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
             assertEquals(
-                WebhookEvent::CHECKIN_UPDATE->name(),
+                WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
             );
             assertEquals($status->id, $job->payload['status']->id);
@@ -158,7 +158,7 @@ class WebhookStatusTest extends TestCase
 
         Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
             assertEquals(
-                WebhookEvent::CHECKIN_UPDATE->name(),
+                WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
             );
             assertEquals($status->id, $job->payload['status']->id);
@@ -178,7 +178,7 @@ class WebhookStatusTest extends TestCase
 
         Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
             assertEquals(
-                WebhookEvent::CHECKIN_DELETE->name(),
+                WebhookEvent::CHECKIN_DELETE->value,
                 $job->payload['event']
             );
             assertEquals($status->id, $job->payload['status']->id);

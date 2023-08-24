@@ -173,15 +173,11 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/_laravel_idea" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/fidry/cpu-core-counter" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-webhook-server" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/uwumarie/laravel-bitflags" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-validation-rules" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/uri-template" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/league/flysystem-local" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-  </component>
-  <component name="SonarLintModuleSettings">
-    <option name="uniqueId" value="25ca8c57-fa48-47f1-b34c-c6b743029e8e" />
   </component>
 </module>

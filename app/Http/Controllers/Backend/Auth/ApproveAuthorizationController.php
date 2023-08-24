@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Backend\Auth;
 
-use App\Enum\WebhookEvent;
 use App\Http\Controllers\Backend\WebhookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -17,11 +16,11 @@ class ApproveAuthorizationController extends PassportApproveAuthorizationControl
             $code = $query['code'];
             $user = $webhook['user'];
             $client = $webhook['client'];
-            $events = WebhookEvent::fromNames($webhook['events']);
+            $events = $webhook['events'];
             Log::debug("Creating a new webhook creation request", [
                 'client_id' => $client->id,
-                'user_id' => $user->id,
-                'events' => $webhook['events'],
+                'user_id'   => $user->id,
+                'events'    => $events,
             ]);
             WebhookController::createWebhookRequest(
                 $user,
