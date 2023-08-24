@@ -288,7 +288,6 @@
             var urlTrainTrip     = '{{ route('trains.trip') }}';
             var urlUnfollow      = '{{ route('follow.destroy') }}';
             var urlAutocomplete  = '{{ url('transport/train/autocomplete') }}';
-
             var mapprovider = '{{ Auth::user()->mapprovider ?? "default" }}';
 
             let translations = {

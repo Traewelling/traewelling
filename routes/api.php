@@ -45,7 +45,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
     Route::group(['middleware' => ['auth:api', 'privacy-policy']], static function() {
         Route::post('event', [EventController::class, 'suggest'])->middleware(['scope:write-event-suggestions']);
-        Route::get('activeEvents', [EventController::class, 'activeEvents'])->middleware(['scope:read-statuses']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends'])
              ->middleware(['scope:read-statistics']);
         Route::group(['middleware' => ['scope:read-statuses']], static function() {
@@ -162,6 +161,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
     Route::group(['middleware' => ['privacy-policy']], static function() {
         Route::group(['middleware' => ['semiscope:read-statuses']], static function() {
             Route::get('statuses', [StatusController::class, 'enRoute']);
+            Route::get('positions', [StatusController::class, 'livePositions']);
+            Route::get('positions/{ids}', [StatusController::class, 'getLivePositionForStatus']);
             Route::get('status/{id}', [StatusController::class, 'show']);
             Route::get('status/{id}/likes', [LikesController::class, 'show']);
             Route::get('status/{statusId}/tags', [StatusTagController::class, 'index']);
@@ -171,6 +172,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('event/{slug}/details', [EventController::class, 'showDetails']);
             Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
             Route::get('events', [EventController::class, 'upcoming']);
+            Route::get('activeEvents', [EventController::class, 'activeEvents']);
             Route::get('user/{username}', [UserController::class, 'show']);
             Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
         });

@@ -3,10 +3,12 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Dto\GeoJson\Feature;
+use App\Dto\GeoJson\FeatureCollection;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\PermissionException;
-use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -21,6 +23,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -28,6 +31,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
+use OpenApi\Annotations as OA;
 
 class StatusController extends Controller
 {
@@ -176,7 +180,78 @@ class StatusController extends Controller
      *
      */
     public function enRoute(): AnonymousResourceCollection {
-        return StatusResource::collection(StatusBackend::getActiveStatuses()['statuses']);
+        return StatusResource::collection(StatusBackend::getActiveStatuses());
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/positions",
+     *     operationId="getLivePositionsForActiveStatuses",
+     *     tags={"Status"},
+     *     summary="[Auth optional] get live positions for active statuses",
+     *     description="Returns an array of live position objects for active statuses",
+     *     @OA\Response(
+     *         response="200",
+     *         description="successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     ref="#/components/schemas/LivePointDto"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=403, description="User not authorized to access this status"),
+     *       security={
+     *           {"passport": {"read-statuses"}}, {"token": {}}
+     *
+     *       }
+     *     )
+     * )
+     */
+    public function livePositions(): JsonResource {
+        return JsonResource::collection(StatusBackend::getLivePositions());
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/positions/{ids}",
+     *     operationId="getLivePositionsForStatuses",
+     *     tags={"Status"},
+     *     summary="[Auth optional] get live positions for given statuses",
+     *     description="Returns an array of live position objects for given status IDs",
+     *     @OA\Parameter(
+     *         name="ids",
+     *         in="path",
+     *         description="Status-IDs separated by comma",
+     *         example="1337,1338",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response="200",
+     *         description="successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     ref="#/components/schemas/LivePointDto"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=403, description="User not authorized to access this status"),
+     *       security={
+     *           {"passport": {"read-statuses"}}, {"token": {}}
+     *
+     *       }
+     *     )
+     * )
+     */
+    public function getLivePositionForStatus($ids): AnonymousResourceCollection {
+        return JsonResource::collection(StatusBackend::getLivePositionForStatus($ids));
     }
 
     /**
@@ -432,11 +507,11 @@ class StatusController extends Controller
      *
      * @param string $parameters
      *
-     * @return JsonResponse
+     * @return JsonResource
      * @todo extract this to backend
      * @todo does this conform to the private checkin-shit?
      */
-    public function getPolyline(string $parameters): JsonResponse {
+    public function getPolyline(string $parameters): JsonResource {
         $ids             = explode(',', $parameters, 50);
         $geoJsonFeatures = Status::whereIn('id', $ids)
                                  ->with('trainCheckin.HafasTrip.polyline')
@@ -450,10 +525,12 @@ class StatusController extends Controller
                                      return true;
                                  })
                                  ->map(function($status) {
-                                     return GeoController::getGeoJsonFeatureForStatus($status);
+                                     return new Feature(
+                                         LocationController::forStatus($status)->getMapLines()
+                                     );
                                  });
-        $geoJson         = GeoController::getGeoJsonFeatureCollection($geoJsonFeatures);
-        return $ids ? $this->sendResponse($geoJson) : $this->sendError("");
+        $geoJson         = new FeatureCollection($geoJsonFeatures);
+        return $ids ? new JsonResource($geoJson) : $this->sendError("");
     }
 
     /**

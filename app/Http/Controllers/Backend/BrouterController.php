@@ -11,6 +11,7 @@ use App\Jobs\RefreshPolyline;
 use App\Models\HafasTrip;
 use App\Models\PolyLine;
 use App\Models\TrainCheckin;
+use App\Objects\LineSegment;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
@@ -129,12 +130,11 @@ abstract class BrouterController extends Controller
                     //This is required and very important to prevent bugs for ring lines!
                     continue;
                 }
-                $distance = GeoController::calculateDistanceBetweenCoordinates(
-                    latitudeA:  $feature['geometry']['coordinates'][1],
-                    longitudeA: $feature['geometry']['coordinates'][0],
-                    latitudeB:  $stopover->trainStation->latitude,
-                    longitudeB: $stopover->trainStation->longitude,
-                );
+                $distance = (new LineSegment(
+                    new Coordinate($feature['geometry']['coordinates'][1], $feature['geometry']['coordinates'][0]),
+                    new Coordinate($stopover->trainStation->latitude, $stopover->trainStation->longitude)
+                ))->calculateDistance();
+
                 if ($minDistance === null || $distance < $minDistance) {
                     $minDistance       = $distance;
                     $closestFeatureKey = $key;
