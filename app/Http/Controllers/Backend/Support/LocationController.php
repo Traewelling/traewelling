@@ -7,12 +7,10 @@ use App\Dto\GeoJson\Feature;
 use App\Dto\LivePointDto;
 use App\Models\HafasTrip;
 use App\Models\Status;
-use App\Models\TrainCheckin;
 use App\Models\TrainStopover;
 use App\Objects\LineSegment;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Support\Collection;
 use JsonException;
 use stdClass;
 
@@ -53,10 +51,10 @@ class LocationController
                     $newStopovers = [$stopover];
                     break;
                 }
-                $newStopovers = [
-                    $stopovers[$key - 1],
-                    $stopover
-                ];
+                if (!empty($stopovers[$key - 1])) {
+                    $newStopovers[] = $stopovers[$key - 1];
+                }
+                $newStopovers[] = $stopover;
                 break;
             }
         }
@@ -114,7 +112,7 @@ class LocationController
         $currentPosition = $lineSegment->interpolatePoint($meters / $distance);
 
         $polyline->features = array_slice($polyline->features, $key);
-        array_unshift($polyline->features, Feature::fromCoordinate($currentPosition ));
+        array_unshift($polyline->features, Feature::fromCoordinate($currentPosition));
 
         return new LivePointDto(
             null,
@@ -126,7 +124,7 @@ class LocationController
         );
     }
 
-    private function getDistanceFromGeoJson(\stdClass $geoJson): int {
+    private function getDistanceFromGeoJson(stdClass $geoJson): int {
         $fullD        = 0;
         $lastStopover = null;
         foreach ($geoJson->features as $stopover) {

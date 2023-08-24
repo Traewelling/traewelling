@@ -12,7 +12,8 @@
                 <h1 class="fs-4">{{ __('menu.active') }}</h1>
             </div>
             <div class="col-md-6 mb-4" id="activeJourneys">
-                <active-journey-map map-provider="{{ Auth::user()->mapprovider ?? "default" }}"/>
+                <active-journey-map map-provider="{{ Auth::user()->mapprovider ?? "default" }}">
+                </active-journey-map>
 
                 <div class="row text-center fs-5 mt-3">
                     <div class="col mb-3">
