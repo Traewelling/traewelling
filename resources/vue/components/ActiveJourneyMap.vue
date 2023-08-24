@@ -1,8 +1,7 @@
 <template>
     <div
-        id="active-map"
-        class="embed-responsive embed-responsive-1by1"
-        style="min-height: 600px;"
+        class="map"
+        :style="mapStyle"
         ref="map"
     ></div>
 </template>
@@ -39,6 +38,11 @@ export default {
         return {
             map: null,
             points: [],
+        }
+    },
+    computed: {
+        mapStyle() {
+            return this.$props.statusId ? '' : 'min-height: 600px;';
         }
     },
     mounted() {

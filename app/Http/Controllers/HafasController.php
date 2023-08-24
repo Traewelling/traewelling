@@ -486,9 +486,9 @@ abstract class HafasController extends Controller
                 'trip_id'           => $rawHafas->id,
                 'train_station_id'  => $stop->id,
                 'arrival_planned'   => isset($stopover->plannedArrival) ? $arrivalPlanned : $departurePlanned,
-                'arrival_real'      => $arrivalReal,
+                'arrival_real'      => isset($stopover->arrival) ? $arrivalReal : null,
                 'departure_planned' => isset($stopover->plannedDeparture) ? $departurePlanned : $arrivalPlanned,
-                'departure_real'    => $departureReal,
+                'departure_real'    => isset($stopover->departure) ? $departureReal : null,
             ];
         }
 
