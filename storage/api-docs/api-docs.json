@@ -4811,7 +4811,12 @@
                         "$ref": "#/components/schemas/TrainStopover"
                     },
                     "operator": {
-                        "$ref": "#/components/schemas/Operator"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Operator"
+                            }
+                        ],
+                        "nullable": true
                     }
                 },
                 "type": "object",

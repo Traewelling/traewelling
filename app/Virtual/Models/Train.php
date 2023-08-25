@@ -146,7 +146,8 @@ class Train
     /**
      * @OA\Property (
      *     title="operator",
-     *     description="Operator of the mean of transport"
+     *     description="Operator of the mean of transport",
+     *     nullable=true
      * )
      *
      * @var Operator
