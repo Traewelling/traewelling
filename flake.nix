@@ -62,7 +62,7 @@
               echo "Installing composer packages"
               ${composer} install > /dev/null 2>&1
               echo "Installing npm packages"
-              ${npm} ci $REDIRECTION > /dev/null 2>&1
+              ${npm} ci > /dev/null 2>&1
 
               if [[ "$DB_CONNECTION" == "mysql" ]];
               then
