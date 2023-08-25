@@ -15,12 +15,12 @@ class Operator
 {
     /**
      * @OA\Property (
-     *     title="id",
+     *     title="identifier",
      *     example="sbb"
      * )
      * @var string
      */
-    private $id;
+    private $identifier;
 
 
     /**
