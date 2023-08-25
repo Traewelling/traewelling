@@ -4442,8 +4442,8 @@
                 "title": "Operator",
                 "description": "Operator of a mean of transport",
                 "properties": {
-                    "id": {
-                        "title": "id",
+                    "identifier": {
+                        "title": "identifier",
                         "type": "string",
                         "example": "sbb"
                     },
