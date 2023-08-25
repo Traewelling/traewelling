@@ -4675,6 +4675,26 @@
                     "name": "Notification"
                 }
             },
+            "Operator": {
+                "title": "Operator",
+                "description": "Operator of a mean of transport",
+                "properties": {
+                    "identifier": {
+                        "title": "identifier",
+                        "type": "string",
+                        "example": "sbb"
+                    },
+                    "name": {
+                        "title": "name",
+                        "type": "string",
+                        "example": "SBB"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Operator"
+                }
+            },
             "PaginationPage": {
                 "title": "PaginationPage",
                 "description": "pagination links",
@@ -5026,6 +5046,14 @@
                     },
                     "destination": {
                         "$ref": "#/components/schemas/TrainStopover"
+                    },
+                    "operator": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Operator"
+                            }
+                        ],
+                        "nullable": true
                     }
                 },
                 "type": "object",
