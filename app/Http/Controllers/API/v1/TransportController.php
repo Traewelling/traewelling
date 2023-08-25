@@ -167,7 +167,7 @@ class TransportController extends Controller
                 stationQuery: $name,
                 when:         isset($validated['when']) ? Carbon::parse($validated['when']) : null,
                 travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
-                localtime:    isset($validated['when']) && !str_contains($validated['when'], '+')
+                localtime:    isset($validated['when']) && !preg_match('(\+|Z)', $validated['when'])
             );
         } catch (HafasException) {
             return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 502);

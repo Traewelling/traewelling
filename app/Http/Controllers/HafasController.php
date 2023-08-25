@@ -164,7 +164,7 @@ abstract class HafasController extends Controller
         bool         $skipTimeShift = false
     ) {
         $client   = self::getHttpClient();
-        $time = (clone $when)->shiftTimezone("Europe/Berlin");
+        $time   = $skipTimeShift ? $when : (clone $when)->shiftTimezone("Europe/Berlin");
         $query    = [
             'when'                       => $time->toIso8601String(),
             'duration'                   => $duration,
@@ -212,7 +212,13 @@ abstract class HafasController extends Controller
         try {
             $requestTime = is_null($station->time_offset) || $localtime
                 ? $when : (clone $when)->subHours($station->time_offset);
-            $data        = self::fetchDepartures($station, $requestTime, $duration, $type, !$station->shift_time);
+            $data        = self::fetchDepartures(
+                $station,
+                $requestTime,
+                $duration,
+                $type,
+                !$station->shift_time && !$localtime
+            );
             if (!$localtime) {
                 foreach ($data as $departure) {
                     if ($departure?->when) {
