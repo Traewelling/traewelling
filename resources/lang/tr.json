@@ -225,5 +225,6 @@
     "about.no-train": "Tüm bağlantıların doğrudan gösterilmediği, Alman Demiryolları (Deutsche Bahn) tarafından sağlanan bir arayüz kullanıyoruz. Eğer treniniz orada bulunmamaktaysa yapabileceğimiz çok fazla bir şey yok. Türkiye'de sadece Bosfor Ekspresi, Sofya Ekspresi, Ankara-İstanbul, İstanbul-Konya ve Ankara-Konya YHT'leri, İzmir Mavi Treni, Konya Mavi Treni, Doğu Ekspresi, Toros Ekspresi ana duraklarda duracak şekilde gösterilmektedir.",
     "controller.user.follow-request-already-exists": "Bu kişiye hâlihazırda takip isteği gönderdiniz.",
     "controller.user.follow-destroyed": "Kullanıcıyı takipten çıktınız.",
-    "controller.social.delete-set-email": "Bir SSO sağlayıcısını silmeden önce, hesaba erişiminizi yitirmemek için bir e-posta adresi ayarlamalısınız."
+    "controller.social.delete-set-email": "Bir SSO sağlayıcısını silmeden önce, hesaba erişiminizi yitirmemek için bir e-posta adresi ayarlamalısınız.",
+    "controller.transport.social-post": ":Destination durağına doğru :lineName hattındayım! #NowTräwelling |:Destination durağına doğru :lineName hattındayım! #NowTräwelling "
 }
