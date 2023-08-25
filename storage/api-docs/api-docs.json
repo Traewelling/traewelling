@@ -2911,7 +2911,7 @@
                     {
                         "name": "when",
                         "in": "query",
-                        "description": "When to get the departures (default: now)",
+                        "description": "When to get the departures (default: now).\n      If you omit the timezone, the datetime is interpreted as localtime.\n          This is especially helpful when träwelling abroad.",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -4218,6 +4218,55 @@
                     "name": "LivePointDto"
                 }
             },
+            "TrainStation": {
+                "title": "TrainStation",
+                "description": "train station model",
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "description": "id",
+                        "type": "integer",
+                        "example": "4711"
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "name of the station",
+                        "type": "string",
+                        "example": "Karlsruhe Hbf"
+                    },
+                    "latitude": {
+                        "title": "latitude",
+                        "description": "latitude of the station",
+                        "type": "number",
+                        "format": "float",
+                        "example": "48.991591"
+                    },
+                    "longitude": {
+                        "title": "longitude",
+                        "description": "longitude of the station",
+                        "type": "number",
+                        "format": "float",
+                        "example": "8.400538"
+                    },
+                    "ibnr": {
+                        "title": "ibnr",
+                        "description": "IBNR of the station",
+                        "type": "integer",
+                        "example": "8000191"
+                    },
+                    "rilIdentifier": {
+                        "title": "rilIdentifier",
+                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
+                        "type": "string",
+                        "example": "RK",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TrainStation"
+                }
+            },
             "BearerTokenResponse": {
                 "title": "BearerTokenResponse",
                 "properties": {
@@ -5105,55 +5154,6 @@
                 "type": "object",
                 "xml": {
                     "name": "TrainCheckinResponse"
-                }
-            },
-            "TrainStation": {
-                "title": "TrainStation",
-                "description": "train station model",
-                "properties": {
-                    "id": {
-                        "title": "id",
-                        "description": "id",
-                        "type": "integer",
-                        "example": "4711"
-                    },
-                    "name": {
-                        "title": "name",
-                        "description": "name of the station",
-                        "type": "string",
-                        "example": "Karlsruhe Hbf"
-                    },
-                    "latitude": {
-                        "title": "latitude",
-                        "description": "latitude of the station",
-                        "type": "number",
-                        "format": "float",
-                        "example": "48.991591"
-                    },
-                    "longitude": {
-                        "title": "longitude",
-                        "description": "longitude of the station",
-                        "type": "number",
-                        "format": "float",
-                        "example": "8.400538"
-                    },
-                    "ibnr": {
-                        "title": "ibnr",
-                        "description": "IBNR of the station",
-                        "type": "integer",
-                        "example": "8000191"
-                    },
-                    "rilIdentifier": {
-                        "title": "rilIdentifier",
-                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
-                        "type": "string",
-                        "example": "RK",
-                        "nullable": "true"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "TrainStation"
                 }
             },
             "TrainStopover": {
