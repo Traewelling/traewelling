@@ -23,6 +23,7 @@ class Feature implements \JsonSerializable
     public function toArray(): array {
         $response = [
             'type'     => 'Feature',
+            'properties' => [],
             'geometry' => [
                 'type'        => $this->type,
                 'coordinates' => $this->coordinates
