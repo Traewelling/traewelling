@@ -17,8 +17,21 @@ return [
     # DB_REST
     'db_rest'               => env('DB_REST', 'https://v5.db.transport.rest/'),
     'db_rest_timeout'       => env('DB_REST_TIMEOUT', 10),
+
+    # Points
     'base_points'           => [
-        'train' => [
+        'time_window' => [
+            # time windows before and after a journey to get points
+            'good_enough' => [
+                'before' => env('GOOD_ENOUGH_POINTS_MIN_BEFORE', 60),
+                'after'  => env('GOOD_ENOUGH_POINTS_MIN_AFTER', 60),
+            ],
+            'in_time'     => [
+                'before' => env('FULL_POINTS_MIN_BEFORE', 20),
+                'after'  => env('FULL_POINTS_MIN_AFTER', 10),
+            ],
+        ],
+        'train'       => [
             'tram'            => env('BASE_POINTS_TRAIN_TRAM', 2),
             'bus'             => env('BASE_POINTS_TRAIN_BUS', 2),
             'subway'          => env('BASE_POINTS_TRAIN_SUBWAY', 2),

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 
 /**
+ * @property int              id
  * @property int              user_id
  * @property string           body
  * @property Business         business
@@ -24,10 +25,10 @@ class Status extends Model
 
     use HasFactory;
 
-    protected $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'tweet_id', 'mastodon_post_id'];
-    protected $hidden   = ['user_id', 'business'];
-    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description'];
-    protected $casts    = [
+    protected    $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'tweet_id', 'mastodon_post_id'];
+    protected    $hidden   = ['user_id', 'business'];
+    protected    $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description'];
+    protected    $casts    = [
         'id'               => 'integer',
         'user_id'          => 'integer',
         'business'         => Business::class,

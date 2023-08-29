@@ -26,7 +26,7 @@ class TrainStation extends Model
     use HasFactory;
 
     protected $fillable = ['ibnr', 'rilIdentifier', 'name', 'latitude', 'longitude', 'time_offset', 'shift_time'];
-    protected $hidden   = ['created_at', 'updated_at'];
+    protected $hidden   = ['created_at', 'updated_at', 'time_offset', 'shift_time'];
     protected $casts    = [
         'id'        => 'integer',
         'ibnr'      => 'integer',

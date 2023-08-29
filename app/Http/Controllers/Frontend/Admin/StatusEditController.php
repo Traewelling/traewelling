@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Frontend\Admin;
 
 use App\Events\StatusUpdateEvent;
-use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
@@ -64,11 +64,11 @@ class StatusEditController extends Controller
         $newDeparture = $newOrigin->departure_planned ?? $newOrigin->arrival_planned;
         $newArrival   = $newDestination->arrival_planned ?? $newDestination->departure_planned;
 
-        $distanceInMeters = GeoController::calculateDistance(
+        $distanceInMeters = (new LocationController(
             hafasTrip:   $status->trainCheckin->HafasTrip,
             origin:      $newOrigin,
             destination: $newDestination
-        );
+        ))->calculateDistance();
 
         $pointCalculation = PointsCalculationController::calculatePoints(
             distanceInMeter: $distanceInMeters,
