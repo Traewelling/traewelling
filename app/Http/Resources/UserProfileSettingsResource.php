@@ -25,7 +25,7 @@ class UserProfileSettingsResource extends JsonResource
             'privateProfile'          => (bool) $this->private_profile,
             'preventIndex'            => (bool) $this->prevent_index,
             'defaultStatusVisibility' => (int) $this->default_status_visibility->value,
-            'privacyHideDays'         => (int) $this->privacy_hide_days->value,
+            'privacyHideDays'         => (int) $this->privacy_hide_days,
             'password'                => (bool) $this->password,
             'email'                   => $this->email,
             'emailVerified'           => !empty($this->email_verified_at),
