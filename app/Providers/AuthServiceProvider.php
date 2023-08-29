@@ -65,8 +65,6 @@ class AuthServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot(): void {
-        $this->registerPolicies();
-
         Passport::useClientModel(OAuthClient::class);
 
         // Override passport routes
