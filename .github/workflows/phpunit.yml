@@ -43,6 +43,9 @@ jobs:
           mkdir -p database
           touch database/database.sqlite
 
+      - name: Create Vite Production build
+        run: npm run build
+
       - name: Execute tests (Unit and Feature tests) via Laravel internal test management and PHPUnit
         env:
           DB_CONNECTION: sqlite
