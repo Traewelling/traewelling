@@ -23,14 +23,23 @@ jobs:
           extensions: mbstring, bcmath, ctype, fileinfo, json, openssl, pdo, tokenizer, xml, gd
           coverage: xdebug
 
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+
       - name: Copy .env
         run: cp .env.example .env
 
       - name: Validate composer.json and composer.lock
         run: composer validate
 
-      - name: Install Dependencies
+      - name: Install Composer Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --prefer-dist
+
+      - name: Install npm Dependencies
+        run: npm ci
 
       - name: Generate key
         run: php artisan key:generate
