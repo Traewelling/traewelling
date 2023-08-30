@@ -17,22 +17,22 @@
         "aarch64-darwin"
       ];
       perSystem = {
-        config,
         pkgs,
+        lib,
         ...
       }: {
-        devenv.shells.default = {
+        devenv.shells.default = {config, ...}: {
           languages = {
             php.enable = true;
             javascript.enable = true;
           };
-          dotenv.disableHint = true;
+          dotenv.enable = true;
           services.mysql = {
             enable = true;
             ensureUsers = [
               {
-                name = "homestead";
-                password = "secret";
+                name = config.env.DB_USERNAME;
+                password = config.env.DB_PASSWORD;
                 ensurePermissions = {
                   "*.*" = "ALL PRIVILEGES";
                 };
@@ -40,16 +40,15 @@
             ];
             initialDatabases = [
               {
-                name = "homestead";
+                name = config.env.DB_DATABASE;
               }
             ];
           };
-          scripts =
-          let
-            composer = "${config.devenv.shells.default.languages.php.packages.composer}/bin/composer";
-            php = "${config.devenv.shells.default.languages.php.package}/bin/php";
-            npm = "${config.devenv.shells.default.languages.javascript.package}/bin/npm";
-            mysql = config.devenv.shells.default.services.mysql.package;
+          scripts = let
+            composer = "${config.languages.php.packages.composer}/bin/composer";
+            php = "${config.languages.php.package}/bin/php";
+            npm = "${config.languages.javascript.package}/bin/npm";
+            mysql = config.services.mysql.package;
           in {
             setup-devenv.exec = ''
               set -eo pipefail
