@@ -59,9 +59,9 @@
               fi
               set -a; source .env; set +a
               echo "Installing composer packages"
-              ${composer} install > /dev/null 2>&1
+              ${composer} install > /dev/null
               echo "Installing npm packages"
-              ${npm} ci > /dev/null 2>&1
+              ${npm} ci > /dev/null
 
               if [[ "$DB_CONNECTION" == "mysql" ]];
               then
@@ -78,9 +78,9 @@
               fi
 
               echo "Generating Keys"
-              ${php} artisan key:generate > /dev/null 2>&1
+              ${php} artisan key:generate > /dev/null
               echo "Initializing Passport"
-              ${php} artisan passport:install > /dev/null 2>&1
+              ${php} artisan passport:install > /dev/null
             '';
             serve.exec = ''
               ${npm} run watch &
