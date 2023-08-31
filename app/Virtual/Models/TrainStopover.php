@@ -211,7 +211,7 @@ class TrainStopover
      *
      * @var bool
      */
-    private $isDeparutreDelayed;
+    private $isDepartureDelayed;
 
     /**
      * @OA\Property (
