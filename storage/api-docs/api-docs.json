@@ -5290,7 +5290,7 @@
                         "type": "boolean",
                         "example": false
                     },
-                    "isDeparutreDelayed": {
+                    "isDepartureDelayed": {
                         "title": "isDepartureDelayed",
                         "description": "Is there a delay in the departure time?",
                         "type": "boolean",
