@@ -100,7 +100,7 @@ If you want to use it:
 - [Install nix](https://github.com/DeterminateSystems/nix-installer) if you haven't already. (Make sure you've [enabled flakes and the nix command](https://nixos.wiki/wiki/Flakes#Permanent))
 - Activate the environment either by using the [direnv](https://direnv.net/) shell hook or by executing `nix develop --impure` ([why-impure?](https://devenv.sh/guides/using-with-flakes/#getting-started)) in every terminal where you need the dev environment
 - Run `devenv up` in another terminal
-- Run `setup-devenv` in your terminal to install composer and npm packages and migrate and seed the database
+- Run `setup-devenv` in your terminal to copy the example `.env` file, install composer and npm packages, and migrate and seed the database
 - Run `serve` to start serving the application on http://127.0.0.1:8000/
 
 ## Developing and contributing
