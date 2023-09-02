@@ -84,6 +84,18 @@
           ${npm} run dev &
           ${php} artisan serve
         '';
+        update-nix-package-deps.exec = ''
+          set -eo pipefail
+
+          pushd nix/package
+          ./update.sh
+          pushd web
+          ./update.sh
+          popd
+          popd
+
+          nix fmt ./nix/package
+        '';
         artisan.exec = ''
           # Unset .env variables, so laravel reads the .env files by itself
           ${unsetEnv}
