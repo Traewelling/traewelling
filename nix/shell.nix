@@ -1,9 +1,11 @@
 {...}: {
   perSystem = {
+    config,
     pkgs,
     lib,
     ...
-  }: {
+  }: rec {
+    devenv.shells.ci = devenv.shells.default;
     devenv.shells.default = {
       config,
       inputs,
