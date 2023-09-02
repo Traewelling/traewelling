@@ -26,4 +26,18 @@ class EventSuggestionCorrectionTest extends TestCase {
 
         $this->assertEquals('GreatTestCase', $suggestion->hashtag);
     }
+
+    public function testSuggestionHashTagWithoutCorrection() {
+        $user = User::factory()->create();
+
+        $suggestion = EventController::suggestEvent(
+            user: $user,
+            name: $this->faker->name,
+            begin: Carbon::now(),
+            end: Carbon::now()->addDay(),
+            hashtag: 'GreatTestCase',
+        );
+
+        $this->assertEquals('GreatTestCase', $suggestion->hashtag);
+    }
 }
