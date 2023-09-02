@@ -33,7 +33,7 @@ jobs:
         run: |
           if [ "$(git status --porcelain=v1 2>/dev/null | wc -l)" = "1" ]; then
             git status
-            echo "::error::Nix hashes are not up to date"
+            echo "::error::Nix hashes are not up to date. Update them with the `update-nix-package-dep` command in the nix devshell."
           fi
 
   build:
