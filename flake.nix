@@ -49,6 +49,11 @@
             php = "${config.languages.php.package}/bin/php";
             npm = "${config.languages.javascript.package}/bin/npm";
             mysql = config.services.mysql.package;
+
+            envKeys = builtins.attrNames config.env;
+            unsetEnv = builtins.concatStringsSep "\n" (
+              map (key: "unset ${key}") envKeys
+            );
           in {
             setup-devenv.exec = ''
               set -eo pipefail
@@ -83,7 +88,9 @@
               ${php} artisan passport:install > /dev/null
             '';
             serve.exec = ''
-              APP_URL=http://localhost:8000 ${npm} run dev &
+              # Unset .env variables, so laravel reads the .env files by itself
+              ${unsetEnv}
+              ${npm} run dev &
               ${php} artisan serve
             '';
           };
