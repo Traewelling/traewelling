@@ -22,6 +22,8 @@
         ...
       }: {
         devenv.shells.default = {config, ...}: {
+          # See https://github.com/cachix/devenv/issues/528#issuecomment-1556108767
+          containers = lib.mkForce {};
           languages = {
             php.enable = true;
             javascript.enable = true;
