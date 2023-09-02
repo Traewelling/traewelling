@@ -95,6 +95,11 @@
               ${npm} run dev &
               ${php} artisan serve
             '';
+            artisan.exec = ''
+              # Unset .env variables, so laravel reads the .env files by itself
+              ${unsetEnv}
+              exec ${php} artisan $@
+            '';
           };
         };
         formatter = pkgs.alejandra;
