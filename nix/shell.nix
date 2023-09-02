@@ -4,7 +4,17 @@
     lib,
     ...
   }: {
-    devenv.shells.default = {config, ...}: {
+    devenv.shells.default = {
+      config,
+      inputs,
+      system,
+      ...
+    }: let
+      composer2nix = import inputs.composer2nix {
+        inherit pkgs system;
+      };
+    in {
+      packages = [composer2nix];
       languages = {
         php.enable = true;
         javascript.enable = true;
