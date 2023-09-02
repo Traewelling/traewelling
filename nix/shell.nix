@@ -81,6 +81,18 @@
           ${npm} run watch &
           ${php} artisan serve
         '';
+        update-nix-package-deps.exec = ''
+          set -eo pipefail
+
+          pushd nix/package
+          ./update.sh
+          pushd web
+          ./update.sh
+          popd
+          popd
+
+          nix fmt ./nix/package
+        '';
       };
     };
   };
