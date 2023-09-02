@@ -1,11 +1,16 @@
 {...}: {
   perSystem = {
+    config,
     pkgs,
     lib,
     ...
   }: {
-    devenv.shells.default = {config, ...}: {
-      # See https://github.com/cachix/devenv/issues/528#issuecomment-1556108767
+    devenv.shells.default = {
+      config,
+      inputs,
+      system,
+      ...
+    }: {
       containers = lib.mkForce {};
       languages = {
         php.enable = true;
