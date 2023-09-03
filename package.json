@@ -19,6 +19,7 @@
         "resolve-url-loader": "^5.0.0",
         "sass": "^1.65.1",
         "sass-loader": "^13.3.2",
+        "typescript": "^5.2.2",
         "vue-loader": "^16.8.3"
     },
     "dependencies": {

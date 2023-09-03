@@ -31,6 +31,7 @@
         "laravel/socialite": "^5.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^4.0",
+        "predis/predis": "^2.2",
         "revolution/laravel-mastodon-api": "^3.0",
         "romanzipp/laravel-queue-monitor": "^4.0",
         "spatie/icalendar-generator": "^2.0",
