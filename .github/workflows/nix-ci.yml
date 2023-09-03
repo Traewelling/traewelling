@@ -17,23 +17,16 @@ jobs:
       #     name: trawelling
       #     authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
-      - name: Prepare Nix shell
-        run: nix develop --impure .#ci
-
-      - name: Update npm Hashes
-        working-directory: nix/package/web
-        run: nix develop --impure .#ci --command "./update.sh"
-
-      - name: Update Composer Hashes
-        working-directory: nix/package
-        run: nix develop --impure .#ci --command "./update.sh"
+      - name: Update generated files
+        run: nix develop --impure .#ci --command "update-nix-package-deps"
 
       - name: Check if up-to-date
         shell: bash
         run: |
           if [ "$(git status --porcelain=v1 2>/dev/null | wc -l)" = "1" ]; then
             git status
-            echo "::error::Nix hashes are not up to date. Update them with the `update-nix-package-dep` command in the nix devshell."
+            echo "Nix hashes are not up to date. Update them with the `update-nix-package-dep` command in the nix devshell. or run `/nix-update`"
+            exit 1
           fi
 
   build:
