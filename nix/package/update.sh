@@ -1,14 +1,15 @@
 #!/usr/bin/env nix-shell
-#! nix-shell -i bash -p nix nix-prefetch-scripts
+#! nix-shell -i bash -p nix git
 
-# check if composer2nix is installed
-if ! command -v composer2nix &> /dev/null; then
-  echo "Please use the devshell or install composer2nix (https://github.com/svanderburg/composer2nix) to run this script."
-  exit 1
-fi
+set -eo pipefail
 
-composer2nix --name "traewelling" \
-    --composition=composition.nix \
-    --no-dev \
-    --config-file=../../composer.json \
-    --lock-file=../../composer.lock
+GIT_TAG="$(git describe --tags --abbrev=0)"
+OLD_VERSION="$(nix eval --raw ".#default.version")"
+sed -i -E -e "s#version = \"$OLD_VERSION\"#version = \"${GIT_TAG#v}\"#" ./default.nix
+
+OLD_HASH="$(nix eval --raw ".#default.vendorHash")"
+EMPTY_HASH="sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+sed -i -E -e "s#vendorHash = \".*\"#vendorHash = \"$EMPTY_HASH\"#" ./default.nix
+
+NEW_HASH="$(nix build .#default 2>&1 | tail -n3 | grep 'got:' | cut -d: -f2- | xargs echo || true)"
+sed -i -E -e "s#vendorHash = \"$EMPTY_HASH\"#vendorHash = \"${NEW_HASH:-$OLD_HASH}\"#" ./default.nix
