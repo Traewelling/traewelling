@@ -11,6 +11,7 @@ class CacheKey
     public const LeaderboardGlobalPoints   = 'LeaderboardGlobalPoints';
     public const LeaderboardGlobalDistance = 'LeaderboardGlobalDistance';
     public const LeaderboardMonth          = 'LeaderboardMonth';
+    public const SchedulerCanary           = 'scheduler-canary';
     public const StatisticsGlobal          = 'StatisticsGlobal';
 
     public static function getFriendsLeaderboardKey(int $userId): string {

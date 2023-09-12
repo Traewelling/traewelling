@@ -14,6 +14,7 @@
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\FollowController;
+use App\Http\Controllers\API\v1\HealthMonitorController;
 use App\Http\Controllers\API\v1\IcsController;
 use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\API\v1\NotificationsController;
@@ -42,6 +43,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
     Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy'])
          ->name('api.v1.getPrivacyPolicy');
+
+    Route::get("/health/ready", [HealthMonitorController::class, 'healthReady'])
+         ->name("api.health.ready");
+    Route::get("/health/fitness", [HealthMonitorController::class, 'healthFitness'])
+         ->name("api.health.fitness");
 
     Route::group(['middleware' => ['auth:api', 'privacy-policy']], static function() {
         Route::post('event', [EventController::class, 'suggest'])->middleware(['scope:write-event-suggestions']);
