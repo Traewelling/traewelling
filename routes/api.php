@@ -119,7 +119,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('profile', [SettingsController::class, 'getProfileSettings'])
                  ->middleware(['scope:read-settings']);
             Route::put('profile', [SettingsController::class, 'updateSettings'])
-                 ->middleware(['scope:write-settings']);
+                 ->middleware(['scope:write-settings-profile']);
             Route::delete('profilePicture', [SettingsController::class, 'deleteProfilePicture'])
                  ->middleware(['scope:write-settings-profile-picture']);
             Route::post('profilePicture', [SettingsController::class, 'uploadProfilePicture'])
