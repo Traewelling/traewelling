@@ -11,7 +11,6 @@
 [![Codacy Coverage Badge](https://img.shields.io/codacy/coverage/60765ceacee5494184476eae9bf27a1f)](https://www.codacy.com/gh/Traewelling/traewelling/dashboard?utm_source=github.com&utm_medium=referral&utm_content=Traewelling/traewelling&utm_campaign=Badge_Coverage)
 [![Translation status](https://translate.codeberg.org/widgets/trawelling/-/traewelling/svg-badge.svg)](https://translate.codeberg.org/engage/trawelling/)
 ![License](https://img.shields.io/github/license/traewelling/traewelling)
-[![Staging Environment](https://img.shields.io/github/actions/workflow/status/traewelling/traewelling/staging-environment.yml?branch=develop&color=%234f46e5&label=Staging%20Environment&logo=%F0%9F%9A%80)](https://trwl-develop-environment.fly.dev)
 
 [![Träwelling Screenshot](traewelling.jpg)](https://traewelling.de)
 
