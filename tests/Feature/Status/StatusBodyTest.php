@@ -22,7 +22,7 @@ class StatusBodyTest extends TestCase
              ->assertSee($htmlSanitized, escape: false);
     }
 
-    public function statusBodyProvider() {
+    public static function statusBodyProvider() {
         return [
             [
                 'ab' . PHP_EOL . 'cd',
