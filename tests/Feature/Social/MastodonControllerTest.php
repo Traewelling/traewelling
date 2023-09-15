@@ -39,7 +39,7 @@ class MastodonControllerTest extends TestCase
         $this->assertFalse($validated->fails());
     }
 
-    public function providerTestFormatDomain(): array {
+    public static function providerTestFormatDomain(): array {
         return [
             ['https://uelfte.club', 'https://uelfte.club'],
             ['http://uelfte.club', 'https://uelfte.club'],
