@@ -20,12 +20,12 @@ class UTCTimeMethodTest extends UnitTestCase
      */
     public function testSetUtcDateTime($assert, $value): void {
         $UTCDateTime = new UTCDateTime();
-        $result = $UTCDateTime->set(new TrainStopover(), 'departure', $value, []);
+        $result      = $UTCDateTime->set(new TrainStopover(), 'departure', $value, []);
 
         $this->assertEquals($assert, $result->toIso8601String());
     }
 
-    private function setUtcDateTimeDataProvider(): array {
+    public static function setUtcDateTimeDataProvider(): array {
         return [
             ['2023-01-01T00:00:00+00:00', '2023-01-01T01:00:00+01:00'],
             ['2023-01-01T00:00:00+00:00', '2023-01-01T01:00:00+01:00'],
@@ -39,12 +39,12 @@ class UTCTimeMethodTest extends UnitTestCase
      */
     public function testGetUtcDateTime($assert, $value): void {
         $UTCDateTime = new UTCDateTime();
-        $result = $UTCDateTime->get(new TrainStopover(), 'departure', $value, []);
+        $result      = $UTCDateTime->get(new TrainStopover(), 'departure', $value, []);
 
         $this->assertEquals($assert, $result?->toIso8601String());
     }
 
-    private function getUtcDateTimeDataProvider(): array {
+    public static function getUtcDateTimeDataProvider(): array {
         return [
             [null, null],
             ['2023-01-01T00:00:00+00:00', '2023-01-01T00:00:00'],
