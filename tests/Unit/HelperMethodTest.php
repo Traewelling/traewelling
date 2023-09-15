@@ -79,7 +79,7 @@ class HelperMethodTest extends UnitTestCase
         $this->assertEquals('', userTime(null));
     }
 
-    public function userTimeDataProvider(): array {
+    public static function userTimeDataProvider(): array {
         $defaultTime                 = '2023-01-01T00:00:00';
         $carbonDefaultTime           = new Carbon($defaultTime, "UTC");
         $illuminateCarbonDefaultTime = new IlluminateCarbon($defaultTime);
