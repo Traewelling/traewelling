@@ -3,6 +3,7 @@
 namespace App\Dto\GeoJson;
 
 use App\Dto\Coordinate;
+use stdClass;
 
 class Feature implements \JsonSerializable
 {
