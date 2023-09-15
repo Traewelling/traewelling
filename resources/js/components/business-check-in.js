@@ -31,6 +31,8 @@ $(document).on("click", ".edit", function (event) {
 
     document.querySelector("#status-update input[name='statusId']").value = statusId;
     document.querySelector("#status-update textarea[name='body']").value  = dataset.trwlStatusBody;
+    document.querySelector("#status-update input[name='manualDeparture']").value  = dataset.trwlManualDeparture;
+    document.querySelector("#status-update input[name='manualArrival']").value  = dataset.trwlManualArrival;
 
     let statusBusiness   = dataset.trwlBusinessId;
     let statusVisibility = dataset.trwlVisibility;

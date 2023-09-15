@@ -3,6 +3,8 @@
 namespace App\Virtual\Models;
 
 
+use App\Dto\Transport\TrainStation;
+
 /**
  * @OA\Schema(
  *     title="UserAuth",
@@ -110,9 +112,9 @@ class UserAuth
     /**
      * @OA\Property (
      *     title="twitterUrl",
-     *     description="URL to the Twitter profile of the user",
+     *     description="Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
      *     nullable=true,
-     *     example="https://twitter.com/i/user/843458335"
+     *     example="null"
      * )
      *
      * @var string

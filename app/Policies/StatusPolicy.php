@@ -58,7 +58,11 @@ class StatusPolicy
         }
 
         // Case 6: Status is unlisted
-        // This isn't checked here. This is done in the query from the (global/private) dashboard.
+        if ($status->visibility === StatusVisibility::UNLISTED) {
+            //This isn't checked here. This is done in the query from the (global/private) dashboard.
+            //But in general, unlisted statuses are visible to everyone.
+            return Response::allow();
+        }
 
         // Case 7: Status is public or authenticated
         if ($status->visibility === StatusVisibility::PUBLIC || $status->visibility === StatusVisibility::AUTHENTICATED) {
@@ -80,6 +84,20 @@ class StatusPolicy
      */
     public function update(User $user, Status $status): bool {
         return $user->id === $status->user_id;
+    }
+
+    /**
+     * @param User|null $user
+     * @param Status    $status
+     *
+     * @return bool If the given user (or unauthenticated) can like the given status
+     */
+    public function like(?User $user, Status $status): bool {
+        if ($user === null) {
+            //Unauthenticated users can't like things...
+            return false;
+        }
+        return $this->view($user, $status) && $user->likes_enabled && $status->user->likes_enabled;
     }
 
     /**

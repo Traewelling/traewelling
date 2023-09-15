@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Dto\CheckinSuccess;
 use App\Enum\Business;
-use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
@@ -50,7 +50,9 @@ class FrontendTransportController extends Controller
                                             'travelType' => ['nullable', new Enum(TravelType::class)]
                                         ]);
 
-        $when = isset($validated['when']) ? Carbon::parse($validated['when']) : null;
+        $when = isset($validated['when'])
+            ? Carbon::parse($validated['when'], auth()->user()->timezone ?? config('app.timezone'))
+            : Carbon::now(auth()->user()->timezone ?? config('app.timezone'))->subMinutes(5);
 
         try {
             //Per default: Use the given station query for lookup
@@ -69,6 +71,7 @@ class FrontendTransportController extends Controller
                 stationQuery: $searchQuery,
                 when:         $when,
                 travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
+                localtime:    true
             );
             return view('stationboard', [
                                           'station'    => $stationboardResponse['station'],
@@ -127,13 +130,13 @@ class FrontendTransportController extends Controller
                 $startStation->id,
             );
 
-            $stopovers = $hafasTrip->stopoversNEW
+            $stopovers = $hafasTrip->stopovers
                 ->filter(function(TrainStopover $trainStopover) use ($departure): bool {
                     return $trainStopover->departure_planned->isAfter($departure);
                 });
 
             // Find out where this train terminates and offer this as a "fast check-in" option.
-            $lastStopover = $hafasTrip->stopoversNEW
+            $lastStopover = $hafasTrip->stopovers
                 ->filter(function(TrainStopover $stopover) {
                     return !$stopover->isArrivalCancelled;
                 })
@@ -189,16 +192,20 @@ class FrontendTransportController extends Controller
 
             $trainCheckin = $backendResponse['status']->trainCheckin;
 
-            return redirect()->route('dashboard')->with('checkin-success', [
-                'distance'                => $trainCheckin->distance,
-                'duration'                => $trainCheckin->duration,
-                'points'                  => $trainCheckin->points,
-                'lineName'                => $trainCheckin->HafasTrip->linename,
-                'alsoOnThisConnection'    => $trainCheckin->alsoOnThisConnection,
-                'event'                   => $trainCheckin->event,
-                'forced'                  => isset($validated['force']),
-                'pointsCalculationReason' => PointReason::from($backendResponse['points']['calculation']['reason'])
-            ]);
+            $checkinSuccess = new CheckinSuccess(
+                id:                   $backendResponse['status']->id,
+                distance:             $trainCheckin->distance,
+                duration:             $trainCheckin->duration,
+                points:               $trainCheckin->points,
+                pointReason:          $backendResponse['points']->reason,
+                lineName:             $trainCheckin->HafasTrip->linename,
+                socialText:           $backendResponse['status']->socialText,
+                alsoOnThisConnection: $trainCheckin->alsoOnThisConnection,
+                event:                $trainCheckin->event,
+                forced: isset($validated['force'])
+            );
+            return redirect()->route('status', ['id' => $backendResponse['status']->id])
+                             ->with('checkin-success', (clone $checkinSuccess));
 
         } catch (CheckInCollisionException $exception) {
             return redirect()
@@ -235,13 +242,9 @@ class FrontendTransportController extends Controller
             }
             $trainStation = HomeController::setHome(auth()->user(), $trainStation);
 
-            return redirect()->back()->with(['message' => __('user.home-set', ['station' => $trainStation->name])]);
+            return redirect()->back()->with(['success' => __('user.home-set', ['station' => $trainStation->name])]);
         } catch (HafasException) {
             return redirect()->back()->with(['error' => __('messages.exception.generalHafas')]);
         }
-    }
-
-    private function isCancelled(mixed $param): bool {
-        return $param['cancelled'] && $param['arrival'] == null && $param['departure'] == null;
     }
 }

@@ -49,6 +49,10 @@ Homestead.json
 .idea/commandlinetools/
 .idea/laravel-idea.xml
 .idea/sonarlint.xml
+.idea/phpunit.xml
+.idea/phpspec.xml
+.idea/codeception.xml
+.idea/php-test-framework.xml
 
 # Sensitive or high-churn files
 .idea/dataSources.xml
@@ -121,9 +125,16 @@ fabric.properties
 
 # End of https://www.gitignore.io/api/phpstorm
 
+database-data/
+
 public/js/*.js
 public/js/*.js.map
 public/js/*.js.LICENSE.txt
 public/css/*.css
 public/css/*.css.map
 .phpunit.result.cache
+
+# Nix
+.devenv
+.direnv
+result*

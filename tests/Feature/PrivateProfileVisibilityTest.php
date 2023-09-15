@@ -3,7 +3,8 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\UserController;
-use Carbon\Carbon;
+use App\Models\TrainCheckin;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
@@ -17,8 +18,8 @@ class PrivateProfileVisibilityTest extends ApiTestCase
 
     /**
      * We want to test, if a private profile and/or status is visible to the user itself, a following user, a
-     * not-following user and a guest. Therefore we create three users: bob (private profile), gertrud (following bob),
-     * and alice (not following bob). Also Gertrud and bob will have their own seperate check-ins.
+     * not-following user and a guest. Therefore, we create three users: bob (private profile), gertrud (following bob),
+     * and alice (not following bob). Also, Gertrud and bob will have their own seperate check-ins.
      */
     public function setUp(): void {
         parent::setUp();
@@ -28,10 +29,8 @@ class PrivateProfileVisibilityTest extends ApiTestCase
     /**
      * Watching a private profile is characterized by being able to see ones statuses on a profile page.
      * If the statuses are returned as null, you're not allowed to see the statuses.
-     *
-     * @test
      */
-    public function view_profile_of_private_user() {
+    public function test_view_profile_of_private_user() {
         $this->markTestSkipped('Test does not work properly and therefore was not executed. It must be rewritten.');
 
         // Can a guest see the profile of bob? => no
@@ -63,15 +62,12 @@ class PrivateProfileVisibilityTest extends ApiTestCase
         $this->assertNotEquals(null, $gertrud['statuses'], 'Gertrud cannot see the statuses bob!');
     }
 
-    /**
-     * @test
-     */
-    public function view_status_of_private_user() {
+    public function test_view_status_of_private_user() {
         $this->markTestSkipped('Test does not work properly and therefore was not executed. It must be rewritten.');
 
         // Can a guest see the status of bob? => no
         Auth::logout();
-        $guest = $this->get(route('statuses.get', ['id' => $this->users->bob->checkin['statusId']]));
+        $guest = $this->get(route('status', ['id' => $this->users->bob->checkin['statusId']]));
         $this->assertGuest();
         $guest->assertStatus(403);
 
@@ -101,9 +97,8 @@ class PrivateProfileVisibilityTest extends ApiTestCase
     /**
      * If a user is private, only authorized (not explicitly authenticated) users should be able to see their statuses
      * on the dashboard
-     * @test
      */
-    public function view_status_of_private_user_on_global_dashboard() {
+    public function test_view_status_of_private_user_on_global_dashboard() {
         $this->markTestSkipped('Test does not work properly and therefore was not executed. It must be rewritten.');
 
         // Can a guest see the statuses of bob on the dashboard? => no, because they can't access the dashboard
@@ -207,25 +202,25 @@ class PrivateProfileVisibilityTest extends ApiTestCase
 
         // Can a guest see the statuses of bob on the dashboard? => no
         Auth::logout();
-        $guest = $this->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+        $guest = $this->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $this->assertGuest();
         $guest->assertDontSee($this->users->bob->user->username);
 
         // Can Bob see the statuses of bob on the event page? => yes
         $bob = $this->actingAs($this->users->bob->user, 'web')
-                    ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+                    ->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $bob->assertSee($this->users->bob->user->username);
         $bob->assertSuccessful();
 
         // Can Alice see the statuses of bob on the dashboard? => no
         $alice = $this->actingAs($this->users->alice->user, 'web')
-                      ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+                      ->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $alice->assertDontSee($this->users->bob->user->username);
         $alice->assertSuccessful();
 
         // Can Gertrud see the statuses of bob on the dashboard? => yes
         $gertrud = $this->actingAs($this->users->gertrud->user, 'web')
-                        ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+                        ->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $gertrud->assertSee($this->users->bob->user->username);
         $gertrud->assertSuccessful();
     }
@@ -244,19 +239,12 @@ class PrivateProfileVisibilityTest extends ApiTestCase
         $data->gertrud = new stdClass();
         $data->alice   = new stdClass();
         // Create Gertrud, Alice and Bob
-        $data->bob->user                     = $this->createGDPRAckedUser();
-        $data->bob->user->privacy_ack_at     = now();
-        $data->gertrud->user                 = $this->createGDPRAckedUser();
-        $data->gertrud->user->privacy_ack_at = now();
-        $data->alice->user                   = $this->createGDPRAckedUser();
-        $data->alice->user->privacy_ack_at   = now();
-        $data->bob->user->save();
-        $data->gertrud->user->save();
-        $data->alice->user->save();
+        $data->bob->user     = User::factory()->create();
+        $data->gertrud->user = User::factory()->create();
+        $data->alice->user   = User::factory()->create();
 
         // Create new CheckIn for Bob
-        $timestamp          = Carbon::parse("-40min");
-        $data->bob->checkin = $this->checkin("Frankfurt Hbf", $timestamp, $data->bob->user, 1);
+        $data->bob->checkin = TrainCheckin::factory(['user_id' => $data->bob->user->id])->create();
 
         // Make Gertrud follow bob and make bob's profile private
         UserController::destroyFollow($data->alice->user, $data->bob->user);

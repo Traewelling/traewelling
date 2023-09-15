@@ -42,7 +42,7 @@ class BackendCheckinTest extends TestCase
         }
         $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
-        $originStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', $stationHannover->ibnr)->first();
+        $originStopover = $hafasTrip->stopovers->where('trainStation.ibnr', $stationHannover->ibnr)->first();
 
         $this->expectException(StationNotOnTripException::class);
         TrainCheckinController::checkin(
@@ -76,8 +76,8 @@ class BackendCheckinTest extends TestCase
         }
         $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
-        $originStopover      = $hafasTrip->stopoversNew->where('trainStation.ibnr', $station->ibnr)->first();
-        $nextStopovers       = $hafasTrip->stopoversNew
+        $originStopover      = $hafasTrip->stopovers->where('trainStation.ibnr', $station->ibnr)->first();
+        $nextStopovers       = $hafasTrip->stopovers
             ->where(function(TrainStopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned);
@@ -116,8 +116,8 @@ class BackendCheckinTest extends TestCase
         }
         $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
-        $originStopover      = $hafasTrip->stopoversNew->where('trainStation.ibnr', $station->ibnr)->first();
-        $nextStopovers       = $hafasTrip->stopoversNew
+        $originStopover      = $hafasTrip->stopovers->where('trainStation.ibnr', $station->ibnr)->first();
+        $nextStopovers       = $hafasTrip->stopovers
             ->where(function(TrainStopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned);
@@ -174,7 +174,6 @@ class BackendCheckinTest extends TestCase
 
         // The bus runs in a 20min interval
         $departure = $trainStationboard['departures'][0];
-        self::isCorrectHafasTrip($departure, $timestamp);
 
         // Third: Get the trip information
         try {
@@ -188,9 +187,9 @@ class BackendCheckinTest extends TestCase
         }
 
         //Höhenstr., Potsdam
-        $originStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', '736140')->first();
+        $originStopover = $hafasTrip->stopovers->where('trainStation.ibnr', '736140')->first();
         //Rathaus, Potsdam
-        $destinationStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', '736160')->last();
+        $destinationStopover = $hafasTrip->stopovers->where('trainStation.ibnr', '736160')->last();
 
         $user = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
 
@@ -247,9 +246,9 @@ class BackendCheckinTest extends TestCase
         $user = User::factory()->create();
 
         // Berlin-Westkreuz. We hop in there.
-        $originStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', 8089047)->first();
+        $originStopover = $hafasTrip->stopovers->where('trainStation.ibnr', 8089047)->first();
         // Berlin-Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
-        $destinationStopover = $hafasTrip->stopoversNew
+        $destinationStopover = $hafasTrip->stopovers
             ->where('trainStation.ibnr', 8089090)
             ->where(function(TrainStopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
@@ -306,9 +305,9 @@ class BackendCheckinTest extends TestCase
         $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         // We hop in at Plantagenstr, Potsdam.
-        $originStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', 736165)->first();
+        $originStopover = $hafasTrip->stopovers->where('trainStation.ibnr', 736165)->first();
         // We check out two stations later at Babelsberg (S)/Wattstr., Potsdam.
-        $destinationStopover = $hafasTrip->stopoversNew
+        $destinationStopover = $hafasTrip->stopovers
             ->where('trainStation.ibnr', 736089)
             ->where(function(TrainStopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
@@ -365,9 +364,9 @@ class BackendCheckinTest extends TestCase
         $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         // We hop in at Plantagenstr, Potsdam.
-        $originStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', 736165)->first();
+        $originStopover = $hafasTrip->stopovers->where('trainStation.ibnr', 736165)->first();
         // We check out at Babelsberg (S)/Wattstr., Potsdam. But this time we go a whole round with.
-        $destinationStopover = $hafasTrip->stopoversNew
+        $destinationStopover = $hafasTrip->stopovers
             ->where('trainStation.ibnr', 736089)
             ->where(function(TrainStopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
@@ -424,9 +423,9 @@ class BackendCheckinTest extends TestCase
         $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         // We hop in at Flughafen Terminal 1, Frankfurt a.M.
-        $originStopover = $hafasTrip->stopoversNew->where('trainStation.ibnr', 102932)->first();
+        $originStopover = $hafasTrip->stopovers->where('trainStation.ibnr', 102932)->first();
         // We check out at Hauptbahnhof, Darmstadt
-        $destinationStopover = $hafasTrip->stopoversNew
+        $destinationStopover = $hafasTrip->stopovers
             ->where('trainStation.ibnr', 104734)
             ->where(function(TrainStopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
@@ -469,9 +468,9 @@ class BackendCheckinTest extends TestCase
         }
         $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
-        $originStopover      = $hafasTrip->stopoversNew->where('trainStation.ibnr', self::FRANKFURT_HBF['id'])->first();
-        $originalDestination = $hafasTrip->stopoversNew->where('trainStation.ibnr', self::AACHEN_HBF['id'])->first();
-        $changedDestination  = $hafasTrip->stopoversNew->where('trainStation.ibnr', self::HANNOVER_HBF['id'])->first();
+        $originStopover      = $hafasTrip->stopovers->where('trainStation.ibnr', self::FRANKFURT_HBF['id'])->first();
+        $originalDestination = $hafasTrip->stopovers->where('trainStation.ibnr', self::AACHEN_HBF['id'])->first();
+        $changedDestination  = $hafasTrip->stopovers->where('trainStation.ibnr', self::HANNOVER_HBF['id'])->first();
 
         $status = TrainCheckinController::checkin(
             user:        $user,

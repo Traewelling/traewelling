@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
@@ -18,19 +19,17 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  */
 class FrontendUserController extends Controller
 {
-    public function getProfilePage($username): Renderable {
-        $profilePage = UserBackend::getProfilePage($username);
-        if ($profilePage === null) {
-            abort(404);
+    public function getProfilePage(string $username): View {
+        $user = User::where('username', $username)->firstOrFail();
+        try {
+            $statuses = UserController::statusesForUser($user);
+        } catch (AuthorizationException) {
+            $statuses = null;
         }
 
         return view('profile', [
-            'username'    => $profilePage['username'],
-            'statuses'    => $profilePage['statuses'],
-            'user'        => $profilePage['user'],
-            'currentUser' => Auth::user(),
-            'twitterUrl'  => $profilePage['twitterUrl'],
-            'mastodonUrl' => $profilePage['mastodonUrl']
+            'statuses' => $statuses,
+            'user'     => $user,
         ]);
     }
 
@@ -54,7 +53,7 @@ class FrontendUserController extends Controller
         } catch (AuthorizationException) {
             return response()->json(['message' => __('profile.youre-blocked-text')], 403);
         }
-        if ($createFollowResponse == false) {
+        if (!$createFollowResponse) {
             abort(409);
         }
         return response()->json(['message' => __('controller.user.follow-ok')], 201);
@@ -102,22 +101,14 @@ class FrontendUserController extends Controller
         return response()->json(['message' => __('controller.user.follow-destroyed')], 200);
     }
 
-    public function updateProfilePicture(Request $request): JsonResponse {
-        $avatar                 = $request->input('image');
-        $profilePictureResponse = UserBackend::updateProfilePicture($avatar);
-        return response()->json($profilePictureResponse);
-    }
-
     public function searchUser(Request $request): Renderable|RedirectResponse {
         try {
-            $userSearchResponse = UserBackend::searchUser($request['searchQuery']);
-
-            if ($userSearchResponse->count() === 1) {
-                return redirect()->route('profile', ['username' => $userSearchResponse->first()->username]);
+            $users = \App\Http\Controllers\Backend\UserController::searchUser($request['searchQuery']);
+            if ($users->count() === 1) {
+                return redirect()->route('profile', ['username' => $users->first()->username]);
             }
-
             return view('search', [
-                'userSearchResponse' => $userSearchResponse
+                'users' => $users,
             ]);
         } catch (HttpException) {
             //abort(400) is triggered.

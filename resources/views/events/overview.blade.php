@@ -48,7 +48,7 @@
                                                 </td>
                                                 <td>
                                                     <a class="btn btn-primary btn-sm"
-                                                       href="{{route('statuses.byEvent', ['eventSlug' => $event->slug])}}">
+                                                       href="{{route('event', ['slug' => $event->slug])}}">
                                                         {{__('menu.show-more')}}
                                                         <em class="fas fa-angle-double-right"></em>
                                                     </a>
@@ -72,43 +72,51 @@
                         </h2>
                         <hr/>
                         @auth
-                            <form method="POST" action="{{route('events.suggest')}}">
-                                @csrf
-                                <div class="form-outline mb-4">
+                            <form id="event-suggest">
+                                <div class="form-floating mb-2">
                                     <input type="text" id="event-requester-name" name="name" class="form-control"
                                            required/>
-                                    <label class="form-label" for="event-requester-name">{{__('events.name')}}</label>
+                                    <label class="form-label" for="event-requester-name">{{__('events.name')}} *</label>
                                 </div>
-                                <div class="form-outline mb-4">
+                                <div class="form-floating mb-2">
                                     <input type="text" id="event-requester-host" name="host" class="form-control"/>
                                     <label class="form-label" for="event-requester-host">{{__('events.host')}}</label>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="form-outline mb-4 datepicker">
+                                        <div class="form-floating mb-2 datepicker">
                                             <input type="date" id="event-requester-begin" name="begin"
                                                    class="form-control" required/>
                                             <label class="form-label" for="event-requester-begin">
-                                                {{__('events.begin')}}
+                                                {{__('events.begin')}} *
                                             </label>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="form-outline mb-4 datepicker">
+                                        <div class="form-floating mb-2 datepicker">
                                             <input type="date" id="event-requester-end" name="end" class="form-control"
                                                    required/>
                                             <label class="form-label" for="event-requester-end">
-                                                {{__('events.end')}}
+                                                {{__('events.end')}} *
                                             </label>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-outline mb-4">
-                                    <input type="string" id="event-requester-url" name="url" class="form-control"/>
+                                <div class="form-floating mb-2">
+                                    <input type="url" id="event-requester-url" name="url" class="form-control"/>
                                     <label class="form-label" for="event-requester-url">{{__('events.url')}}</label>
+                                </div>
+                                <div class="form-floating mb-2">
+                                    <input type="text" id="event-requester-hashtag" name="hashtag" class="form-control"/>
+                                    <label class="form-label" for="event-requester-hashtag">{{__('events.hashtag')}}</label>
+                                </div>
+                                <div class="form-floating mb-2" id="station-autocomplete-container">
+                                    <input type="text" id="station-autocomplete" name="nearestStation" class="form-control"/>
+                                    <label class="form-label" for="station-autocomplete">{{__('events.closestStation')}}</label>
                                 </div>
                                 <button type="submit" class="btn btn-primary">{{__('events.request-button')}}</button>
                             </form>
+
                             <hr/>
                             <small class="text-muted">{{__('events.notice')}}</small>
                         @else

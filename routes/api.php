@@ -33,8 +33,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static function() {
     Route::group(['prefix' => 'auth'], function() {
         Route::post('login', [v1Auth::class, 'login']);
-        Route::post('signup', [v1Auth::class, 'register']);
-        Route::group(['middleware' => 'auth:api'], function() {
+        Route::group(['middleware' => 'auth:api'], static function() {
             Route::post('refresh', [v1Auth::class, 'refresh']);
             Route::post('logout', [v1Auth::class, 'logout']);
             Route::get('user', [v1Auth::class, 'user']);
@@ -46,7 +45,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
     Route::group(['middleware' => ['auth:api', 'privacy-policy']], static function() {
         Route::post('event', [EventController::class, 'suggest'])->middleware(['scope:write-event-suggestions']);
-        Route::get('activeEvents', [EventController::class, 'activeEvents'])->middleware(['scope:read-statuses']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends'])
              ->middleware(['scope:read-statistics']);
         Route::group(['middleware' => ['scope:read-statuses']], static function() {
@@ -55,10 +53,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('dashboard/future', [StatusController::class, 'getFutureCheckins']);
         });
         Route::group(['middleware' => ['scope:write-statuses']], static function() {
-            Route::delete('status/{id}', [StatusController::class, 'destroy']);
+            Route::delete('status/{id}', [StatusController::class, 'destroy'])->whereNumber('id');
             Route::put('status/{id}', [StatusController::class, 'update']);
-            Route::delete('statuses/{statusId}', [StatusController::class, 'destroy']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
-            Route::put('statuses/{id}', [StatusController::class, 'update']);           //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
             Route::post('status/{statusId}/tags', [StatusTagController::class, 'store']);
             Route::put('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'update']);
             Route::delete('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'destroy']);
@@ -66,20 +62,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::group(['middleware' => ['scope:write-likes']], static function() {
             Route::post('status/{id}/like', [LikesController::class, 'create']);
             Route::delete('status/{id}/like', [LikesController::class, 'destroy']);
-            Route::post('like/{statusId}', [LikesController::class, 'create']);         //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/like)
-            Route::delete('like/{status}', [LikesController::class, 'destroy']);        //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/like)
         });
         Route::post('support/ticket', [SupportController::class, 'createTicket']);
         Route::group(['prefix' => 'notifications'], static function() {
             Route::group(['middleware' => ['scope:read-notifications']], static function() {
-                Route::get('/', [NotificationsController::class, 'index']);
-                Route::get('count', [NotificationsController::class, 'count']);
+                Route::get('/', [NotificationsController::class, 'listNotifications']);
+                Route::get('/unread/count', [NotificationsController::class, 'getUnreadCount']);
             });
             Route::group(['middleware' => ['scope:write-notifications']], static function() {
-                Route::put('{id}', [NotificationsController::class, 'update']);
-                Route::put('read/{id}', [NotificationsController::class, 'read']);
-                Route::put('unread/{id}', [NotificationsController::class, 'unread']);
-                Route::post('readAll', [NotificationsController::class, 'readAll']);
+                Route::put('read/all', [NotificationsController::class, 'markAllAsRead']);
+                Route::put('read/{id}', [NotificationsController::class, 'markAsRead']);
+                Route::put('unread/{id}', [NotificationsController::class, 'markAsUnread']);
             });
         });
         Route::group(['prefix' => 'trains', 'middleware' => ['scope:write-statuses']], static function() {
@@ -98,16 +91,15 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('/global', [StatisticsController::class, 'getGlobalStatistics']);
             Route::post('export', [StatisticsController::class, 'generateTravelExport'])
                  ->middleware(['scope:write-exports'])->withoutMiddleware(['scope:read-statistics']);
+            Route::get('/daily/{date}', [StatisticsController::class, 'getPersonalDailyStatistics']);
         });
         Route::group(['prefix' => 'user'], static function() {
             Route::post('/{userId}/report', [UserController::class, 'createReport']);
             Route::group(['middleware' => ['scope:write-follows']], static function() {
                 Route::post('/{userId}/follow', [FollowController::class, 'createFollow']);
                 Route::delete('/{userId}/follow', [FollowController::class, 'destroyFollow']);
-                Route::post('createFollow', [FollowController::class, 'createFollow']);     //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/follow)
-                Route::delete('destroyFollow', [FollowController::class, 'destroyFollow']); //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/follow)
             });
-            Route::group(['middleware' => ['scope:write-followers']], static function(){
+            Route::group(['middleware' => ['scope:write-followers']], static function() {
                 Route::delete('removeFollower', [FollowController::class, 'removeFollower']);
                 Route::delete('rejectFollowRequest', [FollowController::class, 'rejectFollowRequest']);
                 Route::put('approveFollowRequest', [FollowController::class, 'approveFollowRequest']);
@@ -117,8 +109,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::delete('/{userId}/block', [UserController::class, 'destroyBlock']);
                 Route::post('/{userId}/mute', [UserController::class, 'createMute']);
                 Route::delete('/{userId}/mute', [UserController::class, 'destroyMute']);
-                Route::post('createMute', [UserController::class, 'createMute']);     //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/mute)
-                Route::delete('destroyMute', [UserController::class, 'destroyMute']); //TODO deprecated: Remove this after 2023-02-28 (new: /user/{id}/mute)
             });
             Route::get('search/{query}', [UserController::class, 'search'])->middleware(['scope:read-search']);
             Route::get('statuses/active', [StatusController::class, 'getActiveStatus'])
@@ -130,7 +120,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('profile', [SettingsController::class, 'getProfileSettings'])
                  ->middleware(['scope:read-settings']);
             Route::put('profile', [SettingsController::class, 'updateSettings'])
-                 ->middleware(['scope:write-settings']);
+                 ->middleware(['scope:write-settings-profile']);
             Route::delete('profilePicture', [SettingsController::class, 'deleteProfilePicture'])
                  ->middleware(['scope:write-settings-profile-picture']);
             Route::post('profilePicture', [SettingsController::class, 'uploadProfilePicture'])
@@ -142,7 +132,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::put('password', [SettingsController::class, 'updatePassword'])
                  ->middleware(['scope:extra-write-password']);
             Route::delete('account', [UserController::class, 'deleteAccount'])
-                 ->middleware(['extra-delete'])
+                 ->middleware(['scope:extra-delete'])
                  ->withoutMiddleware('privacy-policy');
             Route::group(['middleware' => ['scope:write-settings-calendar']], static function() {
                 Route::get('ics-tokens', [IcsController::class, 'getIcsTokens']);
@@ -172,19 +162,20 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
     Route::group(['middleware' => ['privacy-policy']], static function() {
         Route::group(['middleware' => ['semiscope:read-statuses']], static function() {
             Route::get('statuses', [StatusController::class, 'enRoute']);
+            Route::get('positions', [StatusController::class, 'livePositions']);
+            Route::get('positions/{ids}', [StatusController::class, 'getLivePositionForStatus']);
             Route::get('status/{id}', [StatusController::class, 'show']);
             Route::get('status/{id}/likes', [LikesController::class, 'show']);
-            Route::get('statuses/{id}', [StatusController::class, 'show']);        //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id})
-            Route::get('statuses/{id}/likedby', [LikesController::class, 'show']); //TODO deprecated: Remove this after 2023-02-28 (new: /status/{id}/likedby)
             Route::get('status/{statusId}/tags', [StatusTagController::class, 'index']);
-        Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
-        Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
-        Route::get('event/{slug}', [EventController::class, 'show']);
-        Route::get('event/{slug}/details', [EventController::class, 'showDetails']);
-        Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
-        Route::get('events', [EventController::class, 'upcoming']);
-        Route::get('user/{username}', [UserController::class, 'show']);
-        Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
+            Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
+            Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
+            Route::get('event/{slug}', [EventController::class, 'show']);
+            Route::get('event/{slug}/details', [EventController::class, 'showDetails']);
+            Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
+            Route::get('events', [EventController::class, 'upcoming']);
+            Route::get('activeEvents', [EventController::class, 'activeEvents']);
+            Route::get('user/{username}', [UserController::class, 'show']);
+            Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
         });
         Route::group(['middleware' => ['semiscope:read-statistics']], static function() {
             Route::get('leaderboard', [StatisticsController::class, 'leaderboard']);

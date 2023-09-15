@@ -2,45 +2,22 @@
 
 namespace Tests;
 
+use App\Models\User;
+use App\Providers\AuthServiceProvider;
 use Illuminate\Testing\TestResponse;
 
 abstract class ApiTestCase extends TestCase
 {
-    public          $mockConsoleOutput = false;
-    private ?string $token             = null;
+    public $mockConsoleOutput = false;
 
     public function setUp(): void {
         parent::setUp();
         $this->artisan('passport:install');
         $this->artisan('passport:keys', ['--no-interaction' => true]);
-        $this->artisan('db:seed');
     }
 
     protected function getTokenForTestUser(): string {
-        if ($this->token === null) {
-            $username = 'john_doe' . time() . rand(111, 999);
-            $response = $this->postJson('/api/v1/auth/signup', [
-                'username'              => $username,
-                'name'                  => 'John Doe',
-                'email'                 => $username . '@example.com',
-                'password'              => 'thisisnotasecurepassword123',
-                'password_confirmation' => 'thisisnotasecurepassword123',
-            ]);
-            $response->assertCreated();
-            $response->assertJsonStructure([
-                                               'data' => [
-                                                   'token',
-                                                   'expires_at',
-                                               ]
-                                           ]);
-            $this->token = $response->json('data.token');
-
-            $response = $this->put('/api/v1/settings/acceptPrivacy', [], [
-                'Authorization' => 'Bearer ' . $this->token,
-            ]);
-            $response->assertNoContent();
-        }
-        return $this->token;
+        return User::factory()->create()->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
     }
 
     protected function assertUserResource(TestResponse $response): void {
@@ -54,7 +31,6 @@ abstract class ApiTestCase extends TestCase
                                                'trainDuration',
                                                'trainSpeed',
                                                'points',
-                                               'twitterUrl',
                                                'mastodonUrl',
                                                'privateProfile',
                                                'preventIndex',

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Frontend\Admin;
 
 use App\Events\StatusUpdateEvent;
-use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
@@ -58,33 +58,33 @@ class StatusEditController extends Controller
         $originStation      = TrainStation::find($validated['origin']);
         $destinationStation = TrainStation::find($validated['destination']);
 
-        $newOrigin      = $status->trainCheckIn->HafasTrip->stopoversNew->where('train_station_id', $originStation->id)->first();
-        $newDestination = $status->trainCheckIn->HafasTrip->stopoversNew->where('train_station_id', $destinationStation->id)->first();
+        $newOrigin      = $status->trainCheckIn->HafasTrip->stopovers->where('train_station_id', $originStation->id)->first();
+        $newDestination = $status->trainCheckIn->HafasTrip->stopovers->where('train_station_id', $destinationStation->id)->first();
 
         $newDeparture = $newOrigin->departure_planned ?? $newOrigin->arrival_planned;
         $newArrival   = $newDestination->arrival_planned ?? $newDestination->departure_planned;
 
-        $distanceInMeters = GeoController::calculateDistance(
+        $distanceInMeters = (new LocationController(
             hafasTrip:   $status->trainCheckin->HafasTrip,
             origin:      $newOrigin,
             destination: $newDestination
-        );
+        ))->calculateDistance();
 
-        $points = PointsCalculationController::calculatePoints(
+        $pointCalculation = PointsCalculationController::calculatePoints(
             distanceInMeter: $distanceInMeters,
             hafasTravelType: $status->trainCheckin->HafasTrip->category,
             departure:       $newDeparture,
             arrival:         $newArrival,
             timestampOfView: $newDeparture,
-        )['points'];
+        );
 
         $status->trainCheckIn->update([
                                           'origin'      => $originStation->ibnr,
                                           'destination' => $destinationStation->ibnr,
-                                          'departure'   => $newDeparture->toIso8601String(),
-                                          'arrival'     => $newArrival->toIso8601String(),
+                                          'departure'   => $newDeparture,
+                                          'arrival'     => $newArrival,
                                           'distance'    => $distanceInMeters,
-                                          'points'      => $points,
+                                          'points'      => $pointCalculation->points,
                                       ]);
 
         StatusUpdateEvent::dispatch($status->refresh());

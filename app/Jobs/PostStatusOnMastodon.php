@@ -4,6 +4,8 @@ namespace App\Jobs;
 
 use App\Http\Controllers\Backend\Social\MastodonController;
 use App\Models\Status;
+use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -27,7 +29,7 @@ class PostStatusOnMastodon implements ShouldQueue
      * Execute the job.
      *
      * @return void
-     * @throws \Exception
+     * @throws Exception|GuzzleException
      */
     public function handle(): void {
         $this->queueData([

@@ -14,7 +14,7 @@ class SocialController extends Controller
 
     public function destroyProvider(Request $request): Response|Application|ResponseFactory {
         $validated = $request->validate([
-                                            'provider' => ['required', Rule::in(['twitter', 'mastodon'])]
+                                            'provider' => ['required', Rule::in(['mastodon', 'twitter'])]
                                         ]);
 
         $user = auth()->user();
@@ -32,6 +32,7 @@ class SocialController extends Controller
         }
 
         if ($validated['provider'] === 'twitter') {
+            //Twitter destroy is possible as we keep saving the last access tokens and account ids
             $user->socialProfile->update([
                                              'twitter_id'          => null,
                                              'twitter_token'       => null,

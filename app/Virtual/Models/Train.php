@@ -55,6 +55,18 @@ class Train
      */
     private $number;
 
+    /**
+     * @OA\Property (
+     *     title="journeyNumber",
+     *     description="The number of the journey. Given by the transport company.",
+     *     example="3697",
+     *     nullable=true
+     * )
+     *
+     * @var int
+     */
+    private $journeyNumber;
+
 
     /**
      * @OA\Property (
@@ -130,4 +142,15 @@ class Train
      * @var TrainStopover
      */
     private $destination;
+
+    /**
+     * @OA\Property (
+     *     title="operator",
+     *     description="Operator of the mean of transport",
+     *     nullable=true
+     * )
+     *
+     * @var Operator
+     */
+    private $operator;
 }

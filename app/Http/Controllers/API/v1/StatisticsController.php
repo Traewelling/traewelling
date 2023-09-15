@@ -2,19 +2,28 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Dto\GeoJson\Feature;
+use App\Dto\GeoJson\FeatureCollection;
+use App\Exceptions\DataOverflowException;
 use App\Http\Controllers\Backend\Export\ExportController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
+use App\Http\Controllers\Backend\Stats\DailyStatsController;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Resources\LeaderboardUserResource;
 use App\Http\Resources\StatisticsGlobalData;
 use App\Http\Resources\StatisticsTravelPurposeResource;
+use App\Http\Resources\StatusResource;
+use App\Models\Status;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Validation\Rule;
-use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StatisticsController extends Controller
@@ -145,6 +154,8 @@ class StatisticsController extends Controller
      *       }
      *     )
      *
+     * @param string $date
+     *
      * @return AnonymousResourceCollection
      */
     public function leaderboardForMonth(string $date): AnonymousResourceCollection {
@@ -263,7 +274,13 @@ class StatisticsController extends Controller
             'purpose'    => $purposes,
             'categories' => $categories,
             'operators'  => $operators,
-            'time'       => $travelTime
+            'time'       => $travelTime->map(function(Collection $row) {
+                return [
+                    'date'     => $row->date->toDateString(),
+                    'count'    => $row->count,
+                    'duration' => $row->duration,
+                ];
+            })
         ];
 
         $additionalData = [
@@ -274,6 +291,93 @@ class StatisticsController extends Controller
         ];
 
         return $this->sendResponse(data: $returnData, additional: $additionalData);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/statistics/daily/{date}",
+     *      operationId="getDailyStatistics",
+     *      tags={"Statistics"},
+     *      summary="Get statistics and statuses of one day",
+     *      description="Returns all statuses and statistics for the requested day",
+     *      @OA\Parameter (
+     *          name="withPolylines",
+     *          in="query",
+     *          description="If this parameter is set, the polylines will be returned as well. Otherwise attribute is null.",
+     *          example="",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="object",
+     *                  @OA\Property (
+     *                      property="statuses", type="array",
+     *                      @OA\Items (
+     *                          ref="#/components/schemas/Status"
+     *                      ),
+     *                  ),
+     *                  @OA\Property (
+     *                      property="polylines", type="array",
+     *                      @OA\Items (
+     *                          ref="#/components/schemas/FeatureCollection"
+     *                      ),
+     *                  ),
+     *                  @OA\Property(
+     *                      property="totalDistance",
+     *                      example="74026",
+     *                      type="integer"
+     *                  ),
+     *                  @OA\Property(
+     *                      property="totalDuration",
+     *                      example="4711",
+     *                      type="integer"
+     *                  ),
+     *                  @OA\Property(
+     *                      property="totalPoints",
+     *                      example="42",
+     *                      type="integer"
+     *                  ),
+     *              )
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       @OA\Response(response=401, description="Unauthorized"),
+     *       @OA\Response(response=403, description="User not authorized to access this"),
+     *       security={
+     *           {"passport": {"read-statistics"}}, {"token": {}}
+     *       }
+     *     )
+     *
+     *
+     *
+     * @param Request $request
+     * @param string  $dateString
+     *
+     * @return JsonResponse
+     */
+    public function getPersonalDailyStatistics(Request $request, string $dateString): JsonResponse {
+        $statuses = DailyStatsController::getStatusesOnDate(auth()->user(), Date::parse($dateString));
+
+        $polylines = null;
+        if ($request->has('withPolylines')) {
+            $polylines = collect();
+            $statuses->each(function(Status $status) use (&$polylines) {
+                $polylines->add(new Feature(LocationController::forStatus($status)->getMapLines()));
+            });
+            $featureCollection = new FeatureCollection($polylines);
+        }
+
+        return $this->sendResponse([
+                                       'statuses'      => StatusResource::collection($statuses),
+                                       'polylines'     => $polylines && count($polylines) ? $featureCollection : null,
+                                       'totalDistance' => $statuses->sum('trainCheckin.distance'),
+                                       'totalDuration' => $statuses->sum('trainCheckin.duration'),
+                                       'totalPoints'   => $statuses->sum('trainCheckin.points')
+                                   ]);
     }
 
     /**
@@ -341,6 +445,9 @@ class StatisticsController extends Controller
         return $this->sendResponse(data: $data, additional: $additionalData);
     }
 
+    /**
+     * @throws DataOverflowException
+     */
     public function generateTravelExport(Request $request): JsonResponse|StreamedResponse|Response {
         $validated = $request->validate([
                                             'from'     => ['required', 'date', 'before_or_equal:until'],

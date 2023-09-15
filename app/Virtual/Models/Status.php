@@ -138,6 +138,18 @@ class Status
 
     /**
      * @OA\Property (
+     *     title="isLikable",
+     *     description="Do the author of this status and the currently authenticated user allow liking of statuses? Only show the like UI if set to true",
+     *     type="boolean",
+     *     example=true
+     * )
+     *
+     * @var bool
+     */
+    private $isLikable;
+
+    /**
+     * @OA\Property (
      *     title="createdAt",
      *     description="creation date of this status",
      *     type="string",

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <title>@yield('title') - {{ config('app.name', 'Träwelling') }}</title>
@@ -7,19 +7,38 @@
         @include('layouts.includes.meta')
 
         <!-- Scripts -->
-        <script src="{{ mix('js/app.js') }}"></script>
-
+        <!-- Run this blocking script as early as possible to prevent flickering -->
+        <script>
+            if (localStorage.getItem("darkMode") === null) {
+                localStorage.setItem("darkMode", "auto");
+            }
+            var darkModeSetting = localStorage.getItem("darkMode");
+            if (darkModeSetting === "auto") {
+                darkModeSetting = window.matchMedia("(prefers-color-scheme: dark)")
+                    .matches
+                    ? "dark"
+                    : "light";
+            }
+            if (darkModeSetting === "dark") {
+                document.documentElement.classList.add("dark");
+            } else {
+                document.documentElement.classList.remove("dark");
+            }
+        </script>
         <!-- Fonts -->
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
 
         <!-- Styles -->
         <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+        <link href="{{ mix('css/app-dark.css') }}" rel="stylesheet">
         <link rel="mask-icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}">
         <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
         <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
         <link rel="author" href="/humans.txt">
         <link rel="manifest" href="/manifest.json"/>
+
+        <script src="{{ mix('js/app.js') }}"></script>
 
         @yield('head')
     </head>
@@ -30,16 +49,15 @@
                     <a class="navbar-brand" href="{{ url('/') }}">
                         {{ config('app.name') }}
                     </a>
+
                     <div class="navbar-toggler">
                         @auth
-                            <button class="navbar-toggler notifications-board-toggle" type="button"
-                                    data-mdb-toggle="modal"
-                                    data-mdb-target="#notifications-board" aria-controls="navbarSupportedContent"
-                                    aria-expanded="false"
-                                    aria-label="{{ __('Show notifications') }}">
-                                <span class="notifications-bell far fa-bell"></span>
-                                <span class="notifications-pill badge rounded-pill badge-notification" hidden>0</span>
-                            </button>
+                            <notification-bell
+                                i18n-empty="{{ __('notifications.empty') }}"
+                                i18n-title="{{ __('notifications.title') }}"
+                                label="{{ __('Show notifications') }}"
+                            >
+                            </notification-bell>
                         @endauth
                         <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
                                 data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -104,15 +122,13 @@
                                     </div>
                                 </form>
                                 <li class="nav-item d-none d-md-inline-block">
-                                    <a href="javascript:void(0)" id="notifications-toggle"
-                                       class="nav-link notifications-board-toggle"
-                                       data-mdb-toggle="modal"
-                                       data-mdb-target="#notifications-board">
-                                        <span class="notifications-bell far fa-bell"></span>
-                                        <span class="notifications-pill badge rounded-pill badge-notification" hidden>
-                                            0
-                                        </span>
-                                    </a>
+                                    <notification-bell
+                                        i18n-empty="{{__('notifications.empty')}}"
+                                        i18n-title="{{ __('notifications.title') }}"
+                                        :link="true"
+                                        label="{{ __('Show notifications') }}"
+                                    >
+                                    </notification-bell>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" href="#" class="nav-link dropdown-toggle mdb-select"
@@ -148,14 +164,14 @@
                                             </li>
                                         @endif
                                         @admin
-                                            <li>
-                                                <a class="dropdown-item" href="{{route('admin.dashboard')}}">
-                                                    <i class="fas fa-tools"></i> {{__('menu.admin')}}
-                                                </a>
-                                            </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{{route('admin.dashboard')}}">
+                                                <i class="fas fa-tools"></i> {{__('menu.admin')}}
+                                            </a>
+                                        </li>
                                         @endadmin
                                         <li>
-                                            <hr class="dropdown-divider" />
+                                            <hr class="dropdown-divider"/>
                                         </li>
 
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST"
@@ -183,17 +199,37 @@
             </main>
             <footer class="footer mt-auto py-3">
                 <div class="container">
-                    <div class="btn-group dropup float-end">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-mdb-dropdown-animation="off"
-                                data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
-                        </button>
-                        <div class="dropdown-menu">
-                            @foreach(config('app.locales') as $key => $lang)
-                                <a class="dropdown-item" href="{{request()->fullUrlWithQuery(['language' => $key])}}">
-                                    {{ $lang }}
-                                </a>
-                            @endforeach
+
+                    <div class="float-end row gy-3 mb-4 mb-md-0 gx-2">
+                        <div class="btn-group dropup col">
+                            <button type="button" class="btn btn-primary dropdown-toggle"
+                                    data-mdb-dropdown-animation="off"
+                                    data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-circle-half-stroke"></i></i> {{__('settings.colorscheme.set')}}
+                            </button>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-item" id="colorModeToggleLight"><i
+                                        class="fas fa-sun"></i> {{__('settings.colorscheme.light')}}</div>
+                                <div class="dropdown-item" id="colorModeToggleDark"><i
+                                        class="fas fa-moon"></i> {{__('settings.colorscheme.dark')}}</div>
+                                <div class="dropdown-item" id="colorModeToggleAuto"><i
+                                        class="fas fa-circle-half-stroke"></i> {{__('settings.colorscheme.auto')}}</div>
+                            </div>
+                        </div>
+                        <div class="btn-group dropup col">
+                            <button type="button" class="btn btn-primary dropdown-toggle"
+                                    data-mdb-dropdown-animation="off"
+                                    data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
+                            </button>
+                            <div class="dropdown-menu">
+                                @foreach(config('app.locales') as $key => $lang)
+                                    <a class="dropdown-item"
+                                       href="{{request()->fullUrlWithQuery(['language' => $key])}}">
+                                        {{ $lang }}
+                                    </a>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                     <p class="text-muted mb-0">
@@ -224,6 +260,8 @@
                            class="text-muted">
                             {{ \App\Http\Controllers\Backend\VersionController::getVersion() }}
                         </a>
+                        -
+                        <a href="{{route('changelog')}}" class="text-muted">{{__('changelog')}}</a>
                     </p>
                 </div>
             </footer>
@@ -245,16 +283,12 @@
              * checkin into components/stationboard.js.
              */
             var token            = '{{ csrf_token() }}';
-            var urlAvatarUpload  = '{{route('settings.upload-image')}}';
-            var urlDelete        = '{{ route('status.delete') }}';
-            var urlDisconnect    = '{{ route('provider.destroy') }}';
-            var urlDislike       = '{{ route('like.destroy') }}';
             var urlFollow        = '{{ route('follow.create') }}';
             var urlFollowRequest = '{{ route('follow.request') }}';
-            var urlLike          = '{{ route('like.create') }}';
             var urlTrainTrip     = '{{ route('trains.trip') }}';
             var urlUnfollow      = '{{ route('follow.destroy') }}';
             var urlAutocomplete  = '{{ url('transport/train/autocomplete') }}';
+            var mapprovider = '{{ Auth::user()->mapprovider ?? "default" }}';
 
             let translations = {
                 stationboard: {
@@ -265,6 +299,5 @@
     </body>
 
     @include('includes.check-in-modal')
-    @include('includes.modals.notifications-board')
     @yield('footer')
 </html>

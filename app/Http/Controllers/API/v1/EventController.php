@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Backend\EventController as EventBackend;
-use App\Http\Resources\EventResource;
+use App\Http\Controllers\HafasController;
+use App\Http\Controllers\StatusController;
 use App\Http\Resources\EventDetailsResource;
+use App\Http\Resources\EventResource;
 use App\Http\Resources\StatusResource;
+use App\Models\Event;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -148,11 +151,13 @@ class EventController extends Controller
      * @return AnonymousResourceCollection
      */
     public static function statuses(string $slug): AnonymousResourceCollection {
-        return StatusResource::collection(EventBackend::getBySlug($slug)->statuses()->paginate());
+        $event    = Event::where('slug', $slug)->firstOrFail();
+        $statuses = StatusController::getStatusesByEvent($event);
+        return StatusResource::collection($statuses['statuses']->paginate());
     }
 
     /**
-     *  @OA\Get(
+     * @OA\Get(
      *      path="/events",
      *      operationId="getUpcomingEvent",
      *      tags={"Events"},
@@ -222,35 +227,47 @@ class EventController extends Controller
      */
     public function suggest(Request $request): JsonResponse {
         $validated = $request->validate([
-                                            'name'  => ['required', 'max:255'],
-                                            'host'  => ['nullable', 'max:255'],
-                                            'begin' => ['required', 'date'],
-                                            'end'   => ['required', 'date'],
-                                            'url'   => ['nullable', 'max:255'],
+                                            'name'           => ['required', 'string', 'max:255'],
+                                            'host'           => ['nullable', 'string', 'max:255'],
+                                            'begin'          => ['required', 'date'],
+                                            'end'            => ['required', 'date'],
+                                            'url'            => ['nullable', 'url', 'max:255'],
+                                            'hashtag'        => ['nullable', 'string', 'max:40'],
+                                            'nearestStation' => ['nullable', 'string', 'max:255'],
                                         ]);
 
+        if (isset($validated['nearestStation'])) {
+            $stations = HafasController::getStations($validated['nearestStation'], 1);
+            if (count($stations) === 0) {
+                return $this->sendError(error: __('events.request.station_not_found'), code: 400);
+            }
+            $nearestStation = $stations->first();
+        }
         $eventSuggestion = EventBackend::suggestEvent(
-            user: auth()->user(),
-            name: $validated['name'],
-            begin: Carbon::parse($validated['begin']),
-            end: Carbon::parse($validated['end']),
-            url: $validated['url'] ?? null,
-            host: $validated['host'] ?? null
+            user:    auth()->user(),
+            name:    $validated['name'],
+            begin:   Carbon::parse($validated['begin']),
+            end:     Carbon::parse($validated['end']),
+            station: $nearestStation ?? null,
+            url:     $validated['url'] ?? null,
+            host:    $validated['host'] ?? null,
+            hashtag: $validated['hashtag'] ?? null,
         );
 
         if ($eventSuggestion->wasRecentlyCreated) {
-            return $this->sendResponse(data: null, code: 201);
+            return $this->sendResponse(data: ['message' => __('events.request.success')], code: 201);
         }
-        return $this->sendError(error: null, code: 500);
+        return $this->sendError(error: __('messages.exception.general'), code: 500);
     }
 
     /**
-     *   @OA\Get(
+     * @OA\Get(
      *      path="/activeEvents",
      *      operationId="getCurrentEvents",
      *      tags={"Events"},
      *      summary="Shows current events with basic information",
-     *      description="Returns array of current events, used for a basic overview during checkiused for a basic overview during checkin",
+     *      description="Returns array of current events, used for a basic overview during checkiused for a basic
+     *      overview during checkin",
      *      @OA\Parameter (
      *          name="slug",
      *          in="path",

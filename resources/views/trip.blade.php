@@ -66,10 +66,13 @@
                                             <td>{{ $stopover->trainStation->name }}</td>
                                             <td class="text-end">
                                                 {{ __('stationboard.arr') }}
-                                                {{ $stopover->arrival_planned->isoFormat(__('time-format'))}}
+                                                {{ userTime($stopover->arrival_planned) }}
                                                 @isset($stopover->arrival_real)
-                                                    <small>(<span
-                                                            class="traindelay">+{{ $stopover->arrival_real->diffInMinutes($stopover->arrival_planned) }}</span>)</small>
+                                                    <small>
+                                                        (<span class="traindelay">
+                                                            +{{ $stopover->arrival_real->diffInMinutes($stopover->arrival_planned) }}
+                                                        </span>)
+                                                    </small>
                                                 @endisset
                                             </td>
                                         </tr>

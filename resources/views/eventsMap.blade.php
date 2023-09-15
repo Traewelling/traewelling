@@ -1,29 +1,30 @@
 @extends('layouts.app')
 
 @section('title', $event->name)
-@section('canonical', route('statuses.byEvent', ['eventSlug' => $event->slug]))
+@section('canonical', route('event', ['slug' => $event->slug]))
 
 @section('content')
-    <div class="px-4 py-5 mt-n4"
-         style="background-image: url({{url('/images/covers/profile-background.png')}});background-position: center;background-color: #c5232c">
+    <div class="px-4 py-5 mt-n4 profile-banner">
         <div class="container" id="event-header">
             <div class="row justify-content-center">
                 <div class="text-white col-md-8 col-lg-7">
                     <h1 class="card-title font-bold">
                         <strong>
                             {{ __('events.header', ['name' => $event->name]) }}
-                            <code class="text-white">#{{ $event->hashtag }}</code>
+                            @isset($event->hashtag)
+                                <code class="text-white">#{{ $event->hashtag }}</code>
+                            @endisset
                         </strong>
                     </h1>
                     <h2 class="h2-responsive">
                         <span class="font-weight-bold">
                             <i class="fa fa-route d-inline"></i>
-                            {{ number($distance / 1000, 0) }}
+                            {{ number($event->trainDistance / 1000, 0) }}
                         </span>
                         <span class="small font-weight-lighter">km</span>
                         <span class="font-weight-bold ps-sm-2">
                             <i class="fa fa-stopwatch d-inline"></i>
-                            {!! durationToSpan(secondsToDuration($duration)) !!}
+                            {!! durationToSpan(secondsToDuration($event->trainDuration * 60)) !!}
                         </span>
                         <br class="d-block d-sm-none">
                         @isset($event->host)
@@ -66,6 +67,12 @@
 
         <div class="row justify-content-center mt-5">
             {{ $statuses->links() }}
+
+            <small class="text-muted">
+                <sup>1</sup> {{__('events.disclaimer.organizer')}}
+                <sup>2</sup> {{__('events.disclaimer.source')}}
+                <sup>3</sup> {{__('events.disclaimer.warranty')}}
+            </small>
         </div>
     </div>
 

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Frontend\Transport;
 
+use App\Dto\CheckinSuccess;
 use App\Enum\Business;
-use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
 use App\Exceptions\PermissionException;
@@ -11,6 +11,8 @@ use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\TrainStopover;
+use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -24,7 +26,9 @@ class StatusController extends Controller
         $validated = $request->validate([
                                             'statusId'              => ['required', 'exists:statuses,id'],
                                             'body'                  => ['nullable', 'max:280'],
-                                            'business_check'        => ['required', new Enum(Business::class)],
+                                            'manualDeparture'       => ['nullable', 'date'],
+                                            'manualArrival'         => ['nullable', 'date'],
+                                            'business_check'        => ['required', new Enum(Business::class)], //TODO: Why is this not CamelCase?
                                             'checkinVisibility'     => ['required', new Enum(StatusVisibility::class)],
                                             'destinationStopoverId' => ['nullable', 'exists:train_stopovers,id'],
                                         ]);
@@ -38,6 +42,15 @@ class StatusController extends Controller
                                 'visibility' => StatusVisibility::from($validated['checkinVisibility']),
                             ]);
 
+            $status->trainCheckin->update([
+                                              'manual_departure' => isset($validated['manualDeparture']) ?
+                                                  Carbon::parse($validated['manualDeparture'], auth()->user()->timezone) :
+                                                  null,
+                                              'manual_arrival'   => isset($validated['manualArrival']) ?
+                                                  Carbon::parse($validated['manualArrival'], auth()->user()->timezone) :
+                                                  null,
+                                          ]);
+
             StatusUpdateEvent::dispatch($status->refresh());
 
             if (isset($validated['destinationStopoverId'])
@@ -48,24 +61,30 @@ class StatusController extends Controller
                 );
                 $status->fresh();
 
-                return redirect()->route('statuses.get', ['id' => $status->id])
-                                 ->with('checkin-success', [
-                                     'reason'                  => 'status-updated',
-                                     'distance'                => $status->trainCheckin->distance,
-                                     'duration'                => $status->trainCheckin->duration,
-                                     'points'                  => $status->trainCheckin->points,
-                                     'lineName'                => $status->trainCheckin->HafasTrip->linename,
-                                     'alsoOnThisConnection'    => $status->trainCheckin->alsoOnThisConnection,
-                                     'event'                   => $status->trainCheckin->event,
-                                     'forced'                  => false,
-                                     'pointsCalculationReason' => $pointReason,
-                                 ]);
+                $checkinSuccess = new CheckinSuccess(
+                    id:                   $status->id,
+                    distance:             $status->trainCheckin->distance,
+                    duration:             $status->trainCheckin->duration,
+                    points:               $status->trainCheckin->points,
+                    pointReason:          $pointReason,
+                    lineName:             $status->trainCheckin->HafasTrip->linename,
+                    socialText:           $status->socialText,
+                    alsoOnThisConnection: $status->trainCheckin->alsoOnThisConnection,
+                    event:                $status->trainCheckin->event,
+                    forced:               false,
+                    reason:               'status-updated'
+                );
+
+                return redirect()->route('status', ['id' => $status->id])
+                                 ->with('checkin-success', (clone $checkinSuccess));
             }
 
-            return redirect()->route('statuses.get', ['id' => $status->id])
+            return redirect()->route('status', ['id' => $status->id])
                              ->with('success', __('status.update.success'));
         } catch (ModelNotFoundException|PermissionException) {
             return redirect()->back()->with('alert-danger', __('messages.exception.general'));
+        } catch (AuthorizationException) {
+            return redirect()->back()->with('alert-danger', __('error.status.not-authorized'));
         }
     }
 }

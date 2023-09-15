@@ -2,24 +2,29 @@
 
 namespace Tests\Feature\Transport\PointsCalculation;
 
+use App\Enum\HafasTravelType;
 use App\Enum\PointReason;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ReasonTest extends TestCase
 {
 
+    use RefreshDatabase;
+
     protected function setUp(): void {
+        parent::setUp();
         Carbon::setTestNow("10.05.2020 13:15");
     }
 
     public function test5MinutesBeforeTrip(): void {
         $pointReason = PointsCalculationController::getReason(
-            departure:       Carbon::now()->addMinutes(5),
-            arrival:         Carbon::now()->addHour(),
+            departure:       now()->addMinutes(5),
+            arrival:         now()->addHour(),
             forceCheckin:    false,
-            timestampOfView: Carbon::now(),
+            timestampOfView: now(),
         );
 
         $this->assertEquals(PointReason::IN_TIME, $pointReason);
@@ -27,10 +32,10 @@ class ReasonTest extends TestCase
 
     public function test25MinutesBeforeTrip(): void {
         $pointReason = PointsCalculationController::getReason(
-            departure:       Carbon::now()->addMinutes(25),
-            arrival:         Carbon::now()->addHour(),
+            departure:       now()->addMinutes(25),
+            arrival:         now()->addHour(),
             forceCheckin:    false,
-            timestampOfView: Carbon::now(),
+            timestampOfView: now(),
         );
 
         $this->assertEquals(PointReason::GOOD_ENOUGH, $pointReason);
@@ -38,10 +43,10 @@ class ReasonTest extends TestCase
 
     public function test65MinutesBeforeTrip(): void {
         $pointReason = PointsCalculationController::getReason(
-            departure:       Carbon::now()->addMinutes(65),
-            arrival:         Carbon::now()->addHour(),
+            departure:       now()->addMinutes(65),
+            arrival:         now()->addHour(),
             forceCheckin:    false,
-            timestampOfView: Carbon::now(),
+            timestampOfView: now(),
         );
 
         $this->assertEquals(PointReason::NOT_SUFFICIENT, $pointReason);
@@ -52,21 +57,21 @@ class ReasonTest extends TestCase
      */
     public function testEnRoute(): void {
         $pointReason = PointsCalculationController::getReason(
-            departure:       Carbon::now()->subHour(),
-            arrival:         Carbon::now()->addHour(),
+            departure:       now()->subHour(),
+            arrival:         now()->addHour(),
             forceCheckin:    false,
-            timestampOfView: Carbon::now(),
+            timestampOfView: now(),
         );
 
         $this->assertEquals(PointReason::IN_TIME, $pointReason);
     }
 
-    public function test1MinuteAfterTrip(): void {
+    public function test11MinutesAfterTrip(): void {
         $pointReason = PointsCalculationController::getReason(
-            departure:       Carbon::now()->subHour(),
-            arrival:         Carbon::now()->subMinute(),
+            departure:       now()->subHour(),
+            arrival:         now(),
             forceCheckin:    false,
-            timestampOfView: Carbon::now(),
+            timestampOfView: now()->addMinutes(11),
         );
 
         $this->assertEquals(PointReason::GOOD_ENOUGH, $pointReason);
@@ -74,10 +79,10 @@ class ReasonTest extends TestCase
 
     public function test61MinuteAfterTrip(): void {
         $pointReason = PointsCalculationController::getReason(
-            departure:       Carbon::now()->subHours(2),
-            arrival:         Carbon::now()->subMinutes(61),
+            departure:       now()->subHours(2),
+            arrival:         now()->subMinutes(61),
             forceCheckin:    false,
-            timestampOfView: Carbon::now(),
+            timestampOfView: now(),
         );
 
         $this->assertEquals(PointReason::NOT_SUFFICIENT, $pointReason);
@@ -85,10 +90,10 @@ class ReasonTest extends TestCase
 
     public function testForced(): void {
         $pointReason = PointsCalculationController::getReason(
-            departure:       Carbon::now()->subHour(),
-            arrival:         Carbon::now()->addHour(),
+            departure:       now()->subHour(),
+            arrival:         now()->addHour(),
             forceCheckin:    true,
-            timestampOfView: Carbon::now(),
+            timestampOfView: now(),
         );
 
         $this->assertEquals(PointReason::FORCED, $pointReason);

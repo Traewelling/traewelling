@@ -52,7 +52,7 @@ class LoginController extends Controller
             return redirect()->intended($this->redirectPath());
         }
 
-        return redirect()->back()
+        return redirect()->route('login')
                          ->withInput()
                          ->withErrors([
                                           'login_error' => __('error.login'),

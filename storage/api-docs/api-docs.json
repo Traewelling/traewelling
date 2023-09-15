@@ -2,13 +2,13 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Träwelling API",
-        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
+        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The\n *      API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body\n *      can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
         "contact": {
             "email": "support@traewelling.de"
         },
         "license": {
             "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
         },
         "version": "1.0.0 - alpha"
     },
@@ -18,142 +18,11 @@
             "description": "Production Server"
         },
         {
-            "url": "https://traewelling.de/api/v1",
+            "url": "http://localhost:8000/api/v1",
             "description": "This instance"
         }
     ],
     "paths": {
-        "/auth/signup": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "register new user",
-                "operationId": "registerUser",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "username": {
-                                        "description": "Username",
-                                        "type": "string",
-                                        "maxLength": 25,
-                                        "minLength": 3,
-                                        "pattern": "^[a-zA-Z0-9_]*$",
-                                        "example": "Gertrud123"
-                                    },
-                                    "name": {
-                                        "type": "string",
-                                        "maxLength": 50
-                                    },
-                                    "email": {
-                                        "example": "mail@example.com"
-                                    },
-                                    "password": {
-                                        "description": "password",
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "minLength": 8,
-                                        "example": "thisisnotasecurepassword123"
-                                    },
-                                    "password_confirmation": {
-                                        "description": "confirmation of the password-field.",
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "minLength": 8,
-                                        "example": "thisisnotasecurepassword123"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/components/schemas/BearerTokenResponse"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Other (not specified) error occured"
-                    },
-                    "422": {
-                        "description": "Username or email is already taken, or other input error"
-                    }
-                }
-            }
-        },
-        "/auth/login": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Login with username & password",
-                "operationId": "loginUser",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "login": {
-                                        "description": "Username or email",
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "minLength": 8,
-                                        "example": "gertrud@traewelling.de"
-                                    },
-                                    "password": {
-                                        "description": "password",
-                                        "type": "string",
-                                        "maxLength": 255,
-                                        "minLength": 8,
-                                        "example": "thisisnotasecurepassword123"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/components/schemas/BearerTokenResponse"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "401": {
-                        "description": "Non-matching credentials"
-                    }
-                }
-            }
-        },
         "/auth/logout": {
             "post": {
                 "tags": [
@@ -550,7 +419,7 @@
                     "Events"
                 ],
                 "summary": "Shows current events with basic information",
-                "description": "Returns array of current events, used for a basic overview during checkiused for a basic overview during checkin",
+                "description": "Returns array of current events, used for a basic overview during checkiused for a basic\n     *      overview during checkin",
                 "operationId": "getCurrentEvents",
                 "parameters": [
                     {
@@ -1017,7 +886,7 @@
                     "Likes"
                 ],
                 "summary": "[Auth optional] Get likes for status",
-                "description": "Returns array of users that liked the status",
+                "description": "Returns array of users that liked the status. Can return an empty dataset when the status\n     *      author or the requesting user has deactivated likes",
                 "operationId": "getLikesForStatus",
                 "parameters": [
                     {
@@ -1165,6 +1034,242 @@
                     {
                         "passport": [
                             "write-likes"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/notifications/unread/count": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get count of unread notifications for authenticated user",
+                "description": "Returns count of unread notifications of a authenticated user",
+                "operationId": "getUnreadCount",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "integer",
+                                            "example": 2
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-notifications"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/notifications": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get paginated notifications for authenticated user",
+                "description": "Returns paginated notifications of a authenticated",
+                "operationId": "listNotifications",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Notification"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-notifications"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/notifications/read/{id}": {
+            "put": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark notification as read",
+                "operationId": "markAsRead",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of notification",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cbf6054e-9c00-4b1f-ab37-7eb18ac8419f"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Notification"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Notification not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-notifications"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/notifications/unread/{id}": {
+            "put": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark notification as unread",
+                "operationId": "markAsUnread",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of notification",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cbf6054e-9c00-4b1f-ab37-7eb18ac8419f"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Notification"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Notification not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-notifications"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/notifications/read/all": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark all notification as read",
+                "operationId": "markAllAsRead",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All notifications marked as read"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-notifications"
                         ]
                     },
                     {
@@ -1323,6 +1428,10 @@
                                     },
                                     "mastodonVisibility": {
                                         "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "mapProvider": {
+                                        "type": "string",
                                         "nullable": true
                                     }
                                 },
@@ -1700,6 +1809,89 @@
                 ]
             }
         },
+        "/statistics/daily/{date}": {
+            "get": {
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Get statistics and statuses of one day",
+                "description": "Returns all statuses and statistics for the requested day",
+                "operationId": "getDailyStatistics",
+                "parameters": [
+                    {
+                        "name": "withPolylines",
+                        "in": "query",
+                        "description": "If this parameter is set, the polylines will be returned as well. Otherwise attribute is null.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": ""
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "statuses": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Status"
+                                                    }
+                                                },
+                                                "polylines": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/FeatureCollection"
+                                                    }
+                                                },
+                                                "totalDistance": {
+                                                    "type": "integer",
+                                                    "example": "74026"
+                                                },
+                                                "totalDuration": {
+                                                    "type": "integer",
+                                                    "example": "4711"
+                                                },
+                                                "totalPoints": {
+                                                    "type": "integer",
+                                                    "example": "42"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-statistics"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/statistics/global": {
             "get": {
                 "tags": [
@@ -1982,6 +2174,103 @@
                     },
                     "400": {
                         "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/positions": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "[Auth optional] get live positions for active statuses",
+                "description": "Returns an array of live position objects for active statuses",
+                "operationId": "getLivePositionsForActiveStatuses",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LivePointDto"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/positions/{ids}": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "[Auth optional] get live positions for given statuses",
+                "description": "Returns an array of live position objects for given status IDs",
+                "operationId": "getLivePositionsForStatuses",
+                "parameters": [
+                    {
+                        "name": "ids",
+                        "in": "path",
+                        "description": "Status-IDs separated by comma",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1337,1338"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LivePointDto"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
                     }
                 },
                 "security": [
@@ -2622,7 +2911,7 @@
                     {
                         "name": "when",
                         "in": "query",
-                        "description": "When to get the departures (default: now)",
+                        "description": "When to get the departures (default: now).\n      If you omit the timezone, the datetime is interpreted as localtime.\n          This is especially helpful when träwelling abroad.",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -3830,6 +4119,154 @@
     },
     "components": {
         "schemas": {
+            "Coordinate": {
+                "title": "Coordinate",
+                "description": "GeoJson Coordinates",
+                "properties": {
+                    "type": {
+                        "type": "number",
+                        "format": "float",
+                        "example": "Feature"
+                    },
+                    "properties": {
+                        "type": "object",
+                        "example": "{}"
+                    },
+                    "geometry": {
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "example": "Point"
+                            },
+                            "coordinates": {
+                                "type": "array",
+                                "items": {
+                                    "example": "[8.39767,49.01625]"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Coordinate"
+                }
+            },
+            "FeatureCollection": {
+                "title": "FeatureCollection",
+                "description": "featurecollection of multiple GeoJson points",
+                "properties": {
+                    "type": {
+                        "title": "type",
+                        "type": "string",
+                        "example": "FeatureCollection"
+                    },
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Coordinate"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "FeatureCollection"
+                }
+            },
+            "LivePointDto": {
+                "title": "LivePointDto",
+                "description": "All necessary information to calculate live position",
+                "properties": {
+                    "point": {
+                        "$ref": "#/components/schemas/Coordinate"
+                    },
+                    "polyline": {
+                        "$ref": "#/components/schemas/FeatureCollection"
+                    },
+                    "arrival": {
+                        "title": "arrival",
+                        "description": "arrival at end of polyline in UNIX time format",
+                        "type": "integer",
+                        "format": "integer",
+                        "example": 1692538680
+                    },
+                    "departure": {
+                        "title": "departure",
+                        "description": "departure at start of polyline in UNIX time format",
+                        "type": "integer",
+                        "format": "integer",
+                        "example": 1692538740
+                    },
+                    "lineName": {
+                        "title": "lineName",
+                        "description": "name of line",
+                        "type": "string",
+                        "format": "string",
+                        "example": "ICE 123"
+                    },
+                    "statusId": {
+                        "title": "statusId",
+                        "description": "ID of status",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 12345
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "LivePointDto"
+                }
+            },
+            "TrainStation": {
+                "title": "TrainStation",
+                "description": "train station model",
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "description": "id",
+                        "type": "integer",
+                        "example": "4711"
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "name of the station",
+                        "type": "string",
+                        "example": "Karlsruhe Hbf"
+                    },
+                    "latitude": {
+                        "title": "latitude",
+                        "description": "latitude of the station",
+                        "type": "number",
+                        "format": "float",
+                        "example": "48.991591"
+                    },
+                    "longitude": {
+                        "title": "longitude",
+                        "description": "longitude of the station",
+                        "type": "number",
+                        "format": "float",
+                        "example": "8.400538"
+                    },
+                    "ibnr": {
+                        "title": "ibnr",
+                        "description": "IBNR of the station",
+                        "type": "integer",
+                        "example": "8000191"
+                    },
+                    "rilIdentifier": {
+                        "title": "rilIdentifier",
+                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
+                        "type": "string",
+                        "example": "RK",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "TrainStation"
+                }
+            },
             "BearerTokenResponse": {
                 "title": "BearerTokenResponse",
                 "properties": {
@@ -3976,14 +4413,6 @@
                         "example": "MiWuLa",
                         "nullable": true
                     },
-                    "url": {
-                        "title": "url",
-                        "description": "external URL for this event",
-                        "type": "string",
-                        "maxLength": 255,
-                        "example": "https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756",
-                        "nullable": true
-                    },
                     "begin": {
                         "title": "begin",
                         "description": "Timestamp for the start of the event",
@@ -3993,6 +4422,30 @@
                         "title": "end",
                         "description": "Timestamp for the end of the event",
                         "example": "2022-08-31T23:59:00+02:00"
+                    },
+                    "url": {
+                        "title": "url",
+                        "description": "external URL for this event",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756",
+                        "nullable": true
+                    },
+                    "hashtag": {
+                        "title": "hashtag",
+                        "description": "hashtag for this event",
+                        "type": "string",
+                        "maxLength": 40,
+                        "example": "gpn21",
+                        "nullable": true
+                    },
+                    "nearestStation": {
+                        "title": "nearestStation",
+                        "description": "Query string for the nearest station to this event",
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Berlin Hbf",
+                        "nullable": true
                     }
                 },
                 "type": "object",
@@ -4130,6 +4583,116 @@
                 "type": "object",
                 "xml": {
                     "name": "LeaderboardUser"
+                }
+            },
+            "Notification": {
+                "title": "Notification",
+                "description": "Notification model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "string",
+                        "format": "string",
+                        "example": "bb1ba9a5-9c2b-43c3-b8c9-2f70651fc51c"
+                    },
+                    "type": {
+                        "title": "type",
+                        "description": "type of notification",
+                        "type": "string",
+                        "example": "UserJoinedConnection"
+                    },
+                    "leadFormatted": {
+                        "title": "leadFormatted",
+                        "description": "the title of notification in html formatted form",
+                        "type": "string",
+                        "format": "string",
+                        "example": "<b>@bob</b> is in your connection!"
+                    },
+                    "lead": {
+                        "title": "lead",
+                        "description": "the title of notification in plain text form",
+                        "type": "string",
+                        "format": "string",
+                        "example": "@bob is in your connection!"
+                    },
+                    "noticeFormatted": {
+                        "title": "noticeFormatted",
+                        "description": "the body of notification in html formatted form",
+                        "type": "string",
+                        "format": "string",
+                        "example": "@bob is on <b>S 81</b> from <b>Karlsruhe Hbf</b> to <b>Freudenstadt Hbf</b>."
+                    },
+                    "notice": {
+                        "title": "notice",
+                        "description": "the body of notification in plain text form",
+                        "type": "string",
+                        "format": "string",
+                        "example": "@bob is on S 81 from Karlsruhe Hbf to Freudenstadt Hbf."
+                    },
+                    "link": {
+                        "title": "link",
+                        "description": "the link to the notification",
+                        "type": "string",
+                        "format": "string",
+                        "example": "https://traewelling.de/status/123456"
+                    },
+                    "data": {
+                        "title": "data",
+                        "description": "the data of the notification",
+                        "type": "array",
+                        "items": {
+                            "example": {
+                                "notice": "every notification type has different data attributes, just try it out"
+                            }
+                        }
+                    },
+                    "readAt": {
+                        "title": "readAt",
+                        "description": "the date when the notification was read, null if not read yet",
+                        "type": "string",
+                        "format": "string",
+                        "example": "2023-01-01T00:00:00+00:00",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "title": "createdAt",
+                        "description": "the date when the notification was created",
+                        "type": "string",
+                        "format": "string",
+                        "example": "2023-01-01T00:00:00+00:00"
+                    },
+                    "updatedAtForHumans": {
+                        "title": "createdAtForHumans",
+                        "description": "DON'T USE THIS ATTRIBUTE! This Attribute will be removed in the future. The date when the notification was created, but in human readable form",
+                        "type": "string",
+                        "format": "string",
+                        "example": "2 days ago"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Notification"
+                }
+            },
+            "Operator": {
+                "title": "Operator",
+                "description": "Operator of a mean of transport",
+                "properties": {
+                    "identifier": {
+                        "title": "identifier",
+                        "type": "string",
+                        "example": "sbb"
+                    },
+                    "name": {
+                        "title": "name",
+                        "type": "string",
+                        "example": "SBB"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Operator"
                 }
             },
             "PaginationPage": {
@@ -4327,6 +4890,12 @@
                         "type": "boolean",
                         "example": true
                     },
+                    "isLikable": {
+                        "title": "isLikable",
+                        "description": "Do the author of this status and the currently authenticated user allow liking of statuses? Only show the like UI if set to true",
+                        "type": "boolean",
+                        "example": true
+                    },
                     "createdAt": {
                         "title": "createdAt",
                         "description": "creation date of this status",
@@ -4434,6 +5003,13 @@
                         "type": "string",
                         "example": "4-a6s4-4"
                     },
+                    "journeyNumber": {
+                        "title": "journeyNumber",
+                        "description": "The number of the journey. Given by the transport company.",
+                        "type": "integer",
+                        "example": "3697",
+                        "nullable": true
+                    },
                     "lineName": {
                         "title": "lineName",
                         "description": "name of the transport line",
@@ -4470,6 +5046,14 @@
                     },
                     "destination": {
                         "$ref": "#/components/schemas/TrainStopover"
+                    },
+                    "operator": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Operator"
+                            }
+                        ],
+                        "nullable": true
                     }
                 },
                 "type": "object",
@@ -4600,55 +5184,6 @@
                     "name": "TrainCheckinResponse"
                 }
             },
-            "TrainStation": {
-                "title": "TrainStation",
-                "description": "train station model",
-                "properties": {
-                    "id": {
-                        "title": "id",
-                        "description": "id",
-                        "type": "integer",
-                        "example": "4711"
-                    },
-                    "name": {
-                        "title": "name",
-                        "description": "name of the station",
-                        "type": "string",
-                        "example": "Karlsruhe Hbf"
-                    },
-                    "latitude": {
-                        "title": "latitude",
-                        "description": "latitude of the station",
-                        "type": "number",
-                        "format": "float",
-                        "example": "48.991591"
-                    },
-                    "longitude": {
-                        "title": "longitude",
-                        "description": "longitude of the station",
-                        "type": "number",
-                        "format": "float",
-                        "example": "8.400538"
-                    },
-                    "ibnr": {
-                        "title": "ibnr",
-                        "description": "IBNR of the station",
-                        "type": "integer",
-                        "example": "8000191"
-                    },
-                    "rilIdentifier": {
-                        "title": "rilIdentifier",
-                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
-                        "type": "string",
-                        "example": "RK",
-                        "nullable": "true"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "TrainStation"
-                }
-            },
             "TrainStopover": {
                 "title": "TrainStopover",
                 "description": "train station model",
@@ -4755,7 +5290,7 @@
                         "type": "boolean",
                         "example": false
                     },
-                    "isDeparutreDelayed": {
+                    "isDepartureDelayed": {
                         "title": "isDepartureDelayed",
                         "description": "Is there a delay in the departure time?",
                         "type": "boolean",
@@ -4831,9 +5366,9 @@
                     },
                     "twitterUrl": {
                         "title": "twitterUrl",
-                        "description": "URL to the Twitter profile of the user",
+                        "description": "Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
                         "type": "string",
-                        "example": "https://twitter.com/i/user/843458335",
+                        "example": "null",
                         "nullable": true
                     },
                     "mastodonUrl": {
@@ -4848,6 +5383,12 @@
                         "description": "is this profile set to private?",
                         "type": "boolean",
                         "example": false
+                    },
+                    "likes_enabled": {
+                        "title": "likes_enabled",
+                        "description": "Does this profile allow likes? Only offer the UI to like any status if this setting is set to true. If set to false, the likes API will return 403.",
+                        "type": "boolean",
+                        "example": true
                     },
                     "userInvisibleToMe": {
                         "title": "userInvisibleToMe",
@@ -4943,9 +5484,9 @@
                     },
                     "twitterUrl": {
                         "title": "twitterUrl",
-                        "description": "URL to the Twitter profile of the user",
+                        "description": "Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
                         "type": "string",
-                        "example": "https://twitter.com/i/user/843458335",
+                        "example": "null",
                         "nullable": true
                     },
                     "mastodonUrl": {
@@ -5074,9 +5615,10 @@
                     },
                     "twitter": {
                         "title": "twitter",
-                        "description": "Twitter URL of user",
+                        "description": "Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
                         "type": "string",
-                        "example": "https://twitter.com/i/user/843458335"
+                        "example": "null",
+                        "nullable": true
                     },
                     "mastodon": {
                         "title": "mastodon",
@@ -5158,6 +5700,33 @@
                     },
                     "visibility": {
                         "$ref": "#/components/schemas/VisibilityEnum"
+                    },
+                    "manualDeparture": {
+                        "title": "manualDeparture",
+                        "description": "Manual departure time set by the user",
+                        "format": "date",
+                        "example": "2020-01-01 12:00:00",
+                        "nullable": true
+                    },
+                    "manualArrival": {
+                        "title": "manualArrival",
+                        "description": "Manual arrival time set by the user",
+                        "format": "date",
+                        "example": "2020-01-01 13:00:00",
+                        "nullable": true
+                    },
+                    "destinationId": {
+                        "title": "destinationId",
+                        "description": "Destination station id",
+                        "example": "1",
+                        "nullable": true
+                    },
+                    "destinationArrivalPlanned": {
+                        "title": "destinationArrivalPlanned",
+                        "description": "Destination arrival time",
+                        "format": "date",
+                        "example": "2020-01-01 13:00:00",
+                        "nullable": true
                     }
                 },
                 "type": "object",
@@ -5175,6 +5744,16 @@
                     2
                 ],
                 "example": 0
+            },
+            "MapProviderEnum": {
+                "title": "MapProvider",
+                "description": "What type of map provider (cargo, open-railway-map) did the user specify?",
+                "type": "string",
+                "enum": [
+                    "cargo",
+                    "open-railway-map"
+                ],
+                "example": "cargo"
             },
             "MastodonVisibilityEnum": {
                 "title": "visibility",
@@ -5268,9 +5847,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "https://traewelling.de/oauth/authorize",
-                        "tokenUrl": "https://traewelling.de/oauth/token",
-                        "refreshUrl": "https://traewelling.de/auth/refresh",
+                        "authorizationUrl": "http://localhost/oauth/authorize",
+                        "tokenUrl": "http://localhost/oauth/token",
+                        "refreshUrl": "http://localhost/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",

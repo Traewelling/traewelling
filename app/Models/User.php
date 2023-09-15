@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Enum\MapProvider;
 use App\Enum\StatusVisibility;
 use App\Exceptions\RateLimitExceededException;
+use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
 use App\Jobs\SendVerificationEmail;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -22,21 +23,24 @@ use Laravel\Passport\HasApiTokens;
 use Mastodon;
 
 /**
- * @property int     id
- * @property string  username
- * @property string  name
- * @property string  avatar
- * @property string  email
- * @property Carbon  email_verified_at
- * @property string  password
- * @property int     home_id
- * @property Carbon  privacy_ack_at
- * @property integer default_status_visibility
- * @property boolean private_profile
- * @property boolean prevent_index
- * @property int     privacy_hide_days
- * @property string  language
- * @property Carbon  last_login
+ * @property int         id
+ * @property string      username
+ * @property string      name
+ * @property string      avatar
+ * @property string      email
+ * @property Carbon      email_verified_at
+ * @property string      password
+ * @property int         home_id
+ * @property Carbon      privacy_ack_at
+ * @property integer     default_status_visibility
+ * @property boolean     private_profile
+ * @property boolean     prevent_index
+ * @property boolean     likes_enabled
+ * @property MapProvider mapprovider
+ * @property int         privacy_hide_days
+ * @property string      language
+ * @property Carbon      last_login
+ * @property Status[]    $statuses
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -45,8 +49,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
-        'default_status_visibility', 'private_profile', 'prevent_index', 'privacy_hide_days',
-        'language', 'last_login',
+        'default_status_visibility', 'likes_enabled', 'private_profile', 'prevent_index', 'privacy_hide_days',
+        'language', 'last_login', 'mapprovider', 'timezone',
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
@@ -54,7 +58,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
     protected $appends  = [
         'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl', 'train_distance', 'train_duration',
-        'following', 'followPending', 'muted'
+        'following', 'followPending', 'muted', 'isAuthUserBlocked', 'isBlockedByAuthUser',
     ];
     protected $casts    = [
         'id'                        => 'integer',
@@ -62,17 +66,17 @@ class User extends Authenticatable implements MustVerifyEmail
         'privacy_ack_at'            => 'datetime',
         'home_id'                   => 'integer',
         'private_profile'           => 'boolean',
+        'likes_enabled'             => 'boolean',
         'default_status_visibility' => StatusVisibility::class,
         'prevent_index'             => 'boolean',
         'privacy_hide_days'         => 'integer',
         'role'                      => 'integer',
         'last_login'                => 'datetime',
+        'mapprovider'               => MapProvider::class,
     ];
 
     public function getTrainDistanceAttribute(): float {
-        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
-                           ->select('distance')
-                           ->sum('distance');
+        return TrainCheckin::where('user_id', $this->id)->sum('distance');
     }
 
     public function statuses(): HasMany {
@@ -83,11 +87,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(TrainCheckin::class, 'user_id', 'id');
     }
 
+    /**
+     * Since duration is a cached and calculated value, it can happen that some checkins are not included in the sum.
+     * @return float
+     */
     public function getTrainDurationAttribute(): float {
-        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
-                           ->select(['arrival', 'departure'])
-                           ->get()
-                           ->sum('duration');
+        return TrainCheckin::where('user_id', $this->id)->sum('duration');
     }
 
     /**
@@ -207,21 +212,21 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function getMutedAttribute(): bool {
-        return (auth()->check() && auth()->user()->mutedUsers->contains('id', $this->id));
+        return auth()->check() && auth()->user()->mutedUsers->contains('id', $this->id);
     }
 
     /**
      * The auth-user is blocked by $this user. auth-user can not see $this's statuses.
      */
     public function getIsAuthUserBlockedAttribute(): bool {
-        return (auth()->check() && $this->blockedUsers->contains('id', auth()->user()->id));
+        return auth()->check() && $this->blockedUsers->contains('id', auth()->user()->id);
     }
 
     /**
      * The auth-user has blocked $this user. $this can not see auth-user's statuses.
      */
     public function getIsBlockedByAuthUserAttribute(): bool {
-        return (auth()->check() && $this->blockedByUsers->contains('id', auth()->user()->id));
+        return auth()->check() && $this->blockedByUsers->contains('id', auth()->user()->id);
     }
 
     /**
@@ -229,33 +234,11 @@ class User extends Authenticatable implements MustVerifyEmail
      * @deprecated
      */
     public function getTwitterUrlAttribute(): ?string {
-        if ($this->socialProfile->twitter_id) {
-            return "https://twitter.com/i/user/" . $this->socialProfile->twitter_id;
-        }
-        return null;
+        return null; //Twitter isn't used by traewelling anymore
     }
 
     public function getMastodonUrlAttribute(): ?string {
-        $mastodonUrl = null;
-        if (!empty($this->socialProfile)
-            && !empty($this->socialProfile->mastodon_token)
-            && !empty($this->socialProfile->mastodon_id)) {
-            try {
-                $mastodonServer = MastodonServer::where('id', $this->socialProfile->mastodon_server)->first();
-                if ($mastodonServer) {
-                    $mastodonDomain      = $mastodonServer->domain;
-                    $mastodonAccountInfo = Mastodon::domain($mastodonDomain)
-                                                   ->token($this->socialProfile->mastodon_token)
-                                                   ->get("/accounts/" . $this->socialProfile->mastodon_id);
-                    $mastodonUrl         = $mastodonAccountInfo["url"];
-                }
-            } catch (Exception $exception) {
-                // The connection might be broken, or the instance is down, or $user has removed the api rights
-                // but has not told us yet.
-                Log::warning($exception);
-            }
-        }
-        return $mastodonUrl;
+        return (new MastodonProfileDetails($this))->getProfileUrl();
     }
 
     /**
@@ -295,5 +278,13 @@ class User extends Authenticatable implements MustVerifyEmail
                       ));
             throw new RateLimitExceededException();
         }
+    }
+
+    /**
+     * Laravel default function (e.g. for notifications)
+     * @return string
+     */
+    public function preferredLocale(): string {
+        return $this->language;
     }
 }

@@ -8,18 +8,18 @@
 @import "variables";
 
 // mdbootstrap
-@import '~mdb-ui-kit/src/scss/mdb.free.scss';
+@import "~mdb-ui-kit/src/scss/mdb.free.scss";
 
 body {
-  font-family: "Nunito", sans-serif;
-  font-weight: 300;
+    font-family: "Nunito", sans-serif;
+    font-weight: 300;
 }
 
 .card {
-  box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
 }
 
-@import '~notyf/notyf.min.css';
+@import "~notyf/notyf.min.css";
 
 // Overall site layout
 @import "site";
@@ -49,11 +49,55 @@ body {
 @import "./components/custom-buttons";
 @import "./components/stationboard";
 @import "./components/dailyStats";
+@import "./components/maps";
 
 .table-vertical-center td {
-  vertical-align: middle;
+    vertical-align: middle;
 }
 
 .color-main {
-  color: $trwlRot;
+    color: $trwlRot;
+}
+
+.profile-banner {
+    background-image: url("/images/covers/profile-background.png");
+    background-position: center;
+    background-color: #c5232c;
+}
+
+.profile-picture {
+    width: 30%;
+    height: 30%;
+    bottom: 0;
+}
+
+.profile-stats {
+    font-size: map-get($font-sizes, 5);
+}
+
+.profile-name {
+    font-size: map-get($font-sizes, 4);
+}
+
+.profile-tag {
+    font-size: map-get($font-sizes, 5);
+}
+
+@include media-breakpoint-up(md) {
+    .profile-picture {
+        width: 20%;
+        height: 20%;
+    }
+
+    .profile-stats {
+        font-size: map-get($font-sizes, 2);
+    }
+
+    .profile-name {
+        font-size: map-get($font-sizes, 2);
+    }
+
+    .profile-tag {
+        font-size: map-get($font-sizes, 2);
+    }
 }

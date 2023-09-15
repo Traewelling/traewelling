@@ -55,17 +55,21 @@ abstract class StationController extends Controller
      * @return Collection
      */
     public static function getLatestArrivals(User $user, int $maxCount = 5): Collection {
+        $groupAndSelect = [
+            'train_stations.id', 'train_stations.ibnr', 'train_stations.name',
+            'train_stations.latitude', 'train_stations.longitude', 'train_stations.rilIdentifier',
+        ];
         return TrainStation::join('train_checkins', 'train_checkins.destination', '=', 'train_stations.ibnr')
                            ->where('train_checkins.user_id', $user->id)
-                           ->groupBy(['train_stations.id', 'train_stations.ibnr', 'train_stations.name'])
-                           ->select(['train_stations.id', 'train_stations.ibnr', 'train_stations.name'])
+                           ->groupBy($groupAndSelect)
+                           ->select($groupAndSelect)
                            ->orderByDesc(DB::raw('MAX(train_checkins.arrival)'))
                            ->limit($maxCount)
                            ->get();
     }
 
     public static function getAlternativeDestinationsForCheckin(TrainCheckin $checkin): Collection {
-        return $checkin->HafasTrip->stopoversNEW
+        return $checkin->HafasTrip->stopovers
             ->filter(function(TrainStopover $stopover) use ($checkin) {
                 return ($stopover->arrival_planned ?? $stopover->departure_planned)->isAfter($checkin->departure);
             })
@@ -73,7 +77,7 @@ abstract class StationController extends Controller
                 return [
                     'id'              => $stopover->id,
                     'name'            => $stopover->trainStation->name,
-                    'arrival_planned' => ($stopover->arrival_planned ?? $stopover->departure_planned)->format('H:i'),
+                    'arrival_planned' => userTime($stopover->arrival_planned ?? $stopover->departure_planned),
                 ];
             });
     }

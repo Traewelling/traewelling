@@ -418,10 +418,8 @@
     "dateformat.with-weekday": "dddd, DD. MMMM YYYY",
     "notifications.socialNotShared.mastodon.401": "Dei Inschtanz hot eis an <code>401 Anothoraisd</code>-Feahler g'meldt, als mer versuacht hend, dein Check-In zum tuuta. Vielleicht hilfts, Maschtodon ernuit mit Träwelling zum verbinda?",
     "events.closestStation": "Nägschde Träwelling-Station",
-    "notifications.socialNotShared.twitter.401": "Twitter hot eis an <code>401 Anothoraisd</code>-Feahler g'meldt, als mer versuacht hend, dein Check-In zum twittra. Vielleicht hilfts, Twitter ernuit mit Träwelling zum verbinda?",
     "stationboard.stopover": "Schdation",
     "events.live-and-upcoming": "Jetzige und zuakünftige Feschtla",
-    "notifications.socialNotShared.twitter.429": "Eis deicht, dass Träwelling grad vu Twitter gschperrt wora isch. (<code> 429 Tuu männie riekwests</code>)",
     "stationboard.business.business.detail": "Dianschtfahrta",
     "stationboard.business.commute.detail": "Weag zwischa Hüsla und Arbatsplätzla",
     "stats.range.picker": "Zeitraum uswäahla",
@@ -493,9 +491,7 @@
     "support.submit": "Support-Afrogn aschicka",
     "about.dev.5": "Wennd Froga hosch, kasch di gera auf eiserm <a href=\":link\">Discord-Server</a> an eis wenda: <a href=\":link\">:link</a>",
     "settings.visibility.hide": "Check-Ins automatisch ausblenda noch",
-    "notifications.twitterUnstable.lead": "Obacht: Du loggsch di bei Träwelling bloß mit Twitter ei!",
     "stationboard.check-chainPost": "An de letzte gpostete Checkin ahänga",
-    "notifications.twitterUnstable.notice": "Wenn Twitter ausfalla sutt, hosch du koan Zugriff meh uff dein Träwelling-Account. Bitte hinterleg a E-Mail Adressn und a Passwort, damit Träwelling weiter nutza kasch, wenn Twitter amoi nid erreichbar isch.",
     "profile.no-visible-statuses": "Dia Reisa vu :username sind id sichtbar.",
     "status.visibility.4": "Nur agmeldete Nutzer",
     "settings.delete-account.more": "Ableana & Account me löscha",
@@ -595,5 +591,7 @@
     "stats.daily.description": "Togbiachla deiner Fahrta inkl. Kartn",
     "warning.insecure-performance": "Dia Ladezeit dera Seitn isch ggfs. bei viale Data sehr langsam.",
     "year-review": "Johresruckblick",
-    "year-review.open": "Johresruckblick azoiga"
+    "year-review.open": "Johresruckblick azoiga",
+    "error.status.not-authorized": "Dir isch id erlaubt, den Check-In azumschaua.",
+    "user.likes-enabled": "Likes azoiga"
 }

@@ -12,7 +12,6 @@ use App\Models\Like;
 use App\Models\User;
 use App\Models\UserBlock;
 use App\Models\UserMute;
-use Error;
 use Exception;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Pagination\Paginator;
@@ -24,10 +23,9 @@ abstract class UserController extends Controller
     /**
      * @param User $user
      *
-     * @return bool
-     * @throws Error
+     * @return bool|null
      */
-    public static function deleteUserAccount(User $user): bool {
+    public static function deleteUserAccount(User $user): ?bool {
         SettingsController::deleteProfilePicture(user: $user);
 
         DatabaseNotification::where([
@@ -35,10 +33,7 @@ abstract class UserController extends Controller
                                         'notifiable_type' => get_class($user)
                                     ])->delete();
 
-        if ($user->delete()) {
-            return true;
-        }
-        throw new Error();
+        return $user->delete();
     }
 
     /**
@@ -149,10 +144,9 @@ abstract class UserController extends Controller
             throw new InvalidArgumentException();
         }
 
-        return User::where(
-            'name', 'like', "%{$searchQuery}%"
-        )->orWhere(
-            'username', 'like', "%{$searchQuery}%"
-        )->simplePaginate(10);
+        return User::where('name', 'like', "%{$searchQuery}%")
+                   ->orWhere('username', 'like', "%{$searchQuery}%")
+                   ->orderByDesc('last_login')
+                   ->simplePaginate(10);
     }
 }

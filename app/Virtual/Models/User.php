@@ -110,9 +110,9 @@ class User
     /**
      * @OA\Property (
      *     title="twitterUrl",
-     *     description="URL to the Twitter profile of the user",
+     *     description="Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
      *     nullable=true,
-     *     example="https://twitter.com/i/user/843458335"
+     *     example="null"
      * )
      *
      * @var string
@@ -142,6 +142,18 @@ class User
      * @var bool
      */
     private $privateProfile;
+
+    /**
+     * @OA\Property (
+     *     title="likes_enabled",
+     *     description="Does this profile allow likes? Only offer the UI to like any status if this setting is set to true. If set to false, the likes API will return 403.",
+     *     type="boolean",
+     *     example=true
+     * )
+     *
+     * @var bool
+     */
+    private $likes_enabled;
 
     /**
      * @OA\Property (

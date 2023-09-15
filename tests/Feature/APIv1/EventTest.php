@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\APIv1;
 
-use App\Models\User;
+use App\Models\Event;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\ApiTestCase;
@@ -13,6 +13,7 @@ class EventTest extends ApiTestCase
     use RefreshDatabase;
 
     public function testEventDetails(): void {
+        Event::factory()->create();
         $response = $this->get('/api/v1/events');
         $response->assertOk();
         $response->assertJsonCount(1, 'data');

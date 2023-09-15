@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Follow;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,17 +14,9 @@ use Illuminate\Validation\Rule;
  */
 class SettingsController extends Controller
 {
-    /**
-     * @deprecated
-     */
-    public function renderFollowerSettings(): Renderable {
-        return view('settings.follower', [
-            'requests'  => auth()->user()->followRequests()->with('user')->paginate(15),
-            'followers' => auth()->user()->followers()->with('user')->paginate(15)
-        ]);
-    }
 
     /**
+     * @throws AuthorizationException
      * @deprecated
      */
     public function removeFollower(Request $request): RedirectResponse {

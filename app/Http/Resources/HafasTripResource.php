@@ -23,7 +23,7 @@ class HafasTripResource extends JsonResource
             'journeyNumber' => $this->journey_number,
             'origin'        => new TrainStationResource($this->originStation),
             'destination'   => new TrainStationResource($this->destinationStation),
-            'stopovers'     => StopoverResource::collection($this->stopoversNEW)
+            'stopovers'     => StopoverResource::collection($this->stopovers)
         ];
     }
 }

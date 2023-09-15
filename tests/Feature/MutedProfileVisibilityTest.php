@@ -3,7 +3,8 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\UserController;
-use Carbon\Carbon;
+use App\Models\TrainCheckin;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
@@ -17,8 +18,8 @@ class MutedProfileVisibilityTest extends ApiTestCase
 
     /**
      * We want to test, if a muted profile and/or status is visible to the user itself, a following user, a
-     * not-following user and a guest. Therefore we create three users: bob (muted profile), gertrud (following bob),
-     * and alice (not following bob). Also Gertrud and bob will have their own seperate check-ins.
+     * not-following user and a guest. Therefore, we create three users: bob (muted profile), gertrud (following bob),
+     * and alice (not following bob). Also, Gertrud and bob will have their own seperate check-ins.
      */
     public function setUp(): void {
         parent::setUp();
@@ -56,7 +57,7 @@ class MutedProfileVisibilityTest extends ApiTestCase
 
         // Can a guest see the status of bob? => yes
         Auth::logout();
-        $guest = $this->get(route('statuses.get', ['id' => $this->users->bob->checkin['statusId']]));
+        $guest = $this->get(route('status', ['id' => $this->users->bob->checkin['statusId']]));
         $this->assertGuest();
         $guest->assertSuccessful();
 
@@ -188,25 +189,25 @@ class MutedProfileVisibilityTest extends ApiTestCase
 
         // Can a guest see the statuses of bob on the dashboard? => yes
         Auth::logout();
-        $guest = $this->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+        $guest = $this->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $this->assertGuest();
         $guest->assertSee($this->users->bob->user->username);
 
         // Can Bob see the statuses of bob on the event page? => yes
         $bob = $this->actingAs($this->users->bob->user, 'web')
-                    ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+                    ->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $bob->assertSee(["username" => $this->users->bob->user->username]);
         $bob->assertSuccessful();
 
         // Can Alice see the statuses of bob on the dashboard? => no
         $alice = $this->actingAs($this->users->alice->user, 'web')
-                      ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+                      ->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $alice->assertDontSee(["username" => $this->users->bob->user->username]);
         $alice->assertSuccessful();
 
         // Can Gertrud see the statuses of bob on the dashboard? => yes
         $gertrud = $this->actingAs($this->users->gertrud->user, 'web')
-                        ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+                        ->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $gertrud->assertDontSee(["username" => $this->users->bob->user->username]);
         $gertrud->assertSuccessful();
     }
@@ -225,13 +226,12 @@ class MutedProfileVisibilityTest extends ApiTestCase
         $data->gertrud = new stdClass();
         $data->alice   = new stdClass();
         // Create Gertrud, Alice and Bob
-        $data->bob->user     = $this->createGDPRAckedUser(['name' => 'bob', 'privacy_ack_at' => now()]);
-        $data->gertrud->user = $this->createGDPRAckedUser(['name' => 'gertrud', 'privacy_ack_at' => now()]);
-        $data->alice->user   = $this->createGDPRAckedUser(['name' => 'alice', 'privacy_ack_at' => now()]);
+        $data->bob->user     = User::factory(['name' => 'bob'])->create();
+        $data->gertrud->user = User::factory(['name' => 'gertrud'])->create();
+        $data->alice->user   = User::factory(['name' => 'alice'])->create();
 
         // Create new CheckIn for Bob
-        $timestamp          = Carbon::parse('+1 day 8:00');
-        $data->bob->checkin = $this->checkin("Frankfurt Hbf", $timestamp, $data->bob->user, 1);
+        $data->bob->checkin = TrainCheckin::factory(['user_id' => $data->bob->user->id])->create();
 
         // Make Gertrud follow bob and make bob's profile muted
         UserController::destroyFollow($data->alice->user, $data->bob->user);

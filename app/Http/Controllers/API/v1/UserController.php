@@ -13,8 +13,6 @@ use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Models\UserReport;
-use Error;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -67,11 +65,10 @@ class UserController extends Controller
     public function deleteAccount(Request $request): JsonResponse {
         $request->validate(['confirmation' => ['required', Rule::in([auth()->user()->username])]]);
 
-        try {
-            return $this->sendResponse(BackendUserBackend::deleteUserAccount(user: auth()->user()));
-        } catch (Error) {
-            return $this->sendError('', 409);
+        if (!BackendUserBackend::deleteUserAccount(user: auth()->user())) {
+            return $this->sendError(__('messages.exception.general'), 500);
         }
+        return $this->sendResponse(true);
     }
 
     /**

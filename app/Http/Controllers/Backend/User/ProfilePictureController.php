@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend\User;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Exception;
-use Gate;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManagerStatic as Image;
 
@@ -64,7 +64,11 @@ abstract class ProfilePictureController extends Controller
         $hash           = 0;
         $usernameLength = strlen($user->username);
         for ($i = 0; $i < $usernameLength; $i++) {
-            $hash = ord(substr($user->username, $i, 1)) + (($hash << 5) - $hash);
+            $securedHash = ord(substr($user->username, $i, 1)) + (($hash << 5) - $hash);
+            if ($securedHash <= 0) {
+                break;
+            }
+            $hash = $securedHash;
         }
 
         $hex = dechex($hash & 0x00FFFFFF);

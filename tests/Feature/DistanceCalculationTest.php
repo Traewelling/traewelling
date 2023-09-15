@@ -2,12 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Dto\Coordinate;
 use App\Enum\HafasTravelType;
-use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use App\Models\TrainStopover;
-use Carbon\Carbon;
+use App\Objects\LineSegment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Tests\TestCase;
@@ -17,29 +18,20 @@ class DistanceCalculationTest extends TestCase
 
     use RefreshDatabase;
 
-    protected function setUp(): void {
-        parent::setUp();
-        $this->artisan('db:seed');
-    }
-
-    public function test_distance_calculation_between_hanover_and_karlsruhe() {
-        $result = GeoController::calculateDistanceBetweenCoordinates(
-            latitudeA:  52.376589,
-            longitudeA: 9.741083,
-            latitudeB:  48.993962,
-            longitudeB: 8.401107,
+    public function test_distance_calculation_between_hanover_and_karlsruhe(): void {
+        $result = new LineSegment(
+            new Coordinate(52.376589, 9.741083),
+            new Coordinate(48.993962,  8.401107)
         );
-        $this->assertEquals(388213, $result);
+        $this->assertEquals(388213, $result->calculateDistance());
     }
 
     public function test_distance_calculation_between_hanover_hbf_and_hanover_kroepcke() {
-        $result = GeoController::calculateDistanceBetweenCoordinates(
-            latitudeA:  52.376589,
-            longitudeA: 9.741083,
-            latitudeB:  52.374497,
-            longitudeB: 9.738573,
+        $result = new LineSegment(
+            new Coordinate(52.376589, 9.741083),
+            new Coordinate(52.374497, 9.738573)
         );
-        $this->assertEquals(289, $result);
+        $this->assertEquals(289, $result->calculateDistance());
     }
 
     public function test_distance_calculation_between_simple_stopovers() {
@@ -76,9 +68,9 @@ class DistanceCalculationTest extends TestCase
                                                                                       ->toIso8601String(),
                                                       ])->create();
 
-        $hafasTrip->load(['stopoversNEW']);
+        $hafasTrip->load(['stopovers']);
 
-        $result = GeoController::calculateDistance($hafasTrip, $originStopover, $destinationStopover);
+        $result = (new LocationController($hafasTrip, $originStopover, $destinationStopover))->calculateDistance();
         $this->assertEquals(4526, $result);
     }
 
@@ -119,9 +111,9 @@ class DistanceCalculationTest extends TestCase
                                                           'arrival_planned'  => Date::now()->addHour(),
                                                       ])->create();
 
-        $hafasTrip->load(['stopoversNEW']);
+        $hafasTrip->load(['stopovers']);
 
-        $result = GeoController::calculateDistance($hafasTrip, $originStopover, $destinationStopover);
+        $result = (new LocationController($hafasTrip, $originStopover, $destinationStopover))->calculateDistance();
         $this->assertEquals(202210, $result);
     }
 }

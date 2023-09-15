@@ -25,14 +25,14 @@ abstract class ExportController extends Controller
      */
     public static function getExportableStatuses(User $user, Carbon $timestampFrom, Carbon $timestampTo): Collection {
         $statuses = Status::with([
-                                     //'trainCheckin.HafasTrip.stopoversNEW', TODO: This eager load is doing weird things. Some HafasTrips aren't loaded and this throws some http 500. Loading this manually is working.
-                                     'trainCheckin.Origin',
-                                     'trainCheckin.Destination',
+                                     //'trainCheckin.HafasTrip.stopovers', TODO: This eager load is doing weird things. Some HafasTrips aren't loaded and this throws some http 500. Loading this manually is working.
+                                     'trainCheckin.originStation',
+                                     'trainCheckin.destinationStation',
                                  ])
                           ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                           ->where('statuses.user_id', $user->id)
-                          ->where('train_checkins.departure', '>=', $timestampFrom->startOfDay()->toIso8601String())
-                          ->where('train_checkins.departure', '<=', $timestampTo->endOfDay()->toIso8601String())
+                          ->where('train_checkins.departure', '>=', $timestampFrom->startOfDay())
+                          ->where('train_checkins.departure', '<=', $timestampTo->endOfDay())
                           ->select(['statuses.*'])
                           ->limit(2001)
                           ->get();
@@ -40,7 +40,7 @@ abstract class ExportController extends Controller
         // overflows. Thus, if the database returns 2001 entries (which is the limit),
         // there are `>2000` statuses in this time frame and the user must choose a
         // smaller time frame.
-        if ($statuses->count() == 2001) {
+        if ($statuses->count() === 2001) {
             throw new DataOverflowException();
         }
         return $statuses;

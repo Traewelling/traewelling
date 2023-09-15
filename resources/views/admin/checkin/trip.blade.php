@@ -95,13 +95,6 @@
                         <div class="row mt-1">
                             <div class="col">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="tweet"
-                                           name="tweet" {{$user->twitterUrl ? '' : 'disabled'}}>
-                                    <label class="form-check-label" for="tweet">
-                                        Twitter
-                                    </label>
-                                </div>
-                                <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="mastodon"
                                            name="toot" {{$user->mastodonUrl ? '' : 'disabled'}}>
                                     <label class="form-check-label" for="mastodon">

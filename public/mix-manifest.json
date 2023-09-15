@@ -3,6 +3,7 @@
     "/js/stats.js": "/js/stats.js",
     "/js/admin.js": "/js/admin.js",
     "/css/app.css": "/css/app.css",
+    "/css/admin.css": "/css/admin.css",
     "/css/welcome.css": "/css/welcome.css",
-    "/css/admin.css": "/css/admin.css"
+    "/css/app-dark.css": "/css/app-dark.css"
 }

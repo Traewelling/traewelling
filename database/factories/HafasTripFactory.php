@@ -4,12 +4,11 @@ namespace Database\Factories;
 
 use App\Enum\HafasTravelType;
 use App\Http\Controllers\TransportController;
+use App\Models\HafasOperator;
 use App\Models\HafasTrip;
 use App\Models\TrainStation;
 use App\Models\TrainStopover;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use JsonException;
 
 class HafasTripFactory extends Factory
 {
@@ -23,23 +22,21 @@ class HafasTripFactory extends Factory
         }
 
         return [
-            'trip_id'     => $this->faker->unique()->numerify('1|######|##|##|') . Carbon::now()->format('dmY'),
-            'category'    => $this->faker->randomElement(HafasTravelType::cases())->value,
-            'number'      => $this->faker->bothify('??-##'),
-            'linename'    => $this->faker->bothify('?? ##'),
-            'origin'      => $origin->ibnr,
-            'destination' => $destination->ibnr,
-            'departure'   => Carbon::now()->subMinutes(15)->format('c'),
-            'arrival'     => Carbon::now()->addMinutes(80)->format('c'),
-            'polyline_id' => null, //Will be set in the configure function
+            'trip_id'        => $this->faker->unique()->numerify('1|######|##|##|') . now()->format('dmY'),
+            'category'       => $this->faker->randomElement(HafasTravelType::cases())->value,
+            'number'         => $this->faker->bothify('??-##'),
+            'linename'       => $this->faker->bothify('?? ##'),
+            'journey_number' => $this->faker->numberBetween(10000, 99999),
+            'operator_id'    => HafasOperator::factory()->create()->id,
+            'origin'         => $origin->ibnr,
+            'destination'    => $destination->ibnr,
+            'polyline_id'    => null, //Will be set in the configure function
+            'departure'      => now()->subMinutes(15)->format('c'),
+            'arrival'        => now()->addMinutes(80)->format('c'),
+            'delay'          => 0, //TODO: is deprecated? used?
         ];
     }
 
-    /**
-     * Configure the model factory.
-     *
-     * @return $this
-     */
     public function configure(): static {
         return $this->afterCreating(function(HafasTrip $hafasTrip) {
             $stops = TrainStation::inRandomOrder()
@@ -58,34 +55,27 @@ class HafasTripFactory extends Factory
             TrainStopover::factory([
                                        'trip_id'           => $hafasTrip->trip_id,
                                        'train_station_id'  => $hafasTrip->originStation->id,
-                                       'arrival_planned'   => $hafasTrip->departure->toIso8601String(),
-                                       'arrival_real'      => $hafasTrip->departure->toIso8601String(),
-                                       'departure_planned' => $hafasTrip->departure->toIso8601String(),
-                                       'departure_real'    => $hafasTrip->departure->toIso8601String(),
+                                       'arrival_planned'   => $hafasTrip->departure,
+                                       'departure_planned' => $hafasTrip->departure,
                                    ])->create();
 
             // Create intermediate stopovers
             foreach ($stops as $stop) {
-                $time->addMinutes(15);
+                $time = $time->clone()->addMinutes(15);
                 TrainStopover::factory([
                                            'trip_id'           => $hafasTrip->trip_id,
                                            'train_station_id'  => $stop->id,
-                                           'arrival_planned'   => $time->toIso8601String(),
-                                           'arrival_real'      => $time->toIso8601String(),
-                                           'departure_planned' => $time->toIso8601String(),
-                                           'departure_real'    => $time->toIso8601String(),
+                                           'arrival_planned'   => $time,
+                                           'departure_planned' => $time,
                                        ])->create();
             }
 
             // Create destination stopover
-            $time->addMinutes(15);
             TrainStopover::factory([
                                        'trip_id'           => $hafasTrip->trip_id,
                                        'train_station_id'  => $hafasTrip->destinationStation->id,
-                                       'arrival_planned'   => $hafasTrip->arrival->toIso8601String(),
-                                       'arrival_real'      => $hafasTrip->arrival->toIso8601String(),
-                                       'departure_planned' => $hafasTrip->arrival->toIso8601String(),
-                                       'departure_real'    => $hafasTrip->arrival->toIso8601String(),
+                                       'arrival_planned'   => $hafasTrip->arrival,
+                                       'departure_planned' => $hafasTrip->arrival,
                                    ])->create();
 
             self::createPolyline($hafasTrip);
@@ -94,9 +84,9 @@ class HafasTripFactory extends Factory
     }
 
     public static function createPolyline(HafasTrip $hafasTrip) {
-        $time     = Carbon::now()->subMinutes(15);
+        $time     = now()->subMinutes(15);
         $features = [];
-        foreach ($hafasTrip->stopoversNEW as $stopover) {
+        foreach ($hafasTrip->stopovers as $stopover) {
             $products = [];
             foreach (HafasTravelType::cases() as $hafasTravelType) {
                 $products[$hafasTravelType->value] = rand(0, 1);

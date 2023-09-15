@@ -26,39 +26,39 @@
     </div>
 
     <script>
-        let map = L.map('map').setView([50.3, 10.47], 5);
+        window.onload = function() {
+            let map = L.map('map').setView([50.3, 10.47], 5);
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+            setTilingLayer(mapprovider, map);
 
-        let primaryDot   = L.icon({
-            iconUrl: '/img/marker/dot-primary.svg',
-            iconSize: [10, 10],
-        });
-        let secondaryDot = L.icon({
-            iconUrl: '/img/marker/dot-secondary.svg',
-            iconSize: [10, 10],
-        });
+            let primaryDot   = L.icon({
+                iconUrl: '/img/marker/dot-primary.svg',
+                iconSize: [10, 10],
+            });
+            let secondaryDot = L.icon({
+                iconUrl: '/img/marker/dot-secondary.svg',
+                iconSize: [10, 10],
+            });
 
-        let featureGroup = L.featureGroup().addTo(map);
+            let featureGroup = L.featureGroup().addTo(map);
 
-        @foreach($usedStations as $usedStation)
-        L.marker([{{ $usedStation->latitude }}, {{ $usedStation->longitude }}], {
-            icon: primaryDot
-        })
-            .addTo(featureGroup)
-            .bindPopup("{{ $usedStation->name }}");
-        @endforeach
+            @foreach($usedStations as $usedStation)
+            L.marker([{{ $usedStation->latitude }}, {{ $usedStation->longitude }}], {
+                icon: primaryDot
+            })
+                .addTo(featureGroup)
+                .bindPopup("{{ $usedStation->name }}");
+            @endforeach
 
-        @foreach($passedStations as $passedStation)
-        L.marker([{{ $passedStation->latitude }}, {{ $passedStation->longitude }}], {
-            icon: secondaryDot
-        })
-            .addTo(featureGroup)
-            .bindPopup("{{ $passedStation->name }}");
-        @endforeach
+            @foreach($passedStations as $passedStation)
+            L.marker([{{ $passedStation->latitude }}, {{ $passedStation->longitude }}], {
+                icon: secondaryDot
+            })
+                .addTo(featureGroup)
+                .bindPopup("{{ $passedStation->name }}");
+            @endforeach
 
-        map.fitBounds(featureGroup.getBounds());
+            map.fitBounds(featureGroup.getBounds());
+        }
     </script>
 @endsection

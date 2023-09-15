@@ -12,21 +12,23 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 
 /**
+ * @property int              id
  * @property int              user_id
  * @property string           body
  * @property Business         business
  * @property int              event_id
  * @property StatusVisibility visibility
+ * @property TrainCheckin     $trainCheckin
  */
 class Status extends Model
 {
 
     use HasFactory;
 
-    protected $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'tweet_id', 'mastodon_post_id'];
-    protected $hidden   = ['user_id', 'business'];
-    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description'];
-    protected $casts    = [
+    protected    $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'tweet_id', 'mastodon_post_id'];
+    protected    $hidden   = ['user_id', 'business'];
+    protected    $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description'];
+    protected    $casts    = [
         'id'               => 'integer',
         'user_id'          => 'integer',
         'business'         => Business::class,
@@ -64,29 +66,30 @@ class Status extends Model
     }
 
     public function getSocialTextAttribute(): string {
-        $postText = trans_choice(
-            key:     'controller.transport.social-post',
-            number:  preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
-            replace: [
-                         'lineName'    => $this->trainCheckin->HafasTrip->linename,
-                         'destination' => $this->trainCheckin->Destination->name
-                     ]
-        );
-        if ($this->event !== null) {
+        if (isset($this->event) && $this->event->hashtag !== null) {
             $postText = trans_choice(
                 key:     'controller.transport.social-post-with-event',
                 number:  preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
                 replace: [
                              'lineName'    => $this->trainCheckin->HafasTrip->linename,
-                             'destination' => $this->trainCheckin->Destination->name,
+                             'destination' => $this->trainCheckin->destinationStation->name,
                              'hashtag'     => $this->event->hashtag
+                         ]
+            );
+        } else {
+            $postText = trans_choice(
+                key:     'controller.transport.social-post',
+                number:  preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
+                replace: [
+                             'lineName'    => $this->trainCheckin->HafasTrip->linename,
+                             'destination' => $this->trainCheckin->destinationStation->name
                          ]
             );
         }
 
 
         if (isset($this->body)) {
-            if ($this->event !== null) {
+            if ($this->event?->hashtag !== null) {
                 $eventIntercept = __('controller.transport.social-post-for', [
                     'hashtag' => $this->event->hashtag
                 ]);
@@ -94,7 +97,7 @@ class Status extends Model
 
             $appendix = strtr(' (@ :linename ➜ :destination:eventIntercept) #NowTräwelling', [
                 ':linename'       => $this->trainCheckin->HafasTrip->linename,
-                ':destination'    => $this->trainCheckin->Destination->name,
+                ':destination'    => $this->trainCheckin->destinationStation->name,
                 ':eventIntercept' => isset($eventIntercept) ? ' ' . $eventIntercept : ''
             ]);
 
@@ -112,12 +115,12 @@ class Status extends Model
     public function getDescriptionAttribute(): string {
         return __('description.status', [
             'username'    => $this->user->name,
-            'origin'      => $this->trainCheckin->Origin->name .
-                             ($this->trainCheckin->Origin->rilIdentifier ?
-                                 ' (' . $this->trainCheckin->Origin->rilIdentifier . ')' : ''),
-            'destination' => $this->trainCheckin->Destination->name .
-                             ($this->trainCheckin->Destination->rilIdentifier ?
-                                 ' (' . $this->trainCheckin->Destination->rilIdentifier . ')' : ''),
+            'origin'      => $this->trainCheckin->originStation->name .
+                             ($this->trainCheckin->originStation->rilIdentifier ?
+                                 ' (' . $this->trainCheckin->originStation->rilIdentifier . ')' : ''),
+            'destination' => $this->trainCheckin->destinationStation->name .
+                             ($this->trainCheckin->destinationStation->rilIdentifier ?
+                                 ' (' . $this->trainCheckin->destinationStation->rilIdentifier . ')' : ''),
             'date'        => $this->trainCheckin->departure->isoFormat(__('datetime-format')),
             'lineName'    => $this->trainCheckin->HafasTrip->linename
         ]);
