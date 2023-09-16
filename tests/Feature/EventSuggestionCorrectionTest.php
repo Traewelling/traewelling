@@ -10,8 +10,7 @@ use Tests\TestCase;
 
 class EventSuggestionCorrectionTest extends TestCase
 {
-    use RefreshDatabase;
-    use WithFaker;
+    use RefreshDatabase, WithFaker;
 
     public function testSuggestionHashTagCorrection(): void {
         $user = User::factory()->create();
