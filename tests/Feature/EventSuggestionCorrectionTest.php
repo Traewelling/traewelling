@@ -9,7 +9,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class EventSuggestionCorrectionTest extends TestCase {
+class EventSuggestionCorrectionTest extends TestCase
+{
     use RefreshDatabase;
     use WithFaker;
 
@@ -17,10 +18,10 @@ class EventSuggestionCorrectionTest extends TestCase {
         $user = User::factory()->create();
 
         $suggestion = EventController::suggestEvent(
-            user: $user,
-            name: $this->faker->name,
-            begin: Carbon::now(),
-            end: Carbon::now()->addDay(),
+            user:    $user,
+            name:    $this->faker->name,
+            begin:   Carbon::now(),
+            end:     Carbon::now()->addDay(),
             hashtag: '#GreatTestCase',
         );
 
@@ -31,10 +32,10 @@ class EventSuggestionCorrectionTest extends TestCase {
         $user = User::factory()->create();
 
         $suggestion = EventController::suggestEvent(
-            user: $user,
-            name: $this->faker->name,
-            begin: Carbon::now(),
-            end: Carbon::now()->addDay(),
+            user:    $user,
+            name:    $this->faker->name,
+            begin:   Carbon::now(),
+            end:     Carbon::now()->addDay(),
             hashtag: 'GreatTestCase',
         );
 
