@@ -7,8 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
 {
@@ -23,7 +24,7 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
+    use AuthenticatesUsers, ThrottlesLogins;
 
     /**
      * Where to redirect users after login.
@@ -41,16 +42,23 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    public function login(Request $request): RedirectResponse {
+    public function login(Request $request): Response {
         $validated = $request->validate([
                                             'login'    => ['required', 'max:255'],
                                             'password' => ['required', 'min:8'],
                                             'remember' => ['nullable',],
                                         ]);
 
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+            return $this->sendLockoutResponse($request);
+        }
+
         if (BackendLoginController::login($validated['login'], $validated['password'], isset($validated['remember']))) {
             return redirect()->intended($this->redirectPath());
         }
+
+        $this->incrementLoginAttempts($request);
 
         return redirect()->route('login')
                          ->withInput()
@@ -61,5 +69,9 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, User $user): void {
         $user->update(['last_login' => Carbon::now()->toIso8601String()]);
+    }
+
+    public function username(): string {
+        return 'login';
     }
 }
