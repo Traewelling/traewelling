@@ -13,7 +13,7 @@ class EventSuggestionCorrectionTest extends TestCase {
     use RefreshDatabase;
     use WithFaker;
 
-    public function testSuggestionHashTagCorrection() {
+    public function testSuggestionHashTagCorrection(): void {
         $user = User::factory()->create();
 
         $suggestion = EventController::suggestEvent(
@@ -27,7 +27,7 @@ class EventSuggestionCorrectionTest extends TestCase {
         $this->assertEquals('GreatTestCase', $suggestion->hashtag);
     }
 
-    public function testSuggestionHashTagWithoutCorrection() {
+    public function testSuggestionHashTagWithoutCorrection(): void {
         $user = User::factory()->create();
 
         $suggestion = EventController::suggestEvent(
