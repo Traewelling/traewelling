@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\Backend\EventController;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -20,8 +19,8 @@ class EventSuggestionCorrectionTest extends TestCase
         $suggestion = EventController::suggestEvent(
             user:    $user,
             name:    $this->faker->name,
-            begin:   Carbon::now(),
-            end:     Carbon::now()->addDay(),
+            begin:   now(),
+            end:     now()->addDay(),
             hashtag: '#GreatTestCase',
         );
 
@@ -34,8 +33,8 @@ class EventSuggestionCorrectionTest extends TestCase
         $suggestion = EventController::suggestEvent(
             user:    $user,
             name:    $this->faker->name,
-            begin:   Carbon::now(),
-            end:     Carbon::now()->addDay(),
+            begin:   now(),
+            end:     now()->addDay(),
             hashtag: 'GreatTestCase',
         );
 
