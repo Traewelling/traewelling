@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Backend\Admin\TelegramController;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventSuggestion;
@@ -14,8 +13,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 
-abstract class EventController extends Controller
-{
+abstract class EventController extends Controller {
     public static function suggestEvent(
         User         $user,
         string       $name,
@@ -26,6 +24,11 @@ abstract class EventController extends Controller
         string       $host = null,
         string       $hashtag = null,
     ): EventSuggestion {
+
+        if ($hashtag != null && str_starts_with($hashtag, '#')) {
+            $hashtag = substr($hashtag, 1);
+        }
+
         $eventSuggestion = EventSuggestion::create([
                                                        'user_id'    => $user->id,
                                                        'name'       => $name,
