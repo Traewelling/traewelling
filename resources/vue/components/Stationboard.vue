@@ -39,10 +39,17 @@ export default {
             this.data = [];
             this.fetchData();
         },
-        fetchData() {
+        fetchPrevious() {
+            this.fetchData(this.meta.times.prev)
+        },
+        fetchNext() {
+            this.fetchData(this.meta.times.next)
+        },
+        fetchData(time = null) {
             this.loading = true;
+            const when = time ? `?when=${time}` : ``;
             let query = this.station.replace(/%2F/, ' ').replace(/\//, ' ');
-            fetch(`/api/v1/trains/station/${query}/departures`).then((response) => {
+            fetch(`/api/v1/trains/station/${query}/departures${when}`).then((response) => {
                 response.json().then((result) => {
                     this.data = result.data;
                     this.meta = result.meta;
@@ -100,7 +107,11 @@ export default {
             <CheckinInterface :selectedTrain="selectedTrain" :selectedDestination="selectedDestination"/>
         </template>
     </FullScreenModal>
-    <v-template v-for="(item, key) in data" :key="item.id">
+
+    <div class="text-center mb-2" v-if="data.length !== 0" @click="fetchPrevious">
+        <button type="button" class="btn btn-primary"><i class="fa-solid fa-angle-up"></i></button>
+    </div>
+    <v-template v-show="!loading" v-for="(item, key) in data" :key="item.id">
         <div class="card mb-1 dep-card" @click="showModal(item)">
             <div class="card-body d-flex py-0">
                 <div class="col-1 align-items-center d-flex justify-content-center">
@@ -132,6 +143,9 @@ export default {
             <hr>
         </div>
     </v-template>
+    <div class="text-center mt-2" v-if="data.length !== 0" @click="fetchNext">
+        <button type="button" class="btn btn-primary"><i class="fa-solid fa-angle-down"></i></button>
+    </div>
 </template>
 
 <style scoped lang="scss">
