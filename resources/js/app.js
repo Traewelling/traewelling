@@ -5,6 +5,7 @@ import {Notyf} from 'notyf';
 import {createApp} from 'vue';
 import NotificationBell from "../vue/components/NotificationBell.vue";
 import ActiveJourneyMap from "../vue/components/ActiveJourneyMap.vue";
+import Stationboard from "../vue/components/Stationboard.vue";
 
 require("./bootstrap");
 require("awesomplete/awesomplete");
@@ -23,6 +24,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const app2 = createApp({});
     app2.component('ActiveJourneyMap', ActiveJourneyMap);
     app2.mount('#activeJourneys');
+
+    const app3 = createApp({});
+    app3.component('Stationboard', Stationboard);
+    app3.mount('#station-board-new');
 
     window.notyf = new Notyf({
         duration: 5000,

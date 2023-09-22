@@ -30,6 +30,7 @@
         "croppie": "^2.6.5",
         "leaflet": "^1.9.4",
         "Leaflet-MovingMaker": "^0.0.1",
+        "luxon": "^3.4.3",
         "mdb-ui-kit": "^6.4.1",
         "notyf": "^3.10.0",
         "vue": "^3.3.4"

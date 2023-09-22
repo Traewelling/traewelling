@@ -5,9 +5,12 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7">
+            <div class="col-md-8 col-lg-7" id="station-board-new">
                 @include('includes.station-autocomplete')
 
+                @if(true)
+                    <Stationboard @isset($station) station="{{$station->name}}" @endisset></Stationboard>
+                @else
                 <div id="timepicker-wrapper">
                     <div class="text-center">
                         <div class="btn-group" role="group">
@@ -180,6 +183,7 @@
                         @endif
                     </div>
                 </div>
+                @endif
             </div>
         </div>
     </div>
