@@ -46,13 +46,14 @@ class SettingsController extends Controller
 
     public function updateMainSettings(Request $request): RedirectResponse {
         $validated = $request->validate([
-                                            'username'    => [
+                                            'username'     => [
                                                 'required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'
                                             ],
-                                            'name'        => ['required', 'string', 'max:50'],
-                                            'email'       => ['required', 'string', 'email:rfc,dns', 'max:255'],
-                                            'mapprovider' => ['required', new Enum(MapProvider::class)],
-                                            'timezone'    => ['required', Rule::in(DateTimeZone::listIdentifiers())]
+                                            'name'         => ['required', 'string', 'max:50'],
+                                            'email'        => ['required', 'string', 'email:rfc,dns', 'max:255'],
+                                            'mapprovider'  => ['required', new Enum(MapProvider::class)],
+                                            'timezone'     => ['required', Rule::in(DateTimeZone::listIdentifiers())],
+                                            'experimental' => ['required', 'boolean'],
                                         ]);
 
         if (auth()->user()->username !== $validated['username']) {
