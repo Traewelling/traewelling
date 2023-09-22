@@ -6,6 +6,7 @@ import {createApp} from 'vue';
 import NotificationBell from "../vue/components/NotificationBell.vue";
 import ActiveJourneyMap from "../vue/components/ActiveJourneyMap.vue";
 import Stationboard from "../vue/components/Stationboard.vue";
+import StationAutocomplete from "../vue/components/StationAutocomplete.vue";
 
 require("./bootstrap");
 require("awesomplete/awesomplete");
@@ -27,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const app3 = createApp({});
     app3.component('Stationboard', Stationboard);
+    app3.component('Stationautocomplete', StationAutocomplete);
     app3.mount('#station-board-new');
 
     window.notyf = new Notyf({

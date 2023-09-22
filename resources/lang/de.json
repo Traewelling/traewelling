@@ -383,6 +383,8 @@
     "settings.prevent-indexing": "Suchmaschinenindexierung verhindern",
     "settings.allow": "Erlauben",
     "settings.prevent": "Verbieten",
+    "settings.experimental-ui": "Experimentelle UI",
+    "settings.experimental-ui.description": "Die experimentelle UI ist noch nicht fertig und kann Fehler enthalten. Sie ist nicht für den täglichen Gebrauch geeignet.",
     "settings.privacy.update.success": "Deine Privatsphäreneinstellungen wurden aktualisiert.",
     "settings.search-engines.description": "Wir setzen ein noindex-Tag auf deinem Profil um den Suchmaschinen mitzuteilen, dass dein Profil nicht indexiert werden darf. Wir haben keinen Einfluss darauf, ob die Suchmaschine diesen Wunsch berücksichtigt.",
     "settings.no-tokens": "Es haben aktuell keine externen Anwendungen Zugriff auf deinen Account.",

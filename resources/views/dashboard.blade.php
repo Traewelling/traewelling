@@ -64,7 +64,7 @@
                     </div>
                 @endif
 
-                @if(true)
+                @if(auth()->user()->experimental_ui ?? false)
                     <div id="station-board-new">
                         <Stationautocomplete :dashboard="true"></Stationautocomplete>
                     </div>
