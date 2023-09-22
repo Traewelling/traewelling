@@ -3,9 +3,10 @@ import FullScreenModal from "./FullScreenModal.vue";
 import ProductIcon from "./ProductIcon.vue";
 import LineIndicator from "./LineIndicator.vue";
 import { DateTime } from "luxon";
+import CheckinLineRun from "./CheckinLineRun.vue";
 
 export default {
-    components: {LineIndicator, ProductIcon, FullScreenModal},
+    components: {CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal},
     props: {
         station: {
             type: String,
@@ -15,35 +16,28 @@ export default {
     },
     data() {
         return {
-            demo: [
-                {product: 'tram', id: 1},
-                {product: 'suburban', id: "S 2"},
-                {product: 'bus', id: 3},
-                {product: 'subway', id: 4},
-                {product: 'train', id: "IRE 1"}
-            ],
             data: [],
             meta: {},
             show: false,
             selectedTrain: null,
             selectedDestination: null,
+            loading: false,
         };
     },
-    computed: {
-        modalTitle() {
-
-        }
-    },
     methods: {
-        showModal() {
+        showModal(selectedItem) {
+            this.selectedDestination = null;
+            this.selectedTrain = selectedItem;
             this.show = true;
             this.$refs.modal.show();
         },
         fetchData() {
+            this.loading = true;
             fetch(`/api/v1/trains/station/${this.$props.station}/departures`).then((response) => {
                 response.json().then((result) => {
                     this.data = result.data;
                     this.meta = result.meta;
+                    this.loading = false;
                 });
             });
         },
@@ -68,41 +62,30 @@ export default {
 </script>
 
 <template>
+    <div v-if="loading" class="spinner-grow text-trwl mx-auto p-2" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
     <FullScreenModal ref="modal">
-        <template #header>
+        <template #header v-if="selectedTrain">
             <div class="col-1 align-items-center d-flex">
-                <img
-                    alt="tram"
-                    src="/img/tram.svg"
-                    class="product-icon">
+                <ProductIcon :product="selectedTrain.line.product" />
             </div>
             <div class="col-auto align-items-center d-flex me-3">
-                <span class="line-indicator text-white" style="--accent: #D91A1A;">1</span>
+                <LineIndicator :product-name="selectedTrain.line.product" :number="selectedTrain.line.name" />
             </div>
-            <template v-if="selectedTrain">
+            <template v-if="selectedDestination">
                 <div class="col-auto align-items-center d-flex me-3">
                     <i class="fas fa-arrow-alt-circle-right"></i>
                 </div>
                 <div class="col-auto align-items-center d-flex me-3">
-                    Knielingen Nord, Karlsruhe
+                    {{ selectedDestination.name }}
                 </div>
             </template>
         </template>
-        <template #idk v-if="!selectedTrain">
-            <ul class="timeline">
-                <li v-for="item in demo" :key="item" @click="selectedTrain = true">
-                    <i class="trwl-bulletpoint" aria-hidden="true"></i>
-                    <span class="text-trwl float-end">
-                    <small class="text-muted text-decoration-line-through">09:39 pm</small>
-                        &nbsp;
-                    <span>09:43 pm</span>
-                </span>
-
-                    <a href="#" class="text-trwl clearfix">Karlsruhe-Durlach</a>
-                </li>
-            </ul>
+        <template #idk v-if="!!selectedTrain && !selectedDestination">
+            <CheckinLineRun :selectedTrain="selectedTrain" v-model:destination="selectedDestination"/>
         </template>
-        <template #idk v-if="!!selectedTrain">
+        <template #idk v-if="!!selectedDestination">
             <form action="https://traewelling.de/trains/checkin" method="POST" id="checkinForm">
                 <div class="form-outline">
                     <textarea name="body" class="form-control" id="message-text" maxlength="280"
@@ -214,7 +197,7 @@ export default {
         </template>
     </FullScreenModal>
     <v-template v-for="(item, key) in data" :key="item.id">
-        <div class="card mb-1 dep-card" @click="showModal()">
+        <div class="card mb-1 dep-card" @click="showModal(item)">
             <div class="card-body d-flex py-0">
                 <div class="col-1 align-items-center d-flex justify-content-center">
                     <ProductIcon :product="item.line.product"/>
