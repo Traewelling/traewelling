@@ -9,6 +9,11 @@ export default {
         station: {
             type: Object,
             required: false
+        },
+        dashboard: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     data() {
@@ -44,6 +49,7 @@ export default {
             this.stationInput = item.name;
             this.$emit('update:station', item);
             this.$refs.modal.hide();
+            window.location="/trains/stationboard?station=" + item.name;
         }
     },
     watch: {
