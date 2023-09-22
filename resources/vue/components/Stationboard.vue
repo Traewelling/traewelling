@@ -24,7 +24,7 @@ export default {
             selectedTrain: null,
             selectedDestination: null,
             loading: false,
-            station: null,
+            stationString: null,
         };
     },
     methods: {
@@ -35,7 +35,7 @@ export default {
             this.$refs.modal.show();
         },
         updateStation(station) {
-            this.station = station.name;
+            this.stationString = station.name;
             this.data = [];
             this.fetchData();
         },
@@ -48,7 +48,7 @@ export default {
         fetchData(time = null) {
             this.loading = true;
             const when = time ? `?when=${time}` : ``;
-            let query = this.station.replace(/%2F/, ' ').replace(/\//, ' ');
+            let query = this.stationString.replace(/%2F/, ' ').replace(/\//, ' ');
             fetch(`/api/v1/trains/station/${query}/departures${when}`).then((response) => {
                 response.json().then((result) => {
                     this.data = result.data;
@@ -72,14 +72,14 @@ export default {
         }
     },
     mounted() {
-        this.station = this.$props.station;
+        this.stationString = this.$props.station;
         this.fetchData();
     }
 }
 </script>
 
 <template>
-    <StationAutocomplete v-on:update:station="updateStation" />
+    <StationAutocomplete v-on:update:station="updateStation" :station="{name: stationString}"/>
     <div v-if="loading" style="max-width: 200px;" class="spinner-grow text-trwl mx-auto p-2" role="status">
         <span class="visually-hidden">Loading...</span>
     </div>
@@ -111,7 +111,7 @@ export default {
     <div class="text-center mb-2" v-if="data.length !== 0" @click="fetchPrevious">
         <button type="button" class="btn btn-primary"><i class="fa-solid fa-angle-up"></i></button>
     </div>
-    <v-template v-show="!loading" v-for="(item, key) in data" :key="item.id">
+    <template v-show="!loading" v-for="(item, key) in data" :key="item.id">
         <div class="card mb-1 dep-card" @click="showModal(item)">
             <div class="card-body d-flex py-0">
                 <div class="col-1 align-items-center d-flex justify-content-center">
@@ -142,7 +142,7 @@ export default {
         <div v-if="showDivider(item, key)">
             <hr>
         </div>
-    </v-template>
+    </template>
     <div class="text-center mt-2" v-if="data.length !== 0" @click="fetchNext">
         <button type="button" class="btn btn-primary"><i class="fa-solid fa-angle-down"></i></button>
     </div>

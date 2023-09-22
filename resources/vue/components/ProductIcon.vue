@@ -17,9 +17,6 @@ export default {
             }
         };
     },
-    mounted() {
-        console.log(this.$props.product);
-    },
     computed: {
         productExists() {
             return this.iconPaths.hasOwnProperty(this.$props.product);

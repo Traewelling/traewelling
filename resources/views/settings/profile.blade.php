@@ -138,17 +138,17 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="experimental_ui" class="col-md-4 col-form-label text-md-right">
-                                {{ __('settings.experimental-ui') }}
-                                <i class="fas fa-info-circle" title="{{__('settings.experimental-ui.description')}}"
+                            <label for="experimental" class="col-md-4 col-form-label text-md-right">
+                                {{ __('settings.experimental') }}
+                                <i class="fas fa-info-circle" title="{{__('settings.experimental.description')}}"
                                    data-mdb-toggle="tooltip"></i>
                             </label>
                             <div class="col-md-6">
-                                <select class="form-control" name="experimental_ui" id="experimental_ui">
-                                    <option value="1" @if(auth()->user()->experimental_ui) selected @endif>
+                                <select class="form-control" name="experimental" id="experimental">
+                                    <option value="1" @if(auth()->user()->experimental) selected @endif>
                                         {{__('settings.allow')}}
                                     </option>
-                                    <option value="0" @if(!auth()->user()->experimental_ui) selected @endif>
+                                    <option value="0" @if(!auth()->user()->experimental) selected @endif>
                                         {{__('settings.prevent')}}
                                     </option>
                                 </select>

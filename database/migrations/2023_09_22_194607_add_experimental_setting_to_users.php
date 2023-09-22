@@ -9,14 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('experimental_ui')->default(false)->after('likes_enabled');
+            $table->boolean('experimental')->default(false)->after('likes_enabled');
         });
     }
 
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('experimental_ui');
+            $table->dropColumn('experimental');
         });
     }
 };

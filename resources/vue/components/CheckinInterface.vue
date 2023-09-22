@@ -90,6 +90,7 @@ export default {
         <div class="form-outline">
             <textarea
                 name="body"
+                id="message-text"
                 class="form-control"
                 v-model="statusText"
                 :maxlength="allowedChars"
@@ -166,7 +167,7 @@ export default {
                     </li>
                 </ul>
             </div>
-            <button class="col-auto ms-auto btn btn-sm btn-outline-primary" @click="checkIn">
+            <button class="col-auto float-end ms-auto btn btn-sm btn-outline-primary" @click="checkIn">
                 <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 <span v-if="loading" class="visually-hidden">Loading...</span>
                 Einchecken!

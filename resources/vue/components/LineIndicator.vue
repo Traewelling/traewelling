@@ -53,7 +53,6 @@ export default {
         },
         color() {
             const color = this.product.color;
-            console.log(color, this.product);
             return `--accent: ${color};`
         }
     }
