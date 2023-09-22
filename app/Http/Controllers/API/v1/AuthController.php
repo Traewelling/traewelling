@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\Backend\Auth\LoginController;
 use App\Http\Resources\UserSettingsResource;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Http\JsonResponse;
@@ -10,28 +9,6 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-
-    /**
-     * @param Request $request
-     *
-     * @return JsonResponse
-     * @deprecated Remove before 2023-10! Maybe earlier - if possible. Deprecation is already announced since
-     *             November'22.
-     */
-    public function login(Request $request): JsonResponse {
-        $validated = $request->validate(['login' => ['required', 'max:255'], 'password' => ['required', 'min:8', 'max:255']]);
-
-        if (LoginController::login($validated['login'], $validated['password'])) {
-            $token = $request->user()->createToken('token', array_keys(AuthServiceProvider::$scopes));
-            return $this->sendResponse([
-                                           'WARNING'    => 'This endpoint (login) is deprecated and will be removed in the following weeks. Please migrate to use OAuth2. More information: https://github.com/Traewelling/traewelling/issues/1772',
-                                           'token'      => $token->accessToken,
-                                           'expires_at' => $token->token->expires_at->toIso8601String(),
-                                       ])
-                        ->header('Authorization', $token->accessToken);
-        }
-        return $this->sendError('Non-matching credentials', 401);
-    }
 
     /**
      * @OA\Post(
@@ -134,7 +111,8 @@ class AuthController extends Controller
         $oldToken->revoke();
         return $this->sendResponse([
                                        'token'      => $newToken->accessToken,
-                                       'expires_at' => $newToken->token->expires_at->toIso8601String()]
-        )->header('Authorization', $newToken->accessToken);
+                                       'expires_at' => $newToken->token->expires_at->toIso8601String()
+                                   ])
+                    ->header('Authorization', $newToken->accessToken);
     }
 }

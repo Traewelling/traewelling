@@ -707,6 +707,7 @@
     "access-token-remove-at": "You can remove the AccessToken at any time in the settings under 'API Tokens'.",
     "your-access-token": "Your AccessToken",
     "your-access-token-description": "You can generate an AccessToken to access your own account.",
+    "your-access-token.ask": "We at Träwelling will never ask you for your AccessToken. If you are asked for it, it is probably a scam.",
     "access-token-is-private": "Treat your AccessToken like a password. Never give it to third parties.",
     "refresh": "Refresh"
 }
