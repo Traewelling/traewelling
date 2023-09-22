@@ -5,9 +5,10 @@ import LineIndicator from "./LineIndicator.vue";
 import { DateTime } from "luxon";
 import CheckinLineRun from "./CheckinLineRun.vue";
 import CheckinInterface from "./CheckinInterface.vue";
+import StationAutocomplete from "./StationAutocomplete.vue";
 
 export default {
-    components: {CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal},
+    components: {StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal},
     props: {
         station: {
             type: String,
@@ -23,6 +24,7 @@ export default {
             selectedTrain: null,
             selectedDestination: null,
             loading: false,
+            station: null,
         };
     },
     methods: {
@@ -32,9 +34,15 @@ export default {
             this.show = true;
             this.$refs.modal.show();
         },
+        updateStation(station) {
+            this.station = station.name;
+            this.data = [];
+            this.fetchData();
+        },
         fetchData() {
             this.loading = true;
-            fetch(`/api/v1/trains/station/${this.$props.station}/departures`).then((response) => {
+            let query = this.station.replace(/%2F/, ' ').replace(/\//, ' ');
+            fetch(`/api/v1/trains/station/${query}/departures`).then((response) => {
                 response.json().then((result) => {
                     this.data = result.data;
                     this.meta = result.meta;
@@ -57,12 +65,14 @@ export default {
         }
     },
     mounted() {
+        this.station = this.$props.station;
         this.fetchData();
     }
 }
 </script>
 
 <template>
+    <StationAutocomplete v-on:update:station="updateStation" />
     <div v-if="loading" style="max-width: 200px;" class="spinner-grow text-trwl mx-auto p-2" role="status">
         <span class="visually-hidden">Loading...</span>
     </div>

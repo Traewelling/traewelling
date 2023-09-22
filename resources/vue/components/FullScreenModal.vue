@@ -17,6 +17,9 @@ export default {
         },
         show() {
             this.modal.show();
+        },
+        hide() {
+            this.modal.hide();
         }
     },
     mounted() {
