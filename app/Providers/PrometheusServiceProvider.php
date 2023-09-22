@@ -39,7 +39,7 @@ class PrometheusServiceProvider extends ServiceProvider
                                       ->selectRaw("count(*) AS total, operator_id, category")
                                       ->with("operator")
                                       ->get()
-                                      ->map(fn($item) => [$item->total, [$item->operator->name, $item->category]])
+                                      ->map(fn($item) => [$item->total, [$item->operator?->name, $item->category]])
                                       ->toArray();
                   });
 
