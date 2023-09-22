@@ -67,7 +67,7 @@ export default {
 </script>
 
 <template>
-    <div v-if="loading" class="spinner-grow text-trwl mx-auto p-2" role="status">
+    <div v-if="loading" class="spinner-grow text-trwl mx-auto p-2" style="max-width: 200px;" role="status">
         <span class="visually-hidden">Loading...</span>
     </div>
     <ul class="timeline" v-else>

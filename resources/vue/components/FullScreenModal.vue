@@ -34,9 +34,9 @@ export default {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <slot name="idk"></slot>
+                    <slot name="body"></slot>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer d-none">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
