@@ -193,7 +193,7 @@ return [
                 ],
                 'token'    => [ // Unique name of security
                                 'type'        => 'apiKey', // Valid values are "basic", "apiKey" or "oauth2".
-                                'description' => 'You can create your personal access token at https://traewelling.de/settings/applications. We recommend this method for prototyping purposes. For all other use cases please use the oAuth method above.',
+                                'description' => 'Enter token in format "Bearer \<token\>". You can create your personal access token at https://traewelling.de/settings/applications. We recommend this method for prototyping purposes. For all other use cases please use the oAuth method above.',
                                 'name'        => 'Authorization', // The name of the header or query parameter to be used.
                                 'in'          => 'header',
                 ],
