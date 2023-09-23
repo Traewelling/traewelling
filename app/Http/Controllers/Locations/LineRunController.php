@@ -28,16 +28,32 @@ class LineRunController
     }
 
     public function showDemo() {
-        $segments = LineRun::where('hash', $this->hash)->get();
+        $origin = TrainStation::where('id', 54)->first();
+        $destination = TrainStation::where('id', 3334)->first();
 
-        $coordinates = [];
-        foreach ($segments as $segment) {
-            $segment = LineSegmentBetween::where('id', $segment->line_segment_id)->first();
-            $points = LineSegmentPoint::where('segment_id', $segment->segment_id)->get();
-            foreach ($points as $point) {
-                $coordinates[] = new Coordinate($point->latitude, $point->longitude);
+        $segments = LineRun::where('hash', $this->hash)->get();
+        $lineSegmentIds  = $segments->map(fn($segment) => $segment->line_segment_id);
+        $segmentsBetween = LineSegmentBetween::whereIn('id', $lineSegmentIds)->get();
+
+        $routeStarted = false;
+        $segmentsBetween = $segmentsBetween->filter(function ($segment) use (&$origin, &$destination, &$routeStarted) {
+            if (!$routeStarted && $segment->origin_id == $origin->id) {
+                $routeStarted = true;
             }
+            if ($routeStarted && $segment->destination_id == $destination->id) {
+                $routeStarted = false;
+                return true;
+            }
+            return $routeStarted;
+        })->map(fn($segment) => $segment->segment_id);
+
+        $points = LineSegmentPoint::whereIn('segment_id', $segmentsBetween)->get();
+        $coordinates = [];
+        $coodinates[] = new Coordinate($origin->latitude, $origin->longitude);
+        foreach ($points as $point) {
+            $coordinates[] = new Coordinate($point->latitude, $point->longitude);
         }
+        $coordinates[] = new Coordinate($destination->latitude, $destination->longitude);
 
         print_r(json_encode(new Feature($coordinates)));
     }
@@ -90,7 +106,9 @@ class LineRunController
             ]
         );
 
-        $exists = LineSegmentBetween::where(['origin_id' => $origin->id, 'destination_id' => $destination->id])->first();
+        $exists = LineSegmentBetween::where(
+            ['origin_id' => $origin->id, 'destination_id' => $destination->id]
+        )->first();
         if (empty($exists)) {
             $segmentHead = LineSegment::create(['reversible' => true]);
 
