@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-8 col-lg-7">
+        <div class="col-lg-8">
             <div class="card mb-3">
                 <div class="card-header">{{ __('settings.title-tokens') }}</div>
                 <div class="card-body table-responsive px-0">
@@ -42,7 +42,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-lg-5">
+        <div class="col-lg-4">
             @include('dev.access-token')
         </div>
     </div>

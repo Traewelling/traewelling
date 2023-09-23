@@ -3,6 +3,7 @@
 namespace App\Dto\GeoJson;
 
 use App\Dto\Coordinate;
+use stdClass;
 
 class Feature implements \JsonSerializable
 {
@@ -28,6 +29,7 @@ class Feature implements \JsonSerializable
                 'type'        => $this->type,
                 'coordinates' => $this->coordinates
             ],
+            'properties' => new stdClass(),
         ];
         if ($this->statusId) {
             $response['properties'] = ['statusId' => $this->statusId];

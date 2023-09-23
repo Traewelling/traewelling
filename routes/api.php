@@ -32,7 +32,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static function() {
     Route::group(['prefix' => 'auth'], function() {
-        Route::post('login', [v1Auth::class, 'login']);
         Route::group(['middleware' => 'auth:api'], static function() {
             Route::post('refresh', [v1Auth::class, 'refresh']);
             Route::post('logout', [v1Auth::class, 'logout']);
@@ -119,7 +118,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('profile', [SettingsController::class, 'getProfileSettings'])
                  ->middleware(['scope:read-settings']);
             Route::put('profile', [SettingsController::class, 'updateSettings'])
-                 ->middleware(['scope:write-settings']);
+                 ->middleware(['scope:write-settings-profile']);
             Route::delete('profilePicture', [SettingsController::class, 'deleteProfilePicture'])
                  ->middleware(['scope:write-settings-profile-picture']);
             Route::post('profilePicture', [SettingsController::class, 'uploadProfilePicture'])

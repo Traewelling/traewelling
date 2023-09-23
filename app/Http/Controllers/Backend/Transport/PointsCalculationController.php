@@ -21,16 +21,16 @@ abstract class PointsCalculationController extends Controller
         Carbon          $timestampOfView = null
     ): PointCalculation {
         if ($timestampOfView == null) {
-            $timestampOfView = Carbon::now();
+            $timestampOfView = now();
         }
 
         $base     = config('trwl.base_points.train.' . $hafasTravelType->value, 1);
         $distance = ceil($distanceInMeter / 10000);
 
         return self::calculatePointsWithReason(
-            basePoints:       $base,
-            distancePoints:   $distance,
-            pointReason:      self::getReason($departure, $arrival, $forceCheckin, $timestampOfView),
+            basePoints:     $base,
+            distancePoints: $distance,
+            pointReason:    self::getReason($departure, $arrival, $forceCheckin, $timestampOfView),
         );
     }
 
@@ -42,11 +42,11 @@ abstract class PointsCalculationController extends Controller
     ): PointCalculation {
         if ($pointReason === PointReason::NOT_SUFFICIENT || $pointReason === PointReason::FORCED) {
             return new PointCalculation(
-                points:           1,
-                basePoints:       $basePoints,
-                distancePoints:   $distancePoints,
-                reason:           $pointReason,
-                factor:           0,
+                points:         1,
+                basePoints:     $basePoints,
+                distancePoints: $distancePoints,
+                reason:         $pointReason,
+                factor:         0,
             );
         }
         $factor = self::getFactorByReason($pointReason);
@@ -55,11 +55,11 @@ abstract class PointsCalculationController extends Controller
         $distancePoints *= $factor;
 
         return new PointCalculation(
-            points:           ceil($basePoints + $distancePoints),
-            basePoints:       $basePoints,
-            distancePoints:   $distancePoints,
-            reason:           $pointReason,
-            factor:           $factor,
+            points:         ceil($basePoints + $distancePoints),
+            basePoints:     $basePoints,
+            distancePoints: $distancePoints,
+            reason:         $pointReason,
+            factor:         $factor,
         );
     }
 
@@ -74,7 +74,6 @@ abstract class PointsCalculationController extends Controller
         return 1;
     }
 
-    #[Pure]
     public static function getReason(
         Carbon $departure,
         Carbon $arrival,
@@ -92,7 +91,10 @@ abstract class PointsCalculationController extends Controller
          * -----------------------------------------> t
          *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
          */
-        if ($timestampOfView->isBetween($departure->clone()->subMinutes(20), $arrival)) {
+        if ($timestampOfView->isBetween(
+            $departure->clone()->subMinutes(config('trwl.base_points.time_window.in_time.before')),
+            $arrival->clone()->addMinutes(config('trwl.base_points.time_window.in_time.after'))
+        )) {
             return PointReason::IN_TIME;
         }
 
@@ -104,7 +106,10 @@ abstract class PointsCalculationController extends Controller
          * -----------------------------------------> t
          *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
          */
-        if ($timestampOfView->isBetween($departure->clone()->subHour(), $arrival->clone()->addHour())) {
+        if ($timestampOfView->isBetween(
+            $departure->clone()->subMinutes(config('trwl.base_points.time_window.good_enough.before')),
+            $arrival->clone()->addMinutes(config('trwl.base_points.time_window.good_enough.after'))
+        )) {
             return PointReason::GOOD_ENOUGH;
         }
 

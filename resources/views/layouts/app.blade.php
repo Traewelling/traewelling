@@ -29,8 +29,6 @@
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
 
         <!-- Styles -->
-        <link href="{{ mix('css/app.css') }}" rel="stylesheet">
-        <link href="{{ mix('css/app-dark.css') }}" rel="stylesheet">
         <link rel="mask-icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}">
         <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
         <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
@@ -38,7 +36,7 @@
         <link rel="author" href="/humans.txt">
         <link rel="manifest" href="/manifest.json"/>
 
-        <script src="{{ mix('js/app.js') }}"></script>
+        @vite(['resources/sass/app.scss', 'resources/sass/app.scss', 'resources/js/app.js'])
 
         @yield('head')
     </head>

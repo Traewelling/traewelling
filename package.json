@@ -2,24 +2,18 @@
     "name": "traewelling",
     "private": true,
     "scripts": {
-        "dev": "npm run development",
-        "development": "mix",
-        "watch": "mix watch",
-        "watch-poll": "mix watch -- --watch-options-poll=1000",
-        "hot": "mix watch --hot",
-        "prod": "npm run production",
-        "production": "mix --production"
+        "dev": "vite",
+        "build": "vite build"
     },
     "devDependencies": {
         "@popperjs/core": "^2.11",
+        "@vitejs/plugin-vue": "^4.3.3",
         "bootstrap": "^5.3",
         "jquery": "^3.7.0",
-        "laravel-mix": "^6.0",
+        "laravel-vite-plugin": "^0.8.0",
         "lodash": "^4.17.21",
-        "resolve-url-loader": "^5.0.0",
-        "sass": "^1.65.1",
-        "sass-loader": "^13.3.2",
-        "vue-loader": "^16.8.3"
+        "sass": "^1.67.0",
+        "vite": "^4.4.9"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.4.2",
@@ -30,6 +24,7 @@
         "croppie": "^2.6.5",
         "leaflet": "^1.9.4",
         "Leaflet-MovingMaker": "^0.0.1",
+        "luxon": "^3.4.3",
         "mdb-ui-kit": "^6.4.1",
         "notyf": "^3.10.0",
         "vue": "^3.3.4"

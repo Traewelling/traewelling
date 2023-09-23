@@ -383,6 +383,8 @@
     "settings.prevent-indexing": "Suchmaschinenindexierung verhindern",
     "settings.allow": "Erlauben",
     "settings.prevent": "Verbieten",
+    "settings.experimental": "Experimentelle Features",
+    "settings.experimental.description": "Die experimentellen Features sind noch nicht fertig und können Fehler enthalten. Sie sind nicht für den täglichen Gebrauch geeignet.",
     "settings.privacy.update.success": "Deine Privatsphäreneinstellungen wurden aktualisiert.",
     "settings.search-engines.description": "Wir setzen ein noindex-Tag auf deinem Profil um den Suchmaschinen mitzuteilen, dass dein Profil nicht indexiert werden darf. Wir haben keinen Einfluss darauf, ob die Suchmaschine diesen Wunsch berücksichtigt.",
     "settings.no-tokens": "Es haben aktuell keine externen Anwendungen Zugriff auf deinen Account.",
@@ -707,6 +709,7 @@
     "access-token-remove-at": "Du kannst den AccessToken jederzeit in den Einstellungen unter 'API-Tokens' entfernen.",
     "your-access-token": "Dein AccessToken",
     "your-access-token-description": "Du kannst dir einen AccessToken generieren um auf deinen eigenen Account zuzugreifen.",
+    "your-access-token.ask": "Wir von Träwelling werden dich niemals nach deinem AccessToken fragen. Wenn du von jemandem danach gefragt wirst, ist das vermutlich ein Betrugsversuch.",
     "access-token-is-private": "Behandle deinen AccessToken wie ein Passwort. Gib ihn niemals an Dritte weiter.",
     "refresh": "Aktualisieren"
 }

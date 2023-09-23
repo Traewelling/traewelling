@@ -13,7 +13,7 @@
         <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
 
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
-        <link href="{{ asset('css/welcome.css') }}" rel="stylesheet">
+        @vite('resources/sass/welcome.scss')
     </head>
     <body>
         <div class="flex-center position-ref full-height">
