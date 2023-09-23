@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Backend;
 use App\Dto\Coordinate;
 use App\Enum\BrouterProfile;
 use App\Exceptions\DistanceDeviationException;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Locations\LineRunController;
 use App\Jobs\RefreshPolyline;
 use App\Models\HafasTrip;
 use App\Models\PolyLine;
@@ -159,9 +161,15 @@ abstract class BrouterController extends Controller
             foreach ($trainCheckinToRecalc as $trainCheckin) {
                 TrainCheckinController::refreshDistanceAndPoints($trainCheckin->status);
             }
+            self::convertToLineSegments($polyline);
         } catch (DistanceDeviationException) {
             $trip->update(['polyline_id' => $oldPolyLine]);
         }
+    }
+
+    private static function convertToLineSegments($polyline): void {
+        $lineRun = new LineRunController(json_decode($polyline->polyline), $polyline->hash);
+        $lineRun->demo();
     }
 
     /**
