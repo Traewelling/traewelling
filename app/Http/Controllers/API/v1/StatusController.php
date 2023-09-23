@@ -11,11 +11,13 @@ use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Backend\User\DashboardController;
+use App\Http\Controllers\Locations\LineRunController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
 use App\Models\HafasTrip;
+use App\Models\LineRun;
 use App\Models\Status;
 use App\Models\TrainStopover;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -525,11 +527,19 @@ class StatusController extends Controller
                                      return true;
                                  })
                                  ->map(function($status) {
-                                     return new Feature(
-                                         LocationController::forStatus($status)->getMapLines(),
-                                         'LineString',
-                                         $status->id
-                                     );
+                                     if (auth()->user()->experimental ?? false) {
+                                         return new Feature(
+                                             LineRunController::forStatus($status),
+                                             'LineString',
+                                             $status->id
+                                         );
+                                     } else {
+                                         return new Feature(
+                                             LocationController::forStatus($status)->getMapLines(),
+                                             'LineString',
+                                             $status->id
+                                         );
+                                     }
                                  });
         $geoJson         = new FeatureCollection($geoJsonFeatures);
         return $ids ? new JsonResource($geoJson) : $this->sendError("");

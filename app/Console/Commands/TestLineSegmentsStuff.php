@@ -16,9 +16,9 @@ class TestLineSegmentsStuff extends Command
 
     public function handle(): int {
         $flag      = $this->arguments()['flag'];
-        $lineRunController = new LineRunController();
+        $lineRunController = LineRunController::fromFile();
         if ($flag) {
-            $lineRunController->showDemo();
+            $lineRunController->getLinerun();
         } else {
             $lineRunController->demo();
         }

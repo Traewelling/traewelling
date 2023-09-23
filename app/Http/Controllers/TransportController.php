@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enum\TravelType;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Transport\StationController;
+use App\Http\Controllers\Locations\LineRunController;
 use App\Models\PolyLine;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
@@ -157,6 +158,9 @@ class TransportController extends Controller
      * @return PolyLine
      */
     public static function getPolylineHash(string $polyline): PolyLine {
+        $controller = new LineRunController(json_decode($polyline), md5($polyline));
+        $controller->demo();
+
         return PolyLine::updateOrCreate([
                                             'hash' => md5($polyline)
                                         ], [
