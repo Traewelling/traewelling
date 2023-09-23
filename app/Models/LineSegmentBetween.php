@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $origin_id
  * @property int $destination_id
  * @property int $segment_id
- * @property bool $reversed
  * @property TrainStation $origin
  * @property TrainStation $destination
  * @property LineSegment $segment
@@ -19,7 +18,7 @@ class LineSegmentBetween extends Model
     use HasFactory;
 
     protected $fillable = [
-        'origin_id', 'destination_id', 'segment_id', 'reversed'
+        'origin_id', 'destination_id', 'segment_id'
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $table = 'line_segment_between';

@@ -169,7 +169,7 @@ abstract class BrouterController extends Controller
 
     private static function convertToLineSegments($polyline): void {
         $lineRun = new LineRunController(json_decode($polyline->polyline), $polyline->hash);
-        $lineRun->demo();
+        $lineRun->splitAndSaveLineRun();
     }
 
     /**

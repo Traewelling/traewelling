@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Model where($column, $operator = null, $value = null, $boolean = 'and')
  * @method static Builder|Model whereIn($column, $values, $boolean = 'and', $not = false)
  * @method static Builder|Model create(array $attributes = [])
+ * @method static Builder|Model updateOrCreate(array $attributes, array $values = [])
  * */
 class Model extends \Illuminate\Database\Eloquent\Model
 {

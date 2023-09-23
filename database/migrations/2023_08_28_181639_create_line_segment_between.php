@@ -18,7 +18,6 @@ return new class extends Migration
             $table->unsignedBigInteger('origin_id');
             $table->unsignedBigInteger('destination_id');
             $table->unsignedBigInteger('segment_id');
-            $table->boolean('reversed');
             $table->timestamps();
 
             $table->foreign('origin_id')

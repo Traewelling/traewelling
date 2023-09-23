@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property string $polyline
+ * @property string $hash
  * @property string $source
  */
 class PolyLine extends Model

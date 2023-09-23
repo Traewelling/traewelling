@@ -159,7 +159,7 @@ class TransportController extends Controller
      */
     public static function getPolylineHash(string $polyline): PolyLine {
         $controller = new LineRunController(json_decode($polyline), md5($polyline));
-        $controller->demo();
+        $controller->splitAndSaveLineRun();
 
         return PolyLine::updateOrCreate([
                                             'hash' => md5($polyline)
