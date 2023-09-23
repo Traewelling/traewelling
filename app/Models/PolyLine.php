@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property string $polyline
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class PolyLine extends Model
 {
 
-    protected $fillable = ['hash', 'polyline', 'source'];
+    protected $fillable = ['hash', 'polyline', 'source', 'parent_id'];
     protected $casts    = [
         'id'     => 'integer',
         'source' => 'string', //enum['hafas', 'brouter'] in database
@@ -19,5 +20,9 @@ class PolyLine extends Model
 
     public function trips(): HasMany {
         return $this->hasMany(HafasTrip::class, 'polyline_id', 'id');
+    }
+
+    public function parent(): HasOne {
+        return $this->hasOne(PolyLine::class, 'parent_id', 'id');
     }
 }
