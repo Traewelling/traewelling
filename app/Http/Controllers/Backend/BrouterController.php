@@ -145,9 +145,10 @@ abstract class BrouterController extends Controller
         }
 
         $polyline    = PolyLine::create([
-                                            'hash'     => Str::uuid(), //In this case a non required unique key
-                                            'polyline' => json_encode($geoJson),
-                                            'source'   => 'brouter',
+                                            'hash'      => Str::uuid(), //In this case a non required unique key
+                                            'polyline'  => json_encode($geoJson),
+                                            'source'    => 'brouter',
+                                            'parent_id' => $trip->polyline_id
                                         ]);
         $oldPolyLine = $trip->polyline_id;
         $trip->update(['polyline_id' => $polyline->id]);
