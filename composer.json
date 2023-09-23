@@ -38,7 +38,8 @@
         "spatie/laravel-sitemap": "^6.0",
         "spatie/laravel-validation-rules": "^3.2",
         "spatie/laravel-webhook-server": "^3.4",
-        "trwl/socialite-mastodon": "^1.2"
+        "trwl/socialite-mastodon": "^1.2",
+        "ext-simplexml": "*"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
