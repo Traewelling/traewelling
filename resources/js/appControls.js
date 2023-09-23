@@ -149,7 +149,7 @@ $(document).on("click", ".disconnect", function (event) {
             location.reload();
         },
         error: function (request) {
-            bootstrap_alert.danger(request.responseText);
+            window.bootstrap_alert.danger(request.responseText);
         }
     });
 });

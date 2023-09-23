@@ -83,7 +83,7 @@
               ${php} artisan passport:install > /dev/null
             '';
             serve.exec = ''
-              ${npm} run watch &
+              APP_URL=http://localhost:8000 ${npm} run dev &
               ${php} artisan serve
             '';
           };

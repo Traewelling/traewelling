@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run production build
-        run: npm run production
+        run: npm run build
 
         env:
           CI: true

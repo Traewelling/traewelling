@@ -1,5 +1,7 @@
-window._ = require("lodash");
-
+import "lodash";
+import jQuery from "jquery";
+import * as Popper from '@popperjs/core';
+import { mdb } from "mdb-ui-kit/js/mdb.min";
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
  * for JavaScript based Bootstrap features such as modals and tabs. This
@@ -7,16 +9,16 @@ window._ = require("lodash");
  */
 document.addEventListener("DOMContentLoaded", function () {
     try {
-        window.Popper = require('@popperjs/core');
-        window.$      = window.jQuery = require("jquery");
+        window.Popper = Popper;
+        window.$ = window.jQuery = jQuery;
 
-        require("./../../node_modules/bootstrap/js/dist/collapse");
-        require("./../../node_modules/bootstrap/js/dist/alert");
-        require("./../../node_modules/bootstrap/js/dist/button");
-        require("./../../node_modules/bootstrap/js/dist/modal");
-        require("./../../node_modules/bootstrap/js/dist/tab");
-        require("./../../node_modules/bootstrap/js/dist/dropdown");
-        window.mdb = require("./../../node_modules/mdb-ui-kit/js/mdb.min");
+        import("bootstrap/js/dist/collapse");
+        import("bootstrap/js/dist/alert");
+        import("bootstrap/js/dist/button");
+        import("bootstrap/js/dist/modal");
+        import("bootstrap/js/dist/tab");
+        import("bootstrap/js/dist/dropdown");
+        window.mdb = mdb;
     } catch (e) {
         throw new Error(e);
     }

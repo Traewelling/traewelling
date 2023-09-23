@@ -1,12 +1,12 @@
-const Chart = require("chart.js");
-require("awesomplete/awesomplete");
+import "awesomplete/awesomplete";
 
 window.addEventListener("load", () => {
-    require("./components/usageBoard");
-    require("./components/station-autocomplete");
+    import("./components/usageBoard");
+    import("./components/station-autocomplete");
 });
 
-window.Popper = require("@popperjs/core");
+import * as Popper from "@popperjs/core";
+window.Popper = Popper;
 
-require("bootstrap");
-require("leaflet");
+import "bootstrap";
+import "leaflet";

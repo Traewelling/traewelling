@@ -138,3 +138,6 @@ public/css/*.css.map
 .devenv
 .direnv
 result*
+
+# Vite
+/public/build

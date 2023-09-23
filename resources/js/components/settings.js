@@ -1,4 +1,4 @@
-require("croppie/croppie");
+import "croppie/croppie";
 import API from "../api/api";
 
 var resize = $("#upload-demo").croppie({
