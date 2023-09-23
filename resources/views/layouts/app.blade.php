@@ -202,7 +202,6 @@
                 <footer class="py-5">
                     <div class="row">
                         <div class="col-6 col-md-2 mb-3">
-                            <h5>Section</h5>
                             <ul class="nav flex-column">
                                 <li class="nav-item mb-2">
                                     <a href="{{ route('globaldashboard') }}" class="nav-link p-0 text-body-secondary">
@@ -223,7 +222,6 @@
                         </div>
 
                         <div class="col-6 col-md-2 mb-3">
-                            <h5>Section</h5>
                             <ul class="nav flex-column">
                                 <li class="nav-item mb-2">
                                     <a href="{{ route('legal.privacy') }}" class="nav-link p-0 text-body-secondary">
@@ -239,7 +237,6 @@
                         </div>
 
                         <div class="col-6 col-md-2 mb-3">
-                            <h5>Section</h5>
                             <ul class="nav flex-column">
                                 <li class="nav-item mb-2">
                                     <a href="https://blog.traewelling.de"
