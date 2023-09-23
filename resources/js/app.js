@@ -7,6 +7,7 @@ import NotificationBell from "../vue/components/NotificationBell.vue";
 import ActiveJourneyMap from "../vue/components/ActiveJourneyMap.vue";
 import Stationboard from "../vue/components/Stationboard.vue";
 import StationAutocomplete from "../vue/components/StationAutocomplete.vue";
+import Modal from "bootstrap/js/dist/modal";
 import "./bootstrap";
 import "awesomplete/awesomplete";
 import "leaflet/dist/leaflet.js";
@@ -72,7 +73,7 @@ window.addEventListener("load", () => {
     import("./components/Status");
     import("./components/timepicker");
     import("./components/business-check-in");
-    import("bootstrap/js/dist/modal");
     import("./appControls");
     import("bootstrap-cookie-alert/cookiealert");
+    window.modal = Modal;
 });

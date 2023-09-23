@@ -60,19 +60,20 @@ $(document)
             .parent()
             .data("linename");
         if (!touchmoved) {
-            $("#checkinModal").modal("show", function (event) {
-                var modal = $(this);
-                modal
-                    .find(".modal-title")
-                    .html(
-                        linename +
-                        ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
-                        stopname
-                    );
-                modal.find("#input-tripID").val(tripID);
-                modal.find("#input-destination").val(destination);
-                modal.find("#input-arrival").val(arrival);
-            });
+            const modalWrapper = $("#checkinModal");
+            const modal = new window.modal(modalWrapper);
+            modalWrapper
+                .find(".modal-title")
+                .html(
+                    linename +
+                    ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
+                    stopname
+                );
+            modalWrapper.find("#input-tripID").val(tripID);
+            modalWrapper.find("#input-destination").val(destination);
+            modalWrapper.find("#input-arrival").val(arrival);
+
+            modal.show();
         }
     })
     .on("touchmove", function (e) {
