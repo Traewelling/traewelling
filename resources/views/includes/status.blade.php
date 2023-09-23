@@ -187,7 +187,7 @@
             @can('like', $status)
                 <li class="like-text list-inline-item me-0">
                     <a href="{{ auth()->user() ? '#' : route('login') }}"
-                       class="like {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"
+                       class="like {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}} {{ $status->user->id === 18574 ? 'peach' : '' }}"
                        data-trwl-status-id="{{ $status->id }}"></a>
                 </li>
                 <li class="like-text list-inline-item">

@@ -39,14 +39,17 @@ document.querySelectorAll('.status .like').forEach((likeButton) => {
         event.preventDefault();
         event.stopPropagation();
 
-        if (pointerEvent.target.className === "like far fa-star") {
+        if (pointerEvent.target.className.includes("like far fa-star")) {
             Status.like(statusId)
                 .then(response => {
                     if (!response.ok) {
                         return;
                     }
 
-                    pointerEvent.target.className = "like fas fa-star animated bounceIn";
+                    pointerEvent.target.classList.remove('far');
+                    pointerEvent.target.classList.add('fas');
+                    pointerEvent.target.classList.add('animated');
+                    pointerEvent.target.classList.add('bounceIn');
                     response.json().then((data) => {
                         let likeCount           = data.data.count;
                         spanLikeCount.innerText = likeCount;
@@ -65,7 +68,8 @@ document.querySelectorAll('.status .like').forEach((likeButton) => {
                 if (!response.ok) {
                     return;
                 }
-                pointerEvent.target.className = "like far fa-star";
+                const peaches = pointerEvent.target.className.includes('peach');
+                pointerEvent.target.className = `like far fa-star ${peaches ? 'peach' : ''}`;
 
                 response.json().then((data) => {
                     let likeCount           = data.data.count;

@@ -64,7 +64,13 @@
                     </div>
                 @endif
 
-                @include('includes.station-autocomplete')
+                @if(auth()->user()->experimental ?? false)
+                    <div id="station-board-new">
+                        <Stationautocomplete :dashboard="true"></Stationautocomplete>
+                    </div>
+                @else
+                    @include('includes.station-autocomplete')
+                @endif
                 @if($future->count() >= 1)
                     <div class="accordion accordion-flush" id="accordionFutureCheckIns">
                         <div class="accordion-item">

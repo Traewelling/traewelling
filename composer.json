@@ -34,6 +34,7 @@
         "revolution/laravel-mastodon-api": "^3.0",
         "romanzipp/laravel-queue-monitor": "^4.0",
         "spatie/icalendar-generator": "^2.0",
+        "spatie/laravel-prometheus": "^1.0",
         "spatie/laravel-sitemap": "^6.0",
         "spatie/laravel-validation-rules": "^3.2",
         "spatie/laravel-webhook-server": "^3.4",
@@ -50,12 +51,15 @@
         "nunomaduro/collision": "^7.0",
         "phpunit/phpunit": "^10.0",
         "roave/security-advisories": "dev-latest",
-        "spatie/laravel-ignition": "2.0"
+        "spatie/laravel-ignition": "2.3.0"
     },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "stephank/composer-plugin-nixify": true
+        }
     },
     "extra": {
         "laravel": {

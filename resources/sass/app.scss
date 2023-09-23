@@ -5,6 +5,10 @@
 // mdbootstrap
 @import "mdb-ui-kit/src/scss/mdb.free.scss";
 
+.fas.peach::before {
+    content: "\1f351" !important;
+}
+
 body {
     font-family: "Nunito", sans-serif;
     font-weight: 300;
