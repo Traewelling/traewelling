@@ -63,6 +63,7 @@ $(document).on("click", ".edit", function (event) {
         document.querySelector('.destination-wrapper').classList.add('d-none');
     }
 
-    $("#edit-modal").modal("show");
+    const modal = new window.modal($("#edit-modal"));
+    modal.show();
     document.querySelector('#body-length').innerText = document.querySelector('#status-body').value.length;
 });
