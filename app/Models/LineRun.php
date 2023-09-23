@@ -3,8 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\LineSegment
+ * @property string $hash
+ * @property int    $line_segment_id
+ */
 class LineRun extends Model
 {
     use HasFactory;

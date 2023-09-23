@@ -8,7 +8,7 @@ use App\Dto\LivePointDto;
 use App\Models\HafasTrip;
 use App\Models\Status;
 use App\Models\TrainStopover;
-use App\Objects\LineSegment;
+use App\Objects\PointToPointLine;
 use Carbon\Carbon;
 use Exception;
 use JsonException;
@@ -99,7 +99,7 @@ class LocationController
         foreach ($polyline->features as $key => $point) {
             $point = Coordinate::fromGeoJson($point);
             if ($recentPoint !== null && $point !== null) {
-                $lineSegment = new LineSegment($recentPoint, $point);
+                $lineSegment = new PointToPointLine($recentPoint, $point);
 
                 $distance += $lineSegment->calculateDistance();
                 if ($distance >= $meters) {
@@ -133,11 +133,27 @@ class LocationController
                 $lastStopover = $stopover;
                 continue;
             }
-            $fullD        += (new LineSegment($lastStopover, $stopover))->calculateDistance();
+            $fullD        += (new PointToPointLine($lastStopover, $stopover))->calculateDistance();
             $lastStopover = $stopover;
         }
 
         return $fullD;
+    }
+
+    public static function getDistanceFromLineSegment(array $lineSegment): int {
+        $distance     = 0;
+        $lastPosition = null;
+        foreach ($lineSegment as $position) {
+            $position = Coordinate::fromGeoJson($position);
+            if ($lastPosition === null) {
+                $lastPosition = $position;
+                continue;
+            }
+            $distance     += (new PointToPointLine($lastPosition, $position))->calculateDistance();
+            $lastPosition = $position;
+        }
+
+        return $distance;
     }
 
     /**
@@ -253,7 +269,7 @@ class LocationController
             $lastStopover = null;
             foreach ($geoJson->features as $stopover) {
                 if ($lastStopover !== null) {
-                    $distance += (new LineSegment(
+                    $distance += (new PointToPointLine(
                         new Coordinate(
                             $lastStopover->geometry->coordinates[1],
                             $lastStopover->geometry->coordinates[0]
@@ -289,7 +305,7 @@ class LocationController
                 $lastStopover = $stopover;
                 continue;
             }
-            $distance     += (new LineSegment(
+            $distance     += (new PointToPointLine(
                 new Coordinate($lastStopover->trainStation->latitude, $lastStopover->trainStation->longitude),
                 new Coordinate($stopover->trainStation->latitude, $stopover->trainStation->longitude)
             ))->calculateDistance();

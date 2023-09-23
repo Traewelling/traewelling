@@ -257,6 +257,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
          ->name('user.mute'); //TODO: Replace with API Endpoint
     Route::post('/user/unmute', [\App\Http\Controllers\Frontend\UserController::class, 'unmuteUser'])
          ->name('user.unmute'); //TODO: Replace with API Endpoint
+
+    Route::get('/demo', [\App\Http\Controllers\Locations\LineRunController::class, 'showDemo'])
+         ->name('demo');
 });
 
 Route::get('/sitemap.xml', [SitemapController::class, 'renderSitemap']);

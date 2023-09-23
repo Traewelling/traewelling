@@ -4,7 +4,7 @@ namespace App\Objects;
 
 use App\Dto\Coordinate;
 
-class LineSegment
+class PointToPointLine
 {
     public readonly Coordinate $start;
     public readonly Coordinate $finish;

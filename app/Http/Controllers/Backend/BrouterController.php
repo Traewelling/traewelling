@@ -11,7 +11,7 @@ use App\Jobs\RefreshPolyline;
 use App\Models\HafasTrip;
 use App\Models\PolyLine;
 use App\Models\TrainCheckin;
-use App\Objects\LineSegment;
+use App\Objects\PointToPointLine;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
@@ -130,7 +130,7 @@ abstract class BrouterController extends Controller
                     //This is required and very important to prevent bugs for ring lines!
                     continue;
                 }
-                $distance = (new LineSegment(
+                $distance = (new PointToPointLine(
                     new Coordinate($feature['geometry']['coordinates'][1], $feature['geometry']['coordinates'][0]),
                     new Coordinate($stopover->trainStation->latitude, $stopover->trainStation->longitude)
                 ))->calculateDistance();

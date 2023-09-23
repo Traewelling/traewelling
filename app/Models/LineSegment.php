@@ -3,14 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\LineSegment
+ * @property bool $reversible
+ * @property int  $distance Distance in meters
+ */
 class LineSegment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['reversible'];
-    protected $casts = [
-        'reversible' => 'boolean'
+    protected $fillable = ['reversible', 'distance'];
+    protected $casts    = [
+        'reversible' => 'boolean',
+        'distance'   => 'integer',
     ];
 }

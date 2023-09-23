@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('line_segments', function (Blueprint $table) {
             $table->id();
             $table->boolean('reversible');
+            $table->integer('distance')->comment('Distance in meters');
             $table->timestamps();
         });
     }

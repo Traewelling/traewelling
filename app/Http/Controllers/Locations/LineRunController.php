@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Locations;
 
 use App\Dto\Coordinate;
 use App\Dto\GeoJson\Feature;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Models\LineRun;
 use App\Models\LineSegment;
 use App\Models\LineSegmentBetween;
@@ -16,7 +17,7 @@ class LineRunController
     private array $curSegment;
     private ?int  $a = null;
     private ?int  $b = null;
-    private ?string $hash = null;
+    private ?string $hash;
 
     public function __construct() {
         $file = file_get_contents(__DIR__ . '/demoFile.json');
@@ -49,7 +50,7 @@ class LineRunController
 
         $points = LineSegmentPoint::whereIn('segment_id', $segmentsBetween)->get();
         $coordinates = [];
-        $coodinates[] = new Coordinate($origin->latitude, $origin->longitude);
+        $coordinates[] = new Coordinate($origin->latitude, $origin->longitude);
         foreach ($points as $point) {
             $coordinates[] = new Coordinate($point->latitude, $point->longitude);
         }
@@ -109,8 +110,11 @@ class LineRunController
         $exists = LineSegmentBetween::where(
             ['origin_id' => $origin->id, 'destination_id' => $destination->id]
         )->first();
-        if (empty($exists)) {
-            $segmentHead = LineSegment::create(['reversible' => true]);
+        $distance = LocationController::getDistanceFromLineSegment($this->curSegment);
+
+        //check if segment already exists and segments distance is less than 10% different of calculated distance
+        if (empty($exists) || ($exists->distance * 0.9 > $distance || $exists->distance * 1.1 < $distance)) {
+            $segmentHead = LineSegment::create(['reversible' => true, 'distance' => $distance ?? 0]);
 
             foreach ($this->curSegment as $item) {
                 LineSegmentPoint::create([
