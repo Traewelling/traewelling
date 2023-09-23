@@ -85,11 +85,12 @@ p.train-status:before {
 #nav-main {
     a.nav-link {
         color: #fff;
+        transition: text-shadow .3s;
     }
 
     a.nav-link:hover,
     a.nav-link.active {
-        font-weight: bold;
+        text-shadow: 0 0 .65px #cecece, 0 0 .65px #cecece;
     }
 
     button.navbar-toggler {
