@@ -65,7 +65,7 @@
             <p>
                 {!!  __('events.on-your-way', [
                     "name" => $event['name'],
-                    "url" => route('statuses.byEvent', ['eventSlug' => $event['slug']])
+                    "url" => route('event', ['slug' => $event['slug']])
                 ]) !!}
             </p>
         @endif
@@ -73,7 +73,7 @@
         <p class="mb-0">
             <button
                     class="btn btn-outline-success btn-sm float-end trwl-share"
-                    data-trwl-share-url="{{ route('statuses.get', ['id' => $id]) }}"
+                    data-trwl-share-url="{{ route('status', ['id' => $id]) }}"
                     data-trwl-share-text="{{ $socialText }}"
             >
                 <span class="d-none d-sm-inline">{{__('menu.share')}} </span><i class="fas fa-share" aria-hidden="true"></i>

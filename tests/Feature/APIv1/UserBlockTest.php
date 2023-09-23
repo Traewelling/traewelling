@@ -2,6 +2,9 @@
 
 namespace Tests\Feature\APIv1;
 
+use App\Http\Controllers\Backend\UserController;
+use App\Models\Event;
+use App\Models\TrainCheckin;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -80,5 +83,35 @@ class UserBlockTest extends ApiTestCase
             headers: ['Authorization' => 'Bearer ' . $aliceToken]
         );
         $response->assertNotFound();
+    }
+
+    public function testBlockedUserIsNotVisibleOnEventPage(): void {
+        // due to issue#1755
+        $alice = User::factory(['username' => 'alice'])->create();
+        $bob   = User::factory(['username' => 'bob'])->create();
+        $event = Event::factory()->create();
+
+        // Alice and Bob check in to the event
+        $aliceCheckin = TrainCheckin::factory(['user_id' => $alice->id])->create();
+        $aliceCheckin->status->update(['event_id' => $event->id]);
+        $bobCheckin = TrainCheckin::factory(['user_id' => $bob->id])->create();
+        $bobCheckin->status->update(['event_id' => $event->id]);
+
+        // alice should see both checkins
+        $response = $this->actingAs($alice)
+                         ->get(route('event', $event->slug));
+        $response->assertOk();
+        $response->assertSee($alice->username);
+        $response->assertSee($bob->username);
+
+        // Alice blocks Bob
+        UserController::blockUser($alice, $bob);
+
+        // alice should NOT see both checkins
+        $response = $this->actingAs($alice)
+                         ->get(route('event', $event->slug));
+        $response->assertOk();
+        $response->assertSee($alice->username);
+        $response->assertDontSee($bob->username);
     }
 }

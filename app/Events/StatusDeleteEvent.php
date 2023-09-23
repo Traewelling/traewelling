@@ -13,6 +13,6 @@ class StatusDeleteEvent {
     public Status $status;
     public function __construct(Status $status) {
         $this->status               = $status;
-        Log::info("Dispatching StatusDeleteEvent event for status#" . $status->id);
+        Log::debug("Dispatching StatusDeleteEvent event for status#" . $status->id);
     }
 }

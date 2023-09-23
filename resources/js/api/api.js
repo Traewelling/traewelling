@@ -1,26 +1,29 @@
 'use strict';
 
-window.API = class API {
+export default class API {
 
-    static request(path, method = 'GET', data = {}) {
+    static request(path, method = 'GET', data = {}, customErrorHandling = false) {
         let requestBody = undefined;
 
         if (method !== 'GET' && data !== {}) {
             requestBody = JSON.stringify(data);
         }
-        return fetch('/api/v1' + path, {
+        let request = fetch('/api/v1' + path, {
             method: method,
             headers: {
                 "Content-Type": "application/json"
             },
             body: requestBody,
-        })
-            .catch(API.handleGenericError);
+        });
+        if (!customErrorHandling) {
+            request.catch(this.handleGenericError);
+        }
+        return request;
     }
 
     static handleDefaultResponse(response) {
         if (!response.ok) {
-            return response.json().then(API.handleGenericError);
+            return response.json().then(this.handleGenericError);
         }
 
         return response.json().then(data => {

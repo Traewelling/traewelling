@@ -18,11 +18,11 @@ class StatusBodyTest extends TestCase
         $status->body = $body;
         $status->update();
 
-        $this->get(route('statuses.get', $status))
+        $this->get(route('status', $status))
              ->assertSee($htmlSanitized, escape: false);
     }
 
-    public function statusBodyProvider() {
+    public static function statusBodyProvider() {
         return [
             [
                 'ab' . PHP_EOL . 'cd',

@@ -61,7 +61,8 @@ class TransportController extends Controller
     public static function getDepartures(
         string|int $stationQuery,
         Carbon     $when = null,
-        TravelType $travelType = null
+        TravelType $travelType = null,
+        bool       $localtime = false
     ): array {
         $station = StationController::lookupStation($stationQuery);
 
@@ -73,9 +74,10 @@ class TransportController extends Controller
         ];
 
         $departures = HafasController::getDepartures(
-            station: $station,
-            when:    $when,
-            type:    $travelType
+            station:   $station,
+            when:      $when,
+            type:      $travelType,
+            localtime: $localtime
         )->sortBy(function($departure) {
             return $departure->when ?? $departure->plannedWhen;
         });

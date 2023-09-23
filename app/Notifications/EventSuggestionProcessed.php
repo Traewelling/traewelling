@@ -59,8 +59,8 @@ class EventSuggestionProcessed extends Notification implements BaseNotification
         if (!$data['accepted']) {
             return null;
         }
-        return route('statuses.byEvent', [
-            'eventSlug' => $data['event']['slug'],
+        return route('event', [
+            'slug' => $data['event']['slug'],
         ]);
     }
 }

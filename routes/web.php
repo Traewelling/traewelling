@@ -70,8 +70,9 @@ Route::get('/leaderboard/{date}', [LeaderboardController::class, 'renderMonthlyL
 Route::get('/statuses/active', [FrontendStatusController::class, 'getActiveStatuses'])
      ->name('statuses.active');
 
-Route::get('/statuses/event/{eventSlug}', [FrontendStatusController::class, 'statusesByEvent'])
-     ->name('statuses.byEvent');
+Route::permanentRedirect('/statuses/event/{slug}', '/event/{slug}');
+Route::get('/event/{slug}', [FrontendStatusController::class, 'statusesByEvent'])
+     ->name('event');
 
 Route::get('/events', [EventController::class, 'renderEventOverview'])
      ->name('events');
@@ -86,7 +87,7 @@ Route::get('/callback/mastodon', [MastodonController::class, 'callback']);
 
 Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
      ->whereNumber('id')
-     ->name('statuses.get');
+     ->name('status');
 
 Route::prefix('blog')->group(function() {
     Route::permanentRedirect('/', 'https://blog.traewelling.de')
@@ -149,21 +150,24 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
         Route::prefix('/applications')->group(function() {
             Route::get('/', [DevController::class, 'renderAppList'])->name('dev.apps');
+            Route::post('/createPersonalAccessToken', [DevController::class, 'createPersonalAccessToken'])
+                 ->name('dev.apps.createPersonalAccessToken');
             Route::get('/create', [DevController::class, 'renderCreateApp'])->name('dev.apps.create');
             Route::get('/{appId}', [DevController::class, 'renderUpdateApp'])->name('dev.apps.edit');
-            Route::post('/{appId}', [DevController::class, 'updateApp'])->name('dev.apps.update'); //TODO: Replace with API Endpoint
+            Route::post('/{appId}', [DevController::class, 'updateApp'])->name('dev.apps.update');           //TODO: Replace with API Endpoint
             Route::post('/{appId}/destroy', [DevController::class, 'destroyApp'])->name('dev.apps.destroy'); //TODO: Replace with API Endpoint
-            Route::post('/', [DevController::class, 'createApp'])->name('dev.apps.create.post'); //TODO: Replace with API Endpoint
+            Route::post('/', [DevController::class, 'createApp'])->name('dev.apps.create.post');             //TODO: Replace with API Endpoint
         });
 
         Route::redirect('/', 'settings/profile')->name('settings');
         Route::get('/profile', [SettingsController::class, 'renderProfile'])->name('settings.profile');
         Route::get('/privacy', [SettingsController::class, 'renderPrivacy'])->name('settings.privacy');
-        Route::post('/', [SettingsController::class, 'updateMainSettings']);
+        Route::post('/profile', [SettingsController::class, 'updateMainSettings']);
         Route::post('/update/privacy', [SettingsController::class, 'updatePrivacySettings'])
              ->name('settings.privacy.update');
 
-        Route::get('/account', [SettingsController::class, 'renderAccount'])->name('settings.account');
+        Route::view('/account', 'settings.account')
+             ->name('settings.account');
         Route::post('/account/update', [SettingsController::class, 'updatePassword'])
              ->name('password.change');
 

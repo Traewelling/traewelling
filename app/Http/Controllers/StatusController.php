@@ -8,7 +8,7 @@ use App\Events\StatusDeleteEvent;
 use App\Events\StatusUpdateEvent;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
-use App\Http\Controllers\Backend\GeoController;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Models\Event;
 use App\Models\Like;
 use App\Models\Status;
@@ -17,6 +17,7 @@ use App\Notifications\StatusLiked;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Gate;
 use InvalidArgumentException;
@@ -56,8 +57,8 @@ class StatusController extends Controller
      * @api v1
      * @frontend
      */
-    public static function getActiveStatuses(): array|stdClass|null {
-        $statuses = Status::with([
+    public static function getActiveStatuses(): ?Collection {
+        return Status::with([
                                      'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
                                      'trainCheckin.originStation', 'trainCheckin.destinationStation',
                                      'trainCheckin.HafasTrip.stopovers.trainStation',
@@ -74,15 +75,46 @@ class StatusController extends Controller
                           ->sortByDesc(function(Status $status) {
                               return $status->trainCheckin->departure;
                           })->values();
+    }
 
-        if ($statuses === null) {
-            return null;
+    public static function getLivePositions(): array {
+        $statuses = self::getActiveStatuses();
+
+        $result = [];
+        foreach ($statuses as $status) {
+            $position = LocationController::forStatus($status)->calculateLivePosition();
+            if ($position) {
+                $result[] = $position;
+            }
         }
-        $polylines = $statuses->map(function($status) {
-            return json_encode(GeoController::getMapLinesForCheckin($status->trainCheckin));
-        });
+        return $result;
+    }
 
-        return ['statuses' => $statuses, 'polylines' => $polylines];
+    public static function getLivePositionForStatus(string $ids): array {
+        $ids = explode(',', $ids);
+
+        $statuses = Status::with([
+                                     'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
+                                     'trainCheckin.originStation', 'trainCheckin.destinationStation',
+                                     'trainCheckin.HafasTrip.stopovers.trainStation',
+                                     'trainCheckin.HafasTrip.polyline',
+                                 ])
+                          ->whereIn('id', $ids)
+                          ->get()
+                          ->filter(function(Status $status) {
+                              return Gate::allows('view', $status) && !$status->user->shadow_banned && $status->visibility !== StatusVisibility::UNLISTED;
+                          })
+                          ->values();
+
+        $result = [];
+        foreach ($statuses as $status) {
+            $position = LocationController::forStatus($status)->calculateLivePosition();
+            if ($position) {
+                $result[] = $position;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -170,7 +202,10 @@ class StatusController extends Controller
      */
     public static function getStatusesByEvent(Event $event): array {
         $statuses = $event->statuses()
-                          ->with('user')
+                          ->with([
+                                     'user.blockedUsers', 'trainCheckin.originStation',
+                                     'trainCheckin.destinationStation', 'trainCheckin.HafasTrip.stopovers', 'event', 'likes',
+                                 ])
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
                           ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
@@ -203,23 +238,13 @@ class StatusController extends Controller
                           ->orderBy('train_checkins.departure', 'desc');
 
         if (auth()->check()) {
-            $statuses->whereNotIn('statuses.user_id', auth()->user()->mutedUsers()->select('muted_id'));
+            $statuses->whereNotIn('statuses.user_id', auth()->user()?->mutedUsers()->select('muted_id'))
+                     ->whereNotIn('statuses.user_id', auth()->user()?->blockedUsers()->select('blocked_id'))
+                     ->whereNotIn('statuses.user_id', auth()->user()?->blockedByUsers()->select('user_id'));
         }
-
-        $distance = (clone $statuses)->get()->sum('trainCheckin.distance');
-        $duration = (clone $statuses)->select(['train_checkins.departure', 'train_checkins.arrival'])
-                                     ->get()
-                                     ->map(function($row) {
-                                         $arrival   = Carbon::parse($row->arrival);
-                                         $departure = Carbon::parse($row->departure);
-                                         return $arrival->diffInSeconds($departure);
-                                     })
-                                     ->sum();
 
         return [
             'event'    => $event,
-            'distance' => $distance,
-            'duration' => $duration,
             'statuses' => $statuses,
         ];
     }

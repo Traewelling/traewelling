@@ -3,6 +3,8 @@
 namespace App\Virtual\Models;
 
 
+use App\Dto\Transport\TrainStation;
+
 /**
  * @OA\Schema(
  *     title="UserAuth",

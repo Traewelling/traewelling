@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Auth;
 
+use App\Enum\WebhookEvent;
 use App\Models\OAuthClient;
 use App\Models\Webhook;
 use App\Repositories\OAuthClientRepository;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Enum;
 use Laravel\Passport\ClientRepository;
 use Laravel\Passport\Exceptions\AuthenticationException;
 use Laravel\Passport\Http\Controllers\AuthorizationController as PassportAuthorizationController;
@@ -131,7 +133,7 @@ class AuthorizationController extends PassportAuthorizationController
         }
 
         $validator = Validator::make($request->all(), [
-            'trwl_webhook_events' => ['required', new Delimited(new StringifiedWebhookEvents())],
+            'trwl_webhook_events' => ['required', new Delimited(new Enum(WebhookEvent::class))],
             'trwl_webhook_url'    => ['required', 'string', new AuthorizedWebhookURL($client)]
         ]);
 

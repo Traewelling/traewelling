@@ -4,6 +4,9 @@
 import {Notyf} from 'notyf';
 import {createApp} from 'vue';
 import NotificationBell from "../vue/components/NotificationBell.vue";
+import ActiveJourneyMap from "../vue/components/ActiveJourneyMap.vue";
+import Stationboard from "../vue/components/Stationboard.vue";
+import StationAutocomplete from "../vue/components/StationAutocomplete.vue";
 
 require("./bootstrap");
 require("awesomplete/awesomplete");
@@ -14,17 +17,19 @@ require("./components/maps");
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const app = createApp({
-        data() {
-            return{
-                count: 0
-            }
-        }
-    });
-
+    const app = createApp({});
     app.component('NotificationBell', NotificationBell);
     app.config.devtools = true;
     app.mount('#nav-main');
+
+    const app2 = createApp({});
+    app2.component('ActiveJourneyMap', ActiveJourneyMap);
+    app2.mount('#activeJourneys');
+
+    const app3 = createApp({});
+    app3.component('Stationboard', Stationboard);
+    app3.component('Stationautocomplete', StationAutocomplete);
+    app3.mount('#station-board-new');
 
     window.notyf = new Notyf({
         duration: 5000,
@@ -60,7 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
 window.addEventListener("load", () => {
     require("./components/DarkModeToggle");
     require("./components/alert");
-    require("./components/ActiveJourneys");
     require("./components/Event");
     require("./components/progressbar");
     require("./components/settings");
@@ -68,7 +72,6 @@ window.addEventListener("load", () => {
     require("./components/stationboard");
     require("./components/stationboard-gps");
     require("./components/Status");
-    require("./components/statusMap");
     require("./components/timepicker");
     require("./components/business-check-in");
     require("./../../node_modules/bootstrap/js/dist/modal");

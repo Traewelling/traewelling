@@ -57,7 +57,7 @@ class MutedProfileVisibilityTest extends ApiTestCase
 
         // Can a guest see the status of bob? => yes
         Auth::logout();
-        $guest = $this->get(route('statuses.get', ['id' => $this->users->bob->checkin['statusId']]));
+        $guest = $this->get(route('status', ['id' => $this->users->bob->checkin['statusId']]));
         $this->assertGuest();
         $guest->assertSuccessful();
 
@@ -189,25 +189,25 @@ class MutedProfileVisibilityTest extends ApiTestCase
 
         // Can a guest see the statuses of bob on the dashboard? => yes
         Auth::logout();
-        $guest = $this->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+        $guest = $this->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $this->assertGuest();
         $guest->assertSee($this->users->bob->user->username);
 
         // Can Bob see the statuses of bob on the event page? => yes
         $bob = $this->actingAs($this->users->bob->user, 'web')
-                    ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+                    ->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $bob->assertSee(["username" => $this->users->bob->user->username]);
         $bob->assertSuccessful();
 
         // Can Alice see the statuses of bob on the dashboard? => no
         $alice = $this->actingAs($this->users->alice->user, 'web')
-                      ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+                      ->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $alice->assertDontSee(["username" => $this->users->bob->user->username]);
         $alice->assertSuccessful();
 
         // Can Gertrud see the statuses of bob on the dashboard? => yes
         $gertrud = $this->actingAs($this->users->gertrud->user, 'web')
-                        ->get(route('statuses.byEvent', ['eventSlug' => $this->users->bob->checkin['event']['slug']]));
+                        ->get(route('event', ['slug' => $this->users->bob->checkin['event']['slug']]));
         $gertrud->assertDontSee(["username" => $this->users->bob->user->username]);
         $gertrud->assertSuccessful();
     }

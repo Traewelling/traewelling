@@ -1,4 +1,4 @@
-<div class="card mt-3">
+<div class="card mb-3">
     <div class="card-header">{{ __('settings.title-password') }}</div>
 
     <div class="card-body">

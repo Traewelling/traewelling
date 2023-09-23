@@ -8,8 +8,8 @@
      data-date="{{userTime($status->trainCheckin->departure, __('dateformat.with-weekday'))}}"
      @if(auth()->check() && auth()->id() === $status->user_id)
          data-trwl-status-body="{{ $status->body }}"
-         data-trwl-real-departure="{{ userTime($status->trainCheckin?->real_departure, 'Y-m-d\TH:i:s', false)}}"
-         data-trwl-real-arrival="{{ userTime($status->trainCheckin?->real_arrival, 'Y-m-d\TH:i:s', false)}}"
+         data-trwl-manual-departure="{{ userTime($status->trainCheckin?->manual_departure, 'Y-m-d\TH:i:s', false)}}"
+         data-trwl-manual-arrival="{{ userTime($status->trainCheckin?->manual_arrival, 'Y-m-d\TH:i:s', false)}}"
          data-trwl-business-id="{{ $status->business->value }}"
          data-trwl-visibility="{{ $status->visibility->value }}"
          data-trwl-destination-stopover="{{$status->trainCheckin->destination_stopover->id}}"
@@ -17,10 +17,14 @@
              "{{json_encode(StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
     @endif
 >
-    @if (isset($polyline) && $polyline !== '[]' && Route::current()->uri == "status/{id}")
+    @if (Route::current()->uri == "status/{id}")
         <div class="card-img-top">
-            <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-16by9"
-                 data-polygon="{{ $polyline }}"></div>
+            <div id="activeJourneys" class="map statusMap embed-responsive embed-responsive-16by9">
+                <active-journey-map
+                    map-provider="{{ Auth::user()->mapprovider ?? "default" }}"
+                    :status-id="{{ $status->id }}"
+                />
+            </div>
         </div>
     @endif
 
@@ -37,13 +41,13 @@
                 <li>
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
-                        @if(isset($status->trainCheckin->real_departure) && $status->trainCheckin->real_departure->toString() !== $status->trainCheckin->origin_stopover->departure_planned->toString())
+                        @if(isset($status->trainCheckin->manual_departure) && $status->trainCheckin->manual_departure->toString() !== $status->trainCheckin->origin_stopover->departure_planned->toString())
                         <small style="text-decoration: line-through;" class="text-muted">
                                 {{ userTime($status->trainCheckin->origin_stopover->departure_planned) }}
                             </small>
                             &nbsp;
                             <span data-mdb-toggle="tooltip" title="{{__('time-is-manual')}}">
-                                {{ userTime($status->trainCheckin->real_departure) }}
+                                {{ userTime($status->trainCheckin->manual_departure) }}
                             </span>
                         @elseif($status->trainCheckin?->origin_stopover?->isDepartureDelayed)
                             <small style="text-decoration: line-through;" class="text-muted">
@@ -108,7 +112,7 @@
                             <br/>
                             <span class="pl-sm-2">
                                 <i class="fa fa-calendar-day" aria-hidden="true"></i>
-                                <a href="{{ route('statuses.byEvent', ['eventSlug' => $status->event->slug]) }}">
+                                <a href="{{ route('event', ['slug' => $status->event->slug]) }}">
                                     {{ $status->event->name }}
                                 </a>
                             </span>
@@ -138,15 +142,15 @@
                 <li>
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
-                        @if(isset($status->trainCheckin->real_arrival) && $status->trainCheckin->real_arrival->toString() !== $status->trainCheckin->destination_stopover->arrival_planned->toString())
+                        @if(isset($status->trainCheckin->manual_arrival) && $status->trainCheckin->manual_arrival->toString() !== $status->trainCheckin->destination_stopover->arrival_planned->toString())
                             <small style="text-decoration: line-through;" class="text-muted">
                                 {{ userTime($status->trainCheckin->destination_stopover->arrival_planned) }}
                             </small>
                             &nbsp;
                             <span data-mdb-toggle="tooltip" title="{{__('time-is-manual')}}">
-                                {{ userTime($status->trainCheckin->real_arrival) }}
+                                {{ userTime($status->trainCheckin->manual_arrival) }}
                             </span>
-                        @elseif($status->trainCheckin?->destination_stopover?->isArrivalDelayed && !isset($status->trainCheckin->real_arrival))
+                        @elseif($status->trainCheckin?->destination_stopover?->isArrivalDelayed && !isset($status->trainCheckin->manual_arrival))
                             <small style="text-decoration: line-through;" class="text-muted">
                                 {{ userTime($status->trainCheckin->destination_stopover->arrival_planned) }}
                             </small>
@@ -183,7 +187,7 @@
             @can('like', $status)
                 <li class="like-text list-inline-item me-0">
                     <a href="{{ auth()->user() ? '#' : route('login') }}"
-                       class="like {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"
+                       class="like {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}} {{ $status->user->id === 18574 ? 'peach' : '' }}"
                        data-trwl-status-id="{{ $status->id }}"></a>
                 </li>
                 <li class="like-text list-inline-item">
@@ -209,7 +213,7 @@
                         <li>
                             <button class="dropdown-item trwl-share"
                                     type="button"
-                                    data-trwl-share-url="{{ route('statuses.get', ['id' => $status->id]) }}"
+                                    data-trwl-share-url="{{ route('status', ['id' => $status->id]) }}"
                                     @if(auth()->user() && $status->user_id == auth()->user()->id)
                                         data-trwl-share-text="{{ $status->socialText }}"
                                     @else
@@ -302,7 +306,7 @@
                     @endif
                 </a>
                 {{__('dates.-on-')}}
-                <a href="{{ route('statuses.get', ['id' => $status->id]) }}">
+                <a href="{{ route('status', ['id' => $status->id]) }}">
                     {{ userTime($status->created_at) }}
                 </a>
             </li>

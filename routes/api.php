@@ -32,9 +32,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static function() {
     Route::group(['prefix' => 'auth'], function() {
-        Route::post('login', [v1Auth::class, 'login']);
-        Route::post('signup', [v1Auth::class, 'register']);
-        Route::group(['middleware' => 'auth:api'], function() {
+        Route::group(['middleware' => 'auth:api'], static function() {
             Route::post('refresh', [v1Auth::class, 'refresh']);
             Route::post('logout', [v1Auth::class, 'logout']);
             Route::get('user', [v1Auth::class, 'user']);
@@ -46,7 +44,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
     Route::group(['middleware' => ['auth:api', 'privacy-policy']], static function() {
         Route::post('event', [EventController::class, 'suggest'])->middleware(['scope:write-event-suggestions']);
-        Route::get('activeEvents', [EventController::class, 'activeEvents'])->middleware(['scope:read-statuses']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends'])
              ->middleware(['scope:read-statistics']);
         Route::group(['middleware' => ['scope:read-statuses']], static function() {
@@ -93,6 +90,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('/global', [StatisticsController::class, 'getGlobalStatistics']);
             Route::post('export', [StatisticsController::class, 'generateTravelExport'])
                  ->middleware(['scope:write-exports'])->withoutMiddleware(['scope:read-statistics']);
+            Route::get('/daily/{date}', [StatisticsController::class, 'getPersonalDailyStatistics']);
         });
         Route::group(['prefix' => 'user'], static function() {
             Route::group(['middleware' => ['scope:write-follows']], static function() {
@@ -120,7 +118,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('profile', [SettingsController::class, 'getProfileSettings'])
                  ->middleware(['scope:read-settings']);
             Route::put('profile', [SettingsController::class, 'updateSettings'])
-                 ->middleware(['scope:write-settings']);
+                 ->middleware(['scope:write-settings-profile']);
             Route::delete('profilePicture', [SettingsController::class, 'deleteProfilePicture'])
                  ->middleware(['scope:write-settings-profile-picture']);
             Route::post('profilePicture', [SettingsController::class, 'uploadProfilePicture'])
@@ -162,6 +160,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
     Route::group(['middleware' => ['privacy-policy']], static function() {
         Route::group(['middleware' => ['semiscope:read-statuses']], static function() {
             Route::get('statuses', [StatusController::class, 'enRoute']);
+            Route::get('positions', [StatusController::class, 'livePositions']);
+            Route::get('positions/{ids}', [StatusController::class, 'getLivePositionForStatus']);
             Route::get('status/{id}', [StatusController::class, 'show']);
             Route::get('status/{id}/likes', [LikesController::class, 'show']);
             Route::get('status/{statusId}/tags', [StatusTagController::class, 'index']);
@@ -171,6 +171,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('event/{slug}/details', [EventController::class, 'showDetails']);
             Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
             Route::get('events', [EventController::class, 'upcoming']);
+            Route::get('activeEvents', [EventController::class, 'activeEvents']);
             Route::get('user/{username}', [UserController::class, 'show']);
             Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
         });

@@ -52,7 +52,7 @@ class FrontendTransportController extends Controller
 
         $when = isset($validated['when'])
             ? Carbon::parse($validated['when'], auth()->user()->timezone ?? config('app.timezone'))
-            : null;
+            : Carbon::now(auth()->user()->timezone ?? config('app.timezone'))->subMinutes(5);
 
         try {
             //Per default: Use the given station query for lookup
@@ -71,6 +71,7 @@ class FrontendTransportController extends Controller
                 stationQuery: $searchQuery,
                 when:         $when,
                 travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
+                localtime:    true
             );
             return view('stationboard', [
                                           'station'    => $stationboardResponse['station'],
@@ -203,7 +204,8 @@ class FrontendTransportController extends Controller
                 event:                $trainCheckin->event,
                 forced: isset($validated['force'])
             );
-            return redirect()->route('dashboard')->with('checkin-success', (clone $checkinSuccess));
+            return redirect()->route('status', ['id' => $backendResponse['status']->id])
+                             ->with('checkin-success', (clone $checkinSuccess));
 
         } catch (CheckInCollisionException $exception) {
             return redirect()

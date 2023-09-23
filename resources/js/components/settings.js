@@ -1,4 +1,5 @@
 require("croppie/croppie");
+import API from "../api/api";
 
 var resize = $("#upload-demo").croppie({
                                            enableExif: true,
@@ -27,7 +28,7 @@ $("#image").on("change", function () {
     reader.readAsDataURL(this.files[0]);
 });
 
-$(".upload-image").on("click", function (ev) {
+$(".upload-image").on("click", function () {
     resize.croppie("result", {
         type: "canvas",
         size: "viewport"

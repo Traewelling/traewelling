@@ -14,7 +14,7 @@ class NotificationSentWebhookListener
             return;
         }
         $user = User::where('id', $event->notifiable->id)->first();
-        $notification = $user->notifications->find($event->notification->id)->first();
+        $notification = $user->notifications->where('id', $event->notification->id)->first();
         WebhookController::sendNotificationWebhook($user, $notification);
     }
 }

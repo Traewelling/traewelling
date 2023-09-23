@@ -150,8 +150,8 @@
                             <td>{{ $status->trainCheckin->HafasTrip->linename }}</td>
                             <td>{{ $status->trainCheckin->originStation->name }}</td>
                             <td>
-                                @if(isset($status->trainCheckin->real_departure))
-                                    {{ userTime($status->trainCheckin->real_departure, __('datetime-format')) }}
+                                @if(isset($status->trainCheckin->manual_departure))
+                                    {{ userTime($status->trainCheckin->manual_departure, __('datetime-format')) }}
                                 @elseif($status->trainCheckin->origin_stopover->isDepartureDelayed)
                                     <span style="text-decoration: line-through;">
                                         {{ userTime($status->trainCheckin->origin_stopover->departure_planned, __('datetime-format')) }}
@@ -164,8 +164,8 @@
                             </td>
                             <td>{{ $status->trainCheckin->destinationStation->name }}</td>
                             <td>
-                                @if(isset($status->trainCheckin->real_arrival))
-                                    {{ userTime($status->trainCheckin->real_arrival, __('datetime-format')) }}
+                                @if(isset($status->trainCheckin->manual_arrival))
+                                    {{ userTime($status->trainCheckin->manual_arrival, __('datetime-format')) }}
                                 @elseif($status->trainCheckin->origin_stopover->isArrivalDelayed)
                                     <span style="text-decoration: line-through;">
                                         {{ userTime($status->trainCheckin->destination_stopover->arrival_planned, __('datetime-format')) }}

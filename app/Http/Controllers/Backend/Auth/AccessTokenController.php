@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Backend\Auth;
 
 use App\Http\Controllers\Backend\WebhookController;
-use Illuminate\Http\Response;
 use Laravel\Passport\Exceptions\OAuthServerException;
 use Laravel\Passport\Http\Controllers\AccessTokenController as PassportAccessTokenController;
 use Nyholm\Psr7\Response as Psr7Response;
+use Nyholm\Psr7\Stream;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
@@ -48,11 +48,6 @@ class AccessTokenController extends PassportAccessTokenController
             'secret' => $webhook->secret,
             'url'    => $webhook->url,
         ];
-
-        return new Response(
-            $data,
-            $response->getStatusCode(),
-            $response->getHeaders()
-        );
+        return $response->withBody(Stream::create(json_encode($data)));
     }
 }

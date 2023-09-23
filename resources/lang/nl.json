@@ -694,5 +694,21 @@
     "time-is-manual": "De vertrektĳd is handmatig aangepast",
     "stationboard.timezone": "Er is vastgesteld dat je tĳdzone verschilt met die van dit station. De getoonde tĳden zĳn op basis van je ingestelde tĳdzone: <i>:timezone</i>.",
     "stationboard.timezone.settings": "Je kunt dit aanpassen in de <a href=\":url\">instellingen</a>.",
-    "user.timezone": "Tĳdzone"
+    "user.timezone": "Tĳdzone",
+    "settings.title-appdevelopment": "Appontwikkeling",
+    "settings.back-to-traewelling": "Terug naar Träwelling",
+    "settings.title-security": "Beveiliging",
+    "settings.title-extra": "Aanvullend",
+    "access-token-generated-success": "De toegangssleutel is gegenereerd.",
+    "your-access-token": "Mĳn toegangssleutel",
+    "your-access-token-description": "Je kunt een toegangssleutel genereren om toegang te krĳgen tot je account.",
+    "no-own-apps": "Je hebt nog geen app gemaakt.",
+    "create-app": "App maken",
+    "your-apps": "Mĳn apps",
+    "generate-token": "Toegangssleutel genereren",
+    "access-token-remove-at": "Je kunt de toegangssleutel te allen tĳde intrekken in de sectie ‘Api-toegangssleutels’ in de instellingen.",
+    "edit-app": "App bewerken",
+    "access-token-is-private": "Behandel je toegangssleutel als een wachtwoord en deel hem niet met anderen.",
+    "refresh": "Herladen",
+    "your-access-token.ask": "Wij van Träwelling vragen je nooit om je toegangssleutel. Als je die vraag krijgt, dan is het hoogstwaarschijnlijk een scam."
 }

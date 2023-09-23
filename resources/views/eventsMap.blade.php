@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', $event->name)
-@section('canonical', route('statuses.byEvent', ['eventSlug' => $event->slug]))
+@section('canonical', route('event', ['slug' => $event->slug]))
 
 @section('content')
     <div class="px-4 py-5 mt-n4 profile-banner">
@@ -11,18 +11,20 @@
                     <h1 class="card-title font-bold">
                         <strong>
                             {{ __('events.header', ['name' => $event->name]) }}
-                            <code class="text-white">#{{ $event->hashtag }}</code>
+                            @isset($event->hashtag)
+                                <code class="text-white">#{{ $event->hashtag }}</code>
+                            @endisset
                         </strong>
                     </h1>
                     <h2 class="h2-responsive">
                         <span class="font-weight-bold">
                             <i class="fa fa-route d-inline"></i>
-                            {{ number($distance / 1000, 0) }}
+                            {{ number($event->trainDistance / 1000, 0) }}
                         </span>
                         <span class="small font-weight-lighter">km</span>
                         <span class="font-weight-bold ps-sm-2">
                             <i class="fa fa-stopwatch d-inline"></i>
-                            {!! durationToSpan(secondsToDuration($duration)) !!}
+                            {!! durationToSpan(secondsToDuration($event->trainDuration * 60)) !!}
                         </span>
                         <br class="d-block d-sm-none">
                         @isset($event->host)

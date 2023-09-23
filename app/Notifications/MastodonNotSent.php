@@ -40,7 +40,7 @@ class MastodonNotSent extends Notification implements BaseNotification
     }
 
     public static function getLink(array $data): ?string {
-        return route('statuses.get', [
+        return route('status', [
             'id' => $data['status']['id'],
         ]);
     }

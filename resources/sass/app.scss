@@ -10,6 +10,10 @@
 // mdbootstrap
 @import "~mdb-ui-kit/src/scss/mdb.free.scss";
 
+.fas.peach::before {
+    content: "\1f351" !important;
+}
+
 body {
     font-family: "Nunito", sans-serif;
     font-weight: 300;
@@ -63,4 +67,41 @@ body {
     background-image: url("/images/covers/profile-background.png");
     background-position: center;
     background-color: #c5232c;
+}
+
+.profile-picture {
+    width: 30%;
+    height: 30%;
+    bottom: 0;
+}
+
+.profile-stats {
+    font-size: map-get($font-sizes, 5);
+}
+
+.profile-name {
+    font-size: map-get($font-sizes, 4);
+}
+
+.profile-tag {
+    font-size: map-get($font-sizes, 5);
+}
+
+@include media-breakpoint-up(md) {
+    .profile-picture {
+        width: 20%;
+        height: 20%;
+    }
+
+    .profile-stats {
+        font-size: map-get($font-sizes, 2);
+    }
+
+    .profile-name {
+        font-size: map-get($font-sizes, 2);
+    }
+
+    .profile-tag {
+        font-size: map-get($font-sizes, 2);
+    }
 }

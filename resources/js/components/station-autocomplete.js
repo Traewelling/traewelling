@@ -9,7 +9,7 @@ const popularStations = [
     "Mönchengladbach Hbf"
 ];
 (function () {
-    const input = document.getElementById("station-autocomplete");
+    const input     = document.getElementById("station-autocomplete");
     const container = document.getElementById("station-autocomplete-container");
     if (input == null) {
         return;
@@ -39,7 +39,7 @@ const popularStations = [
     function fetchStations() {
         if (input.value.length < 2) return;
 
-        fetch(urlAutocomplete + "/" + encodeURI(input.value))
+        fetch("/transport/train/autocomplete/" + encodeURI(input.value))
             .then(res => res.json())
             .then(json => {
                 window.awesomplete.list = json.map(station => {

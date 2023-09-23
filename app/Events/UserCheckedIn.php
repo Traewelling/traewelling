@@ -26,6 +26,6 @@ class UserCheckedIn
         $this->shouldPostOnMastodon = $shouldPostOnMastodon;
         $this->shouldChain          = $shouldChain;
 
-        Log::info("Dispatching UserCheckedIn event for status#" . $status->id);
+        Log::debug("Dispatching UserCheckedIn event for status#" . $status->id);
     }
 }

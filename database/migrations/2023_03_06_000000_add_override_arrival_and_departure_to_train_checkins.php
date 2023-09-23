@@ -8,7 +8,7 @@ return new class extends Migration
 {
 
     public function up(): void {
-        Schema::table('train_checkins', function(Blueprint $table) {
+        Schema::table('train_checkins', static function(Blueprint $table) {
             $table->timestamp('real_departure')
                   ->comment('User-defined override of the departure')
                   ->default(null)
@@ -23,7 +23,7 @@ return new class extends Migration
     }
 
     public function down(): void {
-        Schema::table('train_checkins', function(Blueprint $table) {
+        Schema::table('train_checkins', static function(Blueprint $table) {
             $table->dropColumn(['real_departure', 'real_arrival']);
         });
     }

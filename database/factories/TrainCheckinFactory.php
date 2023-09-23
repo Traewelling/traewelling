@@ -13,17 +13,17 @@ class TrainCheckinFactory extends Factory
     public function definition(): array {
         $trip = HafasTrip::factory()->create();
         return [
-            'status_id'      => Status::factory(),
-            'user_id'        => User::factory(),
-            'trip_id'        => $trip->trip_id,
-            'origin'         => $trip->originStation->ibnr,
-            'destination'    => $trip->destinationStation->ibnr,
-            'distance'       => $this->faker->randomFloat(2, 0, 100),
-            'departure'      => $trip->departure,
-            'real_departure' => null,
-            'arrival'        => $trip->arrival,
-            'real_arrival'   => null,
-            'points'         => $this->faker->numberBetween(0, 100),
+            'status_id'        => Status::factory(),
+            'user_id'          => User::factory(),
+            'trip_id'          => $trip->trip_id,
+            'origin'           => $trip->originStation->ibnr,
+            'destination'      => $trip->destinationStation->ibnr,
+            'distance'         => $this->faker->randomFloat(2, 0, 100),
+            'departure'        => $trip->departure,
+            'manual_departure' => null,
+            'arrival'          => $trip->arrival,
+            'manual_arrival'   => null,
+            'points'           => $this->faker->numberBetween(0, 100),
         ];
     }
 

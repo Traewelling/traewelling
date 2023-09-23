@@ -36,6 +36,7 @@ use Mastodon;
  * @property boolean     private_profile
  * @property boolean     prevent_index
  * @property boolean     likes_enabled
+ * @property boolean     $experimental
  * @property MapProvider mapprovider
  * @property int         privacy_hide_days
  * @property string      language
@@ -50,7 +51,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
         'default_status_visibility', 'likes_enabled', 'private_profile', 'prevent_index', 'privacy_hide_days',
-        'language', 'last_login', 'mapprovider', 'timezone',
+        'language', 'last_login', 'mapprovider', 'timezone', 'experimental',
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
@@ -67,6 +68,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'home_id'                   => 'integer',
         'private_profile'           => 'boolean',
         'likes_enabled'             => 'boolean',
+        'experimental'              => 'boolean',
         'default_status_visibility' => StatusVisibility::class,
         'prevent_index'             => 'boolean',
         'privacy_hide_days'         => 'integer',
@@ -212,7 +214,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function getMutedAttribute(): bool {
-        return (auth()->check() && auth()->user()->mutedUsers->contains('id', $this->id));
+        return auth()->check() && auth()->user()->mutedUsers->contains('id', $this->id);
     }
 
     /**
