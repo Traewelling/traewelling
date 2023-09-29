@@ -70,6 +70,7 @@
     "dates.July": "juillet",
     "modals.deleteStatus-title": "Est-ce que tu veux vraiment supprimer cet enregistrement ?",
     "controller.transport.social-post-with-event": "Je suis actuellement dans :lineName à destination de :destination pour #:hashtag ! #NowTräwelling | Je suis actuellement dans :lineName à destination de :destination pour #:hashtag ! #NowTräwelling ",
+    "controller.transport.social-post-for": "pour #:hashtag",
     "export.number": "Numéro",
     "messages.cookie-notice-learn": "En savoir plus",
     "profile.private-profile-text": "Ce profil est privé.",
