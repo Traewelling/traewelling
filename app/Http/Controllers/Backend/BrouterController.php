@@ -55,6 +55,7 @@ abstract class BrouterController extends Controller
             Log::debug('[RefreshPolyline] Brouter response was not okay.', ['body' => $response->body()]);
             throw new InvalidArgumentException('Brouter response was not okay.');
         }
+        throw new InvalidArgumentException('Brouter response was not okay.');
 
         $geoJson = json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
         //remove unnecessary data
