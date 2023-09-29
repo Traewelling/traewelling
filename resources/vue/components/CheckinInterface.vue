@@ -1,5 +1,6 @@
 <script>
 import {DateTime} from "luxon";
+import {Notyf} from "notyf";
 
 export default {
     name: "CheckinInterface",
@@ -21,6 +22,8 @@ export default {
             visibility: 0,
             business: 0,
             loading: false,
+            notyf: new Notyf({position: {x: 'right', y: 'bottom'}}),
+            collision: false,
         };
     },
     methods: {
@@ -38,7 +41,7 @@ export default {
                 destination: this.selectedDestination.evaIdentifier,
                 departure: DateTime.fromISO(this.selectedTrain.plannedWhen).setZone("UTC").toISO(),
                 arrival: DateTime.fromISO(this.selectedDestination.arrivalPlanned).setZone("UTC").toISO(),
-                force: false,
+                force: this.collision,
                 eventId: null,
             };
             fetch('/api/v1/trains/checkin', {
@@ -48,9 +51,27 @@ export default {
                 },
                 body: JSON.stringify(data),
             }).then((response) => {
-                response.json().then((result) => {
-                    window.location = "/status/" + result.data.status.id;
-                });
+                this.loading = false;
+                if (response.ok) {
+                    response.json().then((result) => {
+                        localStorage.setItem("points", JSON.stringify(result.data.points));
+                        localStorage.setItem("alsoOnThisConnection", JSON.stringify(result.data.alsoOnThisConnection));
+                        window.location = "/status/" + result.data.status.id;
+                    });
+                }
+                if (response.status === 409) {
+                    response.json().then(() => {
+                        this.collision = true;
+                        this.notyf.error("Du bist bereits in einem Zug eingecheckt. Falls du den Checkin forcieren möchtest, drücke nochmal auf \"einchecken\".");
+                    });
+                }
+                if (response.status === 500) {
+                    this.notyf.error("Ein unbekannter Fehler ist aufgetreten. Bitte versuche es später erneut.");
+                }
+            }).catch((reason) => {
+                console.log(reason);
+                this.loading = false;
+                this.notyf.error(reason);
             });
         }
     },
