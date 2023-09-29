@@ -36,7 +36,7 @@
         <link rel="author" href="/humans.txt">
         <link rel="manifest" href="/manifest.json"/>
 
-        @vite(['resources/sass/app.scss', 'resources/sass/app.scss', 'resources/js/app.js'])
+        @vite(['resources/sass/app.scss', 'resources/sass/app-dark.scss', 'resources/js/app.js'])
 
         @yield('head')
     </head>
