@@ -31,7 +31,7 @@ class AccessTokenController extends PassportAccessTokenController
         }
         $body = $requestInterface->getParsedBody();
         // Only create webhook on authorization code grant type.
-        if ($body['grant_type'] != 'code' ) {
+        if ($body['grant_type'] != 'authorization_code' ) {
             return $response;
         }
 
