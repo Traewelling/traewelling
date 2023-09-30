@@ -196,8 +196,8 @@
                 @yield('content')
             </main>
 
-            <div class="container">
-                <footer class="py-5">
+            <footer class="py-5">
+                <div class="container">
                     <div class="row">
                         <div class="col-6 col-md-2 mb-3">
                             <ul class="nav flex-column">
@@ -254,7 +254,7 @@
                             </ul>
                         </div>
 
-                        <div class="col-md-2 offset-md-3 mb-3">
+                        <div class="col-md-auto ms-md-auto mb-3">
                             <ul class="nav flex-column">
                                 <li class="nav item mb-2">
                                 <div class="btn-group dropup w-100">
@@ -307,8 +307,7 @@
                             </a>
                         </p>
                     </div>
-                </footer>
-            </div>
+            </footer>
         </div>
 
         <div class="alert text-center cookiealert" role="alert">
