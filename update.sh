@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+set -e
+
 pre_run() {
  php artisan down
  git pull
@@ -19,6 +22,7 @@ post_run() {
     php artisan up
 }
 
-set -e
 pre_run
-(run_migrations & update_ui) && post_run
+run_migrations
+update_ui
+post_run
