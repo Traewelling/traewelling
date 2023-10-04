@@ -1,11 +1,12 @@
 import _ from "lodash";
+import { Modal } from "bootstrap";
 
 $(document).on("click", ".join", function (event) {
     event.preventDefault();
 
     const source = getDataset(event);
     const modalWrapper = $("#checkinModal");
-    const modal = new window.modal(modalWrapper);
+    const modal = new Modal(modalWrapper);
     modalWrapper
         .find(".modal-title")
         .html(

@@ -1,3 +1,5 @@
+import { Modal } from "bootstrap";
+
 let delays = document.getElementsByClassName("traindelay");
 for (let delay of delays) {
     let delayValue = delay.innerText;
@@ -61,7 +63,7 @@ $(document)
             .data("linename");
         if (!touchmoved) {
             const modalWrapper = $("#checkinModal");
-            const modal = new window.modal(modalWrapper);
+            const modal = new Modal(modalWrapper);
             modalWrapper
                 .find(".modal-title")
                 .html(
