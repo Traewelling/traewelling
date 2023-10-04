@@ -682,8 +682,8 @@
     "active-journeys": "voyage actif|voyages actifs",
     "notifications.readAll.success": "Toutes les notifications ont été marquées comme lues.",
     "notifications.socialNotShared.mastodon.0": "Une erreur inconnue s'est produite lorsque nous avons essayé d'effectuer le transfert.",
-    "page-only-available-in-language": "Cette page n'est disponible que dans la :language .",
-    "language.en": "Englais",
+    "page-only-available-in-language": "Cette page n'est disponible qu'en :language .",
+    "language.en": "Anglais",
     "changelog": "Journal des modifications",
     "time-is-planned": "Durée prévue",
     "time-is-real": "Temps réel (à partir de l'api des horaires)",
@@ -709,5 +709,6 @@
     "edit-app": "Editer une application",
     "generate-token": "Générer un jeton d'accès",
     "access-token-remove-at": "Vous pouvez supprimer un jeton d'accès à tout moment dans les paramètres sous \"Jeton API\".",
-    "your-access-token-description": "Vous pouvez générer un jeton d'accès pour accéder à votre propre compte."
+    "your-access-token-description": "Vous pouvez générer un jeton d'accès pour accéder à votre propre compte.",
+    "settings.experimental": "Fonctionnalité expérimentale"
 }

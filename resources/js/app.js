@@ -12,6 +12,7 @@ import "awesomplete/awesomplete";
 import "leaflet/dist/leaflet.js";
 import "./api/api";
 import "./components/maps";
+import CheckinSuccessHelper from "../vue/components/CheckinSuccessHelper.vue";
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -28,6 +29,11 @@ document.addEventListener("DOMContentLoaded", function () {
     app3.component('Stationboard', Stationboard);
     app3.component('Stationautocomplete', StationAutocomplete);
     app3.mount('#station-board-new');
+
+    const app4 = createApp({});
+    app4.component('CheckinSuccessHelper', CheckinSuccessHelper);
+    app4.mount('#checkin-success-helper');
+
 
     window.notyf = new Notyf({
         duration: 5000,
@@ -72,7 +78,6 @@ window.addEventListener("load", () => {
     import("./components/Status");
     import("./components/timepicker");
     import("./components/business-check-in");
-    import("bootstrap/js/dist/modal");
     import("./appControls");
     import("bootstrap-cookie-alert/cookiealert");
 });

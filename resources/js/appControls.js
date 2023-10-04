@@ -1,28 +1,31 @@
+import _ from "lodash";
+import { Modal } from "bootstrap";
+
 $(document).on("click", ".join", function (event) {
     event.preventDefault();
 
     const source = getDataset(event);
-    $("#checkinModal").modal("show", function (event) {
-        const modal = $(this);
-        modal
-            .find(".modal-title")
-            .html(
-                source.trwlLinename +
-                ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
-                source.trwlStopName
-            );
-        modal.find("#input-tripID").val(source.trwlTripId);
-        modal.find("#input-destination").val(source.trwlDestination);
-        modal.find("#input-arrival").val(source.trwlArrival);
-        modal.find("#input-start").val(source.trwlStart);
-        modal.find("#input-departure").val(source.trwlDeparture);
-        // case for small number of events
-        modal.find("#event_check").each(function () {
-            $(this).prop("checked", $(this).val() === source.trwlEventId);
-        });
-        // case for large number of events
-        modal.find("#event-dropdown").val(source.trwlEventId);
+    const modalWrapper = $("#checkinModal");
+    const modal = new Modal(modalWrapper);
+    modalWrapper
+        .find(".modal-title")
+        .html(
+            source.trwlLinename +
+            ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
+            source.trwlStopName
+        );
+    modalWrapper.find("#input-tripID").val(source.trwlTripId);
+    modalWrapper.find("#input-destination").val(source.trwlDestination);
+    modalWrapper.find("#input-arrival").val(source.trwlArrival);
+    modalWrapper.find("#input-start").val(source.trwlStart);
+    modalWrapper.find("#input-departure").val(source.trwlDeparture);
+    // case for small number of events
+    modalWrapper.find("#event_check").each(function () {
+        $(this).prop("checked", $(this).val() === source.trwlEventId);
     });
+    // case for large number of events
+    modalWrapper.find("#event-dropdown").val(source.trwlEventId);
+    modal.show();
 });
 
 document.querySelectorAll('.status .like').forEach((likeButton) => {
