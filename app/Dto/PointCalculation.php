@@ -11,14 +11,14 @@ class PointCalculation
     public readonly int         $basePoints;
     public readonly int         $distancePoints;
     public readonly PointReason $reason;
-    public readonly int         $factor;
+    public readonly float       $factor;
 
     public function __construct(
         int         $points,
         int         $basePoints,
         int         $distancePoints,
         PointReason $reason,
-        int         $factor,
+        float       $factor,
     ) {
         $this->points           = $points;
         $this->basePoints       = $basePoints;

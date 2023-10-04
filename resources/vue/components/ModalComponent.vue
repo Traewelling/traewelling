@@ -11,6 +11,10 @@ export default {
             type: String,
             default: null
         },
+        headerClass: {
+            type: String,
+            default: null
+        },
         dialogClass: {
             type: String,
             default: null
@@ -44,8 +48,8 @@ export default {
          aria-hidden="true" ref="modalComponent">
         <div class="modal-dialog" :class="dialogClass">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-dark" :class="{'flex-grow-1': !!this.$slots['header-extra']}">
+                <div class="modal-header text-dark" :class="headerClass">
+                    <h5 class="modal-title" :class="{'flex-grow-1': !!this.$slots['header-extra']}">
                         {{ title }}
                     </h5>
                     <slot name="header-extra"/>

@@ -8,7 +8,7 @@
 
                 <div class="modal-header">
                     <h4 class="modal-title">{{__('modals.editStatus-title')}}</h4>
-                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="destination-wrapper form-floating mb-2">
@@ -68,7 +68,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-mdb-dismiss="modal">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
                         {{__('menu.discard')}}
                     </button>
                     <button type="submit" class="btn btn-primary">

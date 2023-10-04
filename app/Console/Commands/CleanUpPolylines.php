@@ -14,7 +14,8 @@ class CleanUpPolylines extends Command
 
     public function handle(): int {
         $usedPolylineIds = HafasTrip::where('polyline_id', '<>', null)->groupBy('polyline_id')->select('polyline_id');
-        $affectedRows    = Polyline::whereNotIn('id', $usedPolylineIds)->delete();
+        $usedParentIds   = Polyline::where('parent_id', '<>', null)->groupBy('parent_id')->select('parent_id');
+        $affectedRows    = Polyline::whereNotIn('id', $usedPolylineIds)->whereNotIn('id', $usedParentIds)->delete();
         Log::debug($affectedRows . ' unused polylines deleted.');
         return 0;
     }

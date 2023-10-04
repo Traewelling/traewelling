@@ -29,7 +29,13 @@ class AccessTokenController extends PassportAccessTokenController
         if ($response->getStatusCode() > 299 || $response->getStatusCode() < 200) {
             return $response;
         }
-        $code = $requestInterface->getParsedBody()['code'];
+        $body = $requestInterface->getParsedBody();
+        // Only create webhook on authorization code grant type.
+        if ($body['grant_type'] != 'authorization_code' ) {
+            return $response;
+        }
+
+        $code = $body['code'];
 
         $request = WebhookController::findWebhookRequest($code);
         if ($request === null) {
