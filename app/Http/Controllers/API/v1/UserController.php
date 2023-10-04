@@ -135,11 +135,6 @@ class UserController extends Controller
         return StatusResource::collection($userResponse);
     }
 
-    //ToDo: Is this even used anywhere?
-    public function authenticated(): UserResource {
-        return new UserResource(Auth::user());
-    }
-
     /**
      * @OA\Get(
      *      path="/user/{username}",
