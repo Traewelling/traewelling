@@ -13,16 +13,17 @@
     "license": "AGPL-3.0-only",
     "require": {
         "php": "^8.1",
+        "barryvdh/laravel-dompdf": "^2.0",
+        "darkaonline/l5-swagger": "^8.3",
+        "doctrine/dbal": "^3.1.4",
         "ext-exif": "*",
         "ext-gd": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
+        "ext-simplexml": "*",
         "ext-sodium": "*",
-        "barryvdh/laravel-dompdf": "^2.0",
-        "darkaonline/l5-swagger": "^8.3",
-        "doctrine/dbal": "^3.1.4",
         "guzzlehttp/guzzle": "^7.1",
         "intervention/image": "^2.5",
         "jenssegers/agent": "^2.6",
@@ -38,8 +39,7 @@
         "spatie/laravel-sitemap": "^6.0",
         "spatie/laravel-validation-rules": "^3.2",
         "spatie/laravel-webhook-server": "^3.4",
-        "trwl/socialite-mastodon": "^1.2",
-        "ext-simplexml": "*"
+        "trwl/socialite-mastodon": "^1.2"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
