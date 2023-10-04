@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 pre_run() {
  php artisan down
  git pull
