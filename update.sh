@@ -19,6 +19,6 @@ post_run() {
     php artisan up
 }
 
-
+set -e
 pre_run
 (run_migrations & update_ui) && post_run
