@@ -71,6 +71,9 @@ return [
 
     'timezone' => 'UTC',
 
+    // This timezone will be used for displaying time in the frontend, when not logged in.
+    'display_timezone' => 'Europe/Berlin',
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
