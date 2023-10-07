@@ -1,6 +1,8 @@
 <?php
 
+use Carbon\CarbonTimeZone;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * @see https://stackoverflow.com/a/437642
@@ -54,4 +56,16 @@ function userTime(null|Carbon|\Carbon\Carbon|string $time=null, ?string $format=
         return $time->tz($timezone)->isoFormat($format);
     }
     return $time->tz($timezone)->format($format);
+}
+
+function stationBoardTimezoneOffset(Collection $departures): bool {
+    foreach ($departures as $departure) {
+        if (!empty($departure?->cancelled) && $departure->cancelled) {
+            continue;
+        }
+        return \Carbon\Carbon::parse($departure->when)->tz->toOffsetName()
+               !== CarbonTimeZone::create(auth()->user()->timezone)->toOffsetName();
+    }
+
+    return false;
 }

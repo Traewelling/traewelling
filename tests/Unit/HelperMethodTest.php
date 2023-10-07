@@ -2,9 +2,12 @@
 
 namespace Tests\Unit;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Carbon as IlluminateCarbon;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\Passport;
+use Mockery;
 use stdClass;
 use Illuminate\Support\Facades\App;
 
@@ -94,6 +97,48 @@ class HelperMethodTest extends UnitTestCase
             [$illuminateCarbonDefaultTime, null, true],
             [$illuminateCarbonDefaultTime, 'HH:mm', true],
             [$illuminateCarbonDefaultTime, 'H:i', false],
+        ];
+    }
+
+    /**
+     * @dataProvider stationBoardTimezoneOffsetProvider
+     */
+    public function testStationBoardTimezoneOffset($expected, $departures): void {
+        $this->user = User::factory()->make();
+        Passport::actingAs($this->user);
+
+        $user = Mockery::mock($this->user)
+                       ->shouldReceive('getAttribute')
+                       ->with('timezone')
+                       ->andReturn('Europe/Berlin')
+                       ->getMock();
+
+        Auth::setUser($user);
+
+        $this->assertEquals($expected, stationBoardTimezoneOffset(collect($departures)));
+    }
+
+    public static function stationBoardTimezoneOffsetProvider(): array {
+        $cancelledCorrect            = new stdClass();
+        $cancelledCorrect->cancelled = true;
+        $cancelledCorrect->when      = '2023-10-07T22:17:00+02:00';
+
+        $cancelledWrong       = clone $cancelledCorrect;
+        $cancelledWrong->when = '2023-10-07T22:17:00+01:00';
+
+        $correct       = new stdClass();
+        $correct->when = '2023-10-07T22:17:00+02:00';
+
+        $wrong       = clone $correct;
+        $wrong->when = '2023-10-07T22:17:00+01:00';
+
+
+        return [
+            'cancelled, correct timezone'          => [false, [$cancelledCorrect, $correct]],
+            'cancelled, wrong timezone'            => [true, [$cancelledWrong, $wrong]],
+            'not cancelled, correct timezone'      => [false, [$correct, $cancelledCorrect]],
+            'not cancelled, wrong timezone'        => [true, [$wrong, $cancelledWrong]],
+            'cancelled, cancelled, wrong timezone' => [false, [$cancelledCorrect, $cancelledWrong]],
         ];
     }
 }
