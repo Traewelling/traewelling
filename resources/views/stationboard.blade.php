@@ -46,11 +46,7 @@
                         </div>
                     </div>
 
-                    @if (
-                        count($departures) > 0 &&
-                        \Carbon\Carbon::parse($departures[0]->when)->tz->toOffsetName()
-                        !== \Carbon\CarbonTimeZone::create(auth()->user()->timezone)->toOffsetName()
-                    )
+                    @if (hasStationBoardTimezoneOffsetToUser($departures, auth()->user()))
                         <div class="alert alert-info alert-dismissible fade show" role="alert">
                             {!! __("stationboard.timezone", ['timezone' => auth()->user()->timezone]) !!}
                             <p>{!! __("stationboard.timezone.settings", ['url' => route('settings')]) !!}</p>

@@ -1,16 +1,13 @@
 <?php
 
-namespace Tests\Feature\APIv1;
+namespace Feature\APIv1;
 
-use App\Http\Controllers\UserController as UserBackend;
-use App\Models\Status;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Http;
+use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
-use App\Providers\AuthServiceProvider;
 
 class TransportTest extends ApiTestCase
 {
@@ -27,9 +24,9 @@ class TransportTest extends ApiTestCase
         //Test departures
         $station   = self::FRANKFURT_HBF['name'];
         $timestamp = Date::parse('next monday 8 am');
+        $this->actAsApiUserWithAllScopes();
         $response  = $this->get(
             uri:     '/api/v1/trains/station/' . $station . '/departures?when=' . urlencode($timestamp->toIso8601String()),
-            headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
         );
         $response->assertOk();
         $response->assertJsonStructure([
@@ -70,7 +67,6 @@ class TransportTest extends ApiTestCase
                      . '?hafasTripId=' . $departure['tripId']
                      . '&lineName=' . $departure['line']['name']
                      . '&start=' . ($departure['stop']['id'] + 99999),
-            headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
         );
         $response->assertStatus(400);
         // Fetch correct trip
@@ -79,7 +75,6 @@ class TransportTest extends ApiTestCase
                      . '?tripId=' . $departure['tripId']
                      . '&lineName=' . $departure['line']['name']
                      . '&start=' . $departure['stop']['id'],
-            headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
         );
         $response->assertOk();
         $response->assertJsonStructure([
@@ -120,7 +115,6 @@ class TransportTest extends ApiTestCase
                          'arrival'     => $trip['stopovers'][1]['arrivalPlanned'],
                          'ibnr'        => true,
                      ],
-            headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
         );
         $response->assertCreated();
         $response->assertJsonStructure([
@@ -151,7 +145,6 @@ class TransportTest extends ApiTestCase
                          'arrival'     => $trip['stopovers'][1]['arrivalPlanned'],
                          'ibnr'        => true,
                      ],
-            headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
         );
         $response->assertStatus(409);
     }
@@ -162,10 +155,8 @@ class TransportTest extends ApiTestCase
                                                              ["distance" => 421]
                                                          )])]);
 
-        $response = $this->get(
-            uri:     '/api/v1/trains/station/nearby?latitude=52.376564&longitude=9.741046&limit=1',
-            headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
-        );
+        $this->actAsApiUserWithAllScopes();
+        $response = $this->get('/api/v1/trains/station/nearby?latitude=52.376564&longitude=9.741046&limit=1');
         $response->assertOk();
         $response->assertJsonStructure([
                                            'data' => [
@@ -183,25 +174,20 @@ class TransportTest extends ApiTestCase
     public function testGetStationByCoordinatesIfNoStationIsNearby(): void {
         Http::fake(["*/stops/nearby*" => Http::response([])]);
 
-        $response = $this->get(
-            uri:     '/api/v1/trains/station/nearby?latitude=0&longitude=0&limit=1',
-            headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
-        );
+        $this->actAsApiUserWithAllScopes();
+        $response = $this->get('/api/v1/trains/station/nearby?latitude=0&longitude=0&limit=1');
         $response->assertNotFound();
     }
 
     public function testSetHome(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
 
         $this->assertNull($user->home);
 
         Http::fake(["*" => Http::response([self::HANNOVER_HBF])]);
 
-        $response = $this->put(
-            uri:     '/api/v1/trains/station/Hannover Hbf/home',
-            headers: ['Authorization' => 'Bearer ' . $userToken]
-        );
+        $response = $this->put('/api/v1/trains/station/Hannover Hbf/home');
         $response->assertOk();
         $user->refresh();
         $this->assertEquals('Hannover Hbf', $user->home?->name);
@@ -209,14 +195,11 @@ class TransportTest extends ApiTestCase
 
     public function testAutocompleteWithDs100(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
 
         Http::fake(["*/stations/" . self::HANNOVER_HBF['ril100'] => Http::response(self::HANNOVER_HBF)]);
 
-        $response = $this->get(
-            uri:     '/api/v1/trains/station/autocomplete/HH',
-            headers: ['Authorization' => 'Bearer ' . $userToken]
-        );
+        $response = $this->get('/api/v1/trains/station/autocomplete/HH');
         $response->assertOk();
         $response->assertJsonStructure([
                                            'data' => [

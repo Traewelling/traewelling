@@ -19,9 +19,8 @@ class EventTest extends ApiTestCase
         $response->assertJsonCount(1, 'data');
         $eventResource = $response->json('data')[0];
 
-        $response = $this->get('/api/v1/activeEvents', [
-            'Authorization' => 'Bearer ' . $this->getTokenForTestUser(),
-        ]);
+        $this->actAsApiUserWithAllScopes();
+        $response = $this->get('/api/v1/activeEvents');
         $response->assertOk();
         $response->assertJsonCount(1, 'data');
 
@@ -39,18 +38,15 @@ class EventTest extends ApiTestCase
     }
 
     public function testEventSuggestion(): void {
-        $response = $this->postJson('/api/v1/event', [], [
-            'Authorization' => 'Bearer ' . $this->getTokenForTestUser(),
-        ]);
+        $this->actAsApiUserWithAllScopes();
+        $response = $this->postJson('/api/v1/event');
         $response->assertUnprocessable();
 
         $response = $this->postJson('/api/v1/event', [
             'name'  => 'Testevent',
             'begin' => Carbon::tomorrow()->toDateString(),
             'end'   => Carbon::tomorrow()->addWeek()->toDateString(),
-        ],                          [
-                                        'Authorization' => 'Bearer ' . $this->getTokenForTestUser(),
-                                    ]);
+        ]);
         $response->assertCreated();
     }
 }

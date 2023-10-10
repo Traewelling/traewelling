@@ -710,5 +710,7 @@
     "generate-token": "Générer un jeton d'accès",
     "access-token-remove-at": "Vous pouvez supprimer un jeton d'accès à tout moment dans les paramètres sous \"Jeton API\".",
     "your-access-token-description": "Vous pouvez générer un jeton d'accès pour accéder à votre propre compte.",
-    "settings.experimental": "Fonctionnalité expérimentale"
+    "settings.experimental": "Fonctionnalité expérimentale",
+    "your-access-token.ask": "Chez Träwelling, nous ne vous demanderons jamais votre jeton d'accès. Si on vous le demande, il s'agit probablement d'une usurpation d'identitée.",
+    "settings.experimental.description": "Les fonctionnalités expérimentales ne sont pas encore prêtes et peuvent contenir des bugs. Elles ne sont pas recommandées pour une utilisation quotidienne."
 }

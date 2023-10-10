@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
 
 class LikesTest extends ApiTestCase
@@ -17,7 +18,7 @@ class LikesTest extends ApiTestCase
 
     public function testCreateShowAndDestroyLike(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
         $checkin   = TrainCheckin::factory()->create();
         $status    = $checkin->status;
 
@@ -28,7 +29,6 @@ class LikesTest extends ApiTestCase
 
         $response = $this->postJson(
             uri:     '/api/v1/status/' . $status->id . '/like',
-            headers: ['Authorization' => 'Bearer ' . $userToken]
         );
         $response->assertCreated();
 
@@ -38,16 +38,10 @@ class LikesTest extends ApiTestCase
         ]);
 
         //Should fail: Already liked
-        $response = $this->postJson(
-            uri:     '/api/v1/status/' . $status->id . '/like',
-            headers: ['Authorization' => 'Bearer ' . $userToken]
-        );
+        $response = $this->postJson('/api/v1/status/' . $status->id . '/like');
         $response->assertStatus(409);
 
-        $response = $this->get(
-            uri:     '/api/v1/status/' . $status->id . '/likes',
-            headers: ['Authorization' => 'Bearer ' . $userToken]
-        );
+        $response = $this->get('/api/v1/status/' . $status->id . '/likes');
         $response->assertOk();
         $response->assertJsonStructure([
                                            'data' => [
@@ -72,10 +66,7 @@ class LikesTest extends ApiTestCase
                                        ]);
         $this->assertCount(1, $response->json('data'));
 
-        $response = $this->deleteJson(
-            uri:     '/api/v1/status/' . $status->id . '/like',
-            headers: ['Authorization' => 'Bearer ' . $userToken]
-        );
+        $response = $this->deleteJson('/api/v1/status/' . $status->id . '/like');
         $response->assertOk();
 
         $this->assertDatabaseMissing('likes', [
@@ -85,57 +76,47 @@ class LikesTest extends ApiTestCase
     }
 
     public function testDestroyShouldFailIfWrongStatusIdGiven() {
+        $this->actAsApiUserWithAllScopes();
         $response = $this->deleteJson(
             uri:     '/api/v1/like/999999999', //some high id which should not exist in our test-data
-            headers: ['Authorization' => 'Bearer ' . $this->getTokenForTestUser()]
         );
         $response->assertNotFound();
     }
 
     public function testCannotLikeIfStatusAuthorHasDisabledLikes(): void {
         $bob      = User::factory()->create();
-        $bobToken = $bob->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($bob, ['*']);
 
         $status     = Status::factory()->create();
         $alice      = $status->user;
-        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
         $alice->update(["likes_enabled" => false]);
 
-        $response = $this->postJson(
-            uri:     '/api/v1/status/' . $status->id . '/like',
-            headers: ['Authorization' => 'Bearer ' . $bobToken]
-        );
+        $response = $this->postJson('/api/v1/status/' . $status->id . '/like');
         $response->assertStatus(403);
 
-        $this->assertSeeNumberOfLikes($status, $bobToken, 0);
+        $this->assertSeeNumberOfLikes($status, $bob, 0);
         Auth::forgetUser();
-        $this->assertSeeNumberOfLikes($status, $aliceToken, 0);
+        $this->assertSeeNumberOfLikes($status, $alice, 0);
     }
 
     public function testBobDoesntSeeLikesIfBobHasDisabledLikes(): void {
         $checkin    = TrainCheckin::factory()->create();
         $alice      = $checkin->status->user;
-        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($alice, ['*']);
 
-        $response = $this->postJson(
-            uri:     '/api/v1/status/' . $checkin->status->id . '/like',
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->postJson('/api/v1/status/' . $checkin->status->id . '/like');
         $response->assertCreated();
-        $this->assertSeeNumberOfLikes($checkin->status, $aliceToken, 1);
+        $this->assertSeeNumberOfLikes($checkin->status, $alice, 1);
 
         Auth::forgetUser();
 
         $bob      = User::factory(["likes_enabled" => false])->create();
-        $bobToken = $bob->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
-        $this->assertSeeNumberOfLikes($checkin->status, $bobToken, 0);
+        $this->assertSeeNumberOfLikes($checkin->status, $bob, 0);
     }
 
-    private function assertSeeNumberOfLikes(Status $status, string $token, int $expectedLikeCount): void {
-        $response = $this->get(
-            uri:     '/api/v1/status/' . $status->id . '/likes',
-            headers: ['Authorization' => 'Bearer ' . $token]
-        );
+    private function assertSeeNumberOfLikes(Status $status, User $user, int $expectedLikeCount): void {
+        Passport::actingAs($user, ['*']);
+        $response = $this->get('/api/v1/status/' . $status->id . '/likes');
         $response->assertOk();
         $this->assertCount($expectedLikeCount, $response->json('data'));
     }

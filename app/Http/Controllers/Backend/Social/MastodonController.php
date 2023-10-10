@@ -12,6 +12,7 @@ use App\Notifications\MastodonNotSent;
 use Error;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 use Revolution\Mastodon\Facades\Mastodon;
@@ -182,7 +183,7 @@ abstract class MastodonController extends Controller
         $client = self::getClient($user);
 
         try {
-            $context = $client->get('/statuses/' . $mastodonPostId . '/context');
+            $context = $client->call("GET", "/statuses/{$mastodonPostId}/context", options: self::getRequestOptions());
         } catch (GuzzleException $e) {
             Log::info("Unable to chain toot because of an issue with the connecting mastodon server.");
             if ($e->getCode() == 404) {
@@ -227,5 +228,8 @@ abstract class MastodonController extends Controller
             ->whereNotNull('mastodon_post_id')
             ->latest()
             ->first();
+    }
+    public static function getRequestOptions(): array {
+        return [RequestOptions::TIMEOUT => config("trwl.mastodon_timeout_seconds")];
     }
 }

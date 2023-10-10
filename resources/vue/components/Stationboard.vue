@@ -20,6 +20,8 @@ export default {
         return {
             data: [],
             meta: {},
+            fetchTime: null,
+            now: DateTime.now(),
             show: false,
             selectedTrain: null,
             selectedDestination: null,
@@ -40,21 +42,41 @@ export default {
             this.fetchData();
         },
         fetchPrevious() {
-            this.fetchData(this.meta.times.prev)
+            this.fetchData(
+                this.meta?.times?.prev ? this.meta.times.prev : this.fetchTime.minus({minutes: 15}).toString(),
+                -1
+            );
         },
         fetchNext() {
-            this.fetchData(this.meta.times.next)
+            this.fetchData(
+                this.meta?.times?.next ? this.meta.times.next : this.fetchTime.plus({minutes: 15}).toString(),
+                1
+            );
         },
-        fetchData(time = null) {
+        fetchData(time = null, appendPosition = 0) {
             this.loading = true;
-            const when = time ? `?when=${time}` : ``;
+            if (time !== null) {
+                this.fetchTime = DateTime.fromISO(time).setZone('UTC');
+            } else {
+                time = this.fetchTime.minus({ minutes: 5 }).toString();
+            }
+
             let query = this.stationString.replace(/%2F/, ' ').replace(/\//, ' ');
-            fetch(`/api/v1/trains/station/${query}/departures${when}`).then((response) => {
-                response.json().then((result) => {
-                    this.data = result.data;
-                    this.meta = result.meta;
-                    this.loading = false;
-                });
+            fetch(`/api/v1/trains/station/${query}/departures?when=${time}`).then((response) => {
+                this.loading = false;
+                this.now = DateTime.now();
+                if (response.ok) {
+                    response.json().then((result) => {
+                        if (appendPosition === 0) {
+                            this.data = result.data;
+                        } else if (appendPosition === 1) {
+                            this.data = this.data.concat(result.data);
+                        } else {
+                            this.data = result.data.concat(this.data);
+                        }
+                        this.meta = result.meta;
+                    });
+                }
             });
         },
         formatTime(time) {
@@ -65,13 +87,13 @@ export default {
             if (key === 0 || typeof this.meta.times === undefined) {
                 return false;
             }
-            const now = DateTime.fromISO(this.meta.times.now);
             const prev = DateTime.fromISO(this.data[key - 1].when);
             const next = DateTime.fromISO(item.when);
-            return now >= prev && now <= next;
+            return this.now >= prev && this.now <= next;
         }
     },
     mounted() {
+        this.fetchTime = DateTime.now().setZone('UTC');
         this.stationString = this.$props.station;
         this.fetchData();
     }
@@ -108,7 +130,7 @@ export default {
         </template>
     </FullScreenModal>
 
-    <div class="text-center mb-2" v-if="data.length !== 0" @click="fetchPrevious">
+    <div class="text-center mb-2" v-if="!loading" @click="fetchPrevious">
         <button type="button" class="btn btn-primary"><i class="fa-solid fa-angle-up"></i></button>
     </div>
     <template v-show="!loading" v-for="(item, key) in data" :key="item.id">
@@ -143,7 +165,7 @@ export default {
             <hr>
         </div>
     </template>
-    <div class="text-center mt-2" v-if="data.length !== 0" @click="fetchNext">
+    <div class="text-center mt-2" v-if="!loading" @click="fetchNext">
         <button type="button" class="btn btn-primary"><i class="fa-solid fa-angle-down"></i></button>
     </div>
 </template>
