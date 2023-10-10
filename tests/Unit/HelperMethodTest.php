@@ -105,7 +105,6 @@ class HelperMethodTest extends UnitTestCase
      */
     public function testStationBoardTimezoneOffset($expected, $departures): void {
         $this->user = User::factory()->make();
-        Passport::actingAs($this->user);
 
         $user = Mockery::mock($this->user)
                        ->shouldReceive('getAttribute')
@@ -113,32 +112,57 @@ class HelperMethodTest extends UnitTestCase
                        ->andReturn('Europe/Berlin')
                        ->getMock();
 
-        Auth::setUser($user);
-
-        $this->assertEquals($expected, stationBoardTimezoneOffset(collect($departures)));
+        $this->assertEquals($expected, hasStationBoardTimezoneOffsetToUser(collect($departures), $user));
     }
 
     public static function stationBoardTimezoneOffsetProvider(): array {
-        $cancelledCorrect            = new stdClass();
-        $cancelledCorrect->cancelled = true;
-        $cancelledCorrect->when      = '2023-10-07T22:17:00+02:00';
 
-        $cancelledWrong       = clone $cancelledCorrect;
-        $cancelledWrong->when = '2023-10-07T22:17:00+01:00';
 
-        $correct       = new stdClass();
-        $correct->when = '2023-10-07T22:17:00+02:00';
+        $correctTimestampCEST = '2023-10-07T22:17:00+02:00';
+        $wrongTimestampCEST   = '2023-10-07T22:17:00+01:00';
+        $correctTimestampCET  = '2023-01-07T22:17:00+01:00';
+        $wrongTimestampCET    = '2023-01-07T22:17:00+00:00';
 
-        $wrong       = clone $correct;
-        $wrong->when = '2023-10-07T22:17:00+01:00';
+
+        $cancelledCorrectCEST            = new stdClass();
+        $cancelledCorrectCEST->cancelled = true;
+        $cancelledCorrectCEST->when      = $correctTimestampCEST;
+
+        $cancelledWrongCEST       = clone $cancelledCorrectCEST;
+        $cancelledWrongCEST->when = $wrongTimestampCEST;
+
+        $correctCEST       = new stdClass();
+        $correctCEST->when = $correctTimestampCEST;
+
+        $wrongCEST       = clone $correctCEST;
+        $wrongCEST->when = $wrongTimestampCEST;
+
+        $cancelledCorrectCET       = clone $cancelledCorrectCEST;
+        $cancelledCorrectCET->when = $correctTimestampCET;
+
+        $cancelledWrongCET       = clone $cancelledCorrectCEST;
+        $cancelledWrongCET->when = $wrongTimestampCET;
+
+        $correctCET       = clone $correctCEST;
+        $correctCET->when = $correctTimestampCET;
+
+        $wrongCET       = clone $correctCEST;
+        $wrongCET->when = $wrongTimestampCET;
 
 
         return [
-            'cancelled, correct timezone'          => [false, [$cancelledCorrect, $correct]],
-            'cancelled, wrong timezone'            => [true, [$cancelledWrong, $wrong]],
-            'not cancelled, correct timezone'      => [false, [$correct, $cancelledCorrect]],
-            'not cancelled, wrong timezone'        => [true, [$wrong, $cancelledWrong]],
-            'cancelled, cancelled, wrong timezone' => [false, [$cancelledCorrect, $cancelledWrong]],
+            'CEST, cancelled, correct timezone'          => [false, [$cancelledCorrectCEST, $correctCEST]],
+            'CEST, cancelled, wrong timezone'            => [true, [$cancelledWrongCEST, $wrongCEST]],
+            'CEST, not cancelled, correct timezone'      => [false, [$correctCEST, $cancelledCorrectCEST]],
+            'CEST, not cancelled, wrong timezone'        => [true, [$wrongCEST, $cancelledWrongCEST]],
+            'CEST, cancelled, cancelled, wrong timezone' => [false, [$cancelledCorrectCEST, $cancelledWrongCEST]],
+            'CEST, no stations'                          => [false, []],
+            'CET, cancelled, correct timezone'           => [false, [$cancelledCorrectCET, $correctCET]],
+            'CET, cancelled, wrong timezone'             => [true, [$cancelledWrongCET, $wrongCET]],
+            'CET, not cancelled, correct timezone'       => [false, [$correctCET, $cancelledCorrectCET]],
+            'CET, not cancelled, wrong timezone'         => [true, [$wrongCET, $cancelledWrongCET]],
+            'CET, cancelled, cancelled, wrong timezone'  => [false, [$cancelledCorrectCET, $cancelledWrongCET]],
+            'CET, no stations'                           => [false, []],
         ];
     }
 }

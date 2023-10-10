@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Carbon\CarbonTimeZone;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -8,9 +9,12 @@ use Illuminate\Support\Collection;
  * @see https://stackoverflow.com/a/437642
  */
 function number($number, $decimals = 2) {
-    return number_format($number, $decimals,
-                         __('dates.decimal_point'),
-                         __('dates.thousands_sep'));
+    return number_format(
+        $number,
+        $decimals,
+        __('dates.decimal_point'),
+        __('dates.thousands_sep')
+    );
 }
 
 /**
@@ -45,7 +49,7 @@ function durationToSpan($duration): string {
     return $return;
 }
 
-function userTime(null|Carbon|\Carbon\Carbon|string $time=null, ?string $format=null, bool $iso=true): string {
+function userTime(null|Carbon|\Carbon\Carbon|string $time = null, ?string $format = null, bool $iso = true): string {
     if ($time === null) {
         return '';
     }
@@ -58,13 +62,16 @@ function userTime(null|Carbon|\Carbon\Carbon|string $time=null, ?string $format=
     return $time->tz($timezone)->format($format);
 }
 
-function stationBoardTimezoneOffset(Collection $departures): bool {
+function hasStationBoardTimezoneOffsetToUser(Collection $departures, User $user): bool {
     foreach ($departures as $departure) {
         if (!empty($departure?->cancelled) && $departure->cancelled) {
             continue;
         }
-        return \Carbon\Carbon::parse($departure->when)->tz->toOffsetName()
-               !== CarbonTimeZone::create(auth()->user()->timezone)->toOffsetName();
+        $departureObject = \Carbon\Carbon::parse($departure->when);
+        $userObject      = CarbonTimeZone::create($user->timezone);
+        $referenceObject = \Carbon\Carbon::parse($departureObject->format('Y-m-d'));
+
+        return $departureObject->tz->toOffsetName($referenceObject) !== $userObject->toOffsetName($referenceObject);
     }
 
     return false;

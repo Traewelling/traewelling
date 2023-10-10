@@ -46,7 +46,7 @@
                         </div>
                     </div>
 
-                    @if (stationBoardTimezoneOffset($departures))
+                    @if (hasStationBoardTimezoneOffsetToUser($departures, auth()->user()))
                         <div class="alert alert-info alert-dismissible fade show" role="alert">
                             {!! __("stationboard.timezone", ['timezone' => auth()->user()->timezone]) !!}
                             <p>{!! __("stationboard.timezone.settings", ['url' => route('settings')]) !!}</p>
