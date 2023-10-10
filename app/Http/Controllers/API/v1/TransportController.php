@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Dto\Transport\TrainStation as TrainStationDto;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
@@ -47,7 +48,9 @@ class TransportController extends Controller
      *     @OA\Parameter(
      *         name="when",
      *         in="query",
-     *         description="When to get the departures (default: now)",
+     *         description="When to get the departures (default: now).
+      If you omit the timezone, the datetime is interpreted as localtime.
+          This is especially helpful when träwelling abroad.",
      *         required=false,
      *         @OA\Schema(
      *             type="string",
@@ -165,6 +168,7 @@ class TransportController extends Controller
                 stationQuery: $name,
                 when:         isset($validated['when']) ? Carbon::parse($validated['when']) : null,
                 travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
+                localtime:    isset($validated['when']) && !preg_match('(\+|Z)', $validated['when'])
             );
         } catch (HafasException) {
             return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 502);
@@ -175,6 +179,7 @@ class TransportController extends Controller
         return $this->sendResponse(
             data:       FPTFBuilder::forDeparture($trainStationboardResponse['departures']),
             additional: ["meta" => ['station' => $trainStationboardResponse['station'],
+            additional: ["meta" => ['station' => TrainStationDto::fromModel($trainStationboardResponse['station']),
                                     'times'   => $trainStationboardResponse['times'],
                         ]]
         );

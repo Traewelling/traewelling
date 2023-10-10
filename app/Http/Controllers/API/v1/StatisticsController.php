@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Dto\GeoJson\Feature;
+use App\Dto\GeoJson\FeatureCollection;
 use App\Exceptions\DataOverflowException;
 use App\Http\Controllers\Backend\Export\ExportController;
-use App\Http\Controllers\Backend\GeoController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Http\Controllers\Backend\Stats\DailyStatsController;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Resources\LeaderboardUserResource;
 use App\Http\Resources\StatisticsGlobalData;
 use App\Http\Resources\StatisticsTravelPurposeResource;
@@ -319,17 +321,10 @@ class StatisticsController extends Controller
      *                      ),
      *                  ),
      *                  @OA\Property (
-     *                      property="polylines", type="object",
-     *                      @OA\Property(
-     *                      property="type",
-     *                      example="FeatureCollection"
-         *                  ),
-         *                  @OA\Property (
-         *                      property="features", type="array",
-         *                      @OA\Items (
-         *                          ref="#/components/schemas/Polyline"
-         *                      ),
-         *                  ),
+     *                      property="polylines", type="array",
+     *                      @OA\Items (
+     *                          ref="#/components/schemas/FeatureCollection"
+     *                      ),
      *                  ),
      *                  @OA\Property(
      *                      property="totalDistance",
@@ -367,17 +362,18 @@ class StatisticsController extends Controller
     public function getPersonalDailyStatistics(Request $request, string $dateString): JsonResponse {
         $statuses = DailyStatsController::getStatusesOnDate(auth()->user(), Date::parse($dateString));
 
+        $polylines = null;
         if ($request->has('withPolylines')) {
             $polylines = collect();
             $statuses->each(function(Status $status) use (&$polylines) {
-                $polylines->add(GeoController::getGeoJsonFeatureForStatus($status));
+                $polylines->add(new Feature(LocationController::forStatus($status)->getMapLines()));
             });
-            $featureCollection = GeoController::getGeoJsonFeatureCollection($polylines);
+            $featureCollection = new FeatureCollection($polylines);
         }
 
         return $this->sendResponse([
                                        'statuses'      => StatusResource::collection($statuses),
-                                       'polylines'     => $featureCollection ?? null,
+                                       'polylines'     => $polylines && count($polylines) ? $featureCollection : null,
                                        'totalDistance' => $statuses->sum('trainCheckin.distance'),
                                        'totalDuration' => $statuses->sum('trainCheckin.duration'),
                                        'totalPoints'   => $statuses->sum('trainCheckin.points')

@@ -1,3 +1,5 @@
+import { Modal } from "bootstrap";
+
 let delays = document.getElementsByClassName("traindelay");
 for (let delay of delays) {
     let delayValue = delay.innerText;
@@ -60,19 +62,20 @@ $(document)
             .parent()
             .data("linename");
         if (!touchmoved) {
-            $("#checkinModal").modal("show", function (event) {
-                var modal = $(this);
-                modal
-                    .find(".modal-title")
-                    .html(
-                        linename +
-                        ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
-                        stopname
-                    );
-                modal.find("#input-tripID").val(tripID);
-                modal.find("#input-destination").val(destination);
-                modal.find("#input-arrival").val(arrival);
-            });
+            const modalWrapper = $("#checkinModal");
+            const modal = new Modal(modalWrapper);
+            modalWrapper
+                .find(".modal-title")
+                .html(
+                    linename +
+                    ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
+                    stopname
+                );
+            modalWrapper.find("#input-tripID").val(tripID);
+            modalWrapper.find("#input-destination").val(destination);
+            modalWrapper.find("#input-arrival").val(arrival);
+
+            modal.show();
         }
     })
     .on("touchmove", function (e) {

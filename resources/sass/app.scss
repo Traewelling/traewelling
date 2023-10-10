@@ -1,14 +1,13 @@
-// Fonts
-@import "~@fortawesome/fontawesome-free/scss/brands";
-@import "~@fortawesome/fontawesome-free/scss/regular";
-@import "~@fortawesome/fontawesome-free/scss/solid";
-@import "~@fortawesome/fontawesome-free/scss/fontawesome";
-
+@import "./font-awesome";
 // Variables
 @import "variables";
 
 // mdbootstrap
-@import "~mdb-ui-kit/src/scss/mdb.free.scss";
+@import "mdb-ui-kit/src/scss/mdb.free.scss";
+
+.fas.peach::before {
+    content: "\1f351" !important;
+}
 
 body {
     font-family: "Nunito", sans-serif;
@@ -19,7 +18,7 @@ body {
     box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
 }
 
-@import "~notyf/notyf.min.css";
+@import "notyf/notyf.min.css";
 
 // Overall site layout
 @import "site";
@@ -30,16 +29,16 @@ body {
 @import "components/timepicker";
 
 // Leaflet
-@import "~leaflet/dist/leaflet.css";
+@import "leaflet/dist/leaflet.css";
 
 // Station Autocomplete
-@import "~awesomplete/awesomplete.css";
+@import "awesomplete/awesomplete.css";
 @import "components/station-autocomplete";
 
 // Components
 @import "./components/status";
 @import "./components/activeJourneys";
-@import "~bootstrap-cookie-alert/cookiealert.css";
+@import "bootstrap-cookie-alert/cookiealert.css";
 @import "./components/image-box";
 @import "./components/settings";
 @import "./components/eventspage";
@@ -60,7 +59,7 @@ body {
 }
 
 .profile-banner {
-    background-image: url("/images/covers/profile-background.png");
+    background-image: url("../images/covers/profile-background.png");
     background-position: center;
     background-color: #c5232c;
 }

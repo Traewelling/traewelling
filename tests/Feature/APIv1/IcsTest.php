@@ -6,6 +6,8 @@ use App\Http\Controllers\UserController as UserBackend;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
+use Mockery\Generator\StringManipulation\Pass\Pass;
 use Tests\ApiTestCase;
 use App\Providers\AuthServiceProvider;
 
@@ -16,7 +18,7 @@ class IcsTest extends ApiTestCase
 
     public function testCreateGetAndRevokeIcsToken(): void {
         $user1      = User::factory()->create();
-        $user1token = $user1->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user1, ['*']);
 
         $this->assertDatabaseMissing('ics_tokens', [
             'user_id' => $user1->id,
@@ -26,7 +28,6 @@ class IcsTest extends ApiTestCase
         $response = $this->postJson(
             uri:     '/api/v1/settings/ics-token',
             data:    ['name' => 'icsname',],
-            headers: ['Authorization' => 'Bearer ' . $user1token]
         );
         $response->assertCreated();
 
@@ -37,7 +38,6 @@ class IcsTest extends ApiTestCase
 
         $response = $this->get(
             uri:     '/api/v1/settings/ics-tokens',
-            headers: ['Authorization' => 'Bearer ' . $user1token]
         );
         $response->assertOk();
         $response->assertJsonStructure([
@@ -57,7 +57,6 @@ class IcsTest extends ApiTestCase
         $response = $this->deleteJson(
             uri:     '/api/v1/settings/ics-token',
             data:    ['tokenId' => $tokenId],
-            headers: ['Authorization' => 'Bearer ' . $user1token]
         );
         $response->assertStatus(204);
 
@@ -69,7 +68,6 @@ class IcsTest extends ApiTestCase
         $response = $this->deleteJson(
             uri:     '/api/v1/settings/ics-token',
             data:    ['tokenId' => $tokenId],
-            headers: ['Authorization' => 'Bearer ' . $user1token]
         );
         $response->assertStatus(404);
     }

@@ -3,6 +3,7 @@
 namespace Tests\Feature\APIv1;
 
 use App\Enum\StatusVisibility;
+use Laravel\Passport\Passport;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Backend\User\FollowController as FollowBackend;
 use App\Http\Controllers\Backend\UserController as BackendUserController;
@@ -19,6 +20,7 @@ use App\Notifications\UserJoinedConnection;
 use App\Providers\AuthServiceProvider;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mockery\Generator\StringManipulation\Pass\Pass;
 use Tests\ApiTestCase;
 
 class NotificationsTest extends ApiTestCase
@@ -29,7 +31,7 @@ class NotificationsTest extends ApiTestCase
         //create users
         $alice      = User::factory()->create();
         $bob        = User::factory()->create();
-        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($alice, ['*']);
 
         //check if there are no notifications in the database
         $this->assertDatabaseCount('notifications', 0);
@@ -41,10 +43,7 @@ class NotificationsTest extends ApiTestCase
         $this->assertDatabaseCount('notifications', 1);
 
         //check if api returns one unread notification
-        $response = $this->get(
-            uri:     '/api/v1/notifications/unread/count',
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->get(uri: '/api/v1/notifications/unread/count');
         $response->assertOk();
         $response->assertJsonFragment(['data' => 1]);
     }
@@ -53,7 +52,7 @@ class NotificationsTest extends ApiTestCase
         //create users
         $alice      = User::factory()->create();
         $bob        = User::factory()->create();
-        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($alice, ['*']);
 
         //check if there are no notifications in the database
         $this->assertDatabaseCount('notifications', 0);
@@ -66,17 +65,11 @@ class NotificationsTest extends ApiTestCase
         $this->assertNull($notification->read_at);
 
         //try to mark non-existing notification as read -> should fail
-        $response = $this->put(
-            uri:     "/api/v1/notifications/read/non-existing-id",
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->put("/api/v1/notifications/read/non-existing-id");
         $response->assertNotFound();
 
         //mark notification as read
-        $response = $this->put(
-            uri:     "/api/v1/notifications/read/{$notification->id}",
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->put("/api/v1/notifications/read/{$notification->id}");
         $response->assertOk();
 
         //check if notification is read
@@ -84,17 +77,11 @@ class NotificationsTest extends ApiTestCase
         $this->assertNotNull($notification->read_at);
 
         //try to mark non-existing notification as unread -> should fail
-        $response = $this->put(
-            uri:     "/api/v1/notifications/unread/non-existing-id",
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->put("/api/v1/notifications/unread/non-existing-id");
         $response->assertNotFound();
 
         //mark notification as unread
-        $response = $this->put(
-            uri:     "/api/v1/notifications/unread/{$notification->id}",
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->put("/api/v1/notifications/unread/{$notification->id}");
         $response->assertOk();
 
         //check if notification is unread
@@ -106,7 +93,8 @@ class NotificationsTest extends ApiTestCase
         //create users
         $alice      = User::factory()->create();
         $bob        = User::factory()->create();
-        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+
+        Passport::actingAs($alice, ['*']);
 
         //check if there are no notifications in the database
         $this->assertDatabaseCount('notifications', 0);
@@ -122,10 +110,7 @@ class NotificationsTest extends ApiTestCase
         $this->assertDatabaseHas('notifications', ['read_at' => null]);
 
         //mark all notifications as read
-        $response = $this->put(
-            uri:     "/api/v1/notifications/read/all",
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->put(uri: "/api/v1/notifications/read/all");
         $response->assertOk();
 
         //check if all notifications are read
@@ -136,7 +121,7 @@ class NotificationsTest extends ApiTestCase
         //Create users
         $alice    = User::factory()->create();
         $bob      = User::factory()->create();
-        $bobToken = $bob->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($bob, ['*']);
 
         //Check if there are no notifications
         $this->assertDatabaseCount('notifications', 0);
@@ -149,10 +134,7 @@ class NotificationsTest extends ApiTestCase
         $this->assertDatabaseCount('notifications', 1);
 
         //bob should have one notification
-        $response = $this->get(
-            uri:     '/api/v1/notifications',
-            headers: ['Authorization' => 'Bearer ' . $bobToken]
-        );
+        $response = $this->get('/api/v1/notifications');
         $response->assertOk();
         $response->assertJsonCount(1, 'data'); // one notification
         $response->assertJsonFragment([
@@ -265,7 +247,7 @@ class NotificationsTest extends ApiTestCase
         //create alice and bob
         $alice    = User::factory()->create();
         $bob      = User::factory()->create();
-        $bobToken = $bob->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($bob, ['*']);
 
         //alice follows bob
         UserBackend::createFollow($alice, $bob);
@@ -275,10 +257,7 @@ class NotificationsTest extends ApiTestCase
         $this->assertNull($notification->read_at);
 
         //mark notification as read via api
-        $response = $this->put(
-            uri:     "/api/v1/notifications/read/{$notification->id}",
-            headers: ['Authorization' => 'Bearer ' . $bobToken],
-        );
+        $response = $this->put("/api/v1/notifications/read/{$notification->id}");
         $response->assertOk();
 
         //check if notification is marked as read
@@ -307,7 +286,7 @@ class NotificationsTest extends ApiTestCase
     public function testAcceptingEventSuggestionSpawnANotification(): void {
         //Create users
         $alice      = User::factory(['role' => 10])->create(); //additionally make alice an admin, so she can self-accept
-        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($alice, ['*']);
 
         //suggest an event
         $eventSuggestion = EventSuggestion::factory(['user_id' => $alice->id])->create();
@@ -334,10 +313,7 @@ class NotificationsTest extends ApiTestCase
         $event = Event::first();
 
         //let alice request her notifications
-        $response = $this->get(
-            uri:     '/api/v1/notifications',
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->get('/api/v1/notifications');
         $response->assertOk();
         $response->assertJsonCount(1, 'data'); // one notification
         $response->assertJsonFragment([
@@ -363,7 +339,7 @@ class NotificationsTest extends ApiTestCase
     public function testDenyingEventSuggestionSpawnANotification(): void {
         //Create users
         $alice      = User::factory(['role' => 10])->create(); //additionally make alice an admin, so she can self-accept
-        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($alice, ['*']);
 
         //suggest an event
         $eventSuggestion = EventSuggestion::factory(['user_id' => $alice->id])->create();
@@ -378,10 +354,7 @@ class NotificationsTest extends ApiTestCase
         $response->assertOk();
 
         //let alice request her notifications
-        $response = $this->get(
-            uri:     '/api/v1/notifications',
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->get('/api/v1/notifications');
         $response->assertOk();
         $response->assertJsonCount(1, 'data'); // one notification
         $response->assertJsonFragment([

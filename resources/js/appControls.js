@@ -1,28 +1,31 @@
+import _ from "lodash";
+import { Modal } from "bootstrap";
+
 $(document).on("click", ".join", function (event) {
     event.preventDefault();
 
     const source = getDataset(event);
-    $("#checkinModal").modal("show", function (event) {
-        const modal = $(this);
-        modal
-            .find(".modal-title")
-            .html(
-                source.trwlLinename +
-                ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
-                source.trwlStopName
-            );
-        modal.find("#input-tripID").val(source.trwlTripId);
-        modal.find("#input-destination").val(source.trwlDestination);
-        modal.find("#input-arrival").val(source.trwlArrival);
-        modal.find("#input-start").val(source.trwlStart);
-        modal.find("#input-departure").val(source.trwlDeparture);
-        // case for small number of events
-        modal.find("#event_check").each(function () {
-            $(this).prop("checked", $(this).val() === source.trwlEventId);
-        });
-        // case for large number of events
-        modal.find("#event-dropdown").val(source.trwlEventId);
+    const modalWrapper = $("#checkinModal");
+    const modal = new Modal(modalWrapper);
+    modalWrapper
+        .find(".modal-title")
+        .html(
+            source.trwlLinename +
+            ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
+            source.trwlStopName
+        );
+    modalWrapper.find("#input-tripID").val(source.trwlTripId);
+    modalWrapper.find("#input-destination").val(source.trwlDestination);
+    modalWrapper.find("#input-arrival").val(source.trwlArrival);
+    modalWrapper.find("#input-start").val(source.trwlStart);
+    modalWrapper.find("#input-departure").val(source.trwlDeparture);
+    // case for small number of events
+    modalWrapper.find("#event_check").each(function () {
+        $(this).prop("checked", $(this).val() === source.trwlEventId);
     });
+    // case for large number of events
+    modalWrapper.find("#event-dropdown").val(source.trwlEventId);
+    modal.show();
 });
 
 document.querySelectorAll('.status .like').forEach((likeButton) => {
@@ -39,14 +42,17 @@ document.querySelectorAll('.status .like').forEach((likeButton) => {
         event.preventDefault();
         event.stopPropagation();
 
-        if (pointerEvent.target.className === "like far fa-star") {
+        if (pointerEvent.target.className.includes("like far fa-star")) {
             Status.like(statusId)
                 .then(response => {
                     if (!response.ok) {
                         return;
                     }
 
-                    pointerEvent.target.className = "like fas fa-star animated bounceIn";
+                    pointerEvent.target.classList.remove('far');
+                    pointerEvent.target.classList.add('fas');
+                    pointerEvent.target.classList.add('animated');
+                    pointerEvent.target.classList.add('bounceIn');
                     response.json().then((data) => {
                         let likeCount           = data.data.count;
                         spanLikeCount.innerText = likeCount;
@@ -65,7 +71,8 @@ document.querySelectorAll('.status .like').forEach((likeButton) => {
                 if (!response.ok) {
                     return;
                 }
-                pointerEvent.target.className = "like far fa-star";
+                const peaches = pointerEvent.target.className.includes('peach');
+                pointerEvent.target.className = `like far fa-star ${peaches ? 'peach' : ''}`;
 
                 response.json().then((data) => {
                     let likeCount           = data.data.count;
@@ -145,7 +152,7 @@ $(document).on("click", ".disconnect", function (event) {
             location.reload();
         },
         error: function (request) {
-            bootstrap_alert.danger(request.responseText);
+            window.bootstrap_alert.danger(request.responseText);
         }
     });
 });

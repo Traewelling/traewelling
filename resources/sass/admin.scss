@@ -12,16 +12,12 @@ $light: #fff;
 $dark: #000;
 
 // Bootstrap
-@import "~bootstrap";
+@import "bootstrap";
 
-// Fonts
-@import "~@fortawesome/fontawesome-free/scss/brands";
-@import "~@fortawesome/fontawesome-free/scss/regular";
-@import "~@fortawesome/fontawesome-free/scss/solid";
-@import "~@fortawesome/fontawesome-free/scss/fontawesome";
+@import "./font-awesome";
 
-@import "~leaflet";
-@import "~awesomplete/awesomplete.css";
+@import "leaflet";
+@import "awesomplete/awesomplete.css";
 
 #navbar-top {
     background-color: $primary;

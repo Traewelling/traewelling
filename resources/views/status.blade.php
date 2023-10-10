@@ -27,7 +27,12 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7">
+            <div class="col-md-8 col-lg-7" >
+                @if(auth()->user()->experimental ?? false)
+                    <div id="checkin-success-helper">
+                        <checkin-success-helper></checkin-success-helper>
+                    </div>
+                @endif
                 <h2 class="fs-5">{{ userTime($status->trainCheckin->departure,__('dateformat.with-weekday')) }}</h2>
                 @include('includes.status')
 

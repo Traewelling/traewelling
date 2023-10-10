@@ -709,5 +709,8 @@
     "access-token-remove-at": "Je kunt de toegangssleutel te allen tĳde intrekken in de sectie ‘Api-toegangssleutels’ in de instellingen.",
     "edit-app": "App bewerken",
     "access-token-is-private": "Behandel je toegangssleutel als een wachtwoord en deel hem niet met anderen.",
-    "refresh": "Herladen"
+    "refresh": "Herladen",
+    "your-access-token.ask": "Wij van Träwelling vragen je nooit om je toegangssleutel. Als je die vraag krijgt, dan is het hoogstwaarschijnlijk een scam.",
+    "settings.experimental": "Experimentele functies",
+    "settings.experimental.description": "Let op: deze experimentele functies zijn nog niet helemaal klaar voor gebruik en kunnen bugs bevatten. Niet aanbevolen voor dagelijks gebruik."
 }

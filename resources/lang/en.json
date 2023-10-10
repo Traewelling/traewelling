@@ -362,6 +362,8 @@
     "settings.prevent-indexing": "Prevent search engine indexing",
     "settings.allow": "Allow",
     "settings.prevent": "Prevent",
+    "settings.experimental": "Experimental features",
+    "settings.experimental.description": "The experimental features are not yet ready and may contain bugs. This is not recommended for daily use.",
     "settings.privacy.update.success": "Your privacy settings have been updated.",
     "settings.search-engines.description": "We set a noindex tag on your profile to tell the search engines that your profile should not be indexed. We have no influence on whether the search engine takes this wish into account.",
     "settings.last-accessed": "Last accessed",
@@ -707,6 +709,7 @@
     "access-token-remove-at": "You can remove the AccessToken at any time in the settings under 'API Tokens'.",
     "your-access-token": "Your AccessToken",
     "your-access-token-description": "You can generate an AccessToken to access your own account.",
+    "your-access-token.ask": "We at Träwelling will never ask you for your AccessToken. If you are asked for it, it is probably a scam.",
     "access-token-is-private": "Treat your AccessToken like a password. Never give it to third parties.",
     "refresh": "Refresh"
 }

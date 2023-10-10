@@ -17,10 +17,14 @@
              "{{json_encode(StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
     @endif
 >
-    @if (isset($polyline) && $polyline !== '[]' && Route::current()->uri == "status/{id}")
+    @if (Route::current()->uri == "status/{id}")
         <div class="card-img-top">
-            <div id="map-{{ $status->id }}" class="map statusMap embed-responsive embed-responsive-16by9"
-                 data-polygon="{{ $polyline }}"></div>
+            <div id="activeJourneys" class="map statusMap embed-responsive embed-responsive-16by9">
+                <active-journey-map
+                    map-provider="{{ Auth::user()->mapprovider ?? "default" }}"
+                    :status-id="{{ $status->id }}"
+                />
+            </div>
         </div>
     @endif
 
@@ -183,7 +187,7 @@
             @can('like', $status)
                 <li class="like-text list-inline-item me-0">
                     <a href="{{ auth()->user() ? '#' : route('login') }}"
-                       class="like {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}}"
+                       class="like {{ auth()->user() && $status->likes->where('user_id', auth()->user()->id)->first() !== null ? 'fas fa-star' : 'far fa-star'}} {{ $status->user->id === 18574 ? 'peach' : '' }}"
                        data-trwl-status-id="{{ $status->id }}"></a>
                 </li>
                 <li class="like-text list-inline-item">

@@ -21,5 +21,7 @@
     </div>
     <div class="card-footer">
         <small>{{__('access-token-is-private')}}</small>
+        <br />
+        <small class="text-danger">{{__('your-access-token.ask')}}</small>
     </div>
 </div>

@@ -163,9 +163,9 @@ abstract class HafasController extends Controller
         TravelType   $type = null,
         bool         $skipTimeShift = false
     ) {
-        $client = self::getHttpClient();
+        $client   = self::getHttpClient();
         $time   = $skipTimeShift ? $when : (clone $when)->shiftTimezone("Europe/Berlin");
-        $query  = [
+        $query    = [
             'when'                       => $time->toIso8601String(),
             'duration'                   => $duration,
             HTT::NATIONAL_EXPRESS->value => self::checkTravelType($type, TravelType::EXPRESS),
@@ -197,6 +197,7 @@ abstract class HafasController extends Controller
      * @param Carbon          $when
      * @param int             $duration
      * @param TravelType|null $type
+     * @param bool            $localtime
      *
      * @return Collection
      * @throws HafasException
@@ -205,35 +206,45 @@ abstract class HafasController extends Controller
         TrainStation $station,
         Carbon       $when,
         int          $duration = 15,
-        TravelType   $type = null
+        TravelType   $type = null,
+        bool         $localtime = false
     ): Collection {
         try {
-            $requestTime = is_null($station->time_offset) ? $when : (clone $when)->subHours($station->time_offset);
-            $data        = self::fetchDepartures($station, $requestTime, $duration, $type, !$station->shift_time);
-            foreach ($data as $departure) {
-                if ($departure?->when) {
-                    $time     = Carbon::parse($departure->when);
-                    $timezone = $time->tz->toOffsetName();
+            $requestTime = is_null($station->time_offset) || $localtime
+                ? $when : (clone $when)->subHours($station->time_offset);
+            $data        = self::fetchDepartures(
+                $station,
+                $requestTime,
+                $duration,
+                $type,
+                !$station->shift_time && !$localtime
+            );
+            if (!$localtime) {
+                foreach ($data as $departure) {
+                    if ($departure?->when) {
+                        $time     = Carbon::parse($departure->when);
+                        $timezone = $time->tz->toOffsetName();
 
-                    // check for an offset between results
-                    $offset = $time->tz('UTC')->hour - $when->tz('UTC')->hour;
-                    if ($offset !== 0) {
-                        // Check if the timezone for this station is equal in its offset to Europe/Berlin.
-                        // If so, fetch again **without** adjusting the timezone
-                        if ($timezone === CarbonTimeZone::create("Europe/Berlin")->toOffsetName()) {
-                            $data = self::fetchDepartures($station, $when, $duration, $type, true);
+                        // check for an offset between results
+                        $offset = $time->tz('UTC')->hour - $when->tz('UTC')->hour;
+                        if ($offset !== 0) {
+                            // Check if the timezone for this station is equal in its offset to Europe/Berlin.
+                            // If so, fetch again **without** adjusting the timezone
+                            if ($timezone === CarbonTimeZone::create("Europe/Berlin")->toOffsetName()) {
+                                $data = self::fetchDepartures($station, $when, $duration, $type, true);
 
-                            $station->shift_time = false;
+                                $station->shift_time = false;
+                                $station->save();
+                                break;
+                            }
+                            // if the timezone is not equal to Europe/Berlin, fetch the offset
+                            $data = self::fetchDepartures($station, (clone $when)->subHours($offset), $duration, $type);
+
+                            $station->time_offset = $offset;
                             $station->save();
-                            break;
                         }
-                        // if the timezone is not equal to Europe/Berlin, fetch the offset
-                        $data = self::fetchDepartures($station, (clone $when)->subHours($offset), $duration, $type);
-
-                        $station->time_offset = $offset;
-                        $station->save();
+                        break;
                     }
-                    break;
                 }
             }
 
@@ -399,7 +410,6 @@ abstract class HafasController extends Controller
                                                    'operator_id'    => $operator?->id,
                                                    'origin'         => $origin->ibnr,
                                                    'destination'    => $destination->ibnr,
-                                                   'stopoversOLD'      => json_encode($tripJson->stopovers),
                                                    'polyline_id'    => $polyline->id,
                                                    'departure'      => $tripJson->plannedDeparture,
                                                    'arrival'        => $tripJson->plannedArrival,
@@ -486,9 +496,9 @@ abstract class HafasController extends Controller
                 'trip_id'           => $rawHafas->id,
                 'train_station_id'  => $stop->id,
                 'arrival_planned'   => isset($stopover->plannedArrival) ? $arrivalPlanned : $departurePlanned,
-                'arrival_real'      => $arrivalReal,
+                'arrival_real'      => isset($stopover->arrival) ? $arrivalReal : null,
                 'departure_planned' => isset($stopover->plannedDeparture) ? $departurePlanned : $arrivalPlanned,
-                'departure_real'    => $departureReal,
+                'departure_real'    => isset($stopover->departure) ? $departureReal : null,
             ];
         }
 

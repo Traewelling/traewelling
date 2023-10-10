@@ -143,7 +143,7 @@
     "menu.abort": "Annuler",
     "about.name": "Le nom est une allusion au célèbre « <i>Senk ju for träwelling wis Deutsche Bahn</i> » ( Merci de voyager avec la Deutsche Bahn) que vous pouvez entendre dans presque tous les trains grandes lignes de la Deutsche Bahn.",
     "settings.notconnected": "Pas connecté(e)",
-    "menu.developed": "Codé avec <i class=\"fas fa-heart fa-sm\" style=\"color: Tomato;\"> dans l’Union européenne. <a href=\"https://github.com/traewelling/traewelling\">Code source</a> publié sous la licence <a href=\"https://www.gnu.org/licenses/agpl-3.0.html\">AGPLv3</a>.",
+    "menu.developed": "Codé avec <i class=\"fas fa-heart fa-sm\" style=\"color: Tomato;\"></i> dans l’Union européenne. <a href=\"https://github.com/traewelling/traewelling\">Code source</a> publié sous la licence <a href=\"https://www.gnu.org/licenses/agpl-3.0.html\">AGPLv3</a>.",
     "user.email-verify": "Confirmer l’adresse e-mail",
     "controller.social.delete-never-connected": "Tu n’as pas de fournisseur de connexion sociale.",
     "menu.register": "S’inscrire",
@@ -682,8 +682,8 @@
     "active-journeys": "voyage actif|voyages actifs",
     "notifications.readAll.success": "Toutes les notifications ont été marquées comme lues.",
     "notifications.socialNotShared.mastodon.0": "Une erreur inconnue s'est produite lorsque nous avons essayé d'effectuer le transfert.",
-    "page-only-available-in-language": "Cette page n'est disponible que dans la :language .",
-    "language.en": "Englais",
+    "page-only-available-in-language": "Cette page n'est disponible qu'en :language .",
+    "language.en": "Anglais",
     "changelog": "Journal des modifications",
     "time-is-planned": "Durée prévue",
     "time-is-real": "Temps réel (à partir de l'api des horaires)",
@@ -709,5 +709,8 @@
     "edit-app": "Editer une application",
     "generate-token": "Générer un jeton d'accès",
     "access-token-remove-at": "Vous pouvez supprimer un jeton d'accès à tout moment dans les paramètres sous \"Jeton API\".",
-    "your-access-token-description": "Vous pouvez générer un jeton d'accès pour accéder à votre propre compte."
+    "your-access-token-description": "Vous pouvez générer un jeton d'accès pour accéder à votre propre compte.",
+    "settings.experimental": "Fonctionnalité expérimentale",
+    "your-access-token.ask": "Chez Träwelling, nous ne vous demanderons jamais votre jeton d'accès. Si on vous le demande, il s'agit probablement d'une usurpation d'identitée.",
+    "settings.experimental.description": "Les fonctionnalités expérimentales ne sont pas encore prêtes et peuvent contenir des bugs. Elles ne sont pas recommandées pour une utilisation quotidienne."
 }

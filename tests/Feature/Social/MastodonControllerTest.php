@@ -39,7 +39,7 @@ class MastodonControllerTest extends TestCase
         $this->assertFalse($validated->fails());
     }
 
-    public function providerTestFormatDomain(): array {
+    public static function providerTestFormatDomain(): array {
         return [
             ['https://uelfte.club', 'https://uelfte.club'],
             ['http://uelfte.club', 'https://uelfte.club'],
@@ -59,9 +59,9 @@ class MastodonControllerTest extends TestCase
          * - end.
          */
 
-        Mastodon::shouldReceive('get')
+        Mastodon::shouldReceive('call')
                 ->once()
-                ->with(self::OP_CONTEXT_URL)
+                ->with("GET", self::OP_CONTEXT_URL, MastodonController::getRequestOptions())
                 ->andReturn(["descendants" => []]);
 
         $this->assertEquals(self::TOOTID_OP, MastodonController::getEndOfChain($user, self::TOOTID_OP));
@@ -75,9 +75,9 @@ class MastodonControllerTest extends TestCase
          * - toodid-answer from userid-answer
          */
 
-        Mastodon::shouldReceive('get')
+        Mastodon::shouldReceive('call')
                 ->once()
-                ->with(self::OP_CONTEXT_URL)
+                ->with("GET", self::OP_CONTEXT_URL, MastodonController::getRequestOptions())
                 ->andReturn(
                     [
                         "descendants" => [
@@ -105,9 +105,9 @@ class MastodonControllerTest extends TestCase
          *   - tootid-answer2 from userid-op
          */
 
-        Mastodon::shouldReceive('get')
+        Mastodon::shouldReceive('call')
                 ->once()
-                ->with(self::OP_CONTEXT_URL)
+                ->with("GET", self::OP_CONTEXT_URL, MastodonController::getRequestOptions())
                 ->andReturn(
                     [
                         "descendants" => [
@@ -142,9 +142,9 @@ class MastodonControllerTest extends TestCase
          * - tootid-answer from userid-op <== THIS ONE
          */
 
-        Mastodon::shouldReceive('get')
+        Mastodon::shouldReceive('call')
                 ->once()
-                ->with(self::OP_CONTEXT_URL)
+                ->with("GET", self::OP_CONTEXT_URL, MastodonController::getRequestOptions())
                 ->andReturn(
                     [
                         "descendants" => [
@@ -171,9 +171,9 @@ class MastodonControllerTest extends TestCase
          * - tootid-answer from userid-op with mention of userid-bob <== THIS ONE
          */
 
-        Mastodon::shouldReceive('get')
+        Mastodon::shouldReceive('call')
                 ->once()
-                ->with(self::OP_CONTEXT_URL)
+                ->with("GET", self::OP_CONTEXT_URL, MastodonController::getRequestOptions())
                 ->andReturn(
                     [
                         "descendants" => [
@@ -200,9 +200,9 @@ class MastodonControllerTest extends TestCase
          * - tootid-answer from userid-op with mention of userid-bob which is a DM
          */
 
-        Mastodon::shouldReceive('get')
+        Mastodon::shouldReceive('call')
                 ->once()
-                ->with(self::OP_CONTEXT_URL)
+                ->with("GET", self::OP_CONTEXT_URL, MastodonController::getRequestOptions())
                 ->andReturn(
                     [
                         "descendants" => [
@@ -230,9 +230,9 @@ class MastodonControllerTest extends TestCase
          *   - tootid-answer2 from userid-op <== THIS ONE
          */
 
-        Mastodon::shouldReceive('get')
+        Mastodon::shouldReceive('call')
                 ->once()
-                ->with(self::OP_CONTEXT_URL)
+                ->with("GET", self::OP_CONTEXT_URL, MastodonController::getRequestOptions())
                 ->andReturn(
                     [
                         "descendants" => [
@@ -271,9 +271,9 @@ class MastodonControllerTest extends TestCase
          *   - tootid-answer3 from userid-answer
          */
 
-        Mastodon::shouldReceive('get')
+        Mastodon::shouldReceive('call')
                 ->once()
-                ->with(self::OP_CONTEXT_URL)
+                ->with("GET", self::OP_CONTEXT_URL, MastodonController::getRequestOptions())
                 ->andReturn(
                     [
                         "descendants" => [
@@ -319,9 +319,9 @@ class MastodonControllerTest extends TestCase
          * Original post is deleted.
          */
 
-        Mastodon::shouldReceive('get')
+        Mastodon::shouldReceive('call')
                 ->once()
-                ->with(self::OP_CONTEXT_URL)
+                ->with("GET", self::OP_CONTEXT_URL, MastodonController::getRequestOptions())
                 ->andThrowExceptions([new ClientException(
                                           '{"error":"Record not found"}',
                                           new Request('GET', self::OP_CONTEXT_URL),
@@ -340,9 +340,9 @@ class MastodonControllerTest extends TestCase
          * Original post is deleted.
          */
 
-        Mastodon::shouldReceive('get')
+        Mastodon::shouldReceive('call')
                 ->once()
-                ->with(self::OP_CONTEXT_URL)
+                ->with("GET", self::OP_CONTEXT_URL, MastodonController::getRequestOptions())
                 ->andThrowExceptions([new ConnectException("server not available",
                                                            new Request('GET', self::OP_CONTEXT_URL)
                                       )]);

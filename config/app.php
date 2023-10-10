@@ -71,6 +71,9 @@ return [
 
     'timezone' => 'UTC',
 
+    // This timezone will be used for displaying time in the frontend, when not logged in.
+    'display_timezone' => env('DISPLAY_TIMEZONE', 'Europe/Berlin'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
@@ -191,6 +194,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         Laravel\Passport\PassportServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\PrometheusServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 

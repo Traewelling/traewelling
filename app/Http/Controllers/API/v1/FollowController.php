@@ -109,7 +109,7 @@ class FollowController extends Controller
                 return $this->sendError(['message' => __('controller.user.follow-404')], 409);
             }
             $userToUnfollow->fresh();
-            return $this->sendResponse();
+            return $this->sendResponse(new UserResource($userToUnfollow));
         } catch (ModelNotFoundException) {
             return $this->sendError(['message' => 'User not found'], 404);
         } catch (InvalidArgumentException) {

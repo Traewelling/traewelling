@@ -9,18 +9,15 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ 18.x, 19.x ]
+        node-version: [ 18.x, 20.x ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Run production build
-        run: npm run production
-
-        env:
-          CI: true
+        run: npm run build
