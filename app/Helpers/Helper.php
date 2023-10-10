@@ -1,6 +1,9 @@
 <?php
 
+use App\Models\User;
+use Carbon\CarbonTimeZone;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * @see https://stackoverflow.com/a/437642
@@ -57,4 +60,19 @@ function userTime(null|Carbon|\Carbon\Carbon|string $time = null, ?string $forma
         return $time->tz($timezone)->isoFormat($format);
     }
     return $time->tz($timezone)->format($format);
+}
+
+function hasStationBoardTimezoneOffsetToUser(Collection $departures, User $user): bool {
+    foreach ($departures as $departure) {
+        if (!empty($departure?->cancelled) && $departure->cancelled) {
+            continue;
+        }
+        $departureObject = \Carbon\Carbon::parse($departure->when);
+        $userObject      = CarbonTimeZone::create($user->timezone);
+        $referenceObject = \Carbon\Carbon::parse($departureObject->format('Y-m-d'));
+
+        return $departureObject->tz->toOffsetName($referenceObject) !== $userObject->toOffsetName($referenceObject);
+    }
+
+    return false;
 }
