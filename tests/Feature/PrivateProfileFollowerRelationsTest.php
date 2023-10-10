@@ -9,6 +9,7 @@ use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
 
 class PrivateProfileFollowerRelationsTest extends ApiTestCase
@@ -46,9 +47,7 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
     public function testAcceptingAFollowRequestShouldSpawnANotificationForInitiator(): void {
         //create a user with a private profile
         $alice      = User::factory()->create();
-        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
         $bob        = User::factory(['private_profile' => true])->create();
-        $bobToken   = $bob->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
 
         //check that there are no notifications
         $this->assertDatabaseCount('notifications', 0);
@@ -56,11 +55,9 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
         //alice requests to follow bob
         FollowController::createOrRequestFollow($alice, $bob);
 
+        Passport::actingAs($bob, ['*']);
         //bob should have a notification
-        $response = $this->get(
-            uri:     '/api/v1/notifications',
-            headers: ['Authorization' => 'Bearer ' . $bobToken]
-        );
+        $response = $this->get('/api/v1/notifications');
         $response->assertOk();
         $response->assertJsonCount(1, 'data'); // one notification
         $response->assertJsonFragment(['type' => 'FollowRequestIssued']);
@@ -68,11 +65,9 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
         //bob accepts the request
         FollowController::approveFollower($bob->id, $alice->id);
 
+        Passport::actingAs($alice, ['*']);
         //alice should have a notification
-        $response = $this->get(
-            uri:     '/api/v1/notifications',
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->get('/api/v1/notifications');
         $response->assertOk();
         $response->assertJsonCount(1, 'data'); // one notification
     }

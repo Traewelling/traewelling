@@ -8,6 +8,7 @@ use App\Models\StatusTag;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
 
 class StatusTagTest extends ApiTestCase
@@ -17,30 +18,24 @@ class StatusTagTest extends ApiTestCase
 
     public function testViewNonExistingTagsOnOwnStatus(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
         $status    = Status::factory(['user_id' => $user->id])->create();
 
-        $response = $this->get(
-            uri:     '/api/v1/status/' . $status->id . '/tags',
-            headers: ['Authorization' => 'Bearer ' . $userToken]
-        );
+        $response = $this->get('/api/v1/status/' . $status->id . '/tags');
         $response->assertJsonStructure(['data' => []]);
         $response->assertJsonCount(0, 'data');
     }
 
     public function testViewTagsOnOwnStatusWithDifferentVisibilitiesAndDeleteOne(): void {
         $user        = User::factory()->create();
-        $userToken   = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
         $status      = Status::factory(['user_id' => $user->id])->create();
         $tagToDelete = StatusTag::factory(['status_id' => $status->id, 'visibility' => StatusVisibility::PUBLIC->value])->create();
         StatusTag::factory(['status_id' => $status->id, 'visibility' => StatusVisibility::FOLLOWERS->value])->create();
         StatusTag::factory(['status_id' => $status->id, 'visibility' => StatusVisibility::PRIVATE->value])->create();
         StatusTag::factory(['status_id' => $status->id, 'visibility' => StatusVisibility::AUTHENTICATED->value])->create();
 
-        $response = $this->get(
-            uri:     '/api/v1/status/' . $status->id . '/tags',
-            headers: ['Authorization' => 'Bearer ' . $userToken]
-        );
+        $response = $this->get('/api/v1/status/' . $status->id . '/tags');
         $response->assertJsonStructure([
                                            'data' => [
                                                '*' => [
@@ -55,10 +50,7 @@ class StatusTagTest extends ApiTestCase
         $this->assertDatabaseHas('status_tags', ['id' => $tagToDelete->id]);
 
         //Delete StatusTag
-        $response = $this->delete(
-            uri:     '/api/v1/status/' . $status->id . '/tags/' . $tagToDelete->key,
-            headers: ['Authorization' => 'Bearer ' . $userToken],
-        );
+        $response = $this->delete('/api/v1/status/' . $status->id . '/tags/' . $tagToDelete->key);
         $response->assertOk();
         $response->assertJson(['status' => 'success']);
 
@@ -67,7 +59,7 @@ class StatusTagTest extends ApiTestCase
 
     public function testCreateAndUpdateTag(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
         $status    = Status::factory(['user_id' => $user->id])->create();
 
         //Create StatusTag
@@ -78,7 +70,6 @@ class StatusTagTest extends ApiTestCase
                          'value'      => 'test',
                          'visibility' => StatusVisibility::PUBLIC->value,
                      ],
-            headers: ['Authorization' => 'Bearer ' . $userToken]
         );
         $response->assertOk();
         $response->assertJson([
@@ -98,7 +89,6 @@ class StatusTagTest extends ApiTestCase
                          'key'   => 'test2',
                          'value' => 'test2',
                      ],
-            headers: ['Authorization' => 'Bearer ' . $userToken]
         );
         $response->assertOk();
         $response->assertJson([

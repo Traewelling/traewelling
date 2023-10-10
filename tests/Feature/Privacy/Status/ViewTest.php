@@ -11,6 +11,7 @@ use App\Models\TrainCheckin;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
 
 class ViewTest extends ApiTestCase
@@ -154,7 +155,7 @@ class ViewTest extends ApiTestCase
     public function testUnlistedStatusPolicyIsWorkingCorrectly(): void {
         //create alice and bob
         $alice      = User::factory()->create();
-        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($alice, ['*']);
         $bob        = User::factory()->create();
 
         //create an unlisted status for bob
@@ -162,10 +163,7 @@ class ViewTest extends ApiTestCase
         $trainCheckin->status->update(['visibility' => StatusVisibility::UNLISTED]);
 
         //alice should not see the status on her global dashboard
-        $response = $this->get(
-            uri:     "/api/v1/dashboard/global",
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->get("/api/v1/dashboard/global");
         $response->assertOk();
         $response->assertJsonCount(0, 'data');
 
@@ -173,34 +171,22 @@ class ViewTest extends ApiTestCase
         FollowBackend::createOrRequestFollow($alice, $bob);
 
         //alice should not see the status on her (followers) dashboard
-        $response = $this->get(
-            uri:     "/api/v1/dashboard",
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->get("/api/v1/dashboard");
         $response->assertOk();
         $response->assertJsonCount(0, 'data');
 
         //alice should not see the status on active journeys
-        $response = $this->get(
-            uri:     '/api/v1/statuses',
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->get('/api/v1/statuses');
         $response->assertOk();
         $response->assertJsonCount(0, 'data');
 
         //alice should see the status on bobs profile
-        $response = $this->get(
-            uri:     "/api/v1/user/{$bob->username}/statuses",
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->get("/api/v1/user/{$bob->username}/statuses");
         $response->assertOk();
         $response->assertJsonCount(1, 'data');
 
         //alice should see the status if queried directly
-        $response = $this->get(
-            uri:     "/api/v1/status/{$trainCheckin->status->id}",
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->get("/api/v1/status/{$trainCheckin->status->id}");
         $response->assertOk();
         $response->assertJsonCount(1);
     }

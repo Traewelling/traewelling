@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
+use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
 
 class ExportTripsTest extends ApiTestCase
@@ -16,7 +17,7 @@ class ExportTripsTest extends ApiTestCase
     public function test_pdf_export(): void {
         $user = User::factory()->create();
         TrainCheckin::factory(['user_id' => $user->id])->count(2)->create();
-        $token = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
 
         $response = $this->postJson(
             uri:     '/api/v1/statistics/export',
@@ -25,7 +26,6 @@ class ExportTripsTest extends ApiTestCase
                          'until'    => Date::today()->addWeek(),
                          'filetype' => 'pdf'
                      ],
-            headers: ['Authorization' => 'Bearer ' . $token]
         );
         $response->assertSuccessful();
         $response->assertHeader('Content-Type', 'application/pdf');
@@ -34,7 +34,7 @@ class ExportTripsTest extends ApiTestCase
     public function test_json_export(): void {
         $user = User::factory()->create();
         TrainCheckin::factory(['user_id' => $user->id])->count(2)->create();
-        $token = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
 
         $response = $this->postJson(
             uri:     '/api/v1/statistics/export',
@@ -43,7 +43,6 @@ class ExportTripsTest extends ApiTestCase
                          'until'    => Date::today()->addWeek(),
                          'filetype' => 'json'
                      ],
-            headers: ['Authorization' => 'Bearer ' . $token]
         );
         $response->assertSuccessful();
         $response->assertHeader('Content-Type', 'text/json; charset=UTF-8');
@@ -52,7 +51,7 @@ class ExportTripsTest extends ApiTestCase
     public function test_csv_export(): void {
         $user = User::factory()->create();
         TrainCheckin::factory(['user_id' => $user->id])->count(2)->create();
-        $token = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
 
         $response = $this->postJson(
             uri:     '/api/v1/statistics/export',
@@ -61,7 +60,6 @@ class ExportTripsTest extends ApiTestCase
                          'until'    => Date::today()->addWeek(),
                          'filetype' => 'csv'
                      ],
-            headers: ['Authorization' => 'Bearer ' . $token]
         );
         $response->assertSuccessful();
         $response->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
