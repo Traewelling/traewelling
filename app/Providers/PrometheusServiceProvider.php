@@ -90,6 +90,10 @@ class PrometheusServiceProvider extends ServiceProvider
                       $iter = new \FilesystemIterator(public_path("uploads/avatars"));
                       return iterator_count($iter);
                   });
+
+        Prometheus::addGauge("is_maintenance_mode_active")
+                  ->helpText("Is the Laravel Maintenance Mode active right now?")
+                  ->value($this->app->maintenanceMode()->active());
     }
 
 

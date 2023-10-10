@@ -6,6 +6,7 @@ use App\Models\TrainCheckin;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
 
 class StatisticsTest extends ApiTestCase
@@ -15,13 +16,10 @@ class StatisticsTest extends ApiTestCase
 
     public function testDailyStatistics(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
         $checkin   = TrainCheckin::factory(['user_id' => $user->id])->create();
 
-        $response = $this->get(
-            uri:     '/api/v1/statistics/daily/' . $checkin->departure->format('Y-m-d'),
-            headers: ['Authorization' => 'Bearer ' . $userToken]
-        );
+        $response = $this->get('/api/v1/statistics/daily/' . $checkin->departure->format('Y-m-d'));
         $response->assertOk();
         $response->assertJsonStructure([
                                            'data' => [
@@ -37,13 +35,10 @@ class StatisticsTest extends ApiTestCase
 
     public function testDailyStatisticsWithPolylines(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
         $checkin   = TrainCheckin::factory(['user_id' => $user->id])->create();
 
-        $response = $this->get(
-            uri:     '/api/v1/statistics/daily/' . $checkin->departure->format('Y-m-d') . '?withPolylines',
-            headers: ['Authorization' => 'Bearer ' . $userToken]
-        );
+        $response = $this->get('/api/v1/statistics/daily/' . $checkin->departure->format('Y-m-d') . '?withPolylines');
         $response->assertOk();
         $response->assertJsonStructure([
                                            'data' => [

@@ -13,6 +13,8 @@ use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
+use Laravel\Passport\Passport;
+use Mockery\Generator\StringManipulation\Pass\Pass;
 use Tests\ApiTestCase;
 
 class StatusTest extends ApiTestCase
@@ -22,19 +24,16 @@ class StatusTest extends ApiTestCase
 
     public function testActiveStatusesWithoutAnyStatus(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
 
-        $response = $this->get(
-            uri:     '/api/v1/user/statuses/active',
-            headers: ['Authorization' => 'Bearer ' . $userToken]
-        );
+        $response = $this->get('/api/v1/user/statuses/active');
         $response->assertNotFound();
         $this->assertEquals('User doesn\'t have any checkins', $response->json('message'));
     }
 
     public function testActiveStatusesShowStatusesCurrentlyUnderway(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
 
         $departure = Date::now()->subHour();
         $arrival   = Date::now()->addHour();
@@ -45,10 +44,7 @@ class StatusTest extends ApiTestCase
                                              'arrival'   => $arrival,
                                          ])->create();
 
-        $response = $this->get(
-            uri:     '/api/v1/user/statuses/active',
-            headers: ['Authorization' => 'Bearer ' . $userToken]
-        );
+        $response = $this->get('/api/v1/user/statuses/active');
         $response->assertOk();
         $response->assertJsonStructure([
                                            'data' => [
@@ -80,7 +76,7 @@ class StatusTest extends ApiTestCase
 
     public function testActiveStatusesDontShowStatusesFromTheFuture(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
 
         $departure = Date::now()->addHour();
         $arrival   = Date::now()->addHours(2);
@@ -95,17 +91,14 @@ class StatusTest extends ApiTestCase
                                   'trip_id'     => $trip->trip_id,
                               ])->create();
 
-        $response = $this->get(
-            uri:     '/api/v1/user/statuses/active',
-            headers: ['Authorization' => 'Bearer ' . $userToken]
-        );
+        $response = $this->get('/api/v1/user/statuses/active');
         $response->assertNotFound();
         $this->assertEquals('No active status', $response->json('message'));
     }
 
     public function testStatusUpdate(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
 
         $status = Status::factory([
                                       'user_id'    => $user->id,
@@ -129,7 +122,6 @@ class StatusTest extends ApiTestCase
                          'visibility' => StatusVisibility::PUBLIC->value,
                          'business'   => Business::BUSINESS->value,
                      ],
-            headers: ['Authorization' => 'Bearer ' . $userToken],
         );
         $response->assertOk();
 
@@ -142,7 +134,7 @@ class StatusTest extends ApiTestCase
 
     public function testStatusUpdateWithChangedDestination(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
 
         $checkin = TrainCheckin::factory(['user_id' => $user->id])->create();
 
@@ -169,7 +161,6 @@ class StatusTest extends ApiTestCase
                          'destinationId'             => $newStation->id,
                          'destinationArrivalPlanned' => $thirdTimestamp->toDateTimeString(),
                      ],
-            headers: ['Authorization' => 'Bearer ' . $userToken],
         );
         $response->assertOk();
 

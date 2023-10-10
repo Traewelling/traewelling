@@ -5,6 +5,7 @@ namespace Tests\Feature\APIv1;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
 
 class UserDeletionTest extends ApiTestCase
@@ -14,14 +15,13 @@ class UserDeletionTest extends ApiTestCase
 
     public function testUserAccountCanBeDeleted(): void {
         $alice      = User::factory()->create();
-        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($alice, ['*']);
 
         $this->assertDatabaseHas('users', ['id' => $alice->id]);
 
         $response = $this->deleteJson(
             uri:     '/api/v1/settings/account',
             data:    ['confirmation' => $alice->username],
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
         );
         $response->assertOk();
 

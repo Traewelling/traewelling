@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController as UserBackend;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
 use App\Providers\AuthServiceProvider;
 
@@ -17,7 +18,7 @@ class FollowTest extends ApiTestCase
 
     public function testCreateAndListFollow(): void {
         $user1      = User::factory()->create();
-        $user1token = $user1->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user1, ['*']);
         $user2      = User::factory()->create();
 
         $this->assertDatabaseMissing('follows', [
@@ -25,10 +26,7 @@ class FollowTest extends ApiTestCase
             'follow_id' => $user2->id,
         ]);
 
-        $response = $this->postJson(
-            uri:     strtr('/api/v1/user/:userId/follow', [':userId' => $user2->id]),
-            headers: ['Authorization' => 'Bearer ' . $user1token]
-        );
+        $response = $this->postJson(sprintf('/api/v1/user/%s/follow', $user2->id));
         $response->assertCreated();
 
         $this->assertDatabaseHas('follows', [
@@ -37,10 +35,7 @@ class FollowTest extends ApiTestCase
         ]);
 
         //User 1 shouldn't have followers...
-        $response = $this->get(
-            uri:     '/api/v1/settings/followers',
-            headers: ['Authorization' => 'Bearer ' . $user1token]
-        );
+        $response = $this->get('/api/v1/settings/followers');
         $response->assertOk();
         $response->assertJsonStructure([
                                            'data',
@@ -61,16 +56,14 @@ class FollowTest extends ApiTestCase
         $this->assertCount(0, $response->json('data'));
 
         //...but user1 should have one following.
-        $response = $this->get(
-            uri:     '/api/v1/settings/followings',
-            headers: ['Authorization' => 'Bearer ' . $user1token]
-        );
+        $response = $this->get('/api/v1/settings/followings');
         $response->assertOk();
         $this->assertCount(1, $response->json('data'));
     }
 
     public function testDestroyFollow(): void {
         $user1      = User::factory()->create();
+        // ToDo: I wasn't able to move this to Passport::actingAs() -- the first response is always 409
         $user1token = $user1->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
         $user2      = User::factory()->create();
         FollowController::createOrRequestFollow($user1, $user2);

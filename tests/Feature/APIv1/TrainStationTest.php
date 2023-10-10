@@ -6,6 +6,7 @@ use App\Models\TrainCheckin;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
 
 class TrainStationTest extends ApiTestCase
@@ -15,13 +16,10 @@ class TrainStationTest extends ApiTestCase
 
     public function testHistory(): void {
         $user      = User::factory()->create();
-        $userToken = $user->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($user, ['*']);
 
         //Check if endpoint is working without data
-        $response = $this->get(
-            uri:     '/api/v1/trains/station/history',
-            headers: ['Authorization' => 'Bearer ' . $userToken]
-        );
+        $response = $this->get('/api/v1/trains/station/history');
         $response->assertJsonStructure(['data' => []]);
         $response->assertJsonCount(0, 'data');
 
@@ -29,10 +27,7 @@ class TrainStationTest extends ApiTestCase
         TrainCheckin::factory(['user_id' => $user->id])->create();
 
         //Check if endpoint is working with data
-        $response = $this->get(
-            uri:     '/api/v1/trains/station/history',
-            headers: ['Authorization' => 'Bearer ' . $userToken]
-        );
+        $response = $this->get('/api/v1/trains/station/history');
         $response->assertJsonStructure(['data' => [
             '*' => [
                 'id',

@@ -8,6 +8,7 @@ use App\Models\TrainCheckin;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
 
 class UserBlockTest extends ApiTestCase
@@ -17,7 +18,7 @@ class UserBlockTest extends ApiTestCase
 
     public function testUserCanBeBlockedOnceAndThenUnblocked(): void {
         $alice      = User::factory()->create();
-        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs($alice, ['*']);
         $bob        = User::factory()->create();
 
         $this->assertDatabaseMissing('user_blocks', [
@@ -25,10 +26,7 @@ class UserBlockTest extends ApiTestCase
             'blocked_id' => $bob->id,
         ]);
 
-        $response = $this->postJson(
-            uri:     strtr('/api/v1/user/:userId/block', [':userId' => $bob->id]),
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->postJson(strtr('/api/v1/user/:userId/block', [':userId' => $bob->id]));
         $response->assertCreated();
 
         $this->assertDatabaseHas('user_blocks', [
@@ -37,17 +35,11 @@ class UserBlockTest extends ApiTestCase
         ]);
 
         //Already blocked -> expect 409
-        $response = $this->postJson(
-            uri:     strtr('/api/v1/user/:userId/block', [':userId' => $bob->id]),
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->postJson(strtr('/api/v1/user/:userId/block', [':userId' => $bob->id]));
         $response->assertConflict();
 
         //Now unblock user
-        $response = $this->deleteJson(
-            uri:     strtr('/api/v1/user/:userId/block', [':userId' => $bob->id]),
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->deleteJson(strtr('/api/v1/user/:userId/block', [':userId' => $bob->id]));
         $response->assertOk();
 
         $this->assertDatabaseMissing('user_blocks', [
@@ -56,32 +48,21 @@ class UserBlockTest extends ApiTestCase
         ]);
 
         //Now unblock an already unblocked user and expect 409
-        $response = $this->deleteJson(
-            uri:     strtr('/api/v1/user/:userId/block', [':userId' => $bob->id]),
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->deleteJson(strtr('/api/v1/user/:userId/block', [':userId' => $bob->id]));
         $response->assertConflict();
     }
 
     public function testNonExistingUserCantBeBlocked(): void {
-        $alice      = User::factory()->create();
-        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs(User::factory()->create(), ['*']);
 
-        $response = $this->postJson(
-            uri:     strtr('/api/v1/user/:userId/block', [':userId' => 9999]),
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->postJson(strtr('/api/v1/user/:userId/block', [':userId' => 9999]));
         $response->assertNotFound();
     }
 
     public function testNonExistingUserCantBeUnblocked(): void {
-        $alice      = User::factory()->create();
-        $aliceToken = $alice->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+        Passport::actingAs(User::factory()->create(), ['*']);
 
-        $response = $this->deleteJson(
-            uri:     strtr('/api/v1/user/:userId/block', [':userId' => 9999]),
-            headers: ['Authorization' => 'Bearer ' . $aliceToken]
-        );
+        $response = $this->deleteJson(strtr('/api/v1/user/:userId/block', [':userId' => 9999]));
         $response->assertNotFound();
     }
 
