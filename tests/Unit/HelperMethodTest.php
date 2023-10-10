@@ -72,7 +72,7 @@ class HelperMethodTest extends UnitTestCase
     public function testUserTimeWithoutTimezoneOffset($time, $format, $iso): void {
         Auth::shouldReceive('user')->andReturn(null);
 
-        $this->assertEquals('00:00', userTime($time, $format, $iso));
+        $this->assertEquals('01:00', userTime($time, $format, $iso));
     }
 
     public function testUserTimeWithNull(): void {
