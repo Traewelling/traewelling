@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script checks the current commit against the latest tags hash. If they are equal, the tags name is saved into the file VERSION
 
