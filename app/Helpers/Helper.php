@@ -6,9 +6,12 @@ use Illuminate\Support\Carbon;
  * @see https://stackoverflow.com/a/437642
  */
 function number($number, $decimals = 2) {
-    return number_format($number, $decimals,
-                         __('dates.decimal_point'),
-                         __('dates.thousands_sep'));
+    return number_format(
+        $number,
+        $decimals,
+        __('dates.decimal_point'),
+        __('dates.thousands_sep')
+    );
 }
 
 /**
@@ -43,13 +46,13 @@ function durationToSpan($duration): string {
     return $return;
 }
 
-function userTime(null|Carbon|\Carbon\Carbon|string $time=null, ?string $format=null, bool $iso=true): string {
+function userTime(null|Carbon|\Carbon\Carbon|string $time = null, ?string $format = null, bool $iso = true): string {
     if ($time === null) {
         return '';
     }
     $format   = $format ?? __('time-format');
     $time     = $time instanceof \Carbon\Carbon ? $time : Carbon::parse($time);
-    $timezone = auth()->user()->timezone ?? config('app.timezone');
+    $timezone = auth()->user()->timezone ?? config('app.display_timezone');
     if ($iso) {
         return $time->tz($timezone)->isoFormat($format);
     }
