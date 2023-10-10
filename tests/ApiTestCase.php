@@ -5,6 +5,7 @@ namespace Tests;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Testing\TestResponse;
+use Laravel\Passport\Passport;
 
 abstract class ApiTestCase extends TestCase
 {
@@ -16,8 +17,8 @@ abstract class ApiTestCase extends TestCase
         $this->artisan('passport:keys', ['--no-interaction' => true]);
     }
 
-    protected function getTokenForTestUser(): string {
-        return User::factory()->create()->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
+    protected function actAsApiUserWithAllScopes(): void {
+        Passport::actingAs(User::factory()->create(), ['*']);
     }
 
     protected function assertUserResource(TestResponse $response): void {
