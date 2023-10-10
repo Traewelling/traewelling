@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Http\Controllers\Backend\VersionController;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Http;
@@ -19,6 +20,11 @@ class ChangelogController extends Controller
             return json_decode($json, true);
         });
 
+        // prevent changelog from showing future versions
+        $currentVersion = VersionController::getVersion();
+        if (str_starts_with($currentVersion, 'v') && $changelog['entry'][0]['title'] !== $currentVersion) {
+            array_shift($changelog['entry']);
+        }
         foreach ($changelog['entry'] as $key => $entry) {
             //sanitize content and remove all html tags but allowed
             $changelog['entry'][$key]['content'] = strip_tags($entry['content'], '<p><ul><li><h1><h2><h3><h4><h5><h6><a><strong><em><blockquote><code><pre><img><br><hr><table><thead><tbody><tr><th><td>');
