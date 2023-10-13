@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
+use OpenApi\Annotations as OA;
 use function auth;
 
 class StatusTagController extends Controller
@@ -70,6 +71,71 @@ class StatusTagController extends Controller
             return $this->sendError(
                 error: 'No status found for this id',
             );
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/statuses/{statusIds}/tags",
+     *      operationId="getTagsForMultipleStatuses",
+     *      tags={"Status"},
+     *      summary="Show all tags for multiple statuses which are visible for the current user",
+     *      description="Returns a collection of all visible tags for the given statuses, if user is authorized",
+     *      @OA\Parameter (
+     *          name="statusIds",
+     *          in="path",
+     *          description="Status-ID",
+     *          example="1337,4711",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="object",
+     *                  @OA\Property(
+     *                      property="1337",
+     *                      type="array",
+     *                      @OA\Items(ref="#/components/schemas/StatusTag")
+     *                  ),
+     *                  @OA\Property(
+     *                      property="4711",
+     *                      type="array",
+     *                      @OA\Items(ref="#/components/schemas/StatusTag")
+     *                  )
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=403, description="User not authorized to access this"),
+     *      security={
+     *          {"passport": {}}, {"token": {}}
+     *      }
+     *  )
+     *
+     * Show all tags for a status which are visible for the current user
+     */
+    public function indexForMultiple(string $statusIds): JsonResponse {
+        $statusIds = explode(',', $statusIds);
+
+        foreach ($statusIds as $statusId) {
+            if (!is_numeric($statusId)) {
+                return $this->sendError(error: 'Id has to be numeric!', code:  400);
+            }
+        }
+
+        if (count($statusIds) > 1) {
+            $tags     = [];
+            $statuses  = Status::whereIn('id', $statusIds)->get();
+            foreach ($statuses as $status) {
+                $tags[$status->id] = StatusTagResource::collection(
+                    StatusTagBackend::getVisibleTagsForUser($status, auth()->user())
+                );
+            }
+            return $this->sendResponse($tags);
         }
     }
 
