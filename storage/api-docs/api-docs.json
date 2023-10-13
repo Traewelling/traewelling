@@ -2753,6 +2753,78 @@
                 ]
             }
         },
+        "/statuses/{statusIds}/tags": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Show all tags for multiple statuses which are visible for the current user",
+                "description": "Returns a collection of all visible tags for the given statuses, if user is authorized",
+                "operationId": "getTagsForMultipleStatuses",
+                "parameters": [
+                    {
+                        "name": "statusIds",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1337,4711"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "1337": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/StatusTag"
+                                                    }
+                                                },
+                                                "4711": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/StatusTag"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/status/{statusId}/tags/{tagKey}": {
             "put": {
                 "tags": [
@@ -5881,7 +5953,7 @@
             },
             "token": {
                 "type": "apiKey",
-                "description": "Enter token in format \"Bearer \\<token\\>\"",
+                "description": "Enter token in format \"Bearer \\<token\\>\". You can create your personal access token at https://traewelling.de/settings/applications. We recommend this method for prototyping purposes. For all other use cases please use the oAuth method above.",
                 "name": "Authorization",
                 "in": "header"
             }

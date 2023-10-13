@@ -97,12 +97,17 @@ class PrometheusServiceProvider extends ServiceProvider
     }
 
 
-    private function getJobsByDisplayName($table_name): array {
-        return DB::table($table_name)
-                 ->get("payload")
-                 ->map(fn($row) => json_decode($row->payload))
-                 ->countBy(fn($payload) => $payload->displayName)
-                 ->mapWithKeys(fn($total, $key) => [$total, [$key]])
-                 ->toArray();
+    public static function getJobsByDisplayName($table_name): array {
+        $counts = DB::table($table_name)
+                    ->get("payload")
+                    ->map(fn($row) => json_decode($row->payload))
+                    ->countBy(fn($payload) => $payload->displayName)
+                    ->toArray();
+
+        return array_map(
+            fn($jobname, $count) => [$count, [$jobname]],
+            array_keys($counts),
+            array_values($counts)
+        );
     }
 }
