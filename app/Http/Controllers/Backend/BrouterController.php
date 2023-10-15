@@ -186,10 +186,14 @@ abstract class BrouterController extends Controller
     }
 
     private static function checkIfPolylineHasMissingParts(HafasTrip $hafasTrip): bool {
+        if (is_null($hafasTrip->polyline)) {
+            Log::debug('Missing route found. No polyline available.');
+            return true;
+        }
         $geoJson      = json_decode($hafasTrip->polyline->polyline);
         $features     = $geoJson->features;
         $lastStopOver = null; // To detect whether as the crow flies or real routing
-        foreach ($features as $key => $data) {
+        foreach ($features as $data) {
             if (!isset($data->properties->id)) {
                 $lastStopOver = null;
             } else {

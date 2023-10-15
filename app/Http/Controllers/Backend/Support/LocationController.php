@@ -69,7 +69,7 @@ class LocationController
         $hafasTrip    = $this->hafasTrip;
         $newStopovers = $this->filterStopoversFromStatus();
 
-        if (!$newStopovers) {
+        if (!$newStopovers || !isset($hafasTrip->polyline->polyline)) {
             return null;
         }
         if (count($newStopovers) === 1) {
@@ -144,7 +144,10 @@ class LocationController
      * @throws JsonException
      */
     private function getPolylineWithTimestamps(): stdClass {
-        $geoJsonObj = json_decode($this->hafasTrip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
+        $geoJsonObj = json_decode('{"type":"FeatureCollection","features":[]}', false, 512, JSON_THROW_ON_ERROR);
+        if (isset($this->hafasTrip->polyline)) {
+            $geoJsonObj = json_decode($this->hafasTrip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
+        }
         $stopovers  = $this->hafasTrip->stopovers;
 
         $stopovers = $stopovers->map(function ($stopover) {
