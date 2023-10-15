@@ -23,7 +23,7 @@
         </div>
 
         <div class="form-group">
-            <label for="departure">Departure</label>
+            <label for="departure">Departure (UTC)</label>
             <input type="datetime-local" class="form-control" id="departure" name="departure" placeholder="Departure"
                    required>
         </div>
@@ -35,7 +35,7 @@
         </div>
 
         <div class="form-group">
-            <label for="arrival">Arrival</label>
+            <label for="arrival">Arrival (UTC)</label>
             <input type="datetime-local" class="form-control" id="arrival" name="arrival" placeholder="Arrival"
                    required>
         </div>
