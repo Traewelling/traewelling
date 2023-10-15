@@ -48,6 +48,11 @@ class TripController
                                             'journey_number' => ['required', 'numeric'],
                                         ]);
 
+        $departure = str_contains($validated['departure'], '+') && str_contains($validated['departure'], '-')
+            ? $validated['departure'] : $validated['departure'] . '+00:00';
+        $arrival = str_contains($validated['arrival'], '+') && str_contains($validated['arrival'], '-')
+            ? $validated['arrival'] : $validated['arrival'] . '+00:00';
+
         $originStation      = TrainStation::where('ibnr', $validated['origin'])->firstOrFail();
         $destinationStation = TrainStation::where('ibnr', $validated['destination'])->firstOrFail();
 
@@ -63,29 +68,29 @@ class TripController
                                       'operator_id'    => $validated['operator_id'],
                                       'origin'         => $validated['origin'],
                                       'destination'    => $validated['destination'],
-                                      'departure'      => $validated['departure'],
-                                      'arrival'        => $validated['arrival'],
+                                      'departure'      => $departure,
+                                      'arrival'        => $arrival,
                                   ]);
         //Origin stopover
         TrainStopover::create([
                                   'trip_id'           => $trip->trip_id,
                                   'train_station_id'  => $originStation->id,
-                                  'arrival_planned'   => $validated['departure'],
-                                  'departure_planned' => $validated['departure'],
+                                  'arrival_planned'   => $departure,
+                                  'departure_planned' => $departure,
                               ]);
         //Destination stopover
         TrainStopover::create([
                                   'trip_id'           => $trip->trip_id,
                                   'train_station_id'  => $destinationStation->id,
-                                  'arrival_planned'   => $validated['arrival'],
-                                  'departure_planned' => $validated['arrival'],
+                                  'arrival_planned'   => $arrival,
+                                  'departure_planned' => $arrival,
                               ]);
 
         return redirect()->route('trains.trip', [
             'tripID'    => $trip->trip_id,
             'lineName'  => $trip->linename,
             'start'     => $trip->origin,
-            'departure' => $validated['departure'],
+            'departure' => $departure,
         ]);
     }
 }
