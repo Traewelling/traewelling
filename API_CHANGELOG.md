@@ -4,6 +4,13 @@ In this we try to keep track of changes to the API.
 Primarily this should document changes that are not backwards compatible or belongs to already documented endpoints.
 This is to help you keep track of the changes and to help you update your code accordingly.
 
+## unreleased
+
+Deprecated `speed` attribute in `LeaderboardUser`, `Status` and `UserBase`-object.
+There are `distance` and `duration` attributes, which you can use to calculate the speed yourself.
+
+As of now, the `speed` attribute return 0 for all objects and will be removed after 2023-12-31.
+
 ## 2023-08-09
 
 Dropped endpoint `POST /api/v1/auth/signup` ([#1772](https://github.com/Traewelling/traewelling/issues/1772))
