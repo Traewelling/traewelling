@@ -15,7 +15,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
-use OpenApi\Annotations as OA;
 use function auth;
 
 class StatusTagController extends Controller
@@ -123,13 +122,13 @@ class StatusTagController extends Controller
 
         foreach ($statusIds as $statusId) {
             if (!is_numeric($statusId)) {
-                return $this->sendError(error: 'Id has to be numeric!', code:  400);
+                return $this->sendError(error: 'Id has to be numeric!', code: 400);
             }
         }
 
-        if (count($statusIds) > 1) {
+        if (count($statusIds) >= 1) {
             $tags     = [];
-            $statuses  = Status::whereIn('id', $statusIds)->get();
+            $statuses = Status::whereIn('id', $statusIds)->get();
             foreach ($statuses as $status) {
                 $tags[$status->id] = StatusTagResource::collection(
                     StatusTagBackend::getVisibleTagsForUser($status, auth()->user())
@@ -137,6 +136,8 @@ class StatusTagController extends Controller
             }
             return $this->sendResponse($tags);
         }
+
+        return $this->sendError(error: 'No statuses found for given ids');
     }
 
     /**
