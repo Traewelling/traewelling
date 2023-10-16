@@ -24,7 +24,7 @@ class UserBaseResource extends JsonResource
             'profilePicture' => ProfilePictureController::getUrlForUserId($this->id),
             'trainDistance'  => (float) $this->train_distance,
             'trainDuration'  => (int) $this->train_duration,
-            'trainSpeed'     => (float) $this->averageSpeed,
+            'trainSpeed'     => 0.0, //deprecated: TODO: remove after 2023-12-31
             'points'         => (int) $this->points,
             'twitterUrl'     => null, //deprecated
             'mastodonUrl'    => $this->mastodonUrl ?? null,

@@ -41,7 +41,7 @@ class StatusResource extends JsonResource
                 'distance'            => (int) $this->trainCheckin->distance,
                 'points'              => (int) $this->trainCheckin->points,
                 'duration'            => (int) $this->trainCheckin->duration,
-                'speed'               => (float) $this->trainCheckin->speed,
+                'speed'               => 0.0, //deprecated: TODO: remove after 2023-12-31
                 'overriddenDeparture' => $this->trainCheckin->manual_departure?->toIso8601String(), //TODO: deprecated: remove after 2023-10 (#1809)
                 'manualDeparture'     => $this->trainCheckin->manual_departure?->toIso8601String(),
                 'overriddenArrival'   => $this->trainCheckin->manual_arrival?->toIso8601String(), //TODO: deprecated: remove after 2023-10 (#1809)

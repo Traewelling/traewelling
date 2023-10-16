@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1",
+            "url": "https://traewelling.de/api/v1",
             "description": "This instance"
         }
     ],
@@ -2808,11 +2808,8 @@
                     "401": {
                         "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "No status found for this id"
-                    },
                     "403": {
-                        "description": "User not authorized to access this status"
+                        "description": "User not authorized to access this"
                     }
                 },
                 "security": [
@@ -4637,13 +4634,6 @@
                         "format": "int64",
                         "example": 12345
                     },
-                    "trainSpeed": {
-                        "title": "trainSpeed",
-                        "description": "average speed travelled by train in meters",
-                        "type": "number",
-                        "format": "float",
-                        "example": 123.45
-                    },
                     "points": {
                         "title": "points",
                         "description": "Current points of the last 7 days",
@@ -5106,13 +5096,6 @@
                         "type": "integer",
                         "example": 7
                     },
-                    "speed": {
-                        "title": "speed",
-                        "description": "speed of this checkin in kph",
-                        "type": "number",
-                        "format": "float",
-                        "example": 85.98857142857143
-                    },
                     "origin": {
                         "$ref": "#/components/schemas/TrainStopover"
                     },
@@ -5422,13 +5405,6 @@
                         "format": "int64",
                         "example": 6
                     },
-                    "trainSpeed": {
-                        "title": "trainSpeed",
-                        "description": "average speed travelled by train in meters",
-                        "type": "number",
-                        "format": "float",
-                        "example": 123.45
-                    },
                     "points": {
                         "title": "points",
                         "description": "Current points of the last 7 days",
@@ -5539,13 +5515,6 @@
                         "type": "integer",
                         "format": "int64",
                         "example": 6
-                    },
-                    "trainSpeed": {
-                        "title": "trainSpeed",
-                        "description": "average speed travelled by train in meters",
-                        "type": "number",
-                        "format": "float",
-                        "example": 123.45
                     },
                     "points": {
                         "title": "points",
@@ -5919,9 +5888,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost/oauth/authorize",
-                        "tokenUrl": "http://localhost/oauth/token",
-                        "refreshUrl": "http://localhost/auth/refresh",
+                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
+                        "tokenUrl": "http://localhost:8000/oauth/token",
+                        "refreshUrl": "http://localhost:8000/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",

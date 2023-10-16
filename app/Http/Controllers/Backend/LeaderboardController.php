@@ -21,10 +21,10 @@ abstract class LeaderboardController extends Controller
         bool   $onlyFollowings = false
     ): Collection {
         if ($since == null) {
-            $since = Carbon::now()->subWeek();
+            $since = now()->subWeek();
         }
         if ($until == null) {
-            $until = Carbon::now();
+            $until = now();
         }
         if ($since->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
