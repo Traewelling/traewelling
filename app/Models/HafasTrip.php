@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property $stopovers
- * @property PolyLine $polyLine
  * @property PolyLine $polyline
  * @property $linename
  */

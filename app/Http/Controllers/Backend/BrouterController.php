@@ -5,13 +5,15 @@ namespace App\Http\Controllers\Backend;
 use App\Dto\Coordinate;
 use App\Enum\BrouterProfile;
 use App\Exceptions\DistanceDeviationException;
+use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Locations\LineRunController;
 use App\Jobs\RefreshPolyline;
 use App\Models\HafasTrip;
 use App\Models\PolyLine;
 use App\Models\TrainCheckin;
-use App\Objects\LineSegment;
+use App\Objects\PointToPointLine;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
@@ -130,7 +132,7 @@ abstract class BrouterController extends Controller
                     //This is required and very important to prevent bugs for ring lines!
                     continue;
                 }
-                $distance = (new LineSegment(
+                $distance = (new PointToPointLine(
                     new Coordinate($feature['geometry']['coordinates'][1], $feature['geometry']['coordinates'][0]),
                     new Coordinate($stopover->trainStation->latitude, $stopover->trainStation->longitude)
                 ))->calculateDistance();
@@ -159,9 +161,15 @@ abstract class BrouterController extends Controller
             foreach ($trainCheckinToRecalc as $trainCheckin) {
                 TrainCheckinController::refreshDistanceAndPoints($trainCheckin->status);
             }
+            self::convertToLineSegments($polyline);
         } catch (DistanceDeviationException) {
             $trip->update(['polyline_id' => $oldPolyLine]);
         }
+    }
+
+    private static function convertToLineSegments($polyline): void {
+        $lineRun = new LineRunController(json_decode($polyline->polyline), $polyline->hash);
+        $lineRun->splitAndSaveLineRun();
     }
 
     /**
