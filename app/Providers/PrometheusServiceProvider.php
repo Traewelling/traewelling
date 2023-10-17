@@ -94,6 +94,21 @@ class PrometheusServiceProvider extends ServiceProvider
         Prometheus::addGauge("is_maintenance_mode_active")
                   ->helpText("Is the Laravel Maintenance Mode active right now?")
                   ->value($this->app->maintenanceMode()->active());
+
+        Prometheus::addGauge("oauth_tokens")
+                  ->helpText("How many users do the clients have?")
+                  ->labels(["app_name"])
+                  ->value(function() {
+                      return DB::table("oauth_access_tokens")
+                               ->join("oauth_clients", "oauth_access_tokens.client_id", "=", "oauth_clients.id")
+                               ->groupBy("oauth_clients.name")
+                               ->selectRaw("count(*) AS total, oauth_clients.name AS name")
+                               ->orderBy("total", "desc")
+                               ->limit(20)
+                               ->get()
+                               ->map(fn($item) => [$item->total, [$item->name]])
+                               ->toArray();
+                  });
     }
 
 
