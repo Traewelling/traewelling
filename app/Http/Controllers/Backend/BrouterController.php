@@ -92,7 +92,7 @@ abstract class BrouterController extends Controller
             //2. Request route at brouter
             $brouterGeoJSON = self::getGeoJSONForRoute($coordinates);
         } catch (InvalidArgumentException) {
-            Log::error('[RefreshPolyline] Error while getting Polyline for HafasTrip#' . $trip->trip_id . ' (Required data is missing in Brouter response)');
+            Log::warning('[RefreshPolyline] Error while getting Polyline for HafasTrip#' . $trip->trip_id . ' (Required data is missing in Brouter response)');
             return;
         } catch (ConnectException) {
             Log::info('[RefreshPolyline] Getting Polyline for HafasTrip#' . $trip->trip_id . ' timed out.');
