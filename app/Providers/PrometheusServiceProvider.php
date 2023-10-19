@@ -95,14 +95,46 @@ class PrometheusServiceProvider extends ServiceProvider
                   ->helpText("Is the Laravel Maintenance Mode active right now?")
                   ->value($this->app->maintenanceMode()->active());
 
-        Prometheus::addGauge("oauth_tokens")
-                  ->helpText("How many users do the clients have?")
+        Prometheus::addGauge("oauth_total_tokens")
+                  ->helpText("How many total (revoked and accredited) access tokens do the clients have?")
                   ->labels(["app_name"])
                   ->value(function() {
                       return DB::table("oauth_access_tokens")
                                ->join("oauth_clients", "oauth_access_tokens.client_id", "=", "oauth_clients.id")
                                ->groupBy("oauth_clients.name")
                                ->selectRaw("count(*) AS total, oauth_clients.name AS name")
+                               ->orderBy("total", "desc")
+                               ->limit(20)
+                               ->get()
+                               ->map(fn($item) => [$item->total, [$item->name]])
+                               ->toArray();
+                  });
+        Prometheus::addGauge("oauth_users")
+                  ->helpText("How many access tokens do the clients have?")
+                  ->labels(["app_name"])
+                  ->value(function() {
+                      return DB::table("oauth_access_tokens")
+                               ->join("oauth_clients", "oauth_access_tokens.client_id", "=", "oauth_clients.id")
+                               ->groupBy("oauth_clients.name")
+                               ->selectRaw("count(distinct oauth_access_tokens.user_id) AS total, oauth_clients.name AS name")
+                               ->where("oauth_access_tokens.revoked", "=", 0)
+                               ->whereNull("oauth_access_tokens.expires_at")
+                               ->orderBy("total", "desc")
+                               ->limit(20)
+                               ->get()
+                               ->map(fn($item) => [$item->total, [$item->name]])
+                               ->toArray();
+                  });
+        Prometheus::addGauge("oauth_revoked_tokens")
+                  ->helpText("How many revoked access tokens do the clients have?")
+                  ->labels(["app_name"])
+                  ->value(function() {
+                      return DB::table("oauth_access_tokens")
+                               ->join("oauth_clients", "oauth_access_tokens.client_id", "=", "oauth_clients.id")
+                               ->groupBy("oauth_clients.name")
+                               ->selectRaw("count(distinct oauth_access_tokens.user_id) AS total, oauth_clients.name AS name")
+                               ->where("oauth_access_tokens.revoked", "!=", 0)
+                               ->whereNotNull("oauth_access_tokens.expires_at", "or")
                                ->orderBy("total", "desc")
                                ->limit(20)
                                ->get()
