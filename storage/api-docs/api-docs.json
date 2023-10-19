@@ -1239,7 +1239,7 @@
             }
         },
         "/notifications/read/all": {
-            "post": {
+            "put": {
                 "tags": [
                     "Notifications"
                 ],
@@ -2808,11 +2808,8 @@
                     "401": {
                         "description": "Unauthorized"
                     },
-                    "404": {
-                        "description": "No status found for this id"
-                    },
                     "403": {
-                        "description": "User not authorized to access this status"
+                        "description": "User not authorized to access this"
                     }
                 },
                 "security": [
