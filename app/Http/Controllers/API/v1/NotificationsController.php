@@ -152,7 +152,7 @@ class NotificationsController extends Controller
     }
 
     /**
-     * @OA\Post(
+     * @OA\Put(
      *      path="/notifications/read/all",
      *      operationId="markAllAsRead",
      *      tags={"Notifications"},
