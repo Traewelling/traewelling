@@ -27,18 +27,21 @@
 * Create own applications with our API
 * Available in German, English, Polish, French and Dutch
 
-## Set up an instance
+## Set up a development instance
+
+If you have any issues regarding your local setup, you can ask [in our Discord](https://discord.gg/QypAnG2qAw), or via the fediverse by mentioning [@traewelling@chaos.social](https://chaos.social/@traewelling).
+
+There are several options to get your development instance running - depending on your prior knowledge and host system, you might one way simpler than others.
 
 ### Option 1: Using docker compose
 
-In the `docker` folder you will find a sample number of docker-compose files and minimal settings in the .env files. A `dev.docker-compose.yml` file is useful if you want to develop Träwelling locally. Adjust the values according to your requirements and start the containers:
+In the root directory of this repository, you can find a `docker-compose.yml` file which is using the configuration in `.env.docker`. With a working docker installation, you can start everything you need *for backend development* with `docker compose up -d`.
 
-```bash
-cd docker
-docker compose -f dev.docker-compose.yml up
-```
+To change frontend resources that need to be compiled (any `.scss`, `.js` or `.vue` file), we expect you to have a working nodejs environment on your system. You can then un-comment the last volume mount in the `docker-compose.yml` (see `services->app->volumes`) and restart the container. On the host system, run `npm install` and `npm run dev` to create artefacts with your changes. 
 
-You can have sample data created if you set the environment variable `SEED_DB=true`.
+You can generate sample data by setting the environment variable `SEED_DB: true` for the `app` container.
+
+If you are working on scheduled code or with background jobs, you need to restart the worker containers after making code changes. Otherwise, the workers will keep their PHP processes with the old code running.
 
 ### Option 2: Manual installation (e.g. for local development)
 

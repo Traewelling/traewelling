@@ -7,6 +7,7 @@ FROM composer:2 as ComposerBuildContainer
 COPY --from=NodeBuildContainer /usr/src/trwl /usr/src/trwl
 WORKDIR /usr/src/trwl
 RUN composer install --ignore-platform-reqs --no-interaction --no-progress --no-suggest --optimize-autoloader
+RUN php artisan optimize
 
 FROM php:8.1.24-apache
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
