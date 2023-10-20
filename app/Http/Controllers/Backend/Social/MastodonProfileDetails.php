@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Social;
 
 
+use App\Enum\CacheKey;
 use App\Models\MastodonServer;
 use App\Models\User;
 use Exception;
@@ -23,7 +24,7 @@ class MastodonProfileDetails
     }
 
     private function getData(): ?array {
-        return Cache::remember("mastodon_{$this->user->username}", 60 * 60 /* 1 hour */, function() {
+        return Cache::remember(CacheKey::getMastodonProfileInformationKey($this->user->username), 60 * 60 /* 1 hour */, function() {
             return $this->fetchProfileInformation();
         });
     }
