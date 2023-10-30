@@ -426,7 +426,6 @@
     "settings.visibility.disclaimer": "Om din profil är privat visas statuser som är markerade som offentliga endast för dina följare.",
     "stats.range.picker": "Välj period",
     "stats.purpose": "Syftet med dina resor",
-    "minutes": "Minuter",
     "user.home-not-set": "Du har inte ställt in en hemmastation än.",
     "menu.loading": "Ladda",
     "modals.setHome-body": "Vill du ange <em>:stationName</em> som din hemstation?",

@@ -437,7 +437,6 @@
     "description.status": "Il viaggio di :username col :lineName da :origin a :destination il :date.",
     "description.en-route": "Mappa panoramica di tutti gli utenti Träwelling che sono attualmente in movimento nel mondo.",
     "leaderboard.notice": "I dati qui riportati si basano sui check-in degli ultimi 7 giorni. Aggiornamenti possono richiedere fino a cinque minuti.",
-    "minutes": "Minuti",
     "support": "Assistenza",
     "support.create": "Creare una richiesta di assistenza",
     "support.submit": "Inviare una richiesta di assistenza",

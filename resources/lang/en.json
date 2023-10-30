@@ -531,7 +531,6 @@
     "description.profile": ":username has already traveled :kmAmount kilometers in :hourAmount hours on public transportation.",
     "date-format": "YYYY-MM-DD",
     "transport_types.regionalExp": "Regional Express",
-    "minutes": "minutes",
     "support": "Support",
     "support.create": "Create support request",
     "support.submit": "Submit support request",
