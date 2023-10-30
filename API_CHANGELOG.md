@@ -11,6 +11,10 @@ There are `distance` and `duration` attributes, which you can use to calculate t
 
 As of now, the `speed` attribute return 0 for all objects and will be removed after 2023-12-31.
 
+## 2023-09-22
+
+Dropped endpoint `POST /api/v1/auth/login` ([#1772](https://github.com/Traewelling/traewelling/issues/1772))
+
 ## 2023-08-09
 
 Dropped endpoint `POST /api/v1/auth/signup` ([#1772](https://github.com/Traewelling/traewelling/issues/1772))
