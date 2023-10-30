@@ -4,6 +4,10 @@ In this we try to keep track of changes to the API.
 Primarily this should document changes that are not backwards compatible or belongs to already documented endpoints.
 This is to help you keep track of the changes and to help you update your code accordingly.
 
+## 2023-09-22
+
+Dropped endpoint `POST /api/v1/auth/login` ([#1772](https://github.com/Traewelling/traewelling/issues/1772))
+
 ## 2023-08-09
 
 Dropped endpoint `POST /api/v1/auth/signup` ([#1772](https://github.com/Traewelling/traewelling/issues/1772))
