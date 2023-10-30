@@ -9,7 +9,9 @@ This is to help you keep track of the changes and to help you update your code a
 Deprecated `trainSpeed` and `speed` attribute in `LeaderboardUser`, `Status` and `UserBase`-object.
 There are `distance` and `duration` attributes, which you can use to calculate the speed yourself.
 
-As of now, the `speed` attribute return 0 for all objects and will be removed after 2023-12-31.
+> **note**
+> This change is backwards compatible and will not break your code.
+> As of now, the `speed` attribute return 0 for all objects and will be removed after 2023-12-31.
 
 ## 2023-09-22
 
