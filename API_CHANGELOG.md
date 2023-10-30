@@ -4,7 +4,7 @@ In this we try to keep track of changes to the API.
 Primarily this should document changes that are not backwards compatible or belongs to already documented endpoints.
 This is to help you keep track of the changes and to help you update your code accordingly.
 
-## unreleased
+## 2023-10-30
 
 Deprecated `trainSpeed` and `speed` attribute in `LeaderboardUser`, `Status` and `UserBase`-object.
 There are `distance` and `duration` attributes, which you can use to calculate the speed yourself.
