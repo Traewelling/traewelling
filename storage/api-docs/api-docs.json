@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1",
+            "url": "https://traewelling.de/api/v1",
             "description": "This instance"
         }
     ],
@@ -1676,6 +1676,20 @@
                 ],
                 "summary": "Get personal statistics",
                 "operationId": "getStatistics",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Start date for the statistics",
+                        "example": "2021-01-01T00:00:00.000Z"
+                    },
+                    {
+                        "name": "until",
+                        "in": "query",
+                        "description": "End date for the statistics",
+                        "example": "2021-02-01T00:00:00.000Z"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -1769,17 +1783,6 @@
                                                         },
                                                         "type": "object"
                                                     }
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "meta": {
-                                            "properties": {
-                                                "from": {
-                                                    "example": "2021-01-01T00:00:00.000000Z"
-                                                },
-                                                "until": {
-                                                    "example": "2021-02-01T00:00:00.000000Z"
                                                 }
                                             },
                                             "type": "object"
@@ -5916,9 +5919,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost/oauth/authorize",
-                        "tokenUrl": "http://localhost/oauth/token",
-                        "refreshUrl": "http://localhost/auth/refresh",
+                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
+                        "tokenUrl": "http://localhost:8000/oauth/token",
+                        "refreshUrl": "http://localhost:8000/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",
