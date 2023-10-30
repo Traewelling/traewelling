@@ -451,7 +451,7 @@
     "status.visibility.4": "Only logged-in users",
     "status.visibility.4.detail": "Only visible for logged-in users",
     "status.update.success": "Your Status has been updated successfully.",
-    "transport_types.bus": "bus",
+    "transport_types.bus": "Bus",
     "transport_types.business": "Business Trip",
     "transport_types.businessPlural": "Business Trips",
     "transport_types.express": "Express",

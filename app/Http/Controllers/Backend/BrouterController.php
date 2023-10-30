@@ -12,6 +12,7 @@ use App\Models\HafasTrip;
 use App\Models\PolyLine;
 use App\Models\TrainCheckin;
 use App\Objects\LineSegment;
+use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
@@ -33,7 +34,7 @@ abstract class BrouterController extends Controller
      * @param BrouterProfile $profile
      *
      * @return stdClass
-     * @throws JsonException|InvalidArgumentException
+     * @throws JsonException|InvalidArgumentException|ConnectException
      */
     public static function getGeoJSONForRoute(
         array          $coordinates,
@@ -91,7 +92,10 @@ abstract class BrouterController extends Controller
             //2. Request route at brouter
             $brouterGeoJSON = self::getGeoJSONForRoute($coordinates);
         } catch (InvalidArgumentException) {
-            Log::error('[RefreshPolyline] Error while getting Polyline for HafasTrip#' . $trip->trip_id . ' (Required data is missing in Brouter response)');
+            Log::warning('[RefreshPolyline] Error while getting Polyline for HafasTrip#' . $trip->trip_id . ' (Required data is missing in Brouter response)');
+            return;
+        } catch (ConnectException) {
+            Log::info('[RefreshPolyline] Getting Polyline for HafasTrip#' . $trip->trip_id . ' timed out.');
             return;
         }
         //3. Create "new" GeoJSON split by stations (as features)

@@ -1239,7 +1239,7 @@
             }
         },
         "/notifications/read/all": {
-            "post": {
+            "put": {
                 "tags": [
                     "Notifications"
                 ],
@@ -1676,6 +1676,20 @@
                 ],
                 "summary": "Get personal statistics",
                 "operationId": "getStatistics",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Start date for the statistics",
+                        "example": "2021-01-01T00:00:00.000Z"
+                    },
+                    {
+                        "name": "until",
+                        "in": "query",
+                        "description": "End date for the statistics",
+                        "example": "2021-02-01T00:00:00.000Z"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -1769,17 +1783,6 @@
                                                         },
                                                         "type": "object"
                                                     }
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "meta": {
-                                            "properties": {
-                                                "from": {
-                                                    "example": "2021-01-01T00:00:00.000000Z"
-                                                },
-                                                "until": {
-                                                    "example": "2021-02-01T00:00:00.000000Z"
                                                 }
                                             },
                                             "type": "object"

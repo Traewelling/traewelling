@@ -281,7 +281,7 @@ abstract class TrainCheckinController extends Controller
         $oldDistance = $trainCheckin->distance;
 
         if ($distance === 0 || $oldDistance !== 0 && $distance / $oldDistance >= 1.15) {
-            Log::error(sprintf(
+            Log::warning(sprintf(
                            'Distance deviation for status #%d is greater than 15 percent. Original: %d, new: %d',
                            $status->id,
                            $oldDistance,

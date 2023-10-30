@@ -169,19 +169,17 @@ class StatisticsController extends Controller
      *     operationId="getStatistics",
      *     tags={"Statistics"},
      *     summary="Get personal statistics",
-     *     @OA\Property(
-     *         property="from",
+     *     @OA\Parameter(
+     *         name="from",
+     *         in="query",
      *         description="Start date for the statistics",
-     *         example="2021-01-01T00:00:00.000Z",
-     *         type="string",
-     *         format="date-time"
+     *         example="2021-01-01T00:00:00.000Z"
      *     ),
-     *     @OA\Property(
-     *         property="until",
+     *     @OA\Parameter(
+     *         name="until",
+     *         in="query",
      *         description="End date for the statistics",
-     *         example="2021-02-01T00:00:00.000Z",
-     *         type="string",
-     *         format="date-time"
+     *         example="2021-02-01T00:00:00.000Z"
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -234,12 +232,6 @@ class StatisticsController extends Controller
      *                                                          minutes"),
      *                    )
      *               ),
-     *            ),
-     *            @OA\Property(
-     *                property="meta",
-     *                type="object",
-     *                @OA\Property(property="from", example="2021-01-01T00:00:00.000000Z"),
-     *                @OA\Property(property="until", example="2021-02-01T00:00:00.000000Z"),
      *            )
      *        )
      *    ),
