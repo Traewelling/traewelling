@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1d5c88afb697da9510882c27f9b9a0ac",
+    "content-hash": "ca890a9262bec51842f401bb7b43c6c4",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -5577,16 +5577,16 @@
         },
         {
             "name": "romanzipp/laravel-queue-monitor",
-            "version": "4.0.2",
+            "version": "5.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romanzipp/Laravel-Queue-Monitor.git",
-                "reference": "fbd9142a92d6889378075fbeb2c3c70b25138b2d"
+                "reference": "823b3ae3d4d5308aa46cfe4af1a7e5e8cfa9df64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romanzipp/Laravel-Queue-Monitor/zipball/fbd9142a92d6889378075fbeb2c3c70b25138b2d",
-                "reference": "fbd9142a92d6889378075fbeb2c3c70b25138b2d",
+                "url": "https://api.github.com/repos/romanzipp/Laravel-Queue-Monitor/zipball/823b3ae3d4d5308aa46cfe4af1a7e5e8cfa9df64",
+                "reference": "823b3ae3d4d5308aa46cfe4af1a7e5e8cfa9df64",
                 "shasum": ""
             },
             "require": {
@@ -5635,7 +5635,7 @@
             "description": "Queue Monitoring for Laravel Database Job Queue",
             "support": {
                 "issues": "https://github.com/romanzipp/Laravel-Queue-Monitor/issues",
-                "source": "https://github.com/romanzipp/Laravel-Queue-Monitor/tree/4.0.2"
+                "source": "https://github.com/romanzipp/Laravel-Queue-Monitor/tree/5.0.1"
             },
             "funding": [
                 {
@@ -5643,7 +5643,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-05-17T13:15:15+00:00"
+            "time": "2023-10-04T15:39:43+00:00"
         },
         {
             "name": "sabberworm/php-css-parser",
