@@ -138,7 +138,6 @@
     "empty-input-disable-function": "Fonksiyonu devre dışı bırakmak için bu bölümü boş bırakın.",
     "date-format": "YYYY-AA-GG",
     "transport_types.regionalExp": "Bölgesel Ekspres",
-    "minutes": "dakika",
     "auth.required": "Bu özelliği kullanmak için giriş yapmalısınız.",
     "user.header-reset-pw": "Şifreyi Sıfırla",
     "subject": "Konu",

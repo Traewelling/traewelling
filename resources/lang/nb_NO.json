@@ -354,7 +354,6 @@
     "stats.range.days": "Siste :days dager",
     "stats.range.picker": "Velg periode",
     "stats.purpose": "Formål med dine reiser",
-    "minutes": "Minutter",
     "export.departure": "Avgangstid",
     "export.destination": "Ankomststed",
     "export.journey-from-to": "Kjør fra :origin til :destination",
