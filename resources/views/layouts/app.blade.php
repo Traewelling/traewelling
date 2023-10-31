@@ -310,15 +310,6 @@
             </footer>
         </div>
 
-        <div class="alert text-center cookiealert" role="alert">
-            <b>Do you like cookies?</b> &#x1F36A; {{ __('messages.cookie-notice') }}
-            <a href="{{route('legal.privacy')}}">{{ __('messages.cookie-notice-learn') }}</a>
-
-            <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
-                {{ __('messages.cookie-notice-button') }}
-            </button>
-        </div>
-
         <script>
             /**
              * Let's only keep the JS here that is needed, e.g. Routes or CSRF tokens and put the rest

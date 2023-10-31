@@ -230,9 +230,8 @@
     "menu.admin": "Admin-Panel",
     "menu.readmore": "Read more",
     "menu.loading": "Loading",
-    "messages.cookie-notice": "We use cookies for our login-system.",
-    "messages.cookie-notice-button": "Okay",
-    "messages.cookie-notice-learn": "Learn more",
+    "checkin.points.learn-more": "Learn more",
+
     "messages.exception.general": "An unknown error occurred. Please try again.",
     "messages.exception.generalHafas": "There was a problem with the interface to the timetable data. Please try again.",
     "messages.exception.hafas.502": "The timetable could not be loaded. Please try again in a moment.",

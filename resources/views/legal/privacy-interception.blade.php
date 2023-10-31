@@ -4,11 +4,6 @@
 @section('meta-robots', 'noindex')
 
 @section('content')
-    <style>
-        .cookiealert { /* Wir wollen keine doppelten Bottom-Bars auf der Privacy-Seite. */
-            display: none;
-        }
-    </style>
 
     <div class="container">
         <div class="row justify-content-center">
