@@ -42,28 +42,16 @@
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
                         @php
-                            $original_departure = $status->trainCheckin->origin_stopover?->departure_planned
-                                ?? $status->trainCheckin?->origin_stopover?->departure
-                                ?? $status->trainCheckin->departure;
-                            if (isset($status->trainCheckin->manual_departure)):
-                                $updated_departure = $status->trainCheckin->manual_departure;
-                                $tooltip_departure = 'time-is-manual';
-                            elseif (isset($status->trainCheckin->origin_stopover->departure_real)):
-                                $updated_departure = $status->trainCheckin->origin_stopover->departure_real;
-                                $tooltip_departure = 'time-is-real';
-                            else:
-                                $updated_departure = $original_departure;
-                                $tooltip_departure = 'time-is-planned';
-                            endif;
+                            $display_departure = $status->trainCheckin->displayDeparture;
                         @endphp
-                        @if($original_departure->toString() !== $updated_departure->toString())
+                        @isset($display_departure->original)
                             <small style="text-decoration: line-through;" class="text-muted">
-                                {{ userTime($original_departure) }}
+                                {{ userTime($display_departure->original) }}
                             </small>
                             &nbsp;
-                        @endif
-                        <span data-mdb-toggle="tooltip" title="{{__($tooltip_departure)}}">
-                            {{ userTime($updated_departure) }}
+                        @endisset
+                        <span data-mdb-toggle="tooltip" title="{{$display_departure->type->getTooltip()}}">
+                            {{ userTime($display_departure->time) }}
                         </span>
                     </span>
 
@@ -145,29 +133,15 @@
                 <li>
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
-                        @php
-                            $original_arrival = $status->trainCheckin->destination_stopover?->arrival_planned
-                                ?? $status->trainCheckin?->destination_stopover?->arrival
-                                ?? $status->trainCheckin->arrival;
-                            if (isset($status->trainCheckin->manual_arrival)):
-                                $updated_arrival = $status->trainCheckin->manual_arrival;
-                                $tooltip_arrival = 'time-is-manual';
-                            elseif (isset($status->trainCheckin->destination_stopover->arrival_real)):
-                                $updated_arrival = $status->trainCheckin->destination_stopover->arrival_real;
-                                $tooltip_arrival = 'time-is-real';
-                            else:
-                                $updated_arrival = $original_arrival;
-                                $tooltip_arrival = 'time-is-planned';
-                            endif;
-                        @endphp
-                        @if($original_arrival->toString() !== $updated_arrival->toString())
+                        @php($display_arrival = $status->trainCheckin->displayArrival)
+                        @isset($display_arrival->original)
                             <small style="text-decoration: line-through;" class="text-muted">
-                                {{ userTime($original_arrival) }}
+                                {{ userTime($display_arrival->original) }}
                             </small>
                             &nbsp;
-                        @endif
-                        <span data-mdb-toggle="tooltip" title="{{__($tooltip_arrival)}}">
-                            {{ userTime($updated_arrival) }}
+                        @endisset
+                        <span data-mdb-toggle="tooltip" title="{{$display_arrival->type->getTooltip()}}">
+                            {{ userTime($display_arrival->time) }}
                         </span>
                     </span>
                     <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->destinationStation->ibnr])}}"
