@@ -239,7 +239,8 @@ class StatusTagController extends Controller
      *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions
      *      we recommend the following tags in the trwl namespace:<br><ul><li>trwl:seat (i.e. 61)</li><li>trwl:wagon
      *      (i.e. 25)</li><li>trwl:ticket (i.e. BahnCard 100 first))</li><li>trwl:travel_class (i.e. 1, 2, business,
-     *      economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li></ul>",
+     *      economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li>
+     *      <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li></ul>",
      * @OA\Parameter (
      *          name="statusId",
      *          in="path",
