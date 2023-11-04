@@ -510,7 +510,6 @@
     "status.visibility.1": "Niet-vermeld",
     "status.visibility.1.detail": "Zichtbaar voor iedereen, maar alleen via je profiel",
     "description.leaderboard.monthly": "De topträwellers van :month :year van de afgelopen 7 dagen.",
-    "minutes": "minuten",
     "generic.error": "Foutmelding",
     "messages.exception.already-checkedin": "Je bent al ingecheckt op deze reis.",
     "messages.exception.maybe-too-fast": "Wellicht heb je je aanvraag per ongeluk meerdere keren verzonden?",
