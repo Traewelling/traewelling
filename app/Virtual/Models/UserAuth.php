@@ -87,18 +87,6 @@ class UserAuth
 
     /**
      * @OA\Property(
-     *     title="trainSpeed",
-     *     description="average speed travelled by train in meters",
-     *     format="float",
-     *     example=123.45
-     * )
-     *
-     * @var float
-     */
-    private $trainSpeed;
-
-    /**
-     * @OA\Property(
      *     title="points",
      *     description="Current points of the last 7 days",
      *     format="int64",

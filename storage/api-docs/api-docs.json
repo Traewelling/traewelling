@@ -4637,13 +4637,6 @@
                         "format": "int64",
                         "example": 12345
                     },
-                    "trainSpeed": {
-                        "title": "trainSpeed",
-                        "description": "average speed travelled by train in meters",
-                        "type": "number",
-                        "format": "float",
-                        "example": 123.45
-                    },
                     "points": {
                         "title": "points",
                         "description": "Current points of the last 7 days",
@@ -5106,13 +5099,6 @@
                         "type": "integer",
                         "example": 7
                     },
-                    "speed": {
-                        "title": "speed",
-                        "description": "speed of this checkin in kph",
-                        "type": "number",
-                        "format": "float",
-                        "example": 85.98857142857143
-                    },
                     "origin": {
                         "$ref": "#/components/schemas/TrainStopover"
                     },
@@ -5422,13 +5408,6 @@
                         "format": "int64",
                         "example": 6
                     },
-                    "trainSpeed": {
-                        "title": "trainSpeed",
-                        "description": "average speed travelled by train in meters",
-                        "type": "number",
-                        "format": "float",
-                        "example": 123.45
-                    },
                     "points": {
                         "title": "points",
                         "description": "Current points of the last 7 days",
@@ -5539,13 +5518,6 @@
                         "type": "integer",
                         "format": "int64",
                         "example": 6
-                    },
-                    "trainSpeed": {
-                        "title": "trainSpeed",
-                        "description": "average speed travelled by train in meters",
-                        "type": "number",
-                        "format": "float",
-                        "example": 123.45
                     },
                     "points": {
                         "title": "points",
