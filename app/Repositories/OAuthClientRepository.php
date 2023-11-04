@@ -76,8 +76,6 @@ class OAuthClientRepository
             'secret' => $secret,
         ])->save();
 
-        Token::where('client_id', $client->id)->update(['revoked' => true]);
-
         return $client;
     }
 
