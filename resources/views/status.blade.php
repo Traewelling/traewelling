@@ -46,20 +46,8 @@
                 @foreach($status->tags as $tag)
                     @can('view', $tag)
                         <span class="badge bg-trwl">
-                            @if($tag->key === 'trwl:seat')
-                                <i class="fa-solid fa-couch me-1"></i>
-                            @elseif($tag->key === 'trwl:ticket')
-                                <i class="fa-solid fa-qrcode me-1"></i>
-                            @elseif($tag->key === 'trwl:wagon')
-                                <!-- TODO: Icon? -->
-                            @elseif($tag->key === 'trwl:travel_class')
-                                <!-- TODO: Icon? -->
-                            @elseif($tag->key === 'trwl:locomotive_class')
-                                <!-- TODO: Icon? -->
-                            @elseif($tag->key === 'trwl:wagon_class')
-                                <!-- TODO: Icon? -->
-                            @elseif($tag->key === 'trwl:role')
-                                <i class="fa-solid fa-briefcase me-1"></i>
+                            @if($tag->keyEnum?->faIcon() !== null)
+                                <i class="fa-solid {{$tag->keyEnum->faIcon()}} me-1"></i>
                             @endif
                             {{$tag->value}}
                         </span>
