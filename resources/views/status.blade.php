@@ -47,7 +47,7 @@
                     @can('view', $tag)
                         <span class="badge bg-trwl">
                             @if($tag->key === 'trwl:seat')
-                                <i class="fa-solid fa-chair me-1"></i> <!-- TODO: Better Icon... -->
+                                <i class="fa-solid fa-couch me-1"></i>
                             @elseif($tag->key === 'trwl:ticket')
                                 <i class="fa-solid fa-qrcode me-1"></i>
                             @elseif($tag->key === 'trwl:wagon')
