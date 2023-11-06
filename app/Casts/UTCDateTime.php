@@ -32,7 +32,8 @@ class UTCDateTime implements CastsAttributes
             return null;
         }
         if (!$value instanceof Carbon) {
-            if (is_string($value) && !str_contains($value, '+')) {
+            //check if string contains +, - or Z
+            if (is_string($value) && preg_match('/(([+\-])([0-1]?\d|2[0-3]):|Z)/', $value) === 0) {
                 throw new InvalidTimeZoneException("Given timestamp has no valid timezone in it -> $value");
             }
             $value = Carbon::parse($value);
