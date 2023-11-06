@@ -26,8 +26,8 @@ class CacheKey
         return self::StatisticsGlobal . '-from-' . $from->toDateString() . '-to-' . $to->startOfHour()->toDateString();
     }
 
-    public static function getMastodonProfileInformationKey(string $username): string {
-        return "mastodon_{$username}";
+    public static function getMastodonProfileInformationKey(User $user): string {
+        return "mastodon_{$user->name}";
     }
 
     public static function getYearInReviewKey(User $user, int $year): string {
