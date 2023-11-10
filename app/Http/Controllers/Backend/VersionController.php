@@ -14,7 +14,7 @@ abstract class VersionController extends Controller
         return trim(self::getCurrentGitCommit());
     }
 
-    private static function get_git_HEAD(): bool|string {
+    private static function getGitHead(): bool|string {
         if ($head = @file_get_contents(base_path() . '/.git/HEAD')) {
             return substr($head, 5, -1);
         }
@@ -23,7 +23,7 @@ abstract class VersionController extends Controller
 
     private static function getCurrentGitCommit(): bool|string {
         try {
-            if ($hash = @file_get_contents(base_path() . '/.git/' . self::get_git_HEAD())) {
+            if ($hash = @file_get_contents(base_path() . '/.git/' . self::getGitHead())) {
                 return $hash;
             }
         } catch (Exception $exception) {
