@@ -9,9 +9,9 @@ abstract class VersionController extends Controller
 {
     public static function getVersion(): bool|string {
         if (file_exists(base_path() . '/VERSION')) {
-            return file_get_contents(base_path() . '/VERSION');
+            return trim(file_get_contents(base_path() . '/VERSION'));
         }
-        return self::getCurrentGitCommit();
+        return trim(self::getCurrentGitCommit());
     }
 
     private static function get_git_HEAD(): bool|string {
