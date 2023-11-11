@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class TrainCheckinAlreadyExistException extends Exception
+class TrainCheckinAlreadyExistException extends Referencable
 {
     //
 }

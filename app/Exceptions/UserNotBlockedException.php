@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class UserNotBlockedException extends Exception
+class UserNotBlockedException extends Referencable
 {
     //
 }

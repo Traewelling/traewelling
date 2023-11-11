@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class RateLimitExceededException extends Exception
+class RateLimitExceededException extends Referencable
 {
     //
 }

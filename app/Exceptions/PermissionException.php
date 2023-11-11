@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class PermissionException extends Exception
+class PermissionException extends Referencable
 {
     //
 }
