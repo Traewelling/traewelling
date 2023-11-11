@@ -175,9 +175,11 @@ class HelperMethodTest extends UnitTestCase
         $text = __('messages.exception.reference', ['reference' => 'referenceTest']);
 
         $this->assertStringEndsWith($text, errorMessage($exception));
+        $this->assertStringEndsWith("Text? " . $text, errorMessage($exception, "Text?"));
     }
 
     public function testHelperMethodWithoutReference(): void {
         $this->assertEquals(__('messages.exception.general'), errorMessage(new \Exception()));
+        $this->assertEquals("Text?", errorMessage(new \Exception(), "Text?"));
     }
 }

@@ -11,11 +11,11 @@ class StationNotOnTripException extends Referencable
 {
 
     /**
-     * @param TrainStation $origin
-     * @param TrainStation $destination
-     * @param Carbon       $departure
-     * @param Carbon       $arrival
-     * @param HafasTrip    $trip
+     * @param TrainStation|null $origin
+     * @param TrainStation|null $destination
+     * @param Carbon|null       $departure
+     * @param Carbon|null       $arrival
+     * @param HafasTrip|null    $trip
      */
     public function __construct(
         ?TrainStation $origin = null,

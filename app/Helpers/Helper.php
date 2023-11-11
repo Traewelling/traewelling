@@ -80,12 +80,12 @@ function hasStationBoardTimezoneOffsetToUser(Collection $departures, User $user)
     return false;
 }
 
-function errorMessage(Exception $exception): array|null|string {
+function errorMessage(Exception $exception, ?string $text = null): array|null|string {
+    $text = $text ?? __('messages.exception.general');
+
     if (!$exception instanceof Referencable) {
-        return __('messages.exception.general');
+        return $text;
     }
 
-    return __('messages.exception.general')
-           . ' '
-           . __('messages.exception.reference', ['reference' => $exception->reference()]);
+    return $text . ' ' . __('messages.exception.reference', ['reference' => $exception->reference()]);
 }
