@@ -3,8 +3,10 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Throwable;
 
@@ -30,18 +32,6 @@ class Handler extends ExceptionHandler
     ];
 
     /**
-     * Report or log an exception.
-     *
-     * @param Throwable $exception
-     *
-     * @return void
-     * @throws Throwable
-     */
-    public function report(Throwable $exception) {
-        parent::report($exception);
-    }
-
-    /**
      * Render an exception into an HTTP response.
      *
      * @param Request   $request
@@ -51,6 +41,17 @@ class Handler extends ExceptionHandler
      * @throws Throwable
      */
     public function render($request, Throwable $exception) {
-        return parent::render($request, $exception);
+        if (!config('app.debug') && !$exception instanceof Referencable) {
+            $exception = new Referencable();
+            Log::error('Reference for above exception: '.$exception->reference);
+        }
+
+        $response = parent::render($request, $exception);
+
+        if ($response instanceof JsonResponse && !config('app.debug') && $exception instanceof Referencable) {
+            $response->setData($response->getData(true) + ['reference' => $exception->reference]);
+        }
+
+        return $response;
     }
 }

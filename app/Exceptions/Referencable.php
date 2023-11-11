@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-abstract class Referencable extends Exception
+class Referencable extends Exception
 {
     public readonly string $reference;
     protected array $context = [];
