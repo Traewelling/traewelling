@@ -226,7 +226,7 @@ class FrontendTransportController extends Controller
             report($exception);
             return redirect()
                 ->route('dashboard')
-                ->with('error', __('messages.exception.general'));
+                ->with('error', errorMessage($exception));
         }
     }
 

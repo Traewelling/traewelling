@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Exceptions\StationNotOnTripException;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Carbon as IlluminateCarbon;
@@ -164,5 +165,19 @@ class HelperMethodTest extends UnitTestCase
             'CET, cancelled, cancelled, wrong timezone'  => [false, [$cancelledCorrectCET, $cancelledWrongCET]],
             'CET, no stations'                           => [false, []],
         ];
+    }
+
+    public function testHelperMethodWithReference(): void {
+        $exception = $this->mock(StationNotOnTripException::class, function ($mock) {
+            $mock->shouldReceive('reference')->andReturn('referenceTest');
+        });
+
+        $text = __('messages.exception.reference', ['reference' => 'referenceTest']);
+
+        $this->assertStringEndsWith($text, errorMessage($exception));
+    }
+
+    public function testHelperMethodWithoutReference(): void {
+        $this->assertEquals(__('messages.exception.general'), errorMessage(new \Exception()));
     }
 }
