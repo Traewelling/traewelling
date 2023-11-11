@@ -32,6 +32,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
@@ -141,6 +142,22 @@ abstract class TrainCheckinController extends Controller
         $lastStop  = $trip->stopovers->where('train_station_id', $destination->id)
                                      ->where('arrival_planned', $arrival)
                                      ->first();
+
+        // In some rare occasions, the departure time of the origin station has a different timezone
+        // than the first stopover. In this case, we need to find it by comparing the departure time
+        // in a localtime string format.
+        if (empty($firstStop)) {
+            $firstStops = $trip->stopovers->where('train_station_id', $origin->id);
+
+            if ($firstStops->count() > 1) {
+                $firstStop = $firstStops->filter(function(TrainStopover $stopover) use ($departure) {
+                    return $stopover->departure_planned->format('H:i') === $departure->format('H:i');
+                })->first();
+            } else {
+                $firstStop = $firstStops->first();
+            }
+        }
+
 
         if (empty($firstStop) || empty($lastStop)) {
             throw new StationNotOnTripException(
