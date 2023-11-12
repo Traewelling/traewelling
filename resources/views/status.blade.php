@@ -27,7 +27,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7" >
+            <div class="col-md-8 col-lg-7">
                 @if(auth()->user()->experimental ?? false)
                     <div id="checkin-success-helper">
                         <checkin-success-helper></checkin-success-helper>
@@ -42,6 +42,17 @@
                         {{$status->trainCheckin->HafasTrip->last_refreshed->diffForHumans()}}
                     </small>
                 @endif
+
+                @foreach($status->tags as $tag)
+                    @can('view', $tag)
+                        <span class="badge bg-trwl">
+                            @if($tag->keyEnum?->faIcon() !== null)
+                                <i class="fa-solid {{$tag->keyEnum->faIcon()}} me-1"></i>
+                            @endif
+                            {{$tag->value}}
+                        </span>
+                    @endcan
+                @endforeach
             </div>
         </div>
         @if(auth()->check() && auth()->user()->id == $status->user_id)

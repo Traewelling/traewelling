@@ -38,7 +38,7 @@ class StatusTagPolicy
 
         // Case 6: Status is public or authenticated
         if ($statusTag->visibility === StatusVisibility::PUBLIC || $statusTag->visibility === StatusVisibility::AUTHENTICATED) {
-            return Response::allow();
+            return Response::allow('Status is public or authenticated');
         }
 
         //In any edge case it should be false. Each case should be treated here.
