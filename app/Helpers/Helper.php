@@ -3,8 +3,6 @@
 use App\Exceptions\Referencable;
 use App\Models\User;
 use Carbon\CarbonTimeZone;
-use Illuminate\Contracts\Translation\Translator;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
