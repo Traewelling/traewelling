@@ -16,7 +16,7 @@ import CheckinSuccessHelper from "../vue/components/CheckinSuccessHelper.vue";
 
 window.notyf = new Notyf({
     duration: 5000,
-    position: { x: "right", y: "top" },
+    position: { x: "right", y: window.innerWidth > 480 ? "top" : "bottom" },
     dismissible: true,
     ripple: true,
     types: [
