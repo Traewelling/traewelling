@@ -19,7 +19,7 @@ class LeaderboardController extends Controller
         $date = Carbon::parse($date);
 
         $leaderboard = Cache::remember(
-            CacheKey::LeaderboardMonth . '-for-' . $date->toISOString(),
+            CacheKey::getMonthlyLeaderboardKey($date),
             config(self::$cacheRetentionConfigKey),
             static fn() => LeaderboardBackend::getMonthlyLeaderboard($date)
         )->filter(function(stdClass $row) {

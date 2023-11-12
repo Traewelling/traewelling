@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
+use App\Models\User;
 use Carbon\Carbon;
 
 class CacheKey
@@ -17,7 +18,19 @@ class CacheKey
         return self::LeaderboardFriends . '-for-' . $userId;
     }
 
+    public static function getMonthlyLeaderboardKey(Carbon $date): string {
+        return self::LeaderboardMonth . '-for-' . $date->toISOString();
+    }
+
     public static function getGlobalStatsKey(Carbon $from, Carbon $to): string {
         return self::StatisticsGlobal . '-from-' . $from->toDateString() . '-to-' . $to->startOfHour()->toDateString();
+    }
+
+    public static function getMastodonProfileInformationKey(User $user): string {
+        return "mastodon_{$user->name}";
+    }
+
+    public static function getYearInReviewKey(User $user, int $year): string {
+        return "year-in-review-{$user->id}-{$year}";
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Stats;
 
+use App\Enum\CacheKey;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\TrainStationResource;
@@ -14,18 +15,14 @@ abstract class YearInReviewController extends Controller
 {
 
     public static function get(User $user, int $year): array {
-        return Cache::remember(self::cacheKey($user, $year), Carbon::now()->addWeek(), static function() use ($user, $year) {
+        return Cache::remember(CacheKey::getYearInReviewKey($user, $year), Carbon::now()->addWeek(), static function() use ($user, $year) {
             return self::generate($user, $year);
         });
     }
 
     public static function renew(User $user, int $year): array {
-        Cache::forget(self::cacheKey($user, $year));
+        Cache::forget(CacheKey::getYearInReviewKey($user, $year));
         return self::get($user, $year);
-    }
-
-    private static function cacheKey(User $user, int $year): string {
-        return "year-in-review-{$user->id}-{$year}";
     }
 
     public static function generate(User $user, int $year): array {
