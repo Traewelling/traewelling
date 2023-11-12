@@ -92,6 +92,7 @@
     "controller.status.like-not-found": "Like not found.",
     "controller.status.like-ok": "Like created!",
     "controller.status.not-permitted": "You're not permitted to do this.",
+    "tag-beta-tooltip": "Tags can currently only be viewed on traewelling.de. You can edit them in third-party apps.",
     "controller.social.already-connected-error": "This Account is already connected to another user.",
     "controller.social.create-error": "There has been an error creating your account.",
     "controller.social.delete-never-connected": "Your user does not have a Social Login provider.",

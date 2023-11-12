@@ -45,7 +45,7 @@
 
                 @foreach($status->tags as $tag)
                     @can('view', $tag)
-                        <span class="badge bg-trwl">
+                        <span class="badge bg-trwl" data-mdb-toggle="tooltip" title="{{__('tag-beta-tooltip')}}">
                             @if($tag->keyEnum?->faIcon() !== null)
                                 <i class="fa-solid {{$tag->keyEnum->faIcon()}} me-1"></i>
                             @endif
