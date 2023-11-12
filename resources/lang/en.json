@@ -711,5 +711,11 @@
     "your-access-token-description": "You can generate an AccessToken to access your own account.",
     "your-access-token.ask": "We at Träwelling will never ask you for your AccessToken. If you are asked for it, it is probably a scam.",
     "access-token-is-private": "Treat your AccessToken like a password. Never give it to third parties.",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "tag.title.trwl:seat": "Seat",
+    "tag.title.trwl:wagon": "Carriage",
+    "tag.title.trwl:ticket": "Ticket",
+    "tag.title.trwl:travel_class": "Travel class",
+    "tag.title.trwl:locomotive_class": "Locomotive Class",
+    "tag.title.trwl:role": "Role"
 }

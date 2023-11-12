@@ -24,7 +24,7 @@ enum StatusTagKey: string implements IconEnumInterface
     }
 
     public function title(): ?string {
-        return null;
+        return __('tag.title.' . $this->value);
     }
 
     public function description(): ?string {
