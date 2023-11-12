@@ -45,7 +45,7 @@
 
                 @foreach($status->tags as $tag)
                     @can('view', $tag)
-                        <span class="badge bg-trwl" data-mdb-toggle="tooltip" title="{{__('tag-beta-tooltip')}}">
+                        <span class="badge bg-trwl">
                             @if($tag->keyEnum?->faIcon() !== null)
                                 <i class="fa-solid {{$tag->keyEnum->faIcon()}} me-1"></i>
                             @endif
@@ -53,6 +53,11 @@
                         </span>
                     @endcan
                 @endforeach
+                @if(count($status->tags) > 0)
+                    <span class="badge bg-trwl" data-mdb-toggle="tooltip" title="{{__('tag-beta-tooltip')}}">
+                        <i class="fa-solid fa-info-circle"></i>
+                    </span>
+                @endif
             </div>
         </div>
         @if(auth()->check() && auth()->user()->id == $status->user_id)
