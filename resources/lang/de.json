@@ -252,6 +252,7 @@
     "messages.cookie-notice-button": "Okay",
     "messages.cookie-notice-learn": "Mehr erfahren",
     "messages.exception.general": "Es ist ein Fehler aufgetreten. Bitte probiere es erneut.",
+    "messages.exception.reference": "Fehler-Referenz: :reference",
     "messages.exception.generalHafas": "Es gab ein Problem mit der Schnittstelle zu den Fahrplandaten. Bitte probiere es erneut.",
     "messages.exception.hafas.502": "Der Fahrplan konnte nicht geladen werden. Bitte versuche es gleich erneut.",
     "messages.exception.already-checkedin": "Es existiert bereits ein Checkin in dieser Verbindung.",

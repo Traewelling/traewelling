@@ -160,12 +160,13 @@ abstract class TrainCheckinController extends Controller
 
 
         if (empty($firstStop) || empty($lastStop)) {
-            Log::debug('TrainCheckin: No stop found for origin or destination (HafasTrip ' . $trip->trip_id . ')');
-            Log::debug('TrainCheckin: Origin-ID: ' . $origin->id . ', Departure: ' . $departure->toIso8601String());
-            Log::debug(
-                'TrainCheckin: Destination-ID: ' . $destination->id . ', Arrival: ' . $arrival->toIso8601String()
+            throw new StationNotOnTripException(
+                origin:      $origin,
+                destination: $destination,
+                departure:   $departure,
+                arrival:     $arrival,
+                trip:        $trip
             );
-            throw new StationNotOnTripException();
         }
 
         $overlapping = TransportController::getOverlappingCheckIns(

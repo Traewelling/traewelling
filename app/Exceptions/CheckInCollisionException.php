@@ -6,7 +6,7 @@ use App\Models\TrainCheckin;
 use Exception;
 use Throwable;
 
-class CheckInCollisionException extends Exception
+class CheckInCollisionException extends Referencable
 {
     private $trainCheckIn;
 

@@ -5,7 +5,7 @@ namespace App\Exceptions;
 use App\Models\User;
 use Exception;
 
-class AlreadyFollowingException extends Exception
+class AlreadyFollowingException extends Referencable
 {
     private User $user;
     private User $initiator;
