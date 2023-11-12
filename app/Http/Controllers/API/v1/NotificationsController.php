@@ -162,9 +162,13 @@ class NotificationsController extends Controller
      *          description="successful operation",
      *          @OA\JsonContent(
      *              @OA\Property(
-     *                  property="message",
-     *                  type="string",
-     *                  example="All notifications marked as read"
+     *                  property="data",
+     *                  type="object",
+     *                  @OA\Property(
+     *                      property="message",
+     *                      type="string",
+     *                      example="All notifications marked as read"
+     *                  ),
      *              ),
      *          )
      *      ),
