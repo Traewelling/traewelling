@@ -161,15 +161,7 @@ class NotificationsController extends Controller
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *              @OA\Property(
-     *                  property="data",
-     *                  type="object",
-     *                  @OA\Property(
-     *                      property="message",
-     *                      type="string",
-     *                      example="All notifications marked as read"
-     *                  ),
-     *              ),
+     *                      ref="#/components/schemas/SuccessResponse"
      *          )
      *      ),
      *      @OA\Response(response=401, description="Unauthorized"),
@@ -180,6 +172,6 @@ class NotificationsController extends Controller
      */
     public function markAllAsRead(): JsonResponse {
         Auth::user()->unreadNotifications->markAsRead();
-        return $this->sendResponse(['message' => __('notifications.readAll.success')]);
+        return $this->sendResponse();
     }
 }
