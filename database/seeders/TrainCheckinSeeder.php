@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Enum\StatusTagKey;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Models\Event;
 use App\Models\HafasTrip;
+use App\Models\StatusTag;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Seeder;
@@ -16,7 +18,7 @@ class TrainCheckinSeeder extends Seeder
         foreach (User::all() as $user) {
             $hafasTrip = HafasTrip::all()->random();
             try {
-                TrainCheckinController::checkin(
+                $trainCheckinResponse = TrainCheckinController::checkin(
                     user:        $user,
                     hafasTrip:   $hafasTrip,
                     origin:      $hafasTrip->originStation,      //Checkin from the first station...
@@ -25,6 +27,8 @@ class TrainCheckinSeeder extends Seeder
                     arrival:     $hafasTrip->arrival,
                     event:       random_int(0, 1) ? Event::all()->random() : null,
                 );
+                $status               = $trainCheckinResponse['status'];
+                StatusTag::factory(['status_id' => $status->id])->create();
             } catch (Exception) {
                 continue;
             }
