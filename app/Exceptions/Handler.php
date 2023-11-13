@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -41,7 +42,12 @@ class Handler extends ExceptionHandler
      * @throws Throwable
      */
     public function render($request, Throwable $exception) {
-        if (!config('app.debug') && !$exception instanceof Referencable) {
+        // create referencable exception, if running in production, not already referencable and not maintenance mode
+        if (
+            !config('app.debug')
+            && !$exception instanceof Referencable
+            && !($exception instanceof HttpException && $exception->getStatusCode() === 503)
+        ) {
             $exception = new Referencable();
             Log::error('Reference for above exception: '.$exception->reference);
         }
