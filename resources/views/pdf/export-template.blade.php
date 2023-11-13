@@ -25,8 +25,6 @@
             .export-container .heading {
                 font-size: 2em;
                 font-weight: bold;
-                text-align: center;
-                vertical-align: middle;
             }
 
             .export-container .username {
@@ -80,18 +78,8 @@
                 height: 50px;
             }
 
-            .number-field {
-                text-align: right;
-                white-space: nowrap;
-            }
-
             .right {
                 float: right;
-            }
-
-            .center {
-                text-align: center;
-                font-style: italic;
             }
         </style>
     </head>
@@ -100,10 +88,6 @@
             <div class="footer fixed-section">
                 <div class="right">
                     <span class="page-number">{{ __('export.page') }} </span>
-                </div>
-                <div class="center">
-                    *: 0- {{ __('export.reason.private') }} | 1- {{ __('export.reason.business') }} |
-                    2- {{ __('export.reason.commute') }}
                 </div>
                 <div class="left">
                     <span class="promo">
@@ -132,69 +116,20 @@
             <table cellpadding="0" cellspacing="0">
                 <thead>
                     <tr>
-                        <th>{{ __('export.type') }}</th>
-                        <th>{{ __('export.number') }}</th>
-                        <th>{{ __('export.origin') }}</th>
-                        <th>{{ __('export.departure') }}</th>
-                        <th>{{ __('export.destination') }}</th>
-                        <th>{{ __('export.arrival') }}</th>
-                        <th>{{ __('export.duration') }}</th>
-                        <th>{{ __('export.kilometers') }}</th>
-                        <th>{{ __('export.reason') }}*</th>
+                        @foreach($columns as $column)
+                            <th>{{ $column->title() }}</th>
+                        @endforeach
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($statuses as $status)
+                    @foreach($data as $row)
                         <tr>
-                            <td>{{ __('transport_types.' . $status->trainCheckin->HafasTrip->category->value) }}</td>
-                            <td>{{ $status->trainCheckin->HafasTrip->linename }}</td>
-                            <td>{{ $status->trainCheckin->originStation->name }}</td>
-                            <td>
-                                @if(isset($status->trainCheckin->manual_departure))
-                                    {{ userTime($status->trainCheckin->manual_departure, __('datetime-format')) }}
-                                @elseif($status->trainCheckin->origin_stopover->isDepartureDelayed)
-                                    <span style="text-decoration: line-through;">
-                                        {{ userTime($status->trainCheckin->origin_stopover->departure_planned, __('datetime-format')) }}
-                                    </span>
-                                    <br/>
-                                    {{ userTime($status->trainCheckin->origin_stopover->departure_real, __('datetime-format')) }}
-                                @else
-                                    {{ userTime($status->trainCheckin->origin_stopover->departure_planned, __('datetime-format')) }}
-                                @endif
-                            </td>
-                            <td>{{ $status->trainCheckin->destinationStation->name }}</td>
-                            <td>
-                                @if(isset($status->trainCheckin->manual_arrival))
-                                    {{ userTime($status->trainCheckin->manual_arrival, __('datetime-format')) }}
-                                @elseif($status->trainCheckin->origin_stopover->isArrivalDelayed)
-                                    <span style="text-decoration: line-through;">
-                                        {{ userTime($status->trainCheckin->destination_stopover->arrival_planned, __('datetime-format')) }}
-                                    </span>
-                                    <br/>
-                                    {{ userTime($status->trainCheckin->destination_stopover->arrival_real, __('datetime-format')) }}
-                                @else
-                                    {{ userTime($status->trainCheckin->destination_stopover->arrival_planned, __('datetime-format')) }}
-                                @endif
-                            </td>
-                            <td class="number-field">{{ $status->trainCheckin->duration }} min</td>
-                            <td class="number-field">{{ number($status->trainCheckin->distance / 1000) }} km</td>
-                            <td class="number-field"><i>{{ $status->business->value }}</i></td>
+                            @foreach($columns as $column)
+                                <td>{{ $row[$column->value] ?? '' }}</td>
+                            @endforeach
                         </tr>
                     @endforeach
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td style="font-style: italic;">{{ __('export.total') }}:</td>
-                        <td class="number-field">{{ $sum_duration }} min</td>
-                        <td class="number-field">{{ number($sum_distance) }} km</td>
-                        <td></td>
-                    </tr>
-                </tfoot>
             </table>
         </div>
 

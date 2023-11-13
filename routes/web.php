@@ -217,6 +217,8 @@ Route::middleware(['auth', 'privacy'])->group(function() {
              ->name('export.landing');
         Route::post('/generate', [ExportController::class, 'renderExport'])
              ->name('export.generate');
+        Route::post('/generate/json', [ExportController::class, 'renderJsonExport'])
+             ->name('export.generate.json');
     });
 
     Route::post('/createfollow', [FrontendUserController::class, 'CreateFollow'])

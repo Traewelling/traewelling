@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\TrainCheckin;
 use App\Models\User;
-use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Laravel\Passport\Passport;
@@ -20,12 +19,12 @@ class ExportTripsTest extends ApiTestCase
         Passport::actingAs($user, ['*']);
 
         $response = $this->postJson(
-            uri:     '/api/v1/statistics/export',
-            data:    [
-                         'from'     => Date::today()->subWeek(),
-                         'until'    => Date::today()->addWeek(),
-                         'filetype' => 'pdf'
-                     ],
+            uri:  '/api/v1/statistics/export',
+            data: [
+                      'from'     => Date::today()->subWeek(),
+                      'until'    => Date::today()->addWeek(),
+                      'filetype' => 'pdf'
+                  ],
         );
         $response->assertSuccessful();
         $response->assertHeader('Content-Type', 'application/pdf');
@@ -37,12 +36,12 @@ class ExportTripsTest extends ApiTestCase
         Passport::actingAs($user, ['*']);
 
         $response = $this->postJson(
-            uri:     '/api/v1/statistics/export',
-            data:    [
-                         'from'     => Date::today()->subWeek(),
-                         'until'    => Date::today()->addWeek(),
-                         'filetype' => 'json'
-                     ],
+            uri:  '/api/v1/statistics/export',
+            data: [
+                      'from'     => Date::today()->subWeek(),
+                      'until'    => Date::today()->addWeek(),
+                      'filetype' => 'json'
+                  ],
         );
         $response->assertSuccessful();
         $response->assertHeader('Content-Type', 'text/json; charset=UTF-8');
@@ -54,12 +53,12 @@ class ExportTripsTest extends ApiTestCase
         Passport::actingAs($user, ['*']);
 
         $response = $this->postJson(
-            uri:     '/api/v1/statistics/export',
-            data:    [
-                         'from'     => Date::today()->subWeek(),
-                         'until'    => Date::today()->addWeek(),
-                         'filetype' => 'csv'
-                     ],
+            uri:  '/api/v1/statistics/export',
+            data: [
+                      'from'     => Date::today()->subWeek(),
+                      'until'    => Date::today()->addWeek(),
+                      'filetype' => 'csv_machine'
+                  ],
         );
         $response->assertSuccessful();
         $response->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
