@@ -711,5 +711,11 @@
     "your-access-token-description": "Du kannst dir einen AccessToken generieren um auf deinen eigenen Account zuzugreifen.",
     "your-access-token.ask": "Wir von Träwelling werden dich niemals nach deinem AccessToken fragen. Wenn du von jemandem danach gefragt wirst, ist das vermutlich ein Betrugsversuch.",
     "access-token-is-private": "Behandle deinen AccessToken wie ein Passwort. Gib ihn niemals an Dritte weiter.",
-    "refresh": "Aktualisieren"
+    "refresh": "Aktualisieren",
+    "tag.title.trwl:seat": "Sitzplatz",
+    "tag.title.trwl:wagon": "Wagen",
+    "tag.title.trwl:ticket": "Ticket",
+    "tag.title.trwl:travel_class": "Reiseklasse",
+    "tag.title.trwl:locomotive_class": "Baureihe",
+    "tag.title.trwl:role": "Rolle"
 }
