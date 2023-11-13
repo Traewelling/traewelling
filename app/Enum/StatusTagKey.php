@@ -25,7 +25,11 @@ enum StatusTagKey: string implements IconEnumInterface
     }
 
     public function title(): ?string {
-        return __('tag.title.' . $this->value);
+        $title = __('tag.title.' . $this->value);
+        if (str_starts_with($title, 'tag.title.')) {
+            return 'Tag: ' . $this->value;
+        }
+        return $title;
     }
 
     public function description(): ?string {
