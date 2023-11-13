@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -32,6 +33,11 @@ class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
+    protected array $dontReference = [
+        ModelNotFoundException::class,
+        HttpException::class,
+    ];
+
     /**
      * Render an exception into an HTTP response.
      *
@@ -46,10 +52,11 @@ class Handler extends ExceptionHandler
         if (
             !config('app.debug')
             && !$exception instanceof Referencable
-            && !($exception instanceof HttpException && $exception->getStatusCode() === 503)
+            && (!in_array(get_class($exception), $this->dontReference) || $exception->getCode() === 500)
         ) {
+            $name = get_class($exception);
             $exception = new Referencable();
-            Log::error('Reference for above exception: '.$exception->reference);
+            Log::error(sprintf('Reference for above exception of type %s: %s', $name, $exception->reference));
         }
 
         $response = parent::render($request, $exception);
