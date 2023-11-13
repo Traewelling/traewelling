@@ -17,9 +17,10 @@ enum StatusTagKey: string implements IconEnumInterface
 
     public function faIcon(): ?string {
         return match ($this) {
-            self::SEAT             => 'fa-couch',
-            self::ROLE             => 'fa-briefcase',
-            default                => null,
+            self::SEAT   => 'fa-couch',
+            self::ROLE   => 'fa-briefcase',
+            self::TICKET => 'fa-qrcode',
+            default      => null,
         };
     }
 

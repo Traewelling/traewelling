@@ -60,6 +60,7 @@
     "controller.status.like-not-found": "Like nicht gefunden.",
     "controller.status.like-ok": "Liked!",
     "controller.status.not-permitted": "Das darfst Du nicht.",
+    "tag-beta-tooltip": "Tags können derzeit auf traewelling.de nur angesehen werden. Du kannst sie aber in Drittanbieter-Apps bearbeiten.",
     "controller.transport.checkin-heading": "Eingecheckt",
     "controller.transport.checkin-ok": "Du hast erfolgreich in :lineName eingecheckt!|Du hast erfolgreich in Linie :lineName eingecheckt!",
     "controller.transport.no-name-given": "Du musst einen Stationsnamen angeben!",
