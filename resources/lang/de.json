@@ -718,5 +718,6 @@
     "tag.title.trwl:ticket": "Ticket",
     "tag.title.trwl:travel_class": "Reiseklasse",
     "tag.title.trwl:locomotive_class": "Baureihe",
-    "tag.title.trwl:role": "Rolle"
+    "tag.title.trwl:role": "Rolle",
+    "tag.title.trwl:vehicle_number": "Fahrzeugnummer"
 }
