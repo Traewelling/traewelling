@@ -14,6 +14,7 @@ enum StatusTagKey: string implements IconEnumInterface
     case LOCOMOTIVE_CLASS = 'trwl:locomotive_class';
     case WAGON_CLASS = 'trwl:wagon_class';
     case ROLE = 'trwl:role';
+    case VEHICLE_NUMBER = 'trwl:vehicle_number';
 
     public function faIcon(): ?string {
         return match ($this) {
