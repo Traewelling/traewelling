@@ -17,9 +17,9 @@ class StatusTagTest extends ApiTestCase
     use RefreshDatabase;
 
     public function testViewNonExistingTagsOnOwnStatus(): void {
-        $user      = User::factory()->create();
+        $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
-        $status    = Status::factory(['user_id' => $user->id])->create();
+        $status = Status::factory(['user_id' => $user->id])->create();
 
         $response = $this->get('/api/v1/status/' . $status->id . '/tags');
         $response->assertJsonStructure(['data' => []]);
@@ -27,13 +27,13 @@ class StatusTagTest extends ApiTestCase
     }
 
     public function testViewTagsOnOwnStatusWithDifferentVisibilitiesAndDeleteOne(): void {
-        $user        = User::factory()->create();
+        $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
         $status      = Status::factory(['user_id' => $user->id])->create();
-        $tagToDelete = StatusTag::factory(['status_id' => $status->id, 'visibility' => StatusVisibility::PUBLIC->value])->create();
-        StatusTag::factory(['status_id' => $status->id, 'visibility' => StatusVisibility::FOLLOWERS->value])->create();
-        StatusTag::factory(['status_id' => $status->id, 'visibility' => StatusVisibility::PRIVATE->value])->create();
-        StatusTag::factory(['status_id' => $status->id, 'visibility' => StatusVisibility::AUTHENTICATED->value])->create();
+        $tagToDelete = StatusTag::factory(['status_id' => $status->id, 'key' => 'first', 'visibility' => StatusVisibility::PUBLIC->value])->create();
+        StatusTag::factory(['status_id' => $status->id, 'key' => 'second', 'visibility' => StatusVisibility::FOLLOWERS->value])->create();
+        StatusTag::factory(['status_id' => $status->id, 'key' => 'third', 'visibility' => StatusVisibility::PRIVATE->value])->create();
+        StatusTag::factory(['status_id' => $status->id, 'key' => 'fourth', 'visibility' => StatusVisibility::AUTHENTICATED->value])->create();
 
         $response = $this->get('/api/v1/status/' . $status->id . '/tags');
         $response->assertJsonStructure([
@@ -58,18 +58,18 @@ class StatusTagTest extends ApiTestCase
     }
 
     public function testCreateAndUpdateTag(): void {
-        $user      = User::factory()->create();
+        $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
-        $status    = Status::factory(['user_id' => $user->id])->create();
+        $status = Status::factory(['user_id' => $user->id])->create();
 
         //Create StatusTag
         $response = $this->post(
-            uri:     '/api/v1/status/' . $status->id . '/tags',
-            data:    [
-                         'key'        => 'test',
-                         'value'      => 'test',
-                         'visibility' => StatusVisibility::PUBLIC->value,
-                     ],
+            uri:  '/api/v1/status/' . $status->id . '/tags',
+            data: [
+                      'key'        => 'test',
+                      'value'      => 'test',
+                      'visibility' => StatusVisibility::PUBLIC->value,
+                  ],
         );
         $response->assertOk();
         $response->assertJson([
@@ -84,11 +84,11 @@ class StatusTagTest extends ApiTestCase
 
         //Update StatusTag and change key and value
         $response = $this->put(
-            uri:     '/api/v1/status/' . $status->id . '/tags/test',
-            data:    [
-                         'key'   => 'test2',
-                         'value' => 'test2',
-                     ],
+            uri:  '/api/v1/status/' . $status->id . '/tags/test',
+            data: [
+                      'key'   => 'test2',
+                      'value' => 'test2',
+                  ],
         );
         $response->assertOk();
         $response->assertJson([
