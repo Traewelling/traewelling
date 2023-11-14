@@ -55,8 +55,8 @@ class Handler extends ExceptionHandler
             && (!in_array(get_class($exception), $this->dontReference) || $exception->getCode() === 500)
         ) {
             $name = get_class($exception);
-            $exception = new Referencable();
-            Log::error(sprintf('Reference for above exception of type %s: %s', $name, $exception->reference));
+            //ToDo: $exception = new Referencable();
+            Log::error(sprintf('Reference for above exception of type %s: %s', $name, 'nonexistent-reference'));
         }
 
         $response = parent::render($request, $exception);
