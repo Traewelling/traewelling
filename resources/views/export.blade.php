@@ -11,7 +11,7 @@
             </div>
 
             <div class="col-md-8">
-                <form method="POST" action="{{ route('export.generate') }}">
+                <form method="POST" action="/api/v1/export/statuses">
                     @csrf
                     <div class="card mb-2">
                         <div class="card-body">
@@ -43,14 +43,14 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-floating">
-                                        <input name="from" id="from" type="date" value="{{$begin_of_month}}"
+                                        <input name="from" id="from" type="date" value="{{now()->firstOfMonth()->format('Y-m-d')}}"
                                                class="form-control"/>
                                         <label for="from">{{__('export.begin')}}</label>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="form-floating">
-                                        <input name="until" id="until" type="date" value="{{$end_of_month}}"
+                                        <input name="until" id="until" type="date" value="{{now()->lastOfMonth()->format('Y-m-d')}}"
                                                class="form-control"/>
                                         <label for="until">{{__('export.end')}}</label>
                                     </div>
@@ -70,10 +70,13 @@
                                             <i class="fa-regular fa-file-pdf"></i>&nbsp;&nbsp;PDF
                                         </button>
                                         <button type="submit" class="btn btn-primary" name="filetype" value="csv_human">
-                                            <i class="fa-solid fa-file-csv"></i>&nbsp;&nbsp;CSV ({{__('human-readable-headings')}})
+                                            <i class="fa-solid fa-file-csv"></i>&nbsp;&nbsp;CSV
+                                            ({{__('human-readable-headings')}})
                                         </button>
-                                        <button type="submit" class="btn btn-primary" name="filetype" value="csv_machine">
-                                            <i class="fa-solid fa-file-csv"></i>&nbsp;&nbsp;CSV ({{__('machine-readable-headings')}})
+                                        <button type="submit" class="btn btn-primary" name="filetype"
+                                                value="csv_machine">
+                                            <i class="fa-solid fa-file-csv"></i>&nbsp;&nbsp;CSV
+                                            ({{__('machine-readable-headings')}})
                                         </button>
                                     </div>
                                 </div>
@@ -97,19 +100,19 @@
 
                         <hr/>
 
-                        <form method="POST" action="{{ route('export.generate.json') }}">
+                        <form method="POST" action="/api/v1/export/statuses">
                             @csrf
                             <div class="row">
                                 <div class="col">
                                     <div class="form-floating">
-                                        <input name="from" id="from" type="date" value="{{$begin_of_month}}"
+                                        <input name="from" id="from" type="date" value="{{now()->firstOfMonth()->format('Y-m-d')}}"
                                                class="form-control"/>
                                         <label for="from">{{__('export.begin')}}</label>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="form-floating">
-                                        <input name="until" id="until" type="date" value="{{$end_of_month}}"
+                                        <input name="until" id="until" type="date" value="{{now()->lastOfMonth()->format('Y-m-d')}}"
                                                class="form-control"/>
                                         <label for="until">{{__('export.end')}}</label>
                                     </div>
@@ -117,7 +120,7 @@
                             </div>
                             <div class="row pt-2">
                                 <div class="col text-end">
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-primary" name="filetype" value="json">
                                         <i class="fa-solid fa-download"></i>
                                         {{__('export.generate')}}
                                     </button>

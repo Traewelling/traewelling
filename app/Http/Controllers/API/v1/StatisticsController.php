@@ -4,9 +4,6 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Dto\GeoJson\Feature;
 use App\Dto\GeoJson\FeatureCollection;
-use App\Enum\ExportableColumn;
-use App\Exceptions\DataOverflowException;
-use App\Http\Controllers\Backend\Export\ExportController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Http\Controllers\Backend\Stats\DailyStatsController;
@@ -20,11 +17,8 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
-use Illuminate\Validation\Rule;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StatisticsController extends Controller
 {
@@ -435,39 +429,5 @@ class StatisticsController extends Controller
         ];
 
         return $this->sendResponse(data: $data, additional: $additionalData);
-    }
-
-    /**
-     * @throws DataOverflowException
-     */
-    public function generateTravelExport(Request $request): JsonResponse|StreamedResponse|Response {
-        $validated = $request->validate([
-                                            'from'      => ['required', 'date', 'before_or_equal:until'],
-                                            'until'     => ['required', 'date', 'after_or_equal:from'],
-                                            'columns.*' => ['nullable', Rule::enum(ExportableColumn::class)],
-                                            'filetype'  => ['required', Rule::in(['json', 'csv_human', 'csv_machine', 'pdf'])],
-                                        ]);
-
-        if ($validated['filetype'] === 'json') {
-            return ExportController::exportJson(
-                begin: Carbon::parse($validated['from']),
-                end:   Carbon::parse($validated['until']),
-            );
-        }
-
-        $columns = [];
-        foreach ($validated['columns'] ?? [] as $column) {
-            $columns[] = ExportableColumn::from($column);
-        }
-        if (empty($columns)) {
-            $columns = ExportableColumn::cases();
-        }
-
-        return ExportController::generateExport(
-            from:     Carbon::parse($validated['from']),
-            until:    Carbon::parse($validated['until']),
-            columns:  $columns,
-            filetype: $request->input('filetype')
-        );
     }
 }

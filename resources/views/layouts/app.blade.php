@@ -144,7 +144,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" href="{{ route('export.landing') }}">
+                                            <a class="dropdown-item" href="{{ route('export') }}">
                                                 <i class="fas fa-save"></i> {{ __('menu.export') }}
                                             </a>
                                         </li>

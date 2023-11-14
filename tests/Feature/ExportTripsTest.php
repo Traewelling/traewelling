@@ -19,7 +19,7 @@ class ExportTripsTest extends ApiTestCase
         Passport::actingAs($user, ['*']);
 
         $response = $this->postJson(
-            uri:  '/api/v1/statistics/export',
+            uri:  '/api/v1/export/statuses',
             data: [
                       'from'     => Date::today()->subWeek(),
                       'until'    => Date::today()->addWeek(),
@@ -36,7 +36,7 @@ class ExportTripsTest extends ApiTestCase
         Passport::actingAs($user, ['*']);
 
         $response = $this->postJson(
-            uri:  '/api/v1/statistics/export',
+            uri:  '/api/v1/export/statuses',
             data: [
                       'from'     => Date::today()->subWeek(),
                       'until'    => Date::today()->addWeek(),
@@ -53,7 +53,7 @@ class ExportTripsTest extends ApiTestCase
         Passport::actingAs($user, ['*']);
 
         $response = $this->postJson(
-            uri:  '/api/v1/statistics/export',
+            uri:  '/api/v1/export/statuses',
             data: [
                       'from'     => Date::today()->subWeek(),
                       'until'    => Date::today()->addWeek(),
