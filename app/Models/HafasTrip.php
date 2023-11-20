@@ -12,10 +12,27 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * @property          $stopovers
- * @property PolyLine $polyLine
- * @property PolyLine $polyline
- * @property          $linename
+ * @property int             $id
+ * @property string          $trip_id
+ * @property HafasTravelType $category
+ * @property string          $number
+ * @property string          $linename
+ * @property string          $journey_number
+ * @property int             $operator_id
+ * @property int             $origin
+ * @property int             $destination
+ * @property int             $polyline_id
+ * @property UTCDateTime     $departure
+ * @property UTCDateTime     $arrival
+ * @property UTCDateTime     $last_refreshed
+ * @property TripSource      $source
+ * @property                 $stopovers
+ * @property PolyLine        $polyLine
+ *
+ * @todo rename table only to "Trip" (without Hafas)
+ * @todo rename "linename" to "line_name" (or something else, but not "linename")
+ * @todo migrate origin & destination to use "id" instead of "ibnr" and rename to "origin_id" & "destination_id"
+ * @todo is "delay" still needed? We save planned and real in the stopovers. check.
  */
 class HafasTrip extends Model
 {

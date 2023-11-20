@@ -42,6 +42,12 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string      language
  * @property Carbon      last_login
  * @property Status[]    $statuses
+ *
+ * @todo replace "role" with an explicit permission system - e.g. spatie/laravel-permission
+ * @todo replace "experimental" also with an explicit permission system - user can add self to "experimental" group
+ * @todo rename home_id to home_station_id
+ * @todo rename mapprovider to map_provider
+ * @todo remove "twitterUrl" (Twitter isn't used by traewelling anymore)
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
