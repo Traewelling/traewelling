@@ -33,7 +33,6 @@ class UserBaseResource extends JsonResource
             'likes_enabled'  => $this->likes_enabled,
             $this->mergeWhen(isset($this->UserSettingsResource),
                 [
-                    'role'                    => $this->role,
                     'home'                    => $this->home,
                     'language'                => $this->language,
                     'defaultStatusVisibility' => $this->default_status_visibility

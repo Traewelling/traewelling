@@ -34,7 +34,6 @@ abstract class ApiTestCase extends TestCase
                                                'mastodonUrl',
                                                'privateProfile',
                                                'preventIndex',
-                                               'role',
                                                'home',
                                                'language',
                                            ]

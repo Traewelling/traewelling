@@ -18,7 +18,6 @@
                             <th>Begin</th>
                             <th>End</th>
                             <th>External URL</th>
-                            <th>Suggesting user</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -37,25 +36,21 @@
                                 </td>
                                 <td>{{$event->end->format('d.m.Y')}}</td>
                                 <td>{{$event->url}}</td>
-                                <td>
-                                    @isset($event->user)
-                                        <a href="{{route('admin.users.user', ['id' => $event->user->id])}}"
-                                           target="_blank">
-                                            {{$event->user->username}}
-                                        </a>
-                                    @endisset
-                                </td>
                                 <td class="text-end">
                                     <form method="POST" action="{{route('admin.events.suggestions.deny')}}">
                                         @csrf
                                         <input type="hidden" name="id" value="{{$event->id}}"/>
 
                                         <div class="btn-group">
-                                            <a class="btn btn-sm btn-success"
-                                               href="{{route('admin.events.suggestions.accept', ['id' => $event->id])}}">
-                                                Edit & accept
-                                            </a>
-                                            <x-event-rejection-button/>
+                                            @can('accept-events')
+                                                <a class="btn btn-sm btn-success"
+                                                   href="{{route('admin.events.suggestions.accept', ['id' => $event->id])}}">
+                                                    Edit & accept
+                                                </a>
+                                            @endcan
+                                            @can('deny-events')
+                                                <x-event-rejection-button/>
+                                            @endcan
                                         </div>
                                     </form>
                                 </td>

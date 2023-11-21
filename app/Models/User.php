@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Passport\HasApiTokens;
 use Mastodon;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * @property int         id
@@ -36,7 +37,6 @@ use Mastodon;
  * @property boolean     private_profile
  * @property boolean     prevent_index
  * @property boolean     likes_enabled
- * @property boolean     $experimental
  * @property MapProvider mapprovider
  * @property int         privacy_hide_days
  * @property string      language
@@ -46,16 +46,16 @@ use Mastodon;
 class User extends Authenticatable implements MustVerifyEmail
 {
 
-    use Notifiable, HasApiTokens, HasFactory;
+    use Notifiable, HasApiTokens, HasFactory, HasRoles;
 
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
         'default_status_visibility', 'likes_enabled', 'private_profile', 'prevent_index', 'privacy_hide_days',
-        'language', 'last_login', 'mapprovider', 'timezone', 'experimental',
+        'language', 'last_login', 'mapprovider', 'timezone',
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
-        'home_id', 'avatar', 'role', 'social_profile', 'created_at', 'updated_at', 'userInvisibleToMe'
+        'home_id', 'avatar', 'social_profile', 'created_at', 'updated_at', 'userInvisibleToMe'
     ];
     protected $appends  = [
         'averageSpeed', 'points', 'userInvisibleToMe', 'mastodonUrl', 'train_distance', 'train_duration',
@@ -68,11 +68,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'home_id'                   => 'integer',
         'private_profile'           => 'boolean',
         'likes_enabled'             => 'boolean',
-        'experimental'              => 'boolean',
         'default_status_visibility' => StatusVisibility::class,
         'prevent_index'             => 'boolean',
         'privacy_hide_days'         => 'integer',
-        'role'                      => 'integer',
         'last_login'                => 'datetime',
         'mapprovider'               => MapProvider::class,
     ];

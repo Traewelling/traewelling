@@ -5,7 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <meta name="csrf-token" content="{{ csrf_token() }}"/>
 
-        <title>@hasSection('title')@yield('title') | @endif Admin | {{ config('app.name') }}</title>
+        <title>@hasSection('title')
+                @yield('title') |
+            @endif Admin | {{ config('app.name') }}</title>
 
         <!-- Fonts -->
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
@@ -20,7 +22,7 @@
                 <a class="navbar-brand" href="{{route('admin.dashboard')}}">
                     <img src="{{ asset('images/icons/touch-icon-vector.svg') }}" alt="{{ config('app.name') }} Logo"
                          class="brand-image me-3" style="width: 30px; opacity: 0.8">
-                    TRWL Admin
+                    TRWL Backend
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
@@ -33,30 +35,38 @@
                             <i class="fa-solid fa-table-columns"></i>
                             Dashboard
                         </a>
-                        <a class="nav-link" href="{{ route('admin.users') }}">
-                            <i class="fa-solid fa-users"></i>
-                            Users
-                        </a>
-                        <a class="nav-link" href="{{ route('admin.events') }}">
-                            <i class="fa-solid fa-calendar"></i>
-                            Events
-                        </a>
-                        <a class="nav-link" href="{{ route('admin.status') }}">
-                            <i class="fa-solid fa-broadcast-tower"></i>
-                            Status
-                        </a>
-                        <a class="nav-link" href="{{ route('admin.stationboard') }}">
-                            <i class="fa-solid fa-train"></i>
-                            Checkin
-                        </a>
-                        <a class="nav-link" href="{{ route('admin.trip.create') }}">
-                            <i class="fa-solid fa-plus"></i>
-                            Trips
-                        </a>
-                        <a class="nav-link" href="{{ route('admin.stats') }}">
-                            <i class="fa-solid fa-chart-line"></i>
-                            Stats
-                        </a>
+                        @if(auth()->user()->hasRole('admin'))
+                            <a class="nav-link" href="{{ route('admin.users') }}">
+                                <i class="fa-solid fa-users"></i>
+                                Users
+                            </a>
+                        @endif
+
+                        @if(auth()->user()->hasRole('event-moderator') || auth()->user()->hasRole('admin'))
+                            <a class="nav-link" href="{{ route('admin.events') }}">
+                                <i class="fa-solid fa-calendar"></i>
+                                Events
+                            </a>
+                        @endif
+
+                        @if(auth()->user()->hasRole('admin'))
+                            <a class="nav-link" href="{{ route('admin.status') }}">
+                                <i class="fa-solid fa-broadcast-tower"></i>
+                                Status
+                            </a>
+                            <a class="nav-link" href="{{ route('admin.stationboard') }}">
+                                <i class="fa-solid fa-train"></i>
+                                Checkin
+                            </a>
+                            <a class="nav-link" href="{{ route('admin.trip.create') }}">
+                                <i class="fa-solid fa-plus"></i>
+                                Trips
+                            </a>
+                            <a class="nav-link" href="{{ route('admin.stats') }}">
+                                <i class="fa-solid fa-chart-line"></i>
+                                Stats
+                            </a>
+                        @endif
                     </div>
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">

@@ -69,7 +69,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone'         => 'UTC',
 
     // This timezone will be used for displaying time in the frontend, when not logged in.
     'display_timezone' => env('DISPLAY_TIMEZONE', 'Europe/Berlin'),
@@ -271,8 +271,9 @@ return [
     ],
 
     'admin' => [
-        'webhooks' => [
-            'new_event' => env('ADMIN_WEBHOOK_NEW_EVENT'),
+        'notification' => [
+            'url'     => env('ADMIN_NOTIFICATION_URL'),
+            'chat_id' => env('ADMIN_NOTIFICATION_CHAT_ID'),
         ]
     ]
 

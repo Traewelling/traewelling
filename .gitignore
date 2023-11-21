@@ -4,6 +4,7 @@ node_modules/
 npm-debug.log
 tests-coverage/
 clover.xml
+.phpunit.cache/
 
 # Profile pictures
 public/uploads/avatars/*
