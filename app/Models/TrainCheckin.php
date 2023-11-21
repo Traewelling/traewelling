@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\UTCDateTime;
+use App\Enum\TimeType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -111,6 +112,47 @@ class TrainCheckin extends Model
             $this->HafasTrip->load('stopovers');
         }
         return $stopOver;
+    }
+
+    /**
+     * Takes the planned and optionally real and manual times and returns an array to use while displaying the status.
+     * Precedence: Manual > Real > Planned.
+     * Only returns the 'original' planned time if the updated time differs from the planned time.
+     */
+    private static function prepareDisplayTime($planned, $real = NULL, $manual = NULL): array {
+        if (isset($manual)) {
+            $time = $manual;
+            $type = TimeType::MANUAL;
+        } elseif (isset($real)) {
+            $time = $real;
+            $type = TimeType::REALTIME;
+        } else {
+            $time = $planned;
+            $type = TimeType::PLANNED;
+        }
+        return array(
+            'time' => $time,
+            'original' => ($planned->toString() !== $time->toString()) ? $planned : NULL,
+            'type' => $type
+        );
+    }
+
+    public function getDisplayDepartureAttribute(): \stdClass {
+        $planned = $this->origin_stopover?->departure_planned
+            ?? $this->origin_stopover?->departure
+            ?? $this->departure;
+        $real = $this->origin_stopover?->departure_real;
+        $manual = $this->manual_departure;
+        return (object) self::prepareDisplayTime($planned, $real, $manual);
+    }
+
+    public function getDisplayArrivalAttribute(): \stdClass {
+        $planned = $this->destination_stopover?->arrival_planned
+            ?? $this->destination_stopover?->arrival
+            ?? $this->arrival;
+        $real = $this->destination_stopover?->arrival_real;
+        $manual = $this->manual_arrival;
+        return (object) self::prepareDisplayTime($planned, $real, $manual);
     }
 
     /**
