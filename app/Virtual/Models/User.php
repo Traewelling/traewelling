@@ -97,18 +97,6 @@ class User
 
     /**
      * @OA\Property (
-     *     title="twitterUrl",
-     *     description="Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
-     *     nullable=true,
-     *     example="null"
-     * )
-     *
-     * @var string
-     */
-    private $twitterUrl;
-
-    /**
-     * @OA\Property (
      *     title="mastodonUrl",
      *     description="URL to the Mastodon profile of the user",
      *     nullable=true,
