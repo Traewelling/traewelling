@@ -442,13 +442,15 @@ abstract class HafasController extends Controller
             //remove "null" values
             $updatePayload = array_filter($updatePayload, 'strlen'); //TODO: This is deprecated, find a better way
 
-            if ($stopover->arrival !== null && Carbon::parse($stopover->arrival)->isFuture()) {
+            //the arrival and departure attributes are always included, so to recognize whether we have realtime data,
+            // arrivalDelay and departureDelay are checked for being null or not.
+            if ($stopover->arrival !== null && isset($stopover->arrivalDelay)) {
                 $updatePayload['arrival_real'] = Carbon::parse($stopover->arrival);
                 if ($stopover->arrivalPlatform !== null) {
                     $updatePayload['arrival_platform_real'] = $stopover->arrivalPlatform;
                 }
             }
-            if ($stopover->departure !== null && Carbon::parse($stopover->departure)->isFuture()) {
+            if ($stopover->departure !== null && isset($stopover->departureDelay)) {
                 $updatePayload['departure_real'] = Carbon::parse($stopover->departure);
                 if ($stopover->departurePlatform !== null) {
                     $updatePayload['departure_platform_real'] = $stopover->departurePlatform;
@@ -480,9 +482,7 @@ abstract class HafasController extends Controller
     public static function refreshStopovers(stdClass $rawHafas): int {
         $payload = [];
         foreach ($rawHafas->stopovers ?? [] as $stopover) {
-            $timestampToCheck = Carbon::parse($stopover->departure ?? $stopover->arrival);
-            if ($timestampToCheck->isPast() || $timestampToCheck->isAfter(now()->addDay())) {
-                //HAFAS doesn't give as real time information on past stopovers, so... don't overwrite our data. :)
+            if (!isset($stopover->arrivalDelay) && !isset($stopover->departureDelay)) {
                 continue;
             }
 
