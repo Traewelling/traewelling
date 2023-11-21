@@ -11,10 +11,10 @@ class SocialLoginProfile extends Model
 
     protected $fillable = [
         'user_id',
-        'twitter_id', 'twitter_token', 'twitter_tokenSecret', 'twitter_refresh_token', 'twitter_token_expires_at',
+        'twitter_id',
         'mastodon_id', 'mastodon_server', 'mastodon_token', 'mastodon_visibility'
     ];
-    protected $hidden   = ['twitter_token', 'twitter_tokenSecret', 'twitter_refresh_token', 'mastodon_server', 'mastodon_token'];
+    protected $hidden   = ['mastodon_server', 'mastodon_token'];
     protected $casts    = [
         'id'                       => 'integer',
         'user_id'                  => 'integer',
@@ -22,10 +22,6 @@ class SocialLoginProfile extends Model
         'mastodon_id'              => 'integer',
         'mastodon_server'          => 'integer',
         'mastodon_visibility'      => MastodonVisibility::class,
-        'twitter_token'            => 'encrypted',
-        'twitter_tokenSecret'      => 'encrypted',
-        'twitter_refresh_token'    => 'encrypted',
-        'twitter_token_expires_at' => 'datetime',
         'mastodon_token'           => 'encrypted',
     ];
 
