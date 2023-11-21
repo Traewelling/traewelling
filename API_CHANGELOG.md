@@ -4,6 +4,12 @@ In this we try to keep track of changes to the API.
 Primarily this should document changes that are not backwards compatible or belongs to already documented endpoints.
 This is to help you keep track of the changes and to help you update your code accordingly.
 
+## 2023-11-21
+
+The attribute `twitterUrl` in the `User` Model is marked as deprecated, as Traewelling does not support Twitter anymore.
+It will be removed after February 2024.
+Until then, it just returns `null`.
+
 ## 2023-10-30
 
 Deprecated `trainSpeed` and `speed` attribute in `LeaderboardUser`, `Status` and `UserBase`-object.

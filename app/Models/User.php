@@ -58,7 +58,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'home_id', 'avatar', 'role', 'social_profile', 'created_at', 'updated_at', 'userInvisibleToMe'
     ];
     protected $appends  = [
-        'averageSpeed', 'points', 'userInvisibleToMe', 'twitterUrl', 'mastodonUrl', 'train_distance', 'train_duration',
+        'averageSpeed', 'points', 'userInvisibleToMe', 'mastodonUrl', 'train_distance', 'train_duration',
         'following', 'followPending', 'muted', 'isAuthUserBlocked', 'isBlockedByAuthUser',
     ];
     protected $casts    = [
@@ -229,14 +229,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getIsBlockedByAuthUserAttribute(): bool {
         return auth()->check() && $this->blockedByUsers->contains('id', auth()->user()->id);
-    }
-
-    /**
-     * @return string|null
-     * @deprecated
-     */
-    public function getTwitterUrlAttribute(): ?string {
-        return null; //Twitter isn't used by traewelling anymore
     }
 
     public function getMastodonUrlAttribute(): ?string {
