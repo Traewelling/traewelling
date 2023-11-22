@@ -117,7 +117,7 @@
                 <thead>
                     <tr>
                         @foreach($columns as $column)
-                            <th>{{ $column->title() }}</th>
+                            <th>{{ \App\Http\Controllers\Backend\Export\ExportController::getColumnTitle($column) }}</th>
                         @endforeach
                     </tr>
                 </thead>
@@ -125,7 +125,7 @@
                     @foreach($data as $row)
                         <tr>
                             @foreach($columns as $column)
-                                <td>{{ $row[$column->value] ?? '' }}</td>
+                                <td>{{ $row[$column->value ?? $column] ?? '' }}</td>
                             @endforeach
                         </tr>
                     @endforeach

@@ -702,6 +702,7 @@
     "tag.title.trwl:locomotive_class": "Locomotive Class",
     "tag.title.trwl:role": "Role",
     "tag.title.trwl:vehicle_number": "Vehicle number",
+    "tag.title.trwl:wagon_class": "Wagon class",
     "export.generate": "Generate",
     "export.json.description": "You can export your journeys as JSON.",
     "export.json.description2": "The JSON structure is the same as that of the API.",
