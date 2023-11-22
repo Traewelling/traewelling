@@ -112,6 +112,23 @@
                     </table>
                 </div>
             </div>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2 class="fs-5">Assigned roles</h2>
+                    @if($user->roles->count() > 0)
+                        <ul>
+                            @foreach($user->roles as $role)
+                                <li><code>{{ $role->name }}</code></li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <span class="text-danger">
+                            <i class="fa-solid fa-times"></i>
+                            No roles assigned - default permissions apply
+                        </span>
+                    @endif
+                </div>
+            </div>
         </div>
         <div class="col-md-8">
             <div class="card mb-3">

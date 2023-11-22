@@ -47,24 +47,24 @@
                         <div class="form-group col-sm-4 offset-sm-2 col-6">
                             <label for="begin">Checkin {{ __('events.begin') }}:</label>
                             <input id="begin" type="datetime-local" class="form-control" name="begin" required
-                                   value="{{$event->begin->toDateTimeLocalString()}}"/>
+                                   value="{{$event->begin?->toDateTimeLocalString()}}"/>
                         </div>
                         <div class="form-group col-sm-4 offset-sm-2 col-6">
                             <label for="end">Checkin {{ __('events.end') }}:</label>
                             <input id="end" type="datetime-local" class="form-control" name="end" required
-                                   value="{{$event->end->toDateTimeLocalString()}}"/>
+                                   value="{{$event->end?->toDateTimeLocalString()}}"/>
                         </div>
                     </div>
                     <div class="row mt-4">
                         <div class="form-group col-sm-4 offset-sm-2 col-6">
                             <label for="event-begin">Event {{ __('events.begin') }}:</label>
                             <input id="event-start" type="datetime-local" class="form-control" name="event_start"
-                                   required value="{{$event->event_start->toDateTimeLocalString()}}"/>
+                                   required value="{{$event->event_start?->toDateTimeLocalString()}}"/>
                         </div>
                         <div class="form-group col-sm-4 offset-sm-2 col-6">
                             <label for="event-end">Event {{ __('events.end') }}:</label>
                             <input id="event-end" type="datetime-local" class="form-control" name="event_end" required
-                                   value="{{$event->event_end->toDateTimeLocalString()}}"/>
+                                   value="{{$event->event_end?->toDateTimeLocalString()}}"/>
                         </div>
                     </div>
                     <div class="form-group row mt-4">

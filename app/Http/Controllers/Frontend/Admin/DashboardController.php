@@ -10,10 +10,6 @@ use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function renderDashboard(): View {
-        return view('admin.dashboard');
-    }
-
     public function renderStats(Request $request): View {
         $validated = $request->validate([
                                             'since' => ['nullable', 'date'],

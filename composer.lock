@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c070f8f4bc41ddf78a8f2410b1e9a87b",
+    "content-hash": "0d59a89bf5693ab4d07789966b9920ed",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -5770,16 +5770,16 @@
         },
         {
             "name": "spatie/crawler",
-            "version": "8.0.2",
+            "version": "8.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/crawler.git",
-                "reference": "62354d296c6112ab4694f594ad620139e3f0fed2"
+                "reference": "6983c78d32d4b4dfab2ead4da3bfc7396a0fa6c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/crawler/zipball/62354d296c6112ab4694f594ad620139e3f0fed2",
-                "reference": "62354d296c6112ab4694f594ad620139e3f0fed2",
+                "url": "https://api.github.com/repos/spatie/crawler/zipball/6983c78d32d4b4dfab2ead4da3bfc7396a0fa6c5",
+                "reference": "6983c78d32d4b4dfab2ead4da3bfc7396a0fa6c5",
                 "shasum": ""
             },
             "require": {
@@ -5822,7 +5822,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/crawler/issues",
-                "source": "https://github.com/spatie/crawler/tree/8.0.2"
+                "source": "https://github.com/spatie/crawler/tree/8.0.3"
             },
             "funding": [
                 {
@@ -5834,7 +5834,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-11-20T08:04:52+00:00"
+            "time": "2023-11-22T12:56:26+00:00"
         },
         {
             "name": "spatie/enum",
@@ -6156,6 +6156,88 @@
             "time": "2023-08-23T09:04:39+00:00"
         },
         {
+            "name": "spatie/laravel-permission",
+            "version": "6.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-permission.git",
+                "reference": "8e584d3ac09856e106f989741a2d82b094278e58"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/8e584d3ac09856e106f989741a2d82b094278e58",
+                "reference": "8e584d3ac09856e106f989741a2d82b094278e58",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/auth": "^8.12|^9.0|^10.0",
+                "illuminate/container": "^8.12|^9.0|^10.0",
+                "illuminate/contracts": "^8.12|^9.0|^10.0",
+                "illuminate/database": "^8.12|^9.0|^10.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "laravel/passport": "^11.0",
+                "orchestra/testbench": "^6.23|^7.0|^8.0",
+                "phpunit/phpunit": "^9.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "6.x-dev",
+                    "dev-master": "6.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Spatie\\Permission\\PermissionServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Spatie\\Permission\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Permission handling for Laravel 8.0 and up",
+            "homepage": "https://github.com/spatie/laravel-permission",
+            "keywords": [
+                "acl",
+                "laravel",
+                "permission",
+                "permissions",
+                "rbac",
+                "roles",
+                "security",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-permission/issues",
+                "source": "https://github.com/spatie/laravel-permission/tree/6.1.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-11-09T22:03:17+00:00"
+        },
+        {
             "name": "spatie/laravel-prometheus",
             "version": "1.0.4",
             "source": {
@@ -6453,16 +6535,16 @@
         },
         {
             "name": "spatie/robots-txt",
-            "version": "2.0.2",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/robots-txt.git",
-                "reference": "f40a12b89f98dd18f3665673d04757298f5fbbf9"
+                "reference": "dacba2ba159364987392aa1b0002e196c5923970"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/robots-txt/zipball/f40a12b89f98dd18f3665673d04757298f5fbbf9",
-                "reference": "f40a12b89f98dd18f3665673d04757298f5fbbf9",
+                "url": "https://api.github.com/repos/spatie/robots-txt/zipball/dacba2ba159364987392aa1b0002e196c5923970",
+                "reference": "dacba2ba159364987392aa1b0002e196c5923970",
                 "shasum": ""
             },
             "require": {
@@ -6498,7 +6580,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/robots-txt/issues",
-                "source": "https://github.com/spatie/robots-txt/tree/2.0.2"
+                "source": "https://github.com/spatie/robots-txt/tree/2.0.3"
             },
             "funding": [
                 {
@@ -6510,7 +6592,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-05-18T15:14:21+00:00"
+            "time": "2023-11-22T12:57:35+00:00"
         },
         {
             "name": "spatie/temporary-directory",
@@ -6575,16 +6657,16 @@
         },
         {
             "name": "swagger-api/swagger-ui",
-            "version": "v5.10.0",
+            "version": "v5.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swagger-api/swagger-ui.git",
-                "reference": "058082ee4848397894a53aebe7579d6535c419fb"
+                "reference": "c33fe65f8113d16f19bd83deea01287285c5bc97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swagger-api/swagger-ui/zipball/058082ee4848397894a53aebe7579d6535c419fb",
-                "reference": "058082ee4848397894a53aebe7579d6535c419fb",
+                "url": "https://api.github.com/repos/swagger-api/swagger-ui/zipball/c33fe65f8113d16f19bd83deea01287285c5bc97",
+                "reference": "c33fe65f8113d16f19bd83deea01287285c5bc97",
                 "shasum": ""
             },
             "type": "library",
@@ -6630,9 +6712,9 @@
             ],
             "support": {
                 "issues": "https://github.com/swagger-api/swagger-ui/issues",
-                "source": "https://github.com/swagger-api/swagger-ui/tree/v5.10.0"
+                "source": "https://github.com/swagger-api/swagger-ui/tree/v5.10.3"
             },
-            "time": "2023-11-15T13:41:51+00:00"
+            "time": "2023-11-22T09:04:39+00:00"
         },
         {
             "name": "symfony/console",
