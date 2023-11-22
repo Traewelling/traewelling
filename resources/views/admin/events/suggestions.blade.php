@@ -18,6 +18,9 @@
                             <th>Begin</th>
                             <th>End</th>
                             <th>External URL</th>
+                            @if(auth()->user()->hasRole('admin'))
+                                <th>Suggesting user</th>
+                            @endif
                             <th></th>
                         </tr>
                     </thead>
@@ -36,6 +39,13 @@
                                 </td>
                                 <td>{{$event->end->format('d.m.Y')}}</td>
                                 <td>{{$event->url}}</td>
+                                @if(auth()->user()->hasRole('admin'))
+                                    <td>
+                                        <a href="{{route('admin.users.user', ['id' => $event->user->id])}}">
+                                            {{$event->user->name}}
+                                        </a>
+                                    </td>
+                                @endif
                                 <td class="text-end">
                                     <form method="POST" action="{{route('admin.events.suggestions.deny')}}">
                                         @csrf
