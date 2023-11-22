@@ -35,7 +35,7 @@ class FeatureCollection implements \JsonSerializable
      *     )
      * )
      */
-    private Collection $features;
+    public Collection $features;
 
     public function __construct(Collection $features, string $type = 'FeatureCollection') {
         $this->features = $features;

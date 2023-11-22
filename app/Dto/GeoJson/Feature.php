@@ -7,6 +7,9 @@ use stdClass;
 
 class Feature implements \JsonSerializable
 {
+    /**
+     * @var Coordinate[] $coordinates
+     */
     private array  $coordinates;
     private string $type;
     private ?int   $statusId;
