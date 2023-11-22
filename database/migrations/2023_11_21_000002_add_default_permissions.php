@@ -29,7 +29,7 @@ return new class extends Migration
         $roleEventModerator->givePermissionTo($permissionDenyEvents);
         $roleEventModerator->givePermissionTo($permissionUpdateEvents);
 
-        $oldAdmins = User::where('role', '>', 5)->get();
+        $oldAdmins = User::where('role', '>', 10)->get();
         foreach ($oldAdmins as $oldAdmin) {
             $oldAdmin->assignRole('admin');
         }
