@@ -55,7 +55,7 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
     });
 
     Route::prefix('events')
-         ->middleware(['role_or_permission:admin|event-moderator|view-events|accept-events|deny-events|update-events|delete-events'])
+         ->middleware(['permission:view-events|accept-events|deny-events|update-events|delete-events'])
          ->group(function() {
              // these routes are also accessible for event-moderators - attention here - don't expose too much!
 

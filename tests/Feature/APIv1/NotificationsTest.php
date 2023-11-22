@@ -283,16 +283,14 @@ class NotificationsTest extends ApiTestCase
 
     public function testAcceptingEventSuggestionSpawnANotification(): void {
         //Create users
-        $alice = User::factory()->create();
-        $alice->assignRole('admin'); //additionally make alice an admin, so she can self-accept
-        Passport::actingAs($alice, ['*']);
+        $alice = User::factory()->create()
+                     ->assignRole('admin'); //additionally make alice an admin, so she can self-accept
 
         //suggest an event
         $eventSuggestion = EventSuggestion::factory(['user_id' => $alice->id])->create();
 
         //accept event suggestion
         $response = $this->actingAs($alice)
-                         ->followingRedirects()
                          ->post(
                              uri:  '/admin/events/suggestions/accept',
                              data: [
@@ -306,12 +304,13 @@ class NotificationsTest extends ApiTestCase
                                        'event_end'    => $eventSuggestion->end
                                    ]
                          );
-        $response->assertOk();
+        $response->assertRedirectToRoute('admin.events');
 
         //save event for later
         $event = Event::first();
 
         //let alice request her notifications
+        Passport::actingAs($alice, ['*']);
         $response = $this->get('/api/v1/notifications');
         $response->assertOk();
         $response->assertJsonCount(1, 'data'); // one notification
@@ -339,7 +338,6 @@ class NotificationsTest extends ApiTestCase
         //Create users
         $alice = User::factory()->create();
         $alice->assignRole('admin'); //additionally make alice an admin, so she can self-accept
-        Passport::actingAs($alice, ['*']);
 
         //suggest an event
         $eventSuggestion = EventSuggestion::factory(['user_id' => $alice->id])->create();
@@ -353,6 +351,7 @@ class NotificationsTest extends ApiTestCase
         $response->assertRedirectToRoute('admin.events.suggestions');
 
         //let alice request her notifications
+        Passport::actingAs($alice, ['*']);
         $response = $this->actingAs($alice)
                          ->get('/api/v1/notifications');
         $response->assertOk();
