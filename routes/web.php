@@ -35,6 +35,7 @@ use App\Http\Controllers\FrontendUserController;
 use App\Http\Controllers\PrivacyAgreementController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Backend\WebFingerController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -255,3 +256,5 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 });
 
 Route::get('/sitemap.xml', [SitemapController::class, 'renderSitemap']);
+
+Route::get('/.well-known/webfinger', [WebFingerController::class, 'endpoint']);
