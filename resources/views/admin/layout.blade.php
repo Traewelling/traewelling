@@ -7,7 +7,7 @@
 
         <title>@hasSection('title')
                 @yield('title') |
-            @endif Admin | {{ config('app.name') }}</title>
+            @endif Backend | {{ config('app.name') }}</title>
 
         <!-- Fonts -->
         <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
