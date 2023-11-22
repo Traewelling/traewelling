@@ -161,7 +161,7 @@
                                                 </a>
                                             </li>
                                         @endif
-                                        @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('event-moderator'))
+                                        @if(auth()->user()->hasRole('admin') || auth()->user()->can('view-events'))
                                             <li>
                                                 <a class="dropdown-item" href="{{route('admin.dashboard')}}">
                                                     <i class="fas fa-tools"></i> Backend

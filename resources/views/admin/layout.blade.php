@@ -42,7 +42,7 @@
                             </a>
                         @endif
 
-                        @if(auth()->user()->hasRole('event-moderator') || auth()->user()->hasRole('admin'))
+                        @if(auth()->user()->can('view-events') || auth()->user()->hasRole('admin'))
                             <a class="nav-link" href="{{ route('admin.events') }}">
                                 <i class="fa-solid fa-calendar"></i>
                                 Events
