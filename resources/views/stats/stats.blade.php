@@ -39,7 +39,7 @@
                     {{__('experimental-features')}}
                 </h4>
                 <ul>
-                    @if(auth()->check() && auth()->user()->hasRole('open-beta'))
+                    @if(auth()->check() && auth()->user()->hasRole('closed-beta'))
                         <li>
                             <a href="{{route('stats.stations')}}">
                                 {{__('stats.stations.description')}}
