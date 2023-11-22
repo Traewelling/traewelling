@@ -4,13 +4,22 @@ In this we try to keep track of changes to the API.
 Primarily this should document changes that are not backwards compatible or belongs to already documented endpoints.
 This is to help you keep track of the changes and to help you update your code accordingly.
 
+## 2023-11-22
+
+The attribute `role` in the `User` Model is marked as deprecated and now returns `0` for all users.
+
+> [!IMPORTANT]
+> **Backwards compatibility** - Will not break your code until February 2024.
+>
+> After that, the attribute will be removed.
+
 ## 2023-11-21
 
 The attribute `twitterUrl` in the `User` Model is marked as deprecated and returns `null`, as Traewelling does not support Twitter anymore.
 
 > [!IMPORTANT]
 > **Backwards compatibility** - Will not break your code until February 2024.
-> 
+>
 > After that, the attribute will be removed.
 
 ## 2023-10-30

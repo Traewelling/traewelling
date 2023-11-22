@@ -33,6 +33,7 @@ class UserBaseResource extends JsonResource
             'likes_enabled'  => $this->likes_enabled,
             $this->mergeWhen(isset($this->UserSettingsResource),
                 [
+                    'role'                    => 0, //deprecated: TODO: remove after 2024-02-29
                     'home'                    => $this->home,
                     'language'                => $this->language,
                     'defaultStatusVisibility' => $this->default_status_visibility
