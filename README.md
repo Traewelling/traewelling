@@ -39,7 +39,7 @@ In the root directory of this repository, you can find a `docker-compose.yml` fi
 
 To change frontend resources that need to be compiled (any `.scss`, `.js` or `.vue` file), we expect you to have a working nodejs environment on your system. You can then un-comment the last volume mount in the `docker-compose.yml` (see `services->app->volumes`) and restart the container. On the host system, run `npm install` and `npm run dev` to create artefacts with your changes. 
 
-You can generate sample data by setting the environment variable `SEED_DB: true` for the `app` container.
+You can generate sample data by setting the environment variable `SEED_DB: true` for the `app` container. This will seed the database and reset the oauth master keys every time on restart, when the variable is present. The seeder uses some default profile pictures which are stored in `public/uploads/avatars` in the host system. To see them in the web application, copy them to the `avatars` folder in the repository root, which is preserved over restarts.
 
 If you are working on scheduled code or with background jobs, you need to restart the worker containers after making code changes. Otherwise, the workers will keep their PHP processes with the old code running.
 
