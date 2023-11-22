@@ -54,40 +54,42 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
         });
     });
 
-    Route::prefix('events')->middleware(['role_or_permission:admin|event-moderator|accept-events|deny-events|update-events|delete-events'])->group(function() {
-        // these routes are also accessible for event-moderators - attention here - don't expose too much!
+    Route::prefix('events')
+         ->middleware(['role_or_permission:admin|event-moderator|view-events|accept-events|deny-events|update-events|delete-events'])
+         ->group(function() {
+             // these routes are also accessible for event-moderators - attention here - don't expose too much!
 
-        Route::get('/', [AdminEventController::class, 'renderList'])
-             ->name('admin.events');
-        Route::post('/delete', [AdminEventController::class, 'deleteEvent'])
-             ->middleware('can:delete-events')
-             ->name('admin.events.delete');
+             Route::get('/', [AdminEventController::class, 'renderList'])
+                  ->name('admin.events');
+             Route::post('/delete', [AdminEventController::class, 'deleteEvent'])
+                  ->middleware('permission:delete-events')
+                  ->name('admin.events.delete');
 
-        Route::get('/suggestions', [AdminEventController::class, 'renderSuggestions'])
-             ->middleware('permission:accept-events|deny-events')
-             ->name('admin.events.suggestions');
-        Route::get('/suggestions/accept/{id}', [AdminEventController::class, 'renderSuggestionCreation'])
-             ->middleware('can:accept-events')
-             ->name('admin.events.suggestions.accept');
-        Route::post('/suggestions/deny', [AdminEventController::class, 'denySuggestion'])
-             //->middleware('can:deny-events') - TODO: working in the browser, but not in the tests
-             ->name('admin.events.suggestions.deny');
-        Route::post('/suggestions/accept', [AdminEventController::class, 'acceptSuggestion'])
-             //->middleware(['can:accept-events']) - TODO: working in the browser, but not in the tests
-             ->name('admin.events.suggestions.accept.do');
+             Route::get('/suggestions', [AdminEventController::class, 'renderSuggestions'])
+                  ->middleware('permission:accept-events|deny-events')
+                  ->name('admin.events.suggestions');
+             Route::get('/suggestions/accept/{id}', [AdminEventController::class, 'renderSuggestionCreation'])
+                  ->middleware('permission:accept-events')
+                  ->name('admin.events.suggestions.accept');
+             Route::post('/suggestions/deny', [AdminEventController::class, 'denySuggestion'])
+                 //->middleware('can:deny-events') - TODO: working in the browser, but not in the tests
+                  ->name('admin.events.suggestions.deny');
+             Route::post('/suggestions/accept', [AdminEventController::class, 'acceptSuggestion'])
+                 //->middleware(['can:accept-events']) - TODO: working in the browser, but not in the tests
+                  ->name('admin.events.suggestions.accept.do');
 
-        Route::view('/create', 'admin.events.create')
-             ->middleware('can:create-events')
-             ->name('admin.events.create');
-        Route::post('/create', [AdminEventController::class, 'create'])
-             ->middleware('can:create-events');
+             Route::view('/create', 'admin.events.create')
+                  ->middleware('permission:create-events')
+                  ->name('admin.events.create');
+             Route::post('/create', [AdminEventController::class, 'create'])
+                  ->middleware('permission:create-events');
 
-        Route::get('/edit/{id}', [AdminEventController::class, 'renderEdit'])
-             ->middleware('can:update-events')
-             ->name('admin.events.edit');
-        Route::post('/edit/{id}', [AdminEventController::class, 'edit'])
-             ->middleware('can:update-events');
-    });
+             Route::get('/edit/{id}', [AdminEventController::class, 'renderEdit'])
+                  ->middleware('permission:update-events')
+                  ->name('admin.events.edit');
+             Route::post('/edit/{id}', [AdminEventController::class, 'edit'])
+                  ->middleware('permission:update-events');
+         });
 });
 
 
