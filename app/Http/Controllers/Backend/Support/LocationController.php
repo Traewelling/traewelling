@@ -181,6 +181,7 @@ class LocationController
         try {
             $geoJson  = $this->getPolylineBetween();
             if ($geoJson instanceof FeatureCollection) {
+
                 return $geoJson->features[0]->getCoordinates();
             }
 
@@ -204,18 +205,21 @@ class LocationController
     }
 
     private function createPolylineFromStopovers(): FeatureCollection {
-        $features = new Collection([
-            new Feature(
-                [
-                    new Coordinate($this->origin->trainStation->latitude, $this->origin->trainStation->longitude),
-                    new Coordinate(
-                        $this->destination->trainStation->latitude,
-                        $this->destination->trainStation->longitude
-                    ),
-                ]
-            )
-            ]
-        );
+        $coordinates = [];
+        $firstStop = null;
+        foreach ($this->hafasTrip->stopovers as $stopover) {
+            if ($firstStop !== null || $stopover->is($this->origin)) {
+                $firstStop = $stopover;
+                $coordinates[] = new Coordinate($stopover->trainStation->latitude, $stopover->trainStation->longitude);
+
+                if ($stopover->is($this->destination)) {
+                    break;
+                }
+            }
+        }
+
+
+        $features = new Collection([new Feature($coordinates)]);
         return new FeatureCollection($features);
     }
 
