@@ -34,6 +34,10 @@
                             <td>{{ $trip->operator?->name }}</td>
                         </tr>
                         <tr>
+                            <th>Source</th>
+                            <td>{{ $trip->source?->name }}</td>
+                        </tr>
+                        <tr>
                             <th>Last refreshed</th>
                             <td>{{ $trip->last_refreshed }}</td>
                         </tr>
@@ -94,6 +98,7 @@
                                 <th scope="col">Name</th>
                                 <th scope="col">TRWL-ID</th>
                                 <th scope="col">IBNR</th>
+                                <th scope="col">RIL100</th>
                                 <th scope="col">Ankunft plan</th>
                                 <th scope="col">real</th>
                                 <th scope="col">Abfahrt plan</th>
@@ -106,6 +111,7 @@
                                     <td>{{$stopover->trainStation?->name}}</td>
                                     <td>{{$stopover->trainStation?->id}}</td>
                                     <td>{{$stopover->trainStation?->ibnr}}</td>
+                                    <td>{{$stopover->trainStation?->rilIdentifier}}</td>
                                     <td>{{$stopover->arrival_planned?->format('H:i')}}</td>
                                     <td>{{$stopover->arrival_real?->format('H:i')}}</td>
                                     <td>{{$stopover->departure_planned?->format('H:i')}}</td>
