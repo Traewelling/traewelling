@@ -25,8 +25,8 @@ else
 
         if [ ${SEED_DB} == "true" ]; then
             echo "Resetting OAuth keys and seeding database"
-            runuser -u www-data -- php artisan passport:install --force --quiet --no-interaction
             runuser -u www-data -- php artisan migrate:fresh --seed --force
+            runuser -u www-data -- php artisan passport:install --force --quiet --no-interaction
         else
             runuser -u www-data -- php artisan migrate --force
         fi
