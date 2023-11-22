@@ -108,7 +108,7 @@
                                     <td>{{$stopover->trainStation?->ibnr}}</td>
                                     <td>{{$stopover->arrival_planned?->format('H:i')}}</td>
                                     <td>{{$stopover->arrival_real?->format('H:i')}}</td>
-                                    <td>{{$stopover->departure_planned->format('H:i')}}</td>
+                                    <td>{{$stopover->departure_planned?->format('H:i')}}</td>
                                     <td>{{$stopover->departure_real?->format('H:i')}}</td>
                                 </tr>
                             @endforeach
