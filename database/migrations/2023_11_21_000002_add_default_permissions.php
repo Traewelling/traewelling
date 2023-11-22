@@ -13,6 +13,8 @@ return new class extends Migration
         Role::create(['name' => 'open-beta']);                             //for experimental features that can be enabled by users
         Role::create(['name' => 'closed-beta']);                           //for experimental features that can be only enabled by admins for specific users
 
+        $permissionViewBackend = Permission::create(['name' => 'view-backend']);
+
         $permissionViewEvents   = Permission::create(['name' => 'view-events']);
         $permissionAcceptEvents = Permission::create(['name' => 'accept-events']);
         $permissionDenyEvents   = Permission::create(['name' => 'deny-events']);
@@ -20,6 +22,7 @@ return new class extends Migration
         $permissionUpdateEvents = Permission::create(['name' => 'update-events']);
         $permissionDeleteEvents = Permission::create(['name' => 'delete-events']);
 
+        $roleAdmin->givePermissionTo($permissionViewBackend);
         $roleAdmin->givePermissionTo($permissionViewEvents);
         $roleAdmin->givePermissionTo($permissionAcceptEvents);
         $roleAdmin->givePermissionTo($permissionDenyEvents);
@@ -27,6 +30,7 @@ return new class extends Migration
         $roleAdmin->givePermissionTo($permissionUpdateEvents);
         $roleAdmin->givePermissionTo($permissionDeleteEvents);
 
+        $roleEventModerator->givePermissionTo($permissionViewBackend);
         $roleEventModerator->givePermissionTo($permissionViewEvents);
         $roleEventModerator->givePermissionTo($permissionAcceptEvents);
         $roleEventModerator->givePermissionTo($permissionDenyEvents);

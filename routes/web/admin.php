@@ -8,9 +8,8 @@ use App\Http\Controllers\Frontend\Admin\TripController;
 use App\Http\Controllers\Frontend\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth'])->group(function() {
+Route::middleware(['auth', 'permission:view-backend'])->group(function() {
     Route::view('/', 'admin.dashboard') //attention: route accessible for admins and event-moderators!
-         ->middleware(['role:admin|event-moderator'])
          ->name('admin.dashboard');
 
     Route::middleware('role:admin')->group(static function() {
