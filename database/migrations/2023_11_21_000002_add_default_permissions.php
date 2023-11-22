@@ -44,6 +44,11 @@ return new class extends Migration
     }
 
     public function down(): void {
+        $admins = User::role('admin')->get();
+        foreach ($admins as $admin) {
+            $admin->update(['role' => 10]);
+        }
+
         Role::where('name', 'admin')->delete();
         Role::where('name', 'event-moderator')->delete();
         Role::where('name', 'open-beta')->delete();
