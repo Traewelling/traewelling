@@ -4911,12 +4911,6 @@
                         "description": "User defined status text",
                         "example": "Hello world!"
                     },
-                    "type": {
-                        "title": "type",
-                        "description": "type of status",
-                        "type": "string",
-                        "example": "HAFAS"
-                    },
                     "user": {
                         "title": "user",
                         "description": "user id",

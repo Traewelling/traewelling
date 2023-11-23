@@ -39,17 +39,6 @@ class Status
     public $body;
 
     /**
-     * @OA\Property (
-     *     title="type",
-     *     description="type of status",
-     *     example="HAFAS"
-     * )
-     *
-     * @var string
-     */
-    private $type;
-
-    /**
      * @OA\Property(
      *     title="user",
      *     description="user id",

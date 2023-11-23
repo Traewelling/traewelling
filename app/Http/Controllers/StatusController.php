@@ -267,8 +267,7 @@ class StatusController extends Controller
         Business         $business,
         StatusVisibility $visibility,
         string           $body = null,
-        int              $eventId = null, //TODO: change to Event Object
-        string           $type = "hafas"
+        int              $eventId = null //TODO: change to Event Object
     ): Status {
         $event = null;
         if ($eventId !== null) {
@@ -283,7 +282,6 @@ class StatusController extends Controller
                                   'body'       => $body,
                                   'business'   => $business,
                                   'visibility' => $visibility,
-                                  'type'       => $type,
                                   'event_id'   => $event?->id
                               ]);
     }
