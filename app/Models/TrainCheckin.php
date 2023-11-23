@@ -22,6 +22,10 @@ use Illuminate\Support\Facades\Log;
  * @property TrainStopover $destination_stopover
  * @property TrainStation  $originStation
  * @property TrainStation  $destinationStation
+ *
+ * @todo rename table to "Checkin" (without Train - we have more than just trains)
+ * @todo merge model with "Status" because the difference between trip sources (HAFAS,
+ *        User, and future sources) should be handled in the Trip model.
  */
 class TrainCheckin extends Model
 {
