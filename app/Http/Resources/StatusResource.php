@@ -20,7 +20,7 @@ class StatusResource extends JsonResource
         return [
             'id'             => (int) $this->id,
             'body'           => (string) $this->body,
-            'type'           => (string) $this->type,
+            'type'           => '', //TODO: deprecated: remove after 2024-02
             'user'           => (int) $this->user->id,
             'username'       => (string) $this->user->username,
             'profilePicture' => ProfilePictureController::getUrl($this->user),
