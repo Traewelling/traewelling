@@ -40,6 +40,7 @@ class ManualTripCreator extends Controller
                                             'departure'      => $this->originDeparturePlanned,
                                             'arrival'        => $this->destinationArrivalPlanned,
                                             'source'         => TripSource::USER,
+                                            'user_id'        => auth()->user()?->id ?? null,
                                         ]);
         return $this->trip;
     }

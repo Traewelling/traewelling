@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property UTCDateTime     $arrival
  * @property UTCDateTime     $last_refreshed
  * @property TripSource      $source
+ * @property int             $user_id
  * @property                 $stopovers
  * @property PolyLine        $polyLine
  *
@@ -41,7 +42,7 @@ class HafasTrip extends Model
 
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'journey_number', 'operator_id', 'origin', 'destination',
-        'polyline_id', 'departure', 'arrival', 'delay', 'source', 'last_refreshed',
+        'polyline_id', 'departure', 'arrival', 'delay', 'source', 'user_id', 'last_refreshed',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $casts    = [
@@ -57,6 +58,7 @@ class HafasTrip extends Model
         'arrival'        => UTCDateTime::class,
         'last_refreshed' => 'datetime',
         'source'         => TripSource::class,
+        'user_id'        => 'integer',
     ];
 
     public function polyline(): HasOne {
@@ -83,5 +85,12 @@ class HafasTrip extends Model
 
     public function checkins(): HasMany {
         return $this->hasMany(TrainCheckin::class, 'trip_id', 'trip_id');
+    }
+
+    /**
+     * If this trip was created by a user, this model belongs to the user, so they can edit and delete it.
+     */
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }
