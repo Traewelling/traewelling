@@ -19,7 +19,7 @@
                     <i class="fa-solid fa-circle-info"></i>
                     {{__('checkin.points.could-have')}}
                     <a href="{{route('static.about') . '#heading-points'}}">
-                        ({{__('messages.cookie-notice-learn')}})
+                        ({{__('checkin.points.learn-more')}})
                     </a>
                 </span>
             @endif
