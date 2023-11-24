@@ -8,19 +8,19 @@ use Tests\Unit\UnitTestCase;
 
 class FactorTest extends UnitTestCase
 {
-    public function testInTimeFactor(): void {
-        $this->assertEquals(1, PointsCalculationController::getFactorByReason(PointReason::IN_TIME));
+    public static function factorDataProvider(): array {
+        return [
+            [PointReason::IN_TIME, 1],
+            [PointReason::GOOD_ENOUGH, 0.25],
+            [PointReason::NOT_SUFFICIENT, 0],
+            [PointReason::FORCED, 0],
+        ];
     }
 
-    public function testGoodEnoughFactor(): void {
-        $this->assertEquals(0.25, PointsCalculationController::getFactorByReason(PointReason::GOOD_ENOUGH));
-    }
-
-    public function testNotSufficientFactor(): void {
-        $this->assertEquals(0, PointsCalculationController::getFactorByReason(PointReason::NOT_SUFFICIENT));
-    }
-
-    public function testForcedFactor(): void {
-        $this->assertEquals(0, PointsCalculationController::getFactorByReason(PointReason::FORCED));
+    /**
+     * @dataProvider factorDataProvider
+     */
+    public function testFactor(PointReason $reason, float $expectedFactor): void {
+        $this->assertEquals($expectedFactor, PointsCalculationController::getFactorByReason($reason));
     }
 }
