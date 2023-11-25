@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Auth;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
@@ -11,6 +12,7 @@ class LoginController extends Controller
         $loginType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         if (Auth::attempt([$loginType => $login, 'password' => $password], $remember)) {
+            auth()->user()->update(['last_login' => now()]);
             return true;
         }
 
