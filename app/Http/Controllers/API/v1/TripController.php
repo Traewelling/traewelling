@@ -36,8 +36,8 @@ class TripController extends Controller
         $validated = $request->validate([
                                             'category'                  => ['required', new Enum(HafasTravelType::class)],
                                             'lineName'                  => ['required'],
-                                            'journey_number'            => ['nullable', 'numeric', 'min:1'],
-                                            'operator_id'               => ['nullable', 'numeric', 'exists:hafas_operators,id'],
+                                            'journeyNumber'             => ['nullable', 'numeric', 'min:1'],
+                                            'operatorId'                => ['nullable', 'numeric', 'exists:hafas_operators,id'],
                                             'originId'                  => ['required', 'exists:train_stations,ibnr'],
                                             'originDeparturePlanned'    => ['required', 'date'],
                                             'destinationId'             => ['required', 'exists:train_stations,ibnr'],
@@ -50,8 +50,8 @@ class TripController extends Controller
 
         $creator->category                  = HafasTravelType::from($validated['category']);
         $creator->lineName                  = $validated['lineName'];
-        $creator->journeyNumber             = $validated['journey_number'];
-        $creator->operator                  = HafasOperator::find($validated['operator_id']);
+        $creator->journeyNumber             = $validated['journeyNumber'];
+        $creator->operator                  = HafasOperator::find($validated['operatorId']);
         $creator->origin                    = TrainStation::where('ibnr', $validated['originId'])->firstOrFail();
         $creator->originDeparturePlanned    = Carbon::parse($validated['originDeparturePlanned']);
         $creator->destination               = TrainStation::where('ibnr', $validated['destinationId'])->firstOrFail();

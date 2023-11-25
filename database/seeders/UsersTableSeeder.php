@@ -25,6 +25,7 @@ class UsersTableSeeder extends Seeder
                                     'password' => Hash::make('thisisnotasecurepassword123'),
                                 ]);
         $gertrud->assignRole('admin');
+        $gertrud->assignRole('closed-beta');
 
         User::factory()
             ->create([
