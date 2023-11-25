@@ -10,39 +10,31 @@ use Illuminate\Http\Request;
 use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class WebFingerController extends Controller {
+class WebFingerController extends Controller
+{
 
+    private string $resource;
     private string $serverName;
 
-    public function __construct() {
-        $url = config('app.url');
-        $this->serverName = $this::getServerName($url);
+    public function __construct(string $resource) {
+        $this->resource   = $resource;
+        $this->serverName = self::getServerName(config('app.url'));
     }
 
     public static function getServerName(string $url): string {
-        $parsedUrl = parse_url($url);
-        $protocol = $parsedUrl['scheme'];
+        $parsedUrl  = parse_url($url);
+        $protocol   = $parsedUrl['scheme'];
         $serverName = $parsedUrl['host'];
-        $port = null;
 
         if (isset($parsedUrl['port'])) {
-            $port = $parsedUrl['port'];
-            $serverName = WebFingerController::appendNonStandardPort($protocol, $serverName, $port);
+            $serverName = WebFingerController::appendNonStandardPort($protocol, $serverName, $parsedUrl['port']);
         }
 
         return $serverName;
     }
 
-    public function endpoint(Request $request): JsonResponse {
-        $active = config('trwl.webfinger_active');
-        if (!$active) {
-            return new JsonResponse([ 'message' => 'WebFinger is disabled. Contact the server administrator if you believe this is an error.' ], 403);
-        }
-
-        $validated = $request->validate(['resource' => 'required']);
-
-        $resource = $validated['resource'];
-        [$username, $host] = $this->parseDetails($resource);
+    public function renderResponse(): JsonResponse {
+        [$username, $host] = $this->parseDetails($this->resource);
 
         if ($host != $this->serverName) {
             throw new InvalidArgumentException('Only users from ' . $this->serverName . ' are accepted.');
@@ -61,14 +53,14 @@ class WebFingerController extends Controller {
                 'aliases' => [
                     route('profile', ['username' => $username]),
                 ],
-                'links' => [
+                'links'   => [
                     [
-                        'rel' => 'http://webfinger.net/rel/profile-page',
+                        'rel'  => 'http://webfinger.net/rel/profile-page',
                         'type' => 'text/html',
                         'href' => route('profile', ['username' => $username]),
                     ],
                     [
-                        'rel' => 'http://webfinger.net/rel/avatar',
+                        'rel'  => 'http://webfinger.net/rel/avatar',
                         'type' => 'image/png',
                         'href' => $avatarUrl,
                     ],
@@ -84,9 +76,9 @@ class WebFingerController extends Controller {
     function parseDetails(string $resource): mixed {
         // is it a 'acct:' uri?
         if (str_starts_with($resource, 'acct:')) {
-            $atPos = strpos($resource, '@', strlen('acct:'));
+            $atPos    = strpos($resource, '@', strlen('acct:'));
             $username = substr($resource, strlen('acct:'), $atPos - strlen('acct:'));
-            $host = substr($resource, $atPos + 1);
+            $host     = substr($resource, $atPos + 1);
             return [
                 $username,
                 $host,
@@ -94,14 +86,12 @@ class WebFingerController extends Controller {
         }
         // otherwise it's a regular url
         // e.g. https://traewelling.de/@Gertrud123
-        $url = parse_url($resource);
+        $url      = parse_url($resource);
         $username = substr($url['path'], 2);
-        $host = $url['host'];
-        $scheme = $url['scheme'];
-        $port = null;
+        $host     = $url['host'];
+        $scheme   = $url['scheme'];
         if (isset($url['port'])) {
-            $port = $url['port'];
-            $host = $this->appendNonStandardPort($scheme, $host, $port);
+            $host = $this->appendNonStandardPort($scheme, $host, $url['port']);
         }
 
         return [
