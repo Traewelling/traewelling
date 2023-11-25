@@ -34,6 +34,22 @@
                                 @endforeach
                             </select>
 
+                            <script>
+                                document.querySelector('select[name="columns[]"]')
+                                    .addEventListener('change', function (e) {
+                                        if (e.target.selectedOptions.length > 7) {
+                                            document.querySelector('#alert-pdf-count').classList.remove('d-none');
+                                        } else {
+                                            document.querySelector('#alert-pdf-count').classList.add('d-none');
+                                        }
+                                    });
+                            </script>
+
+                            <div class="alert alert-warning mt-3 d-none" role="alert" id="alert-pdf-count">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                {{__('export.pdf.many')}}
+                            </div>
+
                             <hr/>
                             <p class="fw-bold mb-1">
                                 <i class="fa-regular fa-calendar-days"></i>
@@ -43,14 +59,16 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-floating">
-                                        <input name="from" id="from" type="date" value="{{now()->firstOfMonth()->format('Y-m-d')}}"
+                                        <input name="from" id="from" type="date"
+                                               value="{{now()->firstOfMonth()->format('Y-m-d')}}"
                                                class="form-control"/>
                                         <label for="from">{{__('export.begin')}}</label>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="form-floating">
-                                        <input name="until" id="until" type="date" value="{{now()->lastOfMonth()->format('Y-m-d')}}"
+                                        <input name="until" id="until" type="date"
+                                               value="{{now()->lastOfMonth()->format('Y-m-d')}}"
                                                class="form-control"/>
                                         <label for="until">{{__('export.end')}}</label>
                                     </div>
@@ -105,14 +123,16 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-floating">
-                                        <input name="from" id="from" type="date" value="{{now()->firstOfMonth()->format('Y-m-d')}}"
+                                        <input name="from" id="from" type="date"
+                                               value="{{now()->firstOfMonth()->format('Y-m-d')}}"
                                                class="form-control"/>
                                         <label for="from">{{__('export.begin')}}</label>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="form-floating">
-                                        <input name="until" id="until" type="date" value="{{now()->lastOfMonth()->format('Y-m-d')}}"
+                                        <input name="until" id="until" type="date"
+                                               value="{{now()->lastOfMonth()->format('Y-m-d')}}"
                                                class="form-control"/>
                                         <label for="until">{{__('export.end')}}</label>
                                     </div>

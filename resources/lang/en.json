@@ -730,5 +730,6 @@
     "machine-readable-headings": "machine readable headings",
     "export.columns": "Which columns should the export contain?",
     "export.period": "What period do you want to export?",
-    "export.format": "What format do you want to export in?"
+    "export.format": "What format do you want to export in?",
+    "export.pdf.many": "You have selected a lot of columns, which means the PDF export may no longer be easy to read."
 }
