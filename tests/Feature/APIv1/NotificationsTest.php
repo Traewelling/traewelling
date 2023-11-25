@@ -17,10 +17,8 @@ use App\Models\User;
 use App\Notifications\EventSuggestionProcessed;
 use App\Notifications\UserFollowed;
 use App\Notifications\UserJoinedConnection;
-use App\Providers\AuthServiceProvider;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery\Generator\StringManipulation\Pass\Pass;
 use Tests\ApiTestCase;
 
 class NotificationsTest extends ApiTestCase
@@ -29,8 +27,8 @@ class NotificationsTest extends ApiTestCase
 
     public function testUnreadCountEndpoint(): void {
         //create users
-        $alice      = User::factory()->create();
-        $bob        = User::factory()->create();
+        $alice = User::factory()->create();
+        $bob   = User::factory()->create();
         Passport::actingAs($alice, ['*']);
 
         //check if there are no notifications in the database
@@ -50,8 +48,8 @@ class NotificationsTest extends ApiTestCase
 
     public function testApiEndpointCanMarkNotificationAsReadAndUnread(): void {
         //create users
-        $alice      = User::factory()->create();
-        $bob        = User::factory()->create();
+        $alice = User::factory()->create();
+        $bob   = User::factory()->create();
         Passport::actingAs($alice, ['*']);
 
         //check if there are no notifications in the database
@@ -91,8 +89,8 @@ class NotificationsTest extends ApiTestCase
 
     public function testApiEndpointCanMarkAllNotificationAsRead(): void {
         //create users
-        $alice      = User::factory()->create();
-        $bob        = User::factory()->create();
+        $alice = User::factory()->create();
+        $bob   = User::factory()->create();
 
         Passport::actingAs($alice, ['*']);
 
@@ -119,8 +117,8 @@ class NotificationsTest extends ApiTestCase
 
     public function testFollowingAUserShouldSpawnANotification(): void {
         //Create users
-        $alice    = User::factory()->create();
-        $bob      = User::factory()->create();
+        $alice = User::factory()->create();
+        $bob   = User::factory()->create();
         Passport::actingAs($bob, ['*']);
 
         //Check if there are no notifications
@@ -245,8 +243,8 @@ class NotificationsTest extends ApiTestCase
 
     public function testMarkNotificationAsRead(): void {
         //create alice and bob
-        $alice    = User::factory()->create();
-        $bob      = User::factory()->create();
+        $alice = User::factory()->create();
+        $bob   = User::factory()->create();
         Passport::actingAs($bob, ['*']);
 
         //alice follows bob
@@ -285,15 +283,14 @@ class NotificationsTest extends ApiTestCase
 
     public function testAcceptingEventSuggestionSpawnANotification(): void {
         //Create users
-        $alice      = User::factory(['role' => 10])->create(); //additionally make alice an admin, so she can self-accept
-        Passport::actingAs($alice, ['*']);
+        $alice = User::factory()->create()
+                     ->assignRole('admin'); //additionally make alice an admin, so she can self-accept
 
         //suggest an event
         $eventSuggestion = EventSuggestion::factory(['user_id' => $alice->id])->create();
 
         //accept event suggestion
         $response = $this->actingAs($alice)
-                         ->followingRedirects()
                          ->post(
                              uri:  '/admin/events/suggestions/accept',
                              data: [
@@ -307,12 +304,13 @@ class NotificationsTest extends ApiTestCase
                                        'event_end'    => $eventSuggestion->end
                                    ]
                          );
-        $response->assertOk();
+        $response->assertRedirectToRoute('admin.events');
 
         //save event for later
         $event = Event::first();
 
         //let alice request her notifications
+        Passport::actingAs($alice, ['*']);
         $response = $this->get('/api/v1/notifications');
         $response->assertOk();
         $response->assertJsonCount(1, 'data'); // one notification
@@ -321,15 +319,15 @@ class NotificationsTest extends ApiTestCase
                                       ]);
         $response->assertJsonFragment([
                                           'data' => [
-                                              'accepted'      => true,
-                                              'event'         => [
+                                              'accepted'        => true,
+                                              'event'           => [
                                                   'id'    => $event->id,
                                                   'slug'  => $event->slug,
                                                   'name'  => $event->name,
                                                   'begin' => $event->begin,
                                                   'end'   => $event->end,
                                               ],
-                                              'suggestedName' => $eventSuggestion->name,
+                                              'suggestedName'   => $eventSuggestion->name,
                                               'rejectionReason' => null
                                           ]
                                       ]
@@ -338,23 +336,24 @@ class NotificationsTest extends ApiTestCase
 
     public function testDenyingEventSuggestionSpawnANotification(): void {
         //Create users
-        $alice      = User::factory(['role' => 10])->create(); //additionally make alice an admin, so she can self-accept
-        Passport::actingAs($alice, ['*']);
+        $alice = User::factory()->create();
+        $alice->assignRole('admin'); //additionally make alice an admin, so she can self-accept
 
         //suggest an event
         $eventSuggestion = EventSuggestion::factory(['user_id' => $alice->id])->create();
 
         //accept event suggestion
         $response = $this->actingAs($alice)
-                         ->followingRedirects()
                          ->post(
                              uri:  '/admin/events/suggestions/deny',
                              data: ['id' => $eventSuggestion->id, 'rejectionReason' => 'denied']
                          );
-        $response->assertOk();
+        $response->assertRedirectToRoute('admin.events.suggestions');
 
         //let alice request her notifications
-        $response = $this->get('/api/v1/notifications');
+        Passport::actingAs($alice, ['*']);
+        $response = $this->actingAs($alice)
+                         ->get('/api/v1/notifications');
         $response->assertOk();
         $response->assertJsonCount(1, 'data'); // one notification
         $response->assertJsonFragment([
@@ -362,10 +361,10 @@ class NotificationsTest extends ApiTestCase
                                       ]);
         $response->assertJsonFragment([
                                           'data' => [
-                                              'accepted'      => false,
-                                              'event'         => null,
-                                              'suggestedName' => $eventSuggestion->name,
-                                              'rejectionReason'        => "denied"
+                                              'accepted'        => false,
+                                              'event'           => null,
+                                              'suggestedName'   => $eventSuggestion->name,
+                                              'rejectionReason' => "denied"
                                           ]
                                       ]
         );

@@ -66,6 +66,12 @@ class SettingsController extends Controller
             $validated['email']             = strtolower($validated['email']);
         }
 
+        if ($validated['experimental'] === '1' && !auth()->user()->hasRole('open-beta')) {
+            auth()->user()->assignRole('open-beta');
+        } elseif ($validated['experimental'] === '0' && auth()->user()->hasRole('open-beta')) {
+            auth()->user()->removeRole('open-beta');
+        }
+
         auth()->user()->update($validated);
 
         if (!auth()->user()->hasVerifiedEmail()) {

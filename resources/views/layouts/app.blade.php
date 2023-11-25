@@ -161,13 +161,13 @@
                                                 </a>
                                             </li>
                                         @endif
-                                        @admin
-                                        <li>
-                                            <a class="dropdown-item" href="{{route('admin.dashboard')}}">
-                                                <i class="fas fa-tools"></i> {{__('menu.admin')}}
-                                            </a>
-                                        </li>
-                                        @endadmin
+                                        @if(auth()->user()->hasRole('admin') || auth()->user()->can('view-events'))
+                                            <li>
+                                                <a class="dropdown-item" href="{{route('admin.dashboard')}}">
+                                                    <i class="fas fa-tools"></i> Backend
+                                                </a>
+                                            </li>
+                                        @endif
                                         <li>
                                             <hr class="dropdown-divider"/>
                                         </li>
@@ -257,40 +257,40 @@
                         <div class="col-md-auto ms-md-auto mb-3">
                             <ul class="nav flex-column">
                                 <li class="nav item mb-2">
-                                <div class="btn-group dropup w-100">
-                                    <button type="button" class="btn btn-primary btn-block dropdown-toggle"
-                                            data-mdb-dropdown-animation="off"
-                                            data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        @foreach(config('app.locales') as $key => $lang)
-                                            <a class="dropdown-item"
-                                               href="{{request()->fullUrlWithQuery(['language' => $key])}}">
-                                                {{ $lang }}
-                                            </a>
-                                        @endforeach
-                                    </div>
-                                </div>
-                                </li>
-                                <li class="nav item mb-2">
-                                <div class="btn-group dropup w-100">
-                                    <button type="button" class="btn btn-primary btn-block dropdown-toggle"
-                                            data-mdb-dropdown-animation="off"
-                                            data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fas fa-circle-half-stroke"></i></i> {{__('settings.colorscheme.set')}}
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <div class="dropdown-item" id="colorModeToggleLight"><i
-                                                class="fas fa-sun"></i> {{__('settings.colorscheme.light')}}</div>
-                                        <div class="dropdown-item" id="colorModeToggleDark"><i
-                                                class="fas fa-moon"></i> {{__('settings.colorscheme.dark')}}</div>
-                                        <div class="dropdown-item" id="colorModeToggleAuto">
-                                            <i class="fas fa-circle-half-stroke"></i>
-                                            {{__('settings.colorscheme.auto')}}
+                                    <div class="btn-group dropup w-100">
+                                        <button type="button" class="btn btn-primary btn-block dropdown-toggle"
+                                                data-mdb-dropdown-animation="off"
+                                                data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            @foreach(config('app.locales') as $key => $lang)
+                                                <a class="dropdown-item"
+                                                   href="{{request()->fullUrlWithQuery(['language' => $key])}}">
+                                                    {{ $lang }}
+                                                </a>
+                                            @endforeach
                                         </div>
                                     </div>
-                                </div>
+                                </li>
+                                <li class="nav item mb-2">
+                                    <div class="btn-group dropup w-100">
+                                        <button type="button" class="btn btn-primary btn-block dropdown-toggle"
+                                                data-mdb-dropdown-animation="off"
+                                                data-mdb-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-circle-half-stroke"></i></i> {{__('settings.colorscheme.set')}}
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <div class="dropdown-item" id="colorModeToggleLight"><i
+                                                    class="fas fa-sun"></i> {{__('settings.colorscheme.light')}}</div>
+                                            <div class="dropdown-item" id="colorModeToggleDark"><i
+                                                    class="fas fa-moon"></i> {{__('settings.colorscheme.dark')}}</div>
+                                            <div class="dropdown-item" id="colorModeToggleAuto">
+                                                <i class="fas fa-circle-half-stroke"></i>
+                                                {{__('settings.colorscheme.auto')}}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </li>
                             </ul>
 
@@ -331,7 +331,7 @@
             var urlTrainTrip     = '{{ route('trains.trip') }}';
             var urlUnfollow      = '{{ route('follow.destroy') }}';
             var urlAutocomplete  = '{{ url('transport/train/autocomplete') }}';
-            var mapprovider = '{{ Auth::user()->mapprovider ?? "default" }}';
+            var mapprovider      = '{{ Auth::user()->mapprovider ?? "default" }}';
 
             let translations = {
                 stationboard: {

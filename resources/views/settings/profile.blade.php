@@ -145,10 +145,10 @@
                             </label>
                             <div class="col-md-6">
                                 <select class="form-control" name="experimental" id="experimental">
-                                    <option value="1" @if(auth()->user()->experimental) selected @endif>
+                                    <option value="1" @if(auth()->user()->hasRole('open-beta')) selected @endif>
                                         {{__('settings.allow')}}
                                     </option>
-                                    <option value="0" @if(!auth()->user()->experimental) selected @endif>
+                                    <option value="0" @if(!auth()->user()->hasRole('open-beta')) selected @endif>
                                         {{__('settings.prevent')}}
                                     </option>
                                 </select>

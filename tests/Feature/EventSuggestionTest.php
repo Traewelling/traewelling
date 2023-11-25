@@ -19,7 +19,7 @@ class EventSuggestionTest extends TestCase
     public function setUp(): void {
         parent::setUp();
         $this->user            = User::factory()->create();
-        $this->admin           = User::factory(['role' => 10])->create();
+        $this->admin           = User::factory()->create()->assignRole('admin');
         $this->eventSuggestion = EventSuggestion::factory(['user_id' => $this->user->id])->create();
     }
 

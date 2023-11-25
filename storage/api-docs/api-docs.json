@@ -4911,12 +4911,6 @@
                         "description": "User defined status text",
                         "example": "Hello world!"
                     },
-                    "type": {
-                        "title": "type",
-                        "description": "type of status",
-                        "type": "string",
-                        "example": "HAFAS"
-                    },
                     "user": {
                         "title": "user",
                         "description": "user id",
@@ -5415,13 +5409,6 @@
                         "format": "int64",
                         "example": 300
                     },
-                    "twitterUrl": {
-                        "title": "twitterUrl",
-                        "description": "Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
-                        "type": "string",
-                        "example": "null",
-                        "nullable": true
-                    },
                     "mastodonUrl": {
                         "title": "mastodonUrl",
                         "description": "URL to the Mastodon profile of the user",
@@ -5525,13 +5512,6 @@
                         "type": "integer",
                         "format": "int64",
                         "example": 300
-                    },
-                    "twitterUrl": {
-                        "title": "twitterUrl",
-                        "description": "Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
-                        "type": "string",
-                        "example": "null",
-                        "nullable": true
                     },
                     "mastodonUrl": {
                         "title": "mastodonUrl",

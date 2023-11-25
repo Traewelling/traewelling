@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
@@ -10,6 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -36,6 +38,8 @@ class Handler extends ExceptionHandler
     protected array $dontReference = [
         ModelNotFoundException::class,
         HttpException::class,
+        AuthenticationException::class,
+        NotFoundHttpException::class
     ];
 
     /**

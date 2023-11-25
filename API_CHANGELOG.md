@@ -4,13 +4,43 @@ In this we try to keep track of changes to the API.
 Primarily this should document changes that are not backwards compatible or belongs to already documented endpoints.
 This is to help you keep track of the changes and to help you update your code accordingly.
 
+## 2023-11-23
+
+The attribute `type` in the `Status` Model is marked as deprecated and now returns a blank string for all statuses as it
+is not used.
+
+> [!IMPORTANT]
+> **Backwards compatibility** - Will not break your code until February 2024.
+>
+> After that, the attribute will be removed.
+
+## 2023-11-22
+
+The attribute `role` in the `User` Model is marked as deprecated and now returns `0` for all users.
+
+> [!IMPORTANT]
+> **Backwards compatibility** - Will not break your code until February 2024.
+>
+> After that, the attribute will be removed.
+
+## 2023-11-21
+
+The attribute `twitterUrl` in the `User` Model is marked as deprecated and returns `null`, as Traewelling does not
+support Twitter anymore.
+
+> [!IMPORTANT]
+> **Backwards compatibility** - Will not break your code until February 2024.
+>
+> After that, the attribute will be removed.
+
 ## 2023-10-30
 
 Deprecated `trainSpeed` and `speed` attribute in `LeaderboardUser`, `Status` and `UserBase`-object.
 There are `distance` and `duration` attributes, which you can use to calculate the speed yourself.
 
-> **note**
-> This change is backwards compatible and will not break your code.
+> [!IMPORTANT]
+> **Backwards compatibility** - Will not break your code until December 2023.
+>
 > As of now, the `speed` attribute return 0 for all objects and will be removed after 2023-12-31.
 
 ## 2023-09-22
