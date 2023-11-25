@@ -314,7 +314,8 @@ abstract class TrainCheckinController extends Controller
             distanceInMeter: $distance,
             hafasTravelType: $trainCheckin->HafasTrip->category,
             departure:       $firstStop->departure,
-            arrival:         $lastStop->arrival
+            arrival:         $lastStop->arrival,
+            timestampOfView: $status->created_at
         );
         $payload        = [
             'distance' => $distance,
