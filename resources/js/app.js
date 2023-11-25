@@ -68,7 +68,6 @@ document.addEventListener("DOMContentLoaded", function() {
  */
 window.addEventListener("load", () => {
     import("./components/DarkModeToggle");
-    import("./components/alert");
     import("./components/Event");
     import("./components/progressbar");
     import("./components/settings");
