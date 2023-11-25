@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1",
+            "url": "https://traewelling.de/api/v1",
             "description": "This instance"
         }
     ],
@@ -1239,7 +1239,7 @@
             }
         },
         "/notifications/read/all": {
-            "post": {
+            "put": {
                 "tags": [
                     "Notifications"
                 ],
@@ -1676,6 +1676,20 @@
                 ],
                 "summary": "Get personal statistics",
                 "operationId": "getStatistics",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Start date for the statistics",
+                        "example": "2021-01-01T00:00:00.000Z"
+                    },
+                    {
+                        "name": "until",
+                        "in": "query",
+                        "description": "End date for the statistics",
+                        "example": "2021-02-01T00:00:00.000Z"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -1769,17 +1783,6 @@
                                                         },
                                                         "type": "object"
                                                     }
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "meta": {
-                                            "properties": {
-                                                "from": {
-                                                    "example": "2021-01-01T00:00:00.000000Z"
-                                                },
-                                                "until": {
-                                                    "example": "2021-02-01T00:00:00.000000Z"
                                                 }
                                             },
                                             "type": "object"
@@ -2690,7 +2693,7 @@
                     "Status"
                 ],
                 "summary": "Create a StatusTag",
-                "description": "Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free\n     *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b>\n     *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions\n     *      we recommend the following tags in the trwl namespace:<br><ul><li>trwl:seat (i.e. 61)</li><li>trwl:wagon\n     *      (i.e. 25)</li><li>trwl:ticket (i.e. BahnCard 100 first))</li><li>trwl:travel_class (i.e. 1, 2, business,\n     *      economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li></ul>",
+                "description": "Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free\n     *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b>\n     *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions\n     *      we recommend the following tags in the trwl namespace:<br><ul><li>trwl:seat (i.e. 61)</li><li>trwl:wagon\n     *      (i.e. 25)</li><li>trwl:ticket (i.e. BahnCard 100 first))</li><li>trwl:travel_class (i.e. 1, 2, business,\n     *      economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li>\n     *      <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li><li>trwl:vehicle_number (i.e. 425\n     *      001, Tz9001, 123, ...)</li></ul>",
                 "operationId": "createSingleStatusTag",
                 "parameters": [
                     {
@@ -2746,6 +2749,75 @@
                         "passport": [
                             "write-statuses"
                         ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/statuses/{statusIds}/tags": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Show all tags for multiple statuses which are visible for the current user",
+                "description": "Returns a collection of all visible tags for the given statuses, if user is authorized",
+                "operationId": "getTagsForMultipleStatuses",
+                "parameters": [
+                    {
+                        "name": "statusIds",
+                        "in": "path",
+                        "description": "Status-ID",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "1337,4711"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "1337": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/StatusTag"
+                                                    }
+                                                },
+                                                "4711": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/StatusTag"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "User not authorized to access this"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
                     },
                     {
                         "token": []
@@ -4565,13 +4637,6 @@
                         "format": "int64",
                         "example": 12345
                     },
-                    "trainSpeed": {
-                        "title": "trainSpeed",
-                        "description": "average speed travelled by train in meters",
-                        "type": "number",
-                        "format": "float",
-                        "example": 123.45
-                    },
                     "points": {
                         "title": "points",
                         "description": "Current points of the last 7 days",
@@ -4846,12 +4911,6 @@
                         "description": "User defined status text",
                         "example": "Hello world!"
                     },
-                    "type": {
-                        "title": "type",
-                        "description": "type of status",
-                        "type": "string",
-                        "example": "HAFAS"
-                    },
                     "user": {
                         "title": "user",
                         "description": "user id",
@@ -5033,13 +5092,6 @@
                         "description": "time traveled in this checkin in minutes",
                         "type": "integer",
                         "example": 7
-                    },
-                    "speed": {
-                        "title": "speed",
-                        "description": "speed of this checkin in kph",
-                        "type": "number",
-                        "format": "float",
-                        "example": 85.98857142857143
                     },
                     "origin": {
                         "$ref": "#/components/schemas/TrainStopover"
@@ -5350,26 +5402,12 @@
                         "format": "int64",
                         "example": 6
                     },
-                    "trainSpeed": {
-                        "title": "trainSpeed",
-                        "description": "average speed travelled by train in meters",
-                        "type": "number",
-                        "format": "float",
-                        "example": 123.45
-                    },
                     "points": {
                         "title": "points",
                         "description": "Current points of the last 7 days",
                         "type": "integer",
                         "format": "int64",
                         "example": 300
-                    },
-                    "twitterUrl": {
-                        "title": "twitterUrl",
-                        "description": "Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
-                        "type": "string",
-                        "example": "null",
-                        "nullable": true
                     },
                     "mastodonUrl": {
                         "title": "mastodonUrl",
@@ -5468,26 +5506,12 @@
                         "format": "int64",
                         "example": 6
                     },
-                    "trainSpeed": {
-                        "title": "trainSpeed",
-                        "description": "average speed travelled by train in meters",
-                        "type": "number",
-                        "format": "float",
-                        "example": 123.45
-                    },
                     "points": {
                         "title": "points",
                         "description": "Current points of the last 7 days",
                         "type": "integer",
                         "format": "int64",
                         "example": 300
-                    },
-                    "twitterUrl": {
-                        "title": "twitterUrl",
-                        "description": "Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
-                        "type": "string",
-                        "example": "null",
-                        "nullable": true
                     },
                     "mastodonUrl": {
                         "title": "mastodonUrl",
@@ -5847,9 +5871,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost/oauth/authorize",
-                        "tokenUrl": "http://localhost/oauth/token",
-                        "refreshUrl": "http://localhost/auth/refresh",
+                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
+                        "tokenUrl": "http://localhost:8000/oauth/token",
+                        "refreshUrl": "http://localhost:8000/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",
@@ -5881,7 +5905,7 @@
             },
             "token": {
                 "type": "apiKey",
-                "description": "Enter token in format \"Bearer \\<token\\>\"",
+                "description": "Enter token in format \"Bearer \\<token\\>\". You can create your personal access token at https://traewelling.de/settings/applications. We recommend this method for prototyping purposes. For all other use cases please use the oAuth method above.",
                 "name": "Authorization",
                 "in": "header"
             }

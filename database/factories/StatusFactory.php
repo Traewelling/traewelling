@@ -16,7 +16,6 @@ class StatusFactory extends Factory
             'user_id'    => User::factory(),
             'business'   => $this->faker->randomElement(Business::cases())->value,
             'visibility' => StatusVisibility::PUBLIC,
-            'type'       => 'hafas',
             'event_id'   => null,
         ];
     }

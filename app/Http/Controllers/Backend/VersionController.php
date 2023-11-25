@@ -9,12 +9,12 @@ abstract class VersionController extends Controller
 {
     public static function getVersion(): bool|string {
         if (file_exists(base_path() . '/VERSION')) {
-            return file_get_contents(base_path() . '/VERSION');
+            return trim(file_get_contents(base_path() . '/VERSION'));
         }
-        return self::getCurrentGitCommit();
+        return trim(self::getCurrentGitCommit());
     }
 
-    private static function get_git_HEAD(): bool|string {
+    private static function getGitHead(): bool|string {
         if ($head = @file_get_contents(base_path() . '/.git/HEAD')) {
             return substr($head, 5, -1);
         }
@@ -23,7 +23,7 @@ abstract class VersionController extends Controller
 
     private static function getCurrentGitCommit(): bool|string {
         try {
-            if ($hash = @file_get_contents(base_path() . '/.git/' . self::get_git_HEAD())) {
+            if ($hash = @file_get_contents(base_path() . '/.git/' . self::getGitHead())) {
                 return $hash;
             }
         } catch (Exception $exception) {

@@ -114,17 +114,6 @@ class Train
 
     /**
      * @OA\Property (
-     *     title="speed",
-     *     description="speed of this checkin in kph",
-     *     example=85.98857142857143
-     * )
-     *
-     * @var float
-     */
-    private $speed;
-
-    /**
-     * @OA\Property (
      *     title="origin",
      *     description="model of origin stopover"
      * )

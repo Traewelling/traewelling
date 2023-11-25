@@ -30,12 +30,10 @@ abstract class ApiTestCase extends TestCase
                                                'profilePicture',
                                                'trainDistance',
                                                'trainDuration',
-                                               'trainSpeed',
                                                'points',
                                                'mastodonUrl',
                                                'privateProfile',
                                                'preventIndex',
-                                               'role',
                                                'home',
                                                'language',
                                            ]

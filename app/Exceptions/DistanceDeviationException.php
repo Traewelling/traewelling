@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class DistanceDeviationException extends Exception
+class DistanceDeviationException extends Referencable
 {
     //
 }

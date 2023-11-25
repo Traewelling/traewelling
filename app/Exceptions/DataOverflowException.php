@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class DataOverflowException extends Exception
+class DataOverflowException extends Referencable
 {
     //
 }

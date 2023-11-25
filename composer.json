@@ -12,13 +12,14 @@
     ],
     "license": "AGPL-3.0-only",
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-exif": "*",
         "ext-gd": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
+        "ext-simplexml": "*",
         "ext-sodium": "*",
         "barryvdh/laravel-dompdf": "^2.0",
         "darkaonline/l5-swagger": "^8.3",
@@ -32,10 +33,11 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^4.0",
         "revolution/laravel-mastodon-api": "^3.0",
-        "romanzipp/laravel-queue-monitor": "^4.0",
+        "romanzipp/laravel-queue-monitor": "^5.0",
         "spatie/icalendar-generator": "^2.0",
+        "spatie/laravel-permission": "^6.1",
         "spatie/laravel-prometheus": "^1.0",
-        "spatie/laravel-sitemap": "^6.0",
+        "spatie/laravel-sitemap": "^7.0",
         "spatie/laravel-validation-rules": "^3.2",
         "spatie/laravel-webhook-server": "^3.4",
         "trwl/socialite-mastodon": "^1.2"
@@ -51,7 +53,7 @@
         "nunomaduro/collision": "^7.0",
         "phpunit/phpunit": "^10.0",
         "roave/security-advisories": "dev-latest",
-        "spatie/laravel-ignition": "2.3.0"
+        "spatie/laravel-ignition": "2.3.1"
     },
     "config": {
         "optimize-autoloader": true,

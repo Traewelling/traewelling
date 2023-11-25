@@ -32,11 +32,9 @@ class SocialController extends Controller
         }
 
         if ($validated['provider'] === 'twitter') {
-            //Twitter destroy is possible as we keep saving the last access tokens and account ids
+            //Twitter destroy is possible as we keep saving the last known user id
             $user->socialProfile->update([
-                                             'twitter_id'          => null,
-                                             'twitter_token'       => null,
-                                             'twitter_tokenSecret' => null
+                                             'twitter_id' => null,
                                          ]);
         } elseif ($validated['provider'] === 'mastodon') {
             $user->socialProfile->update([

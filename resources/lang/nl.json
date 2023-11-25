@@ -510,7 +510,6 @@
     "status.visibility.1": "Niet-vermeld",
     "status.visibility.1.detail": "Zichtbaar voor iedereen, maar alleen via je profiel",
     "description.leaderboard.monthly": "De topträwellers van :month :year van de afgelopen 7 dagen.",
-    "minutes": "minuten",
     "generic.error": "Foutmelding",
     "messages.exception.already-checkedin": "Je bent al ingecheckt op deze reis.",
     "messages.exception.maybe-too-fast": "Wellicht heb je je aanvraag per ongeluk meerdere keren verzonden?",
@@ -712,5 +711,14 @@
     "refresh": "Herladen",
     "your-access-token.ask": "Wij van Träwelling vragen je nooit om je toegangssleutel. Als je die vraag krijgt, dan is het hoogstwaarschijnlijk een scam.",
     "settings.experimental": "Experimentele functies",
-    "settings.experimental.description": "Let op: deze experimentele functies zijn nog niet helemaal klaar voor gebruik en kunnen bugs bevatten. Niet aanbevolen voor dagelijks gebruik."
+    "settings.experimental.description": "Let op: deze experimentele functies zijn nog niet helemaal klaar voor gebruik en kunnen bugs bevatten. Niet aanbevolen voor dagelijks gebruik.",
+    "messages.exception.reference": "Foutmelding: :reference",
+    "tag.title.trwl:vehicle_number": "Voertuignummer",
+    "tag.title.trwl:travel_class": "Klasse",
+    "tag.title.trwl:ticket": "Kaartje",
+    "tag.title.trwl:role": "Rol",
+    "tag.title.trwl:locomotive_class": "Locomotiefserie",
+    "tag.title.trwl:wagon": "Rijtuig",
+    "tag.title.trwl:seat": "Zitplaats",
+    "tag-beta-tooltip": "Hashtags kunnen momenteel alleen op traewelling.de worden bekeken. Je kunt ze wel bewerken in externe apps."
 }

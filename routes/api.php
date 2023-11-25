@@ -26,6 +26,7 @@ use App\Http\Controllers\API\v1\StatusTagController;
 use App\Http\Controllers\API\v1\SupportController;
 use App\Http\Controllers\API\v1\TokenController;
 use App\Http\Controllers\API\v1\TransportController;
+use App\Http\Controllers\API\v1\TripController;
 use App\Http\Controllers\API\v1\UserController;
 use App\Http\Controllers\API\v1\WebhookController;
 use Illuminate\Support\Facades\Route;
@@ -74,8 +75,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::put('unread/{id}', [NotificationsController::class, 'markAsUnread']);
             });
         });
-        Route::group(['prefix' => 'trains', 'middleware' => ['scope:write-statuses']], static function() {
-            Route::get('trip/', [TransportController::class, 'getTrip']);
+        Route::group(['prefix' => 'trains', 'middleware' => ['scope:write-statuses']], static function() { //TODO: rename from "trains" -> we have more then trains...
+            Route::get('trip', [TransportController::class, 'getTrip']);
+            Route::post('trip', [TripController::class, 'createTrip']);
             Route::post('checkin', [TransportController::class, 'create']);
             Route::group(['prefix' => 'station'], static function() {
                 Route::get('{name}/departures', [TransportController::class, 'departures']);
@@ -165,6 +167,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('status/{id}', [StatusController::class, 'show']);
             Route::get('status/{id}/likes', [LikesController::class, 'show']);
             Route::get('status/{statusId}/tags', [StatusTagController::class, 'index']);
+            Route::get('statuses/{statusIds}/tags', [StatusTagController::class, 'indexForMultiple']);
             Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
             Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);
             Route::get('event/{slug}', [EventController::class, 'show']);

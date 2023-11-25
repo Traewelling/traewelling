@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Casts\UTCDateTime;
 use App\Enum\HafasTravelType;
+use App\Enum\TripSource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,10 +12,28 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * @property $stopovers
- * @property PolyLine $polyLine
- * @property PolyLine $polyline
- * @property $linename
+ * @property int             $id
+ * @property string          $trip_id
+ * @property HafasTravelType $category
+ * @property string          $number
+ * @property string          $linename
+ * @property string          $journey_number
+ * @property int             $operator_id
+ * @property int             $origin
+ * @property int             $destination
+ * @property int             $polyline_id
+ * @property UTCDateTime     $departure
+ * @property UTCDateTime     $arrival
+ * @property UTCDateTime     $last_refreshed
+ * @property TripSource      $source
+ * @property int             $user_id
+ * @property                 $stopovers
+ * @property PolyLine        $polyLine
+ *
+ * @todo rename table only to "Trip" (without Hafas)
+ * @todo rename "linename" to "line_name" (or something else, but not "linename")
+ * @todo migrate origin & destination to use "id" instead of "ibnr" and rename to "origin_id" & "destination_id"
+ * @todo is "delay" still needed? We save planned and real in the stopovers. check.
  */
 class HafasTrip extends Model
 {
@@ -23,7 +42,7 @@ class HafasTrip extends Model
 
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'journey_number', 'operator_id', 'origin', 'destination',
-        'polyline_id', 'departure', 'arrival', 'delay', 'last_refreshed',
+        'polyline_id', 'departure', 'arrival', 'delay', 'source', 'user_id', 'last_refreshed',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $casts    = [
@@ -38,6 +57,8 @@ class HafasTrip extends Model
         'departure'      => UTCDateTime::class,
         'arrival'        => UTCDateTime::class,
         'last_refreshed' => 'datetime',
+        'source'         => TripSource::class,
+        'user_id'        => 'integer',
     ];
 
     public function polyline(): HasOne {
@@ -64,5 +85,12 @@ class HafasTrip extends Model
 
     public function checkins(): HasMany {
         return $this->hasMany(TrainCheckin::class, 'trip_id', 'trip_id');
+    }
+
+    /**
+     * If this trip was created by a user, this model belongs to the user, so they can edit and delete it.
+     */
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

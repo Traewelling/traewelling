@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @todo rename table only to "Operator" (or "TransportOperator", ..., but not HAFAS)
+ */
 class HafasOperator extends Model
 {
     use HasFactory;

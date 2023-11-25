@@ -27,8 +27,8 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7" >
-                @if(auth()->user()->experimental ?? false)
+            <div class="col-md-8 col-lg-7">
+                @if(auth()->check() && auth()->user()->hasRole('open-beta'))
                     <div id="checkin-success-helper">
                         <checkin-success-helper></checkin-success-helper>
                     </div>
@@ -36,7 +36,24 @@
                 <h2 class="fs-5">{{ userTime($status->trainCheckin->departure,__('dateformat.with-weekday')) }}</h2>
                 @include('includes.status')
 
+                @if($status->tags->count() > 0)
+                    @foreach($status->tags as $tag)
+                        @can('view', $tag)
+                            <span class="badge bg-trwl" data-mdb-toggle="tooltip" title="{{$tag->keyEnum->title()}}">
+                            @if($tag->keyEnum?->faIcon() !== null)
+                                    <i class="fa-solid {{$tag->keyEnum->faIcon()}} me-1"></i>
+                                @endif
+                                {{$tag->value}}
+                        </span>
+                        @endcan
+                    @endforeach
+                    <span class="badge" data-mdb-toggle="tooltip" title="{{__('tag-beta-tooltip')}}">
+                        <i class="fa-solid fa-question-circle"></i>
+                    </span>
+                @endif
+
                 @if(isset($status->trainCheckin->HafasTrip->last_refreshed) && \Illuminate\Support\Facades\Date::now()->isBefore($status->created_at->clone()->addDay()))
+                    <hr/>
                     <small class="text-muted">
                         {{__('real-time-last-refreshed')}}
                         {{$status->trainCheckin->HafasTrip->last_refreshed->diffForHumans()}}

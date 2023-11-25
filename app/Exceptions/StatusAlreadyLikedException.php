@@ -6,7 +6,7 @@ use App\Models\Status;
 use App\Models\User;
 use Exception;
 
-class StatusAlreadyLikedException extends Exception
+class StatusAlreadyLikedException extends Referencable
 {
     private $user;
     private $status;

@@ -50,8 +50,8 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::useBootstrap();
 
-        Blade::if("admin", function() {
-            return auth()->user()->role >= 5;
+        Blade::if("admin", static function(): bool {
+            return auth()->user()?->hasRole('admin');
         });
     }
 }

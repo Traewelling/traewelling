@@ -7,8 +7,12 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @todo rename table to "Stopover" (without Train - we have more than just trains)
+ * @todo rename "train_station_id" to "station_id" - we have more than just trains.
+ * @todo rename "cancelled" to "is_cancelled" - or split into "is_arrival_cancelled" and "is_departure_cancelled"? need to think about this.
+ */
 class TrainStopover extends Model
 {
     use HasFactory;

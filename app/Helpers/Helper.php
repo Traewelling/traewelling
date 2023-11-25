@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\Referencable;
 use App\Models\User;
 use Carbon\CarbonTimeZone;
 use Illuminate\Support\Carbon;
@@ -75,4 +76,14 @@ function hasStationBoardTimezoneOffsetToUser(Collection $departures, User $user)
     }
 
     return false;
+}
+
+function errorMessage(Exception $exception, ?string $text = null): array|null|string {
+    $text = $text ?? __('messages.exception.general');
+
+    if (!$exception instanceof Referencable) {
+        return $text;
+    }
+
+    return $text . ' ' . __('messages.exception.reference', ['reference' => $exception->reference()]);
 }

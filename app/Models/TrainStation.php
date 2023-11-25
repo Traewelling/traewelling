@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Event[] $events
  * @property Carbon  $created_at
  * @property Carbon  $updated_at
+ * @todo rename table to "Station" (without Train - we have more than just trains)
  */
 class TrainStation extends Model
 {

@@ -60,6 +60,7 @@
     "controller.status.like-not-found": "Like nicht gefunden.",
     "controller.status.like-ok": "Liked!",
     "controller.status.not-permitted": "Das darfst Du nicht.",
+    "tag-beta-tooltip": "Tags können derzeit auf traewelling.de nur angesehen werden. Du kannst sie aber in Drittanbieter-Apps bearbeiten.",
     "controller.transport.checkin-heading": "Eingecheckt",
     "controller.transport.checkin-ok": "Du hast erfolgreich in :lineName eingecheckt!|Du hast erfolgreich in Linie :lineName eingecheckt!",
     "controller.transport.no-name-given": "Du musst einen Stationsnamen angeben!",
@@ -252,6 +253,7 @@
     "messages.cookie-notice-button": "Okay",
     "messages.cookie-notice-learn": "Mehr erfahren",
     "messages.exception.general": "Es ist ein Fehler aufgetreten. Bitte probiere es erneut.",
+    "messages.exception.reference": "Fehler-Referenz: :reference",
     "messages.exception.generalHafas": "Es gab ein Problem mit der Schnittstelle zu den Fahrplandaten. Bitte probiere es erneut.",
     "messages.exception.hafas.502": "Der Fahrplan konnte nicht geladen werden. Bitte versuche es gleich erneut.",
     "messages.exception.already-checkedin": "Es existiert bereits ein Checkin in dieser Verbindung.",
@@ -540,7 +542,6 @@
     "description.en-route": "Übersichtskarte über alle Träweller, welche gerade auf der Welt unterwegs sind.",
     "leaderboard.notice": "Die hier angezeigten Daten basieren auf den Check-Ins der letzten 7 Tage. Aktualisierungen können bis zu fünf Minuten dauern.",
     "localisation.not-available": "Dieser Inhalt steht aktuell leider nicht auf deiner Sprache zur Verfügung.",
-    "minutes": "Minuten",
     "support": "Support",
     "support.create": "Support-Anfrage erstellen",
     "support.submit": "Support-Anfrage abschicken",
@@ -711,5 +712,12 @@
     "your-access-token-description": "Du kannst dir einen AccessToken generieren um auf deinen eigenen Account zuzugreifen.",
     "your-access-token.ask": "Wir von Träwelling werden dich niemals nach deinem AccessToken fragen. Wenn du von jemandem danach gefragt wirst, ist das vermutlich ein Betrugsversuch.",
     "access-token-is-private": "Behandle deinen AccessToken wie ein Passwort. Gib ihn niemals an Dritte weiter.",
-    "refresh": "Aktualisieren"
+    "refresh": "Aktualisieren",
+    "tag.title.trwl:seat": "Sitzplatz",
+    "tag.title.trwl:wagon": "Wagen",
+    "tag.title.trwl:ticket": "Ticket",
+    "tag.title.trwl:travel_class": "Reiseklasse",
+    "tag.title.trwl:locomotive_class": "Baureihe",
+    "tag.title.trwl:role": "Rolle",
+    "tag.title.trwl:vehicle_number": "Fahrzeugnummer"
 }

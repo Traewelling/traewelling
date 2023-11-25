@@ -33,7 +33,7 @@
                 tooltip: {
                     y: {
                         formatter: function (value) {
-                            return value + ' {{__('minutes')}}';
+                            return value + ' {{__('time.minutes')}}';
                         }
                     }
                 },

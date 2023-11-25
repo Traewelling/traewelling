@@ -7,6 +7,9 @@ use stdClass;
 
 class Feature implements \JsonSerializable
 {
+    /**
+     * @var Coordinate[] $coordinates
+     */
     private array  $coordinates;
     private string $type;
     private ?int   $statusId;
@@ -19,6 +22,10 @@ class Feature implements \JsonSerializable
 
     public static function fromCoordinate(Coordinate $coordinate) {
         return new self([$coordinate->longitude, $coordinate->latitude], 'Point');
+    }
+
+    public function getCoordinates(): array {
+        return $this->coordinates;
     }
 
     public function toArray(): array {

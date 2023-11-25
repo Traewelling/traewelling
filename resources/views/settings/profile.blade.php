@@ -15,10 +15,10 @@
                                 {{ __('settings.picture') }}
                             </label>
                             <div class="col-md-6 text-center">
-                                <div class="image-box">
+                                <div class="image-box pb-2">
                                     <img
                                         src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
-                                        style="max-width: 96px" alt="{{__('settings.picture')}}" class="pb-2"
+                                        style="max-width: 96px" alt="{{__('settings.picture')}}"
                                         id="theProfilePicture" loading="lazy" decoding="async"
                                     />
                                 </div>
@@ -145,10 +145,10 @@
                             </label>
                             <div class="col-md-6">
                                 <select class="form-control" name="experimental" id="experimental">
-                                    <option value="1" @if(auth()->user()->experimental) selected @endif>
+                                    <option value="1" @if(auth()->user()->hasRole('open-beta')) selected @endif>
                                         {{__('settings.allow')}}
                                     </option>
-                                    <option value="0" @if(!auth()->user()->experimental) selected @endif>
+                                    <option value="0" @if(!auth()->user()->hasRole('open-beta')) selected @endif>
                                         {{__('settings.prevent')}}
                                     </option>
                                 </select>

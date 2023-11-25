@@ -461,7 +461,8 @@
                     <div class="w-16 h-1 bg-trwl-light my-3 md:my-6"></div>
 
                     <p class="text-grey-darker text-2xl md:text-3xl font-light mb-8 leading-normal">
-                        @yield('message')
+                        @yield('message')<br>
+                        @yield('reference')
                     </p>
 
                     <a href="{{ app('router')->has('home') ? route('home') : url('/') }}">

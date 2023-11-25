@@ -8,27 +8,31 @@ use App\Http\Controllers\Backend\Auth\AuthorizationController;
 use App\Models\Follow;
 use App\Models\OAuthClient;
 use App\Models\Status;
+use App\Models\StatusTag;
 use App\Models\User;
 use App\Models\Webhook;
 use App\Policies\FollowPolicy;
 use App\Policies\StatusPolicy;
+use App\Policies\StatusTagPolicy;
 use App\Policies\UserPolicy;
 use App\Policies\WebhookPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Laravel\Passport\Passport;
 
-class AuthServiceProvider extends ServiceProvider {
+class AuthServiceProvider extends ServiceProvider
+{
     /**
      * The policy mappings for the application.
      *
      * @var array
      */
     protected $policies = [
-        Status::class  => StatusPolicy::class,
-        User::class    => UserPolicy::class,
-        Follow::class  => FollowPolicy::class,
-        Webhook::class => WebhookPolicy::class
+        Status::class    => StatusPolicy::class,
+        User::class      => UserPolicy::class,
+        Follow::class    => FollowPolicy::class,
+        Webhook::class   => WebhookPolicy::class,
+        StatusTag::class => StatusTagPolicy::class
     ];
 
     //ToDo Translate

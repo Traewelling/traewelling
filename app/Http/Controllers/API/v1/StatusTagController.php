@@ -74,6 +74,73 @@ class StatusTagController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *      path="/statuses/{statusIds}/tags",
+     *      operationId="getTagsForMultipleStatuses",
+     *      tags={"Status"},
+     *      summary="Show all tags for multiple statuses which are visible for the current user",
+     *      description="Returns a collection of all visible tags for the given statuses, if user is authorized",
+     *      @OA\Parameter (
+     *          name="statusIds",
+     *          in="path",
+     *          description="Status-ID",
+     *          example="1337,4711",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property (
+     *                  property="data",
+     *                  type="object",
+     *                  @OA\Property(
+     *                      property="1337",
+     *                      type="array",
+     *                      @OA\Items(ref="#/components/schemas/StatusTag")
+     *                  ),
+     *                  @OA\Property(
+     *                      property="4711",
+     *                      type="array",
+     *                      @OA\Items(ref="#/components/schemas/StatusTag")
+     *                  )
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=403, description="User not authorized to access this"),
+     *      security={
+     *          {"passport": {}}, {"token": {}}
+     *      }
+     *  )
+     *
+     * Show all tags for a status which are visible for the current user
+     */
+    public function indexForMultiple(string $statusIds): JsonResponse {
+        $statusIds = explode(',', $statusIds);
+
+        foreach ($statusIds as $statusId) {
+            if (!is_numeric($statusId)) {
+                return $this->sendError(error: 'Id has to be numeric!', code: 400);
+            }
+        }
+
+        if (count($statusIds) >= 1) {
+            $tags     = [];
+            $statuses = Status::whereIn('id', $statusIds)->get();
+            foreach ($statuses as $status) {
+                $tags[$status->id] = StatusTagResource::collection(
+                    StatusTagBackend::getVisibleTagsForUser($status, auth()->user())
+                );
+            }
+            return $this->sendResponse($tags);
+        }
+
+        return $this->sendError(error: 'No statuses found for given ids');
+    }
+
+    /**
      * @OA\Put(
      *      path="/status/{statusId}/tags/{tagKey}",
      *      operationId="updateSingleStatusTag",
@@ -172,7 +239,9 @@ class StatusTagController extends Controller
      *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions
      *      we recommend the following tags in the trwl namespace:<br><ul><li>trwl:seat (i.e. 61)</li><li>trwl:wagon
      *      (i.e. 25)</li><li>trwl:ticket (i.e. BahnCard 100 first))</li><li>trwl:travel_class (i.e. 1, 2, business,
-     *      economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li></ul>",
+     *      economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li>
+     *      <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li><li>trwl:vehicle_number (i.e. 425
+     *      001, Tz9001, 123, ...)</li></ul>",
      * @OA\Parameter (
      *          name="statusId",
      *          in="path",

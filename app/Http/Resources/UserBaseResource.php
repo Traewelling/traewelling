@@ -24,16 +24,16 @@ class UserBaseResource extends JsonResource
             'profilePicture' => ProfilePictureController::getUrlForUserId($this->id),
             'trainDistance'  => (float) $this->train_distance,
             'trainDuration'  => (int) $this->train_duration,
-            'trainSpeed'     => (float) $this->averageSpeed,
+            'trainSpeed'     => 0.0, //deprecated: TODO: remove after 2023-12-31
             'points'         => (int) $this->points,
-            'twitterUrl'     => null, //deprecated
+            'twitterUrl'     => null, //deprecated: TODO: can be removed after 2024-02-29
             'mastodonUrl'    => $this->mastodonUrl ?? null,
             'privateProfile' => (bool) $this->private_profile,
             'preventIndex'   => $this->prevent_index,
             'likes_enabled'  => $this->likes_enabled,
             $this->mergeWhen(isset($this->UserSettingsResource),
                 [
-                    'role'                    => $this->role,
+                    'role'                    => 0, //deprecated: TODO: remove after 2024-02-29
                     'home'                    => $this->home,
                     'language'                => $this->language,
                     'defaultStatusVisibility' => $this->default_status_visibility

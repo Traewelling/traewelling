@@ -39,13 +39,13 @@
                     {{__('experimental-features')}}
                 </h4>
                 <ul>
-                    @admin
+                    @if(auth()->check() && auth()->user()->hasRole('closed-beta'))
                         <li>
                             <a href="{{route('stats.stations')}}">
                                 {{__('stats.stations.description')}}
                             </a>
                         </li>
-                    @endadmin
+                    @endif
                     <li>
                         <a href="{{route('stats.daily', ['dateString' => \Illuminate\Support\Facades\Date::today()->toDateString()])}}">
                             {{__('stats.daily.description')}}

@@ -32,6 +32,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
@@ -142,11 +143,30 @@ abstract class TrainCheckinController extends Controller
                                      ->where('arrival_planned', $arrival)
                                      ->first();
 
+        // In some rare occasions, the departure time of the origin station has a different timezone
+        // than the first stopover. In this case, we need to find it by comparing the departure time
+        // in a localtime string format.
+        if (empty($firstStop)) {
+            $firstStops = $trip->stopovers->where('train_station_id', $origin->id);
+
+            if ($firstStops->count() > 1) {
+                $firstStop = $firstStops->filter(function(TrainStopover $stopover) use ($departure) {
+                    return $stopover->departure_planned->format('H:i') === $departure->format('H:i');
+                })->first();
+            } else {
+                $firstStop = $firstStops->first();
+            }
+        }
+
+
         if (empty($firstStop) || empty($lastStop)) {
-            Log::debug('TrainCheckin: No stop found for origin or destination (HafasTrip ' . $trip->trip_id . ')');
-            Log::debug('TrainCheckin: Origin-ID: ' . $origin->id . ', Departure: ' . $departure->toIso8601String());
-            Log::debug('TrainCheckin: Destination-ID: ' . $destination->id . ', Arrival: ' . $arrival->toIso8601String());
-            throw new StationNotOnTripException();
+            throw new StationNotOnTripException(
+                origin:      $origin,
+                destination: $destination,
+                departure:   $departure,
+                arrival:     $arrival,
+                trip:        $trip
+            );
         }
 
         $overlapping = TransportController::getOverlappingCheckIns(
@@ -281,7 +301,7 @@ abstract class TrainCheckinController extends Controller
         $oldDistance = $trainCheckin->distance;
 
         if ($distance === 0 || $oldDistance !== 0 && $distance / $oldDistance >= 1.15) {
-            Log::error(sprintf(
+            Log::warning(sprintf(
                            'Distance deviation for status #%d is greater than 15 percent. Original: %d, new: %d',
                            $status->id,
                            $oldDistance,
@@ -294,7 +314,8 @@ abstract class TrainCheckinController extends Controller
             distanceInMeter: $distance,
             hafasTravelType: $trainCheckin->HafasTrip->category,
             departure:       $firstStop->departure,
-            arrival:         $lastStop->arrival
+            arrival:         $lastStop->arrival,
+            timestampOfView: $status->created_at
         );
         $payload        = [
             'distance' => $distance,

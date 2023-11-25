@@ -49,6 +49,7 @@ class EventController extends Controller
         return view('admin.events.suggestions', [
             'suggestions' => EventSuggestion::where('processed', false)
                                             ->where('end', '>', DB::raw('CURRENT_TIMESTAMP'))
+                                            ->where('user_id', '!=', auth()->user()->id) //moderator can't accept their own suggestions
                                             ->orderBy('begin')
                                             ->get()
         ]);
@@ -58,10 +59,6 @@ class EventController extends Controller
         return view('admin.events.suggestion-create', [
             'event' => EventSuggestion::findOrFail($id)
         ]);
-    }
-
-    public function renderCreate(): View {
-        return view('admin.events.create');
     }
 
     public function renderEdit(int $id): View {
@@ -77,9 +74,18 @@ class EventController extends Controller
                                               ]);
         $eventSuggestion = EventSuggestion::find($validated['id']);
         $eventSuggestion->update(['processed' => true]);
-        if (!App::runningUnitTests() && config('app.admin.webhooks.new_event') !== null) {
-            Http::post(config('app.admin.webhooks.new_event'), [
-                auth()->user()->name . ' denied the event "' . $eventSuggestion->name . '".'
+        if (!App::runningUnitTests() && config('app.admin.notification.url') !== null) {
+            Http::post(config('app.admin.notification.url'), [
+                'chat_id'    => config('app.admin.notification.chat_id'),
+                'text'       => strtr("<b>Event suggestion denied</b>" . PHP_EOL .
+                                      "Title: :name" . PHP_EOL
+                                      . "Denial reason: :reason" . PHP_EOL
+                                      . "Denial user: :username" . PHP_EOL, [
+                                          ':name'     => $eventSuggestion->name,
+                                          ':reason'   => EventRejectionReason::from($validated['rejectionReason'])->getReason(),
+                                          ':username' => auth()->user()->username,
+                                      ]),
+                'parse_mode' => 'HTML',
             ]);
         }
         $eventSuggestion->user->notify(
@@ -113,6 +119,10 @@ class EventController extends Controller
         $eventSuggestion = EventSuggestion::find($validated['suggestionId']);
         $trainStation    = null;
 
+        if ($eventSuggestion->user_id === auth()->user()->id && !auth()->user()?->hasRole('admin')) {
+            return back()->with('alert-danger', 'You can\'t accept your own suggestion.');
+        }
+
         if (isset($validated['nearest_station_name'])) {
             $trainStation = HafasController::getStations($validated['nearest_station_name'], 1)->first();
 
@@ -136,9 +146,16 @@ class EventController extends Controller
                                ]);
 
         $eventSuggestion->update(['processed' => true]);
-        if (!App::runningUnitTests() && config('app.admin.webhooks.new_event') !== null) {
-            Http::post(config('app.admin.webhooks.new_event'), [
-                'content' => auth()->user()->name . ' accepted the event "' . $eventSuggestion->name . '".',
+        if (!App::runningUnitTests() && config('app.admin.notification.url') !== null) {
+            Http::post(config('app.admin.notification.url'), [
+                'chat_id'    => config('app.admin.notification.chat_id'),
+                'text'       => strtr("<b>Event suggestion accepted</b>" . PHP_EOL .
+                                      "Title: :name" . PHP_EOL
+                                      . "Accepting user: :username" . PHP_EOL, [
+                                          ':name'     => $eventSuggestion->name,
+                                          ':username' => auth()->user()->username,
+                                      ]),
+                'parse_mode' => 'HTML',
             ]);
         }
 
