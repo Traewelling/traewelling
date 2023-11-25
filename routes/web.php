@@ -212,12 +212,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/status/update', [StatusController::class, 'updateStatus'])
          ->name('status.update'); //TODO: Replace with API Endpoint
 
-    Route::prefix('export')->group(function() {
-        Route::get('/', [ExportController::class, 'renderForm'])
-             ->name('export.landing');
-        Route::post('/generate', [ExportController::class, 'renderExport'])
-             ->name('export.generate');
-    });
+    Route::view('/export', 'export')->name('export');
 
     Route::post('/createfollow', [FrontendUserController::class, 'CreateFollow'])
          ->name('follow.create'); //TODO: Replace with API Endpoint
