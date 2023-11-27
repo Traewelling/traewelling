@@ -467,7 +467,7 @@
     "settings.ics.descriptor": "Hier kun je je ics-Link beheren. Met deze links kun je eerder gemaakte ritten in een agenda met ics-ondersteuning zetten.",
     "experimental-feature": "Experimentele functie",
     "settings.revoke-token.success": "De toegang is ingetrokken",
-    "no-points-message": "Je hebt niet het volledige aantal punten verdiend omdat je de check-in geforceerd hebt.",
+    "no-points-message.forced": "Je hebt niet het volledige aantal punten verdiend omdat je de check-in geforceerd hebt.",
     "settings.visibility.disclaimer": "Als je profiel privé is, kunnen alleen volgers je statussen zien, óók je openbare statussen.",
     "about.events.description1": "Träwelling brengt mensen samen die samen gebruikmaken van het openbaar vervoer. Soms gaan ze zelfs naar hetzelfde evenement zonder dat ze dat van elkaar weten!",
     "about.events.description2": "Daarom hebben we de evenmentfunctie gemaakt. Een ieder kan <a href=\":link\">via ons formulier</a> een evenement voor een vastgelegde periode aanbevelen, en alle gebruikers van Träwellig kunnen de check-ins aan het evenement in kwestie koppelen.",

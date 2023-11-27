@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enum\HafasTravelType;
+use App\Enum\TripSource;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasOperator;
 use App\Models\HafasTrip;
@@ -34,6 +35,7 @@ class HafasTripFactory extends Factory
             'departure'      => now()->subMinutes(15)->format('c'),
             'arrival'        => now()->addMinutes(80)->format('c'),
             'delay'          => 0, //TODO: is deprecated? used?
+            'source'         => TripSource::HAFAS,
         ];
     }
 

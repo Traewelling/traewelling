@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend\Transport;
 use App\Dto\PointCalculation;
 use App\Enum\HafasTravelType;
 use App\Enum\PointReason;
+use App\Enum\TripSource;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use JetBrains\PhpStorm\Pure;
@@ -17,6 +18,7 @@ abstract class PointsCalculationController extends Controller
         HafasTravelType $hafasTravelType,
         Carbon          $departure,
         Carbon          $arrival,
+        TripSource      $tripSource,
         bool            $forceCheckin = false,
         Carbon          $timestampOfView = null
     ): PointCalculation {
@@ -30,7 +32,7 @@ abstract class PointsCalculationController extends Controller
         return self::calculatePointsWithReason(
             basePoints:     $base,
             distancePoints: $distance,
-            pointReason:    self::getReason($departure, $arrival, $forceCheckin, $timestampOfView),
+            pointReason:    self::getReason($departure, $arrival, $forceCheckin, $tripSource, $timestampOfView),
         );
     }
 
@@ -40,6 +42,15 @@ abstract class PointsCalculationController extends Controller
         float       $distancePoints,
         PointReason $pointReason
     ): PointCalculation {
+        if ($pointReason === PointReason::MANUAL_TRIP) {
+            return new PointCalculation(
+                points:         0,
+                basePoints:     $basePoints,
+                distancePoints: $distancePoints,
+                reason:         $pointReason,
+                factor:         0,
+            );
+        }
         if ($pointReason === PointReason::NOT_SUFFICIENT || $pointReason === PointReason::FORCED) {
             return new PointCalculation(
                 points:         1,
@@ -75,13 +86,17 @@ abstract class PointsCalculationController extends Controller
     }
 
     public static function getReason(
-        Carbon $departure,
-        Carbon $arrival,
-        bool   $forceCheckin,
-        Carbon $timestampOfView
+        Carbon     $departure,
+        Carbon     $arrival,
+        bool       $forceCheckin,
+        TripSource $tripSource,
+        Carbon     $timestampOfView
     ): PointReason {
         if ($forceCheckin) {
             return PointReason::FORCED;
+        }
+        if ($tripSource === TripSource::USER) {
+            return PointReason::MANUAL_TRIP;
         }
 
         /**
