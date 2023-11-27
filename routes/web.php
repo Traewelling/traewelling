@@ -28,6 +28,7 @@ use App\Http\Controllers\Frontend\Support\SupportController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
 use App\Http\Controllers\Frontend\WebhookController;
+use App\Http\Controllers\Frontend\WebFingerController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendTransportController;
@@ -255,3 +256,5 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 });
 
 Route::get('/sitemap.xml', [SitemapController::class, 'renderSitemap']);
+
+Route::get('/.well-known/webfinger', [WebFingerController::class, 'endpoint']);
