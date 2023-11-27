@@ -69,9 +69,7 @@
                                                 {{ userTime($stopover->arrival_planned) }}
                                                 @isset($stopover->arrival_real)
                                                     <small>
-                                                        (<span class="traindelay">
-                                                            +{{ $stopover->arrival_real->diffInMinutes($stopover->arrival_planned) }}
-                                                        </span>)
+                                                        (<span class="traindelay">+{{ $stopover->arrival_real->diffInMinutes($stopover->arrival_planned) }}</span>)
                                                     </small>
                                                 @endisset
                                             </td>

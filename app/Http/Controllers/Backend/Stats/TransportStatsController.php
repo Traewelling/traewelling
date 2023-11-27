@@ -215,7 +215,7 @@ abstract class TransportStatsController extends Controller
     }
 
     /**
-     *  Get the toal sum of arrival delay in the given time frame
+     *  Get the total sum of arrival delay in the given time frame
      *
      * @param User   $user User to get the stats for
      * @param Carbon $from Start date
