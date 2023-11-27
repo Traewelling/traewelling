@@ -1,7 +1,6 @@
 import "awesomplete/awesomplete";
 
 window.addEventListener("load", () => {
-    import("./components/usageBoard");
     import("./components/station-autocomplete");
 });
 
