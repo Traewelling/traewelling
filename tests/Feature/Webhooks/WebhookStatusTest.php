@@ -33,7 +33,7 @@ class WebhookStatusTest extends TestCase
         Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
             assertEquals([
                              'event' => WebhookEvent::CHECKIN_CREATE->value,
-                             'status' => new StatusResource($status),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       'status' => new StatusResource($status),
                          ], $job->payload);
             return true;
         });

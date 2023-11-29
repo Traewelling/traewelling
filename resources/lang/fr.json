@@ -523,7 +523,7 @@
     "request-feature": "Demander une fonction",
     "email.verification.too-many-requests": "Veuillez patienter quelques minutes avant de demander un autre mail de confirmation.",
     "overlapping-checkin": "Chevauchement de trajet",
-    "no-points-message": "Vous n'avez pas obtenu tous les points pour avoir forcé l'enregistrement.",
+    "no-points-message.forced": "Vous n'avez pas obtenu tous les points pour avoir forcé l'enregistrement.",
     "about.who0": "Träwelling est un projet Open-Sources.",
     "about.who1": "Depuis 2013 diverses personnes ont développé le projet. Quelques corrections de bugs et aussi quelques changements plus importants.",
     "about.who2": "Vous pouvez voir la liste des contributeurs au code sur <a href=\":link\" target=\"_blank\">GitHub</a>.",

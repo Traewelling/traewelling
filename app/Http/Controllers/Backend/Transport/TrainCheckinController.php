@@ -185,7 +185,8 @@ abstract class TrainCheckinController extends Controller
             hafasTravelType: $trip->category,
             departure:       $firstStop->departure,
             arrival:         $lastStop->arrival,
-            forceCheckin:    $force
+            tripSource:      $trip->source,
+            forceCheckin:    $force,
         );
         try {
             $trainCheckin         = TrainCheckin::create([
@@ -221,7 +222,7 @@ abstract class TrainCheckinController extends Controller
     }
 
     public static function changeDestination(
-        TrainCheckin $checkin,
+        TrainCheckin  $checkin,
         TrainStopover $newDestinationStopover
     ): PointReason {
         if ($newDestinationStopover->arrival_planned->isBefore($checkin->origin_stopover->arrival_planned)
@@ -232,13 +233,14 @@ abstract class TrainCheckinController extends Controller
         }
 
         $newDistance = (new LocationController($checkin->HafasTrip, $checkin->origin_stopover, $newDestinationStopover))
-        ->calculateDistance();
+            ->calculateDistance();
 
         $pointsResource = PointsCalculationController::calculatePoints(
             distanceInMeter: $newDistance,
             hafasTravelType: $checkin->HafasTrip->category,
             departure:       $checkin->origin_stopover->departure,
             arrival:         $newDestinationStopover->arrival,
+            tripSource:      $checkin->HafasTrip->source
         );
 
         $checkin->update([
@@ -286,42 +288,43 @@ abstract class TrainCheckinController extends Controller
      * @throws DistanceDeviationException
      */
     public static function refreshDistanceAndPoints(Status $status, bool $resetPolyline = false): void {
-        $trainCheckin = $status->trainCheckin;
+        $checkin = $status->trainCheckin;
         if ($resetPolyline) {
-            $trainCheckin->HafasTrip->update(['polyline_id' => null]);
+            $checkin->HafasTrip->update(['polyline_id' => null]);
         }
-        $firstStop   = $trainCheckin->origin_stopover;
-        $lastStop    = $trainCheckin->destination_stopover;
+        $firstStop   = $checkin->origin_stopover;
+        $lastStop    = $checkin->destination_stopover;
         $distance    = (new LocationController(
-            hafasTrip:   $trainCheckin->HafasTrip,
+            hafasTrip:   $checkin->HafasTrip,
             origin:      $firstStop,
             destination: $lastStop
         ))->calculateDistance();
-        $oldPoints   = $trainCheckin->points;
-        $oldDistance = $trainCheckin->distance;
+        $oldPoints   = $checkin->points;
+        $oldDistance = $checkin->distance;
 
-        if ($distance === 0 || $oldDistance !== 0 && $distance / $oldDistance >= 1.15) {
+        if ($distance === 0 || ($oldDistance !== 0 && $distance / $oldDistance >= 1.15)) {
             Log::warning(sprintf(
-                           'Distance deviation for status #%d is greater than 15 percent. Original: %d, new: %d',
-                           $status->id,
-                           $oldDistance,
-                           $distance
-                       ));
+                             'Distance deviation for status #%d is greater than 15 percent. Original: %d, new: %d',
+                             $status->id,
+                             $oldDistance,
+                             $distance
+                         ));
             throw new DistanceDeviationException();
         }
 
         $pointsResource = PointsCalculationController::calculatePoints(
             distanceInMeter: $distance,
-            hafasTravelType: $trainCheckin->HafasTrip->category,
+            hafasTravelType: $checkin->HafasTrip->category,
             departure:       $firstStop->departure,
             arrival:         $lastStop->arrival,
+            tripSource:      $checkin->HafasTrip->source,
             timestampOfView: $status->created_at
         );
         $payload        = [
             'distance' => $distance,
             'points'   => $pointsResource->points,
         ];
-        $trainCheckin->update($payload);
+        $checkin->update($payload);
         Log::debug(sprintf('Updated distance and points of status #%d: Old: %dm %dp New: %dm %dp',
                            $status->id,
                            $oldDistance,

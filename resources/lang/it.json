@@ -567,7 +567,7 @@
     "empty-en-route": "Attualmente non ci sono utenti Träwelling in giro.",
     "overlapping-checkin.description2": "Vuoi forzare il check-in?",
     "no-points-warning": "Non otterrai il massimo dei punti.",
-    "no-points-message": "Non hai ottenuto il massimo dei punti perché hai forzato il check-in.",
+    "no-points-message.forced": "Non hai ottenuto il massimo dei punti perché hai forzato il check-in.",
     "overlapping-checkin.force-yes": "Si, forzare.",
     "report-bug": "Segnalare un bug",
     "about.events": "Cosa sono gli eventi?",

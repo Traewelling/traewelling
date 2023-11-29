@@ -537,7 +537,7 @@
     "overlapping-checkin.description": "Din resa kunde inte sparas eftersom den överlappar din incheckning i :lineName.",
     "overlapping-checkin.description2": "Vill du tvinga incheckning nu?",
     "no-points-warning": "Du får inte full poäng för det.",
-    "no-points-message": "Du fick inte hela poängen för att tvinga fram incheckningen.",
+    "no-points-message.forced": "Du fick inte hela poängen för att tvinga fram incheckningen.",
     "overlapping-checkin.force-yes": "Ja, tvinga.",
     "overlapping-checkin.force-no": "Nej, gör ingenting.",
     "about.who0": "Träwelling är ett projekt med öppen källkod.",

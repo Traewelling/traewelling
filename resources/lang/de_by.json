@@ -492,7 +492,7 @@
     "merry-christmas": "Mir wünschat dir a frohe Weihnachtszeit!",
     "overlapping-checkin.description2": "Meachtsch dean Check-In jetz erzwinga?",
     "no-points-warning": "Dofiar kriagsch id dia volla Punkte.",
-    "no-points-message": "Du hosch id dia volla Punkte kriagt, weil dean Check-In erzwunga hosch.",
+    "no-points-message.forced": "Du hosch id dia volla Punkte kriagt, weil dean Check-In erzwunga hosch.",
     "overlapping-checkin.force-yes": "Jo, erzwinga.",
     "overlapping-checkin.force-no": "Nei, nix doa.",
     "report-bug": "Feahler melda",
