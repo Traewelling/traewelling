@@ -749,5 +749,6 @@
     "export.title.body": "Statustekst",
     "export.title.arrival_real": "Daadwerkelijke aankomsttijd",
     "export.period": "Welke periode wil je exporteren?",
-    "export.format": "Welk bestandsformaat moet de export hebben?"
+    "export.format": "Welk bestandsformaat moet de export hebben?",
+    "no-points-message.manual": "Je hebt geen punten ontvangen, omdat deze reis handmatig is toegevoegd."
 }
