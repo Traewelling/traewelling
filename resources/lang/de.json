@@ -704,6 +704,7 @@
     "tag.title.trwl:role": "Rolle",
     "tag.title.trwl:vehicle_number": "Fahrzeugnummer",
     "tag.title.trwl:wagon_class": "Wagengattung",
+    "tag.title.trwl:passenger_rights": "Fahrgastrechte",
     "export.generate": "Generieren",
     "export.json.description": "Du kannst deine Fahrten als JSON exportieren.",
     "export.json.description2": "Die JSON Struktur ist die gleiche wie die der API.",
