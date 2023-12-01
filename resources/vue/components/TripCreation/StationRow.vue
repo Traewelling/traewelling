@@ -77,7 +77,7 @@ export default {
             this.autocomplete();
         }, 500),
     },
-}
+};
 </script>
 
 <template>
