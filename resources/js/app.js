@@ -13,6 +13,7 @@ import "leaflet/dist/leaflet.js";
 import "./api/api";
 import "./components/maps";
 import CheckinSuccessHelper from "../vue/components/CheckinSuccessHelper.vue";
+import {i18nVue} from "laravel-vue-i18n";
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -46,6 +47,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const app = createApp({});
     app.component('NotificationBell', NotificationBell);
     app.config.devtools = true;
+    app.use(i18nVue, {
+        lang: 'en',
+        resolve: (lang) => import(`../../lang/${lang}.json`)
+    });
     app.mount('#nav-main');
 
     const app2 = createApp({});
