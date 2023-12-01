@@ -342,7 +342,10 @@ abstract class HafasController extends Controller
      * @throws HafasException
      */
     public static function getHafasTrip(string $tripID, string $lineName): HafasTrip {
-        $trip = HafasTrip::where('trip_id', $tripID)->where('linename', $lineName)->first();
+        if (is_numeric($tripID)) {
+            $trip = HafasTrip::where('id', $tripID)->where('linename', $lineName)->first();
+        }
+        $trip = $trip ??  HafasTrip::where('trip_id', $tripID)->where('linename', $lineName)->first();
         return $trip ?? self::fetchHafasTrip($tripID, $lineName);
     }
 
