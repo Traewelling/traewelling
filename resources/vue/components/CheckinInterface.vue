@@ -23,7 +23,7 @@ export default {
             visibility: 0,
             business: 0,
             loading: false,
-            notyf: new Notyf({position: {x: 'right', y: 'bottom'}}),
+            notyf: new Notyf({position: {x: "right", y: "bottom"}}),
             collision: false,
         };
     },
@@ -46,10 +46,10 @@ export default {
                 force: this.collision,
                 eventId: null,
             };
-            fetch('/api/v1/trains/checkin', {
-                method: 'POST',
+            fetch("/api/v1/trains/checkin", {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(data),
             }).then((response) => {
@@ -119,7 +119,7 @@ export default {
                 :maxlength="allowedChars"
                 style="min-height: 130px;">
             </textarea>
-            <label for="message-text" class="form-label" style="margin-left: 0px;">{{ trans('stationboard.label-message') }}</label>
+            <label for="message-text" class="form-label" style="margin-left: 0px;">{{ trans("stationboard.label-message") }}</label>
         </div>
         <small class="float-end" :class="typed < 10 ? 'text-danger' : 'text-warning'" v-show="typed < 20">
             {{ typed }}
@@ -130,7 +130,7 @@ export default {
                 <input type="checkbox" class="btn-check" autocomplete="off" v-model="toot" autocompleted="" id="toot_check" :disabled="visibility === 3">
                 <label class="btn btn-sm btn-outline-mastodon" for="toot_check" style="">
                     <i class="fab fa-mastodon"></i>
-                    <span class="visually-hidden-focusable">{{ trans('stationboard.check-toot') }}</span>
+                    <span class="visually-hidden-focusable">{{ trans("stationboard.check-toot") }}</span>
                 </label>
             </div>
             <div class="col-auto btn-group me-1">
@@ -141,17 +141,17 @@ export default {
                 </button>
                 <ul id="businessDropdown" class="dropdown-menu" aria-labelledby="businessDropdownButton">
                     <li class="dropdown-item" @click="business = 0">
-                        <i class="fa fa-user"></i> {{ trans('stationboard.business.private') }}
+                        <i class="fa fa-user"></i> {{ trans("stationboard.business.private") }}
                     </li>
                     <li class="dropdown-item" @click="business = 1">
-                        <i class="fa fa-briefcase"></i> {{ trans('stationboard.business.business') }}
+                        <i class="fa fa-briefcase"></i> {{ trans("stationboard.business.business") }}
                         <br>
-                        <span class="text-muted"> {{ trans('stationboard.business.business.detail')}}</span>
+                        <span class="text-muted"> {{ trans("stationboard.business.business.detail")}}</span>
                     </li>
                     <li class="dropdown-item" @click="business = 2">
-                        <i class="fa fa-building"></i> {{ trans('stationboard.business.commute') }}
+                        <i class="fa fa-building"></i> {{ trans("stationboard.business.commute") }}
                         <br>
-                        <span class="text-muted"> {{ trans('stationboard.business.commute.detail') }}</span>
+                        <span class="text-muted"> {{ trans("stationboard.business.commute.detail") }}</span>
                     </li>
                 </ul>
             </div>
@@ -163,37 +163,37 @@ export default {
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="visibilityDropdownButton" style="">
                     <li class="dropdown-item" @click="visibility = 0">
-                        <i class="fa fa-globe-americas" aria-hidden="true"></i> {{ trans('status.visibility.0') }}
+                        <i class="fa fa-globe-americas" aria-hidden="true"></i> {{ trans("status.visibility.0") }}
                         <br>
                         <span
-                            class="text-muted"> {{ trans('status.visibility.0.detail') }}</span>
+                            class="text-muted"> {{ trans("status.visibility.0.detail") }}</span>
                     </li>
                     <li class="dropdown-item" @click="visibility = 1">
-                        <i class="fa fa-lock-open" aria-hidden="true"></i> {{ trans('status.visibility.1') }}
+                        <i class="fa fa-lock-open" aria-hidden="true"></i> {{ trans("status.visibility.1") }}
                         <br>
-                        <span class="text-muted"> {{ trans('status.visibility.1.detail') }}</span>
+                        <span class="text-muted"> {{ trans("status.visibility.1.detail") }}</span>
                     </li>
                     <li class="dropdown-item" @click="visibility = 2">
-                        <i class="fa fa-user-friends" aria-hidden="true"></i> {{ trans('status.visibility.2') }}
+                        <i class="fa fa-user-friends" aria-hidden="true"></i> {{ trans("status.visibility.2") }}
                         <br>
-                        <span class="text-muted"> {{ trans('status.visibility.2.detail') }}</span>
+                        <span class="text-muted"> {{ trans("status.visibility.2.detail") }}</span>
                     </li>
                     <li class="dropdown-item" @click="visibility = 3">
-                        <i class="fa fa-lock" aria-hidden="true"></i> {{ trans('status.visibility.3') }}
+                        <i class="fa fa-lock" aria-hidden="true"></i> {{ trans("status.visibility.3") }}
                         <br>
-                        <span class="text-muted"> {{ trans('status.visibility.3.detail') }}</span>
+                        <span class="text-muted"> {{ trans("status.visibility.3.detail") }}</span>
                     </li>
                     <li class="dropdown-item" @click="visibility = 4">
-                        <i class="fa fa-user-check" aria-hidden="true"></i> {{ trans('status.visibility.4') }}
+                        <i class="fa fa-user-check" aria-hidden="true"></i> {{ trans("status.visibility.4") }}
                         <br>
-                        <span class="text-muted"> {{ trans('status.visibility.4.detail') }}</span>
+                        <span class="text-muted"> {{ trans("status.visibility.4.detail") }}</span>
                     </li>
                 </ul>
             </div>
             <button class="col-auto float-end ms-auto btn btn-sm btn-outline-primary" @click="checkIn">
                 <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 <span v-if="loading" class="visually-hidden">Loading...</span>
-                {{ trans('stationboard.btn-checkin') }}
+                {{ trans("stationboard.btn-checkin") }}
             </button>
         </div>
 </template>

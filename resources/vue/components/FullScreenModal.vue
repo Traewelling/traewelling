@@ -43,10 +43,10 @@ export default {
                 </div>
                 <div class="modal-footer d-none">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        {{ trans('menu.close') }}
+                        {{ trans("menu.close") }}
                     </button>
                     <button type="button" class="btn btn-primary">
-                        {{ trans('modals.edit-confirm') }}
+                        {{ trans("modals.edit-confirm") }}
                     </button>
                 </div>
             </div>

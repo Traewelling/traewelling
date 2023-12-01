@@ -1,8 +1,8 @@
 /**
  * Here, we include all of our external dependencies
  */
-import { Notyf } from 'notyf';
-import { createApp } from 'vue';
+import { Notyf } from "notyf";
+import { createApp } from "vue";
 import NotificationBell from "../vue/components/NotificationBell.vue";
 import ActiveJourneyMap from "../vue/components/ActiveJourneyMap.vue";
 import Stationboard from "../vue/components/Stationboard.vue";
@@ -43,47 +43,50 @@ window.notyf = new Notyf({
 });
 
 document.addEventListener("DOMContentLoaded", function() {
+    // get language query parameter
+    let fallbackLang = "en";
+    const urlParams = new URLSearchParams(window.location.search);
+    const lang = urlParams.get("language");
+
+    if (lang && lang.startsWith("de_")) {
+        fallbackLang = "de";
+    }
 
     const app = createApp({});
-    app.component('NotificationBell', NotificationBell);
+    app.component("NotificationBell", NotificationBell);
     app.config.devtools = true;
     app.use(i18nVue, {
-        fallbackLang: 'en',
+        fallbackLang: fallbackLang,
         resolve: (lang) => import(`../../lang/${lang}.json`)
     });
-    app.mount('#nav-main');
+    app.mount("#nav-main");
 
     const app2 = createApp({});
-    app2.component('ActiveJourneyMap', ActiveJourneyMap);
+    app2.component("ActiveJourneyMap", ActiveJourneyMap);
     app2.use(i18nVue, {
-        fallbackLang: 'en',
+        fallbackLang: fallbackLang,
         resolve: (lang) => import(`../../lang/${lang}.json`)
     });
-    app2.mount('#activeJourneys');
+    app2.mount("#activeJourneys");
 
     const app3 = createApp({});
-    app3.component('Stationboard', Stationboard);
-    app3.component('Stationautocomplete', StationAutocomplete);
+    app3.component("Stationboard", Stationboard);
+    app3.component("Stationautocomplete", StationAutocomplete);
     app3.use(i18nVue, {
-        fallbackLang: 'en',
+        fallbackLang: fallbackLang,
         resolve: (lang) => import(`../../lang/${lang}.json`)
     });
-    app3.mount('#station-board-new');
+    app3.mount("#station-board-new");
 
     const app4 = createApp({});
-    app4.component('CheckinSuccessHelper', CheckinSuccessHelper);
+    app4.component("CheckinSuccessHelper", CheckinSuccessHelper);
     app4.use(i18nVue, {
-        fallbackLang: 'en',
+        fallbackLang: fallbackLang,
         resolve: (lang) => import(`../../lang/${lang}.json`)
     });
-    app4.mount('#checkin-success-helper');
+    app4.mount("#checkin-success-helper");
 
-    // get language query parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const lang = urlParams.get('lang');
-    if (lang) {
-        I18n.getSharedInstance().setOptions({lang: lang}).load();
-    }
+
 });
 
 /**

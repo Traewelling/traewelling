@@ -63,7 +63,7 @@ export default {
                 <div class="modal-footer" v-if="!hideFooter">
                     <slot name="footer"></slot>
                     <button type="button" class="btn btn-secondary">
-                        {{ trans('menu.close') }}
+                        {{ trans("menu.close") }}
                     </button>
                 </div>
             </div>

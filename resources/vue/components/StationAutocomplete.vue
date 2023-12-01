@@ -22,7 +22,7 @@ export default {
             recent: [],
             loading: false,
             autocompleteList: [],
-            stationInput: '',
+            stationInput: "",
         };
     },
     methods: {
@@ -44,7 +44,7 @@ export default {
                 this.loading = false;
                 return;
             }
-            let query = this.stationInput.replace(/%2F/, ' ').replace(/\//, ' ');
+            let query = this.stationInput.replace(/%2F/, " ").replace(/\//, " ");
             fetch(`/api/v1/trains/station/autocomplete/${query}`).then((response) => {
                 response.json().then((result) => {
                     this.autocompleteList = result.data;
@@ -54,7 +54,7 @@ export default {
         },
         setStation(item) {
             this.stationInput = item.name;
-            this.$emit('update:station', item);
+            this.$emit("update:station", item);
             this.$refs.modal.hide();
             window.location="/trains/stationboard?station=" + item.name;
         }
@@ -68,7 +68,7 @@ export default {
         }
     },
     mounted() {
-        this.stationInput = this.station ? this.station.name : '';
+        this.stationInput = this.station ? this.station.name : "";
         this.getRecent();
     }
 }
@@ -98,7 +98,7 @@ export default {
         </template>
     </FullScreenModal>
     <div class="card mb-4">
-        <div class="card-header">{{ trans('stationboard.where-are-you') }}</div>
+        <div class="card-header">{{ trans("stationboard.where-are-you") }}</div>
         <div class="card-body">
                 <div id="station-autocomplete-container" style="z-index: 3;">
                     <div class="input-group mb-2 mr-sm-2">
