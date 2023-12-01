@@ -1,6 +1,6 @@
 <script>
 import StationRow from "./StationRow.vue";
-import {isNumber, random} from "lodash";
+import {isNumber} from "lodash";
 import {DateTime} from "luxon";
 
 export default {
@@ -40,9 +40,6 @@ export default {
         };
     },
     methods: {
-        addStopover() {
-            this.form.stopovers.push("");
-        },
         setOrigin(item) {
             this.origin        = item;
             this.form.originId = item.ibnr;
@@ -58,8 +55,8 @@ export default {
             this.form.destinationArrivalPlanned = DateTime.fromISO(time).setZone(this.destinationTimezone);
         },
         sendform() {
-            this.form.lineName      = this.trainTypeInput + " " + this.trainNumberInput;
-            this.form.journeyNumber = isNumber(this.trainNumberInput) ? this.trainNumberInput : random(1000, 9999, false);
+            this.form.lineName      = this.trainTypeInput;
+            this.form.journeyNumber = isNumber(this.trainNumberInput) ? this.trainNumberInput : null;
 
             fetch("/api/v1/trains/trip", {
                 method: "POST",
@@ -99,13 +96,7 @@ export default {
                     v-on:update:timeFieldA="setDeparture"
                 ></StationRow>
             </div>
-            <!--
-            <a href="#" @click="addStopover">Zwischenhalt hinzufügen <i class="fa fa-plus" aria-hidden="true"></i></a>
-            <div class="row g-3 mt-1" v-for="test in form.stopovers" v-bind:key="test">
-                <StationRow placeholder="Zwischenhalt"></StationRow>
-            </div>
-            -->
-            <div class="row g-3 mt-1">
+           <div class="row g-3 mt-1">
                 <StationRow
                     placeholder="Zielbahnhof"
                     :departure="false"
@@ -115,10 +106,10 @@ export default {
             </div>
             <div class="row g-3 mt-1">
                 <div class="col-4">
-                    <input type="text" class="form-control" placeholder="Zugart (ICE, IC,...)" v-model="trainTypeInput">
+                    <input type="text" class="form-control" placeholder="Linie (S1, ICE 13,...)" v-model="trainTypeInput">
                 </div>
                 <div class="col-4">
-                    <input type="text" class="form-control" placeholder="Zugnummer" aria-label="Zugnummer"
+                    <input type="text" class="form-control" placeholder="Nummer (optional)" aria-label="Zugnummer"
                            v-model="trainNumberInput">
                 </div>
                 <div class="col">

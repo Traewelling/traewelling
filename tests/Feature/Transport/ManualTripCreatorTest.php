@@ -26,21 +26,16 @@ class ManualTripCreatorTest extends TestCase
 
         $creator = new ManualTripCreator();
 
-        $creator->category                  = HafasTravelType::REGIONAL;
-        $creator->lineName                  = 'S1';
-        $creator->journeyNumber             = 85001;
-        $creator->operator                  = HafasOperator::factory()->create();
-        $creator->origin                    = $originStation;
-        $creator->originDeparturePlanned    = $departure;
-        $creator->destination               = $destinationStation;
-        $creator->destinationArrivalPlanned = $arrival;
+        $creator->setCategory(HafasTravelType::REGIONAL)
+                ->setLine('S1', 85001)
+                ->setOperator(HafasOperator::factory()->create())
+                ->setOrigin($originStation, $departure)
+                ->setDestination($destinationStation, $arrival);
 
-        $trip = $creator->createTrip();
-        $creator->createOriginStopover();
-        $creator->createDestinationStopover();
+        $trip = $creator->createFullTrip();
         $trip->refresh();
 
-        $this->assertEquals($trip->source, TripSource::USER);
+        $this->assertEquals(TripSource::USER, $trip->source);
 
         $this->assertDatabaseHas('hafas_trips', [
             'trip_id'        => $trip->trip_id,

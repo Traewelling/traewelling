@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Backend\Transport;
 
 use App\Enum\HafasTravelType;
 use App\Enum\TripSource;
-use App\Http\Controllers\Backend\Transport\ManualTripCreator as TripBackend;
 use App\Http\Controllers\Controller;
 use App\Models\HafasOperator;
 use App\Models\HafasTrip;
@@ -12,24 +13,30 @@ use App\Models\TrainStation;
 use App\Models\TrainStopover;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 class ManualTripCreator extends Controller
 {
 
     private ?HafasTrip $trip;
-    //
-    public HafasTravelType $category;
-    public string          $lineName;
-    public ?int            $journeyNumber;
-    public ?HafasOperator  $operator;
-    public TrainStation    $origin;
-    public Carbon          $originDeparturePlanned;
-    public TrainStation    $destination;
-    public Carbon          $destinationArrivalPlanned;
+    private HafasTravelType $category;
+    private string          $lineName;
+    private ?int            $journeyNumber;
+    private ?HafasOperator  $operator;
+    private TrainStation    $origin;
+    private Carbon          $originDeparturePlanned;
+    private TrainStation    $destination;
+    private Carbon          $destinationArrivalPlanned;
 
-    public function createTrip(): HafasTrip {
+    public function createFullTrip(): HafasTrip {
+        $this->createTrip();
+        $this->createOriginStopover();
+        $this->createDestinationStopover();
+        return $this->trip;
+    }
+    private function createTrip(): void {
         $this->trip = HafasTrip::create([
-                                            'trip_id'        => TripBackend::generateUniqueTripId(),
+                                            'trip_id'        => $this->generateUniqueTripId(),
                                             'category'       => $this->category,
                                             'number'         => $this->lineName,
                                             'linename'       => $this->lineName,
@@ -42,38 +49,65 @@ class ManualTripCreator extends Controller
                                             'source'         => TripSource::USER,
                                             'user_id'        => auth()->user()?->id ?? null,
                                         ]);
-        return $this->trip;
     }
 
-    public function createOriginStopover(): TrainStopover {
+    private function createOriginStopover(): void {
         if ($this->trip === null) {
-            throw new \InvalidArgumentException('Cannot create stopover without trip');
+            throw new InvalidArgumentException('Cannot create stopover without trip');
         }
-        return TrainStopover::create([
-                                         'trip_id'           => $this->trip->trip_id,
-                                         'train_station_id'  => $this->origin->id,
-                                         'arrival_planned'   => $this->originDeparturePlanned,
-                                         'departure_planned' => $this->originDeparturePlanned,
-                                     ]);
+        TrainStopover::create([
+                                  'trip_id'           => $this->trip->trip_id,
+                                  'train_station_id'  => $this->origin->id,
+                                  'arrival_planned'   => $this->originDeparturePlanned,
+                                  'departure_planned' => $this->originDeparturePlanned,
+                              ]);
     }
 
-    public function createDestinationStopover(): TrainStopover {
+    private function createDestinationStopover(): void {
         if ($this->trip === null) {
-            throw new \InvalidArgumentException('Cannot create stopover without trip');
+            throw new InvalidArgumentException('Cannot create stopover without trip');
         }
-        return TrainStopover::create([
-                                         'trip_id'           => $this->trip->trip_id,
-                                         'train_station_id'  => $this->destination->id,
-                                         'arrival_planned'   => $this->destinationArrivalPlanned,
-                                         'departure_planned' => $this->destinationArrivalPlanned,
-                                     ]);
+        TrainStopover::create([
+                                  'trip_id'           => $this->trip->trip_id,
+                                  'train_station_id'  => $this->destination->id,
+                                  'arrival_planned'   => $this->destinationArrivalPlanned,
+                                  'departure_planned' => $this->destinationArrivalPlanned,
+                              ]);
     }
 
-    public static function generateUniqueTripId(): string {
+    public function generateUniqueTripId(): string {
         $tripId = Str::uuid();
         while (HafasTrip::where('trip_id', $tripId)->exists()) {
-            return self::generateUniqueTripId();
+            $tripId = Str::uuid();
         }
-        return $tripId;
+        return $tripId->toString();
+    }
+
+    public function setCategory(HafasTravelType $category): ManualTripCreator {
+        $this->category = $category;
+        return $this;
+    }
+
+    public function setLine(string $lineName, ?int $journeyNumber): ManualTripCreator {
+        $this->lineName = $lineName;
+        $this->journeyNumber = $journeyNumber;
+        return $this;
+    }
+
+    public function setOperator(?HafasOperator $operator): ManualTripCreator {
+        $this->operator = $operator;
+        return $this;
+    }
+
+    public function setOrigin(TrainStation $origin, Carbon $plannedDeparture): ManualTripCreator {
+        $this->origin = $origin;
+        $this->originDeparturePlanned = $plannedDeparture;
+        return $this;
+    }
+
+    public function setDestination(TrainStation $destination, Carbon $plannedArrival): ManualTripCreator {
+        $this->destination = $destination;
+        $this->destinationArrivalPlanned = $plannedArrival;
+        return $this;
     }
 }
