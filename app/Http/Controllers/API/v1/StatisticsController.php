@@ -4,8 +4,6 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Dto\GeoJson\Feature;
 use App\Dto\GeoJson\FeatureCollection;
-use App\Exceptions\DataOverflowException;
-use App\Http\Controllers\Backend\Export\ExportController;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Http\Controllers\Backend\Stats\DailyStatsController;
@@ -19,12 +17,8 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
-use Illuminate\Validation\Rule;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StatisticsController extends Controller
 {
@@ -295,8 +289,8 @@ class StatisticsController extends Controller
      *      @OA\Parameter (
      *          name="withPolylines",
      *          in="query",
-     *          description="If this parameter is set, the polylines will be returned as well. Otherwise attribute is null.",
-     *          example="",
+     *          description="If this parameter is set, the polylines will be returned as well. Otherwise attribute is
+     *          null.", example="",
      *          @OA\Schema(type="string")
      *      ),
      *      @OA\Response(
@@ -435,22 +429,5 @@ class StatisticsController extends Controller
         ];
 
         return $this->sendResponse(data: $data, additional: $additionalData);
-    }
-
-    /**
-     * @throws DataOverflowException
-     */
-    public function generateTravelExport(Request $request): JsonResponse|StreamedResponse|Response {
-        $validated = $request->validate([
-                                            'from'     => ['required', 'date', 'before_or_equal:until'],
-                                            'until'    => ['required', 'date', 'after_or_equal:from'],
-                                            'filetype' => ['required', Rule::in(['json', 'csv', 'pdf'])],
-                                        ]);
-
-        return ExportController::generateExport(
-            from:     Carbon::parse($validated['from']),
-            until:    Carbon::parse($validated['until']),
-            filetype: $request->input('filetype')
-        );
     }
 }

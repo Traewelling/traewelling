@@ -20,6 +20,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Passport\HasApiTokens;
+use Illuminate\Database\Eloquent\Builder;
 use Mastodon;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -48,6 +49,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @todo rename home_id to home_station_id
  * @todo rename mapprovider to map_provider
  * @todo remove "twitterUrl" (Twitter isn't used by traewelling anymore)
+ * @mixin Builder
  */
 class User extends Authenticatable implements MustVerifyEmail
 {

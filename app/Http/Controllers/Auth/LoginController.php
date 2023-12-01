@@ -67,10 +67,6 @@ class LoginController extends Controller
                                       ]);
     }
 
-    protected function authenticated(Request $request, User $user): void {
-        $user->update(['last_login' => Carbon::now()->toIso8601String()]);
-    }
-
     public function username(): string {
         return 'login';
     }

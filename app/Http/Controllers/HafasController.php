@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enum\HafasTravelType as HTT;
 use App\Enum\TravelType;
+use App\Enum\TripSource;
 use App\Exceptions\HafasException;
 use App\Models\HafasOperator;
 use App\Models\HafasTrip;
@@ -164,7 +165,7 @@ abstract class HafasController extends Controller
         bool         $skipTimeShift = false
     ) {
         $client   = self::getHttpClient();
-        $time   = $skipTimeShift ? $when : (clone $when)->shiftTimezone("Europe/Berlin");
+        $time     = $skipTimeShift ? $when : (clone $when)->shiftTimezone("Europe/Berlin");
         $query    = [
             'when'                       => $time->toIso8601String(),
             'duration'                   => $duration,
@@ -341,7 +342,10 @@ abstract class HafasController extends Controller
      * @throws HafasException
      */
     public static function getHafasTrip(string $tripID, string $lineName): HafasTrip {
-        $trip = HafasTrip::where('trip_id', $tripID)->where('linename', $lineName)->first();
+        if (is_numeric($tripID)) {
+            $trip = HafasTrip::where('id', $tripID)->where('linename', $lineName)->first();
+        }
+        $trip = $trip ??  HafasTrip::where('trip_id', $tripID)->where('linename', $lineName)->first();
         return $trip ?? self::fetchHafasTrip($tripID, $lineName);
     }
 
@@ -413,7 +417,8 @@ abstract class HafasController extends Controller
                                                    'polyline_id'    => $polyline->id,
                                                    'departure'      => $tripJson->plannedDeparture,
                                                    'arrival'        => $tripJson->plannedArrival,
-                                                   'delay'          => $tripJson->arrivalDelay ?? null
+                                                   'delay'          => $tripJson->arrivalDelay ?? null,
+                                                   'source'         => TripSource::HAFAS,
                                                ]);
 
         //Save TrainStations

@@ -237,11 +237,18 @@ class StatusTagController extends Controller
      *      description="Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free
      *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b>
      *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions
-     *      we recommend the following tags in the trwl namespace:<br><ul><li>trwl:seat (i.e. 61)</li><li>trwl:wagon
-     *      (i.e. 25)</li><li>trwl:ticket (i.e. BahnCard 100 first))</li><li>trwl:travel_class (i.e. 1, 2, business,
-     *      economy, ...)</li><li>trwl:locomotive_class (BR424, BR450)</li><li>trwl:wagon_class (i.e. Bpmz)</li>
-     *      <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li><li>trwl:vehicle_number (i.e. 425
-     *      001, Tz9001, 123, ...)</li></ul>",
+     *      we recommend the following tags in the trwl namespace:<br>
+     *      <ul>
+     *          <li>trwl:seat (i.e. 61)</li>
+     *          <li>trwl:wagon (i.e. 25)</li>
+     *          <li>trwl:ticket (i.e. BahnCard 100 first))</li>
+     *          <li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li>
+     *          <li>trwl:locomotive_class (BR424, BR450)</li>
+     *          <li>trwl:wagon_class (i.e. Bpmz)</li>
+     *          <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li>
+     *          <li>trwl:vehicle_number (i.e. 425 001, Tz9001, 123, ...)</li>
+     *          <li>trwl:passenger_rights (i.e. yes / no / ID of claim)</li>
+     *      </ul>",
      * @OA\Parameter (
      *          name="statusId",
      *          in="path",

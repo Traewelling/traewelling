@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Backend\Export;
 
+use App\Enum\ExportableColumn;
+use App\Enum\StatusTagKey;
 use App\Exceptions\DataOverflowException;
-use App\Http\Controllers\Backend\Export\ExportController as ExportBackend;
-use App\Http\Controllers\Backend\Export\Format\CsvExportController;
 use App\Http\Controllers\Backend\Export\Format\JsonExportController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
@@ -12,6 +12,7 @@ use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Response;
 use InvalidArgumentException;
@@ -49,26 +50,140 @@ abstract class ExportController extends Controller
     /**
      * @throws DataOverflowException
      */
-    public static function generateExport(Carbon $from, Carbon $until, string $filetype) {
-        if ($filetype === 'json') {
-            return self::exportJson($from, $until);
-        }
+    public static function generateExport(
+        Carbon $from,
+        Carbon $until,
+        array $columns,
+        string $filetype
+    ): HttpResponse|StreamedResponse {
+        $data = self::getExportData($from, $until, $columns);
 
         if ($filetype === 'pdf') {
-            return self::exportPdf($from, $until);
+            return self::exportPdf(
+                from:    $from,
+                until:   $until,
+                columns: $columns,
+                data:    $data,
+            );
         }
 
-        if ($filetype === 'csv') {
-            return self::exportCsv($from, $until);
+        if ($filetype === 'csv_human' || $filetype === 'csv_machine') {
+            return self::exportCsv(
+                from:                  $from,
+                until:                 $until,
+                columns:               $columns,
+                data:                  $data,
+                humanReadableHeadings: $filetype === 'csv_human',
+            );
         }
 
         throw new InvalidArgumentException('unsupported filetype');
     }
 
+    private static function getExportMapping(Status $status, ExportableColumn $column) {
+
+        switch ($column) {
+            case ExportableColumn::STATUS_ID:
+                return $status->id;
+            case ExportableColumn::JOURNEY_TYPE:
+                return $status->trainCheckin->HafasTrip->category->value;
+            case ExportableColumn::LINE_NAME:
+                return $status->trainCheckin->HafasTrip->linename;
+            case ExportableColumn::JOURNEY_NUMBER:
+                return $status->trainCheckin->HafasTrip->journey_number;
+            case ExportableColumn::ORIGIN_NAME:
+                return $status->trainCheckin->originStation->name;
+            case ExportableColumn::ORIGIN_COORDINATES:
+                return $status->trainCheckin->originStation->latitude
+                       . ',' . $status->trainCheckin->originStation->longitude;
+            case ExportableColumn::DEPARTURE_PLANNED:
+                return $status->trainCheckin->origin_stopover?->departure_planned?->toIso8601String();
+            case ExportableColumn::DEPARTURE_REAL:
+                return $status->trainCheckin->origin_stopover?->departure?->toIso8601String();
+            case ExportableColumn::DESTINATION_NAME:
+                return $status->trainCheckin->destinationStation->name;
+            case ExportableColumn::DESTINATION_COORDINATES:
+                return $status->trainCheckin->destinationStation->latitude
+                       . ',' . $status->trainCheckin->destinationStation->longitude;
+            case ExportableColumn::ARRIVAL_PLANNED:
+                return $status->trainCheckin->destination_stopover?->arrival_planned?->toIso8601String();
+            case ExportableColumn::ARRIVAL_REAL:
+                return $status->trainCheckin->destination_stopover?->arrival?->toIso8601String();
+            case ExportableColumn::DURATION:
+                return $status->trainCheckin->duration;
+            case ExportableColumn::DISTANCE:
+                return $status->trainCheckin->distance;
+            case ExportableColumn::POINTS:
+                return $status->trainCheckin->points;
+            case ExportableColumn::BODY:
+                return $status->body;
+            case ExportableColumn::TRAVEL_TYPE:
+                return $status->business->name;
+            case ExportableColumn::OPERATOR:
+                return $status->trainCheckin->HafasTrip?->operator?->name;
+            case ExportableColumn::STATUS_TAGS:
+                $tags = [];
+                foreach ($status->tags as $tag) {
+                    $tags[$tag->key] = $tag->value;
+                }
+                return $tags;
+            default:
+                throw new InvalidArgumentException('unsupported column');
+        }
+    }
+
     /**
      * @throws DataOverflowException
      */
-    private static function exportJson(Carbon $begin, Carbon $end): JsonResponse {
+    public static function getExportData(Carbon $timestampFrom, Carbon $timestampTo, array &$columns): array {
+        $statuses = self::getExportableStatuses(auth()->user(), $timestampFrom, $timestampTo);
+        $data     = [];
+        $tagKeys  = [];
+        $statusTags = [];
+        foreach ($statuses as $key => $status) {
+            $row  = [];
+            $tags = [];
+
+            foreach ($columns as $column) {
+                if (!($column instanceof ExportableColumn)) {
+                    continue;
+                }
+                if ($column === ExportableColumn::STATUS_TAGS) {
+                    $tags = self::getExportMapping($status, $column);
+                    foreach ($tags as $tag => $value) {
+                        if (!in_array($tag, $tagKeys, true)) {
+                            $tagKeys[] = $tag;
+                        }
+                    }
+                    $statusTags[$key] = $tags;
+
+                    continue;
+                }
+                $row[$column->value] = self::getExportMapping($status, $column);
+            }
+
+            $data[$key] = $row;
+        }
+
+        foreach ($statusTags as $key => $tags) {
+            foreach ($tagKeys as $tagKey) {
+                $data[$key][$tagKey] = $tags[$tagKey] ?? null;
+            }
+        }
+
+        array_push($columns, ...$tagKeys);
+
+        if (($key = array_search(ExportableColumn::STATUS_TAGS, $columns, true)) !== false) {
+            unset($columns[$key]);
+        }
+
+        return $data;
+    }
+
+    /**
+     * @throws DataOverflowException
+     */
+    public static function exportJson(Carbon $begin, Carbon $end): JsonResponse {
         $headers    = [
             'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
             'Content-type'        => 'text/json',
@@ -84,45 +199,71 @@ abstract class ExportController extends Controller
         return Response::json(data: $exportData, headers: $headers);
     }
 
-    /**
-     * @throws DataOverflowException
-     */
-    private static function exportPdf(Carbon $begin, Carbon $end): \Illuminate\Http\Response {
-        $statuses = ExportBackend::getExportableStatuses(auth()->user(), $begin, $end);
-
+    private static function exportPdf(Carbon $from, Carbon $until, array $columns, array $data): HttpResponse {
         return Pdf::loadView('pdf.export-template', [
-            'statuses'     => $statuses,
-            'begin'        => $begin,
-            'end'          => $end,
-            'sum_duration' => $statuses->sum('trainCheckin.duration'),
-            'sum_distance' => $statuses->sum('trainCheckin.distance') / 1000,
+            'begin'   => $from,
+            'end'     => $until,
+            'columns' => $columns,
+            'data'    => $data,
         ])
                   ->setPaper('a4', 'landscape')
                   ->download(
                       sprintf(
                           'Traewelling_export_%s_to_%s.pdf',
-                          $begin->format('Y-m-d'),
-                          $end->format('Y-m-d')
+                          $from->format('Y-m-d'),
+                          $until->format('Y-m-d')
                       )
                   );
     }
 
-    /**
-     * @throws DataOverflowException
-     */
-    private static function exportCsv(Carbon $begin, Carbon $end): StreamedResponse {
-        $headers      = [
+    private static function exportCsv(
+        Carbon $from,
+        Carbon $until,
+        array $columns,
+        array $data,
+        bool $humanReadableHeadings = false
+    ): StreamedResponse {
+        $headers = [
             'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
             'Content-type'        => 'text/csv',
             'Content-Disposition' => sprintf(
                 'attachment; filename="Traewelling_export_%s_to_%s.csv"',
-                $begin->format('Y-m-d'),
-                $end->format('Y-m-d')
+                $from->format('Y-m-d'),
+                $until->format('Y-m-d')
             ),
             'Expires'             => '0',
             'Pragma'              => 'public',
         ];
-        $exportStream = CsvExportController::generateExport(auth()->user(), $begin, $end);
-        return Response::stream($exportStream, 200, $headers);
+
+        $fileStream = static function () use ($humanReadableHeadings, $columns, $data) {
+            $csv           = fopen('php://output', 'w');
+            $stringColumns = [];
+            foreach ($columns as $column) {
+                if ($humanReadableHeadings) {
+                    $stringColumns[] = self::getColumnTitle($column);
+                    continue;
+                }
+                $stringColumns[] = $column->value ?? $column;
+            }
+            fputcsv(
+                stream: $csv,
+                fields: $stringColumns,
+            );
+            foreach ($data as $row) {
+                fputcsv($csv, $row);
+            }
+            fclose($csv);
+        };
+
+        return Response::stream($fileStream, 200, $headers);
+    }
+
+    public static function getColumnTitle(ExportableColumn|String $column): string {
+        if ($column instanceof ExportableColumn) {
+            return $column->title();
+        }
+
+        $key = StatusTagKey::tryFrom($column);
+        return $key?->title() ?? $column;
     }
 }

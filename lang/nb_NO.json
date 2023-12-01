@@ -520,7 +520,7 @@
     "merry-christmas": "Vi ønsker deg en riktig god jul!",
     "overlapping-checkin.description2": "Vil du tvinge innsjekk nå?",
     "no-points-warning": "Du får ikke fulle poeng for det.",
-    "no-points-message": "Du fikk ikke hele poeng for å tvinge inn innsjekkingen.",
+    "no-points-message.forced": "Du fikk ikke hele poeng for å tvinge inn innsjekkingen.",
     "overlapping-checkin.force-yes": "Ja, tvinger.",
     "overlapping-checkin": "Overlappende tur",
     "overlapping-checkin.description": "Reisen din kunne ikke lagres fordi den overlapper med innsjekkingen din i :lineName.",

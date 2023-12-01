@@ -152,7 +152,7 @@ $(document).on("click", ".disconnect", function (event) {
             location.reload();
         },
         error: function (request) {
-            window.bootstrap_alert.danger(request.responseText);
+            notyf.error(request.responseText);
         }
     });
 });

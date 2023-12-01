@@ -1,7 +1,6 @@
 import "awesomplete/awesomplete";
 
 window.addEventListener("load", () => {
-    import("./components/usageBoard");
     import("./components/station-autocomplete");
 });
 
@@ -10,3 +9,12 @@ window.Popper = Popper;
 
 import "bootstrap";
 import "leaflet";
+import {createApp} from "vue";
+import TripCreationForm from "../vue/components/TripCreation/TripCreationForm.vue";
+
+document.addEventListener("DOMContentLoaded", function() {
+    const admin = createApp({});
+    admin.component('TripCreationForm', TripCreationForm);
+    admin.mount('#trip-creation-form');
+
+});
