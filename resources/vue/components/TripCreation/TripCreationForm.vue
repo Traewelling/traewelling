@@ -37,11 +37,11 @@ export default {
                 {value: "tram", text: "tram"},
                 {value: "taxi", text: "taxi"},
             ],
-        }
+        };
     },
     methods: {
         addStopover() {
-            this.form.stopovers.push('');
+            this.form.stopovers.push("");
         },
         setOrigin(item) {
             this.origin        = item;
@@ -61,10 +61,10 @@ export default {
             this.form.lineName      = this.trainTypeInput + " " + this.trainNumberInput;
             this.form.journeyNumber = isNumber(this.trainNumberInput) ? this.trainNumberInput : random(1000, 9999, false);
 
-            fetch('/api/v1/trains/trip', {
-                method: 'POST',
+            fetch("/api/v1/trains/trip", {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(this.form),
             }).then((data) => {
@@ -78,11 +78,10 @@ export default {
                             departure: this.form.originDeparturePlanned,
                         };
 
-                        console.log(`/trains/trip?${new URLSearchParams(query).toString()}`);
                         window.location.href = `/trains/trip/?${new URLSearchParams(query).toString()}`;
                     });
                 }
-            })
+            });
         }
     }
 }
