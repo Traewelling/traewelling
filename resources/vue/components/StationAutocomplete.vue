@@ -1,6 +1,7 @@
 <script>
 import FullScreenModal from "./FullScreenModal.vue";
 import _ from "lodash";
+import {trans} from "laravel-vue-i18n";
 
 export default {
     name: "StationAutocomplete",
@@ -25,6 +26,7 @@ export default {
         };
     },
     methods: {
+        trans,
         showModal() {
             this.$refs.modal.show();
         },
@@ -96,7 +98,7 @@ export default {
         </template>
     </FullScreenModal>
     <div class="card mb-4">
-        <div class="card-header">Where are you?</div>
+        <div class="card-header">{{ trans('stationboard.where-are-you') }}</div>
         <div class="card-body">
                 <div id="station-autocomplete-container" style="z-index: 3;">
                     <div class="input-group mb-2 mr-sm-2">

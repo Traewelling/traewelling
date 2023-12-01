@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import CheckinLineRun from "./CheckinLineRun.vue";
 import CheckinInterface from "./CheckinInterface.vue";
 import StationAutocomplete from "./StationAutocomplete.vue";
+import {trans} from "laravel-vue-i18n";
 
 export default {
     components: {StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal},
@@ -30,6 +31,7 @@ export default {
         };
     },
     methods: {
+        trans,
         showModal(selectedItem) {
             this.selectedDestination = null;
             this.selectedTrain = selectedItem;
@@ -146,7 +148,7 @@ export default {
                     <div>
                         <span class="fw-bold fs-6">{{ item.direction }}</span><br>
                         <span v-if="item.stop.name !== meta.station.name" class="text-muted small font-italic">
-                        ab {{ item.stop.name }}
+                        {{ trans('stationboard.dep') }} {{ item.stop.name }}
                     </span>
                     </div>
                 </div>

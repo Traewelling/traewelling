@@ -1,5 +1,6 @@
 <script>
 import {Modal} from "bootstrap";
+import {trans} from "laravel-vue-i18n";
 
 export default {
     props: {
@@ -33,6 +34,7 @@ export default {
         this.modalObj = new Modal(this.$refs.modalComponent);
     },
     methods: {
+        trans,
         show() {
             this.modalObj.show();
         },
@@ -61,7 +63,7 @@ export default {
                 <div class="modal-footer" v-if="!hideFooter">
                     <slot name="footer"></slot>
                     <button type="button" class="btn btn-secondary">
-                        Close
+                        {{ trans('menu.close') }}
                     </button>
                 </div>
             </div>

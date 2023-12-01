@@ -11,9 +11,6 @@ export default {
             loading: true
         }
     },
-    props: {
-        emptyText: String
-    },
     methods: {
         toggleRead(data, key) {
             let readAction = data.readAt ? 'unread' : 'read';
@@ -70,7 +67,7 @@ export default {
     </div>
     <div class="text-center text-muted notifications-empty" v-else>
         <i class="fa-solid fa-envelope fs-1"></i>
-        <p class="fs-5">{{ emptyText }}</p>
+        <p class="fs-5">{{ $t('notifications.empty') }}</p>
     </div>
 </template>
 

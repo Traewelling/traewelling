@@ -13,7 +13,7 @@ import "leaflet/dist/leaflet.js";
 import "./api/api";
 import "./components/maps";
 import CheckinSuccessHelper from "../vue/components/CheckinSuccessHelper.vue";
-import {i18nVue} from "laravel-vue-i18n";
+import {I18n, i18nVue} from "laravel-vue-i18n";
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -48,24 +48,42 @@ document.addEventListener("DOMContentLoaded", function() {
     app.component('NotificationBell', NotificationBell);
     app.config.devtools = true;
     app.use(i18nVue, {
-        lang: 'en',
+        fallbackLang: 'en',
         resolve: (lang) => import(`../../lang/${lang}.json`)
     });
     app.mount('#nav-main');
 
     const app2 = createApp({});
     app2.component('ActiveJourneyMap', ActiveJourneyMap);
+    app2.use(i18nVue, {
+        fallbackLang: 'en',
+        resolve: (lang) => import(`../../lang/${lang}.json`)
+    });
     app2.mount('#activeJourneys');
 
     const app3 = createApp({});
     app3.component('Stationboard', Stationboard);
     app3.component('Stationautocomplete', StationAutocomplete);
+    app3.use(i18nVue, {
+        fallbackLang: 'en',
+        resolve: (lang) => import(`../../lang/${lang}.json`)
+    });
     app3.mount('#station-board-new');
 
     const app4 = createApp({});
     app4.component('CheckinSuccessHelper', CheckinSuccessHelper);
+    app4.use(i18nVue, {
+        fallbackLang: 'en',
+        resolve: (lang) => import(`../../lang/${lang}.json`)
+    });
     app4.mount('#checkin-success-helper');
 
+    // get language query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const lang = urlParams.get('lang');
+    if (lang) {
+        I18n.getSharedInstance().setOptions({lang: lang}).load();
+    }
 });
 
 /**
