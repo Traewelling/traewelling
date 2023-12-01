@@ -25,6 +25,7 @@ class TripController extends Controller
      * @return HafasTripResource
      *
      * @todo add stopovers
+     * @todo add docs
      * @todo currently the stations need to be in the database. We need to add a fallback to HAFAS.
      *       -> later solve the problem for non-existing stations
      */
