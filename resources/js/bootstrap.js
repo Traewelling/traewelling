@@ -1,7 +1,9 @@
 import "lodash";
 import jQuery from "jquery";
 import * as Popper from '@popperjs/core';
-import { mdb } from "mdb-ui-kit/js/mdb.min";
+import {Input, Dropdown, Popover, Collapse, Modal, Tooltip, initMDB } from "mdb-ui-kit/js/mdb.es.min";
+initMDB({ Input, Dropdown, Popover, Popper, Collapse, Modal, Tooltip });
+
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
  * for JavaScript based Bootstrap features such as modals and tabs. This
@@ -17,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
         import("bootstrap/js/dist/button");
         import("bootstrap/js/dist/tab");
         import("bootstrap/js/dist/dropdown");
-        window.mdb = mdb;
+        //window.mdb = mdb;
     } catch (e) {
         throw new Error(e);
     }
