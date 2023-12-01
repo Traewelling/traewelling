@@ -24,7 +24,6 @@ class TripController extends Controller
      *
      * @return HafasTripResource
      *
-     * @todo add stopovers
      * @todo add docs
      * @todo currently the stations need to be in the database. We need to add a fallback to HAFAS.
      *       -> later solve the problem for non-existing stations
@@ -44,6 +43,10 @@ class TripController extends Controller
                 'originDeparturePlanned'    => ['required', 'date'],
                 'destinationId'             => ['required', 'exists:train_stations,ibnr'],
                 'destinationArrivalPlanned' => ['required', 'date'],
+                'stopovers'                 => ['nullable', 'array'],
+                'stopovers.*.stationId'     => ['required', 'exists:train_stations,ibnr'],
+                'stopovers.*.arrival'       => ['required_without:stopovers.*.departure', 'date'],
+                'stopovers.*.departure'     => ['required_without:stopovers.*.arrival,null', 'date'],
             ]
         );
 
@@ -61,6 +64,16 @@ class TripController extends Controller
                     TrainStation::where('ibnr', $validated['destinationId'])->firstOrFail(),
                     Carbon::parse($validated['destinationArrivalPlanned'])
                 );
+
+        if (isset($validated['stopovers'])) {
+            foreach ($validated['stopovers'] as $stopover) {
+                $creator->addStopover(
+                    TrainStation::where('ibnr', $stopover['stationId'])->firstOrFail(),
+                    isset($stopover['departure']) ? Carbon::parse($stopover['departure']) : null,
+                    isset($stopover['arrival']) ? Carbon::parse($stopover['arrival']) : null
+                );
+            }
+        }
 
         $trip = $creator->createFullTrip();
 

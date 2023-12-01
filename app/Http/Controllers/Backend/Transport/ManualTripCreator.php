@@ -18,7 +18,7 @@ use InvalidArgumentException;
 class ManualTripCreator extends Controller
 {
 
-    private ?HafasTrip $trip;
+    private ?HafasTrip      $trip;
     private HafasTravelType $category;
     private string          $lineName;
     private ?int            $journeyNumber;
@@ -27,13 +27,16 @@ class ManualTripCreator extends Controller
     private Carbon          $originDeparturePlanned;
     private TrainStation    $destination;
     private Carbon          $destinationArrivalPlanned;
+    private array           $stopovers;
 
     public function createFullTrip(): HafasTrip {
         $this->createTrip();
         $this->createOriginStopover();
         $this->createDestinationStopover();
+        $this->processStopovers();
         return $this->trip;
     }
+
     private function createTrip(): void {
         $this->trip = HafasTrip::create([
                                             'trip_id'        => $this->generateUniqueTripId(),
@@ -89,7 +92,7 @@ class ManualTripCreator extends Controller
     }
 
     public function setLine(string $lineName, ?int $journeyNumber): ManualTripCreator {
-        $this->lineName = $lineName;
+        $this->lineName      = $lineName;
         $this->journeyNumber = $journeyNumber;
         return $this;
     }
@@ -100,14 +103,41 @@ class ManualTripCreator extends Controller
     }
 
     public function setOrigin(TrainStation $origin, Carbon $plannedDeparture): ManualTripCreator {
-        $this->origin = $origin;
+        $this->origin                 = $origin;
         $this->originDeparturePlanned = $plannedDeparture;
         return $this;
     }
 
     public function setDestination(TrainStation $destination, Carbon $plannedArrival): ManualTripCreator {
-        $this->destination = $destination;
+        $this->destination               = $destination;
         $this->destinationArrivalPlanned = $plannedArrival;
         return $this;
+    }
+
+    public function addStopover(
+        TrainStation $station,
+        ?Carbon      $plannedDeparture,
+        ?Carbon      $plannedArrival
+    ): ManualTripCreator {
+        $this->stopovers[] = [
+            'stationId' => $station->id,
+            'departure' => $plannedDeparture,
+            'arrival'   => $plannedArrival,
+        ];
+        return $this;
+    }
+
+    private function processStopovers(): void {
+        if ($this->trip === null) {
+            throw new InvalidArgumentException('Cannot add stopover without trip');
+        }
+        foreach ($this->stopovers as $stopover) {
+            TrainStopover::create([
+                                      'trip_id'           => $this->trip->trip_id,
+                                      'train_station_id'  => $stopover['stationId'],
+                                      'arrival_planned'   => $stopover['arrival'],
+                                      'departure_planned' => $stopover['departure'],
+                                  ]);
+        }
     }
 }

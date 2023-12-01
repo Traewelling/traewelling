@@ -21,6 +21,7 @@ export default {
             },
             originTimezone: "Europe/Berlin",
             destinationTimezone: "Europe/Berlin",
+            stopovers: [],
             origin: {},
             destination: {},
             trainNumberInput: "",
@@ -40,11 +41,23 @@ export default {
         };
     },
     methods: {
+        addStopover() {
+            const dummyStopover = {
+                station: {
+                    name: "",
+                    ibnr: "",
+                },
+                departurePlanned: "",
+                arrivalPlanned: "",
+            };
+            this.stopovers.push(dummyStopover);
+        },
         setOrigin(item) {
             this.origin        = item;
             this.form.originId = item.ibnr;
         },
         setDeparture(time) {
+            console.info('departure', time)
             this.form.originDeparturePlanned = DateTime.fromISO(time).setZone(this.originTimezone);
         },
         setDestination(item) {
@@ -52,6 +65,7 @@ export default {
             this.form.destinationId = item.ibnr;
         },
         setArrival(time) {
+            console.info('arrival', time)
             this.form.destinationArrivalPlanned = DateTime.fromISO(time).setZone(this.destinationTimezone);
         },
         sendform() {
@@ -79,7 +93,17 @@ export default {
                     });
                 }
             });
-        }
+        },
+        setStopoverStation(item, key) {
+            console.log(item, key)
+            this.stopovers[key].station = item;
+        },
+        setStopoverDeparture(time, key) {
+            this.stopovers[key].departurePlanned = DateTime.fromISO(time).setZone(this.originTimezone);
+        },
+        setStopoverArrival(time, key) {
+            this.stopovers[key].arrivalPlanned = DateTime.fromISO(time).setZone(this.destinationTimezone);
+        },
     }
 }
 </script>
@@ -93,15 +117,25 @@ export default {
                     placeholder="Startbahnhof"
                     :arrival="false"
                     v-on:update:station="setOrigin"
-                    v-on:update:timeFieldA="setDeparture"
+                    v-on:update:timeFieldB="setDeparture"
                 ></StationRow>
             </div>
-           <div class="row g-3 mt-1">
+            <a href="#" @click="addStopover">Zwischenhalt hinzufügen <i class="fa fa-plus" aria-hidden="true"></i></a>
+            <div class="row g-3 mt-1" v-for="(stopover, key) in stopovers" v-bind:key="key">
+                <StationRow
+                    placeholder="Zwischenhalt"
+                    v-on:update:station="setStopoverStation($event, key)"
+                    v-on:update:timeFieldB="setStopoverDeparture($event, key)"
+                    v-on:update:timeFieldA="setStopoverArrival($event, key)"
+                ></StationRow>
+                <hr>
+            </div>
+            <div class="row g-3 mt-1">
                 <StationRow
                     placeholder="Zielbahnhof"
                     :departure="false"
                     v-on:update:station="setDestination"
-                    v-on:update:timeFieldA="setArrival"
+                    v-on:update:timeFieldB="setArrival"
                 ></StationRow>
             </div>
             <div class="row g-3 mt-1">
