@@ -61,7 +61,7 @@ class StatisticController extends Controller
     }
 
     public function renderStations(Request $request): View {
-        if (!auth()->check() || auth()->user()->role < 10) {
+        if (!auth()->check() || !auth()->user()->hasRole('closed-beta')) {
             abort(404);
         }
 

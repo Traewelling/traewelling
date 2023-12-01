@@ -54,4 +54,5 @@ return [
     ],
     'year_in_review_active'    => env('YEAR_IN_REVIEW_ACTIVE', false),
     'webhooks_active'          => env('WEBHOOKS_ACTIVE', false),
+    'webfinger_active'         => env('WEBFINGER_ACTIVE', false),
 ];

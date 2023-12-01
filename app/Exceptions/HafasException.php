@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class HafasException extends Exception
+class HafasException extends Referencable
 {
     //
 }

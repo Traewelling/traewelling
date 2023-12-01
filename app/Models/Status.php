@@ -19,16 +19,19 @@ use Illuminate\Support\Facades\Auth;
  * @property int              event_id
  * @property StatusVisibility visibility
  * @property TrainCheckin     $trainCheckin
+ *
+ * @todo merge model with "TrainCheckin" (later only "Checkin") because the difference between trip sources (HAFAS,
+ *       User, and future sources) should be handled in the Trip model.
  */
 class Status extends Model
 {
 
     use HasFactory;
 
-    protected    $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'tweet_id', 'mastodon_post_id'];
-    protected    $hidden   = ['user_id', 'business'];
-    protected    $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description'];
-    protected    $casts    = [
+    protected $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'tweet_id', 'mastodon_post_id'];
+    protected $hidden   = ['user_id', 'business'];
+    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description'];
+    protected $casts    = [
         'id'               => 'integer',
         'user_id'          => 'integer',
         'business'         => Business::class,

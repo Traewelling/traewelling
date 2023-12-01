@@ -75,6 +75,7 @@ class StatusEditController extends Controller
             hafasTravelType: $status->trainCheckin->HafasTrip->category,
             departure:       $newDeparture,
             arrival:         $newArrival,
+            tripSource:      $status->trainCheckin->HafasTrip->source,
             timestampOfView: $newDeparture,
         );
 

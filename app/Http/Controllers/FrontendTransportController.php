@@ -217,7 +217,7 @@ class FrontendTransportController extends Controller
 
         } catch (TrainCheckinAlreadyExistException) {
             return redirect()->route('dashboard')
-                             ->with('error', __('messages.exception.general'));
+                             ->with('error', __('messages.exception.already-checkedin'));
         } catch (AlreadyCheckedInException) {
             $message = __('messages.exception.already-checkedin') . ' ' . __('messages.exception.maybe-too-fast');
             return redirect()->route('dashboard')
@@ -226,7 +226,7 @@ class FrontendTransportController extends Controller
             report($exception);
             return redirect()
                 ->route('dashboard')
-                ->with('error', __('messages.exception.general'));
+                ->with('error', errorMessage($exception));
         }
     }
 

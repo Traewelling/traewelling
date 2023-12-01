@@ -5,9 +5,9 @@ namespace App\Interfaces;
 
 interface IconEnumInterface
 {
-    public function faIcon(): string;
+    public function faIcon(): ?string;
 
-    public function title(): string;
+    public function title(): ?string;
 
-    public function description(): string;
+    public function description(): ?string;
 }

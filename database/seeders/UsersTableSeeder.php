@@ -16,15 +16,16 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void {
         // For better Testing, we'll create private and public users.
-        User::factory()
-            ->has(IcsToken::factory(rand(0, 2)))
-            ->create([
-                         'username' => 'Gertrud123',
-                         'name'     => 'Gertrud',
-                         'email'    => 'gertrud@traewelling.de',
-                         'password' => Hash::make('thisisnotasecurepassword123'),
-                         'role'     => 10,
-                     ]);
+        $gertrud = User::factory()
+                       ->has(IcsToken::factory(rand(0, 2)))
+                       ->create([
+                                    'username' => 'Gertrud123',
+                                    'name'     => 'Gertrud',
+                                    'email'    => 'gertrud@traewelling.de',
+                                    'password' => Hash::make('thisisnotasecurepassword123'),
+                                ]);
+        $gertrud->assignRole('admin');
+        $gertrud->assignRole('closed-beta');
 
         User::factory()
             ->create([

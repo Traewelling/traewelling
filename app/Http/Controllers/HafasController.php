@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enum\HafasTravelType as HTT;
 use App\Enum\TravelType;
+use App\Enum\TripSource;
 use App\Exceptions\HafasException;
 use App\Models\HafasOperator;
 use App\Models\HafasTrip;
@@ -164,7 +165,7 @@ abstract class HafasController extends Controller
         bool         $skipTimeShift = false
     ) {
         $client   = self::getHttpClient();
-        $time   = $skipTimeShift ? $when : (clone $when)->shiftTimezone("Europe/Berlin");
+        $time     = $skipTimeShift ? $when : (clone $when)->shiftTimezone("Europe/Berlin");
         $query    = [
             'when'                       => $time->toIso8601String(),
             'duration'                   => $duration,
@@ -341,7 +342,10 @@ abstract class HafasController extends Controller
      * @throws HafasException
      */
     public static function getHafasTrip(string $tripID, string $lineName): HafasTrip {
-        $trip = HafasTrip::where('trip_id', $tripID)->where('linename', $lineName)->first();
+        if (is_numeric($tripID)) {
+            $trip = HafasTrip::where('id', $tripID)->where('linename', $lineName)->first();
+        }
+        $trip = $trip ??  HafasTrip::where('trip_id', $tripID)->where('linename', $lineName)->first();
         return $trip ?? self::fetchHafasTrip($tripID, $lineName);
     }
 
@@ -413,7 +417,8 @@ abstract class HafasController extends Controller
                                                    'polyline_id'    => $polyline->id,
                                                    'departure'      => $tripJson->plannedDeparture,
                                                    'arrival'        => $tripJson->plannedArrival,
-                                                   'delay'          => $tripJson->arrivalDelay ?? null
+                                                   'delay'          => $tripJson->arrivalDelay ?? null,
+                                                   'source'         => TripSource::HAFAS,
                                                ]);
 
         //Save TrainStations
@@ -442,13 +447,15 @@ abstract class HafasController extends Controller
             //remove "null" values
             $updatePayload = array_filter($updatePayload, 'strlen'); //TODO: This is deprecated, find a better way
 
-            if ($stopover->arrival !== null && Carbon::parse($stopover->arrival)->isFuture()) {
+            //the arrival and departure attributes are always included, so to recognize whether we have realtime data,
+            // arrivalDelay and departureDelay are checked for being null or not.
+            if ($stopover->arrival !== null && isset($stopover->arrivalDelay)) {
                 $updatePayload['arrival_real'] = Carbon::parse($stopover->arrival);
                 if ($stopover->arrivalPlatform !== null) {
                     $updatePayload['arrival_platform_real'] = $stopover->arrivalPlatform;
                 }
             }
-            if ($stopover->departure !== null && Carbon::parse($stopover->departure)->isFuture()) {
+            if ($stopover->departure !== null && isset($stopover->departureDelay)) {
                 $updatePayload['departure_real'] = Carbon::parse($stopover->departure);
                 if ($stopover->departurePlatform !== null) {
                     $updatePayload['departure_platform_real'] = $stopover->departurePlatform;
@@ -480,9 +487,7 @@ abstract class HafasController extends Controller
     public static function refreshStopovers(stdClass $rawHafas): int {
         $payload = [];
         foreach ($rawHafas->stopovers ?? [] as $stopover) {
-            $timestampToCheck = Carbon::parse($stopover->departure ?? $stopover->arrival);
-            if ($timestampToCheck->isPast() || $timestampToCheck->isAfter(now()->addDay())) {
-                //HAFAS doesn't give as real time information on past stopovers, so... don't overwrite our data. :)
+            if (!isset($stopover->arrivalDelay) && !isset($stopover->departureDelay)) {
                 continue;
             }
 

@@ -34,8 +34,9 @@ class FeatureCollection implements \JsonSerializable
      *         ref="#/components/schemas/Coordinate"
      *     )
      * )
+     * @var Collection|Feature[]
      */
-    private Collection $features;
+    public Collection $features;
 
     public function __construct(Collection $features, string $type = 'FeatureCollection') {
         $this->features = $features;

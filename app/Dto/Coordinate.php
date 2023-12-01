@@ -12,7 +12,7 @@ use OpenApi\Annotations as OA;
  *     @OA\Xml(name="Coordinate"),
  * )
  */
-class Coordinate
+class Coordinate implements \JsonSerializable
 {
     /**
      *
@@ -44,5 +44,11 @@ class Coordinate
         return null;
     }
 
+    public function toArray(): array {
+        return [$this->longitude, $this->latitude];
+    }
 
+    public function jsonSerialize(): array {
+        return $this->toArray();
+    }
 }

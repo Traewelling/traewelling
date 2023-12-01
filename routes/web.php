@@ -28,6 +28,7 @@ use App\Http\Controllers\Frontend\Support\SupportController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
 use App\Http\Controllers\Frontend\WebhookController;
+use App\Http\Controllers\Frontend\WebFingerController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendTransportController;
@@ -212,12 +213,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::post('/status/update', [StatusController::class, 'updateStatus'])
          ->name('status.update'); //TODO: Replace with API Endpoint
 
-    Route::prefix('export')->group(function() {
-        Route::get('/', [ExportController::class, 'renderForm'])
-             ->name('export.landing');
-        Route::post('/generate', [ExportController::class, 'renderExport'])
-             ->name('export.generate');
-    });
+    Route::view('/export', 'export')->name('export');
 
     Route::post('/createfollow', [FrontendUserController::class, 'CreateFollow'])
          ->name('follow.create'); //TODO: Replace with API Endpoint
@@ -260,3 +256,5 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 });
 
 Route::get('/sitemap.xml', [SitemapController::class, 'renderSitemap']);
+
+Route::get('/.well-known/webfinger', [WebFingerController::class, 'endpoint']);

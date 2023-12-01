@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enum\TripSource;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\HafasController;
 use App\Models\HafasTrip;
@@ -30,6 +31,7 @@ class RefreshCurrentTrips extends Command
                               $query->where('hafas_trips.last_refreshed', '<', now()->subMinutes(5))
                                     ->orWhereNull('hafas_trips.last_refreshed');
                           })
+                          ->where('hafas_trips.source', TripSource::HAFAS->value)
                           ->select('hafas_trips.*')
                           ->distinct()
                           ->orderBy('hafas_trips.last_refreshed')

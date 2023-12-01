@@ -5,20 +5,10 @@ import NotificationList from "./NotificationList.vue";
 import API from "../../js/api/api";
 
 defineProps({
-    label: {
-        type: String,
-        default: "aria-label placeholder",
-    },
     link: {
         type: Boolean,
         default: false
     },
-    i18nEmpty: {
-        type: String
-    },
-    i18nTitle: {
-        type: String
-    }
 });
 
 let fetchInterval = null;
@@ -60,14 +50,14 @@ function fetchCount() {
     <button @click="showModal" class="btn btn-link btn-transparent text-white notifications-board-toggle" style=""
        :class="{'nav-link': link, 'navbar-toggler': !link}" type="button"
        aria-expanded="false"
-       :aria-label="label">
+       :aria-label="$t('notifications.show')">
         <span class="notifications-bell fa-bell" :class="{'fas': !!state.count,  'far': !state.count}"></span>
-        <span class="notifications-pill badge rounded-pill badge-notification" v-show="state.count">{{
-                state.count
-            }}</span>
+        <span class="notifications-pill badge rounded-pill badge-notification" v-show="state.count">
+              {{ state.count }}
+        </span>
     </button>
     <ModalComponent
-        :title="i18nTitle"
+        :title="$t('notifications.title')"
         ref="thisModal"
         dialogClass="modal-lg modal-dialog-scrollable"
         bodyClass="p-0"
@@ -76,7 +66,6 @@ function fetchCount() {
             <NotificationList
                 ref="notifications"
                 @toggle-read="fetchCount"
-                :empty-text="i18nEmpty"
             />
         </template>
         <template #header-extra>
@@ -85,7 +74,7 @@ function fetchCount() {
                 class="btn btn-sm btn-link py-0 px-1 fs-5 text-muted"
                 @click="$refs.notifications.toggleAllRead"
                 v-show="state.count"
-                aria-label="{{ __('notifications.mark-all-read') }}">
+                :aria-label="$t('notifications.mark-all-read')">
                 <span aria-hidden="true"><i class="fa-solid fa-check-double"></i></span>
             </button>
         </template>

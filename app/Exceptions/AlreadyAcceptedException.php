@@ -6,10 +6,9 @@ use App\Models\PrivacyAgreement;
 use App\Models\User;
 use Exception;
 
-class AlreadyAcceptedException extends Exception
+class AlreadyAcceptedException extends Referencable
 {
     private User $user;
-    private User $initiator;
 
     /**
      * AlreadyFollowingException constructor.

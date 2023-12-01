@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Support;
 
 use App\Dto\Coordinate;
 use App\Dto\GeoJson\Feature;
+use App\Dto\GeoJson\FeatureCollection;
 use App\Dto\LivePointDto;
 use App\Models\HafasTrip;
 use App\Models\Status;
@@ -11,6 +12,7 @@ use App\Models\TrainStopover;
 use App\Objects\LineSegment;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Collection;
 use JsonException;
 use stdClass;
 
@@ -178,6 +180,11 @@ class LocationController
     public function getMapLines(bool $invert = false): array {
         try {
             $geoJson  = $this->getPolylineBetween();
+            if ($geoJson instanceof FeatureCollection) {
+
+                return $geoJson->features[0]->getCoordinates();
+            }
+
             $mapLines = [];
             foreach ($geoJson->features as $feature) {
                 if (isset($feature->geometry->coordinates[0], $feature->geometry->coordinates[1])) {
@@ -197,12 +204,35 @@ class LocationController
         }
     }
 
+    private function createPolylineFromStopovers(): FeatureCollection {
+        $coordinates = [];
+        $firstStop = null;
+        foreach ($this->hafasTrip->stopovers as $stopover) {
+            if ($firstStop !== null || $stopover->is($this->origin)) {
+                $firstStop = $stopover;
+                $coordinates[] = new Coordinate($stopover->trainStation->latitude, $stopover->trainStation->longitude);
+
+                if ($stopover->is($this->destination)) {
+                    break;
+                }
+            }
+        }
+
+
+        $features = new Collection([new Feature($coordinates)]);
+        return new FeatureCollection($features);
+    }
+
     /**
      * @throws JsonException
      */
-    private function getPolylineBetween(bool $preserveKeys = true): stdClass {
+    private function getPolylineBetween(bool $preserveKeys = true): stdClass|FeatureCollection {
         $this->hafasTrip->loadMissing(['stopovers.trainStation']);
         $geoJson  = $this->getPolylineWithTimestamps();
+        if (count($geoJson->features) === 0) {
+            return $this->createPolylineFromStopovers();
+        }
+
         $features = $geoJson->features;
 
         $originIndex      = null;

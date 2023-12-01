@@ -22,7 +22,6 @@ class UserFactory extends Factory
             'default_status_visibility' => StatusVisibility::PUBLIC->value,
             'prevent_index'             => false,
             'privacy_hide_days'         => $this->faker->numberBetween(7, 365),
-            'role'                      => 0,
             'language'                  => null,
             'likes_enabled'             => true,
         ];
