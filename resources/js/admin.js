@@ -14,7 +14,6 @@ import TripCreationForm from "../vue/components/TripCreation/TripCreationForm.vu
 
 document.addEventListener("DOMContentLoaded", function() {
     const admin = createApp({});
-    admin.component('TripCreationForm', TripCreationForm);
-    admin.mount('#trip-creation-form');
-
+    admin.component("TripCreationForm", TripCreationForm);
+    admin.mount("#trip-creation-form");
 });
