@@ -26,9 +26,9 @@ export default {
             trainNumberInput: "",
             trainTypeInput: "",
             categories: [
-                {value: "nationalExp", text: "nationalExp"},
+                {value: "nationalExpress", text: "nationalExpress"},
                 {value: "national", text: "national"},
-                {value: "regionalExp", text: "regionalExp"},
+                {value: "regionalExp", text: "regionalExpress"},
                 {value: "regional", text: "regional"},
                 {value: "suburban", text: "suburban"},
                 {value: "bus", text: "bus"},
@@ -67,6 +67,21 @@ export default {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(this.form),
+            }).then((data) => {
+                if (data.ok) {
+                    data.json().then((result) => {
+                        result = result.data;
+                        let query = {
+                            tripID: result.id,
+                            lineName: result.lineName,
+                            start: result.origin.ibnr,
+                            departure: this.form.originDeparturePlanned,
+                        };
+
+                        console.log(`/trains/trip?${new URLSearchParams(query).toString()}`);
+                        window.location.href = `/trains/trip/?${new URLSearchParams(query).toString()}`;
+                    });
+                }
             })
         }
     }
