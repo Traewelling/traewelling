@@ -68,9 +68,16 @@ export default {
             console.info('arrival', time)
             this.form.destinationArrivalPlanned = DateTime.fromISO(time).setZone(this.destinationTimezone);
         },
-        sendform() {
+        sendForm() {
             this.form.lineName      = this.trainTypeInput;
             this.form.journeyNumber = isNumber(this.trainNumberInput) ? this.trainNumberInput : null;
+            this.form.stopovers     = this.stopovers.map((stopover) => {
+                return {
+                    stationId: stopover.station.ibnr,
+                    departure: stopover.departurePlanned,
+                    arrival: stopover.arrivalPlanned,
+                };
+            });
 
             fetch("/api/v1/trains/trip", {
                 method: "POST",
@@ -111,7 +118,7 @@ export default {
 <template>
     <div>
         <h1>TripCreationForm</h1>
-        <form @submit.prevent="sendform">
+        <form @submit.prevent="sendForm">
             <div class="row g-3 mb-3">
                 <StationRow
                     placeholder="Startbahnhof"
