@@ -27,7 +27,7 @@ class CacheKey
     }
 
     public static function getMastodonProfileInformationKey(User $user): string {
-        return "mastodon_{$user->name}";
+        return "mastodon_{$user->id}";
     }
 
     public static function getYearInReviewKey(User $user, int $year): string {
