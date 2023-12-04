@@ -15,7 +15,6 @@ use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\ChangelogController;
 use App\Http\Controllers\Frontend\DevController;
 use App\Http\Controllers\Frontend\EventController;
-use App\Http\Controllers\Frontend\Export\ExportController;
 use App\Http\Controllers\Frontend\IcsController;
 use App\Http\Controllers\Frontend\LeaderboardController;
 use App\Http\Controllers\Frontend\SettingsController;
@@ -23,12 +22,11 @@ use App\Http\Controllers\Frontend\Social\MastodonController;
 use App\Http\Controllers\Frontend\Social\SocialController;
 use App\Http\Controllers\Frontend\StatisticController;
 use App\Http\Controllers\Frontend\Stats\DailyStatsController;
-use App\Http\Controllers\Frontend\Stats\YearInReviewController;
 use App\Http\Controllers\Frontend\Support\SupportController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
-use App\Http\Controllers\Frontend\WebhookController;
 use App\Http\Controllers\Frontend\WebFingerController;
+use App\Http\Controllers\Frontend\WebhookController;
 use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendTransportController;
@@ -125,8 +123,6 @@ Route::get('/ics', [IcsController::class, 'renderIcs'])
  * All of these routes can only be used by fully registered users.
  */
 Route::middleware(['auth', 'privacy'])->group(function() {
-    Route::get('year-in-review', [YearInReviewController::class, 'show']);
-
     Route::post('/ics/createToken', [IcsController::class, 'createIcsToken'])
          ->name('ics.createToken'); //TODO: Replace with API Endpoint
     Route::post('/ics/revokeToken', [IcsController::class, 'revokeIcsToken'])

@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Backend\Stats;
 
-use App\Enum\StatusVisibility;
-use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\Controller;
+use App\Models\Status;
 use App\Models\TrainCheckin;
 use App\Models\TrainStation;
 use App\Models\User;
@@ -232,7 +231,7 @@ abstract class TransportStatsController extends Controller
                    ->select([
                                 DB::raw('SUM(TIMESTAMPDIFF(MINUTE, train_stopovers.arrival_planned, train_stopovers.arrival_real)) as delay'),
                             ])
-                   ->first()->delay;
+                   ->first()?->delay ?? 0;
     }
 
     public static function getTopDestinations(User $user, Carbon $from, Carbon $to, int $limit = null): Collection {
@@ -300,64 +299,28 @@ abstract class TransportStatsController extends Controller
                            });
     }
 
-    /**
-     * @deprecated Do not use this function! This is untested and doesn't show correct data.
-     *
-     * @param User   $user  User to get the stats for
-     * @param Carbon $from  Start date
-     * @param Carbon $to    End date
-     * @param int    $limit Limit the number of results
-     *
-     * @return Collection
-     */
-    public static function getTopTravellingWith(User $user, Carbon $from, Carbon $to, int $limit = 5): Collection {
-        $tripIds = self::getTrainCheckinsBetween($user, $from, $to)
-                       ->select(['trip_id'])
-                       ->distinct()
-                       ->pluck('trip_id');
-
-        $otherUsers = DB::table('statuses')
-                        ->join('train_checkins', 'statuses.user_id', '=', 'train_checkins.user_id')
-                        ->join('users', 'statuses.user_id', '=', 'users.id')
-                        ->where('train_checkins.user_id', '!=', $user->id)
-                        ->whereIn('train_checkins.trip_id', $tripIds)
-                        ->where(function(QueryBuilder $query) use ($user) {
-                            //Visibility checks: One of the following options must be true
-
-                            //Option 1: User is public AND status is public
-                            $query->where(function(QueryBuilder $query) {
-                                $query->where('users.private_profile', 0)
-                                      ->whereIn('visibility', [
-                                          StatusVisibility::PUBLIC->value,
-                                          StatusVisibility::AUTHENTICATED->value
-                                      ]);
-                            });
-
-                            //Option 2: Status is from a followed BUT not private
-                            $query->orWhere(function(QueryBuilder $query) use ($user) {
-                                $query->whereIn('users.id', $user->follows()->select('follow_id'))
-                                      ->whereNotIn('visibility', [
-                                          StatusVisibility::PRIVATE->value,
-                                      ]);
-                            });
-                        })
-                        ->whereNotIn('train_checkins.user_id', $user->mutedUsers()->select('muted_id'))
-                        ->groupBy('train_checkins.user_id')
-                        ->select([
-                                     'train_checkins.user_id',
-                                     DB::raw('COUNT(*) as count'),
-                                 ])
-                        ->get();
-
-        $users = User::whereIn('id', $otherUsers->pluck('user_id'))->get();
-
-        return $otherUsers->map(function($model) use ($users) {
-            $user               = $users->firstWhere('id', $model->user_id);
-            $model->username    = $user->username;
-            $model->picture_url = ProfilePictureController::getUrlForUserId($user->id);
-            return $model;
-        })
-                          ->sortByDesc('count')
-                          ->take($limit);
+    public static function getMostLikedStatus(User $user, Carbon $from, Carbon $to, int $limit = 3): Collection {
+        if ($limit < 1) {
+            throw new InvalidArgumentException('limit must be greater than 0');
+        }
+        if ($limit > 100) {
+            throw new InvalidArgumentException('limit must be smaller than 10');
+        }
+        return self::getTrainCheckinsBetween($user, $from, $to, true)
+                   ->join('likes', 'train_checkins.status_id', '=', 'likes.status_id')
+                   ->groupBy('train_checkins.status_id')
+                   ->select([
+                                'train_checkins.status_id',
+                                DB::raw('COUNT(*) as count'),
+                            ])
+                   ->orderByDesc('count')
+                   ->limit($limit)
+                   ->get()
+                   ->map(function($row) {
+                       return [
+                           'status'    => $row->status,
+                           'likeCount' => $row->count,
+                       ];
+                   });
     }
 }
