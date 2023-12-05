@@ -53,13 +53,13 @@
                             <notification-bell
                                 i18n-empty="{{ __('notifications.empty') }}"
                                 i18n-title="{{ __('notifications.title') }}"
-                                label="{{ __('Show notifications') }}"
+                                label="{{ __('show-notifications') }}"
                             >
                             </notification-bell>
                         @endauth
                         <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
                                 data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                                aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                                aria-expanded="false" aria-label="{{ __('toggle-navigation') }}">
                             <i class="fas fa-bars"></i>
                         </button>
                     </div>
@@ -124,7 +124,7 @@
                                         i18n-empty="{{__('notifications.empty')}}"
                                         i18n-title="{{ __('notifications.title') }}"
                                         :link="true"
-                                        label="{{ __('Show notifications') }}"
+                                        label="{{ __('show-notifications') }}"
                                     >
                                     </notification-bell>
                                 </li>

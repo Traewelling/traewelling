@@ -733,5 +733,7 @@
     "export.columns": "Welche Spalten soll der Export beinhalten?",
     "export.period": "Welchen Zeitraum möchtest du exportieren?",
     "export.format": "In welchem Format möchtest du exportieren?",
-    "export.pdf.many": "Du hast sehr viele Spalten ausgewählt, der PDF Export kann daher nicht mehr gut lesbar sein."
+    "export.pdf.many": "Du hast sehr viele Spalten ausgewählt, der PDF Export kann daher nicht mehr gut lesbar sein.",
+    "toggle-navigation": "Navigation ein- und ausblenden",
+    "show-notifications": "Benachrichtigungen anzeigen"
 }
