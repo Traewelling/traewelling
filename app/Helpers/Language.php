@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Log;
+
 /**
  * Translate the given message.
  * Overloads the laravel own helper method
@@ -34,6 +36,7 @@ function __(string $key = null, array $replace = [], string $locale = null) {
 
     //What? Why we don't have these translation in german? This is our main language.
     //When we are reaching this line something is broken. Please fix it.
+    Log::warning('Missing translation for key: ' . $key);
     //But nevermind, first return the key:
     return trans($key, $replace, $locale);
 }
