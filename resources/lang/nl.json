@@ -751,5 +751,7 @@
     "export.period": "Welke periode wil je exporteren?",
     "export.format": "Welk bestandsformaat moet de export hebben?",
     "no-points-message.manual": "Je hebt geen punten ontvangen, omdat deze reis handmatig is toegevoegd.",
-    "tag.title.trwl:passenger_rights": "Passagiersrechten"
+    "tag.title.trwl:passenger_rights": "Passagiersrechten",
+    "toggle-navigation": "Navigatie tonen/verbergen",
+    "show-notifications": "Meldingen tonen"
 }
