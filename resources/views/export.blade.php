@@ -26,7 +26,7 @@
                                 {{__('export.columns')}}
                             </p>
 
-                            <select class="form-select" multiple name="columns[]" required>
+                            <select class="form-select" size="12" multiple name="columns[]" required>
                                 @foreach(\App\Enum\ExportableColumn::cases() as $column)
                                     <option value="{{$column->value}}">
                                         {{$column->title()}}
