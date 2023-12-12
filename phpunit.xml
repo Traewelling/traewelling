@@ -1,36 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" bootstrap="vendor/autoload.php" colors="true" processIsolation="false" stopOnFailure="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
-  <testsuites>
-    <testsuite name="Unit">
-      <directory suffix="Test.php">./tests/Unit</directory>
-      <directory suffix="Test.php">./tests/Unit/*</directory>
-      <directory suffix="Test.php">./tests/Unit/*/*</directory>
-    </testsuite>
-    <testsuite name="Feature">
-      <directory suffix="Test.php">./tests/Feature</directory>
-      <directory suffix="Test.php">./tests/Feature/*</directory>
-      <directory suffix="Test.php">./tests/Feature/*/*</directory>
-      <directory suffix="Test.php">./tests/Feature/*/*/*</directory>
-    </testsuite>
-  </testsuites>
-  <coverage>
-    <report>
-      <clover outputFile="clover.xml"/>
-      <html outputDirectory="tests-coverage" lowUpperBound="50" highLowerBound="90"/>
-    </report>
-  </coverage>
-  <php>
-    <server name="APP_ENV" value="testing"/>
-    <server name="BCRYPT_ROUNDS" value="4"/>
-    <server name="CACHE_DRIVER" value="array"/>
-    <server name="MAIL_DRIVER" value="array"/>
-    <server name="QUEUE_CONNECTION" value="sync"/>
-    <server name="SESSION_DRIVER" value="array"/>
-    <server name="WEBHOOKS_ACTIVE" value="true"/>
-  </php>
-  <source>
-    <include>
-      <directory suffix=".php">app/</directory>
-    </include>
-  </source>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" bootstrap="vendor/autoload.php"
+         colors="true" processIsolation="false" stopOnFailure="false"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd" cacheDirectory=".phpunit.cache"
+         backupStaticProperties="false">
+    <testsuites>
+        <testsuite name="Unit">
+            <directory suffix="Test.php">./tests/Unit</directory>
+            <directory suffix="Test.php">./tests/Unit/*</directory>
+            <directory suffix="Test.php">./tests/Unit/*/*</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory suffix="Test.php">./tests/Feature</directory>
+            <directory suffix="Test.php">./tests/Feature/*</directory>
+            <directory suffix="Test.php">./tests/Feature/*/*</directory>
+            <directory suffix="Test.php">./tests/Feature/*/*/*</directory>
+        </testsuite>
+    </testsuites>
+    <coverage>
+        <report>
+            <clover outputFile="clover.xml"/>
+            <html outputDirectory="tests-coverage" lowUpperBound="50" highLowerBound="90"/>
+        </report>
+    </coverage>
+    <php>
+        <server name="APP_ENV" value="testing"/>
+        <server name="BCRYPT_ROUNDS" value="4"/>
+        <server name="CACHE_DRIVER" value="array"/>
+        <server name="MAIL_DRIVER" value="array"/>
+        <server name="QUEUE_CONNECTION" value="sync"/>
+        <server name="SESSION_DRIVER" value="array"/>
+        <server name="WEBHOOKS_ACTIVE" value="true"/>
+        <server name="PRIVACY_ACCOUNT_DELETION_SEND_NOTIFICATION" value="true"/>
+        <server name="PRIVACY_ACCOUNT_DELETION_DELETE_ACCOUNT" value="true"/>
+    </php>
+    <source>
+        <include>
+            <directory suffix=".php">app/</directory>
+        </include>
+    </source>
 </phpunit>
