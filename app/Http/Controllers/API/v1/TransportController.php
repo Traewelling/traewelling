@@ -11,6 +11,7 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
+use App\Helpers\FPTFBuilder;
 use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
@@ -176,7 +177,8 @@ class TransportController extends Controller
         }
 
         return $this->sendResponse(
-            data:       $trainStationboardResponse['departures'],
+            data:       FPTFBuilder::forDeparture($trainStationboardResponse['departures']),
+            additional: ["meta" => ['station' => $trainStationboardResponse['station'],
             additional: ["meta" => ['station' => TrainStationDto::fromModel($trainStationboardResponse['station']),
                                     'times'   => $trainStationboardResponse['times'],
                         ]]

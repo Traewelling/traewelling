@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enum\TravelType;
 use App\Exceptions\HafasException;
+use App\Helpers\FPTFBuilder;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Models\PolyLine;
 use App\Models\TrainCheckin;
