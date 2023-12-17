@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Event extends Model
 {
 
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $fillable = [
         'name', 'hashtag', 'station_id', 'slug', 'host', 'url', 'begin', 'end', 'event_start', 'event_end'
@@ -52,5 +54,11 @@ class Event extends Model
 
     public function approvedBy(): HasOne {
         return $this->hasOne(User::class, 'id', 'approved_by');
+    }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+                         ->logOnlyDirty()
+                         ->logOnly(['name', 'hashtag', 'station_id', 'slug', 'host', 'url', 'begin', 'end', 'event_start', 'event_end']);
     }
 }
