@@ -51,6 +51,11 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
             Route::get('/{id}', [TripController::class, 'renderTrip'])
                  ->name('admin.trip.show');
         });
+
+        Route::prefix('events')->group(function() {
+            Route::get('/{id}/history', [AdminEventController::class, 'renderHistory'])
+                 ->name('admin.events.history');
+        });
     });
 
     Route::prefix('events')

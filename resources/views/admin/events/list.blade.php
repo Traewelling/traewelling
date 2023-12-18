@@ -77,6 +77,12 @@
                                             @csrf
                                             <input type="hidden" name="id" value="{{$event->id}}"/>
                                             <div class="btn-group">
+                                                @can('view event history')
+                                                    <a href="{{route('admin.events.history', ['id' => $event->id])}}"
+                                                       class="btn btn-sm btn-primary">
+                                                        <i class="fa-solid fa-history"></i>
+                                                    </a>
+                                                @endcan
                                                 <a href="{{route('admin.events.edit', ['id' => $event->id])}}"
                                                    class="btn btn-sm btn-primary">
                                                     <i class="fa-solid fa-pen-to-square"></i>

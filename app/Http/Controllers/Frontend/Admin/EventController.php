@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
+use Spatie\Activitylog\Models\Activity;
 
 class EventController extends Controller
 {
@@ -218,5 +219,19 @@ class EventController extends Controller
         $event     = Event::find($validated['id']);
         $event->delete();
         return redirect()->route('admin.events')->with('alert-success', 'Das Event wurde gelöscht!');
+    }
+
+    public function renderHistory(int $eventId): View {
+        $this->authorize('view event history');
+
+        $activities = Activity::where('subject_type', Event::class)
+                              ->where('subject_id', $eventId)
+                              ->orderByDesc('created_at')
+                              ->paginate(10);
+
+        return view('admin.events.history', [
+            'eventId'    => $eventId,
+            'activities' => $activities,
+        ]);
     }
 }
