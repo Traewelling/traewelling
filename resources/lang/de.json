@@ -735,5 +735,12 @@
     "export.format": "In welchem Format möchtest du exportieren?",
     "export.pdf.many": "Du hast sehr viele Spalten ausgewählt, der PDF Export kann daher nicht mehr gut lesbar sein.",
     "toggle-navigation": "Navigation ein- und ausblenden",
-    "show-notifications": "Benachrichtigungen anzeigen"
+    "show-notifications": "Benachrichtigungen anzeigen",
+    "mail.hello": "Hallo :username",
+    "mail.bye": "Viele Grüße",
+    "mail.signature": "Dein Träwelling Team",
+    "mail.account_deletion_notification_two_weeks_before.subject": "Dein Träwelling Account wird in zwei Wochen gelöscht",
+    "mail.account_deletion_notification_two_weeks_before.body1": "dein Träwelling Account scheint seit längerer Zeit nicht mehr aktiv von dir genutzt zu werden.",
+    "mail.account_deletion_notification_two_weeks_before.body2": "Aus Gründen der Datensparsamkeit werden Accounts, die länger als 12 Monate nicht genutzt werden, automatisch gelöscht.",
+    "mail.account_deletion_notification_two_weeks_before.body3": "Wenn du deinen Account behalten möchtest, logge dich bitte innerhalb der nächsten 14 Tage ein."
 }
