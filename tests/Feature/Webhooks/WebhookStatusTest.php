@@ -108,7 +108,7 @@ class WebhookStatusTest extends TestCase
                 $job->payload['event']
             );
             assertEquals($status->id, $job->payload['status']->id);
-            // This is really hacky, but i didn't got it working otherwise.
+            // This is really hacky, but I didn't get it working otherwise.
             $parsedStatus = json_decode($job->payload['status']->toJson());
             assertEquals(self::AACHEN_HBF['id'], $parsedStatus->train->destination->evaIdentifier);
             return true;
