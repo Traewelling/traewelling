@@ -32,7 +32,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
@@ -190,15 +189,17 @@ abstract class TrainCheckinController extends Controller
         );
         try {
             $trainCheckin         = TrainCheckin::create([
-                                                             'status_id'   => $status->id,
-                                                             'user_id'     => $status->user_id,
-                                                             'trip_id'     => $trip->trip_id,
-                                                             'origin'      => $firstStop->trainStation->ibnr,
-                                                             'destination' => $lastStop->trainStation->ibnr,
-                                                             'distance'    => $distance,
-                                                             'points'      => $pointCalculation->points,
-                                                             'departure'   => $firstStop->departure_planned,
-                                                             'arrival'     => $lastStop->arrival_planned
+                                                             'status_id'               => $status->id,
+                                                             'user_id'                 => $status->user_id,
+                                                             'trip_id'                 => $trip->trip_id,
+                                                             'origin'                  => $firstStop->trainStation->ibnr, //@todo: deprecated - use origin_stopover_id instead
+                                                             'origin_stopover_id'      => $firstStop->id,
+                                                             'destination'             => $lastStop->trainStation->ibnr, //@todo: deprecated - use destination_stopover_id instead
+                                                             'destination_stopover_id' => $lastStop->id,
+                                                             'distance'                => $distance,
+                                                             'points'                  => $pointCalculation->points,
+                                                             'departure'               => $firstStop->departure_planned, //@todo: deprecated - use origin_stopover_id instead
+                                                             'arrival'                 => $lastStop->arrival_planned //@todo: deprecated - use destination_stopover_id instead
                                                          ]);
             $alsoOnThisConnection = $trainCheckin->alsoOnThisConnection;
 
