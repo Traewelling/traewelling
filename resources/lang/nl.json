@@ -753,5 +753,12 @@
     "no-points-message.manual": "Je hebt geen punten ontvangen, omdat deze reis handmatig is toegevoegd.",
     "tag.title.trwl:passenger_rights": "Passagiersrechten",
     "toggle-navigation": "Navigatie tonen/verbergen",
-    "show-notifications": "Meldingen tonen"
+    "show-notifications": "Meldingen tonen",
+    "mail.account_deletion_notification_two_weeks_before.body2": "Wegens beperkte serverruimte worden accounts die langer dan 12 maanden inactief zijn automatisch verwijderd.",
+    "mail.account_deletion_notification_two_weeks_before.body3": "Als je je account wilt behouden, log dan binnen 14 dagen in.",
+    "mail.hello": "Hallo, :username",
+    "mail.account_deletion_notification_two_weeks_before.subject": "Je Träwelling-account wordt over twee weken verwijderd",
+    "mail.signature": "Het Träwelling-team",
+    "mail.bye": "Met vriendelijke groet",
+    "mail.account_deletion_notification_two_weeks_before.body1": "Je Träwelling-account lijkt al enige tijd inactief te zijn."
 }
