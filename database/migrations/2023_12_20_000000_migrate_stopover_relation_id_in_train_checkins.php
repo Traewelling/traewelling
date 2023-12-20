@@ -1,21 +1,11 @@
 <?php
 
-namespace App\Console\Commands;
-
 use App\Models\TrainCheckin;
-use Illuminate\Console\Command;
+use Illuminate\Database\Migrations\Migration;
 
-/**
- * @deprecated Just created and marked as deprecated, because it is only needed for migrating old checkins.
- *             Can be deleted after migration.
- */
-class MigrateStopovers extends Command
+return new class extends Migration
 {
-
-    protected $signature   = 'app:migrate-stopovers';
-    protected $description = 'Calculate missing stopover relations for train checkins. Currently only needed for migrating old checkins.';
-
-    public function handle(): int {
+    public function up(): void {
         while (TrainCheckin::whereNull('origin_stopover_id')->orWhereNull('destination_stopover_id')->count() > 0) {
             TrainCheckin::with(['HafasTrip.stopovers', 'originStation', 'destinationStation'])
                         ->whereNull('origin_stopover_id')
@@ -31,11 +21,11 @@ class MigrateStopovers extends Command
                                                                                  ->first();
 
                             if ($originStopover === null) {
-                                $this->error("Could not find origin stopover for checkin {$checkin->id}");
+                                echo "ERROR: Could not find origin stopover for checkin {$checkin->id}\n";
                                 return;
                             }
                             if ($destinationStopover === null) {
-                                $this->error("Could not find destination stopover for checkin {$checkin->id}");
+                                echo "ERROR: Could not find destination stopover for checkin {$checkin->id}\n";
                                 return;
                             }
 
@@ -43,10 +33,8 @@ class MigrateStopovers extends Command
                                                  'origin_stopover_id'      => $originStopover->id,
                                                  'destination_stopover_id' => $destinationStopover->id,
                                              ]);
-
-                            $this->info("Migrated stopover ids for checkin {$checkin->id}");
+                            echo ".";
                         });
         }
-        return Command::SUCCESS;
     }
-}
+};
