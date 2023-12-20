@@ -16,11 +16,12 @@ class MigrateStopovers extends Command
     protected $description = 'Calculate missing stopover relations for train checkins. Currently only needed for migrating old checkins.';
 
     public function handle(): int {
-        TrainCheckin::with(['HafasTrip.stopovers', 'originStation', 'destinationStation'])
-                    ->whereNull('origin_stopover_id')
-                    ->orWhereNull('destination_stopover_id')
-                    ->chunk(100, function($checkins) {
-                        foreach ($checkins as $checkin) {
+        while (TrainCheckin::whereNull('origin_stopover_id')->orWhereNull('destination_stopover_id')->count() > 0) {
+            TrainCheckin::with(['HafasTrip.stopovers', 'originStation', 'destinationStation'])
+                        ->whereNull('origin_stopover_id')
+                        ->orWhereNull('destination_stopover_id')
+                        ->limit(100)
+                        ->each(function(TrainCheckin $checkin) {
                             $originStopover      = $checkin->HafasTrip->stopovers->where('train_station_id', $checkin->originStation->id)
                                                                                  ->where('departure_planned', $checkin->departure)
                                                                                  ->first();
@@ -33,8 +34,8 @@ class MigrateStopovers extends Command
                                              ]);
 
                             $this->info("Migrated stopover ids for checkin {$checkin->id}");
-                        }
-                    });
+                        });
+        }
         return Command::SUCCESS;
     }
 }
