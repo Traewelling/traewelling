@@ -2035,16 +2035,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v10.37.3",
+            "version": "v10.38.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "996375dd61f8c6e4ac262b57ed485655d71fcbdc"
+                "reference": "ced4689f495213e9d23995b36098f12a802cc15b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/996375dd61f8c6e4ac262b57ed485655d71fcbdc",
-                "reference": "996375dd61f8c6e4ac262b57ed485655d71fcbdc",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/ced4689f495213e9d23995b36098f12a802cc15b",
+                "reference": "ced4689f495213e9d23995b36098f12a802cc15b",
                 "shasum": ""
             },
             "require": {
@@ -2090,6 +2090,8 @@
                 "voku/portable-ascii": "^2.0"
             },
             "conflict": {
+                "carbonphp/carbon-doctrine-types": ">=3.0",
+                "doctrine/dbal": ">=4.0",
                 "tightenco/collect": "<5.5.33"
             },
             "provide": {
@@ -2201,6 +2203,7 @@
                 "files": [
                     "src/Illuminate/Collections/helpers.php",
                     "src/Illuminate/Events/functions.php",
+                    "src/Illuminate/Filesystem/functions.php",
                     "src/Illuminate/Foundation/helpers.php",
                     "src/Illuminate/Support/helpers.php"
                 ],
@@ -2233,7 +2236,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2023-12-13T20:10:58+00:00"
+            "time": "2023-12-20T14:52:12+00:00"
         },
         {
             "name": "laravel/passport",
@@ -2571,16 +2574,16 @@
         },
         {
             "name": "laravel/ui",
-            "version": "v4.2.3",
+            "version": "v4.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/ui.git",
-                "reference": "eb532ea096ca1c0298c87c19233daf011fda743a"
+                "reference": "d166e09cdcb2e23836f694774cba77a32edb6007"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/ui/zipball/eb532ea096ca1c0298c87c19233daf011fda743a",
-                "reference": "eb532ea096ca1c0298c87c19233daf011fda743a",
+                "url": "https://api.github.com/repos/laravel/ui/zipball/d166e09cdcb2e23836f694774cba77a32edb6007",
+                "reference": "d166e09cdcb2e23836f694774cba77a32edb6007",
                 "shasum": ""
             },
             "require": {
@@ -2627,9 +2630,9 @@
                 "ui"
             ],
             "support": {
-                "source": "https://github.com/laravel/ui/tree/v4.2.3"
+                "source": "https://github.com/laravel/ui/tree/v4.3.0"
             },
-            "time": "2023-11-23T14:44:22+00:00"
+            "time": "2023-12-19T14:46:09+00:00"
         },
         {
             "name": "lcobucci/clock",
@@ -4764,16 +4767,16 @@
         },
         {
             "name": "promphp/prometheus_client_php",
-            "version": "v2.8.0",
+            "version": "v2.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PromPHP/prometheus_client_php.git",
-                "reference": "c7c174b4e0b691d75aa1cce939c6b1369b91fd22"
+                "reference": "ad2a85fa52a7b9f6e6d84095cd34d1cb6f0a06bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PromPHP/prometheus_client_php/zipball/c7c174b4e0b691d75aa1cce939c6b1369b91fd22",
-                "reference": "c7c174b4e0b691d75aa1cce939c6b1369b91fd22",
+                "url": "https://api.github.com/repos/PromPHP/prometheus_client_php/zipball/ad2a85fa52a7b9f6e6d84095cd34d1cb6f0a06bc",
+                "reference": "ad2a85fa52a7b9f6e6d84095cd34d1cb6f0a06bc",
                 "shasum": ""
             },
             "require": {
@@ -4825,9 +4828,9 @@
             "description": "Prometheus instrumentation library for PHP applications.",
             "support": {
                 "issues": "https://github.com/PromPHP/prometheus_client_php/issues",
-                "source": "https://github.com/PromPHP/prometheus_client_php/tree/v2.8.0"
+                "source": "https://github.com/PromPHP/prometheus_client_php/tree/v2.9.0"
             },
-            "time": "2023-11-24T05:30:07+00:00"
+            "time": "2023-12-20T06:22:58+00:00"
         },
         {
             "name": "psr/cache",
@@ -5781,16 +5784,16 @@
         },
         {
             "name": "spatie/browsershot",
-            "version": "3.60.1",
+            "version": "3.60.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/browsershot.git",
-                "reference": "8779b2cd10dcd9dab4abd0127429e5578da3f9ab"
+                "reference": "406cbbca39cf1d5f4a86f00fa0784ccf3b5864ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/browsershot/zipball/8779b2cd10dcd9dab4abd0127429e5578da3f9ab",
-                "reference": "8779b2cd10dcd9dab4abd0127429e5578da3f9ab",
+                "url": "https://api.github.com/repos/spatie/browsershot/zipball/406cbbca39cf1d5f4a86f00fa0784ccf3b5864ea",
+                "reference": "406cbbca39cf1d5f4a86f00fa0784ccf3b5864ea",
                 "shasum": ""
             },
             "require": {
@@ -5798,7 +5801,7 @@
                 "php": "^8.0",
                 "spatie/image": "^1.5.3|^2.0",
                 "spatie/temporary-directory": "^1.1|^2.0",
-                "symfony/process": "^4.2|^5.0|^6.0"
+                "symfony/process": "^4.2|^5.0|^6.0|^7.0"
             },
             "require-dev": {
                 "pestphp/pest": "^1.20",
@@ -5835,7 +5838,7 @@
                 "webpage"
             ],
             "support": {
-                "source": "https://github.com/spatie/browsershot/tree/3.60.1"
+                "source": "https://github.com/spatie/browsershot/tree/3.60.2"
             },
             "funding": [
                 {
@@ -5843,7 +5846,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-11-28T10:50:45+00:00"
+            "time": "2023-12-18T14:14:03+00:00"
         },
         {
             "name": "spatie/crawler",
@@ -11175,12 +11178,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "3c2385497f806decca1e5abeba3cb8fd7caba4e0"
+                "reference": "6d3d49988325b4f65dc4a115ff808c1a9d70803b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/3c2385497f806decca1e5abeba3cb8fd7caba4e0",
-                "reference": "3c2385497f806decca1e5abeba3cb8fd7caba4e0",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/6d3d49988325b4f65dc4a115ff808c1a9d70803b",
+                "reference": "6d3d49988325b4f65dc4a115ff808c1a9d70803b",
                 "shasum": ""
             },
             "conflict": {
@@ -11564,7 +11567,7 @@
                 "phpoffice/phpspreadsheet": "<1.16",
                 "phpseclib/phpseclib": "<2.0.31|>=3,<3.0.34",
                 "phpservermon/phpservermon": "<3.6",
-                "phpsysinfo/phpsysinfo": "<3.2.5",
+                "phpsysinfo/phpsysinfo": "<3.4.3",
                 "phpunit/phpunit": ">=4.8.19,<4.8.28|>=5,<5.6.3",
                 "phpwhois/phpwhois": "<=4.2.5",
                 "phpxmlrpc/extras": "<0.6.1",
@@ -11801,6 +11804,7 @@
                 "yii2mod/yii2-cms": "<1.9.2",
                 "yiisoft/yii": "<1.1.29",
                 "yiisoft/yii2": "<2.0.38",
+                "yiisoft/yii2-authclient": "<2.2.15",
                 "yiisoft/yii2-bootstrap": "<2.0.4",
                 "yiisoft/yii2-dev": "<2.0.43",
                 "yiisoft/yii2-elasticsearch": "<2.0.5",
@@ -11884,7 +11888,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-15T16:04:17+00:00"
+            "time": "2023-12-19T22:03:59+00:00"
         },
         {
             "name": "sebastian/cli-parser",

@@ -16,7 +16,7 @@ class CleanUpPasswordResets extends Command
                           ->where('created_at', '<', Carbon::now()->subHour()->toIso8601String())
                           ->delete();
 
-        echo strtr(':rowsAffected expired password reset tokens deleted', [':rowsAffected' => $rowsAffected]) . PHP_EOL;
+        $this->info('Deleted ' . $rowsAffected . ' expired password reset tokens');
         return 0;
     }
 }
