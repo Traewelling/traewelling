@@ -54,7 +54,7 @@ class StatusController extends Controller
             StatusUpdateEvent::dispatch($status->refresh());
 
             if (isset($validated['destinationStopoverId'])
-                && $validated['destinationStopoverId'] != $status->trainCheckin->destination_stopover->id) {
+                && $validated['destinationStopoverId'] != $status->trainCheckin->destinationStopover->id) {
                 $pointReason = TrainCheckinController::changeDestination(
                     checkin:                $status->trainCheckin,
                     newDestinationStopover: TrainStopover::findOrFail($validated['destinationStopoverId']),

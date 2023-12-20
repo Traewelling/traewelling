@@ -226,20 +226,20 @@ abstract class TrainCheckinController extends Controller
         TrainCheckin  $checkin,
         TrainStopover $newDestinationStopover
     ): PointReason {
-        if ($newDestinationStopover->arrival_planned->isBefore($checkin->origin_stopover->arrival_planned)
-            || $newDestinationStopover->is($checkin->origin_stopover)
+        if ($newDestinationStopover->arrival_planned->isBefore($checkin->originStopover->arrival_planned)
+            || $newDestinationStopover->is($checkin->originStopover)
             || !$checkin->HafasTrip->stopovers->contains('id', $newDestinationStopover->id)
         ) {
             throw new InvalidArgumentException();
         }
 
-        $newDistance = (new LocationController($checkin->HafasTrip, $checkin->origin_stopover, $newDestinationStopover))
+        $newDistance = (new LocationController($checkin->HafasTrip, $checkin->originStopover, $newDestinationStopover))
             ->calculateDistance();
 
         $pointsResource = PointsCalculationController::calculatePoints(
             distanceInMeter: $newDistance,
             hafasTravelType: $checkin->HafasTrip->category,
-            departure:       $checkin->origin_stopover->departure,
+            departure:       $checkin->originStopover->departure,
             arrival:         $newDestinationStopover->arrival,
             tripSource:      $checkin->HafasTrip->source
         );
@@ -297,8 +297,8 @@ abstract class TrainCheckinController extends Controller
         if ($resetPolyline) {
             $checkin->HafasTrip->update(['polyline_id' => null]);
         }
-        $firstStop   = $checkin->origin_stopover;
-        $lastStop    = $checkin->destination_stopover;
+        $firstStop   = $checkin->originStopover;
+        $lastStop    = $checkin->destinationStopover;
         $distance    = (new LocationController(
             hafasTrip:   $checkin->HafasTrip,
             origin:      $firstStop,

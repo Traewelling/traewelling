@@ -62,8 +62,8 @@ abstract class IcsController extends Controller
                                   ->name($name)
                                   ->uniqueIdentifier($checkin->id)
                                   ->createdAt($checkin->created_at)
-                                  ->startsAt($useRealTime ? $checkin->origin_stopover->departure : $checkin->origin_stopover->departure_planned)
-                                  ->endsAt($useRealTime ? $checkin->destination_stopover->arrival : $checkin->destination_stopover->arrival_planned);
+                                  ->startsAt($useRealTime ? $checkin->originStopover->departure : $checkin->originStopover->departure_planned)
+                                  ->endsAt($useRealTime ? $checkin->destinationStopover->arrival : $checkin->destinationStopover->arrival_planned);
                     $calendar->event($event);
                 } catch (Throwable $throwable) {
                     report($throwable);
