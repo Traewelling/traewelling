@@ -29,6 +29,7 @@ export default {
                         notification.readAt = new Date().toISOString();
                         return notification
                     });
+                    notyf.success(this.$t("notifications.readAll.success"));
                     this.$emit("toggle-read");
                 });
         },
