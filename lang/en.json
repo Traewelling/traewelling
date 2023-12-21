@@ -736,5 +736,14 @@
     "export.columns": "Which columns should the export contain?",
     "export.period": "What period do you want to export?",
     "export.format": "What format do you want to export in?",
-    "export.pdf.many": "You have selected a lot of columns, which means the PDF export may no longer be easy to read."
+    "export.pdf.many": "You have selected a lot of columns, which means the PDF export may no longer be easy to read.",
+    "toggle-navigation": "Toggle navigation",
+    "show-notifications": "Show notifications",
+    "mail.account_deletion_notification_two_weeks_before.subject": "Your Träwelling account will be deleted in two weeks",
+    "mail.hello": "Hello :username",
+    "mail.bye": "Best regards",
+    "mail.signature": "Your Träwelling Team",
+    "mail.account_deletion_notification_two_weeks_before.body1": "your Träwelling account seems to be inactive for a long time.",
+    "mail.account_deletion_notification_two_weeks_before.body2": "For reasons of data economy, accounts that are not used for more than 12 months will be automatically deleted.",
+    "mail.account_deletion_notification_two_weeks_before.body3": "If you would like to keep your account, please log in within the next 14 days."
 }

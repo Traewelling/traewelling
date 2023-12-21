@@ -13,7 +13,7 @@ class CleanUpUsers extends Command
 
     public function handle(): int {
         $privacyUsers = User::where('privacy_ack_at', null)
-                            ->where('created_at', '>', DB::raw('(NOW() - INTERVAL 1 DAY)'))
+                            ->where('created_at', '<', now()->subDay())
                             ->get();
         foreach ($privacyUsers as $user) {
             $user->delete();
