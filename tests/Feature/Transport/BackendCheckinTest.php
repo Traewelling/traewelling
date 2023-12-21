@@ -30,7 +30,7 @@ class BackendCheckinTest extends TestCase
                    ]);
 
         $user            = User::factory()->create();
-        $stationHannover = HafasController::getTrainStation(8000152);
+        $stationHannover = HafasController::getStation(8000152);
         $departures      = HafasController::getDepartures(
             station: $stationHannover,
             when:    Carbon::parse('2023-01-12 08:00'),
@@ -42,15 +42,15 @@ class BackendCheckinTest extends TestCase
         }
         $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
-        $originStopover = $hafasTrip->stopovers->where('trainStation.ibnr', $stationHannover->ibnr)->first();
+        $originStopover = $hafasTrip->stopovers->where('station.ibnr', $stationHannover->ibnr)->first();
 
         $this->expectException(StationNotOnTripException::class);
         TrainCheckinController::checkin(
             user:        $user,
             hafasTrip:   $hafasTrip,
-            origin:      $originStopover->trainStation,
+            origin:      $originStopover->station,
             departure:   $originStopover->departure_planned,
-            destination: HafasController::getTrainStation(8000001),
+            destination: HafasController::getStation(8000001),
             arrival:     $originStopover->departure_planned,
         );
     }
@@ -64,7 +64,7 @@ class BackendCheckinTest extends TestCase
                    ]);
 
         $user       = User::factory()->create();
-        $station    = HafasController::getTrainStation(8000105);
+        $station    = HafasController::getStation(8000105);
         $departures = HafasController::getDepartures(
             station: $station,
             when:    Carbon::parse('2023-01-12 08:00'),
@@ -76,7 +76,7 @@ class BackendCheckinTest extends TestCase
         }
         $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
-        $originStopover      = $hafasTrip->stopovers->where('trainStation.ibnr', $station->ibnr)->first();
+        $originStopover      = $hafasTrip->stopovers->where('station.ibnr', $station->ibnr)->first();
         $nextStopovers       = $hafasTrip->stopovers
             ->where(function(TrainStopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
@@ -104,7 +104,7 @@ class BackendCheckinTest extends TestCase
                    ]);
 
         $user       = User::factory()->create();
-        $station    = HafasController::getTrainStation(8000105);
+        $station    = HafasController::getStation(8000105);
         $departures = HafasController::getDepartures(
             station: $station,
             when:    Carbon::parse('2023-01-12 08:00'),
@@ -116,7 +116,7 @@ class BackendCheckinTest extends TestCase
         }
         $hafasTrip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
-        $originStopover      = $hafasTrip->stopovers->where('trainStation.ibnr', $station->ibnr)->first();
+        $originStopover      = $hafasTrip->stopovers->where('station.ibnr', $station->ibnr)->first();
         $nextStopovers       = $hafasTrip->stopovers
             ->where(function(TrainStopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
@@ -127,18 +127,18 @@ class BackendCheckinTest extends TestCase
         TrainCheckinController::checkin(
             user:        $user,
             hafasTrip:   $hafasTrip,
-            origin:      $originStopover->trainStation,
+            origin:      $originStopover->station,
             departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->trainStation,
+            destination: $destinationStopover->station,
             arrival:     $destinationStopover->arrival_planned,
         );
         $this->expectException(CheckInCollisionException::class);
         TrainCheckinController::checkin(
             user:        $user,
             hafasTrip:   $hafasTrip,
-            origin:      $originStopover->trainStation,
+            origin:      $originStopover->station,
             departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->trainStation,
+            destination: $destinationStopover->station,
             arrival:     $destinationStopover->arrival_planned,
         );
     }
@@ -187,9 +187,9 @@ class BackendCheckinTest extends TestCase
         }
 
         //Höhenstr., Potsdam
-        $originStopover = $hafasTrip->stopovers->where('trainStation.ibnr', '736140')->first();
+        $originStopover = $hafasTrip->stopovers->where('station.ibnr', '736140')->first();
         //Rathaus, Potsdam
-        $destinationStopover = $hafasTrip->stopovers->where('trainStation.ibnr', '736160')->last();
+        $destinationStopover = $hafasTrip->stopovers->where('station.ibnr', '736160')->last();
 
         $user = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
 
@@ -197,9 +197,9 @@ class BackendCheckinTest extends TestCase
         $backendResponse = TrainCheckinController::checkin(
             user:        $user,
             hafasTrip:   $hafasTrip,
-            origin:      $originStopover->trainStation,
+            origin:      $originStopover->station,
             departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->trainStation,
+            destination: $destinationStopover->station,
             arrival:     $destinationStopover->departure_planned,
         );
 
@@ -231,7 +231,7 @@ class BackendCheckinTest extends TestCase
 
         // First: Get a train that's fine for our stuff
         // The 10:00 train actually quits at Südkreuz, but the 10:05 does not.
-        $station    = HafasController::getTrainStation(8089110);
+        $station    = HafasController::getStation(8089110);
         $departures = HafasController::getDepartures(
             station: $station,
             when:    Carbon::parse('2023-01-16 10:00'),
@@ -246,10 +246,10 @@ class BackendCheckinTest extends TestCase
         $user = User::factory()->create();
 
         // Berlin-Westkreuz. We hop in there.
-        $originStopover = $hafasTrip->stopovers->where('trainStation.ibnr', 8089047)->first();
+        $originStopover = $hafasTrip->stopovers->where('station.ibnr', 8089047)->first();
         // Berlin-Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
         $destinationStopover = $hafasTrip->stopovers
-            ->where('trainStation.ibnr', 8089090)
+            ->where('station.ibnr', 8089090)
             ->where(function(TrainStopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned->clone()->addMinutes(10));
@@ -259,9 +259,9 @@ class BackendCheckinTest extends TestCase
         $response     = TrainCheckinController::checkin(
             user:        $user,
             hafasTrip:   $hafasTrip,
-            origin:      $originStopover->trainStation,
+            origin:      $originStopover->station,
             departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->trainStation,
+            destination: $destinationStopover->station,
             arrival:     $destinationStopover->arrival_planned,
         );
         $trainCheckin = $response['status']->trainCheckin;
@@ -290,7 +290,7 @@ class BackendCheckinTest extends TestCase
                    ]);
 
         $user                    = User::factory()->create();
-        $stationPlantagenPotsdam = HafasController::getTrainStation(736165);
+        $stationPlantagenPotsdam = HafasController::getStation(736165);
         $departures              = HafasController::getDepartures(
             station: $stationPlantagenPotsdam,
             when:    Carbon::parse('2023-01-16 10:00'),
@@ -350,7 +350,7 @@ class BackendCheckinTest extends TestCase
                    ]);
 
         $user                    = User::factory()->create();
-        $stationPlantagenPotsdam = HafasController::getTrainStation(736165);
+        $stationPlantagenPotsdam = HafasController::getStation(736165);
         $departures              = HafasController::getDepartures(
             station: $stationPlantagenPotsdam,
             when:    Carbon::parse('2023-01-16 10:00'),
@@ -409,7 +409,7 @@ class BackendCheckinTest extends TestCase
                    ]);
 
         $user       = User::factory()->create();
-        $station    = HafasController::getTrainStation(102932); // Flughafen Terminal 1, Frankfurt a.M.
+        $station    = HafasController::getStation(102932); // Flughafen Terminal 1, Frankfurt a.M.
         $departures = HafasController::getDepartures(
             station: $station,
             when:    Carbon::parse('2023-01-16 10:00'),
@@ -456,7 +456,7 @@ class BackendCheckinTest extends TestCase
                    ]);
 
         $user       = User::factory()->create();
-        $station    = HafasController::getTrainStation(self::FRANKFURT_HBF['id']);
+        $station    = HafasController::getStation(self::FRANKFURT_HBF['id']);
         $departures = HafasController::getDepartures(
             station: $station,
             when:    Carbon::parse('2023-01-16 08:00'),

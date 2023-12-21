@@ -24,7 +24,7 @@ use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\Status;
 use App\Models\TrainCheckin;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\TrainStopover;
 use App\Models\User;
 use App\Notifications\UserJoinedConnection;
@@ -53,9 +53,9 @@ abstract class TrainCheckinController extends Controller
     public static function checkin(
         User             $user,
         HafasTrip        $hafasTrip,
-        TrainStation     $origin,
+        Station          $origin,
         Carbon           $departure,
-        TrainStation     $destination,
+        Station          $destination,
         Carbon           $arrival,
         Business         $travelReason = Business::PRIVATE,
         StatusVisibility $visibility = StatusVisibility::PUBLIC,
@@ -124,13 +124,13 @@ abstract class TrainCheckinController extends Controller
         'alsoOnThisConnection' => AnonymousResourceCollection::class
     ])]
     private static function createTrainCheckin(
-        Status       $status,
-        HafasTrip    $trip,
-        TrainStation $origin,
-        TrainStation $destination,
-        Carbon       $departure,
-        Carbon       $arrival,
-        bool         $force = false,
+        Status    $status,
+        HafasTrip $trip,
+        Station   $origin,
+        Station   $destination,
+        Carbon    $departure,
+        Carbon    $arrival,
+        bool      $force = false,
     ): array {
         $trip->load('stopovers');
 
@@ -192,9 +192,9 @@ abstract class TrainCheckinController extends Controller
                                                              'status_id'               => $status->id,
                                                              'user_id'                 => $status->user_id,
                                                              'trip_id'                 => $trip->trip_id,
-                                                             'origin'                  => $firstStop->trainStation->ibnr, //@todo: deprecated - use origin_stopover_id instead
+                                                             'origin'                  => $firstStop->station->ibnr, //@todo: deprecated - use origin_stopover_id instead
                                                              'origin_stopover_id'      => $firstStop->id,
-                                                             'destination'             => $lastStop->trainStation->ibnr, //@todo: deprecated - use destination_stopover_id instead
+                                                             'destination'             => $lastStop->station->ibnr, //@todo: deprecated - use destination_stopover_id instead
                                                              'destination_stopover_id' => $lastStop->id,
                                                              'distance'                => $distance,
                                                              'points'                  => $pointCalculation->points,
@@ -246,7 +246,7 @@ abstract class TrainCheckinController extends Controller
 
         $checkin->update([
                              'arrival'                 => $newDestinationStopover->arrival_planned,
-                             'destination'             => $newDestinationStopover->trainStation->ibnr,
+                             'destination'             => $newDestinationStopover->station->ibnr,
                              'destination_stopover_id' => $newDestinationStopover->id,
                              'distance'                => $newDistance,
                              'points'                  => $pointsResource->points,
@@ -273,7 +273,7 @@ abstract class TrainCheckinController extends Controller
         $hafasTrip->loadMissing(['stopovers', 'originStation', 'destinationStation']);
 
         $originStopover = $hafasTrip->stopovers->filter(function(TrainStopover $stopover) use ($startId) {
-            return $stopover->train_station_id === $startId || $stopover->trainStation->ibnr === $startId;
+            return $stopover->train_station_id === $startId || $stopover->station->ibnr === $startId;
         })->first();
 
         if ($originStopover === null) {

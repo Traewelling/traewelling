@@ -45,7 +45,7 @@ class StatusController extends Controller
                      ->with([
                                 'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'trainCheckin',
                                 'trainCheckin.originStation', 'trainCheckin.destinationStation',
-                                'trainCheckin.HafasTrip.stopovers.trainStation',
+                                'trainCheckin.HafasTrip.stopovers.station',
                             ])
                      ->firstOrFail();
     }
@@ -61,7 +61,7 @@ class StatusController extends Controller
         return Status::with([
                                      'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
                                      'trainCheckin.originStation', 'trainCheckin.destinationStation',
-                                     'trainCheckin.HafasTrip.stopovers.trainStation',
+                                     'trainCheckin.HafasTrip.stopovers.station',
                                      'trainCheckin.HafasTrip.polyline',
                                  ])
                           ->whereHas('trainCheckin', function($query) {
@@ -96,7 +96,7 @@ class StatusController extends Controller
         $statuses = Status::with([
                                      'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
                                      'trainCheckin.originStation', 'trainCheckin.destinationStation',
-                                     'trainCheckin.HafasTrip.stopovers.trainStation',
+                                     'trainCheckin.HafasTrip.stopovers.station',
                                      'trainCheckin.HafasTrip.polyline',
                                  ])
                           ->whereIn('id', $ids)

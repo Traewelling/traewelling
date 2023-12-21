@@ -2,18 +2,16 @@
 
 namespace App\Dto\Transport;
 
-use OpenApi\Annotations as OA;
-
 /**
  * @OA\Schema (
- *     title="TrainStation",
+ *     title="Station",
  *     description="train station model",
  *     @OA\Xml(
- *        name="TrainStation"
+ *        name="Station"
  *     )
  * )
  */
-class TrainStation
+class Station
 {
     /**
      * @OA\Property (
@@ -82,39 +80,37 @@ class TrainStation
      */
     public readonly ?string $rilIdentifier;
 
-    public function setId(int $id): TrainStation {
+    public function setId(int $id): self {
         $this->id = $id;
         return $this;
     }
 
-    public function setName(string $name): TrainStation {
+    public function setName(string $name): self {
         $this->name = $name;
         return $this;
     }
 
-    public function setLatitude(float $latitude): TrainStation {
+    public function setLatitude(float $latitude): self {
         $this->latitude = $latitude;
         return $this;
     }
 
-    public function setLongitude(float $longitude): TrainStation {
+    public function setLongitude(float $longitude): self {
         $this->longitude = $longitude;
         return $this;
     }
 
-    public function setIbnr(int $ibnr): TrainStation {
+    public function setIbnr(int $ibnr): self {
         $this->ibnr = $ibnr;
         return $this;
     }
 
-    public function setRilIdentifier(?string $rilIdentifier): TrainStation {
+    public function setRilIdentifier(?string $rilIdentifier): self {
         $this->rilIdentifier = $rilIdentifier;
         return $this;
     }
 
-
-
-    public static function fromModel(\App\Models\TrainStation $station) {
+    public static function fromModel(\App\Models\Station $station): self {
         $dto = new self();
         $dto->setId($station->id)
             ->setName($station->name)

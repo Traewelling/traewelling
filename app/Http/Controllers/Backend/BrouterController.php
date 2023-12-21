@@ -85,7 +85,7 @@ abstract class BrouterController extends Controller
         //1. Prepare coordinates from stations
         $coordinates = [];
         foreach ($trip->stopovers as $stopover) {
-            $coordinates[] = new Coordinate($stopover->trainStation->latitude, $stopover->trainStation->longitude);
+            $coordinates[] = new Coordinate($stopover->station->latitude, $stopover->station->longitude);
         }
 
         try {
@@ -119,8 +119,8 @@ abstract class BrouterController extends Controller
         $highestMappedKey = null;
         foreach ($trip->stopovers as $stopover) {
             $properties = [
-                'id'                => $stopover->trainStation->ibnr,
-                'name'              => $stopover->trainStation->name,
+                'id'                => $stopover->station->ibnr,
+                'name'              => $stopover->station->name,
                 'departure_planned' => $stopover->departure_planned,
                 'arrival_planned'   => $stopover->arrival_planned,
             ];
@@ -136,7 +136,7 @@ abstract class BrouterController extends Controller
                 }
                 $distance = (new LineSegment(
                     new Coordinate($feature['geometry']['coordinates'][1], $feature['geometry']['coordinates'][0]),
-                    new Coordinate($stopover->trainStation->latitude, $stopover->trainStation->longitude)
+                    new Coordinate($stopover->station->latitude, $stopover->station->longitude)
                 ))->calculateDistance();
 
                 if ($minDistance === null || $distance < $minDistance) {

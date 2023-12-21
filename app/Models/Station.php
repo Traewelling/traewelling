@@ -21,11 +21,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Carbon  $updated_at
  * @todo rename table to "Station" (without Train - we have more than just trains)
  */
-class TrainStation extends Model
+class Station extends Model
 {
 
     use HasFactory;
 
+    protected $table    = 'train_stations';
     protected $fillable = ['ibnr', 'rilIdentifier', 'name', 'latitude', 'longitude', 'time_offset', 'shift_time'];
     protected $hidden   = ['created_at', 'updated_at', 'time_offset', 'shift_time'];
     protected $casts    = [

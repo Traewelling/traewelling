@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -227,7 +227,7 @@ abstract class StatisticController extends Controller
                                         ->merge($qUsedStations->pluck('destination'))
                                         ->unique();
 
-        return TrainStation::whereIn('ibnr', $usedStationIds)->get();
+        return Station::whereIn('ibnr', $usedStationIds)->get();
     }
 
     public static function getPassedStations(User $user, Carbon $from = null, Carbon $to = null): Collection {
@@ -245,6 +245,6 @@ abstract class StatisticController extends Controller
             $query->where('train_checkins.departure', '<=', $to->toIso8601String());
         }
 
-        return TrainStation::whereIn('id', $query)->get();
+        return Station::whereIn('id', $query)->get();
     }
 }

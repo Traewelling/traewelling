@@ -3,7 +3,7 @@
 namespace App\Exceptions;
 
 use App\Models\HafasTrip;
-use App\Models\TrainStation;
+use App\Models\Station;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -11,17 +11,17 @@ class StationNotOnTripException extends Referencable
 {
 
     /**
-     * @param TrainStation|null $origin
-     * @param TrainStation|null $destination
-     * @param Carbon|null       $departure
-     * @param Carbon|null       $arrival
-     * @param HafasTrip|null    $trip
+     * @param Station|null   $origin
+     * @param Station|null   $destination
+     * @param Carbon|null    $departure
+     * @param Carbon|null    $arrival
+     * @param HafasTrip|null $trip
      */
     public function __construct(
-        ?TrainStation $origin = null,
-        ?TrainStation $destination = null,
-        ?Carbon $departure = null,
-        ?Carbon $arrival = null,
+        ?Station   $origin = null,
+        ?Station   $destination = null,
+        ?Carbon    $departure = null,
+        ?Carbon    $arrival = null,
         ?HafasTrip $trip = null
     ) {
         $this->context = [
