@@ -30,6 +30,7 @@ use App\Http\Controllers\API\v1\TransportController;
 use App\Http\Controllers\API\v1\TripController;
 use App\Http\Controllers\API\v1\UserController;
 use App\Http\Controllers\API\v1\WebhookController;
+use App\Http\Controllers\API\v1\YearInReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static function() {
@@ -45,6 +46,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
          ->name('api.v1.getPrivacyPolicy');
 
     Route::group(['middleware' => ['auth:api', 'privacy-policy']], static function() {
+        Route::get('year-in-review', [YearInReviewController::class, 'show'])
+             ->middleware(['scope:read-statistics']);
+
         Route::post('event', [EventController::class, 'suggest'])->middleware(['scope:write-event-suggestions']);
         Route::get('leaderboard/friends', [StatisticsController::class, 'leaderboardFriends'])
              ->middleware(['scope:read-statistics']);
@@ -137,16 +141,16 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                  ->middleware(['scope:extra-delete'])
                  ->withoutMiddleware('privacy-policy');
             Route::group(['middleware' => ['scope:write-settings-calendar']], static function() {
-                Route::get('ics-tokens', [IcsController::class, 'getIcsTokens']); //TODO: undocumented endpoint - document when stable
-                Route::post('ics-token', [IcsController::class, 'createIcsToken']); //TODO: undocumented endpoint - document when stable
+                Route::get('ics-tokens', [IcsController::class, 'getIcsTokens']);     //TODO: undocumented endpoint - document when stable
+                Route::post('ics-token', [IcsController::class, 'createIcsToken']);   //TODO: undocumented endpoint - document when stable
                 Route::delete('ics-token', [IcsController::class, 'revokeIcsToken']); //TODO: undocumented endpoint - document when stable
             });
             Route::group(['middleware' => ['scope:extra-terminate-sessions']], static function() {
-                Route::get('sessions', [SessionController::class, 'index']); //TODO: undocumented endpoint - document when stable
+                Route::get('sessions', [SessionController::class, 'index']);                //TODO: undocumented endpoint - document when stable
                 Route::delete('sessions', [SessionController::class, 'deleteAllSessions']); //TODO: undocumented endpoint - document when stable
-                Route::get('tokens', [TokenController::class, 'index']); //TODO: undocumented endpoint - document when stable
-                Route::delete('tokens', [TokenController::class, 'revokeAllTokens']); //TODO: undocumented endpoint - document when stable
-                Route::delete('token', [TokenController::class, 'revokeToken']); //TODO: undocumented endpoint - document when stable
+                Route::get('tokens', [TokenController::class, 'index']);                    //TODO: undocumented endpoint - document when stable
+                Route::delete('tokens', [TokenController::class, 'revokeAllTokens']);       //TODO: undocumented endpoint - document when stable
+                Route::delete('token', [TokenController::class, 'revokeToken']);            //TODO: undocumented endpoint - document when stable
             });
             Route::group(['middleware' => ['scope:read-settings-followers']], static function() {
                 Route::get('followers', [FollowController::class, 'getFollowers']);

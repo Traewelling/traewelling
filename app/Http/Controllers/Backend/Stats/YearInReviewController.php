@@ -42,6 +42,7 @@ abstract class YearInReviewController extends Controller
         $mostDelayedArrivals        = TransportStatsController::getTripsByArrivalDelay($user, $from, $to, 'desc', 1);
         $topDestinations            = TransportStatsController::getTopDestinations($user, $from, $to, 5);
         $lonelyStations             = TransportStatsController::getLonelyStations($user, $from, $to);
+        $mostLikedStatuses          = TransportStatsController::getMostLikedStatus($user, $from, $to);
 
         return [
             'year'                => $year,
@@ -118,6 +119,12 @@ abstract class YearInReviewController extends Controller
                 return [
                     'station' => new TrainStationResource($station),
                     'count'   => $station->count,
+                ];
+            }),
+            'mostLikedStatuses'   => $mostLikedStatuses->map(static function($data) {
+                return [
+                    'likeCount' => $data['likeCount'],
+                    'status'    => new StatusResource($data['status']),
                 ];
             }),
         ];

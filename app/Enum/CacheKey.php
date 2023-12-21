@@ -6,28 +6,28 @@ namespace App\Enum;
 use App\Models\User;
 use Carbon\Carbon;
 
-class CacheKey
+enum CacheKey: string
 {
-    public const LeaderboardFriends        = 'LeaderboardFriends';
-    public const LeaderboardGlobalPoints   = 'LeaderboardGlobalPoints';
-    public const LeaderboardGlobalDistance = 'LeaderboardGlobalDistance';
-    public const LeaderboardMonth          = 'LeaderboardMonth';
-    public const StatisticsGlobal          = 'StatisticsGlobal';
+    case LeaderboardFriends        = 'LeaderboardFriends';
+    case LeaderboardGlobalPoints   = 'LeaderboardGlobalPoints';
+    case LeaderboardGlobalDistance = 'LeaderboardGlobalDistance';
+    case LeaderboardMonth          = 'LeaderboardMonth';
+    case StatisticsGlobal          = 'StatisticsGlobal';
 
     public static function getFriendsLeaderboardKey(int $userId): string {
-        return self::LeaderboardFriends . '-for-' . $userId;
+        return self::LeaderboardFriends->value . '-for-' . $userId;
     }
 
     public static function getMonthlyLeaderboardKey(Carbon $date): string {
-        return self::LeaderboardMonth . '-for-' . $date->toISOString();
+        return self::LeaderboardMonth->value . '-for-' . $date->toISOString();
     }
 
     public static function getGlobalStatsKey(Carbon $from, Carbon $to): string {
-        return self::StatisticsGlobal . '-from-' . $from->toDateString() . '-to-' . $to->startOfHour()->toDateString();
+        return self::StatisticsGlobal->value . '-from-' . $from->toDateString() . '-to-' . $to->startOfHour()->toDateString();
     }
 
     public static function getMastodonProfileInformationKey(User $user): string {
-        return "mastodon_{$user->name}";
+        return "mastodon_{$user->id}";
     }
 
     public static function getYearInReviewKey(User $user, int $year): string {

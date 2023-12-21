@@ -17,7 +17,7 @@ for (let delay of delays) {
 
 var touchmoved;
 $(document)
-    .on("click touchstart", ".trainrow", function () {
+    .on("click touchend", ".trainrow", function () {
         var lineName        = $(this).data("linename");
         var tripID          = $(this).data("tripid");
         var start           = $(this).data("start");

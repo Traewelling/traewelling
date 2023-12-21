@@ -34,6 +34,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('trwl:cache:leaderboard')->withoutOverlapping()->everyFiveMinutes();
         $schedule->command('cache:clear-database')->daily();
         $schedule->command('queue-monitor:purge --beforeDays=7')->daily();
+        $schedule->command('activitylog:clean')->weekly();
 
         if (config('trwl.year_in_review_active')) {
             $schedule->command('trwl:cache-year-in-review')->withoutOverlapping()->dailyAt('2:00');
