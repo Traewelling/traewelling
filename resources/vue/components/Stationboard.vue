@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import CheckinLineRun from "./CheckinLineRun.vue";
 import CheckinInterface from "./CheckinInterface.vue";
 import StationAutocomplete from "./StationAutocomplete.vue";
+import {trans} from "laravel-vue-i18n";
 
 export default {
     components: {StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal},
@@ -13,7 +14,7 @@ export default {
         station: {
             type: String,
             required: true,
-            default: 'Karlsruhe Hbf'
+            default: "Karlsruhe Hbf"
         }
     },
     data() {
@@ -30,6 +31,7 @@ export default {
         };
     },
     methods: {
+        trans,
         showModal(selectedItem) {
             this.selectedDestination = null;
             this.selectedTrain = selectedItem;
@@ -56,12 +58,12 @@ export default {
         fetchData(time = null, appendPosition = 0) {
             this.loading = true;
             if (time !== null) {
-                this.fetchTime = DateTime.fromISO(time).setZone('UTC');
+                this.fetchTime = DateTime.fromISO(time).setZone("UTC");
             } else {
                 time = this.fetchTime.minus({ minutes: 5 }).toString();
             }
 
-            let query = this.stationString.replace(/%2F/, ' ').replace(/\//, ' ');
+            let query = this.stationString.replace(/%2F/, " ").replace(/\//, " ");
             fetch(`/api/v1/trains/station/${query}/departures?when=${time}`).then((response) => {
                 this.loading = false;
                 this.now = DateTime.now();
@@ -80,7 +82,7 @@ export default {
             });
         },
         formatTime(time) {
-            return DateTime.fromISO(time).toFormat('HH:mm');
+            return DateTime.fromISO(time).toFormat("HH:mm");
         },
         //show divider if this.times.now is between this and the next item
         showDivider(item, key) {
@@ -93,7 +95,7 @@ export default {
         }
     },
     mounted() {
-        this.fetchTime = DateTime.now().setZone('UTC');
+        this.fetchTime = DateTime.now().setZone("UTC");
         this.stationString = this.$props.station;
         this.fetchData();
     }
@@ -146,7 +148,7 @@ export default {
                     <div>
                         <span class="fw-bold fs-6">{{ item.direction }}</span><br>
                         <span v-if="item.stop.name !== meta.station.name" class="text-muted small font-italic">
-                        ab {{ item.stop.name }}
+                        {{ trans("stationboard.dep") }} {{ item.stop.name }}
                     </span>
                     </div>
                 </div>
