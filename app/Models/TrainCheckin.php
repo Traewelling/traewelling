@@ -12,7 +12,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Log;
 
 /**
  * //properties
@@ -35,14 +34,12 @@ use Illuminate\Support\Facades\Log;
  *
  * //relations
  * @property HafasTrip     $HafasTrip
- * @property TrainStopover $origin_stopover
- * @property TrainStopover $destination_stopover
  * @property Status        $status
  * @property User          $user
  * @property TrainStation  $originStation
- * @property TrainStopover $originStopoverRelation
+ * @property TrainStopover $originStopover
  * @property TrainStation  $destinationStation
- * @property TrainStopover $destinationStopoverRelation
+ * @property TrainStopover $destinationStopover
  *
  * @todo rename table to "Checkin" (without Train - we have more than just trains)
  * @todo merge model with "Status" because the difference between trip sources (HAFAS,
@@ -60,7 +57,7 @@ class TrainCheckin extends Model
         'distance', 'duration', 'departure', 'manual_departure', 'arrival', 'manual_arrival', 'points', 'forced',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
-    protected $appends  = ['origin_stopover', 'destination_stopover', 'speed'];
+    protected $appends  = ['speed'];
     protected $casts    = [
         'id'                      => 'integer',
         'status_id'               => 'integer',
@@ -99,82 +96,12 @@ class TrainCheckin extends Model
         return $this->hasOne(HafasTrip::class, 'trip_id', 'trip_id');
     }
 
-    /**
-     * @return BelongsTo
-     * @todo rename to `originStopover` when `getOriginStopoverAttribute` is removed
-     */
-    public function originStopoverRelation(): BelongsTo {
+    public function originStopover(): BelongsTo {
         return $this->belongsTo(TrainStopover::class, 'origin_stopover_id', 'id');
     }
 
-    /**
-     * @return TrainStopover
-     * @todo make this a relation (hasOne) when the origin and destination columns are removed
-     */
-    public function getOriginStopoverAttribute(): TrainStopover {
-        if ($this->origin_stopover_id !== null) {
-            return $this->originStopoverRelation;
-        }
-
-        $stopover = $this->HafasTrip->stopovers->where('train_station_id', $this->originStation->id)
-                                               ->where('departure_planned', $this->departure)
-                                               ->first();
-        if ($stopover === null) {
-            //To support legacy data, where we don't save the stopovers in the stopovers table, yet.
-            Log::info('TrainCheckin #' . $this->id . ': Origin stopover not found. Created a new one.');
-            $stopover = TrainStopover::updateOrCreate(
-                [
-                    "trip_id"          => $this->trip_id,
-                    "train_station_id" => $this->originStation->id
-                ],
-                [
-                    "departure_planned" => $this->departure,
-                    "arrival_planned"   => $this->departure,
-                ]
-            );
-            $this->HafasTrip->load('stopovers');
-        }
-        $this->update(['origin_stopover_id' => $stopover->id]);
-        return $stopover;
-    }
-
-    /**
-     * @return BelongsTo
-     * @todo rename to `destinationStopover` when `getDestinationStopoverAttribute` is removed
-     */
-    public function destinationStopoverRelation(): BelongsTo {
+    public function destinationStopover(): BelongsTo {
         return $this->belongsTo(TrainStopover::class, 'destination_stopover_id', 'id');
-    }
-
-    /**
-     * @return TrainStopover
-     * @todo make this a relation (hasOne) when the origin and destination columns are removed
-     */
-    public function getDestinationStopoverAttribute(): TrainStopover {
-        if ($this->destination_stopover_id !== null) {
-            return $this->destinationStopoverRelation;
-        }
-
-        $stopover = $this->HafasTrip->stopovers->where('train_station_id', $this->destinationStation->id)
-                                               ->where('arrival_planned', $this->arrival)
-                                               ->first();
-        if ($stopover === null) {
-            //To support legacy data, where we don't save the stopovers in the stopovers table, yet.
-            Log::info('TrainCheckin #' . $this->id . ': Destination stopover not found. Created a new one.');
-            $stopover = TrainStopover::updateOrCreate(
-                [
-                    "trip_id"          => $this->trip_id,
-                    "train_station_id" => $this->destinationStation->id
-                ],
-                [
-                    "departure_planned" => $this->arrival,
-                    "arrival_planned"   => $this->arrival,
-                ]
-            );
-            $this->HafasTrip->load('stopovers');
-        }
-        $this->update(['destination_stopover_id' => $stopover->id]);
-        return $stopover;
     }
 
     /**
@@ -201,19 +128,19 @@ class TrainCheckin extends Model
     }
 
     public function getDisplayDepartureAttribute(): \stdClass {
-        $planned = $this->origin_stopover?->departure_planned
-                   ?? $this->origin_stopover?->departure
+        $planned = $this->originStopover?->departure_planned
+                   ?? $this->originStopover?->departure
                       ?? $this->departure;
-        $real    = $this->origin_stopover?->departure_real;
+        $real    = $this->originStopover?->departure_real;
         $manual  = $this->manual_departure;
         return (object) self::prepareDisplayTime($planned, $real, $manual);
     }
 
     public function getDisplayArrivalAttribute(): \stdClass {
-        $planned = $this->destination_stopover?->arrival_planned
-                   ?? $this->destination_stopover?->arrival
+        $planned = $this->destinationStopover?->arrival_planned
+                   ?? $this->destinationStopover?->arrival
                       ?? $this->arrival;
-        $real    = $this->destination_stopover?->arrival_real;
+        $real    = $this->destinationStopover?->arrival_real;
         $manual  = $this->manual_arrival;
         return (object) self::prepareDisplayTime($planned, $real, $manual);
     }
@@ -229,8 +156,8 @@ class TrainCheckin extends Model
         }
 
         //Else calculate and cache it
-        $departure = $this->manual_departure ?? $this->origin_stopover->departure ?? $this->departure;
-        $arrival   = $this->manual_arrival ?? $this->destination_stopover->arrival ?? $this->arrival;
+        $departure = $this->manual_departure ?? $this->originStopover->departure ?? $this->departure;
+        $arrival   = $this->manual_arrival ?? $this->destinationStopover->arrival ?? $this->arrival;
         $duration  = $arrival->diffInMinutes($departure);
         DB::table('train_checkins')->where('id', $this->id)->update(['duration' => $duration]);
         return $duration;

@@ -25,7 +25,7 @@ class CheckinDurationTest extends TestCase
                                              'arrival'   => '2021-01-01T01:00:00+01:00',
                                          ])->create();
 
-        $checkin->origin_stopover->departure_real = '2021-01-01T00:10:00+01:00';
+        $checkin->originStopover->departure_real = '2021-01-01T00:10:00+01:00';
 
         $this->assertEquals(50, $checkin->duration);
     }
@@ -36,7 +36,7 @@ class CheckinDurationTest extends TestCase
                                              'arrival'   => '2021-01-01T01:00:00+01:00',
                                          ])->create();
 
-        $checkin->destination_stopover->arrival_real = '2021-01-01T01:10:00+01:00';
+        $checkin->destinationStopover->arrival_real = '2021-01-01T01:10:00+01:00';
 
         $this->assertEquals(70, $checkin->duration);
     }
@@ -47,8 +47,8 @@ class CheckinDurationTest extends TestCase
                                              'arrival'   => '2021-01-01T01:00:00+01:00',
                                          ])->create();
 
-        $checkin->origin_stopover->departure_real    = '2021-01-01T00:10:00+01:00';
-        $checkin->destination_stopover->arrival_real = '2021-01-01T01:10:00+01:00';
+        $checkin->originStopover->departure_real    = '2021-01-01T00:10:00+01:00';
+        $checkin->destinationStopover->arrival_real = '2021-01-01T01:10:00+01:00';
 
         $this->assertEquals(60, $checkin->duration);
     }
@@ -93,7 +93,7 @@ class CheckinDurationTest extends TestCase
                                          ])->create();
 
         //This should be ignored, because the real departure is already set by user
-        $checkin->origin_stopover->departure_real = '2021-01-01T00:30:00+01:00';
+        $checkin->originStopover->departure_real = '2021-01-01T00:30:00+01:00';
 
         $this->assertEquals(65, $checkin->duration);
     }
@@ -108,7 +108,7 @@ class CheckinDurationTest extends TestCase
                                          ])->create();
 
         //This should be ignored, because the real arrival is already set by user
-        $checkin->destination_stopover->arrival_real = '2021-01-01T01:50:00+01:00';
+        $checkin->destinationStopover->arrival_real = '2021-01-01T01:50:00+01:00';
 
         $this->assertEquals(65, $checkin->duration);
     }

@@ -97,18 +97,18 @@ abstract class ExportController extends Controller
                 return $status->trainCheckin->originStation->latitude
                        . ',' . $status->trainCheckin->originStation->longitude;
             case ExportableColumn::DEPARTURE_PLANNED:
-                return $status->trainCheckin->origin_stopover?->departure_planned?->toIso8601String();
+                return $status->trainCheckin->originStopover?->departure_planned?->toIso8601String();
             case ExportableColumn::DEPARTURE_REAL:
-                return $status->trainCheckin->origin_stopover?->departure?->toIso8601String();
+                return $status->trainCheckin->originStopover?->departure?->toIso8601String();
             case ExportableColumn::DESTINATION_NAME:
                 return $status->trainCheckin->destinationStation->name;
             case ExportableColumn::DESTINATION_COORDINATES:
                 return $status->trainCheckin->destinationStation->latitude
                        . ',' . $status->trainCheckin->destinationStation->longitude;
             case ExportableColumn::ARRIVAL_PLANNED:
-                return $status->trainCheckin->destination_stopover?->arrival_planned?->toIso8601String();
+                return $status->trainCheckin->destinationStopover?->arrival_planned?->toIso8601String();
             case ExportableColumn::ARRIVAL_REAL:
-                return $status->trainCheckin->destination_stopover?->arrival?->toIso8601String();
+                return $status->trainCheckin->destinationStopover?->arrival?->toIso8601String();
             case ExportableColumn::DURATION:
                 return $status->trainCheckin->duration;
             case ExportableColumn::DISTANCE:

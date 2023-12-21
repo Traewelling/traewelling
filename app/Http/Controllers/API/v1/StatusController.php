@@ -612,8 +612,8 @@ class StatusController extends Controller
             return $this->sendError('User doesn\'t have any checkins');
         }
         foreach ($latestStatuses as $status) {
-            if ($status->trainCheckin->origin_stopover->departure->isPast()
-                && $status->trainCheckin->destination_stopover->arrival->isFuture()) {
+            if ($status->trainCheckin->originStopover->departure->isPast()
+                && $status->trainCheckin->destinationStopover->arrival->isFuture()) {
                 return $this->sendResponse(new StatusResource($status));
             }
         }
