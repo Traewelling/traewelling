@@ -32,6 +32,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
@@ -337,5 +338,14 @@ abstract class TrainCheckinController extends Controller
                            $distance,
                            $pointsResource->points,
                    ));
+    }
+
+    public static function calculateCheckinDuration(TrainCheckin $checkin): int {
+        $departure = $checkin->manual_departure ?? $checkin->origin_stopover->departure ?? $checkin->departure;
+        $arrival   = $checkin->manual_arrival ?? $checkin->destination_stopover->arrival ?? $checkin->arrival;
+        $duration  = $arrival->diffInMinutes($departure);
+        //don't use eloquent here, because it would trigger the observer (and this function) again
+        DB::table('train_checkins')->where('id', $checkin->id)->update(['duration' => $duration]);
+        return $duration;
     }
 }
