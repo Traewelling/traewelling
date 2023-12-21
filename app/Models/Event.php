@@ -30,7 +30,7 @@ class Event extends Model
     ];
 
     public function station(): HasOne {
-        return $this->hasOne(TrainStation::class, 'id', 'station_id');
+        return $this->hasOne(Station::class, 'id', 'station_id');
     }
 
     public function statuses(): HasMany {

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend\Stats;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\TrainCheckin;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
@@ -244,7 +244,7 @@ abstract class TransportStatsController extends Controller
                         ->orderByDesc('count')
                         ->limit($limit)
                         ->get();
-        $stations = TrainStation::whereIn('ibnr', $data->pluck('destination'))->get();
+        $stations = Station::whereIn('ibnr', $data->pluck('destination'))->get();
         return $data->map(function($model) use ($stations) {
             $model->station = $stations->firstWhere('ibnr', $model->destination);
             unset($model->destination);
@@ -292,8 +292,8 @@ abstract class TransportStatsController extends Controller
 
         $lonelyStations = $ownDestinations->where('otherUsers', 0)->pluck('destination');
 
-        return TrainStation::whereIn('ibnr', $lonelyStations)->get()
-                           ->map(function($station) use ($ownDestinations) {
+        return Station::whereIn('ibnr', $lonelyStations)->get()
+                      ->map(function($station) use ($ownDestinations) {
                                $station->count = $ownDestinations->firstWhere('destination', $station->ibnr)->count;
                                return $station;
                            });

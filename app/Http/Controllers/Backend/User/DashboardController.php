@@ -19,7 +19,7 @@ abstract class DashboardController extends Controller
         return Status::with([
                                 'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'trainCheckin',
                                 'trainCheckin.originStation', 'trainCheckin.destinationStation',
-                                'trainCheckin.HafasTrip.stopovers.trainStation'
+                                'trainCheckin.HafasTrip.stopovers.station'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
@@ -41,7 +41,7 @@ abstract class DashboardController extends Controller
         return Status::with([
                                 'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'trainCheckin',
                                 'trainCheckin.originStation', 'trainCheckin.destinationStation',
-                                'trainCheckin.HafasTrip.stopovers.trainStation'
+                                'trainCheckin.HafasTrip.stopovers.station'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->join('users', 'statuses.user_id', '=', 'users.id')

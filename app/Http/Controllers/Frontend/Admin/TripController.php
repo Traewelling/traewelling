@@ -7,7 +7,7 @@ use App\Http\Controllers\Backend\Transport\ManualTripCreator;
 use App\Http\Controllers\Backend\Transport\ManualTripCreator as TripBackend;
 use App\Models\HafasOperator;
 use App\Models\HafasTrip;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\TrainStopover;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;

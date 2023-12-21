@@ -36,9 +36,9 @@ use Illuminate\Support\Facades\Gate;
  * @property HafasTrip     $HafasTrip
  * @property Status        $status
  * @property User          $user
- * @property TrainStation  $originStation
+ * @property Station       $originStation
  * @property TrainStopover $originStopover
- * @property TrainStation  $destinationStation
+ * @property Station       $destinationStation
  * @property TrainStopover $destinationStopover
  *
  * @todo rename table to "Checkin" (without Train - we have more than just trains)
@@ -85,11 +85,11 @@ class TrainCheckin extends Model
     }
 
     public function originStation(): HasOne {
-        return $this->hasOne(TrainStation::class, 'ibnr', 'origin');
+        return $this->hasOne(Station::class, 'ibnr', 'origin');
     }
 
     public function destinationStation(): HasOne {
-        return $this->hasOne(TrainStation::class, 'ibnr', 'destination');
+        return $this->hasOne(Station::class, 'ibnr', 'destination');
     }
 
     public function HafasTrip(): HasOne {

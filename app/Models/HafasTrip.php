@@ -66,11 +66,11 @@ class HafasTrip extends Model
     }
 
     public function originStation(): BelongsTo {
-        return $this->belongsTo(TrainStation::class, 'origin', 'ibnr');
+        return $this->belongsTo(Station::class, 'origin', 'ibnr');
     }
 
     public function destinationStation(): BelongsTo {
-        return $this->belongsTo(TrainStation::class, 'destination', 'ibnr');
+        return $this->belongsTo(Station::class, 'destination', 'ibnr');
     }
 
     public function operator(): BelongsTo {

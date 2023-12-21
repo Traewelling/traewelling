@@ -7,7 +7,7 @@ use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Models\PolyLine;
 use App\Models\TrainCheckin;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -28,14 +28,14 @@ class TransportController extends Controller
      */
     public static function getTrainStationAutocomplete(string $query): Collection {
         if (!is_numeric($query) && strlen($query) <= 5 && ctype_upper($query)) {
-            $stations = HafasController::getTrainStationsByFuzzyRilIdentifier(rilIdentifier: $query);
+            $stations = HafasController::getStationsByFuzzyRilIdentifier(rilIdentifier: $query);
         }
 
         if (!isset($stations) || $stations[0] === null) {
             $stations = HafasController::getStations($query);
         }
 
-        return $stations->map(function(TrainStation $station) {
+        return $stations->map(function(Station $station) {
             return [
                 'ibnr'          => $station->ibnr,
                 'rilIdentifier' => $station->rilIdentifier,
@@ -54,7 +54,7 @@ class TransportController extends Controller
      * @api v1
      */
     #[ArrayShape([
-        'station'    => TrainStation::class,
+        'station'    => Station::class,
         'departures' => Collection::class,
         'times'      => "array"
     ])]

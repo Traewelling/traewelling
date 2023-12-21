@@ -16,7 +16,7 @@ use App\Http\Controllers\TransportController as TransportBackend;
 use App\Jobs\PostStatusOnMastodon;
 use App\Models\Event;
 use App\Models\Status;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\TrainStopover;
 use App\Models\User;
 use Carbon\Carbon;
@@ -145,9 +145,9 @@ class CheckinController
             $backendResponse = TrainCheckinController::checkin(
                 user:         $user,
                 hafasTrip:    HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
-                origin:       TrainStation::where('ibnr', $validated['startIBNR'])->first(),
+                origin:       Station::where('ibnr', $validated['startIBNR'])->first(),
                 departure:    Carbon::parse($validated['departure']),
-                destination:  $destinationStopover->trainStation,
+                destination:  $destinationStopover->station,
                 arrival:      $destinationStopover->arrival_planned,
                 travelReason: Business::tryFrom($validated['business'] ?? 0),
                 visibility:   StatusVisibility::tryFrom($validated['visibility'] ?? 0),

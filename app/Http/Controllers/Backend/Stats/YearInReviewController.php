@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend\Stats;
 use App\Enum\CacheKey;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StatusResource;
-use App\Http\Resources\TrainStationResource;
+use App\Http\Resources\StationResource;
 use App\Models\TrainCheckin;
 use App\Models\User;
 use Carbon\Carbon;
@@ -111,13 +111,13 @@ abstract class YearInReviewController extends Controller
             })->first(),
             'topDestinations'     => $topDestinations->map(static function($data) {
                 return [
-                    'station' => new TrainStationResource($data->station),
+                    'station' => new StationResource($data->station),
                     'count'   => $data->count,
                 ];
             }),
             'lonelyStations'      => $lonelyStations->map(static function($station) {
                 return [
-                    'station' => new TrainStationResource($station),
+                    'station' => new StationResource($station),
                     'count'   => $station->count,
                 ];
             }),

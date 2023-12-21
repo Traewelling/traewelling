@@ -12,7 +12,7 @@ use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasTrip;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -169,11 +169,10 @@ class CheckinTest extends TestCase
 
     /**
      * Test if the checkin collision is truly working
-     * @test
      */
     public function testCheckinCollision(): void {
-        // GIVEN: Generate TrainStations
-        TrainStation::factory()->count(4)->create();
+        // GIVEN: Generate Stations
+        Station::factory()->count(4)->create();
 
         // GIVEN: A logged-in and gdpr-acked user
         $user = User::factory()->create();

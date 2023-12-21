@@ -1,16 +1,34 @@
-
 <div class="card status">
     <div class="card-header">
         <a href="{{ route('events.show', ['slug' => $event->slug]) }}">{{ $event->name }}</a>
     </div>
     <div class="card-body">
         <table class="table mb-0">
-            <tr><th class="ps-0">Hashtag:</th><td class="text-break"><code>#{{ $event->hashtag }}</code></td></tr>
-            <tr><th class="ps-0">Host:</th><td class="text-break">{{ $event->host }}</td></tr>
-            <tr><th class="ps-0">URL:</th><td class="text-break"><a href="{{ $event->url }}">{{ $event->url }} <i class="fas fa-link"></i></a></td></tr>
-            <tr><th class="ps-0">Beginn:</th><td class="text-break">{{ $event->begin->format('Y-m-d') }}</td></tr>
-            <tr><th class="ps-0">Ende:</th><td class="text-break">{{ $event->end->format('Y-m-d') }}</td></tr>
-            <tr><th class="ps-0">Station:</th><td class="text-break">{{ \App\Models\TrainStation::find($event->trainstation)->name }}</td></tr>
+            <tr>
+                <th class="ps-0">Hashtag:</th>
+                <td class="text-break"><code>#{{ $event->hashtag }}</code></td>
+            </tr>
+            <tr>
+                <th class="ps-0">Host:</th>
+                <td class="text-break">{{ $event->host }}</td>
+            </tr>
+            <tr>
+                <th class="ps-0">URL:</th>
+                <td class="text-break"><a href="{{ $event->url }}">{{ $event->url }} <i class="fas fa-link"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <th class="ps-0">Beginn:</th>
+                <td class="text-break">{{ $event->begin->format('Y-m-d') }}</td>
+            </tr>
+            <tr>
+                <th class="ps-0">Ende:</th>
+                <td class="text-break">{{ $event->end->format('Y-m-d') }}</td>
+            </tr>
+            <tr>
+                <th class="ps-0">Station:</th>
+                <td class="text-break">{{ \App\Models\Station::find($event->trainstation)->name }}</td>
+            </tr>
         </table>
     </div>
     <div class="card-footer">
@@ -46,7 +64,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-mdb-dismiss="modal">{{__('menu.abort')}}</button>
-                <a href="{{ URL::signedRoute('events.delete', ['slug' => $event->slug]) }}" class="btn btn-danger" id="modal-delete">{{__('modals.delete-confirm')}}</a>
+                <a href="{{ URL::signedRoute('events.delete', ['slug' => $event->slug]) }}" class="btn btn-danger"
+                   id="modal-delete">{{__('modals.delete-confirm')}}</a>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

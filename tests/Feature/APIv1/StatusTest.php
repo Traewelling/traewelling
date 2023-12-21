@@ -7,7 +7,7 @@ use App\Enum\StatusVisibility;
 use App\Models\HafasTrip;
 use App\Models\Status;
 use App\Models\TrainCheckin;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\TrainStopover;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
@@ -139,7 +139,7 @@ class StatusTest extends ApiTestCase
         $checkin = TrainCheckin::factory(['user_id' => $user->id])->create();
 
         //Create a new stopover now (factory creates departure 1 hour ago and arrival in 1 hour)
-        $newStation     = TrainStation::factory()->create();
+        $newStation     = Station::factory()->create();
         $thirdTimestamp = Date::now()->setSecond(0);
         TrainStopover::factory([
                                    'trip_id'           => $checkin->trip_id,
