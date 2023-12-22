@@ -760,5 +760,8 @@
     "mail.account_deletion_notification_two_weeks_before.subject": "Je Träwelling-account wordt over twee weken verwijderd",
     "mail.signature": "Het Träwelling-team",
     "mail.bye": "Met vriendelijke groet",
-    "mail.account_deletion_notification_two_weeks_before.body1": "Je Träwelling-account lijkt al enige tijd inactief te zijn."
+    "mail.account_deletion_notification_two_weeks_before.body1": "Je Träwelling-account lijkt al enige tijd inactief te zijn.",
+    "checkin.points.full": "Je had :points punten kunnen verdienen.",
+    "checkin.conflict": "Er is al een gelijktijdige incheck gedaan.",
+    "notifications.show": "Meldingen tonen"
 }
