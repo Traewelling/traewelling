@@ -16,7 +16,7 @@ use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\Event;
 use App\Models\HafasTrip;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\TrainStopover;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
@@ -62,7 +62,7 @@ class FrontendTransportController extends Controller
             //If so: Use the given station string. Otherwise, use the station_id for lookup.
             //This is to prevent that HAFAS fuzzy search return other stations (e.g. "Bern, Hauptbahnhof", Issue 1082)
             if (isset($validated['ibnr']) && $searchQuery !== $validated['ibnr']) {
-                $station = HafasController::getTrainStation($validated['ibnr']);
+                $station = HafasController::getStation($validated['ibnr']);
                 if ($station->name === $validated['station']) {
                     $searchQuery = $station->ibnr;
                 }
@@ -121,7 +121,7 @@ class FrontendTransportController extends Controller
                                         ]);
 
         try {
-            $startStation = TrainStation::where('ibnr', $validated['start'])->firstOrFail();
+            $startStation = Station::where('ibnr', $validated['start'])->firstOrFail();
             $departure    = Carbon::parse($validated['departure']);
 
             $hafasTrip = TrainCheckinController::getHafasTrip(
@@ -146,7 +146,7 @@ class FrontendTransportController extends Controller
                 'hafasTrip'       => $hafasTrip,
                 'stopovers'       => $stopovers,
                 'startStation'    => $startStation,
-                'searchedStation' => isset($validated['searchedStation']) ? TrainStation::findOrFail($validated['searchedStation']) : null,
+                'searchedStation' => isset($validated['searchedStation']) ? Station::findOrFail($validated['searchedStation']) : null,
                 'lastStopover'    => $lastStopover,
             ]);
         } catch (HafasException $exception) {
@@ -177,9 +177,9 @@ class FrontendTransportController extends Controller
             $backendResponse = TrainCheckinController::checkin(
                 user:         Auth::user(),
                 hafasTrip:    HafasTrip::where('trip_id', $validated['tripID'])->first(),
-                origin:       TrainStation::where('ibnr', $validated['start'])->first(),
+                origin:       Station::where('ibnr', $validated['start'])->first(),
                 departure:    Carbon::parse($validated['departure']),
-                destination:  TrainStation::where('ibnr', $validated['destination'])->first(),
+                destination:  Station::where('ibnr', $validated['destination'])->first(),
                 arrival:      Carbon::parse($validated['arrival']),
                 travelReason: Business::from($validated['business_check']),
                 visibility:   StatusVisibility::tryFrom($validated['checkinVisibility'] ?? StatusVisibility::PUBLIC->value),
@@ -236,13 +236,13 @@ class FrontendTransportController extends Controller
                                         ]);
 
         try {
-            $trainStation = HafasController::getStations(query: $validated['stationName'], results: 1)->first();
-            if ($trainStation === null) {
+            $station = HafasController::getStations(query: $validated['stationName'], results: 1)->first();
+            if ($station === null) {
                 return redirect()->back()->with(['error' => __('messages.exception.general')]);
             }
-            $trainStation = HomeController::setHome(auth()->user(), $trainStation);
+            $station = HomeController::setHome(auth()->user(), $station);
 
-            return redirect()->back()->with(['success' => __('user.home-set', ['station' => $trainStation->name])]);
+            return redirect()->back()->with(['success' => __('user.home-set', ['station' => $station->name])]);
         } catch (HafasException) {
             return redirect()->back()->with(['error' => __('messages.exception.generalHafas')]);
         }

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventSuggestion;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -16,14 +16,14 @@ use Illuminate\Support\Facades\Http;
 abstract class EventController extends Controller
 {
     public static function suggestEvent(
-        User         $user,
-        string       $name,
-        Carbon       $begin,
-        Carbon       $end,
-        TrainStation $station = null,
-        string       $url = null,
-        string       $host = null,
-        string       $hashtag = null,
+        User    $user,
+        string  $name,
+        Carbon  $begin,
+        Carbon  $end,
+        Station $station = null,
+        string  $url = null,
+        string  $host = null,
+        string  $hashtag = null,
     ): EventSuggestion {
 
         if ($hashtag != null && str_starts_with($hashtag, '#')) {

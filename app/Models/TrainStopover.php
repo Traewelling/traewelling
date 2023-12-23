@@ -11,7 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @todo rename table to "Stopover" (without Train - we have more than just trains)
  * @todo rename "train_station_id" to "station_id" - we have more than just trains.
- * @todo rename "cancelled" to "is_cancelled" - or split into "is_arrival_cancelled" and "is_departure_cancelled"? need to think about this.
+ * @todo rename "cancelled" to "is_cancelled" - or split into "is_arrival_cancelled" and "is_departure_cancelled"? need
+ *       to think about this.
  */
 class TrainStopover extends Model
 {
@@ -46,8 +47,16 @@ class TrainStopover extends Model
         return $this->belongsTo(HafasTrip::class, 'trip_id', 'trip_id');
     }
 
+    public function station(): BelongsTo {
+        return $this->belongsTo(Station::class, 'train_station_id', 'id');
+    }
+
+    /**
+     * @return BelongsTo
+     * @deprecated use station() instead
+     */
     public function trainStation(): BelongsTo {
-        return $this->belongsTo(TrainStation::class, 'train_station_id', 'id');
+        return $this->station();
     }
 
     // These two methods are a ticking time bomb and I hope we'll never see it explode. 💣

@@ -12,7 +12,7 @@
          data-trwl-manual-arrival="{{ userTime($status->trainCheckin?->manual_arrival, 'Y-m-d\TH:i:s', false)}}"
          data-trwl-business-id="{{ $status->business->value }}"
          data-trwl-visibility="{{ $status->visibility->value }}"
-         data-trwl-destination-stopover="{{$status->trainCheckin->destination_stopover->id}}"
+         data-trwl-destination-stopover="{{$status->trainCheckin->destinationStopover->id}}"
          data-trwl-alternative-destinations=
              "{{json_encode(StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
     @endif
@@ -158,8 +158,8 @@
             role="progressbar"
             style="width: 0"
             data-valuenow="{{ time() }}"
-            data-valuemin="{{ $status->trainCheckin?->origin_stopover?->departure->timestamp ?? $status->trainCheckin->departure->timestamp }}"
-            data-valuemax="{{ $status->trainCheckin?->destination_stopover?->arrival->timestamp ?? $status->trainCheckin->arrival->timestamp }}"
+            data-valuemin="{{ $status->trainCheckin?->originStopover?->departure->timestamp ?? $status->trainCheckin->departure->timestamp }}"
+            data-valuemax="{{ $status->trainCheckin?->destinationStopover?->arrival->timestamp ?? $status->trainCheckin->arrival->timestamp }}"
         ></div>
     </div>
     <div class="card-footer text-muted interaction px-3 px-md-4">

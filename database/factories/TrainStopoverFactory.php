@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\HafasTrip;
-use App\Models\TrainStation;
+use App\Models\Station;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TrainStopoverFactory extends Factory
@@ -11,7 +11,7 @@ class TrainStopoverFactory extends Factory
     public function definition(): array {
         return [
             'trip_id'                    => HafasTrip::factory(),
-            'train_station_id'           => TrainStation::factory(),
+            'train_station_id'           => Station::factory(),
             'arrival_planned'            => $this->faker->dateTimeBetween(),
             'arrival_real'               => null,
             'arrival_platform_planned'   => $this->faker->numberBetween(1, 99),

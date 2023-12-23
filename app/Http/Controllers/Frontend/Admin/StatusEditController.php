@@ -7,7 +7,7 @@ use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -55,8 +55,8 @@ class StatusEditController extends Controller
 
         $status = Status::find($validated['statusId']);
 
-        $originStation      = TrainStation::find($validated['origin']);
-        $destinationStation = TrainStation::find($validated['destination']);
+        $originStation      = Station::find($validated['origin']);
+        $destinationStation = Station::find($validated['destination']);
 
         $newOrigin      = $status->trainCheckIn->HafasTrip->stopovers->where('train_station_id', $originStation->id)->first();
         $newDestination = $status->trainCheckIn->HafasTrip->stopovers->where('train_station_id', $destinationStation->id)->first();

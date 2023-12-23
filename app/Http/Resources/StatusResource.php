@@ -42,12 +42,10 @@ class StatusResource extends JsonResource
                 'points'              => (int) $this->trainCheckin->points,
                 'duration'            => (int) $this->trainCheckin->duration,
                 'speed'               => 0.0, //deprecated: TODO: remove after 2023-12-31
-                'overriddenDeparture' => $this->trainCheckin->manual_departure?->toIso8601String(), //TODO: deprecated: remove after 2023-10 (#1809)
                 'manualDeparture'     => $this->trainCheckin->manual_departure?->toIso8601String(),
-                'overriddenArrival'   => $this->trainCheckin->manual_arrival?->toIso8601String(), //TODO: deprecated: remove after 2023-10 (#1809)
                 'manualArrival'       => $this->trainCheckin->manual_arrival?->toIso8601String(),
-                'origin'              => new StopoverResource($this->trainCheckin->origin_stopover),
-                'destination'         => new StopoverResource($this->trainCheckin->destination_stopover),
+                'origin'              => new StopoverResource($this->trainCheckin->originStopover),
+                'destination'         => new StopoverResource($this->trainCheckin->destinationStopover),
                 'operator'            => new OperatorResource($this?->trainCheckin->HafasTrip->operator)
             ],
             'event'          => new EventResource($this?->event),

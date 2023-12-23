@@ -38,8 +38,8 @@ class LocationController
     public static function forStatus(Status $status): LocationController {
         return new self(
             $status->trainCheckin->HafasTrip,
-            $status->trainCheckin->origin_stopover,
-            $status->trainCheckin->destination_stopover,
+            $status->trainCheckin->originStopover,
+            $status->trainCheckin->destinationStopover,
             $status->id
         );
     }
@@ -77,8 +77,8 @@ class LocationController
         if (count($newStopovers) === 1) {
             return new LivePointDto(
                 (new Coordinate(
-                    $newStopovers[0]->trainStation->latitude,
-                    $newStopovers[0]->trainStation->longitude
+                    $newStopovers[0]->station->latitude,
+                    $newStopovers[0]->station->longitude
                 )),
                 null,
                 $newStopovers[0]->arrival->timestamp,
@@ -162,7 +162,7 @@ class LocationController
                 continue;
             }
 
-            $stopover = $stopovers->where('trainStation.ibnr', $polylineFeature->properties->id)
+            $stopover = $stopovers->where('station.ibnr', $polylineFeature->properties->id)
                                   ->where('passed', false)
                                   ->first();
 
@@ -210,7 +210,7 @@ class LocationController
         foreach ($this->hafasTrip->stopovers as $stopover) {
             if ($firstStop !== null || $stopover->is($this->origin)) {
                 $firstStop = $stopover;
-                $coordinates[] = new Coordinate($stopover->trainStation->latitude, $stopover->trainStation->longitude);
+                $coordinates[] = new Coordinate($stopover->station->latitude, $stopover->station->longitude);
 
                 if ($stopover->is($this->destination)) {
                     break;
@@ -227,7 +227,7 @@ class LocationController
      * @throws JsonException
      */
     private function getPolylineBetween(bool $preserveKeys = true): stdClass|FeatureCollection {
-        $this->hafasTrip->loadMissing(['stopovers.trainStation']);
+        $this->hafasTrip->loadMissing(['stopovers.station']);
         $geoJson  = $this->getPolylineWithTimestamps();
         if (count($geoJson->features) === 0) {
             return $this->createPolylineFromStopovers();
@@ -243,7 +243,7 @@ class LocationController
             }
 
             if ($originIndex === null
-                && $this->origin->trainStation->ibnr === (int) $data->properties->id
+                && $this->origin->station->ibnr === (int) $data->properties->id
                 && isset($data->properties->departure_planned) //Important for ring lines!
                 && $this->origin->departure_planned->is($data->properties->departure_planned) //ring lines!
             ) {
@@ -251,7 +251,7 @@ class LocationController
             }
 
             if ($destinationIndex === null
-                && $this->destination->trainStation->ibnr === (int) $data->properties->id
+                && $this->destination->station->ibnr === (int) $data->properties->id
                 && isset($data->properties->arrival_planned) //Important for ring lines!
                 && $this->destination->arrival_planned->is($data->properties->arrival_planned) //ring lines!
             ) {
@@ -323,8 +323,8 @@ class LocationController
                 continue;
             }
             $distance     += (new LineSegment(
-                new Coordinate($lastStopover->trainStation->latitude, $lastStopover->trainStation->longitude),
-                new Coordinate($stopover->trainStation->latitude, $stopover->trainStation->longitude)
+                new Coordinate($lastStopover->station->latitude, $lastStopover->station->longitude),
+                new Coordinate($stopover->station->latitude, $stopover->station->longitude)
             ))->calculateDistance();
             $lastStopover = $stopover;
         }

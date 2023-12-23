@@ -8,7 +8,7 @@ use App\Http\Controllers\Backend\Transport\ManualTripCreator as TripBackend;
 use App\Http\Controllers\Controller;
 use App\Models\HafasOperator;
 use App\Models\HafasTrip;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\TrainStopover;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -21,11 +21,11 @@ class ManualTripCreator extends Controller
     public HafasTravelType $category;
     public string          $lineName;
     public ?int            $journeyNumber;
-    public ?HafasOperator  $operator;
-    public TrainStation    $origin;
-    public Carbon          $originDeparturePlanned;
-    public TrainStation    $destination;
-    public Carbon          $destinationArrivalPlanned;
+    public ?HafasOperator $operator;
+    public Station        $origin;
+    public Carbon         $originDeparturePlanned;
+    public Station $destination;
+    public Carbon  $destinationArrivalPlanned;
 
     public function createTrip(): HafasTrip {
         $this->trip = HafasTrip::create([

@@ -7,19 +7,19 @@ use App\Enum\TripSource;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasOperator;
 use App\Models\HafasTrip;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\TrainStopover;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class HafasTripFactory extends Factory
 {
     public function definition(): array {
-        if (TrainStation::all()->count() > 3) {
-            $origin      = TrainStation::inRandomOrder()->first();
-            $destination = TrainStation::inRandomOrder()->where('id', '!=', $origin->id)->first();
+        if (Station::all()->count() > 3) {
+            $origin      = Station::inRandomOrder()->first();
+            $destination = Station::inRandomOrder()->where('id', '!=', $origin->id)->first();
         } else {
-            $origin      = TrainStation::factory()->create();
-            $destination = TrainStation::factory()->create();
+            $origin      = Station::factory()->create();
+            $destination = Station::factory()->create();
         }
 
         return [
@@ -41,13 +41,13 @@ class HafasTripFactory extends Factory
 
     public function configure(): static {
         return $this->afterCreating(function(HafasTrip $hafasTrip) {
-            $stops = TrainStation::inRandomOrder()
-                                 ->whereNotIn('id', [$hafasTrip->originStation->id, $hafasTrip->destinationStation->id])
-                                 ->limit(2)
-                                 ->get();
+            $stops = Station::inRandomOrder()
+                            ->whereNotIn('id', [$hafasTrip->originStation->id, $hafasTrip->destinationStation->id])
+                            ->limit(2)
+                            ->get();
             if ($stops->count() < 2) {
                 for ($i = 0; $i < 2; $i++) {
-                    $stops->push(TrainStation::factory()->create());
+                    $stops->push(Station::factory()->create());
                 }
             }
 
@@ -97,21 +97,21 @@ class HafasTripFactory extends Factory
                 'type'       => 'Feature',
                 'properties' => [
                     'type'     => 'stop',
-                    'id'       => $stopover->trainStation->ibnr,
-                    'name'     => $stopover->trainStation->name,
+                    'id'       => $stopover->station->ibnr,
+                    'name'     => $stopover->station->name,
                     'location' => [
                         'type'      => 'location',
-                        'id'        => $stopover->trainStation->ibnr,
-                        'latitude'  => $stopover->trainStation->latitude,
-                        'longitude' => $stopover->trainStation->longitude,
+                        'id'        => $stopover->station->ibnr,
+                        'latitude'  => $stopover->station->latitude,
+                        'longitude' => $stopover->station->longitude,
                     ],
                     'products' => $products,
                 ],
                 'geometry'   => [
                     'type'        => 'Point',
                     'coordinates' => [
-                        $stopover->trainStation->longitude,
-                        $stopover->trainStation->latitude,
+                        $stopover->station->longitude,
+                        $stopover->station->latitude,
                     ]
                 ]
             ];
