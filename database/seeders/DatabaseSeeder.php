@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         Station::factory()->count(50)->create();
         $this->call(EventSeeder::class);
         HafasTrip::factory()->count(50)->create();
-        $this->call(TrainCheckinSeeder::class);
+        $this->call(CheckinSeeder::class);
         $this->call(PrivacyAgreementSeeder::class);
         EventSuggestion::factory(['user_id' => 1])->count(5)->create();
     }
