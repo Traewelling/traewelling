@@ -6,7 +6,7 @@ use App\Models\HafasTrip;
 use App\Models\Station;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TrainStopoverFactory extends Factory
+class StopoverFactory extends Factory
 {
     public function definition(): array {
         return [

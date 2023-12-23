@@ -8,7 +8,7 @@ use App\Models\HafasTrip;
 use App\Models\Status;
 use App\Models\Checkin;
 use App\Models\Station;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -141,7 +141,7 @@ class StatusTest extends ApiTestCase
         //Create a new stopover now (factory creates departure 1 hour ago and arrival in 1 hour)
         $newStation     = Station::factory()->create();
         $thirdTimestamp = Date::now()->setSecond(0);
-        TrainStopover::factory([
+        Stopover::factory([
                                    'trip_id'           => $checkin->trip_id,
                                    'train_station_id'  => $newStation->id,
                                    'arrival_planned'   => $thirdTimestamp,

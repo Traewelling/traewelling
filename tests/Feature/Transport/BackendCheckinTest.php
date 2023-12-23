@@ -9,7 +9,7 @@ use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -78,7 +78,7 @@ class BackendCheckinTest extends TestCase
 
         $originStopover      = $hafasTrip->stopovers->where('station.ibnr', $station->ibnr)->first();
         $nextStopovers       = $hafasTrip->stopovers
-            ->where(function(TrainStopover $stopover) use ($originStopover) {
+            ->where(function(Stopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned);
             });
@@ -118,7 +118,7 @@ class BackendCheckinTest extends TestCase
 
         $originStopover      = $hafasTrip->stopovers->where('station.ibnr', $station->ibnr)->first();
         $nextStopovers       = $hafasTrip->stopovers
-            ->where(function(TrainStopover $stopover) use ($originStopover) {
+            ->where(function(Stopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned);
             });
@@ -250,7 +250,7 @@ class BackendCheckinTest extends TestCase
         // Berlin-Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
         $destinationStopover = $hafasTrip->stopovers
             ->where('station.ibnr', 8089090)
-            ->where(function(TrainStopover $stopover) use ($originStopover) {
+            ->where(function(Stopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned->clone()->addMinutes(10));
             })
@@ -309,7 +309,7 @@ class BackendCheckinTest extends TestCase
         // We check out two stations later at Babelsberg (S)/Wattstr., Potsdam.
         $destinationStopover = $hafasTrip->stopovers
             ->where('trainStation.ibnr', 736089)
-            ->where(function(TrainStopover $stopover) use ($originStopover) {
+            ->where(function(Stopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned);
             })
@@ -368,7 +368,7 @@ class BackendCheckinTest extends TestCase
         // We check out at Babelsberg (S)/Wattstr., Potsdam. But this time we go a whole round with.
         $destinationStopover = $hafasTrip->stopovers
             ->where('trainStation.ibnr', 736089)
-            ->where(function(TrainStopover $stopover) use ($originStopover) {
+            ->where(function(Stopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned->clone()->addMinutes(10));
             })
@@ -427,7 +427,7 @@ class BackendCheckinTest extends TestCase
         // We check out at Hauptbahnhof, Darmstadt
         $destinationStopover = $hafasTrip->stopovers
             ->where('trainStation.ibnr', 104734)
-            ->where(function(TrainStopover $stopover) use ($originStopover) {
+            ->where(function(Stopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned->clone()->addMinutes(10));
             })

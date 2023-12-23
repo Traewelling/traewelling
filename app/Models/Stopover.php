@@ -14,10 +14,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @todo rename "cancelled" to "is_cancelled" - or split into "is_arrival_cancelled" and "is_departure_cancelled"? need
  *       to think about this.
  */
-class TrainStopover extends Model
+class Stopover extends Model
 {
     use HasFactory;
 
+    protected $table    = 'train_stopovers';
     protected $fillable = [
         'trip_id', 'train_station_id',
         'arrival_planned', 'arrival_real',

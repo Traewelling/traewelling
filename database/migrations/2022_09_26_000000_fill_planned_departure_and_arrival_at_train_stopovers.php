@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
@@ -16,12 +16,12 @@ return new class extends Migration
      * @return void
      */
     public function up(): void {
-        TrainStopover::whereNull('arrival_planned')
+        Stopover::whereNull('arrival_planned')
                      ->whereNotNull('departure_planned')
                      ->update(['arrival_planned' => DB::raw('departure_planned')]);
 
 
-        TrainStopover::whereNull('departure_planned')
+        Stopover::whereNull('departure_planned')
                      ->whereNotNull('arrival_planned')
                      ->update(['departure_planned' => DB::raw('arrival_planned')]);
     }

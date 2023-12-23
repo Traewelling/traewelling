@@ -25,7 +25,7 @@ use App\Models\HafasTrip;
 use App\Models\Status;
 use App\Models\Checkin;
 use App\Models\Station;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use App\Models\User;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
@@ -149,7 +149,7 @@ abstract class TrainCheckinController extends Controller
             $firstStops = $trip->stopovers->where('train_station_id', $origin->id);
 
             if ($firstStops->count() > 1) {
-                $firstStop = $firstStops->filter(function(TrainStopover $stopover) use ($departure) {
+                $firstStop = $firstStops->filter(function(Stopover $stopover) use ($departure) {
                     return $stopover->departure_planned->format('H:i') === $departure->format('H:i');
                 })->first();
             } else {
@@ -224,7 +224,7 @@ abstract class TrainCheckinController extends Controller
 
     public static function changeDestination(
         Checkin       $checkin,
-        TrainStopover $newDestinationStopover
+        Stopover $newDestinationStopover
     ): PointReason {
         if ($newDestinationStopover->arrival_planned->isBefore($checkin->originStopover->arrival_planned)
             || $newDestinationStopover->is($checkin->originStopover)
@@ -272,7 +272,7 @@ abstract class TrainCheckinController extends Controller
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
         $hafasTrip->loadMissing(['stopovers', 'originStation', 'destinationStation']);
 
-        $originStopover = $hafasTrip->stopovers->filter(function(TrainStopover $stopover) use ($startId) {
+        $originStopover = $hafasTrip->stopovers->filter(function(Stopover $stopover) use ($startId) {
             return $stopover->train_station_id === $startId || $stopover->station->ibnr === $startId;
         })->first();
 

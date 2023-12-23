@@ -17,7 +17,7 @@ use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\Event;
 use App\Models\HafasTrip;
 use App\Models\Station;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -131,13 +131,13 @@ class FrontendTransportController extends Controller
             );
 
             $stopovers = $hafasTrip->stopovers
-                ->filter(function(TrainStopover $trainStopover) use ($departure): bool {
-                    return $trainStopover->departure_planned->isAfter($departure);
+                ->filter(function(Stopover $stopover) use ($departure): bool {
+                    return $stopover->departure_planned->isAfter($departure);
                 });
 
             // Find out where this train terminates and offer this as a "fast check-in" option.
             $lastStopover = $hafasTrip->stopovers
-                ->filter(function(TrainStopover $stopover) {
+                ->filter(function(Stopover $stopover) {
                     return !$stopover->isArrivalCancelled;
                 })
                 ->last();

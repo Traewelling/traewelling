@@ -118,7 +118,7 @@ class Train
      *     description="model of origin stopover"
      * )
      *
-     * @var TrainStopover
+     * @var Stopover
      */
     private $origin;
 
@@ -128,7 +128,7 @@ class Train
      *     description="model of destination stopover"
      * )
      *
-     * @var TrainStopover
+     * @var Stopover
      */
     private $destination;
 

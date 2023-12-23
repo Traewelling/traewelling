@@ -223,7 +223,7 @@ class TransportController extends Controller
      *                  @OA\Property(property="destination", ref="#/components/schemas/Station"),
      *                  @OA\Property(property="stopovers", type="array",
      *                      @OA\Items(
-     *                          ref="#/components/schemas/TrainStopover"
+     *                          ref="#/components/schemas/Stopover"
      *                      )
      *                  ),
      *              )

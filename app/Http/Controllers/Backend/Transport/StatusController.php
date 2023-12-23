@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend\Transport;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\Station;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 
 abstract class StatusController extends Controller
 {
@@ -17,7 +17,7 @@ abstract class StatusController extends Controller
      */
     public static function getNextStationForStatus(Status $status): ?Station {
         return $status->checkin->HafasTrip->stopovers
-            ->filter(function(TrainStopover $stopover) {
+            ->filter(function(Stopover $stopover) {
                 return $stopover->arrival->isFuture();
             })
             ->sortBy('arrival') //sort by real time and if not available by planned time
