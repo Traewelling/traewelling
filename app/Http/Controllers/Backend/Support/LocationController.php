@@ -8,7 +8,7 @@ use App\Dto\GeoJson\FeatureCollection;
 use App\Dto\LivePointDto;
 use App\Models\HafasTrip;
 use App\Models\Status;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use App\Objects\LineSegment;
 use Carbon\Carbon;
 use Exception;
@@ -18,16 +18,16 @@ use stdClass;
 
 class LocationController
 {
-    private HafasTrip      $hafasTrip;
-    private ?TrainStopover $origin;
-    private ?TrainStopover $destination;
-    private ?int           $statusId;
+    private HafasTrip $hafasTrip;
+    private ?Stopover $origin;
+    private ?Stopover $destination;
+    private ?int      $statusId;
 
     public function __construct(
-        HafasTrip     $hafasTrip,
-        TrainStopover $origin = null,
-        TrainStopover $destination = null,
-        int           $statusId = null
+        HafasTrip $hafasTrip,
+        Stopover  $origin = null,
+        Stopover  $destination = null,
+        int       $statusId = null
     ) {
         $this->hafasTrip   = $hafasTrip;
         $this->origin      = $origin;

@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\HafasController;
 use App\Models\Checkin;
 use App\Models\Station;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
@@ -70,10 +70,10 @@ abstract class StationController extends Controller
 
     public static function getAlternativeDestinationsForCheckin(Checkin $checkin): Collection {
         return $checkin->HafasTrip->stopovers
-            ->filter(function(TrainStopover $stopover) use ($checkin) {
+            ->filter(function(Stopover $stopover) use ($checkin) {
                 return ($stopover->arrival_planned ?? $stopover->departure_planned)->isAfter($checkin->departure);
             })
-            ->map(function(TrainStopover $stopover) {
+            ->map(function(Stopover $stopover) {
                 return [
                     'id'              => $stopover->id,
                     'name'            => $stopover->station->name,

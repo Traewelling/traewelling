@@ -78,7 +78,7 @@ class HafasTrip extends Model
     }
 
     public function stopovers(): HasMany {
-        return $this->hasMany(TrainStopover::class, 'trip_id', 'trip_id')
+        return $this->hasMany(Stopover::class, 'trip_id', 'trip_id')
                     ->orderBy('arrival_planned')
                     ->orderBy('departure_planned');
     }

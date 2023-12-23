@@ -17,7 +17,7 @@ use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
 use App\Models\HafasTrip;
 use App\Models\Status;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -417,9 +417,9 @@ class StatusController extends Controller
             if (isset($validated['destinationId'], $validated['destinationArrivalPlanned'])
                 && ((int) $validated['destinationId']) !== $status->checkin->destinationStation->id) {
                 $arrival  = Carbon::parse($validated['destinationArrivalPlanned'])->timezone(config('app.timezone'));
-                $stopover = TrainStopover::where('train_station_id', $validated['destinationId'])
-                                         ->where('arrival_planned', $arrival)
-                                         ->first();
+                $stopover = Stopover::where('train_station_id', $validated['destinationId'])
+                                    ->where('arrival_planned', $arrival)
+                                    ->first();
 
                 if ($stopover === null) {
                     return $this->sendError('Invalid stopover given', 400);

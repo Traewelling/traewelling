@@ -8,7 +8,7 @@ use App\Http\Controllers\TransportController;
 use App\Models\HafasOperator;
 use App\Models\HafasTrip;
 use App\Models\Station;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class HafasTripFactory extends Factory
@@ -54,7 +54,7 @@ class HafasTripFactory extends Factory
             $time = $hafasTrip->departure->clone();
 
             // Create origin stopover
-            TrainStopover::factory([
+            Stopover::factory([
                                        'trip_id'           => $hafasTrip->trip_id,
                                        'train_station_id'  => $hafasTrip->originStation->id,
                                        'arrival_planned'   => $hafasTrip->departure,
@@ -64,7 +64,7 @@ class HafasTripFactory extends Factory
             // Create intermediate stopovers
             foreach ($stops as $stop) {
                 $time = $time->clone()->addMinutes(15);
-                TrainStopover::factory([
+                Stopover::factory([
                                            'trip_id'           => $hafasTrip->trip_id,
                                            'train_station_id'  => $stop->id,
                                            'arrival_planned'   => $time,
@@ -73,7 +73,7 @@ class HafasTripFactory extends Factory
             }
 
             // Create destination stopover
-            TrainStopover::factory([
+            Stopover::factory([
                                        'trip_id'           => $hafasTrip->trip_id,
                                        'train_station_id'  => $hafasTrip->destinationStation->id,
                                        'arrival_planned'   => $hafasTrip->arrival,

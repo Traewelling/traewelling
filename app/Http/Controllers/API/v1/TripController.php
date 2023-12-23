@@ -8,7 +8,7 @@ use App\Http\Resources\HafasTripResource;
 use App\Models\HafasOperator;
 use App\Models\HafasTrip;
 use App\Models\Station;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

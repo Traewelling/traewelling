@@ -13,7 +13,7 @@ use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
 use App\Models\Checkin;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;

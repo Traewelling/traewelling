@@ -27,19 +27,19 @@ use Illuminate\Support\Facades\Gate;
  * @property int           $duration
  * @property UTCDateTime   $departure   @deprecated -> use origin_stopover instead
  * @property UTCDateTime   $manual_departure
- * @property UTCDateTime   $arrival     @deprecated -> use destination_stopover instead
- * @property UTCDateTime   $manual_arrival
- * @property int           $points
- * @property bool          $forced
+ * @property UTCDateTime $arrival     @deprecated -> use destination_stopover instead
+ * @property UTCDateTime $manual_arrival
+ * @property int         $points
+ * @property bool        $forced
  *
  * //relations
- * @property HafasTrip     $HafasTrip
- * @property Status        $status
- * @property User          $user
- * @property Station       $originStation
- * @property TrainStopover $originStopover
- * @property Station       $destinationStation
- * @property TrainStopover $destinationStopover
+ * @property HafasTrip   $HafasTrip
+ * @property Status      $status
+ * @property User        $user
+ * @property Station     $originStation
+ * @property Stopover    $originStopover
+ * @property Station     $destinationStation
+ * @property Stopover    $destinationStopover
  *
  * @todo rename table to "Checkin" (without Train - we have more than just trains)
  * @todo merge model with "Status" because the difference between trip sources (HAFAS,
@@ -98,11 +98,11 @@ class Checkin extends Model
     }
 
     public function originStopover(): BelongsTo {
-        return $this->belongsTo(TrainStopover::class, 'origin_stopover_id', 'id');
+        return $this->belongsTo(Stopover::class, 'origin_stopover_id', 'id');
     }
 
     public function destinationStopover(): BelongsTo {
-        return $this->belongsTo(TrainStopover::class, 'destination_stopover_id', 'id');
+        return $this->belongsTo(Stopover::class, 'destination_stopover_id', 'id');
     }
 
     /**

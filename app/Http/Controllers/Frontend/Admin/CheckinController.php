@@ -17,7 +17,7 @@ use App\Jobs\PostStatusOnMastodon;
 use App\Models\Event;
 use App\Models\Status;
 use App\Models\Station;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -139,7 +139,7 @@ class CheckinController
             return redirect()->back()->withErrors('User non-existent');
         }
 
-        $destinationStopover = TrainStopover::findOrFail($validated['destinationStopover']);
+        $destinationStopover = Stopover::findOrFail($validated['destinationStopover']);
 
         try {
             $backendResponse = TrainCheckinController::checkin(

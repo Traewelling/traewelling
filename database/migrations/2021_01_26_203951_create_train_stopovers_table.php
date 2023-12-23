@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\HafasController;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -53,7 +53,7 @@ class CreateTrainStopoversTable extends Migration
 
                       $hafasStop = HafasController::parseHafasStopObject($stopover->stop);
 
-                      TrainStopover::updateOrCreate(
+                      Stopover::updateOrCreate(
                           [
                               'trip_id' => $hafasTrip->trip_id,
                                                                                                                                                                                                 'train_station_id' => $hafasStop->id

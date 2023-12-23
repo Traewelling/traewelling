@@ -9,7 +9,7 @@ use App\Exceptions\HafasException;
 use App\Models\HafasOperator;
 use App\Models\HafasTrip;
 use App\Models\Station;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use Carbon\Carbon;
 use Carbon\CarbonTimeZone;
 use Exception;
@@ -278,7 +278,7 @@ abstract class HafasController extends Controller
     }
 
     /**
-     * Get the TrainStopover Model from Database
+     * Get the Stopover Model from Database
      *
      * @param int         $ibnr
      * @param string|null $name
@@ -467,7 +467,7 @@ abstract class HafasController extends Controller
                 $plannedArrival   = Carbon::parse($stopover->plannedArrival);
                 $plannedDeparture = Carbon::parse($stopover->plannedDeparture);
 
-                TrainStopover::updateOrCreate(
+                Stopover::updateOrCreate(
                     [
                         'trip_id'           => $tripID,
                         'train_station_id'  => $stations->where('ibnr', $stopover->stop->id)->first()->id,
@@ -507,7 +507,7 @@ abstract class HafasController extends Controller
             ];
         }
 
-        return TrainStopover::upsert(
+        return Stopover::upsert(
             $payload,
             ['trip_id', 'train_station_id', 'departure_planned', 'arrival_planned'],
             ['arrival_real', 'departure_real']
@@ -521,12 +521,12 @@ abstract class HafasController extends Controller
      *
      * This function should be called in an async job, if not needed instantly.
      *
-     * @param TrainStopover $stopover
+     * @param Stopover $stopover
      *
      * @return void
      * @throws HafasException
      */
-    public static function refreshStopover(TrainStopover $stopover): void {
+    public static function refreshStopover(Stopover $stopover): void {
         $departure = self::getDepartures(
             station: $stopover->station,
             when:    $stopover->departure_planned,

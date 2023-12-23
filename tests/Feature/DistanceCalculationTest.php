@@ -7,7 +7,7 @@ use App\Enum\HafasTravelType;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Models\HafasTrip;
 use App\Models\Station;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use App\Objects\LineSegment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
@@ -55,12 +55,12 @@ class DistanceCalculationTest extends TestCase
                                          'arrival'     => Date::now()->addHour(),
                                        ]);
 
-        $originStopover      = TrainStopover::factory([
+        $originStopover      = Stopover::factory([
                                                           'trip_id'           => $hafasTrip->trip_id,
                                                           'train_station_id'  => $origin->id,
                                                           'departure_planned' => Date::now()->toIso8601String(),
                                                       ])->create();
-        $destinationStopover = TrainStopover::factory([
+        $destinationStopover = Stopover::factory([
                                                           'trip_id'          => $hafasTrip->trip_id,
                                                           'train_station_id' => $destination->id,
                                                           'arrival_planned'  => Date::now()
@@ -100,12 +100,12 @@ class DistanceCalculationTest extends TestCase
                                            'arrival'     => Date::now()->addHour(),
                                        ]);
 
-        $originStopover      = TrainStopover::factory([
+        $originStopover      = Stopover::factory([
                                                           'trip_id'           => $hafasTrip->trip_id,
                                                           'train_station_id'  => $origin->id,
                                                           'departure_planned' => Date::now()->subHour(),
                                                       ])->create();
-        $destinationStopover = TrainStopover::factory([
+        $destinationStopover = Stopover::factory([
                                                           'trip_id'          => $hafasTrip->trip_id,
                                                           'train_station_id' => $destination->id,
                                                           'arrival_planned'  => Date::now()->addHour(),

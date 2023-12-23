@@ -11,7 +11,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Database\Seeder;
 
-class TrainCheckinSeeder extends Seeder
+class CheckinSeeder extends Seeder
 {
 
     public function run(): void {
