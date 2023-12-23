@@ -15,7 +15,7 @@ use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\Event;
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\Station;
 use App\Models\Stopover;
 use Carbon\Carbon;
@@ -124,26 +124,26 @@ class FrontendTransportController extends Controller
             $startStation = Station::where('ibnr', $validated['start'])->firstOrFail();
             $departure    = Carbon::parse($validated['departure']);
 
-            $hafasTrip = TrainCheckinController::getHafasTrip(
+            $trip = TrainCheckinController::getHafasTrip(
                 $validated['tripID'],
                 $validated['lineName'],
                 $startStation->id,
             );
 
-            $stopovers = $hafasTrip->stopovers
+            $stopovers = $trip->stopovers
                 ->filter(function(Stopover $stopover) use ($departure): bool {
                     return $stopover->departure_planned->isAfter($departure);
                 });
 
             // Find out where this train terminates and offer this as a "fast check-in" option.
-            $lastStopover = $hafasTrip->stopovers
+            $lastStopover = $trip->stopovers
                 ->filter(function(Stopover $stopover) {
                     return !$stopover->isArrivalCancelled;
                 })
                 ->last();
 
             return view('trip', [
-                'hafasTrip'       => $hafasTrip,
+                'hafasTrip'       => $trip,
                 'stopovers'       => $stopovers,
                 'startStation'    => $startStation,
                 'searchedStation' => isset($validated['searchedStation']) ? Station::findOrFail($validated['searchedStation']) : null,
@@ -176,7 +176,7 @@ class FrontendTransportController extends Controller
         try {
             $backendResponse = TrainCheckinController::checkin(
                 user:         Auth::user(),
-                hafasTrip:    HafasTrip::where('trip_id', $validated['tripID'])->first(),
+                trip:         Trip::where('trip_id', $validated['tripID'])->first(),
                 origin:       Station::where('ibnr', $validated['start'])->first(),
                 departure:    Carbon::parse($validated['departure']),
                 destination:  Station::where('ibnr', $validated['destination'])->first(),
@@ -198,7 +198,7 @@ class FrontendTransportController extends Controller
                 duration:             $checkin->duration,
                 points:               $checkin->points,
                 pointReason:          $backendResponse['points']->reason,
-                lineName:             $checkin->HafasTrip->linename,
+                lineName:             $checkin->trip->linename,
                 socialText:           $backendResponse['status']->socialText,
                 alsoOnThisConnection: $checkin->alsoOnThisConnection,
                 event:                $checkin->event,
@@ -211,7 +211,7 @@ class FrontendTransportController extends Controller
             return redirect()
                 ->route('dashboard')
                 ->with('checkin-collision', [
-                    'lineName'  => $exception->getCollision()->HafasTrip->linename,
+                    'lineName'  => $exception->getCollision()->trip->linename,
                     'validated' => $validated,
                 ]);
 

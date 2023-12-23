@@ -45,7 +45,7 @@ class Stopover extends Model
     ];
 
     public function trip(): BelongsTo {
-        return $this->belongsTo(HafasTrip::class, 'trip_id', 'trip_id');
+        return $this->belongsTo(Trip::class, 'trip_id', 'trip_id');
     }
 
     public function station(): BelongsTo {

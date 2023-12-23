@@ -247,12 +247,12 @@ class TransportController extends Controller
                                         ]);
 
         try {
-            $hafasTrip = TrainCheckinController::getHafasTrip(
+            $trip = TrainCheckinController::getHafasTrip(
                 $validated['hafasTripId'] ?? $validated['tripId'], //ToDo deprecated: change to hafasTripId after 2023-02-28
                 $validated['lineName'],
                 (int) $validated['start']
             );
-            return $this->sendResponse(data: new HafasTripResource($hafasTrip));
+            return $this->sendResponse(data: new HafasTripResource($trip));
         } catch (StationNotOnTripException) {
             return $this->sendError(__('controller.transport.not-in-stopovers', [], 'en'), 400);
         }
@@ -377,7 +377,7 @@ class TransportController extends Controller
 
             $checkinResponse           = TrainCheckinController::checkin(
                 user:           Auth::user(),
-                hafasTrip:      HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
+                trip:           HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
                 origin:         $originStation,
                 departure:      Carbon::parse($validated['departure']),
                 destination:    $destinationStation,
@@ -409,7 +409,7 @@ class TransportController extends Controller
         } catch (CheckInCollisionException $exception) {
             return $this->sendError([
                                         'status_id' => $exception->getCollision()->status_id,
-                                        'lineName'  => $exception->getCollision()->HafasTrip->linename
+                                        'lineName'  => $exception->getCollision()->trip->linename
                                     ], 409);
 
         } catch (StationNotOnTripException) {

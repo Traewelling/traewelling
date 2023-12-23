@@ -6,7 +6,7 @@ use App\Enum\HafasTravelType;
 use App\Http\Controllers\Backend\Transport\ManualTripCreator;
 use App\Http\Controllers\Backend\Transport\ManualTripCreator as TripBackend;
 use App\Models\HafasOperator;
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\Station;
 use App\Models\Stopover;
 use Carbon\Carbon;
@@ -19,9 +19,9 @@ class TripController
 {
 
     public function renderTrip(string $id): View {
-        $trip = HafasTrip::with(['checkins'])
-                         ->where('trip_id', $id)
-                         ->firstOrFail();
+        $trip = Trip::with(['checkins'])
+                    ->where('trip_id', $id)
+                    ->firstOrFail();
         return view('admin.trip.show', [
             'trip' => $trip
         ]);

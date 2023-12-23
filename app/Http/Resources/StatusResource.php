@@ -32,12 +32,12 @@ class StatusResource extends JsonResource
             'isLikable'      => Gate::allows('like', $this->resource),
             'createdAt'      => $this->created_at->toIso8601String(),
             'train'          => [
-                'trip'                => (int) $this->checkin->HafasTrip->id,
-                'hafasId'             => (string) $this->checkin->HafasTrip->trip_id,
-                'category'            => (string) $this->checkin->HafasTrip->category->value,
-                'number'              => (string) $this->checkin->HafasTrip->number,
-                'lineName'            => (string) $this->checkin->HafasTrip->linename,
-                'journeyNumber'       => $this->checkin->HafasTrip->journey_number,
+                'trip'                => (int) $this->checkin->trip->id,
+                'hafasId'             => (string) $this->checkin->trip->trip_id,
+                'category'            => (string) $this->checkin->trip->category->value,
+                'number'              => (string) $this->checkin->trip->number,
+                'lineName'            => (string) $this->checkin->trip->linename,
+                'journeyNumber'       => $this->checkin->trip->journey_number,
                 'distance'            => (int) $this->checkin->distance,
                 'points'              => (int) $this->checkin->points,
                 'duration'            => (int) $this->checkin->duration,
@@ -46,7 +46,7 @@ class StatusResource extends JsonResource
                 'manualArrival'       => $this->checkin->manual_arrival?->toIso8601String(),
                 'origin'              => new StopoverResource($this->checkin->originStopover),
                 'destination'         => new StopoverResource($this->checkin->destinationStopover),
-                'operator'            => new OperatorResource($this?->checkin->HafasTrip->operator)
+                'operator'            => new OperatorResource($this?->checkin->trip->operator)
             ],
             'event'          => new EventResource($this?->event),
         ];

@@ -30,7 +30,7 @@ class StatusLiked extends Notification implements BaseNotification
                 'destination'      => $this->like->status->checkin->destinationStation->only(['id', 'ibnr', 'name']),
                 'plannedDeparture' => $this->like->status->checkin->departure,
                 'plannedArrival'   => $this->like->status->checkin->arrival,
-                'lineName'         => $this->like->status->checkin->HafasTrip->linename,
+                'lineName'         => $this->like->status->checkin->trip->linename,
             ],
             'liker'  => $this->like->user->only(['id', 'username', 'name']),
         ];

@@ -94,12 +94,12 @@ class WebhookStatusTest extends TestCase
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status    = $this->createStatus($user);
         $checkin   = $status->checkin()->first();
-        $hafasTrip = TrainCheckinController::getHafasTrip(
+        $trip = TrainCheckinController::getHafasTrip(
             tripId:   self::TRIP_ID,
             lineName: self::ICE802['line']['name'],
             startId:  self::FRANKFURT_HBF['id']
         );
-        $aachen    = $hafasTrip->stopovers->where('station.ibnr', self::AACHEN_HBF['id'])->first();
+        $aachen    = $trip->stopovers->where('station.ibnr', self::AACHEN_HBF['id'])->first();
         TrainCheckinController::changeDestination($checkin, $aachen);
 
         Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
@@ -203,7 +203,7 @@ class WebhookStatusTest extends TestCase
 
         $checkin = TrainCheckinController::checkin(
             user:         $user,
-            hafasTrip:    $trip,
+            trip:         $trip,
             origin:       $origin,
             departure:    Carbon::parse(self::DEPARTURE_TIME),
             destination:  $destination,

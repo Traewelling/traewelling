@@ -62,17 +62,17 @@
 
                     <p class="train-status text-muted">
                         <span>
-                            @if (file_exists(public_path('img/' . $status->checkin->HafasTrip->category->value . '.svg')))
+                            @if (file_exists(public_path('img/' . $status->checkin->trip->category->value . '.svg')))
                                 <img class="product-icon"
-                                     src="{{ asset('img/' . $status->checkin->HafasTrip->category->value . '.svg') }}"
-                                     alt="{{$status->checkin->HafasTrip->category->value}}"
+                                     src="{{ asset('img/' . $status->checkin->trip->category->value . '.svg') }}"
+                                     alt="{{$status->checkin->trip->category->value}}"
                                 />
                             @else
                                 <i class="fa fa-train d-inline" aria-hidden="true"></i>
                             @endif
-                            {{ $status->checkin->HafasTrip->linename }}
-                            @if(isset($status->checkin->HafasTrip->journey_number) && !str_contains($status->checkin->HafasTrip->linename, $status->checkin->HafasTrip->journey_number))
-                                <small>({{$status->checkin->HafasTrip->journey_number}})</small>
+                            {{ $status->checkin->trip->linename }}
+                            @if(isset($status->checkin->trip->journey_number) && !str_contains($status->checkin->trip->linename, $status->checkin->trip->journey_number))
+                                <small>({{$status->checkin->trip->journey_number}})</small>
                             @endif
                         </span>
                         <span class="ps-2">
@@ -231,7 +231,7 @@
                             @else
                                 <li>
                                     <button type="button" class="dropdown-item join"
-                                            data-trwl-linename="{{$status->checkin->HafasTrip->linename}}"
+                                            data-trwl-linename="{{$status->checkin->trip->linename}}"
                                             data-trwl-stop-name="{{$status->checkin->destinationStation->name}}"
                                             data-trwl-trip-id="{{$status->checkin->trip_id}}"
                                             data-trwl-destination="{{$status->checkin->destination}}"

@@ -26,7 +26,7 @@ abstract class ExportController extends Controller
      */
     public static function getExportableStatuses(User $user, Carbon $timestampFrom, Carbon $timestampTo): Collection {
         $statuses = Status::with([
-                                     //'trainCheckin.HafasTrip.stopovers', TODO: This eager load is doing weird things. Some HafasTrips aren't loaded and this throws some http 500. Loading this manually is working.
+                                     //'checkin.trip.stopovers', TODO: This eager load is doing weird things. Some Trips aren't loaded and this throws some http 500. Loading this manually is working.
                                      'checkin.originStation',
                                      'checkin.destinationStation',
                                  ])
@@ -86,11 +86,11 @@ abstract class ExportController extends Controller
             case ExportableColumn::STATUS_ID:
                 return $status->id;
             case ExportableColumn::JOURNEY_TYPE:
-                return $status->checkin->HafasTrip->category->value;
+                return $status->checkin->trip->category->value;
             case ExportableColumn::LINE_NAME:
-                return $status->checkin->HafasTrip->linename;
+                return $status->checkin->trip->linename;
             case ExportableColumn::JOURNEY_NUMBER:
-                return $status->checkin->HafasTrip->journey_number;
+                return $status->checkin->trip->journey_number;
             case ExportableColumn::ORIGIN_NAME:
                 return $status->checkin->originStation->name;
             case ExportableColumn::ORIGIN_COORDINATES:
@@ -120,7 +120,7 @@ abstract class ExportController extends Controller
             case ExportableColumn::TRAVEL_TYPE:
                 return $status->business->name;
             case ExportableColumn::OPERATOR:
-                return $status->checkin->HafasTrip?->operator?->name;
+                return $status->checkin->trip?->operator?->name;
             case ExportableColumn::STATUS_TAGS:
                 $tags = [];
                 foreach ($status->tags as $tag) {

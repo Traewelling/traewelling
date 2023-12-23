@@ -72,7 +72,7 @@ class ManualTripCreatorTest extends TestCase
 
         $checkin = TrainCheckinController::checkin(
             user:        User::factory()->create(),
-            hafasTrip:   $trip,
+            trip:        $trip,
             origin:      $originStation,
             departure:   $departure,
             destination: $destinationStation,

@@ -15,7 +15,7 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\Status;
 use App\Models\Stopover;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -511,7 +511,7 @@ class StatusController extends Controller
     public function getPolyline(string $parameters): JsonResource {
         $ids             = explode(',', $parameters, 50);
         $geoJsonFeatures = Status::whereIn('id', $ids)
-                                 ->with('checkin.HafasTrip.polyline')
+                                 ->with('checkin.Trip.polyline')
                                  ->get()
                                  ->filter(function(Status $status) {
                                      try {
@@ -571,7 +571,7 @@ class StatusController extends Controller
      */
     public function getStopovers(string $parameters): JsonResponse {
         $tripIds = explode(',', $parameters, 50);
-        $trips   = HafasTrip::whereIn('id', $tripIds)->get()->mapWithKeys(function($trip) {
+        $trips   = Trip::whereIn('id', $tripIds)->get()->mapWithKeys(function($trip) {
             return [$trip->id => StopoverResource::collection($trip->stopovers)];
         });
         return $this->sendResponse($trips);

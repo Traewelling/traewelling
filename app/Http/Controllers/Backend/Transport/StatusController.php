@@ -16,7 +16,7 @@ abstract class StatusController extends Controller
      * @return Station|null
      */
     public static function getNextStationForStatus(Status $status): ?Station {
-        return $status->checkin->HafasTrip->stopovers
+        return $status->checkin->trip->stopovers
             ->filter(function(Stopover $stopover) {
                 return $stopover->arrival->isFuture();
             })

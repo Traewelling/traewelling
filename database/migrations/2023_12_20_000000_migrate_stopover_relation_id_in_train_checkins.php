@@ -7,7 +7,7 @@ return new class extends Migration
 {
     public function up(): void {
         while (Checkin::whereNull('origin_stopover_id')->orWhereNull('destination_stopover_id')->count() > 0) {
-            Checkin::with(['HafasTrip.stopovers', 'originStation', 'destinationStation'])
+            Checkin::with(['Trip.stopovers', 'originStation', 'destinationStation'])
                    ->whereNull('origin_stopover_id')
                    ->orWhereNull('destination_stopover_id')
                    ->limit(100)

@@ -7,7 +7,7 @@ use App\Enum\TravelType;
 use App\Enum\TripSource;
 use App\Exceptions\HafasException;
 use App\Models\HafasOperator;
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\Station;
 use App\Models\Stopover;
 use Carbon\Carbon;
@@ -40,14 +40,14 @@ abstract class HafasController extends Controller
                 return null;
             }
             $data = json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
-            return Station::updateOrCreate(        [
-                                                    'ibnr' => $data->id
-                                                ], [
-                                                    'rilIdentifier' => $data->ril100,
-                                                    'name'          => $data->name,
-                                                    'latitude'      => $data->location->latitude,
-                                                    'longitude'     => $data->location->longitude
-                                                ]);
+            return Station::updateOrCreate([
+                                               'ibnr' => $data->id
+                                           ], [
+                                               'rilIdentifier' => $data->ril100,
+                                               'name'          => $data->name,
+                                               'latitude'      => $data->location->latitude,
+                                               'longitude'     => $data->location->longitude
+                                           ]);
         } catch (Exception $exception) {
             report($exception);
         }
@@ -97,12 +97,12 @@ abstract class HafasController extends Controller
      */
     public static function parseHafasStopObject(stdClass $hafasStop): Station {
         return Station::updateOrCreate([
-                                                'ibnr' => $hafasStop->id
-                                            ], [
-                                                'name'      => $hafasStop->name,
-                                                'latitude'  => $hafasStop->location?->latitude,
-                                                'longitude' => $hafasStop->location?->longitude,
-                                            ]);
+                                           'ibnr' => $hafasStop->id
+                                       ], [
+                                           'name'      => $hafasStop->name,
+                                           'latitude'  => $hafasStop->location?->latitude,
+                                           'longitude' => $hafasStop->location?->longitude,
+                                       ]);
     }
 
     private static function parseHafasStops(array $hafasResponse): Collection {
@@ -194,7 +194,7 @@ abstract class HafasController extends Controller
     }
 
     /**
-     * @param Station    $station
+     * @param Station         $station
      * @param Carbon          $when
      * @param int             $duration
      * @param TravelType|null $type
@@ -204,11 +204,11 @@ abstract class HafasController extends Controller
      * @throws HafasException
      */
     public static function getDepartures(
-        Station $station,
-        Carbon       $when,
-        int          $duration = 15,
-        TravelType   $type = null,
-        bool         $localtime = false
+        Station    $station,
+        Carbon     $when,
+        int        $duration = 15,
+        TravelType $type = null,
+        bool       $localtime = false
     ): Collection {
         try {
             $requestTime = is_null($station->time_offset) || $localtime
@@ -299,13 +299,13 @@ abstract class HafasController extends Controller
             $dbStation = Station::where('ibnr', $ibnr)->first();
             return $dbStation ?? self::fetchStation($ibnr);
         }
-        return Station::updateOrCreate(        [
-                                                'ibnr' => $ibnr
-                                            ], [
-                                                'name'      => $name,
-                                                'latitude'  => $latitude,
-                                                'longitude' => $longitude
-                                            ]);
+        return Station::updateOrCreate([
+                                           'ibnr' => $ibnr
+                                       ], [
+                                           'name'      => $name,
+                                           'latitude'  => $latitude,
+                                           'longitude' => $longitude
+                                       ]);
     }
 
     /**
@@ -325,12 +325,12 @@ abstract class HafasController extends Controller
 
         $data = json_decode($response->body());
         return Station::updateOrCreate([
-                                                'ibnr' => $data->id
-                                            ], [
-                                                'name'      => $data->name,
-                                                'latitude'  => $data->location->latitude,
-                                                'longitude' => $data->location->longitude
-                                            ]);
+                                           'ibnr' => $data->id
+                                       ], [
+                                           'name'      => $data->name,
+                                           'latitude'  => $data->location->latitude,
+                                           'longitude' => $data->location->longitude
+                                       ]);
 
     }
 
@@ -338,14 +338,14 @@ abstract class HafasController extends Controller
      * @param string $tripID
      * @param string $lineName
      *
-     * @return HafasTrip
+     * @return Trip
      * @throws HafasException
      */
-    public static function getHafasTrip(string $tripID, string $lineName): HafasTrip {
+    public static function getHafasTrip(string $tripID, string $lineName): Trip {
         if (is_numeric($tripID)) {
-            $trip = HafasTrip::where('id', $tripID)->where('linename', $lineName)->first();
+            $trip = Trip::where('id', $tripID)->where('linename', $lineName)->first();
         }
-        $trip = $trip ??  HafasTrip::where('trip_id', $tripID)->where('linename', $lineName)->first();
+        $trip = $trip ?? Trip::where('trip_id', $tripID)->where('linename', $lineName)->first();
         return $trip ?? self::fetchHafasTrip($tripID, $lineName);
     }
 
@@ -377,10 +377,10 @@ abstract class HafasController extends Controller
      * @param string $tripID
      * @param string $lineName
      *
-     * @return HafasTrip
+     * @return Trip
      * @throws HafasException
      */
-    public static function fetchHafasTrip(string $tripID, string $lineName): HafasTrip {
+    public static function fetchHafasTrip(string $tripID, string $lineName): Trip {
         $tripJson    = self::fetchRawHafasTrip($tripID, $lineName);
         $origin      = self::parseHafasStopObject($tripJson->origin);
         $destination = self::parseHafasStopObject($tripJson->destination);
@@ -404,22 +404,22 @@ abstract class HafasController extends Controller
 
         $polyline = TransportController::getPolylineHash(json_encode($tripJson->polyline));
 
-        $hafasTrip = HafasTrip::updateOrCreate([
-                                                   'trip_id' => $tripID
-                                               ], [
-                                                   'category'       => $tripJson->line->product,
-                                                   'number'         => $tripJson->line->id,
-                                                   'linename'       => $tripJson->line->name,
-                                                   'journey_number' => $tripJson->line?->fahrtNr === "0" ? null : $tripJson->line?->fahrtNr,
-                                                   'operator_id'    => $operator?->id,
-                                                   'origin'         => $origin->ibnr,
-                                                   'destination'    => $destination->ibnr,
-                                                   'polyline_id'    => $polyline->id,
-                                                   'departure'      => $tripJson->plannedDeparture,
-                                                   'arrival'        => $tripJson->plannedArrival,
-                                                   'delay'          => $tripJson->arrivalDelay ?? null,
-                                                   'source'         => TripSource::HAFAS,
-                                               ]);
+        $trip = Trip::updateOrCreate([
+                                         'trip_id' => $tripID
+                                     ], [
+                                         'category'       => $tripJson->line->product,
+                                         'number'         => $tripJson->line->id,
+                                         'linename'       => $tripJson->line->name,
+                                         'journey_number' => $tripJson->line?->fahrtNr === "0" ? null : $tripJson->line?->fahrtNr,
+                                         'operator_id'    => $operator?->id,
+                                         'origin'         => $origin->ibnr,
+                                         'destination'    => $destination->ibnr,
+                                         'polyline_id'    => $polyline->id,
+                                         'departure'      => $tripJson->plannedDeparture,
+                                         'arrival'        => $tripJson->plannedArrival,
+                                         'delay'          => $tripJson->arrivalDelay ?? null,
+                                         'source'         => TripSource::HAFAS,
+                                     ]);
 
         //Save Stations
         $payload = [];
@@ -481,7 +481,7 @@ abstract class HafasController extends Controller
                 // it can be thrown an error here. But that's not a big deal.
             }
         }
-        return $hafasTrip;
+        return $trip;
     }
 
     public static function refreshStopovers(stdClass $rawHafas): int {

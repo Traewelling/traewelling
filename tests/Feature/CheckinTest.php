@@ -11,7 +11,7 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController;
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\Station;
 use App\Models\User;
 use Carbon\Carbon;
@@ -199,7 +199,7 @@ class CheckinTest extends TestCase
 
         $collisionTrips    = [];
         $nonCollisionTrips = [];
-        $baseTrip          = HafasTrip::factory()->create(
+        $baseTrip          = Trip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:sP', strtotime('12:00')),
                 'arrival'   => date('Y-m-d H:i:sP', strtotime('13:00'))
@@ -207,25 +207,25 @@ class CheckinTest extends TestCase
         );
 
         //Trips Case 1 - 4 for which a collisionException should be thrown
-        $collisionTrips[] = HafasTrip::factory()->create(
+        $collisionTrips[] = Trip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:sP', strtotime('11:45')),
                 'arrival'   => date('Y-m-d H:i:sP', strtotime('12:15'))
             ]
         );
-        $collisionTrips[] = HafasTrip::factory()->create(
+        $collisionTrips[] = Trip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:sP', strtotime('12:45')),
                 'arrival'   => date('Y-m-d H:i:sP', strtotime('13:15'))
             ]
         );
-        $collisionTrips[] = HafasTrip::factory()->create(
+        $collisionTrips[] = Trip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:sP', strtotime('12:15')),
                 'arrival'   => date('Y-m-d H:i:sP', strtotime('12:45'))
             ]
         );
-        $collisionTrips[] = HafasTrip::factory()->create(
+        $collisionTrips[] = Trip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:sP', strtotime('11:45')),
                 'arrival'   => date('Y-m-d H:i:sP', strtotime('13:15'))
@@ -233,13 +233,13 @@ class CheckinTest extends TestCase
         );
 
         //Trips case 5 & 6 for which no Exception should be thrown
-        $nonCollisionTrips[] = HafasTrip::factory()->create(
+        $nonCollisionTrips[] = Trip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:sP', strtotime('11:15')),
                 'arrival'   => date('Y-m-d H:i:sP', strtotime('11:45'))
             ]
         );
-        $nonCollisionTrips[] = HafasTrip::factory()->create(
+        $nonCollisionTrips[] = Trip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:sP', strtotime('13:30')),
                 'arrival'   => date('Y-m-d H:i:sP', strtotime('13:45'))
@@ -249,7 +249,7 @@ class CheckinTest extends TestCase
         try {
             TrainCheckinController::checkin(
                 user:        $user,
-                hafasTrip:   $baseTrip,
+                trip:        $baseTrip,
                 origin:      $baseTrip->originStation,
                 departure:   $baseTrip->departure,
                 destination: $baseTrip->destinationStation,
@@ -264,7 +264,7 @@ class CheckinTest extends TestCase
             try {
                 TrainCheckinController::checkin(
                     user:        $user,
-                    hafasTrip:   $trip,
+                    trip:        $trip,
                     origin:      $trip->originStation,
                     departure:   $trip->departure,
                     destination: $trip->destinationStation,
@@ -272,7 +272,7 @@ class CheckinTest extends TestCase
                 );
                 $this->fail("Expected exception for Collision Case $caseCount not thrown");
             } catch (CheckInCollisionException $exception) {
-                $this->assertEquals($baseTrip->linename, $exception->getCollision()->HafasTrip->first()->linename);
+                $this->assertEquals($baseTrip->linename, $exception->getCollision()->trip->first()->linename);
             } catch (HafasException $e) {
                 $this->markTestSkipped($e->getMessage());
             }
@@ -284,7 +284,7 @@ class CheckinTest extends TestCase
             try {
                 TrainCheckinController::checkin(
                     user:        $user,
-                    hafasTrip:   $trip,
+                    trip:        $trip,
                     origin:      $trip->originStation,
                     departure:   $trip->departure,
                     destination: $trip->destinationStation,
@@ -292,7 +292,7 @@ class CheckinTest extends TestCase
                 );
                 $this->assertTrue(true);
             } catch (CheckInCollisionException $exception) {
-                $this->assertEquals($baseTrip->linename, $exception->getCollision()->HafasTrip->first()->linename);
+                $this->assertEquals($baseTrip->linename, $exception->getCollision()->trip->first()->linename);
                 $this->fail("Exception for Case $caseCount thrown even though checkin should happen.");
             } catch (HafasException $e) {
                 $this->markTestSkipped($e->getMessage());
@@ -312,7 +312,7 @@ class CheckinTest extends TestCase
         $user = User::factory()->create();
 
         // WHEN: Coming back from the checkin flow and returning to the dashboard
-        $dto  = new CheckinSuccess(
+        $dto      = new CheckinSuccess(
             id:                   1,
             distance:             72.096,
             duration:             1860,

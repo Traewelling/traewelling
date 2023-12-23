@@ -6,7 +6,7 @@ use App\Dto\Coordinate;
 use App\Dto\GeoJson\Feature;
 use App\Dto\GeoJson\FeatureCollection;
 use App\Dto\LivePointDto;
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\Status;
 use App\Models\Stopover;
 use App\Objects\LineSegment;
@@ -18,18 +18,18 @@ use stdClass;
 
 class LocationController
 {
-    private HafasTrip $hafasTrip;
+    private Trip      $trip;
     private ?Stopover $origin;
     private ?Stopover $destination;
     private ?int      $statusId;
 
     public function __construct(
-        HafasTrip $hafasTrip,
-        Stopover  $origin = null,
-        Stopover  $destination = null,
-        int       $statusId = null
+        Trip     $trip,
+        Stopover $origin = null,
+        Stopover $destination = null,
+        int      $statusId = null
     ) {
-        $this->hafasTrip   = $hafasTrip;
+        $this->trip   = $trip;
         $this->origin      = $origin;
         $this->destination = $destination;
         $this->statusId    = $statusId;
@@ -37,7 +37,7 @@ class LocationController
 
     public static function forStatus(Status $status): LocationController {
         return new self(
-            $status->checkin->HafasTrip,
+            $status->checkin->trip,
             $status->checkin->originStopover,
             $status->checkin->destinationStopover,
             $status->id
@@ -45,7 +45,7 @@ class LocationController
     }
 
     private function filterStopoversFromStatus(): ?array {
-        $stopovers    = $this->hafasTrip->stopovers;
+        $stopovers    = $this->trip->stopovers;
         $newStopovers = null;
         foreach ($stopovers as $key => $stopover) {
             if ($stopover->departure->isFuture()) {
@@ -68,10 +68,9 @@ class LocationController
      * @throws JsonException
      */
     public function calculateLivePosition(): ?LivePointDto {
-        $hafasTrip    = $this->hafasTrip;
         $newStopovers = $this->filterStopoversFromStatus();
 
-        if (!$newStopovers || !isset($hafasTrip->polyline->polyline)) {
+        if (!$newStopovers || !isset($this->trip->polyline->polyline)) {
             return null;
         }
         if (count($newStopovers) === 1) {
@@ -83,7 +82,7 @@ class LocationController
                 null,
                 $newStopovers[0]->arrival->timestamp,
                 $newStopovers[0]->departure->timestamp,
-                $hafasTrip->linename,
+                $this->trip->linename,
                 $this->statusId
             );
         }
@@ -121,7 +120,7 @@ class LocationController
             $polyline,
             $newStopovers[1]->arrival->timestamp,
             $newStopovers[1]->departure->timestamp,
-            $hafasTrip->linename,
+            $this->trip->linename,
             $this->statusId,
         );
     }
@@ -147,10 +146,10 @@ class LocationController
      */
     private function getPolylineWithTimestamps(): stdClass {
         $geoJsonObj = json_decode('{"type":"FeatureCollection","features":[]}', false, 512, JSON_THROW_ON_ERROR);
-        if (isset($this->hafasTrip->polyline)) {
-            $geoJsonObj = json_decode($this->hafasTrip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
+        if (isset($this->trip->polyline)) {
+            $geoJsonObj = json_decode($this->trip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
         }
-        $stopovers  = $this->hafasTrip->stopovers;
+        $stopovers  = $this->trip->stopovers;
 
         $stopovers = $stopovers->map(function ($stopover) {
             $stopover['passed'] = false;
@@ -207,7 +206,7 @@ class LocationController
     private function createPolylineFromStopovers(): FeatureCollection {
         $coordinates = [];
         $firstStop = null;
-        foreach ($this->hafasTrip->stopovers as $stopover) {
+        foreach ($this->trip->stopovers as $stopover) {
             if ($firstStop !== null || $stopover->is($this->origin)) {
                 $firstStop = $stopover;
                 $coordinates[] = new Coordinate($stopover->station->latitude, $stopover->station->longitude);
@@ -218,7 +217,6 @@ class LocationController
             }
         }
 
-
         $features = new Collection([new Feature($coordinates)]);
         return new FeatureCollection($features);
     }
@@ -227,7 +225,7 @@ class LocationController
      * @throws JsonException
      */
     private function getPolylineBetween(bool $preserveKeys = true): stdClass|FeatureCollection {
-        $this->hafasTrip->loadMissing(['stopovers.station']);
+        $this->trip->loadMissing(['stopovers.station']);
         $geoJson  = $this->getPolylineWithTimestamps();
         if (count($geoJson->features) === 0) {
             return $this->createPolylineFromStopovers();
@@ -273,9 +271,9 @@ class LocationController
 
     public function calculateDistance(): int {
         if (
-            $this->hafasTrip->polyline === null ||
-            $this->hafasTrip->polyline?->polyline === null ||
-            strlen($this->hafasTrip->polyline?->polyline) < 10
+            $this->trip->polyline === null ||
+            $this->trip->polyline?->polyline === null ||
+            strlen($this->trip->polyline?->polyline) < 10
         ) {
             return $this->calculateDistanceByStopovers();
         }
@@ -305,7 +303,7 @@ class LocationController
     }
 
     private function calculateDistanceByStopovers(): int {
-        $stopovers                = $this->hafasTrip->stopovers->sortBy('departure');
+        $stopovers                = $this->trip->stopovers->sortBy('departure');
         $originStopoverIndex      = $stopovers->search(function ($item) {
             return $item->is($this->origin);
         });

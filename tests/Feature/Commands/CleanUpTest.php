@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Commands;
 
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\Like;
 use App\Models\PolyLine;
 use App\Models\Checkin;
@@ -55,7 +55,7 @@ class CleanUpTest extends TestCase
 
     public function testUnusedTripsAreDeleted(): void {
         //create an unused trip
-        HafasTrip::factory()->create();
+        Trip::factory()->create();
         $this->assertDatabaseCount('hafas_trips', 1);
         $this->artisan('trwl:cleanUpHafasTrips')->assertExitCode(Command::SUCCESS);
         $this->assertDatabaseCount('hafas_trips', 0);
@@ -115,9 +115,9 @@ class CleanUpTest extends TestCase
         $polyline = PolyLine::create([
                                          'hash'      => Str::uuid(),
                                          'polyline'  => json_encode(['some json data']),
-                                         'parent_id' => $checkin->HafasTrip->polyline_id,
+                                         'parent_id' => $checkin->trip->polyline_id,
                                      ]);
-        $checkin->HafasTrip->update(['polyline_id' => $polyline->id]);
+        $checkin->trip->update(['polyline_id' => $polyline->id]);
         $this->assertDatabaseCount('poly_lines', 2);
 
         //no polylines should be deleted

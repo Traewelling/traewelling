@@ -35,11 +35,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @todo migrate origin & destination to use "id" instead of "ibnr" and rename to "origin_id" & "destination_id"
  * @todo is "delay" still needed? We save planned and real in the stopovers. check.
  */
-class HafasTrip extends Model
+class Trip extends Model
 {
 
     use HasFactory;
 
+    protected $table    = 'hafas_trips';
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'journey_number', 'operator_id', 'origin', 'destination',
         'polyline_id', 'departure', 'arrival', 'delay', 'source', 'user_id', 'last_refreshed',

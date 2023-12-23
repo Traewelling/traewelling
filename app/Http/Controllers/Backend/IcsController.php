@@ -26,7 +26,7 @@ abstract class IcsController extends Controller
     ): Calendar {
         $icsToken = IcsToken::where([['token', $token], ['user_id', $user->id]])->firstOrFail();
 
-        $checkinQuery = Checkin::with(['originStation', 'destinationStation', 'HafasTrip.stopovers'])
+        $checkinQuery = Checkin::with(['originStation', 'destinationStation', 'Trip.stopovers'])
                                ->where('user_id', $user->id)
                                ->orderByDesc('departure')
                                ->limit($limit);
@@ -47,7 +47,7 @@ abstract class IcsController extends Controller
                 try {
                     $name = '';
                     if ($useEmojis) {
-                        $name .= $checkin?->HafasTrip?->category?->getEmoji() . ' ';
+                        $name .= $checkin?->trip?->category?->getEmoji() . ' ';
                     }
                     $name .= __(
                         key:     'export.journey-from-to',

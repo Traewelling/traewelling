@@ -125,7 +125,7 @@ class TransportController extends Controller
             return collect();
         }
 
-        $checkInsToCheck = Checkin::with(['HafasTrip.stopovers', 'originStation', 'destinationStation'])
+        $checkInsToCheck = Checkin::with(['Trip.stopovers', 'originStation', 'destinationStation'])
                                   ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
                                   ->where('statuses.user_id', $user->id)
                                   ->where('departure', '>=', $start->clone()->subDays(3))
