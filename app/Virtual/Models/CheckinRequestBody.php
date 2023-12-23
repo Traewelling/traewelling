@@ -6,14 +6,14 @@ use Carbon\Carbon;
 
 /**
  * @OA\Schema(
- *     title="TrainCheckinRequestBody",
+ *     title="CheckinRequestBody",
  *     description="Fields for creating a train checkin",
  *     @OA\Xml(
- *         name="TrainCheckinRequestBody"
+ *         name="CheckinRequestBody"
  *     )
  * )
  */
-class TrainCheckinRequestBody
+class CheckinRequestBody
 {
     /**
      * @OA\Property(

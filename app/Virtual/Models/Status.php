@@ -156,7 +156,7 @@ class Status
      *     description="Train model",
      * )
      *
-     * @var Train
+     * @var Trip
      */
     private $train;
 

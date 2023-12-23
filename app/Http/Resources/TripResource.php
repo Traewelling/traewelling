@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class HafasTripResource extends JsonResource
+class TripResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
