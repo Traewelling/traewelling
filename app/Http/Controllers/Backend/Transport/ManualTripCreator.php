@@ -7,7 +7,7 @@ use App\Enum\TripSource;
 use App\Http\Controllers\Backend\Transport\ManualTripCreator as TripBackend;
 use App\Http\Controllers\Controller;
 use App\Models\HafasOperator;
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\Station;
 use App\Models\Stopover;
 use Carbon\Carbon;
@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 class ManualTripCreator extends Controller
 {
 
-    private ?HafasTrip $trip;
+    private ?Trip $trip;
     //
     public HafasTravelType $category;
     public string          $lineName;
@@ -27,8 +27,8 @@ class ManualTripCreator extends Controller
     public Station $destination;
     public Carbon  $destinationArrivalPlanned;
 
-    public function createTrip(): HafasTrip {
-        $this->trip = HafasTrip::create([
+    public function createTrip(): Trip {
+        $this->trip = Trip::create([
                                             'trip_id'        => TripBackend::generateUniqueTripId(),
                                             'category'       => $this->category,
                                             'number'         => $this->lineName,
@@ -71,7 +71,7 @@ class ManualTripCreator extends Controller
 
     public static function generateUniqueTripId(): string {
         $tripId = Str::uuid();
-        while (HafasTrip::where('trip_id', $tripId)->exists()) {
+        while (Trip::where('trip_id', $tripId)->exists()) {
             return self::generateUniqueTripId();
         }
         return $tripId;

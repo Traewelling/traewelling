@@ -15,25 +15,25 @@ use Illuminate\Support\Facades\Gate;
 
 /**
  * //properties
- * @property int           $id
- * @property int           $status_id
- * @property int           $user_id
- * @property string        $trip_id
- * @property int           $origin      @deprecated -> use origin_stopover instead
- * @property int           $origin_stopover_id
- * @property int           $destination @deprecated -> use destination_stopover instead
- * @property int           $destination_stopover_id
- * @property int           $distance
- * @property int           $duration
- * @property UTCDateTime   $departure   @deprecated -> use origin_stopover instead
- * @property UTCDateTime   $manual_departure
+ * @property int         $id
+ * @property int         $status_id
+ * @property int         $user_id
+ * @property string      $trip_id
+ * @property int         $origin      @deprecated -> use origin_stopover instead
+ * @property int         $origin_stopover_id
+ * @property int         $destination @deprecated -> use destination_stopover instead
+ * @property int         $destination_stopover_id
+ * @property int         $distance
+ * @property int         $duration
+ * @property UTCDateTime $departure   @deprecated -> use origin_stopover instead
+ * @property UTCDateTime $manual_departure
  * @property UTCDateTime $arrival     @deprecated -> use destination_stopover instead
  * @property UTCDateTime $manual_arrival
  * @property int         $points
  * @property bool        $forced
  *
  * //relations
- * @property HafasTrip   $HafasTrip
+ * @property Trip        $trip
  * @property Status      $status
  * @property User        $user
  * @property Station     $originStation
@@ -93,8 +93,16 @@ class Checkin extends Model
         return $this->hasOne(Station::class, 'ibnr', 'destination');
     }
 
+    /**
+     * @return HasOne
+     * @deprecated use ->trip instead
+     */
     public function HafasTrip(): HasOne {
-        return $this->hasOne(HafasTrip::class, 'trip_id', 'trip_id');
+        return $this->trip();
+    }
+
+    public function trip(): HasOne {
+        return $this->hasOne(Trip::class, 'trip_id', 'trip_id');
     }
 
     public function originStopover(): BelongsTo {
@@ -176,7 +184,7 @@ class Checkin extends Model
         return self::with(['status'])
                    ->where([
                                ['status_id', '<>', $this->status->id],
-                               ['trip_id', '=', $this->HafasTrip->trip_id],
+                               ['trip_id', '=', $this->trip->trip_id],
                                ['arrival', '>', $this->departure],
                                ['departure', '<', $this->arrival]
                            ])

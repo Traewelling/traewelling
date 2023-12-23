@@ -190,7 +190,7 @@ class NotificationsTest extends ApiTestCase
         //bob also checks into the train (with same origin and destination - but not relevant)
         $bobsData  = TrainCheckinController::checkin(
             user:        $bob,
-            hafasTrip:   $aliceCheckIn->HafasTrip,
+            trip:        $aliceCheckIn->trip,
             origin:      $aliceCheckIn->originStation,
             departure:   $aliceCheckIn->departure,
             destination: $aliceCheckIn->destinationStation,
@@ -229,7 +229,7 @@ class NotificationsTest extends ApiTestCase
         $bob = User::factory(['privacy_ack_at' => Carbon::now()])->create();
         TrainCheckinController::checkin(
             user:        $bob,
-            hafasTrip:   $aliceCheckIn->HafasTrip,
+            trip:        $aliceCheckIn->trip,
             origin:      $aliceCheckIn->originStation,
             departure:   $aliceCheckIn->departure,
             destination: $aliceCheckIn->destinationStation,

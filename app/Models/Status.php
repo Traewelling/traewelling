@@ -80,9 +80,9 @@ class Status extends Model
         if (isset($this->event) && $this->event->hashtag !== null) {
             $postText = trans_choice(
                 key:     'controller.transport.social-post-with-event',
-                number:  preg_match('/\s/', $this->checkin->HafasTrip->linename),
+                number:  preg_match('/\s/', $this->checkin->trip->linename),
                 replace: [
-                             'lineName'    => $this->checkin->HafasTrip->linename,
+                             'lineName'    => $this->checkin->trip->linename,
                              'destination' => $this->checkin->destinationStation->name,
                              'hashtag'     => $this->event->hashtag
                          ]
@@ -90,9 +90,9 @@ class Status extends Model
         } else {
             $postText = trans_choice(
                 key:     'controller.transport.social-post',
-                number:  preg_match('/\s/', $this->checkin->HafasTrip->linename),
+                number:  preg_match('/\s/', $this->checkin->trip->linename),
                 replace: [
-                             'lineName'    => $this->checkin->HafasTrip->linename,
+                             'lineName'    => $this->checkin->trip->linename,
                              'destination' => $this->checkin->destinationStation->name
                          ]
             );
@@ -107,7 +107,7 @@ class Status extends Model
             }
 
             $appendix = strtr(' (@ :linename ➜ :destination:eventIntercept) #NowTräwelling', [
-                ':linename'       => $this->checkin->HafasTrip->linename,
+                ':linename'       => $this->checkin->trip->linename,
                 ':destination'    => $this->checkin->destinationStation->name,
                 ':eventIntercept' => isset($eventIntercept) ? ' ' . $eventIntercept : ''
             ]);
@@ -133,7 +133,7 @@ class Status extends Model
                              ($this->checkin->destinationStation->rilIdentifier ?
                                  ' (' . $this->checkin->destinationStation->rilIdentifier . ')' : ''),
             'date'        => $this->checkin->departure->isoFormat(__('datetime-format')),
-            'lineName'    => $this->checkin->HafasTrip->linename
+            'lineName'    => $this->checkin->trip->linename
         ]);
     }
 

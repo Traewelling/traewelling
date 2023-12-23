@@ -144,7 +144,7 @@ class CheckinController
         try {
             $backendResponse = TrainCheckinController::checkin(
                 user:         $user,
-                hafasTrip:    HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
+                trip:         HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
                 origin:       Station::where('ibnr', $validated['startIBNR'])->first(),
                 departure:    Carbon::parse($validated['departure']),
                 destination:  $destinationStopover->station,
@@ -173,7 +173,7 @@ class CheckinController
                 ->withErrors(__(
                                  'controller.transport.overlapping-checkin',
                                  [
-                                     'linename' => $e->getCollision()->HafasTrip->linename
+                                     'linename' => $e->getCollision()->trip->linename
                                  ]
                              ) . strtr(' <a href=":url">#:id</a>',
                                        [

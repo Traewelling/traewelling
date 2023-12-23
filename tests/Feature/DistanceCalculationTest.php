@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Dto\Coordinate;
 use App\Enum\HafasTravelType;
 use App\Http\Controllers\Backend\Support\LocationController;
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Objects\LineSegment;
@@ -44,33 +44,33 @@ class DistanceCalculationTest extends TestCase
                                             'longitude' => 9.718319,
                                         ])->create();
 
-        $hafasTrip = HafasTrip::create([ //Don't use factory here, so the trip can be created manually here
-                                         'trip_id'     => '1|2|3|4',
-                                         'category'    => HafasTravelType::REGIONAL,
-                                         'number'      => 'xxx',
-                                         'linename'    => 'xxx',
-                                         'origin'      => $origin->ibnr,
-                                         'destination' => $destination->ibnr,
-                                         'departure'   => Date::now()->subHour(),
-                                         'arrival'     => Date::now()->addHour(),
-                                       ]);
+        $trip = Trip::create([ //Don't use factory here, so the trip can be created manually here
+                               'trip_id'     => '1|2|3|4',
+                               'category'    => HafasTravelType::REGIONAL,
+                               'number'      => 'xxx',
+                               'linename'    => 'xxx',
+                               'origin'      => $origin->ibnr,
+                               'destination' => $destination->ibnr,
+                               'departure'   => Date::now()->subHour(),
+                               'arrival'     => Date::now()->addHour(),
+                             ]);
 
         $originStopover      = Stopover::factory([
-                                                          'trip_id'           => $hafasTrip->trip_id,
-                                                          'train_station_id'  => $origin->id,
-                                                          'departure_planned' => Date::now()->toIso8601String(),
-                                                      ])->create();
+                                                     'trip_id'           => $trip->trip_id,
+                                                     'train_station_id'  => $origin->id,
+                                                     'departure_planned' => Date::now()->toIso8601String(),
+                                                 ])->create();
         $destinationStopover = Stopover::factory([
-                                                          'trip_id'          => $hafasTrip->trip_id,
-                                                          'train_station_id' => $destination->id,
-                                                          'arrival_planned'  => Date::now()
-                                                                                    ->addHours(1)
-                                                                                    ->toIso8601String(),
-                                                      ])->create();
+                                                     'trip_id'          => $trip->trip_id,
+                                                     'train_station_id' => $destination->id,
+                                                     'arrival_planned'  => Date::now()
+                                                                               ->addHours(1)
+                                                                               ->toIso8601String(),
+                                                 ])->create();
 
-        $hafasTrip->load(['stopovers']);
+        $trip->load(['stopovers']);
 
-        $result = (new LocationController($hafasTrip, $originStopover, $destinationStopover))->calculateDistance();
+        $result = (new LocationController($trip, $originStopover, $destinationStopover))->calculateDistance();
         $this->assertEquals(4526, $result);
     }
 
@@ -89,31 +89,31 @@ class DistanceCalculationTest extends TestCase
                                         ])->create();
 
 
-        $hafasTrip = HafasTrip::create([
-                                           'trip_id'     => '1|2|3|4',
-                                           'category'    => HafasTravelType::REGIONAL,
-                                           'number'      => 'xxx',
-                                           'linename'    => 'xxx',
-                                           'origin'      => $origin->ibnr,
-                                           'destination' => $destination->ibnr,
-                                           'departure'   => Date::now()->subHour(),
-                                           'arrival'     => Date::now()->addHour(),
-                                       ]);
+        $trip = Trip::create([
+                                 'trip_id'     => '1|2|3|4',
+                                 'category'    => HafasTravelType::REGIONAL,
+                                 'number'      => 'xxx',
+                                 'linename'    => 'xxx',
+                                 'origin'      => $origin->ibnr,
+                                 'destination' => $destination->ibnr,
+                                 'departure'   => Date::now()->subHour(),
+                                 'arrival'     => Date::now()->addHour(),
+                             ]);
 
         $originStopover      = Stopover::factory([
-                                                          'trip_id'           => $hafasTrip->trip_id,
-                                                          'train_station_id'  => $origin->id,
-                                                          'departure_planned' => Date::now()->subHour(),
-                                                      ])->create();
+                                                     'trip_id'           => $trip->trip_id,
+                                                     'train_station_id'  => $origin->id,
+                                                     'departure_planned' => Date::now()->subHour(),
+                                                 ])->create();
         $destinationStopover = Stopover::factory([
-                                                          'trip_id'          => $hafasTrip->trip_id,
-                                                          'train_station_id' => $destination->id,
-                                                          'arrival_planned'  => Date::now()->addHour(),
-                                                      ])->create();
+                                                     'trip_id'          => $trip->trip_id,
+                                                     'train_station_id' => $destination->id,
+                                                     'arrival_planned'  => Date::now()->addHour(),
+                                                 ])->create();
 
-        $hafasTrip->load(['stopovers']);
+        $trip->load(['stopovers']);
 
-        $result = (new LocationController($hafasTrip, $originStopover, $destinationStopover))->calculateDistance();
+        $result = (new LocationController($trip, $originStopover, $destinationStopover))->calculateDistance();
         $this->assertEquals(202210, $result);
     }
 }

@@ -27,7 +27,7 @@ class UserJoinedConnection extends Notification implements BaseNotification
         return [
             'status'  => $this->status->only(['id']),
             'checkin' => [
-                'linename'    => $this->status->checkin->HafasTrip->linename,
+                'linename'    => $this->status->checkin->trip->linename,
                 'origin'      => $this->status->checkin->originStation->name,
                 'destination' => $this->status->checkin->destinationStation->name,
             ],

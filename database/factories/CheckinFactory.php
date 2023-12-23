@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\Status;
 use App\Models\Checkin;
 use App\Models\User;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class CheckinFactory extends Factory
 {
     public function definition(): array {
-        $trip = HafasTrip::factory()->create();
+        $trip = Trip::factory()->create();
         return [
             'status_id'               => Status::factory(),
             'user_id'                 => User::factory(),

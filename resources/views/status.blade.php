@@ -52,11 +52,11 @@
                     </span>
                 @endif
 
-                @if(isset($status->checkin->HafasTrip->last_refreshed) && \Illuminate\Support\Facades\Date::now()->isBefore($status->created_at->clone()->addDay()))
+                @if(isset($status->checkin->trip->last_refreshed) && \Illuminate\Support\Facades\Date::now()->isBefore($status->created_at->clone()->addDay()))
                     <hr/>
                     <small class="text-muted">
                         {{__('real-time-last-refreshed')}}
-                        {{$status->checkin->HafasTrip->last_refreshed->diffForHumans()}}
+                        {{$status->checkin->trip->last_refreshed->diffForHumans()}}
                     </small>
                 @endif
             </div>

@@ -10,6 +10,6 @@ use App\Http\Controllers\Backend\WebhookController;
 class StatusCreateCheckPolylineListener
 {
     public function handle(UserCheckedIn $event): void {
-        BrouterController::checkPolyline($event->status->checkin->HafasTrip);
+        BrouterController::checkPolyline($event->status->checkin->trip);
     }
 }

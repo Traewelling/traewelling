@@ -67,7 +67,7 @@ class StatusController extends Controller
                     duration:             $status->checkin->duration,
                     points:               $status->checkin->points,
                     pointReason:          $pointReason,
-                    lineName:             $status->checkin->HafasTrip->linename,
+                    lineName:             $status->checkin->trip->linename,
                     socialText:           $status->socialText,
                     alsoOnThisConnection: $status->checkin->alsoOnThisConnection,
                     event:                $status->checkin->event,

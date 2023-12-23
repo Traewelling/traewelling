@@ -6,7 +6,7 @@ use App\Enum\HafasTravelType;
 use App\Http\Controllers\Backend\Transport\ManualTripCreator;
 use App\Http\Resources\HafasTripResource;
 use App\Models\HafasOperator;
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\Station;
 use App\Models\Stopover;
 use Carbon\Carbon;

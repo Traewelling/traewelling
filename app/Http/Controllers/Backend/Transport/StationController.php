@@ -69,7 +69,7 @@ abstract class StationController extends Controller
     }
 
     public static function getAlternativeDestinationsForCheckin(Checkin $checkin): Collection {
-        return $checkin->HafasTrip->stopovers
+        return $checkin->trip->stopovers
             ->filter(function(Stopover $stopover) use ($checkin) {
                 return ($stopover->arrival_planned ?? $stopover->departure_planned)->isAfter($checkin->departure);
             })

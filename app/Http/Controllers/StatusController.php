@@ -45,7 +45,7 @@ class StatusController extends Controller
                      ->with([
                                 'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin',
                                 'checkin.originStation', 'checkin.destinationStation',
-                                'checkin.HafasTrip.stopovers.station',
+                                'checkin.Trip.stopovers.station',
                             ])
                      ->firstOrFail();
     }
@@ -61,8 +61,8 @@ class StatusController extends Controller
         return Status::with([
                                      'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
                                      'checkin.originStation', 'checkin.destinationStation',
-                                     'checkin.HafasTrip.stopovers.station',
-                                     'checkin.HafasTrip.polyline',
+                                     'checkin.Trip.stopovers.station',
+                                     'checkin.Trip.polyline',
                                  ])
                           ->whereHas('checkin', function($query) {
                               $query->where('departure', '<', date('Y-m-d H:i:s'))
@@ -96,8 +96,8 @@ class StatusController extends Controller
         $statuses = Status::with([
                                      'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
                                      'checkin.originStation', 'checkin.destinationStation',
-                                     'checkin.HafasTrip.stopovers.station',
-                                     'checkin.HafasTrip.polyline',
+                                     'checkin.Trip.stopovers.station',
+                                     'checkin.Trip.polyline',
                                  ])
                           ->whereIn('id', $ids)
                           ->get()
@@ -204,7 +204,7 @@ class StatusController extends Controller
         $statuses = $event->statuses()
                           ->with([
                                      'user.blockedUsers', 'checkin.originStation',
-                                     'checkin.destinationStation', 'checkin.HafasTrip.stopovers', 'event', 'likes',
+                                     'checkin.destinationStation', 'checkin.Trip.stopovers', 'event', 'likes',
                                  ])
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
@@ -253,7 +253,7 @@ class StatusController extends Controller
         return auth()->user()->statuses()
                      ->with([
                                 'user', 'checkin.originStation', 'checkin.destinationStation',
-                                'checkin.HafasTrip', 'event',
+                                'checkin.Trip', 'event',
                             ])
                      ->orderByDesc('created_at')
                      ->whereHas('checkin', function($query) {

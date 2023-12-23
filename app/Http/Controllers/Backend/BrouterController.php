@@ -8,7 +8,7 @@ use App\Exceptions\DistanceDeviationException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Controller;
 use App\Jobs\RefreshPolyline;
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\PolyLine;
 use App\Models\Checkin;
 use App\Objects\LineSegment;
@@ -73,12 +73,12 @@ abstract class BrouterController extends Controller
      * 2. split the route by stations (we need the GeoJSON split!)
      * 3. Create features for every station and route between
      *
-     * @param HafasTrip $trip
+     * @param Trip $trip
      *
      * @return void
      * @throws JsonException
      */
-    public static function reroutePolyline(HafasTrip $trip): void {
+    public static function reroutePolyline(Trip $trip): void {
         if (App::runningUnitTests()) {
             return;
         }
@@ -92,10 +92,10 @@ abstract class BrouterController extends Controller
             //2. Request route at brouter
             $brouterGeoJSON = self::getGeoJSONForRoute($coordinates);
         } catch (InvalidArgumentException) {
-            Log::warning('[RefreshPolyline] Error while getting Polyline for HafasTrip#' . $trip->trip_id . ' (Required data is missing in Brouter response)');
+            Log::warning('[RefreshPolyline] Error while getting Polyline for Trip#' . $trip->trip_id . ' (Required data is missing in Brouter response)');
             return;
         } catch (ConnectException) {
-            Log::info('[RefreshPolyline] Getting Polyline for HafasTrip#' . $trip->trip_id . ' timed out.');
+            Log::info('[RefreshPolyline] Getting Polyline for Trip#' . $trip->trip_id . ' timed out.');
             return;
         }
         //3. Create "new" GeoJSON split by stations (as features)
@@ -171,37 +171,37 @@ abstract class BrouterController extends Controller
     /**
      * Check if Polyline has missing parts. If yes: Automatically schedule a job to get a real route via brouter
      *
-     * @param HafasTrip $hafasTrip
+     * @param Trip $trip
      *
      * @return void
      */
-    public static function checkPolyline(HafasTrip $hafasTrip): void {
-        if (!$hafasTrip->category?->onRails()) {
+    public static function checkPolyline(Trip $trip): void {
+        if (!$trip->category?->onRails()) {
             return;
         }
 
-        if (!self::checkIfPolylineHasMissingParts($hafasTrip)) {
+        if (!self::checkIfPolylineHasMissingParts($trip)) {
             Log::debug('no parts missing');
             //Nothing to do here.
             return;
         }
         Log::debug('parts missing: dispatch');
-        RefreshPolyline::dispatch($hafasTrip);
+        RefreshPolyline::dispatch($trip);
     }
 
-    private static function checkIfPolylineHasMissingParts(HafasTrip $hafasTrip): bool {
-        if (is_null($hafasTrip->polyline)) {
+    private static function checkIfPolylineHasMissingParts(Trip $trip): bool {
+        if (is_null($trip->polyline)) {
             Log::debug('Missing route found. No polyline available.');
             return true;
         }
-        $geoJson      = json_decode($hafasTrip->polyline->polyline);
+        $geoJson      = json_decode($trip->polyline->polyline);
         $features     = $geoJson->features;
         $lastStopOver = null; // To detect whether as the crow flies or real routing
         foreach ($features as $data) {
             if (!isset($data->properties->id)) {
                 $lastStopOver = null;
             } else {
-                if (!is_null($lastStopOver) && $hafasTrip->category?->onRails()) { // A real route is missing -> request route via Brouter
+                if (!is_null($lastStopOver) && $trip->category?->onRails()) { // A real route is missing -> request route via Brouter
                     Log::debug('Missing route found between ' . ($lastStopOver->properties->name ?? 'unknown') . ' and ' . ($data->properties->name ?? 'unknown'));
                     return true;
                 }

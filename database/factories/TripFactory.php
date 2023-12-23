@@ -6,12 +6,12 @@ use App\Enum\HafasTravelType;
 use App\Enum\TripSource;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasOperator;
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\Station;
 use App\Models\Stopover;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class HafasTripFactory extends Factory
+class TripFactory extends Factory
 {
     public function definition(): array {
         if (Station::all()->count() > 3) {
@@ -40,9 +40,9 @@ class HafasTripFactory extends Factory
     }
 
     public function configure(): static {
-        return $this->afterCreating(function(HafasTrip $hafasTrip) {
+        return $this->afterCreating(function(Trip $trip) {
             $stops = Station::inRandomOrder()
-                            ->whereNotIn('id', [$hafasTrip->originStation->id, $hafasTrip->destinationStation->id])
+                            ->whereNotIn('id', [$trip->originStation->id, $trip->destinationStation->id])
                             ->limit(2)
                             ->get();
             if ($stops->count() < 2) {
@@ -51,44 +51,44 @@ class HafasTripFactory extends Factory
                 }
             }
 
-            $time = $hafasTrip->departure->clone();
+            $time = $trip->departure->clone();
 
             // Create origin stopover
             Stopover::factory([
-                                       'trip_id'           => $hafasTrip->trip_id,
-                                       'train_station_id'  => $hafasTrip->originStation->id,
-                                       'arrival_planned'   => $hafasTrip->departure,
-                                       'departure_planned' => $hafasTrip->departure,
-                                   ])->create();
+                                  'trip_id'           => $trip->trip_id,
+                                  'train_station_id'  => $trip->originStation->id,
+                                  'arrival_planned'   => $trip->departure,
+                                  'departure_planned' => $trip->departure,
+                              ])->create();
 
             // Create intermediate stopovers
             foreach ($stops as $stop) {
                 $time = $time->clone()->addMinutes(15);
                 Stopover::factory([
-                                           'trip_id'           => $hafasTrip->trip_id,
-                                           'train_station_id'  => $stop->id,
-                                           'arrival_planned'   => $time,
-                                           'departure_planned' => $time,
-                                       ])->create();
+                                      'trip_id'           => $trip->trip_id,
+                                      'train_station_id'  => $stop->id,
+                                      'arrival_planned'   => $time,
+                                      'departure_planned' => $time,
+                                  ])->create();
             }
 
             // Create destination stopover
             Stopover::factory([
-                                       'trip_id'           => $hafasTrip->trip_id,
-                                       'train_station_id'  => $hafasTrip->destinationStation->id,
-                                       'arrival_planned'   => $hafasTrip->arrival,
-                                       'departure_planned' => $hafasTrip->arrival,
-                                   ])->create();
+                                  'trip_id'           => $trip->trip_id,
+                                  'train_station_id'  => $trip->destinationStation->id,
+                                  'arrival_planned'   => $trip->arrival,
+                                  'departure_planned' => $trip->arrival,
+                              ])->create();
 
-            self::createPolyline($hafasTrip);
-            $hafasTrip->refresh();
+            self::createPolyline($trip);
+            $trip->refresh();
         });
     }
 
-    public static function createPolyline(HafasTrip $hafasTrip) {
+    public static function createPolyline(Trip $trip) {
         $time     = now()->subMinutes(15);
         $features = [];
-        foreach ($hafasTrip->stopovers as $stopover) {
+        foreach ($trip->stopovers as $stopover) {
             $products = [];
             foreach (HafasTravelType::cases() as $hafasTravelType) {
                 $products[$hafasTravelType->value] = rand(0, 1);
@@ -125,6 +125,6 @@ class HafasTripFactory extends Factory
                                 JSON_THROW_ON_ERROR);
         $polyline = TransportController::getPolylineHash($polyline);
 
-        $hafasTrip->update(['polyline_id' => $polyline->id]);
+        $trip->update(['polyline_id' => $polyline->id]);
     }
 }

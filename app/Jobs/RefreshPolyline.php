@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Http\Controllers\Backend\BrouterController;
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -15,10 +15,10 @@ class RefreshPolyline implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
-    protected HafasTrip $hafasTrip;
+    protected Trip $trip;
 
-    public function __construct(HafasTrip $hafasTrip) {
-        $this->hafasTrip = $hafasTrip;
+    public function __construct(Trip $trip) {
+        $this->trip = $trip;
     }
 
     /**
@@ -28,6 +28,6 @@ class RefreshPolyline implements ShouldQueue
      * @throws \Exception
      */
     public function handle(): void {
-        BrouterController::reroutePolyline($this->hafasTrip);
+        BrouterController::reroutePolyline($this->trip);
     }
 }

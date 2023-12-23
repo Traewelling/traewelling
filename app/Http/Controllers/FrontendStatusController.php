@@ -93,8 +93,8 @@ class FrontendStatusController extends Controller
             'status'      => $status,
             'time'        => time(),
             'title'       => __('status.ogp-title', ['name' => $status->user->username]),
-            'description' => trans_choice('status.ogp-description', preg_match('/\s/', $status->checkin->HafasTrip->linename), [
-                'linename'    => $status->checkin->HafasTrip->linename,
+            'description' => trans_choice('status.ogp-description', preg_match('/\s/', $status->checkin->trip->linename), [
+                'linename'    => $status->checkin->trip->linename,
                 'distance'    => number($status->checkin->distance / 1000, 1),
                 'destination' => $status->checkin->destinationStation->name,
                 'origin'      => $status->checkin->originStation->name

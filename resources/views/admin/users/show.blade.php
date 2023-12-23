@@ -191,7 +191,7 @@
                                                 {{ $status->checkin->trip_id }}
                                             </a>
                                             <br/>
-                                            <code>{{ $status->checkin->HafasTrip->linename }}</code>
+                                            <code>{{ $status->checkin->trip->linename }}</code>
                                         </td>
                                         <td>
                                             {{ $status->checkin->originStation->name }}
