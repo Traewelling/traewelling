@@ -31,7 +31,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
-use OpenApi\Annotations as OA;
 
 class StatusController extends Controller
 {
@@ -398,9 +397,7 @@ class StatusController extends Controller
             'visibility'                => ['required', new Enum(StatusVisibility::class)],
 
             //Changing of Checkin-Metadata
-            'realDeparture'             => ['nullable', 'date'], //TODO: deprecated: remove after 2023-10 (#1809)
             'manualDeparture'           => ['nullable', 'date'],
-            'realArrival'               => ['nullable', 'date'], //TODO: deprecated: remove after 2023-10 (#1809)
             'manualArrival'             => ['nullable', 'date'],
 
             //Following attributes are needed, if user want's to change the destination
@@ -440,14 +437,14 @@ class StatusController extends Controller
                                 'visibility' => StatusVisibility::from($validated['visibility']),
                             ]);
 
-            if (isset($validated['realDeparture']) || isset($validated['manualDeparture'])) { //TODO: remove realDeparture after 2023-10 (#1809)
+            if (isset($validated['manualDeparture'])) {
                 $status->checkin->update([
-                                                  'manual_departure' => Carbon::parse($validated['manualDeparture'] ?? $validated['realDeparture'], auth()->user()->timezone)
+                                                  'manual_departure' => Carbon::parse($validated['manualDeparture'], auth()->user()->timezone)
                                               ]);
             }
-            if (isset($validated['realArrival']) || isset($validated['manualArrival'])) { //TODO: remove realArrival after 2023-10 (#1809)
+            if (isset($validated['manualArrival'])) {
                 $status->checkin->update([
-                                                  'manual_arrival' => Carbon::parse($validated['manualArrival'] ?? $validated['realArrival'], auth()->user()->timezone)
+                                                  'manual_arrival' => Carbon::parse($validated['manualArrival'], auth()->user()->timezone)
                                               ]);
             }
 

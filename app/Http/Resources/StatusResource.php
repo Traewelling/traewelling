@@ -42,9 +42,7 @@ class StatusResource extends JsonResource
                 'points'              => (int) $this->checkin->points,
                 'duration'            => (int) $this->checkin->duration,
                 'speed'               => 0.0, //deprecated: TODO: remove after 2023-12-31
-                'overriddenDeparture' => $this->checkin->manual_departure?->toIso8601String(), //TODO: deprecated: remove after 2023-10 (#1809)
                 'manualDeparture'     => $this->checkin->manual_departure?->toIso8601String(),
-                'overriddenArrival'   => $this->checkin->manual_arrival?->toIso8601String(), //TODO: deprecated: remove after 2023-10 (#1809)
                 'manualArrival'       => $this->checkin->manual_arrival?->toIso8601String(),
                 'origin'              => new StopoverResource($this->checkin->originStopover),
                 'destination'         => new StopoverResource($this->checkin->destinationStopover),
