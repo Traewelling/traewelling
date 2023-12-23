@@ -6,7 +6,7 @@ use App\Enum\TravelType;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Models\PolyLine;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\Station;
 use App\Models\User;
 use Carbon\Carbon;
@@ -125,16 +125,16 @@ class TransportController extends Controller
             return collect();
         }
 
-        $checkInsToCheck = TrainCheckin::with(['HafasTrip.stopovers', 'originStation', 'destinationStation'])
-                                       ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
-                                       ->where('statuses.user_id', $user->id)
-                                       ->where('departure', '>=', $start->clone()->subDays(3))
-                                       ->get();
+        $checkInsToCheck = Checkin::with(['HafasTrip.stopovers', 'originStation', 'destinationStation'])
+                                  ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
+                                  ->where('statuses.user_id', $user->id)
+                                  ->where('departure', '>=', $start->clone()->subDays(3))
+                                  ->get();
 
-        return $checkInsToCheck->filter(function($trainCheckIn) use ($start, $end) {
+        return $checkInsToCheck->filter(function(Checkin $checkin) use ($start, $end) {
             //use realtime-data or use planned if not available
-            $departure = $trainCheckIn?->originStopover?->departure ?? $trainCheckIn->departure;
-            $arrival   = $trainCheckIn?->destinationStopover?->arrival ?? $trainCheckIn->arrival;
+            $departure = $checkin?->originStopover?->departure ?? $checkin->departure;
+            $arrival   = $checkin?->destinationStopover?->arrival ?? $checkin->arrival;
 
             return (
                        $arrival->isAfter($start) &&

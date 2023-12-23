@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\UserController;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
@@ -231,7 +231,7 @@ class MutedProfileVisibilityTest extends ApiTestCase
         $data->alice->user   = User::factory(['name' => 'alice'])->create();
 
         // Create new CheckIn for Bob
-        $data->bob->checkin = TrainCheckin::factory(['user_id' => $data->bob->user->id])->create();
+        $data->bob->checkin = Checkin::factory(['user_id' => $data->bob->user->id])->create();
 
         // Make Gertrud follow bob and make bob's profile muted
         UserController::destroyFollow($data->alice->user, $data->bob->user);

@@ -42,7 +42,7 @@ class StatusController extends Controller
                                 'visibility' => StatusVisibility::from($validated['checkinVisibility']),
                             ]);
 
-            $status->trainCheckin->update([
+            $status->checkin->update([
                                               'manual_departure' => isset($validated['manualDeparture']) ?
                                                   Carbon::parse($validated['manualDeparture'], auth()->user()->timezone) :
                                                   null,
@@ -54,23 +54,23 @@ class StatusController extends Controller
             StatusUpdateEvent::dispatch($status->refresh());
 
             if (isset($validated['destinationStopoverId'])
-                && $validated['destinationStopoverId'] != $status->trainCheckin->destinationStopover->id) {
+                && $validated['destinationStopoverId'] != $status->checkin->destinationStopover->id) {
                 $pointReason = TrainCheckinController::changeDestination(
-                    checkin:                $status->trainCheckin,
+                    checkin:                $status->checkin,
                     newDestinationStopover: TrainStopover::findOrFail($validated['destinationStopoverId']),
                 );
                 $status->fresh();
 
                 $checkinSuccess = new CheckinSuccess(
                     id:                   $status->id,
-                    distance:             $status->trainCheckin->distance,
-                    duration:             $status->trainCheckin->duration,
-                    points:               $status->trainCheckin->points,
+                    distance:             $status->checkin->distance,
+                    duration:             $status->checkin->duration,
+                    points:               $status->checkin->points,
                     pointReason:          $pointReason,
-                    lineName:             $status->trainCheckin->HafasTrip->linename,
+                    lineName:             $status->checkin->HafasTrip->linename,
                     socialText:           $status->socialText,
-                    alsoOnThisConnection: $status->trainCheckin->alsoOnThisConnection,
-                    event:                $status->trainCheckin->event,
+                    alsoOnThisConnection: $status->checkin->alsoOnThisConnection,
+                    event:                $status->checkin->event,
                     forced:               false,
                     reason:               'status-updated'
                 );

@@ -38,13 +38,13 @@ class Event extends Model
     }
 
     public function getTrainDistanceAttribute(): float {
-        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
-                           ->sum('distance');
+        return Checkin::whereIn('status_id', $this->statuses()->select('id'))
+                      ->sum('distance');
     }
 
     public function getTrainDurationAttribute(): int {
-        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
-                           ->sum('duration');
+        return Checkin::whereIn('status_id', $this->statuses()->select('id'))
+                      ->sum('duration');
     }
 
     public function getIsPrideAttribute(): bool {

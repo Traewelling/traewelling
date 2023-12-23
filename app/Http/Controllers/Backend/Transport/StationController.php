@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend\Transport;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HafasController;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\Station;
 use App\Models\TrainStopover;
 use App\Models\User;
@@ -68,7 +68,7 @@ abstract class StationController extends Controller
                       ->get();
     }
 
-    public static function getAlternativeDestinationsForCheckin(TrainCheckin $checkin): Collection {
+    public static function getAlternativeDestinationsForCheckin(Checkin $checkin): Collection {
         return $checkin->HafasTrip->stopovers
             ->filter(function(TrainStopover $stopover) use ($checkin) {
                 return ($stopover->arrival_planned ?? $stopover->departure_planned)->isAfter($checkin->departure);

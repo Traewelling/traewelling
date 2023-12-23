@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\RefreshPolyline;
 use App\Models\HafasTrip;
 use App\Models\PolyLine;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Objects\LineSegment;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Http\Client\PendingRequest;
@@ -158,10 +158,10 @@ abstract class BrouterController extends Controller
         $trip->update(['polyline_id' => $polyline->id]);
 
         //Refresh distance and points of trips
-        $trainCheckinToRecalc = TrainCheckin::with(['status'])->where('trip_id', $trip->trip_id)->get();
+        $checkinsToRecalc = Checkin::with(['status'])->where('trip_id', $trip->trip_id)->get();
         try {
-            foreach ($trainCheckinToRecalc as $trainCheckin) {
-                TrainCheckinController::refreshDistanceAndPoints($trainCheckin->status);
+            foreach ($checkinsToRecalc as $checkin) {
+                TrainCheckinController::refreshDistanceAndPoints($checkin->status);
             }
         } catch (DistanceDeviationException) {
             $trip->update(['polyline_id' => $oldPolyLine]);

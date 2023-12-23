@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\IcsToken;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -26,10 +26,10 @@ abstract class IcsController extends Controller
     ): Calendar {
         $icsToken = IcsToken::where([['token', $token], ['user_id', $user->id]])->firstOrFail();
 
-        $checkinQuery = TrainCheckin::with(['originStation', 'destinationStation', 'HafasTrip.stopovers'])
-                                    ->where('user_id', $user->id)
-                                    ->orderByDesc('departure')
-                                    ->limit($limit);
+        $checkinQuery = Checkin::with(['originStation', 'destinationStation', 'HafasTrip.stopovers'])
+                               ->where('user_id', $user->id)
+                               ->orderByDesc('departure')
+                               ->limit($limit);
 
         if ($from !== null) {
             $checkinQuery->where('departure', '>=', $from);

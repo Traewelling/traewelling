@@ -3,7 +3,7 @@
 namespace Tests\Feature\Status;
 
 use App\Enum\TimeType;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -25,7 +25,7 @@ class TimeTypeTest extends TestCase
      */
     public function testTimeTypeFindPreference(bool $manual, bool $delay, TimeType $expected): void {
         // GIVEN
-        $checkin = TrainCheckin::factory()->create();
+        $checkin = Checkin::factory()->create();
 
         $checkin->originStopover->update(['departure_real' => null]);
 
@@ -44,7 +44,7 @@ class TimeTypeTest extends TestCase
 
     public function testSameManualDeparture(): void {
         // GIVEN
-        $checkin = TrainCheckin::factory()->create();
+        $checkin = Checkin::factory()->create();
 
         $checkin->originStopover->update(['departure_real' => null]);
 
@@ -58,7 +58,7 @@ class TimeTypeTest extends TestCase
 
     public function testSameRealTimeDeparture(): void {
         // GIVEN
-        $checkin = TrainCheckin::factory()->create();
+        $checkin = Checkin::factory()->create();
 
         $checkin->originStopover->update(['departure_real' => null]);
 
@@ -70,7 +70,7 @@ class TimeTypeTest extends TestCase
         $this->assertNull($checkin->displayDeparture->original);
     }
 
-    private function setDelayedTrainDeparture(TrainCheckin $checkin, int $min): void {
+    private function setDelayedTrainDeparture(Checkin $checkin, int $min): void {
         $checkin->originStopover->update([
                                                      'departure_real' => $checkin->originStopover->departure_planned
                                                          ->copy()
@@ -78,7 +78,7 @@ class TimeTypeTest extends TestCase
                                                  ]);
     }
 
-    private function setManualDeparture(TrainCheckin $checkin, int $min): void {
+    private function setManualDeparture(Checkin $checkin, int $min): void {
         $checkin->update([
                              'manual_departure' => $checkin->departure->copy()->addMinutes($min)
                          ]);

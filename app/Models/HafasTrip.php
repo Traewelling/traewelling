@@ -84,7 +84,7 @@ class HafasTrip extends Model
     }
 
     public function checkins(): HasMany {
-        return $this->hasMany(TrainCheckin::class, 'trip_id', 'trip_id');
+        return $this->hasMany(Checkin::class, 'trip_id', 'trip_id');
     }
 
     /**

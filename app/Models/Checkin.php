@@ -47,11 +47,12 @@ use Illuminate\Support\Facades\Gate;
  * @todo use the `id` from trips, instead of the hafas trip id - this is duplicated data
  * @todo drop the `origin`, `destination`, `departure` and `arrival` columns and use the stopover instead
  */
-class TrainCheckin extends Model
+class Checkin extends Model
 {
 
     use HasFactory;
 
+    protected $table    = 'train_checkins';
     protected $fillable = [
         'status_id', 'user_id', 'trip_id', 'origin', 'origin_stopover_id', 'destination', 'destination_stopover_id',
         'distance', 'duration', 'departure', 'manual_departure', 'arrival', 'manual_arrival', 'points', 'forced',
@@ -180,8 +181,8 @@ class TrainCheckin extends Model
                                ['departure', '<', $this->arrival]
                            ])
                    ->get()
-                   ->map(function(TrainCheckin $trainCheckin) {
-                       return $trainCheckin->status;
+                   ->map(function(Checkin $checkin) {
+                       return $checkin->status;
                    })
                    ->filter(function($status) {
                        return $status !== null && Gate::forUser(Auth::user())->allows('view', $status);

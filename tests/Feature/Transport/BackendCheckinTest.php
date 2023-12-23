@@ -204,7 +204,7 @@ class BackendCheckinTest extends TestCase
         );
 
         $status  = $backendResponse['status'];
-        $checkin = $status->trainCheckin;
+        $checkin = $status->checkin;
 
         // Es wird tatsächlich die zeitlich spätere Station angenommen.
         $this->assertTrue($checkin->arrival > $checkin->departure);
@@ -264,12 +264,12 @@ class BackendCheckinTest extends TestCase
             destination: $destinationStopover->station,
             arrival:     $destinationStopover->arrival_planned,
         );
-        $trainCheckin = $response['status']->trainCheckin;
+        $checkin = $response['status']->checkin;
 
-        $this->assertEquals(8089047, $trainCheckin->origin);
-        $this->assertEquals(8089090, $trainCheckin->destination);
-        $this->assertEquals('S 42', $trainCheckin->HafasTrip->linename);
-        $this->assertTrue($trainCheckin->departure->isBefore($trainCheckin->arrival));
+        $this->assertEquals(8089047, $checkin->origin);
+        $this->assertEquals(8089090, $checkin->destination);
+        $this->assertEquals('S 42', $checkin->HafasTrip->linename);
+        $this->assertTrue($checkin->departure->isBefore($checkin->arrival));
     }
 
     public function testDistanceCalculationOnRingLinesForFirstOccurrence(): void {
@@ -323,7 +323,7 @@ class BackendCheckinTest extends TestCase
             destination: $destinationStopover->trainStation,
             arrival:     $destinationStopover->arrival_planned,
         );
-        $trainCheckin = $response['status']->trainCheckin;
+        $trainCheckin = $response['status']->checkin;
         $distance     = $trainCheckin->distance;
 
         //We check, that the distance is between 500 and 1000 meters.
@@ -382,7 +382,7 @@ class BackendCheckinTest extends TestCase
             destination: $destinationStopover->trainStation,
             arrival:     $destinationStopover->arrival_planned,
         );
-        $trainCheckin = $response['status']->trainCheckin;
+        $trainCheckin = $response['status']->checkin;
         $distance     = $trainCheckin->distance;
 
         //We check, that the distance is between 12000 and 12500 meters.
@@ -441,7 +441,7 @@ class BackendCheckinTest extends TestCase
             destination: $destinationStopover->trainStation,
             arrival:     $destinationStopover->arrival_planned,
         );
-        $trainCheckin = $response['status']->trainCheckin;
+        $trainCheckin = $response['status']->checkin;
 
         $this->assertEquals(102932, $trainCheckin->origin);
         $this->assertEquals(104734, $trainCheckin->destination);
@@ -481,12 +481,12 @@ class BackendCheckinTest extends TestCase
             arrival:     $originalDestination->arrival_planned,
         )['status'];
 
-        $this->assertEquals($originStopover->id, $status->trainCheckin->originStopover->id);
-        $this->assertEquals($originalDestination->id, $status->trainCheckin->destinationStopover->id);
+        $this->assertEquals($originStopover->id, $status->checkin->originStopover->id);
+        $this->assertEquals($originalDestination->id, $status->checkin->destinationStopover->id);
 
-        TrainCheckinController::changeDestination($status->trainCheckin, $changedDestination);
+        TrainCheckinController::changeDestination($status->checkin, $changedDestination);
 
-        $this->assertEquals($originStopover->id, $status->trainCheckin->originStopover->id);
-        $this->assertEquals($changedDestination->id, $status->trainCheckin->destinationStopover->id);
+        $this->assertEquals($originStopover->id, $status->checkin->originStopover->id);
+        $this->assertEquals($changedDestination->id, $status->checkin->destinationStopover->id);
     }
 }

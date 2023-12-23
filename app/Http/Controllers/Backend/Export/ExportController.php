@@ -27,8 +27,8 @@ abstract class ExportController extends Controller
     public static function getExportableStatuses(User $user, Carbon $timestampFrom, Carbon $timestampTo): Collection {
         $statuses = Status::with([
                                      //'trainCheckin.HafasTrip.stopovers', TODO: This eager load is doing weird things. Some HafasTrips aren't loaded and this throws some http 500. Loading this manually is working.
-                                     'trainCheckin.originStation',
-                                     'trainCheckin.destinationStation',
+                                     'checkin.originStation',
+                                     'checkin.destinationStation',
                                  ])
                           ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                           ->where('statuses.user_id', $user->id)
@@ -86,41 +86,41 @@ abstract class ExportController extends Controller
             case ExportableColumn::STATUS_ID:
                 return $status->id;
             case ExportableColumn::JOURNEY_TYPE:
-                return $status->trainCheckin->HafasTrip->category->value;
+                return $status->checkin->HafasTrip->category->value;
             case ExportableColumn::LINE_NAME:
-                return $status->trainCheckin->HafasTrip->linename;
+                return $status->checkin->HafasTrip->linename;
             case ExportableColumn::JOURNEY_NUMBER:
-                return $status->trainCheckin->HafasTrip->journey_number;
+                return $status->checkin->HafasTrip->journey_number;
             case ExportableColumn::ORIGIN_NAME:
-                return $status->trainCheckin->originStation->name;
+                return $status->checkin->originStation->name;
             case ExportableColumn::ORIGIN_COORDINATES:
-                return $status->trainCheckin->originStation->latitude
-                       . ',' . $status->trainCheckin->originStation->longitude;
+                return $status->checkin->originStation->latitude
+                       . ',' . $status->checkin->originStation->longitude;
             case ExportableColumn::DEPARTURE_PLANNED:
-                return $status->trainCheckin->originStopover?->departure_planned?->toIso8601String();
+                return $status->checkin->originStopover?->departure_planned?->toIso8601String();
             case ExportableColumn::DEPARTURE_REAL:
-                return $status->trainCheckin->originStopover?->departure?->toIso8601String();
+                return $status->checkin->originStopover?->departure?->toIso8601String();
             case ExportableColumn::DESTINATION_NAME:
-                return $status->trainCheckin->destinationStation->name;
+                return $status->checkin->destinationStation->name;
             case ExportableColumn::DESTINATION_COORDINATES:
-                return $status->trainCheckin->destinationStation->latitude
-                       . ',' . $status->trainCheckin->destinationStation->longitude;
+                return $status->checkin->destinationStation->latitude
+                       . ',' . $status->checkin->destinationStation->longitude;
             case ExportableColumn::ARRIVAL_PLANNED:
-                return $status->trainCheckin->destinationStopover?->arrival_planned?->toIso8601String();
+                return $status->checkin->destinationStopover?->arrival_planned?->toIso8601String();
             case ExportableColumn::ARRIVAL_REAL:
-                return $status->trainCheckin->destinationStopover?->arrival?->toIso8601String();
+                return $status->checkin->destinationStopover?->arrival?->toIso8601String();
             case ExportableColumn::DURATION:
-                return $status->trainCheckin->duration;
+                return $status->checkin->duration;
             case ExportableColumn::DISTANCE:
-                return $status->trainCheckin->distance;
+                return $status->checkin->distance;
             case ExportableColumn::POINTS:
-                return $status->trainCheckin->points;
+                return $status->checkin->points;
             case ExportableColumn::BODY:
                 return $status->body;
             case ExportableColumn::TRAVEL_TYPE:
                 return $status->business->name;
             case ExportableColumn::OPERATOR:
-                return $status->trainCheckin->HafasTrip?->operator?->name;
+                return $status->checkin->HafasTrip?->operator?->name;
             case ExportableColumn::STATUS_TAGS:
                 $tags = [];
                 foreach ($status->tags as $tag) {

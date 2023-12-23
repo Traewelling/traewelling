@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Status;
 
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -14,7 +14,7 @@ class StatusBodyTest extends TestCase
      * @dataProvider statusBodyProvider
      */
     public function testStatusBodySanitizesHtml($body, $htmlSanitized) {
-        $status       = TrainCheckin::factory()->create()->status;
+        $status       = Checkin::factory()->create()->status;
         $status->body = $body;
         $status->update();
 

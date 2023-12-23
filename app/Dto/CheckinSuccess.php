@@ -4,7 +4,7 @@ namespace App\Dto;
 
 use App\Enum\PointReason;
 use App\Models\Event;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Virtual\Models\Train;
 use Illuminate\Database\Eloquent\Collection;
 

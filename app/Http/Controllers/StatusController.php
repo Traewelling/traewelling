@@ -43,9 +43,9 @@ class StatusController extends Controller
     public static function getStatus(int $statusId): Status {
         return Status::where('id', $statusId)
                      ->with([
-                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'trainCheckin',
-                                'trainCheckin.originStation', 'trainCheckin.destinationStation',
-                                'trainCheckin.HafasTrip.stopovers.station',
+                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin',
+                                'checkin.originStation', 'checkin.destinationStation',
+                                'checkin.HafasTrip.stopovers.station',
                             ])
                      ->firstOrFail();
     }
@@ -60,11 +60,11 @@ class StatusController extends Controller
     public static function getActiveStatuses(): ?Collection {
         return Status::with([
                                      'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
-                                     'trainCheckin.originStation', 'trainCheckin.destinationStation',
-                                     'trainCheckin.HafasTrip.stopovers.station',
-                                     'trainCheckin.HafasTrip.polyline',
+                                     'checkin.originStation', 'checkin.destinationStation',
+                                     'checkin.HafasTrip.stopovers.station',
+                                     'checkin.HafasTrip.polyline',
                                  ])
-                          ->whereHas('trainCheckin', function($query) {
+                          ->whereHas('checkin', function($query) {
                               $query->where('departure', '<', date('Y-m-d H:i:s'))
                                     ->where('arrival', '>', date('Y-m-d H:i:s'));
                           })
@@ -73,7 +73,7 @@ class StatusController extends Controller
                               return Gate::allows('view', $status) && !$status->user->shadow_banned && $status->visibility !== StatusVisibility::UNLISTED;
                           })
                           ->sortByDesc(function(Status $status) {
-                              return $status->trainCheckin->departure;
+                              return $status->checkin->departure;
                           })->values();
     }
 
@@ -95,9 +95,9 @@ class StatusController extends Controller
 
         $statuses = Status::with([
                                      'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
-                                     'trainCheckin.originStation', 'trainCheckin.destinationStation',
-                                     'trainCheckin.HafasTrip.stopovers.station',
-                                     'trainCheckin.HafasTrip.polyline',
+                                     'checkin.originStation', 'checkin.destinationStation',
+                                     'checkin.HafasTrip.stopovers.station',
+                                     'checkin.HafasTrip.polyline',
                                  ])
                           ->whereIn('id', $ids)
                           ->get()
@@ -203,8 +203,8 @@ class StatusController extends Controller
     public static function getStatusesByEvent(Event $event): array {
         $statuses = $event->statuses()
                           ->with([
-                                     'user.blockedUsers', 'trainCheckin.originStation',
-                                     'trainCheckin.destinationStation', 'trainCheckin.HafasTrip.stopovers', 'event', 'likes',
+                                     'user.blockedUsers', 'checkin.originStation',
+                                     'checkin.destinationStation', 'checkin.HafasTrip.stopovers', 'event', 'likes',
                                  ])
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
@@ -252,11 +252,11 @@ class StatusController extends Controller
     public static function getFutureCheckins(): Paginator {
         return auth()->user()->statuses()
                      ->with([
-                                'user', 'trainCheckin.originStation', 'trainCheckin.destinationStation',
-                                'trainCheckin.HafasTrip', 'event',
+                                'user', 'checkin.originStation', 'checkin.destinationStation',
+                                'checkin.HafasTrip', 'event',
                             ])
                      ->orderByDesc('created_at')
-                     ->whereHas('trainCheckin', function($query) {
+                     ->whereHas('checkin', function($query) {
                          $query->where('departure', '>=', date('Y-m-d H:i:s', strtotime("+20min")));
                      })
                      ->simplePaginate(15);

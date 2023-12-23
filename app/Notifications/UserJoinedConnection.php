@@ -15,8 +15,8 @@ class UserJoinedConnection extends Notification implements BaseNotification
     public function __construct(Status $status) {
         $this->status = $status;
 
-        $this->origin      = $status->trainCheckin->originStation->name;
-        $this->destination = $status->trainCheckin->destinationStation->name;
+        $this->origin      = $status->checkin->originStation->name;
+        $this->destination = $status->checkin->destinationStation->name;
     }
 
     public function via(): array {
@@ -27,9 +27,9 @@ class UserJoinedConnection extends Notification implements BaseNotification
         return [
             'status'  => $this->status->only(['id']),
             'checkin' => [
-                'linename'    => $this->status->trainCheckin->HafasTrip->linename,
-                'origin'      => $this->status->trainCheckin->originStation->name,
-                'destination' => $this->status->trainCheckin->destinationStation->name,
+                'linename'    => $this->status->checkin->HafasTrip->linename,
+                'origin'      => $this->status->checkin->originStation->name,
+                'destination' => $this->status->checkin->destinationStation->name,
             ],
             'user'    => $this->status->user->only(['id', 'username', 'name']),
         ];

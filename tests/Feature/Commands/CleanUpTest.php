@@ -5,7 +5,7 @@ namespace Tests\Feature\Commands;
 use App\Models\HafasTrip;
 use App\Models\Like;
 use App\Models\PolyLine;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use App\Notifications\StatusLiked;
 use Illuminate\Console\Command;
@@ -26,7 +26,7 @@ class CleanUpTest extends TestCase
         //Create a user, a liking user, a checkin, a like and a notification
         $user       = User::factory()->create();
         $likingUser = User::factory()->create();
-        $checkin    = TrainCheckin::factory(['user_id' => $user->id])->create();
+        $checkin    = Checkin::factory(['user_id' => $user->id])->create();
         $like       = Like::factory([
                                         'user_id'   => $likingUser->id,
                                         'status_id' => $checkin->status_id,
@@ -61,7 +61,7 @@ class CleanUpTest extends TestCase
         $this->assertDatabaseCount('hafas_trips', 0);
 
         //create a checkin (factory creates a trip)
-        TrainCheckin::factory()->create();
+        Checkin::factory()->create();
         $this->assertDatabaseCount('hafas_trips', 1);
         $this->artisan('trwl:cleanUpHafasTrips')->assertExitCode(Command::SUCCESS);
         $this->assertDatabaseCount('hafas_trips', 1);
@@ -108,7 +108,7 @@ class CleanUpTest extends TestCase
 
         //create a polyline with a reference and a parent
         //Checkin Factory creates a trip which creates a polyline
-        $checkin = TrainCheckin::factory()->create();
+        $checkin = Checkin::factory()->create();
         $this->assertDatabaseCount('poly_lines', 1);
 
         //create a second polyline for testing parent deletion (this can be a Brouter polyline)

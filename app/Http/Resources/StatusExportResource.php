@@ -17,7 +17,7 @@ class StatusExportResource extends JsonResource
     public function toArray($request): array {
         return [
             "status" => new StatusResource($this),
-            "trip"   => new HafasTripResource($this->trainCheckin->HafasTrip),
+            "trip"   => new HafasTripResource($this->checkin->HafasTrip),
         ];
     }
 }

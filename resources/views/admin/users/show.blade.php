@@ -187,18 +187,18 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="{{route('admin.trip.show', ['id' => $status->trainCheckin->trip_id])}}">
-                                                {{ $status->trainCheckin->trip_id }}
+                                            <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip_id])}}">
+                                                {{ $status->checkin->trip_id }}
                                             </a>
                                             <br/>
-                                            <code>{{ $status->trainCheckin->HafasTrip->linename }}</code>
+                                            <code>{{ $status->checkin->HafasTrip->linename }}</code>
                                         </td>
                                         <td>
-                                            {{ $status->trainCheckin->originStation->name }}
+                                            {{ $status->checkin->originStation->name }}
                                             &rarr;
-                                            {{ $status->trainCheckin->destinationStation->name }}
+                                            {{ $status->checkin->destinationStation->name }}
                                         </td>
-                                        <td>{{ $status->trainCheckin->points }}</td>
+                                        <td>{{ $status->checkin->points }}</td>
                                         <td>{{ $status->created_at }}</td>
                                     </tr>
                                 @endforeach

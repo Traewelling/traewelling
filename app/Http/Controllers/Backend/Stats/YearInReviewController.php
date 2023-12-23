@@ -6,7 +6,7 @@ use App\Enum\CacheKey;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StationResource;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -93,20 +93,20 @@ abstract class YearInReviewController extends Controller
                 })->first(),
             ],
             'longestTrips'        => [
-                'distance' => $longestTripsByDistance->map(static function(TrainCheckin $checkin) {
+                'distance' => $longestTripsByDistance->map(static function(Checkin $checkin) {
                     return new StatusResource($checkin->status);
                 })->first(),
-                'duration' => $longestTripsByDuration->map(static function(TrainCheckin $checkin) {
+                'duration' => $longestTripsByDuration->map(static function(Checkin $checkin) {
                     return new StatusResource($checkin->status);
                 })->first(),
             ],
-            'fastestTrips'        => $fastestTrips->map(static function(TrainCheckin $checkin) {
+            'fastestTrips'        => $fastestTrips->map(static function(Checkin $checkin) {
                 return new StatusResource($checkin->status);
             })->first(),
-            'slowestTrips'        => $slowestTrips->map(static function(TrainCheckin $checkin) {
+            'slowestTrips'        => $slowestTrips->map(static function(Checkin $checkin) {
                 return new StatusResource($checkin->status);
             })->first(),
-            'mostDelayedArrivals' => $mostDelayedArrivals->map(static function(TrainCheckin $checkin) {
+            'mostDelayedArrivals' => $mostDelayedArrivals->map(static function(Checkin $checkin) {
                 return new StatusResource($checkin->status);
             })->first(),
             'topDestinations'     => $topDestinations->map(static function($data) {

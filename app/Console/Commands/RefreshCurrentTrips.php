@@ -6,7 +6,7 @@ use App\Enum\TripSource;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\HafasController;
 use App\Models\HafasTrip;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use Illuminate\Console\Command;
 use PDOException;
 
@@ -55,7 +55,7 @@ class RefreshCurrentTrips extends Command
                 $this->info('Updated ' . $updatedRows . ' rows.');
 
                 //set duration for refreshed trips to null, so it will be recalculated
-                TrainCheckin::where('trip_id', $trip->trip_id)->update(['duration' => null]);
+                Checkin::where('trip_id', $trip->trip_id)->update(['duration' => null]);
             } catch (PDOException $exception) {
                 if ($exception->getCode() === '23000') {
                     $this->warn('-> Skipping, due to integrity constraint violation');
