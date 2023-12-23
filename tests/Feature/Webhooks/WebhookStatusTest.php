@@ -93,7 +93,7 @@ class WebhookStatusTest extends TestCase
         $client = $this->createWebhookClient($user);
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status    = $this->createStatus($user);
-        $checkin   = $status->trainCheckin()->first();
+        $checkin   = $status->checkin()->first();
         $hafasTrip = TrainCheckinController::getHafasTrip(
             tripId:   self::TRIP_ID,
             lineName: self::ICE802['line']['name'],

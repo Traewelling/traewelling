@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backend\Stats;
 
 use App\Http\Controllers\Controller;
 use App\Models\Status;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\Station;
 use App\Models\User;
 use Carbon\Carbon;
@@ -19,7 +19,7 @@ abstract class TransportStatsController extends Controller
 {
 
     private static function getTrainCheckinsBetween(User $user, Carbon $from, Carbon $to, bool $returnModel = false): QueryBuilder|EloquentBuilder {
-        return ($returnModel ? TrainCheckin::with([]) : DB::table('train_checkins'))
+        return ($returnModel ? Checkin::with([]) : DB::table('train_checkins'))
             ->where('train_checkins.user_id', $user->id)
             ->whereBetween('train_checkins.departure', [$from, $to]);
     }

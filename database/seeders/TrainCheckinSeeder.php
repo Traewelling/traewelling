@@ -18,7 +18,7 @@ class TrainCheckinSeeder extends Seeder
         foreach (User::all() as $user) {
             $hafasTrip = HafasTrip::all()->random();
             try {
-                $trainCheckinResponse = TrainCheckinController::checkin(
+                $checkinResponse = TrainCheckinController::checkin(
                     user:        $user,
                     hafasTrip:   $hafasTrip,
                     origin:      $hafasTrip->originStation,      //Checkin from the first station...
@@ -27,7 +27,7 @@ class TrainCheckinSeeder extends Seeder
                     arrival:     $hafasTrip->arrival,
                     event:       random_int(0, 1) ? Event::all()->random() : null,
                 );
-                $status               = $trainCheckinResponse['status'];
+                $status               = $checkinResponse['status'];
                 StatusTag::factory(['status_id' => $status->id])->create();
             } catch (Exception) {
                 continue;

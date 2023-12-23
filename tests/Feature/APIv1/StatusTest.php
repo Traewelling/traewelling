@@ -6,7 +6,7 @@ use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Models\HafasTrip;
 use App\Models\Status;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\Station;
 use App\Models\TrainStopover;
 use App\Models\User;
@@ -38,7 +38,7 @@ class StatusTest extends ApiTestCase
         $departure = Date::now()->subHour();
         $arrival   = Date::now()->addHour();
 
-        $checkin = TrainCheckin::factory([
+        $checkin = Checkin::factory([
                                              'user_id'   => $user->id,
                                              'departure' => $departure,
                                              'arrival'   => $arrival,
@@ -82,7 +82,7 @@ class StatusTest extends ApiTestCase
         $arrival   = Date::now()->addHours(2);
         $trip = HafasTrip::factory(['departure' => $departure, 'arrival' => $arrival])->create();
 
-        TrainCheckin::factory([
+        Checkin::factory([
                                   'user_id'     => $user->id,
                                   'departure'   => $trip->departure,
                                   'arrival'     => $trip->arrival,
@@ -106,7 +106,7 @@ class StatusTest extends ApiTestCase
                                       'visibility' => StatusVisibility::PRIVATE->value,
                                       'business'   => Business::PRIVATE->value,
                                   ])->create();
-        TrainCheckin::factory([
+        Checkin::factory([
                                   'status_id' => $status->id,
                                   'user_id'   => $user->id,
                               ])->create();
@@ -136,7 +136,7 @@ class StatusTest extends ApiTestCase
         $user      = User::factory()->create();
         Passport::actingAs($user, ['*']);
 
-        $checkin = TrainCheckin::factory(['user_id' => $user->id])->create();
+        $checkin = Checkin::factory(['user_id' => $user->id])->create();
 
         //Create a new stopover now (factory creates departure 1 hour ago and arrival in 1 hour)
         $newStation     = Station::factory()->create();

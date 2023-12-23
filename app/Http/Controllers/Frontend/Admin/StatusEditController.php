@@ -58,28 +58,28 @@ class StatusEditController extends Controller
         $originStation      = Station::find($validated['origin']);
         $destinationStation = Station::find($validated['destination']);
 
-        $newOrigin      = $status->trainCheckIn->HafasTrip->stopovers->where('train_station_id', $originStation->id)->first();
-        $newDestination = $status->trainCheckIn->HafasTrip->stopovers->where('train_station_id', $destinationStation->id)->first();
+        $newOrigin      = $status->checkin->HafasTrip->stopovers->where('train_station_id', $originStation->id)->first();
+        $newDestination = $status->checkin->HafasTrip->stopovers->where('train_station_id', $destinationStation->id)->first();
 
         $newDeparture = $newOrigin->departure_planned ?? $newOrigin->arrival_planned;
         $newArrival   = $newDestination->arrival_planned ?? $newDestination->departure_planned;
 
         $distanceInMeters = (new LocationController(
-            hafasTrip:   $status->trainCheckin->HafasTrip,
+            hafasTrip:   $status->checkin->HafasTrip,
             origin:      $newOrigin,
             destination: $newDestination
         ))->calculateDistance();
 
         $pointCalculation = PointsCalculationController::calculatePoints(
             distanceInMeter: $distanceInMeters,
-            hafasTravelType: $status->trainCheckin->HafasTrip->category,
+            hafasTravelType: $status->checkin->HafasTrip->category,
             departure:       $newDeparture,
             arrival:         $newArrival,
-            tripSource:      $status->trainCheckin->HafasTrip->source,
+            tripSource:      $status->checkin->HafasTrip->source,
             timestampOfView: $newDeparture,
         );
 
-        $status->trainCheckIn->update([
+        $status->checkin->update([
                                           'origin'      => $originStation->ibnr,
                                           'destination' => $destinationStation->ibnr,
                                           'departure'   => $newDeparture,

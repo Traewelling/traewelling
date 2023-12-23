@@ -4,11 +4,11 @@ namespace Database\Factories;
 
 use App\Models\HafasTrip;
 use App\Models\Status;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TrainCheckinFactory extends Factory
+class CheckinFactory extends Factory
 {
     public function definition(): array {
         $trip = HafasTrip::factory()->create();
@@ -31,7 +31,7 @@ class TrainCheckinFactory extends Factory
 
     public function configure(): static {
         //Update corresponding models so that the created checkins is consistent
-        return $this->afterCreating(static function(TrainCheckin $checkin) {
+        return $this->afterCreating(static function(Checkin $checkin) {
             $checkin->status->update(['user_id' => $checkin->user_id]);
 
             $checkin->originStopover->update([

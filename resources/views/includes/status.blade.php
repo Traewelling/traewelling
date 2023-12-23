@@ -5,16 +5,16 @@
 @endphp
 <div class="card status mb-3" id="status-{{ $status->id }}"
      data-trwl-id="{{$status->id}}"
-     data-date="{{userTime($status->trainCheckin->departure, __('dateformat.with-weekday'))}}"
+     data-date="{{userTime($status->checkin->departure, __('dateformat.with-weekday'))}}"
      @if(auth()->check() && auth()->id() === $status->user_id)
          data-trwl-status-body="{{ $status->body }}"
-         data-trwl-manual-departure="{{ userTime($status->trainCheckin?->manual_departure, 'Y-m-d\TH:i:s', false)}}"
-         data-trwl-manual-arrival="{{ userTime($status->trainCheckin?->manual_arrival, 'Y-m-d\TH:i:s', false)}}"
+         data-trwl-manual-departure="{{ userTime($status->checkin?->manual_departure, 'Y-m-d\TH:i:s', false)}}"
+         data-trwl-manual-arrival="{{ userTime($status->checkin?->manual_arrival, 'Y-m-d\TH:i:s', false)}}"
          data-trwl-business-id="{{ $status->business->value }}"
          data-trwl-visibility="{{ $status->visibility->value }}"
-         data-trwl-destination-stopover="{{$status->trainCheckin->destinationStopover->id}}"
+         data-trwl-destination-stopover="{{$status->checkin->destinationStopover->id}}"
          data-trwl-alternative-destinations=
-             "{{json_encode(StationController::getAlternativeDestinationsForCheckin($status->trainCheckin))}}"
+             "{{json_encode(StationController::getAlternativeDestinationsForCheckin($status->checkin))}}"
     @endif
 >
     @if (Route::current()->uri == "status/{id}")
@@ -42,7 +42,7 @@
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
                         @php
-                            $display_departure = $status->trainCheckin->displayDeparture;
+                            $display_departure = $status->checkin->displayDeparture;
                         @endphp
                         @isset($display_departure->original)
                             <small style="text-decoration: line-through;" class="text-muted">
@@ -55,37 +55,37 @@
                         </span>
                     </span>
 
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->originStation->ibnr])}}"
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->checkin->originStation->ibnr])}}"
                        class="text-trwl clearfix">
-                        {{$status->trainCheckin->originStation->name}}
+                        {{$status->checkin->originStation->name}}
                     </a>
 
                     <p class="train-status text-muted">
                         <span>
-                            @if (file_exists(public_path('img/' . $status->trainCheckin->HafasTrip->category->value . '.svg')))
+                            @if (file_exists(public_path('img/' . $status->checkin->HafasTrip->category->value . '.svg')))
                                 <img class="product-icon"
-                                     src="{{ asset('img/' . $status->trainCheckin->HafasTrip->category->value . '.svg') }}"
-                                     alt="{{$status->trainCheckin->HafasTrip->category->value}}"
+                                     src="{{ asset('img/' . $status->checkin->HafasTrip->category->value . '.svg') }}"
+                                     alt="{{$status->checkin->HafasTrip->category->value}}"
                                 />
                             @else
                                 <i class="fa fa-train d-inline" aria-hidden="true"></i>
                             @endif
-                            {{ $status->trainCheckin->HafasTrip->linename }}
-                            @if(isset($status->trainCheckin->HafasTrip->journey_number) && !str_contains($status->trainCheckin->HafasTrip->linename, $status->trainCheckin->HafasTrip->journey_number))
-                                <small>({{$status->trainCheckin->HafasTrip->journey_number}})</small>
+                            {{ $status->checkin->HafasTrip->linename }}
+                            @if(isset($status->checkin->HafasTrip->journey_number) && !str_contains($status->checkin->HafasTrip->linename, $status->checkin->HafasTrip->journey_number))
+                                <small>({{$status->checkin->HafasTrip->journey_number}})</small>
                             @endif
                         </span>
                         <span class="ps-2">
                             <i class="fa fa-route d-inline" aria-hidden="true"></i>
-                            @if($status->trainCheckin->distance < 1000)
-                                {{ $status->trainCheckin->distance }}<small>m</small>
+                            @if($status->checkin->distance < 1000)
+                                {{ $status->checkin->distance }}<small>m</small>
                             @else
-                                {{round($status->trainCheckin->distance / 1000)}}<small>km</small>
+                                {{round($status->checkin->distance / 1000)}}<small>km</small>
                             @endif
                         </span>
                         <span class="ps-2">
                             <i class="fa fa-stopwatch d-inline" aria-hidden="true"></i>
-                            {!! durationToSpan(secondsToDuration($status->trainCheckin->duration * 60)) !!}
+                            {!! durationToSpan(secondsToDuration($status->checkin->duration * 60)) !!}
                         </span>
 
                         @if($status->business !== Business::PRIVATE)
@@ -116,7 +116,7 @@
                         </p>
                     @endif
 
-                    @if($status->trainCheckin->departure->isPast() && $status->trainCheckin->arrival->isFuture())
+                    @if($status->checkin->departure->isPast() && $status->checkin->arrival->isFuture())
                         <p class="text-muted font-italic">
                             {{ __('stationboard.next-stop') }}
 
@@ -133,7 +133,7 @@
                 <li>
                     <i class="trwl-bulletpoint" aria-hidden="true"></i>
                     <span class="text-trwl float-end">
-                        @php($display_arrival = $status->trainCheckin->displayArrival)
+                        @php($display_arrival = $status->checkin->displayArrival)
                         @isset($display_arrival->original)
                             <small style="text-decoration: line-through;" class="text-muted">
                                 {{ userTime($display_arrival->original) }}
@@ -144,9 +144,9 @@
                             {{ userTime($display_arrival->time) }}
                         </span>
                     </span>
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->trainCheckin->destinationStation->ibnr])}}"
+                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->checkin->destinationStation->ibnr])}}"
                        class="text-trwl clearfix">
-                        {{$status->trainCheckin->destinationStation->name}}
+                        {{$status->checkin->destinationStation->name}}
                     </a>
                 </li>
             </ul>
@@ -158,8 +158,8 @@
             role="progressbar"
             style="width: 0"
             data-valuenow="{{ time() }}"
-            data-valuemin="{{ $status->trainCheckin?->originStopover?->departure->timestamp ?? $status->trainCheckin->departure->timestamp }}"
-            data-valuemax="{{ $status->trainCheckin?->destinationStopover?->arrival->timestamp ?? $status->trainCheckin->arrival->timestamp }}"
+            data-valuemin="{{ $status->checkin?->originStopover?->departure->timestamp ?? $status->checkin->departure->timestamp }}"
+            data-valuemax="{{ $status->checkin?->destinationStopover?->arrival->timestamp ?? $status->checkin->arrival->timestamp }}"
         ></div>
     </div>
     <div class="card-footer text-muted interaction px-3 px-md-4">
@@ -231,13 +231,13 @@
                             @else
                                 <li>
                                     <button type="button" class="dropdown-item join"
-                                            data-trwl-linename="{{$status->trainCheckin->HafasTrip->linename}}"
-                                            data-trwl-stop-name="{{$status->trainCheckin->destinationStation->name}}"
-                                            data-trwl-trip-id="{{$status->trainCheckin->trip_id}}"
-                                            data-trwl-destination="{{$status->trainCheckin->destination}}"
-                                            data-trwl-arrival="{{$status->trainCheckin->arrival}}"
-                                            data-trwl-start="{{$status->trainCheckin->origin}}"
-                                            data-trwl-departure="{{$status->trainCheckin->departure}}"
+                                            data-trwl-linename="{{$status->checkin->HafasTrip->linename}}"
+                                            data-trwl-stop-name="{{$status->checkin->destinationStation->name}}"
+                                            data-trwl-trip-id="{{$status->checkin->trip_id}}"
+                                            data-trwl-destination="{{$status->checkin->destination}}"
+                                            data-trwl-arrival="{{$status->checkin->arrival}}"
+                                            data-trwl-start="{{$status->checkin->origin}}"
+                                            data-trwl-departure="{{$status->checkin->departure}}"
                                             data-trwl-event-id="{{$status->event?->id}}"
                                     >
                                         <div class="dropdown-icon-suspense">

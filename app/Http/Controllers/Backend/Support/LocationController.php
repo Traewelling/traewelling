@@ -37,9 +37,9 @@ class LocationController
 
     public static function forStatus(Status $status): LocationController {
         return new self(
-            $status->trainCheckin->HafasTrip,
-            $status->trainCheckin->originStopover,
-            $status->trainCheckin->destinationStopover,
+            $status->checkin->HafasTrip,
+            $status->checkin->originStopover,
+            $status->checkin->destinationStopover,
             $status->id
         );
     }

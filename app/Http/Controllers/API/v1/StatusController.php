@@ -396,7 +396,7 @@ class StatusController extends Controller
             'business'                  => ['required', new Enum(Business::class)],
             'visibility'                => ['required', new Enum(StatusVisibility::class)],
 
-            //Changing of TrainCheckin-Metadata
+            //Changing of Checkin-Metadata
             'manualDeparture'           => ['nullable', 'date'],
             'manualArrival'             => ['nullable', 'date'],
 
@@ -415,7 +415,7 @@ class StatusController extends Controller
             $this->authorize('update', $status);
 
             if (isset($validated['destinationId'], $validated['destinationArrivalPlanned'])
-                && ((int) $validated['destinationId']) !== $status->trainCheckin->destinationStation->id) {
+                && ((int) $validated['destinationId']) !== $status->checkin->destinationStation->id) {
                 $arrival  = Carbon::parse($validated['destinationArrivalPlanned'])->timezone(config('app.timezone'));
                 $stopover = TrainStopover::where('train_station_id', $validated['destinationId'])
                                          ->where('arrival_planned', $arrival)
@@ -426,7 +426,7 @@ class StatusController extends Controller
                 }
 
                 TrainCheckinController::changeDestination(
-                    checkin:                $status->trainCheckin,
+                    checkin:                $status->checkin,
                     newDestinationStopover: $stopover,
                 );
             }
@@ -438,12 +438,12 @@ class StatusController extends Controller
                             ]);
 
             if (isset($validated['manualDeparture'])) {
-                $status->trainCheckin->update([
+                $status->checkin->update([
                                                   'manual_departure' => Carbon::parse($validated['manualDeparture'], auth()->user()->timezone)
                                               ]);
             }
             if (isset($validated['manualArrival'])) {
-                $status->trainCheckin->update([
+                $status->checkin->update([
                                                   'manual_arrival' => Carbon::parse($validated['manualArrival'], auth()->user()->timezone)
                                               ]);
             }
@@ -511,7 +511,7 @@ class StatusController extends Controller
     public function getPolyline(string $parameters): JsonResource {
         $ids             = explode(',', $parameters, 50);
         $geoJsonFeatures = Status::whereIn('id', $ids)
-                                 ->with('trainCheckin.HafasTrip.polyline')
+                                 ->with('checkin.HafasTrip.polyline')
                                  ->get()
                                  ->filter(function(Status $status) {
                                      try {
@@ -609,8 +609,8 @@ class StatusController extends Controller
             return $this->sendError('User doesn\'t have any checkins');
         }
         foreach ($latestStatuses as $status) {
-            if ($status->trainCheckin->originStopover->departure->isPast()
-                && $status->trainCheckin->destinationStopover->arrival->isFuture()) {
+            if ($status->checkin->originStopover->departure->isPast()
+                && $status->checkin->destinationStopover->arrival->isFuture()) {
                 return $this->sendResponse(new StatusResource($status));
             }
         }

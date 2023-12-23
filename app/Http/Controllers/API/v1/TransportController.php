@@ -375,7 +375,7 @@ class TransportController extends Controller
             $originStation      = Station::where($searchKey, $validated['start'])->first();
             $destinationStation = Station::where($searchKey, $validated['destination'])->first();
 
-            $trainCheckinResponse           = TrainCheckinController::checkin(
+            $checkinResponse           = TrainCheckinController::checkin(
                 user:           Auth::user(),
                 hafasTrip:      HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
                 origin:         $originStation,
@@ -390,11 +390,11 @@ class TransportController extends Controller
                 postOnMastodon: isset($validated['toot']) && $validated['toot'],
                 shouldChain:    isset($validated['chainPost']) && $validated['chainPost']
             );
-            $trainCheckinResponse['status'] = new StatusResource($trainCheckinResponse['status']);
+            $checkinResponse['status'] = new StatusResource($checkinResponse['status']);
 
             //Rewrite ['points'] so the DTO will match the documented structure -> non-breaking api change
-            $pointsCalculation              = $trainCheckinResponse['points'];
-            $trainCheckinResponse['points'] = [
+            $pointsCalculation         = $checkinResponse['points'];
+            $checkinResponse['points'] = [
                 'points'      => $pointsCalculation->points,
                 'calculation' => [
                     'base'     => $pointsCalculation->basePoints,
@@ -405,7 +405,7 @@ class TransportController extends Controller
                 'additional'  => null, //unused old attribute (not removed so this isn't breaking)
             ];
 
-            return $this->sendResponse($trainCheckinResponse, 201); //ToDo: Check if documented structure has changed
+            return $this->sendResponse($checkinResponse, 201); //ToDo: Check if documented structure has changed
         } catch (CheckInCollisionException $exception) {
             return $this->sendError([
                                         'status_id' => $exception->getCollision()->status_id,

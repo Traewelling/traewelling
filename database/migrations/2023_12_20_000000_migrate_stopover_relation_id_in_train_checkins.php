@@ -1,17 +1,17 @@
 <?php
 
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
     public function up(): void {
-        while (TrainCheckin::whereNull('origin_stopover_id')->orWhereNull('destination_stopover_id')->count() > 0) {
-            TrainCheckin::with(['HafasTrip.stopovers', 'originStation', 'destinationStation'])
-                        ->whereNull('origin_stopover_id')
-                        ->orWhereNull('destination_stopover_id')
-                        ->limit(100)
-                        ->each(function(TrainCheckin $checkin) {
+        while (Checkin::whereNull('origin_stopover_id')->orWhereNull('destination_stopover_id')->count() > 0) {
+            Checkin::with(['HafasTrip.stopovers', 'originStation', 'destinationStation'])
+                   ->whereNull('origin_stopover_id')
+                   ->orWhereNull('destination_stopover_id')
+                   ->limit(100)
+                   ->each(function(Checkin $checkin) {
                             $originStopover = $checkin->HafasTrip->stopovers->where('train_station_id', $checkin->originStation->id)
                                                                             ->where('departure_planned', $checkin->departure)
                                                                             ->first();

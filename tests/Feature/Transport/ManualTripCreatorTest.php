@@ -81,7 +81,7 @@ class ManualTripCreatorTest extends TestCase
 
         $this->assertDatabaseHas('train_checkins', [
             'trip_id' => $trip->trip_id,
-            'user_id' => $checkin['status']->trainCheckin->user_id,
+            'user_id' => $checkin['status']->checkin->user_id,
         ]);
     }
 }

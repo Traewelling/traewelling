@@ -190,18 +190,18 @@ class FrontendTransportController extends Controller
                 shouldChain: isset($request->chainPost_check),
             );
 
-            $trainCheckin = $backendResponse['status']->trainCheckin;
+            $checkin = $backendResponse['status']->checkin;
 
             $checkinSuccess = new CheckinSuccess(
                 id:                   $backendResponse['status']->id,
-                distance:             $trainCheckin->distance,
-                duration:             $trainCheckin->duration,
-                points:               $trainCheckin->points,
+                distance:             $checkin->distance,
+                duration:             $checkin->duration,
+                points:               $checkin->points,
                 pointReason:          $backendResponse['points']->reason,
-                lineName:             $trainCheckin->HafasTrip->linename,
+                lineName:             $checkin->HafasTrip->linename,
                 socialText:           $backendResponse['status']->socialText,
-                alsoOnThisConnection: $trainCheckin->alsoOnThisConnection,
-                event:                $trainCheckin->event,
+                alsoOnThisConnection: $checkin->alsoOnThisConnection,
+                event:                $checkin->event,
                 forced: isset($validated['force'])
             );
             return redirect()->route('status', ['id' => $backendResponse['status']->id])

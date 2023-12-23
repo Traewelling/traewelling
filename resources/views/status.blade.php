@@ -33,7 +33,7 @@
                         <checkin-success-helper></checkin-success-helper>
                     </div>
                 @endif
-                <h2 class="fs-5">{{ userTime($status->trainCheckin->departure,__('dateformat.with-weekday')) }}</h2>
+                <h2 class="fs-5">{{ userTime($status->checkin->departure,__('dateformat.with-weekday')) }}</h2>
                 @include('includes.status')
 
                 @if($status->tags->count() > 0)
@@ -52,11 +52,11 @@
                     </span>
                 @endif
 
-                @if(isset($status->trainCheckin->HafasTrip->last_refreshed) && \Illuminate\Support\Facades\Date::now()->isBefore($status->created_at->clone()->addDay()))
+                @if(isset($status->checkin->HafasTrip->last_refreshed) && \Illuminate\Support\Facades\Date::now()->isBefore($status->created_at->clone()->addDay()))
                     <hr/>
                     <small class="text-muted">
                         {{__('real-time-last-refreshed')}}
-                        {{$status->trainCheckin->HafasTrip->last_refreshed->diffForHumans()}}
+                        {{$status->checkin->HafasTrip->last_refreshed->diffForHumans()}}
                     </small>
                 @endif
             </div>

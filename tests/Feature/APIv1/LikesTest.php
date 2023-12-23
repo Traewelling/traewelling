@@ -3,7 +3,7 @@
 namespace Tests\Feature\APIv1;
 
 use App\Models\Status;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,7 +19,7 @@ class LikesTest extends ApiTestCase
     public function testCreateShowAndDestroyLike(): void {
         $user      = User::factory()->create();
         Passport::actingAs($user, ['*']);
-        $checkin   = TrainCheckin::factory()->create();
+        $checkin   = Checkin::factory()->create();
         $status    = $checkin->status;
 
         $this->assertDatabaseMissing('likes', [
@@ -99,7 +99,7 @@ class LikesTest extends ApiTestCase
     }
 
     public function testBobDoesntSeeLikesIfBobHasDisabledLikes(): void {
-        $checkin    = TrainCheckin::factory()->create();
+        $checkin    = Checkin::factory()->create();
         $alice      = $checkin->status->user;
         Passport::actingAs($alice, ['*']);
 

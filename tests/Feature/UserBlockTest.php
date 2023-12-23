@@ -6,7 +6,7 @@ use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Like;
 use App\Models\Status;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +24,7 @@ class UserBlockTest extends TestCase
         parent::setUp();
         $this->alice   = User::factory(['username' => 'alice', 'name' => 'Alice'])->create();
         $this->bob     = User::factory(['username' => 'bob', 'name' => 'Bob'])->create();
-        $this->checkin = TrainCheckin::factory(['user_id' => $this->alice->id])->create();
+        $this->checkin = Checkin::factory(['user_id' => $this->alice->id])->create();
     }
 
     private function aliceBlocksBob(): void {
@@ -60,7 +60,7 @@ class UserBlockTest extends TestCase
     }
 
     public function testBobsStatusIsHiddenFromAlicesGlobalDashboard(): void {
-        TrainCheckin::factory(['user_id' => $this->bob->id])->create();
+        Checkin::factory(['user_id' => $this->bob->id])->create();
 
         $this->actingAs($this->alice)
              ->get(route('globaldashboard'))
@@ -95,7 +95,7 @@ class UserBlockTest extends TestCase
     }
 
     public function testBobsStatusIsHiddenFromAlicesActiveJourneys(): void {
-        TrainCheckin::factory(['user_id' => $this->bob->id])->create();
+        Checkin::factory(['user_id' => $this->bob->id])->create();
 
         $this->actingAs($this->alice)
              ->get(route('statuses.active'))
@@ -131,7 +131,7 @@ class UserBlockTest extends TestCase
         StatusBackend::createLike($this->bob, Status::find($this->checkin->status_id));
 
         //Create a second checkin and like it
-        $this->checkin = TrainCheckin::factory(['user_id' => $this->bob->id])->create();
+        $this->checkin = Checkin::factory(['user_id' => $this->bob->id])->create();
         StatusBackend::createLike($this->alice, Status::find($this->checkin->status_id));
 
         $this->assertEquals(2, Like::all()->count());
