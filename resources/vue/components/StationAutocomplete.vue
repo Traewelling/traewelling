@@ -52,6 +52,9 @@ export default {
                 });
             });
         },
+        setStationFromText() {
+            this.setStation({name: this.stationInput});
+        },
         setStation(item) {
             this.stationInput = item.name;
             this.$emit("update:station", item);
@@ -70,6 +73,11 @@ export default {
     mounted() {
         this.stationInput = this.station ? this.station.name : "";
         this.getRecent();
+    },
+    computed: {
+        placeholder() {
+            return `${trans('stationboard.station-placeholder')} ${trans('or-alternative')} ${trans('ril100')}`;
+        }
     }
 }
 </script>
@@ -78,8 +86,9 @@ export default {
     <FullScreenModal ref="modal">
         <template #header>
             <input type="text" name="station" class="form-control"
-                   placeholder="Station or Ril 100 identifier"
+                   :placeholder="placeholder"
                    v-model="stationInput"
+                   @keyup.enter="setStationFromText"
             />
         </template>
         <template #body>
@@ -103,8 +112,9 @@ export default {
                 <div id="station-autocomplete-container" style="z-index: 3;">
                     <div class="input-group mb-2 mr-sm-2">
                         <input type="text" name="station" class="form-control"
-                               placeholder="Station or Ril 100 identifier"
-                               v-model="stationInput" @focusin="showModal"
+                               :placeholder="placeholder"
+                               v-model="stationInput"
+                               @focusin="showModal"
                         />
                         <button type="button"
                                 class="btn btn-outline-dark stationSearchButton"
