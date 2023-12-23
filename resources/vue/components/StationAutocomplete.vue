@@ -41,14 +41,14 @@ export default {
             this.loading = true;
             if (!this.stationInput || this.stationInput.length < 3) {
                 this.autocompleteList = [];
-                this.loading = false;
+                this.loading          = false;
                 return;
             }
             let query = this.stationInput.replace(/%2F/, " ").replace(/\//, " ");
             fetch(`/api/v1/trains/station/autocomplete/${query}`).then((response) => {
                 response.json().then((result) => {
                     this.autocompleteList = result.data;
-                    this.loading = false;
+                    this.loading          = false;
                 });
             });
         },
@@ -59,11 +59,26 @@ export default {
             this.stationInput = item.name;
             this.$emit("update:station", item);
             this.$refs.modal.hide();
-            window.location="/trains/stationboard?station=" + item.name;
+            window.location = "/trains/stationboard?station=" + item.name;
+        },
+        setStationFromGps() {
+            if (!navigator.geolocation) {
+                notyf.error(trans("stationboard.position-unavailable"));
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    window.location.href = `/trains/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`;
+                },
+                () => {
+                    notyf.error(trans("stationboard.position-unavailable"));
+                }
+            );
         }
     },
     watch: {
-        stationInput: _.debounce(function() {
+        stationInput: _.debounce(function () {
             this.autocomplete();
         }, 500),
         station() {
@@ -93,14 +108,20 @@ export default {
         </template>
         <template #body>
             <ul class="list-group list-group-light list-group-small">
+                <li class="list-group-item pb-3 mb-3" v-show="autocompleteList.length === 0" @click="setStationFromGps">
+                    <a href="#" class="text-trwl">
+                        <i class="fa fa-map-marker-alt"></i>
+                        {{ trans("stationboard.search-by-location") }}
+                    </a>
+                </li>
                 <li class="list-group-item" v-for="item in recent" v-show="autocompleteList.length === 0">
                     <a href="#" class="text-trwl" @click="setStation(item)">
-                        {{item.name}} <span v-if="item.rilIdentifier">({{item.rilIdentifier}})</span>
+                        {{ item.name }} <span v-if="item.rilIdentifier">({{ item.rilIdentifier }})</span>
                     </a>
                 </li>
                 <li class="list-group-item" v-for="item in autocompleteList" @click="setStation(item)">
                     <a href="#" class="text-trwl">
-                        {{item.name}} <span v-if="item.rilIdentifier">({{item.rilIdentifier}})</span>
+                        {{ item.name }} <span v-if="item.rilIdentifier">({{ item.rilIdentifier }})</span>
                     </a>
                 </li>
             </ul>
@@ -109,25 +130,23 @@ export default {
     <div class="card mb-4">
         <div class="card-header">{{ trans("stationboard.where-are-you") }}</div>
         <div class="card-body">
-                <div id="station-autocomplete-container" style="z-index: 3;">
-                    <div class="input-group mb-2 mr-sm-2">
-                        <input type="text" name="station" class="form-control"
-                               :placeholder="placeholder"
-                               v-model="stationInput"
-                               @focusin="showModal"
-                        />
-                        <button type="button"
-                                class="btn btn-outline-dark stationSearchButton"
-                                id="gps-button"
-                                data-mdb-ripple-color="dark"
-                                >
-                            <i class="fa fa-map-marker-alt"></i>
-                            <div class="spinner-border d-none" role="status" style="height: 1rem; width: 1rem;">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                        </button>
-                    </div>
+            <div id="station-autocomplete-container" style="z-index: 3;">
+                <div class="input-group mb-2 mr-sm-2">
+                    <input type="text" name="station" class="form-control"
+                           :placeholder="placeholder"
+                           v-model="stationInput"
+                           @focusin="showModal"
+                    />
+                    <button type="button"
+                            class="btn btn-outline-dark stationSearchButton"
+                    >
+                        <i class="fa fa-clock" aria-hidden="true"></i>
+                        <div class="spinner-border d-none" role="status" style="height: 1rem; width: 1rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </button>
                 </div>
+            </div>
         </div>
     </div>
 
