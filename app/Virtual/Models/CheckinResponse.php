@@ -6,13 +6,13 @@ use Carbon\Carbon;
 
 /**
  * @OA\Schema(
- *     title="TrainCheckinResponse",
+ *     title="CheckinResponse",
  *     @OA\Xml(
- *         name="TrainCheckinResponse"
+ *         name="CheckinResponse"
  *     )
  * )
  */
-class TrainCheckinResponse
+class CheckinResponse
 {
     /**
      * @OA\Property(

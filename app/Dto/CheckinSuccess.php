@@ -5,7 +5,7 @@ namespace App\Dto;
 use App\Enum\PointReason;
 use App\Models\Event;
 use App\Models\Checkin;
-use App\Virtual\Models\Train;
+use App\Virtual\Models\Trip;
 use Illuminate\Database\Eloquent\Collection;
 
 class CheckinSuccess

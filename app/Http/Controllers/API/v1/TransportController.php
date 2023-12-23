@@ -15,7 +15,7 @@ use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
-use App\Http\Resources\HafasTripResource;
+use App\Http\Resources\TripResource;
 use App\Http\Resources\StationResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Event;
@@ -252,7 +252,7 @@ class TransportController extends Controller
                 $validated['lineName'],
                 (int) $validated['start']
             );
-            return $this->sendResponse(data: new HafasTripResource($trip));
+            return $this->sendResponse(data: new TripResource($trip));
         } catch (StationNotOnTripException) {
             return $this->sendError(__('controller.transport.not-in-stopovers', [], 'en'), 400);
         }
@@ -331,12 +331,12 @@ class TransportController extends Controller
      *      summary="Create a checkin",
      *      @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/TrainCheckinRequestBody")
+     *          @OA\JsonContent(ref="#/components/schemas/CheckinRequestBody")
      *      ),
      *      @OA\Response(
      *          response=201,
      *          description="successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/TrainCheckinResponse")
+     *          @OA\JsonContent(ref="#/components/schemas/CheckinResponse")
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=409, description="Checkin collision"),
