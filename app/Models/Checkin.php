@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Casts\UTCDateTime;
 use App\Enum\TimeType;
+use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -165,11 +166,7 @@ class Checkin extends Model
         }
 
         //Else calculate and cache it
-        $departure = $this->manual_departure ?? $this->originStopover->departure ?? $this->departure;
-        $arrival   = $this->manual_arrival ?? $this->destinationStopover->arrival ?? $this->arrival;
-        $duration  = $arrival->diffInMinutes($departure);
-        DB::table('train_checkins')->where('id', $this->id)->update(['duration' => $duration]);
-        return $duration;
+        return TrainCheckinController::calculateCheckinDuration($this);
     }
 
     public function getSpeedAttribute(): float {

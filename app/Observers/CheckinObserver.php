@@ -2,16 +2,16 @@
 
 namespace App\Observers;
 
+use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Models\Checkin;
 
 class CheckinObserver
 {
 
     public function updated(Checkin $checkin): void {
-        if ($checkin->isDirty(['origin', 'destination', 'departure', 'arrival'])) {
-            //if origin, destination, departure or arrival is changed: set duration to null (will be calculated on next access)
-            //Don't use ->update() here, because this will trigger an infinite loop
-            Checkin::where('id', $checkin->id)->update(['duration' => null]);
+        if ($checkin->isDirty(['origin', 'destination', 'departure', 'arrival', 'manual_departure', 'manual_arrival'])) {
+            //if origin, destination, departure or arrival is changed, update duration
+            TrainCheckinController::calculateCheckinDuration($checkin);
         }
     }
 }
