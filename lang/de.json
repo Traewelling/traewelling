@@ -745,5 +745,11 @@
     "mail.account_deletion_notification_two_weeks_before.subject": "Dein Träwelling Account wird in zwei Wochen gelöscht",
     "mail.account_deletion_notification_two_weeks_before.body1": "dein Träwelling Account scheint seit längerer Zeit nicht mehr aktiv von dir genutzt zu werden.",
     "mail.account_deletion_notification_two_weeks_before.body2": "Aus Gründen der Datensparsamkeit werden Accounts, die länger als 12 Monate nicht genutzt werden, automatisch gelöscht.",
-    "mail.account_deletion_notification_two_weeks_before.body3": "Wenn du deinen Account behalten möchtest, logge dich bitte innerhalb der nächsten 14 Tage ein."
+    "mail.account_deletion_notification_two_weeks_before.body3": "Wenn du deinen Account behalten möchtest, logge dich bitte innerhalb der nächsten 14 Tage ein.",
+    "error.401": "Nicht autorisiert",
+    "error.403": "Verboten",
+    "error.404": "Nicht gefunden",
+    "error.419": "Zeitüberschreitung",
+    "error.429": "Zu viele Anfragen",
+    "error.500": "Interner Serverfehler"
 }
