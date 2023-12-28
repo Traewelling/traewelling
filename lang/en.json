@@ -745,5 +745,11 @@
     "mail.signature": "Your Träwelling Team",
     "mail.account_deletion_notification_two_weeks_before.body1": "your Träwelling account seems to be inactive for a long time.",
     "mail.account_deletion_notification_two_weeks_before.body2": "For reasons of data economy, accounts that are not used for more than 12 months will be automatically deleted.",
-    "mail.account_deletion_notification_two_weeks_before.body3": "If you would like to keep your account, please log in within the next 14 days."
+    "mail.account_deletion_notification_two_weeks_before.body3": "If you would like to keep your account, please log in within the next 14 days.",
+    "error.401": "Unauthorized",
+    "error.403": "Forbidden",
+    "error.404": "Not Found",
+    "error.419": "Page Expired",
+    "error.429": "Too Many Requests",
+    "error.500": "Server Error"
 }
