@@ -80,12 +80,14 @@ class StatusEditController extends Controller
         );
 
         $status->checkin->update([
-                                     'origin'      => $originStation->ibnr,
-                                     'destination' => $destinationStation->ibnr,
-                                     'departure'   => $newDeparture,
-                                     'arrival'     => $newArrival,
-                                     'distance'    => $distanceInMeters,
-                                     'points'      => $pointCalculation->points,
+                                     'origin'                  => $originStation->ibnr,
+                                     'origin_stopover_id'      => $newOrigin->id,
+                                     'destination'             => $destinationStation->ibnr,
+                                     'destination_stopover_id' => $newDestination->id,
+                                     'departure'               => $newDeparture,
+                                     'arrival'                 => $newArrival,
+                                     'distance'                => $distanceInMeters,
+                                     'points'                  => $pointCalculation->points,
                                  ]);
 
         StatusUpdateEvent::dispatch($status->refresh());
