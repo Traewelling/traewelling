@@ -2,10 +2,13 @@
 import FullScreenModal from "./FullScreenModal.vue";
 import _ from "lodash";
 import {trans} from "laravel-vue-i18n";
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+import {DateTime} from "luxon";
 
 export default {
     name: "StationAutocomplete",
-    components: {FullScreenModal},
+    components: {FullScreenModal, VueDatePicker},
     props: {
         station: {
             type: Object,
@@ -15,6 +18,11 @@ export default {
             type: Boolean,
             required: false,
             default: false
+        },
+        time: {
+            type: DateTime,
+            required: false,
+            default: null
         }
     },
     data() {
@@ -23,6 +31,7 @@ export default {
             loading: false,
             autocompleteList: [],
             stationInput: "",
+            date: null
         };
     },
     methods: {
@@ -51,6 +60,12 @@ export default {
                     this.loading          = false;
                 });
             });
+        },
+        showPicker() {
+            this.$refs.picker.openMenu();
+        },
+        setTime() {
+            this.$emit("update:time", DateTime.fromJSDate(this.date).setZone('UTC').toISO());
         },
         setStationFromText() {
             this.setStation({name: this.stationInput});
@@ -86,12 +101,16 @@ export default {
         }
     },
     mounted() {
+        this.date         = this.time;
         this.stationInput = this.station ? this.station.name : "";
         this.getRecent();
     },
     computed: {
         placeholder() {
             return `${trans('stationboard.station-placeholder')} ${trans('or-alternative')} ${trans('ril100')}`;
+        },
+        dark() {
+            return localStorage.getItem('darkMode') === 'dark';
         }
     }
 }
@@ -136,16 +155,26 @@ export default {
                            :placeholder="placeholder"
                            v-model="stationInput"
                            @focusin="showModal"
+                            @keyup.enter="setStationFromText"
                     />
-                    <button type="button"
-                            class="btn btn-outline-dark stationSearchButton"
-                    >
+                    <button type="button" class="btn btn-outline-dark stationSearchButton" @click="showPicker">
                         <i class="fa fa-clock" aria-hidden="true"></i>
-                        <div class="spinner-border d-none" role="status" style="height: 1rem; width: 1rem;">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
                     </button>
                 </div>
+                <VueDatePicker
+                        v-model="date"
+                        ref="picker"
+                        @update:model-value="setTime"
+                        time-picker-inline
+                        :dark="dark"
+                        :action-row="{ showSelect: true, showCancel: true, showNow: true, showPreview: true }"
+                >
+                    <template #trigger>
+                        <button type="button" class="btn btn-outline-dark stationSearchButton" hidden>
+                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                        </button>
+                    </template>
+                </VueDatePicker>
             </div>
         </div>
     </div>

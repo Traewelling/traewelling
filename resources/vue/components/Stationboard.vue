@@ -22,7 +22,6 @@ export default {
             data: [],
             meta: {},
             fetchTime: null,
-            now: DateTime.now(),
             show: false,
             selectedTrain: null,
             selectedDestination: null,
@@ -43,16 +42,17 @@ export default {
             this.data = [];
             this.fetchData();
         },
+        updateTime(time) {
+            this.fetchData(time);
+        },
         fetchPrevious() {
             this.fetchData(
                 this.meta?.times?.prev ? this.meta.times.prev : this.fetchTime.minus({minutes: 15}).toString(),
-                -1
             );
         },
         fetchNext() {
             this.fetchData(
                 this.meta?.times?.next ? this.meta.times.next : this.fetchTime.plus({minutes: 15}).toString(),
-                1
             );
         },
         fetchData(time = null, appendPosition = 0) {
@@ -98,12 +98,24 @@ export default {
         this.fetchTime = DateTime.now().setZone("UTC");
         this.stationString = this.$props.station;
         this.fetchData();
+    },
+    computed: {
+        now() {
+            return Object.hasOwn(this.meta, "times") && Object.hasOwn(this.meta.times, "now")
+                ? DateTime.fromISO(this.meta.times.now).setZone("UTC")
+                : DateTime.now().setZone("UTC");
+        }
     }
 }
 </script>
 
 <template>
-    <StationAutocomplete v-on:update:station="updateStation" :station="{name: stationString}"/>
+    <StationAutocomplete
+        v-on:update:time="updateTime"
+        v-on:update:station="updateStation"
+        :station="{name: stationString}"
+        :time="now"
+    />
     <div v-if="loading" style="max-width: 200px;" class="spinner-grow text-trwl mx-auto p-2" role="status">
         <span class="visually-hidden">Loading...</span>
     </div>
