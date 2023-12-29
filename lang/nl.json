@@ -763,5 +763,11 @@
     "mail.account_deletion_notification_two_weeks_before.body1": "Je Träwelling-account lijkt al enige tijd inactief te zijn.",
     "checkin.points.full": "Je had :points punten kunnen verdienen.",
     "checkin.conflict": "Er is al een gelijktijdige incheck gedaan.",
-    "notifications.show": "Meldingen tonen"
+    "notifications.show": "Meldingen tonen",
+    "error.403": "Verboden",
+    "error.429": "Teveel verzoeken",
+    "error.401": "Geen toegang",
+    "error.500": "Serverfout",
+    "error.419": "Pagina verlopen",
+    "error.404": "Niet gevonden"
 }
