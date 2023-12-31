@@ -3,7 +3,7 @@
 namespace Feature\Commands;
 
 use App\Http\Controllers\Backend\User\AccountDeletionController;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
@@ -31,7 +31,7 @@ class AccountDeletionTest extends TestCase
         $this->assertCount(1, AccountDeletionController::getInactiveUsersWithTwoWeeksLeft());
 
         // now create a status in the last week so the user is protected from deletion
-        TrainCheckin::factory(['user_id' => $user->id])->create();
+        Checkin::factory(['user_id' => $user->id])->create();
 
         // user logged 1 week before a year ago => should NOT be notified anymore (because of the status)
         $user->update(['last_login' => now()->subWeeks(51)]);
