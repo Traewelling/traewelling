@@ -27,7 +27,7 @@ class AccountDeletionNotificationTwoWeeksBefore extends Mailable
     }
 
     public function content(): Content {
-        App::setLocale($this->user?->language);
+        App::setLocale($this->user?->language ?? config('app.locale', 'en'));
         return new Content(
             view: 'mail.account_deletion_notification_two_weeks_before',
             with: [
