@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\Commands;
+namespace Tests\Feature\Commands;
 
 use App\Http\Controllers\Backend\User\AccountDeletionController;
 use App\Models\Checkin;
