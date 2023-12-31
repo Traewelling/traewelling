@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Event;
-use App\Models\TrainStation;
+use App\Models\Station;
 use Illuminate\Database\Seeder;
 
 class EventSeeder extends Seeder

@@ -35,11 +35,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @todo migrate origin & destination to use "id" instead of "ibnr" and rename to "origin_id" & "destination_id"
  * @todo is "delay" still needed? We save planned and real in the stopovers. check.
  */
-class HafasTrip extends Model
+class Trip extends Model
 {
 
     use HasFactory;
 
+    protected $table    = 'hafas_trips';
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'journey_number', 'operator_id', 'origin', 'destination',
         'polyline_id', 'departure', 'arrival', 'delay', 'source', 'user_id', 'last_refreshed',
@@ -66,11 +67,11 @@ class HafasTrip extends Model
     }
 
     public function originStation(): BelongsTo {
-        return $this->belongsTo(TrainStation::class, 'origin', 'ibnr');
+        return $this->belongsTo(Station::class, 'origin', 'ibnr');
     }
 
     public function destinationStation(): BelongsTo {
-        return $this->belongsTo(TrainStation::class, 'destination', 'ibnr');
+        return $this->belongsTo(Station::class, 'destination', 'ibnr');
     }
 
     public function operator(): BelongsTo {
@@ -78,13 +79,13 @@ class HafasTrip extends Model
     }
 
     public function stopovers(): HasMany {
-        return $this->hasMany(TrainStopover::class, 'trip_id', 'trip_id')
+        return $this->hasMany(Stopover::class, 'trip_id', 'trip_id')
                     ->orderBy('arrival_planned')
                     ->orderBy('departure_planned');
     }
 
     public function checkins(): HasMany {
-        return $this->hasMany(TrainCheckin::class, 'trip_id', 'trip_id');
+        return $this->hasMany(Checkin::class, 'trip_id', 'trip_id');
     }
 
     /**

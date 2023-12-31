@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class HafasTripResource extends JsonResource
+class TripResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -21,8 +21,8 @@ class HafasTripResource extends JsonResource
             'number'        => $this->number,
             'lineName'      => $this->linename,
             'journeyNumber' => $this->journey_number,
-            'origin'        => new TrainStationResource($this->originStation),
-            'destination'   => new TrainStationResource($this->destinationStation),
+            'origin'        => new StationResource($this->originStation),
+            'destination'   => new StationResource($this->destinationStation),
             'stopovers'     => StopoverResource::collection($this->stopovers)
         ];
     }

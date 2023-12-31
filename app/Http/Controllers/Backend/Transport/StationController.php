@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Backend\Transport;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HafasController;
-use App\Models\TrainCheckin;
-use App\Models\TrainStation;
-use App\Models\TrainStopover;
+use App\Models\Checkin;
+use App\Models\Station;
+use App\Models\Stopover;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
@@ -20,10 +20,10 @@ abstract class StationController extends Controller
      * @throws HafasException
      * @throws ModelNotFoundException
      */
-    public static function lookupStation(string|int $query): TrainStation {
+    public static function lookupStation(string|int $query): Station {
         //Lookup by station ibnr
         if (is_numeric($query)) {
-            $station = TrainStation::where('ibnr', $query)->first();
+            $station = Station::where('ibnr', $query)->first();
             if ($station !== null) {
                 return $station;
             }
@@ -31,7 +31,7 @@ abstract class StationController extends Controller
 
         //Lookup by ril identifier
         if (!is_numeric($query) && strlen($query) <= 5 && ctype_upper($query)) {
-            $station = HafasController::getTrainStationByRilIdentifier($query);
+            $station = HafasController::getStationByRilIdentifier($query);
             if ($station !== null) {
                 return $station;
             }
@@ -47,7 +47,7 @@ abstract class StationController extends Controller
     }
 
     /**
-     * Get the latest TrainStations the user is arrived.
+     * Get the latest Stations the user is arrived.
      *
      * @param User $user
      * @param int  $maxCount
@@ -59,24 +59,24 @@ abstract class StationController extends Controller
             'train_stations.id', 'train_stations.ibnr', 'train_stations.name',
             'train_stations.latitude', 'train_stations.longitude', 'train_stations.rilIdentifier',
         ];
-        return TrainStation::join('train_checkins', 'train_checkins.destination', '=', 'train_stations.ibnr')
-                           ->where('train_checkins.user_id', $user->id)
-                           ->groupBy($groupAndSelect)
-                           ->select($groupAndSelect)
-                           ->orderByDesc(DB::raw('MAX(train_checkins.arrival)'))
-                           ->limit($maxCount)
-                           ->get();
+        return Station::join('train_checkins', 'train_checkins.destination', '=', 'train_stations.ibnr')
+                      ->where('train_checkins.user_id', $user->id)
+                      ->groupBy($groupAndSelect)
+                      ->select($groupAndSelect)
+                      ->orderByDesc(DB::raw('MAX(train_checkins.arrival)'))
+                      ->limit($maxCount)
+                      ->get();
     }
 
-    public static function getAlternativeDestinationsForCheckin(TrainCheckin $checkin): Collection {
-        return $checkin->HafasTrip->stopovers
-            ->filter(function(TrainStopover $stopover) use ($checkin) {
+    public static function getAlternativeDestinationsForCheckin(Checkin $checkin): Collection {
+        return $checkin->trip->stopovers
+            ->filter(function(Stopover $stopover) use ($checkin) {
                 return ($stopover->arrival_planned ?? $stopover->departure_planned)->isAfter($checkin->departure);
             })
-            ->map(function(TrainStopover $stopover) {
+            ->map(function(Stopover $stopover) {
                 return [
                     'id'              => $stopover->id,
-                    'name'            => $stopover->trainStation->name,
+                    'name'            => $stopover->station->name,
                     'arrival_planned' => userTime($stopover->arrival_planned ?? $stopover->departure_planned),
                 ];
             });

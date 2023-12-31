@@ -4,7 +4,7 @@ namespace Tests\Feature\APIv1;
 
 use App\Http\Controllers\Backend\UserController;
 use App\Models\Event;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -73,9 +73,9 @@ class UserBlockTest extends ApiTestCase
         $event = Event::factory()->create();
 
         // Alice and Bob check in to the event
-        $aliceCheckin = TrainCheckin::factory(['user_id' => $alice->id])->create();
+        $aliceCheckin = Checkin::factory(['user_id' => $alice->id])->create();
         $aliceCheckin->status->update(['event_id' => $event->id]);
-        $bobCheckin = TrainCheckin::factory(['user_id' => $bob->id])->create();
+        $bobCheckin = Checkin::factory(['user_id' => $bob->id])->create();
         $bobCheckin->status->update(['event_id' => $event->id]);
 
         // alice should see both checkins

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Dto\Transport\TrainStation as TrainStationDto;
+use App\Dto\Transport\Station as StationDto;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
@@ -11,16 +11,15 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
-use App\Http\Controllers\API\ResponseController;
 use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
-use App\Http\Resources\HafasTripResource;
+use App\Http\Resources\TripResource;
+use App\Http\Resources\StationResource;
 use App\Http\Resources\StatusResource;
-use App\Http\Resources\TrainStationResource;
 use App\Models\Event;
-use App\Models\TrainStation;
+use App\Models\Station;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -48,8 +47,8 @@ class TransportController extends Controller
      *         name="when",
      *         in="query",
      *         description="When to get the departures (default: now).
-      If you omit the timezone, the datetime is interpreted as localtime.
-          This is especially helpful when träwelling abroad.",
+    If you omit the timezone, the datetime is interpreted as localtime.
+    This is especially helpful when träwelling abroad.",
      *         required=false,
      *         @OA\Schema(
      *             type="string",
@@ -57,7 +56,7 @@ class TransportController extends Controller
      *             example="2020-01-01T12:00:00.000Z"
      *         )
      *     ),
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="travelType",
      *         in="query",
      *         description="Means of transport (default: all)",
@@ -66,7 +65,7 @@ class TransportController extends Controller
      *          ref="#/components/schemas/TravelTypeEnum"
      *         )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=200,
      *         description="Successful operation",
      *         @OA\JsonContent(
@@ -104,7 +103,7 @@ class TransportController extends Controller
      *              type="object",
      *              @OA\Property(
      *                  property="station",
-     *                  ref="#/components/schemas/TrainStation"
+     *                  ref="#/components/schemas/Station"
      *              ),
      *              @OA\Property(
      *                  property="times",
@@ -131,19 +130,19 @@ class TransportController extends Controller
      *         )
      *        )
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=404,
      *         description="Station not found",
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=502,
      *         description="Error with our data provider",
      *     ),
-     *     @OA\Response(
+     * @OA\Response(
      *         response=422,
      *         description="Invalid input",
      *     ),
-     *     @OA\Response(response=401, description="Unauthorized"),
+     * @OA\Response(response=401, description="Unauthorized"),
      *     security={
      *        {"passport": {"create-statuses"}}, {"token": {}}
      *
@@ -177,7 +176,7 @@ class TransportController extends Controller
 
         return $this->sendResponse(
             data:       $trainStationboardResponse['departures'],
-            additional: ["meta" => ['station' => TrainStationDto::fromModel($trainStationboardResponse['station']),
+            additional: ["meta" => ['station' => StationDto::fromModel($trainStationboardResponse['station']),
                                     'times'   => $trainStationboardResponse['times'],
                         ]]
         );
@@ -220,11 +219,11 @@ class TransportController extends Controller
      *                  @OA\Property(property="number", type="string", example="4-a6s4-4"),
      *                  @OA\Property(property="lineName", type="string", example="S 4"),
      *                  @OA\Property(property="journeyNumber", type="int64", example="34427"),
-     *                  @OA\Property(property="origin", ref="#/components/schemas/TrainStation"),
-     *                  @OA\Property(property="destination", ref="#/components/schemas/TrainStation"),
+     *                  @OA\Property(property="origin", ref="#/components/schemas/Station"),
+     *                  @OA\Property(property="destination", ref="#/components/schemas/Station"),
      *                  @OA\Property(property="stopovers", type="array",
      *                      @OA\Items(
-     *                          ref="#/components/schemas/TrainStopover"
+     *                          ref="#/components/schemas/Stopover"
      *                      )
      *                  ),
      *              )
@@ -248,12 +247,12 @@ class TransportController extends Controller
                                         ]);
 
         try {
-            $hafasTrip = TrainCheckinController::getHafasTrip(
+            $trip = TrainCheckinController::getHafasTrip(
                 $validated['hafasTripId'] ?? $validated['tripId'], //ToDo deprecated: change to hafasTripId after 2023-02-28
                 $validated['lineName'],
                 (int) $validated['start']
             );
-            return $this->sendResponse(data: new HafasTripResource($hafasTrip));
+            return $this->sendResponse(data: new TripResource($trip));
         } catch (StationNotOnTripException) {
             return $this->sendError(__('controller.transport.not-in-stopovers', [], 'en'), 400);
         }
@@ -264,7 +263,7 @@ class TransportController extends Controller
      *      path="/trains/station/nearby",
      *      operationId="trainStationsNearby",
      *      tags={"Checkin"},
-     *      summary="Location based search for trainstations",
+     *      summary="Location based search for stations",
      *      description="Returns the nearest station to the given coordinates",
      *      @OA\Parameter(
      *          name="latitude",
@@ -286,7 +285,7 @@ class TransportController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/TrainStation"
+     *                      ref="#/components/schemas/Station"
      *                  )
      *              )
      *          )
@@ -321,7 +320,7 @@ class TransportController extends Controller
             return $this->sendError(__('controller.transport.no-station-found', [], 'en'));
         }
 
-        return $this->sendResponse(new TrainStationResource($nearestStation));
+        return $this->sendResponse(new StationResource($nearestStation));
     }
 
     /**
@@ -332,12 +331,12 @@ class TransportController extends Controller
      *      summary="Create a checkin",
      *      @OA\RequestBody(
      *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/TrainCheckinRequestBody")
+     *          @OA\JsonContent(ref="#/components/schemas/CheckinRequestBody")
      *      ),
      *      @OA\Response(
      *          response=201,
      *          description="successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/TrainCheckinResponse")
+     *          @OA\JsonContent(ref="#/components/schemas/CheckinResponse")
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=409, description="Checkin collision"),
@@ -373,12 +372,12 @@ class TransportController extends Controller
 
         try {
             $searchKey          = isset($validated['ibnr']) ? 'ibnr' : 'id';
-            $originStation      = TrainStation::where($searchKey, $validated['start'])->first();
-            $destinationStation = TrainStation::where($searchKey, $validated['destination'])->first();
+            $originStation      = Station::where($searchKey, $validated['start'])->first();
+            $destinationStation = Station::where($searchKey, $validated['destination'])->first();
 
-            $trainCheckinResponse           = TrainCheckinController::checkin(
+            $checkinResponse           = TrainCheckinController::checkin(
                 user:           Auth::user(),
-                hafasTrip:      HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
+                trip:           HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
                 origin:         $originStation,
                 departure:      Carbon::parse($validated['departure']),
                 destination:    $destinationStation,
@@ -391,11 +390,11 @@ class TransportController extends Controller
                 postOnMastodon: isset($validated['toot']) && $validated['toot'],
                 shouldChain:    isset($validated['chainPost']) && $validated['chainPost']
             );
-            $trainCheckinResponse['status'] = new StatusResource($trainCheckinResponse['status']);
+            $checkinResponse['status'] = new StatusResource($checkinResponse['status']);
 
             //Rewrite ['points'] so the DTO will match the documented structure -> non-breaking api change
-            $pointsCalculation              = $trainCheckinResponse['points'];
-            $trainCheckinResponse['points'] = [
+            $pointsCalculation         = $checkinResponse['points'];
+            $checkinResponse['points'] = [
                 'points'      => $pointsCalculation->points,
                 'calculation' => [
                     'base'     => $pointsCalculation->basePoints,
@@ -406,11 +405,11 @@ class TransportController extends Controller
                 'additional'  => null, //unused old attribute (not removed so this isn't breaking)
             ];
 
-            return $this->sendResponse($trainCheckinResponse, 201); //ToDo: Check if documented structure has changed
+            return $this->sendResponse($checkinResponse, 201); //ToDo: Check if documented structure has changed
         } catch (CheckInCollisionException $exception) {
             return $this->sendError([
                                         'status_id' => $exception->getCollision()->status_id,
-                                        'lineName'  => $exception->getCollision()->HafasTrip->linename
+                                        'lineName'  => $exception->getCollision()->trip->linename
                                     ], 409);
 
         } catch (StationNotOnTripException) {
@@ -440,7 +439,7 @@ class TransportController extends Controller
      *         description="successful operation",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="data", ref="#/components/schemas/TrainStation")
+     *             @OA\Property(property="data", ref="#/components/schemas/Station")
      *         ),
      *     ),
      *     @OA\Response(response=400, description="Bad request"),
@@ -459,15 +458,15 @@ class TransportController extends Controller
      */
     public function setHome(string $stationName): JsonResponse {
         try {
-            $trainStation = HafasController::getStations(query: $stationName, results: 1)->first();
-            if ($trainStation === null) {
+            $station = HafasController::getStations(query: $stationName, results: 1)->first();
+            if ($station === null) {
                 return $this->sendError("Your query matches no station");
             }
 
-            $station = HomeController::setHome(user: auth()->user(), trainStation: $trainStation);
+            $station = HomeController::setHome(user: auth()->user(), station: $station);
 
             return $this->sendResponse(
-                data: new TrainStationResource($station),
+                data: new StationResource($station),
             );
         } catch (HafasException) {
             return $this->sendError("There has been an error with our data provider", 502);
@@ -481,7 +480,7 @@ class TransportController extends Controller
      *      path="/trains/station/autocomplete/{query}",
      *      operationId="trainStationAutocomplete",
      *      tags={"Checkin"},
-     *      summary="Autocomplete for trainstations",
+     *      summary="Autocomplete for stations",
      *      description="This request returns an array of max. 10 station objects matching the query. **CAUTION:** All
      *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
      * @OA\Parameter(
@@ -523,7 +522,7 @@ class TransportController extends Controller
      *      path="/trains/station/history",
      *      operationId="trainStationHistory",
      *      tags={"Checkin"},
-     *      summary="History for trainstations",
+     *      summary="History for stations",
      *      description="This request returns an array of max. 10 most recent station objects that the user has arrived
      *      at.",
      *      @OA\Response(
@@ -532,7 +531,7 @@ class TransportController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/TrainStation"
+     *                      ref="#/components/schemas/Station"
      *                  )
      *              )
      *          )
@@ -545,6 +544,6 @@ class TransportController extends Controller
      *     )
      */
     public function getTrainStationHistory(): AnonymousResourceCollection {
-        return TrainStationResource::collection(TransportBackend::getLatestArrivals(auth()->user()));
+        return StationResource::collection(TransportBackend::getLatestArrivals(auth()->user()));
     }
 }

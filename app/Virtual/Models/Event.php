@@ -110,7 +110,7 @@ class Event
      *     description="nearest station for this event (nullable)",
      *     type="object",
      *     nullable="true",
-     *     anyOf={@OA\Schema(ref="#/components/schemas/TrainStation"), @OA\Schema(type="'null'")}
+     *     anyOf={@OA\Schema(ref="#/components/schemas/Station"), @OA\Schema(type="'null'")}
      *
      * )
      */

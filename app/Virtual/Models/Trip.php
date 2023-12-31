@@ -4,14 +4,14 @@ namespace App\Virtual\Models;
 
 /**
  * @OA\Schema(
- *     title="Train",
- *     description="Train model",
+ *     title="Trip",
+ *     description="Trip model",
  *     @OA\Xml(
- *         name="Train"
+ *         name="Trip"
  *     )
  * )
  */
-class Train
+class Trip
 {
     /**
      * @OA\Property (
@@ -22,7 +22,7 @@ class Train
      *
      * @var integer
      */
-    private $trip;
+    private $trip; //TODO: rename to id? "trip" in "trip" is redundant
 
     /**
      * @OA\Property (
@@ -118,7 +118,7 @@ class Train
      *     description="model of origin stopover"
      * )
      *
-     * @var TrainStopover
+     * @var Stopover
      */
     private $origin;
 
@@ -128,7 +128,7 @@ class Train
      *     description="model of destination stopover"
      * )
      *
-     * @var TrainStopover
+     * @var Stopover
      */
     private $destination;
 

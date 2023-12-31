@@ -7,7 +7,7 @@ use App\Http\Controllers\Backend\User\FollowController as FollowBackend;
 use App\Models\Event;
 use App\Models\Follow;
 use App\Models\Status;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,7 +22,7 @@ class ViewTest extends ApiTestCase
     public function testUnauthenticatedViewPublicStatus(): void {
         $user   = User::factory()->create();
         $status = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::PUBLIC->value])
-                        ->has(TrainCheckin::factory())
+                        ->has(Checkin::factory())
                         ->create();
 
         $this->assertGuest();
@@ -33,7 +33,7 @@ class ViewTest extends ApiTestCase
     public function testUnauthenticatedViewPrivateStatus(): void {
         $user   = User::factory()->create();
         $status = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::PRIVATE])
-                        ->has(TrainCheckin::factory())
+                        ->has(Checkin::factory())
                         ->create();
 
         $this->assertGuest();
@@ -44,7 +44,7 @@ class ViewTest extends ApiTestCase
     public function testUnauthenticatedViewUnlistedStatus(): void {
         $user   = User::factory()->create();
         $status = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::UNLISTED])
-                        ->has(TrainCheckin::factory())
+                        ->has(Checkin::factory())
                         ->create();
 
         $this->assertGuest();
@@ -55,7 +55,7 @@ class ViewTest extends ApiTestCase
     public function testUnauthenticatedViewFollowersOnlyStatus(): void {
         $user   = User::factory()->create();
         $status = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::FOLLOWERS])
-                        ->has(TrainCheckin::factory())
+                        ->has(Checkin::factory())
                         ->create();
 
         $this->assertGuest();
@@ -66,7 +66,7 @@ class ViewTest extends ApiTestCase
     public function testUnauthenticatedViewOnlyAuthenticatedUsersStatus(): void {
         $user   = User::factory()->create();
         $status = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::AUTHENTICATED])
-                        ->has(TrainCheckin::factory())
+                        ->has(Checkin::factory())
                         ->create();
 
         $this->assertGuest();
@@ -137,12 +137,12 @@ class ViewTest extends ApiTestCase
     public function testPublicStatusFromPrivateProfileIsNotDisplayedOnEventsPage(): void {
         //create test scenario: Public Status with Event and Private Profile
         $event        = Event::factory()->create();
-        $trainCheckin = TrainCheckin::factory()->create();
-        $trainCheckin->status->update([
+        $checkin = Checkin::factory()->create();
+        $checkin->status->update([
                                           'visibility' => StatusVisibility::PUBLIC,
                                           'event_id'   => $event->id,
                                       ]);
-        $trainCheckin->user->update(['private_profile' => true]);
+        $checkin->user->update(['private_profile' => true]);
 
         //request statuses for event
         $response = $this->get("/api/v1/event/{$event->slug}/statuses");
@@ -159,8 +159,8 @@ class ViewTest extends ApiTestCase
         $bob        = User::factory()->create();
 
         //create an unlisted status for bob
-        $trainCheckin = TrainCheckin::factory(['user_id' => $bob->id])->create();
-        $trainCheckin->status->update(['visibility' => StatusVisibility::UNLISTED]);
+        $checkin = Checkin::factory(['user_id' => $bob->id])->create();
+        $checkin->status->update(['visibility' => StatusVisibility::UNLISTED]);
 
         //alice should not see the status on her global dashboard
         $response = $this->get("/api/v1/dashboard/global");
@@ -186,7 +186,7 @@ class ViewTest extends ApiTestCase
         $response->assertJsonCount(1, 'data');
 
         //alice should see the status if queried directly
-        $response = $this->get("/api/v1/status/{$trainCheckin->status->id}");
+        $response = $this->get("/api/v1/status/{$checkin->status->id}");
         $response->assertOk();
         $response->assertJsonCount(1);
     }

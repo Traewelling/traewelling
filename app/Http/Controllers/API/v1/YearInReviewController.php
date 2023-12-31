@@ -18,7 +18,7 @@ class YearInReviewController extends Controller
      * @return JsonResponse
      */
     public function show(Request $request): JsonResponse {
-        if (config('trwl.year_in_review_active') === false) {
+        if (config('trwl.year_in_review.backend') === false) {
             return $this->sendError('Year in review is not active', 403);
         }
 

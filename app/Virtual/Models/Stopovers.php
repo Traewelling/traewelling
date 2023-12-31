@@ -20,7 +20,7 @@ class Stopovers
      *     description="Array of stopovers. Key describes trip id",
      *     type="array",
      *          @OA\Items(
-     *              ref="#/components/schemas/TrainStopover"
+     *              ref="#/components/schemas/Stopover"
      *          )
      * )
      * @var object

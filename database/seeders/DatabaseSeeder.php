@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\EventSuggestion;
-use App\Models\HafasTrip;
-use App\Models\TrainStation;
+use App\Models\Trip;
+use App\Models\Station;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,10 +14,10 @@ class DatabaseSeeder extends Seeder
         $this->call(UsersTableSeeder::class);
         $this->call(ClientSeeder::class);
         $this->call(FollowTableSeeder::class);
-        TrainStation::factory()->count(50)->create();
+        Station::factory()->count(50)->create();
         $this->call(EventSeeder::class);
-        HafasTrip::factory()->count(50)->create();
-        $this->call(TrainCheckinSeeder::class);
+        Trip::factory()->count(50)->create();
+        $this->call(CheckinSeeder::class);
         $this->call(PrivacyAgreementSeeder::class);
         EventSuggestion::factory(['user_id' => 1])->count(5)->create();
     }

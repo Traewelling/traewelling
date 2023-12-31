@@ -1,5 +1,6 @@
 <script>
 import Modal from "bootstrap/js/dist/modal";
+import {trans} from "laravel-vue-i18n";
 
 export default {
     name: "FullScreenModal",
@@ -12,6 +13,7 @@ export default {
         };
     },
     methods: {
+        trans,
         mount() {
             this.modal = new Modal(this.$refs.myModal, {})
         },
@@ -40,8 +42,12 @@ export default {
                     <slot name="body"></slot>
                 </div>
                 <div class="modal-footer d-none">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        {{ trans("menu.close") }}
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        {{ trans("modals.edit-confirm") }}
+                    </button>
                 </div>
             </div>
         </div>

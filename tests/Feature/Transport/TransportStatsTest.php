@@ -12,8 +12,8 @@ use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
-use App\Models\TrainCheckin;
-use App\Models\TrainStopover;
+use App\Models\Checkin;
+use App\Models\Stopover;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -33,18 +33,18 @@ class TransportStatsTest extends TestCase
         $likingUser3 = User::factory()->create();
 
         //Create a checkin with 3 likes
-        $checkin1 = TrainCheckin::factory()->create(['user_id' => $user->id]);
+        $checkin1 = Checkin::factory()->create(['user_id' => $user->id]);
         StatusBackend::createLike($likingUser1, $checkin1->status);
         StatusBackend::createLike($likingUser2, $checkin1->status);
         StatusBackend::createLike($likingUser3, $checkin1->status);
 
         //Create a checkin with 2 likes
-        $checkin2 = TrainCheckin::factory()->create(['user_id' => $user->id]);
+        $checkin2 = Checkin::factory()->create(['user_id' => $user->id]);
         StatusBackend::createLike($likingUser1, $checkin2->status);
         StatusBackend::createLike($likingUser2, $checkin2->status);
 
         //Create a checkin with no like (should not be in the result)
-        $checkin3 = TrainCheckin::factory()->create(['user_id' => $user->id]);
+        $checkin3 = Checkin::factory()->create(['user_id' => $user->id]);
 
         //get stats and check result
         $mostLiked = TransportStatsController::getMostLikedStatus($user, Carbon::now()->subYear(), Carbon::now()->addYear());

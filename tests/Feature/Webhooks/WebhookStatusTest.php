@@ -93,13 +93,13 @@ class WebhookStatusTest extends TestCase
         $client = $this->createWebhookClient($user);
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status    = $this->createStatus($user);
-        $checkin   = $status->trainCheckin()->first();
-        $hafasTrip = TrainCheckinController::getHafasTrip(
+        $checkin   = $status->checkin()->first();
+        $trip = TrainCheckinController::getHafasTrip(
             tripId:   self::TRIP_ID,
             lineName: self::ICE802['line']['name'],
             startId:  self::FRANKFURT_HBF['id']
         );
-        $aachen    = $hafasTrip->stopovers->where('trainStation.ibnr', self::AACHEN_HBF['id'])->first();
+        $aachen    = $trip->stopovers->where('station.ibnr', self::AACHEN_HBF['id'])->first();
         TrainCheckinController::changeDestination($checkin, $aachen);
 
         Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
@@ -108,7 +108,7 @@ class WebhookStatusTest extends TestCase
                 $job->payload['event']
             );
             assertEquals($status->id, $job->payload['status']->id);
-            // This is really hacky, but i didn't got it working otherwise.
+            // This is really hacky, but I didn't get it working otherwise.
             $parsedStatus = json_decode($job->payload['status']->toJson());
             assertEquals(self::AACHEN_HBF['id'], $parsedStatus->train->destination->evaIdentifier);
             return true;
@@ -198,12 +198,12 @@ class WebhookStatusTest extends TestCase
             startId:  self::FRANKFURT_HBF['id']
         );
 
-        $origin      = HafasController::getTrainStation(self::FRANKFURT_HBF['id']);
-        $destination = HafasController::getTrainStation(self::HANNOVER_HBF['id']);
+        $origin      = HafasController::getStation(self::FRANKFURT_HBF['id']);
+        $destination = HafasController::getStation(self::HANNOVER_HBF['id']);
 
         $checkin = TrainCheckinController::checkin(
             user:         $user,
-            hafasTrip:    $trip,
+            trip:         $trip,
             origin:       $origin,
             departure:    Carbon::parse(self::DEPARTURE_TIME),
             destination:  $destination,

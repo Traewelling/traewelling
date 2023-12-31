@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Event extends Model
 {
 
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $fillable = [
         'name', 'hashtag', 'station_id', 'slug', 'host', 'url', 'begin', 'end', 'event_start', 'event_end'
@@ -28,7 +30,7 @@ class Event extends Model
     ];
 
     public function station(): HasOne {
-        return $this->hasOne(TrainStation::class, 'id', 'station_id');
+        return $this->hasOne(Station::class, 'id', 'station_id');
     }
 
     public function statuses(): HasMany {
@@ -36,13 +38,13 @@ class Event extends Model
     }
 
     public function getTrainDistanceAttribute(): float {
-        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
-                           ->sum('distance');
+        return Checkin::whereIn('status_id', $this->statuses()->select('id'))
+                      ->sum('distance');
     }
 
     public function getTrainDurationAttribute(): int {
-        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
-                           ->sum('duration');
+        return Checkin::whereIn('status_id', $this->statuses()->select('id'))
+                      ->sum('duration');
     }
 
     public function getIsPrideAttribute(): bool {
@@ -52,5 +54,11 @@ class Event extends Model
 
     public function approvedBy(): HasOne {
         return $this->hasOne(User::class, 'id', 'approved_by');
+    }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+                         ->logOnlyDirty()
+                         ->logOnly(['name', 'hashtag', 'station_id', 'slug', 'host', 'url', 'begin', 'end', 'event_start', 'event_end']);
     }
 }

@@ -6,14 +6,14 @@ use Carbon\Carbon;
 
 /**
  * @OA\Schema (
- *     title="TrainStopover",
- *     description="train station model",
+ *     title="Stopover",
+ *     description="stopover model",
  *     @OA\Xml(
- *        name="TrainStopover"
+ *        name="Stopover"
  *     )
  * )
  */
-class TrainStopover
+class Stopover
 {
     /**
      * @OA\Property (

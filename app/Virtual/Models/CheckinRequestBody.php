@@ -6,14 +6,14 @@ use Carbon\Carbon;
 
 /**
  * @OA\Schema(
- *     title="TrainCheckinRequestBody",
+ *     title="CheckinRequestBody",
  *     description="Fields for creating a train checkin",
  *     @OA\Xml(
- *         name="TrainCheckinRequestBody"
+ *         name="CheckinRequestBody"
  *     )
  * )
  */
-class TrainCheckinRequestBody
+class CheckinRequestBody
 {
     /**
      * @OA\Property(
@@ -121,7 +121,7 @@ class TrainCheckinRequestBody
     /**
      * @OA\Property (
      *     title="start",
-     *     description="The TrainStation-ID of the starting point (see `ibnr`)",
+     *     description="The Station-ID of the starting point (see `ibnr`)",
      *     example="8000191",
      *     type="integer"
      * )
@@ -131,7 +131,7 @@ class TrainCheckinRequestBody
     /**
      * @OA\Property (
      *     title="destination",
-     *     description="The TrainStation-ID of the destination (see `ibnr`)",
+     *     description="The Station-ID of the destination (see `ibnr`)",
      *     example="8079045",
      *     type="integer"
      * )

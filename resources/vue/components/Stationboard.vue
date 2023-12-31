@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import CheckinLineRun from "./CheckinLineRun.vue";
 import CheckinInterface from "./CheckinInterface.vue";
 import StationAutocomplete from "./StationAutocomplete.vue";
+import {trans} from "laravel-vue-i18n";
 
 export default {
     components: {StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal},
@@ -13,7 +14,7 @@ export default {
         station: {
             type: String,
             required: true,
-            default: 'Karlsruhe Hbf'
+            default: "Karlsruhe Hbf"
         }
     },
     data() {
@@ -21,7 +22,6 @@ export default {
             data: [],
             meta: {},
             fetchTime: null,
-            now: DateTime.now(),
             show: false,
             selectedTrain: null,
             selectedDestination: null,
@@ -30,6 +30,7 @@ export default {
         };
     },
     methods: {
+        trans,
         showModal(selectedItem) {
             this.selectedDestination = null;
             this.selectedTrain = selectedItem;
@@ -41,27 +42,28 @@ export default {
             this.data = [];
             this.fetchData();
         },
+        updateTime(time) {
+            this.fetchData(time);
+        },
         fetchPrevious() {
             this.fetchData(
                 this.meta?.times?.prev ? this.meta.times.prev : this.fetchTime.minus({minutes: 15}).toString(),
-                -1
             );
         },
         fetchNext() {
             this.fetchData(
                 this.meta?.times?.next ? this.meta.times.next : this.fetchTime.plus({minutes: 15}).toString(),
-                1
             );
         },
         fetchData(time = null, appendPosition = 0) {
             this.loading = true;
             if (time !== null) {
-                this.fetchTime = DateTime.fromISO(time).setZone('UTC');
+                this.fetchTime = DateTime.fromISO(time).setZone("UTC");
             } else {
                 time = this.fetchTime.minus({ minutes: 5 }).toString();
             }
 
-            let query = this.stationString.replace(/%2F/, ' ').replace(/\//, ' ');
+            let query = this.stationString.replace(/%2F/, " ").replace(/\//, " ");
             fetch(`/api/v1/trains/station/${query}/departures?when=${time}`).then((response) => {
                 this.loading = false;
                 this.now = DateTime.now();
@@ -80,7 +82,7 @@ export default {
             });
         },
         formatTime(time) {
-            return DateTime.fromISO(time).toFormat('HH:mm');
+            return DateTime.fromISO(time).toFormat("HH:mm");
         },
         //show divider if this.times.now is between this and the next item
         showDivider(item, key) {
@@ -93,15 +95,27 @@ export default {
         }
     },
     mounted() {
-        this.fetchTime = DateTime.now().setZone('UTC');
+        this.fetchTime = DateTime.now().setZone("UTC");
         this.stationString = this.$props.station;
         this.fetchData();
+    },
+    computed: {
+        now() {
+            return Object.hasOwn(this.meta, "times") && Object.hasOwn(this.meta.times, "now")
+                ? DateTime.fromISO(this.meta.times.now).setZone("UTC")
+                : DateTime.now().setZone("UTC");
+        }
     }
 }
 </script>
 
 <template>
-    <StationAutocomplete v-on:update:station="updateStation" :station="{name: stationString}"/>
+    <StationAutocomplete
+        v-on:update:time="updateTime"
+        v-on:update:station="updateStation"
+        :station="{name: stationString}"
+        :time="now"
+    />
     <div v-if="loading" style="max-width: 200px;" class="spinner-grow text-trwl mx-auto p-2" role="status">
         <span class="visually-hidden">Loading...</span>
     </div>
@@ -146,7 +160,7 @@ export default {
                     <div>
                         <span class="fw-bold fs-6">{{ item.direction }}</span><br>
                         <span v-if="item.stop.name !== meta.station.name" class="text-muted small font-italic">
-                        ab {{ item.stop.name }}
+                        {{ trans("stationboard.dep") }} {{ item.stop.name }}
                     </span>
                     </div>
                 </div>

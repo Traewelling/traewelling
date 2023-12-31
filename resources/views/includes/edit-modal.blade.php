@@ -24,10 +24,10 @@
                             <div class="form-floating mb-2">
                                 <input class="form-control" name="manualDeparture" id="manual_departure"
                                        type="datetime-local"
-                                       placeholder="{{__('export.title.origin.time.real')}}"
+                                       placeholder="{{__('export.title.departure_real')}}"
                                 />
                                 <label for="manual_departure">
-                                    {{__('export.title.origin.time.real')}}
+                                    {{__('export.title.departure_real')}}
                                 </label>
                             </div>
                         </div>
@@ -35,10 +35,10 @@
                             <div class="form-floating mb-2">
                                 <input class="form-control" name="manualArrival" id="manual_arrival"
                                        type="datetime-local"
-                                       placeholder="{{__('export.title.destination.time.real')}}"
+                                       placeholder="{{__('export.title.arrival_real')}}"
                                 />
                                 <label for="manual_arrival">
-                                    {{__('export.title.destination.time.real')}}
+                                    {{__('export.title.arrival_real')}}
                                 </label>
                             </div>
                         </div>

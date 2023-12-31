@@ -84,7 +84,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     public function getTrainDistanceAttribute(): float {
-        return TrainCheckin::where('user_id', $this->id)->sum('distance');
+        return Checkin::where('user_id', $this->id)->sum('distance');
     }
 
     public function statuses(): HasMany {
@@ -92,7 +92,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function trainCheckins(): HasMany {
-        return $this->hasMany(TrainCheckin::class, 'user_id', 'id');
+        return $this->hasMany(Checkin::class, 'user_id', 'id');
     }
 
     /**
@@ -100,7 +100,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @return float
      */
     public function getTrainDurationAttribute(): float {
-        return TrainCheckin::where('user_id', $this->id)->sum('duration');
+        return Checkin::where('user_id', $this->id)->sum('duration');
     }
 
     /**
@@ -119,7 +119,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function home(): HasOne {
-        return $this->hasOne(TrainStation::class, 'id', 'home_id');
+        return $this->hasOne(Station::class, 'id', 'home_id');
     }
 
     public function likes(): HasMany {
@@ -173,10 +173,10 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function getPointsAttribute(): int {
-        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
-                           ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
-                           ->select('points')
-                           ->sum('points');
+        return Checkin::whereIn('status_id', $this->statuses()->select('id'))
+                      ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
+                      ->select('points')
+                      ->sum('points');
     }
 
     /**

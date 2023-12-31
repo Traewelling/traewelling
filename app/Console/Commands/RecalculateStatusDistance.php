@@ -19,9 +19,9 @@ class RecalculateStatusDistance extends Command
         $this->newLine(3);
         foreach ($statuses as $status) {
             try {
-                $oldDistance = $status->trainCheckin->distance;
+                $oldDistance = $status->checkin->distance;
                 TrainCheckinController::refreshDistanceAndPoints(status: $status, resetPolyline: true);
-                $this->info(sprintf('#%d: %d -> %d', $status->id, $oldDistance, $status->trainCheckin->distance));
+                $this->info(sprintf('#%d: %d -> %d', $status->id, $oldDistance, $status->checkin->distance));
             } catch (DistanceDeviationException) {
                 $this->error(sprintf('#%d: DistanceDeviationException occurred', $status->id));
             }

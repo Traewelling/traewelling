@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\Backend\Stats\YearInReviewController;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -18,9 +18,9 @@ class CacheYearInReview extends Command
     public function handle(): int {
         $year = $this->option('year') ?? date('Y');
         $this->info('Caching year in review for year ' . $year . '...');
-        $userIdsQ  = TrainCheckin::whereBetween('departure', [Carbon::create($year), Carbon::create($year, 12, 31)])
-                                 ->select('user_id')
-                                 ->distinct();
+        $userIdsQ  = Checkin::whereBetween('departure', [Carbon::create($year), Carbon::create($year, 12, 31)])
+                            ->select('user_id')
+                            ->distinct();
         $users     = User::whereIn('id', $userIdsQ)->get();
         $count     = $users->count();
         $iteration = 0;

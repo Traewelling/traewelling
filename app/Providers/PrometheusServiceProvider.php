@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\PolyLine;
 use App\Models\Status;
 use App\Models\User;
@@ -36,12 +36,12 @@ class PrometheusServiceProvider extends ServiceProvider
                   ->helpText("How many hafas trips are posted grouped by operator and mode of transport?")
                   ->labels(["operator", "category"])
                   ->value(function() {
-                      return HafasTrip::groupBy("operator_id", "category")
-                                      ->selectRaw("count(*) AS total, operator_id, category")
-                                      ->with("operator")
-                                      ->get()
-                                      ->map(fn($item) => [$item->total, [$item->operator?->name, $item->category]])
-                                      ->toArray();
+                      return Trip::groupBy("operator_id", "category")
+                                 ->selectRaw("count(*) AS total, operator_id, category")
+                                 ->with("operator")
+                                 ->get()
+                                 ->map(fn($item) => [$item->total, [$item->operator?->name, $item->category]])
+                                 ->toArray();
                   });
 
         Prometheus::addGauge('Polylines count')
