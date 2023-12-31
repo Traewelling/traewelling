@@ -33,4 +33,8 @@ enum CacheKey: string
     public static function getYearInReviewKey(User $user, int $year): string {
         return "year-in-review-{$user->id}-{$year}";
     }
+
+    public static function getAccountDeletionNotificationTwoWeeksBeforeKey(User $user): string {
+        return "account-deletion-notification-two-weeks-before-{$user->id}";
+    }
 }
