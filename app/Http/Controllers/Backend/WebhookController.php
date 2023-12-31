@@ -14,7 +14,6 @@ use App\Models\Webhook;
 use App\Models\WebhookCreationRequest;
 use App\Models\WebhookEvent;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;

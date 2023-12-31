@@ -9,7 +9,7 @@ fi
 
 if [ "$role" = "launch-all-at-once" ]; then
 
-    echo "Running one item of every role"; 
+    echo "Running one item of every role";
     set -m # make job control work
 
     CONTAINER_ROLE=app ./docker-entrypoint.sh &
@@ -33,7 +33,7 @@ else
     elif [ "$role" = "queue" ]; then
 
         echo "Running the queue..."
-        runuser -u www-data -- php artisan queue:work
+        runuser -u www-data -- php artisan queue:work --queue=default,webhook
 
     elif [ "$role" = "scheduler" ]; then
 

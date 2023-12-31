@@ -12,6 +12,7 @@ use Illuminate\Support\ServiceProvider;
 use romanzipp\QueueMonitor\Enums\MonitorStatus;
 use Spatie\Prometheus\Facades\Prometheus;
 
+const PROM_JOB_SCRAPER_SEPARATOR = "-PROM-JOB-SCRAPER-SEPARATOR-";
 class PrometheusServiceProvider extends ServiceProvider
 {
     public function register() {
@@ -56,31 +57,31 @@ class PrometheusServiceProvider extends ServiceProvider
 
         Prometheus::addGauge("queue_size")
                   ->helpText("How many items are currently in the job queue?")
-                  ->label("job_name")
+                  ->labels(["job_name", "queue"])
                   ->value(function() {
                       if (config("queue.default") === "database") {
                           return $this->getJobsByDisplayName("jobs");
                       }
 
-                      return [Queue::size(), ["all"]];
+                      return [Queue::size(), ["all", "all"]];
                   });
 
         Prometheus::addGauge("failed_jobs_count")
                   ->helpText("How many jobs have failed?")
-                  ->label("job_name")
+                  ->labels(["job_name", "queue"])
                   ->value(function() {
                       return $this->getJobsByDisplayName("failed_jobs");
                   });
 
         Prometheus::addGauge("completed_jobs_count")
                   ->helpText("How many jobs are done? Old items from queue monitor table are deleted after 7 days.")
-                  ->labels(["job_name", "status"])
+                  ->labels(["job_name", "status", "queue"])
                   ->value(function() {
                       return DB::table("queue_monitor")
-                               ->groupBy("name", "status")
-                               ->selectRaw("count(*) AS total, name, status")
+                               ->groupBy("name", "status", "queue")
+                               ->selectRaw("count(*) AS total, name, status, queue")
                                ->get()
-                               ->map(fn($item) => [$item->total, [$item->name, MonitorStatus::toNamedArray()[$item->status]]])
+                               ->map(fn($item) => [$item->total, [$item->name, MonitorStatus::toNamedArray()[$item->status], $item->queue]])
                                ->toArray();
                   });
 
@@ -146,9 +147,24 @@ class PrometheusServiceProvider extends ServiceProvider
 
     public static function getJobsByDisplayName($table_name): array {
         $counts = DB::table($table_name)
-                    ->get("payload")
-                    ->map(fn($row) => json_decode($row->payload))
-                    ->countBy(fn($payload) => $payload->displayName)
+                    ->get(["queue", "payload"])
+                    ->map(fn($row) => [
+                        'queue'       => $row->queue,
+                        'displayName' => json_decode($row->payload)->displayName])
+                    ->countBy(fn($job) => $job['displayName'] . PROM_JOB_SCRAPER_SEPARATOR . $job['queue'])
+                    ->toArray();
+
+        return array_map(
+            fn($job_properties, $count) => [$count, explode(PROM_JOB_SCRAPER_SEPARATOR, $job_properties)],
+            array_keys($counts),
+            array_values($counts)
+        );
+    }
+
+    public static function getJobsByQueue($table_name): array {
+        $counts = DB::table($table_name)
+                    ->get("queue")
+                    ->countBy(fn($job) => $job->queue)
                     ->toArray();
 
         return array_map(

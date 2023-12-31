@@ -85,6 +85,12 @@ php artisan passport:install
 Use your webserver of choice or the in php included dev server (`php artisan serve`) to boot the application.
 You should see the Träwelling homepage at http://localhost:8000.
 
+Additionally, for continuous functionality:
+
+- Create a cron job to run `php artisan schedule:run` every minute.
+- Set up a service initiating with `php artisan queue:work` to handle essential background tasks. 
+  Consider creating separate services for the default and webhooks queue if this is a larger installation.
+
 ### Option 3: Local Development using [Nix](https://nixos.org/)
 
 Nix is a cross-platform package manager for Linux and macOS systems.

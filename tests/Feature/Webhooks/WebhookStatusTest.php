@@ -9,12 +9,12 @@ use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController;
 use App\Http\Resources\StatusResource;
+use App\Jobs\MonitoredCallWebhookJob;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
-use Spatie\WebhookServer\CallWebhookJob;
 use Tests\TestCase;
 use function PHPUnit\Framework\assertEquals;
 
@@ -30,7 +30,7 @@ class WebhookStatusTest extends TestCase
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_CREATE]);
         $status = $this->createStatus($user);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals([
                              'event' => WebhookEvent::CHECKIN_CREATE->value,
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        'status' => new StatusResource($status),
@@ -54,7 +54,7 @@ class WebhookStatusTest extends TestCase
                  'checkinVisibility' => $status['visibility']->value
              ]);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
@@ -75,7 +75,7 @@ class WebhookStatusTest extends TestCase
         StatusController::createLike($user, $status);
 
         // For self-likes, a CHECKIN_UPDATE is sent, but no notification.
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
@@ -102,7 +102,7 @@ class WebhookStatusTest extends TestCase
         $aachen    = $trip->stopovers->where('station.ibnr', self::AACHEN_HBF['id'])->first();
         TrainCheckinController::changeDestination($checkin, $aachen);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
@@ -130,7 +130,7 @@ class WebhookStatusTest extends TestCase
                  'checkinVisibility' => $status['visibility']->value
              ]);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
@@ -156,7 +156,7 @@ class WebhookStatusTest extends TestCase
                  'checkinVisibility' => StatusVisibility::UNLISTED->value,
              ]);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
@@ -176,7 +176,7 @@ class WebhookStatusTest extends TestCase
         $status = $this->createStatus($user);
         StatusController::DeleteStatus($user, $status['id']);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_DELETE->value,
                 $job->payload['event']
