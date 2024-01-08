@@ -6222,16 +6222,16 @@
         },
         {
             "name": "spatie/laravel-prometheus",
-            "version": "1.0.4",
+            "version": "1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-prometheus.git",
-                "reference": "4fbe7aa88f643abfdc721a66b7a3e375ecd57cda"
+                "reference": "cba9088e5da62f1164ae8db7cec51fe17b1a287f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-prometheus/zipball/4fbe7aa88f643abfdc721a66b7a3e375ecd57cda",
-                "reference": "4fbe7aa88f643abfdc721a66b7a3e375ecd57cda",
+                "url": "https://api.github.com/repos/spatie/laravel-prometheus/zipball/cba9088e5da62f1164ae8db7cec51fe17b1a287f",
+                "reference": "cba9088e5da62f1164ae8db7cec51fe17b1a287f",
                 "shasum": ""
             },
             "require": {
@@ -6243,10 +6243,10 @@
                 "spatie/laravel-package-tools": "^1.15.0"
             },
             "require-dev": {
+                "larastan/larastan": "^2.6.0",
                 "laravel/horizon": "^5.16.1",
                 "laravel/pint": "^1.10",
                 "nunomaduro/collision": "^7",
-                "nunomaduro/larastan": "^2.6.0",
                 "orchestra/testbench": "^8.5.5",
                 "pestphp/pest": "^2.6.2",
                 "pestphp/pest-plugin-arch": "^2.2",
@@ -6291,9 +6291,9 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-prometheus/issues",
-                "source": "https://github.com/spatie/laravel-prometheus/tree/1.0.4"
+                "source": "https://github.com/spatie/laravel-prometheus/tree/1.0.5"
             },
-            "time": "2023-07-26T10:17:55+00:00"
+            "time": "2024-01-02T17:30:58+00:00"
         },
         {
             "name": "spatie/laravel-sitemap",
