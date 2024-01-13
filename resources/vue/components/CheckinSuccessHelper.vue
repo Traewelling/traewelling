@@ -43,7 +43,7 @@ export default {
             <p>{{ transChoice("checkin.points.earned", points.points, { points: points.points.toString() }) }}</p>
             <p v-if="points.calculation.reason === 1 || points.calculation.reason === 2" class="text-muted">
                 {{ trans("checkin.points.could-have") }}
-                {{ trans("checkin.points.full", { points: (points.points / points.calculation.factor).toString() }) }}
+                {{ trans("checkin.points.full", { points: (points.calculation.base + points.calculation.distance ).toString() }) }}
             </p>
             <p v-if="points.calculation.reason === 3" class="text-danger">{{ trans("checkin.points.forced") }}</p>
 

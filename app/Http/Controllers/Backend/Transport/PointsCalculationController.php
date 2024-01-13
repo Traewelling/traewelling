@@ -13,6 +13,12 @@ use JetBrains\PhpStorm\Pure;
 abstract class PointsCalculationController extends Controller
 {
 
+    private const REDUCED_POINTS = [
+        PointReason::NOT_SUFFICIENT,
+        PointReason::FORCED,
+        PointReason::MANUAL_TRIP,
+    ];
+
     public static function calculatePoints(
         int             $distanceInMeter,
         HafasTravelType $hafasTravelType,
@@ -42,31 +48,10 @@ abstract class PointsCalculationController extends Controller
         float       $distancePoints,
         PointReason $pointReason
     ): PointCalculation {
-        if ($pointReason === PointReason::MANUAL_TRIP) {
-            return new PointCalculation(
-                points:         0,
-                basePoints:     $basePoints,
-                distancePoints: $distancePoints,
-                reason:         $pointReason,
-                factor:         0,
-            );
-        }
-        if ($pointReason === PointReason::NOT_SUFFICIENT || $pointReason === PointReason::FORCED) {
-            return new PointCalculation(
-                points:         1,
-                basePoints:     $basePoints,
-                distancePoints: $distancePoints,
-                reason:         $pointReason,
-                factor:         0,
-            );
-        }
         $factor = self::getFactorByReason($pointReason);
 
-        $basePoints     *= $factor;
-        $distancePoints *= $factor;
-
         return new PointCalculation(
-            points:         ceil($basePoints + $distancePoints),
+            points:         self::getPointsByReason($pointReason, ($basePoints + $distancePoints), $factor),
             basePoints:     $basePoints,
             distancePoints: $distancePoints,
             reason:         $pointReason,
@@ -74,9 +59,17 @@ abstract class PointsCalculationController extends Controller
         );
     }
 
+    public static function getPointsByReason(PointReason $pointReason, int $points, float $factor): int {
+        if (in_array($pointReason, self::REDUCED_POINTS)) {
+            return $pointReason === PointReason::MANUAL_TRIP ? 0 : 1;
+        }
+
+        return ceil($points * $factor);
+    }
+
     #[Pure]
     public static function getFactorByReason(PointReason $pointReason): float|int {
-        if ($pointReason === PointReason::NOT_SUFFICIENT || $pointReason === PointReason::FORCED) {
+        if (in_array($pointReason, self::REDUCED_POINTS)) {
             return 0;
         }
         if ($pointReason === PointReason::GOOD_ENOUGH) {
