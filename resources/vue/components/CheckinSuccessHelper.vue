@@ -16,12 +16,17 @@ export default {
         transChoice,
         trans,
         fetchData() {
+            if (localStorage.getItem("points") === null) {
+                return;
+            }
             this.points              = JSON.parse(localStorage.getItem("points"));
-            this.alsoOnThisConection = JSON.parse(localStorage.getItem("alsoOnThisConnection"));
+            if (localStorage.getItem("alsoOnThisConnection") !== null) {
+                this.alsoOnThisConection = JSON.parse(localStorage.getItem("alsoOnThisConnection"));
+            }
             localStorage.removeItem("points");
             localStorage.removeItem("alsoOnThisConnection");
             console.log(this.alsoOnThisConection[0]);
-            if (this.points && this.points.points) {
+            if (this.points?.points) {
                 this.$refs.modal.show();
             }
         }
@@ -58,7 +63,3 @@ export default {
         </template>
     </ModalComponent>
 </template>
-
-<style scoped lang="scss">
-
-</style>
