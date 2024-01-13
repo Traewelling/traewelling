@@ -1,6 +1,7 @@
 <script>
 import VisibilityDropdown from "./VisibilityDropdown.vue";
 import {trans} from "laravel-vue-i18n";
+import _ from "lodash";
 
 export default {
     name: "TagRow",
@@ -33,7 +34,7 @@ export default {
             ],
             selectedKey: this.value?.key,
             input: this.value?.value,
-            visibility: this.value?.visibility
+            visibility: this.value?.visibility ?? 0
         };
     },
     components: {VisibilityDropdown},
@@ -67,16 +68,24 @@ export default {
             }
         },
         addTag() {
+            if (this.updateTag()) {
+                this.input = null;
+                this.selectKey();
+            }
+        },
+        deleteTag() {
+            this.$emit("update:model-value", null);
+        },
+        updateTag() {
+            if (this.input === null || this.input === "") {
+                return false;
+            }
             this.$emit("update:model-value", {
                 key: this.selectedKey,
                 value: this.input,
                 visibility: this.visibility
             });
-            this.input = null;
-            this.selectKey();
-        },
-        deleteTag() {
-            this.$emit("update:model-value", null);
+            return true;
         }
     },
     mounted() {
@@ -95,7 +104,17 @@ export default {
     watch: {
         exclude() {
             this.selectKey();
-        }
+        },
+        visibility() {
+            if (this.list) {
+                this.updateTag();
+            }
+        },
+        input: _.debounce(function(){
+            if (this.list) {
+                this.updateTag();
+            }
+        }, 1000)
     },
     emits: ["update:model-value"]
 }
@@ -121,7 +140,7 @@ export default {
                 </a>
             </li>
         </ul>
-        <input type="text" class="form-control" v-model="input" :disabled="disabled">
+        <input :id="`input-${selectedKey?.replace(':', '')}`" type="text" class="form-control" v-model="input" :disabled="disabled">
         <VisibilityDropdown v-model="visibility" :disabled="disabled"></VisibilityDropdown>
         <button v-if="!list" class="btn btn-primary" @click="addTag" :disabled="disabled">Add</button>
         <button v-if="list" class="btn btn-outline-danger" @click="deleteTag"><i class="fa fa-trash"></i></button>

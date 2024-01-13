@@ -11,6 +11,11 @@ export default {
         VisibilityDropdown,
         FullScreenModal
     },
+    props: {
+        statusId: {
+            type: Number,
+        }
+    },
     data() {
         return {
             tags: [],
@@ -23,40 +28,82 @@ export default {
     },
     methods: {
         trans,
-        showModal() {
+        showModal(tag) {
             this.$refs.modal.show();
+            let input = 'input';
+            if (tag) {
+                input = '#input-' + tag.key.replace(':', '');
+            }
+            console.log(input)
+            // automatically focus the input field of the tag
+            setTimeout(() => {
+                this.$refs.modal.$el.querySelector(input).focus();
+            }, 100);
         },
         addTag(value) {
-            this.tags.push(value);
+            fetch(`/api/v1/status/${this.$props.statusId}/tags`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(value)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.tags.push(data.data);
+                })
         },
         updateTag(event, tag) {
             if (event === null) {
-                this.tags = this.tags.filter(item => item.key !== tag.key);
+                fetch(`/api/v1/status/${this.$props.statusId}/tags/${tag.key}`, {
+                    method: 'DELETE',
+                })
+                    .then(response => response.json())
+                    .then(() => {
+                        this.tags = this.tags.filter(item => item.key !== tag.key);
+                    })
             } else {
-                this.tags = this.tags.map(item => {
-                    if (item.key === tag.key) {
-                        return event;
-                    }
-                    return item;
-                });
+                fetch(`/api/v1/status/${this.$props.statusId}/tags/${tag.key}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(event)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.tags = this.tags.map(item => {
+                            if (item.key === tag.key) {
+                                return data.data;
+                            }
+                            return item;
+                        });
+                    })
             }
+        },
+        fetchTags() {
+            fetch(`/api/v1/status/${this.$props.statusId}/tags`)
+                .then(response => response.json())
+                .then(data => {
+                    this.tags = data.data;
+                })
         }
     },
     computed: {
         excludeTags() {
             return this.tags.map(key => key.key);
         }
-    }
+    },
+    mounted() {
+        this.fetchTags();
+    },
 }
 </script>
 
 <template>
     <FullScreenModal ref="modal">
         <template #header>
-            <div class="col-1 align-items-center d-flex">
-                Tags
-                {{ trans('export.title.status_tags') }}
-            </div>
+            {{ trans('export.title.status_tags') }}
         </template>
         <template #body>
             <TagRow @update:model-value="addTag" :exclude="excludeTags"></TagRow>
@@ -68,6 +115,10 @@ export default {
     <button class="btn btn-link btn-sm text-white badge bg-trwl" @click="showModal()">
         <i class="fa fa-plus"></i>
         New Tag
+    </button>
+
+    <button v-for="tag in tags" :key="tag.key" class="btn btn-link btn-sm text-white badge bg-trwl ms-1" @click="showModal(tag)">
+        {{ tag.key }}|{{ tag.value }}
     </button>
     &nbsp;
     <slot/>
