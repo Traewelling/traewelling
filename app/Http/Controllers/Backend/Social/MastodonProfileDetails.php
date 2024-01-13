@@ -24,9 +24,13 @@ class MastodonProfileDetails
     }
 
     private function getData(): ?array {
-        return Cache::remember(CacheKey::getMastodonProfileInformationKey($this->user), 60 * 60 /* 1 hour */, function() {
+        return Cache::remember(CacheKey::getMastodonProfileInformationKey($this->user), 3600, function () {
             return $this->fetchProfileInformation();
         });
+    }
+
+    public function forgetData(): void {
+        Cache::forget(CacheKey::getMastodonProfileInformationKey($this->user));
     }
 
     private function fetchProfileInformation(): ?array {
