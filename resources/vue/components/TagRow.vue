@@ -67,7 +67,7 @@ export default {
     },
     computed: {
         tagKeys() {
-            return this.baseKeys.filter(key => !this.exclude.includes(key));
+            return this.baseKeys.filter((key) => !this.exclude.includes(key));
         },
         disabled() {
             return this.tagKeys.length === 0;
@@ -89,7 +89,7 @@ export default {
         }, 1000)
     },
     emits: ["update:model-value"]
-}
+};
 </script>
 
 <template>

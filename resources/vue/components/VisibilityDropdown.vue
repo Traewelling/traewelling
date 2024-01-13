@@ -20,7 +20,7 @@ export default {
     data() {
         return {
             visibility: this.value,
-        }
+        };
     },
     methods: {
         trans,
@@ -49,7 +49,7 @@ export default {
         this.visibility = this.startValue;
     },
     emits: ["update:model-value"]
-}
+};
 </script>
 
 <template>
