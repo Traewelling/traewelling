@@ -2,6 +2,7 @@
 import VisibilityDropdown from "./VisibilityDropdown.vue";
 import {trans} from "laravel-vue-i18n";
 import _ from "lodash";
+import {getIcon, getTitle, keys} from "../helpers/StatusTag";
 
 export default {
     name: "TagRow",
@@ -21,17 +22,7 @@ export default {
     },
     data() {
         return {
-            baseKeys: [
-                'trwl:seat',
-                'trwl:ticket',
-                'trwl:role',
-                'trwl:passenger_rights',
-                'trwl:wagon',
-                'trwl:travel_class',
-                'trwl:locomotive_class',
-                'trwl:wagon_class',
-                'trwl:vehicle_number'
-            ],
+            baseKeys: keys,
             selectedKey: this.value?.key,
             input: this.value?.value,
             visibility: this.value?.visibility ?? 0
@@ -39,27 +30,8 @@ export default {
     },
     components: {VisibilityDropdown},
     methods: {
-        getIcon(key) {
-            switch (key) {
-                case "trwl:seat":
-                    return 'fa-couch';
-                case 'trwl:role':
-                    return 'fa-briefcase';
-                case 'trwl:ticket':
-                    return 'fa-qrcode';
-                case 'trwl:passenger_rights':
-                    return 'fa-user-shield';
-            }
-            return 'fa-fw';
-        },
-        getTitle(key) {
-            let translate = trans('tag.title.' + key);
-
-            if (translate === 'tag.title.' + key) {
-                return key;
-            }
-            return translate;
-        },
+        getTitle,
+        getIcon,
         selectKey(key) {
             if (key) {
                 this.selectedKey = key;
@@ -77,15 +49,16 @@ export default {
             this.$emit("update:model-value", null);
         },
         updateTag() {
-            if (this.input === null || this.input === "") {
-                return false;
+            if (this.input) {
+                this.$emit("update:model-value", {
+                    key: this.selectedKey,
+                    value: this.input,
+                    visibility: this.visibility
+                });
+                return true;
             }
-            this.$emit("update:model-value", {
-                key: this.selectedKey,
-                value: this.input,
-                visibility: this.visibility
-            });
-            return true;
+
+            return false;
         }
     },
     mounted() {
@@ -140,7 +113,14 @@ export default {
                 </a>
             </li>
         </ul>
-        <input :id="`input-${selectedKey?.replace(':', '')}`" type="text" class="form-control" v-model="input" :disabled="disabled">
+        <input
+            :id="`input-${selectedKey?.replace(':', '')}`"
+            type="text"
+            class="form-control"
+            v-model="input"
+            :disabled="disabled"
+            @keydown.enter="addTag"
+        >
         <VisibilityDropdown v-model="visibility" :disabled="disabled"></VisibilityDropdown>
         <button v-if="!list" class="btn btn-primary" @click="addTag" :disabled="disabled">Add</button>
         <button v-if="list" class="btn btn-outline-danger" @click="deleteTag"><i class="fa fa-trash"></i></button>

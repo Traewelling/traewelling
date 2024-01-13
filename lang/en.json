@@ -231,6 +231,7 @@
     "modals.deleteEvent-body": "Are you sure, that you want to delete the event <em>:name</em>? Check-ins en route will be updated to <code>NULL</code>.",
     "modals.setHome-title": "Set home station",
     "modals.setHome-body": "Do you want to set <em>:stationName</em> as your home station?",
+    "modals.tags.new": "New tag",
     "notifications.empty": "You have not received any notifications yet.",
     "notifications.eventSuggestionProcessed.lead": "Your event suggestion <b>:name</b> was reviewed.",
     "notifications.eventSuggestionProcessed.denied": "Your suggestion was rejected.",

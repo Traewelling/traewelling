@@ -36,7 +36,12 @@
                 <h2 class="fs-5">{{ userTime($status->checkin->departure,__('dateformat.with-weekday')) }}</h2>
                 @include('includes.status')
                 <div id="tag-helper">
-                    <tag-helper :status-id="{{ $status->id }}"></tag-helper>
+                    <tag-helper
+                        :status-id="{{ $status->id }}"
+                        @can('update', $status)
+                            :editable="true"
+                        @endcan
+                    ></tag-helper>
                 </div>
 
                 @if(isset($status->checkin->trip->last_refreshed) && \Illuminate\Support\Facades\Date::now()->isBefore($status->created_at->clone()->addDay()))

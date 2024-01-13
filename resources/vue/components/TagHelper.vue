@@ -3,6 +3,7 @@ import FullScreenModal from "./FullScreenModal.vue";
 import VisibilityDropdown from "./VisibilityDropdown.vue";
 import {trans} from "laravel-vue-i18n";
 import TagRow from "./TagRow.vue";
+import {getIcon, getTitle} from "../helpers/StatusTag";
 
 export default {
     name: "TagHelper",
@@ -14,6 +15,10 @@ export default {
     props: {
         statusId: {
             type: Number,
+        },
+        editable: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -27,6 +32,8 @@ export default {
         };
     },
     methods: {
+        getTitle,
+        getIcon,
         trans,
         showModal(tag) {
             this.$refs.modal.show();
@@ -112,14 +119,34 @@ export default {
         </template>
     </FullScreenModal>
 
-    <button class="btn btn-link btn-sm text-white badge bg-trwl" @click="showModal()">
+    <button v-show="editable" class="btn btn-link btn-sm text-white badge bg-trwl" @click="showModal()">
         <i class="fa fa-plus"></i>
-        New Tag
+        {{ trans('modals.tags.new') }}
     </button>
 
-    <button v-for="tag in tags" :key="tag.key" class="btn btn-link btn-sm text-white badge bg-trwl ms-1" @click="showModal(tag)">
-        {{ tag.key }}|{{ tag.value }}
+    <button
+        v-if="editable"
+        v-for="tag in tags"
+        :key="tag.key"
+        class="btn btn-link btn-sm text-white badge bg-trwl ms-1"
+        @click="showModal(tag)"
+    >
+        <i v-show="getIcon(tag.key) !== 'fa-fw'" :class="[getIcon(tag.key), 'fa']"></i>
+        {{ tag.value }}
     </button>
+    <span
+        v-else
+        v-for="tag in tags"
+        :key="tag.key"
+        class="text-white badge bg-trwl ms-1"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        :title="getTitle(tag.key)"
+        :ref="tag.key"
+    >
+        <i v-show="getIcon(tag.key) !== 'fa-fw'" :class="[getIcon(tag.key), 'fa']"></i>
+        {{ tag.value }}
+    </span>
     &nbsp;
     <slot/>
 </template>

@@ -249,6 +249,7 @@
     "modals.deleteEvent-body": "Bist Du sicher, dass Du das Event <em>:name</em> löschen möchtest? Check-ins auf dem Weg dahin fahren dann nach <code>NULL</code>.",
     "modals.setHome-title": "Heimatbahnhof setzen",
     "modals.setHome-body": "Möchtest du <em>:stationName</em> als Heimatbahnhof festlegen?",
+    "modals.tags.new": "Neuer Tag",
     "notifications.empty": "Du hast bisher noch keine Benachrichtigungen bekommen.",
     "notifications.eventSuggestionProcessed.lead": "Dein Eventvorschlag <b>:name</b> wurde bearbeitet.",
     "notifications.eventSuggestionProcessed.denied": "Dein Vorschlag wurde abgelehnt.",
