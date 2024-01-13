@@ -35,22 +35,25 @@
                 @endif
                 <h2 class="fs-5">{{ userTime($status->checkin->departure,__('dateformat.with-weekday')) }}</h2>
                 @include('includes.status')
-
-                @if($status->tags->count() > 0)
-                    @foreach($status->tags as $tag)
-                        @can('view', $tag)
-                            <span class="badge bg-trwl" data-mdb-toggle="tooltip" title="{{$tag->keyEnum->title()}}">
+                <div id="tag-helper">
+                    <tag-helper>
+                        @if($status->tags->count() > 0)
+                            @foreach($status->tags as $tag)
+                                @can('view', $tag)
+                                    <span class="badge bg-trwl" data-mdb-toggle="tooltip" title="{{$tag->keyEnum->title()}}">
                             @if($tag->keyEnum?->faIcon() !== null)
-                                    <i class="fa-solid {{$tag->keyEnum->faIcon()}} me-1"></i>
-                                @endif
-                                {{$tag->value}}
+                                            <i class="fa-solid {{$tag->keyEnum->faIcon()}} me-1"></i>
+                                        @endif
+                                        {{$tag->value}}
                         </span>
-                        @endcan
-                    @endforeach
-                    <span class="badge" data-mdb-toggle="tooltip" title="{{__('tag-beta-tooltip')}}">
+                                @endcan
+                            @endforeach
+                            <span class="badge" data-mdb-toggle="tooltip" title="{{__('tag-beta-tooltip')}}">
                         <i class="fa-solid fa-question-circle"></i>
                     </span>
-                @endif
+                        @endif
+                    </tag-helper>
+                </div>
 
                 @if(isset($status->checkin->trip->last_refreshed) && \Illuminate\Support\Facades\Date::now()->isBefore($status->created_at->clone()->addDay()))
                     <hr/>

@@ -1,0 +1,86 @@
+<script>
+import {trans} from "laravel-vue-i18n";
+
+export default {
+    name: "VisibilityDropdown",
+    props: {
+        value: {
+            type: Number,
+            default: 0
+        },
+        disabled: {
+            type: Boolean,
+            default: false
+        }
+    },
+    data() {
+        return {
+            visibility: this.value,
+        }
+    },
+    methods: {
+        trans,
+        setVisibility(visibility) {
+            this.visibility = visibility;
+            this.$emit("update:model-value", visibility);
+        }
+    },
+    computed: {
+        visibilityIcon() {
+            switch (this.visibility) {
+                case 0:
+                    return "fa fa-globe-americas";
+                case 1:
+                    return "fa fa-lock-open";
+                case 2:
+                    return "fa fa-user-friends";
+                case 3:
+                    return "fa fa-lock";
+                case 4:
+                    return "fa fa-user-check";
+            }
+        }
+    },
+    emits: ["update:model-value"]
+}
+</script>
+
+<template>
+    <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
+            id="visibilityDropdownButton" data-mdb-dropdown-animation="off"
+            data-mdb-toggle="dropdown" aria-expanded="false" :disabled="disabled">
+        <i :class="visibilityIcon" aria-hidden="true"></i>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="visibilityDropdownButton" style="">
+        <li class="dropdown-item" @click="setVisibility(0)">
+            <i class="fa fa-globe-americas" aria-hidden="true"></i> {{ trans("status.visibility.0") }}
+            <br>
+            <span
+                class="text-muted"> {{ trans("status.visibility.0.detail") }}</span>
+        </li>
+        <li class="dropdown-item" @click="setVisibility(1)">
+            <i class="fa fa-lock-open" aria-hidden="true"></i> {{ trans("status.visibility.1") }}
+            <br>
+            <span class="text-muted"> {{ trans("status.visibility.1.detail") }}</span>
+        </li>
+        <li class="dropdown-item" @click="setVisibility(2)">
+            <i class="fa fa-user-friends" aria-hidden="true"></i> {{ trans("status.visibility.2") }}
+            <br>
+            <span class="text-muted"> {{ trans("status.visibility.2.detail") }}</span>
+        </li>
+        <li class="dropdown-item" @click="setVisibility(3)">
+            <i class="fa fa-lock" aria-hidden="true"></i> {{ trans("status.visibility.3") }}
+            <br>
+            <span class="text-muted"> {{ trans("status.visibility.3.detail") }}</span>
+        </li>
+        <li class="dropdown-item" @click="setVisibility(4)">
+            <i class="fa fa-user-check" aria-hidden="true"></i> {{ trans("status.visibility.4") }}
+            <br>
+            <span class="text-muted"> {{ trans("status.visibility.4.detail") }}</span>
+        </li>
+    </ul>
+</template>
+
+<style scoped lang="scss">
+
+</style>
