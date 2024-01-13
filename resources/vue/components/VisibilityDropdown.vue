@@ -46,8 +46,7 @@ export default {
 </script>
 
 <template>
-    <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
-            id="visibilityDropdownButton" data-mdb-dropdown-animation="off"
+    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
             data-mdb-toggle="dropdown" aria-expanded="false" :disabled="disabled">
         <i :class="visibilityIcon" aria-hidden="true"></i>
     </button>
