@@ -4,8 +4,9 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="1">
+          <list size="2">
             <item index="0" class="java.lang.String" itemvalue=":class" />
+            <item index="1" class="java.lang.String" itemvalue="@click" />
           </list>
         </value>
       </option>
@@ -14,7 +15,6 @@
     <inspection_tool class="PhpCSValidationInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="CODING_STANDARD" value="Custom" />
       <option name="CUSTOM_RULESET_PATH" value="$PROJECT_DIR$/phpcs.xml" />
-      <option name="EXTENSIONS" value="php,js,css,inc" />
     </inspection_tool>
   </profile>
 </component>

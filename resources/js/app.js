@@ -13,7 +13,8 @@ import "leaflet/dist/leaflet.js";
 import "./api/api";
 import "./components/maps";
 import CheckinSuccessHelper from "../vue/components/CheckinSuccessHelper.vue";
-import {I18n, i18nVue} from "laravel-vue-i18n";
+import {i18nVue} from "laravel-vue-i18n";
+import TagHelper from "../vue/components/TagHelper.vue";
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -85,6 +86,14 @@ document.addEventListener("DOMContentLoaded", function() {
         resolve: (lang) => import(`../../lang/${lang}.json`)
     });
     app4.mount("#checkin-success-helper");
+
+    const app5 = createApp({});
+    app5.component("TagHelper", TagHelper);
+    app5.use(i18nVue, {
+        fallbackLang: fallbackLang,
+        resolve: (lang) => import(`../../lang/${lang}.json`)
+    });
+    app5.mount("#tag-helper");
 
 
 });
