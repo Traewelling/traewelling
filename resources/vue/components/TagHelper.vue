@@ -37,11 +37,10 @@ export default {
         trans,
         showModal(tag) {
             this.$refs.modal.show();
-            let input = 'input';
+            let input = "input";
             if (tag) {
-                input = '#input-' + tag.key.replace(':', '');
+                input = "#input-" + tag.key.replace(":", "");
             }
-            console.log(input)
             // automatically focus the input field of the tag
             setTimeout(() => {
                 this.$refs.modal.$el.querySelector(input).focus();
@@ -49,37 +48,37 @@ export default {
         },
         addTag(value) {
             fetch(`/api/v1/status/${this.$props.statusId}/tags`, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(value)
             })
-                .then(response => response.json())
-                .then(data => {
+                .then((response) => response.json())
+                .then((data) => {
                     this.tags.push(data.data);
-                })
+                });
         },
         updateTag(event, tag) {
             if (event === null) {
                 fetch(`/api/v1/status/${this.$props.statusId}/tags/${tag.key}`, {
-                    method: 'DELETE',
+                    method: "DELETE",
                 })
                     .then(response => response.json())
                     .then(() => {
-                        this.tags = this.tags.filter(item => item.key !== tag.key);
+                        this.tags = this.tags.filter((item) => item.key !== tag.key);
                     })
             } else {
                 fetch(`/api/v1/status/${this.$props.statusId}/tags/${tag.key}`, {
-                    method: 'PUT',
+                    method: "PUT",
                     headers: {
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
                     },
                     body: JSON.stringify(event)
                 })
                     .then(response => response.json())
                     .then(data => {
-                        this.tags = this.tags.map(item => {
+                        this.tags = this.tags.map((item) => {
                             if (item.key === tag.key) {
                                 return data.data;
                             }
@@ -104,13 +103,13 @@ export default {
     mounted() {
         this.fetchTags();
     },
-}
+};
 </script>
 
 <template>
     <FullScreenModal ref="modal">
         <template #header>
-            {{ trans('export.title.status_tags') }}
+            {{ trans("export.title.status_tags") }}
         </template>
         <template #body>
             <TagRow @update:model-value="addTag" :exclude="excludeTags"></TagRow>
@@ -121,7 +120,7 @@ export default {
 
     <button v-show="editable" class="btn btn-link btn-sm text-white badge bg-trwl" @click="showModal()">
         <i class="fa fa-plus"></i>
-        {{ trans('modals.tags.new') }}
+        {{ trans("modals.tags.new") }}
     </button>
 
     <button
