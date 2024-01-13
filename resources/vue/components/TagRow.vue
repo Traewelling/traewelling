@@ -1,6 +1,5 @@
 <script>
 import VisibilityDropdown from "./VisibilityDropdown.vue";
-import {trans} from "laravel-vue-i18n";
 import _ from "lodash";
 import {getIcon, getTitle, keys} from "../helpers/StatusTag";
 
@@ -121,7 +120,7 @@ export default {
             :disabled="disabled"
             @keydown.enter="addTag"
         >
-        <VisibilityDropdown v-model="visibility" :disabled="disabled"></VisibilityDropdown>
+        <VisibilityDropdown :start-value="visibility" :v-model="visibility" :disabled="disabled"></VisibilityDropdown>
         <button v-if="!list" class="btn btn-primary" @click="addTag" :disabled="disabled">Add</button>
         <button v-if="list" class="btn btn-outline-danger" @click="deleteTag"><i class="fa fa-trash"></i></button>
     </div>

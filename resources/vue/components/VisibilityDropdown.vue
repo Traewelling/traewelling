@@ -8,6 +8,10 @@ export default {
             type: Number,
             default: 0
         },
+        startValue: {
+            type: Number, // idk why I need this here. value did not update without it
+            default: 0
+        },
         disabled: {
             type: Boolean,
             default: false
@@ -40,6 +44,9 @@ export default {
                     return "fa fa-user-check";
             }
         }
+    },
+    mounted() {
+        this.visibility = this.startValue;
     },
     emits: ["update:model-value"]
 }
