@@ -768,5 +768,6 @@
     "error.401": "Geen toegang",
     "error.500": "Serverfout",
     "error.419": "Pagina verlopen",
-    "error.404": "Niet gevonden"
+    "error.404": "Niet gevonden",
+    "modals.tags.new": "Nieuw label"
 }
