@@ -23,7 +23,7 @@
         "bootstrap-cookie-alert": "^1.2.1",
         "chart.js": "^2.9.4",
         "croppie": "^2.6.5",
-        "laravel-vue-i18n": "^2.7.1",
+        "laravel-vue-i18n": "^2.7.6",
         "leaflet": "^1.9.4",
         "Leaflet-MovingMaker": "^0.0.1",
         "luxon": "^3.4.4",
