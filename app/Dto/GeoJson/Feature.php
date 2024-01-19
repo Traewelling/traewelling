@@ -24,14 +24,19 @@ class Feature implements \JsonSerializable
         return new self([$coordinate->longitude, $coordinate->latitude], 'Point');
     }
 
-    public function getCoordinates(): array {
-        return $this->coordinates;
+    public function getCoordinates(bool $invert = false): array {
+        if (!$invert) {
+            return $this->coordinates;
+        }
+        return array_map(static function($coordinate) {
+            return [$coordinate->latitude, $coordinate->longitude];
+        }, $this->coordinates);
     }
 
     public function toArray(): array {
         $response = [
-            'type'     => 'Feature',
-            'geometry' => [
+            'type'       => 'Feature',
+            'geometry'   => [
                 'type'        => $this->type,
                 'coordinates' => $this->coordinates
             ],
