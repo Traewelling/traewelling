@@ -30,7 +30,7 @@ class TripController extends Controller
      *       -> later solve the problem for non-existing stations
      */
     public function createTrip(Request $request): TripResource {
-        if (!auth()->user()?->hasRole('closed-beta')) {
+        if (!auth()->user()?->can('create-manual-trip')) {
             abort(403, 'this endpoint is currently only available for beta users');
         }
 
