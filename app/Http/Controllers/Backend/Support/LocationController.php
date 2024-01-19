@@ -180,8 +180,7 @@ class LocationController
         try {
             $geoJson  = $this->getPolylineBetween();
             if ($geoJson instanceof FeatureCollection) {
-
-                return $geoJson->features[0]->getCoordinates();
+                return $geoJson->features[0]->getCoordinates($invert);
             }
 
             $mapLines = [];
