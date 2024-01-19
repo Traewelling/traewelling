@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use stdClass;
 
 /**
  * //properties
@@ -42,6 +42,11 @@ use Illuminate\Support\Facades\Gate;
  * @property Station     $destinationStation
  * @property Stopover    $destinationStopover
  *
+ * //appends
+ * @property float       $speed
+ * @property stdClass    $displayDeparture
+ * @property stdClass    $displayArrival
+ *
  * @todo rename table to "Checkin" (without Train - we have more than just trains)
  * @todo merge model with "Status" because the difference between trip sources (HAFAS,
  *        User, and future sources) should be handled in the Trip model.
@@ -59,7 +64,7 @@ class Checkin extends Model
         'distance', 'duration', 'departure', 'manual_departure', 'arrival', 'manual_arrival', 'points', 'forced',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
-    protected $appends  = ['speed'];
+    protected $appends  = ['speed', 'displayDeparture', 'displayArrival'];
     protected $casts    = [
         'id'                      => 'integer',
         'status_id'               => 'integer',
@@ -137,7 +142,7 @@ class Checkin extends Model
         ];
     }
 
-    public function getDisplayDepartureAttribute(): \stdClass {
+    public function getDisplayDepartureAttribute(): stdClass {
         $planned = $this->originStopover?->departure_planned
                    ?? $this->originStopover?->departure
                       ?? $this->departure;
@@ -146,7 +151,7 @@ class Checkin extends Model
         return (object) self::prepareDisplayTime($planned, $real, $manual);
     }
 
-    public function getDisplayArrivalAttribute(): \stdClass {
+    public function getDisplayArrivalAttribute(): stdClass {
         $planned = $this->destinationStopover?->arrival_planned
                    ?? $this->destinationStopover?->arrival
                       ?? $this->arrival;

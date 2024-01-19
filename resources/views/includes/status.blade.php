@@ -158,8 +158,8 @@
             role="progressbar"
             style="width: 0"
             data-valuenow="{{ time() }}"
-            data-valuemin="{{ $status->checkin?->originStopover?->departure->timestamp ?? $status->checkin->departure->timestamp }}"
-            data-valuemax="{{ $status->checkin?->destinationStopover?->arrival->timestamp ?? $status->checkin->arrival->timestamp }}"
+            data-valuemin="{{ $status->checkin->displayDeparture->time->timestamp }}"
+            data-valuemax="{{ $status->checkin->displayArrival->time->timestamp }}"
         ></div>
     </div>
     <div class="card-footer text-muted interaction px-3 px-md-4">
