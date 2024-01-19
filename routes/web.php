@@ -123,6 +123,10 @@ Route::get('/ics', [IcsController::class, 'renderIcs'])
  * All of these routes can only be used by fully registered users.
  */
 Route::middleware(['auth', 'privacy'])->group(function() {
+    Route::view('/beta/trip-creation', 'closed-beta.trip-creation')
+         ->can('create-manual-trip')
+         ->name('beta.trip-creation');
+
     Route::post('/ics/createToken', [IcsController::class, 'createIcsToken'])
          ->name('ics.createToken'); //TODO: Replace with API Endpoint
     Route::post('/ics/revokeToken', [IcsController::class, 'revokeIcsToken'])
