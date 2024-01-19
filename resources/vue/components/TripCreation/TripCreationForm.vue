@@ -59,7 +59,9 @@ export default {
         },
         sendform() {
             this.form.lineName      = this.trainTypeInput + " " + this.trainNumberInput;
-            this.form.journeyNumber = isNumber(this.trainNumberInput) ? this.trainNumberInput : random(1000, 9999, false);
+
+            let trainNumber = parseInt(this.trainNumberInput);
+            this.form.journeyNumber = trainNumber || null;
 
             fetch("/api/v1/trains/trip", {
                 method: "POST",
