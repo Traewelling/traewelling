@@ -20,7 +20,6 @@ class LeaderboardUserResource extends JsonResource
             'profilePicture'=> ProfilePictureController::getUrl($this->user),
             'trainDuration' => (int) $this->duration,
             'trainDistance' => (float) $this->distance,
-            'trainSpeed'    => 0.0, //deprecated: TODO: remove after 2023-12-31
             'points'        => (int) $this->points
         ];
     }

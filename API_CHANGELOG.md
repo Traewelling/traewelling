@@ -4,6 +4,11 @@ In this we try to keep track of changes to the API.
 Primarily this should document changes that are not backwards compatible or belongs to already documented endpoints.
 This is to help you keep track of the changes and to help you update your code accordingly.
 
+## 2024-01-21
+
+The attribute `twitter` in the `User` Model is already always `null` and will be removed after 2024-03.
+Please prepare your code accordingly.
+
 ## 2023-11-23
 
 The attribute `type` in the `Status` Model is marked as deprecated and now returns a blank string for all statuses as it

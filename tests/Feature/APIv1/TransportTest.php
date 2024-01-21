@@ -72,7 +72,7 @@ class TransportTest extends ApiTestCase
         // Fetch correct trip
         $response = $this->get(
             uri:     '/api/v1/trains/trip'
-                     . '?tripId=' . $departure['tripId']
+                     . '?hafasTripId=' . $departure['tripId']
                      . '&lineName=' . $departure['line']['name']
                      . '&start=' . $departure['stop']['id'],
         );

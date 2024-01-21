@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 /**
- * @deprecated used in api v0 and frontend
+ * used in frontend
  */
 class PrivacyInterceptionMiddleware
 {

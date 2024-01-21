@@ -41,7 +41,6 @@ class StatusResource extends JsonResource
                 'distance'            => (int) $this->checkin->distance,
                 'points'              => (int) $this->checkin->points,
                 'duration'            => (int) $this->checkin->duration,
-                'speed'               => 0.0, //deprecated: TODO: remove after 2023-12-31
                 'manualDeparture'     => $this->checkin->manual_departure?->toIso8601String(),
                 'manualArrival'       => $this->checkin->manual_arrival?->toIso8601String(),
                 'origin'              => new StopoverResource($this->checkin->originStopover),
