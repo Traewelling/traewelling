@@ -751,5 +751,6 @@
     "error.404": "Nicht gefunden",
     "error.419": "Zeitüberschreitung",
     "error.429": "Zu viele Anfragen",
-    "error.500": "Interner Serverfehler"
+    "error.500": "Interner Serverfehler",
+    "support.rate_limit_exceeded": "Du hast vor kurzem bereits eine Support-Anfrage erstellt. Bitte warte noch etwas, bevor du eine weitere Anfrage erstellst."
 }

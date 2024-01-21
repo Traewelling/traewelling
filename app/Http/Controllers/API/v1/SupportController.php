@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Backend\Support\TicketController;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
@@ -30,6 +31,8 @@ class SupportController extends Controller
         } catch (GuzzleException $exception) {
             report($exception);
             return $this->sendError(null, 503);
+        } catch (RateLimitExceededException) {
+            return $this->sendError(__('support.rate_limit_exceeded'), 429);
         }
     }
 }
