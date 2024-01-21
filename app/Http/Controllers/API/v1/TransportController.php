@@ -15,9 +15,9 @@ use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
-use App\Http\Resources\TripResource;
 use App\Http\Resources\StationResource;
 use App\Http\Resources\StatusResource;
+use App\Http\Resources\TripResource;
 use App\Models\Event;
 use App\Models\Station;
 use Carbon\Carbon;
@@ -240,15 +240,14 @@ class TransportController extends Controller
      */
     public function getTrip(Request $request): JsonResponse {
         $validated = $request->validate([
-                                            'tripId'      => ['required_without:hafasTripId', 'string'], //ToDo deprecated: remove after 2023-02-28
-                                            'hafasTripId' => ['required_without:tripId', 'string'],
+                                            'hafasTripId' => ['required', 'string'],
                                             'lineName'    => ['required', 'string'],
                                             'start'       => ['required', 'numeric', 'gt:0'],
                                         ]);
 
         try {
             $trip = TrainCheckinController::getHafasTrip(
-                $validated['hafasTripId'] ?? $validated['tripId'], //ToDo deprecated: change to hafasTripId after 2023-02-28
+                $validated['hafasTripId'],
                 $validated['lineName'],
                 (int) $validated['start']
             );

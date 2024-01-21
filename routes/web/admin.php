@@ -15,9 +15,6 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
     Route::middleware('role:admin')->group(static function() {
         // these routes are only accessible for admins
 
-        Route::get('/stats', [DashboardController::class, 'renderStats'])
-             ->name('admin.stats');
-
         Route::prefix('checkin')->group(function() {
             Route::get('/', [CheckinController::class, 'renderStationboard'])
                  ->name('admin.stationboard');

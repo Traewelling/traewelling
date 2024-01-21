@@ -66,7 +66,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'home_id', 'avatar', 'social_profile', 'created_at', 'updated_at', 'userInvisibleToMe'
     ];
     protected $appends  = [
-        'averageSpeed', 'points', 'userInvisibleToMe', 'mastodonUrl', 'train_distance', 'train_duration',
+        'points', 'userInvisibleToMe', 'mastodonUrl', 'train_distance', 'train_duration',
         'following', 'followPending', 'muted', 'isAuthUserBlocked', 'isBlockedByAuthUser',
     ];
     protected $casts    = [
@@ -101,14 +101,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getTrainDurationAttribute(): float {
         return Checkin::where('user_id', $this->id)->sum('duration');
-    }
-
-    /**
-     * @return float
-     * @deprecated Use speed variable at train_checkins instead
-     */
-    public function getAverageSpeedAttribute(): float {
-        return $this->train_duration == 0 ? 0 : $this->train_distance / ($this->train_duration / 60);
     }
 
     public function socialProfile(): HasOne {

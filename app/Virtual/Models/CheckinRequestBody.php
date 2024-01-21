@@ -59,17 +59,6 @@ class CheckinRequestBody
 
     /**
      * @OA\Property (
-     *     title="tweet",
-     *     nullable=true,
-     *     description="The tweet flag is deprecated and will be removed in a future version. For now, it is ignored and check-ins are not tweeted.",
-     *     type="boolean",
-     *     example="false"
-     * )
-     */
-    private $tweet;
-
-    /**
-     * @OA\Property (
      *     title="toot",
      *     nullable=true,
      *     description="Should this status be posted to mastodon?",
