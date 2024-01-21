@@ -267,14 +267,10 @@ class StatusController extends Controller
         Business         $business,
         StatusVisibility $visibility,
         string           $body = null,
-        int              $eventId = null //TODO: change to Event Object
+        Event            $event = null
     ): Status {
-        $event = null;
-        if ($eventId !== null) {
-            $event = Event::find($eventId);
-            if (!Carbon::now()->isBetween($event?->begin, $event?->end)) {
-                $event = null;
-            }
+        if ($event !== null && !Carbon::now()->isBetween($event->begin, $event->end)) {
+            $event = null;
         }
 
         return Status::create([

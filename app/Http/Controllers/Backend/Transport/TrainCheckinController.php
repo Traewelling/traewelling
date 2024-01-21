@@ -20,12 +20,12 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
 use App\Http\Resources\StatusResource;
 use App\Jobs\RefreshStopover;
-use App\Models\Event;
-use App\Models\Trip;
-use App\Models\Status;
 use App\Models\Checkin;
+use App\Models\Event;
 use App\Models\Station;
+use App\Models\Status;
 use App\Models\Stopover;
+use App\Models\Trip;
 use App\Models\User;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
@@ -76,7 +76,7 @@ abstract class TrainCheckinController extends Controller
                 business:   $travelReason,
                 visibility: $visibility,
                 body:       $body,
-                eventId:    $event?->id
+                event:      $event
             );
 
             $checkinResponse = self::createCheckin(
