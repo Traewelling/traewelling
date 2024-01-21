@@ -289,9 +289,9 @@ class StatusController extends Controller
      *
      * @param int $id
      *
-     * @return StatusResource|Response
+     * @return StatusResource
      */
-    public function show(int $id): StatusResource|Response {
+    public function show(int $id): StatusResource {
         $status = StatusBackend::getStatus($id);
         try {
             $this->authorize('view', $status);
