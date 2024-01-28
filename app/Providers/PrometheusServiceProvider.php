@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
+use App\Enum\CacheKey;
+use App\Enum\MonitoringCounter;
 use App\Models\Trip;
 use App\Models\PolyLine;
-use App\Models\Status;
-use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
@@ -22,15 +23,20 @@ class PrometheusServiceProvider extends ServiceProvider
          */
         Prometheus::addGauge('Users count')
                   ->helpText("How many users are registered on the website?")
-                  ->value(function() {
-                      return User::count();
-                  });
+            ->labels(["created", "deleted"])
+            ->value(fn() => [
+                Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::UserCreated)),
+                Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::UserDeleted))
+            ]);
+
 
         Prometheus::addGauge('Status count')
                   ->helpText("How many statuses are posted on the website?")
-                  ->value(function() {
-                      return Status::count();
-                  });
+                  ->labels(["created", "deleted"])
+                  ->value(fn() => [
+                      Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusCreated)),
+                      Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusDeleted))
+                  ]);
 
         Prometheus::addGauge('Hafas Trips count')
                   ->helpText("How many hafas trips are posted grouped by operator and mode of transport?")

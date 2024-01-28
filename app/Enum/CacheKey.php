@@ -37,4 +37,8 @@ enum CacheKey: string
     public static function getAccountDeletionNotificationTwoWeeksBeforeKey(User $user): string {
         return "account-deletion-notification-two-weeks-before-{$user->id}";
     }
+
+    public static function getMonitoringCounterKey(MonitoringCounter $counter): string {
+        return "monitoring-counter-{$counter->value}";
+    }
 }
