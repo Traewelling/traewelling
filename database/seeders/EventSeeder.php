@@ -10,12 +10,14 @@ class EventSeeder extends Seeder
 {
 
     public function run(): void {
-        Event::factory([
-                           'name'    => 'Jährliches Modelleisenbahntreffen ' . date('Y'),
-                           'hashtag' => 'Modellbahn' . date('y'),
-                           'slug'    => 'Modellbahn' . date('y'),
-                           'host'    => 'Modelleisenbahnfreunde Knuffingen',
-                           'url'     => 'https://traewelling.de',
-                       ])->create();
+        if (!Event::where("slug", "=", 'Modellbahn' . date('y'))->count()) {
+            Event::factory([
+                               'name'    => 'Jährliches Modelleisenbahntreffen ' . date('Y'),
+                               'hashtag' => 'Modellbahn' . date('y'),
+                               'slug'    => 'Modellbahn' . date('y'),
+                               'host'    => 'Modelleisenbahnfreunde Knuffingen',
+                               'url'     => 'https://traewelling.de',
+                           ])->create();
+        }
     }
 }
