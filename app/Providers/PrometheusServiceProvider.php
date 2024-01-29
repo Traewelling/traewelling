@@ -23,20 +23,24 @@ class PrometheusServiceProvider extends ServiceProvider
          */
         Prometheus::addGauge('Users count')
                   ->helpText("How many users are registered on the website?")
-            ->labels(["created", "deleted"])
-            ->value(fn() => [
-                Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::UserCreated)),
-                Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::UserDeleted))
-            ]);
+            ->label("state")
+            ->value(function() {
+                return [
+                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::UserCreated)), ["created"]],
+                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::UserDeleted)), ["deleted"]]
+                ];
+            });
 
 
         Prometheus::addGauge('Status count')
                   ->helpText("How many statuses are posted on the website?")
-                  ->labels(["created", "deleted"])
-                  ->value(fn() => [
-                      Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusCreated)),
-                      Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusDeleted))
-                  ]);
+            ->label("state")
+            ->value(function() {
+                return [
+                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusCreated)), ["created"]],
+                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusDeleted)), ["deleted"]]
+                ];
+            });
 
         Prometheus::addGauge('Hafas Trips count')
                   ->helpText("How many hafas trips are posted grouped by operator and mode of transport?")
