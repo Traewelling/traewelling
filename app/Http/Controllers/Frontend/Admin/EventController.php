@@ -62,7 +62,7 @@ class EventController extends Controller
     }
 
     public function renderEdit(int $id): View {
-        return view('admin.events.edit', ['event' => Event::findOrFail($id)]);
+        return view('admin.events.form', ['event' => Event::findOrFail($id)]);
     }
 
     public function denySuggestion(Request $request): RedirectResponse {
@@ -201,12 +201,15 @@ class EventController extends Controller
 
         $event = Event::findOrFail($id);
 
-        $trainStation = HafasController::getStations($validated['nearest_station_name'], 1)->first();
+        $validated['station_id'] = null;
+        if ($validated['nearest_station_name']) {
+            $trainStation = HafasController::getStations($validated['nearest_station_name'], 1)->first();
 
-        if ($trainStation === null) {
-            return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
+            if ($trainStation === null) {
+                return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
+            }
+            $validated['station_id'] = $trainStation->id;
         }
-        $validated['station_id'] = $trainStation->id;
 
         $event->update($validated);
 

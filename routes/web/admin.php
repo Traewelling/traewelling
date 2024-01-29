@@ -83,7 +83,7 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
                  //->middleware(['can:accept-events']) - TODO: working in the browser, but not in the tests
                   ->name('admin.events.suggestions.accept.do');
 
-             Route::view('/create', 'admin.events.create')
+             Route::view('/create', 'admin.events.form')
                   ->middleware('permission:create-events')
                   ->name('admin.events.create');
              Route::post('/create', [AdminEventController::class, 'create'])
