@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Support;
 
+use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Backend\Support\TicketController;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Exception\GuzzleException;
@@ -34,6 +35,8 @@ class SupportController extends Controller
         } catch (GuzzleException $exception) {
             report($exception);
             return back()->with('error', __('messages.exception.general'));
+        } catch (RateLimitExceededException) {
+            return back()->with('error', __('support.rate_limit_exceeded'));
         }
     }
 }
