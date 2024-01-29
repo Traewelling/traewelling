@@ -16,8 +16,10 @@ use Illuminate\Support\Facades\Auth;
  * @property int              user_id
  * @property string           body
  * @property Business         business
- * @property int              event_id
  * @property StatusVisibility visibility
+ * @property int              event_id
+ * @property string           tweet_id
+ * @property string           mastodon_post_id
  * @property Checkin          $checkin
  *
  * @todo merge model with "Checkin" (later only "Checkin") because the difference between trip sources (HAFAS,
@@ -28,7 +30,7 @@ class Status extends Model
 
     use HasFactory;
 
-    protected $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'tweet_id', 'mastodon_post_id'];
+    protected $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'tweet_id', 'mastodon_post_id', 'client_id'];
     protected $hidden   = ['user_id', 'business'];
     protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description'];
     protected $casts    = [
@@ -39,6 +41,7 @@ class Status extends Model
         'event_id'         => 'integer',
         'tweet_id'         => 'string',
         'mastodon_post_id' => 'string',
+        'client_id'        => 'integer'
     ];
 
     public function user(): BelongsTo {
@@ -51,6 +54,10 @@ class Status extends Model
 
     public function checkin(): HasOne {
         return $this->hasOne(Checkin::class);
+    }
+
+    public function client(): BelongsTo {
+        return $this->belongsTo(OAuthClient::class, 'client_id', 'id');
     }
 
     /**

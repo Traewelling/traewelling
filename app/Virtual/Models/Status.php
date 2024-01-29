@@ -139,6 +139,16 @@ class Status
 
     /**
      * @OA\Property (
+     *     title="client",
+     *     description="Client model",
+     * )
+     *
+     * @var Client
+     */
+    private $client;
+
+    /**
+     * @OA\Property (
      *     title="createdAt",
      *     description="creation date of this status",
      *     type="string",

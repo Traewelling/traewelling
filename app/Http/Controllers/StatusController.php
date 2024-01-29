@@ -60,22 +60,22 @@ class StatusController extends Controller
      */
     public static function getActiveStatuses(): ?Collection {
         return Status::with([
-                                     'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
-                                     'checkin.originStation', 'checkin.destinationStation',
-                                     'checkin.Trip.stopovers.station',
-                                     'checkin.Trip.polyline',
-                                 ])
-                          ->whereHas('checkin', function($query) {
-                              $query->where('departure', '<', date('Y-m-d H:i:s'))
-                                    ->where('arrival', '>', date('Y-m-d H:i:s'));
-                          })
-                          ->get()
-                          ->filter(function(Status $status) {
-                              return Gate::allows('view', $status) && !$status->user->shadow_banned && $status->visibility !== StatusVisibility::UNLISTED;
-                          })
-                          ->sortByDesc(function(Status $status) {
-                              return $status->checkin->departure;
-                          })->values();
+                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
+                                'checkin.originStation', 'checkin.destinationStation',
+                                'checkin.Trip.stopovers.station',
+                                'checkin.Trip.polyline',
+                            ])
+                     ->whereHas('checkin', function($query) {
+                         $query->where('departure', '<', date('Y-m-d H:i:s'))
+                               ->where('arrival', '>', date('Y-m-d H:i:s'));
+                     })
+                     ->get()
+                     ->filter(function(Status $status) {
+                         return Gate::allows('view', $status) && !$status->user->shadow_banned && $status->visibility !== StatusVisibility::UNLISTED;
+                     })
+                     ->sortByDesc(function(Status $status) {
+                         return $status->checkin->departure;
+                     })->values();
     }
 
     public static function getLivePositions(): array {
@@ -283,7 +283,8 @@ class StatusController extends Controller
                                   'body'       => $body,
                                   'business'   => $business,
                                   'visibility' => $visibility,
-                                  'event_id'   => $event?->id
+                                  'event_id'   => $event?->id,
+                                  'client_id'  => request()?->user()?->token()?->client?->id,
                               ]);
     }
 }

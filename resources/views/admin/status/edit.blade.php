@@ -34,11 +34,21 @@
                             @isset($status->checkin->trip->operator?->name)
                                 <small>(Betreiber: {{$status->checkin->trip->operator?->name}})</small>
                             @endisset
-                            <br />
+                            <br/>
                             <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip_id])}}">
                                 {{ $status->checkin->trip_id }}
                             </a>
                         </div>
+
+                        <div class="col-4">
+                            <label>Client</label>
+                        </div>
+                        <div class="col-8">
+                            @isset($status?->client)
+                                {{$status->client->name}} (#{{$status->client->id}})
+                            @endisset
+                        </div>
+
                     </div>
                     <hr/>
                     <form method="POST" action="{{route('admin.status.edit')}}">

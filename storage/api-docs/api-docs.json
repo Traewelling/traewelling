@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Träwelling API",
-        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The\n *      API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body\n *      can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
+        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The\n *      API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body\n *      can be changed. Breaking changes will be announced on GitHub:\n *      https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md",
         "contact": {
             "email": "support@traewelling.de"
         },
@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1",
+            "url": "https://traewelling.de/api/v1",
             "description": "This instance"
         }
     ],
@@ -4378,13 +4378,6 @@
                         "type": "integer",
                         "nullable": true
                     },
-                    "tweet": {
-                        "title": "tweet",
-                        "description": "The tweet flag is deprecated and will be removed in a future version. For now, it is ignored and check-ins are not tweeted.",
-                        "type": "boolean",
-                        "example": "false",
-                        "nullable": true
-                    },
                     "toot": {
                         "title": "toot",
                         "description": "Should this status be posted to mastodon?",
@@ -4475,6 +4468,35 @@
                 "type": "object",
                 "xml": {
                     "name": "CheckinResponse"
+                }
+            },
+            "Client": {
+                "title": "Client",
+                "description": "Client model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 39
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "Name of client",
+                        "type": "string",
+                        "example": "Träwelling App"
+                    },
+                    "privacyPolicyUrl": {
+                        "title": "privacyPolicyUrl",
+                        "description": "URL to privacy policy",
+                        "type": "string",
+                        "example": "https://traewelling.de/privacy-policy"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Client"
                 }
             },
             "Event": {
@@ -5072,6 +5094,9 @@
                         "type": "boolean",
                         "example": true
                     },
+                    "client": {
+                        "$ref": "#/components/schemas/Client"
+                    },
                     "createdAt": {
                         "title": "createdAt",
                         "description": "creation date of this status",
@@ -5637,13 +5662,6 @@
                         "type": "boolean",
                         "example": false
                     },
-                    "twitter": {
-                        "title": "twitter",
-                        "description": "Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
-                        "type": "string",
-                        "example": "null",
-                        "nullable": true
-                    },
                     "mastodon": {
                         "title": "mastodon",
                         "description": "Mastodon URL of user",
@@ -5871,9 +5889,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost/oauth/authorize",
-                        "tokenUrl": "http://localhost/oauth/token",
-                        "refreshUrl": "http://localhost/auth/refresh",
+                        "authorizationUrl": "http://127.0.0.1:8000//oauth/authorize",
+                        "tokenUrl": "http://127.0.0.1:8000//oauth/token",
+                        "refreshUrl": "http://127.0.0.1:8000//auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",
