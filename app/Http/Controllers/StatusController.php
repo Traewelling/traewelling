@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use stdClass;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -267,14 +268,14 @@ class StatusController extends Controller
         Business         $business,
         StatusVisibility $visibility,
         string           $body = null,
-        int              $eventId = null //TODO: change to Event Object
+        Event            $event = null
     ): Status {
-        $event = null;
-        if ($eventId !== null) {
-            $event = Event::find($eventId);
-            if (!Carbon::now()->isBetween($event?->begin, $event?->end)) {
-                $event = null;
-            }
+        if ($event !== null && !Carbon::now()->isBetween($event->begin, $event->end)) {
+            Log::info('Event checkin was prevented because the event is not active anymore', [
+                'event' => $event->only(['id', 'name', 'begin', 'end']),
+                'user'  => $user->only(['id', 'username']),
+            ]);
+            $event = null;
         }
 
         return Status::create([
