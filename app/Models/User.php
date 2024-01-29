@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
 use App\Jobs\SendVerificationEmail;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,7 +21,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Passport\HasApiTokens;
-use Illuminate\Database\Eloquent\Builder;
 use Mastodon;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -278,5 +278,9 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function preferredLocale(): string {
         return $this->language;
+    }
+
+    protected function getDefaultGuardName(): string {
+        return 'web';
     }
 }
