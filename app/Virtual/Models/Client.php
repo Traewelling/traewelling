@@ -35,4 +35,15 @@ class Client
      * @var string
      */
     private $name;
+
+    /**
+     * @OA\Property (
+     *     title="privacyPolicyUrl",
+     *     description="URL to privacy policy",
+     *     example="https://traewelling.de/privacy-policy"
+     * )
+     *
+     * @var string
+     */
+    private $privacyPolicyUrl;
 }

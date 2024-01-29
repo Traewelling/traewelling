@@ -4486,6 +4486,12 @@
                         "description": "Name of client",
                         "type": "string",
                         "example": "Träwelling App"
+                    },
+                    "privacyPolicyUrl": {
+                        "title": "privacyPolicyUrl",
+                        "description": "URL to privacy policy",
+                        "type": "string",
+                        "example": "https://traewelling.de/privacy-policy"
                     }
                 },
                 "type": "object",
@@ -5883,9 +5889,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
-                        "tokenUrl": "http://localhost:8000/oauth/token",
-                        "refreshUrl": "http://localhost:8000/auth/refresh",
+                        "authorizationUrl": "http://127.0.0.1:8000//oauth/authorize",
+                        "tokenUrl": "http://127.0.0.1:8000//oauth/token",
+                        "refreshUrl": "http://127.0.0.1:8000//auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",
