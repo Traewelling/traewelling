@@ -1,14 +1,15 @@
-@php use App\Enum\EventRejectionReason; @endphp
 @php use Illuminate\Support\Facades\Date; @endphp
 @extends('admin.layout')
 
-@section('title', 'Veranstaltungsvorschläge')
+@section('title', 'Event suggestions')
 
 @section('content')
     <div class="card">
         <div class="card-body">
-            @if($suggestions->count() == 0)
-                <p class="font-weight-bold text-danger">Es sind aktuell keine Vorschläge vorhanden. :(</p>
+            @if($suggestions->count() === 0)
+                <p class="font-weight-bold text-danger">
+                    Nothing to do here! 🎉
+                </p>
             @else
                 <table class="table">
                     <thead>
@@ -26,6 +27,10 @@
                     </thead>
                     <tbody>
                         @foreach($suggestions as $event)
+                            @if($event->user->id === auth()->id() && !auth()->user()->hasRole('admin'))
+                                @continue
+                            @endif
+
                             <tr class="{{$event->begin->isPast() ? 'table-danger' : ''}}">
                                 <td>{{$event->name}}</td>
                                 <td>{{$event->host}}</td>
@@ -70,5 +75,13 @@
                 </table>
             @endif
         </div>
+        @if(!auth()->user()->hasRole('admin'))
+            <div class="card-footer">
+                <small>
+                    You cannot see your own suggestions.
+                    They are only visible to other event moderators and admins.
+                </small>
+            </div>
+        @endif
     </div>
 @endsection
