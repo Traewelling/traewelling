@@ -64,7 +64,7 @@ class StationController extends Controller
         $this->authorize('update', $oldStation);
         $this->authorize('delete', $oldStation);
 
-        $logMessage = 'Merged station ' . $oldStation->name . ' (' . $oldStation->ibnr . ') into ' . $newStation->name . ' (' . $newStation->ibnr . ')';
+        $logMessage = 'Merged station ' . $oldStation->name . ' (' . $oldStation->id . ') into ' . $newStation->name . ' (' . $newStation->id . ')';
         activity()->causedBy(auth()->user())
                   ->performedOn($oldStation)
                   ->log($logMessage);

@@ -219,18 +219,4 @@ class EventController extends Controller
         $event->delete();
         return redirect()->route('admin.events')->with('alert-success', 'Das Event wurde gelöscht!');
     }
-
-    public function renderHistory(int $eventId): View {
-        $this->authorize('view event history');
-
-        $activities = Activity::where('subject_type', Event::class)
-                              ->where('subject_id', $eventId)
-                              ->orderByDesc('created_at')
-                              ->paginate(10);
-
-        return view('admin.events.history', [
-            'eventId'    => $eventId,
-            'activities' => $activities,
-        ]);
-    }
 }
