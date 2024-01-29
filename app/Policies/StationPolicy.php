@@ -8,6 +8,12 @@ use App\Models\User;
 class StationPolicy
 {
 
+    public function viewAny(User $user): bool {
+        return $user->can('create stations')
+               || $user->can('update stations')
+               || $user->can('delete stations');
+    }
+
     public function create(User $user): bool {
         return $user->can('create stations');
     }

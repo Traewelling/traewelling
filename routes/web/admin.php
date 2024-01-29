@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\Frontend\Admin\ActivityController;
 use App\Http\Controllers\Frontend\Admin\CheckinController;
-use App\Http\Controllers\Frontend\Admin\DashboardController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Frontend\Admin\StationController;
 use App\Http\Controllers\Frontend\Admin\StatusEditController;
@@ -50,13 +50,11 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
                  ->name('admin.trip.show');
         });
 
-        Route::prefix('events')->group(function() {
-            Route::get('/{id}/history', [AdminEventController::class, 'renderHistory'])
-                 ->name('admin.events.history');
-        });
-
         Route::get('stations', [StationController::class, 'renderList'])
              ->name('admin.stations');
+
+        Route::get('activity', [ActivityController::class, 'render'])
+             ->name('admin.activity');
     });
 
     Route::prefix('events')

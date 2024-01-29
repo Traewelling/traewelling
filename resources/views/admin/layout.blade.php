@@ -66,6 +66,10 @@
                                 <i class="fa-solid fa-map-marker"></i>
                                 Stations
                             </a>
+                            <a class="nav-link" href="{{ route('admin.activity') }}">
+                                <i class="fa-solid fa-hammer"></i>
+                                Activity
+                            </a>
                         @endif
                     </div>
                     <ul class="navbar-nav ms-auto">

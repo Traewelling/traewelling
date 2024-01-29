@@ -11,6 +11,7 @@ class StationController extends Controller
 {
 
     public function renderList(Request $request): View {
+        $this->authorize('viewAny', Station::class);
         $stations = Station::orderByDesc('created_at');
         if ($request->has('query')) {
             $stations->where('name', 'LIKE', '%' . strip_tags($request->get('query')) . '%')

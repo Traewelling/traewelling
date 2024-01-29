@@ -78,7 +78,7 @@
                                             <input type="hidden" name="id" value="{{$event->id}}"/>
                                             <div class="btn-group">
                                                 @can('view event history')
-                                                    <a href="{{route('admin.events.history', ['id' => $event->id])}}"
+                                                    <a href="{{route('admin.activity', ['subject_type' => $event::class, 'subject_id' => $event->id])}}"
                                                        class="btn btn-sm btn-primary">
                                                         <i class="fa-solid fa-history"></i>
                                                     </a>
