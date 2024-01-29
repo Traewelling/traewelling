@@ -1,6 +1,7 @@
 @extends('admin.layout')
 
-@section('title', 'Create event')
+@section('title', isset($event) ? 'Edit Event' : 'Create Event')
+@php($event ??= null)
 
 @section('content')
     <form method="POST">
@@ -15,7 +16,8 @@
                                 {{ __('events.name') }}<span class="text-danger">*</span>:
                             </label>
                             <div class="col-md-8 text-center">
-                                <input id="name" type="text" class="form-control" name="name" required/>
+                                <input id="name" type="text" class="form-control" name="name" required
+                                       value="{{$event?->name}}"/>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -23,7 +25,8 @@
                                 {{ __('events.hashtag') }}:
                             </label>
                             <div class="col-md-8 text-center">
-                                <input id="hashtag" type="text" class="form-control" name="hashtag"/>
+                                <input id="hashtag" type="text" class="form-control" name="hashtag"
+                                       value="{{$event?->hashtag}}"/>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -31,14 +34,15 @@
                                 {{ __('events.host') }}:
                             </label>
                             <div class="col-md-8 text-center">
-                                <input id="host" type="text" class="form-control" name="host"/>
+                                <input id="host" type="text" class="form-control" name="host"
+                                       value="{{$event?->host}}"/>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="url" class="col-md-4 col-form-label text-md-right">{{ __('events.url') }}
                                 :</label>
                             <div class="col-md-8 text-center">
-                                <input id="url" type="url" class="form-control" name="url"/>
+                                <input id="url" type="url" class="form-control" name="url" value="{{$event?->url}}"/>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -48,6 +52,7 @@
                             <div class="col-md-8 text-left" id="station-autocomplete-container">
                                 <input type="text" id="station-autocomplete" name="nearest_station_name"
                                        class="form-control" placeholder="{{ __('stationboard.station-placeholder') }}"
+                                       value="{{$event?->nearest_station_name}}"
                                 />
                             </div>
                         </div>
@@ -64,7 +69,7 @@
                             <div class="col-6">
                                 <div class="form-floating">
                                     <input id="begin" type="datetime-local" class="form-control" name="begin"
-                                           required
+                                           required value="{{$event?->begin}}"
                                     />
                                     <label for="begin">Checkin {{ __('events.begin') }}:</label>
                                 </div>
@@ -72,7 +77,7 @@
                             <div class="col-6">
                                 <div class="form-floating">
                                     <input id="end" type="datetime-local" class="form-control" name="end"
-                                           required
+                                           required value="{{$event?->end}}"
                                     />
                                     <label for="end">Checkin {{ __('events.end') }}:</label>
                                 </div>
@@ -92,7 +97,7 @@
                             <div class="col-6">
                                 <div class="form-floating">
                                     <input id="event-start" type="datetime-local" class="form-control"
-                                           name="event_start"
+                                           name="event_start" value="{{$event?->event_start}}"
                                     />
                                     <label for="event-begin">{{ __('events.begin') }}</label>
                                 </div>
@@ -100,6 +105,7 @@
                             <div class="col-6">
                                 <div class="form-floating">
                                     <input id="event-end" type="datetime-local" class="form-control" name="event_end"
+                                           value="{{$event?->event_end}}"
                                     />
                                     <label for="event-end">{{ __('events.end') }}</label>
                                 </div>
