@@ -5,7 +5,8 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * @property int     $id
@@ -24,19 +25,23 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Station extends Model
 {
 
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $table    = 'train_stations';
     protected $fillable = ['ibnr', 'rilIdentifier', 'name', 'latitude', 'longitude', 'time_offset', 'shift_time'];
     protected $hidden   = ['created_at', 'updated_at', 'time_offset', 'shift_time'];
     protected $casts    = [
-        'id'        => 'integer',
-        'ibnr'      => 'integer',
-        'latitude'  => 'decimal:6',
-        'longitude' => 'decimal:6',
+        'id'            => 'integer',
+        'rilIdentifier' => 'string',
+        'name'          => 'string',
+        'ibnr'          => 'integer',
+        'latitude'      => 'float',
+        'longitude'     => 'float',
     ];
 
-    public function events(): HasMany {
-        return $this->hasMany(Event::class, 'trainstation', 'id');
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+                         ->dontSubmitEmptyLogs()
+                         ->logOnlyDirty();
     }
 }

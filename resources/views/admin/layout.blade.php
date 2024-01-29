@@ -62,6 +62,10 @@
                                 <i class="fa-solid fa-plus"></i>
                                 Trips
                             </a>
+                            <a class="nav-link" href="{{ route('admin.stations') }}">
+                                <i class="fa-solid fa-map-marker"></i>
+                                Stations
+                            </a>
                         @endif
                     </div>
                     <ul class="navbar-nav ms-auto">
