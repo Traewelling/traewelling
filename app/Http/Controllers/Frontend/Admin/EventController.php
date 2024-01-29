@@ -50,7 +50,6 @@ class EventController extends Controller
         return view('admin.events.suggestions', [
             'suggestions' => EventSuggestion::where('processed', false)
                                             ->where('end', '>', DB::raw('CURRENT_TIMESTAMP'))
-                                            ->where('user_id', '!=', auth()->user()->id) //moderator can't accept their own suggestions
                                             ->orderBy('begin')
                                             ->get()
         ]);
