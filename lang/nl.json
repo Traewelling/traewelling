@@ -769,5 +769,6 @@
     "error.500": "Serverfout",
     "error.419": "Pagina verlopen",
     "error.404": "Niet gevonden",
-    "modals.tags.new": "Nieuw label"
+    "modals.tags.new": "Nieuw label",
+    "support.rate_limit_exceeded": "Je hebt onlangs een ondersteuningsverzoek gedaan. Wacht even voordat je nog een verzoek doet."
 }
