@@ -59,18 +59,18 @@ class TripController extends Controller
                 ->setLine($validated['lineName'], $validated['journeyNumber'])
                 ->setOperator(HafasOperator::find($validated['operatorId']))
                 ->setOrigin(
-                    TrainStation::where('ibnr', $validated['originId'])->firstOrFail(),
+                    Station::where('ibnr', $validated['originId'])->firstOrFail(),
                     Carbon::parse($validated['originDeparturePlanned'])
                 )
                 ->setDestination(
-                    TrainStation::where('ibnr', $validated['destinationId'])->firstOrFail(),
+                    Station::where('ibnr', $validated['destinationId'])->firstOrFail(),
                     Carbon::parse($validated['destinationArrivalPlanned'])
                 );
 
         if (isset($validated['stopovers'])) {
             foreach ($validated['stopovers'] as $stopover) {
                 $creator->addStopover(
-                    TrainStation::where('ibnr', $stopover['stationId'])->firstOrFail(),
+                    Station::where('ibnr', $stopover['stationId'])->firstOrFail(),
                     isset($stopover['departure']) ? Carbon::parse($stopover['departure']) : null,
                     isset($stopover['arrival']) ? Carbon::parse($stopover['arrival']) : null
                 );

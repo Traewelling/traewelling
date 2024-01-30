@@ -57,7 +57,6 @@ export default {
             this.form.originId = item.ibnr;
         },
         setDeparture(time) {
-            console.info('departure', time)
             this.form.originDeparturePlanned = DateTime.fromISO(time).setZone(this.originTimezone);
         },
         setDestination(item) {
@@ -65,7 +64,6 @@ export default {
             this.form.destinationId = item.ibnr;
         },
         setArrival(time) {
-            console.info('arrival', time)
             this.form.destinationArrivalPlanned = DateTime.fromISO(time).setZone(this.destinationTimezone);
         },
         sendForm() {
@@ -99,10 +97,14 @@ export default {
                         window.location.href = `/trains/trip/?${new URLSearchParams(query).toString()}`;
                     });
                 }
+                if(data.status === 422) {
+                    data.json().then((result) => {
+                        alert(result.message);
+                    });
+                }
             });
         },
         setStopoverStation(item, key) {
-            console.log(item, key)
             this.stopovers[key].station = item;
         },
         setStopoverDeparture(time, key) {
@@ -198,7 +200,3 @@ export default {
         </div>
     </div>
 </template>
-
-<style scoped lang="scss">
-
-</style>
