@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Models\OAuthClient;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 /**
  * @OA\Info(
@@ -119,5 +122,14 @@ class Controller extends \App\Http\Controllers\Controller
         ];
         $response = $additional ? array_merge($response, ["meta" => $additional]) : $response;
         return response()->json($response, $code);
+    }
+
+    public static function getCurrentOAuthClient(): OAuthClient|null {
+        try {
+            return request()?->user()?->token()?->client;
+        } catch (Throwable $throwable) {
+            Log::debug('Could not get current OAuth Client: ' . $throwable->getMessage());
+            return null;
+        }
     }
 }
