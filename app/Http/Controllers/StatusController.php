@@ -8,6 +8,7 @@ use App\Events\StatusDeleteEvent;
 use App\Events\StatusUpdateEvent;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
+use App\Http\Controllers\API\v1\Controller as APIController;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Models\Event;
 use App\Models\Like;
@@ -284,7 +285,7 @@ class StatusController extends Controller
                                   'business'   => $business,
                                   'visibility' => $visibility,
                                   'event_id'   => $event?->id,
-                                  'client_id'  => request()?->user()?->token()?->client?->id,
+                                  'client_id'  => APIController::getCurrentOAuthClient()?->id,
                               ]);
     }
 }
