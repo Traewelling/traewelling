@@ -88,7 +88,7 @@ export default {
             }).then((data) => {
                 if (data.ok) {
                     data.json().then((result) => {
-                        result = result.data;
+                        result    = result.data;
                         let query = {
                             tripID: result.id,
                             lineName: result.lineName,
@@ -117,8 +117,25 @@ export default {
 
 <template>
     <div>
-        <h1>TripCreationForm</h1>
-        <form @submit.prevent="sendForm">
+        <h1 class="fs-4">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            Create trip manually (closed-beta)
+        </h1>
+
+        <div class="alert alert-info">
+            <h2 class="fs-5">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                Beta users only
+            </h2>
+
+            This form is currently for testing purposes only.
+            Beta users can create a trip with manually entered data.
+            All Users can check in to this trip.
+            It should be tested if the trip is created correctly and all data required for the trip is present, so no
+            (500) errors occur or if features are missing which are not mentioned in the limitations section.
+        </div>
+
+        <form @submit.prevent="sendForm" class="mb-3">
             <div class="row g-3 mb-3">
                 <StationRow
                     placeholder="Startbahnhof"
@@ -165,8 +182,20 @@ export default {
                     <button type="submit" class="btn btn-primary float-end">Speichern</button>
                 </div>
             </div>
-
         </form>
+
+        <div class="alert alert-warning">
+            <h2 class="fs-5">
+                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                Current limitations
+            </h2>
+
+            <ul>
+                <li>Only stations available in DB-HAFAS are supported</li>
+                <li>Stopovers can't be created yet</li>
+                <li>Polyline is generated straight from origin to destination (Brouter generation will apply if the difference between air distance and distance by train isn't too big)</li>
+            </ul>
+        </div>
     </div>
 </template>
 

@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\HafasController;
-use App\Models\TrainStation;
+use App\Models\Station;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -48,11 +48,11 @@ class StationSearchTest extends TestCase
 
     public function testIbnrLocalSearch(): void {
         Http::preventStrayRequests();
-        $expected = TrainStation::factory()->make();
+        $expected = Station::factory()->make();
         $expected->save();
 
         $station = StationController::lookupStation(str($expected->ibnr));
-        $this->assertEquals(TrainStation::find($expected->id)->name, $station->name);
+        $this->assertEquals(Station::find($expected->id)->name, $station->name);
     }
 
     public function testGetNearbyStations(): void {

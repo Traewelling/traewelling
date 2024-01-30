@@ -3,22 +3,22 @@
 namespace App\Http\Controllers\Backend\Transport;
 
 use App\Http\Controllers\Controller;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\User;
 
 abstract class HomeController extends Controller
 {
     /**
-     * @param User         $user
-     * @param TrainStation $trainStation
+     * @param User    $user
+     * @param Station $station
      *
-     * @return TrainStation
+     * @return Station
      * @api v1
      */
-    public static function setHome(User $user, TrainStation $trainStation): TrainStation {
+    public static function setHome(User $user, Station $station): Station {
         $user->update([
-                          'home_id' => $trainStation->id
+                          'home_id' => $station->id
                       ]);
-        return $trainStation;
+        return $station;
     }
 }

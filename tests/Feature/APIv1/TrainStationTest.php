@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\APIv1;
 
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,7 +24,7 @@ class TrainStationTest extends ApiTestCase
         $response->assertJsonCount(0, 'data');
 
         //Create random checkin
-        TrainCheckin::factory(['user_id' => $user->id])->create();
+        Checkin::factory(['user_id' => $user->id])->create();
 
         //Check if endpoint is working with data
         $response = $this->get('/api/v1/trains/station/history');

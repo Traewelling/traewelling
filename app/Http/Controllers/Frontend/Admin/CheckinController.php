@@ -16,8 +16,8 @@ use App\Http\Controllers\TransportController as TransportBackend;
 use App\Jobs\PostStatusOnMastodon;
 use App\Models\Event;
 use App\Models\Status;
-use App\Models\TrainStation;
-use App\Models\TrainStopover;
+use App\Models\Station;
+use App\Models\Stopover;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -139,15 +139,15 @@ class CheckinController
             return redirect()->back()->withErrors('User non-existent');
         }
 
-        $destinationStopover = TrainStopover::findOrFail($validated['destinationStopover']);
+        $destinationStopover = Stopover::findOrFail($validated['destinationStopover']);
 
         try {
             $backendResponse = TrainCheckinController::checkin(
                 user:         $user,
-                hafasTrip:    HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
-                origin:       TrainStation::where('ibnr', $validated['startIBNR'])->first(),
+                trip:         HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
+                origin:       Station::where('ibnr', $validated['startIBNR'])->first(),
                 departure:    Carbon::parse($validated['departure']),
-                destination:  $destinationStopover->trainStation,
+                destination:  $destinationStopover->station,
                 arrival:      $destinationStopover->arrival_planned,
                 travelReason: Business::tryFrom($validated['business'] ?? 0),
                 visibility:   StatusVisibility::tryFrom($validated['visibility'] ?? 0),
@@ -173,7 +173,7 @@ class CheckinController
                 ->withErrors(__(
                                  'controller.transport.overlapping-checkin',
                                  [
-                                     'linename' => $e->getCollision()->HafasTrip->linename
+                                     'linename' => $e->getCollision()->trip->linename
                                  ]
                              ) . strtr(' <a href=":url">#:id</a>',
                                        [

@@ -1,6 +1,7 @@
 <script>
 import {DateTime} from "luxon";
 import {Notyf} from "notyf";
+import {trans} from "laravel-vue-i18n";
 
 export default {
     name: "CheckinInterface",
@@ -22,11 +23,12 @@ export default {
             visibility: 0,
             business: 0,
             loading: false,
-            notyf: new Notyf({position: {x: 'right', y: 'bottom'}}),
+            notyf: new Notyf({position: {x: "right", y: "bottom"}}),
             collision: false,
         };
     },
     methods: {
+        trans,
         checkIn() {
             this.loading = true;
             const data = {
@@ -44,10 +46,10 @@ export default {
                 force: this.collision,
                 eventId: null,
             };
-            fetch('/api/v1/trains/checkin', {
-                method: 'POST',
+            fetch("/api/v1/trains/checkin", {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(data),
             }).then((response) => {
@@ -62,11 +64,11 @@ export default {
                 if (response.status === 409) {
                     response.json().then(() => {
                         this.collision = true;
-                        this.notyf.error("Du bist bereits in einem Zug eingecheckt. Falls du den Checkin forcieren möchtest, drücke nochmal auf \"einchecken\".");
+                        this.notyf.error(trans("checkin.conflict") + "<br>" +trans("checkin.conflict.question"));
                     });
                 }
                 if (response.status === 500) {
-                    this.notyf.error("Ein unbekannter Fehler ist aufgetreten. Bitte versuche es später erneut.");
+                    this.notyf.error(trans("messages.exception.general"));
                 }
             }).catch((reason) => {
                 console.log(reason);
@@ -117,7 +119,7 @@ export default {
                 :maxlength="allowedChars"
                 style="min-height: 130px;">
             </textarea>
-            <label for="message-text" class="form-label" style="margin-left: 0px;">Status-Nachricht:</label>
+            <label for="message-text" class="form-label" style="margin-left: 0px;">{{ trans("stationboard.label-message") }}</label>
         </div>
         <small class="float-end" :class="typed < 10 ? 'text-danger' : 'text-warning'" v-show="typed < 20">
             {{ typed }}
@@ -128,7 +130,7 @@ export default {
                 <input type="checkbox" class="btn-check" autocomplete="off" v-model="toot" autocompleted="" id="toot_check" :disabled="visibility === 3">
                 <label class="btn btn-sm btn-outline-mastodon" for="toot_check" style="">
                     <i class="fab fa-mastodon"></i>
-                    <span class="visually-hidden-focusable">Tooten</span>
+                    <span class="visually-hidden-focusable">{{ trans("stationboard.check-toot") }}</span>
                 </label>
             </div>
             <div class="col-auto btn-group me-1">
@@ -139,17 +141,17 @@ export default {
                 </button>
                 <ul id="businessDropdown" class="dropdown-menu" aria-labelledby="businessDropdownButton">
                     <li class="dropdown-item" @click="business = 0">
-                        <i class="fa fa-user"></i> Privat
+                        <i class="fa fa-user"></i> {{ trans("stationboard.business.private") }}
                     </li>
                     <li class="dropdown-item" @click="business = 1">
-                        <i class="fa fa-briefcase"></i> Geschäftlich
+                        <i class="fa fa-briefcase"></i> {{ trans("stationboard.business.business") }}
                         <br>
-                        <span class="text-muted"> Dienstfahrten</span>
+                        <span class="text-muted"> {{ trans("stationboard.business.business.detail")}}</span>
                     </li>
                     <li class="dropdown-item" @click="business = 2">
-                        <i class="fa fa-building"></i> Arbeitsweg
+                        <i class="fa fa-building"></i> {{ trans("stationboard.business.commute") }}
                         <br>
-                        <span class="text-muted"> Weg zwischen Wohnort und Arbeitsplatz</span>
+                        <span class="text-muted"> {{ trans("stationboard.business.commute.detail") }}</span>
                     </li>
                 </ul>
             </div>
@@ -161,37 +163,37 @@ export default {
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="visibilityDropdownButton" style="">
                     <li class="dropdown-item" @click="visibility = 0">
-                        <i class="fa fa-globe-americas" aria-hidden="true"></i> Öffentlich
+                        <i class="fa fa-globe-americas" aria-hidden="true"></i> {{ trans("status.visibility.0") }}
                         <br>
                         <span
-                            class="text-muted"> Sichtbar für alle, angezeigt im Dashboard, bei Events, etc.</span>
+                            class="text-muted"> {{ trans("status.visibility.0.detail") }}</span>
                     </li>
                     <li class="dropdown-item" @click="visibility = 1">
-                        <i class="fa fa-lock-open" aria-hidden="true"></i> Ungelistet
+                        <i class="fa fa-lock-open" aria-hidden="true"></i> {{ trans("status.visibility.1") }}
                         <br>
-                        <span class="text-muted"> Sichtbar für alle, nur im Profil aufrufbar</span>
+                        <span class="text-muted"> {{ trans("status.visibility.1.detail") }}</span>
                     </li>
                     <li class="dropdown-item" @click="visibility = 2">
-                        <i class="fa fa-user-friends" aria-hidden="true"></i> Nur für Follower
+                        <i class="fa fa-user-friends" aria-hidden="true"></i> {{ trans("status.visibility.2") }}
                         <br>
-                        <span class="text-muted"> Nur für (akzeptierte) Follower sichtbar</span>
+                        <span class="text-muted"> {{ trans("status.visibility.2.detail") }}</span>
                     </li>
                     <li class="dropdown-item" @click="visibility = 3">
-                        <i class="fa fa-lock" aria-hidden="true"></i> Privat
+                        <i class="fa fa-lock" aria-hidden="true"></i> {{ trans("status.visibility.3") }}
                         <br>
-                        <span class="text-muted"> Nur für dich sichtbar</span>
+                        <span class="text-muted"> {{ trans("status.visibility.3.detail") }}</span>
                     </li>
                     <li class="dropdown-item" @click="visibility = 4">
-                        <i class="fa fa-user-check" aria-hidden="true"></i> Nur angemeldete Nutzer
+                        <i class="fa fa-user-check" aria-hidden="true"></i> {{ trans("status.visibility.4") }}
                         <br>
-                        <span class="text-muted"> Nur für angemeldete Nutzer sichtbar</span>
+                        <span class="text-muted"> {{ trans("status.visibility.4.detail") }}</span>
                     </li>
                 </ul>
             </div>
             <button class="col-auto float-end ms-auto btn btn-sm btn-outline-primary" @click="checkIn">
                 <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 <span v-if="loading" class="visually-hidden">Loading...</span>
-                Einchecken!
+                {{ trans("stationboard.btn-checkin") }}
             </button>
         </div>
 </template>

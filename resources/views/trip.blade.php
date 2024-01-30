@@ -25,8 +25,8 @@
                     >
                         <div class="float-end">
                             <a href="#" class="train-destinationrow text-white"
-                               data-ibnr="{{$lastStopover->trainStation->ibnr}}"
-                               data-stopname="{{$lastStopover->trainStation->name}}"
+                               data-ibnr="{{$lastStopover->station->ibnr}}"
+                               data-stopname="{{$lastStopover->station->name}}"
                                data-arrival="{{$lastStopover->arrival_planned ?? $lastStopover->departure_planned}}">
                                 <i class="fa fa-fast-forward"></i>
                             </a>
@@ -52,18 +52,18 @@
                                 @foreach($stopovers as $stopover)
                                     @if($stopover->isArrivalCancelled)
                                         <tr>
-                                            <td>{{ $stopover->trainStation->name }}</td>
+                                            <td>{{ $stopover->station->name }}</td>
                                             <td>
                                                 <span class="text-danger">{{ __('stationboard.stop-cancelled') }}</span><br/>&nbsp;
                                             </td>
                                         </tr>
                                     @else
                                         <tr class="train-destinationrow"
-                                            data-ibnr="{{$stopover->trainStation->ibnr}}"
-                                            data-stopname="{{$stopover->trainStation->name}}"
+                                            data-ibnr="{{$stopover->station->ibnr}}"
+                                            data-stopname="{{$stopover->station->name}}"
                                             data-arrival="{{$stopover->arrival_planned ?? $stopover->departure_planned}}"
                                         >
-                                            <td>{{ $stopover->trainStation->name }}</td>
+                                            <td>{{ $stopover->station->name }}</td>
                                             <td class="text-end">
                                                 {{ __('stationboard.arr') }}
                                                 {{ userTime($stopover->arrival_planned) }}

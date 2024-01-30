@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -39,7 +40,8 @@ class Handler extends ExceptionHandler
         ModelNotFoundException::class,
         HttpException::class,
         AuthenticationException::class,
-        NotFoundHttpException::class
+        NotFoundHttpException::class,
+        ThrottleRequestsException::class,
     ];
 
     /**

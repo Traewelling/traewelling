@@ -8,9 +8,9 @@ use App\Enum\HafasTravelType;
 use App\Enum\TripSource;
 use App\Http\Controllers\Controller;
 use App\Models\HafasOperator;
-use App\Models\HafasTrip;
-use App\Models\TrainStation;
-use App\Models\TrainStopover;
+use App\Models\Trip;
+use App\Models\Station;
+use App\Models\Stopover;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -18,15 +18,15 @@ use InvalidArgumentException;
 class ManualTripCreator extends Controller
 {
 
-    private ?HafasTrip      $trip;
+    private ?Trip $trip;
     private HafasTravelType $category;
     private string          $lineName;
     private ?int            $journeyNumber;
-    private ?HafasOperator  $operator;
-    private TrainStation    $origin;
-    private Carbon          $originDeparturePlanned;
-    private TrainStation    $destination;
-    private Carbon          $destinationArrivalPlanned;
+    private ?HafasOperator $operator;
+    private Station        $origin;
+    private Carbon         $originDeparturePlanned;
+    private Station $destination;
+    private Carbon  $destinationArrivalPlanned;
     private array           $stopovers;
 
     public function createFullTrip(): HafasTrip {
@@ -40,6 +40,7 @@ class ManualTripCreator extends Controller
     private function createTrip(): void {
         $this->trip = HafasTrip::create([
                                             'trip_id'        => $this->generateUniqueTripId(),
+                                            'trip_id'        => TripBackend::generateUniqueTripId(),
                                             'category'       => $this->category,
                                             'number'         => $this->lineName,
                                             'linename'       => $this->lineName,
@@ -58,29 +59,29 @@ class ManualTripCreator extends Controller
         if ($this->trip === null) {
             throw new InvalidArgumentException('Cannot create stopover without trip');
         }
-        TrainStopover::create([
-                                  'trip_id'           => $this->trip->trip_id,
-                                  'train_station_id'  => $this->origin->id,
-                                  'arrival_planned'   => $this->originDeparturePlanned,
-                                  'departure_planned' => $this->originDeparturePlanned,
-                              ]);
+        Stopover::create([
+                                         'trip_id'           => $this->trip->trip_id,
+                                         'train_station_id'  => $this->origin->id,
+                                         'arrival_planned'   => $this->originDeparturePlanned,
+                                         'departure_planned' => $this->originDeparturePlanned,
+                                     ]);
     }
 
-    private function createDestinationStopover(): void {
+    private function createDestinationStopover(): Stopover {
         if ($this->trip === null) {
             throw new InvalidArgumentException('Cannot create stopover without trip');
         }
-        TrainStopover::create([
-                                  'trip_id'           => $this->trip->trip_id,
-                                  'train_station_id'  => $this->destination->id,
-                                  'arrival_planned'   => $this->destinationArrivalPlanned,
-                                  'departure_planned' => $this->destinationArrivalPlanned,
-                              ]);
+        Stopover::create([
+                                         'trip_id'           => $this->trip->trip_id,
+                                         'train_station_id'  => $this->destination->id,
+                                         'arrival_planned'   => $this->destinationArrivalPlanned,
+                                         'departure_planned' => $this->destinationArrivalPlanned,
+                                     ]);
     }
 
     public function generateUniqueTripId(): string {
         $tripId = Str::uuid();
-        while (HafasTrip::where('trip_id', $tripId)->exists()) {
+        while (Trip::where('trip_id', $tripId)->exists()) {
             $tripId = Str::uuid();
         }
         return $tripId->toString();

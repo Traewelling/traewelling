@@ -98,7 +98,7 @@
                     </div>
                 @endif
 
-                @if(config('trwl.year_in_review_active'))
+                @if(config('trwl.year_in_review.alert'))
                     <div class="alert alert-info">
                         <h4 class="alert-heading">
                             <i class="fa-solid fa-champagne-glasses"></i>

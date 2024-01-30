@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
 use App\Jobs\SendVerificationEmail;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,7 +21,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Passport\HasApiTokens;
-use Illuminate\Database\Eloquent\Builder;
 use Mastodon;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -66,7 +66,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'home_id', 'avatar', 'social_profile', 'created_at', 'updated_at', 'userInvisibleToMe'
     ];
     protected $appends  = [
-        'averageSpeed', 'points', 'userInvisibleToMe', 'mastodonUrl', 'train_distance', 'train_duration',
+        'points', 'userInvisibleToMe', 'mastodonUrl', 'train_distance', 'train_duration',
         'following', 'followPending', 'muted', 'isAuthUserBlocked', 'isBlockedByAuthUser',
     ];
     protected $casts    = [
@@ -84,7 +84,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     public function getTrainDistanceAttribute(): float {
-        return TrainCheckin::where('user_id', $this->id)->sum('distance');
+        return Checkin::where('user_id', $this->id)->sum('distance');
     }
 
     public function statuses(): HasMany {
@@ -92,7 +92,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function trainCheckins(): HasMany {
-        return $this->hasMany(TrainCheckin::class, 'user_id', 'id');
+        return $this->hasMany(Checkin::class, 'user_id', 'id');
     }
 
     /**
@@ -100,15 +100,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @return float
      */
     public function getTrainDurationAttribute(): float {
-        return TrainCheckin::where('user_id', $this->id)->sum('duration');
-    }
-
-    /**
-     * @return float
-     * @deprecated Use speed variable at train_checkins instead
-     */
-    public function getAverageSpeedAttribute(): float {
-        return $this->train_duration == 0 ? 0 : $this->train_distance / ($this->train_duration / 60);
+        return Checkin::where('user_id', $this->id)->sum('duration');
     }
 
     public function socialProfile(): HasOne {
@@ -119,7 +111,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function home(): HasOne {
-        return $this->hasOne(TrainStation::class, 'id', 'home_id');
+        return $this->hasOne(Station::class, 'id', 'home_id');
     }
 
     public function likes(): HasMany {
@@ -173,10 +165,10 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function getPointsAttribute(): int {
-        return TrainCheckin::whereIn('status_id', $this->statuses()->select('id'))
-                           ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
-                           ->select('points')
-                           ->sum('points');
+        return Checkin::whereIn('status_id', $this->statuses()->select('id'))
+                      ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
+                      ->select('points')
+                      ->sum('points');
     }
 
     /**
@@ -286,5 +278,9 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function preferredLocale(): string {
         return $this->language;
+    }
+
+    protected function getDefaultGuardName(): string {
+        return 'web';
     }
 }

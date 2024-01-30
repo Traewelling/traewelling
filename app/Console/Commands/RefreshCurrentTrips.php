@@ -5,8 +5,8 @@ namespace App\Console\Commands;
 use App\Enum\TripSource;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\HafasController;
-use App\Models\HafasTrip;
-use App\Models\TrainCheckin;
+use App\Models\Trip;
+use App\Models\Checkin;
 use Illuminate\Console\Command;
 use PDOException;
 
@@ -18,16 +18,16 @@ class RefreshCurrentTrips extends Command
     public function handle(): int {
         $this->info('Gettings trips to be refreshed...');
 
-        $trips = HafasTrip::join('train_stopovers', 'hafas_trips.trip_id', '=', 'train_stopovers.trip_id')
+        $trips = Trip::join('train_stopovers', 'hafas_trips.trip_id', '=', 'train_stopovers.trip_id')
             //To only refresh checked in trips join train_checkins:
-                          ->join('train_checkins', 'train_checkins.trip_id', '=', 'hafas_trips.trip_id')
-                          ->where(function($query) {
+                     ->join('train_checkins', 'train_checkins.trip_id', '=', 'hafas_trips.trip_id')
+                     ->where(function($query) {
                               $query->where('train_stopovers.arrival_planned', '>=', now())
                                     ->orWhere('train_stopovers.arrival_real', '>=', now())
                                     ->orWhere('train_stopovers.departure_planned', '>=', now())
                                     ->orWhere('train_stopovers.departure_real', '>=', now());
                           })
-                          ->where(function($query) {
+                     ->where(function($query) {
                               $query->where('hafas_trips.last_refreshed', '<', now()->subMinutes(5))
                                     ->orWhereNull('hafas_trips.last_refreshed');
                           })
@@ -55,7 +55,7 @@ class RefreshCurrentTrips extends Command
                 $this->info('Updated ' . $updatedRows . ' rows.');
 
                 //set duration for refreshed trips to null, so it will be recalculated
-                TrainCheckin::where('trip_id', $trip->trip_id)->update(['duration' => null]);
+                Checkin::where('trip_id', $trip->trip_id)->update(['duration' => null]);
             } catch (PDOException $exception) {
                 if ($exception->getCode() === '23000') {
                     $this->warn('-> Skipping, due to integrity constraint violation');

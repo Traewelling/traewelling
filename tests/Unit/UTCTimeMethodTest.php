@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use App\Casts\UTCDateTime;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use Carbon\Exceptions\InvalidTimeZoneException;
 use Illuminate\Support\Carbon;
 
@@ -12,7 +12,7 @@ class UTCTimeMethodTest extends UnitTestCase
     public function testInvalidUtcTimestamp(): void {
         $UTCDateTime = new UTCDateTime();
         $this->expectException(InvalidTimeZoneException::class);
-        $UTCDateTime->set(new TrainStopover(), 'departure', '2023-01-10T01:00', []);
+        $UTCDateTime->set(new Stopover(), 'departure', '2023-01-10T01:00', []);
     }
 
     /**
@@ -20,7 +20,7 @@ class UTCTimeMethodTest extends UnitTestCase
      */
     public function testSetUtcDateTime($assert, $value): void {
         $UTCDateTime = new UTCDateTime();
-        $result      = $UTCDateTime->set(new TrainStopover(), 'departure', $value, []);
+        $result      = $UTCDateTime->set(new Stopover(), 'departure', $value, []);
 
         $this->assertEquals($assert, $result->toIso8601String());
     }
@@ -41,7 +41,7 @@ class UTCTimeMethodTest extends UnitTestCase
      */
     public function testGetUtcDateTime($assert, $value): void {
         $UTCDateTime = new UTCDateTime();
-        $result      = $UTCDateTime->get(new TrainStopover(), 'departure', $value, []);
+        $result      = $UTCDateTime->get(new Stopover(), 'departure', $value, []);
 
         $this->assertEquals($assert, $result?->toIso8601String());
     }

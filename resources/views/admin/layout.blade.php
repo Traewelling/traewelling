@@ -26,7 +26,7 @@
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
-                        aria-label="Toggle navigation">
+                        aria-label="{{ __('toggle-navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
@@ -62,9 +62,13 @@
                                 <i class="fa-solid fa-plus"></i>
                                 Trips
                             </a>
-                            <a class="nav-link" href="{{ route('admin.stats') }}">
-                                <i class="fa-solid fa-chart-line"></i>
-                                Stats
+                            <a class="nav-link" href="{{ route('admin.stations') }}">
+                                <i class="fa-solid fa-map-marker"></i>
+                                Stations
+                            </a>
+                            <a class="nav-link" href="{{ route('admin.activity') }}">
+                                <i class="fa-solid fa-hammer"></i>
+                                Activity
                             </a>
                         @endif
                     </div>

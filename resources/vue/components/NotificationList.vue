@@ -4,40 +4,38 @@ import NotificationEntry from "./NotificationEntry.vue";
 
 export default {
     components: {NotificationEntry},
-    emits: ['toggle-read'],
+    emits: ["toggle-read"],
     data() {
         return {
             notifications: [],
             loading: true
         }
     },
-    props: {
-        emptyText: String
-    },
     methods: {
         toggleRead(data, key) {
-            let readAction = data.readAt ? 'unread' : 'read';
-            API.request(`/notifications/${readAction}/${data.id}`, 'PUT')
+            let readAction = data.readAt ? "unread" : "read";
+            API.request(`/notifications/${readAction}/${data.id}`, "PUT")
                 .then(async (response) => {
                     const data              = await response.json();
                     this.notifications[key] = data.data;
-                    this.$emit('toggle-read');
+                    this.$emit("toggle-read");
                 });
         },
         toggleAllRead() {
-            return API.request('/notifications/read/all', 'PUT')
+            return API.request("/notifications/read/all", "PUT")
                 .then(API.handleDefaultResponse)
                 .then(() => {
                     this.notifications.map((notification) => {
                         notification.readAt = new Date().toISOString();
                         return notification
                     });
-                    this.$emit('toggle-read');
+                    notyf.success(this.$t("notifications.readAll.success"));
+                    this.$emit("toggle-read");
                 });
         },
         fetchNotifications() {
             this.loading = true;
-            API.request('/notifications')
+            API.request("/notifications")
                 .then(async (response) => {
                     const data         = await response.json();
                 this.notifications = data.data;
@@ -70,7 +68,7 @@ export default {
     </div>
     <div class="text-center text-muted notifications-empty" v-else>
         <i class="fa-solid fa-envelope fs-1"></i>
-        <p class="fs-5">{{ emptyText }}</p>
+        <p class="fs-5">{{ $t("notifications.empty") }}</p>
     </div>
 </template>
 

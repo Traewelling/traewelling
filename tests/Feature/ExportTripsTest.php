@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
@@ -15,7 +15,7 @@ class ExportTripsTest extends ApiTestCase
 
     public function test_pdf_export(): void {
         $user = User::factory()->create();
-        TrainCheckin::factory(['user_id' => $user->id])->count(2)->create();
+        Checkin::factory(['user_id' => $user->id])->count(2)->create();
         Passport::actingAs($user, ['*']);
 
         $response = $this->postJson(
@@ -32,7 +32,7 @@ class ExportTripsTest extends ApiTestCase
 
     public function test_json_export(): void {
         $user = User::factory()->create();
-        TrainCheckin::factory(['user_id' => $user->id])->count(2)->create();
+        Checkin::factory(['user_id' => $user->id])->count(2)->create();
         Passport::actingAs($user, ['*']);
 
         $response = $this->postJson(
@@ -49,7 +49,7 @@ class ExportTripsTest extends ApiTestCase
 
     public function test_csv_export(): void {
         $user = User::factory()->create();
-        TrainCheckin::factory(['user_id' => $user->id])->count(2)->create();
+        Checkin::factory(['user_id' => $user->id])->count(2)->create();
         Passport::actingAs($user, ['*']);
 
         $response = $this->postJson(

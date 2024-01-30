@@ -16,26 +16,30 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void {
         // For better Testing, we'll create private and public users.
-        $gertrud = User::factory()
-                       ->has(IcsToken::factory(rand(0, 2)))
-                       ->create([
-                                    'username' => 'Gertrud123',
-                                    'name'     => 'Gertrud',
-                                    'email'    => 'gertrud@traewelling.de',
-                                    'password' => Hash::make('thisisnotasecurepassword123'),
-                                ]);
-        $gertrud->assignRole('admin');
-        $gertrud->assignRole('closed-beta');
+        if (!User::where("username", "=", "Gertrud123")->count()) {
+            $gertrud = User::factory()
+                           ->has(IcsToken::factory(rand(0, 2)))
+                           ->create([
+                                        'username' => 'Gertrud123',
+                                        'name'     => 'Gertrud',
+                                        'email'    => 'gertrud@traewelling.de',
+                                        'password' => Hash::make('thisisnotasecurepassword123'),
+                                    ]);
+            $gertrud->assignRole('admin');
+            $gertrud->assignRole('closed-beta');
+        }
 
-        User::factory()
-            ->create([
-                         'username'        => 'bob',
-                         'name'            => 'Bob from Alice & Bob',
-                         'avatar'          => null, // no avatar
-                         'email'           => 'bob@example.com',
-                         'private_profile' => true,
-                         'password'        => Hash::make('thisisnotasecurepassword123')
-                     ]);
+        if (!User::where("username", "=", "bob")->count()) {
+            User::factory()
+                ->create([
+                             'username'        => 'bob',
+                             'name'            => 'Bob from Alice & Bob',
+                             'avatar'          => null, // no avatar
+                             'email'           => 'bob@example.com',
+                             'private_profile' => true,
+                             'password'        => Hash::make('thisisnotasecurepassword123')
+                         ]);
+        }
 
         User::factory()
             ->has(IcsToken::factory(rand(0, 2)))

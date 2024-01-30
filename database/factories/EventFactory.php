@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\TrainStation;
+use App\Models\Station;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,7 +17,7 @@ class EventFactory extends Factory
             'url'        => $this->faker->url,
             'begin'      => Carbon::now()->subDays(3)->toIso8601String(),
             'end'        => Carbon::now()->addDays(3)->toIso8601String(),
-            'station_id' => TrainStation::factory(),
+            'station_id' => Station::factory(),
         ];
     }
 }

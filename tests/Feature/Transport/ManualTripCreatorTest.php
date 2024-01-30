@@ -7,7 +7,7 @@ use App\Enum\TripSource;
 use App\Http\Controllers\Backend\Transport\ManualTripCreator;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Models\HafasOperator;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,8 +19,8 @@ class ManualTripCreatorTest extends TestCase
     use RefreshDatabase;
 
     public function testCanCreateManualTripsAndCheckin(): void {
-        $originStation      = TrainStation::factory()->create();
-        $destinationStation = TrainStation::factory()->create();
+        $originStation      = Station::factory()->create();
+        $destinationStation = Station::factory()->create();
         $departure          = Carbon::now()->addMinutes(5)->setSecond(0)->setMicrosecond(0);
         $arrival            = Carbon::now()->addMinutes(15)->setSecond(0)->setMicrosecond(0);
 
@@ -67,7 +67,7 @@ class ManualTripCreatorTest extends TestCase
 
         $checkin = TrainCheckinController::checkin(
             user:        User::factory()->create(),
-            hafasTrip:   $trip,
+            trip:        $trip,
             origin:      $originStation,
             departure:   $departure,
             destination: $destinationStation,
@@ -76,7 +76,7 @@ class ManualTripCreatorTest extends TestCase
 
         $this->assertDatabaseHas('train_checkins', [
             'trip_id' => $trip->trip_id,
-            'user_id' => $checkin['status']->trainCheckin->user_id,
+            'user_id' => $checkin['status']->checkin->user_id,
         ]);
     }
 }

@@ -142,3 +142,6 @@ result*
 
 # Vite
 /public/build
+
+# laravel-vue-i18n
+lang/php_*.json
