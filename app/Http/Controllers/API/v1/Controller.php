@@ -43,16 +43,20 @@ use Throwable;
  *     description="Checkin related endpoints. Regular process is departures -> trip -> checkin"
  * )
  * @OA\Tag(
+ *     name="Dashboard",
+ *     description="API Endpoints of Dashboard"
+ * )
+ * @OA\Tag(
  *     name="Events",
  *     description="Events that users can check in to"
  * )
  * @OA\Tag(
- *     name="Status",
- *     description="Endpoints for accessing and manipulating Statusses and their additional data"
+ *     name="Notifications",
+ *     description="Get notifications and mark them as read or unread"
  * )
  * @OA\Tag(
- *     name="Dashboard",
- *     description="API Endpoints of Dashboard"
+ *     name="Status",
+ *     description="Endpoints for accessing and manipulating Statusses and their additional data"
  * )
  * @OA\Tag(
  *     name="Likes",

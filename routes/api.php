@@ -19,6 +19,7 @@ use App\Http\Controllers\API\v1\IcsController;
 use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\API\v1\NotificationsController;
 use App\Http\Controllers\API\v1\PrivacyPolicyController;
+use App\Http\Controllers\API\v1\ReportController;
 use App\Http\Controllers\API\v1\SessionController;
 use App\Http\Controllers\API\v1\SettingsController;
 use App\Http\Controllers\API\v1\StationController;
@@ -165,8 +166,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::delete('/{webhookId}', [WebhookController::class, 'deleteWebhook']);
         });
 
-        Route::apiResource('station', StationController::class); // currently admin/backend only
+        Route::apiResource('station', StationController::class);                                        // currently admin/backend only
         Route::put('station/{oldStationId}/merge/{newStationId}', [StationController::class, 'merge']); // currently admin/backend only
+
+        Route::apiResource('report', ReportController::class);
     });
 
     Route::group(['middleware' => ['privacy-policy']], static function() {

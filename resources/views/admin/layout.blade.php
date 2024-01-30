@@ -70,6 +70,10 @@
                                 <i class="fa-solid fa-hammer"></i>
                                 Activity
                             </a>
+                            <a class="nav-link" href="{{ route('admin.reports') }}">
+                                <i class="fa-solid fa-flag"></i>
+                                Reports
+                            </a>
                         @endif
                     </div>
                     <ul class="navbar-nav ms-auto">
