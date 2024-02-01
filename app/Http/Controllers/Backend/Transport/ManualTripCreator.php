@@ -8,9 +8,9 @@ use App\Enum\HafasTravelType;
 use App\Enum\TripSource;
 use App\Http\Controllers\Controller;
 use App\Models\HafasOperator;
-use App\Models\Trip;
 use App\Models\Station;
 use App\Models\Stopover;
+use App\Models\Trip;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -119,10 +119,17 @@ class ManualTripCreator extends Controller
         ?Carbon $plannedDeparture,
         ?Carbon $plannedArrival
     ): ManualTripCreator {
+        if ($plannedDeparture === null && $plannedArrival === null) {
+            throw new InvalidArgumentException('Either arrival or departure must be set');
+        }
+        if ($plannedDeparture !== null && $plannedArrival !== null && $plannedDeparture->isAfter($plannedArrival)) {
+            throw new InvalidArgumentException('Departure must be before arrival');
+        }
+
         $this->stopovers[] = [
             'stationId' => $station->id,
-            'departure' => $plannedDeparture,
-            'arrival'   => $plannedArrival,
+            'departure' => $plannedDeparture ?? $plannedArrival,
+            'arrival'   => $plannedArrival ?? $plannedDeparture,
         ];
         return $this;
     }
