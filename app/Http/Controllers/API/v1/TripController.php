@@ -45,7 +45,6 @@ class TripController extends Controller
                 'originDeparturePlanned'    => ['required', 'date'],
                 'destinationId'             => ['required', 'exists:train_stations,ibnr'],
                 'destinationArrivalPlanned' => ['required', 'date'],
-                'stopovers'                 => ['nullable', 'array'],
                 'stopovers.*.stationId'     => ['required', 'exists:train_stations,ibnr'],
                 'stopovers.*.arrival'       => ['required_without:stopovers.*.departure', 'date'],
                 'stopovers.*.departure'     => ['required_without:stopovers.*.arrival,null', 'date'],
