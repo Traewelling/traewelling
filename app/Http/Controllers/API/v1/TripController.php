@@ -41,11 +41,11 @@ class TripController extends Controller
                 'lineName'                  => ['required'],
                 'journeyNumber'             => ['nullable', 'numeric', 'min:1'],
                 'operatorId'                => ['nullable', 'numeric', 'exists:hafas_operators,id'],
-                'originId'                  => ['required', 'exists:train_stations,ibnr'],
+                'originId'                  => ['required', 'exists:train_stations,id'],
                 'originDeparturePlanned'    => ['required', 'date'],
-                'destinationId'             => ['required', 'exists:train_stations,ibnr'],
+                'destinationId'             => ['required', 'exists:train_stations,id'],
                 'destinationArrivalPlanned' => ['required', 'date'],
-                'stopovers.*.stationId'     => ['required', 'exists:train_stations,ibnr'],
+                'stopovers.*.stationId'     => ['required', 'exists:train_stations,id'],
                 'stopovers.*.arrival'       => ['required_without:stopovers.*.departure', 'date'],
                 'stopovers.*.departure'     => ['required_without:stopovers.*.arrival,null', 'date'],
             ]
@@ -58,18 +58,18 @@ class TripController extends Controller
                 ->setLine($validated['lineName'], $validated['journeyNumber'])
                 ->setOperator(HafasOperator::find($validated['operatorId']))
                 ->setOrigin(
-                    Station::where('ibnr', $validated['originId'])->firstOrFail(),
+                    Station::findOrFail($validated['originId']),
                     Carbon::parse($validated['originDeparturePlanned'])
                 )
                 ->setDestination(
-                    Station::where('ibnr', $validated['destinationId'])->firstOrFail(),
+                    Station::findOrFail($validated['destinationId']),
                     Carbon::parse($validated['destinationArrivalPlanned'])
                 );
 
         if (isset($validated['stopovers'])) {
             foreach ($validated['stopovers'] as $stopover) {
                 $creator->addStopover(
-                    Station::where('ibnr', $stopover['stationId'])->firstOrFail(),
+                    Station::findOrFail($stopover['stationId']),
                     isset($stopover['departure']) ? Carbon::parse($stopover['departure']) : null,
                     isset($stopover['arrival']) ? Carbon::parse($stopover['arrival']) : null
                 );

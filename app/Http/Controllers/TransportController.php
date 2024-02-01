@@ -37,6 +37,7 @@ class TransportController extends Controller
 
         return $stations->map(function(Station $station) {
             return [
+                'id'            => $station->id,
                 'ibnr'          => $station->ibnr,
                 'rilIdentifier' => $station->rilIdentifier,
                 'name'          => $station->name

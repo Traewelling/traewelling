@@ -15,9 +15,9 @@ use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\Event;
-use App\Models\Trip;
 use App\Models\Station;
 use App\Models\Stopover;
+use App\Models\Trip;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -121,8 +121,12 @@ class FrontendTransportController extends Controller
                                         ]);
 
         try {
-            $startStation = Station::where('ibnr', $validated['start'])->firstOrFail();
-            $departure    = Carbon::parse($validated['departure']);
+            $startStation = Station::where('ibnr', $validated['start'])->first();
+            if ($startStation === null) {
+                // in long term to support multiple data providers we only support IDs here - no IBNRs.
+                $startStation = Station::findOrFail($validated['start']);
+            }
+            $departure = Carbon::parse($validated['departure']);
 
             $trip = TrainCheckinController::getHafasTrip(
                 $validated['tripID'],
@@ -159,9 +163,9 @@ class FrontendTransportController extends Controller
     public function TrainCheckin(Request $request): RedirectResponse {
         $validated = $request->validate([
                                             'tripID'            => ['required'],
-                                            'start'             => ['required', 'numeric'], //Origin station IBNR
+                                            'start'             => ['required', 'numeric'], //origin station ID (or IBNR - in long term to support multiple data providers we only support IDs here)
                                             'departure'         => ['required', 'date'],
-                                            'destination'       => ['required', 'numeric'], //Destination station IBNR
+                                            'destination'       => ['required', 'numeric'], //Destination station ID (or IBNR - in long term to support multiple data providers we only support IDs here)
                                             'arrival'           => ['required', 'date'],
                                             'body'              => ['nullable', 'max:280'],
                                             'business_check'    => ['required', new Enum(Business::class)],
@@ -177,9 +181,9 @@ class FrontendTransportController extends Controller
             $backendResponse = TrainCheckinController::checkin(
                 user:         Auth::user(),
                 trip:         Trip::where('trip_id', $validated['tripID'])->first(),
-                origin:       Station::where('ibnr', $validated['start'])->first(),
+                origin:       Station::where('ibnr', $validated['start'])->first() ?? Station::findOrFail($validated['start']),
                 departure:    Carbon::parse($validated['departure']),
-                destination:  Station::where('ibnr', $validated['destination'])->first(),
+                destination:  Station::where('ibnr', $validated['destination'])->first() ?? Station::findOrFail($validated['destination']),
                 arrival:      Carbon::parse($validated['arrival']),
                 travelReason: Business::from($validated['business_check']),
                 visibility:   StatusVisibility::tryFrom($validated['checkinVisibility'] ?? StatusVisibility::PUBLIC->value),
@@ -226,7 +230,7 @@ class FrontendTransportController extends Controller
             report($exception);
             return redirect()
                 ->route('dashboard')
-                ->with('error', errorMessage($exception));
+                ->with('error', $exception->getMessage());
         }
     }
 

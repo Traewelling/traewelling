@@ -66,6 +66,7 @@ export default {
             let query = this.stationInput.replace(/%2F/, ' ').replace(/\//, ' ');
             fetch(`/api/v1/trains/station/autocomplete/${query}`).then((response) => {
                 response.json().then((result) => {
+                    console.log(result.data);
                     this.autocompleteList = result.data;
                     this.loading = false;
                 });
