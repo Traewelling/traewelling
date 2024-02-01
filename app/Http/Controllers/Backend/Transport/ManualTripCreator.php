@@ -127,7 +127,7 @@ class ManualTripCreator extends Controller
         }
 
         $this->stopovers[] = [
-            'stationId' => $station->id,
+            'station'   => $station,
             'departure' => $plannedDeparture ?? $plannedArrival,
             'arrival'   => $plannedArrival ?? $plannedDeparture,
         ];
@@ -141,7 +141,7 @@ class ManualTripCreator extends Controller
         foreach ($this->stopovers as $stopover) {
             Stopover::create([
                                  'trip_id'           => $this->trip->trip_id,
-                                 'train_station_id'  => $stopover['stationId'],
+                                 'train_station_id'  => $stopover['station']->id,
                                  'arrival_planned'   => $stopover['arrival'],
                                  'departure_planned' => $stopover['departure'],
                              ]);
