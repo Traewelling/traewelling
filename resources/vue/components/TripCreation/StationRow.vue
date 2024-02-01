@@ -81,7 +81,7 @@ export default {
 </script>
 
 <template>
-    <div class="col">
+    <div :class="departure && arrival ? 'col-12 col-md-4' : 'col'">
         <FullScreenModal ref="modal">
             <template #header>
                 <input type="text"
@@ -101,10 +101,13 @@ export default {
                 </ul>
             </template>
         </FullScreenModal>
+        <label for="timeFieldB" class="form-label">{{placeholder}}</label>
         <input type="text" class="form-control" :placeholder="placeholder" @focusin="showModal" v-model="stationInput">
     </div>
-    <div class="col-4">
+    <div :class="departure && arrival ? 'col col-md-4' : 'col-4'" v-if="departure && arrival">
+        <label for="timeFieldA" class="form-label">{{timeFieldALabel}}</label>
         <input
+            id="timeFieldA"
             type="datetime-local"
             class="form-control"
             :placeholder="timeFieldALabel"
@@ -112,9 +115,17 @@ export default {
             @input="$emit('update:timeFieldA', $event.target.value)"
         >
     </div>
-    <template v-if="departure && arrival">
-
-    </template>
+    <div :class="departure && arrival ? 'col col-md-4' : 'col-4'">
+        <label for="timeFieldB" class="form-label">{{timeFieldBLabel}}</label>
+        <input
+            id="timeFieldB"
+            type="datetime-local"
+            class="form-control"
+            :placeholder="timeFieldBLabel"
+            :aria-label="timeFieldBLabel"
+            @input="$emit('update:timeFieldB', $event.target.value)"
+        >
+    </div>
 </template>
 
 <style scoped lang="scss">

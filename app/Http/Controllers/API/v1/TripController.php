@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API\v1;
 
 use App\Enum\HafasTravelType;
@@ -24,7 +26,6 @@ class TripController extends Controller
      *
      * @return TripResource
      *
-     * @todo add stopovers
      * @todo add docs
      * @todo currently the stations need to be in the database. We need to add a fallback to HAFAS.
      *       -> later solve the problem for non-existing stations
@@ -34,33 +35,48 @@ class TripController extends Controller
             abort(403, 'this endpoint is currently only available for beta users');
         }
 
-        $validated = $request->validate([
-                                            'category'                  => ['required', new Enum(HafasTravelType::class)],
-                                            'lineName'                  => ['required'],
-                                            'journeyNumber'             => ['nullable', 'numeric', 'min:1'],
-                                            'operatorId'                => ['nullable', 'numeric', 'exists:hafas_operators,id'],
-                                            'originId'                  => ['required', 'exists:train_stations,ibnr'],
-                                            'originDeparturePlanned'    => ['required', 'date'],
-                                            'destinationId'             => ['required', 'exists:train_stations,ibnr'],
-                                            'destinationArrivalPlanned' => ['required', 'date'],
-                                        ]);
+        $validated = $request->validate(
+            [
+                'category'                  => ['required', new Enum(HafasTravelType::class)],
+                'lineName'                  => ['required'],
+                'journeyNumber'             => ['nullable', 'numeric', 'min:1'],
+                'operatorId'                => ['nullable', 'numeric', 'exists:hafas_operators,id'],
+                'originId'                  => ['required', 'exists:train_stations,ibnr'],
+                'originDeparturePlanned'    => ['required', 'date'],
+                'destinationId'             => ['required', 'exists:train_stations,ibnr'],
+                'destinationArrivalPlanned' => ['required', 'date'],
+                'stopovers.*.stationId'     => ['required', 'exists:train_stations,ibnr'],
+                'stopovers.*.arrival'       => ['required_without:stopovers.*.departure', 'date'],
+                'stopovers.*.departure'     => ['required_without:stopovers.*.arrival,null', 'date'],
+            ]
+        );
 
         DB::beginTransaction();
 
         $creator = new ManualTripCreator();
+        $creator->setCategory(HafasTravelType::from($validated['category']))
+                ->setLine($validated['lineName'], $validated['journeyNumber'])
+                ->setOperator(HafasOperator::find($validated['operatorId']))
+                ->setOrigin(
+                    Station::where('ibnr', $validated['originId'])->firstOrFail(),
+                    Carbon::parse($validated['originDeparturePlanned'])
+                )
+                ->setDestination(
+                    Station::where('ibnr', $validated['destinationId'])->firstOrFail(),
+                    Carbon::parse($validated['destinationArrivalPlanned'])
+                );
 
-        $creator->category                  = HafasTravelType::from($validated['category']);
-        $creator->lineName                  = $validated['lineName'];
-        $creator->journeyNumber             = $validated['journeyNumber'];
-        $creator->operator                  = HafasOperator::find($validated['operatorId']);
-        $creator->origin                    = Station::where('ibnr', $validated['originId'])->firstOrFail();
-        $creator->originDeparturePlanned    = Carbon::parse($validated['originDeparturePlanned']);
-        $creator->destination               = Station::where('ibnr', $validated['destinationId'])->firstOrFail();
-        $creator->destinationArrivalPlanned = Carbon::parse($validated['destinationArrivalPlanned']);
+        if (isset($validated['stopovers'])) {
+            foreach ($validated['stopovers'] as $stopover) {
+                $creator->addStopover(
+                    Station::where('ibnr', $stopover['stationId'])->firstOrFail(),
+                    isset($stopover['departure']) ? Carbon::parse($stopover['departure']) : null,
+                    isset($stopover['arrival']) ? Carbon::parse($stopover['arrival']) : null
+                );
+            }
+        }
 
-        $trip = $creator->createTrip();
-        $creator->createOriginStopover();
-        $creator->createDestinationStopover();
+        $trip = $creator->createFullTrip();
 
         DB::commit();
 
