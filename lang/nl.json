@@ -767,5 +767,9 @@
     "error.419": "Pagina verlopen",
     "error.404": "Niet gevonden",
     "modals.tags.new": "Nieuw label",
-    "support.rate_limit_exceeded": "Je hebt onlangs een ondersteuningsverzoek gedaan. Wacht even voordat je nog een verzoek doet."
+    "support.rate_limit_exceeded": "Je hebt onlangs een ondersteuningsverzoek gedaan. Wacht even voordat je nog een verzoek doet.",
+    "maintenance.prolonged": "Dit bericht zou niet langer dan een paar minuten getoond mogen worden.",
+    "maintenance.try-later": "Probeer het later opnieuw.",
+    "maintenance.subtitle": "Geen zorgen: we werken juist aan verbetering van de website.",
+    "maintenance.title": "Er wordt momenteel onderhoud uitgevoerd."
 }
