@@ -69,9 +69,14 @@ abstract class StationController extends Controller
     }
 
     public static function getAlternativeDestinationsForCheckin(Checkin $checkin): Collection {
+        $encounteredOrigin = false;
         return $checkin->trip->stopovers
-            ->filter(function(Stopover $stopover) use ($checkin) {
-                return ($stopover->arrival_planned ?? $stopover->departure_planned)->isAfter($checkin->departure);
+            ->filter(function(Stopover $stopover) use ($checkin, &$encounteredOrigin): bool {
+                if (!$encounteredOrigin) { // this assumes stopovers being ordered correctly
+                    $encounteredOrigin = $stopover->departure_planned == $checkin->departure && $stopover->is($checkin->originStopover);
+                    return false;
+                }
+                return true;
             })
             ->map(function(Stopover $stopover) {
                 return [
