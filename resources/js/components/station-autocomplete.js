@@ -20,6 +20,7 @@ const popularStations = [
         autoFirst: true,
         sort: false,
         list: popularStations,
+        filter: () => true,
         container: function () {
             container.classList.add("awesomplete");
             return container;

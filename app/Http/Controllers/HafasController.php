@@ -120,8 +120,11 @@ abstract class HafasController extends Controller
 
     private static function upsertStations(array $payload) {
         $ibnrs = array_column($payload, 'ibnr');
+        if (empty($ibnrs)) return new Collection();
         Station::upsert($payload, ['ibnr'], ['name', 'latitude', 'longitude']);
-        return Station::whereIn('ibnr', $ibnrs)->get();
+        return Station::whereIn('ibnr', $ibnrs)->get()->sortBy(function($station) use ($ibnrs) {
+            return array_search($station->ibnr, $ibnrs);
+        })->values();
     }
 
     /**
