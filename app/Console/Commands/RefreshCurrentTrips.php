@@ -16,16 +16,19 @@ class RefreshCurrentTrips extends Command
     protected $description = 'Refresh delay data from current active trips';
 
     public function handle(): int {
-        $this->info('Gettings trips to be refreshed...');
+        $this->info('Getting trips to be refreshed...');
 
-        $trips = Trip::join('train_stopovers', 'hafas_trips.trip_id', '=', 'train_stopovers.trip_id')
-            //To only refresh checked in trips join train_checkins:
-                     ->join('train_checkins', 'train_checkins.trip_id', '=', 'hafas_trips.trip_id')
+        // To only refresh checked in trips join train_checkins:
+        $trips = Trip::join('train_checkins', 'train_checkins.trip_id', '=', 'hafas_trips.trip_id')
+                     ->join('train_stopovers as origin_stopovers', 'origin_stopovers.id', '=', 'train_checkins.origin_stopover_id')
+                     ->join('train_stopovers as destination_stopovers', 'destination_stopovers.id', '=', 'train_checkins.destination_stopover_id')
                      ->where(function($query) {
-                              $query->where('train_stopovers.arrival_planned', '>=', now())
-                                    ->orWhere('train_stopovers.arrival_real', '>=', now())
-                                    ->orWhere('train_stopovers.departure_planned', '>=', now())
-                                    ->orWhere('train_stopovers.departure_real', '>=', now());
+                              $query->where('destination_stopovers.arrival_planned', '>=', now()->subMinutes(20))
+                                    ->orWhere('destination_stopovers.arrival_real', '>=', now()->subMinutes(20));
+                          })
+                     ->where(function($query) {
+                              $query->where('origin_stopovers.departure_planned', '<=', now()->addMinutes(20))
+                                    ->orWhere('origin_stopovers.departure_real', '<=', now()->addMinutes(20));
                           })
                      ->where(function($query) {
                               $query->where('hafas_trips.last_refreshed', '<', now()->subMinutes(5))
