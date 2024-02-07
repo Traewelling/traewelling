@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 /**
+ * //properties
  * @property int              id
  * @property int              user_id
  * @property string           body
@@ -20,7 +22,14 @@ use Illuminate\Support\Facades\Auth;
  * @property int              event_id
  * @property string           tweet_id
  * @property string           mastodon_post_id
+ *
+ * //relations
+ * @property User             $user
  * @property Checkin          $checkin
+ * @property Collection       $likes
+ * @property OAuthClient      $client
+ * @property Event            $event
+ * @property Collection       $tags
  *
  * @todo merge model with "Checkin" (later only "Checkin") because the difference between trip sources (HAFAS,
  *       User, and future sources) should be handled in the Trip model.
