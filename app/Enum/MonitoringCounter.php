@@ -9,4 +9,5 @@ enum MonitoringCounter: string {
     case StatusDeleted = "StatusDeleted";
     case UserCreated   = "UserCreated";
     case UserDeleted   = "UserDeleted";
+    case WebhookAbsent = "WebhookAbsent";
 }

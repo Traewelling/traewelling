@@ -7,6 +7,7 @@ use App\Events\StatusUpdateEvent;
 use App\Events\UserCheckedIn;
 use App\Jobs\PostStatusOnMastodon;
 use App\Listeners\NotificationSentWebhookListener;
+use App\Listeners\RemoveAbsentWebhooksListener;
 use App\Listeners\StatusCreateCheckPolylineListener;
 use App\Listeners\StatusCreateWebhookListener;
 use App\Listeners\StatusDeleteWebhookListener;
@@ -36,21 +37,24 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        Registered::class        => [
+        Registered::class             => [
             //SendEmailVerificationNotification::class,
         ],
-        UserCheckedIn::class     => [
+        UserCheckedIn::class          => [
             StatusCreateWebhookListener::class,
             StatusCreateCheckPolylineListener::class,
         ],
-        StatusUpdateEvent::class => [
+        StatusUpdateEvent::class      => [
             StatusUpdateWebhookListener::class
         ],
-        StatusDeleteEvent::class => [
+        StatusDeleteEvent::class      => [
             StatusDeleteWebhookListener::class
         ],
-        NotificationSent::class  => [
+        NotificationSent::class       => [
             NotificationSentWebhookListener::class
+        ],
+        WebhookCallFailedEvent::class => [
+            RemoveAbsentWebhooksListener::class
         ]
     ];
 
