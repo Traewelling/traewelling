@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 
 /**
+ * //properties
  * @property int              id
  * @property int              user_id
  * @property string           body
@@ -20,6 +21,9 @@ use Illuminate\Support\Facades\Auth;
  * @property int              event_id
  * @property string           tweet_id
  * @property string           mastodon_post_id
+ *
+ * //relations
+ * @property User             $user
  * @property Checkin          $checkin
  *
  * @todo merge model with "Checkin" (later only "Checkin") because the difference between trip sources (HAFAS,

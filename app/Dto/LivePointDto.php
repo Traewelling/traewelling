@@ -3,7 +3,10 @@
 namespace App\Dto;
 
 use App\Dto\GeoJson\Feature;
-use OpenApi\Annotations as OA;
+use App\Http\Controllers\Backend\User\ProfilePictureController;
+use App\Models\Status;
+use JsonSerializable;
+use stdClass;
 
 /**
  * @OA\Schema(
@@ -14,7 +17,7 @@ use OpenApi\Annotations as OA;
  *     )
  * )
  */
-class LivePointDto implements \JsonSerializable
+readonly class LivePointDto implements JsonSerializable
 {
     /**
      * @OA\Property(
@@ -24,7 +27,7 @@ class LivePointDto implements \JsonSerializable
      *     ref="#/components/schemas/Coordinate"
      * )
      */
-    public readonly ?Coordinate $point;
+    public ?Coordinate $point;
     /**
      * @OA\Property(
      *     title="polyline",
@@ -32,7 +35,7 @@ class LivePointDto implements \JsonSerializable
      *     ref="#/components/schemas/FeatureCollection"
      * )
      */
-    public readonly ?\stdClass  $polyline;
+    public ?stdClass $polyline;
     /**
      * @OA\Property(
      *     title="arrival",
@@ -41,7 +44,7 @@ class LivePointDto implements \JsonSerializable
      *     example=1692538680
      * )
      */
-    public readonly int         $arrival;
+    public int $arrival;
     /**
      * @OA\Property(
      *     title="departure",
@@ -50,7 +53,7 @@ class LivePointDto implements \JsonSerializable
      *     example=1692538740
      * )
      */
-    public readonly int         $departure;
+    public int $departure;
     /**
      * @OA\Property(
      *     title="lineName",
@@ -59,8 +62,10 @@ class LivePointDto implements \JsonSerializable
      *     example="ICE 123"
      * )
      **/
-    public readonly string      $lineName;
+    public string $lineName;
     /**
+     * @deprecated how to remove this unnecessary property (use status model instead) without breaking the API?
+     *
      * @OA\Property(
      *     title="statusId",
      *     description="ID of status",
@@ -68,22 +73,25 @@ class LivePointDto implements \JsonSerializable
      *     example=12345
      * )
      **/
-    public readonly int         $statusId;
+    public int $statusId;
+
+    public Status $status;
 
     public function __construct(
         ?Coordinate $point,
-        ?\stdClass  $polyline,
+        ?stdClass   $polyline,
         int         $arrival,
         int         $departure,
         string      $lineName,
-        int         $statusId
+        Status      $status
     ) {
         $this->point     = $point;
         $this->polyline  = $polyline;
         $this->arrival   = $arrival;
         $this->departure = $departure;
         $this->lineName  = $lineName;
-        $this->statusId  = $statusId;
+        $this->status    = $status;
+        $this->statusId  = $status->id;
     }
 
     public function jsonSerialize(): mixed {
@@ -97,7 +105,17 @@ class LivePointDto implements \JsonSerializable
             'arrival'   => $this->arrival,
             'departure' => $this->departure,
             'lineName'  => $this->lineName,
-            'statusId'  => $this->statusId
+            'statusId'  => $this->status->id, //deprecate this... why aren't we using a resource here...? why is a DTO a resource now? isn't a DTO supposed to be a simple data transfer object for internal use?
+            'status'    => [
+                //undocumented
+                'id'   => $this->status->id,
+                'user' => [
+                    'id'                => $this->status->user->id,
+                    'username'          => $this->status->user->username,
+                    'name'              => $this->status->user->name,
+                    'profilePictureUrl' => ProfilePictureController::getUrl($this->status->user)
+                ],
+            ]
         ];
     }
 }

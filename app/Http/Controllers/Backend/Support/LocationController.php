@@ -6,9 +6,9 @@ use App\Dto\Coordinate;
 use App\Dto\GeoJson\Feature;
 use App\Dto\GeoJson\FeatureCollection;
 use App\Dto\LivePointDto;
-use App\Models\Trip;
 use App\Models\Status;
 use App\Models\Stopover;
+use App\Models\Trip;
 use App\Objects\LineSegment;
 use Carbon\Carbon;
 use Exception;
@@ -21,18 +21,18 @@ class LocationController
     private Trip      $trip;
     private ?Stopover $origin;
     private ?Stopover $destination;
-    private ?int      $statusId;
+    private ?Status   $status;
 
     public function __construct(
         Trip     $trip,
         Stopover $origin = null,
         Stopover $destination = null,
-        int      $statusId = null
+        Status   $status = null
     ) {
-        $this->trip   = $trip;
+        $this->trip        = $trip;
         $this->origin      = $origin;
         $this->destination = $destination;
-        $this->statusId    = $statusId;
+        $this->status      = $status;
     }
 
     public static function forStatus(Status $status): LocationController {
@@ -40,7 +40,7 @@ class LocationController
             $status->checkin->trip,
             $status->checkin->originStopover,
             $status->checkin->destinationStopover,
-            $status->id
+            $status
         );
     }
 
@@ -83,7 +83,7 @@ class LocationController
                 $newStopovers[0]->arrival->timestamp,
                 $newStopovers[0]->departure->timestamp,
                 $this->trip->linename,
-                $this->statusId
+                $this->status
             );
         }
 
@@ -121,7 +121,7 @@ class LocationController
             $newStopovers[1]->arrival->timestamp,
             $newStopovers[1]->departure->timestamp,
             $this->trip->linename,
-            $this->statusId,
+            $this->status,
         );
     }
 
@@ -149,9 +149,9 @@ class LocationController
         if (isset($this->trip->polyline)) {
             $geoJsonObj = json_decode($this->trip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
         }
-        $stopovers  = $this->trip->stopovers;
+        $stopovers = $this->trip->stopovers;
 
-        $stopovers = $stopovers->map(function ($stopover) {
+        $stopovers = $stopovers->map(function($stopover) {
             $stopover['passed'] = false;
             return $stopover;
         });
@@ -178,7 +178,7 @@ class LocationController
 
     public function getMapLines(bool $invert = false): array {
         try {
-            $geoJson  = $this->getPolylineBetween();
+            $geoJson = $this->getPolylineBetween();
             if ($geoJson instanceof FeatureCollection) {
                 return $geoJson->features[0]->getCoordinates($invert);
             }
@@ -204,10 +204,10 @@ class LocationController
 
     private function createPolylineFromStopovers(): FeatureCollection {
         $coordinates = [];
-        $firstStop = null;
+        $firstStop   = null;
         foreach ($this->trip->stopovers as $stopover) {
             if ($firstStop !== null || $stopover->is($this->origin)) {
-                $firstStop = $stopover;
+                $firstStop     = $stopover;
                 $coordinates[] = new Coordinate($stopover->station->latitude, $stopover->station->longitude);
 
                 if ($stopover->is($this->destination)) {
@@ -225,7 +225,7 @@ class LocationController
      */
     private function getPolylineBetween(bool $preserveKeys = true): stdClass|FeatureCollection {
         $this->trip->loadMissing(['stopovers.station']);
-        $geoJson  = $this->getPolylineWithTimestamps();
+        $geoJson = $this->getPolylineWithTimestamps();
         if (count($geoJson->features) === 0) {
             return $this->createPolylineFromStopovers();
         }
@@ -303,10 +303,10 @@ class LocationController
 
     private function calculateDistanceByStopovers(): int {
         $stopovers                = $this->trip->stopovers->sortBy('departure');
-        $originStopoverIndex      = $stopovers->search(function ($item) {
+        $originStopoverIndex      = $stopovers->search(function($item) {
             return $item->is($this->origin);
         });
-        $destinationStopoverIndex = $stopovers->search(function ($item) {
+        $destinationStopoverIndex = $stopovers->search(function($item) {
             return $item->is($this->destination);
         });
 
