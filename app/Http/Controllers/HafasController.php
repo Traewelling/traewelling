@@ -484,34 +484,55 @@ abstract class HafasController extends Controller
         return $trip;
     }
 
-    public static function refreshStopovers(stdClass $rawHafas): int {
-        $payload = [];
+    public static function refreshStopovers(stdClass $rawHafas): stdClass {
+        $stopoversUpdated = 0;
+        $payloadArrival = [];
+        $payloadDeparture = [];
+        $payloadCancelled = [];
         foreach ($rawHafas->stopovers ?? [] as $stopover) {
-            if (!isset($stopover->arrivalDelay) && !isset($stopover->departureDelay)) {
-                continue;
+            if (!isset($stopover->arrivalDelay) && !isset($stopover->departureDelay) && !isset($stopover->cancelled)) {
+                continue; // No realtime data present for this stopover, keep existing data
             }
 
-            $stop             = self::parseHafasStopObject($stopover->stop);
-            $arrivalPlanned   = Carbon::parse($stopover->plannedArrival)->tz(config('app.timezone'));
-            $arrivalReal      = Carbon::parse($stopover->arrival)->tz(config('app.timezone'));
+            $stop = self::parseHafasStopObject($stopover->stop);
+            $arrivalPlanned = Carbon::parse($stopover->plannedArrival)->tz(config('app.timezone'));
             $departurePlanned = Carbon::parse($stopover->plannedDeparture)->tz(config('app.timezone'));
-            $departureReal    = Carbon::parse($stopover->departure)->tz(config('app.timezone'));
 
-            $payload[] = [
+            $basePayload = [
                 'trip_id'           => $rawHafas->id,
                 'train_station_id'  => $stop->id,
                 'arrival_planned'   => isset($stopover->plannedArrival) ? $arrivalPlanned : $departurePlanned,
-                'arrival_real'      => isset($stopover->arrival) ? $arrivalReal : null,
                 'departure_planned' => isset($stopover->plannedDeparture) ? $departurePlanned : $arrivalPlanned,
-                'departure_real'    => isset($stopover->departure) ? $departureReal : null,
             ];
+
+            if (isset($stopover->arrivalDelay) && isset($stopover->arrival)) {
+                $arrivalReal = Carbon::parse($stopover->arrival)->tz(config('app.timezone'));
+                $payloadArrival[] = array_merge($basePayload, [ 'arrival_real' => $arrivalReal ]);
+            }
+
+            if (isset($stopover->departureDelay) && isset($stopover->departure)) {
+                $departureReal = Carbon::parse($stopover->departure)->tz(config('app.timezone'));
+                $payloadDeparture[] = array_merge($basePayload, [ 'departure_real' => $departureReal ]);
+            }
+
+            // In case of cancellation, arrivalDelay/departureDelay will be null while the cancelled attribute will be present and true
+            // If cancelled is false / missing while other RT data is present (see initial if expression), it will be upserted to false
+            // This behavior is required for potential withdrawn cancellations
+            $payloadCancelled[] = array_merge($basePayload, [ 'cancelled' => $stopover->cancelled ?? false ]);
+
+            $stopoversUpdated++;
         }
 
-        return Stopover::upsert(
-            $payload,
-            ['trip_id', 'train_station_id', 'departure_planned', 'arrival_planned'],
-            ['arrival_real', 'departure_real']
-        );
+        $key = ['trip_id', 'train_station_id', 'departure_planned', 'arrival_planned'];
+
+        return (object) [
+            "stopovers" => $stopoversUpdated,
+            "rows" => [
+                "arrival" => Stopover::upsert($payloadArrival, $key, ['arrival_real']),
+                "departure" => Stopover::upsert($payloadDeparture, $key, ['departure_real']),
+                "cancelled" => Stopover::upsert($payloadCancelled, $key, ['cancelled'])
+            ]
+        ];
     }
 
     /**

@@ -51,8 +51,8 @@ class RefreshCurrentTrips extends Command
                 $trip->update(['last_refreshed' => now()]);
 
                 $rawHafas    = HafasController::fetchRawHafasTrip($trip->trip_id, $trip->linename);
-                $updatedRows = HafasController::refreshStopovers($rawHafas);
-                $this->info('Updated ' . $updatedRows . ' rows.');
+                $updatedCounts = HafasController::refreshStopovers($rawHafas);
+                $this->info('Updated ' . $updatedCounts->stopovers . ' stopovers.');
 
                 //set duration for refreshed trips to null, so it will be recalculated
                 Checkin::where('trip_id', $trip->trip_id)->update(['duration' => null]);
