@@ -24,7 +24,7 @@ export default {
             stopovers: [],
             origin: {},
             destination: {},
-            trainNumberInput: "",
+            journeyNumberInput: "",
             trainTypeInput: "",
             categories: [
                 {value: "nationalExpress", text: "nationalExpress"},
@@ -45,7 +45,7 @@ export default {
             const dummyStopover = {
                 station: {
                     name: "",
-                    ibnr: "",
+                    id: "",
                 },
                 departurePlanned: "",
                 arrivalPlanned: "",
@@ -54,24 +54,24 @@ export default {
         },
         setOrigin(item) {
             this.origin        = item;
-            this.form.originId = item.ibnr;
+            this.form.originId = item.id;
         },
         setDeparture(time) {
             this.form.originDeparturePlanned = DateTime.fromISO(time).setZone(this.originTimezone);
         },
         setDestination(item) {
             this.destination        = item;
-            this.form.destinationId = item.ibnr;
+            this.form.destinationId = item.id;
         },
         setArrival(time) {
             this.form.destinationArrivalPlanned = DateTime.fromISO(time).setZone(this.destinationTimezone);
         },
         sendForm() {
             this.form.lineName      = this.trainTypeInput;
-            this.form.journeyNumber = isNumber(this.trainNumberInput) ? this.trainNumberInput : null;
+            this.form.journeyNumber = isNumber(this.journeyNumberInput) ? this.journeyNumberInput : null;
             this.form.stopovers     = this.stopovers.map((stopover) => {
                 return {
-                    stationId: stopover.station.ibnr,
+                    stationId: stopover.station.id,
                     departure: stopover.departurePlanned,
                     arrival: stopover.arrivalPlanned,
                 };
@@ -90,7 +90,7 @@ export default {
                         let query = {
                             tripID: result.id,
                             lineName: result.lineName,
-                            start: result.origin.ibnr,
+                            start: result.origin.id,
                             departure: this.form.originDeparturePlanned,
                         };
 
@@ -166,11 +166,11 @@ export default {
             </div>
             <div class="row g-3 mt-1">
                 <div class="col-4">
-                    <input type="text" class="form-control" placeholder="Linie (S1, ICE 13,...)" v-model="trainTypeInput">
+                    <input type="text" class="form-control" placeholder="Linie (S1, ICE 13, ...)" v-model="trainTypeInput">
                 </div>
                 <div class="col-4">
-                    <input type="text" class="form-control" placeholder="Nummer (optional)" aria-label="Zugnummer"
-                           v-model="trainNumberInput">
+                    <input type="text" class="form-control" placeholder="Nummer (optional)" aria-label="Fahrtnummer"
+                           v-model="journeyNumberInput">
                 </div>
                 <div class="col">
                     <select class="form-select" aria-label="Default select example" v-model="form.category">
