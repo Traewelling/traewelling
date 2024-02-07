@@ -12,11 +12,7 @@ use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
 class RemoveAbsentWebhooksListener
 {
     public function handle(WebhookCallFailedEvent $event) {
-        if (!$event->response) {
-            return;
-        }
-
-        if ($event->response->getStatusCode() !== 410) {
+        if (!$event->response || $event->response->getStatusCode() !== 410) {
             return;
         }
 
