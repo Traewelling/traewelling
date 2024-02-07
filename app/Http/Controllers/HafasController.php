@@ -7,9 +7,9 @@ use App\Enum\TravelType;
 use App\Enum\TripSource;
 use App\Exceptions\HafasException;
 use App\Models\HafasOperator;
-use App\Models\Trip;
 use App\Models\Station;
 use App\Models\Stopover;
+use App\Models\Trip;
 use Carbon\Carbon;
 use Carbon\CarbonTimeZone;
 use Exception;
@@ -120,11 +120,15 @@ abstract class HafasController extends Controller
 
     private static function upsertStations(array $payload) {
         $ibnrs = array_column($payload, 'ibnr');
-        if (empty($ibnrs)) return new Collection();
+        if (empty($ibnrs)) {
+            return new Collection();
+        }
         Station::upsert($payload, ['ibnr'], ['name', 'latitude', 'longitude']);
-        return Station::whereIn('ibnr', $ibnrs)->get()->sortBy(function($station) use ($ibnrs) {
-            return array_search($station->ibnr, $ibnrs);
-        })->values();
+        return Station::whereIn('ibnr', $ibnrs)->get()
+                      ->sortBy(function(Station $station) use ($ibnrs) {
+                          return array_search($station->ibnr, $ibnrs);
+                      })
+                      ->values();
     }
 
     /**
