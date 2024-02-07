@@ -134,9 +134,14 @@ class FrontendTransportController extends Controller
                 $startStation->id,
             );
 
+            $encounteredStart = false;
             $stopovers = $trip->stopovers
-                ->filter(function(Stopover $stopover) use ($departure): bool {
-                    return $stopover->departure_planned->isAfter($departure);
+                ->filter(function(Stopover $stopover) use ($departure, $startStation, &$encounteredStart): bool {
+                    if (!$encounteredStart) { // this assumes stopovers being ordered correctly
+                        $encounteredStart = $stopover->departure_planned == $departure && $stopover->station->is($startStation);
+                        return false;
+                    }
+                    return true;
                 });
 
             // Find out where this train terminates and offer this as a "fast check-in" option.
