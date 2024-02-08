@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
+use App\Http\Controllers\Backend\Support\MentionHelper;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,6 +32,7 @@ use Illuminate\Support\Facades\Auth;
  * @property OAuthClient      $client
  * @property Event            $event
  * @property Collection       $tags
+ * @property Mention[]        $mentions
  *
  * @todo merge model with "Checkin" (later only "Checkin") because the difference between trip sources (HAFAS,
  *       User, and future sources) should be handled in the Trip model.
@@ -39,7 +42,16 @@ class Status extends Model
 
     use HasFactory;
 
-    protected $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'tweet_id', 'mastodon_post_id', 'client_id'];
+    protected $fillable = [
+        'user_id',
+        'body',
+        'business',
+        'visibility',
+        'event_id',
+        'tweet_id',
+        'mastodon_post_id',
+        'client_id'
+    ];
     protected $hidden   = ['user_id', 'business'];
     protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description'];
     protected $casts    = [
@@ -83,6 +95,18 @@ class Status extends Model
 
     public function tags(): HasMany {
         return $this->hasMany(StatusTag::class, 'status_id', 'id');
+    }
+
+    public function mentions(): HasMany {
+        return $this->hasMany(Mention::class, 'status_id', 'id');
+    }
+
+    public function setBodyAttribute($value): void {
+        if ($this->id) {
+            MentionHelper::createMentions($this, $value);
+        }
+
+        $this->attributes['body'] = $value;
     }
 
     public function getFavoritedAttribute(): ?bool {
