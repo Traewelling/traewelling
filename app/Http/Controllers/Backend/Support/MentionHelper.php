@@ -12,7 +12,7 @@ use App\Models\User;
 class MentionHelper
 {
 
-    private string $body;
+    private ?string $body;
     private Status $status;
     private bool   $isCreating = false;
 
@@ -33,7 +33,7 @@ class MentionHelper
      */
     private function findUsersInString(): array {
         $users   = [];
-        $matches = self::findMentionsInString($this->body);
+        $matches = self::findMentionsInString($this->body ?? '');
         foreach ($matches as $match) {
             $user = User::where('username', substr($match[0], 1))->first();
 
