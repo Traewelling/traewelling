@@ -6,7 +6,6 @@ namespace App\Dto;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(
@@ -22,7 +21,6 @@ class MentionDto implements \JsonSerializable
     /**
      * @OA\Property(
      *     title="user",
-     *     description="",
      *     nullable="true",
      *     ref="#/components/schemas/User"
      * )
@@ -31,7 +29,6 @@ class MentionDto implements \JsonSerializable
     /**
      * @OA\Property(
      *     title="position",
-     *     description="",
      *     format="int64",
      *     example=0
      * )
@@ -40,7 +37,6 @@ class MentionDto implements \JsonSerializable
     /**
      * @OA\Property(
      *     title="length",
-     *     description="",
      *     format="integer",
      *     example=4
      * )
@@ -53,7 +49,7 @@ class MentionDto implements \JsonSerializable
         $this->length   = $length;
     }
 
-    public function jsonSerialize(): mixed {
+    public function jsonSerialize(): array {
         return $this->toArray();
     }
 

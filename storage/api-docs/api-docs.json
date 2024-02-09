@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1",
+            "url": "https://traewelling.de/api/v1",
             "description": "This instance"
         }
     ],
@@ -4276,7 +4276,8 @@
                         "description": "ID of status",
                         "type": "integer",
                         "format": "int64",
-                        "example": 12345
+                        "example": 12345,
+                        "deprecated": true
                     }
                 },
                 "type": "object",
@@ -4293,14 +4294,12 @@
                     },
                     "position": {
                         "title": "position",
-                        "description": "",
                         "type": "integer",
                         "format": "int64",
                         "example": 0
                     },
                     "length": {
                         "title": "length",
-                        "description": "",
                         "type": "integer",
                         "format": "integer",
                         "example": 4
@@ -5924,9 +5923,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost/oauth/authorize",
-                        "tokenUrl": "http://localhost/oauth/token",
-                        "refreshUrl": "http://localhost/auth/refresh",
+                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
+                        "tokenUrl": "http://localhost:8000/oauth/token",
+                        "refreshUrl": "http://localhost:8000/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",
