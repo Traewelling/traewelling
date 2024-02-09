@@ -112,11 +112,7 @@
 
                     @if(!empty($status->body))
                         <p class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i>
-                            {!! nl2br(preg_replace(
-                            '~(\R{2})\R+~',
-                            '$1',
-                            \App\Http\Controllers\Backend\Support\MentionHelper::getBodyWithMentionLinks($status)
-                            )) !!}
+                            {!! \App\Http\Controllers\Backend\Transport\StatusController::getPrintableEscapedBody($status) !!}
                         </p>
                     @endif
 
