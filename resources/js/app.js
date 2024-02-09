@@ -114,6 +114,7 @@ window.addEventListener("load", () => {
     import("./components/stationboard-gps");
     import("./components/Status");
     import("./components/timepicker");
+    import("./components/export");
     import("./components/business-check-in");
     import("./appControls");
     import("bootstrap-cookie-alert/cookiealert");

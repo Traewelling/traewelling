@@ -21,12 +21,32 @@
                             </h2>
 
                             <hr/>
+
+                            <p class="fw-bold mb-1">
+                                <i class="fa-solid fa-table-list"></i>
+                                {{__('export.predefined')}}
+                            </p>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <button type="button" class="btn btn-primary btn-sm" id="export-nominal">
+                                            {{ __('export.nominal') }}
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm" id="export-tags">
+                                            {{ __('export.nominal-tags') }}
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-primary" id="export-all">
+                                            {{ __('export.all') }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
                             <p class="fw-bold mb-1">
                                 <i class="fa-solid fa-table-list"></i>
                                 {{__('export.columns')}}
                             </p>
-
-                            <select class="form-select" size="12" multiple name="columns[]" required>
+                            <select id="export-select" class="form-select" size="12" multiple name="columns[]" required>
                                 @foreach(\App\Enum\ExportableColumn::cases() as $column)
                                     <option value="{{$column->value}}">
                                         {{$column->title()}}
