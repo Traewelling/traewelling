@@ -14,7 +14,7 @@ class MentionHelper
 
     private ?string $body;
     private Status $status;
-    private bool   $isCreating = false;
+    private bool   $isCreating;
 
     public function __construct(Status $status, string $body = null) {
         $this->status     = $status;
