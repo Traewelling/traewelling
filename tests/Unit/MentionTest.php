@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use App\Http\Controllers\Backend\Support\MentionHelper;
-use App\Models\Status;
 use PHPUnit\Framework\TestCase;
 
 class MentionTest extends TestCase
@@ -12,13 +11,11 @@ class MentionTest extends TestCase
     /**
      * @dataProvider provideStringMatchesMentionDto
      */
-    public function testStringMatchesMentionDto($string, $result): void
-    {
+    public function testStringMatchesMentionDto($string, $result): void {
         $this->assertSame($result, MentionHelper::findMentionsInString($string));
     }
 
-    public function provideStringMatchesMentionDto(): array
-    {
+    public static function provideStringMatchesMentionDto(): array {
         return [
             ['I\'m on my way with @alice and @bob', [['@alice', 19], ['@bob', 30]]],
             ['@alice and @bob are waiting for me', [['@alice', 0], ['@bob', 11]]],
