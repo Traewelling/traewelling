@@ -68,6 +68,7 @@ abstract class ExportController extends Controller
         }
 
         if ($filetype === 'csv_human' || $filetype === 'csv_machine') {
+            unset($columns['sum']);
             return self::exportCsv(
                 from:                  $from,
                 until:                 $until,
@@ -140,6 +141,9 @@ abstract class ExportController extends Controller
         $data     = [];
         $tagKeys  = [];
         $statusTags = [];
+        $distanceSum = 0;
+        $durationSum = 0;
+        $pointsSum   = 0;
         foreach ($statuses as $key => $status) {
             $row  = [];
             $tags = [];
@@ -159,6 +163,15 @@ abstract class ExportController extends Controller
 
                     continue;
                 }
+                if ($column === ExportableColumn::DISTANCE) {
+                    $distanceSum += $status->checkin->distance;
+                }
+                if ($column === ExportableColumn::DURATION) {
+                    $durationSum += $status->checkin->duration;
+                }
+                if ($column === ExportableColumn::POINTS) {
+                    $pointsSum += $status->checkin->points;
+                }
                 $row[$column->value] = self::getExportMapping($status, $column);
             }
 
@@ -170,6 +183,12 @@ abstract class ExportController extends Controller
                 $data[$key][$tagKey] = $tags[$tagKey] ?? null;
             }
         }
+
+        $data['sum'] = [
+            ExportableColumn::DISTANCE->value => $distanceSum,
+            ExportableColumn::DURATION->value => $durationSum,
+            ExportableColumn::POINTS->value   => $pointsSum,
+        ];
 
         array_push($columns, ...$tagKeys);
 

@@ -81,6 +81,11 @@
             .right {
                 float: right;
             }
+
+            .sum {
+                font-weight: bold;
+                border-top: 2px solid black;
+            }
         </style>
     </head>
     <body>
@@ -122,8 +127,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($data as $row)
-                        <tr>
+                    @foreach($data as $key => $row)
+                        <tr class="{{ $key === 'sum' ? 'sum' : '' }}">
                             @foreach($columns as $column)
                                 <td>{{ $row[$column->value ?? $column] ?? '' }}</td>
                             @endforeach
