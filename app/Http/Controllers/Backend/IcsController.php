@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\IcsToken;
 use App\Models\Checkin;
+use App\Models\IcsToken;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -26,7 +26,7 @@ abstract class IcsController extends Controller
     ): Calendar {
         $icsToken = IcsToken::where([['token', $token], ['user_id', $user->id]])->firstOrFail();
 
-        $checkinQuery = Checkin::with(['originStation', 'destinationStation', 'Trip.stopovers'])
+        $checkinQuery = Checkin::with(['status.tags', 'originStation', 'destinationStation', 'trip.stopovers'])
                                ->where('user_id', $user->id)
                                ->orderByDesc('departure')
                                ->limit($limit);
@@ -62,6 +62,7 @@ abstract class IcsController extends Controller
                                   ->name($name)
                                   ->uniqueIdentifier($checkin->id)
                                   ->createdAt($checkin->created_at)
+                                  ->description(self::getDescriptionForCheckin($checkin, $user))
                                   ->startsAt($useRealTime ? $checkin->originStopover->departure : $checkin->originStopover->departure_planned)
                                   ->endsAt($useRealTime ? $checkin->destinationStopover->arrival : $checkin->destinationStopover->arrival_planned);
                     $calendar->event($event);
@@ -75,6 +76,26 @@ abstract class IcsController extends Controller
         return $calendar;
     }
 
+    private static function getDescriptionForCheckin(Checkin $checkin, User $user): string {
+        $description = '';
+        if ($checkin->status->body !== null) {
+            $description .= $checkin->status->body . PHP_EOL . PHP_EOL;
+        }
+        if ($checkin->trip->journey_number !== null) {
+            $description .= __('export.title.journey_number', [], $user->language) . ': ' . $checkin->trip->journey_number . PHP_EOL;
+        }
+        if ($checkin->status->tags->count() > 0) {
+            foreach ($checkin->status->tags as $tag) {
+                $tagName = __('tag.title.' . $tag->key, [], $user->language) !== 'tag.title.' . $tag->key
+                    ? __('tag.title.' . $tag->key, [], $user->language)
+                    : $tag->key;
+
+                $description .= $tagName . ': ' . $tag->value . PHP_EOL;
+            }
+        }
+        return $description;
+    }
+
     public static function createIcsToken(User $user, $name): IcsToken {
         return IcsToken::create([
                                     'user_id' => $user->id,
@@ -83,10 +104,6 @@ abstract class IcsController extends Controller
                                 ]);
     }
 
-    /**
-     * @param User $user
-     * @param int  $tokenId
-     */
     public static function revokeIcsToken(User $user, int $tokenId): void {
         $affectedRows = IcsToken::where('user_id', $user->id)
                                 ->where('id', $tokenId)
