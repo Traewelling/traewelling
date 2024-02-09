@@ -6,9 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
-    {
-        Schema::create('mentions', function (Blueprint $table) {
+    public function up(): void {
+        Schema::create('mentions', static function(Blueprint $table) {
             $table->id();
             $table->foreignId('status_id')->constrained()->cascadeOnDelete();
             $table->foreignId('mentioned_id')->constrained('users')->cascadeOnDelete();
@@ -19,8 +18,7 @@ return new class extends Migration
         });
     }
 
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('mentions');
     }
 };
