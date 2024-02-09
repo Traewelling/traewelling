@@ -23,7 +23,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
-use stdClass;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
@@ -53,9 +52,9 @@ class StatusController extends Controller
     }
 
     /**
-     * This Method returns the current active status(es) for all users or a specific user.
+     * This method returns the current active statuses for all users where the viewer is allowed to see.
      *
-     * @return array|stdClass|null
+     * @return Collection|null
      * @api v1
      * @frontend
      */
@@ -63,12 +62,12 @@ class StatusController extends Controller
         return Status::with([
                                 'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
                                 'checkin.originStation', 'checkin.destinationStation',
-                                'checkin.Trip.stopovers.station',
-                                'checkin.Trip.polyline',
+                                'checkin.trip.stopovers.station',
+                                'checkin.trip.polyline',
                             ])
                      ->whereHas('checkin', function($query) {
-                         $query->where('departure', '<', date('Y-m-d H:i:s'))
-                               ->where('arrival', '>', date('Y-m-d H:i:s'));
+                         $query->where('departure', '<', now())
+                               ->where('arrival', '>', now());
                      })
                      ->get()
                      ->filter(function(Status $status) {
