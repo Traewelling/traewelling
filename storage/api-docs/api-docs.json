@@ -4276,12 +4276,38 @@
                         "description": "ID of status",
                         "type": "integer",
                         "format": "int64",
-                        "example": 12345
+                        "example": 12345,
+                        "deprecated": true
                     }
                 },
                 "type": "object",
                 "xml": {
                     "name": "LivePointDto"
+                }
+            },
+            "MentionDto": {
+                "title": "Mention",
+                "description": "Mentioned user and position in status body",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "position": {
+                        "title": "position",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 0
+                    },
+                    "length": {
+                        "title": "length",
+                        "type": "integer",
+                        "format": "integer",
+                        "example": 4
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Mention"
                 }
             },
             "Station": {
@@ -5049,6 +5075,14 @@
                         "title": "body",
                         "description": "User defined status text",
                         "example": "Hello world!"
+                    },
+                    "bodyMentions": {
+                        "title": "bodyMentions",
+                        "description": "Mentions in the status body",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MentionDto"
+                        }
                     },
                     "user": {
                         "title": "user",
@@ -5889,9 +5923,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://127.0.0.1:8000//oauth/authorize",
-                        "tokenUrl": "http://127.0.0.1:8000//oauth/token",
-                        "refreshUrl": "http://127.0.0.1:8000//auth/refresh",
+                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
+                        "tokenUrl": "http://localhost:8000/oauth/token",
+                        "refreshUrl": "http://localhost:8000/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",

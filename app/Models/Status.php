@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Auth;
  * @property OAuthClient      $client
  * @property Event            $event
  * @property Collection       $tags
+ * @property Mention[]        $mentions
  *
  * @todo merge model with "Checkin" (later only "Checkin") because the difference between trip sources (HAFAS,
  *       User, and future sources) should be handled in the Trip model.
@@ -39,7 +40,16 @@ class Status extends Model
 
     use HasFactory;
 
-    protected $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'tweet_id', 'mastodon_post_id', 'client_id'];
+    protected $fillable = [
+        'user_id',
+        'body',
+        'business',
+        'visibility',
+        'event_id',
+        'tweet_id',
+        'mastodon_post_id',
+        'client_id'
+    ];
     protected $hidden   = ['user_id', 'business'];
     protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description'];
     protected $casts    = [
@@ -83,6 +93,10 @@ class Status extends Model
 
     public function tags(): HasMany {
         return $this->hasMany(StatusTag::class, 'status_id', 'id');
+    }
+
+    public function mentions(): HasMany {
+        return $this->hasMany(Mention::class, 'status_id', 'id');
     }
 
     public function getFavoritedAttribute(): ?bool {

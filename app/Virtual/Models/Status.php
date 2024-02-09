@@ -40,6 +40,20 @@ class Status
 
     /**
      * @OA\Property(
+     *     title="bodyMentions",
+     *     description="Mentions in the status body",
+     *     type="array",
+     *     @OA\Items(
+     *         ref="#/components/schemas/MentionDto"
+     *     )
+     * )
+     *
+     * @var array
+     */
+    public $bodyMentions;
+
+    /**
+     * @OA\Property(
      *     title="user",
      *     description="user id",
      *     format="int64",

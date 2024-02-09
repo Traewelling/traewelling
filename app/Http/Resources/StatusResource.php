@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Dto\MentionDto;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,6 +21,9 @@ class StatusResource extends JsonResource
         return [
             'id'             => (int) $this->id,
             'body'           => (string) $this->body,
+            'bodyMentions'   => $this->mentions->map(
+                fn($mention) => new MentionDto($mention->mentioned, $mention->position, $mention->length)
+            ),
             'type'           => '', //TODO: deprecated: remove after 2024-02
             'user'           => (int) $this->user->id,
             'username'       => (string) $this->user->username,
