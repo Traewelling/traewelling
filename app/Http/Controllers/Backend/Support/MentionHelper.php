@@ -90,7 +90,9 @@ class MentionHelper
             if (in_array($user->username, $replaced)) {
                 continue;
             }
-            $body       = strtr($body, ["@{$user->username}" => "<a href=\"/@{$user->username}\">@$user->username</a>"]);
+            $body       = strtr($body, [
+                "@{$user->username}" => "<a href=\"/@" . route('profile', $user->username) . "\">@$user->username</a>"
+            ]);
             $replaced[] = $user->username;
         }
         return $body;
