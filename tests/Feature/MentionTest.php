@@ -47,17 +47,17 @@ class MentionTest extends TestCase
         $this->assertSame(3, $status->mentions->count());
     }
 
-    public function testWithoutMentions() {
+    public function testWithoutMentions(): void {
         $status = Status::factory()->create(['body' => 'hi there!']);
         $this->assertSame(0, $status->mentions->count());
     }
 
-    public function testWithWrongMentions() {
+    public function testWithWrongMentions(): void {
         $status = Status::factory()->create(['body' => 'omw w/@ alice']);
         $this->assertSame(0, $status->mentions->count());
     }
 
-    public function testHtmlBody() {
+    public function testHtmlBody(): void {
         User::factory()->create(['username' => 'alice']);
         User::factory()->create(['username' => 'bob']);
 
