@@ -9,10 +9,10 @@ use App\Models\User;
 
 /**
  * @OA\Schema(
- *     title="MentionDto",
+ *     title="Mention",
  *     description="Mentioned user and position in status body",
  *     @OA\Xml(
- *         name="MentionDto"
+ *         name="Mention"
  *     )
  * )
  */

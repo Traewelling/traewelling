@@ -4286,7 +4286,7 @@
                 }
             },
             "MentionDto": {
-                "title": "MentionDto",
+                "title": "Mention",
                 "description": "Mentioned user and position in status body",
                 "properties": {
                     "user": {
@@ -4307,7 +4307,7 @@
                 },
                 "type": "object",
                 "xml": {
-                    "name": "MentionDto"
+                    "name": "Mention"
                 }
             },
             "Station": {
