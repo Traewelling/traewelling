@@ -43,6 +43,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string      language
  * @property Carbon      last_login
  * @property Status[]    $statuses
+ * @property SocialLoginProfile socialProfile
  *
  * @todo replace "role" with an explicit permission system - e.g. spatie/laravel-permission
  * @todo replace "experimental" also with an explicit permission system - user can add self to "experimental" group

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Support;
 
 use App\Dto\MentionDto;
+use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
 use App\Models\Mention;
 use App\Models\Status;
 use App\Models\User;
@@ -91,11 +92,30 @@ class MentionHelper
                 continue;
             }
             $body       = strtr($body, [
-                "@{$user->username}" => '<a href="' . route('profile', $user->username) . '">@' . $user->username . '</a>'
+                "@{$user->username}" =>
+                    '<a href="' . route('profile', $user->username) . '">@' . $user->username . '</a>'
             ]);
             $replaced[] = $user->username;
         }
         return $body;
     }
 
+    public static function getMastodonStatus(Status $status): string {
+        $body     = $status->body;
+        $replaced = [];
+        $mentions = $status->mentions;
+        foreach ($mentions as $mention) {
+            $user = $mention->mentioned;
+            if ($user->socialProfile?->mastodon_id === null || in_array($user->username, $replaced)) {
+                continue;
+            }
+
+            $mastodonHelper = new MastodonProfileDetails($user);
+            $username = '@' . $mastodonHelper->getUserName() . '@' .$mastodonHelper->getProfileHost();
+
+            $body       = strtr($body, ["@{$user->username}" => $username]);
+            $replaced[] = $user->username;
+        }
+        return $body;
+    }
 }

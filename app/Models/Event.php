@@ -10,6 +10,9 @@ use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
+/**
+ * @property ?string hashtag
+ */
 class Event extends Model
 {
 
@@ -59,6 +62,9 @@ class Event extends Model
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults()
                          ->logOnlyDirty()
-                         ->logOnly(['name', 'hashtag', 'station_id', 'slug', 'host', 'url', 'begin', 'end', 'event_start', 'event_end']);
+                         ->logOnly([
+                                       'name', 'hashtag', 'station_id', 'slug', 'host',
+                                       'url', 'begin', 'end', 'event_start', 'event_end'
+                                   ]);
     }
 }
