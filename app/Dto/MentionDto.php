@@ -16,7 +16,7 @@ use App\Models\User;
  *     )
  * )
  */
-class MentionDto implements \JsonSerializable
+readonly class MentionDto implements \JsonSerializable
 {
     /**
      * @OA\Property(
@@ -25,7 +25,7 @@ class MentionDto implements \JsonSerializable
      *     ref="#/components/schemas/User"
      * )
      */
-    public readonly User $user;
+    public User $user;
     /**
      * @OA\Property(
      *     title="position",
@@ -33,7 +33,7 @@ class MentionDto implements \JsonSerializable
      *     example=0
      * )
      */
-    public readonly int $position;
+    public int $position;
     /**
      * @OA\Property(
      *     title="length",
@@ -41,7 +41,7 @@ class MentionDto implements \JsonSerializable
      *     example=4
      * )
      */
-    public readonly int $length;
+    public int $length;
 
     public function __construct(User $user, int $position, int $length) {
         $this->user     = $user;
