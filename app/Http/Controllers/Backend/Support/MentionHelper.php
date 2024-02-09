@@ -91,7 +91,7 @@ class MentionHelper
                 continue;
             }
             $body       = strtr($body, [
-                "@{$user->username}" => "<a href=\"/@" . route('profile', $user->username) . "\">@$user->username</a>"
+                "@{$user->username}" => '<a href="' . route('profile', $user->username) . '">@' . $user->username . '</a>'
             ]);
             $replaced[] = $user->username;
         }
