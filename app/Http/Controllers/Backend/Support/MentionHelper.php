@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Http\Controllers\Backend\Support;
 
@@ -13,8 +11,8 @@ class MentionHelper
 {
 
     private ?string $body;
-    private Status $status;
-    private bool   $isCreating;
+    private Status  $status;
+    private bool    $isCreating;
 
     public function __construct(Status $status, string $body = null) {
         $this->status     = $status;
@@ -92,7 +90,7 @@ class MentionHelper
             if (in_array($user->username, $replaced)) {
                 continue;
             }
-            $body = strtr($body, ["@{$user->username}" => "<a href=\"/@{$user->username}\">@$user->username</a>"]);
+            $body       = strtr($body, ["@{$user->username}" => "<a href=\"/@{$user->username}\">@$user->username</a>"]);
             $replaced[] = $user->username;
         }
         return $body;
