@@ -4,8 +4,6 @@ namespace App\Models;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
-use App\Http\Controllers\Backend\Support\MentionHelper;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -99,14 +97,6 @@ class Status extends Model
 
     public function mentions(): HasMany {
         return $this->hasMany(Mention::class, 'status_id', 'id');
-    }
-
-    public function setBodyAttribute($value): void {
-        if ($this->id) {
-            MentionHelper::createMentions($this, $value);
-        }
-
-        $this->attributes['body'] = $value;
     }
 
     public function getFavoritedAttribute(): ?bool {

@@ -18,6 +18,10 @@ class StatusObserver
         MentionHelper::createMentions($status);
     }
 
+    public function updated(Status $status): void {
+        MentionHelper::createMentions($status);
+    }
+
     public function deleted(Status $status): void {
         Cache::increment(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusDeleted));
 
