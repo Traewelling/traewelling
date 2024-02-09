@@ -12,10 +12,9 @@ class MentionTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testCreateMentions(): void
-    {
-        $alice = User::factory()->create(['username' => 'alice']);
-        $bob = User::factory()->create(['username' => 'bob']);
+    public function testCreateMentions(): void {
+        User::factory()->create(['username' => 'alice']);
+        User::factory()->create(['username' => 'bob']);
         $body = 'I\'m on my way with @alice and @bob';
 
         $status = Status::factory()->create(['body' => $body]);
@@ -23,10 +22,9 @@ class MentionTest extends TestCase
         $this->assertSame(2, $status->mentions->count());
     }
 
-    public function testDeleteMentions(): void
-    {
-        $alice = User::factory()->create(['username' => 'alice']);
-        $bob = User::factory()->create(['username' => 'bob']);
+    public function testDeleteMentions(): void {
+        User::factory()->create(['username' => 'alice']);
+        User::factory()->create(['username' => 'bob']);
         $body = 'I\'m on my way with @alice and @bob';
 
         $status = Status::factory()->create(['body' => $body]);
@@ -36,11 +34,10 @@ class MentionTest extends TestCase
         $this->assertSame(1, $status->mentions->count());
     }
 
-    public function testUpdateMentions(): void
-    {
-        $alice = User::factory()->create(['username' => 'alice']);
-        $bob = User::factory()->create(['username' => 'bob']);
-        $charlie = User::factory()->create(['username' => 'charlie']);
+    public function testUpdateMentions(): void {
+        User::factory()->create(['username' => 'alice']);
+        User::factory()->create(['username' => 'bob']);
+        User::factory()->create(['username' => 'charlie']);
         $body = 'I\'m on my way with @alice and @bob';
 
         $status = Status::factory()->create(['body' => $body]);
@@ -61,19 +58,21 @@ class MentionTest extends TestCase
     }
 
     public function testHtmlBody() {
-        $alice = User::factory()->create(['username' => 'alice']);
-        $bob = User::factory()->create(['username' => 'bob']);
+        User::factory()->create(['username' => 'alice']);
+        User::factory()->create(['username' => 'bob']);
 
         $status = Status::factory()->create(['body' => 'I\'m on my way with @alice and @bob']);
         $this->assertSame(
-            'I&#039;m on my way with <a href="/@alice">@alice</a> and <a href="/@bob">@bob</a>',
+            'I&#039;m on my way with <a href="' . route('profile', 'alice') . '">@alice</a> '
+            . 'and <a href="' . route('profile', 'bob') . '">@bob</a>',
             MentionHelper::getBodyWithMentionLinks($status)
         );
 
         $status->update(['body' => 'I\'m on my way with @alice and @alice']);
         $status->refresh();
         $this->assertSame(
-            'I&#039;m on my way with <a href="/@alice">@alice</a> and <a href="/@alice">@alice</a>',
+            'I&#039;m on my way with <a href="' . route('profile', 'alice') . '">@alice</a> '
+            . 'and <a href="' . route('profile', 'alice') . '">@alice</a>',
             MentionHelper::getBodyWithMentionLinks($status)
         );
     }
