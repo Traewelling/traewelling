@@ -9,17 +9,28 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
+ * //properties
  * @property int    id
- * @property Status status
- * @property User   mentioned
+ * @property int    status_id
+ * @property int    mentioned_id
  * @property int    position
  * @property int    length
+ *
+ * //relations
+ * @property Status status
+ * @property User   mentioned
  */
 class Mention extends Model
 {
     use HasFactory;
 
     protected $fillable = ['status_id', 'mentioned_id', 'position', 'length'];
+    protected $casts    = [
+        'status_id'    => 'int',
+        'mentioned_id' => 'int',
+        'position'     => 'int',
+        'length'       => 'int',
+    ];
 
     public function status(): BelongsTo {
         return $this->belongsTo(Status::class);
