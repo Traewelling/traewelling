@@ -21,11 +21,9 @@ class StatusResource extends JsonResource
         return [
             'id'             => (int) $this->id,
             'body'           => (string) $this->body,
-            'bodyMentions'   => [
-                $this->mentions->map(
-                    fn ($mention) => new MentionDto($mention->mentioned, $mention->position, $mention->length)
-                )
-            ],
+            'bodyMentions'   => $this->mentions->map(
+                fn($mention) => new MentionDto($mention->mentioned, $mention->position, $mention->length)
+            ),
             'type'           => '', //TODO: deprecated: remove after 2024-02
             'user'           => (int) $this->user->id,
             'username'       => (string) $this->user->username,
