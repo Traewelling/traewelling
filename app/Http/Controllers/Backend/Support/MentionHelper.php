@@ -111,7 +111,7 @@ class MentionHelper
             }
 
             $mastodonHelper = new MastodonProfileDetails($user);
-            $username = '@' . $mastodonHelper->getUserName() . '@' .$mastodonHelper->getProfileHost();
+            $username       = '@' . $mastodonHelper->getUserName() . '@' . $mastodonHelper->getProfileHost();
 
             $body       = strtr($body, ["@{$user->username}" => $username]);
             $replaced[] = $user->username;
