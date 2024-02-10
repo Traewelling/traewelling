@@ -24,22 +24,6 @@ function setIconForDropdown(value, buttons, inputFields, icons) {
     }
 }
 
-document.querySelectorAll(".trwl-business-item").forEach((item) => {
-    item.addEventListener("click", function (event) {
-        setIconForDropdown(event.currentTarget.dataset.trwlBusiness, businessButton, businessInput, businessIcons);
-    });
-});
-
-document.querySelectorAll(".trwl-visibility-item").forEach((item) => {
-    item.addEventListener("click", function (event) {
-        setIconForDropdown(event.currentTarget.dataset.trwlVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
-    });
-});
-
-document.querySelectorAll(".edit").forEach((item) => {
-    item.addEventListener("click", editCheckIn);
-});
-
 function editCheckIn(event) {
     event.preventDefault();
 
@@ -84,3 +68,20 @@ function editCheckIn(event) {
     modal.show();
     document.querySelector('#body-length').innerText = document.querySelector('#status-body').value.length;
 }
+
+// Event listeners
+document.querySelectorAll(".trwl-business-item").forEach((item) => {
+    item.addEventListener("click", function (event) {
+        setIconForDropdown(event.currentTarget.dataset.trwlBusiness, businessButton, businessInput, businessIcons);
+    });
+});
+
+document.querySelectorAll(".trwl-visibility-item").forEach((item) => {
+    item.addEventListener("click", function (event) {
+        setIconForDropdown(event.currentTarget.dataset.trwlVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
+    });
+});
+
+document.querySelectorAll(".edit").forEach((item) => {
+    item.addEventListener("click", editCheckIn);
+});
