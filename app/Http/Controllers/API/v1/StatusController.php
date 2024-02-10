@@ -441,15 +441,17 @@ class StatusController extends Controller
                                 'visibility' => StatusVisibility::from($validated['visibility']),
                             ]);
 
-            if (isset($validated['manualDeparture'])) {
-                $status->checkin->update([
-                                                  'manual_departure' => Carbon::parse($validated['manualDeparture'], auth()->user()->timezone)
-                                              ]);
+            if (array_key_exists('manualDeparture', $validated)) {
+                $manualDeparture = isset($validated['manualDeparture'])
+                    ? Carbon::parse($validated['manualDeparture'], auth()->user()->timezone)
+                    : null;
+                $status->checkin->update(['manual_departure' => $manualDeparture]);
             }
-            if (isset($validated['manualArrival'])) {
-                $status->checkin->update([
-                                                  'manual_arrival' => Carbon::parse($validated['manualArrival'], auth()->user()->timezone)
-                                              ]);
+            if (array_key_exists('manualArrival', $validated)) {
+                $manualArrival = isset($validated['manualArrival'])
+                    ? Carbon::parse($validated['manualArrival'], auth()->user()->timezone)
+                    : null;
+                $status->checkin->update(['manual_arrival' => $manualArrival]);
             }
 
             return $this->sendResponse(new StatusResource($status->fresh()));
