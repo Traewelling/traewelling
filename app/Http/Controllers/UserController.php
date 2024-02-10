@@ -15,14 +15,11 @@ use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
 use App\Notifications\UserFollowed;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Pagination\Paginator as SimplePaginate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Validator;
 
 /**
  * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
@@ -34,11 +31,11 @@ class UserController extends Controller
      * @param User     $user
      * @param int|null $limit
      *
-     * @return LengthAwarePaginator|null
+     * @return SimplePaginate
      * @api v1
      * @frontend
      */
-    public static function statusesForUser(User $user, int $limit = null): ?LengthAwarePaginator {
+    public static function statusesForUser(User $user, int $limit = null, bool $paginate = false): ?SimplePaginate {
         Gate::authorize('view', $user);
         return $user->statuses()
                     ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
@@ -66,7 +63,7 @@ class UserController extends Controller
                     })
                     ->select('statuses.*')
                     ->orderByDesc('train_checkins.departure')
-                    ->paginate($limit !== null && $limit <= 15 ? $limit : 15);
+                    ->simplePaginate($limit !== null && $limit <= 15 ? $limit : 15);
     }
 
     /**
