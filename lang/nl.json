@@ -771,5 +771,10 @@
     "maintenance.prolonged": "Dit bericht zou niet langer dan een paar minuten getoond mogen worden.",
     "maintenance.try-later": "Probeer het later opnieuw.",
     "maintenance.subtitle": "Geen zorgen: we werken juist aan verbetering van de website.",
-    "maintenance.title": "Er wordt momenteel onderhoud uitgevoerd."
+    "maintenance.title": "Er wordt momenteel onderhoud uitgevoerd.",
+    "export.predefined": "Vooraf ingestelde velden",
+    "export.or-choose": "of kies je eigen",
+    "export.all": "Alle velden",
+    "export.nominal": "Nominale gegevens",
+    "export.nominal-tags": "Nominale gegevens + labels"
 }
