@@ -17,10 +17,7 @@ export default {
         departure: {
             type: Boolean,
             default: true
-        },
-        primary: {
-            default: "start"
-        },
+        }
     },
     emits: ['update:station', 'update:timeFieldA', 'update:timeFieldB'],
     data() {
@@ -36,13 +33,13 @@ export default {
     computed: {
         timeFieldALabel() {
             if (this.arrival && this.departure) {
-                return this.primary === 'start' ? 'Abfahrt' : 'Ankunft';
+                return 'Ankunft';
             }
             return this.arrival ? 'Ankunft' : 'Abfahrt';
         },
         timeFieldBLabel() {
             if (this.arrival && this.departure) {
-                return this.primary === 'start' ? 'Ankunft' : 'Abfahrt';
+                return 'Abfahrt';
             }
             return this.arrival ? 'Ankunft' : 'Abfahrt';
         }
