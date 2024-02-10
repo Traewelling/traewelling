@@ -32,7 +32,7 @@ class StatusHelper
         );
     }
 
-    private function generateBaseText() {
+    private function generateBaseText(): string {
         return trans_choice(
             key:     'controller.transport.social-post',
             number:  preg_match('/\s/', $this->status->checkin->trip->linename),
@@ -61,7 +61,6 @@ class StatusHelper
         return MentionHelper::getMastodonStatus($this->status);
     }
 
-
     private function generateSocialText(): string {
         if (isset($this->status->body)) {
             $body           = $this->mastodon ? $this->getMastodonBody() : $this->status->body;
@@ -84,6 +83,4 @@ class StatusHelper
         }
         return $postText;
     }
-
-
 }
