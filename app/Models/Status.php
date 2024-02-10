@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
-use App\Http\Controllers\Backend\Helper\StatusHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -52,7 +51,7 @@ class Status extends Model
         'client_id'
     ];
     protected $hidden   = ['user_id', 'business'];
-    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description'];
+    protected $appends  = ['favorited', 'statusInvisibleToMe', 'description'];
     protected $casts    = [
         'id'               => 'integer',
         'user_id'          => 'integer',
@@ -105,14 +104,6 @@ class Status extends Model
             return null;
         }
         return $this->likes->contains('user_id', Auth::id());
-    }
-
-    /**
-     * @deprecated Use StatusHelper::getSocialText($status)
-     * @todo remove all calls to this method
-     */
-    public function getSocialTextAttribute(): string {
-        return StatusHelper::getSocialText($this);
     }
 
     public function getDescriptionAttribute(): string {

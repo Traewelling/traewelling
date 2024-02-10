@@ -11,6 +11,7 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
+use App\Http\Controllers\Backend\Helper\StatusHelper;
 use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController as TransportBackend;
@@ -208,7 +209,7 @@ class FrontendTransportController extends Controller
                 points:               $checkin->points,
                 pointReason:          $backendResponse['points']->reason,
                 lineName:             $checkin->trip->linename,
-                socialText:           $backendResponse['status']->socialText,
+                socialText:           StatusHelper::getSocialText($backendResponse['status']),
                 alsoOnThisConnection: $checkin->alsoOnThisConnection,
                 event:                $checkin->event,
                 forced: isset($validated['force'])

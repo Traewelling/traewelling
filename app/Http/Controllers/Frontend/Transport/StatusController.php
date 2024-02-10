@@ -7,6 +7,7 @@ use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
 use App\Exceptions\PermissionException;
+use App\Http\Controllers\Backend\Helper\StatusHelper;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
@@ -68,7 +69,7 @@ class StatusController extends Controller
                     points:               $status->checkin->points,
                     pointReason:          $pointReason,
                     lineName:             $status->checkin->trip->linename,
-                    socialText:           $status->socialText,
+                    socialText:           StatusHelper::getSocialText($status),
                     alsoOnThisConnection: $status->checkin->alsoOnThisConnection,
                     event:                $status->checkin->event,
                     forced:               false,

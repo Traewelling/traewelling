@@ -9,6 +9,7 @@ use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
+use App\Http\Controllers\Backend\Helper\StatusHelper;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController;
 use App\Models\Trip;
@@ -165,7 +166,7 @@ class CheckinTest extends TestCase
         $response->assertSee(self::HANNOVER_HBF['name'], false);  // Arrival Station
         $response->assertSee(self::EXAMPLE_BODY);
 
-        $this->assertStringContainsString(self::EXAMPLE_BODY . " (@ ", $status->socialText);
+        $this->assertStringContainsString(self::EXAMPLE_BODY . " (@ ", StatusHelper::getSocialText($status));
     }
 
     /**
