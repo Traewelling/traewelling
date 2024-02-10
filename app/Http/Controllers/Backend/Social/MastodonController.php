@@ -152,8 +152,7 @@ abstract class MastodonController extends Controller
 
         try {
             $statusText     = (new StatusHelper($status, true))->getMastodonBody();
-            $statusText    .= ' ' . url("/status/{$status->id}");
-            Log::debug($statusText);
+            $statusText     .= ' ' . url("/status/{$status->id}");
             $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
             Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
 
@@ -233,6 +232,7 @@ abstract class MastodonController extends Controller
             ->latest()
             ->first();
     }
+
     public static function getRequestOptions(): array {
         return [RequestOptions::TIMEOUT => config("trwl.mastodon_timeout_seconds")];
     }
