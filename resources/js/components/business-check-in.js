@@ -1,24 +1,31 @@
-import { Modal } from "bootstrap";
+import {Modal} from "bootstrap";
 
-let businessCheckInput  = $("#business_check");
-let businessButton      = $("#businessDropdownButton");
-const businessIcons     = ["fa-user", "fa-briefcase", "fa-building"];
-let visibilityFormInput = $("#checkinVisibility");
-let visibilityButton    = $("#visibilityDropdownButton");
-const visibilityIcons   = ["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock", "fa-user-check"];
+let businessInput       = document.getElementsByClassName("trwl-business-input");
+let businessButton      = document.getElementsByClassName("trwl-business-button");
+let visibilityFormInput = document.getElementsByClassName("trwl-visibility-input");
+let visibilityButton    = document.getElementsByClassName("trwl-visibility-button");
 
-function setIconForDropdown(value, button, inputFieldValue, icons) {
-    let number  = parseInt(value, 10);
-    let classes = button.children()[0].classList;
-    icons.forEach((value) => {
-        classes.remove(value);
-    });
-    classes.add(icons[number]);
-    inputFieldValue.val(number);
+const businessIcons   = ["fa-user", "fa-briefcase", "fa-building"];
+const visibilityIcons = ["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock", "fa-user-check"];
+
+function setIconForDropdown(value, buttons, inputFields, icons) {
+    let number = parseInt(value, 10);
+
+    for (let button of buttons) {
+        let classes = button.children[0].classList;
+        icons.forEach((value) => {
+            classes.remove(value);
+        });
+        classes.add(icons[number]);
+    }
+
+    for (let input of inputFields) {
+        input.value = number;
+    }
 }
 
 $(".trwl-business-item").on("click", function (event) {
-    setIconForDropdown(event.currentTarget.dataset.trwlBusiness, businessButton, businessCheckInput, businessIcons);
+    setIconForDropdown(event.currentTarget.dataset.trwlBusiness, businessButton, businessInput, businessIcons);
 });
 
 $(".trwl-visibility-item").on("click", function (event) {
@@ -31,16 +38,16 @@ $(document).on("click", ".edit", function (event) {
     let statusId = event.currentTarget.dataset.trwlStatusId;
     let dataset  = document.getElementById("status-" + statusId).dataset;
 
-    document.querySelector("#status-update input[name='statusId']").value = statusId;
-    document.querySelector("#status-update textarea[name='body']").value  = dataset.trwlStatusBody;
-    document.querySelector("#status-update input[name='manualDeparture']").value  = dataset.trwlManualDeparture;
-    document.querySelector("#status-update input[name='manualArrival']").value  = dataset.trwlManualArrival;
+    document.querySelector("#status-update input[name='statusId']").value        = statusId;
+    document.querySelector("#status-update textarea[name='body']").value         = dataset.trwlStatusBody;
+    document.querySelector("#status-update input[name='manualDeparture']").value = dataset.trwlManualDeparture;
+    document.querySelector("#status-update input[name='manualArrival']").value   = dataset.trwlManualArrival;
 
     let statusBusiness   = dataset.trwlBusinessId;
     let statusVisibility = dataset.trwlVisibility;
-    businessCheckInput.val(statusBusiness);
+    businessInput.val(statusBusiness);
     visibilityFormInput.val(statusVisibility);
-    setIconForDropdown(statusBusiness, businessButton, businessCheckInput, businessIcons);
+    setIconForDropdown(statusBusiness, businessButton, businessInput, businessIcons);
     setIconForDropdown(statusVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
 
     //Clear list
