@@ -53,7 +53,7 @@ abstract class ExportController extends Controller
     public static function generateExport(
         Carbon $from,
         Carbon $until,
-        array $columns,
+        array  $columns,
         string $filetype
     ): HttpResponse|StreamedResponse {
         $data = self::getExportData($from, $until, $columns);
@@ -137,10 +137,10 @@ abstract class ExportController extends Controller
      * @throws DataOverflowException
      */
     public static function getExportData(Carbon $timestampFrom, Carbon $timestampTo, array &$columns): array {
-        $statuses = self::getExportableStatuses(auth()->user(), $timestampFrom, $timestampTo);
-        $data     = [];
-        $tagKeys  = [];
-        $statusTags = [];
+        $statuses    = self::getExportableStatuses(auth()->user(), $timestampFrom, $timestampTo);
+        $data        = [];
+        $tagKeys     = [];
+        $statusTags  = [];
         $distanceSum = 0;
         $durationSum = 0;
         $pointsSum   = 0;
@@ -238,9 +238,9 @@ abstract class ExportController extends Controller
     private static function exportCsv(
         Carbon $from,
         Carbon $until,
-        array $columns,
-        array $data,
-        bool $humanReadableHeadings = false
+        array  $columns,
+        array  $data,
+        bool   $humanReadableHeadings = false
     ): StreamedResponse {
         $headers = [
             'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
@@ -254,7 +254,7 @@ abstract class ExportController extends Controller
             'Pragma'              => 'public',
         ];
 
-        $fileStream = static function () use ($humanReadableHeadings, $columns, $data) {
+        $fileStream = static function() use ($humanReadableHeadings, $columns, $data) {
             $csv           = fopen('php://output', 'w');
             $stringColumns = [];
             foreach ($columns as $column) {
@@ -277,12 +277,32 @@ abstract class ExportController extends Controller
         return Response::stream($fileStream, 200, $headers);
     }
 
-    public static function getColumnTitle(ExportableColumn|String $column): string {
+    public static function getColumnTitle(ExportableColumn|string $column): string {
         if ($column instanceof ExportableColumn) {
             return $column->title();
         }
 
         $key = StatusTagKey::tryFrom($column);
         return $key?->title() ?? $column;
+    }
+
+    public static function formatExportableColumn(ExportableColumn|string $column, mixed $value): string {
+        if (empty($value)) {
+            return '';
+        }
+        if (!$column instanceof ExportableColumn) {
+            $column = ExportableColumn::tryFrom($column);
+        }
+
+        return match ($column) {
+            ExportableColumn::ARRIVAL_PLANNED,
+            ExportableColumn::ARRIVAL_REAL,
+            ExportableColumn::DEPARTURE_PLANNED,
+            ExportableColumn::DEPARTURE_REAL => userTime($value, __('datetime-format')),
+            ExportableColumn::DISTANCE       => number($value / 1000),
+            ExportableColumn::DURATION       => durationToSpan(secondsToDuration($value * 60)),
+            ExportableColumn::POINTS         => number($value, 0),
+            default                          => (string) $value,
+        };
     }
 }
