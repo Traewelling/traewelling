@@ -24,7 +24,7 @@ function setIconForDropdown(value, buttons, inputFields, icons) {
     }
 }
 
-function editCheckIn(event) {
+function editModal(event) {
     event.preventDefault();
 
     let statusId = event.currentTarget.dataset.trwlStatusId;
@@ -83,5 +83,5 @@ document.querySelectorAll(".trwl-visibility-item").forEach((item) => {
 });
 
 document.querySelectorAll(".edit").forEach((item) => {
-    item.addEventListener("click", editCheckIn);
+    item.addEventListener("click", editModal);
 });
