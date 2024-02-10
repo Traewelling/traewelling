@@ -23,6 +23,14 @@ class MastodonProfileDetails
         return $this->getData()["url"] ?? null;
     }
 
+    public function getProfileHost(): ?string {
+        return parse_url($this->getProfileUrl(), PHP_URL_HOST) ?? null;
+    }
+
+    public function getUserName(): ?string {
+        return $this->getData()["username"] ?? null;
+    }
+
     private function getData(): ?array {
         return Cache::remember(CacheKey::getMastodonProfileInformationKey($this->user), 3600, function () {
             return $this->fetchProfileInformation();
@@ -49,7 +57,8 @@ class MastodonProfileDetails
             } catch (Exception $exception) {
                 // The connection might be broken, or the instance is down, or $user has removed the api rights
                 // but has not told us yet.
-                Log::warning("Unable to fetch mastodon information for user#{$this->user->id} for Mastodon-Server '{$mastodonServer->domain}' and mastodon_id#{$this->user->socialProfile->mastodon_id}");
+                Log::warning("Unable to fetch mastodon information for user#{$this->user->id} for Mastodon-Server '
+                . {$mastodonServer->domain}' and mastodon_id#{$this->user->socialProfile->mastodon_id}");
                 Log::warning($exception);
             }
         }

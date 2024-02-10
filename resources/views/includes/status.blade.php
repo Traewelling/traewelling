@@ -8,13 +8,13 @@
      data-date="{{userTime($status->checkin->departure, __('dateformat.with-weekday'))}}"
      @if(auth()->check() && auth()->id() === $status->user_id)
          data-trwl-status-body="{{ $status->body }}"
-         data-trwl-manual-departure="{{ userTime($status->checkin?->manual_departure, 'Y-m-d\TH:i:s', false)}}"
-         data-trwl-manual-arrival="{{ userTime($status->checkin?->manual_arrival, 'Y-m-d\TH:i:s', false)}}"
-         data-trwl-business-id="{{ $status->business->value }}"
-         data-trwl-visibility="{{ $status->visibility->value }}"
-         data-trwl-destination-stopover="{{$status->checkin->destinationStopover->id}}"
-         data-trwl-alternative-destinations=
-             "{{json_encode(StationController::getAlternativeDestinationsForCheckin($status->checkin))}}"
+     data-trwl-manual-departure="{{ userTime($status->checkin?->manual_departure, 'Y-m-d\TH:i:s', false)}}"
+     data-trwl-manual-arrival="{{ userTime($status->checkin?->manual_arrival, 'Y-m-d\TH:i:s', false)}}"
+     data-trwl-business-id="{{ $status->business->value }}"
+     data-trwl-visibility="{{ $status->visibility->value }}"
+     data-trwl-destination-stopover="{{$status->checkin->destinationStopover->id}}"
+     data-trwl-alternative-destinations=
+         "{{json_encode(StationController::getAlternativeDestinationsForCheckin($status->checkin))}}"
     @endif
 >
     @if (Route::current()->uri == "status/{id}")
@@ -195,7 +195,7 @@
                                     type="button"
                                     data-trwl-share-url="{{ route('status', ['id' => $status->id]) }}"
                                     @if(auth()->user() && $status->user_id == auth()->user()->id)
-                                        data-trwl-share-text="{{ $status->socialText }}"
+                                        data-trwl-share-text="{{ \App\Http\Controllers\Backend\Helper\StatusHelper::getSocialText($status) }}"
                                     @else
                                         data-trwl-share-text="{{ $status->description }}"
                                 @endif

@@ -51,7 +51,7 @@ class Status extends Model
         'client_id'
     ];
     protected $hidden   = ['user_id', 'business'];
-    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description'];
+    protected $appends  = ['favorited', 'statusInvisibleToMe', 'description'];
     protected $casts    = [
         'id'               => 'integer',
         'user_id'          => 'integer',
@@ -104,53 +104,6 @@ class Status extends Model
             return null;
         }
         return $this->likes->contains('user_id', Auth::id());
-    }
-
-    public function getSocialTextAttribute(): string {
-        if (isset($this->event) && $this->event->hashtag !== null) {
-            $postText = trans_choice(
-                key:     'controller.transport.social-post-with-event',
-                number:  preg_match('/\s/', $this->checkin->trip->linename),
-                replace: [
-                             'lineName'    => $this->checkin->trip->linename,
-                             'destination' => $this->checkin->destinationStation->name,
-                             'hashtag'     => $this->event->hashtag
-                         ]
-            );
-        } else {
-            $postText = trans_choice(
-                key:     'controller.transport.social-post',
-                number:  preg_match('/\s/', $this->checkin->trip->linename),
-                replace: [
-                             'lineName'    => $this->checkin->trip->linename,
-                             'destination' => $this->checkin->destinationStation->name
-                         ]
-            );
-        }
-
-
-        if (isset($this->body)) {
-            if ($this->event?->hashtag !== null) {
-                $eventIntercept = __('controller.transport.social-post-for', [
-                    'hashtag' => $this->event->hashtag
-                ]);
-            }
-
-            $appendix = strtr(' (@ :linename ➜ :destination:eventIntercept) #NowTräwelling', [
-                ':linename'       => $this->checkin->trip->linename,
-                ':destination'    => $this->checkin->destinationStation->name,
-                ':eventIntercept' => isset($eventIntercept) ? ' ' . $eventIntercept : ''
-            ]);
-
-            $appendixLength = strlen($appendix) + 30;
-            $postText       = substr($this->body, 0, 280 - $appendixLength);
-            if (strlen($postText) !== strlen($this->body)) {
-                $postText .= '...';
-            }
-            $postText .= $appendix;
-        }
-
-        return $postText;
     }
 
     public function getDescriptionAttribute(): string {

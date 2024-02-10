@@ -6,6 +6,15 @@ use App\Enum\MastodonVisibility;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int                 id
+ * @property int                 user_id
+ * @property ?int                twitter_id
+ * @property ?int                mastodon_id
+ * @property ?int                mastodon_server
+ * @property ?MastodonVisibility mastodon_visibility
+ * @property ?string             mastodon_token
+ */
 class SocialLoginProfile extends Model
 {
 
@@ -16,13 +25,13 @@ class SocialLoginProfile extends Model
     ];
     protected $hidden   = ['mastodon_server', 'mastodon_token'];
     protected $casts    = [
-        'id'                       => 'integer',
-        'user_id'                  => 'integer',
-        'twitter_id'               => 'integer',
-        'mastodon_id'              => 'integer',
-        'mastodon_server'          => 'integer',
-        'mastodon_visibility'      => MastodonVisibility::class,
-        'mastodon_token'           => 'encrypted',
+        'id'                  => 'integer',
+        'user_id'             => 'integer',
+        'twitter_id'          => 'integer',
+        'mastodon_id'         => 'integer',
+        'mastodon_server'     => 'integer',
+        'mastodon_visibility' => MastodonVisibility::class,
+        'mastodon_token'      => 'encrypted',
     ];
 
     public function user(): BelongsTo {
