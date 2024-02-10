@@ -33,7 +33,11 @@
                             <div class="row mb-1 text-center">
                                 <div class="col">
                                     <div class="form-floating">
-                                        <button type="button" class="btn btn-outline-primary btn-sm" id="export-nominal">
+                                        <button
+                                            type="button"
+                                            class="btn btn-outline-primary btn-sm"
+                                            id="export-nominal"
+                                        >
                                             {{ __('export.nominal') }}
                                         </button>
                                         <button type="button" class="btn btn-outline-primary btn-sm" id="export-tags">
@@ -56,17 +60,6 @@
                                     </option>
                                 @endforeach
                             </select>
-
-                            <script>
-                                document.querySelector('select[name="columns[]"]')
-                                    .addEventListener('change', function (e) {
-                                        if (e.target.selectedOptions.length > 7) {
-                                            document.querySelector('#alert-pdf-count').classList.remove('d-none');
-                                        } else {
-                                            document.querySelector('#alert-pdf-count').classList.add('d-none');
-                                        }
-                                    });
-                            </script>
 
                             <div class="alert alert-warning mt-3 d-none" role="alert" id="alert-pdf-count">
                                 <i class="fa-solid fa-triangle-exclamation"></i>
