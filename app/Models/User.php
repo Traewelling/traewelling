@@ -25,24 +25,24 @@ use Mastodon;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
- * @property int         id
- * @property string      username
- * @property string      name
- * @property string      avatar
- * @property string      email
- * @property Carbon      email_verified_at
- * @property string      password
- * @property int         home_id
- * @property Carbon      privacy_ack_at
- * @property integer     default_status_visibility
- * @property boolean     private_profile
- * @property boolean     prevent_index
- * @property boolean     likes_enabled
- * @property MapProvider mapprovider
- * @property int         privacy_hide_days
- * @property string      language
- * @property Carbon      last_login
- * @property Status[]    $statuses
+ * @property int                id
+ * @property string             username
+ * @property string             name
+ * @property string             avatar
+ * @property string             email
+ * @property Carbon             email_verified_at
+ * @property string             password
+ * @property int                home_id
+ * @property Carbon             privacy_ack_at
+ * @property integer            default_status_visibility
+ * @property boolean            private_profile
+ * @property boolean            prevent_index
+ * @property boolean            likes_enabled
+ * @property MapProvider        mapprovider
+ * @property int                privacy_hide_days
+ * @property string             language
+ * @property Carbon             last_login
+ * @property Status[]           $statuses
  * @property SocialLoginProfile socialProfile
  *
  * @todo replace "role" with an explicit permission system - e.g. spatie/laravel-permission
