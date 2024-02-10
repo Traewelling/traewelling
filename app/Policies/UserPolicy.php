@@ -47,10 +47,10 @@ class UserPolicy
             return Response::deny(__('user.muted.heading'));
         }
         if (BlockController::isBlocked($model, $user)) {
-            return Response::deny(__('user.blocked.heading'));
+            return Response::deny(__('profile.youre-blocked-text'));
         }
         if (BlockController::isBlocked($user, $model)) {
-            return Response::deny(__('profile.youre-blocked-text'));
+            return Response::deny(__('user.blocked.heading'));
         }
         return Response::allow();
     }
