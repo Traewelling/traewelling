@@ -24,15 +24,23 @@ function setIconForDropdown(value, buttons, inputFields, icons) {
     }
 }
 
-$(".trwl-business-item").on("click", function (event) {
-    setIconForDropdown(event.currentTarget.dataset.trwlBusiness, businessButton, businessInput, businessIcons);
+document.querySelectorAll(".trwl-business-item").forEach((item) => {
+    item.addEventListener("click", function (event) {
+        setIconForDropdown(event.currentTarget.dataset.trwlBusiness, businessButton, businessInput, businessIcons);
+    });
 });
 
-$(".trwl-visibility-item").on("click", function (event) {
-    setIconForDropdown(event.currentTarget.dataset.trwlVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
+document.querySelectorAll(".trwl-visibility-item").forEach((item) => {
+    item.addEventListener("click", function (event) {
+        setIconForDropdown(event.currentTarget.dataset.trwlVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
+    });
 });
 
-$(document).on("click", ".edit", function (event) {
+document.querySelectorAll(".edit").forEach((item) => {
+    item.addEventListener("click", editCheckIn);
+});
+
+function editCheckIn(event) {
     event.preventDefault();
 
     let statusId = event.currentTarget.dataset.trwlStatusId;
@@ -45,8 +53,8 @@ $(document).on("click", ".edit", function (event) {
 
     let statusBusiness   = dataset.trwlBusinessId;
     let statusVisibility = dataset.trwlVisibility;
-    businessInput.val(statusBusiness);
-    visibilityFormInput.val(statusVisibility);
+    businessInput.value = statusBusiness;
+    visibilityFormInput.value = statusVisibility;
     setIconForDropdown(statusBusiness, businessButton, businessInput, businessIcons);
     setIconForDropdown(statusVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
 
@@ -72,7 +80,7 @@ $(document).on("click", ".edit", function (event) {
         document.querySelector('.destination-wrapper').classList.add('d-none');
     }
 
-    const modal = new Modal($("#edit-modal"));
+    const modal = new Modal(document.querySelector("#edit-modal"));
     modal.show();
     document.querySelector('#body-length').innerText = document.querySelector('#status-body').value.length;
-});
+}
