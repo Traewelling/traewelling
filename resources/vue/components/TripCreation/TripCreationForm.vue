@@ -1,6 +1,5 @@
 <script>
 import StationRow from "./StationRow.vue";
-import {isNumber} from "lodash";
 import {DateTime} from "luxon";
 
 export default {
@@ -68,7 +67,8 @@ export default {
         },
         sendForm() {
             this.form.lineName      = this.trainTypeInput;
-            this.form.journeyNumber = isNumber(this.journeyNumberInput) ? this.journeyNumberInput : null;
+            this.form.journeyNumber = !isNaN(this.journeyNumberInput) && !isNaN(parseInt(this.journeyNumberInput))
+                ? parseInt(this.journeyNumberInput) : null;
             this.form.stopovers     = this.stopovers.map((stopover) => {
                 return {
                     stationId: stopover.station.id,
