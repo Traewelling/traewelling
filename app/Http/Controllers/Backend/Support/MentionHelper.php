@@ -102,6 +102,10 @@ class MentionHelper
 
     public static function getMastodonStatus(Status $status): string {
         $body     = $status->body;
+        if (empty($body)) {
+            return '';
+        }
+
         $replaced = [];
         $mentions = $status->mentions;
         foreach ($mentions as $mention) {

@@ -15,8 +15,8 @@ class StatusHelper
         $this->mastodon = $mastodon;
     }
 
-    public static function getSocialText(Status $status): string {
-        $self = new self($status);
+    public static function getSocialText(Status $status, bool $mastodon = false): string {
+        $self = new self($status, $mastodon);
         return $self->generateSocialText();
     }
 
