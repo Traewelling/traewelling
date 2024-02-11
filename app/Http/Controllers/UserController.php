@@ -31,7 +31,7 @@ class UserController extends Controller
      * @param User     $user
      * @param int|null $limit
      *
-     * @return SimplePaginate
+     * @return SimplePaginate|null
      * @api v1
      * @frontend
      */
