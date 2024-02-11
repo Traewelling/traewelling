@@ -15,7 +15,7 @@ use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
 use App\Notifications\UserFollowed;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Contracts\Pagination\Paginator as SimplePaginate;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,11 +31,11 @@ class UserController extends Controller
      * @param User     $user
      * @param int|null $limit
      *
-     * @return SimplePaginate|null
+     * @return Paginator|null
      * @api v1
      * @frontend
      */
-    public static function statusesForUser(User $user, int $limit = null): ?SimplePaginate {
+    public static function statusesForUser(User $user, int $limit = null): ?Paginator {
         Gate::authorize('view', $user);
         return $user->statuses()
                     ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
