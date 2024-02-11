@@ -151,7 +151,7 @@ abstract class MastodonController extends Controller
         }
 
         try {
-            $statusText     = (new StatusHelper($status, true))->getMastodonBody();
+            $statusText     = StatusHelper::getSocialText($status, true);
             $statusText     .= ' ' . url("/status/{$status->id}");
             $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
             Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
