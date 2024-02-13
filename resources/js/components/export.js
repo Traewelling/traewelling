@@ -1,19 +1,19 @@
 // Event Listener
-document.getElementById("export-nominal").addEventListener("click", function () {
+document.getElementById("export-nominal")?.addEventListener("click", function () {
     resetFields();
     selectNominal();
 })
 
-document.getElementById("export-all").addEventListener("click", function () {
+document.getElementById("export-all")?.addEventListener("click", function () {
     selectAll();
 })
 
-document.getElementById("export-tags").addEventListener("click", function () {
+document.getElementById("export-tags")?.addEventListener("click", function () {
     resetFields();
     selectNominalAndTags();
 });
 
-document.querySelector('select[name="columns[]"]').addEventListener('change', function (e) {
+document.querySelector('select[name="columns[]"]')?.addEventListener('change', function (e) {
     if (e.target.selectedOptions.length > 8) {
         showWarning();
     } else {
@@ -22,7 +22,7 @@ document.querySelector('select[name="columns[]"]').addEventListener('change', fu
 });
 
 // Warning function
-function showWarning(show=true) {
+function showWarning(show = true) {
     const classList = document.querySelector('#alert-pdf-count').classList;
 
     if (show) {
@@ -36,8 +36,8 @@ function showWarning(show=true) {
 function selectAll() {
     let select = document.getElementById("export-select");
 
-    for (let i = 0; i < select.options.length; i++) {
-        select.options[i].selected = true;
+    for (const element of select?.options) {
+        element.selected = true;
     }
 }
 
@@ -58,16 +58,16 @@ function selectNominalAndTags() {
 function resetFields() {
     let select = document.getElementById("export-select");
 
-    for (let i = 0; i < select.options.length; i++) {
-        select.options[i].selected = false;
+    for (const element of select.options) {
+        element.selected = false;
     }
     showWarning(false);
 }
 
 function selectFromArray(array) {
-    for (let i = 0; i < array.length; i++) {
+    for (const element of array) {
         let select = document.getElementById("export-select");
-        let option = select.querySelector(`option[value="${array[i]}"]`);
+        let option = select.querySelector(`option[value="${element}"]`);
         if (option === null) {
             continue;
         }
