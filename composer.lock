@@ -6446,32 +6446,32 @@
         },
         {
             "name": "spatie/laravel-webhook-server",
-            "version": "3.8.0",
+            "version": "3.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-webhook-server.git",
-                "reference": "bdcd23abd78805705a5ac29a66fddefea3fd32a0"
+                "reference": "d4cc24141a4d6a148e110df5f36217cc8f40f07e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-webhook-server/zipball/bdcd23abd78805705a5ac29a66fddefea3fd32a0",
-                "reference": "bdcd23abd78805705a5ac29a66fddefea3fd32a0",
+                "url": "https://api.github.com/repos/spatie/laravel-webhook-server/zipball/d4cc24141a4d6a148e110df5f36217cc8f40f07e",
+                "reference": "d4cc24141a4d6a148e110df5f36217cc8f40f07e",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "guzzlehttp/guzzle": "^6.3|^7.3",
-                "illuminate/bus": "^8.50|^9.0|^10.0",
-                "illuminate/queue": "^8.50|^9.0|^10.0",
-                "illuminate/support": "^8.50|^9.0|^10.0",
+                "illuminate/bus": "^8.50|^9.0|^10.0|^11.0",
+                "illuminate/queue": "^8.50|^9.0|^10.0|^11.0",
+                "illuminate/support": "^8.50|^9.0|^10.0|^11.0",
                 "php": "^8.0",
                 "spatie/laravel-package-tools": "^1.11"
             },
             "require-dev": {
                 "mockery/mockery": "^1.4.3",
-                "orchestra/testbench": "^6.19|^7.0",
-                "pestphp/pest": "^1.22",
-                "pestphp/pest-plugin-laravel": "^1.3",
+                "orchestra/testbench": "^6.19|^7.0|^8.0",
+                "pestphp/pest": "^1.22|^2.0",
+                "pestphp/pest-plugin-laravel": "^1.3|^2.0",
                 "spatie/test-time": "^1.2.2"
             },
             "type": "library",
@@ -6508,7 +6508,7 @@
                 "webhook"
             ],
             "support": {
-                "source": "https://github.com/spatie/laravel-webhook-server/tree/3.8.0"
+                "source": "https://github.com/spatie/laravel-webhook-server/tree/3.8.1"
             },
             "funding": [
                 {
@@ -6516,7 +6516,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2023-11-27T11:46:04+00:00"
+            "time": "2024-02-12T08:18:25+00:00"
         },
         {
             "name": "spatie/robots-txt",
