@@ -95,6 +95,10 @@ class PrometheusServiceProvider extends ServiceProvider
                                ->toArray();
                   });
 
+        Prometheus::addGauge('absent_webhooks_deleted')
+                  ->helpText("How many webhooks were responded with Gone and were thus deleted from our side?")
+                  ->value(fn() => Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::WebhookAbsent)));
+
         Prometheus::addGauge("profile_image_count")
                   ->helpText("How many profile images are stored?")
                   ->value(function() {
