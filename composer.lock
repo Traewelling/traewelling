@@ -851,16 +851,16 @@
         },
         {
             "name": "doctrine/inflector",
-            "version": "2.0.9",
+            "version": "2.0.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/inflector.git",
-                "reference": "2930cd5ef353871c821d5c43ed030d39ac8cfe65"
+                "reference": "5817d0659c5b50c9b950feb9af7b9668e2c436bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/inflector/zipball/2930cd5ef353871c821d5c43ed030d39ac8cfe65",
-                "reference": "2930cd5ef353871c821d5c43ed030d39ac8cfe65",
+                "url": "https://api.github.com/repos/doctrine/inflector/zipball/5817d0659c5b50c9b950feb9af7b9668e2c436bc",
+                "reference": "5817d0659c5b50c9b950feb9af7b9668e2c436bc",
                 "shasum": ""
             },
             "require": {
@@ -922,7 +922,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/inflector/issues",
-                "source": "https://github.com/doctrine/inflector/tree/2.0.9"
+                "source": "https://github.com/doctrine/inflector/tree/2.0.10"
             },
             "funding": [
                 {
@@ -938,7 +938,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-01-15T18:05:13+00:00"
+            "time": "2024-02-18T20:23:39+00:00"
         },
         {
             "name": "doctrine/lexer",
@@ -2035,16 +2035,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v10.43.0",
+            "version": "v10.44.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "4f7802dfc9993cb57cf69615491ce1a7eb2e9529"
+                "reference": "1199dbe361787bbe9648131a79f53921b4148cf6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/4f7802dfc9993cb57cf69615491ce1a7eb2e9529",
-                "reference": "4f7802dfc9993cb57cf69615491ce1a7eb2e9529",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/1199dbe361787bbe9648131a79f53921b4148cf6",
+                "reference": "1199dbe361787bbe9648131a79f53921b4148cf6",
                 "shasum": ""
             },
             "require": {
@@ -2092,6 +2092,7 @@
             "conflict": {
                 "carbonphp/carbon-doctrine-types": ">=3.0",
                 "doctrine/dbal": ">=4.0",
+                "phpunit/phpunit": ">=11.0.0",
                 "tightenco/collect": "<5.5.33"
             },
             "provide": {
@@ -2236,7 +2237,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-01-30T16:25:02+00:00"
+            "time": "2024-02-13T16:01:16+00:00"
         },
         {
             "name": "laravel/passport",
@@ -4041,26 +4042,30 @@
         },
         {
             "name": "nicmart/tree",
-            "version": "0.3.1",
+            "version": "0.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nicmart/Tree.git",
-                "reference": "c55ba47c64a3cb7454c22e6d630729fc2aab23ff"
+                "reference": "8d02952acc9779a2c14f7a9c4ac1650c3dacb545"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nicmart/Tree/zipball/c55ba47c64a3cb7454c22e6d630729fc2aab23ff",
-                "reference": "c55ba47c64a3cb7454c22e6d630729fc2aab23ff",
+                "url": "https://api.github.com/repos/nicmart/Tree/zipball/8d02952acc9779a2c14f7a9c4ac1650c3dacb545",
+                "reference": "8d02952acc9779a2c14f7a9c4ac1650c3dacb545",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1 || ^8.0"
+                "php": "~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0"
             },
             "require-dev": {
-                "ergebnis/composer-normalize": "^2.8.0",
-                "ergebnis/license": "^1.0.0",
-                "ergebnis/php-cs-fixer-config": "^2.2.1",
-                "phpunit/phpunit": "^7.5.20"
+                "ergebnis/composer-normalize": "^2.31.0",
+                "ergebnis/license": "^2.4.0",
+                "ergebnis/php-cs-fixer-config": "^6.13.0",
+                "fakerphp/faker": "^1.23.0",
+                "infection/infection": "~0.26.19",
+                "phpunit/phpunit": "^9.6.14",
+                "psalm/plugin-phpunit": "~0.18.4",
+                "vimeo/psalm": "^5.16.0"
             },
             "type": "library",
             "autoload": {
@@ -4076,14 +4081,18 @@
                 {
                     "name": "Nicolò Martini",
                     "email": "nicmartnic@gmail.com"
+                },
+                {
+                    "name": "Andreas Möller",
+                    "email": "am@localheinz.com"
                 }
             ],
             "description": "A basic but flexible php tree data structure and a fluent tree builder implementation.",
             "support": {
                 "issues": "https://github.com/nicmart/Tree/issues",
-                "source": "https://github.com/nicmart/Tree/tree/0.3.1"
+                "source": "https://github.com/nicmart/Tree/tree/0.8.0"
             },
-            "time": "2020-11-27T09:02:17+00:00"
+            "time": "2023-12-02T13:24:56+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -5789,27 +5798,27 @@
         },
         {
             "name": "spatie/crawler",
-            "version": "8.1.0",
+            "version": "8.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/crawler.git",
-                "reference": "f4958b4f1e10113be2bc8d373afdd7b1d4fe0d72"
+                "reference": "807d145a3c071dc0e69bb7e6783611e2591f9773"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/crawler/zipball/f4958b4f1e10113be2bc8d373afdd7b1d4fe0d72",
-                "reference": "f4958b4f1e10113be2bc8d373afdd7b1d4fe0d72",
+                "url": "https://api.github.com/repos/spatie/crawler/zipball/807d145a3c071dc0e69bb7e6783611e2591f9773",
+                "reference": "807d145a3c071dc0e69bb7e6783611e2591f9773",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^7.3",
                 "guzzlehttp/psr7": "^2.0",
-                "illuminate/collections": "^10.0",
-                "nicmart/tree": "^0.3.0",
+                "illuminate/collections": "^10.0|^11.0",
+                "nicmart/tree": "^0.8.0",
                 "php": "^8.1",
                 "spatie/browsershot": "^3.45|^4.0",
                 "spatie/robots-txt": "^2.0",
-                "symfony/dom-crawler": "^6.0 | ^7.0"
+                "symfony/dom-crawler": "^6.0|^7.0"
             },
             "require-dev": {
                 "pestphp/pest": "^2.0",
@@ -5841,7 +5850,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/crawler/issues",
-                "source": "https://github.com/spatie/crawler/tree/8.1.0"
+                "source": "https://github.com/spatie/crawler/tree/8.2.0"
             },
             "funding": [
                 {
@@ -5853,7 +5862,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-01-02T08:29:35+00:00"
+            "time": "2024-02-15T10:40:48+00:00"
         },
         {
             "name": "spatie/enum",
@@ -6300,22 +6309,22 @@
         },
         {
             "name": "spatie/laravel-sitemap",
-            "version": "7.1.1",
+            "version": "7.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-sitemap.git",
-                "reference": "7f625f81d52b67e485a5431dbabd24e6f3e5b96c"
+                "reference": "4f79443e76a677731edfb4e89fac8816d11e194b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-sitemap/zipball/7f625f81d52b67e485a5431dbabd24e6f3e5b96c",
-                "reference": "7f625f81d52b67e485a5431dbabd24e6f3e5b96c",
+                "url": "https://api.github.com/repos/spatie/laravel-sitemap/zipball/4f79443e76a677731edfb4e89fac8816d11e194b",
+                "reference": "4f79443e76a677731edfb4e89fac8816d11e194b",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^7.8",
-                "illuminate/support": "^10.0",
-                "nesbot/carbon": "^2.71",
+                "illuminate/support": "^10.0|^11.0",
+                "nesbot/carbon": "^2.71|^3.0",
                 "php": "^8.2",
                 "spatie/crawler": "^8.0.1",
                 "spatie/laravel-package-tools": "^1.16.1",
@@ -6323,7 +6332,7 @@
             },
             "require-dev": {
                 "mockery/mockery": "^1.6.6",
-                "orchestra/testbench": "^8.14",
+                "orchestra/testbench": "^8.14|^9.0",
                 "pestphp/pest": "^2.24",
                 "spatie/pest-plugin-snapshots": "^2.1",
                 "spatie/phpunit-snapshot-assertions": "^5.1.2",
@@ -6361,7 +6370,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/laravel-sitemap/tree/7.1.1"
+                "source": "https://github.com/spatie/laravel-sitemap/tree/7.2.0"
             },
             "funding": [
                 {
@@ -6369,7 +6378,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-01-26T08:51:34+00:00"
+            "time": "2024-02-15T10:50:21+00:00"
         },
         {
             "name": "spatie/laravel-validation-rules",
