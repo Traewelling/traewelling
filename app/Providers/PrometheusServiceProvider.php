@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use App\Enum\CacheKey;
 use App\Enum\MonitoringCounter;
-use App\Models\Trip;
 use App\Models\PolyLine;
+use App\Models\Trip;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
@@ -23,24 +23,24 @@ class PrometheusServiceProvider extends ServiceProvider
          */
         Prometheus::addGauge('Users count')
                   ->helpText("How many users are registered on the website?")
-            ->label("state")
-            ->value(function() {
-                return [
-                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::UserCreated)), ["created"]],
-                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::UserDeleted)), ["deleted"]]
-                ];
-            });
+                  ->label("state")
+                  ->value(function() {
+                      return [
+                          [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::UserCreated)), ["created"]],
+                          [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::UserDeleted)), ["deleted"]]
+                      ];
+                  });
 
 
         Prometheus::addGauge('Status count')
                   ->helpText("How many statuses are posted on the website?")
-            ->label("state")
-            ->value(function() {
-                return [
-                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusCreated)), ["created"]],
-                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusDeleted)), ["deleted"]]
-                ];
-            });
+                  ->label("state")
+                  ->value(function() {
+                      return [
+                          [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusCreated)), ["created"]],
+                          [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusDeleted)), ["deleted"]]
+                      ];
+                  });
 
         Prometheus::addGauge('Hafas Trips count')
                   ->helpText("How many hafas trips are posted grouped by operator and mode of transport?")
@@ -97,7 +97,7 @@ class PrometheusServiceProvider extends ServiceProvider
 
         Prometheus::addGauge('absent_webhooks_deleted')
                   ->helpText("How many webhooks were responded with Gone and were thus deleted from our side?")
-                  ->value(fn() => Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::WebhookAbsent)));
+                  ->value(fn() => Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::WebhookAbsent), 0));
 
         Prometheus::addGauge("profile_image_count")
                   ->helpText("How many profile images are stored?")
@@ -159,8 +159,8 @@ class PrometheusServiceProvider extends ServiceProvider
     }
 
 
-    public static function getJobsByDisplayName($table_name): array {
-        $counts = DB::table($table_name)
+    public static function getJobsByDisplayName(string $tableName): array {
+        $counts = DB::table($tableName)
                     ->get(["queue", "payload"])
                     ->map(fn($row) => [
                         'queue'       => $row->queue,
@@ -170,19 +170,6 @@ class PrometheusServiceProvider extends ServiceProvider
 
         return array_map(
             fn($job_properties, $count) => [$count, explode(PROM_JOB_SCRAPER_SEPARATOR, $job_properties)],
-            array_keys($counts),
-            array_values($counts)
-        );
-    }
-
-    public static function getJobsByQueue($table_name): array {
-        $counts = DB::table($table_name)
-                    ->get("queue")
-                    ->countBy(fn($job) => $job->queue)
-                    ->toArray();
-
-        return array_map(
-            fn($jobname, $count) => [$count, [$jobname]],
             array_keys($counts),
             array_values($counts)
         );
