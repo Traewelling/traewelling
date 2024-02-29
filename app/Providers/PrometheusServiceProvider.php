@@ -159,8 +159,8 @@ class PrometheusServiceProvider extends ServiceProvider
     }
 
 
-    public static function getJobsByDisplayName($table_name): array {
-        $counts = DB::table($table_name)
+    public static function getJobsByDisplayName(string $tableName): array {
+        $counts = DB::table($tableName)
                     ->get(["queue", "payload"])
                     ->map(fn($row) => [
                         'queue'       => $row->queue,
@@ -169,7 +169,7 @@ class PrometheusServiceProvider extends ServiceProvider
                     ->toArray();
 
         return array_map(
-            fn($job_properties, $count) => [$count, explode(PROM_JOB_SCRAPER_SEPARATOR, $job_properties)],
+            fn($jobProperties, $count) => [$count, explode(PROM_JOB_SCRAPER_SEPARATOR, $jobProperties)],
             array_keys($counts),
             array_values($counts)
         );
