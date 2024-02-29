@@ -174,17 +174,4 @@ class PrometheusServiceProvider extends ServiceProvider
             array_values($counts)
         );
     }
-
-    public static function getJobsByQueue($table_name): array {
-        $counts = DB::table($table_name)
-                    ->get("queue")
-                    ->countBy(fn($job) => $job->queue)
-                    ->toArray();
-
-        return array_map(
-            fn($jobname, $count) => [$count, [$jobname]],
-            array_keys($counts),
-            array_values($counts)
-        );
-    }
 }
