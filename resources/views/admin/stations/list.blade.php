@@ -29,7 +29,7 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>IBNR</th>
+                                        <th>WikiData</th>
                                         <th>RilIdentifier</th>
                                         <th>Name</th>
                                         <th></th>
@@ -39,9 +39,18 @@
                                     @foreach($stations as $station)
                                         <tr>
                                             <td>{{$station->id}}</td>
-                                            <td>{{$station->ibnr}}</td>
+                                            <td>
+                                                <a href="https://www.wikidata.org/wiki/{{$station->wikidata_id}}"
+                                                   target="{{$station->wikidata_id}}">
+                                                    {{$station->wikidata_id}}
+                                                </a>
+                                            </td>
                                             <td>{{$station->rilIdentifier}}</td>
-                                            <td>{{$station->name}}</td>
+                                            <td>
+                                                <a href="{{route('admin.station', $station->id)}}">
+                                                    {{$station->name}}
+                                                </a>
+                                            </td>
                                             <td>
                                                 <div class="btn-group float-end">
                                                     <a class="btn btn-sm btn-danger"
