@@ -6390,27 +6390,27 @@
         },
         {
             "name": "spatie/laravel-validation-rules",
-            "version": "3.3.1",
+            "version": "3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-validation-rules.git",
-                "reference": "846b92dfbb76fd2a30c6011ae08082f0248c9cf4"
+                "reference": "b629b0a1049ddfe18e5534717b1627bacfaef208"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-validation-rules/zipball/846b92dfbb76fd2a30c6011ae08082f0248c9cf4",
-                "reference": "846b92dfbb76fd2a30c6011ae08082f0248c9cf4",
+                "url": "https://api.github.com/repos/spatie/laravel-validation-rules/zipball/b629b0a1049ddfe18e5534717b1627bacfaef208",
+                "reference": "b629b0a1049ddfe18e5534717b1627bacfaef208",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "^8.0|^9.0|^10.0",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0",
                 "php": "^8.0"
             },
             "require-dev": {
                 "laravel/pint": "^1.3",
-                "league/iso3166": "^3.0",
+                "league/iso3166": "^3.0|^4.3",
                 "myclabs/php-enum": "^1.6",
-                "orchestra/testbench": "^6.23|^7.0|^8.0",
+                "orchestra/testbench": "^6.23|^7.0|^8.0|^9.0",
                 "pestphp/pest": "^1.23|^2.6",
                 "spatie/enum": "^2.2|^3.0"
             },
@@ -6451,7 +6451,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-validation-rules/issues",
-                "source": "https://github.com/spatie/laravel-validation-rules/tree/3.3.1"
+                "source": "https://github.com/spatie/laravel-validation-rules/tree/3.4.0"
             },
             "funding": [
                 {
@@ -6459,7 +6459,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-05-29T13:17:57+00:00"
+            "time": "2024-03-02T05:57:47+00:00"
         },
         {
             "name": "spatie/laravel-webhook-server",
