@@ -24,7 +24,7 @@ export default {
             baseKeys: keys,
             selectedKey: this.value?.key,
             input: this.value?.value,
-            visibility: this.value?.visibility ?? 0
+            visibility: 0
         };
     },
     components: {VisibilityDropdown},
@@ -58,9 +58,13 @@ export default {
             }
 
             return false;
+        },
+        setVisibility(visibility) {
+            this.visibility = visibility;
         }
     },
     mounted() {
+        this.visibility = this.value?.visibility ?? 0;
         if (!this.selectedKey) {
             this.selectKey();
         }
@@ -120,12 +124,8 @@ export default {
             :disabled="disabled"
             @keydown.enter="addTag"
         >
-        <VisibilityDropdown :start-value="visibility" :v-model="visibility" :disabled="disabled"></VisibilityDropdown>
+        <VisibilityDropdown :start-value="visibility" @update:model-value="setVisibility" :disabled="disabled"></VisibilityDropdown>
         <button v-if="!list" class="btn btn-primary" @click="addTag" :disabled="disabled">Add</button>
         <button v-if="list" class="btn btn-outline-danger" @click="deleteTag"><i class="fa fa-trash"></i></button>
     </div>
 </template>
-
-<style scoped lang="scss">
-
-</style>
