@@ -4,10 +4,6 @@ import {trans} from "laravel-vue-i18n";
 export default {
     name: "VisibilityDropdown",
     props: {
-        value: {
-            type: Number,
-            default: 0
-        },
         startValue: {
             type: Number, // idk why I need this here. value did not update without it
             default: 0
@@ -19,7 +15,7 @@ export default {
     },
     data() {
         return {
-            visibility: this.value,
+            visibility: this.startValue,
         };
     },
     methods: {
@@ -48,6 +44,11 @@ export default {
     mounted() {
         this.visibility = this.startValue;
     },
+    watch: {
+        startValue(value) {
+            this.visibility = value;
+        }
+    },
     emits: ["update:model-value"]
 };
 </script>
@@ -57,7 +58,7 @@ export default {
             data-mdb-toggle="dropdown" aria-expanded="false" :disabled="disabled">
         <i :class="visibilityIcon" aria-hidden="true"></i>
     </button>
-    <ul class="dropdown-menu" aria-labelledby="visibilityDropdownButton" style="">
+    <ul class="dropdown-menu" aria-labelledby="visibilityDropdownButton">
         <li class="dropdown-item" @click="setVisibility(0)">
             <i class="fa fa-globe-americas" aria-hidden="true"></i> {{ trans("status.visibility.0") }}
             <br>
@@ -86,7 +87,3 @@ export default {
         </li>
     </ul>
 </template>
-
-<style scoped lang="scss">
-
-</style>
