@@ -143,18 +143,18 @@ export default {
         </template>
         <template #body>
             <ul class="list-group list-group-light list-group-small">
-                <li class="list-group-item pb-3 mb-3" v-show="autocompleteList.length === 0" @click="setStationFromGps">
+                <li class="list-group-item autocomplete-item pb-3 mb-3" v-show="autocompleteList.length === 0" @click="setStationFromGps">
                     <a href="#" class="text-trwl">
                         <i class="fa fa-map-marker-alt"></i>
                         {{ trans("stationboard.search-by-location") }}
                     </a>
                 </li>
-                <li class="list-group-item" v-for="item in recent" v-show="autocompleteList.length === 0">
+                <li class="list-group-item autocomplete-item" v-for="item in recent" v-show="autocompleteList.length === 0">
                     <a href="#" class="text-trwl" @click="setStation(item)">
                         {{ item.name }} <span v-if="item.rilIdentifier">({{ item.rilIdentifier }})</span>
                     </a>
                 </li>
-                <li class="list-group-item" v-for="item in autocompleteList" @click="setStation(item)">
+                <li class="list-group-item autocomplete-item" v-for="item in autocompleteList" @click="setStation(item)">
                     <a href="#" class="text-trwl">
                         {{ item.name }} <span v-if="item.rilIdentifier">({{ item.rilIdentifier }})</span>
                     </a>
@@ -220,24 +220,27 @@ export default {
 
 </template>
 
-<style scoped lang="scss">
-.slide-fade-leave-active,
-.slide-fade-enter-active {
-    transition: all 0.3s ease-out;
-    overflow: hidden;
-}
+<style lang="scss">
+    .autocomplete-item {
+        background-color: var(--mdb-modal-bg) !important;
+    }
+    
+    .slide-fade-leave-active,
+    .slide-fade-enter-active {
+        transition: all 0.3s ease-out;
+        overflow: hidden;
+    }
 
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-    transform: translateY(-20px);
-    opacity: 0;
-}
+    .slide-fade-enter-from,
+    .slide-fade-leave-to {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
 
-.product-icon {
-    width: 1rem;
-    height: 1rem;
-    vertical-align: middle;
-    display:inline;
-}
-
+    .product-icon {
+        width: 1rem;
+        height: 1rem;
+        vertical-align: middle;
+        display:inline;
+    }
 </style>
