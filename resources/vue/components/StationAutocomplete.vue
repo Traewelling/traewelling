@@ -127,18 +127,18 @@ export default {
         </template>
         <template #body>
             <ul class="list-group list-group-light list-group-small">
-                <li class="list-group-item pb-3 mb-3" v-show="autocompleteList.length === 0" @click="setStationFromGps">
+                <li class="list-group-item autocomplete-item pb-3 mb-3" v-show="autocompleteList.length === 0" @click="setStationFromGps">
                     <a href="#" class="text-trwl">
                         <i class="fa fa-map-marker-alt"></i>
                         {{ trans("stationboard.search-by-location") }}
                     </a>
                 </li>
-                <li class="list-group-item" v-for="item in recent" v-show="autocompleteList.length === 0">
+                <li class="list-group-item autocomplete-item" v-for="item in recent" v-show="autocompleteList.length === 0">
                     <a href="#" class="text-trwl" @click="setStation(item)">
                         {{ item.name }} <span v-if="item.rilIdentifier">({{ item.rilIdentifier }})</span>
                     </a>
                 </li>
-                <li class="list-group-item" v-for="item in autocompleteList" @click="setStation(item)">
+                <li class="list-group-item autocomplete-item" v-for="item in autocompleteList" @click="setStation(item)">
                     <a href="#" class="text-trwl">
                         {{ item.name }} <span v-if="item.rilIdentifier">({{ item.rilIdentifier }})</span>
                     </a>
@@ -181,6 +181,8 @@ export default {
 
 </template>
 
-<style scoped lang="scss">
-
+<style lang="scss">
+    .autocomplete-item {
+        background-color: var(--mdb-modal-bg) !important;
+    }
 </style>
