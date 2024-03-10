@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::table('hafas_trips', static function(Blueprint $table) {
             $table->string('source')
                   ->default('hafas')
-                  ->after('delay');
+                  ->after('arrival');
         });
     }
 
