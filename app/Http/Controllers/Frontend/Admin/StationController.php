@@ -22,4 +22,11 @@ class StationController extends Controller
             'stations' => $stations->paginate(20),
         ]);
     }
+
+    public function renderStation(int $id): View {
+        $this->authorize('viewAny', Station::class);
+        return view('admin.stations.show', [
+            'station' => Station::findOrFail($id),
+        ]);
+    }
 }
