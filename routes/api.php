@@ -86,13 +86,18 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::post('trip', [TripController::class, 'createTrip']);
             Route::post('checkin', [TransportController::class, 'create']);
             Route::group(['prefix' => 'station'], static function() {
-                Route::get('{name}/departures', [TransportController::class, 'departures']);
+                Route::get('{name}/departures', [TransportController::class, 'getLegacyDepartures']); //ToDo: Remove this endpoint after 2024-06 (replaced by id)
                 Route::put('{name}/home', [TransportController::class, 'setHome']);
                 Route::get('nearby', [TransportController::class, 'getNextStationByCoordinates']);
                 Route::get('autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);
                 Route::get('history', [TransportController::class, 'getTrainStationHistory']);
             });
         });
+
+        Route::prefix('station')->middleware(['scope:write-statuses'])->group(static function() {
+            Route::get('/{id}/departures', [TransportController::class, 'getDepartures'])->whereNumber('id');
+        });
+
         Route::group(['prefix' => 'statistics', 'middleware' => 'scope:read-statistics'], static function() {
             Route::get('/', [StatisticsController::class, 'getPersonalStatistics']);
             Route::get('/global', [StatisticsController::class, 'getGlobalStatistics']);

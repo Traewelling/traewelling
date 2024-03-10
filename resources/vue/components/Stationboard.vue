@@ -72,7 +72,7 @@ export default {
             let query      = this.stationString.replace(/%2F/, " ").replace(/\//, " ");
             let travelType = this.travelType ? this.travelType : "";
 
-            fetch(`/api/v1/trains/station/${query}/departures?when=${time}&travelType=${travelType}`)
+            fetch(`/api/v1/trains/station/${query}/departures?when=${time}&travelType=${travelType}`) //TODO: change to ID
                 .then((response) => {
                     this.loading = false;
                     this.now     = DateTime.now();
