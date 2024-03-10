@@ -6,7 +6,7 @@ This is to help you keep track of the changes and to help you update your code a
 
 ## 2024-03-10
 
-Replaced `GET /api/v1/trains/station/{name}/departures` with `GET /station/{id}/departures`.
+Replaced `GET /trains/station/{name}/departures` with `GET /station/{id}/departures`.
 The old endpoint is marked as deprecated and will be removed after 2024-06.
 
 Please note, that the ID is the Träwelling internal ID and not the IBNR!
