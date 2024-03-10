@@ -31,7 +31,7 @@ class ReportController extends Controller
      *              @OA\Property(property="reason", type="string", enum={"inappropriate", "implausible", "spam",
      *                                              "illegal", "other"}, example="inappropriate"),
      *              @OA\Property(property="description", type="string", example="The status is inappropriate
-     *                                                   because..."),
+     *                                                   because...", nullable=true),
      *          ),
      *      ),
      *      @OA\Response(response=200, description="The report was successfully created."),

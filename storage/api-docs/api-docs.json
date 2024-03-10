@@ -1386,7 +1386,7 @@
                                         "type": "string",
                                         "enum": [
                                             "inappropriate",
-                                            "unplausible",
+                                            "implausible",
                                             "spam",
                                             "illegal",
                                             "other"
@@ -1395,7 +1395,8 @@
                                     },
                                     "description": {
                                         "type": "string",
-                                        "example": "The status is inappropriate because..."
+                                        "example": "The status is inappropriate\n     *                                                   because...",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
