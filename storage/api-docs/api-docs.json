@@ -2969,7 +2969,7 @@
                 ]
             }
         },
-        "/trains/station/{id}/departures": {
+        "/station/{id}/departures": {
             "get": {
                 "tags": [
                     "Checkin"
@@ -2981,7 +2981,7 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Id of the station (stations needs to be looked up first)",
+                        "description": "Träwelling-ID of the station (station needs to be looked up first)",
                         "required": true
                     },
                     {

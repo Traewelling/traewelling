@@ -2,6 +2,7 @@
 
 namespace Feature\APIv1;
 
+use App\Models\Station;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
@@ -22,11 +23,11 @@ class TransportTest extends ApiTestCase
                    ]);
 
         //Test departures
-        $station   = self::FRANKFURT_HBF['name'];
+        $station   = Station::factory(['ibnr' => self::FRANKFURT_HBF['id'], 'name' => self::FRANKFURT_HBF['name']])->create();
         $timestamp = Date::parse('next monday 8 am');
         $this->actAsApiUserWithAllScopes();
-        $response  = $this->get(
-            uri:     '/api/v1/trains/station/' . $station . '/departures?when=' . urlencode($timestamp->toIso8601String()),
+        $response = $this->get(
+            uri: '/api/v1/station/' . $station->id . '/departures?when=' . urlencode($timestamp->toIso8601String()),
         );
         $response->assertOk();
         $response->assertJsonStructure([
@@ -56,25 +57,25 @@ class TransportTest extends ApiTestCase
                                            ]
                                        ]);
 
-        $this->assertEquals($station, $response->json('meta.station.name'));
+        $this->assertEquals($station->name, $response->json('meta.station.name'));
         $this->assertGreaterThan(0, $response->json('data'));
 
         $departure = $response->json('data')[0];
 
         //Fetch trip with wrong origin / stopover
         $response = $this->get(
-            uri:     '/api/v1/trains/trip'
-                     . '?hafasTripId=' . $departure['tripId']
-                     . '&lineName=' . $departure['line']['name']
-                     . '&start=' . ($departure['stop']['id'] + 99999),
+            uri: '/api/v1/trains/trip'
+                 . '?hafasTripId=' . $departure['tripId']
+                 . '&lineName=' . $departure['line']['name']
+                 . '&start=' . ($departure['stop']['id'] + 99999),
         );
         $response->assertStatus(400);
         // Fetch correct trip
         $response = $this->get(
-            uri:     '/api/v1/trains/trip'
-                     . '?hafasTripId=' . $departure['tripId']
-                     . '&lineName=' . $departure['line']['name']
-                     . '&start=' . $departure['stop']['id'],
+            uri: '/api/v1/trains/trip'
+                 . '?hafasTripId=' . $departure['tripId']
+                 . '&lineName=' . $departure['line']['name']
+                 . '&start=' . $departure['stop']['id'],
         );
         $response->assertOk();
         $response->assertJsonStructure([
@@ -105,16 +106,16 @@ class TransportTest extends ApiTestCase
 
         //Now checkin...
         $response = $this->postJson(
-            uri:     '/api/v1/trains/checkin',
-            data:    [
-                         'tripId'      => $departure['tripId'],
-                         'lineName'    => $departure['line']['name'],
-                         'start'       => $trip['stopovers'][0]['evaIdentifier'],
-                         'departure'   => $trip['stopovers'][0]['departurePlanned'],
-                         'destination' => $trip['stopovers'][1]['evaIdentifier'],
-                         'arrival'     => $trip['stopovers'][1]['arrivalPlanned'],
-                         'ibnr'        => true,
-                     ],
+            uri:  '/api/v1/trains/checkin',
+            data: [
+                      'tripId'      => $departure['tripId'],
+                      'lineName'    => $departure['line']['name'],
+                      'start'       => $trip['stopovers'][0]['evaIdentifier'],
+                      'departure'   => $trip['stopovers'][0]['departurePlanned'],
+                      'destination' => $trip['stopovers'][1]['evaIdentifier'],
+                      'arrival'     => $trip['stopovers'][1]['arrivalPlanned'],
+                      'ibnr'        => true,
+                  ],
         );
         $response->assertCreated();
         $response->assertJsonStructure([
@@ -135,16 +136,16 @@ class TransportTest extends ApiTestCase
 
         //Do the same thing again! Should be a CheckInCollision
         $response = $this->postJson(
-            uri:     '/api/v1/trains/checkin',
-            data:    [
-                         'tripId'      => $departure['tripId'],
-                         'lineName'    => $departure['line']['name'],
-                         'start'       => $trip['stopovers'][0]['evaIdentifier'],
-                         'departure'   => $trip['stopovers'][0]['departurePlanned'],
-                         'destination' => $trip['stopovers'][1]['evaIdentifier'],
-                         'arrival'     => $trip['stopovers'][1]['arrivalPlanned'],
-                         'ibnr'        => true,
-                     ],
+            uri:  '/api/v1/trains/checkin',
+            data: [
+                      'tripId'      => $departure['tripId'],
+                      'lineName'    => $departure['line']['name'],
+                      'start'       => $trip['stopovers'][0]['evaIdentifier'],
+                      'departure'   => $trip['stopovers'][0]['departurePlanned'],
+                      'destination' => $trip['stopovers'][1]['evaIdentifier'],
+                      'arrival'     => $trip['stopovers'][1]['arrivalPlanned'],
+                      'ibnr'        => true,
+                  ],
         );
         $response->assertStatus(409);
     }
@@ -180,7 +181,7 @@ class TransportTest extends ApiTestCase
     }
 
     public function testSetHome(): void {
-        $user      = User::factory()->create();
+        $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
 
         $this->assertNull($user->home);
@@ -194,7 +195,7 @@ class TransportTest extends ApiTestCase
     }
 
     public function testAutocompleteWithDs100(): void {
-        $user      = User::factory()->create();
+        $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
 
         Http::fake(["*/stations/" . self::HANNOVER_HBF['ril100'] => Http::response(self::HANNOVER_HBF)]);
