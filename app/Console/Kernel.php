@@ -35,6 +35,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cache:clear-database')->daily();
         $schedule->command('queue-monitor:purge --beforeDays=7')->daily();
         $schedule->command('activitylog:clean')->weekly();
+        $schedule->command('app:wikidata-fetcher')->everyMinute();
 
         if (config('trwl.year_in_review.backend')) {
             $schedule->command('trwl:cache-year-in-review')->withoutOverlapping()->dailyAt('2:00');

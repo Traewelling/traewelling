@@ -2,7 +2,7 @@
 import FullScreenModal from "./FullScreenModal.vue";
 import ProductIcon from "./ProductIcon.vue";
 import LineIndicator from "./LineIndicator.vue";
-import { DateTime } from "luxon";
+import {DateTime} from "luxon";
 import CheckinLineRun from "./CheckinLineRun.vue";
 import CheckinInterface from "./CheckinInterface.vue";
 import StationAutocomplete from "./StationAutocomplete.vue";
@@ -21,6 +21,7 @@ export default {
         return {
             data: [],
             meta: {},
+            travelType: null,
             fetchTime: null,
             show: false,
             selectedTrain: null,
@@ -33,13 +34,18 @@ export default {
         trans,
         showModal(selectedItem) {
             this.selectedDestination = null;
-            this.selectedTrain = selectedItem;
-            this.show = true;
+            this.selectedTrain       = selectedItem;
+            this.show                = true;
             this.$refs.modal.show();
         },
         updateStation(station) {
             this.stationString = station.name;
-            this.data = [];
+            this.data          = [];
+            this.fetchData();
+        },
+        updateTravelType(travelType) {
+            this.travelType = travelType;
+            this.data       = [];
             this.fetchData();
         },
         updateTime(time) {
@@ -60,33 +66,36 @@ export default {
             if (time !== null) {
                 this.fetchTime = DateTime.fromISO(time).setZone("UTC");
             } else {
-                time = this.fetchTime.minus({ minutes: 5 }).toString();
+                time = this.fetchTime.minus({minutes: 5}).toString();
             }
 
-            let query = this.stationString.replace(/%2F/, " ").replace(/\//, " ");
-            fetch(`/api/v1/trains/station/${query}/departures?when=${time}`).then((response) => {
-                this.loading = false;
-                this.now = DateTime.now();
-                if (response.ok) {
-                    response.json().then((result) => {
-                        if (appendPosition === 0) {
-                            this.data = result.data;
-                        } else if (appendPosition === 1) {
-                            this.data = this.data.concat(result.data);
-                        } else {
-                            this.data = result.data.concat(this.data);
-                        }
-                        this.meta = result.meta;
-                    });
-                }
-            });
+            let query      = this.stationString.replace(/%2F/, " ").replace(/\//, " ");
+            let travelType = this.travelType ? this.travelType : "";
+
+            fetch(`/api/v1/trains/station/${query}/departures?when=${time}&travelType=${travelType}`)
+                .then((response) => {
+                    this.loading = false;
+                    this.now     = DateTime.now();
+                    if (response.ok) {
+                        response.json().then((result) => {
+                            if (appendPosition === 0) {
+                                this.data = result.data;
+                            } else if (appendPosition === 1) {
+                                this.data = this.data.concat(result.data);
+                            } else {
+                                this.data = result.data.concat(this.data);
+                            }
+                            this.meta = result.meta;
+                        });
+                    }
+                });
         },
         formatTime(time) {
             return DateTime.fromISO(time).toFormat("HH:mm");
         },
         //show divider if this.times.now is between this and the next item
         showDivider(item, key) {
-            if (key === 0 || typeof this.meta.times === undefined) {
+            if (key === 0 || typeof this.meta.times === "undefined") {
                 return false;
             }
             const prev = DateTime.fromISO(this.data[key - 1].when);
@@ -95,7 +104,7 @@ export default {
         }
     },
     mounted() {
-        this.fetchTime = DateTime.now().setZone("UTC");
+        this.fetchTime     = DateTime.now().setZone("UTC");
         this.stationString = this.$props.station;
         this.fetchData();
     },
@@ -113,6 +122,7 @@ export default {
     <StationAutocomplete
         v-on:update:time="updateTime"
         v-on:update:station="updateStation"
+        v-on:update:travel-type="updateTravelType"
         :station="{name: stationString}"
         :time="now"
     />
@@ -122,10 +132,10 @@ export default {
     <FullScreenModal ref="modal">
         <template #header v-if="selectedTrain">
             <div class="col-1 align-items-center d-flex">
-                <ProductIcon :product="selectedTrain.line.product" />
+                <ProductIcon :product="selectedTrain.line.product"/>
             </div>
             <div class="col-auto align-items-center d-flex me-3">
-                <LineIndicator :product-name="selectedTrain.line.product" :number="selectedTrain.line.name" />
+                <LineIndicator :product-name="selectedTrain.line.product" :number="selectedTrain.line.name"/>
             </div>
             <template v-if="selectedDestination">
                 <div class="col-auto align-items-center d-flex me-3">
@@ -166,7 +176,9 @@ export default {
                 </div>
                 <div class="col-auto ms-auto align-items-center d-flex">
                     <div v-if="item.delay">
-                        <span class="text-muted text-decoration-line-through">{{ formatTime(item.plannedWhen) }}<br></span>
+                        <span class="text-muted text-decoration-line-through">{{
+                                formatTime(item.plannedWhen)
+                            }}<br></span>
                         <span>{{ formatTime(item.when) }}</span>
                     </div>
                     <div v-else>

@@ -97,7 +97,7 @@ class PrometheusServiceProvider extends ServiceProvider
 
         Prometheus::addGauge('absent_webhooks_deleted')
                   ->helpText("How many webhooks were responded with Gone and were thus deleted from our side?")
-                  ->value(fn() => Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::WebhookAbsent)));
+                  ->value(fn() => Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::WebhookAbsent), 0));
 
         Prometheus::addGauge("profile_image_count")
                   ->helpText("How many profile images are stored?")
@@ -159,8 +159,8 @@ class PrometheusServiceProvider extends ServiceProvider
     }
 
 
-    public static function getJobsByDisplayName($table_name): array {
-        $counts = DB::table($table_name)
+    public static function getJobsByDisplayName(string $tableName): array {
+        $counts = DB::table($tableName)
                     ->get(["queue", "payload"])
                     ->map(fn($row) => [
                         'queue'       => $row->queue,
@@ -169,20 +169,7 @@ class PrometheusServiceProvider extends ServiceProvider
                     ->toArray();
 
         return array_map(
-            fn($job_properties, $count) => [$count, explode(PROM_JOB_SCRAPER_SEPARATOR, $job_properties)],
-            array_keys($counts),
-            array_values($counts)
-        );
-    }
-
-    public static function getJobsByQueue($table_name): array {
-        $counts = DB::table($table_name)
-                    ->get("queue")
-                    ->countBy(fn($job) => $job->queue)
-                    ->toArray();
-
-        return array_map(
-            fn($jobname, $count) => [$count, [$jobname]],
+            fn($jobProperties, $count) => [$count, explode(PROM_JOB_SCRAPER_SEPARATOR, $jobProperties)],
             array_keys($counts),
             array_values($counts)
         );
