@@ -5,13 +5,21 @@ namespace App\Http\Controllers\Backend\User;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Exception;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 use Intervention\Image\ImageManagerStatic as Image;
 
 abstract class ProfilePictureController extends Controller
 {
 
+    /**
+     * To improve performance, you shouldn't use this method.
+     * Better use the method `getUrl` when you have the user model.
+     *
+     * @param int $userId
+     *
+     * @return string
+     */
     public static function getUrlForUserId(int $userId): string {
         $user = User::where('id', $userId)->first();
         return self::getUrl(user: $user);

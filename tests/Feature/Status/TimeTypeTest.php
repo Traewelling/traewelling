@@ -3,7 +3,7 @@
 namespace Tests\Feature\Status;
 
 use App\Enum\TimeType;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -25,10 +25,9 @@ class TimeTypeTest extends TestCase
      */
     public function testTimeTypeFindPreference(bool $manual, bool $delay, TimeType $expected): void {
         // GIVEN
-        $checkin = TrainCheckin::factory()->create();
+        $checkin = Checkin::factory()->create();
 
-        $checkin->origin_stopover->departure_real = null;
-        $checkin->origin_stopover->update();
+        $checkin->originStopover->update(['departure_real' => null]);
 
         // WHEN
         if ($manual) $this->setManualDeparture($checkin, 8);
@@ -45,10 +44,9 @@ class TimeTypeTest extends TestCase
 
     public function testSameManualDeparture(): void {
         // GIVEN
-        $checkin = TrainCheckin::factory()->create();
+        $checkin = Checkin::factory()->create();
 
-        $checkin->origin_stopover->departure_real = null;
-        $checkin->origin_stopover->update();
+        $checkin->originStopover->update(['departure_real' => null]);
 
         // WHEN
         $this->setManualDeparture($checkin, 0);
@@ -60,10 +58,9 @@ class TimeTypeTest extends TestCase
 
     public function testSameRealTimeDeparture(): void {
         // GIVEN
-        $checkin = TrainCheckin::factory()->create();
+        $checkin = Checkin::factory()->create();
 
-        $checkin->origin_stopover->departure_real = null;
-        $checkin->origin_stopover->update();
+        $checkin->originStopover->update(['departure_real' => null]);
 
         // WHEN
         $this->setDelayedTrainDeparture($checkin, 0);
@@ -73,18 +70,17 @@ class TimeTypeTest extends TestCase
         $this->assertNull($checkin->displayDeparture->original);
     }
 
-    private function setDelayedTrainDeparture($checkin, int $min) {
-        $checkin->origin_stopover->departure_real = $checkin->origin_stopover
-            ->departure_planned
-            ->copy()
-            ->addMinutes($min);
-        $checkin->origin_stopover->update();
+    private function setDelayedTrainDeparture(Checkin $checkin, int $min): void {
+        $checkin->originStopover->update([
+                                                     'departure_real' => $checkin->originStopover->departure_planned
+                                                         ->copy()
+                                                         ->addMinutes($min)
+                                                 ]);
     }
 
-    private function setManualDeparture($checkin, int $min) {
-        $checkin->manual_departure = $checkin->departure
-            ->copy()
-            ->addMinutes($min);
-        $checkin->update();
+    private function setManualDeparture(Checkin $checkin, int $min): void {
+        $checkin->update([
+                             'manual_departure' => $checkin->departure->copy()->addMinutes($min)
+                         ]);
     }
 }

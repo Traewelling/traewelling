@@ -2,16 +2,18 @@
 
 namespace App\Providers;
 
-use App\Models\HafasTrip;
+use App\Enum\CacheKey;
+use App\Enum\MonitoringCounter;
+use App\Models\Trip;
 use App\Models\PolyLine;
-use App\Models\Status;
-use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
 use romanzipp\QueueMonitor\Enums\MonitorStatus;
 use Spatie\Prometheus\Facades\Prometheus;
 
+const PROM_JOB_SCRAPER_SEPARATOR = "-PROM-JOB-SCRAPER-SEPARATOR-";
 class PrometheusServiceProvider extends ServiceProvider
 {
     public function register() {
@@ -21,26 +23,35 @@ class PrometheusServiceProvider extends ServiceProvider
          */
         Prometheus::addGauge('Users count')
                   ->helpText("How many users are registered on the website?")
-                  ->value(function() {
-                      return User::count();
-                  });
+            ->label("state")
+            ->value(function() {
+                return [
+                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::UserCreated)), ["created"]],
+                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::UserDeleted)), ["deleted"]]
+                ];
+            });
+
 
         Prometheus::addGauge('Status count')
                   ->helpText("How many statuses are posted on the website?")
-                  ->value(function() {
-                      return Status::count();
-                  });
+            ->label("state")
+            ->value(function() {
+                return [
+                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusCreated)), ["created"]],
+                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusDeleted)), ["deleted"]]
+                ];
+            });
 
         Prometheus::addGauge('Hafas Trips count')
                   ->helpText("How many hafas trips are posted grouped by operator and mode of transport?")
                   ->labels(["operator", "category"])
                   ->value(function() {
-                      return HafasTrip::groupBy("operator_id", "category")
-                                      ->selectRaw("count(*) AS total, operator_id, category")
-                                      ->with("operator")
-                                      ->get()
-                                      ->map(fn($item) => [$item->total, [$item->operator?->name, $item->category]])
-                                      ->toArray();
+                      return Trip::groupBy("operator_id", "category")
+                                 ->selectRaw("count(*) AS total, operator_id, category")
+                                 ->with("operator")
+                                 ->get()
+                                 ->map(fn($item) => [$item->total, [$item->operator?->name, $item->category]])
+                                 ->toArray();
                   });
 
         Prometheus::addGauge('Polylines count')
@@ -56,33 +67,37 @@ class PrometheusServiceProvider extends ServiceProvider
 
         Prometheus::addGauge("queue_size")
                   ->helpText("How many items are currently in the job queue?")
-                  ->label("job_name")
+                  ->labels(["job_name", "queue"])
                   ->value(function() {
                       if (config("queue.default") === "database") {
                           return $this->getJobsByDisplayName("jobs");
                       }
 
-                      return [Queue::size(), ["all"]];
+                      return [Queue::size(), ["all", "all"]];
                   });
 
         Prometheus::addGauge("failed_jobs_count")
                   ->helpText("How many jobs have failed?")
-                  ->label("job_name")
+                  ->labels(["job_name", "queue"])
                   ->value(function() {
                       return $this->getJobsByDisplayName("failed_jobs");
                   });
 
         Prometheus::addGauge("completed_jobs_count")
                   ->helpText("How many jobs are done? Old items from queue monitor table are deleted after 7 days.")
-                  ->labels(["job_name", "status"])
+                  ->labels(["job_name", "status", "queue"])
                   ->value(function() {
                       return DB::table("queue_monitor")
-                               ->groupBy("name", "status")
-                               ->selectRaw("count(*) AS total, name, status")
+                               ->groupBy("name", "status", "queue")
+                               ->selectRaw("count(*) AS total, name, status, queue")
                                ->get()
-                               ->map(fn($item) => [$item->total, [$item->name, MonitorStatus::toNamedArray()[$item->status]]])
+                               ->map(fn($item) => [$item->total, [$item->name, MonitorStatus::toNamedArray()[$item->status], $item->queue]])
                                ->toArray();
                   });
+
+        Prometheus::addGauge('absent_webhooks_deleted')
+                  ->helpText("How many webhooks were responded with Gone and were thus deleted from our side?")
+                  ->value(fn() => Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::WebhookAbsent), 0));
 
         Prometheus::addGauge("profile_image_count")
                   ->helpText("How many profile images are stored?")
@@ -144,15 +159,17 @@ class PrometheusServiceProvider extends ServiceProvider
     }
 
 
-    public static function getJobsByDisplayName($table_name): array {
-        $counts = DB::table($table_name)
-                    ->get("payload")
-                    ->map(fn($row) => json_decode($row->payload))
-                    ->countBy(fn($payload) => $payload->displayName)
+    public static function getJobsByDisplayName(string $tableName): array {
+        $counts = DB::table($tableName)
+                    ->get(["queue", "payload"])
+                    ->map(fn($row) => [
+                        'queue'       => $row->queue,
+                        'displayName' => json_decode($row->payload)->displayName])
+                    ->countBy(fn($job) => $job['displayName'] . PROM_JOB_SCRAPER_SEPARATOR . $job['queue'])
                     ->toArray();
 
         return array_map(
-            fn($jobname, $count) => [$count, [$jobname]],
+            fn($jobProperties, $count) => [$count, explode(PROM_JOB_SCRAPER_SEPARATOR, $jobProperties)],
             array_keys($counts),
             array_values($counts)
         );

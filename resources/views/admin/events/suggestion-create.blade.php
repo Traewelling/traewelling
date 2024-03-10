@@ -75,7 +75,7 @@
                             <div class="col-6">
                                 <div class="form-floating">
                                     <input id="begin" type="datetime-local" class="form-control" name="begin"
-                                           value="{{ $event->begin->toDateTimeLocalString() }}"
+                                           value="{{ $event->begin->startOfDay()->toDateTimeLocalString() }}"
                                            required
                                     />
                                     <label for="begin">Checkin {{ __('events.begin') }}:</label>
@@ -84,7 +84,7 @@
                             <div class="col-6">
                                 <div class="form-floating">
                                     <input id="end" type="datetime-local" class="form-control" name="end"
-                                           value="{{ $event->begin->toDateTimeLocalString() }}"
+                                           value="{{ $event->end->endOfDay()->toDateTimeLocalString() }}"
                                            required
                                     />
                                     <label for="end">Checkin {{ __('events.end') }}:</label>

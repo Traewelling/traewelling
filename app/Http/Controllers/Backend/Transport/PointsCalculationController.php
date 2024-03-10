@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend\Transport;
 use App\Dto\PointCalculation;
 use App\Enum\HafasTravelType;
 use App\Enum\PointReason;
+use App\Enum\TripSource;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use JetBrains\PhpStorm\Pure;
@@ -12,11 +13,18 @@ use JetBrains\PhpStorm\Pure;
 abstract class PointsCalculationController extends Controller
 {
 
+    private const REDUCED_POINTS = [
+        PointReason::NOT_SUFFICIENT,
+        PointReason::FORCED,
+        PointReason::MANUAL_TRIP,
+    ];
+
     public static function calculatePoints(
         int             $distanceInMeter,
         HafasTravelType $hafasTravelType,
         Carbon          $departure,
         Carbon          $arrival,
+        TripSource      $tripSource,
         bool            $forceCheckin = false,
         Carbon          $timestampOfView = null
     ): PointCalculation {
@@ -30,7 +38,7 @@ abstract class PointsCalculationController extends Controller
         return self::calculatePointsWithReason(
             basePoints:     $base,
             distancePoints: $distance,
-            pointReason:    self::getReason($departure, $arrival, $forceCheckin, $timestampOfView),
+            pointReason:    self::getReason($departure, $arrival, $forceCheckin, $tripSource, $timestampOfView),
         );
     }
 
@@ -40,22 +48,10 @@ abstract class PointsCalculationController extends Controller
         float       $distancePoints,
         PointReason $pointReason
     ): PointCalculation {
-        if ($pointReason === PointReason::NOT_SUFFICIENT || $pointReason === PointReason::FORCED) {
-            return new PointCalculation(
-                points:         1,
-                basePoints:     $basePoints,
-                distancePoints: $distancePoints,
-                reason:         $pointReason,
-                factor:         0,
-            );
-        }
         $factor = self::getFactorByReason($pointReason);
 
-        $basePoints     *= $factor;
-        $distancePoints *= $factor;
-
         return new PointCalculation(
-            points:         ceil($basePoints + $distancePoints),
+            points:         self::getPointsByReason($pointReason, ($basePoints + $distancePoints), $factor),
             basePoints:     $basePoints,
             distancePoints: $distancePoints,
             reason:         $pointReason,
@@ -63,9 +59,17 @@ abstract class PointsCalculationController extends Controller
         );
     }
 
+    public static function getPointsByReason(PointReason $pointReason, int $points, float $factor): int {
+        if (in_array($pointReason, self::REDUCED_POINTS)) {
+            return $pointReason === PointReason::MANUAL_TRIP ? 0 : 1;
+        }
+
+        return ceil($points * $factor);
+    }
+
     #[Pure]
     public static function getFactorByReason(PointReason $pointReason): float|int {
-        if ($pointReason === PointReason::NOT_SUFFICIENT || $pointReason === PointReason::FORCED) {
+        if (in_array($pointReason, self::REDUCED_POINTS)) {
             return 0;
         }
         if ($pointReason === PointReason::GOOD_ENOUGH) {
@@ -75,13 +79,17 @@ abstract class PointsCalculationController extends Controller
     }
 
     public static function getReason(
-        Carbon $departure,
-        Carbon $arrival,
-        bool   $forceCheckin,
-        Carbon $timestampOfView
+        Carbon     $departure,
+        Carbon     $arrival,
+        bool       $forceCheckin,
+        TripSource $tripSource,
+        Carbon     $timestampOfView
     ): PointReason {
         if ($forceCheckin) {
             return PointReason::FORCED;
+        }
+        if ($tripSource === TripSource::USER) {
+            return PointReason::MANUAL_TRIP;
         }
 
         /**

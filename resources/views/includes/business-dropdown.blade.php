@@ -1,5 +1,5 @@
 <div class="btn-group">
-    <button class="btn btn-sm btn-outline-primary dropdown-toggle"
+    <button class="btn btn-sm btn-outline-primary dropdown-toggle trwl-business-button
             type="button"
             id="businessDropdownButton"
             data-mdb-dropdown-animation="off"
@@ -23,5 +23,5 @@
             <span class="text-muted"> {{ __('stationboard.business.commute.detail') }}</span>
         </li>
     </ul>
-    <input type="hidden" id="business_check" name="business_check" value="0"/>
+    <input type="hidden" class="trwl-business-input" name="business_check" value="0"/>
 </div>

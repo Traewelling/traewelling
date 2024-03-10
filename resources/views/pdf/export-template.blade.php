@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+@php use App\Http\Controllers\Backend\Export\ExportController; @endphp
+    <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -81,6 +82,11 @@
             .right {
                 float: right;
             }
+
+            .sum {
+                font-weight: bold;
+                border-top: 2px solid black;
+            }
         </style>
     </head>
     <body>
@@ -117,15 +123,20 @@
                 <thead>
                     <tr>
                         @foreach($columns as $column)
-                            <th>{{ \App\Http\Controllers\Backend\Export\ExportController::getColumnTitle($column) }}</th>
+                            <th>{{ ExportController::getColumnTitle($column) }}</th>
                         @endforeach
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($data as $row)
-                        <tr>
+                    @foreach($data as $key => $row)
+                        <tr class="{{ $key === 'sum' ? 'sum' : '' }}">
                             @foreach($columns as $column)
-                                <td>{{ $row[$column->value ?? $column] ?? '' }}</td>
+                                <th>
+                                    {!! ExportController::formatExportableColumn(
+                                        $column,
+                                        $row[$column->value ?? $column] ?? ''
+                                    ) !!}
+                                </th>
                             @endforeach
                         </tr>
                     @endforeach

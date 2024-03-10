@@ -27,7 +27,9 @@ export default class API {
         }
 
         return response.json().then(data => {
-            notyf.success(data.data.message);
+            if (data && data.data && data.data.message) {
+                notyf.success(data.data.message);
+            }
         });
     }
 

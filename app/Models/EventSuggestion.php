@@ -26,6 +26,6 @@ class EventSuggestion extends Model
     }
 
     public function station(): BelongsTo {
-        return $this->belongsTo(TrainStation::class, 'station_id', 'id');
+        return $this->belongsTo(Station::class, 'station_id', 'id');
     }
 }

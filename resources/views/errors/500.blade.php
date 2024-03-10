@@ -6,7 +6,7 @@ if (!$exception instanceof \App\Exceptions\Referencable) {
 @endphp
 
 @section('image', asset('images/covers/derailment.jpg'))
-@section('title', __('Server Error'))
+@section('title', __('error.500'))
 @section('code', '500')
-@section('message', __('Server Error'))
+@section('message', __('error.500'))
 @section('reference', errorMessage($exception, ''))

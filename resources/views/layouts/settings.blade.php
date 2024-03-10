@@ -84,7 +84,7 @@
             </a>
             <button class="navbar-toggler d-md-none collapsed" type="button"
                     data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu" aria-controls="sidebarMenu"
-                    aria-expanded="false" aria-label="Toggle navigation">
+                    aria-expanded="false" aria-label="{{ __('toggle-navigation') }}">
                 <i class="fas fa-bars"></i>
             </button>
         </header>

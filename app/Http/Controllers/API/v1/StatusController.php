@@ -15,9 +15,9 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\Status;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -31,7 +31,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
-use OpenApi\Annotations as OA;
 
 class StatusController extends Controller
 {
@@ -206,7 +205,6 @@ class StatusController extends Controller
      *     @OA\Response(response=403, description="User not authorized to access this status"),
      *       security={
      *           {"passport": {"read-statuses"}}, {"token": {}}
-     *
      *       }
      *     )
      * )
@@ -290,9 +288,9 @@ class StatusController extends Controller
      *
      * @param int $id
      *
-     * @return StatusResource|Response
+     * @return StatusResource
      */
-    public function show(int $id): StatusResource|Response {
+    public function show(int $id): StatusResource {
         $status = StatusBackend::getStatus($id);
         try {
             $this->authorize('view', $status);
@@ -339,7 +337,12 @@ class StatusController extends Controller
     public function destroy(int $statusId): JsonResponse {
         try {
             StatusBackend::DeleteStatus(Auth::user(), $statusId);
-            return $this->sendResponse(['message' => __('controller.status.delete-ok')]);
+            // ToDo: Remove message once the frontend doesn't use the message for anything
+            return $this->sendResponse(
+                ['message' => __('controller.status.delete-ok')],
+                200,
+                ['status' => 'success']
+            );
         } catch (PermissionException) {
             return $this->sendError('You are not allowed to delete this status.', 403);
         } catch (ModelNotFoundException) {
@@ -397,10 +400,8 @@ class StatusController extends Controller
             'business'                  => ['required', new Enum(Business::class)],
             'visibility'                => ['required', new Enum(StatusVisibility::class)],
 
-            //Changing of TrainCheckin-Metadata
-            'realDeparture'             => ['nullable', 'date'], //TODO: deprecated: remove after 2023-10 (#1809)
+            //Changing of Checkin-Metadata
             'manualDeparture'           => ['nullable', 'date'],
-            'realArrival'               => ['nullable', 'date'], //TODO: deprecated: remove after 2023-10 (#1809)
             'manualArrival'             => ['nullable', 'date'],
 
             //Following attributes are needed, if user want's to change the destination
@@ -418,18 +419,18 @@ class StatusController extends Controller
             $this->authorize('update', $status);
 
             if (isset($validated['destinationId'], $validated['destinationArrivalPlanned'])
-                && ((int) $validated['destinationId']) !== $status->trainCheckin->destinationStation->id) {
+                && ((int) $validated['destinationId']) !== $status->checkin->destinationStation->id) {
                 $arrival  = Carbon::parse($validated['destinationArrivalPlanned'])->timezone(config('app.timezone'));
-                $stopover = TrainStopover::where('train_station_id', $validated['destinationId'])
-                                         ->where('arrival_planned', $arrival)
-                                         ->first();
+                $stopover = Stopover::where('train_station_id', $validated['destinationId'])
+                                    ->where('arrival_planned', $arrival)
+                                    ->first();
 
                 if ($stopover === null) {
                     return $this->sendError('Invalid stopover given', 400);
                 }
 
                 TrainCheckinController::changeDestination(
-                    checkin:                $status->trainCheckin,
+                    checkin:                $status->checkin,
                     newDestinationStopover: $stopover,
                 );
             }
@@ -440,15 +441,17 @@ class StatusController extends Controller
                                 'visibility' => StatusVisibility::from($validated['visibility']),
                             ]);
 
-            if (isset($validated['realDeparture']) || isset($validated['manualDeparture'])) { //TODO: remove realDeparture after 2023-10 (#1809)
-                $status->trainCheckin->update([
-                                                  'manual_departure' => Carbon::parse($validated['manualDeparture'] ?? $validated['realDeparture'], auth()->user()->timezone)
-                                              ]);
+            if (array_key_exists('manualDeparture', $validated)) {
+                $manualDeparture = isset($validated['manualDeparture'])
+                    ? Carbon::parse($validated['manualDeparture'], auth()->user()->timezone)
+                    : null;
+                $status->checkin->update(['manual_departure' => $manualDeparture]);
             }
-            if (isset($validated['realArrival']) || isset($validated['manualArrival'])) { //TODO: remove realArrival after 2023-10 (#1809)
-                $status->trainCheckin->update([
-                                                  'manual_arrival' => Carbon::parse($validated['manualArrival'] ?? $validated['realArrival'], auth()->user()->timezone)
-                                              ]);
+            if (array_key_exists('manualArrival', $validated)) {
+                $manualArrival = isset($validated['manualArrival'])
+                    ? Carbon::parse($validated['manualArrival'], auth()->user()->timezone)
+                    : null;
+                $status->checkin->update(['manual_arrival' => $manualArrival]);
             }
 
             return $this->sendResponse(new StatusResource($status->fresh()));
@@ -514,7 +517,7 @@ class StatusController extends Controller
     public function getPolyline(string $parameters): JsonResource {
         $ids             = explode(',', $parameters, 50);
         $geoJsonFeatures = Status::whereIn('id', $ids)
-                                 ->with('trainCheckin.HafasTrip.polyline')
+                                 ->with('checkin.Trip.polyline')
                                  ->get()
                                  ->filter(function(Status $status) {
                                      try {
@@ -574,7 +577,7 @@ class StatusController extends Controller
      */
     public function getStopovers(string $parameters): JsonResponse {
         $tripIds = explode(',', $parameters, 50);
-        $trips   = HafasTrip::whereIn('id', $tripIds)->get()->mapWithKeys(function($trip) {
+        $trips   = Trip::whereIn('id', $tripIds)->get()->mapWithKeys(function($trip) {
             return [$trip->id => StopoverResource::collection($trip->stopovers)];
         });
         return $this->sendResponse($trips);
@@ -612,8 +615,8 @@ class StatusController extends Controller
             return $this->sendError('User doesn\'t have any checkins');
         }
         foreach ($latestStatuses as $status) {
-            if ($status->trainCheckin->origin_stopover->departure->isPast()
-                && $status->trainCheckin->destination_stopover->arrival->isFuture()) {
+            if ($status->checkin->originStopover->departure->isPast()
+                && $status->checkin->destinationStopover->arrival->isFuture()) {
                 return $this->sendResponse(new StatusResource($status));
             }
         }

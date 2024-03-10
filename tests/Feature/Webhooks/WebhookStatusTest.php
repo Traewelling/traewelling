@@ -9,12 +9,12 @@ use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController;
 use App\Http\Resources\StatusResource;
+use App\Jobs\MonitoredCallWebhookJob;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
-use Spatie\WebhookServer\CallWebhookJob;
 use Tests\TestCase;
 use function PHPUnit\Framework\assertEquals;
 
@@ -30,10 +30,10 @@ class WebhookStatusTest extends TestCase
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_CREATE]);
         $status = $this->createStatus($user);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals([
                              'event' => WebhookEvent::CHECKIN_CREATE->value,
-                             'status' => new StatusResource($status),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       'status' => new StatusResource($status),
                          ], $job->payload);
             return true;
         });
@@ -54,7 +54,7 @@ class WebhookStatusTest extends TestCase
                  'checkinVisibility' => $status['visibility']->value
              ]);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
@@ -75,7 +75,7 @@ class WebhookStatusTest extends TestCase
         StatusController::createLike($user, $status);
 
         // For self-likes, a CHECKIN_UPDATE is sent, but no notification.
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
@@ -93,22 +93,22 @@ class WebhookStatusTest extends TestCase
         $client = $this->createWebhookClient($user);
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status    = $this->createStatus($user);
-        $checkin   = $status->trainCheckin()->first();
-        $hafasTrip = TrainCheckinController::getHafasTrip(
+        $checkin   = $status->checkin()->first();
+        $trip = TrainCheckinController::getHafasTrip(
             tripId:   self::TRIP_ID,
             lineName: self::ICE802['line']['name'],
             startId:  self::FRANKFURT_HBF['id']
         );
-        $aachen    = $hafasTrip->stopovers->where('trainStation.ibnr', self::AACHEN_HBF['id'])->first();
+        $aachen    = $trip->stopovers->where('station.ibnr', self::AACHEN_HBF['id'])->first();
         TrainCheckinController::changeDestination($checkin, $aachen);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
             );
             assertEquals($status->id, $job->payload['status']->id);
-            // This is really hacky, but i didn't got it working otherwise.
+            // This is really hacky, but I didn't get it working otherwise.
             $parsedStatus = json_decode($job->payload['status']->toJson());
             assertEquals(self::AACHEN_HBF['id'], $parsedStatus->train->destination->evaIdentifier);
             return true;
@@ -130,7 +130,7 @@ class WebhookStatusTest extends TestCase
                  'checkinVisibility' => $status['visibility']->value
              ]);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
@@ -156,7 +156,7 @@ class WebhookStatusTest extends TestCase
                  'checkinVisibility' => StatusVisibility::UNLISTED->value,
              ]);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
@@ -176,7 +176,7 @@ class WebhookStatusTest extends TestCase
         $status = $this->createStatus($user);
         StatusController::DeleteStatus($user, $status['id']);
 
-        Bus::assertDispatched(function(CallWebhookJob $job) use ($status) {
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals(
                 WebhookEvent::CHECKIN_DELETE->value,
                 $job->payload['event']
@@ -198,12 +198,12 @@ class WebhookStatusTest extends TestCase
             startId:  self::FRANKFURT_HBF['id']
         );
 
-        $origin      = HafasController::getTrainStation(self::FRANKFURT_HBF['id']);
-        $destination = HafasController::getTrainStation(self::HANNOVER_HBF['id']);
+        $origin      = HafasController::getStation(self::FRANKFURT_HBF['id']);
+        $destination = HafasController::getStation(self::HANNOVER_HBF['id']);
 
         $checkin = TrainCheckinController::checkin(
             user:         $user,
-            hafasTrip:    $trip,
+            trip:         $trip,
             origin:       $origin,
             departure:    Carbon::parse(self::DEPARTURE_TIME),
             destination:  $destination,

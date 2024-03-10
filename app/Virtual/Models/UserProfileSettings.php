@@ -143,18 +143,6 @@ class UserProfileSettings
 
     /**
      * @OA\Property (
-     *     title="twitter",
-     *     description="Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
-     *     nullable=true,
-     *     example="null"
-     * )
-     *
-     * @var string
-     */
-    private $twitter;
-
-    /**
-     * @OA\Property (
      *     title="mastodon",
      *     description="Mastodon URL of user",
      *     example="https://chaos.social/@traewelling"

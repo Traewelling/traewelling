@@ -139,7 +139,10 @@ abstract class UserController extends Controller
      * @throws InvalidArgumentException
      */
     public static function searchUser(?string $searchQuery): Paginator {
-        $validator = Validator::make(['searchQuery' => $searchQuery], ['searchQuery' => ['required', 'alpha_num']]);
+        $validator = Validator::make(['searchQuery' => $searchQuery], ['searchQuery' => [
+            'required',
+            'regex:/^[a-zA-Z0-9_\-\s]*$/'
+        ]]);
         if ($validator->fails()) {
             throw new InvalidArgumentException();
         }

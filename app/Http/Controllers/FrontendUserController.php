@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\AlreadyFollowingException;
+use App\Http\Controllers\Backend\UserController as UserControllerAlias;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -12,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
@@ -103,16 +105,16 @@ class FrontendUserController extends Controller
 
     public function searchUser(Request $request): Renderable|RedirectResponse {
         try {
-            $users = \App\Http\Controllers\Backend\UserController::searchUser($request['searchQuery']);
+            $users = UserControllerAlias::searchUser($request['searchQuery']);
             if ($users->count() === 1) {
                 return redirect()->route('profile', ['username' => $users->first()->username]);
             }
             return view('search', [
                 'users' => $users,
             ]);
-        } catch (HttpException) {
+        } catch (HttpException|InvalidArgumentException) {
             //abort(400) is triggered.
-            return redirect()->route('dashboard')->with('error', __('error.bad-request'));
+            return redirect()->back()->with('error', __('error.bad-request'));
         }
     }
 }

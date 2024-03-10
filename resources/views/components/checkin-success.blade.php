@@ -23,11 +23,18 @@
                     </a>
                 </span>
             @endif
+            @if($points === 0 && $pointReason === PointReason::MANUAL_TRIP)
+                <br/>
+                <span class="text-danger">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    {{__('no-points-message.manual')}}
+                </span>
+            @endif
             @if($points === 1 && $forced)
                 <br/>
                 <span class="text-danger">
                     <i class="fa-solid fa-triangle-exclamation"></i>
-                    {{__('no-points-message')}}
+                    {{__('no-points-message.forced')}}
                 </span>
             @endif
         </p>
@@ -52,9 +59,9 @@
                                     </a>
                                 </td>
                                 <td>-</td>
-                                <td>{{ $otherStatus->trainCheckin->originStation->name }}</td>
+                                <td>{{ $otherStatus->checkin->originStation->name }}</td>
                                 <td>➜</td>
-                                <td>{{ $otherStatus->trainCheckin->destinationStation->name }}</td>
+                                <td>{{ $otherStatus->checkin->destinationStation->name }}</td>
                             </tr>
                         @endif
                     @endforeach

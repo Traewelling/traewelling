@@ -52,6 +52,10 @@ return [
         'global-statistics-retention-seconds' => env('GLOBAL_STATISTICS_CACHE_RETENTION_SECONDS', 60 * 60),
         'leaderboard-retention-seconds'       => env('LEADERBOARD_CACHE_RETENTION_SECONDS', 5 * 60)
     ],
-    'year_in_review_active'    => env('YEAR_IN_REVIEW_ACTIVE', false),
+    'year_in_review'           => [
+        'alert'   => env('YEAR_IN_REVIEW_ALERT', false),
+        'backend' => env('YEAR_IN_REVIEW_BACKEND', false),
+    ],
     'webhooks_active'          => env('WEBHOOKS_ACTIVE', false),
+    'webfinger_active'         => env('WEBFINGER_ACTIVE', false),
 ];

@@ -360,9 +360,9 @@ class StatisticsController extends Controller
         return $this->sendResponse([
                                        'statuses'      => StatusResource::collection($statuses),
                                        'polylines'     => $polylines && count($polylines) ? $featureCollection : null,
-                                       'totalDistance' => $statuses->sum('trainCheckin.distance'),
-                                       'totalDuration' => $statuses->sum('trainCheckin.duration'),
-                                       'totalPoints'   => $statuses->sum('trainCheckin.points')
+                                       'totalDistance' => $statuses->sum('checkin.distance'),
+                                       'totalDuration' => $statuses->sum('checkin.duration'),
+                                       'totalPoints'   => $statuses->sum('checkin.points')
                                    ]);
     }
 

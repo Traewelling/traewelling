@@ -12,7 +12,7 @@ use App\Http\Controllers\UserController as UserBackend;
 use App\Models\Event;
 use App\Models\EventSuggestion;
 use App\Models\Follow;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use App\Notifications\EventSuggestionProcessed;
 use App\Notifications\UserFollowed;
@@ -99,7 +99,7 @@ class NotificationsTest extends ApiTestCase
 
         //create some notifications
         for ($i = 0; $i < 10; $i++) {
-            $status = TrainCheckin::factory(['user_id' => $alice->id])->create()->status;
+            $status = Checkin::factory(['user_id' => $alice->id])->create()->status;
             StatusBackend::createLike($bob, $status);
         }
 
@@ -181,7 +181,7 @@ class NotificationsTest extends ApiTestCase
     public function testBobJoiningOnAlicesConnectionShouldSpawnANotification(): void {
         //create users
         $alice        = User::factory()->create();
-        $aliceCheckIn = TrainCheckin::factory(['user_id' => $alice->id])->create();
+        $aliceCheckIn = Checkin::factory(['user_id' => $alice->id])->create();
         $bob          = User::factory()->create();
 
         //Check if there are no notifications
@@ -190,7 +190,7 @@ class NotificationsTest extends ApiTestCase
         //bob also checks into the train (with same origin and destination - but not relevant)
         $bobsData  = TrainCheckinController::checkin(
             user:        $bob,
-            hafasTrip:   $aliceCheckIn->HafasTrip,
+            trip:        $aliceCheckIn->trip,
             origin:      $aliceCheckIn->originStation,
             departure:   $aliceCheckIn->departure,
             destination: $aliceCheckIn->destinationStation,
@@ -220,7 +220,7 @@ class NotificationsTest extends ApiTestCase
     public function testBobJoiningOnAlicesConnectionShouldNotSpawnANotificationWhenPrivate(): void {
         // GIVEN: A mocked checkin for Alice
         $alice        = User::factory(['privacy_ack_at' => Carbon::now()])->create();
-        $aliceCheckIn = TrainCheckin::factory(['user_id' => $alice->id])->create();
+        $aliceCheckIn = Checkin::factory(['user_id' => $alice->id])->create();
 
         //Check if there are no notifications
         $this->assertDatabaseCount('notifications', 0);
@@ -229,7 +229,7 @@ class NotificationsTest extends ApiTestCase
         $bob = User::factory(['privacy_ack_at' => Carbon::now()])->create();
         TrainCheckinController::checkin(
             user:        $bob,
-            hafasTrip:   $aliceCheckIn->HafasTrip,
+            trip:        $aliceCheckIn->trip,
             origin:      $aliceCheckIn->originStation,
             departure:   $aliceCheckIn->departure,
             destination: $aliceCheckIn->destinationStation,

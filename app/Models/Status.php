@@ -9,18 +9,30 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 /**
+ * //properties
  * @property int              id
  * @property int              user_id
  * @property string           body
  * @property Business         business
- * @property int              event_id
  * @property StatusVisibility visibility
- * @property TrainCheckin     $trainCheckin
+ * @property int              event_id
+ * @property string           tweet_id
+ * @property string           mastodon_post_id
  *
- * @todo merge model with "TrainCheckin" (later only "Checkin") because the difference between trip sources (HAFAS,
+ * //relations
+ * @property User             $user
+ * @property Checkin          $checkin
+ * @property Collection       $likes
+ * @property OAuthClient      $client
+ * @property Event            $event
+ * @property Collection       $tags
+ * @property Mention[]        $mentions
+ *
+ * @todo merge model with "Checkin" (later only "Checkin") because the difference between trip sources (HAFAS,
  *       User, and future sources) should be handled in the Trip model.
  */
 class Status extends Model
@@ -28,9 +40,18 @@ class Status extends Model
 
     use HasFactory;
 
-    protected $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'tweet_id', 'mastodon_post_id'];
+    protected $fillable = [
+        'user_id',
+        'body',
+        'business',
+        'visibility',
+        'event_id',
+        'tweet_id',
+        'mastodon_post_id',
+        'client_id'
+    ];
     protected $hidden   = ['user_id', 'business'];
-    protected $appends  = ['favorited', 'socialText', 'statusInvisibleToMe', 'description'];
+    protected $appends  = ['favorited', 'statusInvisibleToMe', 'description'];
     protected $casts    = [
         'id'               => 'integer',
         'user_id'          => 'integer',
@@ -39,6 +60,7 @@ class Status extends Model
         'event_id'         => 'integer',
         'tweet_id'         => 'string',
         'mastodon_post_id' => 'string',
+        'client_id'        => 'integer'
     ];
 
     public function user(): BelongsTo {
@@ -49,8 +71,20 @@ class Status extends Model
         return $this->hasMany(Like::class);
     }
 
+    public function checkin(): HasOne {
+        return $this->hasOne(Checkin::class);
+    }
+
+    public function client(): BelongsTo {
+        return $this->belongsTo(OAuthClient::class, 'client_id', 'id');
+    }
+
+    /**
+     * @return HasOne
+     * @deprecated use ->checkin instead
+     */
     public function trainCheckin(): HasOne {
-        return $this->hasOne(TrainCheckin::class);
+        return $this->checkin();
     }
 
     public function event(): HasOne {
@@ -61,6 +95,10 @@ class Status extends Model
         return $this->hasMany(StatusTag::class, 'status_id', 'id');
     }
 
+    public function mentions(): HasMany {
+        return $this->hasMany(Mention::class, 'status_id', 'id');
+    }
+
     public function getFavoritedAttribute(): ?bool {
         if (!Auth::check()) {
             return null;
@@ -68,64 +106,17 @@ class Status extends Model
         return $this->likes->contains('user_id', Auth::id());
     }
 
-    public function getSocialTextAttribute(): string {
-        if (isset($this->event) && $this->event->hashtag !== null) {
-            $postText = trans_choice(
-                key:     'controller.transport.social-post-with-event',
-                number:  preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
-                replace: [
-                             'lineName'    => $this->trainCheckin->HafasTrip->linename,
-                             'destination' => $this->trainCheckin->destinationStation->name,
-                             'hashtag'     => $this->event->hashtag
-                         ]
-            );
-        } else {
-            $postText = trans_choice(
-                key:     'controller.transport.social-post',
-                number:  preg_match('/\s/', $this->trainCheckin->HafasTrip->linename),
-                replace: [
-                             'lineName'    => $this->trainCheckin->HafasTrip->linename,
-                             'destination' => $this->trainCheckin->destinationStation->name
-                         ]
-            );
-        }
-
-
-        if (isset($this->body)) {
-            if ($this->event?->hashtag !== null) {
-                $eventIntercept = __('controller.transport.social-post-for', [
-                    'hashtag' => $this->event->hashtag
-                ]);
-            }
-
-            $appendix = strtr(' (@ :linename ➜ :destination:eventIntercept) #NowTräwelling', [
-                ':linename'       => $this->trainCheckin->HafasTrip->linename,
-                ':destination'    => $this->trainCheckin->destinationStation->name,
-                ':eventIntercept' => isset($eventIntercept) ? ' ' . $eventIntercept : ''
-            ]);
-
-            $appendixLength = strlen($appendix) + 30;
-            $postText       = substr($this->body, 0, 280 - $appendixLength);
-            if (strlen($postText) !== strlen($this->body)) {
-                $postText .= '...';
-            }
-            $postText .= $appendix;
-        }
-
-        return $postText;
-    }
-
     public function getDescriptionAttribute(): string {
         return __('description.status', [
             'username'    => $this->user->name,
-            'origin'      => $this->trainCheckin->originStation->name .
-                             ($this->trainCheckin->originStation->rilIdentifier ?
-                                 ' (' . $this->trainCheckin->originStation->rilIdentifier . ')' : ''),
-            'destination' => $this->trainCheckin->destinationStation->name .
-                             ($this->trainCheckin->destinationStation->rilIdentifier ?
-                                 ' (' . $this->trainCheckin->destinationStation->rilIdentifier . ')' : ''),
-            'date'        => $this->trainCheckin->departure->isoFormat(__('datetime-format')),
-            'lineName'    => $this->trainCheckin->HafasTrip->linename
+            'origin'      => $this->checkin->originStation->name .
+                             ($this->checkin->originStation->rilIdentifier ?
+                                 ' (' . $this->checkin->originStation->rilIdentifier . ')' : ''),
+            'destination' => $this->checkin->destinationStation->name .
+                             ($this->checkin->destinationStation->rilIdentifier ?
+                                 ' (' . $this->checkin->destinationStation->rilIdentifier . ')' : ''),
+            'date'        => $this->checkin->departure->isoFormat(__('datetime-format')),
+            'lineName'    => $this->checkin->trip->linename
         ]);
     }
 

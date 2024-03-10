@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Dto\MentionDto;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,6 +21,9 @@ class StatusResource extends JsonResource
         return [
             'id'             => (int) $this->id,
             'body'           => (string) $this->body,
+            'bodyMentions'   => $this->mentions->map(
+                fn($mention) => new MentionDto($mention->mentioned, $mention->position, $mention->length)
+            ),
             'type'           => '', //TODO: deprecated: remove after 2024-02
             'user'           => (int) $this->user->id,
             'username'       => (string) $this->user->username,
@@ -30,25 +34,23 @@ class StatusResource extends JsonResource
             'likes'          => (int) $this->likes->count(),
             'liked'          => (bool) $this->favorited,
             'isLikable'      => Gate::allows('like', $this->resource),
+            'client'         => new ClientResource($this->client),
             'createdAt'      => $this->created_at->toIso8601String(),
             'train'          => [
-                'trip'                => (int) $this->trainCheckin->HafasTrip->id,
-                'hafasId'             => (string) $this->trainCheckin->HafasTrip->trip_id,
-                'category'            => (string) $this->trainCheckin->HafasTrip->category->value,
-                'number'              => (string) $this->trainCheckin->HafasTrip->number,
-                'lineName'            => (string) $this->trainCheckin->HafasTrip->linename,
-                'journeyNumber'       => $this->trainCheckin->HafasTrip->journey_number,
-                'distance'            => (int) $this->trainCheckin->distance,
-                'points'              => (int) $this->trainCheckin->points,
-                'duration'            => (int) $this->trainCheckin->duration,
-                'speed'               => 0.0, //deprecated: TODO: remove after 2023-12-31
-                'overriddenDeparture' => $this->trainCheckin->manual_departure?->toIso8601String(), //TODO: deprecated: remove after 2023-10 (#1809)
-                'manualDeparture'     => $this->trainCheckin->manual_departure?->toIso8601String(),
-                'overriddenArrival'   => $this->trainCheckin->manual_arrival?->toIso8601String(), //TODO: deprecated: remove after 2023-10 (#1809)
-                'manualArrival'       => $this->trainCheckin->manual_arrival?->toIso8601String(),
-                'origin'              => new StopoverResource($this->trainCheckin->origin_stopover),
-                'destination'         => new StopoverResource($this->trainCheckin->destination_stopover),
-                'operator'            => new OperatorResource($this?->trainCheckin->HafasTrip->operator)
+                'trip'            => (int) $this->checkin->trip->id,
+                'hafasId'         => (string) $this->checkin->trip->trip_id,
+                'category'        => (string) $this->checkin->trip->category->value,
+                'number'          => (string) $this->checkin->trip->number,
+                'lineName'        => (string) $this->checkin->trip->linename,
+                'journeyNumber'   => $this->checkin->trip->journey_number,
+                'distance'        => (int) $this->checkin->distance,
+                'points'          => (int) $this->checkin->points,
+                'duration'        => (int) $this->checkin->duration,
+                'manualDeparture' => $this->checkin->manual_departure?->toIso8601String(),
+                'manualArrival'   => $this->checkin->manual_arrival?->toIso8601String(),
+                'origin'          => new StopoverResource($this->checkin->originStopover),
+                'destination'     => new StopoverResource($this->checkin->destinationStopover),
+                'operator'        => new OperatorResource($this?->checkin->trip->operator)
             ],
             'event'          => new EventResource($this?->event),
         ];

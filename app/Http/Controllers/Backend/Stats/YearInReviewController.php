@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Backend\Stats;
 use App\Enum\CacheKey;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StatusResource;
-use App\Http\Resources\TrainStationResource;
-use App\Models\TrainCheckin;
+use App\Http\Resources\StationResource;
+use App\Models\Checkin;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -42,6 +42,7 @@ abstract class YearInReviewController extends Controller
         $mostDelayedArrivals        = TransportStatsController::getTripsByArrivalDelay($user, $from, $to, 'desc', 1);
         $topDestinations            = TransportStatsController::getTopDestinations($user, $from, $to, 5);
         $lonelyStations             = TransportStatsController::getLonelyStations($user, $from, $to);
+        $mostLikedStatuses          = TransportStatsController::getMostLikedStatus($user, $from, $to);
 
         return [
             'year'                => $year,
@@ -92,32 +93,38 @@ abstract class YearInReviewController extends Controller
                 })->first(),
             ],
             'longestTrips'        => [
-                'distance' => $longestTripsByDistance->map(static function(TrainCheckin $checkin) {
+                'distance' => $longestTripsByDistance->map(static function(Checkin $checkin) {
                     return new StatusResource($checkin->status);
                 })->first(),
-                'duration' => $longestTripsByDuration->map(static function(TrainCheckin $checkin) {
+                'duration' => $longestTripsByDuration->map(static function(Checkin $checkin) {
                     return new StatusResource($checkin->status);
                 })->first(),
             ],
-            'fastestTrips'        => $fastestTrips->map(static function(TrainCheckin $checkin) {
+            'fastestTrips'        => $fastestTrips->map(static function(Checkin $checkin) {
                 return new StatusResource($checkin->status);
             })->first(),
-            'slowestTrips'        => $slowestTrips->map(static function(TrainCheckin $checkin) {
+            'slowestTrips'        => $slowestTrips->map(static function(Checkin $checkin) {
                 return new StatusResource($checkin->status);
             })->first(),
-            'mostDelayedArrivals' => $mostDelayedArrivals->map(static function(TrainCheckin $checkin) {
+            'mostDelayedArrivals' => $mostDelayedArrivals->map(static function(Checkin $checkin) {
                 return new StatusResource($checkin->status);
             })->first(),
             'topDestinations'     => $topDestinations->map(static function($data) {
                 return [
-                    'station' => new TrainStationResource($data->station),
+                    'station' => new StationResource($data->station),
                     'count'   => $data->count,
                 ];
             }),
             'lonelyStations'      => $lonelyStations->map(static function($station) {
                 return [
-                    'station' => new TrainStationResource($station),
+                    'station' => new StationResource($station),
                     'count'   => $station->count,
+                ];
+            }),
+            'mostLikedStatuses'   => $mostLikedStatuses->map(static function($data) {
+                return [
+                    'likeCount' => $data['likeCount'],
+                    'status'    => new StatusResource($data['status']),
                 ];
             }),
         ];

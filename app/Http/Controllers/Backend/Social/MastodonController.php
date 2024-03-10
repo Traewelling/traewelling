@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Social;
 
 use App\Exceptions\SocialAuth\InvalidMastodonException;
+use App\Http\Controllers\Backend\Helper\StatusHelper;
 use App\Http\Controllers\Controller;
 use App\Models\MastodonServer;
 use App\Models\SocialLoginProfile;
@@ -150,7 +151,8 @@ abstract class MastodonController extends Controller
         }
 
         try {
-            $statusText     = $status->socialText . ' ' . url("/status/{$status->id}");
+            $statusText     = StatusHelper::getSocialText($status, true);
+            $statusText     .= ' ' . url("/status/{$status->id}");
             $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
             Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
 
@@ -193,7 +195,8 @@ abstract class MastodonController extends Controller
             return null;
         }
 
-        // Mastodon transmits ids as strings, and since we want to use === whenever possible, we convert the mastodon_id to a string.
+        // Mastodon transmits ids as strings
+        // and since we want to use === whenever possible, we convert the mastodon_id to a string.
         $mastodonUserId = (string) $user->socialProfile->mastodon_id;
         $onlyThread     = array_filter($context['descendants'], function($toot) use ($mastodonUserId): bool {
             return
@@ -229,6 +232,7 @@ abstract class MastodonController extends Controller
             ->latest()
             ->first();
     }
+
     public static function getRequestOptions(): array {
         return [RequestOptions::TIMEOUT => config("trwl.mastodon_timeout_seconds")];
     }
