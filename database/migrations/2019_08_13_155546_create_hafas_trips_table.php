@@ -26,7 +26,6 @@ class CreateHafasTripsTable extends Migration
             $table->unsignedBigInteger('polyline_id')->nullable();
             $table->timestampTz('departure')->nullable();
             $table->timestampTz('arrival')->nullable();
-            $table->integer('delay')->nullable();
             $table->timestamps();
         });
     }
