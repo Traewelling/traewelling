@@ -67,15 +67,15 @@
                         </div>
                         <div class="col-6 mb-3 col-lg-3">
                             <i class="fa-solid fa-route"></i>
-                            {{round($statuses->sum('trainCheckin.distance') / 1000)}} km
+                            {{round($statuses->sum('checkin.distance') / 1000)}} km
                         </div>
                         <div class="col-6 mb-3 col-lg-3">
                             <i class="fa-regular fa-clock"></i>
-                            {!! durationToSpan(secondsToDuration($statuses->sum('trainCheckin.duration') * 60)) !!}
+                            {!! durationToSpan(secondsToDuration($statuses->sum('checkin.duration') * 60)) !!}
                         </div>
                         <div class="col-6 mb-3 col-lg-3">
                             <i class="fa fa-dice-d20"></i>
-                            {{$statuses->sum('trainCheckin.points')}} {{__('profile.points-abbr')}}
+                            {{$statuses->sum('checkin.points')}} {{__('profile.points-abbr')}}
                         </div>
                     </div>
 

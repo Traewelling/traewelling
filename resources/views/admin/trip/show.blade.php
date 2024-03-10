@@ -35,7 +35,14 @@
                         </tr>
                         <tr>
                             <th>Source</th>
-                            <td>{{ $trip->source?->name }}</td>
+                            <td>
+                                {{ $trip->source?->name }}
+                                @isset($trip->user)
+                                    <a href="{{route('admin.users.user', ['id' => $trip->user_id])}}">
+                                        <small>({{'@'.$trip->user->username}})</small>
+                                    </a>
+                                @endisset
+                            </td>
                         </tr>
                         <tr>
                             <th>Last refreshed</th>
@@ -57,8 +64,9 @@
                                     <tr>
                                         <td>
                                             {{$checkin->user->name}}
-                                            <small><a href="{{route('admin.users.user', ['id' => $checkin->user->id])}}">{{'@'.$checkin->user->username}}</a></small>
-                                            <br />
+                                            <small><a
+                                                    href="{{route('admin.users.user', ['id' => $checkin->user->id])}}">{{'@'.$checkin->user->username}}</a></small>
+                                            <br/>
                                             <a href="{{route('admin.status.edit', ['statusId' => $checkin->status->id])}}">
                                                 #{{ $checkin->status->id }}
                                             </a>
@@ -67,16 +75,16 @@
                                             {{$checkin->originStation->name}}
                                             <br/>
                                             <small>
-                                                dep {{$checkin->origin_stopover->departure_planned->format('H:i')}}
-                                                +{{$checkin->origin_stopover->departure_planned->diffInMinutes($checkin->origin_stopover->departure)}}
+                                                dep {{$checkin->originStopover->departure_planned->format('H:i')}}
+                                                +{{$checkin->originStopover->departure_planned->diffInMinutes($checkin->originStopover->departure)}}
                                             </small>
                                         </td>
                                         <td>
                                             {{$checkin->destinationStation->name}}
                                             <br/>
                                             <small>
-                                                arr {{$checkin->destination_stopover->arrival_planned->format('H:i')}}
-                                                +{{$checkin->destination_stopover->arrival_planned->diffInMinutes($checkin->destination_stopover->arrival)}}
+                                                arr {{$checkin->destinationStopover->arrival_planned->format('H:i')}}
+                                                +{{$checkin->destinationStopover->arrival_planned->diffInMinutes($checkin->destinationStopover->arrival)}}
                                             </small>
                                         </td>
                                     </tr>
@@ -108,10 +116,14 @@
                         <tbody>
                             @foreach($trip->stopovers as $stopover)
                                 <tr>
-                                    <td>{{$stopover->trainStation?->name}}</td>
-                                    <td>{{$stopover->trainStation?->id}}</td>
-                                    <td>{{$stopover->trainStation?->ibnr}}</td>
-                                    <td>{{$stopover->trainStation?->rilIdentifier}}</td>
+                                    <td>
+                                        <a href="{{route('admin.station', $stopover->station->id)}}">
+                                            {{$stopover->station->name}}
+                                        </a>
+                                    </td>
+                                    <td>{{$stopover->station?->id}}</td>
+                                    <td>{{$stopover->station?->ibnr}}</td>
+                                    <td>{{$stopover->station?->rilIdentifier}}</td>
                                     <td>{{$stopover->arrival_planned?->format('H:i')}}</td>
                                     <td>{{$stopover->arrival_real?->format('H:i')}}</td>
                                     <td>{{$stopover->departure_planned?->format('H:i')}}</td>

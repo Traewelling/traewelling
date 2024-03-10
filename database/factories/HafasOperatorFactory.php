@@ -10,7 +10,7 @@ class HafasOperatorFactory extends Factory
 {
     public function definition(): array {
         return [
-            'hafas_id' => $this->faker->unique()->word,
+            'hafas_id' => $this->faker->hexColor,
             'name'     => $this->faker->company
         ];
     }

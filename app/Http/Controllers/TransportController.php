@@ -6,8 +6,8 @@ use App\Enum\TravelType;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Models\PolyLine;
-use App\Models\TrainCheckin;
-use App\Models\TrainStation;
+use App\Models\Checkin;
+use App\Models\Station;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -28,15 +28,16 @@ class TransportController extends Controller
      */
     public static function getTrainStationAutocomplete(string $query): Collection {
         if (!is_numeric($query) && strlen($query) <= 5 && ctype_upper($query)) {
-            $stations = HafasController::getTrainStationsByFuzzyRilIdentifier(rilIdentifier: $query);
+            $stations = HafasController::getStationsByFuzzyRilIdentifier(rilIdentifier: $query);
         }
 
         if (!isset($stations) || $stations[0] === null) {
             $stations = HafasController::getStations($query);
         }
 
-        return $stations->map(function(TrainStation $station) {
+        return $stations->map(function(Station $station) {
             return [
+                'id'            => $station->id,
                 'ibnr'          => $station->ibnr,
                 'rilIdentifier' => $station->rilIdentifier,
                 'name'          => $station->name
@@ -54,7 +55,7 @@ class TransportController extends Controller
      * @api v1
      */
     #[ArrayShape([
-        'station'    => TrainStation::class,
+        'station'    => Station::class,
         'departures' => Collection::class,
         'times'      => "array"
     ])]
@@ -125,16 +126,16 @@ class TransportController extends Controller
             return collect();
         }
 
-        $checkInsToCheck = TrainCheckin::with(['HafasTrip.stopovers', 'originStation', 'destinationStation'])
-                                       ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
-                                       ->where('statuses.user_id', $user->id)
-                                       ->where('departure', '>=', $start->clone()->subDays(3))
-                                       ->get();
+        $checkInsToCheck = Checkin::with(['Trip.stopovers', 'originStation', 'destinationStation'])
+                                  ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
+                                  ->where('statuses.user_id', $user->id)
+                                  ->where('departure', '>=', $start->clone()->subDays(3))
+                                  ->get();
 
-        return $checkInsToCheck->filter(function($trainCheckIn) use ($start, $end) {
+        return $checkInsToCheck->filter(function(Checkin $checkin) use ($start, $end) {
             //use realtime-data or use planned if not available
-            $departure = $trainCheckIn?->origin_stopover?->departure ?? $trainCheckIn->departure;
-            $arrival   = $trainCheckIn?->destination_stopover?->arrival ?? $trainCheckIn->arrival;
+            $departure = $checkin?->originStopover?->departure ?? $checkin->departure;
+            $arrival   = $checkin?->destinationStopover?->arrival ?? $checkin->arrival;
 
             return (
                        $arrival->isAfter($start) &&

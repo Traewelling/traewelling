@@ -3,10 +3,10 @@
 namespace Tests\Feature\Webhooks;
 
 use App\Enum\WebhookEvent;
+use App\Jobs\MonitoredCallWebhookJob;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
-use Spatie\WebhookServer\CallWebhookJob;
 use Tests\TestCase;
 
 use function PHPUnit\Framework\assertEquals;
@@ -27,7 +27,7 @@ class WebhookNotificationTest extends TestCase {
         $follow = $this->actingAs($alice)->post(route('follow.create'), ['follow_id' => $bob->id]);
         $follow->assertStatus(201);
 
-        Bus::assertDispatched(function (CallWebhookJob $job) {
+        Bus::assertDispatched(function (MonitoredCallWebhookJob $job) {
             assertEquals(WebhookEvent::NOTIFICATION->value, $job->payload['event']);
             return true;
         });

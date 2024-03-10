@@ -7,10 +7,11 @@ use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
 use App\Exceptions\PermissionException;
+use App\Http\Controllers\Backend\Helper\StatusHelper;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -42,7 +43,7 @@ class StatusController extends Controller
                                 'visibility' => StatusVisibility::from($validated['checkinVisibility']),
                             ]);
 
-            $status->trainCheckin->update([
+            $status->checkin->update([
                                               'manual_departure' => isset($validated['manualDeparture']) ?
                                                   Carbon::parse($validated['manualDeparture'], auth()->user()->timezone) :
                                                   null,
@@ -54,23 +55,23 @@ class StatusController extends Controller
             StatusUpdateEvent::dispatch($status->refresh());
 
             if (isset($validated['destinationStopoverId'])
-                && $validated['destinationStopoverId'] != $status->trainCheckin->destination_stopover->id) {
+                && $validated['destinationStopoverId'] != $status->checkin->destinationStopover->id) {
                 $pointReason = TrainCheckinController::changeDestination(
-                    checkin:                $status->trainCheckin,
-                    newDestinationStopover: TrainStopover::findOrFail($validated['destinationStopoverId']),
+                    checkin:                $status->checkin,
+                    newDestinationStopover: Stopover::findOrFail($validated['destinationStopoverId']),
                 );
                 $status->fresh();
 
                 $checkinSuccess = new CheckinSuccess(
                     id:                   $status->id,
-                    distance:             $status->trainCheckin->distance,
-                    duration:             $status->trainCheckin->duration,
-                    points:               $status->trainCheckin->points,
+                    distance:             $status->checkin->distance,
+                    duration:             $status->checkin->duration,
+                    points:               $status->checkin->points,
                     pointReason:          $pointReason,
-                    lineName:             $status->trainCheckin->HafasTrip->linename,
-                    socialText:           $status->socialText,
-                    alsoOnThisConnection: $status->trainCheckin->alsoOnThisConnection,
-                    event:                $status->trainCheckin->event,
+                    lineName:             $status->checkin->trip->linename,
+                    socialText:           StatusHelper::getSocialText($status),
+                    alsoOnThisConnection: $status->checkin->alsoOnThisConnection,
+                    event:                $status->checkin->event,
                     forced:               false,
                     reason:               'status-updated'
                 );

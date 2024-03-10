@@ -16,7 +16,7 @@ class HafasOperator extends Model
     protected $fillable = ['hafas_id', 'name'];
 
     public function trips(): HasMany {
-        return $this->hasMany(HafasTrip::class, 'operator_id', 'id');
+        return $this->hasMany(Trip::class, 'operator_id', 'id');
     }
 
 }

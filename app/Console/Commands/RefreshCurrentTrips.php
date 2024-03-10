@@ -5,8 +5,8 @@ namespace App\Console\Commands;
 use App\Enum\TripSource;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\HafasController;
-use App\Models\HafasTrip;
-use App\Models\TrainCheckin;
+use App\Models\Trip;
+use App\Models\Checkin;
 use Illuminate\Console\Command;
 use PDOException;
 
@@ -16,18 +16,21 @@ class RefreshCurrentTrips extends Command
     protected $description = 'Refresh delay data from current active trips';
 
     public function handle(): int {
-        $this->info('Gettings trips to be refreshed...');
+        $this->info('Getting trips to be refreshed...');
 
-        $trips = HafasTrip::join('train_stopovers', 'hafas_trips.trip_id', '=', 'train_stopovers.trip_id')
-            //To only refresh checked in trips join train_checkins:
-                          ->join('train_checkins', 'train_checkins.trip_id', '=', 'hafas_trips.trip_id')
-                          ->where(function($query) {
-                              $query->where('train_stopovers.arrival_planned', '>=', now())
-                                    ->orWhere('train_stopovers.arrival_real', '>=', now())
-                                    ->orWhere('train_stopovers.departure_planned', '>=', now())
-                                    ->orWhere('train_stopovers.departure_real', '>=', now());
+        // To only refresh checked in trips join train_checkins:
+        $trips = Trip::join('train_checkins', 'train_checkins.trip_id', '=', 'hafas_trips.trip_id')
+                     ->join('train_stopovers as origin_stopovers', 'origin_stopovers.id', '=', 'train_checkins.origin_stopover_id')
+                     ->join('train_stopovers as destination_stopovers', 'destination_stopovers.id', '=', 'train_checkins.destination_stopover_id')
+                     ->where(function($query) {
+                              $query->where('destination_stopovers.arrival_planned', '>=', now()->subMinutes(20))
+                                    ->orWhere('destination_stopovers.arrival_real', '>=', now()->subMinutes(20));
                           })
-                          ->where(function($query) {
+                     ->where(function($query) {
+                              $query->where('origin_stopovers.departure_planned', '<=', now()->addMinutes(20))
+                                    ->orWhere('origin_stopovers.departure_real', '<=', now()->addMinutes(20));
+                          })
+                     ->where(function($query) {
                               $query->where('hafas_trips.last_refreshed', '<', now()->subMinutes(5))
                                     ->orWhereNull('hafas_trips.last_refreshed');
                           })
@@ -51,11 +54,11 @@ class RefreshCurrentTrips extends Command
                 $trip->update(['last_refreshed' => now()]);
 
                 $rawHafas    = HafasController::fetchRawHafasTrip($trip->trip_id, $trip->linename);
-                $updatedRows = HafasController::refreshStopovers($rawHafas);
-                $this->info('Updated ' . $updatedRows . ' rows.');
+                $updatedCounts = HafasController::refreshStopovers($rawHafas);
+                $this->info('Updated ' . $updatedCounts->stopovers . ' stopovers.');
 
                 //set duration for refreshed trips to null, so it will be recalculated
-                TrainCheckin::where('trip_id', $trip->trip_id)->update(['duration' => null]);
+                Checkin::where('trip_id', $trip->trip_id)->update(['duration' => null]);
             } catch (PDOException $exception) {
                 if ($exception->getCode() === '23000') {
                     $this->warn('-> Skipping, due to integrity constraint violation');

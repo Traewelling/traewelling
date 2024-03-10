@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Social;
 
+use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -42,6 +43,9 @@ class SocialController extends Controller
                                              'mastodon_server' => null,
                                              'mastodon_token'  => null
                                          ]);
+
+            $mastodonProfileDetails = new MastodonProfileDetails($user);
+            $mastodonProfileDetails->forgetData();
         }
         return response(__('controller.social.deleted'), 200);
     }

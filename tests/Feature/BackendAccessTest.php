@@ -2,9 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Dto\Coordinate;
 use App\Models\User;
-use App\Objects\LineSegment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -17,7 +15,14 @@ class BackendAccessTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user)
              ->get(route('admin.dashboard'))
-             ->assertStatus(403);
+             ->assertForbidden();
+    }
+
+    public function testDefaultUserCantAccessActivity(): void {
+        $user = User::factory()->create();
+        $this->actingAs($user)
+             ->get(route('admin.activity'))
+             ->assertForbidden();
     }
 
     public function testAdminCanAccessBackend(): void {
@@ -40,7 +45,7 @@ class BackendAccessTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user)
              ->get(route('admin.users.user', ['id' => $user->id]))
-             ->assertStatus(403);
+             ->assertForbidden();
     }
 
     public function testAdminCanAccessUserDetailPage(): void {
@@ -56,14 +61,14 @@ class BackendAccessTest extends TestCase
         $user->assignRole('event-moderator');
         $this->actingAs($user)
              ->get(route('admin.users.user', ['id' => $user->id]))
-                ->assertStatus(403);
+             ->assertForbidden();
     }
 
     public function testDefaultUserCantAccessEventSuggestions(): void {
         $user = User::factory()->create();
         $this->actingAs($user)
              ->get(route('admin.events.suggestions'))
-             ->assertStatus(403);
+             ->assertForbidden();
     }
 
     public function testAdminCanAccessEventSuggestions(): void {

@@ -21,29 +21,45 @@
                             </h2>
 
                             <hr/>
+
                             <p class="fw-bold mb-1">
                                 <i class="fa-solid fa-table-list"></i>
                                 {{__('export.columns')}}
                             </p>
 
-                            <select class="form-select" multiple name="columns[]" required>
+                            <p class="fst-italic mb-1 text-center">
+                                {{__('export.predefined')}}...
+                            </p>
+                            <div class="row mb-1 text-center">
+                                <div class="col">
+                                    <div class="form-floating">
+                                        <button
+                                            type="button"
+                                            class="btn btn-outline-primary btn-sm"
+                                            id="export-nominal"
+                                        >
+                                            {{ __('export.nominal') }}
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="export-tags">
+                                            {{ __('export.nominal-tags') }}
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" id="export-all">
+                                            {{ __('export.all') }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="fst-italic mb-1 text-center">
+                                ...{{__('export.or-choose')}}:
+                            </p>
+
+                            <select id="export-select" class="form-select" size="12" multiple name="columns[]" required>
                                 @foreach(\App\Enum\ExportableColumn::cases() as $column)
                                     <option value="{{$column->value}}">
                                         {{$column->title()}}
                                     </option>
                                 @endforeach
                             </select>
-
-                            <script>
-                                document.querySelector('select[name="columns[]"]')
-                                    .addEventListener('change', function (e) {
-                                        if (e.target.selectedOptions.length > 7) {
-                                            document.querySelector('#alert-pdf-count').classList.remove('d-none');
-                                        } else {
-                                            document.querySelector('#alert-pdf-count').classList.add('d-none');
-                                        }
-                                    });
-                            </script>
 
                             <div class="alert alert-warning mt-3 d-none" role="alert" id="alert-pdf-count">
                                 <i class="fa-solid fa-triangle-exclamation"></i>

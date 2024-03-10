@@ -30,15 +30,25 @@
                             <label class="form-label" for="form-origin">Fahrt</label>
                         </div>
                         <div class="col-8">
-                            {{$status->trainCheckIn->HafasTrip->linename}}
-                            @isset($status->trainCheckIn->HafasTrip->operator?->name)
-                                <small>(Betreiber: {{$status->trainCheckIn->HafasTrip->operator?->name}})</small>
+                            {{$status->checkin->trip->linename}}
+                            @isset($status->checkin->trip->operator?->name)
+                                <small>(Betreiber: {{$status->checkin->trip->operator?->name}})</small>
                             @endisset
-                            <br />
-                            <a href="{{route('admin.trip.show', ['id' => $status->trainCheckin->trip_id])}}">
-                                {{ $status->trainCheckin->trip_id }}
+                            <br/>
+                            <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip_id])}}">
+                                {{ $status->checkin->trip_id }}
                             </a>
                         </div>
+
+                        <div class="col-4">
+                            <label>Client</label>
+                        </div>
+                        <div class="col-8">
+                            @isset($status?->client)
+                                {{$status->client->name}} (#{{$status->client->id}})
+                            @endisset
+                        </div>
+
                     </div>
                     <hr/>
                     <form method="POST" action="{{route('admin.status.edit')}}">
@@ -53,9 +63,9 @@
                                 <div class="col-8">
                                     <select id="form-origin" class="form-control" name="origin" required>
                                         <option value="">bitte wählen</option>
-                                        @foreach($status->trainCheckin->HafasTrip->stopovers as $stopover)
+                                        @foreach($status->checkin->trip->stopovers as $stopover)
                                             <option value="{{$stopover->trainStation->id}}"
-                                                    @if($stopover->trainStation->ibnr == $status->trainCheckIn->origin) selected @endif>
+                                                    @if($stopover->trainStation->ibnr == $status->checkin->origin) selected @endif>
                                                 {{$stopover->trainStation->name}}
                                                 (A:{{$stopover->arrival->format('H:i')}},
                                                 D:{{$stopover->departure->format('H:i')}})
@@ -73,9 +83,9 @@
                                 <div class="col-8">
                                     <select id="form-origin" class="form-control" name="destination" required>
                                         <option value="">bitte wählen</option>
-                                        @foreach($status->trainCheckin->HafasTrip->stopovers as $stopover)
+                                        @foreach($status->checkin->trip->stopovers as $stopover)
                                             <option value="{{$stopover->trainStation->id}}"
-                                                    @if($stopover->trainStation->ibnr == $status->trainCheckIn->destination) selected @endif>
+                                                    @if($stopover->trainStation->ibnr == $status->checkin->destination) selected @endif>
                                                 {{$stopover->trainStation->name}}
                                                 (A:{{$stopover->arrival->format('H:i')}},
                                                 D:{{$stopover->departure->format('H:i')}})

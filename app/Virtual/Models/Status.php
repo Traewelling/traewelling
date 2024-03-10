@@ -40,6 +40,20 @@ class Status
 
     /**
      * @OA\Property(
+     *     title="bodyMentions",
+     *     description="Mentions in the status body",
+     *     type="array",
+     *     @OA\Items(
+     *         ref="#/components/schemas/MentionDto"
+     *     )
+     * )
+     *
+     * @var array
+     */
+    public $bodyMentions;
+
+    /**
+     * @OA\Property(
      *     title="user",
      *     description="user id",
      *     format="int64",
@@ -139,6 +153,16 @@ class Status
 
     /**
      * @OA\Property (
+     *     title="client",
+     *     description="Client model",
+     * )
+     *
+     * @var Client
+     */
+    private $client;
+
+    /**
+     * @OA\Property (
      *     title="createdAt",
      *     description="creation date of this status",
      *     type="string",
@@ -156,7 +180,7 @@ class Status
      *     description="Train model",
      * )
      *
-     * @var Train
+     * @var Trip
      */
     private $train;
 

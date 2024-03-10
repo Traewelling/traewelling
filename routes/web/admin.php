@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\Frontend\Admin\ActivityController;
 use App\Http\Controllers\Frontend\Admin\CheckinController;
-use App\Http\Controllers\Frontend\Admin\DashboardController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
+use App\Http\Controllers\Frontend\Admin\StationController;
 use App\Http\Controllers\Frontend\Admin\StatusEditController;
 use App\Http\Controllers\Frontend\Admin\TripController;
 use App\Http\Controllers\Frontend\Admin\UserController;
@@ -14,9 +15,6 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
 
     Route::middleware('role:admin')->group(static function() {
         // these routes are only accessible for admins
-
-        Route::get('/stats', [DashboardController::class, 'renderStats'])
-             ->name('admin.stats');
 
         Route::prefix('checkin')->group(function() {
             Route::get('/', [CheckinController::class, 'renderStationboard'])
@@ -51,6 +49,18 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
             Route::get('/{id}', [TripController::class, 'renderTrip'])
                  ->name('admin.trip.show');
         });
+
+        Route::prefix('stations')->group(function() {
+            Route::get('/', [StationController::class, 'renderList'])
+                 ->name('admin.stations');
+
+            Route::get('/{id}', [StationController::class, 'renderStation'])
+                 ->name('admin.station');
+        });
+
+
+        Route::get('activity', [ActivityController::class, 'render'])
+             ->name('admin.activity');
     });
 
     Route::prefix('events')
@@ -77,7 +87,7 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
                  //->middleware(['can:accept-events']) - TODO: working in the browser, but not in the tests
                   ->name('admin.events.suggestions.accept.do');
 
-             Route::view('/create', 'admin.events.create')
+             Route::view('/create', 'admin.events.form')
                   ->middleware('permission:create-events')
                   ->name('admin.events.create');
              Route::post('/create', [AdminEventController::class, 'create'])

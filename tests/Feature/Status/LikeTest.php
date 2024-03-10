@@ -5,7 +5,7 @@ namespace Tests\Feature\Status;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\StatusController as StatusBackend;
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use App\Notifications\StatusLiked;
 use Carbon\Carbon;
@@ -17,7 +17,7 @@ class LikeTest extends TestCase
     use RefreshDatabase;
 
     public function testLikesAppearsInNotifications(): void {
-        $checkin    = TrainCheckin::factory()->create();
+        $checkin    = Checkin::factory()->create();
         $likingUser = User::factory()->create();
 
         //check that there are no notifications
@@ -36,7 +36,7 @@ class LikeTest extends TestCase
     }
 
     public function testLikesFromMutedUsersDontAppearInNotifications(): void {
-        $checkin    = TrainCheckin::factory()->create();
+        $checkin    = Checkin::factory()->create();
         $likingUser = User::factory()->create();
 
         //check that there are no notifications
@@ -50,7 +50,7 @@ class LikeTest extends TestCase
     }
 
     public function testLikingDoesNotWorkIfIHaveDisabledLikes(): void {
-        $checkin    = TrainCheckin::factory()->create();
+        $checkin    = Checkin::factory()->create();
         $likingUser = User::factory(['privacy_ack_at' => Carbon::now()])->create();
 
         $checkin->status->user->update(['likes_enabled' => false]);
@@ -61,7 +61,7 @@ class LikeTest extends TestCase
 
     public function testOldLikesStillAppearInNotificationsIfIHaveDisabledLikes(): void {
         //create checkin and a liking user
-        $checkin    = TrainCheckin::factory()->create();
+        $checkin    = Checkin::factory()->create();
         $likingUser = User::factory()->create();
 
         //check that there are no notifications
@@ -82,7 +82,7 @@ class LikeTest extends TestCase
 
     public function testRemovedLikesDontAppearInNotifications(): void {
         //create checkin and a liking user
-        $checkin    = TrainCheckin::factory()->create();
+        $checkin    = Checkin::factory()->create();
         $likingUser = User::factory()->create();
 
         //check that there are no notifications
@@ -102,7 +102,7 @@ class LikeTest extends TestCase
     }
 
     public function testLikeButtonDoesNotAppearForLoggedInUserIfAuthorHasDisabledLike(): void {
-        $checkin    = TrainCheckin::factory()->create();
+        $checkin    = Checkin::factory()->create();
         $likingUser = User::factory()->create();
 
         $checkin->status->user->update(['likes_enabled' => false]);
@@ -114,7 +114,7 @@ class LikeTest extends TestCase
     }
 
     public function testLikeButtonDoesNotAppearForGuestIfAuthorHasDisabledLike(): void {
-        $checkin    = TrainCheckin::factory()->create();
+        $checkin    = Checkin::factory()->create();
         $likingUser = User::factory()->create();
 
         $checkin->status->user->update(["likes_enabled" => false]);
@@ -126,7 +126,7 @@ class LikeTest extends TestCase
     }
 
     public function testLikeButtonDoesNotAppearIfIHaveDisabledLike(): void {
-        $checkin    = TrainCheckin::factory()->create();
+        $checkin    = Checkin::factory()->create();
         $likingUser = User::factory()->create();
 
         $likingUser->update(['likes_enabled' => false]);

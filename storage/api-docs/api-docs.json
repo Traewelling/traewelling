@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Träwelling API",
-        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The\n *      API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body\n *      can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
+        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The\n *      API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body\n *      can be changed. Breaking changes will be announced on GitHub:\n *      https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md",
         "contact": {
             "email": "support@traewelling.de"
         },
@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "https://traewelling.de/api/v1",
+            "url": "http://localhost:8000",
             "description": "This instance"
         }
     ],
@@ -965,7 +965,12 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/SuccessResponse"
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/LikeResponse"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -1018,7 +1023,12 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/SuccessResponse"
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/LikeResponse"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -1251,13 +1261,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "All notifications marked as read"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/SuccessResponse"
                                 }
                             }
                         }
@@ -2983,7 +2987,7 @@
                     {
                         "name": "when",
                         "in": "query",
-                        "description": "When to get the departures (default: now).\n      If you omit the timezone, the datetime is interpreted as localtime.\n          This is especially helpful when träwelling abroad.",
+                        "description": "When to get the departures (default: now).\n    If you omit the timezone, the datetime is interpreted as localtime.\n    This is especially helpful when träwelling abroad.",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -3106,7 +3110,7 @@
                                         "meta": {
                                             "properties": {
                                                 "station": {
-                                                    "$ref": "#/components/schemas/TrainStation"
+                                                    "$ref": "#/components/schemas/Station"
                                                 },
                                                 "times": {
                                                     "properties": {
@@ -3221,15 +3225,15 @@
                                                     "example": "34427"
                                                 },
                                                 "origin": {
-                                                    "$ref": "#/components/schemas/TrainStation"
+                                                    "$ref": "#/components/schemas/Station"
                                                 },
                                                 "destination": {
-                                                    "$ref": "#/components/schemas/TrainStation"
+                                                    "$ref": "#/components/schemas/Station"
                                                 },
                                                 "stopovers": {
                                                     "type": "array",
                                                     "items": {
-                                                        "$ref": "#/components/schemas/TrainStopover"
+                                                        "$ref": "#/components/schemas/Stopover"
                                                     }
                                                 }
                                             },
@@ -3271,7 +3275,7 @@
                 "tags": [
                     "Checkin"
                 ],
-                "summary": "Location based search for trainstations",
+                "summary": "Location based search for stations",
                 "description": "Returns the nearest station to the given coordinates",
                 "operationId": "trainStationsNearby",
                 "parameters": [
@@ -3300,7 +3304,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/TrainStation"
+                                                "$ref": "#/components/schemas/Station"
                                             }
                                         }
                                     },
@@ -3346,7 +3350,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/TrainCheckinRequestBody"
+                                "$ref": "#/components/schemas/CheckinRequestBody"
                             }
                         }
                     }
@@ -3357,7 +3361,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TrainCheckinResponse"
+                                    "$ref": "#/components/schemas/CheckinResponse"
                                 }
                             }
                         }
@@ -3408,7 +3412,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/TrainStation"
+                                            "$ref": "#/components/schemas/Station"
                                         }
                                     },
                                     "type": "object"
@@ -3446,7 +3450,7 @@
                 "tags": [
                     "Checkin"
                 ],
-                "summary": "Autocomplete for trainstations",
+                "summary": "Autocomplete for stations",
                 "description": "This request returns an array of max. 10 station objects matching the query. **CAUTION:** All\n     *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
                 "operationId": "trainStationAutocomplete",
                 "parameters": [
@@ -3500,7 +3504,7 @@
                 "tags": [
                     "Checkin"
                 ],
-                "summary": "History for trainstations",
+                "summary": "History for stations",
                 "description": "This request returns an array of max. 10 most recent station objects that the user has arrived\n     *      at.",
                 "operationId": "trainStationHistory",
                 "responses": {
@@ -3513,7 +3517,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/TrainStation"
+                                                "$ref": "#/components/schemas/Station"
                                             }
                                         }
                                     },
@@ -4282,7 +4286,8 @@
                         "description": "ID of status",
                         "type": "integer",
                         "format": "int64",
-                        "example": 12345
+                        "example": 12345,
+                        "deprecated": true
                     }
                 },
                 "type": "object",
@@ -4290,8 +4295,33 @@
                     "name": "LivePointDto"
                 }
             },
-            "TrainStation": {
-                "title": "TrainStation",
+            "MentionDto": {
+                "title": "Mention",
+                "description": "Mentioned user and position in status body",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "position": {
+                        "title": "position",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 0
+                    },
+                    "length": {
+                        "title": "length",
+                        "type": "integer",
+                        "format": "integer",
+                        "example": 4
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Mention"
+                }
+            },
+            "Station": {
+                "title": "Station",
                 "description": "train station model",
                 "properties": {
                     "id": {
@@ -4336,7 +4366,7 @@
                 },
                 "type": "object",
                 "xml": {
-                    "name": "TrainStation"
+                    "name": "Station"
                 }
             },
             "BearerTokenResponse": {
@@ -4358,6 +4388,151 @@
                 "type": "object",
                 "xml": {
                     "name": "BearerTokenResponse"
+                }
+            },
+            "CheckinRequestBody": {
+                "title": "CheckinRequestBody",
+                "description": "Fields for creating a train checkin",
+                "properties": {
+                    "body": {
+                        "title": "body",
+                        "description": "Text that should be added to the post",
+                        "type": "string",
+                        "maxLength": 280,
+                        "example": "Meine erste Fahrt nach Knuffingen!",
+                        "nullable": true
+                    },
+                    "business": {
+                        "$ref": "#/components/schemas/BusinessEnum"
+                    },
+                    "visibility": {
+                        "$ref": "#/components/schemas/VisibilityEnum"
+                    },
+                    "eventId": {
+                        "title": "eventId",
+                        "description": "Id of an event the status should be connected to",
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "toot": {
+                        "title": "toot",
+                        "description": "Should this status be posted to mastodon?",
+                        "type": "boolean",
+                        "example": "false",
+                        "nullable": true
+                    },
+                    "chainPost": {
+                        "title": "chainPost",
+                        "description": "Should this status be posted to mastodon as a chained post?",
+                        "type": "boolean",
+                        "example": "false",
+                        "nullable": true
+                    },
+                    "ibnr": {
+                        "title": "ibnr",
+                        "description": "If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they\n     *     should be given as the Träwelling-ID. Default behavior is `false`.",
+                        "type": "boolean",
+                        "example": "true",
+                        "nullable": true
+                    },
+                    "tripId": {
+                        "title": "tripId",
+                        "description": "The HAFAS tripId for the to be checked in train",
+                        "example": "1|323306|1|80|17072022"
+                    },
+                    "lineName": {
+                        "title": "lineName",
+                        "description": "The line name for the to be checked in train",
+                        "example": "S 4"
+                    },
+                    "start": {
+                        "title": "start",
+                        "description": "The Station-ID of the starting point (see `ibnr`)",
+                        "type": "integer",
+                        "example": "8000191"
+                    },
+                    "destination": {
+                        "title": "destination",
+                        "description": "The Station-ID of the destination (see `ibnr`)",
+                        "type": "integer",
+                        "example": "8079045"
+                    },
+                    "departure": {
+                        "title": "departure",
+                        "description": "Timestamp of the departure",
+                        "example": "2022-12-19T20:41:00+01:00"
+                    },
+                    "arrival": {
+                        "title": "arrival",
+                        "description": "Timestamp of the arrival",
+                        "example": "2022-12-19T20:42:00+01:00"
+                    },
+                    "force": {
+                        "title": "force",
+                        "description": "If true, the checkin will be created, even if a colliding checkin exists. No points will be\n     *     awarded.",
+                        "type": "boolean",
+                        "example": "false",
+                        "nullable": true
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "CheckinRequestBody"
+                }
+            },
+            "CheckinResponse": {
+                "title": "CheckinResponse",
+                "properties": {
+                    "status": {
+                        "title": "status",
+                        "description": "StatusModel of the created status",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "points": {
+                        "$ref": "#/components/schemas/Points"
+                    },
+                    "alsoOnThisConnection": {
+                        "title": "alsoOnThisconnection",
+                        "description": "Statuses of other people on this connection",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Status"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "CheckinResponse"
+                }
+            },
+            "Client": {
+                "title": "Client",
+                "description": "Client model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 39
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "Name of client",
+                        "type": "string",
+                        "example": "Träwelling App"
+                    },
+                    "privacyPolicyUrl": {
+                        "title": "privacyPolicyUrl",
+                        "description": "URL to privacy policy",
+                        "type": "string",
+                        "example": "https://traewelling.de/privacy-policy"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Client"
                 }
             },
             "Event": {
@@ -4417,7 +4592,7 @@
                         "nullable": "true",
                         "anyOf": [
                             {
-                                "$ref": "#/components/schemas/TrainStation"
+                                "$ref": "#/components/schemas/Station"
                             },
                             {
                                 "type": "'null'"
@@ -4648,6 +4823,22 @@
                 "type": "object",
                 "xml": {
                     "name": "LeaderboardUser"
+                }
+            },
+            "LikeResponse": {
+                "title": "LikeResponse",
+                "properties": {
+                    "count": {
+                        "title": "count",
+                        "description": "Amount of likes",
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 12
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "LikeResponse"
                 }
             },
             "Notification": {
@@ -4911,6 +5102,14 @@
                         "description": "User defined status text",
                         "example": "Hello world!"
                     },
+                    "bodyMentions": {
+                        "title": "bodyMentions",
+                        "description": "Mentions in the status body",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MentionDto"
+                        }
+                    },
                     "user": {
                         "title": "user",
                         "description": "user id",
@@ -4955,6 +5154,9 @@
                         "type": "boolean",
                         "example": true
                     },
+                    "client": {
+                        "$ref": "#/components/schemas/Client"
+                    },
                     "createdAt": {
                         "title": "createdAt",
                         "description": "creation date of this status",
@@ -4963,7 +5165,7 @@
                         "example": "2022-07-17T13:37:00+02:00"
                     },
                     "train": {
-                        "$ref": "#/components/schemas/Train"
+                        "$ref": "#/components/schemas/Trip"
                     },
                     "event": {
                         "oneOf": [
@@ -4971,7 +5173,9 @@
                                 "$ref": "#/components/schemas/Event"
                             }
                         ],
-                        "nullable": true
+                        "nullable": true,
+                        "title": "event",
+                        "description": "Event model (nullable)"
                     }
                 },
                 "type": "object",
@@ -5004,241 +5208,9 @@
                     "name": "StatusTag"
                 }
             },
-            "Stopovers": {
-                "title": "Stopovers",
-                "description": "Stopovers of a single status",
-                "properties": {
-                    "1": {
-                        "description": "Array of stopovers. Key describes trip id",
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/TrainStopover"
-                        }
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Stopovers"
-                }
-            },
-            "SuccessResponse": {
-                "title": "SuccessResponse",
-                "description": "Success Response",
-                "properties": {
-                    "status": {
-                        "title": "status",
-                        "description": "status",
-                        "type": "string",
-                        "example": "success"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "SuccessResponse"
-                }
-            },
-            "Train": {
-                "title": "Train",
-                "description": "Train model",
-                "properties": {
-                    "trip": {
-                        "title": "trip",
-                        "description": "ID",
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "hafasId": {
-                        "title": "hafasId",
-                        "description": "Deutsche bahn internal HAFAS ID",
-                        "type": "string",
-                        "example": "1|323306|1|80|17072022"
-                    },
-                    "category": {
-                        "$ref": "#/components/schemas/TrainCategoryEnum"
-                    },
-                    "number": {
-                        "title": "number",
-                        "description": "number of train",
-                        "type": "string",
-                        "example": "4-a6s4-4"
-                    },
-                    "journeyNumber": {
-                        "title": "journeyNumber",
-                        "description": "The number of the journey. Given by the transport company.",
-                        "type": "integer",
-                        "example": "3697",
-                        "nullable": true
-                    },
-                    "lineName": {
-                        "title": "lineName",
-                        "description": "name of the transport line",
-                        "type": "string",
-                        "example": "S 4"
-                    },
-                    "distance": {
-                        "title": "distance",
-                        "description": "travelled distance of this checkin in meters",
-                        "type": "integer",
-                        "example": 3349
-                    },
-                    "points": {
-                        "title": "points",
-                        "description": "points achieved for this checkin",
-                        "type": "integer",
-                        "example": 7
-                    },
-                    "duration": {
-                        "title": "duration",
-                        "description": "time traveled in this checkin in minutes",
-                        "type": "integer",
-                        "example": 7
-                    },
-                    "origin": {
-                        "$ref": "#/components/schemas/TrainStopover"
-                    },
-                    "destination": {
-                        "$ref": "#/components/schemas/TrainStopover"
-                    },
-                    "operator": {
-                        "oneOf": [
-                            {
-                                "$ref": "#/components/schemas/Operator"
-                            }
-                        ],
-                        "nullable": true
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Train"
-                }
-            },
-            "TrainCheckinRequestBody": {
-                "title": "TrainCheckinRequestBody",
-                "description": "Fields for creating a train checkin",
-                "properties": {
-                    "body": {
-                        "title": "body",
-                        "description": "Text that should be added to the post",
-                        "type": "string",
-                        "maxLength": 280,
-                        "example": "Meine erste Fahrt nach Knuffingen!",
-                        "nullable": true
-                    },
-                    "business": {
-                        "$ref": "#/components/schemas/BusinessEnum"
-                    },
-                    "visibility": {
-                        "$ref": "#/components/schemas/VisibilityEnum"
-                    },
-                    "eventId": {
-                        "title": "eventId",
-                        "description": "Id of an event the status should be connected to",
-                        "type": "integer",
-                        "nullable": true
-                    },
-                    "tweet": {
-                        "title": "tweet",
-                        "description": "The tweet flag is deprecated and will be removed in a future version. For now, it is ignored and check-ins are not tweeted.",
-                        "type": "boolean",
-                        "example": "false",
-                        "nullable": true
-                    },
-                    "toot": {
-                        "title": "toot",
-                        "description": "Should this status be posted to mastodon?",
-                        "type": "boolean",
-                        "example": "false",
-                        "nullable": true
-                    },
-                    "chainPost": {
-                        "title": "chainPost",
-                        "description": "Should this status be posted to mastodon as a chained post?",
-                        "type": "boolean",
-                        "example": "false",
-                        "nullable": true
-                    },
-                    "ibnr": {
-                        "title": "ibnr",
-                        "description": "If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they\n     *     should be given as the Träwelling-ID. Default behavior is `false`.",
-                        "type": "boolean",
-                        "example": "true",
-                        "nullable": true
-                    },
-                    "tripId": {
-                        "title": "tripId",
-                        "description": "The HAFAS tripId for the to be checked in train",
-                        "example": "1|323306|1|80|17072022"
-                    },
-                    "lineName": {
-                        "title": "lineName",
-                        "description": "The line name for the to be checked in train",
-                        "example": "S 4"
-                    },
-                    "start": {
-                        "title": "start",
-                        "description": "The TrainStation-ID of the starting point (see `ibnr`)",
-                        "type": "integer",
-                        "example": "8000191"
-                    },
-                    "destination": {
-                        "title": "destination",
-                        "description": "The TrainStation-ID of the destination (see `ibnr`)",
-                        "type": "integer",
-                        "example": "8079045"
-                    },
-                    "departure": {
-                        "title": "departure",
-                        "description": "Timestamp of the departure",
-                        "example": "2022-12-19T20:41:00+01:00"
-                    },
-                    "arrival": {
-                        "title": "arrival",
-                        "description": "Timestamp of the arrival",
-                        "example": "2022-12-19T20:42:00+01:00"
-                    },
-                    "force": {
-                        "title": "force",
-                        "description": "If true, the checkin will be created, even if a colliding checkin exists. No points will be\n     *     awarded.",
-                        "type": "boolean",
-                        "example": "false",
-                        "nullable": true
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "TrainCheckinRequestBody"
-                }
-            },
-            "TrainCheckinResponse": {
-                "title": "TrainCheckinResponse",
-                "properties": {
-                    "status": {
-                        "title": "status",
-                        "description": "StatusModel of the created status",
-                        "type": "string",
-                        "example": ""
-                    },
-                    "points": {
-                        "$ref": "#/components/schemas/Points"
-                    },
-                    "alsoOnThisConnection": {
-                        "title": "alsoOnThisconnection",
-                        "description": "Statuses of other people on this connection",
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Status"
-                        }
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "TrainCheckinResponse"
-                }
-            },
-            "TrainStopover": {
-                "title": "TrainStopover",
-                "description": "train station model",
+            "Stopover": {
+                "title": "Stopover",
+                "description": "stopover model",
                 "properties": {
                     "id": {
                         "title": "id",
@@ -5357,7 +5329,118 @@
                 },
                 "type": "object",
                 "xml": {
-                    "name": "TrainStopover"
+                    "name": "Stopover"
+                }
+            },
+            "Stopovers": {
+                "title": "Stopovers",
+                "description": "Stopovers of a single status",
+                "properties": {
+                    "1": {
+                        "description": "Array of stopovers. Key describes trip id",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Stopover"
+                        }
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Stopovers"
+                }
+            },
+            "SuccessResponse": {
+                "title": "SuccessResponse",
+                "description": "Success Response",
+                "properties": {
+                    "status": {
+                        "title": "status",
+                        "description": "status",
+                        "type": "string",
+                        "example": "success"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "SuccessResponse"
+                }
+            },
+            "Trip": {
+                "title": "Trip",
+                "description": "Trip model",
+                "properties": {
+                    "trip": {
+                        "title": "trip",
+                        "description": "ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "hafasId": {
+                        "title": "hafasId",
+                        "description": "Deutsche bahn internal HAFAS ID",
+                        "type": "string",
+                        "example": "1|323306|1|80|17072022"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/TrainCategoryEnum"
+                    },
+                    "number": {
+                        "title": "number",
+                        "description": "number of train",
+                        "type": "string",
+                        "example": "4-a6s4-4"
+                    },
+                    "journeyNumber": {
+                        "title": "journeyNumber",
+                        "description": "The number of the journey. Given by the transport company.",
+                        "type": "integer",
+                        "example": "3697",
+                        "nullable": true
+                    },
+                    "lineName": {
+                        "title": "lineName",
+                        "description": "name of the transport line",
+                        "type": "string",
+                        "example": "S 4"
+                    },
+                    "distance": {
+                        "title": "distance",
+                        "description": "travelled distance of this checkin in meters",
+                        "type": "integer",
+                        "example": 3349
+                    },
+                    "points": {
+                        "title": "points",
+                        "description": "points achieved for this checkin",
+                        "type": "integer",
+                        "example": 7
+                    },
+                    "duration": {
+                        "title": "duration",
+                        "description": "time traveled in this checkin in minutes",
+                        "type": "integer",
+                        "example": 7
+                    },
+                    "origin": {
+                        "$ref": "#/components/schemas/Stopover"
+                    },
+                    "destination": {
+                        "$ref": "#/components/schemas/Stopover"
+                    },
+                    "operator": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Operator"
+                            }
+                        ],
+                        "nullable": true,
+                        "title": "operator",
+                        "description": "Operator of the mean of transport"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Trip"
                 }
             },
             "User": {
@@ -5548,10 +5631,12 @@
                     "home": {
                         "oneOf": [
                             {
-                                "$ref": "#/components/schemas/TrainStation"
+                                "$ref": "#/components/schemas/Station"
                             }
                         ],
-                        "nullable": true
+                        "nullable": true,
+                        "title": "home",
+                        "description": "The specified 'home'-station of this user"
                     },
                     "language": {
                         "title": "language",
@@ -5636,13 +5721,6 @@
                         "description": "Has the user set a profile picture other then the default one?",
                         "type": "boolean",
                         "example": false
-                    },
-                    "twitter": {
-                        "title": "twitter",
-                        "description": "Deprecated. Always null, since Träwelling doesn't support twitter anymore.",
-                        "type": "string",
-                        "example": "null",
-                        "nullable": true
                     },
                     "mastodon": {
                         "title": "mastodon",

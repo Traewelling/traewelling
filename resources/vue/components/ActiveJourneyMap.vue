@@ -8,14 +8,8 @@
 
 <script>
 import 'leaflet';
-import('Leaflet-MovingMaker/MovingMarker');
 
-const trainIcon = L.divIcon({
-    className: 'custom-div-icon',
-    html: '<div style="background-color:#c30b82;" class="marker-pin">&nbsp;</div>',
-    iconSize: [20, 20],
-    iconAnchor: [9, 18]
-});
+import('Leaflet-MovingMaker/MovingMarker');
 
 const eventIcon = L.divIcon({
     html: '<i class="fa fa-calendar-day" style="line-height: 48px; font-size: 36px;"></i>',
@@ -57,7 +51,7 @@ export default {
             temp.refreshMarkers();
         }, 20000);
 
-        if(!this.$props.statusId) {
+        if (!this.$props.statusId) {
             setInterval(function () {
                 temp.initializeMap();
             }, 30000);
@@ -105,7 +99,7 @@ export default {
                                 result,
                                 L.geoJSON(result.point, {
                                     pointToLayer: function (point, latlng) {
-                                        return L.marker(latlng, {icon: trainIcon});
+                                        return L.marker(latlng, {icon: this.getIconForStatus(result)});
                                     }
                                 }).addTo(this.map)
                             );
@@ -140,6 +134,14 @@ export default {
                 <a href="/event/${event.slug}">Alle Reisen zum Event anzeigen</a>`
             );
         },
+        getIconForStatus(response) {
+            return L.divIcon({
+                className: 'custom-div-icon',
+                html: '<img class="img-thumbnail rounded-circle img-fluid" style="width: 20px;" src="' + response.status.user.profilePictureUrl + '" />',
+                iconSize: [20, 20],
+                iconAnchor: [9, 18]
+            });
+        },
         addMarker(data, oldMarker = null) {
             if (oldMarker) {
                 oldMarker.remove();
@@ -152,7 +154,7 @@ export default {
             let marker = L.Marker.movingMarker(
                 line,
                 data.arrival * 1000 - Date.now(),
-                {icon: trainIcon, autostart: true}
+                {icon: this.getIconForStatus(data), autostart: true}
             ).addTo(this.map);
             marker.start();
 

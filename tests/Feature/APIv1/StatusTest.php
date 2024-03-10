@@ -4,11 +4,11 @@ namespace Tests\Feature\APIv1;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
-use App\Models\HafasTrip;
+use App\Models\Trip;
 use App\Models\Status;
-use App\Models\TrainCheckin;
-use App\Models\TrainStation;
-use App\Models\TrainStopover;
+use App\Models\Checkin;
+use App\Models\Station;
+use App\Models\Stopover;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -38,7 +38,7 @@ class StatusTest extends ApiTestCase
         $departure = Date::now()->subHour();
         $arrival   = Date::now()->addHour();
 
-        $checkin = TrainCheckin::factory([
+        $checkin = Checkin::factory([
                                              'user_id'   => $user->id,
                                              'departure' => $departure,
                                              'arrival'   => $arrival,
@@ -80,9 +80,9 @@ class StatusTest extends ApiTestCase
 
         $departure = Date::now()->addHour();
         $arrival   = Date::now()->addHours(2);
-        $trip = HafasTrip::factory(['departure' => $departure, 'arrival' => $arrival])->create();
+        $trip = Trip::factory(['departure' => $departure, 'arrival' => $arrival])->create();
 
-        TrainCheckin::factory([
+        Checkin::factory([
                                   'user_id'     => $user->id,
                                   'departure'   => $trip->departure,
                                   'arrival'     => $trip->arrival,
@@ -106,7 +106,7 @@ class StatusTest extends ApiTestCase
                                       'visibility' => StatusVisibility::PRIVATE->value,
                                       'business'   => Business::PRIVATE->value,
                                   ])->create();
-        TrainCheckin::factory([
+        Checkin::factory([
                                   'status_id' => $status->id,
                                   'user_id'   => $user->id,
                               ])->create();
@@ -136,12 +136,12 @@ class StatusTest extends ApiTestCase
         $user      = User::factory()->create();
         Passport::actingAs($user, ['*']);
 
-        $checkin = TrainCheckin::factory(['user_id' => $user->id])->create();
+        $checkin = Checkin::factory(['user_id' => $user->id])->create();
 
         //Create a new stopover now (factory creates departure 1 hour ago and arrival in 1 hour)
-        $newStation     = TrainStation::factory()->create();
+        $newStation     = Station::factory()->create();
         $thirdTimestamp = Date::now()->setSecond(0);
-        TrainStopover::factory([
+        Stopover::factory([
                                    'trip_id'           => $checkin->trip_id,
                                    'train_station_id'  => $newStation->id,
                                    'arrival_planned'   => $thirdTimestamp,

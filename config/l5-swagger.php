@@ -184,9 +184,9 @@ return [
                                 'scheme'      => 'https',
                                 'flows'       => [
                                     "authorizationCode" => [
-                                        "authorizationUrl" => config('app.url') . '/oauth/authorize',
-                                        "tokenUrl"         => config('app.url') . '/oauth/token',
-                                        "refreshUrl"       => config('app.url') . '/auth/refresh',
+                                        "authorizationUrl" => env('L5_SWAGGER_CONST_HOST', 'http://localhost:8000') . '/oauth/authorize',
+                                        "tokenUrl"         => env('L5_SWAGGER_CONST_HOST', 'http://localhost:8000') . '/oauth/token',
+                                        "refreshUrl"       => env('L5_SWAGGER_CONST_HOST', 'http://localhost:8000') . '/auth/refresh',
                                         "scopes"           => AuthServiceProvider::$scopes
                                     ],
                                 ],
@@ -287,7 +287,7 @@ return [
          * Constants which can be used in annotations
          */
         'constants'             => [
-            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'https://traewelling.de/api/v1'),
+            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://localhost:8000'),
         ],
     ],
 ];

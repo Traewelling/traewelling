@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\APIv1;
 
-use App\Models\TrainCheckin;
+use App\Models\Checkin;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,7 +17,7 @@ class StatisticsTest extends ApiTestCase
     public function testDailyStatistics(): void {
         $user      = User::factory()->create();
         Passport::actingAs($user, ['*']);
-        $checkin   = TrainCheckin::factory(['user_id' => $user->id])->create();
+        $checkin   = Checkin::factory(['user_id' => $user->id])->create();
 
         $response = $this->get('/api/v1/statistics/daily/' . $checkin->departure->format('Y-m-d'));
         $response->assertOk();
@@ -36,7 +36,7 @@ class StatisticsTest extends ApiTestCase
     public function testDailyStatisticsWithPolylines(): void {
         $user      = User::factory()->create();
         Passport::actingAs($user, ['*']);
-        $checkin   = TrainCheckin::factory(['user_id' => $user->id])->create();
+        $checkin   = Checkin::factory(['user_id' => $user->id])->create();
 
         $response = $this->get('/api/v1/statistics/daily/' . $checkin->departure->format('Y-m-d') . '?withPolylines');
         $response->assertOk();

@@ -130,7 +130,7 @@ class UserController extends Controller
             $this->authorize('view', $user);
             $userResponse = UserBackend::statusesForUser(user: $user, limit: $validated['limit'] ?? null);
         } catch (AuthorizationException $exception) {
-            abort(404, $exception->response()->message() ?? 'No statuses found, or statuses are not visible to you.');
+            abort(403, $exception->response()->message() ?? 'No statuses found, or statuses are not visible to you.');
         }
         return StatusResource::collection($userResponse);
     }

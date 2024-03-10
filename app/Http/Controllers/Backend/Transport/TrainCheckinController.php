@@ -20,12 +20,12 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
 use App\Http\Resources\StatusResource;
 use App\Jobs\RefreshStopover;
+use App\Models\Checkin;
 use App\Models\Event;
-use App\Models\HafasTrip;
+use App\Models\Station;
 use App\Models\Status;
-use App\Models\TrainCheckin;
-use App\Models\TrainStation;
-use App\Models\TrainStopover;
+use App\Models\Stopover;
+use App\Models\Trip;
 use App\Models\User;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
@@ -53,10 +53,10 @@ abstract class TrainCheckinController extends Controller
     ])]
     public static function checkin(
         User             $user,
-        HafasTrip        $hafasTrip,
-        TrainStation     $origin,
+        Trip             $trip,
+        Station          $origin,
         Carbon           $departure,
-        TrainStation     $destination,
+        Station          $destination,
         Carbon           $arrival,
         Business         $travelReason = Business::PRIVATE,
         StatusVisibility $visibility = StatusVisibility::PUBLIC,
@@ -76,12 +76,12 @@ abstract class TrainCheckinController extends Controller
                 business:   $travelReason,
                 visibility: $visibility,
                 body:       $body,
-                eventId:    $event?->id
+                event:      $event
             );
 
-            $trainCheckinResponse = self::createTrainCheckin(
+            $checkinResponse = self::createCheckin(
                 status:      $status,
-                trip:        $hafasTrip,
+                trip:        $trip,
                 origin:      $origin,
                 destination: $destination,
                 departure:   $departure,
@@ -95,7 +95,7 @@ abstract class TrainCheckinController extends Controller
                 $shouldChain
             );
 
-            return $trainCheckinResponse;
+            return $checkinResponse;
         } catch (PDOException $exception) {
             if (isset($status)) {
                 $status->delete();
@@ -124,14 +124,14 @@ abstract class TrainCheckinController extends Controller
         'points'               => PointCalculation::class,
         'alsoOnThisConnection' => AnonymousResourceCollection::class
     ])]
-    private static function createTrainCheckin(
-        Status       $status,
-        HafasTrip    $trip,
-        TrainStation $origin,
-        TrainStation $destination,
-        Carbon       $departure,
-        Carbon       $arrival,
-        bool         $force = false,
+    private static function createCheckin(
+        Status  $status,
+        Trip    $trip,
+        Station $origin,
+        Station $destination,
+        Carbon  $departure,
+        Carbon  $arrival,
+        bool    $force = false,
     ): array {
         $trip->load('stopovers');
 
@@ -150,7 +150,7 @@ abstract class TrainCheckinController extends Controller
             $firstStops = $trip->stopovers->where('train_station_id', $origin->id);
 
             if ($firstStops->count() > 1) {
-                $firstStop = $firstStops->filter(function(TrainStopover $stopover) use ($departure) {
+                $firstStop = $firstStops->filter(function(Stopover $stopover) use ($departure) {
                     return $stopover->departure_planned->format('H:i') === $departure->format('H:i');
                 })->first();
             } else {
@@ -189,18 +189,20 @@ abstract class TrainCheckinController extends Controller
             forceCheckin:    $force,
         );
         try {
-            $trainCheckin         = TrainCheckin::create([
-                                                             'status_id'   => $status->id,
-                                                             'user_id'     => $status->user_id,
-                                                             'trip_id'     => $trip->trip_id,
-                                                             'origin'      => $firstStop->trainStation->ibnr,
-                                                             'destination' => $lastStop->trainStation->ibnr,
-                                                             'distance'    => $distance,
-                                                             'points'      => $pointCalculation->points,
-                                                             'departure'   => $firstStop->departure_planned,
-                                                             'arrival'     => $lastStop->arrival_planned
-                                                         ]);
-            $alsoOnThisConnection = $trainCheckin->alsoOnThisConnection;
+            $checkin              = Checkin::create([
+                                                        'status_id'               => $status->id,
+                                                        'user_id'                 => $status->user_id,
+                                                        'trip_id'                 => $trip->trip_id,
+                                                        'origin'                  => $firstStop->station->ibnr, //@todo: deprecated - use origin_stopover_id instead
+                                                        'origin_stopover_id'      => $firstStop->id,
+                                                        'destination'             => $lastStop->station->ibnr, //@todo: deprecated - use destination_stopover_id instead
+                                                        'destination_stopover_id' => $lastStop->id,
+                                                        'distance'                => $distance,
+                                                        'points'                  => $pointCalculation->points,
+                                                        'departure'               => $firstStop->departure_planned, //@todo: deprecated - use origin_stopover_id instead
+                                                        'arrival'                 => $lastStop->arrival_planned //@todo: deprecated - use destination_stopover_id instead
+                                                    ]);
+            $alsoOnThisConnection = $checkin->alsoOnThisConnection;
 
             foreach ($alsoOnThisConnection as $otherStatus) {
                 if ($otherStatus?->user && $otherStatus->user->can('view', $status)) {
@@ -222,32 +224,33 @@ abstract class TrainCheckinController extends Controller
     }
 
     public static function changeDestination(
-        TrainCheckin  $checkin,
-        TrainStopover $newDestinationStopover
+        Checkin  $checkin,
+        Stopover $newDestinationStopover
     ): PointReason {
-        if ($newDestinationStopover->arrival_planned->isBefore($checkin->origin_stopover->arrival_planned)
-            || $newDestinationStopover->is($checkin->origin_stopover)
-            || !$checkin->HafasTrip->stopovers->contains('id', $newDestinationStopover->id)
+        if ($newDestinationStopover->arrival_planned->isBefore($checkin->originStopover->arrival_planned)
+            || $newDestinationStopover->is($checkin->originStopover)
+            || !$checkin->trip->stopovers->contains('id', $newDestinationStopover->id)
         ) {
             throw new InvalidArgumentException();
         }
 
-        $newDistance = (new LocationController($checkin->HafasTrip, $checkin->origin_stopover, $newDestinationStopover))
+        $newDistance = (new LocationController($checkin->trip, $checkin->originStopover, $newDestinationStopover))
             ->calculateDistance();
 
         $pointsResource = PointsCalculationController::calculatePoints(
             distanceInMeter: $newDistance,
-            hafasTravelType: $checkin->HafasTrip->category,
-            departure:       $checkin->origin_stopover->departure,
+            hafasTravelType: $checkin->trip->category,
+            departure:       $checkin->originStopover->departure,
             arrival:         $newDestinationStopover->arrival,
-            tripSource:      $checkin->HafasTrip->source
+            tripSource:      $checkin->trip->source
         );
 
         $checkin->update([
-                             'arrival'     => $newDestinationStopover->arrival_planned,
-                             'destination' => $newDestinationStopover->trainStation->ibnr,
-                             'distance'    => $newDistance,
-                             'points'      => $pointsResource->points,
+                             'arrival'                 => $newDestinationStopover->arrival_planned,
+                             'destination'             => $newDestinationStopover->station->ibnr,
+                             'destination_stopover_id' => $newDestinationStopover->id,
+                             'distance'                => $newDistance,
+                             'points'                  => $pointsResource->points,
                          ]);
         $checkin->refresh();
 
@@ -261,17 +264,17 @@ abstract class TrainCheckinController extends Controller
      * @param string $lineName
      * @param int    $startId
      *
-     * @return HafasTrip
+     * @return Trip
      * @throws HafasException
      * @throws StationNotOnTripException
      * @api v1
      */
-    public static function getHafasTrip(string $tripId, string $lineName, int $startId): HafasTrip {
+    public static function getHafasTrip(string $tripId, string $lineName, int $startId): Trip {
         $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
         $hafasTrip->loadMissing(['stopovers', 'originStation', 'destinationStation']);
 
-        $originStopover = $hafasTrip->stopovers->filter(function(TrainStopover $stopover) use ($startId) {
-            return $stopover->train_station_id === $startId || $stopover->trainStation->ibnr === $startId;
+        $originStopover = $hafasTrip->stopovers->filter(function(Stopover $stopover) use ($startId) {
+            return $stopover->train_station_id === $startId || $stopover->station->ibnr === $startId;
         })->first();
 
         if ($originStopover === null) {
@@ -291,14 +294,14 @@ abstract class TrainCheckinController extends Controller
      * @throws DistanceDeviationException
      */
     public static function refreshDistanceAndPoints(Status $status, bool $resetPolyline = false): void {
-        $checkin = $status->trainCheckin;
+        $checkin = $status->checkin;
         if ($resetPolyline) {
-            $checkin->HafasTrip->update(['polyline_id' => null]);
+            $checkin->trip->update(['polyline_id' => null]);
         }
-        $firstStop   = $checkin->origin_stopover;
-        $lastStop    = $checkin->destination_stopover;
+        $firstStop   = $checkin->originStopover;
+        $lastStop    = $checkin->destinationStopover;
         $distance    = (new LocationController(
-            hafasTrip:   $checkin->HafasTrip,
+            trip:        $checkin->trip,
             origin:      $firstStop,
             destination: $lastStop
         ))->calculateDistance();
@@ -317,10 +320,10 @@ abstract class TrainCheckinController extends Controller
 
         $pointsResource = PointsCalculationController::calculatePoints(
             distanceInMeter: $distance,
-            hafasTravelType: $checkin->HafasTrip->category,
+            hafasTravelType: $checkin->trip->category,
             departure:       $firstStop->departure,
             arrival:         $lastStop->arrival,
-            tripSource:      $checkin->HafasTrip->source,
+            tripSource:      $checkin->trip->source,
             timestampOfView: $status->created_at
         );
         $payload        = [
@@ -335,5 +338,14 @@ abstract class TrainCheckinController extends Controller
                            $distance,
                            $pointsResource->points,
                    ));
+    }
+
+    public static function calculateCheckinDuration(Checkin $checkin): int {
+        $departure = $checkin->manual_departure ?? $checkin->originStopover->departure ?? $checkin->departure;
+        $arrival   = $checkin->manual_arrival ?? $checkin->destinationStopover->arrival ?? $checkin->arrival;
+        $duration  = $arrival->diffInMinutes($departure);
+        //don't use eloquent here, because it would trigger the observer (and this function) again
+        DB::table('train_checkins')->where('id', $checkin->id)->update(['duration' => $duration]);
+        return $duration;
     }
 }

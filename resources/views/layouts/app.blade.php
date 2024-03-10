@@ -50,16 +50,11 @@
 
                     <div class="navbar-toggler">
                         @auth
-                            <notification-bell
-                                i18n-empty="{{ __('notifications.empty') }}"
-                                i18n-title="{{ __('notifications.title') }}"
-                                label="{{ __('Show notifications') }}"
-                            >
-                            </notification-bell>
+                            <notification-bell></notification-bell>
                         @endauth
                         <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
                                 data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                                aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                                aria-expanded="false" aria-label="{{ __('toggle-navigation') }}">
                             <i class="fas fa-bars"></i>
                         </button>
                     </div>
@@ -86,7 +81,7 @@
                                         {{__('stats')}}
                                     </a>
                                 </li>
-                                @if(config('trwl.year_in_review_active'))
+                                @if(config('trwl.year_in_review.alert'))
                                     <li class="nav-item">
                                         <a class="nav-link" href="/your-year/">
                                             <i class="fa-solid fa-champagne-glasses"></i>
@@ -120,13 +115,7 @@
                                     </div>
                                 </form>
                                 <li class="nav-item d-none d-md-inline-block">
-                                    <notification-bell
-                                        i18n-empty="{{__('notifications.empty')}}"
-                                        i18n-title="{{ __('notifications.title') }}"
-                                        :link="true"
-                                        label="{{ __('Show notifications') }}"
-                                    >
-                                    </notification-bell>
+                                    <notification-bell :link="true"></notification-bell>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" href="#" class="nav-link dropdown-toggle mdb-select"

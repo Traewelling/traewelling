@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Models\OAuthClient;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 /**
  * @OA\Info(
@@ -10,7 +13,8 @@ use Illuminate\Http\JsonResponse;
  *      title="Träwelling API",
  *      description="Träwelling user API description. This is an incomplete documentation with still many errors. The
  *      API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body
- *      can be changed. Breaking changes will be announced on the Discord server: https://discord.gg/72t7564ZbV",
+ *      can be changed. Breaking changes will be announced on GitHub:
+ *      https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md",
  *      @OA\Contact(
  *          email="support@traewelling.de"
  *      ),
@@ -90,7 +94,11 @@ class Controller extends \App\Http\Controllers\Controller
         int   $code = 200,
         array $additional = null
     ): JsonResponse {
-        $disclaimer = 'APIv1 is not officially released for use and is also not fully documented. You can find the documentation at https://traewelling.de/api/documentation. Use at your own risk. Data fields may change at any time without notice.';
+        $disclaimer = [
+            'message'       => 'APIv1 is not officially released for use and is also not fully documented. Use at your own risk. Data fields may change at any time without notice.',
+            'documentation' => 'https://traewelling.de/api/documentation',
+            'changelog'     => 'https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md',
+        ];
         if ($data === null) {
             return response()->json(
                 data:   [
@@ -114,5 +122,14 @@ class Controller extends \App\Http\Controllers\Controller
         ];
         $response = $additional ? array_merge($response, ["meta" => $additional]) : $response;
         return response()->json($response, $code);
+    }
+
+    public static function getCurrentOAuthClient(): OAuthClient|null {
+        try {
+            return request()?->user()?->token()?->client;
+        } catch (Throwable $throwable) {
+            Log::debug('Could not get current OAuth Client: ' . $throwable->getMessage());
+            return null;
+        }
     }
 }

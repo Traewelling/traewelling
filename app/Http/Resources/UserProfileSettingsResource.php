@@ -30,7 +30,7 @@ class UserProfileSettingsResource extends JsonResource
             'email'                   => $this->email,
             'emailVerified'           => !empty($this->email_verified_at),
             'profilePictureSet'       => !empty($this->avatar),
-            'twitter'                 => null, //deprecated
+            'twitter'                 => null, //@deprecated remove after 2024-03
             'mastodon'                => $this->mastodon_url,
             'mastodonVisibility'      => $this->socialProfile->mastodon_visibility->value,
         ];

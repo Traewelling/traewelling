@@ -68,34 +68,34 @@
                                             <small>{{$status->user->name}}</small>
                                         </td>
                                         <td>
-                                            <strong>{{$status->trainCheckin?->originStation?->name}}</strong>
-                                            @isset($status->trainCheckin?->originStation?->rilIdentifier)
+                                            <strong>{{$status->checkin?->originStation?->name}}</strong>
+                                            @isset($status->checkin?->originStation?->rilIdentifier)
                                                 <small>
-                                                    ({{$status->trainCheckin->originStation->rilIdentifier}})
+                                                    ({{$status->checkin->originStation->rilIdentifier}})
                                                 </small>
                                             @endisset
                                             <br/>
-                                            @isset($status?->trainCheckin?->originStation?->ibnr)
-                                                <small>IBNR {{$status->trainCheckin->originStation->ibnr}}</small>
+                                            @isset($status?->checkin?->originStation?->ibnr)
+                                                <small>IBNR {{$status->checkin->originStation->ibnr}}</small>
                                                 <br/>
                                             @endisset
 
-                                            <small>dep {{$status?->trainCheckin?->departure->diffForHumans()}}</small>
+                                            <small>dep {{$status?->checkin?->departure->diffForHumans()}}</small>
                                         </td>
                                         <td>
-                                            <strong>{{$status->trainCheckin?->destinationStation?->name}}</strong>
-                                            @isset($status->trainCheckin?->destinationStation?->rilIdentifier)
+                                            <strong>{{$status->checkin?->destinationStation?->name}}</strong>
+                                            @isset($status->checkin?->destinationStation?->rilIdentifier)
                                                 <small>
-                                                    ({{$status->trainCheckin->destinationStation->rilIdentifier}})
+                                                    ({{$status->checkin->destinationStation->rilIdentifier}})
                                                 </small>
                                             @endisset
                                             <br/>
-                                            @isset($status?->trainCheckin?->destinationStation?->ibnr)
-                                                <small>IBNR {{$status->trainCheckin->destinationStation->ibnr}}</small>
+                                            @isset($status?->checkin?->destinationStation?->ibnr)
+                                                <small>IBNR {{$status->checkin->destinationStation->ibnr}}</small>
                                                 <br/>
                                             @endisset
 
-                                            <small>arr {{$status?->trainCheckin?->arrival->diffForHumans()}}</small>
+                                            <small>arr {{$status?->checkin?->arrival->diffForHumans()}}</small>
                                         </td>
                                         <td>
                                             <small>{{__('status.visibility.' . $status->visibility->value)}}</small>

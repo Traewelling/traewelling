@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
+use Spatie\Activitylog\Models\Activity;
 
 class EventController extends Controller
 {
@@ -49,7 +50,6 @@ class EventController extends Controller
         return view('admin.events.suggestions', [
             'suggestions' => EventSuggestion::where('processed', false)
                                             ->where('end', '>', DB::raw('CURRENT_TIMESTAMP'))
-                                            ->where('user_id', '!=', auth()->user()->id) //moderator can't accept their own suggestions
                                             ->orderBy('begin')
                                             ->get()
         ]);
@@ -62,7 +62,7 @@ class EventController extends Controller
     }
 
     public function renderEdit(int $id): View {
-        return view('admin.events.edit', ['event' => Event::findOrFail($id)]);
+        return view('admin.events.form', ['event' => Event::findOrFail($id)]);
     }
 
     public function denySuggestion(Request $request): RedirectResponse {
@@ -117,16 +117,16 @@ class EventController extends Controller
                                         ]);
 
         $eventSuggestion = EventSuggestion::find($validated['suggestionId']);
-        $trainStation    = null;
+        $station    = null;
 
         if ($eventSuggestion->user_id === auth()->user()->id && !auth()->user()?->hasRole('admin')) {
             return back()->with('alert-danger', 'You can\'t accept your own suggestion.');
         }
 
         if (isset($validated['nearest_station_name'])) {
-            $trainStation = HafasController::getStations($validated['nearest_station_name'], 1)->first();
+            $station = HafasController::getStations($validated['nearest_station_name'], 1)->first();
 
-            if ($trainStation === null) {
+            if ($station === null) {
                 return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
             }
         }
@@ -136,7 +136,7 @@ class EventController extends Controller
                                    'slug'        => AdminEventBackend::createSlugFromName($validated['name']),
                                    'hashtag'     => $validated['hashtag'],
                                    'host'        => $validated['host'],
-                                   'station_id'  => $trainStation?->id,
+                                   'station_id'  => $station?->id,
                                    'begin'       => Carbon::parse($validated['begin'])->toIso8601String(),
                                    'end'         => Carbon::parse($validated['end'])->toIso8601String(),
                                    'event_start' => Carbon::parse($validated['event_start'] ?? $validated['begin'])->toIso8601String(),
@@ -170,11 +170,11 @@ class EventController extends Controller
     public function create(Request $request): RedirectResponse {
         $validated = $request->validate(self::VALIDATOR_RULES);
 
-        $trainStation = null;
+        $station = null;
         if (isset($validated['nearest_station_name'])) {
-            $trainStation = HafasController::getStations($validated['nearest_station_name'], 1)->first();
+            $station = HafasController::getStations($validated['nearest_station_name'], 1)->first();
 
-            if ($trainStation === null) {
+            if ($station === null) {
                 return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
             }
         }
@@ -184,7 +184,7 @@ class EventController extends Controller
                           'slug'        => AdminEventBackend::createSlugFromName($validated['name']),
                           'hashtag'     => $validated['hashtag'],
                           'host'        => $validated['host'],
-                          'station_id'  => $trainStation?->id,
+                          'station_id'  => $station?->id,
                           'begin'       => Carbon::parse($validated['begin'])->toIso8601String(),
                           'end'         => Carbon::parse($validated['end'])->toIso8601String(),
                           'event_start' => Carbon::parse($validated['event_start'] ?? $validated['begin'])->toIso8601String(),
@@ -201,12 +201,15 @@ class EventController extends Controller
 
         $event = Event::findOrFail($id);
 
-        $trainStation = HafasController::getStations($validated['nearest_station_name'], 1)->first();
+        $validated['station_id'] = null;
+        if ($validated['nearest_station_name']) {
+            $station = HafasController::getStations($validated['nearest_station_name'], 1)->first();
 
-        if ($trainStation === null) {
-            return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
+            if ($station === null) {
+                return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
+            }
+            $validated['station_id'] = $station->id;
         }
-        $validated['station_id'] = $trainStation->id;
 
         $event->update($validated);
 

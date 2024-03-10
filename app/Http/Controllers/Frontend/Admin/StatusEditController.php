@@ -7,7 +7,7 @@ use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
-use App\Models\TrainStation;
+use App\Models\Station;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -55,38 +55,40 @@ class StatusEditController extends Controller
 
         $status = Status::find($validated['statusId']);
 
-        $originStation      = TrainStation::find($validated['origin']);
-        $destinationStation = TrainStation::find($validated['destination']);
+        $originStation      = Station::find($validated['origin']);
+        $destinationStation = Station::find($validated['destination']);
 
-        $newOrigin      = $status->trainCheckIn->HafasTrip->stopovers->where('train_station_id', $originStation->id)->first();
-        $newDestination = $status->trainCheckIn->HafasTrip->stopovers->where('train_station_id', $destinationStation->id)->first();
+        $newOrigin      = $status->checkin->trip->stopovers->where('train_station_id', $originStation->id)->first();
+        $newDestination = $status->checkin->trip->stopovers->where('train_station_id', $destinationStation->id)->first();
 
         $newDeparture = $newOrigin->departure_planned ?? $newOrigin->arrival_planned;
         $newArrival   = $newDestination->arrival_planned ?? $newDestination->departure_planned;
 
         $distanceInMeters = (new LocationController(
-            hafasTrip:   $status->trainCheckin->HafasTrip,
+            trip:        $status->checkin->trip,
             origin:      $newOrigin,
             destination: $newDestination
         ))->calculateDistance();
 
         $pointCalculation = PointsCalculationController::calculatePoints(
             distanceInMeter: $distanceInMeters,
-            hafasTravelType: $status->trainCheckin->HafasTrip->category,
+            hafasTravelType: $status->checkin->trip->category,
             departure:       $newDeparture,
             arrival:         $newArrival,
-            tripSource:      $status->trainCheckin->HafasTrip->source,
+            tripSource:      $status->checkin->trip->source,
             timestampOfView: $newDeparture,
         );
 
-        $status->trainCheckIn->update([
-                                          'origin'      => $originStation->ibnr,
-                                          'destination' => $destinationStation->ibnr,
-                                          'departure'   => $newDeparture,
-                                          'arrival'     => $newArrival,
-                                          'distance'    => $distanceInMeters,
-                                          'points'      => $pointCalculation->points,
-                                      ]);
+        $status->checkin->update([
+                                     'origin'                  => $originStation->ibnr,
+                                     'origin_stopover_id'      => $newOrigin->id,
+                                     'destination'             => $destinationStation->ibnr,
+                                     'destination_stopover_id' => $newDestination->id,
+                                     'departure'               => $newDeparture,
+                                     'arrival'                 => $newArrival,
+                                     'distance'                => $distanceInMeters,
+                                     'points'                  => $pointCalculation->points,
+                                 ]);
 
         StatusUpdateEvent::dispatch($status->refresh());
 

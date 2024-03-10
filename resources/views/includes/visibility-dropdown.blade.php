@@ -1,5 +1,5 @@
 <div class="btn-group">
-    <button class="btn btn-sm btn-outline-primary dropdown-toggle"
+    <button class="btn btn-sm btn-outline-primary dropdown-toggle trwl-visibility-button"
             type="button"
             id="visibilityDropdownButton"
             data-mdb-dropdown-animation="off"
@@ -19,6 +19,6 @@
             </li>
         @endforeach
     </ul>
-    <input type="hidden" id="checkinVisibility" name="checkinVisibility"
+    <input type="hidden" class="trwl-visibility-input" name="checkinVisibility"
            value="{{auth()->user()?->default_status_visibility->value ?? 0}}"/>
 </div>

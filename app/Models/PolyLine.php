@@ -16,7 +16,7 @@ class PolyLine extends Model
     ];
 
     public function trips(): HasMany {
-        return $this->hasMany(HafasTrip::class, 'polyline_id', 'id');
+        return $this->hasMany(Trip::class, 'polyline_id', 'id');
     }
 
     public function parent(): HasOne {

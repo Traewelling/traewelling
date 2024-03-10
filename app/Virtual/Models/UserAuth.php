@@ -3,7 +3,7 @@
 namespace App\Virtual\Models;
 
 
-use App\Dto\Transport\TrainStation;
+use App\Dto\Transport\Station;
 
 /**
  * @OA\Schema(
@@ -163,7 +163,7 @@ class UserAuth
      *     nullable=true
      * )
      *
-     * @var TrainStation
+     * @var Station
      */
     private $home;
 

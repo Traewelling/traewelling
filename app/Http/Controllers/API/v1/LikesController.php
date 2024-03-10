@@ -84,7 +84,9 @@ class LikesController extends Controller
      *          response=201,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *              ref="#/components/schemas/SuccessResponse"
+     *              @OA\Property(property="data", type="object",
+     *                      ref="#/components/schemas/LikeResponse"
+     *              )
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
@@ -138,7 +140,9 @@ class LikesController extends Controller
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *                      ref="#/components/schemas/SuccessResponse"
+     *              @OA\Property(property="data", type="object",
+     *                      ref="#/components/schemas/LikeResponse"
+     *              )
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
