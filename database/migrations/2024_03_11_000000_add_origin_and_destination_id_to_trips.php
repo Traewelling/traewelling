@@ -5,6 +5,10 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * "SQLite doesn't support multiple calls to dropColumn / renameColumn in a single modification."
+ * -> so small steps here. (╯°□°)╯︵ ┻━┻
+ */
 return new class extends Migration
 {
     public function up(): void {
@@ -24,9 +28,11 @@ return new class extends Migration
 
         Schema::table('hafas_trips', static function(Blueprint $table) {
             $table->dropForeign(['origin']);
-            $table->dropForeign(['destination']);
-
             $table->dropColumn('origin');
+        });
+
+        Schema::table('hafas_trips', static function(Blueprint $table) {
+            $table->dropForeign(['destination']);
             $table->dropColumn('destination');
         });
 
@@ -53,9 +59,11 @@ return new class extends Migration
 
         Schema::table('hafas_trips', static function(Blueprint $table) {
             $table->dropForeign(['origin_id']);
-            $table->dropForeign(['destination_id']);
-
             $table->dropColumn('origin_id');
+        });
+
+        Schema::table('hafas_trips', static function(Blueprint $table) {
+            $table->dropForeign(['destination_id']);
             $table->dropColumn('destination_id');
         });
 
