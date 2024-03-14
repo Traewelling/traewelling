@@ -731,5 +731,13 @@
     "export.generate": "Générer",
     "export.reason.business": "Voyage pour le travail",
     "export.period": "Quelle période voulez-vous exporter ?",
-    "export.format": "Dans quel format voulez-vous exporter ?"
+    "export.format": "Dans quel format voulez-vous exporter ?",
+    "checkin.conflict": "Un enregistrement parallèle existe déjà.",
+    "maintenance.try-later": "Veuillez réessayer ultérieurement.",
+    "checkin.points.full": "Vous auriez pu gagner :points points.",
+    "modals.tags.new": "Nouveau tag",
+    "notifications.show": "Afficher les notifications",
+    "maintenance.title": "Nous effectuons actuellement des mises à jour.",
+    "maintenance.subtitle": "Ne vous inquiétez pas, nous travaillons actuellement à l'amélioration du site.",
+    "maintenance.prolonged": "Ce message ne devrait pas s'afficher pendant plus de quelques minutes."
 }
