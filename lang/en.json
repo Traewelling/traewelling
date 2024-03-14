@@ -15,7 +15,7 @@
     "about.international": "InterCityExpress, TGV, RailJet",
     "about.name": "The name is an allusion to the well-known <i>\"Senk ju for träwelling wis Deutsche Bahn\"</i>, which you should have heard in almost every long-distance train of the Deutsche Bahn.",
     "about.name-heading": "Where does the name come from?",
-    "about.no-train": "We use an interface of the Deutsche Bahn, where not all offers are displayed directly. Unfortunately, we can't do much with it if your train is not there.",
+    "about.no-train": "We use an interface of the Deutsche Bahn, where not all offers are displayed directly. Unfortunately, we can't do much if your train is not listed.",
     "about.no-train-heading": "Why isn't my train listed?",
     "about.points-heading": "How are points calculated?",
     "about.points1": "The points consist of the product class and the distance of your journey.",
