@@ -13,7 +13,7 @@ class StatusTagPolicy
 {
     use HandlesAuthorization;
 
-    public function view(?User $user, StatusTag $statusTag): Response {
+    public function view(?User $user, StatusTag $statusTag): Response|bool {
         // Case 1: User is owner of this status
         if ($user?->id === $statusTag->status->user_id) {
             return Response::allow('User is owner of this status');
