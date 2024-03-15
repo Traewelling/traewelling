@@ -8,9 +8,9 @@ return new class extends Migration
 {
     public function up(): void {
         Schema::table('train_stations', static function(Blueprint $table) {
-            $table->unsignedInteger('ifopt_e')->nullable()->comment('Stop Place Component / unused')->after('wikidata_id');
-            $table->unsignedInteger('ifopt_d')->nullable()->comment('Stop place component')->after('wikidata_id');
-            $table->unsignedInteger('ifopt_c')->nullable()->comment('Mode / Stop Place')->after('wikidata_id');
+            $table->unsignedInteger('ifopt_e')->nullable()->comment('Stop Place Component (or unused)')->after('wikidata_id');
+            $table->unsignedInteger('ifopt_d')->nullable()->comment('Stop Place or Stop Place Component')->after('wikidata_id');
+            $table->unsignedInteger('ifopt_c')->nullable()->comment('Mode or Stop Place')->after('wikidata_id');
             $table->unsignedInteger('ifopt_b')->nullable()->comment('Administrative Area')->after('wikidata_id');
             $table->string('ifopt_a')->nullable()->comment('Country')->after('wikidata_id');
 
