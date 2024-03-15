@@ -11,7 +11,7 @@ return new class extends Migration
             $table->unsignedInteger('ifopt_e')->nullable()->comment('Platform')->after('wikidata_id');
             $table->unsignedInteger('ifopt_d')->nullable()->comment('Area')->after('wikidata_id');
             $table->unsignedInteger('ifopt_c')->nullable()->comment('Station')->after('wikidata_id');
-            $table->unsignedInteger('ifopt_b')->nullable()->comment('Municipal')->after('wikidata_id');
+            $table->unsignedInteger('ifopt_b')->nullable()->comment('Administrative Area')->after('wikidata_id');
             $table->string('ifopt_a')->nullable()->comment('Country')->after('wikidata_id');
 
             $table->index(['ifopt_a', 'ifopt_b', 'ifopt_c', 'ifopt_d', 'ifopt_e'], 'ifopt');
