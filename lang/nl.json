@@ -501,7 +501,6 @@
     "stats.stations": "Stationskaart",
     "time.years": "jaar",
     "generic.why": "Waarom?",
-    "checkin.points.earned": "Je ontvangt",
     "warning-alternative-station": "Je staat op het punt om in te checken voor vertrek op station <b>:newStation</b>, omdat het dichtbij <b>:searchedStation</b> is.",
     "stationboard.to": "naar",
     "status.visibility.0.detail": "Zichtbaar voor iedereen op het dashboard, bij evenementen, etc.",
