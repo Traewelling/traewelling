@@ -45,7 +45,7 @@
     "controller.status.status-not-found": "Status nicht gefunden",
     "controller.status.create-success": "Status erstellt.",
     "controller.status.delete-ok": "Status gelöscht.",
-    "controller.status.email-resend-mail": "Bestätigungslink senden",
+    "controller.status.email-resend-mail": "Bestätigungslink erneut senden",
     "welcome": "Willkommen bei Träwelling!",
     "email.change": "Bitte Aktualisiere deine E-Mail indem du die neue Adresse und dein aktuelles Passwort eingibst. Dir wird dann eine Bestätigungsmail zugesandt, mit der du diese Änderung bestätigen kannst.",
     "email.validation": "E-Mail Adresse bestätigen",
