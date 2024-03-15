@@ -78,7 +78,7 @@ function hasStationBoardTimezoneOffsetToUser(Collection $departures, User $user)
     return false;
 }
 
-function errorMessage(Exception $exception, ?string $text = null): array|null|string {
+function errorMessage(Exception|Error $exception, ?string $text = null): array|null|string {
     $text = $text ?? __('messages.exception.general');
 
     if (!$exception instanceof Referencable) {
