@@ -88,9 +88,18 @@
             </div>
         </nav>
         <main class="container-fluid pt-3">
-            @hasSection('title')
-                <h1 class="mb-3 text-white fs-3" id="pageTitle">@yield('title')</h1>
-            @endif
+            <div class="row">
+                @hasSection('title')
+                    <div class="col">
+                        <h1 class="mb-3 text-white fs-3" id="pageTitle">@yield('title')</h1>
+                    </div>
+                @endif
+                @hasSection('actions')
+                    <div class="col-3 col-md-2">
+                        @yield('actions')
+                    </div>
+                @endif
+            </div>
             @if ($errors->any())
                 <div class="row">
                     <div class="col-md-12">

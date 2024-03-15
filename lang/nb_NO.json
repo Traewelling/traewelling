@@ -316,7 +316,7 @@
     "notifications.socialNotShared.mastodon.429": "Det ser ut til at Träwelling har blitt midlertidig blokkert av Instance:n din. (<code>429 Too Many Requests</code>)",
     "pagination.previous": "&laquo; Forrige side",
     "pagination.back": "&laquo; Komme tilbake",
-   "notifications.userJoinedConnection.lead": "<b>@:username</b> er også i din forbindelse!",
+    "notifications.userJoinedConnection.lead": "<b>@:username</b> er også i din forbindelse!",
     "notifications.userJoinedConnection.notice": "@:username reiser med <b>:linename</b> fra <b>:origin</b> til <b>:destination </b>. |@:username reiser med linje <b>:linename</b> fra <b>:origin</b> til <b>:destination</b>.",
     "pagination.next": "Neste side &raquo;",
     "notifications.socialNotShared.mastodon.504": "Instance:n din var ikke tilgjengelig da vi prøvde å sende innsjekkingen din. (<code>504 Bad Gateway</code>)",

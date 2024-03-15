@@ -88,12 +88,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::post('checkin', [TransportController::class, 'create']);
             Route::group(['prefix' => 'station'], static function() {
                 Route::get('{name}/departures', [TransportController::class, 'departures']);
-                Route::put('{name}/home', [TransportController::class, 'setHome']);
+                Route::put('{name}/home', [TransportController::class, 'setHomeLegacy']); //ToDo: Remove this endpoint after 2024-06 (replaced by id)
                 Route::get('nearby', [TransportController::class, 'getNextStationByCoordinates']);
                 Route::get('autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);
                 Route::get('history', [TransportController::class, 'getTrainStationHistory']);
             });
         });
+
+        Route::prefix('station')->middleware(['scope:write-statuses'])->group(static function() {
+            Route::put('{id}/home', [TransportController::class, 'setHome'])->whereNumber('id');
+        });
+
         Route::group(['prefix' => 'statistics', 'middleware' => 'scope:read-statistics'], static function() {
             Route::get('/', [StatisticsController::class, 'getPersonalStatistics']);
             Route::get('/global', [StatisticsController::class, 'getGlobalStatistics']);

@@ -21,6 +21,7 @@ use App\Http\Resources\TripResource;
 use App\Models\Event;
 use App\Models\Station;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -421,41 +422,13 @@ class TransportController extends Controller
     }
 
     /**
-     * @OA\Put(
-     *     path="/trains/station/{name}/home",
-     *     operationId="setHomeStation",
-     *     tags={"Checkin"},
-     *     summary="Set a station as home station",
-     *     @OA\Parameter(
-     *         name="name",
-     *         in="path",
-     *         description="Name of the station",
-     *         required=true,
-     *         example="Karlsruhe Hbf",
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="successful operation",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="data", ref="#/components/schemas/Station")
-     *         ),
-     *     ),
-     *     @OA\Response(response=400, description="Bad request"),
-     *     @OA\Response(response=401, description="Unauthorized"),
-     *     @OA\Response(response=404, description="Station not found"),
-     *     @OA\Response(response=502, description="Error with our data provider"),
-     *     security={
-     *           {"passport": {"create-statuses"}}, {"token": {}}
-     *
-     *       }
-     * )
      * @param string $stationName
      *
      * @return JsonResponse
-     * @see All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a space (%20)
+     * @see        All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a space (%20)
+     * @deprecated Replaced by setHome (with "ID" instead of StationName and without "trains" in the path)
      */
-    public function setHome(string $stationName): JsonResponse {
+    public function setHomeLegacy(string $stationName): JsonResponse { //ToDo: Remove this endpoint after 2024-06 (replaced by id)
         try {
             $station = HafasController::getStations(query: $stationName, results: 1)->first();
             if ($station === null) {
@@ -471,6 +444,57 @@ class TransportController extends Controller
             return $this->sendError("There has been an error with our data provider", 502);
         } catch (ModelNotFoundException) {
             return $this->sendError("Your query matches no station");
+        }
+    }
+
+
+    /**
+     * @OA\Put(
+     *     path="/station/{id}/home",
+     *     operationId="setHomeStation",
+     *     tags={"Checkin"},
+     *     summary="Set a station as home station",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Träwelling-ID of the station",
+     *         required=true,
+     *         example=1234,
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="data", ref="#/components/schemas/Station")
+     *         ),
+     *     ),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Station not found"),
+     *     @OA\Response(response=500, description="Unknown error"),
+     *     security={{"passport": {"create-statuses"}}, {"token": {}}}
+     * )
+     * @param int $stationId
+     *
+     * @return JsonResponse
+     */
+    public function setHome(int $stationId): JsonResponse {
+        try {
+            $station = Station::findOrFail($stationId);
+
+            auth()->user()?->update([
+                                        'home_id' => $station->id
+                                    ]);
+
+            return $this->sendResponse(
+                data: new StationResource($station),
+            );
+        } catch (ModelNotFoundException) {
+            return $this->sendError('The station could not be found');
+        } catch (Exception $exception) {
+            report($exception);
+            return $this->sendError('Unknown error', 500);
         }
     }
 

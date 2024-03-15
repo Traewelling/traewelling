@@ -3464,7 +3464,7 @@
                 ]
             }
         },
-        "/trains/station/{name}/home": {
+        "/station/{id}/home": {
             "put": {
                 "tags": [
                     "Checkin"
@@ -3473,11 +3473,11 @@
                 "operationId": "setHomeStation",
                 "parameters": [
                     {
-                        "name": "name",
+                        "name": "id",
                         "in": "path",
-                        "description": "Name of the station",
+                        "description": "Träwelling-ID of the station",
                         "required": true,
-                        "example": "Karlsruhe Hbf"
+                        "example": 1234
                     }
                 ],
                 "responses": {
@@ -3504,6 +3504,9 @@
                     },
                     "404": {
                         "description": "Station not found"
+                    },
+                    "500": {
+                        "description": "Unknown error"
                     },
                     "502": {
                         "description": "Error with our data provider"

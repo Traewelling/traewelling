@@ -33,7 +33,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @todo rename table only to "Trip" (without Hafas)
  * @todo rename "linename" to "line_name" (or something else, but not "linename")
  * @todo migrate origin & destination to use "id" instead of "ibnr" and rename to "origin_id" & "destination_id"
- * @todo is "delay" still needed? We save planned and real in the stopovers. check.
  */
 class Trip extends Model
 {
@@ -43,7 +42,7 @@ class Trip extends Model
     protected $table    = 'hafas_trips';
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'journey_number', 'operator_id', 'origin', 'destination',
-        'polyline_id', 'departure', 'arrival', 'delay', 'source', 'user_id', 'last_refreshed',
+        'polyline_id', 'departure', 'arrival', 'source', 'user_id', 'last_refreshed',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $casts    = [

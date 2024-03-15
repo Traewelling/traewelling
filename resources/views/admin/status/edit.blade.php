@@ -1,11 +1,19 @@
 @extends('admin.layout')
 
+@section('title', 'Status: ' . $status->id)
+
+@section('actions')
+    <a class="btn btn-secondary float-end" href="{{ route('status', ['id' => $status->id]) }}">
+        <i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
+        <span class="d-none d-md-inline">Frontend</span>
+    </a>
+@endsection
+
 @section('content')
     <div class="row">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="card-title mb-4 fs-5">Status bearbeiten</h2>
                     <div class="row">
                         <div class="col-4">
                             <label class="form-label" for="form-origin">Benutzer</label>
