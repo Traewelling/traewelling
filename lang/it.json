@@ -466,7 +466,6 @@
     "status.visibility.2.detail": "Visibile solo per i follower (approvati)",
     "stationboard.no-departures": "Siamo spiacenti, al momento non ci sono partenze per questo orario/filtro.",
     "time-format": "HH:mm",
-    "checkin.points.earned": "Ottieni",
     "notifications.userJoinedConnection.notice": "@:username viaggia con <b>:linename</b> da <b>:origin</b> a <b>:destination</b>.|@:username viaggia con la linea <b>:linename</b> da <b>:origin</b> a <b>:destination</b>.",
     "time-format.with-day": "HH:mm (DD/MM/YYYY)",
     "checkin.points.could-have": "Avresti potuto ottenere più punti se avessi fatto il check-in più vicino all'orario di partenza effettivo!",

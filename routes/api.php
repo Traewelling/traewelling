@@ -87,7 +87,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::post('checkin', [TransportController::class, 'create']);
             Route::group(['prefix' => 'station'], static function() {
                 Route::get('{name}/departures', [TransportController::class, 'getLegacyDepartures']); //ToDo: Remove this endpoint after 2024-06 (replaced by id)
-                Route::put('{name}/home', [TransportController::class, 'setHome']);
+                Route::put('{name}/home', [TransportController::class, 'setHomeLegacy']); //ToDo: Remove this endpoint after 2024-06 (replaced by id)
                 Route::get('nearby', [TransportController::class, 'getNextStationByCoordinates']);
                 Route::get('autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);
                 Route::get('history', [TransportController::class, 'getTrainStationHistory']);
@@ -95,6 +95,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
 
         Route::prefix('station')->middleware(['scope:write-statuses'])->group(static function() {
+            Route::put('/{id}/home', [TransportController::class, 'setHome'])->whereNumber('id');
             Route::get('/{id}/departures', [TransportController::class, 'getDepartures'])->whereNumber('id');
         });
 
@@ -170,7 +171,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::delete('/{webhookId}', [WebhookController::class, 'deleteWebhook']);
         });
 
-        Route::apiResource('station', StationController::class); // currently admin/backend only
+        Route::apiResource('station', StationController::class);                                        // currently admin/backend only
         Route::put('station/{oldStationId}/merge/{newStationId}', [StationController::class, 'merge']); // currently admin/backend only
     });
 

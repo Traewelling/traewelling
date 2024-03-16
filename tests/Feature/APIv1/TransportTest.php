@@ -184,14 +184,14 @@ class TransportTest extends ApiTestCase
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
 
+        $station = Station::factory()->create();
+
         $this->assertNull($user->home);
 
-        Http::fake(["*" => Http::response([self::HANNOVER_HBF])]);
-
-        $response = $this->put('/api/v1/trains/station/Hannover Hbf/home');
+        $response = $this->put('/api/v1/station/' . $station->id . '/home');
         $response->assertOk();
         $user->refresh();
-        $this->assertEquals('Hannover Hbf', $user->home?->name);
+        $this->assertEquals($station->name, $user->home?->name);
     }
 
     public function testAutocompleteWithDs100(): void {

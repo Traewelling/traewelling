@@ -122,8 +122,8 @@ class ManualTripCreator extends Controller
         if ($plannedDeparture === null && $plannedArrival === null) {
             throw new InvalidArgumentException('Either arrival or departure must be set');
         }
-        if ($plannedDeparture !== null && $plannedArrival !== null && $plannedDeparture->isAfter($plannedArrival)) {
-            throw new InvalidArgumentException('Departure must be before arrival');
+        if ($plannedDeparture !== null && $plannedArrival !== null && $plannedDeparture->isBefore($plannedArrival)) {
+            throw new InvalidArgumentException('Departure must be after arrival');
         }
 
         $this->stopovers[] = [

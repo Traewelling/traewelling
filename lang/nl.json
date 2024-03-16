@@ -16,7 +16,7 @@
     "about.points1": "De punten zijn samengesteld uit de productklasse en de afstand van je reis.",
     "about.productclass": "Productklasse",
     "about.tram": "Tram, lightrail, bus, metro",
-    "about.suburban": "S-Bahn, Veerboot",
+    "about.suburban": "Voorstadstreinen, Veerboten",
     "admin.usage": "Gebruik",
     "admin.select-range": "Kies een gebied",
     "about.regional": "Regionale (snel)treinen",
@@ -501,7 +501,6 @@
     "stats.stations": "Stationskaart",
     "time.years": "jaar",
     "generic.why": "Waarom?",
-    "checkin.points.earned": "Je ontvangt",
     "warning-alternative-station": "Je staat op het punt om in te checken voor vertrek op station <b>:newStation</b>, omdat het dichtbij <b>:searchedStation</b> is.",
     "stationboard.to": "naar",
     "status.visibility.0.detail": "Zichtbaar voor iedereen op het dashboard, bij evenementen, etc.",
@@ -776,5 +775,6 @@
     "export.or-choose": "of kies je eigen",
     "export.all": "Alle velden",
     "export.nominal": "Nominale gegevens",
-    "export.nominal-tags": "Nominale gegevens + labels"
+    "export.nominal-tags": "Nominale gegevens + labels",
+    "checkin.points.earned": "Je hebt :points punt verdiend|Je hebt :points punten verdiend!"
 }
