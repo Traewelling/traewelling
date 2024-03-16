@@ -32,16 +32,48 @@ use Illuminate\Validation\Rules\Enum;
 class TransportController extends Controller
 {
     /**
+     * @see All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a space (%20)
+     */
+    public function getLegacyDepartures(Request $request, string $name): JsonResponse { //TODO: remove endpoint after 2024-06
+        $validated = $request->validate([
+                                            'when'       => ['nullable', 'date'],
+                                            'travelType' => ['nullable', new Enum(TravelType::class)],
+                                        ]);
+
+        try {
+            $trainStationboardResponse = TransportBackend::getDepartures(
+                stationQuery: $name,
+                when:         isset($validated['when']) ? Carbon::parse($validated['when']) : null,
+                travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
+                localtime:    isset($validated['when']) && !preg_match('(\+|Z)', $validated['when'])
+            );
+        } catch (HafasException) {
+            return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 502);
+        } catch (ModelNotFoundException) {
+            return $this->sendError(__('controller.transport.no-station-found', [], 'en'));
+        } catch (Exception $exception) {
+            report($exception);
+            return $this->sendError('An unknown error occurred.', 500);
+        }
+        return $this->sendResponse(
+            data:       $trainStationboardResponse['departures'],
+            additional: ["meta" => ['station' => StationDto::fromModel($trainStationboardResponse['station']),
+                                    'times'   => $trainStationboardResponse['times'],
+                        ]]
+        );
+    }
+
+    /**
      * @OA\Get(
-     *     path="/trains/station/{name}/departures",
+     *     path="/station/{id}/departures",
      *     operationId="getDepartures",
      *     tags={"Checkin"},
      *     summary="Get departures from a station",
      *     description="Get departures from a station",
      *     @OA\Parameter(
-     *         name="name",
+     *         name="id",
      *         in="path",
-     *         description="Name of the station (replace slashes with spaces)",
+     *         description="Träwelling-ID of the station (station needs to be looked up first)",
      *         required=true,
      *     ),
      *     @OA\Parameter(
@@ -131,56 +163,58 @@ class TransportController extends Controller
      *         )
      *        )
      *     ),
-     * @OA\Response(
-     *         response=404,
-     *         description="Station not found",
-     *     ),
-     * @OA\Response(
-     *         response=502,
-     *         description="Error with our data provider",
-     *     ),
-     * @OA\Response(
-     *         response=422,
-     *         description="Invalid input",
-     *     ),
-     * @OA\Response(response=401, description="Unauthorized"),
-     *     security={
-     *        {"passport": {"create-statuses"}}, {"token": {}}
-     *
-     *     }
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=404, description="Station not found"),
+     *      @OA\Response(response=422, description="Invalid input"),
+     *      @OA\Response(response=502, description="Error with our data provider"),
+     *      security={{"passport": {"create-statuses"}}, {"token": {}}}
      * )
      *
      * @param Request $request
-     * @param string  $name
+     * @param int     $stationId
      *
      * @return JsonResponse
-     * @see All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a space (%20)
      */
-    public function departures(Request $request, string $name): JsonResponse {
+    public function getDepartures(Request $request, int $stationId): JsonResponse {
         $validated = $request->validate([
                                             'when'       => ['nullable', 'date'],
                                             'travelType' => ['nullable', new Enum(TravelType::class)],
                                         ]);
 
+        $timestamp = isset($validated['when']) ? Carbon::parse($validated['when']) : now();
+        $station   = Station::findOrFail($stationId);
+
         try {
-            $trainStationboardResponse = TransportBackend::getDepartures(
-                stationQuery: $name,
-                when:         isset($validated['when']) ? Carbon::parse($validated['when']) : null,
-                travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
-                localtime:    isset($validated['when']) && !preg_match('(\+|Z)', $validated['when'])
+            $departures = HafasController::getDepartures(
+                station:   $station,
+                when:      $timestamp,
+                type:      TravelType::tryFrom($validated['travelType'] ?? null),
+                localtime: isset($validated['when']) && !preg_match('(\+|Z)', $validated['when'])
+            )->sortBy(function($departure) {
+                return $departure->when ?? $departure->plannedWhen;
+            });
+
+            return $this->sendResponse(
+                data:       $departures->values(),
+                additional: [
+                                'meta' => [
+                                    'station' => StationDto::fromModel($station),
+                                    'times'   => [
+                                        'now'  => $timestamp,
+                                        'prev' => $timestamp->clone()->subMinutes(15),
+                                        'next' => $timestamp->clone()->addMinutes(15)
+                                    ],
+                                ]
+                            ]
             );
         } catch (HafasException) {
             return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 502);
         } catch (ModelNotFoundException) {
             return $this->sendError(__('controller.transport.no-station-found', [], 'en'));
+        } catch (Exception $exception) {
+            report($exception);
+            return $this->sendError('An unknown error occurred.', 500);
         }
-
-        return $this->sendResponse(
-            data:       $trainStationboardResponse['departures'],
-            additional: ["meta" => ['station' => StationDto::fromModel($trainStationboardResponse['station']),
-                                    'times'   => $trainStationboardResponse['times'],
-                        ]]
-        );
     }
 
     /**
