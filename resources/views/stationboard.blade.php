@@ -7,7 +7,11 @@
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7" id="station-board-new">
                 @if(auth()->user()->hasRole('open-beta'))
-                    <Stationboard @isset($station) station="{{$station->name}}" @endisset></Stationboard>
+                    <Stationboard
+                        @isset($station)
+                            station="{{$station->name}}"
+                            station-id="{{$station->id}}"
+                        @endisset></Stationboard>
                 @else
                     @include('includes.station-autocomplete')
                     <div id="timepicker-wrapper">
