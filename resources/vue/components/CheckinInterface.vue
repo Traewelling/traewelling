@@ -38,7 +38,7 @@ export default {
                 business: this.business,
                 ibnr: true,
                 tripId: this.selectedTrain.tripId,
-                lineName: this.selectedTrain.line.name || this.selectedTrain.line.fahrtNr,
+                lineName: this.selectedTrain.line.name ?? this.selectedTrain.line.fahrtNr,
                 start: this.selectedTrain.stop.id,
                 destination: this.selectedDestination.evaIdentifier,
                 departure: DateTime.fromISO(this.selectedTrain.plannedWhen).setZone("UTC").toISO(),
