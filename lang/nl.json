@@ -775,5 +775,6 @@
     "export.or-choose": "of kies je eigen",
     "export.all": "Alle velden",
     "export.nominal": "Nominale gegevens",
-    "export.nominal-tags": "Nominale gegevens + labels"
+    "export.nominal-tags": "Nominale gegevens + labels",
+    "checkin.points.earned": "Je hebt :points punt verdiend|Je hebt :points punten verdiend!"
 }
