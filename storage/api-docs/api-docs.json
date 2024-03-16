@@ -3431,9 +3431,6 @@
                     },
                     "500": {
                         "description": "Unknown error"
-                    },
-                    "502": {
-                        "description": "Error with our data provider"
                     }
                 },
                 "security": [
