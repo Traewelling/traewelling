@@ -145,7 +145,7 @@ export default {
                 <ProductIcon :product="selectedTrain.line.product"/>
             </div>
             <div class="col-auto align-items-center d-flex me-3">
-                <LineIndicator :product-name="selectedTrain.line.product" :number="selectedTrain.line.name"/>
+                <LineIndicator :product-name="selectedTrain.line.product" :number="selectedTrain.line.name !== null ? selectedTrain.line.name : selectedTrain.line.fahrtNr"/>
             </div>
             <template v-if="selectedDestination">
                 <div class="col-auto align-items-center d-flex me-3">
@@ -174,7 +174,7 @@ export default {
                     <ProductIcon :product="item.line.product"/>
                 </div>
                 <div class="col-2 align-items-center d-flex me-3 justify-content-center">
-                    <LineIndicator :productName="item.line.product" :number="item.line.name"/>
+                    <LineIndicator :productName="item.line.product" :number="item.line.name !== null ? item.line.name : item.line.fahrtNr"/>
                 </div>
                 <div class="col align-items-center d-flex second-stop">
                     <div>
