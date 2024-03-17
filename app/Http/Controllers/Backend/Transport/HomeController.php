@@ -13,7 +13,8 @@ abstract class HomeController extends Controller
      * @param Station $station
      *
      * @return Station
-     * @api v1
+     * @api        v1
+     * @deprecated just use $user->update(...) directly...?
      */
     public static function setHome(User $user, Station $station): Station {
         $user->update([

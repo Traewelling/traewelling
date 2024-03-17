@@ -2,6 +2,13 @@
 
 @section('title', 'User: ' . $user->username)
 
+@section('actions')
+    <a class="btn float-end btn-secondary" href="{{ route('profile', ['username' => $user->username]) }}">
+        <i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
+        <span class="d-none d-md-inline">Frontend</span>
+    </a>
+@endsection
+
 @section('content')
 
     <div class="row">

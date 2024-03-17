@@ -17,6 +17,14 @@
                             <th>Name</th>
                             <td>{{ $station->name }}</td>
                         </tr>
+                        <tr>
+                            <th>IBNR</th>
+                            <td>{{ $station->ibnr }}</td>
+                        </tr>
+                        <tr>
+                            <th>IFOPT</th>
+                            <td>{{ $station->ifopt }}</td>
+                        </tr>
                     </table>
                 </div>
             </div>

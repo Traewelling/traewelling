@@ -4,9 +4,25 @@ In this we try to keep track of changes to the API.
 Primarily this should document changes that are not backwards compatible or belongs to already documented endpoints.
 This is to help you keep track of the changes and to help you update your code accordingly.
 
+## 2024-03-16
+
+Replaced `GET /trains/station/{name}/departures` with `GET /station/{id}/departures`.
+The old endpoint is marked as deprecated and will be removed after 2024-06.
+
+Please note, that the ID is the Träwelling internal ID and not the IBNR!
+
+## 2024-03-10
+
+Replaced `PUT /trains/station/{name}/home` with `PUT /station/{id}/home`.
+The old endpoint is marked as deprecated and will be removed after 2024-06.
+
+Please note, that the ID is the Träwelling internal ID and not the IBNR!
+
 ## 2024-03-01
-> **warning**
-> Possibly breaking change: The implementation of next/prev links on user/{username}/statuses endpoint has been changed to adhere to the documentation.
+
+> [!WARNING]
+> Possibly breaking change: The implementation of next/prev links on user/{username}/statuses endpoint has been changed
+> to adhere to the documentation.
 
 ## 2024-01-21
 
