@@ -26,6 +26,19 @@ return new class extends Migration
                                              'destination_id' => DB::raw('(SELECT id FROM train_stations WHERE ibnr = hafas_trips.destination)'),
                                          ]);
 
+        if (config('database.default') === 'sqlite') {
+            //warn the user that they need to manually drop the columns
+            echo PHP_EOL . PHP_EOL;
+            echo "\033[41m"; //console background color red
+            echo '--- WARNING ---' . PHP_EOL;
+            echo 'SQLite doesn\'t support dropping foreign keys' . PHP_EOL;
+            echo 'Please drop the columns "origin" and "destination" manually from the "hafas_trips" table.' . PHP_EOL;
+            echo '--- WARNING ---';
+            echo "\033[0m"; //reset console color
+            echo PHP_EOL . PHP_EOL;
+            return;
+        }
+
         Schema::table('hafas_trips', static function(Blueprint $table) {
             $table->dropForeign(['origin']);
             $table->dropColumn('origin');

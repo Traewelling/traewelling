@@ -1,0 +1,62 @@
+<?php
+
+namespace Database\Seeders\Constants;
+
+use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+
+/**
+ * This seeder is used to insert important constants into the database.
+ * It is used to ensure that the constants are always present in the database.
+ */
+class PermissionSeeder extends Seeder
+{
+    public function run(): void {
+        //Create roles
+        $roleAdmin          = Role::updateOrCreate(['name' => 'admin']);
+        $roleEventModerator = Role::updateOrCreate(['name' => 'event-moderator']);
+        $roleOpenBeta       = Role::updateOrCreate(['name' => 'open-beta']);
+        $roleClosedBeta     = Role::updateOrCreate(['name' => 'closed-beta']);
+
+        //Create permissions
+        $permissionViewBackend      = Permission::updateOrCreate(['name' => 'view-backend']);
+        $permissionViewEvents       = Permission::updateOrCreate(['name' => 'view-events']);
+        $permissionAcceptEvents     = Permission::updateOrCreate(['name' => 'accept-events']);
+        $permissionDenyEvents       = Permission::updateOrCreate(['name' => 'deny-events']);
+        $permissionCreateEvents     = Permission::updateOrCreate(['name' => 'create-events']);
+        $permissionUpdateEvents     = Permission::updateOrCreate(['name' => 'update-events']);
+        $permissionDeleteEvents     = Permission::updateOrCreate(['name' => 'delete-events']);
+        $permissionCreateManualTrip = Permission::updateOrCreate(['name' => 'create-manual-trip']);
+        $permissionViewActivity     = Permission::updateOrCreate(['name' => 'view activity']);
+        $permissionViewEventHistory = Permission::updateOrCreate(['name' => 'view event history']);
+        $permissionCreateStations   = Permission::updateOrCreate(['name' => 'create stations']);
+        $permissionUpdateStations   = Permission::updateOrCreate(['name' => 'update stations']);
+        $permissionDeleteStations   = Permission::updateOrCreate(['name' => 'delete stations']);
+
+        //Assign permissions to admin role
+        $roleAdmin->givePermissionTo($permissionViewBackend);
+        $roleAdmin->givePermissionTo($permissionViewEvents);
+        $roleAdmin->givePermissionTo($permissionAcceptEvents);
+        $roleAdmin->givePermissionTo($permissionDenyEvents);
+        $roleAdmin->givePermissionTo($permissionCreateEvents);
+        $roleAdmin->givePermissionTo($permissionUpdateEvents);
+        $roleAdmin->givePermissionTo($permissionDeleteEvents);
+        $roleAdmin->givePermissionTo($permissionCreateManualTrip);
+        $roleAdmin->givePermissionTo($permissionViewActivity);
+        $roleAdmin->givePermissionTo($permissionViewEventHistory);
+        $roleAdmin->givePermissionTo($permissionCreateStations);
+        $roleAdmin->givePermissionTo($permissionUpdateStations);
+        $roleAdmin->givePermissionTo($permissionDeleteStations);
+
+        //Assign permissions to event-moderator role
+        $roleEventModerator->givePermissionTo($permissionViewBackend);
+        $roleEventModerator->givePermissionTo($permissionViewEvents);
+        $roleEventModerator->givePermissionTo($permissionAcceptEvents);
+        $roleEventModerator->givePermissionTo($permissionDenyEvents);
+        $roleEventModerator->givePermissionTo($permissionUpdateEvents);
+
+        //Assign permissions to open-beta role
+        $roleClosedBeta->givePermissionTo($permissionCreateManualTrip);
+    }
+}
