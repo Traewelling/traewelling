@@ -758,5 +758,6 @@
     "error.419": "Page Expired",
     "error.429": "Too Many Requests",
     "error.500": "Server Error",
-    "support.rate_limit_exceeded": "You have recently created a support request. Please wait a bit before creating another request."
+    "support.rate_limit_exceeded": "You have recently created a support request. Please wait a bit before creating another request.",
+    "create-trip-manually": "Create trip manually"
 }
