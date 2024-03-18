@@ -17,7 +17,7 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.4.2",
-        "@vuepic/vue-datepicker": "^8.2.0",
+        "@vuepic/vue-datepicker": "^8.3.1",
         "apexcharts": "^3.46.0",
         "awesomplete": "^1.1.5",
         "bootstrap-cookie-alert": "^1.2.1",
