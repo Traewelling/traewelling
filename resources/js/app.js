@@ -16,6 +16,8 @@ import CheckinSuccessHelper from "../vue/components/CheckinSuccessHelper.vue";
 import {i18nVue} from "laravel-vue-i18n";
 import TagHelper from "../vue/components/TagHelper.vue";
 import TripCreationForm from "../vue/components/TripCreation/TripCreationForm.vue";
+import {createPinia} from 'pinia'
+import piniaPluginPersistedsState from 'pinia-plugin-persistedstate'
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -49,6 +51,8 @@ document.addEventListener("DOMContentLoaded", function () {
     let fallbackLang = "en";
     const urlParams  = new URLSearchParams(window.location.search);
     const lang       = urlParams.get("language");
+    const pinia      = createPinia();
+    pinia.use(piniaPluginPersistedsState);
 
     if (lang && lang.startsWith("de_")) {
         fallbackLang = "de";
@@ -58,6 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const app = createApp({});
         app.component("NotificationBell", NotificationBell);
         app.config.devtools = true;
+        app.use(pinia);
         app.use(i18nVue, {
             fallbackLang: fallbackLang,
             resolve: (lang) => import(`../../lang/${lang}.json`)
@@ -68,6 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (document.getElementById("activeJourneys")) {
         const app2 = createApp({});
         app2.component("ActiveJourneyMap", ActiveJourneyMap);
+        app2.use(pinia);
         app2.use(i18nVue, {
             fallbackLang: fallbackLang,
             resolve: (lang) => import(`../../lang/${lang}.json`)
@@ -79,6 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const app3 = createApp({});
         app3.component("Stationboard", Stationboard);
         app3.component("Stationautocomplete", StationAutocomplete);
+        app3.use(pinia);
         app3.use(i18nVue, {
             fallbackLang: fallbackLang,
             resolve: (lang) => import(`../../lang/${lang}.json`)
