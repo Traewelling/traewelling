@@ -17,6 +17,7 @@ import {i18nVue} from "laravel-vue-i18n";
 import TagHelper from "../vue/components/TagHelper.vue";
 import TripCreationForm from "../vue/components/TripCreation/TripCreationForm.vue";
 import {createPinia} from 'pinia'
+import piniaPluginPersistedsState from 'pinia-plugin-persistedstate'
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -51,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const urlParams  = new URLSearchParams(window.location.search);
     const lang       = urlParams.get("language");
     const pinia      = createPinia();
+    pinia.use(piniaPluginPersistedsState);
 
     if (lang && lang.startsWith("de_")) {
         fallbackLang = "de";

@@ -2,8 +2,15 @@
 import {DateTime} from "luxon";
 import {Notyf} from "notyf";
 import {trans} from "laravel-vue-i18n";
+import {useProfileSettingsStore} from "../stores/profileSettings";
 
 export default {
+    setup() {
+        const profileStore = useProfileSettingsStore();
+        profileStore.fetchSettings();
+
+        return { profileStore };
+    },
     name: "CheckinInterface",
     props: {
         selectedDestination: {
@@ -20,7 +27,7 @@ export default {
             allowedChars: 280,
             statusText: "",
             toot: false,
-            visibility: 0,
+            visibility: this.profileStore.getDefaultStatusVisibility,
             business: 0,
             loading: false,
             notyf: new Notyf({position: {x: "right", y: "bottom"}}),
@@ -126,7 +133,7 @@ export default {
         </small>
 
         <div class="mt-2">
-            <div class="col-auto btn-group me-1">
+            <div class="col-auto btn-group me-1" :class="{'d-none' : profileStore.getMastodon == null}" >
                 <input type="checkbox" class="btn-check" autocomplete="off" v-model="toot" autocompleted="" id="toot_check" :disabled="visibility === 3">
                 <label class="btn btn-sm btn-outline-mastodon" for="toot_check" style="">
                     <i class="fab fa-mastodon"></i>
