@@ -28,10 +28,14 @@ export const useNotificationsStore = defineStore('notifications', {
             }
         },
         async fetchCount(): Promise<void> {
+            if (this.refreshed && new Date().getTime() - this.refreshed < 30000) {
+                return;
+            }
             try {
                 this.count = await API.request("/notifications/unread/count", "GET", {}, true)
                     .then((response: any) => response.json())
                     .then((data: any) => data.data);
+                this.refreshed = new Date().getTime();
             } catch (error) {
                 this.error = error;
                 this.count = 0;
