@@ -50,8 +50,14 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
                  ->name('admin.trip.show');
         });
 
-        Route::get('stations', [StationController::class, 'renderList'])
-             ->name('admin.stations');
+        Route::prefix('stations')->group(function() {
+            Route::get('/', [StationController::class, 'renderList'])
+                 ->name('admin.stations');
+
+            Route::get('/{id}', [StationController::class, 'renderStation'])
+                 ->name('admin.station');
+        });
+
 
         Route::get('activity', [ActivityController::class, 'render'])
              ->name('admin.activity');

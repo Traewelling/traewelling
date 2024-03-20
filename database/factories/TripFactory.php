@@ -34,7 +34,6 @@ class TripFactory extends Factory
             'polyline_id'    => null, //Will be set in the configure function
             'departure'      => now()->subMinutes(15)->format('c'),
             'arrival'        => now()->addMinutes(80)->format('c'),
-            'delay'          => 0, //TODO: is deprecated? used?
             'source'         => TripSource::HAFAS,
         ];
     }

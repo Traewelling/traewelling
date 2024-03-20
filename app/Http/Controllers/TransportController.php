@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Enum\TravelType;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Transport\StationController;
-use App\Models\PolyLine;
 use App\Models\Checkin;
+use App\Models\PolyLine;
 use App\Models\Station;
 use App\Models\User;
 use Carbon\Carbon;
@@ -49,10 +49,13 @@ class TransportController extends Controller
      * @param string|int      $stationQuery
      * @param Carbon|null     $when
      * @param TravelType|null $travelType
+     * @param bool            $localtime
      *
      * @return array
      * @throws HafasException
-     * @api v1
+     * @deprecated use HafasController::getDepartures(...) directly instead (-> less overhead)
+     *
+     * @api        v1
      */
     #[ArrayShape([
         'station'    => Station::class,

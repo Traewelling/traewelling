@@ -2,8 +2,8 @@
 .env.*
 .github
 docker/
-node_modules
-vendor
+node_modules/
+vendor/
 *.md
 traewelling.jpg
 phpunit.xml
@@ -15,3 +15,9 @@ api-swagger-v0.yml
 tests/
 public/css/
 public/js/
+database/docker-container-state/
+avatars/
+database-data/
+Dockerfile
+.devenv
+.direnv

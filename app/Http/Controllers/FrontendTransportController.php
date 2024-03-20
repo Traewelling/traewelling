@@ -127,6 +127,7 @@ class FrontendTransportController extends Controller
                 // in long term to support multiple data providers we only support IDs here - no IBNRs.
                 $startStation = Station::findOrFail($validated['start']);
             }
+
             $departure = Carbon::parse($validated['departure']);
 
             $trip = TrainCheckinController::getHafasTrip(
@@ -137,9 +138,9 @@ class FrontendTransportController extends Controller
 
             $encounteredStart = false;
             $stopovers = $trip->stopovers
-                ->filter(function(Stopover $stopover) use ($departure, $startStation, &$encounteredStart): bool {
+                ->filter(function(Stopover $stopover) use ($startStation, &$encounteredStart): bool {
                     if (!$encounteredStart) { // this assumes stopovers being ordered correctly
-                        $encounteredStart = $stopover->departure_planned == $departure && $stopover->station->is($startStation);
+                        $encounteredStart = $stopover->station->is($startStation);
                         return false;
                     }
                     return true;
