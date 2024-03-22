@@ -1,53 +1,58 @@
-<script setup>
+<script>
 import ModalComponent from "./ModalComponent.vue";
-import {onMounted, onUnmounted, reactive, ref} from "vue";
 import NotificationList from "./NotificationList.vue";
-import API from "../../js/api/api";
+import {useNotificationsStore} from "../stores/notifications";
 
-defineProps({
-    link: {
-        type: Boolean,
-        default: false
+export default {
+    setup() {
+        const state = useNotificationsStore();
+
+        return { state };
     },
-});
-
-let fetchInterval = null;
-
-onMounted(() => {
-    fetchCount();
-    fetchInterval = setInterval(fetchCount, 30000);
-});
-
-onUnmounted(() => {
-    clearInterval(fetchInterval);
-});
-
-let thisModal = ref(null);
-let notifications = ref(null);
-const state   = reactive({
-    count: 0,
-})
-
-function showModal() {
-    thisModal.value.show();
-    notifications.value.fetchNotifications();
-}
-
-function fetchCount() {
-    API.request("/notifications/unread/count", "GET", {}, true)
-        .then(function (request) {
-            request.json().then(function (json) {
-                state.count = json.data;
-            });
-        })
-        .catch(() => {
-            // Do nothing and ignore this error for better ux
-        });
+    props: {
+        link: {
+            type: Boolean,
+            default: false
+        },
+        allowFetch: {
+            type: Boolean,
+            default: true
+        }
+    },
+    data() {
+        return {
+            fetchInterval: null,
+        }
+    },
+    methods: {
+        showModal() {
+            this.state.fetchNotifications();
+            this.$refs.thisModal.show();
+        },
+        fetchCount() {
+            this.state.fetchCount();
+        },
+    },
+    mounted() {
+        if (this.allowFetch) {
+            this.fetchCount();
+            this.fetchInterval = setInterval(this.fetchCount, 30000);
+        }
+    },
+    beforeDestroy() {
+        if (this.fetchInterval) {
+            clearInterval(this.fetchInterval);
+        }
+    },
+    components: {
+        ModalComponent,
+        NotificationList
+    }
 }
 </script>
 
 <template>
-    <button @click="showModal" class="btn btn-link btn-transparent text-white notifications-board-toggle" style=""
+    <button @click="showModal" class="btn btn-link btn-transparent text-white notifications-board-toggle"
        :class="{'nav-link': link, 'navbar-toggler': !link}" type="button"
        aria-expanded="false"
        :aria-label="$t('notifications.show')">
@@ -63,10 +68,7 @@ function fetchCount() {
         bodyClass="p-0"
         :hide-footer="true">
         <template #body class="p-0">
-            <NotificationList
-                ref="notifications"
-                @toggle-read="fetchCount"
-            />
+            <NotificationList ref="notifications"/>
         </template>
         <template #header-extra>
             <button

@@ -67,6 +67,8 @@
                                      src="{{ asset('img/' . $status->checkin->trip->category->value . '.svg') }}"
                                      alt="{{$status->checkin->trip->category->value}}"
                                 />
+                            @elseif($status->checkin->trip->category->value == 'taxi')
+                                <i class="fa fa-taxi d-inline" aria-hidden="true"></i>
                             @else
                                 <i class="fa fa-train d-inline" aria-hidden="true"></i>
                             @endif

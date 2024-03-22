@@ -4918,7 +4918,7 @@
                         "format": "string",
                         "example": "2023-01-01T00:00:00+00:00"
                     },
-                    "updatedAtForHumans": {
+                    "createdAtForHumans": {
                         "title": "createdAtForHumans",
                         "description": "DON'T USE THIS ATTRIBUTE! This Attribute will be removed in the future. The date when the notification was created, but in human readable form",
                         "type": "string",
