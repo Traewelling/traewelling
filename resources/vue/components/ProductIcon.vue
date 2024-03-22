@@ -20,6 +20,12 @@ export default {
     computed: {
         productExists() {
             return this.iconPaths.hasOwnProperty(this.$props.product);
+        },
+        fontAwesomeIcon() {
+            if (this.$props.product === 'taxi') {
+                return 'fa-taxi';
+            }
+            return this.$props.product === 'train';
         }
     }
 }
@@ -27,12 +33,8 @@ export default {
 
 <template>
     <img v-if="productExists"
-        alt="tram"
+        :alt="this.$props.product"
         :src="this.iconPaths[this.$props.product]"
         class="product-icon">
-    <i v-else class="fa fa-train"></i>
+    <i v-else class="fas" :class="fontAwesomeIcon"></i>
 </template>
-
-<style scoped lang="scss">
-
-</style>
