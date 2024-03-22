@@ -144,5 +144,5 @@ class Notification
      *
      * @var string
      */
-    private $updatedAtForHumans;
+    private $createdAtForHumans;
 }

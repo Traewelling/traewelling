@@ -1,69 +1,36 @@
 <script>
-import API from "../../js/api/api";
 import NotificationEntry from "./NotificationEntry.vue";
+import {useNotificationsStore} from "../stores/notifications";
 
 export default {
-    components: {NotificationEntry},
-    emits: ["toggle-read"],
-    data() {
-        return {
-            notifications: [],
-            loading: true
-        }
+    setup() {
+        const store = useNotificationsStore();
+
+        return { store };
     },
+    components: {NotificationEntry},
     methods: {
-        toggleRead(data, key) {
-            let readAction = data.readAt ? "unread" : "read";
-            API.request(`/notifications/${readAction}/${data.id}`, "PUT")
-                .then(async (response) => {
-                    const data              = await response.json();
-                    this.notifications[key] = data.data;
-                    this.$emit("toggle-read");
-                });
-        },
         toggleAllRead() {
-            return API.request("/notifications/read/all", "PUT")
-                .then(API.handleDefaultResponse)
-                .then(() => {
-                    this.notifications.map((notification) => {
-                        notification.readAt = new Date().toISOString();
-                        return notification
-                    });
-                    notyf.success(this.$t("notifications.readAll.success"));
-                    this.$emit("toggle-read");
-                });
-        },
-        fetchNotifications() {
-            this.loading = true;
-            API.request("/notifications")
-                .then(async (response) => {
-                    const data         = await response.json();
-                this.notifications = data.data;
-                this.loading = false;
-            }).catch(() => {
-                this.loading = false;
-                this.notifications = null;
+            this.store.toggleAllRead().then(() => {
+                notyf.success(this.$t("notifications.readAll.success"));
             });
         }
     },
-    mounted() {
-        this.fetchNotifications();
-    }
 }
 </script>
 
 <template>
-    <div id="notifications-loading" class="text-center text-muted" v-if="loading">
+    <div id="notifications-loading" class="text-center text-muted" v-if="store.loading">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
-    <div id="notifications-list" v-else-if="notifications.length">
+    <div id="notifications-list" v-else-if="store.notifications.length">
         <NotificationEntry
-            v-for="(item, index) in notifications"
+            v-for="(item, index) in store.notifications"
             v-bind="item"
             :key="item.id"
-            @toggleRead="toggleRead(item, index)">
+            @toggleRead="store.toggleRead(item, index)">
         </NotificationEntry>
     </div>
     <div class="text-center text-muted notifications-empty" v-else>
