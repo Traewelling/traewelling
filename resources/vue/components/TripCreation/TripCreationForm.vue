@@ -97,7 +97,7 @@ export default {
                         window.location.href = `/trains/trip/?${new URLSearchParams(query).toString()}`;
                     });
                 }
-                if(data.status === 422) {
+                if (data.status === 422) {
                     data.json().then((result) => {
                         alert(result.message);
                     });
@@ -121,20 +121,24 @@ export default {
     <div>
         <h1 class="fs-4">
             <i class="fa fa-plus" aria-hidden="true"></i>
-            Create trip manually (closed-beta)
+            Create trip manually
         </h1>
 
         <div class="alert alert-info">
             <h2 class="fs-5">
                 <i class="fa fa-info-circle" aria-hidden="true"></i>
-                Beta users only
+                Beta
             </h2>
 
-            This form is currently for testing purposes only.
-            Beta users can create a trip with manually entered data.
-            All Users can check in to this trip.
-            It should be tested if the trip is created correctly and all data required for the trip is present, so no
-            (500) errors occur or if features are missing which are not mentioned in the limitations section.
+            Please note, that the creation of trips is currently in beta.
+            You can create trips manually by entering the stations and times.
+            There are some limitations, which are listed below.
+            <br/>
+            If you encounter any issues, please report them to us.
+            <a href="https://github.com/Traewelling/traewelling/issues/new/choose" target="_blank" class="float-end btn btn-sm btn-outline-danger">
+                Report issue
+            </a>
+
         </div>
 
         <form @submit.prevent="sendForm" class="mb-3">
@@ -166,7 +170,8 @@ export default {
             </div>
             <div class="row g-3 mt-1">
                 <div class="col-4">
-                    <input type="text" class="form-control" placeholder="Linie (S1, ICE 13, ...)" v-model="trainTypeInput">
+                    <input type="text" class="form-control" placeholder="Linie (S1, ICE 13, ...)"
+                           v-model="trainTypeInput">
                 </div>
                 <div class="col-4">
                     <input type="text" class="form-control" placeholder="Nummer (optional)" aria-label="Fahrtnummer"
@@ -193,9 +198,14 @@ export default {
             </h2>
 
             <ul>
-                <li>Only stations available in DB-HAFAS are supported</li>
-                <li>Stopovers can't be created yet</li>
-                <li>Polyline is generated straight from origin to destination (Brouter generation will apply if the difference between air distance and distance by train isn't too big)</li>
+                <li>Only stations available in the time table of DB Navigator are supported</li>
+                <li>
+                    The map lines are generated straight from the given stations
+                    <small>(we try to find a route via Brouter, but this can be result in wrong data)</small>
+                </li>
+                <li>The trip is generally created public - so if you checkin to a trip, everyone who can see your status can ride with you.</li>
+                <li>The operator can't be set in this form (possible via API)</li>
+                <li>There are no visible error messages for this form. So, if nothing happens on submit... sorry. There is an error.</li>
             </ul>
         </div>
     </div>
