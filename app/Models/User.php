@@ -6,6 +6,7 @@ use App\Enum\MapProvider;
 use App\Enum\StatusVisibility;
 use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
+use App\Http\Controllers\Backend\User\TokenController;
 use App\Jobs\SendVerificationEmail;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -18,11 +19,14 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Passport\HasApiTokens;
 use Mastodon;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\PersonalDataExport\ExportsPersonalData;
+use Spatie\PersonalDataExport\PersonalDataSelection;
 
 /**
  * @property int                id
@@ -52,7 +56,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @todo remove "twitterUrl" (Twitter isn't used by traewelling anymore)
  * @mixin Builder
  */
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, ExportsPersonalData
 {
 
     use Notifiable, HasApiTokens, HasFactory, HasRoles;
@@ -283,5 +287,77 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected function getDefaultGuardName(): string {
         return 'web';
+    }
+
+    protected function oAuthClients(): HasMany {
+        return $this->hasMany(OAuthClient::class, 'user_id', 'id');
+    }
+
+    public function selectPersonalData(PersonalDataSelection $personalDataSelection): void {
+        $user                      = $this->toArray();
+        $user['email']             = $this->email;
+        $user['email_verified_at'] = $this->email_verified_at;
+        $user['privacy_ack_at']    = $this->privacy_ack_at;
+        $user['last_login']        = $this->last_login;
+        $user['created_at']        = $this->created_at;
+        $user['updated_at']        = $this->updated_at;
+
+        $webhooks = $this->webhooks()->with('events')->get();
+        $webhooks = $webhooks->map(function($webhook) {
+            $webhook['created_at'] = $webhook->created_at;
+            $webhook['updated_at'] = $webhook->updated_at;
+            $webhook['client_id']  = (int) $webhook->oauth_client_id ?? null;
+            unset($webhook['url']);
+            return $webhook;
+        });
+
+
+        if ($this->avatar && file_exists(public_path('/uploads/avatars/' . $this->avatar))) {
+            $personalDataSelection
+                ->addFile(public_path('/uploads/avatars/' . $this->avatar));
+        }
+
+        $personalDataSelection
+            ->add('user.json', $user)
+            ->add('statuses.json', $this->statuses()->with('tags')->get())
+            ->add('notifications.json', $this->notifications()->get()->toJson())
+            ->add('likes.json', $this->likes()->get()->toJson())
+            ->add('social_profile.json', $this->socialProfile()->with('mastodonserver')->get())
+            ->add('event_suggestions.json', EventSuggestion::where('user_id', $this->id)->get()->toJson())
+            ->add('events.json', Event::where('approved_by', $this->id)->get()->toJson())
+            ->add('webhooks.json', $webhooks)
+            ->add(
+                'webhook_creation_requests.json',
+                WebhookCreationRequest::where('user_id', $this->id)->get()->toJson()
+            )
+            ->add('tokens.json', TokenController::index($this)->toJson())
+            ->add('ics_tokens.json', $this->icsTokens()->get()->toJson())
+            ->add(
+                'password_resets.json',
+                DB::table('password_resets')->select(['email','created_at'])->where('email', $this->email)->get()
+            )
+            ->add('apps.json', $this->oAuthClients()->get()->toJson())
+            ->add('follows.json', DB::table('follows')->where('user_id', $this->id)->get())
+            ->add('followings.json', DB::table('follows')->where('follow_id', $this->id)->get())
+            ->add('blocks.json', DB::table('user_blocks')->where('user_id', $this->id)->get())
+            ->add('blocked_by.json', DB::table('user_blocks')->where('blocked_id', $this->id)->get())
+            ->add('mutes.json', DB::table('user_mutes')->where('user_id', $this->id)->get())
+            ->add('muted_by.json', DB::table('user_mutes')->where('muted_id', $this->id)->get())
+            ->add('follow_requests.json', DB::table('follow_requests')->where('user_id', $this->id)->get())
+            ->add('follows_requests.json', DB::table('follow_requests')->where('follow_id', $this->id)->get())
+            ->add('sessions.json', $this->sessions()->get()->toJson())
+            ->add('home.json', $this->home()->get()->toJson())
+            ->add('hafas_trips.json', DB::table('hafas_trips')->where('user_id', $this->id)->get())
+            ->add('mentions.json', Mention::where('user_id', $this->id)->get()->toJson())
+            ->add('roles.json', $this->roles()->get()->toJson())
+            ->add(
+                'activity_log.json',
+                DB::table('activity_log')->where('causer_type', get_class($this))->where('causer_id', $this->id)->get()
+            )
+            ->add('permissions.json', $this->permissions()->get()->toJson());
+    }
+
+    public function personalDataExportName(): string {
+        return $this->username;
     }
 }

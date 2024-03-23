@@ -11,6 +11,7 @@ class MastodonServer extends Model
     protected $casts    = [
         'id' => 'integer',
     ];
+    protected $hidden   = ['client_id', 'client_secret'];
 
     public function socialProfiles(): HasMany {
         return $this->hasMany(SocialLoginProfile::class, 'mastodon_server', 'id');
