@@ -319,7 +319,6 @@ class User extends Authenticatable implements MustVerifyEmail, ExportsPersonalDa
 
         $personalDataSelection
             ->add('user.json', $user)
-            ->add('statuses.json', $this->statuses()->with('tags')->get())
             ->add('notifications.json', $this->notifications()->get()->toJson())
             ->add('likes.json', $this->likes()->get()->toJson())
             ->add('social_profile.json', $this->socialProfile()->with('mastodonserver')->get())
@@ -348,13 +347,14 @@ class User extends Authenticatable implements MustVerifyEmail, ExportsPersonalDa
             ->add('sessions.json', $this->sessions()->get()->toJson())
             ->add('home.json', $this->home()->get()->toJson())
             ->add('hafas_trips.json', DB::table('hafas_trips')->where('user_id', $this->id)->get())
-            ->add('mentions.json', Mention::where('user_id', $this->id)->get()->toJson())
+            ->add('mentions.json', Mention::where('mentioned_id', $this->id)->get()->toJson())
             ->add('roles.json', $this->roles()->get()->toJson())
             ->add(
                 'activity_log.json',
                 DB::table('activity_log')->where('causer_type', get_class($this))->where('causer_id', $this->id)->get()
             )
-            ->add('permissions.json', $this->permissions()->get()->toJson());
+            ->add('permissions.json', $this->permissions()->get()->toJson())
+            ->add('statuses.json', $this->statuses()->with('tags')->get());
     }
 
     public function personalDataExportName(): string {
