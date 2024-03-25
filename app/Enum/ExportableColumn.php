@@ -33,4 +33,6 @@ enum ExportableColumn: string
         }
         return $title;
     }
+
+//    public
 }

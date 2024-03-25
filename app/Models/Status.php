@@ -107,6 +107,9 @@ class Status extends Model
     }
 
     public function getDescriptionAttribute(): string {
+        if ($this->checkin === null) {
+            return $this->body ?? '';
+        }
         return __('description.status', [
             'username'    => $this->user->name,
             'origin'      => $this->checkin->originStation->name .
