@@ -523,7 +523,7 @@
     "go-to-settings": "Go to settings",
     "subject": "Subject",
     "how-can-we-help": "How can we help?",
-    "support.answer": "We will answer you as soon as possible. The answer will be sent to your e-mail address :address.",
+    "support.answer": "We will answer you as soon as possible. The answer will be sent to your email address :address.",
     "support.success": "We have received your request (Ticket #:ticketNumber). We will answer you as soon as possible by e-mail.",
     "settings.visibility": "Visibility",
     "settings.visibility.disclaimer": "If your profile is private, even statuses marked as public will only be shown to your followers.",
