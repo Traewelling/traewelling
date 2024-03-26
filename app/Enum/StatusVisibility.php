@@ -7,10 +7,10 @@ use App\Interfaces\IconEnumInterface;
 
 enum StatusVisibility: int implements IconEnumInterface
 {
-    case PUBLIC = 0;
-    case UNLISTED = 1;
-    case FOLLOWERS = 2;
-    case PRIVATE = 3;
+    case PUBLIC        = 0;
+    case UNLISTED      = 1;
+    case FOLLOWERS     = 2;
+    case PRIVATE       = 3;
     case AUTHENTICATED = 4;
 
     public function faIcon(): string {

@@ -5,15 +5,15 @@ namespace App\Enum;
 
 enum TimeType: int
 {
-    case PLANNED = 0;
+    case PLANNED  = 0;
     case REALTIME = 1;
-    case MANUAL = 9;
+    case MANUAL   = 9;
 
     private function getTooltipStringId($timeType): string {
         return match ($timeType) {
             self::PLANNED  => 'time-is-planned',
             self::REALTIME => 'time-is-real',
-            self::MANUAL  => 'time-is-manual'
+            self::MANUAL   => 'time-is-manual'
         };
     }
 
