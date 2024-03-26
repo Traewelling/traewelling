@@ -45,8 +45,10 @@ class ManualTripCreator extends Controller
                                        'linename'       => $this->lineName,
                                        'journey_number' => $this->journeyNumber,
                                        'operator_id'    => $this->operator->id ?? null,
-                                       'origin'         => $this->origin->ibnr,
-                                       'destination'    => $this->destination->ibnr,
+                                       'origin'         => $this->origin->ibnr,//TODO: remove when origin and destination are removed from Trip
+                                       'destination'    => $this->destination->ibnr,//TODO: remove when origin and destination are removed from Trip
+                                       'origin_id'      => $this->origin->id,
+                                       'destination_id' => $this->destination->id,
                                        'departure'      => $this->originDeparturePlanned,
                                        'arrival'        => $this->destinationArrivalPlanned,
                                        'source'         => TripSource::USER,
