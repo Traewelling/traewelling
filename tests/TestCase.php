@@ -136,6 +136,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function setUp(): void {
         parent::setUp();
+        $this->artisan('db:seed --class=Database\\\\Seeders\\\\Constants\\\\PermissionSeeder');
         $this->artisan('db:seed --class=Database\\\\Seeders\\\\PrivacyAgreementSeeder');
     }
 
