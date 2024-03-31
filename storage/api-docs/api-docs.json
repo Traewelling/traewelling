@@ -2981,7 +2981,7 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Träwelling-ID of the station (station needs to be looked up first)",
+                        "description": "Träwelling-ID of the station (you can look this up with [trainStationAutocomplete](#/Checkin/trainStationAutocomplete))",
                         "required": true
                     },
                     {
@@ -3471,7 +3471,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/ShortTrainStation"
+                                                "$ref": "#/components/schemas/AutocompleteStation"
                                             }
                                         }
                                     },
@@ -4369,6 +4369,42 @@
                     "name": "Station"
                 }
             },
+            "AutocompleteStation": {
+                "title": "AutocompleteStation",
+                "description": "shortened train station model",
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "description": "Träwelling ID of the station",
+                        "type": "integer",
+                        "example": 12345
+                    },
+                    "ibnr": {
+                        "title": "ibnr",
+                        "description": "IBNR of the station",
+                        "type": "integer",
+                        "example": "8000191",
+                        "nullable": true
+                    },
+                    "rilIdentifier": {
+                        "title": "rilIdentifier",
+                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
+                        "type": "string",
+                        "example": "RK",
+                        "nullable": "true"
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "name of the station",
+                        "type": "string",
+                        "example": "Karlsruhe Hbf"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "AutocompleteStation"
+                }
+            },
             "BearerTokenResponse": {
                 "title": "BearerTokenResponse",
                 "properties": {
@@ -5055,35 +5091,6 @@
                 "type": "object",
                 "xml": {
                     "name": "Polyline"
-                }
-            },
-            "ShortTrainStation": {
-                "title": "ShortTrainStation",
-                "description": "shortened train station model",
-                "properties": {
-                    "ibnr": {
-                        "title": "ibnr",
-                        "description": "IBNR of the station",
-                        "type": "integer",
-                        "example": "8000191"
-                    },
-                    "rilIdentifier": {
-                        "title": "rilIdentifier",
-                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
-                        "type": "string",
-                        "example": "RK",
-                        "nullable": "true"
-                    },
-                    "name": {
-                        "title": "name",
-                        "description": "name of the station",
-                        "type": "string",
-                        "example": "Karlsruhe Hbf"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "ShortTrainStation"
                 }
             },
             "Status": {
