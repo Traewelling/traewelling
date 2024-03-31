@@ -73,7 +73,7 @@ class TransportController extends Controller
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="Träwelling-ID of the station (station needs to be looked up first)",
+     *         description="Träwelling-ID of the station (you can look this up with [trainStationAutocomplete](#/Checkin/trainStationAutocomplete))",
      *         required=true,
      *     ),
      *     @OA\Parameter(
@@ -552,7 +552,7 @@ class TransportController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/ShortTrainStation"
+     *                      ref="#/components/schemas/AutocompleteStation"
      *                  )
      *              )
      *          )
