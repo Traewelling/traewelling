@@ -258,6 +258,8 @@
     "notifications.socialNotShared.mastodon.504": "It looks like your Mastodon instance was not available when we tried to toot. (<code>504 Bad Gateway</code>)",
     "notifications.userJoinedConnection.lead": "<b>@:username</b> is in your connection!",
     "notifications.userJoinedConnection.notice": "@:username is on <b>:linename</b> from <b>:origin</b> to <b>:destination</b>.|@:username is on line <b>:linename</b> from <b>:origin</b> to <b>:destination</b>.",
+    "notifications.personalDataExported.lead": "Your export is ready!",
+    "notifications.personalDataExported.notice": "Your data will be available for download until :date.",
     "pagination.next": "Next &raquo;",
     "pagination.previous": "&laquo; Previous",
     "pagination.back": "&laquo; Back",

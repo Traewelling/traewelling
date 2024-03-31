@@ -13,4 +13,6 @@ interface BaseNotification
      * @return string|null optionally link to which the user should be redirected if clicked on the notification
      */
     public static function getLink(array $data): ?string;
+
+    public function toArray(): array;
 }

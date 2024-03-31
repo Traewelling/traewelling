@@ -276,6 +276,8 @@
     "notifications.socialNotShared.mastodon.504": "Scheinbar war deine Instanz nicht verfügbar, als wir versucht haben, Deinen Check-In zu tooten. (<code>504 Bad Gateway</code>)",
     "notifications.userJoinedConnection.lead": "<b>@:username</b> ist auch in Deiner Verbindung!",
     "notifications.userJoinedConnection.notice": "@:username reist mit <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>.|@:username reist mit Linie <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>.",
+    "notifications.personalDataExported.lead": "Dein Export ist bereit!",
+    "notifications.personalDataExported.notice": "Die Daten stehen für dich bis :date zum Download bereit.",
     "pagination.next": "Nächste Seite &raquo;",
     "pagination.previous": "&laquo; Vorherige Seite",
     "pagination.back": "&laquo; Zurück",

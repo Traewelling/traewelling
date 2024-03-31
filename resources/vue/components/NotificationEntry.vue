@@ -42,6 +42,8 @@ export default {
                     return 'fas fa-user-friends';
                 case 'UserJoinedConnection':
                     return 'fa fa-train';
+                case 'PersonalDataExportedNotification':
+                    return 'fas fa-download';
                 default:
                     return 'far fa-envelope';
             }

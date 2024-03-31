@@ -1,5 +1,7 @@
 <?php
 
+use App\Notifications\PersonalDataExportedNotification;
+
 return [
     /*
      * The disk where the exports will be stored by default.
@@ -26,7 +28,7 @@ return [
      * The notification which will be sent to the user when the export
      * has been created.
      */
-    'notification'             => \Spatie\PersonalDataExport\Notifications\PersonalDataExportedNotification::class,
+    'notification'             => PersonalDataExportedNotification::class,
 
     /*
      * Configure the queue and connection used by `CreatePersonalDataExportJob`
