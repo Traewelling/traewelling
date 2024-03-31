@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000",
+            "url": "https://traewelling.de/api/v1",
             "description": "This instance"
         }
     ],
@@ -5949,9 +5949,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
-                        "tokenUrl": "http://localhost:8000/oauth/token",
-                        "refreshUrl": "http://localhost:8000/auth/refresh",
+                        "authorizationUrl": "https://traewelling.de/oauth/authorize",
+                        "tokenUrl": "https://traewelling.de/oauth/token",
+                        "refreshUrl": "https://traewelling.de/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",
