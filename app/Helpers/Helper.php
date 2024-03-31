@@ -70,7 +70,7 @@ function hasStationBoardTimezoneOffsetToUser(Collection $departures, User $user)
         }
         $departureObject = \Carbon\Carbon::parse($departure->when);
         $userObject      = CarbonTimeZone::create($user->timezone);
-        $referenceObject = \Carbon\Carbon::parse($departureObject->format('Y-m-d'));
+        $referenceObject = \Carbon\Carbon::parse($departureObject->format('Y-m-d H:i:s'));
 
         return $departureObject->tz->toOffsetName($referenceObject) !== $userObject->toOffsetName($referenceObject);
     }
