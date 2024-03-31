@@ -42,6 +42,8 @@ export default {
                     return 'fas fa-user-friends';
                 case 'UserJoinedConnection':
                     return 'fa fa-train';
+                case 'UserMentioned':
+                    return 'fas fa-at';
                 default:
                     return 'far fa-envelope';
             }
