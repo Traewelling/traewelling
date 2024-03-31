@@ -37,11 +37,11 @@ class UserMentioned extends Notification implements BaseNotification
     }
 
     public static function getLead(array $data): string {
-        return "Du wurdest erwähnt!";
+        return __("notifications.userMentioned.lead");
     }
 
     public static function getNotice(array $data): ?string {
-        return $data['creator']['username'] . " hat dich in einem Beitrag erwähnt!";
+        return __("notifications.userMentioned.notice", ['username' => $data['creator']['username']]);
     }
 
     public static function getLink(array $data): ?string {

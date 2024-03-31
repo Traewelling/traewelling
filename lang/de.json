@@ -276,6 +276,8 @@
     "notifications.socialNotShared.mastodon.504": "Scheinbar war deine Instanz nicht verfügbar, als wir versucht haben, Deinen Check-in zu tooten. (<code>504 Bad Gateway</code>)",
     "notifications.userJoinedConnection.lead": "<b>@:username</b> ist auch in Deiner Verbindung!",
     "notifications.userJoinedConnection.notice": "@:username reist mit <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>.|@:username reist mit Linie <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>.",
+    "notifications.userMentioned.lead": "Du wurdest in einem Status erwähnt.",
+    "notifications.userMentioned.notice": "Du wurdest in einem Status von @:username erwähnt.",
     "pagination.next": "Nächste Seite &raquo;",
     "pagination.previous": "&laquo; Vorherige Seite",
     "pagination.back": "&laquo; Zurück",
