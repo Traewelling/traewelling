@@ -13,7 +13,6 @@
                         station-id="{{$station->id}}"
                         @endisset></Stationboard>
 
-                    <!-- Fahrt nicht dabei? Link zur "manuell erstellen" Seite -->
                     <div class="text-center mt-4">
                         <hr/>
                         <p>
@@ -25,7 +24,6 @@
                             {{__('create-journey')}}
                         </a>
                     </div>
-
                 @else
                     @include('includes.station-autocomplete')
                     <div id="timepicker-wrapper">
