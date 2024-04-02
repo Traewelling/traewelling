@@ -118,7 +118,7 @@ export default {
         </template>
     </FullScreenModal>
 
-    <button v-show="editable" class="btn btn-link btn-sm text-white badge bg-trwl" @click="showModal()">
+    <button v-show="editable" class="btn btn-link btn-sm text-white badge bg-trwl text-capitalize" @click="showModal()">
         <i class="fa fa-plus"></i>
         {{ trans("modals.tags.new") }}
     </button>
@@ -127,7 +127,7 @@ export default {
         v-if="editable"
         v-for="tag in tags"
         :key="tag.key"
-        class="btn btn-link btn-sm text-white badge bg-trwl ms-1"
+        class="btn btn-link btn-sm text-white badge bg-trwl ms-1 text-capitalize"
         @click="showModal(tag)"
     >
         <i v-show="getIcon(tag.key) !== 'fa-fw'" :class="[getIcon(tag.key), 'fa']"></i>

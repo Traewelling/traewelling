@@ -15,6 +15,11 @@ export default {
             type: String,
             required: true,
             default: "Karlsruhe Hbf"
+        },
+        stationId: {
+            type: Number,
+            required: true,
+            default: 0
         }
     },
     data() {
@@ -27,7 +32,8 @@ export default {
             selectedTrain: null,
             selectedDestination: null,
             loading: false,
-            stationString: null,
+            stationName: null,
+            trwlStationId: null
         };
     },
     methods: {
@@ -39,7 +45,8 @@ export default {
             this.$refs.modal.show();
         },
         updateStation(station) {
-            this.stationString = station.name;
+            this.stationName   = station.name;
+            this.trwlStationId = station.id;
             this.data          = [];
             this.fetchData();
         },
@@ -69,10 +76,9 @@ export default {
                 time = this.fetchTime.minus({minutes: 5}).toString();
             }
 
-            let query      = this.stationString.replace(/%2F/, " ").replace(/\//, " ");
             let travelType = this.travelType ? this.travelType : "";
 
-            fetch(`/api/v1/trains/station/${query}/departures?when=${time}&travelType=${travelType}`)
+            fetch(`/api/v1/station/${this.trwlStationId}/departures?when=${time}&travelType=${travelType}`)
                 .then((response) => {
                     this.loading = false;
                     this.now     = DateTime.now();
@@ -105,7 +111,11 @@ export default {
     },
     mounted() {
         this.fetchTime     = DateTime.now().setZone("UTC");
-        this.stationString = this.$props.station;
+
+        // These are needed for the communication with blade templates
+        this.stationName   = this.$props.station;
+        this.trwlStationId = this.$props.stationId;
+
         this.fetchData();
     },
     computed: {
@@ -123,7 +133,7 @@ export default {
         v-on:update:time="updateTime"
         v-on:update:station="updateStation"
         v-on:update:travel-type="updateTravelType"
-        :station="{name: stationString}"
+        :station="{name: stationName}"
         :time="now"
     />
     <div v-if="loading" style="max-width: 200px;" class="spinner-grow text-trwl mx-auto p-2" role="status">
@@ -135,7 +145,7 @@ export default {
                 <ProductIcon :product="selectedTrain.line.product"/>
             </div>
             <div class="col-auto align-items-center d-flex me-3">
-                <LineIndicator :product-name="selectedTrain.line.product" :number="selectedTrain.line.name"/>
+                <LineIndicator :product-name="selectedTrain.line.product" :number="selectedTrain.line.name !== null ? selectedTrain.line.name : selectedTrain.line.fahrtNr"/>
             </div>
             <template v-if="selectedDestination">
                 <div class="col-auto align-items-center d-flex me-3">
@@ -164,7 +174,7 @@ export default {
                     <ProductIcon :product="item.line.product"/>
                 </div>
                 <div class="col-2 align-items-center d-flex me-3 justify-content-center">
-                    <LineIndicator :productName="item.line.product" :number="item.line.name"/>
+                    <LineIndicator :productName="item.line.product" :number="item.line.name !== null ? item.line.name : item.line.fahrtNr"/>
                 </div>
                 <div class="col align-items-center d-flex second-stop">
                     <div>
