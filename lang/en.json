@@ -258,6 +258,8 @@
     "notifications.socialNotShared.mastodon.504": "It looks like your Mastodon instance was not available when we tried to toot. (<code>504 Bad Gateway</code>)",
     "notifications.userJoinedConnection.lead": "<b>@:username</b> is in your connection!",
     "notifications.userJoinedConnection.notice": "@:username is on <b>:linename</b> from <b>:origin</b> to <b>:destination</b>.|@:username is on line <b>:linename</b> from <b>:origin</b> to <b>:destination</b>.",
+    "notifications.userMentioned.lead": "You were mentioned in a status.",
+    "notifications.userMentioned.notice": "You were mentioned in a status by @:username.",
     "pagination.next": "Next &raquo;",
     "pagination.previous": "&laquo; Previous",
     "pagination.back": "&laquo; Back",
