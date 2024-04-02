@@ -70,6 +70,8 @@ class AccountDeletionTest extends TestCase
     }
 
     public function testAccountDeletion(): void {
+        Mail::fake();
+
         $user = User::factory(['last_login' => now()->subWeeks(53)])->create();
         $this->assertCount(1, AccountDeletionController::getInactiveUsers());
         $this->assertFalse(AccountDeletionController::wasNotifiedAboutAccountDeletion($user));
