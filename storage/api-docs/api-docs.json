@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000",
+            "url": "https://traewelling.de/api/v1",
             "description": "This instance"
         }
     ],
@@ -2981,7 +2981,7 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Träwelling-ID of the station (station needs to be looked up first)",
+                        "description": "Träwelling-ID of the station (you can look this up with [trainStationAutocomplete](#/Checkin/trainStationAutocomplete))",
                         "required": true
                     },
                     {
@@ -3471,7 +3471,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/ShortTrainStation"
+                                                "$ref": "#/components/schemas/AutocompleteStation"
                                             }
                                         }
                                     },
@@ -4369,6 +4369,42 @@
                     "name": "Station"
                 }
             },
+            "AutocompleteStation": {
+                "title": "AutocompleteStation",
+                "description": "shortened train station model",
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "description": "Träwelling ID of the station",
+                        "type": "integer",
+                        "example": 12345
+                    },
+                    "ibnr": {
+                        "title": "ibnr",
+                        "description": "IBNR of the station",
+                        "type": "integer",
+                        "example": "8000191",
+                        "nullable": true
+                    },
+                    "rilIdentifier": {
+                        "title": "rilIdentifier",
+                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
+                        "type": "string",
+                        "example": "RK",
+                        "nullable": "true"
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "name of the station",
+                        "type": "string",
+                        "example": "Karlsruhe Hbf"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "AutocompleteStation"
+                }
+            },
             "BearerTokenResponse": {
                 "title": "BearerTokenResponse",
                 "properties": {
@@ -4918,7 +4954,7 @@
                         "format": "string",
                         "example": "2023-01-01T00:00:00+00:00"
                     },
-                    "updatedAtForHumans": {
+                    "createdAtForHumans": {
                         "title": "createdAtForHumans",
                         "description": "DON'T USE THIS ATTRIBUTE! This Attribute will be removed in the future. The date when the notification was created, but in human readable form",
                         "type": "string",
@@ -5055,35 +5091,6 @@
                 "type": "object",
                 "xml": {
                     "name": "Polyline"
-                }
-            },
-            "ShortTrainStation": {
-                "title": "ShortTrainStation",
-                "description": "shortened train station model",
-                "properties": {
-                    "ibnr": {
-                        "title": "ibnr",
-                        "description": "IBNR of the station",
-                        "type": "integer",
-                        "example": "8000191"
-                    },
-                    "rilIdentifier": {
-                        "title": "rilIdentifier",
-                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
-                        "type": "string",
-                        "example": "RK",
-                        "nullable": "true"
-                    },
-                    "name": {
-                        "title": "name",
-                        "description": "name of the station",
-                        "type": "string",
-                        "example": "Karlsruhe Hbf"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "ShortTrainStation"
                 }
             },
             "Status": {
@@ -5949,9 +5956,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
-                        "tokenUrl": "http://localhost:8000/oauth/token",
-                        "refreshUrl": "http://localhost:8000/auth/refresh",
+                        "authorizationUrl": "https://traewelling.de/oauth/authorize",
+                        "tokenUrl": "https://traewelling.de/oauth/token",
+                        "refreshUrl": "https://traewelling.de/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",

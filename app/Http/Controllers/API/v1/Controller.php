@@ -30,7 +30,7 @@ use Throwable;
  * )
  *
  * @OA\Server(
- *      url=L5_SWAGGER_CONST_HOST,
+ *      url=L5_SWAGGER_CONST_ENDPOINT,
  *      description="This instance"
  * )
  *

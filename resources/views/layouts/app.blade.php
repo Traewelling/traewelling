@@ -115,7 +115,7 @@
                                     </div>
                                 </form>
                                 <li class="nav-item d-none d-md-inline-block">
-                                    <notification-bell :link="true"></notification-bell>
+                                    <notification-bell :link="true" :allow-fetch="false"></notification-bell>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" href="#" class="nav-link dropdown-toggle mdb-select"

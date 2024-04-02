@@ -36,13 +36,14 @@ export default {
             date: null,
             selectedType: null,
             travelTypes: [
-                {value: "express", color:"rgba(197,199,196,0.5)", icon: "fa-train"},
+                {value: "express", color:"rgba(197,199,196,0.5)", icon: "fa-train", contrast: true},
                 {value: "regional", color:"rgba(193,18,28,0.5)", icon: "fa-train"},
                 {value: "suburban", color:"rgba(0,111,53,0.5)", icon: "fa-train", image: "/img/suburban.svg"},
                 {value: "subway", color:"rgba(21,106,184,0.5)", icon: "fa-subway", image: "/img/subway.svg"},
                 {value: "tram", color:"rgba(217,34,42,0.5)", icon: "fa-tram", image: "/img/tram.svg"},
                 {value: "bus", color:"rgba(163,0,124,0.5)", icon: "fa-bus", image: "/img/bus.svg"},
                 {value: "ferry", color:"rgba(21,106,184,0.5)", icon: "fa-ship"},
+                {value: "taxi", color:"rgb(255,237,74,0.5)", icon: "fa-taxi", contrast: true},
             ]
         };
     },
@@ -189,7 +190,7 @@ export default {
                                 v-for="travelType in travelTypes"
                                 type="button"
                                 class="btn btn-primary btn-sm btn-rounded text-center me-1"
-                                :class="{'active': selectedType === travelType.value}"
+                                :class="{'active': selectedType === travelType.value, 'better-contrast': travelType.contrast ?? false}"
                                 value="travelType"
                                 :style="{backgroundColor: travelType.color}"
                                 @click="setTravelType(travelType)"
@@ -220,11 +221,11 @@ export default {
 
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
     .autocomplete-item {
         background-color: var(--mdb-modal-bg) !important;
     }
-    
+
     .slide-fade-leave-active,
     .slide-fade-enter-active {
         transition: all 0.3s ease-out;
@@ -242,5 +243,23 @@ export default {
         height: 1rem;
         vertical-align: middle;
         display:inline;
+    }
+
+    .better-contrast {
+        color: #4F4F4F;
+    }
+
+    .better-contrast:hover {
+        color: #212529;
+    }
+
+    :root.dark {
+        .better-contrast {
+            color: #FFF;
+        }
+
+        .better-contrast:hover {
+            color: #FFF;
+        }
     }
 </style>

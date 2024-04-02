@@ -5,12 +5,17 @@ namespace Database\Seeders;
 use App\Models\EventSuggestion;
 use App\Models\Trip;
 use App\Models\Station;
+use Database\Seeders\Constants\PermissionSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
 
     public function run(): void {
+        //Seed obligatory constants
+        $this->call(PermissionSeeder::class);
+
+        //Seed example data for development
         $this->call(UsersTableSeeder::class);
         $this->call(ClientSeeder::class);
         $this->call(FollowTableSeeder::class);
