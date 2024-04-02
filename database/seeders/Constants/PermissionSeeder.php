@@ -56,7 +56,10 @@ class PermissionSeeder extends Seeder
         $roleEventModerator->givePermissionTo($permissionDenyEvents);
         $roleEventModerator->givePermissionTo($permissionUpdateEvents);
 
+        //Assign permissions to closed-beta role
+        $roleClosedBeta->revokePermissionTo($permissionCreateManualTrip); //now in open-beta
+
         //Assign permissions to open-beta role
-        $roleClosedBeta->givePermissionTo($permissionCreateManualTrip);
+        $roleOpenBeta->givePermissionTo($permissionCreateManualTrip);
     }
 }
