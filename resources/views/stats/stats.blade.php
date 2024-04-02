@@ -52,13 +52,6 @@
                                 {{__('stats.daily.description')}}
                             </a>
                         </li>
-                        @can('create-manual-trip')
-                            <li>
-                                <a href="{{route('trip.create')}}">
-                                    {{__('create-trip-manually')}}
-                                </a>
-                            </li>
-                        @endcan
                     </ul>
                 @endif
             </div>

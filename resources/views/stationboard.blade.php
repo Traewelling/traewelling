@@ -10,8 +10,22 @@
                     <Stationboard
                         @isset($station)
                             station="{{$station->name}}"
-                            station-id="{{$station->id}}"
+                        station-id="{{$station->id}}"
                         @endisset></Stationboard>
+
+                    <!-- Fahrt nicht dabei? Link zur "manuell erstellen" Seite -->
+                    <div class="text-center mt-4">
+                        <hr/>
+                        <p>
+                            <span class="badge text-bg-info">Beta</span>
+                            {{__('missing-journey')}}
+                        </p>
+                        <a href="{{ route('trip.create') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fa-solid fa-plus"></i>
+                            {{__('create-journey')}}
+                        </a>
+                    </div>
+
                 @else
                     @include('includes.station-autocomplete')
                     <div id="timepicker-wrapper">

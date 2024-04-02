@@ -759,5 +759,6 @@
     "error.429": "Too many requests",
     "error.500": "Server error",
     "support.rate_limit_exceeded": "You have recently created a support request. Please wait a bit before creating another request.",
-    "create-trip-manually": "Create trip manually"
+    "missing-journey": "Haven't found your Journey?",
+    "create-journey": "Create journey"
 }
