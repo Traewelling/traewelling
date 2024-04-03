@@ -12,7 +12,7 @@
     ],
     "license": "AGPL-3.0-only",
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "ext-exif": "*",
         "ext-gd": "*",
         "ext-json": "*",
