@@ -58,15 +58,18 @@ document.addEventListener("DOMContentLoaded", function () {
         fallbackLang = "de";
     }
 
+    const i18nOptions = {
+        fallbackLang: fallbackLang,
+        fallbackMissingTranslations: true,
+        resolve: (lang) => import(`../../lang/${lang}.json`)
+    }
+
     if (document.getElementById("nav-main")) {
         const app = createApp({});
         app.component("NotificationBell", NotificationBell);
         app.config.devtools = true;
         app.use(pinia);
-        app.use(i18nVue, {
-            fallbackLang: fallbackLang,
-            resolve: (lang) => import(`../../lang/${lang}.json`)
-        });
+        app.use(i18nVue, i18nOptions);
         app.mount("#nav-main");
     }
 
@@ -74,10 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const app2 = createApp({});
         app2.component("ActiveJourneyMap", ActiveJourneyMap);
         app2.use(pinia);
-        app2.use(i18nVue, {
-            fallbackLang: fallbackLang,
-            resolve: (lang) => import(`../../lang/${lang}.json`)
-        });
+        app2.use(i18nVue, i18nOptions);
         app2.mount("#activeJourneys");
     }
 
@@ -86,36 +86,28 @@ document.addEventListener("DOMContentLoaded", function () {
         app3.component("Stationboard", Stationboard);
         app3.component("Stationautocomplete", StationAutocomplete);
         app3.use(pinia);
-        app3.use(i18nVue, {
-            fallbackLang: fallbackLang,
-            resolve: (lang) => import(`../../lang/${lang}.json`)
-        });
+        app3.use(i18nVue, i18nOptions);
         app3.mount("#station-board-new");
     }
 
     if (document.getElementById("checkin-success-helper")) {
         const app4 = createApp({});
         app4.component("CheckinSuccessHelper", CheckinSuccessHelper);
-        app4.use(i18nVue, {
-            fallbackLang: fallbackLang,
-            resolve: (lang) => import(`../../lang/${lang}.json`)
-        });
+        app4.use(i18nVue, i18nOptions);
         app4.mount("#checkin-success-helper");
     }
 
     if (document.getElementById("tag-helper")) {
         const app5 = createApp({});
         app5.component("TagHelper", TagHelper);
-        app5.use(i18nVue, {
-            fallbackLang: fallbackLang,
-            resolve: (lang) => import(`../../lang/${lang}.json`)
-        });
+        app5.use(i18nVue, i18nOptions);
         app5.mount("#tag-helper");
     }
 
     if (document.getElementById("trip-creation-form")) {
         const app6 = createApp({});
         app6.component("TripCreationForm", TripCreationForm);
+        app6.use(i18nVue, i18nOptions);
         app6.mount("#trip-creation-form");
     }
 });
