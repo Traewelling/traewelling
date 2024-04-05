@@ -550,6 +550,7 @@
     "checkin.points.full": "Du hättest :points Punkte bekommen können.",
     "checkin.points.forced": "Du hast für diesen Check-in keine Punkte erhalten, da du ihn forciert hast.",
     "checkin.conflict": "Es existiert bereits ein paralleler Check-in.",
+    "checkin.success.title": "Erfolgreich eingecheckt!",
     "checkin.conflict.question": "Möchtest du trotzdem einchecken? Hierfür bekommst du keine Punkte, aber deine persönliche Statistik wird dennoch aktualisiert.",
     "generic.error": "Fehler",
     "christmas-mode": "Weihnachtsmodus",
