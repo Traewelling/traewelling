@@ -216,6 +216,7 @@
     "messages.cookie-notice-button": "Okay",
     "messages.cookie-notice-learn": "Learn more",
     "messages.exception.general": "An unknown error occurred. Please try again.",
+    "messages.exception.general-values": "An unknown error occurred. Please try again with different values.",
     "messages.exception.reference": "Error reference: :reference",
     "messages.exception.generalHafas": "There was a problem with the interface to the timetable data. Please try again.",
     "messages.exception.hafas.502": "The timetable could not be loaded. Please try again in a moment.",

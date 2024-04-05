@@ -98,11 +98,12 @@ export default {
 
                         window.location.href = `/trains/trip/?${new URLSearchParams(query).toString()}`;
                     });
-                }
-                if (data.status === 422) {
+                } else if (data.status === 422) {
                     data.json().then((result) => {
                         alert(result.message);
                     });
+                } else {
+                    alert(trans("messages.exception.general-values"));
                 }
             });
         },
