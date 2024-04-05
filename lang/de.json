@@ -778,7 +778,7 @@
     "trip_creation.form.stopover": "Zwischenhalt",
     "trip_creation.form.departure": "Abfahrt",
     "trip_creation.form.arrival": "Ankunft",
-    "trip_creation.form.line": "Linie (S1, ICE 13, ...)",
+    "trip_creation.form.line": "Linie (S1, ICE 13, …)",
     "trip_creation.form.travel_type": "Kategorie",
     "trip_creation.form.number": "Nummer (optional)",
     "trip_creation.form.save": "Speichern",
