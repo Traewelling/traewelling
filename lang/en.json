@@ -763,5 +763,7 @@
     "error.419": "Page expired",
     "error.429": "Too many requests",
     "error.500": "Server error",
-    "support.rate_limit_exceeded": "You have recently created a support request. Please wait a bit before creating another request."
+    "support.rate_limit_exceeded": "You have recently created a support request. Please wait a bit before creating another request.",
+    "missing-journey": "Haven't found your Journey?",
+    "create-journey": "Create journey"
 }
