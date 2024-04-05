@@ -766,7 +766,7 @@
     "error.429": "Too many requests",
     "error.500": "Server error",
     "support.rate_limit_exceeded": "You have recently created a support request. Please wait a bit before creating another request.",
-    "missing-journey": "Haven't found your Journey?",
+    "missing-journey": "Haven't found your journey?",
     "create-journey": "Create journey",
     "trip_creation.title": "Create trip manually",
     "trip_creation.beta": "Please note, that the creation of trips is currently in beta. You can create trips manually by entering the stations and times. There are some limitations, which are listed below.",
