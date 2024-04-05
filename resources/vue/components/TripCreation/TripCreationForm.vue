@@ -121,7 +121,7 @@ export default {
 
 <template>
     <div>
-        <h1 class="fs-4">
+        <h1 class="fs-2">
             <i class="fa fa-plus" aria-hidden="true"></i>
             {{ trans("trip_creation.title") }}
         </h1>
@@ -135,61 +135,67 @@ export default {
             {{ trans("trip_creation.beta") }}
             <br/>
             {{ trans("trip_creation.beta2") }}
-            <a href="https://github.com/Traewelling/traewelling/issues/new/choose" target="_blank" class="float-end btn btn-sm btn-outline-danger">
+            <a href="https://github.com/Traewelling/traewelling/issues/new/choose" target="_blank"
+               class="float-end btn btn-sm btn-outline-danger">
                 {{ trans("trip_creation.report_issue") }}
             </a>
-
         </div>
 
-        <form @submit.prevent="sendForm" class="mb-3">
-            <div class="row g-3 mb-3">
-                <StationRow
-                    :placeholder="trans('trip_creation.form.origin')"
-                    :arrival="false"
-                    v-on:update:station="setOrigin"
-                    v-on:update:timeFieldB="setDeparture"
-                ></StationRow>
-            </div>
-            <a href="#" @click="addStopover">{{ trans("trip_creation.form.add_stopover") }} <i class="fa fa-plus" aria-hidden="true"></i></a>
-            <div class="row g-3 mt-1" v-for="(stopover, key) in stopovers" v-bind:key="key">
-                <StationRow
-                    :placeholder="trans('trip_creation.form.stopover')"
-                    v-on:update:station="setStopoverStation($event, key)"
-                    v-on:update:timeFieldB="setStopoverDeparture($event, key)"
-                    v-on:update:timeFieldA="setStopoverArrival($event, key)"
-                ></StationRow>
-                <hr>
-            </div>
-            <div class="row g-3 mt-1">
-                <StationRow
-                    :placeholder="trans('trip_creation.form.destination')"
-                    :departure="false"
-                    v-on:update:station="setDestination"
-                    v-on:update:timeFieldB="setArrival"
-                ></StationRow>
-            </div>
-            <div class="row g-3 mt-1">
-                <div class="col-4">
-                    <input type="text" class="form-control" :placeholder="trans('trip_creation.form.line')"
-                           v-model="trainTypeInput">
+        <div class="card mb-3">
+            <form @submit.prevent="sendForm" class="card-body">
+                <div class="row g-3 mb-3">
+                    <StationRow
+                        :placeholder="trans('trip_creation.form.origin')"
+                        :arrival="false"
+                        v-on:update:station="setOrigin"
+                        v-on:update:timeFieldB="setDeparture"
+                    ></StationRow>
                 </div>
-                <div class="col-4">
-                    <input type="text" class="form-control" :placeholder="trans('trip_creation.form.number')"
-                           v-model="journeyNumberInput">
+                <a href="#" @click="addStopover">{{ trans("trip_creation.form.add_stopover") }} <i class="fa fa-plus"
+                                                                                                   aria-hidden="true"></i></a>
+                <div class="row g-3 mt-1" v-for="(stopover, key) in stopovers" v-bind:key="key">
+                    <StationRow
+                        :placeholder="trans('trip_creation.form.stopover')"
+                        v-on:update:station="setStopoverStation($event, key)"
+                        v-on:update:timeFieldB="setStopoverDeparture($event, key)"
+                        v-on:update:timeFieldA="setStopoverArrival($event, key)"
+                    ></StationRow>
+                    <hr>
                 </div>
-                <div class="col">
-                    <select class="form-select" v-model="form.category">
-                        <option selected>{{ trans("trip_creation.form.travel_type") }}</option>
-                        <option v-for="category in categories" :value="category.value">{{ category.text }}</option>
-                    </select>
+                <div class="row g-3 mt-1">
+                    <StationRow
+                        :placeholder="trans('trip_creation.form.destination')"
+                        :departure="false"
+                        v-on:update:station="setDestination"
+                        v-on:update:timeFieldB="setArrival"
+                    ></StationRow>
                 </div>
-            </div>
-            <div class="row justify-content-end mt-3">
-                <div class="col-4">
-                    <button type="submit" class="btn btn-primary float-end">{{ trans("trip_creation.form.save") }}</button>
+                <div class="row g-3 mt-1">
+                    <div class="col-4">
+                        <input type="text" class="form-control" :placeholder="trans('trip_creation.form.line')"
+                               v-model="trainTypeInput">
+                    </div>
+                    <div class="col-4">
+                        <input type="text" class="form-control" :placeholder="trans('trip_creation.form.number')"
+                               v-model="journeyNumberInput">
+                    </div>
+                    <div class="col">
+                        <select class="form-select" v-model="form.category">
+                            <option selected>{{ trans("trip_creation.form.travel_type") }}</option>
+                            <option v-for="category in categories" :value="category.value">{{ category.text }}</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-        </form>
+                <div class="row justify-content-end mt-3">
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary float-end">{{
+                                trans("trip_creation.form.save")
+                            }}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
 
         <div class="alert alert-warning">
             <h2 class="fs-5">

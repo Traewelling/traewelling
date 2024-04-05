@@ -3,9 +3,7 @@
 @section('title', 'Create trip manually')
 
 @section('content')
-    <div class="container">
-        <div id="trip-creation-form">
-            <trip-creation-form></trip-creation-form>
-        </div>
+    <div id="trip-creation-form" class="container">
+        <trip-creation-form></trip-creation-form>
     </div>
 @endsection
