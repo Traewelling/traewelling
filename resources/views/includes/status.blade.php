@@ -23,7 +23,10 @@
                 <active-journey-map
                     map-provider="{{ Auth::user()->mapprovider ?? "default" }}"
                     :status-id="{{ $status->id }}"
-                />
+                    departure="{{ $status->checkin->departure->getTimestamp() }}"
+                    arrival="{{ $status->checkin->arrival->getTimestamp() }}"
+                >
+                </active-journey-map>
             </div>
         </div>
     @endif
