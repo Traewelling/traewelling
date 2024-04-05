@@ -1,6 +1,7 @@
 <script>
 import StationRow from "./StationRow.vue";
 import {DateTime} from "luxon";
+import {trans} from "laravel-vue-i18n";
 
 export default {
     name: "TripCreationForm",
@@ -40,6 +41,7 @@ export default {
         };
     },
     methods: {
+        trans,
         addStopover() {
             const dummyStopover = {
                 station: {
@@ -119,9 +121,9 @@ export default {
 
 <template>
     <div>
-        <h1 class="fs-4">
+        <h1 class="fs-2">
             <i class="fa fa-plus" aria-hidden="true"></i>
-            Create trip manually
+            {{ trans("trip_creation.title") }}
         </h1>
 
         <div class="alert alert-info">
@@ -130,82 +132,86 @@ export default {
                 Beta
             </h2>
 
-            Please note, that the creation of trips is currently in beta.
-            You can create trips manually by entering the stations and times.
-            There are some limitations, which are listed below.
+            {{ trans("trip_creation.beta") }}
             <br/>
-            If you encounter any issues, please report them to us.
-            <a href="https://github.com/Traewelling/traewelling/issues/new/choose" target="_blank" class="float-end btn btn-sm btn-outline-danger">
-                Report issue
+            {{ trans("trip_creation.beta2") }}
+            <a href="https://github.com/Traewelling/traewelling/issues/new/choose" target="_blank"
+               class="float-end btn btn-sm btn-outline-danger">
+                {{ trans("trip_creation.report_issue") }}
             </a>
-
         </div>
 
-        <form @submit.prevent="sendForm" class="mb-3">
-            <div class="row g-3 mb-3">
-                <StationRow
-                    placeholder="Startbahnhof"
-                    :arrival="false"
-                    v-on:update:station="setOrigin"
-                    v-on:update:timeFieldB="setDeparture"
-                ></StationRow>
-            </div>
-            <a href="#" @click="addStopover">Zwischenhalt hinzufügen <i class="fa fa-plus" aria-hidden="true"></i></a>
-            <div class="row g-3 mt-1" v-for="(stopover, key) in stopovers" v-bind:key="key">
-                <StationRow
-                    placeholder="Zwischenhalt"
-                    v-on:update:station="setStopoverStation($event, key)"
-                    v-on:update:timeFieldB="setStopoverDeparture($event, key)"
-                    v-on:update:timeFieldA="setStopoverArrival($event, key)"
-                ></StationRow>
-                <hr>
-            </div>
-            <div class="row g-3 mt-1">
-                <StationRow
-                    placeholder="Zielbahnhof"
-                    :departure="false"
-                    v-on:update:station="setDestination"
-                    v-on:update:timeFieldB="setArrival"
-                ></StationRow>
-            </div>
-            <div class="row g-3 mt-1">
-                <div class="col-4">
-                    <input type="text" class="form-control" placeholder="Linie (S1, ICE 13, ...)"
-                           v-model="trainTypeInput">
+        <div class="card mb-3">
+            <form @submit.prevent="sendForm" class="card-body">
+                <div class="row g-3 mb-3">
+                    <StationRow
+                        :placeholder="trans('trip_creation.form.origin')"
+                        :arrival="false"
+                        v-on:update:station="setOrigin"
+                        v-on:update:timeFieldB="setDeparture"
+                    ></StationRow>
                 </div>
-                <div class="col-4">
-                    <input type="text" class="form-control" placeholder="Nummer (optional)" aria-label="Fahrtnummer"
-                           v-model="journeyNumberInput">
+                <a href="#" @click="addStopover">{{ trans("trip_creation.form.add_stopover") }} <i class="fa fa-plus"
+                                                                                                   aria-hidden="true"></i></a>
+                <div class="row g-3 mt-1" v-for="(stopover, key) in stopovers" v-bind:key="key">
+                    <StationRow
+                        :placeholder="trans('trip_creation.form.stopover')"
+                        v-on:update:station="setStopoverStation($event, key)"
+                        v-on:update:timeFieldB="setStopoverDeparture($event, key)"
+                        v-on:update:timeFieldA="setStopoverArrival($event, key)"
+                    ></StationRow>
+                    <hr>
                 </div>
-                <div class="col">
-                    <select class="form-select" aria-label="Default select example" v-model="form.category">
-                        <option selected>Kategorie</option>
-                        <option v-for="category in categories" :value="category.value">{{ category.text }}</option>
-                    </select>
+                <div class="row g-3 mt-1">
+                    <StationRow
+                        :placeholder="trans('trip_creation.form.destination')"
+                        :departure="false"
+                        v-on:update:station="setDestination"
+                        v-on:update:timeFieldB="setArrival"
+                    ></StationRow>
                 </div>
-            </div>
-            <div class="row justify-content-end mt-3">
-                <div class="col-4">
-                    <button type="submit" class="btn btn-primary float-end">Speichern</button>
+                <div class="row g-3 mt-1">
+                    <div class="col-4">
+                        <input type="text" class="form-control" :placeholder="trans('trip_creation.form.line')"
+                               v-model="trainTypeInput">
+                    </div>
+                    <div class="col-4">
+                        <input type="text" class="form-control" :placeholder="trans('trip_creation.form.number')"
+                               v-model="journeyNumberInput">
+                    </div>
+                    <div class="col">
+                        <select class="form-select" v-model="form.category">
+                            <option selected>{{ trans("trip_creation.form.travel_type") }}</option>
+                            <option v-for="category in categories" :value="category.value">{{ category.text }}</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-        </form>
+                <div class="row justify-content-end mt-3">
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary float-end">{{
+                                trans("trip_creation.form.save")
+                            }}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
 
         <div class="alert alert-warning">
             <h2 class="fs-5">
                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                Current limitations
+                {{ trans("trip_creation.limitations") }}
             </h2>
 
             <ul>
-                <li>Only stations available in the time table of DB Navigator are supported</li>
+                <li>{{ trans("trip_creation.limitations.1") }}</li>
                 <li>
-                    The map lines are generated straight from the given stations
-                    <small>(we try to find a route via Brouter, but this can be result in wrong data)</small>
+                    {{ trans("trip_creation.limitations.2") }}
+                    <small>{{ trans("trip_creation.limitations.2.small") }}</small>
                 </li>
-                <li>The trip is generally created public - so if you checkin to a trip, everyone who can see your status can ride with you.</li>
-                <li>The operator can't be set in this form (possible via API)</li>
-                <li>There are no visible error messages for this form. So, if nothing happens on submit... sorry. There is an error.</li>
+                <li>{{ trans("trip_creation.limitations.3") }}</li>
+                <li>{{ trans("trip_creation.limitations.4") }}</li>
+                <li>{{ trans("trip_creation.limitations.5") }}</li>
             </ul>
         </div>
     </div>

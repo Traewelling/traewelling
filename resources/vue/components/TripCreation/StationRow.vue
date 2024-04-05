@@ -1,6 +1,7 @@
 <script>
 import FullScreenModal from "../FullScreenModal.vue";
 import _ from "lodash";
+import {trans} from "laravel-vue-i18n";
 
 export default {
     name: "StationRow",
@@ -8,7 +9,6 @@ export default {
     props: {
         placeholder: {
             type: String,
-            default: "Zwischenhalt"
         },
         arrival: {
             type: Boolean,
@@ -33,15 +33,15 @@ export default {
     computed: {
         timeFieldALabel() {
             if (this.arrival && this.departure) {
-                return 'Ankunft';
+                return trans("trip_creation.form.arrival");
             }
-            return this.arrival ? 'Ankunft' : 'Abfahrt';
+            return this.arrival ? trans("trip_creation.form.arrival") : trans("trip_creation.form.departure");
         },
         timeFieldBLabel() {
             if (this.arrival && this.departure) {
-                return 'Abfahrt';
+                return trans("trip_creation.form.departure");
             }
-            return this.arrival ? 'Ankunft' : 'Abfahrt';
+            return this.arrival ? trans("trip_creation.form.arrival") : trans("trip_creation.form.departure");
         }
     },
     methods: {
@@ -125,7 +125,3 @@ export default {
         >
     </div>
 </template>
-
-<style scoped lang="scss">
-
-</style>
