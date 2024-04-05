@@ -234,6 +234,7 @@
     "messages.cookie-notice-button": "Okay",
     "messages.cookie-notice-learn": "Mehr erfahren",
     "messages.exception.general": "Ein unbekannter Fehler ist aufgetreten. Bitte probiere es erneut.",
+    "messages.exception.general-values": "Ein unbekannter Fehler ist aufgetreten. Bitte probiere es mit neuen Werten erneut.",
     "messages.exception.reference": "Fehler-Referenz: :reference",
     "messages.exception.generalHafas": "Es gab ein Problem mit der Schnittstelle zu den Fahrplandaten. Bitte probiere es erneut.",
     "messages.exception.hafas.502": "Der Fahrplan konnte nicht geladen werden. Bitte versuche es gleich erneut.",
