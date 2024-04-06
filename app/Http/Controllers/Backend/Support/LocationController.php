@@ -145,9 +145,14 @@ class LocationController
      * @throws JsonException
      */
     private function getPolylineWithTimestamps(): stdClass {
-        $geoJsonObj = json_decode('{"type":"FeatureCollection","features":[]}', false, 512, JSON_THROW_ON_ERROR);
         if (isset($this->trip->polyline)) {
+            // decode GeoJSON object from polyline
             $geoJsonObj = json_decode($this->trip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
+        } else {
+            // create empty GeoJSON object
+            $geoJsonObj           = new stdClass();
+            $geoJsonObj->type     = 'FeatureCollection';
+            $geoJsonObj->features = [];
         }
         $stopovers = $this->trip->stopovers;
 
@@ -226,7 +231,7 @@ class LocationController
     private function getPolylineBetween(bool $preserveKeys = true): stdClass|FeatureCollection {
         $this->trip->loadMissing(['stopovers.station']);
         $geoJson = $this->getPolylineWithTimestamps();
-        if (count($geoJson->features) === 0) {
+        if (count((array) $geoJson->features) === 0) {
             return $this->createPolylineFromStopovers();
         }
 
@@ -257,10 +262,10 @@ class LocationController
         }
         if (is_array($features)) { // object is a rarely stdClass without content if no features in the GeoJSON
             $slicedFeatures    = array_slice(
-                $features,
-                $originIndex,
-                $destinationIndex - $originIndex + 1,
-                $preserveKeys
+                array:         $features,
+                offset:        $originIndex,
+                length:        $destinationIndex - $originIndex + 1,
+                preserve_keys: $preserveKeys
             );
             $geoJson->features = $slicedFeatures;
         }
