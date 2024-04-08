@@ -5543,16 +5543,16 @@
         },
         {
             "name": "revolution/laravel-mastodon-api",
-            "version": "3.1.0",
+            "version": "3.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kawax/laravel-mastodon-api.git",
-                "reference": "4c3c5aefc458de736b26714cacd79a079d52a923"
+                "reference": "869d646a0c1d4d45706b1dfece7c26d5108069ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kawax/laravel-mastodon-api/zipball/4c3c5aefc458de736b26714cacd79a079d52a923",
-                "reference": "4c3c5aefc458de736b26714cacd79a079d52a923",
+                "url": "https://api.github.com/repos/kawax/laravel-mastodon-api/zipball/869d646a0c1d4d45706b1dfece7c26d5108069ec",
+                "reference": "869d646a0c1d4d45706b1dfece7c26d5108069ec",
                 "shasum": ""
             },
             "require": {
@@ -5562,9 +5562,7 @@
                 "php": "^8.1"
             },
             "require-dev": {
-                "mockery/mockery": "^1.6",
-                "orchestra/testbench": "^8.0",
-                "phpunit/phpunit": "^10.0"
+                "orchestra/testbench": "^8.0||^9.0"
             },
             "type": "library",
             "extra": {
@@ -5598,9 +5596,9 @@
                 "mastodon"
             ],
             "support": {
-                "source": "https://github.com/kawax/laravel-mastodon-api/tree/3.1.0"
+                "source": "https://github.com/kawax/laravel-mastodon-api/tree/3.1.2"
             },
-            "time": "2024-02-20T05:25:40+00:00"
+            "time": "2024-04-04T07:32:28+00:00"
         },
         {
             "name": "romanzipp/laravel-queue-monitor",
