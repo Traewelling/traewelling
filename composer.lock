@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bb5005e80922aaed650a3ea3d90ddded",
+    "content-hash": "ae22b756f04e413ffda53849b2fa3709",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -6658,16 +6658,16 @@
         },
         {
             "name": "swagger-api/swagger-ui",
-            "version": "v5.13.0",
+            "version": "v5.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swagger-api/swagger-ui.git",
-                "reference": "65e4f2382208f0fd18e443728d728c44186fe653"
+                "reference": "7bcf090d982714cd9c230c598c8eef38f1427c5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swagger-api/swagger-ui/zipball/65e4f2382208f0fd18e443728d728c44186fe653",
-                "reference": "65e4f2382208f0fd18e443728d728c44186fe653",
+                "url": "https://api.github.com/repos/swagger-api/swagger-ui/zipball/7bcf090d982714cd9c230c598c8eef38f1427c5b",
+                "reference": "7bcf090d982714cd9c230c598c8eef38f1427c5b",
                 "shasum": ""
             },
             "type": "library",
@@ -6713,9 +6713,9 @@
             ],
             "support": {
                 "issues": "https://github.com/swagger-api/swagger-ui/issues",
-                "source": "https://github.com/swagger-api/swagger-ui/tree/v5.13.0"
+                "source": "https://github.com/swagger-api/swagger-ui/tree/v5.14.0"
             },
-            "time": "2024-03-29T13:42:47+00:00"
+            "time": "2024-04-08T08:27:58+00:00"
         },
         {
             "name": "symfony/console",
@@ -10979,12 +10979,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "55338196704d6dae11257b34c4f5cdde484dfaa9"
+                "reference": "00077527dfa5415280a28a044eca385eb3feb7ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/55338196704d6dae11257b34c4f5cdde484dfaa9",
-                "reference": "55338196704d6dae11257b34c4f5cdde484dfaa9",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/00077527dfa5415280a28a044eca385eb3feb7ee",
+                "reference": "00077527dfa5415280a28a044eca385eb3feb7ee",
                 "shasum": ""
             },
             "conflict": {
@@ -11448,8 +11448,8 @@
                 "serluck/phpwhois": "<=4.2.6",
                 "sfroemken/url_redirect": "<=1.2.1",
                 "sheng/yiicms": "<=1.2",
-                "shopware/core": "<=6.5.7.3",
-                "shopware/platform": "<=6.5.7.3|>=6.5.8,<6.5.8.7-dev",
+                "shopware/core": "<6.5.8.8-dev|>=6.6.0.0-RC1-dev,<6.6.1",
+                "shopware/platform": "<6.5.8.8-dev|>=6.6.0.0-RC1-dev,<6.6.1",
                 "shopware/production": "<=6.3.5.2",
                 "shopware/shopware": "<=5.7.17",
                 "shopware/storefront": "<=6.4.8.1|>=6.5.8,<6.5.8.7-dev",
@@ -11716,7 +11716,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-04-03T22:04:54+00:00"
+            "time": "2024-04-08T16:06:11+00:00"
         },
         {
             "name": "sebastian/cli-parser",
