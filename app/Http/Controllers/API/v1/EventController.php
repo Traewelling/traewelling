@@ -37,7 +37,7 @@ class EventController extends Controller
      *              @OA\Property (
      *                  property="data",
      *                  type="object",
-     *                      ref="#/components/schemas/Event"
+     *                      ref="#/components/schemas/EventResource"
      *              )
      *          )
      *       ),
@@ -178,7 +178,7 @@ class EventController extends Controller
      *                  property="data",
      *                  type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/Event"
+     *                      ref="#/components/schemas/EventResource"
      *                  )
      *              )
      *          )
@@ -283,7 +283,7 @@ class EventController extends Controller
      *                  property="data",
      *                  type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/Event"
+     *                      ref="#/components/schemas/EventResource"
      *                  )
      *              )
      *          )
