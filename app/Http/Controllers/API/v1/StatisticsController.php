@@ -377,7 +377,7 @@ class StatisticsController extends Controller
         );
 
         $polylines = null;
-        if ($validated['withPolylines'] === 'true' ?? false) {
+        if (!empty($validated['withPolylines']) && $validated['withPolylines'] !== 'false') {
             $polylines = collect();
             $statuses->each(function(Status $status) use (&$polylines) {
                 $polylines->add(new Feature(LocationController::forStatus($status)->getMapLines()));
