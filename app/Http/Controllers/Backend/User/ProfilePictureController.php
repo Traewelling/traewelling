@@ -7,7 +7,9 @@ use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
-use Intervention\Image\ImageManagerStatic as Image;
+use Intervention\Image\Encoders\PngEncoder;
+use Intervention\Image\ImageManager as Image;
+use Intervention\Image\Drivers\Gd\Driver;
 
 abstract class ProfilePictureController extends Controller
 {
@@ -81,8 +83,10 @@ abstract class ProfilePictureController extends Controller
 
         $hex = dechex($hash & 0x00FFFFFF);
 
-        return Image::canvas(512, 512, $hex)
-                    ->insert(public_path('/img/user.png'))
-                    ->encode('png')->getEncoded();
+        return (new Image(new Driver()))->create(512, 512)
+                    ->fill($hex)
+                    ->place(public_path('/img/user.png'))
+                    ->encode(new PngEncoder())
+                    ->toString();
     }
 }
