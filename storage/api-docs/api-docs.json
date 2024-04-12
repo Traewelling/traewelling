@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "https://traewelling.de/api/v1",
+            "url": "http://localhost:8000/api/v1",
             "description": "This instance"
         }
     ],
@@ -164,7 +164,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/Event"
+                                            "$ref": "#/components/schemas/EventResource"
                                         }
                                     },
                                     "type": "object"
@@ -346,7 +346,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Event"
+                                                "$ref": "#/components/schemas/EventResource"
                                             }
                                         }
                                     },
@@ -442,7 +442,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Event"
+                                                "$ref": "#/components/schemas/EventResource"
                                             }
                                         }
                                     },
@@ -1902,13 +1902,31 @@
                 "operationId": "getDailyStatistics",
                 "parameters": [
                     {
+                        "name": "date",
+                        "in": "path",
+                        "description": "Date for the statistics in Format `YYYY-MM-DD`",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "2024-04-09"
+                    },
+                    {
+                        "name": "timezone",
+                        "in": "query",
+                        "description": "Timezone for the date. If not set, the user's timezone will be used.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Europe/Berlin"
+                    },
+                    {
                         "name": "withPolylines",
                         "in": "query",
                         "description": "If this parameter is set, the polylines will be returned as well. Otherwise attribute is\n     *          null.",
                         "schema": {
-                            "type": "string"
-                        },
-                        "example": ""
+                            "type": "boolean"
+                        }
                     }
                 ],
                 "responses": {
@@ -4445,6 +4463,49 @@
                     "name": "Station"
                 }
             },
+            "EventResource": {
+                "title": "Event",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 39
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "9-Euro-Ticket"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "9_euro_ticket"
+                    },
+                    "hashtag": {
+                        "type": "string",
+                        "example": "NeunEuroTicket"
+                    },
+                    "host": {
+                        "type": "string",
+                        "example": "9-Euro-Ticket GmbH"
+                    },
+                    "url": {
+                        "type": "string",
+                        "example": "https://9-euro-ticket.de"
+                    },
+                    "begin": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-01-01T00:00:00+00:00"
+                    },
+                    "end": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-01-02T00:00:00+00:00"
+                    },
+                    "station": {
+                        "$ref": "#/components/schemas/Station"
+                    }
+                },
+                "type": "object"
+            },
             "AutocompleteStation": {
                 "title": "AutocompleteStation",
                 "description": "shortened train station model",
@@ -4645,76 +4706,6 @@
                 "type": "object",
                 "xml": {
                     "name": "Client"
-                }
-            },
-            "Event": {
-                "title": "Event",
-                "description": "Event model",
-                "properties": {
-                    "id": {
-                        "title": "ID",
-                        "description": "ID",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 39
-                    },
-                    "name": {
-                        "title": "name",
-                        "description": "Name of event",
-                        "type": "string",
-                        "example": "9-Euro-Ticket"
-                    },
-                    "slug": {
-                        "title": "slug",
-                        "description": "URL-Slug for event",
-                        "type": "string",
-                        "example": "9_euro_ticket"
-                    },
-                    "hashtag": {
-                        "title": "hashtag",
-                        "description": "social media hashtag for event",
-                        "type": "string",
-                        "example": "NeunEuroTicket"
-                    },
-                    "host": {
-                        "title": "host",
-                        "description": "host of the event",
-                        "example": "Die Bundesregierung"
-                    },
-                    "url": {
-                        "title": "url",
-                        "description": "external URL for this event",
-                        "type": "string",
-                        "example": "https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756"
-                    },
-                    "begin": {
-                        "title": "begin",
-                        "description": "Timestamp for the start of the event",
-                        "example": "2022-06-01T00:00:00+02:00"
-                    },
-                    "end": {
-                        "title": "end",
-                        "description": "Timestamp for the end of the event",
-                        "example": "2022-08-31T23:59:00+02:00"
-                    },
-                    "station": {
-                        "title": "station",
-                        "description": "nearest station for this event (nullable)",
-                        "type": "object",
-                        "nullable": "true",
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/Station"
-                            },
-                            {
-                                "type": "'null'"
-                            }
-                        ]
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Event"
                 }
             },
             "EventDetails": {
@@ -5251,14 +5242,9 @@
                         "$ref": "#/components/schemas/Trip"
                     },
                     "event": {
-                        "oneOf": [
-                            {
-                                "$ref": "#/components/schemas/Event"
-                            }
-                        ],
-                        "nullable": true,
                         "title": "event",
-                        "description": "Event model (nullable)"
+                        "description": "Event model (nullable)",
+                        "nullable": true
                     }
                 },
                 "type": "object",
@@ -6032,9 +6018,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "https://traewelling.de/oauth/authorize",
-                        "tokenUrl": "https://traewelling.de/oauth/token",
-                        "refreshUrl": "https://traewelling.de/auth/refresh",
+                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
+                        "tokenUrl": "http://localhost:8000/oauth/token",
+                        "refreshUrl": "http://localhost:8000/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",

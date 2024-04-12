@@ -35,23 +35,25 @@
             <div class="col-lg-4">
                 @include('stats.includes.global_cards')
 
-                <h4>
-                    {{__('experimental-features')}}
-                </h4>
-                <ul>
-                    @if(auth()->check() && auth()->user()->hasRole('closed-beta'))
+                @if(auth()->check() && auth()->user()->hasRole('open-beta'))
+                    <h4>
+                        {{__('experimental-features')}}
+                    </h4>
+                    <ul>
+                        @if(auth()->check() && auth()->user()->hasRole('closed-beta'))
+                            <li>
+                                <a href="{{route('stats.stations')}}">
+                                    {{__('stats.stations.description')}}
+                                </a>
+                            </li>
+                        @endif
                         <li>
-                            <a href="{{route('stats.stations')}}">
-                                {{__('stats.stations.description')}}
+                            <a href="{{route('stats.daily', ['dateString' => today()->toDateString()])}}">
+                                {{__('stats.daily.description')}}
                             </a>
                         </li>
-                    @endif
-                    <li>
-                        <a href="{{route('stats.daily', ['dateString' => \Illuminate\Support\Facades\Date::today()->toDateString()])}}">
-                            {{__('stats.daily.description')}}
-                        </a>
-                    </li>
-                </ul>
+                    </ul>
+                @endif
             </div>
         </div>
     </div>

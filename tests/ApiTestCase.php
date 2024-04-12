@@ -13,7 +13,7 @@ abstract class ApiTestCase extends TestCase
 
     public function setUp(): void {
         parent::setUp();
-        $this->artisan('passport:install');
+        $this->artisan('passport:install', ['--no-interaction' => true]);
         $this->artisan('passport:keys', ['--no-interaction' => true]);
     }
 

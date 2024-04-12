@@ -14,11 +14,13 @@ use App\Http\Resources\StatisticsTravelPurposeResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Status;
 use Carbon\Carbon;
+use DateTimeZone;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Validation\Rule;
 
 class StatisticsController extends Controller
 {
@@ -286,12 +288,27 @@ class StatisticsController extends Controller
      *      tags={"Statistics"},
      *      summary="Get statistics and statuses of one day",
      *      description="Returns all statuses and statistics for the requested day",
+     *      @OA\Parameter(
+     *          name="date",
+     *          in="path",
+     *          description="Date for the statistics in Format `YYYY-MM-DD`",
+     *          example="2024-04-09",
+     *          required=true,
+     *          @OA\Schema(type="string")
+     *       ),
+     *      @OA\Parameter (
+     *          name="timezone",
+     *          in="query",
+     *          description="Timezone for the date. If not set, the user's timezone will be used.",
+     *          example="Europe/Berlin",
+     *          @OA\Schema(type="string")
+     *      ),
      *      @OA\Parameter (
      *          name="withPolylines",
      *          in="query",
      *          description="If this parameter is set, the polylines will be returned as well. Otherwise attribute is
-     *          null.", example="",
-     *          @OA\Schema(type="string")
+     *          null.",
+     *          @OA\Schema(type="boolean")
      *      ),
      *      @OA\Response(
      *          response=200,
@@ -346,10 +363,21 @@ class StatisticsController extends Controller
      * @return JsonResponse
      */
     public function getPersonalDailyStatistics(Request $request, string $dateString): JsonResponse {
-        $statuses = DailyStatsController::getStatusesOnDate(auth()->user(), Date::parse($dateString));
+        $validated = $request->validate([
+                                            'withPolylines' => ['nullable', Rule::in(['true', 'false'])],
+                                            'timezone'      => [
+                                                'nullable',
+                                                'string',
+                                                Rule::in(DateTimeZone::listIdentifiers())
+                                            ]
+                                        ]);
+        $statuses  = DailyStatsController::getStatusesOnDate(
+            auth()->user(),
+            Carbon::parse($dateString, $validated['timezone'] ?? auth()->user()->timezone)
+        );
 
         $polylines = null;
-        if ($request->has('withPolylines')) {
+        if (!empty($validated['withPolylines']) && $validated['withPolylines'] !== 'false') {
             $polylines = collect();
             $statuses->each(function(Status $status) use (&$polylines) {
                 $polylines->add(new Feature(LocationController::forStatus($status)->getMapLines()));

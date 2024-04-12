@@ -3,8 +3,10 @@ import {DateTime} from "luxon";
 import {Notyf} from "notyf";
 import {trans} from "laravel-vue-i18n";
 import {useProfileSettingsStore} from "../stores/profileSettings";
+import EventDropdown from "./EventDropdown.vue";
 
 export default {
+    components: {EventDropdown},
     setup() {
         const profileStore = useProfileSettingsStore();
         profileStore.fetchSettings();
@@ -32,6 +34,7 @@ export default {
             loading: false,
             notyf: new Notyf({position: {x: "right", y: "bottom"}}),
             collision: false,
+            selectedEvent: null,
         };
     },
     methods: {
@@ -51,7 +54,7 @@ export default {
                 departure: DateTime.fromISO(this.selectedTrain.plannedWhen).setZone("UTC").toISO(),
                 arrival: DateTime.fromISO(this.selectedDestination.arrivalPlanned).setZone("UTC").toISO(),
                 force: this.collision,
-                eventId: null,
+                eventId: this.selectedEvent ? this.selectedEvent.id : null,
             };
             fetch("/api/v1/trains/checkin", {
                 method: "POST",
@@ -82,6 +85,9 @@ export default {
                 this.loading = false;
                 this.notyf.error(reason);
             });
+        },
+        selectEvent(event) {
+            this.selectedEvent = event;
         }
     },
     computed: {
@@ -197,6 +203,7 @@ export default {
                     </li>
                 </ul>
             </div>
+            <EventDropdown @select-event="selectEvent"/>
             <button class="col-auto float-end ms-auto btn btn-sm btn-outline-primary" @click="checkIn">
                 <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 <span v-if="loading" class="visually-hidden">Loading...</span>

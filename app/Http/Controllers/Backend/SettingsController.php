@@ -8,7 +8,8 @@ use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Intervention\Image\ImageManagerStatic as Image;
+use Intervention\Image\ImageManager as Image;
+use Intervention\Image\Drivers\Gd\Driver;
 
 abstract class SettingsController extends Controller
 {
@@ -47,7 +48,8 @@ abstract class SettingsController extends Controller
     public static function updateProfilePicture(string $avatar): bool {
         $filename = strtr(':userId_:time.png', [':userId' => Auth::user()->id, ':time' => time()]);
 
-        Image::make($avatar)->resize(300, 300)
+
+        (new Image(new Driver()))->read($avatar)->resize(300, 300)
              ->save(public_path('/uploads/avatars/' . $filename));
 
         if (auth()->user()->avatar) {

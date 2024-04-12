@@ -51,9 +51,6 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
         });
 
         Route::prefix('trip')->group(function() {
-            Route::view('/create', 'admin.trip.create')
-                 ->name('admin.trip.create');
-
             Route::get('/{id}', [TripController::class, 'renderTrip'])
                  ->name('admin.trip.show');
         });
