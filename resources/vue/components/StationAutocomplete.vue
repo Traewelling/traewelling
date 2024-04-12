@@ -24,6 +24,16 @@ export default {
             type: DateTime,
             required: false,
             default: null
+        },
+        showFilterButton: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        showGpsButton: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     data() {
@@ -174,9 +184,13 @@ export default {
                            @focusin="showModal"
                            @keyup.enter="setStationFromText"
                     />
-                    <button type="button" class="btn btn-outline-dark stationSearchButton"
+                    <button v-if="showFilterButton" type="button" class="btn btn-outline-dark stationSearchButton"
                             @click="showFilter = !showFilter">
                         <i class="fa fa-filter" aria-hidden="true"></i>
+                    </button>
+                    <button v-if="showGpsButton" type="button" class="btn btn-outline-dark stationSearchButton"
+                            @click="setStationFromGps">
+                        <i class="fa fa-map-marker-alt" aria-hidden="true"></i>
                     </button>
                     <button type="button" class="btn btn-outline-dark stationSearchButton" @click="showPicker">
                         <i class="fa fa-clock" aria-hidden="true"></i>
