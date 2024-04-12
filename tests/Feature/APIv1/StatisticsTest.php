@@ -38,7 +38,7 @@ class StatisticsTest extends ApiTestCase
         Passport::actingAs($user, ['*']);
         $checkin   = Checkin::factory(['user_id' => $user->id])->create();
 
-        $response = $this->get('/api/v1/statistics/daily/' . $checkin->departure->format('Y-m-d') . '?withPolylines');
+        $response = $this->get('/api/v1/statistics/daily/' . $checkin->departure->format('Y-m-d') . '?withPolylines=true');
         $response->assertOk();
         $response->assertJsonStructure([
                                            'data' => [

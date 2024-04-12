@@ -1826,13 +1826,31 @@
                 "operationId": "getDailyStatistics",
                 "parameters": [
                     {
+                        "name": "date",
+                        "in": "path",
+                        "description": "Date for the statistics in Format `YYYY-MM-DD`",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "2024-04-09"
+                    },
+                    {
+                        "name": "timezone",
+                        "in": "query",
+                        "description": "Timezone for the date. If not set, the user's timezone will be used.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Europe/Berlin"
+                    },
+                    {
                         "name": "withPolylines",
                         "in": "query",
                         "description": "If this parameter is set, the polylines will be returned as well. Otherwise attribute is\n     *          null.",
                         "schema": {
-                            "type": "string"
-                        },
-                        "example": ""
+                            "type": "boolean"
+                        }
                     }
                 ],
                 "responses": {
