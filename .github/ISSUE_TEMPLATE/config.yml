@@ -3,10 +3,7 @@ contact_links:
   - name: 🤔 Questions / Support
     url: https://github.com/Traewelling/traewelling/discussions/new?category=questions-support
     about: For Questions and Support in English 🇬🇧 and German 🇩🇪
-  - name: 💬 Chat in Discord
-    url: https://discord.gg/QypAnG2qAw
-    about: Chat with the community in Discord
   - name: 🚀 Feature Request
     url: https://github.com/Traewelling/traewelling/discussions/new?category=ideas-feature-requests
     about: Please check if your feature request already exists and upvote it
-    
+
