@@ -135,6 +135,7 @@ export default {
         v-on:update:travel-type="updateTravelType"
         :station="{name: stationName}"
         :time="now"
+        :show-filter-button="true"
     />
     <div v-if="loading" style="max-width: 200px;" class="spinner-grow text-trwl mx-auto p-2" role="status">
         <span class="visually-hidden">Loading...</span>

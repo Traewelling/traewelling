@@ -66,7 +66,7 @@
 
                 @if(auth()->user()->hasRole('open-beta'))
                     <div id="station-board-new">
-                        <Stationautocomplete :dashboard="true"></Stationautocomplete>
+                        <Stationautocomplete :dashboard="true" :show-gps-button="true"></Stationautocomplete>
                     </div>
                 @else
                     @include('includes.station-autocomplete')
