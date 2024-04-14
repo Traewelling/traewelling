@@ -5,7 +5,7 @@ docker/
 node_modules/
 vendor/
 *.md
-traewelling.jpg
+docs/traewelling.jpg
 phpunit.xml
 phpcs.xml
 Dockerfile

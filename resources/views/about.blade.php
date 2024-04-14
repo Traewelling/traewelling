@@ -74,7 +74,6 @@
                             {{ __('about.dev.2') }}
                             {{ __('about.dev.3') }}
                             {{ __('about.dev.4') }}
-                            {!! __('about.dev.5', ['link' => 'https://discord.gg/QypAnG2qAw']) !!}
                         </p>
                     </div>
                 </div>
