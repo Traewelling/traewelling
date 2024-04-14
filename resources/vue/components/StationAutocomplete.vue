@@ -45,15 +45,16 @@ export default {
             showFilter: false,
             date: null,
             selectedType: null,
+            fetchingGps: false,
             travelTypes: [
-                {value: "express", color:"rgba(197,199,196,0.5)", icon: "fa-train", contrast: true},
-                {value: "regional", color:"rgba(193,18,28,0.5)", icon: "fa-train"},
-                {value: "suburban", color:"rgba(0,111,53,0.5)", icon: "fa-train", image: "/img/suburban.svg"},
-                {value: "subway", color:"rgba(21,106,184,0.5)", icon: "fa-subway", image: "/img/subway.svg"},
-                {value: "tram", color:"rgba(217,34,42,0.5)", icon: "fa-tram", image: "/img/tram.svg"},
-                {value: "bus", color:"rgba(163,0,124,0.5)", icon: "fa-bus", image: "/img/bus.svg"},
-                {value: "ferry", color:"rgba(21,106,184,0.5)", icon: "fa-ship"},
-                {value: "taxi", color:"rgb(255,237,74,0.5)", icon: "fa-taxi", contrast: true},
+                {value: "express", color: "rgba(197,199,196,0.5)", icon: "fa-train", contrast: true},
+                {value: "regional", color: "rgba(193,18,28,0.5)", icon: "fa-train"},
+                {value: "suburban", color: "rgba(0,111,53,0.5)", icon: "fa-train", image: "/img/suburban.svg"},
+                {value: "subway", color: "rgba(21,106,184,0.5)", icon: "fa-subway", image: "/img/subway.svg"},
+                {value: "tram", color: "rgba(217,34,42,0.5)", icon: "fa-tram", image: "/img/tram.svg"},
+                {value: "bus", color: "rgba(163,0,124,0.5)", icon: "fa-bus", image: "/img/bus.svg"},
+                {value: "ferry", color: "rgba(21,106,184,0.5)", icon: "fa-ship"},
+                {value: "taxi", color: "rgb(255,237,74,0.5)", icon: "fa-taxi", contrast: true},
             ]
         };
     },
@@ -104,7 +105,9 @@ export default {
             this.$emit("update:travelType", this.selectedType);
         },
         setStationFromGps() {
+            this.fetchingGps = true;
             if (!navigator.geolocation) {
+                this.fetchingGps = false;
                 notyf.error(trans("stationboard.position-unavailable"));
                 return;
             }
@@ -114,6 +117,7 @@ export default {
                     window.location.href = `/trains/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`;
                 },
                 () => {
+                    this.fetchingGps = false;
                     notyf.error(trans("stationboard.position-unavailable"));
                 }
             );
@@ -154,18 +158,21 @@ export default {
         </template>
         <template #body>
             <ul class="list-group list-group-light list-group-small">
-                <li class="list-group-item autocomplete-item pb-3 mb-3" v-show="autocompleteList.length === 0" @click="setStationFromGps">
+                <li class="list-group-item autocomplete-item pb-3 mb-3" v-show="autocompleteList.length === 0"
+                    @click="setStationFromGps">
                     <a href="#" class="text-trwl">
                         <i class="fa fa-map-marker-alt"></i>
                         {{ trans("stationboard.search-by-location") }}
                     </a>
                 </li>
-                <li class="list-group-item autocomplete-item" v-for="item in recent" v-show="autocompleteList.length === 0">
+                <li class="list-group-item autocomplete-item" v-for="item in recent"
+                    v-show="autocompleteList.length === 0">
                     <a href="#" class="text-trwl" @click="setStation(item)">
                         {{ item.name }} <span v-if="item.rilIdentifier">({{ item.rilIdentifier }})</span>
                     </a>
                 </li>
-                <li class="list-group-item autocomplete-item" v-for="item in autocompleteList" @click="setStation(item)">
+                <li class="list-group-item autocomplete-item" v-for="item in autocompleteList"
+                    @click="setStation(item)">
                     <a href="#" class="text-trwl">
                         {{ item.name }} <span v-if="item.rilIdentifier">({{ item.rilIdentifier }})</span>
                     </a>
@@ -190,7 +197,10 @@ export default {
                     </button>
                     <button v-if="showGpsButton" type="button" class="btn btn-outline-dark stationSearchButton"
                             @click="setStationFromGps">
-                        <i class="fa fa-map-marker-alt" aria-hidden="true"></i>
+                        <i v-if="!fetchingGps" class="fa fa-map-marker-alt" aria-hidden="true"></i>
+                        <div v-else class="spinner-border" role="status" style="height: 1rem; width: 1rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
                     </button>
                     <button type="button" class="btn btn-outline-dark stationSearchButton" @click="showPicker">
                         <i class="fa fa-clock" aria-hidden="true"></i>
@@ -236,44 +246,44 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-    .autocomplete-item {
-        background-color: var(--mdb-modal-bg) !important;
-    }
+.autocomplete-item {
+    background-color: var(--mdb-modal-bg) !important;
+}
 
-    .slide-fade-leave-active,
-    .slide-fade-enter-active {
-        transition: all 0.3s ease-out;
-        overflow: hidden;
-    }
+.slide-fade-leave-active,
+.slide-fade-enter-active {
+    transition: all 0.3s ease-out;
+    overflow: hidden;
+}
 
-    .slide-fade-enter-from,
-    .slide-fade-leave-to {
-        transform: translateY(-20px);
-        opacity: 0;
-    }
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+    transform: translateY(-20px);
+    opacity: 0;
+}
 
-    .product-icon {
-        width: 1rem;
-        height: 1rem;
-        vertical-align: middle;
-        display:inline;
-    }
+.product-icon {
+    width: 1rem;
+    height: 1rem;
+    vertical-align: middle;
+    display: inline;
+}
 
+.better-contrast {
+    color: #4F4F4F;
+}
+
+.better-contrast:hover {
+    color: #212529;
+}
+
+:root.dark {
     .better-contrast {
-        color: #4F4F4F;
+        color: #FFF;
     }
 
     .better-contrast:hover {
-        color: #212529;
+        color: #FFF;
     }
-
-    :root.dark {
-        .better-contrast {
-            color: #FFF;
-        }
-
-        .better-contrast:hover {
-            color: #FFF;
-        }
-    }
+}
 </style>
