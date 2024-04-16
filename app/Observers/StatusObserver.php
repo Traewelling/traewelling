@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Enum\CacheKey;
-use App\Enum\MonitoringCounter;
 use App\Http\Controllers\Backend\Support\MentionHelper;
 use App\Models\Status;
 use App\Notifications\StatusLiked;
@@ -14,7 +13,7 @@ use Illuminate\Support\Facades\Cache;
 class StatusObserver
 {
     public function created(Status $status): void {
-        Cache::increment(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusCreated));
+        Cache::increment(CacheKey::STATUS_CREATED);
         MentionHelper::createMentions($status);
     }
 
@@ -23,7 +22,7 @@ class StatusObserver
     }
 
     public function deleted(Status $status): void {
-        Cache::increment(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusDeleted));
+        Cache::increment(CacheKey::STATUS_DELETED);
 
         // Delete all UserJoinedConnection-Notifications for this Status
         DatabaseNotification::where('type', UserJoinedConnection::class)

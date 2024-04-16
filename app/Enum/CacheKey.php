@@ -8,6 +8,14 @@ use Carbon\Carbon;
 
 enum CacheKey: string
 {
+    // static keys with fixed values
+    public const string STATUS_CREATED = 'monitoring-counter-StatusCreated';
+    public const string STATUS_DELETED = 'monitoring-counter-StatusDeleted';
+    public const string USER_CREATED = 'monitoring-counter-UserCreated';
+    public const string USER_DELETED   = 'monitoring-counter-UserDeleted';
+    public const string WEBHOOK_ABSENT = 'monitoring-counter-WebhookAbsent';
+
+
     case LeaderboardFriends        = 'LeaderboardFriends';
     case LeaderboardGlobalPoints   = 'LeaderboardGlobalPoints';
     case LeaderboardGlobalDistance = 'LeaderboardGlobalDistance';
@@ -23,7 +31,8 @@ enum CacheKey: string
     }
 
     public static function getGlobalStatsKey(Carbon $from, Carbon $to): string {
-        return self::StatisticsGlobal->value . '-from-' . $from->toDateString() . '-to-' . $to->startOfHour()->toDateString();
+        return self::StatisticsGlobal->value
+               . '-from-' . $from->toDateString() . '-to-' . $to->startOfHour()->toDateString();
     }
 
     public static function getMastodonProfileInformationKey(User $user): string {
@@ -36,9 +45,5 @@ enum CacheKey: string
 
     public static function getAccountDeletionNotificationTwoWeeksBeforeKey(User $user): string {
         return "account-deletion-notification-two-weeks-before-{$user->id}";
-    }
-
-    public static function getMonitoringCounterKey(MonitoringCounter $counter): string {
-        return "monitoring-counter-{$counter->value}";
     }
 }

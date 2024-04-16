@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Enum\CacheKey;
-use App\Enum\MonitoringCounter;
 use App\Models\Webhook;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -22,6 +21,6 @@ class RemoveAbsentWebhooksListener
             "webhookId" => $webhookId,
             "userId"    => $event->headers["X-Trwl-User-Id"]
         ]);
-        Cache::increment(CacheKey::getMonitoringCounterKey(MonitoringCounter::WebhookAbsent));
+        Cache::increment(CacheKey::WEBHOOK_ABSENT);
     }
 }
