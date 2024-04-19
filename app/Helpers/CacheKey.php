@@ -13,29 +13,34 @@ class CacheKey
     public const string STATUS_DELETED            = 'monitoring-counter-StatusDeleted';
     public const string USER_CREATED              = 'monitoring-counter-UserCreated';
     public const string USER_DELETED              = 'monitoring-counter-UserDeleted';
-    public const string WEBHOOK_ABSENT            = 'monitoring-counter-WebhookAbsent';
-    public const string LeaderboardGlobalPoints   = 'LeaderboardGlobalPoints';
-    public const string LeaderboardGlobalDistance = 'LeaderboardGlobalDistance';
+    public const string WEBHOOK_ABSENT              = 'monitoring-counter-WebhookAbsent';
+    public const string LEADERBOARD_GLOBAL_POINTS   = 'LeaderboardGlobalPoints';
+    public const string LEADERBOARD_GLOBAL_DISTANCE = 'LeaderboardGlobalDistance';
 
     // dynamic keys
-    private const string LeaderboardFriends = 'LeaderboardFriends';
-    private const string LeaderboardMonth   = 'LeaderboardMonth';
-    private const string StatisticsGlobal   = 'StatisticsGlobal';
+    private const string LEADERBOARD_FRIENDS = 'LeaderboardFriends';
+    private const string LEADERBOARD_MONTH   = 'LeaderboardMonth';
+    private const string STATISTICS_GLOBAL  = 'StatisticsGlobal';
 
     // formatting keys
     private const string FOR                = '%s-for-%s';
-    private const string FOR_TO             = '%s-for-%s-to-%s';
+    private const string FROM_TO            = '%s-from-%s-to-%s';
 
     public static function getFriendsLeaderboardKey(int $userId): string {
-        return sprintf(self::FOR, self::LeaderboardFriends, $userId);
+        return sprintf(self::FOR, self::LEADERBOARD_FRIENDS, $userId);
     }
 
     public static function getMonthlyLeaderboardKey(Carbon $date): string {
-        return sprintf(self::FOR, self::LeaderboardMonth, $date->toISOString());
+        return sprintf(self::FOR, self::LEADERBOARD_MONTH, $date->toISOString());
     }
 
     public static function getGlobalStatsKey(Carbon $from, Carbon $to): string {
-        return sprintf(self::FOR_TO, self::StatisticsGlobal, $from->toISOString(), $to->toISOString());
+        return sprintf(
+            self::FROM_TO,
+            self::STATISTICS_GLOBAL,
+            $from->toDateString(),
+            $to->startOfHour()->toDateString()
+        );
     }
 
     public static function getMastodonProfileInformationKey(User $user): string {

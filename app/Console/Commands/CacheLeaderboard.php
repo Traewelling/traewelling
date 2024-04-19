@@ -31,8 +31,8 @@ class CacheLeaderboard extends Command
      */
     public function handle(LeaderboardController $leaderboardController): int {
         DB::beginTransaction();
-        Cache::forget(CacheKey::LeaderboardGlobalPoints);
-        Cache::forget(CacheKey::LeaderboardGlobalDistance);
+        Cache::forget(CacheKey::LEADERBOARD_GLOBAL_POINTS);
+        Cache::forget(CacheKey::LEADERBOARD_GLOBAL_DISTANCE);
         $leaderboardController->renderLeaderboard();
         DB::commit();
 

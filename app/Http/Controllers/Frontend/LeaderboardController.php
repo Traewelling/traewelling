@@ -36,7 +36,7 @@ class LeaderboardController extends Controller
         $ttl = config(self::$cacheRetentionConfigKey);
 
         $usersLeaderboard = Cache::remember(
-            CacheKey::LeaderboardGlobalPoints,
+            CacheKey::LEADERBOARD_GLOBAL_POINTS,
             $ttl,
             static fn() => LeaderboardBackend::getLeaderboard()
         )->filter(function(stdClass $row) {
@@ -44,7 +44,7 @@ class LeaderboardController extends Controller
         });
 
         $distanceLeaderboard = Cache::remember(
-            CacheKey::LeaderboardGlobalDistance,
+            CacheKey::LEADERBOARD_GLOBAL_DISTANCE,
             $ttl,
             static fn() => LeaderboardBackend::getLeaderboard(orderBy: 'distance')
         )->filter(function(stdClass $row) {
