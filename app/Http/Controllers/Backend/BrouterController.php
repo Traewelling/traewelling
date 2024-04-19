@@ -154,7 +154,7 @@ abstract class BrouterController extends Controller
                                             'source'    => 'brouter',
                                             'parent_id' => $trip->polyline_id
                                         ]);
-        $oldPolyLine = $trip->polyline_id;
+        $oldPolyLine = self::getOldPolyline($trip);
         $trip->update(['polyline_id' => $polyline->id]);
 
         //Refresh distance and points of trips
@@ -210,5 +210,20 @@ abstract class BrouterController extends Controller
             }
         }
         return false;
+    }
+
+    private static function getOldPolyline(Trip $trip): ?int {
+        $oldPolyLine = PolyLine::where('parent_id', $trip->polyline_id)->orderBy('id', 'desc')->first();
+        $limit       = 20;
+        while ($oldPolyLine?->source === 'brouter' && $limit-- > 0) {
+            $next = PolyLine::where('parent_id', $oldPolyLine->id)->orderBy('id', 'desc')->first();
+            if ($next) {
+                $oldPolyLine = $next;
+            } else {
+                break;
+            }
+        }
+
+        return $oldPolyLine->id ?? null;
     }
 }
