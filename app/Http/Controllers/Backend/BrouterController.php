@@ -82,6 +82,15 @@ abstract class BrouterController extends Controller
         if (App::runningUnitTests()) {
             return;
         }
+
+        //0. Check if brouter Polyline is already available
+        $polyline = PolyLine::where('parent_id', $trip->polyline_id)->orderBy('id', 'desc')->first();
+        if ($polyline?->source === 'brouter') {
+            Log::debug('[RefreshPolyline] Brouter Polyline already available for Trip#' . $trip->trip_id);
+            $trip->update(['polyline_id' => $polyline->id]);
+            return;
+        }
+
         //1. Prepare coordinates from stations
         $coordinates = [];
         foreach ($trip->stopovers as $stopover) {
@@ -121,8 +130,6 @@ abstract class BrouterController extends Controller
             $properties = [
                 'id'                => $stopover->station->ibnr,
                 'name'              => $stopover->station->name,
-                'departure_planned' => $stopover->departure_planned,
-                'arrival_planned'   => $stopover->arrival_planned,
             ];
 
             //Get feature with the lowest distance to station
