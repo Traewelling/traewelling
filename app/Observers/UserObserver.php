@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Enum\CacheKey;
+use App\Helpers\CacheKey;
 use App\Models\User;
 use App\Notifications\StatusLiked;
 use Illuminate\Notifications\DatabaseNotification;

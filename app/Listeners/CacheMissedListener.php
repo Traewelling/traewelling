@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Enum\CacheKey;
+use App\Helpers\CacheKey;
 use App\Models\Status;
 use App\Models\User;
 use Illuminate\Cache\Events\CacheMissed;

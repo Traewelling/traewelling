@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Enum\CacheKey;
+use App\Helpers\CacheKey;
 use App\Models\Webhook;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;

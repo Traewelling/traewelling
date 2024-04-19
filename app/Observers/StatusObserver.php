@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Enum\CacheKey;
+use App\Helpers\CacheKey;
 use App\Http\Controllers\Backend\Support\MentionHelper;
 use App\Models\Status;
 use App\Notifications\StatusLiked;

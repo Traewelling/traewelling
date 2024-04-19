@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Enum\CacheKey;
+use App\Helpers\CacheKey;
 use App\Models\Trip;
 use App\Models\PolyLine;
 use Illuminate\Support\Facades\Cache;

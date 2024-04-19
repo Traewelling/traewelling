@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Backend\Social;
 
 
-use App\Enum\CacheKey;
+use App\Helpers\CacheKey;
 use App\Models\MastodonServer;
 use App\Models\User;
 use Exception;

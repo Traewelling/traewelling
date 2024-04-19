@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Enum;
 
-use App\Enum\CacheKey;
+use App\Helpers\CacheKey;
 use Carbon\Carbon;
 use Tests\Unit\UnitTestCase;
 
