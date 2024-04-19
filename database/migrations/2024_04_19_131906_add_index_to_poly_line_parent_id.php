@@ -14,7 +14,7 @@ return new class extends Migration
 
     public function down(): void {
         Schema::table('poly_lines', static function (Blueprint $table) {
-            $table->dropIndex('parent_id');
+            $table->dropIndex(['parent_id']);
         });
     }
 };
