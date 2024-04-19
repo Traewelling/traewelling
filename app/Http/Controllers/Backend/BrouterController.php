@@ -212,7 +212,7 @@ abstract class BrouterController extends Controller
         return false;
     }
 
-    private static function getOldPolyline(Trip $trip) {
+    private static function getOldPolyline(Trip $trip): ?int {
         $oldPolyLine = PolyLine::where('parent_id', $trip->polyline_id)->orderBy('id', 'desc')->first();
         $limit       = 20;
         while ($oldPolyLine?->source === 'brouter' && $limit-- > 0) {
@@ -224,6 +224,6 @@ abstract class BrouterController extends Controller
             }
         }
 
-        return $oldPolyLine->id;
+        return $oldPolyLine->id ?? null;
     }
 }
