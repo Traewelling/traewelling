@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Enum\CacheKey;
+use App\Helpers\CacheKey;
 use App\Http\Controllers\Frontend\LeaderboardController;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
@@ -31,8 +31,8 @@ class CacheLeaderboard extends Command
      */
     public function handle(LeaderboardController $leaderboardController): int {
         DB::beginTransaction();
-        Cache::forget(CacheKey::LeaderboardGlobalPoints->value);
-        Cache::forget(CacheKey::LeaderboardGlobalDistance->value);
+        Cache::forget(CacheKey::LEADERBOARD_GLOBAL_POINTS);
+        Cache::forget(CacheKey::LEADERBOARD_GLOBAL_DISTANCE);
         $leaderboardController->renderLeaderboard();
         DB::commit();
 
