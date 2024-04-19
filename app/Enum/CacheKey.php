@@ -11,7 +11,7 @@ enum CacheKey: string
     // static keys with fixed values
     public const string STATUS_CREATED = 'monitoring-counter-StatusCreated';
     public const string STATUS_DELETED = 'monitoring-counter-StatusDeleted';
-    public const string USER_CREATED = 'monitoring-counter-UserCreated';
+    public const string USER_CREATED   = 'monitoring-counter-UserCreated';
     public const string USER_DELETED   = 'monitoring-counter-UserDeleted';
     public const string WEBHOOK_ABSENT = 'monitoring-counter-WebhookAbsent';
 
