@@ -160,6 +160,9 @@ export default {
         <template #body v-if="!!selectedTrain && !selectedDestination">
             <CheckinLineRun :selectedTrain="selectedTrain" v-model:destination="selectedDestination"/>
         </template>
+        <template #close v-if="!!selectedDestination">
+            <button type="button" class="btn-close" aria-label="Back" @click="selectedDestination = null"></button>
+        </template>
         <template #body v-if="!!selectedDestination">
             <CheckinInterface :selectedTrain="selectedTrain" :selectedDestination="selectedDestination"/>
         </template>
