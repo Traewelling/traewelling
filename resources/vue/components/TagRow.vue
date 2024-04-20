@@ -119,7 +119,7 @@ export default {
         <input
             :id="`input-${selectedKey?.replace(':', '')}`"
             type="text"
-            class="form-control border-secondary"
+            class="form-control border-secondary mobile-input-fs-16"
             v-model="input"
             :disabled="disabled"
             @keydown.enter="addTag"
