@@ -52,7 +52,7 @@ export default {
                         transChoice("controller.transport.also-in-connection", alsoOnThisConnection.length)
                     }}</h5>
                 <div class="list-group">
-                    <a href="#" v-for="status in alsoOnThisConnection" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                    <a :href="`/status/${status.id}`" v-for="status in alsoOnThisConnection" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
                         <div class="d-flex gap-2 w-100 justify-content-between">
                             <div>
                                 <h6 class="mb-0 fw-bold opacity-75">{{status.username}}</h6>
