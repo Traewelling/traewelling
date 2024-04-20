@@ -53,10 +53,8 @@ export default defineComponent({
                 });
             }
         },
-        postAllTags() {
-            for (const tag of this._tags) {
-                this.postAddTag(tag);
-            }
+        async postAllTags(statusId: number) {
+            return Promise.all(this._tags.map(tag => this.postAddTag(tag, statusId)));
         },
         async postDeleteTag(tag: TrwlTag) {
             if (this.$props.cacheLocally) {
@@ -64,7 +62,7 @@ export default defineComponent({
                     resolve({})
                 });
             }
-            return fetch(`/api/v1/status/${this.statusId}/tags/${tag.key}`, {
+            return fetch(`/api/v1/status/${this._statusId}/tags/${tag.key}`, {
                 method: "DELETE",
             }).then(response => response.json())
         },
@@ -74,7 +72,7 @@ export default defineComponent({
                     resolve({data: event})
                 });
             }
-            return fetch(`/api/v1/status/${this.statusId}/tags/${tag.key}`, {
+            return fetch(`/api/v1/status/${this._statusId}/tags/${tag.key}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -82,13 +80,15 @@ export default defineComponent({
                 body: JSON.stringify(event)
             }).then(response => response.json())
         },
-        async postAddTag(value: string | TrwlTag) {
-            if (this.$props.cacheLocally) {
-                new Promise((resolve) => {
+        async postAddTag(value: string | TrwlTag, statusId: number|null = null) {
+            if (this.$props.cacheLocally && statusId === null) {
+                return new Promise((resolve) => {
                     resolve({data: value})
                 });
             }
-            return fetch(`/api/v1/status/${this.$props.statusId}/tags`, {
+            statusId = statusId || this._statusId;
+
+            return fetch(`/api/v1/status/${statusId}/tags`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -127,7 +127,7 @@ export default defineComponent({
 
 <template>
     <TagRow @update:model-value="addTag" :exclude="excludeTags"></TagRow>
-    <hr>
+    <hr v-if="tags.length">
     <TagRow @update:model-value="updateTag($event, tag)" class="mb-1"
             v-for="tag in _tags" :key="tag.key" :value="tag" :list="true"></TagRow>
 </template>
