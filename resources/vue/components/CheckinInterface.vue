@@ -4,9 +4,10 @@ import {Notyf} from "notyf";
 import {trans} from "laravel-vue-i18n";
 import {useProfileSettingsStore} from "../stores/profileSettings";
 import EventDropdown from "./EventDropdown.vue";
+import TagList from "./TagList.vue";
 
 export default {
-    components: {EventDropdown},
+    components: {TagList, EventDropdown},
     setup() {
         const profileStore = useProfileSettingsStore();
         profileStore.fetchSettings();
@@ -63,21 +64,25 @@ export default {
                 },
                 body: JSON.stringify(data),
             }).then((response) => {
-                this.loading = false;
                 if (response.ok) {
                     response.json().then((result) => {
                         localStorage.setItem("points", JSON.stringify(result.data.points));
                         localStorage.setItem("alsoOnThisConnection", JSON.stringify(result.data.alsoOnThisConnection));
-                        window.location = "/status/" + result.data.status.id;
+                        this.$refs.tagList.postAllTags(result.data.status.id).then(() => {
+                            this.loading = false;
+                            window.location = "/status/" + result.data.status.id;
+                        });
                     });
                 }
                 if (response.status === 409) {
+                    this.loading = false;
                     response.json().then(() => {
                         this.collision = true;
                         this.notyf.error(trans("checkin.conflict") + "<br>" +trans("checkin.conflict.question"));
                     });
                 }
                 if (response.status === 500) {
+                    this.loading = false;
                     this.notyf.error(trans("messages.exception.general"));
                 }
             }).catch((reason) => {
@@ -210,4 +215,8 @@ export default {
                 {{ trans("stationboard.btn-checkin") }}
             </button>
         </div>
+
+    <div class="mt-5 border-top pt-3">
+        <TagList ref="tagList" :cache-locally="true" />
+    </div>
 </template>

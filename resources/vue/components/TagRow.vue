@@ -106,12 +106,12 @@ export default {
             :disabled="list || disabled"
         >
             <i v-if="getIcon(selectedKey) !== 'fa-fw'" :class="[getIcon(selectedKey), 'fa']" aria-hidden="true"></i>
-            {{ getTitle(selectedKey) }}
+            <span v-show="getIcon(selectedKey) === 'fa-fw'">{{ getTitle(selectedKey) }}</span>
         </button>
         <ul class="dropdown-menu">
             <li v-for="tagKey in tagKeys">
                 <a class="dropdown-item" href="#" @click="selectKey(tagKey)">
-                    <i :class="[getIcon(tagKey), 'fa']" aria-hidden="true"></i>
+                    <i :class="[getIcon(tagKey), 'fa']" class="w-0125 text-center" aria-hidden="true"></i>
                     {{ getTitle(tagKey) }}
                 </a>
             </li>
@@ -129,3 +129,9 @@ export default {
         <button v-if="list" class="btn btn-outline-danger" @click="deleteTag"><i class="fa fa-trash"></i></button>
     </div>
 </template>
+
+<style scoped lang="scss">
+.w-0125 {
+    width: 12.5%;
+}
+</style>

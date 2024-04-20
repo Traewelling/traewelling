@@ -4,10 +4,12 @@ import VisibilityDropdown from "./VisibilityDropdown.vue";
 import {trans} from "laravel-vue-i18n";
 import TagRow from "./TagRow.vue";
 import {getIcon, getTitle} from "../helpers/StatusTag";
+import TagList from "./TagList.vue";
 
 export default {
     name: "TagHelper",
     components: {
+        TagList,
         TagRow,
         VisibilityDropdown,
         FullScreenModal
@@ -46,58 +48,15 @@ export default {
                 this.$refs.modal.$el.querySelector(input).focus();
             }, 100);
         },
-        addTag(value) {
-            fetch(`/api/v1/status/${this.$props.statusId}/tags`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(value)
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    this.tags.push(data.data);
-                });
-        },
-        updateTag(event, tag) {
-            if (event === null) {
-                fetch(`/api/v1/status/${this.$props.statusId}/tags/${tag.key}`, {
-                    method: "DELETE",
-                })
-                    .then(response => response.json())
-                    .then(() => {
-                        this.tags = this.tags.filter((item) => item.key !== tag.key);
-                    })
-            } else {
-                fetch(`/api/v1/status/${this.$props.statusId}/tags/${tag.key}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(event)
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        this.tags = this.tags.map((item) => {
-                            if (item.key === tag.key) {
-                                return data.data;
-                            }
-                            return item;
-                        });
-                    })
-            }
-        },
         fetchTags() {
             fetch(`/api/v1/status/${this.$props.statusId}/tags`)
                 .then(response => response.json())
                 .then(data => {
                     this.tags = data.data;
                 })
-        }
-    },
-    computed: {
-        excludeTags() {
-            return this.tags.map(key => key.key);
+        },
+        updateTags(tags) {
+            this.tags = tags;
         }
     },
     mounted() {
@@ -112,9 +71,7 @@ export default {
             {{ trans("export.title.status_tags") }}
         </template>
         <template #body>
-            <TagRow @update:model-value="addTag" :exclude="excludeTags"></TagRow>
-            <hr>
-            <TagRow @update:model-value="updateTag($event, tag)" class="mb-1" v-for="tag in tags" :key="tag.key" :value="tag" :list="true"></TagRow>
+            <TagList @update:model-value="updateTags" :tags="tags" :status-id="statusId"/>
         </template>
     </FullScreenModal>
 
