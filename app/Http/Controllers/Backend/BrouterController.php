@@ -84,10 +84,15 @@ abstract class BrouterController extends Controller
         }
 
         //0. Check if brouter Polyline is already available
-        $polyline = PolyLine::where('parent_id', $trip->polyline_id)->orderBy('id', 'desc')->first();
-        if ($polyline?->source === 'brouter') {
+        $childPolyline   = PolyLine::where('parent_id', $trip->polyline_id)->orderBy('id', 'desc')->first();
+        $currentPolyline = $trip->polyline()->first();
+        if ($childPolyline?->source === 'brouter' || $currentPolyline?->source === 'brouter') {
             Log::debug('[RefreshPolyline] Brouter Polyline already available for Trip#' . $trip->trip_id);
-            $trip->update(['polyline_id' => $polyline->id]);
+
+            if ($currentPolyline?->source !== 'brouter') {
+                //If the current Polyline is not from Brouter, we need to recalculate the distance and points
+                self::recalculateDistanceAndPoints($trip, $childPolyline);
+            }
             return;
         }
 
@@ -128,8 +133,8 @@ abstract class BrouterController extends Controller
         $highestMappedKey = null;
         foreach ($trip->stopovers as $stopover) {
             $properties = [
-                'id'                => $stopover->station->ibnr,
-                'name'              => $stopover->station->name,
+                'id'   => $stopover->station->ibnr,
+                'name' => $stopover->station->name,
             ];
 
             //Get feature with the lowest distance to station
@@ -155,12 +160,22 @@ abstract class BrouterController extends Controller
             $geoJson['features'][$closestFeatureKey]['properties'] = $properties;
         }
 
-        $polyline    = PolyLine::create([
-                                            'hash'      => Str::uuid(), //In this case a non required unique key
-                                            'polyline'  => json_encode($geoJson),
-                                            'source'    => 'brouter',
-                                            'parent_id' => $trip->polyline_id
-                                        ]);
+        $childPolyline = PolyLine::create([
+                                              'hash'      => Str::uuid(), //In this case a non required unique key
+                                              'polyline'  => json_encode($geoJson),
+                                              'source'    => 'brouter',
+                                              'parent_id' => $trip->polyline_id
+                                          ]);
+        self::recalculateDistanceAndPoints($trip, $childPolyline);
+    }
+
+    /**
+     * @param Trip     $trip
+     * @param          $polyline
+     *
+     * @return void
+     */
+    public static function recalculateDistanceAndPoints(Trip $trip, $polyline): void {
         $oldPolyLine = self::getOldPolyline($trip);
         $trip->update(['polyline_id' => $polyline->id]);
 
