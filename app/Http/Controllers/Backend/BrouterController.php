@@ -15,6 +15,7 @@ use App\Objects\LineSegment;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -176,7 +177,11 @@ abstract class BrouterController extends Controller
      * @return void
      */
     public static function recalculateDistanceAndPoints(Trip $trip, $polyline): void {
+        DB::beginTransaction();
         $oldPolyLine = self::getOldPolyline($trip);
+        Log::debug('[RefreshPolyline] Recalculating distance and points for Trip#' . $trip->trip_id);
+        Log::debug('[RefreshPolyline] New Polyline ID: ' . $trip->polyline_id);
+        Log::debug('[RefreshPolyline] Old Polyline ID: ' . $oldPolyLine);
         $trip->update(['polyline_id' => $polyline->id]);
 
         //Refresh distance and points of trips
@@ -185,8 +190,11 @@ abstract class BrouterController extends Controller
             foreach ($checkinsToRecalc as $checkin) {
                 TrainCheckinController::refreshDistanceAndPoints($checkin->status);
             }
+            DB::commit();
         } catch (DistanceDeviationException) {
             $trip->update(['polyline_id' => $oldPolyLine]);
+            Log::debug('[RefreshPolyline] Distance Deviation detected. Reverting changes.');
+            DB::rollBack();
         }
     }
 
