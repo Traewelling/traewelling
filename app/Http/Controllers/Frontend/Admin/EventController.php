@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Frontend\Admin;
 use App\Enum\EventRejectionReason;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Admin\EventController as AdminEventBackend;
-use App\Http\Controllers\Backend\Admin\TelegramController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HafasController;
 use App\Models\Event;

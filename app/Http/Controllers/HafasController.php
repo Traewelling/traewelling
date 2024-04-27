@@ -185,7 +185,7 @@ abstract class HafasController extends Controller
             HTT::FERRY->value            => self::checkTravelType($type, TravelType::FERRY),
             HTT::SUBWAY->value           => self::checkTravelType($type, TravelType::SUBWAY),
             HTT::TRAM->value             => self::checkTravelType($type, TravelType::TRAM),
-            HTT::TAXI->value             => 'false',
+            HTT::TAXI->value             => self::checkTravelType($type, TravelType::TAXI),
         ];
         $response = $client->get('/stops/' . $station->ibnr . '/departures', $query);
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Enum\CacheKey;
+use App\Helpers\CacheKey;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -36,7 +36,7 @@ class LeaderboardController extends Controller
         $ttl = config(self::$cacheRetentionConfigKey);
 
         $usersLeaderboard = Cache::remember(
-            CacheKey::LeaderboardGlobalPoints->value,
+            CacheKey::LEADERBOARD_GLOBAL_POINTS,
             $ttl,
             static fn() => LeaderboardBackend::getLeaderboard()
         )->filter(function(stdClass $row) {
@@ -44,7 +44,7 @@ class LeaderboardController extends Controller
         });
 
         $distanceLeaderboard = Cache::remember(
-            CacheKey::LeaderboardGlobalDistance->value,
+            CacheKey::LEADERBOARD_GLOBAL_DISTANCE,
             $ttl,
             static fn() => LeaderboardBackend::getLeaderboard(orderBy: 'distance')
         )->filter(function(stdClass $row) {

@@ -26,6 +26,7 @@
           containers = lib.mkForce {};
           languages = {
             php.enable = true;
+            php.package = pkgs.php83;
             javascript.enable = true;
           };
           dotenv.enable = true;

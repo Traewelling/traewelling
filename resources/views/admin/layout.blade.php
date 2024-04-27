@@ -58,10 +58,6 @@
                                 <i class="fa-solid fa-train"></i>
                                 Checkin
                             </a>
-                            <a class="nav-link" href="{{ route('admin.trip.create') }}">
-                                <i class="fa-solid fa-plus"></i>
-                                Trips
-                            </a>
                             <a class="nav-link" href="{{ route('admin.stations') }}">
                                 <i class="fa-solid fa-map-marker"></i>
                                 Stations
@@ -69,6 +65,10 @@
                             <a class="nav-link" href="{{ route('admin.activity') }}">
                                 <i class="fa-solid fa-hammer"></i>
                                 Activity
+                            </a>
+                            <a class="nav-link" href="{{ route('admin.reports') }}">
+                                <i class="fa-solid fa-flag"></i>
+                                Reports
                             </a>
                         @endif
                     </div>
