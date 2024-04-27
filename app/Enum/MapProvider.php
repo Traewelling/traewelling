@@ -8,6 +8,6 @@ namespace App\Enum;
  */
 enum MapProvider: string
 {
-    case CARGO = 'cargo';
+    case CARGO            = 'cargo';
     case OPEN_RAILWAY_MAP = 'open-railway-map';
 }
