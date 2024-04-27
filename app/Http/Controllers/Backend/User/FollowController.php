@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Backend\User;
 
-use App\Enum\CacheKey;
+use App\Helpers\CacheKey;
 use App\Exceptions\AlreadyFollowingException;
 use App\Exceptions\PermissionException;
 use App\Http\Controllers\Controller;

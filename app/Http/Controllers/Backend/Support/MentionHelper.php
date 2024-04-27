@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
 use App\Models\Mention;
 use App\Models\Status;
 use App\Models\User;
+use App\Notifications\UserMentioned;
 
 class MentionHelper
 {
@@ -16,7 +17,8 @@ class MentionHelper
     private bool    $isCreating;
 
     public function __construct(Status $status, string $body = null) {
-        $this->status     = $status;
+        $this->status = $status;
+        $status->load('mentions', 'mentions.mentioned');
         $this->body       = $body ?? $status->body;
         $this->isCreating = $body === null;
     }
@@ -50,7 +52,11 @@ class MentionHelper
     }
 
     private function parseAndCreate(): void {
-        if (empty($this->body) || ($this->body === $this->status->body && !$this->isCreating)) {
+        if ($this->body === $this->status->body && !$this->isCreating) {
+            return;
+        }
+        if (empty($this->body)) {
+            $this->status->mentions()->delete();
             return;
         }
         $newMentions = $this->findUsersInString();
@@ -61,7 +67,7 @@ class MentionHelper
             $found = false;
             foreach ($newMentions as $key => $newMention) {
                 if (
-                    $oldMention->mentioned->id === $newMention->user->id
+                    $oldMention->mentioned_id === $newMention->user->id
                     && $oldMention->position === $newMention->position
                     && $oldMention->length === $newMention->length
                 ) {
@@ -78,6 +84,22 @@ class MentionHelper
         foreach ($newMentions as $newMention) {
             $mention = Mention::fromMentionDto($newMention, $this->status);
             $mention->save();
+
+            $this->sendNotification($mention);
+        }
+
+    }
+
+    private function sendNotification(Mention $mention): void {
+        $found = false;
+        // only send notification if the user has not been mentioned before
+        foreach ($this->status->mentions as $oldMention) {
+            if ($oldMention->mentioned_id === $mention->mentioned_id) {
+                $found = true;
+            }
+        }
+        if (!$found) {
+            $mention->mentioned->notify(new UserMentioned($mention));
         }
     }
 
@@ -92,7 +114,7 @@ class MentionHelper
                 continue;
             }
             $body       = strtr($body, [
-                "@{$user->username}" =>
+                "@$user->username" =>
                     '<a href="' . route('profile', $user->username) . '">@' . $user->username . '</a>'
             ]);
             $replaced[] = $user->username;
@@ -101,7 +123,7 @@ class MentionHelper
     }
 
     public static function getMastodonStatus(Status $status): string {
-        $body     = $status->body;
+        $body = $status->body;
         if (empty($body)) {
             return '';
         }
@@ -117,7 +139,7 @@ class MentionHelper
             $mastodonHelper = new MastodonProfileDetails($user);
             $username       = '@' . $mastodonHelper->getUserName() . '@' . $mastodonHelper->getProfileHost();
 
-            $body       = strtr($body, ["@{$user->username}" => $username]);
+            $body       = strtr($body, ["@$user->username" => $username]);
             $replaced[] = $user->username;
         }
         return $body;

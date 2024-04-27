@@ -26,7 +26,15 @@ export default {
         statusId: {
             type: Number,
             default: null
-        }
+        },
+        departure: {
+            type: Number,
+            default: null
+        },
+        arrival: {
+            type: Number,
+            default: null
+        },
     },
     data() {
         return {
@@ -65,6 +73,13 @@ export default {
             });
             setTilingLayer(this.$props.mapProvider, this.map);
         },
+        canShowMarkers() {
+            if (this.$props.arrival && this.$props.departure) {
+                return this.$props.departure * 1000 <= Date.now() && this.$props.arrival * 1000 >= Date.now();
+            }
+
+            return true;
+        },
         clearAllElements() {
             this.points.forEach(point => {
                 if (point.marker) {
@@ -88,21 +103,25 @@ export default {
             if (this.$props.statusId) {
                 url = url + '/' + this.$props.statusId;
             }
-            fetch(url).then((response) => {
-                response.json().then((results) => {
+            fetch(url)
+                .then((response) => response.json())
+                .then((results) => {
                     this.clearAllElements();
 
                     results.data.forEach((result) => {
                         let marker = null;
                         if (result.point) {
-                            marker = this.createPointObject(
+                            const icon = this.getIconForStatus(result);
+
+                            // If we can't show markers (yet), we just create the point object, so we can refresh it later
+                            marker = this.canShowMarkers() ? this.createPointObject(
                                 result,
                                 L.geoJSON(result.point, {
                                     pointToLayer: function (point, latlng) {
-                                        return L.marker(latlng, {icon: this.getIconForStatus(result)});
+                                        return L.marker(latlng, {icon: icon});
                                     }
                                 }).addTo(this.map)
-                            );
+                            ) : this.createPointObject(result);
                         }
 
                         if (result.polyline) {
@@ -112,14 +131,13 @@ export default {
                         this.points.push(marker);
                     });
                 });
-            });
         },
         fetchEvents() {
-            fetch('/api/v1/activeEvents').then((response) => {
-                response.json().then((results) => {
+            fetch('/api/v1/activeEvents')
+                .then((response) => response.json())
+                .then((results) => {
                     results.data.forEach(this.addEventMarker);
                 });
-            });
         },
         addEventMarker(event) {
             let marker = L.marker([event.station.latitude, event.station.longitude], {
@@ -146,6 +164,10 @@ export default {
             if (oldMarker) {
                 oldMarker.remove();
             }
+            if (!this.canShowMarkers()) {
+                return this.createPointObject(data);
+            }
+
             let line = [];
             data.polyline.features.forEach(point => {
                 line.push([point.geometry.coordinates[1], point.geometry.coordinates[0]]);
@@ -182,8 +204,9 @@ export default {
             }
         },
         fetchPositions(refreshIds) {
-            fetch('/api/v1/positions/' + refreshIds.join(',')).then((response) => {
-                response.json().then((result) => {
+            fetch('/api/v1/positions/' + refreshIds.join(','))
+                .then((response) => response.json())
+                .then((result) => {
                     let tmpResult  = [];
                     let updatedIds = [];
                     result.data.forEach((stop) => {
@@ -211,24 +234,7 @@ export default {
                         return entry;
                     });
                 });
-            });
         }
     }
 }
 </script>
-
-<style>
-.marker-pin {
-    width: 20px;
-    height: 20px;
-    border-radius: 50% 50% 50% 0;
-    border-color: #830b62;
-    border-width: 1px;
-    background: #c30b82;
-    position: absolute;
-    transform: rotate(-45deg);
-    left: 50%;
-    top: 50%;
-    margin: -15px 0 0 -15px;
-}
-</style>
