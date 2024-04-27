@@ -33,7 +33,9 @@ export default {
             selectedDestination: null,
             loading: false,
             stationName: null,
-            trwlStationId: null
+            trwlStationId: null,
+            nextFetched: 0,
+            firstFetchTime: null,
         };
     },
     methods: {
@@ -92,6 +94,17 @@ export default {
                                 this.data = result.data.concat(this.data);
                             }
                             this.meta = result.meta;
+
+                            if (this.nextFetched === 0) {
+                                this.firstFetchTime = DateTime.fromISO(this.meta?.times?.now);
+                            }
+
+                            if (this.data.length === 0 && this.nextFetched < 3) {
+                                this.nextFetched++;
+                                this.fetchNext();
+                            } else {
+                                this.nextFetched = 0;
+                            }
                         });
                     }
                 });
@@ -110,7 +123,7 @@ export default {
         }
     },
     mounted() {
-        this.fetchTime     = DateTime.now().setZone("UTC");
+        this.fetchTime = DateTime.now().setZone("UTC");
 
         // These are needed for the communication with blade templates
         this.stationName   = this.$props.station;
@@ -135,6 +148,7 @@ export default {
         v-on:update:travel-type="updateTravelType"
         :station="{name: stationName}"
         :time="now"
+        :show-filter-button="true"
     />
     <div v-if="loading" style="max-width: 200px;" class="spinner-grow text-trwl mx-auto p-2" role="status">
         <span class="visually-hidden">Loading...</span>
@@ -145,7 +159,8 @@ export default {
                 <ProductIcon :product="selectedTrain.line.product"/>
             </div>
             <div class="col-auto align-items-center d-flex me-3">
-                <LineIndicator :product-name="selectedTrain.line.product" :number="selectedTrain.line.name !== null ? selectedTrain.line.name : selectedTrain.line.fahrtNr"/>
+                <LineIndicator :product-name="selectedTrain.line.product"
+                               :number="selectedTrain.line.name !== null ? selectedTrain.line.name : selectedTrain.line.fahrtNr"/>
             </div>
             <template v-if="selectedDestination">
                 <div class="col-auto align-items-center d-flex me-3">
@@ -159,6 +174,9 @@ export default {
         <template #body v-if="!!selectedTrain && !selectedDestination">
             <CheckinLineRun :selectedTrain="selectedTrain" v-model:destination="selectedDestination"/>
         </template>
+        <template #close v-if="!!selectedDestination">
+            <button type="button" class="btn-close" aria-label="Back" @click="selectedDestination = null"></button>
+        </template>
         <template #body v-if="!!selectedDestination">
             <CheckinInterface :selectedTrain="selectedTrain" :selectedDestination="selectedDestination"/>
         </template>
@@ -167,6 +185,14 @@ export default {
     <div class="text-center mb-2" v-if="!loading" @click="fetchPrevious">
         <button type="button" class="btn btn-primary"><i class="fa-solid fa-angle-up"></i></button>
     </div>
+    <template v-if="!loading && data.length === 0">
+        <div class="card mb-1 dep-card mt-3 mb-3">
+            <div class="text-center my-auto">
+                {{ trans("stationboard.no-departures") }}
+                ({{ formatTime(this.firstFetchTime) }} - {{ formatTime(this.meta?.times?.now) }})
+            </div>
+        </div>
+    </template>
     <template v-show="!loading" v-for="(item, key) in data" :key="item.id">
         <div class="card mb-1 dep-card" @click="showModal(item)">
             <div class="card-body d-flex py-0">
@@ -174,7 +200,8 @@ export default {
                     <ProductIcon :product="item.line.product"/>
                 </div>
                 <div class="col-2 align-items-center d-flex me-3 justify-content-center">
-                    <LineIndicator :productName="item.line.product" :number="item.line.name !== null ? item.line.name : item.line.fahrtNr"/>
+                    <LineIndicator :productName="item.line.product"
+                                   :number="item.line.name !== null ? item.line.name : item.line.fahrtNr"/>
                 </div>
                 <div class="col align-items-center d-flex second-stop">
                     <div>
@@ -186,9 +213,9 @@ export default {
                 </div>
                 <div class="col-auto ms-auto align-items-center d-flex">
                     <div v-if="item.delay">
-                        <span class="text-muted text-decoration-line-through">{{
-                                formatTime(item.plannedWhen)
-                            }}<br></span>
+                        <span class="text-muted text-decoration-line-through">
+                            {{ formatTime(item.plannedWhen) }}<br>
+                        </span>
                         <span>{{ formatTime(item.when) }}</span>
                     </div>
                     <div v-else>

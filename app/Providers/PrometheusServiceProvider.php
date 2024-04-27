@@ -2,8 +2,7 @@
 
 namespace App\Providers;
 
-use App\Enum\CacheKey;
-use App\Enum\MonitoringCounter;
+use App\Helpers\CacheKey;
 use App\Models\Trip;
 use App\Models\PolyLine;
 use Illuminate\Support\Facades\Cache;
@@ -26,8 +25,8 @@ class PrometheusServiceProvider extends ServiceProvider
             ->label("state")
             ->value(function() {
                 return [
-                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::UserCreated)), ["created"]],
-                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::UserDeleted)), ["deleted"]]
+                    [Cache::get(CacheKey::USER_CREATED, 0), ["created"]],
+                    [Cache::get(CacheKey::USER_DELETED, 0), ["deleted"]]
                 ];
             });
 
@@ -37,8 +36,8 @@ class PrometheusServiceProvider extends ServiceProvider
             ->label("state")
             ->value(function() {
                 return [
-                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusCreated)), ["created"]],
-                    [Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::StatusDeleted)), ["deleted"]]
+                    [Cache::get(CacheKey::STATUS_CREATED, 0), ["created"]],
+                    [Cache::get(CacheKey::STATUS_DELETED, 0), ["deleted"]]
                 ];
             });
 
@@ -97,7 +96,7 @@ class PrometheusServiceProvider extends ServiceProvider
 
         Prometheus::addGauge('absent_webhooks_deleted')
                   ->helpText("How many webhooks were responded with Gone and were thus deleted from our side?")
-                  ->value(fn() => Cache::get(CacheKey::getMonitoringCounterKey(MonitoringCounter::WebhookAbsent), 0));
+                  ->value(fn() => Cache::get(CacheKey::WEBHOOK_ABSENT, 0));
 
         Prometheus::addGauge("profile_image_count")
                   ->helpText("How many profile images are stored?")

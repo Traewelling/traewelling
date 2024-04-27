@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Enum\Business;
-use App\Enum\CacheKey;
+use App\Helpers\CacheKey;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;

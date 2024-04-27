@@ -36,7 +36,9 @@ export default {
             <div class="modal-content">
                 <div class="modal-header d-flex">
                     <slot name="header"></slot>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <slot name="close">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </slot>
                 </div>
                 <div class="modal-body">
                     <slot name="body"></slot>
