@@ -211,6 +211,8 @@ class FollowController extends Controller
     }
 
     /**
+     * @todo paths should use kebab-case
+     * @todo paths should not use verbs
      * @OA\Delete(
      *      path="/user/removeFollower",
      *      operationId="removeFollower",
@@ -266,6 +268,8 @@ class FollowController extends Controller
     }
 
     /**
+     * @todo paths should use kebab-case
+     * @todo paths should not use verbs
      * @OA\Put(
      *     path="/user/acceptFollowRequest",
      *     operationId="acceptFollowRequest",
@@ -316,6 +320,9 @@ class FollowController extends Controller
     }
 
     /**
+     * @todo paths should use kebab-case
+     * @todo paths should not use verbs
+     *
      * @OA\Delete(
      *      path="/user/rejectFollowRequest",
      *      operationId="rejectFollowRequest",
