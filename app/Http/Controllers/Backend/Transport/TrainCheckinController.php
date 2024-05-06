@@ -340,7 +340,7 @@ abstract class TrainCheckinController extends Controller
                    ));
     }
 
-    public static function calculateCheckinDuration(Checkin $checkin, bool $update=true): int {
+    public static function calculateCheckinDuration(Checkin $checkin, bool $update = true): int {
         $departure = $checkin->manual_departure ?? $checkin->originStopover->departure ?? $checkin->departure;
         $arrival   = $checkin->manual_arrival ?? $checkin->destinationStopover->arrival ?? $checkin->arrival;
         $duration  = $arrival->diffInMinutes($departure);
