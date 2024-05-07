@@ -806,5 +806,7 @@
     "trip_creation.limitations.5": "Er worden geen foutmeldingen getoond, dus als er niks gebeurt, dan is er sprake van een fout.",
     "missing-journey": "Heb je je reis nog niet gevonden?",
     "trip_creation.limitations.2.small": "(we trachten om een route via Brouter op te maken, maar dit werkt niet altijd naar behoren)",
-    "trip_creation.limitations.3": "De reis is openbaar. Als je incheckt, ziet iedereen je status en kan men zelf ook inchecken."
+    "trip_creation.limitations.3": "De reis is openbaar. Als je incheckt, ziet iedereen je status en kan men zelf ook inchecken.",
+    "notifications.mastodon-server.lead": "Er is een probleem met je Mastodon-instantie.",
+    "notifications.mastodon-server.exception": "Er kan geen verbinding met je Mastodon-instantie op :domain worden gemaakt. Controleer de instellingen of probeer de koppeling opnieuw te maken. Als het probleem zich blijft voordoen, neem dan contact met ons op."
 }
