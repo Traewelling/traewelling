@@ -14,7 +14,7 @@ smoother and faster. Thank you for your support as we work together to make Trä
 
 If you add code:
 
-* If you edit the language files, please check if your change is applicable at least in english.
+* If you edit the language files, please check if your change is applicable at least in English.
 
 * If you work on the front page (see screenshot above), please consider updating the screenshot.
 
@@ -26,7 +26,7 @@ If you have any issues regarding your local setup, you can ask the
 community [in our discussions section](https://github.com/Traewelling/traewelling/discussions/categories/questions-support).
 
 There are several options to get your development instance running - depending on your prior knowledge and host system,
-you might one way simpler than others.
+you might find one way simpler than others.
 
 ### Option 1: Using docker compose
 
@@ -54,7 +54,7 @@ To set up a Träwelling instance you'll need:
 * [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 * [MariaDB](https://mariadb.org/download) or [MySQL](https://www.mysql.com/de/downloads/) (SQLite is used for running
   tests) (You can use [Docker Compose](https://docs.docker.com/compose/) and
-  the [dev.docker-compose.yml](https://github.com/Traewelling/traewelling/blob/develop/docker-compose.yml) for that)
+  the [dev.docker-compose.yml](../docker-compose.yml) for that)
 * [Composer](https://getcomposer.org/download/)
 * PHP 8.3 and the dependencies mentioned in composer.json
 
@@ -106,7 +106,7 @@ It also provides per project development environments.
 There is a also a Linux Distribution called NixOS which builds on top of nix,
 but it's not required to use nix and this development environment.
 
-Our [nix flake](https://github.com/Traewelling/traewelling/blob/develop/flake.nix) includes such an environment with a pre configured MySQL instance.
+Our [nix flake](../flake.nix) includes such an environment with a pre configured MySQL instance.
 
 If you want to use it:
 

@@ -173,12 +173,12 @@ export default {
                 </div>
                 <div class="row g-3 mt-1">
                     <div class="col-4">
-                        <input type="text" class="form-control" :placeholder="trans('trip_creation.form.line')"
-                               v-model="trainTypeInput">
+                        <input type="text" class="form-control mobile-input-fs-16"
+                               :placeholder="trans('trip_creation.form.line')" v-model="trainTypeInput">
                     </div>
                     <div class="col-4">
-                        <input type="text" class="form-control" :placeholder="trans('trip_creation.form.number')"
-                               v-model="journeyNumberInput">
+                        <input type="text" class="form-control mobile-input-fs-16"
+                               :placeholder="trans('trip_creation.form.number')" v-model="journeyNumberInput">
                     </div>
                     <div class="col">
                         <select class="form-select" v-model="form.category">

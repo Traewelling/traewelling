@@ -4,9 +4,10 @@ import {Notyf} from "notyf";
 import {trans} from "laravel-vue-i18n";
 import {useProfileSettingsStore} from "../stores/profileSettings";
 import EventDropdown from "./EventDropdown.vue";
+import TagList from "./TagList.vue";
 
 export default {
-    components: {EventDropdown},
+    components: {TagList, EventDropdown},
     setup() {
         const profileStore = useProfileSettingsStore();
         profileStore.fetchSettings();
@@ -63,21 +64,25 @@ export default {
                 },
                 body: JSON.stringify(data),
             }).then((response) => {
-                this.loading = false;
                 if (response.ok) {
                     response.json().then((result) => {
                         localStorage.setItem("points", JSON.stringify(result.data.points));
                         localStorage.setItem("alsoOnThisConnection", JSON.stringify(result.data.alsoOnThisConnection));
-                        window.location = "/status/" + result.data.status.id;
+                        this.$refs.tagList.postAllTags(result.data.status.id).then(() => {
+                            this.loading = false;
+                            window.location = "/status/" + result.data.status.id;
+                        });
                     });
                 }
                 if (response.status === 409) {
+                    this.loading = false;
                     response.json().then(() => {
                         this.collision = true;
                         this.notyf.error(trans("checkin.conflict") + "<br>" +trans("checkin.conflict.question"));
                     });
                 }
                 if (response.status === 500) {
+                    this.loading = false;
                     this.notyf.error(trans("messages.exception.general"));
                 }
             }).catch((reason) => {
@@ -127,7 +132,7 @@ export default {
             <textarea
                 name="body"
                 id="message-text"
-                class="form-control"
+                class="form-control mobile-input-fs-16"
                 v-model="statusText"
                 :maxlength="allowedChars"
                 style="min-height: 130px;">
@@ -141,7 +146,7 @@ export default {
         <div class="mt-2">
             <div class="col-auto btn-group me-1" :class="{'d-none' : profileStore.getMastodon == null}" >
                 <input type="checkbox" class="btn-check" autocomplete="off" v-model="toot" autocompleted="" id="toot_check" :disabled="visibility === 3">
-                <label class="btn btn-sm btn-outline-mastodon" for="toot_check" style="">
+                <label class="btn btn-sm btn-outline-mastodon" for="toot_check">
                     <i class="fab fa-mastodon"></i>
                     <span class="visually-hidden-focusable">{{ trans("stationboard.check-toot") }}</span>
                 </label>
@@ -171,10 +176,10 @@ export default {
             <div class="col btn-group me-1">
                 <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
                         id="visibilityDropdownButton" data-mdb-dropdown-animation="off"
-                        data-mdb-toggle="dropdown" aria-expanded="false" style="">
+                        data-mdb-toggle="dropdown" aria-expanded="false">
                     <i :class="visibilityIcon" aria-hidden="true"></i>
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="visibilityDropdownButton" style="">
+                <ul class="dropdown-menu" aria-labelledby="visibilityDropdownButton">
                     <li class="dropdown-item" @click="visibility = 0">
                         <i class="fa fa-globe-americas" aria-hidden="true"></i> {{ trans("status.visibility.0") }}
                         <br>
@@ -210,8 +215,8 @@ export default {
                 {{ trans("stationboard.btn-checkin") }}
             </button>
         </div>
+
+    <div class="mt-5 border-top pt-3">
+        <TagList ref="tagList" :cache-locally="true" />
+    </div>
 </template>
-
-<style scoped lang="scss">
-
-</style>

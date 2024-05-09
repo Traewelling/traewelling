@@ -150,7 +150,7 @@ export default {
 <template>
     <FullScreenModal ref="modal">
         <template #header>
-            <input type="text" name="station" class="form-control"
+            <input type="text" name="station" class="form-control mobile-input-fs-16"
                    :placeholder="placeholder"
                    v-model="stationInput"
                    @keyup.enter="setStationFromText"
@@ -185,7 +185,7 @@ export default {
         <div class="card-body">
             <div id="station-autocomplete-container" style="z-index: 3;">
                 <div class="input-group mb-2 mr-sm-2">
-                    <input type="text" name="station" class="form-control"
+                    <input type="text" name="station" class="form-control mobile-input-fs-16"
                            :placeholder="placeholder"
                            v-model="stationInput"
                            @focusin="showModal"

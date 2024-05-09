@@ -6,6 +6,7 @@ use App\Events\StatusDeleteEvent;
 use App\Events\StatusUpdateEvent;
 use App\Events\UserCheckedIn;
 use App\Jobs\PostStatusOnMastodon;
+use App\Listeners\CacheMissedListener;
 use App\Listeners\NotificationSentWebhookListener;
 use App\Listeners\RemoveAbsentWebhooksListener;
 use App\Listeners\StatusCreateCheckPolylineListener;
@@ -23,6 +24,7 @@ use App\Observers\LikeObserver;
 use App\Observers\StatusObserver;
 use App\Observers\UserObserver;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Cache\Events\CacheMissed;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Event;
@@ -55,7 +57,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         WebhookCallFailedEvent::class => [
             RemoveAbsentWebhooksListener::class
-        ]
+        ],
+        CacheMissed::class            => [
+            CacheMissedListener::class
+        ],
     ];
 
     protected $observers = [

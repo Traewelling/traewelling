@@ -257,6 +257,8 @@
     "notifications.socialNotShared.mastodon.401": "Your instance has sent us an <code>401 Unauthorized</code> error when we tried to toot. Maybe it'll help to reconnect Mastodon with Träwelling again?",
     "notifications.socialNotShared.mastodon.429": "It looks like we've been rate-limited by your instance. (<code>429 Too Many Requests</code>)",
     "notifications.socialNotShared.mastodon.504": "It looks like your Mastodon instance was not available when we tried to toot. (<code>504 Bad Gateway</code>)",
+    "notifications.mastodon-server.lead": "There was a problem with your Mastodon instance.",
+    "notifications.mastodon-server.exception": "We couldn't establish a successful connection to your Mastodon instance :domain. Please check the settings or reconnect. If the problem persists, please contact our support.",
     "notifications.userJoinedConnection.lead": "<b>@:username</b> is in your connection!",
     "notifications.userJoinedConnection.notice": "@:username is on <b>:linename</b> from <b>:origin</b> to <b>:destination</b>.|@:username is on line <b>:linename</b> from <b>:origin</b> to <b>:destination</b>.",
     "notifications.userMentioned.lead": "You were mentioned in a status.",

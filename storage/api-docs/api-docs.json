@@ -1349,6 +1349,82 @@
                 ]
             }
         },
+        "/report": {
+            "post": {
+                "tags": [
+                    "User",
+                    "Status",
+                    "Events"
+                ],
+                "summary": "Report a Status, Event or User to the admins.",
+                "operationId": "7a2c60a00b43cf41d9b72b6f15ad09ad",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "subject_type",
+                                    "subject_id",
+                                    "reason"
+                                ],
+                                "properties": {
+                                    "subject_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Event",
+                                            "Status",
+                                            "User"
+                                        ],
+                                        "example": "Status"
+                                    },
+                                    "subject_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "reason": {
+                                        "type": "string",
+                                        "enum": [
+                                            "inappropriate",
+                                            "implausible",
+                                            "spam",
+                                            "illegal",
+                                            "other"
+                                        ],
+                                        "example": "inappropriate"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "The status is inappropriate\n     *                                                   because...",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The report was successfully created."
+                    },
+                    "401": {
+                        "description": "The user is not authenticated."
+                    },
+                    "422": {
+                        "description": "The given data was invalid."
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/settings/profile": {
             "get": {
                 "tags": [
@@ -5992,16 +6068,20 @@
             "description": "Checkin related endpoints. Regular process is departures -> trip -> checkin"
         },
         {
+            "name": "Dashboard",
+            "description": "API Endpoints of Dashboard"
+        },
+        {
             "name": "Events",
             "description": "Events that users can check in to"
         },
         {
-            "name": "Status",
-            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
+            "name": "Notifications",
+            "description": "Get notifications and mark them as read or unread"
         },
         {
-            "name": "Dashboard",
-            "description": "API Endpoints of Dashboard"
+            "name": "Status",
+            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
         },
         {
             "name": "Likes",
