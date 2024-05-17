@@ -55,7 +55,7 @@ export default defineComponent({
         </button>
         <div aria-labelledby="eventDropdown"
              class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden">
-            <form class="p-2 mb-2 bg-light border-bottom">
+            <form class="p-2 mb-2 border-bottom">
                 <input
                     v-model="search" type="search" class="form-control mobile-input-fs-16" autocomplete="off"
                     :placeholder="trans('stationboard.event-filter')">
@@ -68,7 +68,7 @@ export default defineComponent({
                         <i class="fas" :class="{'fa-check': isSelected(event), }"></i>
                         <div class="flex-grow-1">
                             <div class="fw-bold">{{ event.name }}</div>
-                            <div class="text-muted small">{{ event.station.name }}</div>
+                            <div class="text-muted small">{{ event.station?.name }}</div>
                         </div>
                     </a>
                 </li>

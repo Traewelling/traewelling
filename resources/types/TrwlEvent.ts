@@ -9,5 +9,5 @@ export type TrwlEvent = {
     name: string;
     slug: string;
     url: string;
-    station: ShortStation;
+    station: ShortStation|null;
 }

@@ -140,6 +140,9 @@ export default {
                 });
         },
         addEventMarker(event) {
+            if (!event.station) {
+                return;
+            }
             let marker = L.marker([event.station.latitude, event.station.longitude], {
                 title: event.name,
                 icon: eventIcon
