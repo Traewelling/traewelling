@@ -83,7 +83,6 @@ export default {
             fetch(`/api/v1/station/${this.trwlStationId}/departures?when=${time}&travelType=${travelType}`)
                 .then((response) => {
                     this.loading = false;
-                    this.now     = DateTime.now();
                     if (response.ok) {
                         response.json().then((result) => {
                             if (appendPosition === 0) {
@@ -112,14 +111,8 @@ export default {
         formatTime(time) {
             return DateTime.fromISO(time).toFormat("HH:mm");
         },
-        //show divider if this.times.now is between this and the next item
-        showDivider(item, key) {
-            if (key === 0 || typeof this.meta.times === "undefined") {
-                return false;
-            }
-            const prev = DateTime.fromISO(this.data[key - 1].when);
-            const next = DateTime.fromISO(item.when);
-            return this.now >= prev && this.now <= next;
+        isPast(item) {
+            return DateTime.fromISO(item.when) < DateTime.now();
         }
     },
     mounted() {
@@ -193,8 +186,8 @@ export default {
             </div>
         </div>
     </template>
-    <template v-show="!loading" v-for="(item, key) in data" :key="item.id">
-        <div class="card mb-1 dep-card" @click="showModal(item)">
+    <template v-show="!loading" v-for="item in data" :key="item.id">
+        <div class="card mb-1 dep-card" @click="showModal(item)" :class="{'past-card': isPast(item)}">
             <div class="card-body d-flex py-0">
                 <div class="col-1 align-items-center d-flex justify-content-center">
                     <ProductIcon :product="item.line.product"/>
@@ -224,9 +217,6 @@ export default {
                 </div>
             </div>
         </div>
-        <div v-if="showDivider(item, key)">
-            <hr>
-        </div>
     </template>
     <div class="text-center mt-2" v-if="!loading" @click="fetchNext">
         <button type="button" class="btn btn-primary"><i class="fa-solid fa-angle-down"></i></button>
@@ -251,5 +241,9 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.past-card {
+    opacity: 50%;
 }
 </style>
