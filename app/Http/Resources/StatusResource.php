@@ -25,10 +25,10 @@ class StatusResource extends JsonResource
                 fn($mention) => new MentionDto($mention->mentioned, $mention->position, $mention->length)
             ),
             'type'           => '', //TODO: deprecated: remove after 2024-02
-            'user'           => (int) $this->user->id, // TODO: deprectated: remove after when?
-            'username'       => (string) $this->user->username, // TODO: deprectated: remove after when?
-            'profilePicture' => ProfilePictureController::getUrl($this->user), // TODO: deprectated: remove after when?
-            'preventIndex'   => (bool) $this->user->prevent_index, // TODO: deprectated: remove after when?
+            'user'           => (int) $this->user->id, // TODO: deprectated: remove after 2024-08
+            'username'       => (string) $this->user->username, // TODO: deprectated: remove after 2024-08
+            'profilePicture' => ProfilePictureController::getUrl($this->user), // TODO: deprectated: remove after 2024-08
+            'preventIndex'   => (bool) $this->user->prevent_index, // TODO: deprectated: remove after 2024-08
             'business'       => (int) $this->business->value,
             'visibility'     => (int) $this->visibility->value,
             'likes'          => (int) $this->likes->count(),
@@ -53,7 +53,7 @@ class StatusResource extends JsonResource
                 'operator'        => new OperatorResource($this?->checkin->trip->operator)
             ],
             'event'          => new EventResource($this?->event),
-            'userDetails'    => new UserResource($this->user) // maybe better name? "user" is already taken :/
+            'userDetails'    => new UserResource($this->user)
         ];
     }
 }
