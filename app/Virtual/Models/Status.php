@@ -194,4 +194,14 @@ class Status
      * @var Event
      */
     private $event;
+
+    /**
+     * @OA\Property (
+     *     title="userDetails",
+     *     description="User model",
+     * )
+     *
+     * @var User
+     */
+    private $userDetails;
 }
