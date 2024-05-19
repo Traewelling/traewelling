@@ -7,9 +7,9 @@ use App\Models\Checkin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class AccountDeletionTest extends TestCase
+class AccountDeletionTest extends FeatureTestCase
 {
 
     use RefreshDatabase;

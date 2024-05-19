@@ -6,9 +6,9 @@ use App\Http\Controllers\Backend\EventController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class EventSuggestionCorrectionTest extends TestCase
+class EventSuggestionCorrectionTest extends FeatureTestCase
 {
     use RefreshDatabase, WithFaker;
 

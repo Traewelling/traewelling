@@ -6,9 +6,9 @@ use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\Backend\WebFingerController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class WebFingerTest extends TestCase
+class WebFingerTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
