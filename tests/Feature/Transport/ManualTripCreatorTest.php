@@ -11,9 +11,9 @@ use App\Models\Station;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class ManualTripCreatorTest extends TestCase
+class ManualTripCreatorTest extends FeatureTestCase
 {
 
     use RefreshDatabase;

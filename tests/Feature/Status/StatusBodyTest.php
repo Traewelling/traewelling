@@ -4,9 +4,9 @@ namespace Tests\Feature\Status;
 
 use App\Models\Checkin;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class StatusBodyTest extends TestCase
+class StatusBodyTest extends FeatureTestCase
 {
     use RefreshDatabase;
 

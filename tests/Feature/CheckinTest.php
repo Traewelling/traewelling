@@ -20,9 +20,9 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class CheckinTest extends TestCase
+class CheckinTest extends FeatureTestCase
 {
 
     use RefreshDatabase;

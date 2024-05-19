@@ -10,9 +10,9 @@ use App\Models\User;
 use App\Notifications\StatusLiked;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class LikeTest extends TestCase
+class LikeTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
