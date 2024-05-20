@@ -42,8 +42,8 @@ export default {
             });
             fetch(`/api/v1/trains/trip?${params.toString()}`).then((response) => {
                 response.json().then((result) => {
-                    this.lineRun = result.data;
-                    let remove = true;
+                    this.lineRun           = result.data;
+                    let remove             = true;
                     this.lineRun.stopovers = this.lineRun.stopovers.filter((item) => {
                         if (remove && item.evaIdentifier === Number(this.$props.selectedTrain.stop.id)) {
                             remove = false;
@@ -51,7 +51,7 @@ export default {
                         }
                         return !remove;
                     });
-                    this.loading = false;
+                    this.loading           = false;
                     if (this.$props.fastCheckinIbnr) {
                         this.fastCheckin();
                     }
@@ -72,7 +72,7 @@ export default {
         },
         getTime(item) {
             if (item.arrivalPlanned) {
-               return item.arrivalReal ? item.arrivalReal : item.arrivalPlanned;
+                return item.arrivalReal ? item.arrivalReal : item.arrivalPlanned;
             }
             return item.departureReal ? item.departureReal : item.departurePlanned;
         }
@@ -90,19 +90,31 @@ export default {
     <ul class="timeline" v-else>
         <li v-for="item in lineRun.stopovers" :key="item" @click.prevent="handleSetDestination(item)">
             <i class="trwl-bulletpoint" aria-hidden="true"></i>
-            <span class="text-trwl float-end">
-                    <small
-                        class="text-muted text-decoration-line-through"
-                        v-if="item.isArrivalDelayed || item.isDepartureDelayed">
-                        {{
-                            item.isArrivalDelayed ? formatTime(item.arrivalPlanned) : formatTime(item.departurePlanned)
-                        }}
-                    </small>
-                        &nbsp;
-                    <span>{{ formatTime(getTime(item)) }}</span>
-                </span>
+            <span class="float-end" :class="{'text-trwl': !item.cancelled, 'cancelled-stop': item.cancelled}">
+                <small
+                    :class="{'text-muted': !item.cancelled}"
+                    class="text-decoration-line-through"
+                    v-if="item.isArrivalDelayed || item.isDepartureDelayed">
+                    {{ item.isArrivalDelayed ? formatTime(item.arrivalPlanned) : formatTime(item.departurePlanned) }}
+                </small>
+                    &nbsp;
+                <span>{{ formatTime(getTime(item)) }}</span>
+            </span>
 
-            <a href="#" class="text-trwl clearfix">{{ item.name }}</a>
+            <a href="#" class="clearfix"
+               :class="{'text-trwl': !item.cancelled, 'cancelled-stop': item.cancelled}">{{ item.name }}</a>
         </li>
     </ul>
 </template>
+
+<style scoped lang="scss">
+@import "../../sass/_variables.scss";
+
+.cancelled-stop {
+    color: white !important;
+    opacity: 75%;
+    text-decoration-color: $red !important;
+    text-decoration-thickness: 2px !important;
+    text-decoration: line-through;
+}
+</style>
