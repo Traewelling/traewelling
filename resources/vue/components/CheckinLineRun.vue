@@ -72,7 +72,7 @@ export default {
         },
         getTime(item) {
             if (item.arrivalPlanned) {
-                return item.arrivalReal ? item.arrivalReal : item.arrivalPlanned;
+               return item.arrivalReal ? item.arrivalReal : item.arrivalPlanned;
             }
             return item.departureReal ? item.departureReal : item.departurePlanned;
         }
@@ -95,7 +95,9 @@ export default {
                     :class="{'text-muted': !item.cancelled}"
                     class="text-decoration-line-through"
                     v-if="item.isArrivalDelayed || item.isDepartureDelayed">
-                    {{ item.isArrivalDelayed ? formatTime(item.arrivalPlanned) : formatTime(item.departurePlanned) }}
+                    {{
+                            item.isArrivalDelayed ? formatTime(item.arrivalPlanned) : formatTime(item.departurePlanned)
+                        }}
                 </small>
                     &nbsp;
                 <span>{{ formatTime(getTime(item)) }}</span>
