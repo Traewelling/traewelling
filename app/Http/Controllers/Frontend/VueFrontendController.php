@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Frontend;
 
-
-
 use Illuminate\View\View;
 
 class VueFrontendController

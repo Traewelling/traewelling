@@ -7,9 +7,12 @@ import CheckinLineRun from "./CheckinLineRun.vue";
 import CheckinInterface from "./CheckinInterface.vue";
 import StationAutocomplete from "./StationAutocomplete.vue";
 import {trans} from "laravel-vue-i18n";
+import StationBoardEntry from "./Checkin/StationBoardEntry.vue";
 
 export default {
-    components: {StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal},
+    components: {
+        StationBoardEntry,
+        StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal},
     data() {
         return {
             data: [],
@@ -280,48 +283,20 @@ export default {
             </div>
         </div>
     </template>
-    <template v-show="!loading" v-for="item in data" :key="item.id">
-        <div class="card mb-1 dep-card" @click="showModal(item)" :class="{'past-card': isPast(item)}">
-            <div class="card-body d-flex py-0">
-                <div class="col-1 align-items-center d-flex justify-content-center">
-                    <ProductIcon :product="item.line.product"/>
-                </div>
-                <div class="col-2 align-items-center d-flex me-3 justify-content-center">
-                    <LineIndicator :productName="item.line.product"
-                                   :number="item.line.name !== null ? item.line.name : item.line.fahrtNr"/>
-                </div>
-                <div class="col align-items-center d-flex second-stop">
-                    <div>
-                        <span class="fw-bold fs-6">{{ item.direction }}</span><br>
-                        <span v-if="item.stop.name !== meta.station.name" class="text-muted small font-italic">
-                        {{ trans("stationboard.dep") }} {{ item.stop.name }}
-                    </span>
-                    </div>
-                </div>
-                <div class="col-auto ms-auto align-items-center d-flex">
-                    <div v-if="item.delay">
-                        <span class="text-muted text-decoration-line-through">
-                            {{ formatTime(item.plannedWhen) }}<br>
-                        </span>
-                        <span>{{ formatTime(item.when) }}</span>
-                    </div>
-                    <div v-else>
-                        <span>{{ formatTime(item.plannedWhen) }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </template>
+    <StationBoardEntry
+        v-show="!loading"
+        v-for="item in data"
+        :key="item.id"
+        @click="showModal(item)"
+        :item="item"
+        :station="meta.station"
+    />
     <div class="text-center mt-2" v-if="!loading" @click="fetchNext">
         <button type="button" class="btn btn-primary"><i class="fa-solid fa-angle-down"></i></button>
     </div>
 </template>
 
 <style scoped lang="scss">
-.dep-card {
-    min-height: 4.25rem;
-}
-
 .product-icon {
     width: 1.25rem;
     height: 1.25rem;
@@ -335,9 +310,5 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.past-card {
-    opacity: 50%;
 }
 </style>
