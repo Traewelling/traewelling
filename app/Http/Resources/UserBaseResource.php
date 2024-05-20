@@ -25,14 +25,12 @@ class UserBaseResource extends JsonResource
             'trainDistance'  => (float) $this->train_distance,
             'trainDuration'  => (int) $this->train_duration,
             'points'         => (int) $this->points,
-            'twitterUrl'     => null, //deprecated: TODO: can be removed after 2024-02-29
             'mastodonUrl'    => $this->mastodonUrl ?? null,
             'privateProfile' => (bool) $this->private_profile,
             'preventIndex'   => $this->prevent_index,
             'likes_enabled'  => $this->likes_enabled,
             $this->mergeWhen(isset($this->UserSettingsResource),
                 [
-                    'role'                    => 0, //deprecated: TODO: remove after 2024-02-29
                     'home'                    => $this->home,
                     'language'                => $this->language,
                     'defaultStatusVisibility' => $this->default_status_visibility
