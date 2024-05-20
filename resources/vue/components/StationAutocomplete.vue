@@ -60,6 +60,10 @@ export default {
     },
     methods: {
         trans,
+        clearInput() {
+            this.stationInput = "";
+            this.autocompleteList = [];
+        },
         showModal() {
             this.$refs.modal.show();
         },
@@ -150,11 +154,17 @@ export default {
 <template>
     <FullScreenModal ref="modal">
         <template #header>
-            <input type="text" name="station" class="form-control mobile-input-fs-16"
-                   :placeholder="placeholder"
-                   v-model="stationInput"
-                   @keyup.enter="setStationFromText"
-            />
+            <div class="input-group">
+                <input type="text" name="station" class="form-control mobile-input-fs-16"
+                       :placeholder="placeholder"
+                       v-model="stationInput"
+                       @keyup.enter="setStationFromText"
+                />
+                <button class="btn btn-outline-secondary py-2" type="button" @click="clearInput">
+                    <i class="fa-solid fa-delete-left" aria-hidden="true"></i>
+                    <span class="sr-only">{{ trans("delete") }}</span>
+                </button>
+            </div>
         </template>
         <template #body>
             <ul class="list-group list-group-light list-group-small">
