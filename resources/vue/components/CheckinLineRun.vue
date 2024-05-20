@@ -88,7 +88,7 @@ export default {
         <span class="visually-hidden">Loading...</span>
     </div>
     <ul class="timeline" v-else>
-        <li v-for="item in lineRun.stopovers" :key="item" @click="handleSetDestination(item)">
+        <li v-for="item in lineRun.stopovers" :key="item" @click.prevent="handleSetDestination(item)">
             <i class="trwl-bulletpoint" aria-hidden="true"></i>
             <span class="text-trwl float-end">
                     <small

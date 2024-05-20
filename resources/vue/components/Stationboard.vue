@@ -129,6 +129,9 @@ export default {
             this.fetchTime = DateTime.now().setZone("UTC");
 
             if (urlParams.has('tripId')) {
+                if (!urlParams.has('destination')) {
+                    this.selectedDestination = null;
+                }
                 this.selectedTrain = {
                     tripId: urlParams.get('tripId'),
                     line: {
@@ -157,6 +160,8 @@ export default {
             }
             this.stationName = urlParams.get('stationName');
             this.trwlStationId = urlParams.get('stationId');
+            this.show = false;
+            this.$refs.modal.hide();
             return new Promise((resolve) => {
                 resolve();
             });
@@ -164,8 +169,11 @@ export default {
         popstateListener() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.toString() !== this.pushState.toString()) {
-                this.analyzeUrlParams();
-                this.fetchData();
+                this.analyzeUrlParams().then(() => {
+                    if (!this.selectedTrain) {
+                        this.fetchData();
+                    }
+                });
             }
         },
         pushHistory(data) {
@@ -187,6 +195,15 @@ export default {
         window.addEventListener('popstate', () => {
             this.popstateListener();
         });
+    },
+    watch: {
+        selectedDestination(value) {
+            if (value === null) {
+                window.history.back();
+            } else {
+                this.pushHistory(new URLSearchParams({destination: value.id}));
+            }
+        }
     },
     computed: {
         now() {
