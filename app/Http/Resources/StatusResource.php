@@ -24,7 +24,6 @@ class StatusResource extends JsonResource
             'bodyMentions'   => $this->mentions->map(
                 fn($mention) => new MentionDto($mention->mentioned, $mention->position, $mention->length)
             ),
-            'type'           => '', //TODO: deprecated: remove after 2024-02
             'user'           => (int) $this->user->id,
             'username'       => (string) $this->user->username,
             'profilePicture' => ProfilePictureController::getUrl($this->user),
@@ -36,7 +35,7 @@ class StatusResource extends JsonResource
             'isLikable'      => Gate::allows('like', $this->resource),
             'client'         => new ClientResource($this->client),
             'createdAt'      => $this->created_at->toIso8601String(),
-            'train'          => [
+            'train'          => [ //TODO: don't call it train - we have more than trains
                 'trip'            => (int) $this->checkin->trip->id,
                 'hafasId'         => (string) $this->checkin->trip->trip_id,
                 'category'        => (string) $this->checkin->trip->category->value,
