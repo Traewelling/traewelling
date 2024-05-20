@@ -77,7 +77,7 @@ class CheckinTest extends FeatureTestCase
         // THEN: Expect the redirect to another stationboard
         $response->assertStatus(302);
         $response->assertRedirect(route('trains.stationboard', [
-            'station'  => self::HANNOVER_HBF['id'],
+            'stationId'  => 1,
             'provider' => 'train',
         ]));
     }
