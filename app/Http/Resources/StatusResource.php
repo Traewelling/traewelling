@@ -53,7 +53,7 @@ class StatusResource extends JsonResource
                 'operator'        => new OperatorResource($this?->checkin->trip->operator)
             ],
             'event'          => new EventResource($this?->event),
-            'userDetails'    => new UserResource($this->user)
+            'userDetails'    => new LightUserResource($this->user)
         ];
     }
 }
