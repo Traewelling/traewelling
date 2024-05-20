@@ -121,7 +121,7 @@ class TransportTest extends ApiTestCase
         $response->assertJsonStructure([
                                            'data' => [
                                                'status' => [
-                                                   'id', 'body', 'type', 'user', //and more...
+                                                   'id', 'body', 'user', //and more...
                                                ],
                                                'points' => [
                                                    'points', //TODO: should be renamed... this sounds weird duplicated.
@@ -256,7 +256,7 @@ class TransportTest extends ApiTestCase
         $response->assertJsonStructure([
                                            'data' => [
                                                'status' => [
-                                                   'id', 'body', 'type', 'user', //and more...
+                                                   'id', 'body', 'user', //and more...
                                                ],
                                                'points' => [
                                                    'points', //TODO: should be renamed... this sounds weird duplicated.
