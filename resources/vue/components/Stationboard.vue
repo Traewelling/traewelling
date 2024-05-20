@@ -10,18 +10,6 @@ import {trans} from "laravel-vue-i18n";
 
 export default {
     components: {StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal},
-    props: {
-        station: {
-            type: String,
-            required: true,
-            default: "Karlsruhe Hbf"
-        },
-        stationId: {
-            type: Number,
-            required: true,
-            default: 0
-        }
-    },
     data() {
         return {
             data: [],
@@ -37,6 +25,7 @@ export default {
             nextFetched: 0,
             firstFetchTime: null,
             pushState: null,
+            fastCheckinIbnr: null,
         };
     },
     methods: {
@@ -48,9 +37,9 @@ export default {
             this.$refs.modal.show();
 
             const data = new URLSearchParams({
-                tripID: selectedItem.tripId,
+                tripId: selectedItem.tripId,
                 lineName: selectedItem.line.name,
-                startId: this.meta.station.ibnr,
+                start: this.meta.station.ibnr,
                 departure: selectedItem.when,
             });
 
@@ -86,6 +75,9 @@ export default {
                 this.fetchTime = DateTime.fromISO(time).setZone("UTC");
             } else {
                 time = this.fetchTime.minus({minutes: 5}).toString();
+            }
+            if (this.trwlStationId === null) {
+                return;
             }
 
             let travelType = this.travelType ? this.travelType : "";
@@ -147,6 +139,9 @@ export default {
                     },
                     plannedWhen: urlParams.get('departure'),
                 };
+                if (urlParams.has('destination')) {
+                    this.fastCheckinIbnr = urlParams.get('destination');
+                }
                 this.show = true;
                 this.$refs.modal.show();
                 return new Promise((resolve) => {
@@ -176,6 +171,10 @@ export default {
         pushHistory(data) {
             this.pushState = data;
             window.history.pushState({}, "", `?${data.toString()}`);
+        },
+        goBackToLineRun() {
+            this.selectedDestination = null;
+            this.fastCheckinIbnr = null;
         }
     },
     mounted() {
@@ -236,10 +235,14 @@ export default {
             </template>
         </template>
         <template #body v-if="showLineRun">
-            <CheckinLineRun :selectedTrain="selectedTrain" v-model:destination="selectedDestination"/>
+            <CheckinLineRun
+                :selectedTrain="selectedTrain"
+                :fastCheckinIbnr="fastCheckinIbnr"
+                v-model:destination="selectedDestination"
+            />
         </template>
         <template #close v-if="showCheckinInterface">
-            <button type="button" class="btn-close" aria-label="Back" @click="selectedDestination = null"></button>
+            <button type="button" class="btn-close" aria-label="Back" @click="goBackToLineRun"></button>
         </template>
         <template #body v-if="showCheckinInterface">
             <CheckinInterface :selectedTrain="selectedTrain" :selectedDestination="selectedDestination"/>
