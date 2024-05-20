@@ -13,6 +13,11 @@ export default {
     props: {
         station: {
             type: Object,
+            required: false,
+            default: null,
+        },
+        stationName: {
+            type: Object,
             required: false
         },
         dashboard: {
@@ -44,6 +49,7 @@ export default {
             stationInput: "",
             showFilter: false,
             date: null,
+            selectedStation: null,
             selectedType: null,
             fetchingGps: false,
             travelTypes: [
@@ -96,9 +102,13 @@ export default {
         },
         setStation(item) {
             this.stationInput = item.name;
+            this.selectedStation = item;
             this.$emit("update:station", item);
             this.$refs.modal.hide();
-            window.location = "/trains/stationboard?station=" + item.name;
+            const url = `/stationboard?stationId=${item.id}&stationName=${item.name}`;
+            if (this.$props.dashboard) {
+                window.location = url;
+            }
         },
         setTravelType(travelType) {
             this.selectedType = this.selectedType === travelType.value ? null : travelType.value;
@@ -127,13 +137,17 @@ export default {
         stationInput: _.debounce(function () {
             this.autocomplete();
         }, 500),
+        stationName() {
+            this.stationInput = this.stationName ? this.stationName : this.stationInput;
+        },
         station() {
-            this.stationInput = this.station ? this.station.name : this.stationInput;
+            this.selectedStation = this.station;
         }
     },
     mounted() {
         this.date         = this.time;
-        this.stationInput = this.station ? this.station.name : "";
+        this.stationInput = this.stationName ? this.stationName : "";
+        this.selectedStation = this.station;
         this.getRecent();
     },
     computed: {

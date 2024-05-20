@@ -228,7 +228,8 @@ export default {
         v-on:update:time="updateTime"
         v-on:update:station="updateStation"
         v-on:update:travel-type="updateTravelType"
-        :station="{name: stationName}"
+        :stationName="stationName"
+        :station="meta?.station"
         :time="now"
         :show-filter-button="true"
     />
