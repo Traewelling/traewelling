@@ -71,6 +71,10 @@ class FrontendTransportController extends Controller
             $station = StationController::lookupStation($searchQuery);
         }
 
+        if ($request->user()->hasRole('open-beta')) {
+            return redirect()->route('stationboard', ['stationId' => $station->id, 'stationName' => $station->name]);
+        }
+
         $when = isset($validated['when'])
             ? Carbon::parse($validated['when'], auth()->user()->timezone ?? config('app.timezone'))
             : Carbon::now(auth()->user()->timezone ?? config('app.timezone'))->subMinutes(5);
@@ -132,9 +136,20 @@ class FrontendTransportController extends Controller
                                             'tripID'          => ['required'],
                                             'lineName'        => ['required'],
                                             'start'           => ['required', 'numeric'],
+                                            'destination'     => ['nullable', 'numeric'],
                                             'departure'       => ['required', 'date'],
                                             'searchedStation' => ['nullable', 'exists:train_stations,id'],
                                         ]);
+
+        if ($request->user()->hasRole('open-beta')) {
+            return redirect()->route('stationboard', [
+                'tripId'      => $validated['tripID'],
+                'lineName'    => $validated['lineName'],
+                'start'       => $validated['start'],
+                'departure'   => $validated['departure'],
+                'destination' => $validated['destination'] ?? null,
+            ]);
+        }
 
         try {
             $startStation = Station::where('ibnr', $validated['start'])->first();
@@ -173,8 +188,8 @@ class FrontendTransportController extends Controller
                 'searchedStation' => isset($validated['searchedStation']) ? Station::findOrFail($validated['searchedStation']) : null,
                 'lastStopover'    => $lastStopover,
             ]);
-        } catch (HafasException $exception) {
-            return back()->with('error', $exception->getMessage());
+        } catch (HafasException) {
+            return redirect()->back()->with(['error' => __('messages.exception.generalHafas')]);
         } catch (StationNotOnTripException) {
             return redirect()->back()->with('error', __('controller.transport.not-in-stopovers'));
         }
