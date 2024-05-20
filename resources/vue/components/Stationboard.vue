@@ -36,6 +36,7 @@ export default {
             trwlStationId: null,
             nextFetched: 0,
             firstFetchTime: null,
+            pushState: null,
         };
     },
     methods: {
@@ -45,6 +46,15 @@ export default {
             this.selectedTrain       = selectedItem;
             this.show                = true;
             this.$refs.modal.show();
+
+            const data = new URLSearchParams({
+                tripID: selectedItem.tripId,
+                lineName: selectedItem.line.name,
+                startId: this.meta.station.ibnr,
+                departure: selectedItem.when,
+            });
+
+            this.pushHistory(data);
         },
         updateStation(station) {
             this.stationName   = station.name;
@@ -80,6 +90,13 @@ export default {
 
             let travelType = this.travelType ? this.travelType : "";
 
+            this.pushHistory(new URLSearchParams({
+                stationId: this.trwlStationId,
+                stationName: this.stationName,
+                when: time,
+                travelType: travelType
+            }))
+
             fetch(`/api/v1/station/${this.trwlStationId}/departures?when=${time}&travelType=${travelType}`)
                 .then((response) => {
                     this.loading = false;
@@ -93,6 +110,7 @@ export default {
                                 this.data = result.data.concat(this.data);
                             }
                             this.meta = result.meta;
+                            this.stationName = result.meta.station.name;
 
                             if (this.nextFetched === 0) {
                                 this.firstFetchTime = DateTime.fromISO(this.meta?.times?.now);
@@ -113,22 +131,75 @@ export default {
         },
         isPast(item) {
             return DateTime.fromISO(item.when) < DateTime.now();
+        },
+        async analyzeUrlParams() {
+            let urlParams = new URLSearchParams(window.location.search);
+            this.fetchTime = DateTime.now().setZone("UTC");
+
+            if (urlParams.has('tripId')) {
+                this.selectedTrain = {
+                    tripId: urlParams.get('tripId'),
+                    line: {
+                        name: urlParams.get('lineName')
+                    },
+                    stop: {
+                        id: urlParams.get('start')
+                    },
+                    plannedWhen: urlParams.get('departure'),
+                };
+                this.show = true;
+                this.$refs.modal.show();
+                return new Promise((resolve) => {
+                    resolve();
+                });
+            }
+
+            if (!urlParams.has('stationId')) {
+                window.notyf.error("No station found!");
+            }
+            if (urlParams.has('when')) {
+                this.fetchTime = DateTime.fromISO(urlParams.get('when')).setZone("UTC");
+            }
+            this.stationName = urlParams.get('stationName');
+            this.trwlStationId = urlParams.get('stationId');
+            return new Promise((resolve) => {
+                resolve();
+            });
+        },
+        popstateListener() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.toString() !== this.pushState.toString()) {
+                this.analyzeUrlParams();
+                this.fetchData();
+            }
+        },
+        pushHistory(data) {
+            this.pushState = data;
+            window.history.pushState({}, "", `?${data.toString()}`);
         }
     },
     mounted() {
-        this.fetchTime = DateTime.now().setZone("UTC");
+        this.analyzeUrlParams().then(() => {
+            if (!this.selectedTrain) {
+                this.fetchData();
+            }
+        });
 
-        // These are needed for the communication with blade templates
-        this.stationName   = this.$props.station;
-        this.trwlStationId = this.$props.stationId;
-
-        this.fetchData();
+        window.addEventListener('popstate', () => {
+            this.popstateListener();
+        });
     },
     computed: {
         now() {
             return Object.hasOwn(this.meta, "times") && Object.hasOwn(this.meta.times, "now")
                 ? DateTime.fromISO(this.meta.times.now).setZone("UTC")
                 : DateTime.now().setZone("UTC");
+        },
+        showLineRun() {
+            return !!this.selectedTrain && !this.selectedDestination;
+        },
+        showCheckinInterface() {
+            return !!this.selectedDestination;
         }
     }
 }
@@ -164,13 +235,13 @@ export default {
                 </div>
             </template>
         </template>
-        <template #body v-if="!!selectedTrain && !selectedDestination">
+        <template #body v-if="showLineRun">
             <CheckinLineRun :selectedTrain="selectedTrain" v-model:destination="selectedDestination"/>
         </template>
-        <template #close v-if="!!selectedDestination">
+        <template #close v-if="showCheckinInterface">
             <button type="button" class="btn-close" aria-label="Back" @click="selectedDestination = null"></button>
         </template>
-        <template #body v-if="!!selectedDestination">
+        <template #body v-if="showCheckinInterface">
             <CheckinInterface :selectedTrain="selectedTrain" :selectedDestination="selectedDestination"/>
         </template>
     </FullScreenModal>
