@@ -146,7 +146,7 @@ export default {
                     this.fastCheckinIbnr = urlParams.get('destination');
                 }
                 this.show = true;
-                this.$refs.modal.show();
+                this.$refs?.modal?.show();
                 return new Promise((resolve) => {
                     resolve();
                 });
@@ -201,7 +201,9 @@ export default {
             if (value === null) {
                 window.history.back();
             } else {
-                this.pushHistory(new URLSearchParams({destination: value.id}));
+                const params = new URLSearchParams(window.location.search);
+                params.append('destination', value.evaIdentifier)
+                this.pushHistory(params);
             }
         }
     },
