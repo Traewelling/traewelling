@@ -5,11 +5,11 @@ namespace Tests\Feature\Dev;
 use App\Models\User;
 use App\Repositories\OAuthClientRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertNotEquals;
 
-class EditOAuthClientTest extends TestCase
+class EditOAuthClientTest extends FeatureTestCase
 {
     use RefreshDatabase;
 

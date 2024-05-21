@@ -7,7 +7,7 @@ use App\Providers\AuthServiceProvider;
 use Illuminate\Testing\TestResponse;
 use Laravel\Passport\Passport;
 
-abstract class ApiTestCase extends TestCase
+abstract class ApiTestCase extends FeatureTestCase
 {
     public $mockConsoleOutput = false;
 

@@ -11,10 +11,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 use function PHPUnit\Framework\assertEquals;
 
-class RemoveAbsentWebhooksListenerTest extends TestCase
+class RemoveAbsentWebhooksListenerTest extends FeatureTestCase
 {
     use RefreshDatabase;
 

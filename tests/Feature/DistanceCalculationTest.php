@@ -11,9 +11,9 @@ use App\Models\Stopover;
 use App\Objects\LineSegment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class DistanceCalculationTest extends TestCase
+class DistanceCalculationTest extends FeatureTestCase
 {
 
     use RefreshDatabase;

@@ -5,9 +5,9 @@ namespace Tests\Feature\Frontend;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class AuthTest extends TestCase
+class AuthTest extends FeatureTestCase
 {
     use RefreshDatabase;
 

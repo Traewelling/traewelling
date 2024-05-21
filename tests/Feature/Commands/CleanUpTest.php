@@ -12,9 +12,9 @@ use Illuminate\Console\Command;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class CleanUpTest extends TestCase
+class CleanUpTest extends FeatureTestCase
 {
 
     use RefreshDatabase;
