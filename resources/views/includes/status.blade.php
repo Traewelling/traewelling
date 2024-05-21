@@ -58,7 +58,7 @@
                         </span>
                     </span>
 
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->checkin->originStation->ibnr])}}"
+                    <a href="{{route('trains.stationboard', ['stationId' => $status->checkin->originStation->id ])}}"
                        class="text-trwl clearfix">
                         {{$status->checkin->originStation->name}}
                     </a>
@@ -128,7 +128,7 @@
                             @php
                                 $nextStation = \App\Http\Controllers\Backend\Transport\StatusController::getNextStationForStatus($status);
                             @endphp
-                            <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $nextStation?->ibnr])}}"
+                            <a href="{{route('trains.stationboard', ['stationId' => $nextStation?->id])}}"
                                class="text-trwl clearfix">
                                 {{$nextStation?->name}}
                             </a>
@@ -149,7 +149,7 @@
                             {{ userTime($display_arrival->time) }}
                         </span>
                     </span>
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->checkin->destinationStation->ibnr])}}"
+                    <a href="{{route('trains.stationboard', ['stationId' => $status->checkin->destinationStation->id])}}"
                        class="text-trwl clearfix">
                         {{$status->checkin->destinationStation->name}}
                     </a>

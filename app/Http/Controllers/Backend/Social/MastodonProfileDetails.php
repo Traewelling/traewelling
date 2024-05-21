@@ -32,7 +32,7 @@ class MastodonProfileDetails
     }
 
     private function getData(): ?array {
-        return Cache::remember(CacheKey::getMastodonProfileInformationKey($this->user), 3600, function () {
+        return Cache::remember(CacheKey::getMastodonProfileInformationKey($this->user), 3600, function() {
             return $this->fetchProfileInformation();
         });
     }
@@ -60,9 +60,27 @@ class MastodonProfileDetails
                 Log::warning("Unable to fetch mastodon information for user#{$this->user->id} for Mastodon-Server '
                 . {$mastodonServer->domain}' and mastodon_id#{$this->user->socialProfile->mastodon_id}");
                 Log::warning($exception);
+                if ($exception->getCode() === 410 || $exception->getCode() === 404) {
+                    $this->removeMastodonInformation();
+                }
             }
         }
 
         return null;
+    }
+
+    private function removeMastodonInformation(): void {
+        if ($this->user->email_verified_at === null) {
+            Log::info("User#{$this->user->id} has not verified his email address yet."
+                      . "Not removing mastodon information.");
+            return;
+        }
+        Log::info("Removing mastodon information for user#{$this->user->id}");
+        $this->user->socialProfile->update([
+                                               'mastodon_id'         => null,
+                                               'mastodon_token'      => null,
+                                               'mastodon_server'     => null,
+                                               'mastodon_visibility' => 1,
+                                           ]);
     }
 }

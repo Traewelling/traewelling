@@ -32,7 +32,7 @@
                                                         <br/>
                                                         <small class="text-muted">
                                                             {{__('events.closestStation')}}:
-                                                            <a href="{{route('trains.stationboard', ['station' => $event->station->ibnr])}}">
+                                                            <a href="{{route('trains.stationboard', ['stationId' => $event->station->id ])}}">
                                                                 {{$event->station->name}}
                                                             </a>
                                                         </small>

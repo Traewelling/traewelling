@@ -20,9 +20,9 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class CheckinTest extends TestCase
+class CheckinTest extends FeatureTestCase
 {
 
     use RefreshDatabase;
@@ -77,7 +77,7 @@ class CheckinTest extends TestCase
         // THEN: Expect the redirect to another stationboard
         $response->assertStatus(302);
         $response->assertRedirect(route('trains.stationboard', [
-            'station'  => self::HANNOVER_HBF['id'],
+            'stationId'  => 1,
             'provider' => 'train',
         ]));
     }

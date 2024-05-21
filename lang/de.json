@@ -275,6 +275,8 @@
     "notifications.socialNotShared.mastodon.401": "Deine Instanz hat uns einen <code>401 Unauthorized</code>-Fehler gemeldet, als wir versucht haben, Deinen Check-in zu tooten. Vielleicht hilft es, Mastodon erneut mit Träwelling zu verbinden?",
     "notifications.socialNotShared.mastodon.429": "Es scheint, dass Träwelling temporär von deiner Instanz gesperrt wurde. (<code>429 Too Many Requests</code>)",
     "notifications.socialNotShared.mastodon.504": "Scheinbar war deine Instanz nicht verfügbar, als wir versucht haben, Deinen Check-in zu tooten. (<code>504 Bad Gateway</code>)",
+    "notifications.mastodon-server.lead": "Es gab ein Problem mit der Verbindung zu deiner Mastodon-Instanz.",
+    "notifications.mastodon-server.exception": "Wir konnten keine erfolgreiche Verbindung zu deiner Mastodon-Instanz :domain herstellen. Bitte überprüfe die Einstellungen oder verbinde dich erneut. Sollte das Problem weiterhin bestehen, kontaktiere bitte unseren Support.",
     "notifications.userJoinedConnection.lead": "<b>@:username</b> ist auch in Deiner Verbindung!",
     "notifications.userJoinedConnection.notice": "@:username reist mit <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>.|@:username reist mit Linie <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>.",
     "notifications.userMentioned.lead": "Du wurdest in einem Status erwähnt.",
@@ -788,5 +790,9 @@
     "trip_creation.limitations.2.small": "(wir versuchen, eine Route über Brouter zu finden, aber das funktioniert nicht immer zuverlässig)",
     "trip_creation.limitations.3": "Der Trip wird öffentlich erstellt - wenn du also eincheckst, kann jeder, der deinen Status sehen kann, ebenfalls in diesen Trip einchecken.",
     "trip_creation.limitations.4": "Der Betreiber kann in diesem Formular nicht festgelegt werden (über API möglich)",
-    "trip_creation.limitations.5": "Es gibt keine sichtbaren Fehlermeldungen für dieses Formular. Wenn also beim Absenden nichts passiert, liegt irgendwo ein Fehler vor."
+    "trip_creation.limitations.5": "Es gibt keine sichtbaren Fehlermeldungen für dieses Formular. Wenn also beim Absenden nichts passiert, liegt irgendwo ein Fehler vor.",
+    "action.error": "Diese Aktion konnte leider nicht ausgeführt werden. Bitte versuche es später noch einmal.",
+    "action.like": "Status liken",
+    "action.dislike": "Status nicht mehr liken",
+    "action.set-home": "Heimathaltestelle setzen"
 }

@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\CleanUpMastodonServers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -35,6 +36,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cache:clear-database')->daily();
         $schedule->command('queue-monitor:purge --beforeDays=7')->daily();
         $schedule->command('activitylog:clean')->weekly();
+        $schedule->command(CleanUpMastodonServers::class)->weekly();
         $schedule->command('app:wikidata-fetcher')->everyMinute();
 
         if (config('trwl.year_in_review.backend')) {
