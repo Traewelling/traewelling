@@ -212,7 +212,7 @@ export default {
             } else {
                 const params      = new URLSearchParams(window.location.search);
                 const destination = this.useInternalIdentifiers ? value.id : value.evaIdentifier;
-                params.append('destination', destination)
+                params.set('destination', destination)
                 this.pushHistory(params);
             }
         }
