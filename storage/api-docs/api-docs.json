@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000",
+            "url": "http://localhost:8000/api/v1",
             "description": "This instance"
         }
     ],
@@ -164,7 +164,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/Event"
+                                            "$ref": "#/components/schemas/EventResource"
                                         }
                                     },
                                     "type": "object"
@@ -346,7 +346,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Event"
+                                                "$ref": "#/components/schemas/EventResource"
                                             }
                                         }
                                     },
@@ -442,7 +442,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Event"
+                                                "$ref": "#/components/schemas/EventResource"
                                             }
                                         }
                                     },
@@ -1349,6 +1349,82 @@
                 ]
             }
         },
+        "/report": {
+            "post": {
+                "tags": [
+                    "User",
+                    "Status",
+                    "Events"
+                ],
+                "summary": "Report a Status, Event or User to the admins.",
+                "operationId": "7a2c60a00b43cf41d9b72b6f15ad09ad",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "subject_type",
+                                    "subject_id",
+                                    "reason"
+                                ],
+                                "properties": {
+                                    "subject_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Event",
+                                            "Status",
+                                            "User"
+                                        ],
+                                        "example": "Status"
+                                    },
+                                    "subject_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "reason": {
+                                        "type": "string",
+                                        "enum": [
+                                            "inappropriate",
+                                            "implausible",
+                                            "spam",
+                                            "illegal",
+                                            "other"
+                                        ],
+                                        "example": "inappropriate"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "The status is inappropriate\n     *                                                   because...",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The report was successfully created."
+                    },
+                    "401": {
+                        "description": "The user is not authenticated."
+                    },
+                    "422": {
+                        "description": "The given data was invalid."
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/settings/profile": {
             "get": {
                 "tags": [
@@ -1826,13 +1902,31 @@
                 "operationId": "getDailyStatistics",
                 "parameters": [
                     {
+                        "name": "date",
+                        "in": "path",
+                        "description": "Date for the statistics in Format `YYYY-MM-DD`",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "2024-04-09"
+                    },
+                    {
+                        "name": "timezone",
+                        "in": "query",
+                        "description": "Timezone for the date. If not set, the user's timezone will be used.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Europe/Berlin"
+                    },
+                    {
                         "name": "withPolylines",
                         "in": "query",
                         "description": "If this parameter is set, the polylines will be returned as well. Otherwise attribute is\n     *          null.",
                         "schema": {
-                            "type": "string"
-                        },
-                        "example": ""
+                            "type": "boolean"
+                        }
                     }
                 ],
                 "responses": {
@@ -2981,7 +3075,7 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Träwelling-ID of the station (station needs to be looked up first)",
+                        "description": "Träwelling-ID of the station (you can look this up with [trainStationAutocomplete](#/Checkin/trainStationAutocomplete))",
                         "required": true
                     },
                     {
@@ -3471,7 +3565,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/ShortTrainStation"
+                                                "$ref": "#/components/schemas/AutocompleteStation"
                                             }
                                         }
                                     },
@@ -4369,6 +4463,85 @@
                     "name": "Station"
                 }
             },
+            "EventResource": {
+                "title": "Event",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 39
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "9-Euro-Ticket"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "9_euro_ticket"
+                    },
+                    "hashtag": {
+                        "type": "string",
+                        "example": "NeunEuroTicket"
+                    },
+                    "host": {
+                        "type": "string",
+                        "example": "9-Euro-Ticket GmbH"
+                    },
+                    "url": {
+                        "type": "string",
+                        "example": "https://9-euro-ticket.de"
+                    },
+                    "begin": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-01-01T00:00:00+00:00"
+                    },
+                    "end": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-01-02T00:00:00+00:00"
+                    },
+                    "station": {
+                        "$ref": "#/components/schemas/Station"
+                    }
+                },
+                "type": "object"
+            },
+            "AutocompleteStation": {
+                "title": "AutocompleteStation",
+                "description": "shortened train station model",
+                "properties": {
+                    "id": {
+                        "title": "id",
+                        "description": "Träwelling ID of the station",
+                        "type": "integer",
+                        "example": 12345
+                    },
+                    "ibnr": {
+                        "title": "ibnr",
+                        "description": "IBNR of the station",
+                        "type": "integer",
+                        "example": "8000191",
+                        "nullable": true
+                    },
+                    "rilIdentifier": {
+                        "title": "rilIdentifier",
+                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
+                        "type": "string",
+                        "example": "RK",
+                        "nullable": "true"
+                    },
+                    "name": {
+                        "title": "name",
+                        "description": "name of the station",
+                        "type": "string",
+                        "example": "Karlsruhe Hbf"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "AutocompleteStation"
+                }
+            },
             "BearerTokenResponse": {
                 "title": "BearerTokenResponse",
                 "properties": {
@@ -4533,76 +4706,6 @@
                 "type": "object",
                 "xml": {
                     "name": "Client"
-                }
-            },
-            "Event": {
-                "title": "Event",
-                "description": "Event model",
-                "properties": {
-                    "id": {
-                        "title": "ID",
-                        "description": "ID",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 39
-                    },
-                    "name": {
-                        "title": "name",
-                        "description": "Name of event",
-                        "type": "string",
-                        "example": "9-Euro-Ticket"
-                    },
-                    "slug": {
-                        "title": "slug",
-                        "description": "URL-Slug for event",
-                        "type": "string",
-                        "example": "9_euro_ticket"
-                    },
-                    "hashtag": {
-                        "title": "hashtag",
-                        "description": "social media hashtag for event",
-                        "type": "string",
-                        "example": "NeunEuroTicket"
-                    },
-                    "host": {
-                        "title": "host",
-                        "description": "host of the event",
-                        "example": "Die Bundesregierung"
-                    },
-                    "url": {
-                        "title": "url",
-                        "description": "external URL for this event",
-                        "type": "string",
-                        "example": "https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756"
-                    },
-                    "begin": {
-                        "title": "begin",
-                        "description": "Timestamp for the start of the event",
-                        "example": "2022-06-01T00:00:00+02:00"
-                    },
-                    "end": {
-                        "title": "end",
-                        "description": "Timestamp for the end of the event",
-                        "example": "2022-08-31T23:59:00+02:00"
-                    },
-                    "station": {
-                        "title": "station",
-                        "description": "nearest station for this event (nullable)",
-                        "type": "object",
-                        "nullable": "true",
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/Station"
-                            },
-                            {
-                                "type": "'null'"
-                            }
-                        ]
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Event"
                 }
             },
             "EventDetails": {
@@ -5057,35 +5160,6 @@
                     "name": "Polyline"
                 }
             },
-            "ShortTrainStation": {
-                "title": "ShortTrainStation",
-                "description": "shortened train station model",
-                "properties": {
-                    "ibnr": {
-                        "title": "ibnr",
-                        "description": "IBNR of the station",
-                        "type": "integer",
-                        "example": "8000191"
-                    },
-                    "rilIdentifier": {
-                        "title": "rilIdentifier",
-                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
-                        "type": "string",
-                        "example": "RK",
-                        "nullable": "true"
-                    },
-                    "name": {
-                        "title": "name",
-                        "description": "name of the station",
-                        "type": "string",
-                        "example": "Karlsruhe Hbf"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "ShortTrainStation"
-                }
-            },
             "Status": {
                 "title": "Status",
                 "description": "Status model",
@@ -5168,14 +5242,9 @@
                         "$ref": "#/components/schemas/Trip"
                     },
                     "event": {
-                        "oneOf": [
-                            {
-                                "$ref": "#/components/schemas/Event"
-                            }
-                        ],
-                        "nullable": true,
                         "title": "event",
-                        "description": "Event model (nullable)"
+                        "description": "Event model (nullable)",
+                        "nullable": true
                     }
                 },
                 "type": "object",
@@ -5999,16 +6068,20 @@
             "description": "Checkin related endpoints. Regular process is departures -> trip -> checkin"
         },
         {
+            "name": "Dashboard",
+            "description": "API Endpoints of Dashboard"
+        },
+        {
             "name": "Events",
             "description": "Events that users can check in to"
         },
         {
-            "name": "Status",
-            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
+            "name": "Notifications",
+            "description": "Get notifications and mark them as read or unread"
         },
         {
-            "name": "Dashboard",
-            "description": "API Endpoints of Dashboard"
+            "name": "Status",
+            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
         },
         {
             "name": "Likes",

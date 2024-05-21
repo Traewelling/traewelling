@@ -6,20 +6,32 @@ use Carbon\Carbon;
 
 /**
  * @OA\Schema (
- *     title="ShortTrainStation",
+ *     title="AutocompleteStation",
  *     description="shortened train station model",
  *     @OA\Xml(
- *        name="ShortTrainStation"
+ *        name="AutocompleteStation"
  *     )
  * )
  */
-class ShortTrainStation
+class AutocompleteStation
 {
+    /**
+     * @OA\Property(
+     *     title="id",
+     *     description="Träwelling ID of the station",
+     *     example=12345
+     * )
+     *
+     * @var int
+     */
+    private $id;
+
     /**
      * @OA\Property(
      *     title="ibnr",
      *     description="IBNR of the station",
-     *     example="8000191"
+     *     example="8000191",
+     *     nullable=true
      * )
      *
      * @var int

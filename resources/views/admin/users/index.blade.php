@@ -7,7 +7,8 @@
     <form>
         <div class="input-group mb-3">
             <input type="text" name="query" class="form-control"
-                   placeholder="Search by: UserID, Username or Displayname"
+                   placeholder="Search by: UserID, Username or Displayname. Exact match: 'id:1234'"
+                   value="{{ request('query') }}"
                    aria-describedby="button-search"/>
             <button class="btn btn-outline-secondary" type="button" id="button-search">
                 <i class="fa-solid fa-magnifying-glass"></i>

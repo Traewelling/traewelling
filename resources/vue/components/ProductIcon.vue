@@ -25,7 +25,7 @@ export default {
             if (this.$props.product === 'taxi') {
                 return 'fa-taxi';
             }
-            return this.$props.product === 'train';
+            return 'fa-train';
         }
     }
 }

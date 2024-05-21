@@ -6,9 +6,9 @@ use App\Http\Controllers\Backend\Support\MentionHelper;
 use App\Models\Status;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class MentionTest extends TestCase
+class MentionTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
@@ -32,6 +32,22 @@ class MentionTest extends TestCase
         $status->update(['body' => 'I\'m on my way with @alice']);
         $status->refresh();
         $this->assertSame(1, $status->mentions->count());
+
+        $status->update(['body' => '@alice']);
+        $status->refresh();
+        $this->assertSame(1, $status->mentions->count());
+
+        $status->update(['body' => '']);
+        $status->refresh();
+        $this->assertSame(0, $status->mentions->count());
+
+        $status->update(['body' => '@alice']);
+        $status->refresh();
+        $this->assertSame(1, $status->mentions->count());
+
+        $status->update(['body' => null]);
+        $status->refresh();
+        $this->assertSame(0, $status->mentions->count());
     }
 
     public function testUpdateMentions(): void {
@@ -75,5 +91,29 @@ class MentionTest extends TestCase
             . 'and <a href="' . route('profile', 'alice') . '">@alice</a>',
             MentionHelper::getBodyWithMentionLinks($status)
         );
+    }
+
+    public function testMentionNotification(): void {
+        $alice = User::factory()->create(['username' => 'alice']);
+        $bob = User::factory()->create(['username' => 'bob']);
+
+        $status = Status::factory()->create(['body' => 'I\'m on my way with @alice and @bob']);
+        $status->refresh();
+
+        $this->assertSame(1, $alice->notifications->count());
+        $this->assertSame(1, $bob->notifications->count());
+    }
+
+    public function testNoMentionNotificationOnUpdate(): void {
+        $alice = User::factory()->create(['username' => 'alice']);
+
+        $status = Status::factory()->create(['body' => 'I\'m on my way with @alice']);
+        $status->refresh();
+        $this->assertSame(1, $alice->notifications->count());
+
+        $status->update(['body' => 'I\'m on my way with only @alice']);
+        $status->refresh();
+
+        $this->assertSame(1, $alice->notifications->count());
     }
 }

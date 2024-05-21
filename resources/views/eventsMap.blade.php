@@ -45,7 +45,7 @@
                         <h2 class="h2-responsive">
                             <span class="font-weight-bold"><i class="fa fa-train"></i></span>
                             <span class="font-weight-bold">
-                                 <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $event->station->ibnr])}}"
+                                 <a href="{{route('trains.stationboard', ['provider' => 'train', 'stationId' => $event->station->id])}}"
                                     class="text-white">
                                     {{$event->station->name}}
                                  </a>

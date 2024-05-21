@@ -7,9 +7,9 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class UserRedirectionTest extends TestCase
+class UserRedirectionTest extends FeatureTestCase
 {
     use RefreshDatabase;
 

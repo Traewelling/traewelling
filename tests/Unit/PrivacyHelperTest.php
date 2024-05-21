@@ -6,7 +6,7 @@ use App;
 use App\Http\Controllers\Backend\Helper\PrivacyHelper;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use InvalidArgumentException;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
 class PrivacyHelperTest extends UnitTestCase
 {

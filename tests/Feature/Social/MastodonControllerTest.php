@@ -13,9 +13,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Revolution\Mastodon\Facades\Mastodon;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class MastodonControllerTest extends TestCase
+class MastodonControllerTest extends FeatureTestCase
 {
     use RefreshDatabase;
 

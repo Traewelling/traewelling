@@ -10,9 +10,9 @@ use App\Models\Checkin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class UserBlockTest extends TestCase
+class UserBlockTest extends FeatureTestCase
 {
     use RefreshDatabase;
 

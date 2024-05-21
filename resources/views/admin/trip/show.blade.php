@@ -11,7 +11,7 @@
                     <table class="table">
                         <tr>
                             <th>ID</th>
-                            <td>{{ $trip->trip_id }}</td>
+                            <td><code>{{ $trip->id }}</code></td>
                         </tr>
                         <tr>
                             <th>Category</th>
@@ -46,7 +46,14 @@
                         </tr>
                         <tr>
                             <th>Last refreshed</th>
-                            <td>{{ $trip->last_refreshed }}</td>
+                            <td>{{ $trip->last_refreshed?->format('c') }}</td>
+                        </tr>
+                        <tr>
+                            <th>Polyline</th>
+                            <td>
+                                <code>{{ $trip->polyline->id }}</code> ({{ $trip->polyline->source }})
+                                | parent: <code>{{ $trip->polyline->parent_id ?? "NULL" }}</code> {{ $trip->polyline->parent?->source }}
+                            </td>
                         </tr>
                     </table>
                 </div>
@@ -124,10 +131,18 @@
                                     <td>{{$stopover->station?->id}}</td>
                                     <td>{{$stopover->station?->ibnr}}</td>
                                     <td>{{$stopover->station?->rilIdentifier}}</td>
-                                    <td>{{$stopover->arrival_planned?->format('H:i')}}</td>
-                                    <td>{{$stopover->arrival_real?->format('H:i')}}</td>
-                                    <td>{{$stopover->departure_planned?->format('H:i')}}</td>
-                                    <td>{{$stopover->departure_real?->format('H:i')}}</td>
+                                    <td title="{{$stopover->arrival_planned?->format('c')}}">
+                                        {{userTime($stopover->arrival_planned)}}
+                                    </td>
+                                    <td title="{{$stopover->arrival_real?->format('c')}}">
+                                        {{$stopover->arrival_real?->format('H:i')}}
+                                    </td>
+                                    <td title="{{$stopover->departure_planned?->format('c')}}">
+                                        {{userTime($stopover->departure_planned)}}
+                                    </td>
+                                    <td title="{{$stopover->departure_real?->format('c')}}">
+                                        {{userTime($stopover->departure_real)}}
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

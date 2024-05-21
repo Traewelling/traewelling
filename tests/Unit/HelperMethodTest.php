@@ -105,9 +105,9 @@ class HelperMethodTest extends UnitTestCase
      * @dataProvider stationBoardTimezoneOffsetProvider
      */
     public function testStationBoardTimezoneOffset($expected, $departures): void {
-        $this->user = User::factory()->make();
+        $user = User::factory()->make();
 
-        $user = Mockery::mock($this->user)
+        $user = Mockery::mock($user)
                        ->shouldReceive('getAttribute')
                        ->with('timezone')
                        ->andReturn('Europe/Berlin')
@@ -150,6 +150,9 @@ class HelperMethodTest extends UnitTestCase
         $wrongCET       = clone $correctCEST;
         $wrongCET->when = $wrongTimestampCET;
 
+        $dstTimestamp       = new stdClass();
+        $dstTimestamp->when = '2024-03-31T13:00:00+02:00';
+
 
         return [
             'CEST, cancelled, correct timezone'          => [false, [$cancelledCorrectCEST, $correctCEST]],
@@ -164,11 +167,12 @@ class HelperMethodTest extends UnitTestCase
             'CET, not cancelled, wrong timezone'         => [true, [$wrongCET, $cancelledWrongCET]],
             'CET, cancelled, cancelled, wrong timezone'  => [false, [$cancelledCorrectCET, $cancelledWrongCET]],
             'CET, no stations'                           => [false, []],
+            'DST change'                                 => [false, [$dstTimestamp]],
         ];
     }
 
     public function testHelperMethodWithReference(): void {
-        $exception = $this->mock(StationNotOnTripException::class, function ($mock) {
+        $exception = $this->mock(StationNotOnTripException::class, function($mock) {
             $mock->shouldReceive('reference')->andReturn('referenceTest');
         });
 

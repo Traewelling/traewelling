@@ -7,9 +7,9 @@ use App\Interfaces\IconEnumInterface;
 
 enum Business: int implements IconEnumInterface
 {
-    case PRIVATE = 0;
+    case PRIVATE  = 0;
     case BUSINESS = 1;
-    case COMMUTE = 2;
+    case COMMUTE  = 2;
 
     public function faIcon(): string {
         return match ($this) {

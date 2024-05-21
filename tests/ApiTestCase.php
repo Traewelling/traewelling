@@ -7,13 +7,13 @@ use App\Providers\AuthServiceProvider;
 use Illuminate\Testing\TestResponse;
 use Laravel\Passport\Passport;
 
-abstract class ApiTestCase extends TestCase
+abstract class ApiTestCase extends FeatureTestCase
 {
     public $mockConsoleOutput = false;
 
     public function setUp(): void {
         parent::setUp();
-        $this->artisan('passport:install');
+        $this->artisan('passport:install', ['--no-interaction' => true]);
         $this->artisan('passport:keys', ['--no-interaction' => true]);
     }
 
