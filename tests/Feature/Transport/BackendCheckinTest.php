@@ -448,7 +448,7 @@ class BackendCheckinTest extends FeatureTestCase
         $this->assertTrue($trainCheckin->departure->isBefore($trainCheckin->arrival));
     }
 
-    public function testChangeTripDestination() {
+    public function testChangeTripDestination(): void {
         Http::fake([
                        '/stops/8000105'             => Http::response(self::FRANKFURT_HBF),
                        '/stops/8000105/departures*' => Http::response([self::ICE802]),

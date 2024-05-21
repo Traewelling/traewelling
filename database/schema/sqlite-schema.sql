@@ -58,7 +58,7 @@ CREATE INDEX "train_stations_rilidentifier_index" on "train_stations" ("rilIdent
 CREATE TABLE IF NOT EXISTS "webhook_creation_requests" ("id" varchar not null, "user_id" integer not null, "oauth_client_id" integer not null, "revoked" tinyint(1) not null default '0', "expires_at" datetime not null, "events" varchar not null, "url" text not null, foreign key("user_id") references "users"("id") on delete cascade on update cascade, foreign key("oauth_client_id") references "oauth_clients"("id") on delete cascade on update cascade, primary key ("id"));
 CREATE TABLE failed_jobs (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, uuid VARCHAR(255) NOT NULL, connection CLOB NOT NULL, queue CLOB NOT NULL, payload CLOB NOT NULL, exception CLOB NOT NULL, failed_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL);
 CREATE UNIQUE INDEX failed_jobs_uuid_unique ON failed_jobs (uuid);
-CREATE TABLE hafas_trips (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, trip_id VARCHAR(255) NOT NULL COLLATE "BINARY", category VARCHAR(255) NOT NULL COLLATE "BINARY", number VARCHAR(255) NOT NULL COLLATE "BINARY", linename VARCHAR(255) NOT NULL COLLATE "BINARY", origin BIGINT UNSIGNED NOT NULL, destination BIGINT UNSIGNED NOT NULL, polyline_id INTEGER DEFAULT NULL, departure DATETIME DEFAULT NULL, arrival DATETIME DEFAULT NULL, created_at DATETIME DEFAULT NULL, updated_at DATETIME DEFAULT NULL, operator_id INTEGER DEFAULT NULL, last_refreshed DATETIME DEFAULT NULL, journey_number INTEGER DEFAULT NULL, "source" varchar not null default 'hafas', "user_id" integer, "origin_id" integer not null, "destination_id" integer not null);
+CREATE TABLE hafas_trips (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, trip_id VARCHAR(255) NOT NULL COLLATE "BINARY", category VARCHAR(255) NOT NULL COLLATE "BINARY", number VARCHAR(255) NOT NULL COLLATE "BINARY", linename VARCHAR(255) NOT NULL COLLATE "BINARY", polyline_id INTEGER DEFAULT NULL, departure DATETIME DEFAULT NULL, arrival DATETIME DEFAULT NULL, created_at DATETIME DEFAULT NULL, updated_at DATETIME DEFAULT NULL, operator_id INTEGER DEFAULT NULL, last_refreshed DATETIME DEFAULT NULL, journey_number INTEGER DEFAULT NULL, "source" varchar not null default 'hafas', "user_id" integer, "origin_id" integer not null, "destination_id" integer not null);
 CREATE INDEX hafas_trips_created_at_trip_id_index ON hafas_trips (created_at, trip_id);
 CREATE UNIQUE INDEX hafas_trips_trip_id_unique ON hafas_trips (trip_id);
 CREATE TABLE events (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, station_id BIGINT UNSIGNED DEFAULT NULL, name VARCHAR(255) NOT NULL, slug VARCHAR(255) NOT NULL, hashtag VARCHAR(255) DEFAULT NULL, host VARCHAR(255) DEFAULT NULL, url VARCHAR(255) DEFAULT NULL, "begin" DATETIME NOT NULL, "end" DATETIME NOT NULL, created_at DATETIME DEFAULT NULL, updated_at DATETIME DEFAULT NULL, event_start DATETIME DEFAULT NULL, event_end DATETIME DEFAULT NULL, approved_by INTEGER DEFAULT NULL, FOREIGN KEY (station_id) REFERENCES train_stations (id) ON UPDATE NO ACTION ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE);
@@ -102,6 +102,10 @@ CREATE TABLE IF NOT EXISTS "mentions" ("id" integer primary key autoincrement no
 CREATE UNIQUE INDEX "mentions_status_id_mentioned_id_position_unique" on "mentions" ("status_id", "mentioned_id", "position");
 CREATE TABLE IF NOT EXISTS "wikidata_entities" ("id" varchar not null, "data" text, "last_updated_at" datetime, "created_at" datetime, "updated_at" datetime, primary key ("id"));
 CREATE INDEX "ifopt" on "train_stations" ("ifopt_a", "ifopt_b", "ifopt_c", "ifopt_d", "ifopt_e");
+CREATE TABLE IF NOT EXISTS "reports" ("id" integer primary key autoincrement not null, "status" varchar not null default 'open', "subject_type" varchar not null, "subject_id" integer not null, "reason" varchar, "description" varchar, "reporter_id" integer, "created_at" datetime, "updated_at" datetime, foreign key("reporter_id") references "users"("id") on delete set null);
+CREATE INDEX "reports_subject_type_subject_id_index" on "reports" ("subject_type", "subject_id");
+CREATE INDEX "reports_status_index" on "reports" ("status");
+CREATE INDEX "poly_lines_parent_id_index" on "poly_lines" ("parent_id");
 INSERT INTO migrations VALUES(1,'2014_10_12_000000_create_users_table',1);
 INSERT INTO migrations VALUES(2,'2014_10_12_100000_create_password_resets_table',1);
 INSERT INTO migrations VALUES(3,'2016_06_01_000001_create_oauth_auth_codes_table',1);
@@ -285,3 +289,6 @@ INSERT INTO migrations VALUES(180,'2024_03_10_211526_add_ifopt_to_stations',1);
 INSERT INTO migrations VALUES(181,'2024_03_22_000000_add_origin_and_destination_id_to_trips',1);
 INSERT INTO migrations VALUES(182,'2024_03_22_000001_migrate_origin_and_destination_id_in_trips',1);
 INSERT INTO migrations VALUES(183,'2024_03_22_000002_make_trip_origin_id_and_destination_id_not_nullable',1);
+INSERT INTO migrations VALUES(184,'2024_01_30_000001_create_reports_table',2);
+INSERT INTO migrations VALUES(185,'2024_04_19_131906_add_index_to_poly_line_parent_id',2);
+INSERT INTO migrations VALUES(186,'2024_05_21_000001_remove_station_ibnr_from_hafas_trips',2);
