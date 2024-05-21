@@ -99,8 +99,10 @@ class StationController extends Controller
         Checkin::where('origin', $oldStation->ibnr)->update(['origin' => $newStation->ibnr]);
         Checkin::where('destination', $oldStation->ibnr)->update(['destination' => $newStation->ibnr]);
         Stopover::where('train_station_id', $oldStation->id)->update(['train_station_id' => $newStation->id]);
-        Trip::where('origin', $oldStation->ibnr)->update(['origin' => $newStation->ibnr]);
-        Trip::where('destination', $oldStation->ibnr)->update(['destination' => $newStation->ibnr]);
+        Trip::where('origin', $oldStation->ibnr)->update(['origin' => $newStation->ibnr]);           //TODO: remove when origin and destination are removed from Trip
+        Trip::where('destination', $oldStation->ibnr)->update(['destination' => $newStation->ibnr]); //TODO: remove when origin and destination are removed from Trip
+        Trip::where('origin_id', $oldStation->id)->update(['origin_id' => $newStation->id]);
+        Trip::where('destination_id', $oldStation->id)->update(['destination_id' => $newStation->id]);
         Event::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
         EventSuggestion::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
 

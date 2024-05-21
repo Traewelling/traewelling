@@ -419,8 +419,10 @@ abstract class HafasController extends Controller
                                          'linename'       => $tripJson->line->name,
                                          'journey_number' => $tripJson->line?->fahrtNr === "0" ? null : $tripJson->line?->fahrtNr,
                                          'operator_id'    => $operator?->id,
-                                         'origin'         => $origin->ibnr,
-                                         'destination'    => $destination->ibnr,
+                                         'origin'         => $origin->ibnr,         //TODO: remove when origin and destination are removed from Trip
+                                         'destination'    => $destination->ibnr,    //TODO: remove when origin and destination are removed from Trip
+                                         'origin_id'      => $origin->id,
+                                         'destination_id' => $destination->id,
                                          'polyline_id'    => $polyline->id,
                                          'departure'      => $tripJson->plannedDeparture,
                                          'arrival'        => $tripJson->plannedArrival,
@@ -493,7 +495,7 @@ abstract class HafasController extends Controller
 
     public static function refreshStopovers(stdClass $rawHafas): stdClass {
         $stopoversUpdated = 0;
-        $payloadArrival = [];
+        $payloadArrival   = [];
         $payloadDeparture = [];
         $payloadCancelled = [];
         foreach ($rawHafas->stopovers ?? [] as $stopover) {
@@ -501,8 +503,8 @@ abstract class HafasController extends Controller
                 continue; // No realtime data present for this stopover, keep existing data
             }
 
-            $stop = self::parseHafasStopObject($stopover->stop);
-            $arrivalPlanned = Carbon::parse($stopover->plannedArrival)->tz(config('app.timezone'));
+            $stop             = self::parseHafasStopObject($stopover->stop);
+            $arrivalPlanned   = Carbon::parse($stopover->plannedArrival)->tz(config('app.timezone'));
             $departurePlanned = Carbon::parse($stopover->plannedDeparture)->tz(config('app.timezone'));
 
             $basePayload = [
@@ -513,19 +515,19 @@ abstract class HafasController extends Controller
             ];
 
             if (isset($stopover->arrivalDelay) && isset($stopover->arrival)) {
-                $arrivalReal = Carbon::parse($stopover->arrival)->tz(config('app.timezone'));
-                $payloadArrival[] = array_merge($basePayload, [ 'arrival_real' => $arrivalReal ]);
+                $arrivalReal      = Carbon::parse($stopover->arrival)->tz(config('app.timezone'));
+                $payloadArrival[] = array_merge($basePayload, ['arrival_real' => $arrivalReal]);
             }
 
             if (isset($stopover->departureDelay) && isset($stopover->departure)) {
-                $departureReal = Carbon::parse($stopover->departure)->tz(config('app.timezone'));
-                $payloadDeparture[] = array_merge($basePayload, [ 'departure_real' => $departureReal ]);
+                $departureReal      = Carbon::parse($stopover->departure)->tz(config('app.timezone'));
+                $payloadDeparture[] = array_merge($basePayload, ['departure_real' => $departureReal]);
             }
 
             // In case of cancellation, arrivalDelay/departureDelay will be null while the cancelled attribute will be present and true
             // If cancelled is false / missing while other RT data is present (see initial if expression), it will be upserted to false
             // This behavior is required for potential withdrawn cancellations
-            $payloadCancelled[] = array_merge($basePayload, [ 'cancelled' => $stopover->cancelled ?? false ]);
+            $payloadCancelled[] = array_merge($basePayload, ['cancelled' => $stopover->cancelled ?? false]);
 
             $stopoversUpdated++;
         }
@@ -534,8 +536,8 @@ abstract class HafasController extends Controller
 
         return (object) [
             "stopovers" => $stopoversUpdated,
-            "rows" => [
-                "arrival" => Stopover::upsert($payloadArrival, $key, ['arrival_real']),
+            "rows"      => [
+                "arrival"   => Stopover::upsert($payloadArrival, $key, ['arrival_real']),
                 "departure" => Stopover::upsert($payloadDeparture, $key, ['departure_real']),
                 "cancelled" => Stopover::upsert($payloadCancelled, $key, ['cancelled'])
             ]
