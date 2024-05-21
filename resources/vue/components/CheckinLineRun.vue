@@ -16,6 +16,11 @@ export default {
         fastCheckinIbnr: {
             type: Number,
             required: false,
+        },
+        useInternalIdentifiers: {
+            type: Boolean,
+            required: false,
+            default: false,
         }
     },
     watch: {
@@ -45,7 +50,8 @@ export default {
                     this.lineRun           = result.data;
                     let remove             = true;
                     this.lineRun.stopovers = this.lineRun.stopovers.filter((item) => {
-                        if (remove && item.evaIdentifier === Number(this.$props.selectedTrain.stop.id)) {
+                        const identifier = this.useInternalIdentifiers ? item.id : item.evaIdentifier;
+                        if (remove && Number(this.$props.selectedTrain.stop.id) === identifier) {
                             remove = false;
                             return false;
                         }
@@ -72,7 +78,7 @@ export default {
         },
         getTime(item) {
             if (item.arrivalPlanned) {
-               return item.arrivalReal ? item.arrivalReal : item.arrivalPlanned;
+                return item.arrivalReal ? item.arrivalReal : item.arrivalPlanned;
             }
             return item.departureReal ? item.departureReal : item.departurePlanned;
         }
@@ -94,10 +100,9 @@ export default {
                 <small
                     :class="{'text-muted': !item.cancelled}"
                     class="text-decoration-line-through"
-                    v-if="item.isArrivalDelayed || item.isDepartureDelayed">
-                    {{
-                            item.isArrivalDelayed ? formatTime(item.arrivalPlanned) : formatTime(item.departurePlanned)
-                        }}
+                    v-if="item.isArrivalDelayed || item.isDepartureDelayed"
+                >
+                    {{ item.isArrivalDelayed ? formatTime(item.arrivalPlanned) : formatTime(item.departurePlanned) }}
                 </small>
                     &nbsp;
                 <span>{{ formatTime(getTime(item)) }}</span>

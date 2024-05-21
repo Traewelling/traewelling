@@ -90,13 +90,14 @@ export default {
                     data.json().then((result) => {
                         result    = result.data;
                         let query = {
-                            tripID: result.id,
+                            tripId: result.id,
                             lineName: result.lineName,
                             start: result.origin.id,
                             departure: this.form.originDeparturePlanned,
+                            idType: 'trwl'
                         };
 
-                        window.location.href = `/trains/trip/?${new URLSearchParams(query).toString()}`;
+                        window.location.href = `/stationboard?${new URLSearchParams(query).toString()}`;
                     });
                 } else if (data.status === 422) {
                     data.json().then((result) => {

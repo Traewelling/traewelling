@@ -73,8 +73,8 @@ class TransportController extends Controller
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
-     *         description="Träwelling-ID of the station (you can look this up with [trainStationAutocomplete](#/Checkin/trainStationAutocomplete))",
-     *         required=true,
+     *         description="Träwelling-ID of the station (you can look this up with
+     *         [trainStationAutocomplete](#/Checkin/trainStationAutocomplete))", required=true,
      *     ),
      *     @OA\Parameter(
      *         name="when",
@@ -163,10 +163,10 @@ class TransportController extends Controller
      *         )
      *        )
      *     ),
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=404, description="Station not found"),
-     *      @OA\Response(response=422, description="Invalid input"),
-     *      @OA\Response(response=502, description="Error with our data provider"),
+     * @OA\Response(response=401, description="Unauthorized"),
+     * @OA\Response(response=404, description="Station not found"),
+     * @OA\Response(response=422, description="Invalid input"),
+     * @OA\Response(response=502, description="Error with our data provider"),
      *      security={{"passport": {"create-statuses"}}, {"token": {}}}
      * )
      *
@@ -405,7 +405,7 @@ class TransportController extends Controller
                                         ]);
 
         try {
-            $searchKey          = isset($validated['ibnr']) ? 'ibnr' : 'id';
+            $searchKey          = empty($validated['ibnr']) ? 'id' : 'ibnr';
             $originStation      = Station::where($searchKey, $validated['start'])->first();
             $destinationStation = Station::where($searchKey, $validated['destination'])->first();
 
