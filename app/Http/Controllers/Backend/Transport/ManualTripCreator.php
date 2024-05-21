@@ -108,14 +108,14 @@ class ManualTripCreator extends Controller
         return $this;
     }
 
-    public function setOrigin(Station $origin, Carbon $plannedDeparture, ?Carbon $realDeparture): ManualTripCreator {
+    public function setOrigin(Station $origin, Carbon $plannedDeparture, ?Carbon $realDeparture = null): ManualTripCreator {
         $this->origin                 = $origin;
         $this->originDeparturePlanned = $plannedDeparture;
         $this->originDepartureReal    = $realDeparture;
         return $this;
     }
 
-    public function setDestination(Station $destination, Carbon $plannedArrival, ?Carbon $realArrival): ManualTripCreator {
+    public function setDestination(Station $destination, Carbon $plannedArrival, ?Carbon $realArrival = null): ManualTripCreator {
         $this->destination               = $destination;
         $this->destinationArrivalPlanned = $plannedArrival;
         $this->destinationArrivalReal    = $realArrival;
