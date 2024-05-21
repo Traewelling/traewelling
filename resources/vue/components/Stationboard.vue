@@ -12,7 +12,8 @@ import StationBoardEntry from "./Checkin/StationBoardEntry.vue";
 export default {
     components: {
         StationBoardEntry,
-        StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal},
+        StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal
+    },
     data() {
         return {
             data: [],
@@ -29,6 +30,7 @@ export default {
             firstFetchTime: null,
             pushState: null,
             fastCheckinIbnr: null,
+            useInternalIdentifiers: false,
         };
     },
     methods: {
@@ -104,7 +106,7 @@ export default {
                             } else {
                                 this.data = result.data.concat(this.data);
                             }
-                            this.meta = result.meta;
+                            this.meta        = result.meta;
                             this.stationName = result.meta.station.name;
 
                             if (this.nextFetched === 0) {
@@ -128,7 +130,7 @@ export default {
             return DateTime.fromISO(item.when) < DateTime.now();
         },
         async analyzeUrlParams() {
-            let urlParams = new URLSearchParams(window.location.search);
+            let urlParams  = new URLSearchParams(window.location.search);
             this.fetchTime = DateTime.now().setZone("UTC");
 
             if (urlParams.has('tripId')) {
@@ -148,6 +150,10 @@ export default {
                 if (urlParams.has('destination')) {
                     this.fastCheckinIbnr = urlParams.get('destination');
                 }
+                if (urlParams.has('idType')) {
+                    //ToDo change this form to use trwl-id per default and use db-ibnr for hafas-related-input
+                    this.useInternalIdentifiers = urlParams.get('idType') === 'trwl';
+                }
                 this.show = true;
                 this.$refs?.modal?.show();
                 return new Promise((resolve) => {
@@ -161,9 +167,9 @@ export default {
             if (urlParams.has('when')) {
                 this.fetchTime = DateTime.fromISO(urlParams.get('when')).setZone("UTC");
             }
-            this.stationName = urlParams.get('stationName');
+            this.stationName   = urlParams.get('stationName');
             this.trwlStationId = urlParams.get('stationId');
-            this.show = false;
+            this.show          = false;
             this.$refs.modal.hide();
             return new Promise((resolve) => {
                 resolve();
@@ -185,7 +191,7 @@ export default {
         },
         goBackToLineRun() {
             this.selectedDestination = null;
-            this.fastCheckinIbnr = null;
+            this.fastCheckinIbnr     = null;
         }
     },
     mounted() {
@@ -204,8 +210,9 @@ export default {
             if (value === null) {
                 window.history.back();
             } else {
-                const params = new URLSearchParams(window.location.search);
-                params.append('destination', value.evaIdentifier)
+                const params      = new URLSearchParams(window.location.search);
+                const destination = this.useInternalIdentifiers ? value.id : value.evaIdentifier;
+                params.set('destination', destination)
                 this.pushHistory(params);
             }
         }
@@ -261,6 +268,7 @@ export default {
             <CheckinLineRun
                 :selectedTrain="selectedTrain"
                 :fastCheckinIbnr="fastCheckinIbnr"
+                :useInternalIdentifiers="useInternalIdentifiers"
                 v-model:destination="selectedDestination"
             />
         </template>
@@ -268,7 +276,11 @@ export default {
             <button type="button" class="btn-close" aria-label="Back" @click="goBackToLineRun"></button>
         </template>
         <template #body v-if="showCheckinInterface">
-            <CheckinInterface :selectedTrain="selectedTrain" :selectedDestination="selectedDestination"/>
+            <CheckinInterface
+                :selectedTrain="selectedTrain"
+                :selectedDestination="selectedDestination"
+                :useInternalIdentifiers="useInternalIdentifiers"
+            />
         </template>
     </FullScreenModal>
 
