@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 use stdClass;
 
 /**
@@ -56,7 +58,7 @@ use stdClass;
 class Checkin extends Model
 {
 
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $table    = 'train_checkins';
     protected $fillable = [
@@ -197,5 +199,12 @@ class Checkin extends Model
                    ->filter(function($status) {
                        return $status !== null && Gate::forUser(Auth::user())->allows('view', $status);
                    });
+    }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+                         ->dontSubmitEmptyLogs()
+                         ->logOnlyDirty()
+                         ->logFillable();
     }
 }

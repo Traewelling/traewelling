@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\CleanActivityLog;
 use App\Console\Commands\CleanUpMastodonServers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -38,6 +39,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('activitylog:clean')->weekly();
         $schedule->command(CleanUpMastodonServers::class)->weekly();
         $schedule->command('app:wikidata-fetcher')->everyMinute();
+        $schedule->command(CleanActivityLog::class)->daily();
 
         if (config('trwl.year_in_review.backend')) {
             $schedule->command('trwl:cache-year-in-review')->withoutOverlapping()->dailyAt('2:00');

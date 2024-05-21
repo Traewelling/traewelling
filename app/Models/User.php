@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Passport\HasApiTokens;
 use Mastodon;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -55,7 +57,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements MustVerifyEmail
 {
 
-    use Notifiable, HasApiTokens, HasFactory, HasRoles;
+    use Notifiable, HasApiTokens, HasFactory, HasRoles, LogsActivity;
 
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
@@ -283,5 +285,13 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected function getDefaultGuardName(): string {
         return 'web';
+    }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+                         ->dontSubmitEmptyLogs()
+                         ->logExcept(['password', 'last_login'])
+                         ->logOnlyDirty()
+                         ->logFillable();
     }
 }

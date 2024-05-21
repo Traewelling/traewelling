@@ -29,6 +29,10 @@ abstract class SettingsController extends Controller
 
         $user->update($fields);
 
+        if (in_array('password', $fields, true)) {
+            activity()->on($user)->log('Password changed');
+        }
+
         if (in_array('mastodonVisibility', $fields, true)) {
             $user->socialProfile->update(['mastodon_visibility' => $fields['mastodonVisibility']]);
         }

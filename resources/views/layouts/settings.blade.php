@@ -161,6 +161,15 @@
                                     {{ __('settings.title-webhooks') }}
                                 </a>
                             </li>
+                            @can('use open-beta features')
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{route('settings.transparency')}}">
+                                        <i class="fa-solid fa-box-archive" aria-hidden="true"></i>
+                                        {{ __('settings.tab.transparency') }}
+                                        <span class="badge badge-sm bg-info">Beta</span>
+                                    </a>
+                                </li>
+                            @endcan
                         </ul>
 
                         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-body-secondary text-uppercase">

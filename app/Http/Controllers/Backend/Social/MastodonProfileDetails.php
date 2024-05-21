@@ -57,11 +57,9 @@ class MastodonProfileDetails
             } catch (Exception $exception) {
                 // The connection might be broken, or the instance is down, or $user has removed the api rights
                 // but has not told us yet.
-                Log::warning("Unable to fetch mastodon information for user#{$this->user->id} for Mastodon-Server '
-                . {$mastodonServer->domain}' and mastodon_id#{$this->user->socialProfile->mastodon_id}");
-                Log::warning($exception);
-                if ($exception->getCode() === 410 || $exception->getCode() === 404) {
-                    $this->removeMastodonInformation();
+                Log::warning("Unable to fetch mastodon information for user#{$this->user->id} for Mastodon-Server '{$mastodonServer?->domain}' and mastodon_id#{$this->user->socialProfile->mastodon_id} (HTTP-Code: {$exception->getCode()})");
+                if (in_array($exception->getCode(), [404, 410], true)) {
+                    $this->removeMastodonInformation($exception->getCode());
                 }
             }
         }
@@ -69,13 +67,14 @@ class MastodonProfileDetails
         return null;
     }
 
-    private function removeMastodonInformation(): void {
+    private function removeMastodonInformation(int $reasonResponseCode = null): void {
         if ($this->user->email_verified_at === null) {
             Log::info("User#{$this->user->id} has not verified his email address yet."
                       . "Not removing mastodon information.");
             return;
         }
-        Log::info("Removing mastodon information for user#{$this->user->id}");
+        activity()->performedOn($this->user)
+                  ->log('Mastodon information removed' . ($reasonResponseCode !== null ? "due to response code $reasonResponseCode" : ''));
         $this->user->socialProfile->update([
                                                'mastodon_id'         => null,
                                                'mastodon_token'      => null,

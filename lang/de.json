@@ -312,6 +312,7 @@
     "profile.youre-blocking-information-text": "Um die Check-ins zu sehen, klicke auf \"Nicht mehr blockieren\". Die Person kann deine Check-ins dann jedoch auch wieder sehen.",
     "search-results": "Suchergebnisse",
     "settings.tab.account": "Account",
+    "settings.tab.transparency": "Transparenz",
     "settings.tab.profile": "Profil & Privatsphäre",
     "settings.tab.connectivity": "Verbindungen",
     "settings.heading.account": "Accounteinstellungen",
@@ -794,5 +795,15 @@
     "action.error": "Diese Aktion konnte leider nicht ausgeführt werden. Bitte versuche es später noch einmal.",
     "action.like": "Status liken",
     "action.dislike": "Status nicht mehr liken",
-    "action.set-home": "Heimathaltestelle setzen"
+    "action.set-home": "Heimathaltestelle setzen",
+    "activity.description": "Um dir einen besseren Überblick über die Aktivitäten in deinem Account zu geben siehst du hier eine Liste aller Aktionen, die in den letzten 14 Tagen in deinem Account stattgefunden haben.",
+    "activity.description2": "Auch Aktivitäten, die von externen Anwendungen oder Träwelling-Administratoren ausgelöst wurden, werden hier angezeigt.",
+    "activity.deletion": "Aktivitäten werden nach 14 Tagen automatisch gelöscht.",
+    "activity.deletion-except": "Aktionen von Administratoren werden unbegrenzt gespeichert.",
+    "you": "Du",
+    "admin": "Admin",
+    "activity.causer": "Verursacher",
+    "activity.action": "Aktion",
+    "activity.subject": "Subjekt",
+    "beta": "Diese Funktion befindet sich noch im Beta-Stadium und kann daher noch Fehler enthalten."
 }

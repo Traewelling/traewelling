@@ -175,6 +175,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         Route::post('/account/update', [SettingsController::class, 'updatePassword'])
              ->name('password.change');
 
+        Route::get('/transparency', [SettingsController::class, 'showTransparency'])
+             ->name('settings.transparency');
+
         Route::get('/security/login-providers', [SettingsController::class, 'renderLoginProviders'])
              ->name('settings.login-providers');
         Route::get('/security/sessions', [SettingsController::class, 'renderSessions'])

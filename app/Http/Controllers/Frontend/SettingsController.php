@@ -21,6 +21,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
+use Illuminate\View\View;
+use Spatie\Activitylog\Models\Activity;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class SettingsController extends Controller
 {
@@ -134,6 +138,7 @@ class SettingsController extends Controller
         auth()->user()->update([
                                    'password' => Hash::make($validated['password'])
                                ]);
+        activity()->on(auth()->user())->log('Password changed');
 
         return back()->with('info', __('controller.user.password-changed-ok'));
     }
@@ -224,5 +229,24 @@ class SettingsController extends Controller
             return back()->with('success', __('settings.request.reject-success'));
         }
         return back()->with('danger', __('messages.exception.general'));
+    }
+
+    public function showTransparency(): View {
+        $userIdsFromAdmins = Role::findByName('admin')->users()->pluck('id')->toArray();
+
+        $activities = Activity::orderByDesc('created_at')
+            ->where(function($query) {
+                $query->where('causer_type', User::class)
+                      ->where('causer_id', auth()->id());
+            })
+            ->orWhere(function($query) {
+                $query->where('subject_type', User::class)
+                      ->where('subject_id', auth()->id());
+            });
+
+        return view('settings.transparency', [
+            'activities' => $activities->cursorPaginate(10),
+            'userIdsFromAdmins' => $userIdsFromAdmins
+        ]);
     }
 }

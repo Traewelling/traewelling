@@ -20,19 +20,20 @@ class PermissionSeeder extends Seeder
         $roleClosedBeta     = Role::updateOrCreate(['name' => 'closed-beta']);
 
         //Create permissions
-        $permissionViewBackend      = Permission::updateOrCreate(['name' => 'view-backend']);
-        $permissionViewEvents       = Permission::updateOrCreate(['name' => 'view-events']);
-        $permissionAcceptEvents     = Permission::updateOrCreate(['name' => 'accept-events']);
-        $permissionDenyEvents       = Permission::updateOrCreate(['name' => 'deny-events']);
-        $permissionCreateEvents     = Permission::updateOrCreate(['name' => 'create-events']);
-        $permissionUpdateEvents     = Permission::updateOrCreate(['name' => 'update-events']);
-        $permissionDeleteEvents     = Permission::updateOrCreate(['name' => 'delete-events']);
-        $permissionCreateManualTrip = Permission::updateOrCreate(['name' => 'create-manual-trip']);
-        $permissionViewActivity     = Permission::updateOrCreate(['name' => 'view activity']);
-        $permissionViewEventHistory = Permission::updateOrCreate(['name' => 'view event history']);
-        $permissionCreateStations   = Permission::updateOrCreate(['name' => 'create stations']);
-        $permissionUpdateStations   = Permission::updateOrCreate(['name' => 'update stations']);
-        $permissionDeleteStations   = Permission::updateOrCreate(['name' => 'delete stations']);
+        $permissionViewBackend         = Permission::updateOrCreate(['name' => 'view-backend']);
+        $permissionViewEvents          = Permission::updateOrCreate(['name' => 'view-events']);
+        $permissionAcceptEvents        = Permission::updateOrCreate(['name' => 'accept-events']);
+        $permissionDenyEvents          = Permission::updateOrCreate(['name' => 'deny-events']);
+        $permissionCreateEvents        = Permission::updateOrCreate(['name' => 'create-events']);
+        $permissionUpdateEvents        = Permission::updateOrCreate(['name' => 'update-events']);
+        $permissionDeleteEvents        = Permission::updateOrCreate(['name' => 'delete-events']);
+        $permissionCreateManualTrip    = Permission::updateOrCreate(['name' => 'create-manual-trip']);
+        $permissionViewActivity        = Permission::updateOrCreate(['name' => 'view activity']);
+        $permissionViewEventHistory    = Permission::updateOrCreate(['name' => 'view event history']);
+        $permissionCreateStations      = Permission::updateOrCreate(['name' => 'create stations']);
+        $permissionUpdateStations      = Permission::updateOrCreate(['name' => 'update stations']);
+        $permissionDeleteStations      = Permission::updateOrCreate(['name' => 'delete stations']);
+        $permissionUseOpenBetaFeatures = Permission::updateOrCreate(['name' => 'use open-beta features']);
 
         //Assign permissions to admin role
         $roleAdmin->givePermissionTo($permissionViewBackend);
@@ -61,5 +62,6 @@ class PermissionSeeder extends Seeder
 
         //Assign permissions to open-beta role
         $roleOpenBeta->givePermissionTo($permissionCreateManualTrip);
+        $roleOpenBeta->givePermissionTo($permissionUseOpenBetaFeatures);
     }
 }

@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * //properties
@@ -38,7 +40,7 @@ use Illuminate\Support\Facades\Auth;
 class Status extends Model
 {
 
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $fillable = [
         'user_id',
@@ -126,5 +128,12 @@ class Status extends Model
      */
     public function getStatusInvisibleToMeAttribute(): bool {
         return !request()?->user()?->can('view', $this);
+    }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+                         ->dontSubmitEmptyLogs()
+                         ->logOnlyDirty()
+                         ->logFillable();
     }
 }
