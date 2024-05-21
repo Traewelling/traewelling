@@ -148,6 +148,7 @@ class FrontendTransportController extends Controller
                 'start'       => $validated['start'],
                 'departure'   => $validated['departure'],
                 'destination' => $validated['destination'] ?? null,
+                'idType'      => 'db-ibnr',
             ]);
         }
 

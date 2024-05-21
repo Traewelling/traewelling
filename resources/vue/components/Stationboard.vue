@@ -151,6 +151,7 @@ export default {
                     this.fastCheckinIbnr = urlParams.get('destination');
                 }
                 if (urlParams.has('idType')) {
+                    //ToDo change this form to use trwl-id per default and use db-ibnr for hafas-related-input
                     this.useInternalIdentifiers = urlParams.get('idType') === 'trwl';
                 }
                 this.show = true;
