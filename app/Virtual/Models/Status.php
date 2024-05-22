@@ -198,10 +198,10 @@ class Status
     /**
      * @OA\Property (
      *     title="userDetails",
-     *     description="User model",
+     *     description="Light user model",
      * )
      *
-     * @var User
+     * @var LightUser
      */
     private $userDetails;
 }
