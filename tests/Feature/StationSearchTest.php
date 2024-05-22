@@ -9,9 +9,9 @@ use App\Models\Station;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class StationSearchTest extends TestCase
+class StationSearchTest extends FeatureTestCase
 {
     use RefreshDatabase;
 

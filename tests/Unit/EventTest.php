@@ -4,9 +4,9 @@ namespace Tests\Unit;
 
 use App\Models\Event;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class EventTest extends TestCase
+class EventTest extends FeatureTestCase
 {
     use RefreshDatabase;
 

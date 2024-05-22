@@ -4,9 +4,9 @@ namespace Tests\Feature\Profile;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class ProfileTest extends TestCase
+class ProfileTest extends FeatureTestCase
 {
     use RefreshDatabase;
 

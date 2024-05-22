@@ -808,5 +808,9 @@
     "trip_creation.limitations.2.small": "(we trachten om een route via Brouter op te maken, maar dit werkt niet altijd naar behoren)",
     "trip_creation.limitations.3": "De reis is openbaar. Als je incheckt, ziet iedereen je status en kan men zelf ook inchecken.",
     "notifications.mastodon-server.lead": "Er is een probleem met je Mastodon-instantie.",
-    "notifications.mastodon-server.exception": "Er kan geen verbinding met je Mastodon-instantie op :domain worden gemaakt. Controleer de instellingen of probeer de koppeling opnieuw te maken. Als het probleem zich blijft voordoen, neem dan contact met ons op."
+    "notifications.mastodon-server.exception": "Er kan geen verbinding met je Mastodon-instantie op :domain worden gemaakt. Controleer de instellingen of probeer de koppeling opnieuw te maken. Als het probleem zich blijft voordoen, neem dan contact met ons op.",
+    "action.error": "Deze actie kan niet worden uitgevoerd - probeer het later opnieuw.",
+    "action.like": "Vind-ik-leukstatus",
+    "action.dislike": "Vind-ik-niet-leukstatus",
+    "action.set-home": "Mijn station instellen"
 }

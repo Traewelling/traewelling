@@ -12,7 +12,7 @@ use App\Models\Trip;
 use App\Models\PolyLine;
 use App\Models\Checkin;
 use App\Objects\LineSegment;
-use GuzzleHttp\Exception\ConnectException;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
@@ -35,7 +35,7 @@ abstract class BrouterController extends Controller
      * @param BrouterProfile $profile
      *
      * @return stdClass
-     * @throws JsonException|InvalidArgumentException|ConnectException
+     * @throws JsonException|InvalidArgumentException|ConnectionException
      */
     public static function getGeoJSONForRoute(
         array          $coordinates,
@@ -109,7 +109,7 @@ abstract class BrouterController extends Controller
         } catch (InvalidArgumentException) {
             Log::warning('[RefreshPolyline] Error while getting Polyline for Trip#' . $trip->trip_id . ' (Required data is missing in Brouter response)');
             return;
-        } catch (ConnectException) {
+        } catch (ConnectionException) {
             Log::info('[RefreshPolyline] Getting Polyline for Trip#' . $trip->trip_id . ' timed out.');
             return;
         }

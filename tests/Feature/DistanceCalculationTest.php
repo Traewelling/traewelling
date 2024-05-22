@@ -5,15 +5,15 @@ namespace Tests\Feature;
 use App\Dto\Coordinate;
 use App\Enum\HafasTravelType;
 use App\Http\Controllers\Backend\Support\LocationController;
-use App\Models\Trip;
 use App\Models\Station;
 use App\Models\Stopover;
+use App\Models\Trip;
 use App\Objects\LineSegment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class DistanceCalculationTest extends TestCase
+class DistanceCalculationTest extends FeatureTestCase
 {
 
     use RefreshDatabase;
@@ -45,14 +45,16 @@ class DistanceCalculationTest extends TestCase
                                         ])->create();
 
         $trip = Trip::create([ //Don't use factory here, so the trip can be created manually here
-                               'trip_id'     => '1|2|3|4',
-                               'category'    => HafasTravelType::REGIONAL,
-                               'number'      => 'xxx',
-                               'linename'    => 'xxx',
-                               'origin'      => $origin->ibnr,
-                               'destination' => $destination->ibnr,
-                               'departure'   => Date::now()->subHour(),
-                               'arrival'     => Date::now()->addHour(),
+                               'trip_id'        => '1|2|3|4',
+                               'category'       => HafasTravelType::REGIONAL,
+                               'number'         => 'xxx',
+                               'linename'       => 'xxx',
+                               'origin'         => $origin->ibnr,      //TODO: remove when origin and destination are removed from Trip
+                               'destination'    => $destination->ibnr, //TODO: remove when origin and destination are removed from Trip
+                               'origin_id'      => $origin->id,
+                               'destination_id' => $destination->id,
+                               'departure'      => Date::now()->subHour(),
+                               'arrival'        => Date::now()->addHour(),
                              ]);
 
         $originStopover      = Stopover::factory([
@@ -90,14 +92,16 @@ class DistanceCalculationTest extends TestCase
 
 
         $trip = Trip::create([
-                                 'trip_id'     => '1|2|3|4',
-                                 'category'    => HafasTravelType::REGIONAL,
-                                 'number'      => 'xxx',
-                                 'linename'    => 'xxx',
-                                 'origin'      => $origin->ibnr,
-                                 'destination' => $destination->ibnr,
-                                 'departure'   => Date::now()->subHour(),
-                                 'arrival'     => Date::now()->addHour(),
+                                 'trip_id'        => '1|2|3|4',
+                                 'category'       => HafasTravelType::REGIONAL,
+                                 'number'         => 'xxx',
+                                 'linename'       => 'xxx',
+                                 'origin'         => $origin->ibnr,         //TODO: remove when origin and destination are removed from Trip
+                                 'destination'    => $destination->ibnr,    //TODO: remove when origin and destination are removed from Trip
+                                 'origin_id'      => $origin->id,
+                                 'destination_id' => $destination->id,
+                                 'departure'      => Date::now()->subHour(),
+                                 'arrival'        => Date::now()->addHour(),
                              ]);
 
         $originStopover      = Stopover::factory([

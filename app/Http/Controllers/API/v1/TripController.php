@@ -43,11 +43,15 @@ class TripController extends Controller
                 'operatorId'                => ['nullable', 'numeric', 'exists:hafas_operators,id'],
                 'originId'                  => ['required', 'exists:train_stations,id'],
                 'originDeparturePlanned'    => ['required', 'date'],
+                'originDepartureReal'       => ['nullable', 'date'],
                 'destinationId'             => ['required', 'exists:train_stations,id'],
                 'destinationArrivalPlanned' => ['required', 'date'],
+                'destinationArrivalReal'    => ['nullable', 'date'],
                 'stopovers.*.stationId'     => ['required', 'exists:train_stations,id'],
-                'stopovers.*.arrival'       => ['required_without:stopovers.*.departure', 'date'],
-                'stopovers.*.departure'     => ['required_without:stopovers.*.arrival,null', 'date'],
+                'stopovers.*.arrival'       => ['required_without:stopovers.*.departure', 'required_with:stopovers.*.arrivalReal', 'date'],
+                'stopovers.*.arrivalReal'   => ['nullable', 'date'],
+                'stopovers.*.departure'     => ['required_without:stopovers.*.arrival,null', 'required_with:stopovers.*.departureReal', 'date'],
+                'stopovers.*.departureReal' => ['nullable', 'date'],
             ]
         );
 
@@ -59,11 +63,13 @@ class TripController extends Controller
                 ->setOperator(HafasOperator::find($validated['operatorId']))
                 ->setOrigin(
                     Station::findOrFail($validated['originId']),
-                    Carbon::parse($validated['originDeparturePlanned'])
+                    Carbon::parse($validated['originDeparturePlanned']),
+                    isset($validated['originDepartureReal']) ? Carbon::parse($validated['originDepartureReal']) : null
                 )
                 ->setDestination(
                     Station::findOrFail($validated['destinationId']),
-                    Carbon::parse($validated['destinationArrivalPlanned'])
+                    Carbon::parse($validated['destinationArrivalPlanned']),
+                    isset($validated['destinationArrivalReal']) ? Carbon::parse($validated['destinationArrivalReal']) : null
                 );
 
         if (isset($validated['stopovers'])) {
@@ -71,7 +77,9 @@ class TripController extends Controller
                 $creator->addStopover(
                     Station::findOrFail($stopover['stationId']),
                     isset($stopover['departure']) ? Carbon::parse($stopover['departure']) : null,
-                    isset($stopover['arrival']) ? Carbon::parse($stopover['arrival']) : null
+                    isset($stopover['arrival']) ? Carbon::parse($stopover['arrival']) : null,
+                    isset($stopover['departureReal']) ? Carbon::parse($stopover['departureReal']) : null,
+                    isset($stopover['arrivalReal']) ? Carbon::parse($stopover['arrivalReal']) : null
                 );
             }
         }
