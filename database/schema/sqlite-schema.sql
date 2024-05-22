@@ -88,11 +88,10 @@ CREATE UNIQUE INDEX users_email_unique ON users (email);
 CREATE INDEX users_shadow_banned_index ON users (shadow_banned);
 CREATE TABLE statuses (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, body CLOB DEFAULT NULL COLLATE "BINARY", user_id BIGINT UNSIGNED NOT NULL, business SMALLINT UNSIGNED DEFAULT 0, created_at DATETIME DEFAULT NULL, updated_at DATETIME DEFAULT NULL, event_id INTEGER DEFAULT NULL, visibility INTEGER DEFAULT 0 NOT NULL, tweet_id VARCHAR(255) DEFAULT NULL COLLATE "BINARY", mastodon_post_id VARCHAR(255) DEFAULT NULL COLLATE "BINARY", "client_id" integer);
 CREATE INDEX statuses_user_id_mastodon_post_id_created_at_index ON statuses (user_id, mastodon_post_id, created_at);
-CREATE TABLE train_checkins (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, status_id BIGINT UNSIGNED NOT NULL, trip_id VARCHAR(255) NOT NULL, origin BIGINT UNSIGNED NOT NULL, destination BIGINT UNSIGNED NOT NULL, distance INTEGER UNSIGNED DEFAULT NULL --meters
+CREATE TABLE train_checkins (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, status_id BIGINT UNSIGNED NOT NULL, trip_id VARCHAR(255) NOT NULL, distance INTEGER UNSIGNED DEFAULT NULL --meters
 , departure DATETIME DEFAULT NULL, arrival DATETIME DEFAULT NULL, points INTEGER DEFAULT NULL, created_at DATETIME DEFAULT NULL, updated_at DATETIME DEFAULT NULL, user_id INTEGER DEFAULT NULL, forced BOOLEAN DEFAULT 0 NOT NULL, manual_departure DATETIME DEFAULT NULL, manual_arrival DATETIME DEFAULT NULL, duration INTEGER DEFAULT NULL, "origin_stopover_id" integer, "destination_stopover_id" integer);
 CREATE INDEX train_checkins_departure_arrival_status_id_index ON train_checkins (departure, arrival, status_id);
 CREATE INDEX train_checkins_user_id_arrival_index ON train_checkins (user_id, arrival);
-CREATE UNIQUE INDEX user_trip_origin_departure ON train_checkins (user_id, trip_id, origin, departure);
 CREATE UNIQUE INDEX train_checkins_status_id_unique ON train_checkins (status_id);
 CREATE TABLE IF NOT EXISTS "activity_log" ("id" integer primary key autoincrement not null, "log_name" varchar, "description" text not null, "subject_type" varchar, "subject_id" integer, "causer_type" varchar, "causer_id" integer, "properties" text, "created_at" datetime, "updated_at" datetime, "event" varchar, "batch_uuid" varchar);
 CREATE INDEX "subject" on "activity_log" ("subject_type", "subject_id");
@@ -102,6 +101,10 @@ CREATE TABLE IF NOT EXISTS "mentions" ("id" integer primary key autoincrement no
 CREATE UNIQUE INDEX "mentions_status_id_mentioned_id_position_unique" on "mentions" ("status_id", "mentioned_id", "position");
 CREATE TABLE IF NOT EXISTS "wikidata_entities" ("id" varchar not null, "data" text, "last_updated_at" datetime, "created_at" datetime, "updated_at" datetime, primary key ("id"));
 CREATE INDEX "ifopt" on "train_stations" ("ifopt_a", "ifopt_b", "ifopt_c", "ifopt_d", "ifopt_e");
+CREATE TABLE IF NOT EXISTS "reports" ("id" integer primary key autoincrement not null, "status" varchar not null default 'open', "subject_type" varchar not null, "subject_id" integer not null, "reason" varchar, "description" varchar, "reporter_id" integer, "created_at" datetime, "updated_at" datetime, foreign key("reporter_id") references "users"("id") on delete set null);
+CREATE INDEX "reports_subject_type_subject_id_index" on "reports" ("subject_type", "subject_id");
+CREATE INDEX "reports_status_index" on "reports" ("status");
+CREATE INDEX "poly_lines_parent_id_index" on "poly_lines" ("parent_id");
 INSERT INTO migrations VALUES(1,'2014_10_12_000000_create_users_table',1);
 INSERT INTO migrations VALUES(2,'2014_10_12_100000_create_password_resets_table',1);
 INSERT INTO migrations VALUES(3,'2016_06_01_000001_create_oauth_auth_codes_table',1);
@@ -285,3 +288,6 @@ INSERT INTO migrations VALUES(180,'2024_03_10_211526_add_ifopt_to_stations',1);
 INSERT INTO migrations VALUES(181,'2024_03_22_000000_add_origin_and_destination_id_to_trips',1);
 INSERT INTO migrations VALUES(182,'2024_03_22_000001_migrate_origin_and_destination_id_in_trips',1);
 INSERT INTO migrations VALUES(183,'2024_03_22_000002_make_trip_origin_id_and_destination_id_not_nullable',1);
+INSERT INTO migrations VALUES(184,'2024_01_30_000001_create_reports_table',2);
+INSERT INTO migrations VALUES(185,'2024_04_19_131906_add_index_to_poly_line_parent_id',2);
+INSERT INTO migrations VALUES(186,'2024_05_22_000003_drop_origin_destination_from_check_in',2);

@@ -266,8 +266,8 @@ class BackendCheckinTest extends FeatureTestCase
         );
         $checkin  = $response['status']->checkin;
 
-        $this->assertEquals(8089047, $checkin->origin);
-        $this->assertEquals(8089090, $checkin->destination);
+        $this->assertEquals(8089047, $checkin->originStopover->station->ibnr);
+        $this->assertEquals(8089090, $checkin->destinationStopover->station->ibnr);
         $this->assertEquals('S 42', $checkin->trip->linename);
         $this->assertTrue($checkin->departure->isBefore($checkin->arrival));
     }
@@ -443,8 +443,8 @@ class BackendCheckinTest extends FeatureTestCase
         );
         $trainCheckin = $response['status']->checkin;
 
-        $this->assertEquals(102932, $trainCheckin->origin);
-        $this->assertEquals(104734, $trainCheckin->destination);
+        $this->assertEquals(102932, $trainCheckin->originStopover->station->ibnr);
+        $this->assertEquals(104734, $trainCheckin->destinationStopover->station->ibnr);
         $this->assertTrue($trainCheckin->departure->isBefore($trainCheckin->arrival));
     }
 

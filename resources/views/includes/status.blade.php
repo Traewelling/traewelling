@@ -58,9 +58,9 @@
                         </span>
                     </span>
 
-                    <a href="{{route('trains.stationboard', ['stationId' => $status->checkin->originStation->id ])}}"
+                    <a href="{{route('trains.stationboard', ['stationId' => $status->checkin->originStopover->station->id ])}}"
                        class="text-trwl clearfix">
-                        {{$status->checkin->originStation->name}}
+                        {{$status->checkin->originStopover->station->name}}
                     </a>
 
                     <p class="train-status text-muted">
@@ -149,9 +149,9 @@
                             {{ userTime($display_arrival->time) }}
                         </span>
                     </span>
-                    <a href="{{route('trains.stationboard', ['stationId' => $status->checkin->destinationStation->id])}}"
+                    <a href="{{route('trains.stationboard', ['stationId' => $status->checkin->destinationStopover->station->id])}}"
                        class="text-trwl clearfix">
-                        {{$status->checkin->destinationStation->name}}
+                        {{$status->checkin->destinationStopover->station->name}}
                     </a>
                 </li>
             </ul>
@@ -237,7 +237,7 @@
                                 <li>
                                     <button type="button" class="dropdown-item join"
                                             data-trwl-linename="{{$status->checkin->trip->linename}}"
-                                            data-trwl-stop-name="{{$status->checkin->destinationStation->name}}"
+                                            data-trwl-stop-name="{{$status->checkin->destinationStopover->station->name}}"
                                             data-trwl-trip-id="{{$status->checkin->trip_id}}"
                                             data-trwl-destination="{{$status->checkin->destination}}"
                                             data-trwl-arrival="{{$status->checkin->arrival}}"

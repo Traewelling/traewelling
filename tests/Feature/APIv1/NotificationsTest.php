@@ -191,9 +191,9 @@ class NotificationsTest extends ApiTestCase
         $bobsData  = TrainCheckinController::checkin(
             user:        $bob,
             trip:        $aliceCheckIn->trip,
-            origin:      $aliceCheckIn->originStation,
+            origin:      $aliceCheckIn->originStopover->station,
             departure:   $aliceCheckIn->departure,
-            destination: $aliceCheckIn->destinationStation,
+            destination: $aliceCheckIn->destinationStopover->station,
             arrival:     $aliceCheckIn->arrival,
         );
         $bobStatus = $bobsData['status'];
@@ -230,9 +230,9 @@ class NotificationsTest extends ApiTestCase
         TrainCheckinController::checkin(
             user:        $bob,
             trip:        $aliceCheckIn->trip,
-            origin:      $aliceCheckIn->originStation,
+            origin:      $aliceCheckIn->originStopover->station,
             departure:   $aliceCheckIn->departure,
-            destination: $aliceCheckIn->destinationStation,
+            destination: $aliceCheckIn->destinationStopover->station,
             arrival:     $aliceCheckIn->arrival,
             visibility:  StatusVisibility::PRIVATE // <-- important in this test
         );

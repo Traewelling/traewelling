@@ -41,7 +41,7 @@ class UserController extends Controller
                     ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                     ->with([
                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin',
-                               'checkin.originStation', 'checkin.destinationStation',
+                               'checkin.originStopover.station', 'checkin.destinationStopover.station',
                                'checkin.Trip.stopovers.station',
                            ])
                     ->where(function($query) {

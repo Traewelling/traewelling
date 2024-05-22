@@ -45,7 +45,7 @@ class StatusController extends Controller
         return Status::where('id', $statusId)
                      ->with([
                                 'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin',
-                                'checkin.originStation', 'checkin.destinationStation',
+                                'checkin.originStopover.station', 'checkin.destinationStopover.station',
                                 'checkin.Trip.stopovers.station',
                             ])
                      ->firstOrFail();
@@ -61,7 +61,7 @@ class StatusController extends Controller
     public static function getActiveStatuses(): ?Collection {
         return Status::with([
                                 'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
-                                'checkin.originStation', 'checkin.destinationStation',
+                                'checkin.originStopover.station', 'checkin.destinationStopover.station',
                                 'checkin.trip.stopovers.station',
                                 'checkin.trip.polyline',
                             ])
@@ -96,7 +96,7 @@ class StatusController extends Controller
 
         $statuses = Status::with([
                                      'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
-                                     'checkin.originStation', 'checkin.destinationStation',
+                                     'checkin.originStopover.station', 'checkin.destinationStopover.station',
                                      'checkin.Trip.stopovers.station',
                                      'checkin.Trip.polyline',
                                  ])
@@ -204,8 +204,8 @@ class StatusController extends Controller
     public static function getStatusesByEvent(Event $event): array {
         $statuses = $event->statuses()
                           ->with([
-                                     'user.blockedUsers', 'checkin.originStation',
-                                     'checkin.destinationStation', 'checkin.Trip.stopovers', 'event', 'likes',
+                                     'user.blockedUsers', 'checkin.originStopover.station',
+                                     'checkin.destinationStopover.station', 'checkin.Trip.stopovers', 'event', 'likes',
                                  ])
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
@@ -253,7 +253,7 @@ class StatusController extends Controller
     public static function getFutureCheckins(): Paginator {
         return auth()->user()->statuses()
                      ->with([
-                                'user', 'checkin.originStation', 'checkin.destinationStation',
+                                'user', 'checkin.originStopover.station', 'checkin.destinationStopover.station',
                                 'checkin.Trip', 'event',
                             ])
                      ->orderByDesc('created_at')

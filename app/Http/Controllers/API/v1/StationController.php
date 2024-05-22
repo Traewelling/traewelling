@@ -96,8 +96,6 @@ class StationController extends Controller
                   ->performedOn($newStation)
                   ->log($logMessage);
 
-        Checkin::where('origin', $oldStation->ibnr)->update(['origin' => $newStation->ibnr]);
-        Checkin::where('destination', $oldStation->ibnr)->update(['destination' => $newStation->ibnr]);
         Stopover::where('train_station_id', $oldStation->id)->update(['train_station_id' => $newStation->id]);
         Trip::where('origin', $oldStation->ibnr)->update(['origin' => $newStation->ibnr]);           //TODO: remove when origin and destination are removed from Trip
         Trip::where('destination', $oldStation->ibnr)->update(['destination' => $newStation->ibnr]); //TODO: remove when origin and destination are removed from Trip

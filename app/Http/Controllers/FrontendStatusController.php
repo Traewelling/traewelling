@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\Backend\Support\LocationController;
+use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -39,7 +40,7 @@ class FrontendStatusController extends Controller
         }
         return view('dashboard', [
             'statuses' => $statuses,
-            'latest'   => TransportController::getLatestArrivals(auth()->user()),
+            'latest'   => StationController::getLatestArrivals(auth()->user()),
             'future'   => StatusBackend::getFutureCheckins()
         ]);
     }
@@ -47,7 +48,7 @@ class FrontendStatusController extends Controller
     public function getGlobalDashboard(): Renderable {
         return view('dashboard', [
             'statuses' => DashboardController::getGlobalDashboard(Auth::user()),
-            'latest'   => TransportController::getLatestArrivals(Auth::user()),
+            'latest'   => StationController::getLatestArrivals(Auth::user()),
             'future'   => StatusBackend::getFutureCheckins()
         ]);
     }
@@ -96,8 +97,8 @@ class FrontendStatusController extends Controller
             'description' => trans_choice('status.ogp-description', preg_match('/\s/', $status->checkin->trip->linename), [
                 'linename'    => $status->checkin->trip->linename,
                 'distance'    => number($status->checkin->distance / 1000, 1),
-                'destination' => $status->checkin->destinationStation->name,
-                'origin'      => $status->checkin->originStation->name
+                'destination' => $status->checkin->destinationStopover->station->name,
+                'origin'      => $status->checkin->originStopover->station->name
             ]),
             'image'       => ProfilePictureController::getUrl($status->user),
         ]);

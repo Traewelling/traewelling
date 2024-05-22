@@ -22,7 +22,7 @@ class WebhookStatusTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    public function testWebhookSendingOnStatusCreation() {
+    public function testWebhookSendingOnStatusCreation(): void {
         Bus::fake();
 
         $user   = User::factory()->create();
