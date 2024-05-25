@@ -31,14 +31,21 @@ class Kernel extends ConsoleKernel
      * @return void
      */
     protected function schedule(Schedule $schedule): void {
-        $schedule->command(DatabaseCleaner::class)->dailyAt('1:30');
-
+        //every minute
         $schedule->command(RefreshCurrentTrips::class)->withoutOverlapping()->everyMinute();
-        $schedule->command(HideStatus::class)->daily();
+        $schedule->command(WikidataFetcher::class)->withoutOverlapping()->everyMinute();
+
+        //every five minutes
         $schedule->command(CacheLeaderboard::class)->withoutOverlapping()->everyFiveMinutes();
 
+        //hourly tasks
+        $schedule->command(HideStatus::class)->hourly();
+
+        //daily tasks
+        $schedule->command(DatabaseCleaner::class)->daily();
+
+        //weekly tasks
         $schedule->command(MastodonServers::class)->weekly();
-        $schedule->command(WikidataFetcher::class)->everyMinute();
 
         if (config('trwl.year_in_review.backend')) {
             $schedule->command(CacheYearInReview::class)->withoutOverlapping()->dailyAt('2:00');
