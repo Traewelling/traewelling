@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\DatabaseCleaner;
 
-use App\Models\Trip;
-use App\Models\Checkin;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class CleanUpHafasTrips extends Command
+class Trips extends Command
 {
-    protected $signature   = 'trwl:cleanUpHafasTrips';
+    protected $signature   = 'app:clean-db:trips';
     protected $description = 'Find and delete unused and old Trips from database';
 
     public function handle(): int {

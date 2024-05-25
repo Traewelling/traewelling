@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\DatabaseCleaner;
 
 use Illuminate\Console\Command;
 use Illuminate\Notifications\DatabaseNotification;
 
-class CleanUpNotifications extends Command
+class Notifications extends Command
 {
 
-    protected $signature   = 'trwl:cleanUpNotifications';
+    protected $signature   = 'app:clean-db:notifications';
     protected $description = 'Remove old notifications from the database';
 
     public function handle(): int {
@@ -33,7 +33,6 @@ class CleanUpNotifications extends Command
             }
         } while ($results > 0);
         $this->info("Removed $affectedRows old and unread notifications.");
-
 
         return Command::SUCCESS;
     }

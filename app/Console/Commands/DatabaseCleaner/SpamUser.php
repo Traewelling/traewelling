@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\DatabaseCleaner;
 
 use App\Models\User;
 use Illuminate\Console\Command;
 
-class CleanUpUsers extends Command
+class SpamUser extends Command
 {
-    protected $signature   = 'trwl:cleanUpUsers';
+    protected $signature   = 'app:clean-db:spam-user';
     protected $description = 'Delete users who have registered but have not agreed to the privacy policy';
 
     public function handle(): int {

@@ -2,7 +2,8 @@
 
 namespace App\Console;
 
-use App\Console\Commands\CleanUpMastodonServers;
+use App\Console\Commands\DatabaseCleaner\DatabaseCleaner;
+use App\Console\Commands\DatabaseCleaner\MastodonServers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -25,18 +26,13 @@ class Kernel extends ConsoleKernel
      * @return void
      */
     protected function schedule(Schedule $schedule): void {
-        $schedule->command('trwl:cleanUpUsers')->dailyAt('1:30');
-        $schedule->command('trwl:cleanUpHafasTrips')->dailyAt('1:35');
-        $schedule->command('trwl:cleanUpPolylines')->dailyAt('1:40');
-        $schedule->command('trwl:cleanUpPasswordResets')->dailyAt('1:45');
-        $schedule->command('trwl:cleanUpNotifications')->dailyAt('1:50');
+        $schedule->command(DatabaseCleaner::class)->dailyAt('1:30');
+
         $schedule->command('trwl:refreshTrips')->withoutOverlapping()->everyMinute();
         $schedule->command('trwl:hideStatus')->daily();
         $schedule->command('trwl:cache:leaderboard')->withoutOverlapping()->everyFiveMinutes();
-        $schedule->command('cache:clear-database')->daily();
-        $schedule->command('queue-monitor:purge --beforeDays=7')->daily();
-        $schedule->command('activitylog:clean')->weekly();
-        $schedule->command(CleanUpMastodonServers::class)->weekly();
+
+        $schedule->command(MastodonServers::class)->weekly();
         $schedule->command('app:wikidata-fetcher')->everyMinute();
 
         if (config('trwl.year_in_review.backend')) {
