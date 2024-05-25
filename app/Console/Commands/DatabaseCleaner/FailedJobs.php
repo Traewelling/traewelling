@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\DatabaseCleaner;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class CleanFailedJobs extends Command
+class FailedJobs extends Command
 {
-    protected $signature = 'app:clean-failed-jobs';
+    protected $signature = 'app:clean-db:failed-jobs';
 
     public function handle(): int {
         $affectedRows = 0;

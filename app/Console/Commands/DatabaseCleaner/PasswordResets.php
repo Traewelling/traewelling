@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\DatabaseCleaner;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class CleanUpPasswordResets extends Command
+class PasswordResets extends Command
 {
-    protected $signature   = 'trwl:cleanUpPasswordResets';
+    protected $signature   = 'app:clean-db:password-resets';
     protected $description = 'Delete expired password reset tokens';
 
     public function handle(): int {
