@@ -281,6 +281,8 @@ return [
             'send-notification' => (bool) env('PRIVACY_ACCOUNT_DELETION_SEND_NOTIFICATION', false),
             'delete-account'    => (bool) env('PRIVACY_ACCOUNT_DELETION_DELETE_ACCOUNT', false),
         ]
-    ]
+    ],
+
+    'wikidata_fetcher_enabled' => env('WIKIDATA_FETCHER_ENABLED', false),
 
 ];
