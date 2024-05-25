@@ -12,11 +12,11 @@ return new class extends Migration
                    ->orWhereNull('destination_stopover_id')
                    ->limit(100)
                    ->each(function(Checkin $checkin) {
-                            $originStopover = $checkin->HafasTrip->stopovers->where('train_station_id', $checkin->originStation->id)
+                            $originStopover = $checkin->trip->stopovers->where('train_station_id', $checkin->originStation->id)
                                                                             ->where('departure_planned', $checkin->departure)
                                                                             ->first();
 
-                            $destinationStopover = $checkin->HafasTrip->stopovers->where('train_station_id', $checkin->destinationStation->id)
+                            $destinationStopover = $checkin->trip->stopovers->where('train_station_id', $checkin->destinationStation->id)
                                                                                  ->where('arrival_planned', $checkin->arrival)
                                                                                  ->first();
 
