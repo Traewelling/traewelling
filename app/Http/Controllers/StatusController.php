@@ -71,7 +71,7 @@ class StatusController extends Controller
                      })
                      ->get()
                      ->filter(function(Status $status) {
-                         return Gate::allows('view', $status) && !$status->user->shadow_banned && $status->visibility !== StatusVisibility::UNLISTED;
+                         return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
                      })
                      ->sortByDesc(function(Status $status) {
                          return $status->checkin->departure;
@@ -103,7 +103,7 @@ class StatusController extends Controller
                           ->whereIn('id', $ids)
                           ->get()
                           ->filter(function(Status $status) {
-                              return Gate::allows('view', $status) && !$status->user->shadow_banned && $status->visibility !== StatusVisibility::UNLISTED;
+                              return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
                           })
                           ->values();
 
