@@ -18,9 +18,10 @@ abstract class DashboardController extends Controller
         $followingIDs[] = $user->id;
         return Status::with([
                                 'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin',
+                                'mentions.mentioned',
                                 'checkin.originStation', 'checkin.destinationStation',
                                 'checkin.originStopover', 'checkin.destinationStopover',
-                                'checkin.Trip.stopovers.station'
+                                'checkin.trip.stopovers.station'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
@@ -41,9 +42,10 @@ abstract class DashboardController extends Controller
     public static function getGlobalDashboard(User $user): Paginator {
         return Status::with([
                                 'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin',
+                                'mentions.mentioned',
                                 'checkin.originStation', 'checkin.destinationStation',
                                 'checkin.originStopover', 'checkin.destinationStopover',
-                                'checkin.Trip.stopovers.station'
+                                'checkin.trip.stopovers.station'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->join('users', 'statuses.user_id', '=', 'users.id')
