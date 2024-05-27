@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', __('events.live'))
+@section('canonical', route('events'))
 
 @section('meta-robots', 'index')
 
@@ -107,12 +108,16 @@
                                     <label class="form-label" for="event-requester-url">{{__('events.url')}}</label>
                                 </div>
                                 <div class="form-floating mb-2">
-                                    <input type="text" id="event-requester-hashtag" name="hashtag" class="form-control"/>
-                                    <label class="form-label" for="event-requester-hashtag">{{__('events.hashtag')}}</label>
+                                    <input type="text" id="event-requester-hashtag" name="hashtag"
+                                           class="form-control"/>
+                                    <label class="form-label"
+                                           for="event-requester-hashtag">{{__('events.hashtag')}}</label>
                                 </div>
                                 <div class="form-floating mb-2" id="station-autocomplete-container">
-                                    <input type="text" id="station-autocomplete" name="nearestStation" class="form-control"/>
-                                    <label class="form-label" for="station-autocomplete">{{__('events.closestStation')}}</label>
+                                    <input type="text" id="station-autocomplete" name="nearestStation"
+                                           class="form-control"/>
+                                    <label class="form-label"
+                                           for="station-autocomplete">{{__('events.closestStation')}}</label>
                                 </div>
                                 <button type="submit" class="btn btn-primary">{{__('events.request-button')}}</button>
                             </form>
