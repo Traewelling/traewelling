@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Commands;
 
-use App\Models\Trip;
+use App\Models\Checkin;
 use App\Models\Like;
 use App\Models\PolyLine;
-use App\Models\Checkin;
+use App\Models\Trip;
 use App\Models\User;
 use App\Notifications\StatusLiked;
 use Illuminate\Console\Command;
@@ -73,6 +73,8 @@ class CleanUpTest extends FeatureTestCase
         $user = User::factory()->create();
         Password::createToken($user);
         $this->assertDatabaseCount('password_resets', 1);
+
+        $this->travel(2)->hours();
 
         $this->artisan('app:clean-db:password-resets')->assertExitCode(Command::SUCCESS);
         $this->assertDatabaseCount('password_resets', 0);

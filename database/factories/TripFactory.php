@@ -29,8 +29,6 @@ class TripFactory extends Factory
             'linename'       => $this->faker->bothify('?? ##'),
             'journey_number' => $this->faker->numberBetween(10000, 99999),
             'operator_id'    => HafasOperator::factory()->create()->id,
-            'origin'         => $origin->ibnr,          //TODO: remove when origin and destination are removed from Trip
-            'destination'    => $destination->ibnr,     //TODO: remove when origin and destination are removed from Trip
             'origin_id'      => $origin->id,
             'destination_id' => $destination->id,
             'polyline_id'    => null, //Will be set in the configure function
