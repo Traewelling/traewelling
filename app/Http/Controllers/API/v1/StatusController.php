@@ -15,16 +15,15 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
-use App\Models\Trip;
 use App\Models\Status;
 use App\Models\Stopover;
+use App\Models\Trip;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -399,6 +398,7 @@ class StatusController extends Controller
             'body'                      => ['nullable', 'max:280', 'nullable'],
             'business'                  => ['required', new Enum(Business::class)],
             'visibility'                => ['required', new Enum(StatusVisibility::class)],
+            'eventId'                   => ['nullable', 'integer', 'exists:events,id'],
 
             //Changing of Checkin-Metadata
             'manualDeparture'           => ['nullable', 'date'],
@@ -435,11 +435,16 @@ class StatusController extends Controller
                 );
             }
 
-            $status->update([
-                                'body'       => $validated['body'] ?? null,
-                                'business'   => Business::from($validated['business']),
-                                'visibility' => StatusVisibility::from($validated['visibility']),
-                            ]);
+            $updatePayload = [
+                'body'       => $validated['body'] ?? null,
+                'business'   => Business::from($validated['business']),
+                'visibility' => StatusVisibility::from($validated['visibility']),
+            ];
+
+            if (array_key_exists('eventId', $validated)) { // don't use isset here as it would return false if eventId is null
+                $updatePayload['event_id'] = $validated['eventId'];
+            }
+            $status->update($updatePayload);
 
             if (array_key_exists('manualDeparture', $validated)) {
                 $manualDeparture = isset($validated['manualDeparture'])

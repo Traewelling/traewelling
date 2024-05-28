@@ -4,6 +4,10 @@ In this we try to keep track of changes to the API.
 Primarily this should document changes that are not backwards compatible or belongs to already documented endpoints.
 This is to help you keep track of the changes and to help you update your code accordingly.
 
+## 2024-05-28
+
+You can now edit the `eventId` of a status via the `PUT /status/{id}` endpoint.
+
 ## 2024-04-27
 
 New endpoint `POST /report` for reporting a Status, Event or User to the admins.
