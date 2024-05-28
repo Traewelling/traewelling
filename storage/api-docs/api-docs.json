@@ -3075,7 +3075,7 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Träwelling-ID of the station (you can look this up with [trainStationAutocomplete](#/Checkin/trainStationAutocomplete))",
+                        "description": "Träwelling-ID of the station (you can look this up with\n     *         [trainStationAutocomplete](#/Checkin/trainStationAutocomplete))",
                         "required": true
                     },
                     {
@@ -5860,7 +5860,6 @@
                 "description": "Status Update Body",
                 "properties": {
                     "body": {
-                        "title": "body",
                         "description": "Status-Text to be displayed alongside the checkin",
                         "maxLength": 280,
                         "example": "Wow. This train is extremely crowded!",
@@ -5872,28 +5871,29 @@
                     "visibility": {
                         "$ref": "#/components/schemas/VisibilityEnum"
                     },
+                    "eventId": {
+                        "description": "The ID of the event this status is related to - or null",
+                        "example": "1",
+                        "nullable": true
+                    },
                     "manualDeparture": {
-                        "title": "manualDeparture",
                         "description": "Manual departure time set by the user",
                         "format": "date",
                         "example": "2020-01-01 12:00:00",
                         "nullable": true
                     },
                     "manualArrival": {
-                        "title": "manualArrival",
                         "description": "Manual arrival time set by the user",
                         "format": "date",
                         "example": "2020-01-01 13:00:00",
                         "nullable": true
                     },
                     "destinationId": {
-                        "title": "destinationId",
                         "description": "Destination station id",
                         "example": "1",
                         "nullable": true
                     },
                     "destinationArrivalPlanned": {
-                        "title": "destinationArrivalPlanned",
                         "description": "Destination arrival time",
                         "format": "date",
                         "example": "2020-01-01 13:00:00",
