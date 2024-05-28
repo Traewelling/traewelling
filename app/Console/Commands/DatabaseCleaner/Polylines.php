@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\DatabaseCleaner;
 
 use App\Models\PolyLine;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class CleanUpPolylines extends Command
+class Polylines extends Command
 {
-    protected $signature   = 'trwl:cleanUpPolylines';
+    protected $signature   = 'app:clean-db:polylines';
     protected $description = 'Find and delete unused and old polylines from database';
 
     public function handle(): int {

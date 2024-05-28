@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\DatabaseCleaner;
 
 use App\Models\MastodonServer;
 use App\Models\User;
@@ -11,7 +11,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-class CleanUpMastodonServers extends Command
+class MastodonServers extends Command
 {
     protected $signature = 'trwl:clean-up-mastodon-servers';
 
