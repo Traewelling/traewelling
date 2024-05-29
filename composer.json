@@ -37,6 +37,7 @@
         "spatie/icalendar-generator": "^2.0",
         "spatie/laravel-activitylog": "^4.7",
         "spatie/laravel-permission": "^6.1",
+        "spatie/laravel-personal-data-export": "^4.2",
         "spatie/laravel-prometheus": "^1.0",
         "spatie/laravel-sitemap": "^7.0",
         "spatie/laravel-validation-rules": "^3.2",

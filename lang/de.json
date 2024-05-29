@@ -279,6 +279,8 @@
     "notifications.mastodon-server.exception": "Wir konnten keine erfolgreiche Verbindung zu deiner Mastodon-Instanz :domain herstellen. Bitte überprüfe die Einstellungen oder verbinde dich erneut. Sollte das Problem weiterhin bestehen, kontaktiere bitte unseren Support.",
     "notifications.userJoinedConnection.lead": "<b>@:username</b> ist auch in Deiner Verbindung!",
     "notifications.userJoinedConnection.notice": "@:username reist mit <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>.|@:username reist mit Linie <b>:linename</b> von <b>:origin</b> nach <b>:destination</b>.",
+    "notifications.personalDataExported.lead": "Dein Export ist bereit!",
+    "notifications.personalDataExported.notice": "Die Daten stehen für dich bis :date zum Download bereit.",
     "notifications.userMentioned.lead": "Du wurdest in einem Status erwähnt.",
     "notifications.userMentioned.notice": "Du wurdest in einem Status von @:username erwähnt.",
     "pagination.next": "Nächste Seite &raquo;",

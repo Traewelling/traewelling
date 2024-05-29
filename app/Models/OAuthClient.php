@@ -29,6 +29,10 @@ class OAuthClient extends PassportClient {
         'revoked' => 'bool',
     ];
 
+    protected $hidden = [
+        'secret',
+    ];
+
     public static function newFactory() {
         return parent::newFactory();
     }

@@ -45,6 +45,8 @@ export default {
                     return 'fa fa-train';
                 case 'UserMentioned':
                     return 'fas fa-at';
+                case 'PersonalDataExportedNotification':
+                    return 'fas fa-download';
                 default:
                     return 'far fa-envelope';
             }
