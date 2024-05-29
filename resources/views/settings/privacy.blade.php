@@ -1,5 +1,5 @@
 @extends('layouts.settings')
-@section('title', __('settings.title-loginservices'))
+@section('title', __('settings.title-privacy'))
 
 @section('content')
     <div class="row justify-content-center">
