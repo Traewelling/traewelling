@@ -27,7 +27,7 @@ class Notifications extends Command
         $affectedRows = 0;
         $this->output->writeln('');
         do {
-            $results = DatabaseNotification::where('read_at', '<', now()->subMonths(6))->limit(1000)->delete();
+            $results = DatabaseNotification::where('created_at', '<', now()->subMonths(6))->limit(1000)->delete();
             if ($results > 0) {
                 $this->output->write('.');
             }
