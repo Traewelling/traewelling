@@ -20,10 +20,10 @@ export const useUserStore = defineStore('user', {
         getProfilePicture(): string {
             return this.user ? this.user.profilePicture : '';
         },
-        getTrainDistance(): number {
+        getTrainDistance(): number { // @todo: rename key - we have more than just trains
             return this.user ? this.user.trainDistance : 0;
         },
-        getTrainDuration(): number {
+        getTrainDuration(): number { // @todo: rename key - we have more than just trains
             return this.user ? this.user.trainDuration : 0;
         },
         getPoints(): number {
@@ -52,7 +52,7 @@ export const useUserStore = defineStore('user', {
         }
     },
     actions: {
-        async setHome(home: ShortStation|any): Promise<void> {
+        async setHome(home: ShortStation | any): Promise<void> {
             console.log(home);
             const curStation = this.user?.home;
             if (this.user) {
