@@ -200,8 +200,7 @@ class StatisticsController extends Controller
      *                    @OA\Items(
      *                        @OA\Property(property="name", ref="#/components/schemas/TrainCategoryEnum"),
      *                        @OA\Property(property="count", type="integer", example=11),
-     *                        @OA\Property(property="duration", type="integer", example=425, description="Duration in
-     *                                                          minutes"),
+     *                        @OA\Property(property="duration", type="integer", example=425, description="Duration in minutes"),
      *                    )
      *                ),
      *                @OA\Property(
@@ -211,8 +210,7 @@ class StatisticsController extends Controller
      *                    @OA\Items(
      *                        @OA\Property(property="name", example="Gertruds Verkehrsgesellschaft mbH"),
      *                        @OA\Property(property="count", type="integer", example=10),
-     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in
-     *                                                          minutes"),
+     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in minutes"),
      *                    )
      *                ),
      *                @OA\Property(
@@ -222,8 +220,7 @@ class StatisticsController extends Controller
      *                    @OA\Items(
      *                        @OA\Property(property="date", type="string", example="2021-01-01T00:00:00.000Z"),
      *                        @OA\Property(property="count", type="integer", example=10),
-     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in
-     *                                                          minutes"),
+     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in minutes"),
      *                    )
      *               ),
      *            )

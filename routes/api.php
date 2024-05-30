@@ -18,6 +18,7 @@ use App\Http\Controllers\API\v1\FollowController;
 use App\Http\Controllers\API\v1\IcsController;
 use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\API\v1\NotificationsController;
+use App\Http\Controllers\API\v1\OperatorController;
 use App\Http\Controllers\API\v1\PrivacyPolicyController;
 use App\Http\Controllers\API\v1\ReportController;
 use App\Http\Controllers\API\v1\SessionController;
@@ -176,6 +177,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::put('station/{oldStationId}/merge/{newStationId}', [StationController::class, 'merge']); // currently admin/backend only
 
         Route::apiResource('report', ReportController::class);
+        Route::apiResource('operator', OperatorController::class)->only(['index']);
     });
 
     Route::group(['middleware' => ['privacy-policy']], static function() {
