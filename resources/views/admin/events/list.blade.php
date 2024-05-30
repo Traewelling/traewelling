@@ -59,8 +59,8 @@
                                         </a>
                                     </td>
                                     <td>{{$event->host}}</td>
-                                    <td>{{$event->begin->format('d.m.Y')}}</td>
-                                    <td>{{$event->end->format('d.m.Y')}}</td>
+                                    <td>{{$event->checkin_start->format('d.m.Y')}}</td>
+                                    <td>{{$event->checkin_end->format('d.m.Y')}}</td>
                                     <td>{{$event->event_start?->format('d.m.Y')}}</td>
                                     <td>{{$event->event_end?->format('d.m.Y')}}</td>
                                     <td>{{$event->url}}</td>

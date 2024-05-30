@@ -22,10 +22,10 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property string  slug
  * @property string  host
  * @property string  url
- * @property Carbon  begin // @todo rename to "checkin_start"?
- * @property Carbon  end   // @todo rename to "checkin_end"?
- * @property Carbon  event_start
- * @property Carbon  event_end
+ * @property Carbon  checkin_start Timestamp from when checkins are allowed
+ * @property Carbon  checkin_end   Timestamp until when checkins are allowed
+ * @property Carbon  event_start   Timestamp when the event starts (if different from checkin_start)
+ * @property Carbon  event_end     Timestamp when the event ends (if different from checkin_end)
  *
  * // appends
  * @property int     totalDistance
@@ -38,17 +38,19 @@ class Event extends Model
     use HasFactory, LogsActivity;
 
     protected $fillable = [
-        'name', 'hashtag', 'station_id', 'slug', 'host', 'url', 'begin', 'end', 'event_start', 'event_end'
+        'name', 'hashtag', 'station_id', 'slug', 'host', 'url',
+        'checkin_start', 'checkin_end',
+        'event_start', 'event_end'
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $appends  = ['totalDistance', 'totalDuration', 'isPride'];
     protected $casts    = [
-        'id'          => 'integer',
-        'station_id'  => 'integer',
-        'begin'       => 'datetime',
-        'end'         => 'datetime',
-        'event_start' => 'datetime',
-        'event_end'   => 'datetime',
+        'id'            => 'integer',
+        'station_id'    => 'integer',
+        'checkin_start' => 'datetime',
+        'checkin_end'   => 'datetime',
+        'event_start'   => 'datetime',
+        'event_end'     => 'datetime',
     ];
 
     public function station(): HasOne {
@@ -85,10 +87,7 @@ class Event extends Model
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults()
                          ->logOnlyDirty()
-                         ->logOnly([
-                                       'name', 'hashtag', 'station_id', 'slug', 'host',
-                                       'url', 'begin', 'end', 'event_start', 'event_end'
-                                   ]);
+                         ->logFillable();
     }
 
     /**
@@ -109,10 +108,10 @@ class Event extends Model
      * @return Builder query for events that are active (or upcoming) at the given timestamp
      */
     public static function forTimestamp(Carbon $timestamp, bool $showUpcoming = false): Builder {
-        $query = self::where('end', '>=', $timestamp)
-                     ->orderBy('begin', 'asc');
+        $query = self::where('checkin_end', '>=', $timestamp)
+                     ->orderBy('checkin_start', 'asc');
         if (!$showUpcoming) {
-            $query->where('begin', '<=', $timestamp);
+            $query->where('checkin_start', '<=', $timestamp);
         }
         return $query;
     }

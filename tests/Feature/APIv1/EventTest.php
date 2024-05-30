@@ -25,9 +25,9 @@ class EventTest extends ApiTestCase
     use RefreshDatabase;
 
     public function testEventSelection(): void {
-        $pastEvent   = Event::factory(['begin' => now()->subWeeks(2), 'end' => now()->subWeek()])->create();
-        $activeEvent = Event::factory(['begin' => now()->subDay(), 'end' => now()->addDay()])->create();
-        $futureEvent = Event::factory(['begin' => now()->addWeek(), 'end' => now()->addWeeks(2)])->create();
+        $pastEvent   = Event::factory(['checkin_start' => now()->subWeeks(2), 'checkin_end' => now()->subWeek()])->create();
+        $activeEvent = Event::factory(['checkin_start' => now()->subDay(), 'checkin_end' => now()->addDay()])->create();
+        $futureEvent = Event::factory(['checkin_start' => now()->addWeek(), 'checkin_end' => now()->addWeeks(2)])->create();
 
         // 1. Without any arguments, the API should return events that are currently active
         $response = $this->get('/api/v1/events');

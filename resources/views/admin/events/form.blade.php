@@ -69,7 +69,7 @@
                             <div class="col-6">
                                 <div class="form-floating">
                                     <input id="begin" type="datetime-local" class="form-control" name="begin"
-                                           required value="{{$event?->begin}}"
+                                           required value="{{$event?->checkin_start}}"
                                     />
                                     <label for="begin">Checkin {{ __('events.begin') }}:</label>
                                 </div>
@@ -77,7 +77,7 @@
                             <div class="col-6">
                                 <div class="form-floating">
                                     <input id="end" type="datetime-local" class="form-control" name="end"
-                                           required value="{{$event?->end}}"
+                                           required value="{{$event?->checkin_end}}"
                                     />
                                     <label for="end">Checkin {{ __('events.end') }}:</label>
                                 </div>
