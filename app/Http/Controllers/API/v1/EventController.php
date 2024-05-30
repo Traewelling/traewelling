@@ -81,7 +81,7 @@ class EventController extends Controller
      *              @OA\Property (
      *                  property="data",
      *                  type="object",
-     *                      ref="#/components/schemas/EventDetails"
+     *                      ref="#/components/schemas/EventDetailsResource"
      *              )
      *          )
      *       ),

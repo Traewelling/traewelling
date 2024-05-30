@@ -20,10 +20,10 @@ use Illuminate\Support\Facades\Gate;
  *      @OA\Property(property="business", ref="#/components/schemas/BusinessEnum"),
  *      @OA\Property(property="visibility", ref="#/components/schemas/VisibilityEnum"),
  *      @OA\Property(property="likes", description="How many people have liked this status", type="integer", example=12),
- *      @OA\Property(property="liked",description="Did the currently authenticated user like this status? (if unauthenticated = false)",type="boolean",example=true),
- *      @OA\Property(property="isLikable",description="Do the author of this status and the currently authenticated user allow liking of statuses? Only show the like UI if set to true",type="boolean",example=true),
+ *      @OA\Property(property="liked", description="Did the currently authenticated user like this status? (if unauthenticated = false)",type="boolean",example=true),
+ *      @OA\Property(property="isLikable", description="Do the author of this status and the currently authenticated user allow liking of statuses? Only show the like UI if set to true",type="boolean", example=true),
  *      @OA\Property(property="client", ref="#/components/schemas/ClientResource"),
- *      @OA\Property(property="createdAt",description="creation date of this status",type="string",format="datetime",example="2022-07-17T13:37:00+02:00"),
+ *      @OA\Property(property="createdAt", description="creation date of this status",type="string",format="datetime", example="2022-07-17T13:37:00+02:00"),
  *      @OA\Property(property="train", description="Train model"),
  *      @OA\Property(property="event", ref="#/components/schemas/EventResource", nullable=true)
  * )

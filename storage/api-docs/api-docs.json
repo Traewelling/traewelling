@@ -218,7 +218,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/EventDetails"
+                                            "$ref": "#/components/schemas/EventDetailsResource"
                                         }
                                     },
                                     "type": "object"
@@ -4447,6 +4447,28 @@
                 },
                 "type": "object"
             },
+            "EventDetailsResource": {
+                "title": "EventDetails",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 39
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "9_euro_ticket"
+                    },
+                    "trainDistance": {
+                        "type": "integer",
+                        "example": 12345
+                    },
+                    "trainDuration": {
+                        "type": "integer",
+                        "example": 12345
+                    }
+                },
+                "type": "object"
+            },
             "EventResource": {
                 "title": "Event",
                 "properties": {
@@ -4740,72 +4762,6 @@
                 "type": "object",
                 "xml": {
                     "name": "CheckinResponse"
-                }
-            },
-            "Client": {
-                "title": "Client",
-                "description": "Client model",
-                "properties": {
-                    "id": {
-                        "title": "ID",
-                        "description": "ID",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 39
-                    },
-                    "name": {
-                        "title": "name",
-                        "description": "Name of client",
-                        "type": "string",
-                        "example": "Träwelling App"
-                    },
-                    "privacyPolicyUrl": {
-                        "title": "privacyPolicyUrl",
-                        "description": "URL to privacy policy",
-                        "type": "string",
-                        "example": "https://traewelling.de/privacy-policy"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Client"
-                }
-            },
-            "EventDetails": {
-                "title": "EventDetails",
-                "description": "Statistics/Details for Event",
-                "properties": {
-                    "id": {
-                        "title": "ID",
-                        "description": "ID",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 39
-                    },
-                    "slug": {
-                        "title": "slug",
-                        "description": "URL-Slug for event",
-                        "type": "string",
-                        "example": "9_euro_ticket"
-                    },
-                    "trainDistance": {
-                        "title": "trainDistance",
-                        "description": "Total travelled distance for this event in meters",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 627675656
-                    },
-                    "trainDuration": {
-                        "title": "trainDuration",
-                        "description": "Total travelled duration for this event in minutes",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 591443
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "EventDetails"
                 }
             },
             "EventSuggestion": {
