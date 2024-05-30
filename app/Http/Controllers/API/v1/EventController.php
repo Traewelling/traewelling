@@ -81,7 +81,7 @@ class EventController extends Controller
      *              @OA\Property (
      *                  property="data",
      *                  type="object",
-     *                      ref="#/components/schemas/EventDetails"
+     *                      ref="#/components/schemas/EventDetailsResource"
      *              )
      *          )
      *       ),
@@ -130,7 +130,7 @@ class EventController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/Status"
+     *                      ref="#/components/schemas/StatusResource"
      *                  )
      *              ),
      *              @OA\Property(property="links", ref="#/components/schemas/Links"),

@@ -53,7 +53,7 @@ class StatusController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/Status"
+     *                      ref="#/components/schemas/StatusResource"
      *                  )
      *              ),
      *              @OA\Property(property="links", ref="#/components/schemas/Links"),
@@ -92,7 +92,7 @@ class StatusController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/Status"
+     *                      ref="#/components/schemas/StatusResource"
      *                  )
      *              ),
      *              @OA\Property(property="links", ref="#/components/schemas/Links"),
@@ -132,7 +132,7 @@ class StatusController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/Status"
+     *                      ref="#/components/schemas/StatusResource"
      *                  )
      *              ),
      *              @OA\Property(property="links", ref="#/components/schemas/Links"),
@@ -164,7 +164,7 @@ class StatusController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/Status"
+     *                      ref="#/components/schemas/StatusResource"
      *                  )
      *              ),
      *          )
@@ -270,7 +270,7 @@ class StatusController extends Controller
      *          description="successful operation",
      *          @OA\JsonContent(
      *              @OA\Property(property="data",
-     *                      ref="#/components/schemas/Status"
+     *                      ref="#/components/schemas/StatusResource"
      *              ),
      *          )
      *       ),
@@ -373,7 +373,7 @@ class StatusController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(
      *                  property="data",
-     *                  ref="#/components/schemas/Status"
+     *                  ref="#/components/schemas/StatusResource"
      *              )
      *          )
      *       ),
@@ -600,7 +600,7 @@ class StatusController extends Controller
      *          description="successful operation",
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="object",
-     *                      ref="#/components/schemas/Status"
+     *                      ref="#/components/schemas/StatusResource"
      *              )
      *          )
      *       ),

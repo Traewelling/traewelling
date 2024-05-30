@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
 
@@ -63,7 +62,7 @@ class UserController extends Controller
     public function deleteAccount(Request $request): JsonResponse {
         $request->validate(['confirmation' => ['required', Rule::in([auth()->user()->username])]]);
 
-        if(!BackendUserBackend::deleteUserAccount(user: auth()->user())) {
+        if (!BackendUserBackend::deleteUserAccount(user: auth()->user())) {
             return $this->sendError(__('messages.exception.general'), 500);
         }
         return $this->sendResponse(true);
@@ -95,7 +94,7 @@ class UserController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/Status"
+     *                      ref="#/components/schemas/StatusResource"
      *                  )
      *              ),
      *              @OA\Property(property="links", ref="#/components/schemas/Links"),

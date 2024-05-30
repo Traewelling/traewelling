@@ -318,7 +318,7 @@ class StatisticsController extends Controller
      *                  @OA\Property (
      *                      property="statuses", type="array",
      *                      @OA\Items (
-     *                          ref="#/components/schemas/Status"
+     *                          ref="#/components/schemas/StatusResource"
      *                      ),
      *                  ),
      *                  @OA\Property (
