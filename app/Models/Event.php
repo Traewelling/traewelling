@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
+ * // properties
  * @property int     id
  * @property string  name
  * @property ?string hashtag
@@ -24,6 +26,11 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property Carbon  end   // @todo rename to "checkin_end"?
  * @property Carbon  event_start
  * @property Carbon  event_end
+ *
+ * // appends
+ * @property int     totalDistance
+ * @property int     totalDuration
+ * @property bool    isPride
  */
 class Event extends Model
 {
@@ -34,7 +41,7 @@ class Event extends Model
         'name', 'hashtag', 'station_id', 'slug', 'host', 'url', 'begin', 'end', 'event_start', 'event_end'
     ];
     protected $hidden   = ['created_at', 'updated_at'];
-    protected $appends  = ['trainDistance', 'trainDuration', 'isPride'];
+    protected $appends  = ['totalDistance', 'totalDuration', 'isPride'];
     protected $casts    = [
         'id'          => 'integer',
         'station_id'  => 'integer',
@@ -52,20 +59,18 @@ class Event extends Model
         return $this->hasMany(Status::class);
     }
 
-    /**
-     * @todo rename to "totalDistance"? (we have more than just trains)
-     */
-    public function getTrainDistanceAttribute(): float {
-        return Checkin::whereIn('status_id', $this->statuses()->select('id'))
-                      ->sum('distance');
+    public function getTotalDistanceAttribute(): int {
+        return Cache::remember('event_' . $this->id . '_total_distance', now()->addMinutes(30), function() {
+            return Checkin::whereIn('status_id', $this->statuses()->select('id'))
+                          ->sum('distance');
+        });
     }
 
-    /**
-     * @todo rename to "totalDuration"? (we have more than just trains)
-     */
-    public function getTrainDurationAttribute(): int {
-        return Checkin::whereIn('status_id', $this->statuses()->select('id'))
-                      ->sum('duration');
+    public function getTotalDurationAttribute(): int {
+        return Cache::remember('event_' . $this->id . '_total_duration', now()->addMinutes(30), function() {
+            return Checkin::whereIn('status_id', $this->statuses()->select('id'))
+                          ->sum('duration');
+        });
     }
 
     public function getIsPrideAttribute(): bool {

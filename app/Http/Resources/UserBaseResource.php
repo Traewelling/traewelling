@@ -22,8 +22,8 @@ class UserBaseResource extends JsonResource
             'displayName'    => (string) $this->name,
             'username'       => (string) $this->username,
             'profilePicture' => ProfilePictureController::getUrlForUserId($this->id),
-            'trainDistance'  => (float) $this->train_distance,
-            'trainDuration'  => (int) $this->train_duration,
+            'trainDistance'  => (float) $this->train_distance, // @todo: rename key - we have more than just trains
+            'trainDuration'  => (int) $this->train_duration, // @todo: rename key - we have more than just trains
             'points'         => (int) $this->points,
             'mastodonUrl'    => $this->mastodonUrl ?? null,
             'privateProfile' => (bool) $this->private_profile,
