@@ -4,6 +4,15 @@ In this we try to keep track of changes to the API.
 Primarily this should document changes that are not backwards compatible or belongs to already documented endpoints.
 This is to help you keep track of the changes and to help you update your code accordingly.
 
+## 2024-05-30
+
+Deprecated `GET /activeEvents` endpoint, which will be removed after 2024-08.
+
+Change behavior of `GET /events` endpoint:
+
+- Add `timestamp` and `upcoming` query parameters to filter events by timestamp and upcoming events.
+- Default behavior (without query parameters) is to return active events.
+
 ## 2024-05-28
 
 You can now edit the `eventId` of a status via the `PUT /status/{id}` endpoint.

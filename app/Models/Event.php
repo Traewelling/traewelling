@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,7 +13,17 @@ use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
+ * @property int     id
+ * @property string  name
  * @property ?string hashtag
+ * @property int     station_id
+ * @property string  slug
+ * @property string  host
+ * @property string  url
+ * @property Carbon  begin // @todo rename to "checkin_start"?
+ * @property Carbon  end   // @todo rename to "checkin_end"?
+ * @property Carbon  event_start
+ * @property Carbon  event_end
  */
 class Event extends Model
 {
@@ -40,11 +52,17 @@ class Event extends Model
         return $this->hasMany(Status::class);
     }
 
+    /**
+     * @todo rename to "totalDistance"? (we have more than just trains)
+     */
     public function getTrainDistanceAttribute(): float {
         return Checkin::whereIn('status_id', $this->statuses()->select('id'))
                       ->sum('distance');
     }
 
+    /**
+     * @todo rename to "totalDuration"? (we have more than just trains)
+     */
     public function getTrainDurationAttribute(): int {
         return Checkin::whereIn('status_id', $this->statuses()->select('id'))
                       ->sum('duration');
@@ -66,5 +84,31 @@ class Event extends Model
                                        'name', 'hashtag', 'station_id', 'slug', 'host',
                                        'url', 'begin', 'end', 'event_start', 'event_end'
                                    ]);
+    }
+
+    /**
+     * @param string $slug the slug of the event
+     *
+     * @return Event|null returns the event with the given slug or null if it does not exist
+     */
+    public static function getBySlug(string $slug): ?Event {
+        return self::where('slug', '=', $slug)->firstOrFail();
+    }
+
+    /**
+     * Returns a query for events that are active (or upcoming) at the given timestamp.
+     *
+     * @param Carbon $timestamp
+     * @param bool   $showUpcoming
+     *
+     * @return Builder query for events that are active (or upcoming) at the given timestamp
+     */
+    public static function forTimestamp(Carbon $timestamp, bool $showUpcoming = false): Builder {
+        $query = self::where('end', '>=', $timestamp)
+                     ->orderBy('begin', 'asc');
+        if (!$showUpcoming) {
+            $query->where('begin', '<=', $timestamp);
+        }
+        return $query;
     }
 }

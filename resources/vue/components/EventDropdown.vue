@@ -20,7 +20,7 @@ export default defineComponent({
     methods: {
         trans,
         fetchEvents() {
-            fetch("/api/v1/activeEvents")
+            fetch("/api/v1/events")
                 .then(response => response.json())
                 .then(data => {
                     this.events = data.data;
@@ -51,7 +51,8 @@ export default defineComponent({
         <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
                 id="eventDropdown" data-mdb-dropdown-animation="off"
                 data-mdb-toggle="dropdown" aria-expanded="false" style="">
-            <i class="fas" aria-hidden="true" :class="{'fa-calendar': !selectedEvent, 'fa-calendar-check': selectedEvent}"></i>
+            <i class="fas" aria-hidden="true"
+               :class="{'fa-calendar': !selectedEvent, 'fa-calendar-check': selectedEvent}"></i>
         </button>
         <div aria-labelledby="eventDropdown"
              class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden">
@@ -75,7 +76,8 @@ export default defineComponent({
             </ul>
             <div v-else class="p-2 mb-0 text-center text-muted">
                 <p>{{ trans("stationboard.events-none") }}</p>
-                <p>{{ trans("stationboard.events-propose") }} <a href="/events" target="_blank">traewelling.de/events</a></p>
+                <p>{{ trans("stationboard.events-propose") }} <a href="/events"
+                                                                 target="_blank">traewelling.de/events</a></p>
             </div>
         </div>
     </div>
