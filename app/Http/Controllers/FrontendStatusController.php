@@ -64,7 +64,7 @@ class FrontendStatusController extends Controller
         $event    = Event::where('slug', $slug)->firstOrFail();
         $response = StatusController::getStatusesByEvent($event);
 
-        if ($response['event']->end->isPast() && $response['statuses']->count() === 0) {
+        if ($response['event']->checkin_end->isPast() && $response['statuses']->count() === 0) {
             abort(404);
         }
 

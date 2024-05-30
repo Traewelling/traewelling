@@ -32,9 +32,9 @@ class EventSuggestionProcessed extends Notification implements BaseNotification
 
     public function toArray(): array {
         return [
-            'accepted'      => $this->event !== null,
-            'event'         => $this->event?->only(['id', 'slug', 'name', 'begin', 'end']),
-            'suggestedName' => $this->eventSuggestion->name,
+            'accepted'        => $this->event !== null,
+            'event'           => $this->event?->only(['id', 'slug', 'name', 'checkin_start', 'checkin_end']),
+            'suggestedName'   => $this->eventSuggestion->name,
             'rejectionReason' => $this->rejectionReason,
         ];
     }

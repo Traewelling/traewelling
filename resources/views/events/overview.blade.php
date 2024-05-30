@@ -40,11 +40,11 @@
                                                     @endisset
                                                 </td>
                                                 <td>
-                                                    @if($event->begin->isSameDay($event->end))
-                                                        {{$event->begin->format('d.m.Y')}}
+                                                    @if($event->checkin_start->isSameDay($event->end))
+                                                        {{$event->checkin_start->format('d.m.Y')}}
                                                     @else
-                                                        {{$event->begin->format('d.m.Y')}}
-                                                        - {{$event->end->format('d.m.Y')}}
+                                                        {{$event->checkin_start->format('d.m.Y')}}
+                                                        - {{$event->checkin_end->format('d.m.Y')}}
                                                     @endif
                                                 </td>
                                                 <td>

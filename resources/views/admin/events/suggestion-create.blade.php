@@ -5,7 +5,7 @@
 @section('content')
     <form method="POST" action="{{ route('admin.events.suggestions.accept.do') }}">
         @csrf
-        <input type="hidden" name="suggestionId" value="{{$event->id}}"/>
+        <input type="hidden" name="suggestionId" value="{{$eventSuggestion->id}}"/>
         <div class="row">
             <div class="col-md-6">
                 <div class="card mb-3">
@@ -17,7 +17,7 @@
                             <div class="col-md-8 text-center">
                                 <input id="name" type="text" class="form-control" name="name"
                                        required
-                                       value="{{$event->name}}"
+                                       value="{{$eventSuggestion->name}}"
                                 />
                             </div>
                         </div>
@@ -27,7 +27,7 @@
                             </label>
                             <div class="col-md-8 text-center">
                                 <input id="hashtag" type="text" class="form-control" name="hashtag"
-                                       value="{{$event->hashtag}}"
+                                       value="{{$eventSuggestion->hashtag}}"
                                 />
                             </div>
                         </div>
@@ -37,7 +37,7 @@
                             </label>
                             <div class="col-md-8 text-center">
                                 <input id="host" type="text" class="form-control" name="host"
-                                       value="{{$event->host}}"
+                                       value="{{$eventSuggestion->host}}"
                                 />
                             </div>
                         </div>
@@ -46,7 +46,7 @@
                                 :</label>
                             <div class="col-md-8 text-center">
                                 <input id="url" type="url" class="form-control" name="url"
-                                       value="{{$event->url}}"
+                                       value="{{$eventSuggestion->url}}"
                                 />
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                             <div class="col-md-8 text-left">
                                 <input type="text" id="station-autocomplete" name="nearest_station_name"
                                        class="form-control" placeholder="{{ __('stationboard.station-placeholder') }}"
-                                       value="{{$event->station?->name}}"
+                                       value="{{$eventSuggestion->station?->name}}"
                                 />
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                             <div class="col-6">
                                 <div class="form-floating">
                                     <input id="begin" type="datetime-local" class="form-control" name="begin"
-                                           value="{{ $event->begin->startOfDay()->toDateTimeLocalString() }}"
+                                           value="{{ $eventSuggestion->begin->startOfDay()->toDateTimeLocalString() }}"
                                            required
                                     />
                                     <label for="begin">Checkin {{ __('events.begin') }}:</label>
@@ -84,7 +84,7 @@
                             <div class="col-6">
                                 <div class="form-floating">
                                     <input id="end" type="datetime-local" class="form-control" name="end"
-                                           value="{{ $event->end->endOfDay()->setSeconds(0)->toDateTimeLocalString() }}"
+                                           value="{{ $eventSuggestion->end->endOfDay()->setSeconds(0)->toDateTimeLocalString() }}"
                                            required
                                     />
                                     <label for="end">Checkin {{ __('events.end') }}:</label>
