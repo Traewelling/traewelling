@@ -10,7 +10,7 @@ class OperatorController extends Controller
 {
     /**
      * @OA\Get(
-     *      path="/operators",
+     *      path="/operator",
      *      summary="Get a list of all operators.",
      *      tags={"Checkin"},
      *      @OA\Response(
