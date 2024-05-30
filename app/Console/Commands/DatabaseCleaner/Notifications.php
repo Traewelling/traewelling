@@ -24,6 +24,6 @@ class Notifications extends Command
         $this->output->writeln('');
         $this->info("Removed $affectedRows old notifications.");
 
-        return Command::SUCCESS;
+        return parent::SUCCESS;
     }
 }
