@@ -19,7 +19,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Validation\Rule;
 
 class StatisticsController extends Controller
@@ -320,7 +319,7 @@ class StatisticsController extends Controller
      *                  @OA\Property (
      *                      property="statuses", type="array",
      *                      @OA\Items (
-     *                          ref="#/components/schemas/Status"
+     *                          ref="#/components/schemas/StatusResource"
      *                      ),
      *                  ),
      *                  @OA\Property (

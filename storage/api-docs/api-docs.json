@@ -218,7 +218,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/EventDetails"
+                                            "$ref": "#/components/schemas/EventDetailsResource"
                                         }
                                     },
                                     "type": "object"
@@ -283,7 +283,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Status"
+                                                "$ref": "#/components/schemas/StatusResource"
                                             }
                                         },
                                         "links": {
@@ -1906,7 +1906,7 @@
                                                 "statuses": {
                                                     "type": "array",
                                                     "items": {
-                                                        "$ref": "#/components/schemas/Status"
+                                                        "$ref": "#/components/schemas/StatusResource"
                                                     }
                                                 },
                                                 "polylines": {
@@ -2051,7 +2051,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Status"
+                                                "$ref": "#/components/schemas/StatusResource"
                                             }
                                         },
                                         "links": {
@@ -2114,7 +2114,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Status"
+                                                "$ref": "#/components/schemas/StatusResource"
                                             }
                                         },
                                         "links": {
@@ -2177,7 +2177,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Status"
+                                                "$ref": "#/components/schemas/StatusResource"
                                             }
                                         },
                                         "links": {
@@ -2229,7 +2229,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Status"
+                                                "$ref": "#/components/schemas/StatusResource"
                                             }
                                         }
                                     },
@@ -2378,7 +2378,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/Status"
+                                            "$ref": "#/components/schemas/StatusResource"
                                         }
                                     },
                                     "type": "object"
@@ -2443,7 +2443,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/Status"
+                                            "$ref": "#/components/schemas/StatusResource"
                                         }
                                     },
                                     "type": "object"
@@ -2664,7 +2664,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/Status"
+                                            "$ref": "#/components/schemas/StatusResource"
                                         }
                                     },
                                     "type": "object"
@@ -3691,7 +3691,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Status"
+                                                "$ref": "#/components/schemas/StatusResource"
                                             }
                                         },
                                         "links": {
@@ -4428,6 +4428,47 @@
                     "name": "Station"
                 }
             },
+            "ClientResource": {
+                "title": "Client",
+                "properties": {
+                    "id": {
+                        "description": "Model -> OAuthClient",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Träwelling App"
+                    },
+                    "privacyPolicyUrl": {
+                        "type": "string",
+                        "example": "https://traewelling.de/privacy-policy"
+                    }
+                },
+                "type": "object"
+            },
+            "EventDetailsResource": {
+                "title": "EventDetails",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 39
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "9_euro_ticket"
+                    },
+                    "trainDistance": {
+                        "type": "integer",
+                        "example": 12345
+                    },
+                    "trainDuration": {
+                        "type": "integer",
+                        "example": 12345
+                    }
+                },
+                "type": "object"
+            },
             "EventResource": {
                 "title": "Event",
                 "properties": {
@@ -4467,6 +4508,85 @@
                     },
                     "station": {
                         "$ref": "#/components/schemas/Station"
+                    }
+                },
+                "type": "object"
+            },
+            "StatusResource": {
+                "title": "Status",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 12345
+                    },
+                    "body": {
+                        "description": "User defined status text",
+                        "example": "Hello world!"
+                    },
+                    "bodyMentions": {
+                        "description": "Mentions in the status body",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MentionDto"
+                        }
+                    },
+                    "user": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "profilePicture": {
+                        "type": "string",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "preventIndex": {
+                        "description": "Did the user choose to prevent search engines from indexing their profile?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "business": {
+                        "$ref": "#/components/schemas/BusinessEnum"
+                    },
+                    "visibility": {
+                        "$ref": "#/components/schemas/VisibilityEnum"
+                    },
+                    "likes": {
+                        "description": "How many people have liked this status",
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "liked": {
+                        "description": "Did the currently authenticated user like this status? (if unauthenticated = false)",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "isLikable": {
+                        "description": "Do the author of this status and the currently authenticated user allow liking of statuses? Only show the like UI if set to true",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "client": {
+                        "$ref": "#/components/schemas/ClientResource"
+                    },
+                    "createdAt": {
+                        "description": "creation date of this status",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2022-07-17T13:37:00+02:00"
+                    },
+                    "train": {
+                        "description": "Train model"
+                    },
+                    "event": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/EventResource"
+                            }
+                        ],
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -4635,79 +4755,13 @@
                         "description": "Statuses of other people on this connection",
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Status"
+                            "$ref": "#/components/schemas/StatusResource"
                         }
                     }
                 },
                 "type": "object",
                 "xml": {
                     "name": "CheckinResponse"
-                }
-            },
-            "Client": {
-                "title": "Client",
-                "description": "Client model",
-                "properties": {
-                    "id": {
-                        "title": "ID",
-                        "description": "ID",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 39
-                    },
-                    "name": {
-                        "title": "name",
-                        "description": "Name of client",
-                        "type": "string",
-                        "example": "Träwelling App"
-                    },
-                    "privacyPolicyUrl": {
-                        "title": "privacyPolicyUrl",
-                        "description": "URL to privacy policy",
-                        "type": "string",
-                        "example": "https://traewelling.de/privacy-policy"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Client"
-                }
-            },
-            "EventDetails": {
-                "title": "EventDetails",
-                "description": "Statistics/Details for Event",
-                "properties": {
-                    "id": {
-                        "title": "ID",
-                        "description": "ID",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 39
-                    },
-                    "slug": {
-                        "title": "slug",
-                        "description": "URL-Slug for event",
-                        "type": "string",
-                        "example": "9_euro_ticket"
-                    },
-                    "trainDistance": {
-                        "title": "trainDistance",
-                        "description": "Total travelled distance for this event in meters",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 627675656
-                    },
-                    "trainDuration": {
-                        "title": "trainDuration",
-                        "description": "Total travelled duration for this event in minutes",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 591443
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "EventDetails"
                 }
             },
             "EventSuggestion": {
@@ -5123,98 +5177,6 @@
                 "type": "object",
                 "xml": {
                     "name": "Polyline"
-                }
-            },
-            "Status": {
-                "title": "Status",
-                "description": "Status model",
-                "properties": {
-                    "id": {
-                        "title": "ID",
-                        "description": "ID",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 12345
-                    },
-                    "body": {
-                        "title": "body",
-                        "description": "User defined status text",
-                        "example": "Hello world!"
-                    },
-                    "bodyMentions": {
-                        "title": "bodyMentions",
-                        "description": "Mentions in the status body",
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/MentionDto"
-                        }
-                    },
-                    "user": {
-                        "title": "user",
-                        "description": "user id",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 1
-                    },
-                    "username": {
-                        "title": "username",
-                        "description": "username (@-name)",
-                        "type": "string",
-                        "example": "Gertrud123"
-                    },
-                    "preventIndex": {
-                        "title": "preventIndex",
-                        "description": "Did the user choose to prevent search engines from indexing their profile?",
-                        "type": "boolean",
-                        "example": false
-                    },
-                    "business": {
-                        "$ref": "#/components/schemas/BusinessEnum"
-                    },
-                    "visibility": {
-                        "$ref": "#/components/schemas/VisibilityEnum"
-                    },
-                    "likes": {
-                        "title": "likes",
-                        "description": "How many people have liked this status",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 12
-                    },
-                    "liked": {
-                        "title": "liked",
-                        "description": "Did the currently authenticated user like this status? (if unauthenticated = false)",
-                        "type": "boolean",
-                        "example": true
-                    },
-                    "isLikable": {
-                        "title": "isLikable",
-                        "description": "Do the author of this status and the currently authenticated user allow liking of statuses? Only show the like UI if set to true",
-                        "type": "boolean",
-                        "example": true
-                    },
-                    "client": {
-                        "$ref": "#/components/schemas/Client"
-                    },
-                    "createdAt": {
-                        "title": "createdAt",
-                        "description": "creation date of this status",
-                        "type": "string",
-                        "format": "datetime",
-                        "example": "2022-07-17T13:37:00+02:00"
-                    },
-                    "train": {
-                        "$ref": "#/components/schemas/Trip"
-                    },
-                    "event": {
-                        "title": "event",
-                        "description": "Event model (nullable)",
-                        "nullable": true
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Status"
                 }
             },
             "StatusTag": {
