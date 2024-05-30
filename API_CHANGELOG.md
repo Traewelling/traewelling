@@ -6,6 +6,10 @@ This is to help you keep track of the changes and to help you update your code a
 
 ## 2024-05-30
 
+Added `GET /operator` endpoint to get a paginated list of all operators.
+
+## 2024-05-30
+
 Renamed `trainDuration` and `trainDistance` attributes to `totalDuration` and `totalDistance` in all `User` object.
 (We have more than just trains.)
 
