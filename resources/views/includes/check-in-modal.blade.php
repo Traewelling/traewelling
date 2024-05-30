@@ -1,6 +1,6 @@
-@php use App\Http\Controllers\Backend\EventController; @endphp
+@php use App\Http\Controllers\Backend\Social\MastodonController; @endphp
 @auth
-    @php($events = EventController::activeEvents())
+    @php($events = \App\Models\Event::forTimestamp(now())->get())
     <div class="modal fade" id="checkinModal" tabindex="-1" role="dialog"
          aria-hidden="true" aria-labelledby="checkinModalTitle">
         <div class="modal-dialog" role="document">
@@ -36,7 +36,7 @@
                                             </span>
                                         </label>
                                     </div>
-                                    @if (\App\Http\Controllers\Backend\Social\MastodonController::getLastSavedPostIdFromUserStatuses(auth()->user()))
+                                    @if (MastodonController::getLastSavedPostIdFromUserStatuses(auth()->user()))
                                         <div class="btn-group">
                                             <input type="checkbox" class="btn-check" id="chainPost_check"
                                                    autocomplete="off"

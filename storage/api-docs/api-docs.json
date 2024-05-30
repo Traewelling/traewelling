@@ -322,18 +322,28 @@
                 "tags": [
                     "Events"
                 ],
-                "summary": "[Auth optional] Shows upcoming events with basic information",
-                "description": "Returns slug, name and duration for an event",
-                "operationId": "getUpcomingEvent",
+                "summary": "[Auth optional] Show active or upcoming events for the given timestamp",
+                "description": "Returns all active or upcoming events for the given timestamp. Default timestamp is now. If upcoming is set to true, all events ending after the timestamp are returned.",
+                "operationId": "9c949d287fe278f2f8de845eedbd12fa",
                 "parameters": [
                     {
-                        "name": "slug",
-                        "in": "path",
-                        "description": "slug for event",
+                        "name": "timestamp",
+                        "in": "query",
+                        "description": "The timestamp of view. Default is now.",
+                        "required": false,
                         "schema": {
                             "type": "string"
                         },
-                        "example": "weihnachten_2022"
+                        "example": "2022-08-01T12:00:00+02:00"
+                    },
+                    {
+                        "name": "upcoming",
+                        "in": "query",
+                        "description": "Show only upcoming events",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
                     }
                 ],
                 "responses": {
@@ -357,9 +367,6 @@
                     },
                     "400": {
                         "description": "Bad request"
-                    },
-                    "404": {
-                        "description": "No Event found for this id"
                     }
                 },
                 "security": [
@@ -418,56 +425,14 @@
                 "tags": [
                     "Events"
                 ],
-                "summary": "Shows current events with basic information",
-                "description": "Returns array of current events, used for a basic overview during checkiused for a basic\n     *      overview during checkin",
-                "operationId": "getCurrentEvents",
-                "parameters": [
-                    {
-                        "name": "slug",
-                        "in": "path",
-                        "description": "slug for event",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "weihnachten_2022"
-                    }
-                ],
+                "summary": "DEPRECATED - USE /events - removed after 2024-08",
+                "description": "DEPRECATED - USE /events - removed after 2024-08",
+                "operationId": "35401311136edc062ced8b22c9cd8722",
                 "responses": {
                     "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/EventResource"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "404": {
-                        "description": "No Event found for this id"
+                        "description": "The events"
                     }
-                },
-                "security": [
-                    {
-                        "passport": [
-                            "read-statuses"
-                        ]
-                    },
-                    {
-                        "token": []
-                    }
-                ]
+                }
             }
         },
         "/user/{id}/follow": {
