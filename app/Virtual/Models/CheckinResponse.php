@@ -2,8 +2,6 @@
 
 namespace App\Virtual\Models;
 
-use Carbon\Carbon;
-
 /**
  * @OA\Schema(
  *     title="CheckinResponse",
@@ -41,7 +39,7 @@ class CheckinResponse
      *     title="alsoOnThisconnection",
      *     description="Statuses of other people on this connection",
      *     @OA\Items(
-     *     ref="#/components/schemas/Status"
+     *     ref="#/components/schemas/StatusResource"
      *     )
      * )
      *
