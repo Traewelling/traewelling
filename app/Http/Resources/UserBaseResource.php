@@ -35,11 +35,7 @@ class UserBaseResource extends JsonResource
                     'muted'             => (bool) $this->muted,
                     'following'         => (bool) $this->following,
                     'followPending'     => (bool) $this->followPending,
-                ]),
-            $this->mergeWhen(isset($this->showRoles),
-                [
-                    'roles' => $this->roles->pluck('name')
-                ]),
+                ])
         ];
     }
 }

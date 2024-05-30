@@ -9,20 +9,20 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @OA\Schema(
  *      title="UserAuth",
  *      @OA\Property(property="id", type="integer", example="1"),
- *     @OA\Property(property="displayName", type="string", example="Gertrud"),
- *     @OA\Property(property="username", type="string", example="Gertrud123"),
- *     @OA\Property(property="profilePicture", type="string", example="https://traewelling.de/@Gertrud123/picture"),
- *     @OA\Property(property="totalDistance", type="integer", example="100"),
- *     @OA\Property(property="totalDuration", type="integer", example="100"),
- *     @OA\Property(property="points", type="integer", example="100"),
- *     @OA\Property(property="mastodonUrl", type="string", example="https://mastodon.social/@Gertrud123", nullable=true),
- *     @OA\Property(property="privateProfile", type="boolean", example="false"),
- *     @OA\Property(property="preventIndex", type="boolean", example="false"),
- *     @OA\Property(property="likes_enabled", type="boolean", example="true"),
- *     @OA\Property(property="home", type="object", ref="#/components/schemas/StationResource"),
- *     @OA\Property(property="language", type="string", example="de"),
- *     @OA\Property(property="defaultStatusVisibility", type="integer", example=0),
- *     @OA\Property(property="roles", type="array", @OA\Items(type="string"), example={"admin", "open-beta", "closed-beta"})
+ *      @OA\Property(property="displayName", type="string", example="Gertrud"),
+ *      @OA\Property(property="username", type="string", example="Gertrud123"),
+ *      @OA\Property(property="profilePicture", type="string", example="https://traewelling.de/@Gertrud123/picture"),
+ *      @OA\Property(property="totalDistance", type="integer", example="100"),
+ *      @OA\Property(property="totalDuration", type="integer", example="100"),
+ *      @OA\Property(property="points", type="integer", example="100"),
+ *      @OA\Property(property="mastodonUrl", type="string", example="https://mastodon.social/@Gertrud123", nullable=true),
+ *      @OA\Property(property="privateProfile", type="boolean", example="false"),
+ *      @OA\Property(property="preventIndex", type="boolean", example="false"),
+ *      @OA\Property(property="likes_enabled", type="boolean", example="true"),
+ *      @OA\Property(property="home", type="object", ref="#/components/schemas/StationResource"),
+ *      @OA\Property(property="language", type="string", example="de"),
+ *      @OA\Property(property="defaultStatusVisibility", type="integer", example=0),
+ *      @OA\Property(property="roles", type="array", @OA\Items(type="string"), example={"admin", "open-beta", "closed-beta"})
  * )
  */
 class UserAuthResource extends JsonResource

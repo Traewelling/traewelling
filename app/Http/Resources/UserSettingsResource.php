@@ -8,7 +8,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class UserSettingsResource extends JsonResource
 {
     protected bool $UserSettingsResource = true;
-    protected bool $showRoles            = true;
 
     /**
      * Transform the resource into an array.
