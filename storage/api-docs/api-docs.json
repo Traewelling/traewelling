@@ -77,7 +77,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/UserAuth"
+                                            "$ref": "#/components/schemas/UserAuthResource"
                                         }
                                     },
                                     "type": "object"
@@ -1540,7 +1540,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                                "$ref": "#/components/schemas/LeaderboardUserResource"
                                             }
                                         }
                                     },
@@ -1585,7 +1585,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                                "$ref": "#/components/schemas/LeaderboardUserResource"
                                             }
                                         }
                                     },
@@ -1630,7 +1630,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                                "$ref": "#/components/schemas/LeaderboardUserResource"
                                             }
                                         }
                                     },
@@ -1686,7 +1686,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                                "$ref": "#/components/schemas/LeaderboardUserResource"
                                             }
                                         }
                                     },
@@ -3046,7 +3046,7 @@
                     {
                         "name": "when",
                         "in": "query",
-                        "description": "When to get the departures (default: now).\n    If you omit the timezone, the datetime is interpreted as localtime.\n    This is especially helpful when träwelling abroad.",
+                        "description": "When to get the departures (default: now).\n     * If you omit the timezone, the datetime is interpreted as localtime.\n     * This is especially helpful when träwelling abroad.",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -3530,7 +3530,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/AutocompleteStation"
+                                                "$ref": "#/components/schemas/StationResource"
                                             }
                                         }
                                     },
@@ -4471,41 +4471,138 @@
                 },
                 "type": "object"
             },
-            "AutocompleteStation": {
-                "title": "AutocompleteStation",
-                "description": "shortened train station model",
+            "LeaderboardUserResource": {
+                "title": "LeaderboardUserResource",
                 "properties": {
-                    "id": {
-                        "title": "id",
-                        "description": "Träwelling ID of the station",
+                    "username": {
+                        "description": "username of user",
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "profilePicture": {
+                        "description": "URL of the profile picture of the user",
+                        "type": "string",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "totalDuration": {
+                        "description": "duration travelled in minutes",
+                        "type": "integer",
+                        "example": 6
+                    },
+                    "totalDistance": {
+                        "description": "distance travelled in meters",
                         "type": "integer",
                         "example": 12345
                     },
-                    "ibnr": {
-                        "title": "ibnr",
-                        "description": "IBNR of the station",
-                        "type": "integer",
-                        "example": "8000191",
-                        "nullable": true
-                    },
-                    "rilIdentifier": {
-                        "title": "rilIdentifier",
-                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
-                        "type": "string",
-                        "example": "RK",
-                        "nullable": "true"
-                    },
-                    "name": {
-                        "title": "name",
-                        "description": "name of the station",
-                        "type": "string",
-                        "example": "Karlsruhe Hbf"
+                    "points": {
+                        "description": "points of user",
+                        "type": "integer"
                     }
                 },
-                "type": "object",
-                "xml": {
-                    "name": "AutocompleteStation"
-                }
+                "type": "object"
+            },
+            "StationResource": {
+                "title": "Station",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Karlsruhe Hbf"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "example": "48.993207"
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "example": "8.400977"
+                    },
+                    "ibnr": {
+                        "type": "string",
+                        "example": "8000191"
+                    },
+                    "rilIdentifier": {
+                        "type": "string",
+                        "example": "RK"
+                    }
+                },
+                "type": "object"
+            },
+            "UserAuthResource": {
+                "title": "UserAuth",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "displayName": {
+                        "type": "string",
+                        "example": "Gertrud"
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "profilePicture": {
+                        "type": "string",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "totalDistance": {
+                        "type": "integer",
+                        "example": "100"
+                    },
+                    "totalDuration": {
+                        "type": "integer",
+                        "example": "100"
+                    },
+                    "points": {
+                        "type": "integer",
+                        "example": "100"
+                    },
+                    "mastodonUrl": {
+                        "type": "string",
+                        "example": "https://mastodon.social/@Gertrud123",
+                        "nullable": true
+                    },
+                    "privateProfile": {
+                        "type": "boolean",
+                        "example": "false"
+                    },
+                    "preventIndex": {
+                        "type": "boolean",
+                        "example": "false"
+                    },
+                    "likes_enabled": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "home": {
+                        "$ref": "#/components/schemas/StationResource"
+                    },
+                    "language": {
+                        "type": "string",
+                        "example": "de"
+                    },
+                    "defaultStatusVisibility": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "admin",
+                            "open-beta",
+                            "closed-beta"
+                        ]
+                    }
+                },
+                "type": "object"
             },
             "BearerTokenResponse": {
                 "title": "BearerTokenResponse",
@@ -4849,48 +4946,6 @@
                 "type": "object",
                 "xml": {
                     "name": "PaginationMeta"
-                }
-            },
-            "LeaderboardUser": {
-                "title": "LeaderboardUser",
-                "properties": {
-                    "username": {
-                        "title": "username",
-                        "description": "username of user",
-                        "type": "string",
-                        "example": "Gertrud123"
-                    },
-                    "profilePicture": {
-                        "title": "profilePicture",
-                        "description": "URL of the profile picture of the user",
-                        "type": "integer",
-                        "example": "https://traewelling.de/@Gertrud123/picture"
-                    },
-                    "trainDuration": {
-                        "title": "trainDuration",
-                        "description": "duration travelled by train in minutes",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 6
-                    },
-                    "trainDistance": {
-                        "title": "trainDistance",
-                        "description": "distance travelled by train in meters",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 12345
-                    },
-                    "points": {
-                        "title": "points",
-                        "description": "Current points of the last 7 days",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 300
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "LeaderboardUser"
                 }
             },
             "LikeResponse": {
@@ -5579,109 +5634,6 @@
                 "type": "object",
                 "xml": {
                     "name": "User"
-                }
-            },
-            "UserAuth": {
-                "title": "UserAuth",
-                "description": "User auth model",
-                "properties": {
-                    "id": {
-                        "title": "ID",
-                        "description": "ID",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 1
-                    },
-                    "displayName": {
-                        "title": "displayName",
-                        "description": "Display name of the user",
-                        "example": "Gertrud"
-                    },
-                    "username": {
-                        "title": "username",
-                        "description": "username of user",
-                        "type": "string",
-                        "example": "Gertrud123"
-                    },
-                    "profilePicture": {
-                        "title": "profilePicture",
-                        "description": "URL of the profile picture of the user",
-                        "type": "integer",
-                        "example": "https://traewelling.de/@Gertrud123/picture"
-                    },
-                    "trainDistance": {
-                        "title": "trainDistance",
-                        "description": "distance travelled by train in meters",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 12345
-                    },
-                    "trainDuration": {
-                        "title": "trainDuration",
-                        "description": "duration travelled by train in minutes",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 6
-                    },
-                    "points": {
-                        "title": "points",
-                        "description": "Current points of the last 7 days",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 300
-                    },
-                    "mastodonUrl": {
-                        "title": "mastodonUrl",
-                        "description": "URL to the Mastodon profile of the user",
-                        "type": "string",
-                        "example": "https://chaos.social/@traewelling",
-                        "nullable": true
-                    },
-                    "privateProfile": {
-                        "title": "privateProfile",
-                        "description": "is this profile set to private?",
-                        "type": "boolean",
-                        "example": false
-                    },
-                    "privacyHideDays": {
-                        "title": "privacyHideDays",
-                        "description": "Hide all statuses after x days",
-                        "type": "integer",
-                        "example": 3,
-                        "nullable": true
-                    },
-                    "preventIndex": {
-                        "title": "preventIndex",
-                        "description": "Did the user choose to prevent search engines from indexing their profile?",
-                        "type": "boolean",
-                        "example": false
-                    },
-                    "role": {
-                        "title": "role",
-                        "description": "The permission-role of a user. Distinguishes access level to certain features.",
-                        "type": "integer",
-                        "example": 0
-                    },
-                    "home": {
-                        "oneOf": [
-                            {
-                                "$ref": "#/components/schemas/Station"
-                            }
-                        ],
-                        "nullable": true,
-                        "title": "home",
-                        "description": "The specified 'home'-station of this user"
-                    },
-                    "language": {
-                        "title": "language",
-                        "description": "what is the specified language of this user",
-                        "example": "en",
-                        "nullable": true
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "UserAuth"
                 }
             },
             "UserProfileSettings": {

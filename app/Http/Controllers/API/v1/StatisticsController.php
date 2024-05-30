@@ -19,7 +19,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Validation\Rule;
 
 class StatisticsController extends Controller
@@ -36,7 +35,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
@@ -45,7 +44,6 @@ class StatisticsController extends Controller
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
      *           {"passport": {"read-statistics"}}, {"token": {}}
-     *
      *       }
      *     )
      *
@@ -67,7 +65,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
@@ -99,7 +97,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
@@ -137,7 +135,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
