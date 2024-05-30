@@ -2,16 +2,16 @@
 
 namespace Database\Factories;
 
-use App\Models\HafasOperator;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use JetBrains\PhpStorm\ArrayShape;
+use Illuminate\Support\Str;
 
 class HafasOperatorFactory extends Factory
 {
     public function definition(): array {
+        $companyName = $this->faker->company;
         return [
-            'hafas_id' => $this->faker->hexColor,
-            'name'     => $this->faker->company
+            'hafas_id' => Str::slug($companyName, '_'),
+            'name'     => $companyName,
         ];
     }
 }
