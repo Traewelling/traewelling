@@ -25,13 +25,10 @@ class ReportController extends Controller
      *          required=true,
      *          @OA\JsonContent(
      *              required={"subject_type", "subject_id", "reason"},
-     *              @OA\Property(property="subject_type", type="string", enum={"Event", "Status", "User"},
-     *                                                    example="Status"),
+     *              @OA\Property(property="subject_type", type="string", enum={"Event", "Status", "User"}, example="Status"),
      *              @OA\Property(property="subject_id", type="integer", example=1),
-     *              @OA\Property(property="reason", type="string", enum={"inappropriate", "implausible", "spam",
-     *                                              "illegal", "other"}, example="inappropriate"),
-     *              @OA\Property(property="description", type="string", example="The status is inappropriate
-     *                                                   because...", nullable=true),
+     *              @OA\Property(property="reason", type="string", enum={"inappropriate", "implausible", "spam", "illegal", "other"}, example="inappropriate"),
+     *              @OA\Property(property="description", type="string", example="The status is inappropriate because...", nullable=true),
      *          ),
      *      ),
      *      @OA\Response(response=200, description="The report was successfully created."),

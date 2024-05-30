@@ -1247,6 +1247,35 @@
                 ]
             }
         },
+        "/operators": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Get a list of all operators.",
+                "operationId": "bcfcf8686980cf0fcdc751b2e13fa4f7",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/OperatorResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/static/privacy": {
             "get": {
                 "tags": [
@@ -1360,7 +1389,7 @@
                                     },
                                     "description": {
                                         "type": "string",
-                                        "example": "The status is inappropriate\n     *                                                   because...",
+                                        "example": "The status is inappropriate because...",
                                         "nullable": true
                                     }
                                 },
@@ -4542,6 +4571,23 @@
                 },
                 "type": "object"
             },
+            "OperatorResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "example": "db-regio-ag-nord"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "DB Regio AG Nord"
+                    }
+                },
+                "type": "object"
+            },
             "StationResource": {
                 "title": "Station",
                 "properties": {
@@ -5108,26 +5154,6 @@
                     "name": "Notification"
                 }
             },
-            "Operator": {
-                "title": "Operator",
-                "description": "Operator of a mean of transport",
-                "properties": {
-                    "identifier": {
-                        "title": "identifier",
-                        "type": "string",
-                        "example": "sbb"
-                    },
-                    "name": {
-                        "title": "name",
-                        "type": "string",
-                        "example": "SBB"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Operator"
-                }
-            },
             "PaginationPage": {
                 "title": "PaginationPage",
                 "description": "pagination links",
@@ -5479,14 +5505,9 @@
                         "$ref": "#/components/schemas/Stopover"
                     },
                     "operator": {
-                        "oneOf": [
-                            {
-                                "$ref": "#/components/schemas/Operator"
-                            }
-                        ],
-                        "nullable": true,
                         "title": "operator",
-                        "description": "Operator of the mean of transport"
+                        "description": "Operator of the mean of transport",
+                        "nullable": true
                     }
                 },
                 "type": "object",
