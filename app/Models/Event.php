@@ -59,13 +59,6 @@ class Event extends Model
         return $this->hasMany(Status::class);
     }
 
-    /**
-     * @deprecated
-     */
-    public function getTrainDistanceAttribute(): float {
-        return $this->totalDistance;
-    }
-
     public function getTotalDistanceAttribute(): int {
         return Cache::remember('event_' . $this->id . '_total_distance', now()->addMinutes(30), function() {
             return Checkin::whereIn('status_id', $this->statuses()->select('id'))
@@ -78,13 +71,6 @@ class Event extends Model
             return Checkin::whereIn('status_id', $this->statuses()->select('id'))
                           ->sum('duration');
         });
-    }
-
-    /**
-     * @todo rename to "totalDuration"? (we have more than just trains)
-     */
-    public function getTrainDurationAttribute(): int {
-        return $this->totalDuration;
     }
 
     public function getIsPrideAttribute(): bool {
