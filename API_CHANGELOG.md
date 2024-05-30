@@ -6,6 +6,13 @@ This is to help you keep track of the changes and to help you update your code a
 
 ## 2024-05-30
 
+Renamed `trainDuration` and `trainDistance` attributes to `totalDuration` and `totalDistance` in all `User` object.
+(We have more than just trains.)
+
+The old attributes will be removed after 2024-08.
+
+## 2024-05-30
+
 Deprecated `GET /activeEvents` endpoint, which will be removed after 2024-08.
 
 Change behavior of `GET /events` endpoint:

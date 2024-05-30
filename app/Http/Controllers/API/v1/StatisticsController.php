@@ -35,7 +35,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
@@ -44,7 +44,6 @@ class StatisticsController extends Controller
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
      *           {"passport": {"read-statistics"}}, {"token": {}}
-     *
      *       }
      *     )
      *
@@ -66,7 +65,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
@@ -98,7 +97,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
@@ -136,7 +135,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )

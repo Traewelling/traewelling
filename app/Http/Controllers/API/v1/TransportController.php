@@ -76,14 +76,14 @@ class TransportController extends Controller
      *         description="Träwelling-ID of the station (you can look this up with
      *         [trainStationAutocomplete](#/Checkin/trainStationAutocomplete))", required=true,
      *     ),
-     *     @OA\Parameter(
+     * @OA\Parameter(
      *         name="when",
      *         in="query",
      *         description="When to get the departures (default: now).
-    If you omit the timezone, the datetime is interpreted as localtime.
-    This is especially helpful when träwelling abroad.",
+     * If you omit the timezone, the datetime is interpreted as localtime.
+     * This is especially helpful when träwelling abroad.",
      *         required=false,
-     *         @OA\Schema(
+     * @OA\Schema(
      *             type="string",
      *             format="date-time",
      *             example="2020-01-01T12:00:00.000Z"
@@ -552,7 +552,7 @@ class TransportController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/AutocompleteStation"
+     *                      ref="#/components/schemas/StationResource"
      *                  )
      *              )
      *          )
