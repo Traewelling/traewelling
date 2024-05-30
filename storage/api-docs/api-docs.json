@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Träwelling API",
-        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The\n *      API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body\n *      can be changed. Breaking changes will be announced on GitHub:\n *      https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md",
+        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body can be changed. Breaking changes will be announced on GitHub: https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md",
         "contact": {
             "email": "support@traewelling.de"
         },
@@ -1247,13 +1247,13 @@
                 ]
             }
         },
-        "/operators": {
+        "/operator": {
             "get": {
                 "tags": [
                     "Checkin"
                 ],
                 "summary": "Get a list of all operators.",
-                "operationId": "bcfcf8686980cf0fcdc751b2e13fa4f7",
+                "operationId": "5e836fb23709a92be4c939e036765dbb",
                 "responses": {
                     "200": {
                         "description": "successful operation",
@@ -1272,6 +1272,15 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -1399,7 +1408,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "The report was successfully created."
                     },
                     "401": {
@@ -1807,7 +1816,7 @@
                                                                 "example": 11
                                                             },
                                                             "duration": {
-                                                                "description": "Duration in\n     *                                                          minutes",
+                                                                "description": "Duration in minutes",
                                                                 "type": "integer",
                                                                 "example": 425
                                                             }
@@ -1828,7 +1837,7 @@
                                                                 "example": 10
                                                             },
                                                             "duration": {
-                                                                "description": "Duration in\n     *                                                          minutes",
+                                                                "description": "Duration in minutes",
                                                                 "type": "integer",
                                                                 "example": 424
                                                             }
@@ -1850,7 +1859,7 @@
                                                                 "example": 10
                                                             },
                                                             "duration": {
-                                                                "description": "Duration in\n     *                                                          minutes",
+                                                                "description": "Duration in minutes",
                                                                 "type": "integer",
                                                                 "example": 424
                                                             }
