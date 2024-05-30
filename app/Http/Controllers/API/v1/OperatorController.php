@@ -10,7 +10,7 @@ class OperatorController extends Controller
 {
     /**
      * @OA\Get(
-     *      path="/operators",
+     *      path="/operator",
      *      summary="Get a list of all operators.",
      *      tags={"Checkin"},
      *      @OA\Response(
@@ -23,7 +23,10 @@ class OperatorController extends Controller
      *                  @OA\Items(ref="#/components/schemas/OperatorResource")
      *              )
      *          )
-     *      )
+     *      ),
+     *     @OA\Response(response=401, description="Unauthenticated"),
+     *     @OA\Response(response=403, description="Unauthorized"),
+     *     @OA\Response(response=500, description="Internal Server Error")
      * )
      *
      * @return AnonymousResourceCollection
