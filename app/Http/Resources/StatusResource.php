@@ -13,10 +13,6 @@ use Illuminate\Support\Facades\Gate;
  *      @OA\Property(property="id", type="integer", example=12345),
  *      @OA\Property(property="body", description="User defined status text", example="Hello world!"),
  *      @OA\Property(property="bodyMentions", description="Mentions in the status body", type="array", @OA\Items(ref="#/components/schemas/MentionDto")),
- *      @OA\Property(property="user", type="integer", example=1),
- *      @OA\Property(property="username", type="string", example="Gertrud123"),
- *      @OA\Property(property="profilePicture", type="string", example="https://traewelling.de/@Gertrud123/picture"),
- *      @OA\Property(property="preventIndex", description="Did the user choose to prevent search engines from indexing their profile?", type="boolean", example=false),
  *      @OA\Property(property="business", ref="#/components/schemas/BusinessEnum"),
  *      @OA\Property(property="visibility", ref="#/components/schemas/VisibilityEnum"),
  *      @OA\Property(property="likes", description="How many people have liked this status", type="integer", example=12),
@@ -25,7 +21,8 @@ use Illuminate\Support\Facades\Gate;
  *      @OA\Property(property="client", ref="#/components/schemas/ClientResource"),
  *      @OA\Property(property="createdAt", description="creation date of this status",type="string",format="datetime", example="2022-07-17T13:37:00+02:00"),
  *      @OA\Property(property="train", description="Train model"),
- *      @OA\Property(property="event", ref="#/components/schemas/EventResource", nullable=true)
+ *      @OA\Property(property="event", ref="#/components/schemas/EventResource", nullable=true),
+ *      @OA\Property(property="userDetails", ref="#/components/schemas/LightUserResource")
  * )
  */
 class StatusResource extends JsonResource
@@ -65,7 +62,7 @@ class StatusResource extends JsonResource
                                   'operator'        => new OperatorResource($this?->checkin->trip->operator)
             ],
             'event'          => new EventResource($this?->event),
-            'userDetails'    => new LightUserResource($this->user)
+            'userDetails'    => new LightUserResource($this->user) //TODO: rename this to user, after deprecated fields are removed (2024-08)
         ];
     }
 }

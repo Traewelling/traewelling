@@ -4580,6 +4580,37 @@
                 },
                 "type": "object"
             },
+            "LightUserResource": {
+                "title": "LightUser",
+                "description": "User model with just basic information",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "displayName": {
+                        "type": "string",
+                        "example": "Gertrud"
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "profilePicture": {
+                        "type": "string",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "mastodonUrl": {
+                        "type": "string",
+                        "example": "https://traewelling.social/@Gertrud123"
+                    },
+                    "preventIndex": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object"
+            },
             "OperatorResource": {
                 "properties": {
                     "id": {
@@ -4645,23 +4676,6 @@
                             "$ref": "#/components/schemas/MentionDto"
                         }
                     },
-                    "user": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "username": {
-                        "type": "string",
-                        "example": "Gertrud123"
-                    },
-                    "profilePicture": {
-                        "type": "string",
-                        "example": "https://traewelling.de/@Gertrud123/picture"
-                    },
-                    "preventIndex": {
-                        "description": "Did the user choose to prevent search engines from indexing their profile?",
-                        "type": "boolean",
-                        "example": false
-                    },
                     "business": {
                         "$ref": "#/components/schemas/BusinessEnum"
                     },
@@ -4702,6 +4716,9 @@
                             }
                         ],
                         "nullable": true
+                    },
+                    "userDetails": {
+                        "$ref": "#/components/schemas/LightUserResource"
                     }
                 },
                 "type": "object"
@@ -5055,53 +5072,6 @@
                 "type": "object",
                 "xml": {
                     "name": "PaginationMeta"
-                }
-            },
-            "LightUser": {
-                "title": "LightUser",
-                "description": "User model with just basic information",
-                "properties": {
-                    "id": {
-                        "title": "ID",
-                        "description": "ID",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 1
-                    },
-                    "displayName": {
-                        "title": "displayName",
-                        "description": "Display name of the user",
-                        "example": "Gertrud"
-                    },
-                    "username": {
-                        "title": "username",
-                        "description": "username of user",
-                        "type": "string",
-                        "example": "Gertrud123"
-                    },
-                    "profilePicture": {
-                        "title": "profilePicture",
-                        "description": "URL of the profile picture of the user",
-                        "type": "integer",
-                        "example": "https://traewelling.de/@Gertrud123/picture"
-                    },
-                    "mastodonUrl": {
-                        "title": "mastodonUrl",
-                        "description": "URL to the Mastodon profile of the user",
-                        "type": "string",
-                        "example": "https://chaos.social/@traewelling",
-                        "nullable": true
-                    },
-                    "preventIndex": {
-                        "title": "preventIndex",
-                        "description": "Did the user choose to prevent search engines from indexing their profile?",
-                        "type": "boolean",
-                        "example": false
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "LightUser"
                 }
             },
             "LikeResponse": {
