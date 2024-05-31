@@ -3072,19 +3072,19 @@
                     "Checkin"
                 ],
                 "summary": "Get departures from a station",
-                "description": "Get departures from a station",
+                "description": "Get departures from a station.",
                 "operationId": "getDepartures",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Träwelling-ID of the station (you can look this up with\n     *         [trainStationAutocomplete](#/Checkin/trainStationAutocomplete))",
+                        "description": "Träwelling-ID of the station (you can look this up with [trainStationAutocomplete](#/Checkin/trainStationAutocomplete))",
                         "required": true
                     },
                     {
                         "name": "when",
                         "in": "query",
-                        "description": "When to get the departures (default: now).\n     * If you omit the timezone, the datetime is interpreted as localtime.\n     * This is especially helpful when träwelling abroad.",
+                        "description": "When to get the departures (default: now). If you omit the timezone, the datetime is interpreted as localtime. This is especially helpful when träwelling abroad.",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -3112,7 +3112,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "description": "HAFAS Train model. This model might be subject to unexpected changes. See also\n     *                     external documentation at\n     *                     [https://v5.db.transport.rest/api.html#get-stopsiddepartures](https://v5.db.transport.rest/api.html#get-stopsiddepartures).",
+                                                "description": "HAFAS Train model. This model might be subject to unexpected changes. See also external documentation at [https://v5.db.transport.rest/api.html#get-stopsiddepartures](https://v5.db.transport.rest/api.html#get-stopsiddepartures).",
                                                 "externalDocs": "https://v5.db.transport.rest/api.html#get-stopsiddepartures",
                                                 "example": {
                                                     "tripId": "1|200513|0|81|6012023",
@@ -4580,6 +4580,37 @@
                 },
                 "type": "object"
             },
+            "LightUserResource": {
+                "title": "LightUser",
+                "description": "User model with just basic information",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "displayName": {
+                        "type": "string",
+                        "example": "Gertrud"
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "profilePicture": {
+                        "type": "string",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "mastodonUrl": {
+                        "type": "string",
+                        "example": "https://traewelling.social/@Gertrud123"
+                    },
+                    "preventIndex": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object"
+            },
             "OperatorResource": {
                 "properties": {
                     "id": {
@@ -4645,23 +4676,6 @@
                             "$ref": "#/components/schemas/MentionDto"
                         }
                     },
-                    "user": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "username": {
-                        "type": "string",
-                        "example": "Gertrud123"
-                    },
-                    "profilePicture": {
-                        "type": "string",
-                        "example": "https://traewelling.de/@Gertrud123/picture"
-                    },
-                    "preventIndex": {
-                        "description": "Did the user choose to prevent search engines from indexing their profile?",
-                        "type": "boolean",
-                        "example": false
-                    },
                     "business": {
                         "$ref": "#/components/schemas/BusinessEnum"
                     },
@@ -4702,6 +4716,9 @@
                             }
                         ],
                         "nullable": true
+                    },
+                    "userDetails": {
+                        "$ref": "#/components/schemas/LightUserResource"
                     }
                 },
                 "type": "object"
