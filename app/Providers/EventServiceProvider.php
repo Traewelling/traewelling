@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Events\StatusDeleteEvent;
 use App\Events\StatusUpdateEvent;
 use App\Events\UserCheckedIn;
 use App\Jobs\PostStatusOnMastodon;
@@ -11,12 +10,11 @@ use App\Listeners\NotificationSentWebhookListener;
 use App\Listeners\RemoveAbsentWebhooksListener;
 use App\Listeners\StatusCreateCheckPolylineListener;
 use App\Listeners\StatusCreateWebhookListener;
-use App\Listeners\StatusDeleteWebhookListener;
 use App\Listeners\StatusUpdateWebhookListener;
+use App\Models\Checkin;
 use App\Models\Follow;
 use App\Models\Like;
 use App\Models\Status;
-use App\Models\Checkin;
 use App\Models\User;
 use App\Observers\CheckinObserver;
 use App\Observers\FollowObserver;
@@ -48,9 +46,6 @@ class EventServiceProvider extends ServiceProvider
         ],
         StatusUpdateEvent::class      => [
             StatusUpdateWebhookListener::class
-        ],
-        StatusDeleteEvent::class      => [
-            StatusDeleteWebhookListener::class
         ],
         NotificationSent::class       => [
             NotificationSentWebhookListener::class
