@@ -24,7 +24,7 @@ class LightUserResource extends JsonResource
             'id'             => (int) $this->id,
             'displayName'    => (string) $this->name,
             'username'       => (string) $this->username,
-            'profilePicture' => ProfilePictureController::getUrl($this->user),
+            'profilePicture' => ProfilePictureController::getUrl($this->resource),
             'mastodonUrl'    => $this->mastodonUrl ?? null,
             'preventIndex'   => (bool) $this->prevent_index,
         ];
