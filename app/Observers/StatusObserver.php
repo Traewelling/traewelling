@@ -2,8 +2,10 @@
 
 namespace App\Observers;
 
+use App\Enum\WebhookEvent;
 use App\Helpers\CacheKey;
 use App\Http\Controllers\Backend\Support\MentionHelper;
+use App\Http\Controllers\Backend\WebhookController;
 use App\Models\Status;
 use App\Notifications\StatusLiked;
 use App\Notifications\UserJoinedConnection;
@@ -23,6 +25,11 @@ class StatusObserver
 
     public function deleted(Status $status): void {
         Cache::increment(CacheKey::STATUS_DELETED);
+
+        WebhookController::sendStatusWebhook(
+            status: $status,
+            event:  WebhookEvent::CHECKIN_DELETE
+        );
 
         // Delete all UserJoinedConnection-Notifications for this Status
         DatabaseNotification::where('type', UserJoinedConnection::class)

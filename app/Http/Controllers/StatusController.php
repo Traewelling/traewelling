@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
-use App\Events\StatusDeleteEvent;
 use App\Events\StatusUpdateEvent;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
@@ -135,9 +134,6 @@ class StatusController extends Controller
             throw new PermissionException();
         }
         $status->delete();
-
-        StatusDeleteEvent::dispatch($status);
-
         return true;
     }
 
