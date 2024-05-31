@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
-use App\Events\StatusDeleteEvent;
 use App\Events\StatusUpdateEvent;
 use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
@@ -71,7 +70,7 @@ class StatusController extends Controller
                      })
                      ->get()
                      ->filter(function(Status $status) {
-                         return Gate::allows('view', $status) && !$status->user->shadow_banned && $status->visibility !== StatusVisibility::UNLISTED;
+                         return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
                      })
                      ->sortByDesc(function(Status $status) {
                          return $status->checkin->departure;
@@ -103,7 +102,7 @@ class StatusController extends Controller
                           ->whereIn('id', $ids)
                           ->get()
                           ->filter(function(Status $status) {
-                              return Gate::allows('view', $status) && !$status->user->shadow_banned && $status->visibility !== StatusVisibility::UNLISTED;
+                              return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
                           })
                           ->values();
 
@@ -135,9 +134,6 @@ class StatusController extends Controller
             throw new PermissionException();
         }
         $status->delete();
-
-        StatusDeleteEvent::dispatch($status);
-
         return true;
     }
 
@@ -270,9 +266,9 @@ class StatusController extends Controller
         string           $body = null,
         Event            $event = null
     ): Status {
-        if ($event !== null && !Carbon::now()->isBetween($event->begin, $event->end)) {
+        if ($event !== null && !Carbon::now()->isBetween($event->checkin_start, $event->checkin_end)) {
             Log::info('Event checkin was prevented because the event is not active anymore', [
-                'event' => $event->only(['id', 'name', 'begin', 'end']),
+                'event' => $event->only(['id', 'name', 'checkin_start', 'checkin_end']),
                 'user'  => $user->only(['id', 'username']),
             ]);
             $event = null;

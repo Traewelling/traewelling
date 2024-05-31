@@ -3,9 +3,9 @@
 namespace Tests\Feature\APIv1;
 
 use App\Models\User;
+use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\ApiTestCase;
-use App\Providers\AuthServiceProvider;
 
 class AuthTest extends ApiTestCase
 {
@@ -21,5 +21,15 @@ class AuthTest extends ApiTestCase
             'Authorization' => 'Bearer ' . $token->accessToken,
         ]);
         $response->assertUnauthorized();
+    }
+
+    public function testAccessWithValidTokenIsPossible(): void {
+        $user  = User::factory()->create();
+        $token = $user->createToken('token', array_keys(AuthServiceProvider::$scopes));
+        $this->assertGuest();
+        $response = $this->get('/api/v1/auth/user', [
+            'Authorization' => 'Bearer ' . $token->accessToken,
+        ]);
+        $response->assertOk();
     }
 }

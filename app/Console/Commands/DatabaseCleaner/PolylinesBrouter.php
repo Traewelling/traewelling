@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\DatabaseCleaner;
 
-use App\Models\Trip;
 use App\Models\PolyLine;
+use App\Models\Trip;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-class CleanBrouterPolylines extends Command
+class PolylinesBrouter extends Command
 {
-    protected $signature = 'trwl:cleanUpBRouterPolylines {--limit=10}';
+    protected $signature = 'app:clean-db:polylines:brouter {--limit=10}';
 
     public function handle(): void {
         $limit          = (int) $this->option('limit');

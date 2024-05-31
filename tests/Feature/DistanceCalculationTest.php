@@ -49,8 +49,6 @@ class DistanceCalculationTest extends FeatureTestCase
                                'category'       => HafasTravelType::REGIONAL,
                                'number'         => 'xxx',
                                'linename'       => 'xxx',
-                               'origin'         => $origin->ibnr,      //TODO: remove when origin and destination are removed from Trip
-                               'destination'    => $destination->ibnr, //TODO: remove when origin and destination are removed from Trip
                                'origin_id'      => $origin->id,
                                'destination_id' => $destination->id,
                                'departure'      => Date::now()->subHour(),
@@ -96,8 +94,6 @@ class DistanceCalculationTest extends FeatureTestCase
                                  'category'       => HafasTravelType::REGIONAL,
                                  'number'         => 'xxx',
                                  'linename'       => 'xxx',
-                                 'origin'         => $origin->ibnr,         //TODO: remove when origin and destination are removed from Trip
-                                 'destination'    => $destination->ibnr,    //TODO: remove when origin and destination are removed from Trip
                                  'origin_id'      => $origin->id,
                                  'destination_id' => $destination->id,
                                  'departure'      => Date::now()->subHour(),

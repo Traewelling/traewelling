@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -24,15 +23,15 @@ class EventResource extends JsonResource
 
     public function toArray($request): array {
         return [
-            "id"            => $this->id,
-            "name"          => $this->name,
-            "slug"          => $this->slug,
-            "hashtag"       => $this->hashtag,
-            "host"          => $this->host,
-            "url"           => $this->url,
-            "begin"         => ($this->event_start ?? $this->begin)->toIso8601String(),
-            "end"           => ($this->event_end ?? $this->end)->toIso8601String(),
-            "station"       => new StationResource($this->station)
+            "id"      => $this->id,
+            "name"    => $this->name,
+            "slug"    => $this->slug,
+            "hashtag" => $this->hashtag,
+            "host"    => $this->host,
+            "url"     => $this->url,
+            "begin"   => ($this->event_start ?? $this->checkin_start)->toIso8601String(),
+            "end"     => ($this->event_end ?? $this->checkin_end)->toIso8601String(),
+            "station" => new StationResource($this->station)
         ];
     }
 }

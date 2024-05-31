@@ -10,7 +10,7 @@ return new class extends Migration
         Schema::table('users', static function(Blueprint $table) {
             $table->boolean('likes_enabled')
                   ->default(true)
-                  ->after('shadow_banned');
+                  ->after('language');
         });
     }
 

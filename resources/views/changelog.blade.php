@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', __('changelog'))
+@section('canonical', route('changelog'))
 
 @section('content')
     <div class="container">

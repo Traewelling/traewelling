@@ -1,11 +1,12 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Casts;
 
 use App\Casts\UTCDateTime;
 use App\Models\Stopover;
 use Carbon\Exceptions\InvalidTimeZoneException;
 use Illuminate\Support\Carbon;
+use Tests\Unit\UnitTestCase;
 
 class UTCTimeMethodTest extends UnitTestCase
 {

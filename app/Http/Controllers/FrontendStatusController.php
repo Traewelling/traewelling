@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Backend\EventController as EventBackend;
-use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -13,6 +11,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 
 /**
  * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
@@ -52,12 +51,11 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    public function getActiveStatuses(): Renderable {
-        $activeEvents           = EventBackend::activeEvents();
+    public function getActiveStatuses(): View {
         return view('activejourneys', [
             'currentUser' => Auth::user(),
             'statuses'    => StatusBackend::getActiveStatuses(),
-            'events'      => $activeEvents,
+            'events'      => Event::forTimestamp(now())->get(),
             'event'       => null
         ]);
     }
@@ -66,7 +64,7 @@ class FrontendStatusController extends Controller
         $event    = Event::where('slug', $slug)->firstOrFail();
         $response = StatusController::getStatusesByEvent($event);
 
-        if ($response['event']->end->isPast() && $response['statuses']->count() === 0) {
+        if ($response['event']->checkin_end->isPast() && $response['statuses']->count() === 0) {
             abort(404);
         }
 
