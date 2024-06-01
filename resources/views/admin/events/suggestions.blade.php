@@ -27,7 +27,7 @@
                     </thead>
                     <tbody>
                         @foreach($suggestions as $eventSuggestion)
-                            @if($event->user->id === auth()->id() && !auth()->user()->hasRole('admin'))
+                            @if($eventSuggestion->user->id === auth()->id() && !auth()->user()->hasRole('admin'))
                                 @continue
                             @endif
 

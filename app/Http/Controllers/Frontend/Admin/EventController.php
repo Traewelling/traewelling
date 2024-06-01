@@ -47,7 +47,7 @@ class EventController extends Controller
     public function renderSuggestions(): View {
         return view('admin.events.suggestions', [
             'suggestions' => EventSuggestion::where('processed', false)
-                                            ->where('end', '>', DB::raw('CURRENT_TIMESTAMP'))
+                                            ->where(DB::raw('DATE(end)'), '>=', DB::raw('DATE(CURRENT_TIMESTAMP)'))
                                             ->orderBy('begin')
                                             ->get()
         ]);
