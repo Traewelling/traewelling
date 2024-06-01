@@ -64,13 +64,50 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h2 class="fs-5">
+                            Parallel Events
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            @foreach($parallelEvents as $parallelEvent)
+                                <li class="list-group-item">
+                                    <ol class="breadcrumb mb-0">
+                                        <li class="breadcrumb-item">
+                                            <a href="{{route('admin.events.edit', ['id' => $parallelEvent->id])}}">{{ $parallelEvent->id }}</a>
+                                        </li>
+                                        <li class="breadcrumb-item">
+                                            <a href="{{route('event', ['slug' => $parallelEvent->slug])}}">
+                                                {{ $parallelEvent->name }} <i
+                                                    class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
+                                            </a>
+                                        </li>
+                                        <li class="breadcrumb-item">#{{ $parallelEvent->hashtag}}</li>
+                                        <li class="breadcrumb-item">{{ $parallelEvent->station?->name}}</li>
+                                        <li class="breadcrumb-item">
+                                            <code>similarity: {{ round($parallelEvent->similarity, 1) }} %</code></li>
+                                    </ol>
+                                    {{ $parallelEvent->checkin_start->format('Y-m-d H:i') }}
+                                    - {{ $parallelEvent->checkin_end->format('Y-m-d H:i') }}
+                                    <code>Created at: {{ $parallelEvent->created_at }}</code>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
             <div class="col-md-3">
                 <div class="card mb-3">
-                    <div class="card-body">
+                    <div class="card-header">
                         <h2 class="fs-5">
                             Checkin is possible between the following dates<span class="text-danger">*</span>:
                         </h2>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-floating">
@@ -96,11 +133,13 @@
             </div>
             <div class="col-md-3">
                 <div class="card mb-3">
-                    <div class="card-body">
+                    <div class="card-header">
                         <h2 class="fs-5">
-                            Does the event start and end differently than the check-in times listed?
-                            <i>[optionally]</i>
+                            Does the event start and/or end differ?
+                            <small class="fst-italic">[optional]</small>
                         </h2>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-floating">
@@ -129,9 +168,26 @@
                             <i class="fa-regular fa-square-check"></i>
                             Accept & Save Event
                         </button>
+
+
                     </div>
                 </div>
             </div>
         </div>
     </form>
+    @can('deny-events')
+        <form method="POST" action="{{route('admin.events.suggestions.deny')}}">
+            @csrf
+            <input type="hidden" name="id" value="{{$eventSuggestion->id}}"/>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <x-event-rejection-button/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    @endcan
 @endsection
