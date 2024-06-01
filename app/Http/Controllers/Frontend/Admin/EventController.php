@@ -35,12 +35,24 @@ class EventController extends Controller
     ];
 
     public function renderList(Request $request): View {
-        $events = Event::orderByDesc('checkin_end');
+        $queryBase = Event::query();
         if ($request->has('query')) {
-            $events->where('name', 'LIKE', '%' . strip_tags($request->get('query')) . '%');
+            $queryBase->where('name', 'LIKE', '%' . strip_tags($request->get('query')) . '%');
         }
+
         return view('admin.events.list', [
-            'events' => $events->paginate(10)
+            'events_future'  => $queryBase->clone()
+                                          ->orderBy("begin")
+                                          ->whereDate("begin", ">", DB::raw("now()"))
+                                          ->paginate(10, pageName: "future"),
+            'events_current' => $queryBase->clone()
+                                          ->orderBy("begin")
+                                          ->where("begin", "<", DB::raw("now()"))
+                                          ->where("end", ">", DB::raw("now()"))
+                                          ->paginate(10, pageName: "current"),
+            'events_past'    => $queryBase->clone()
+                                          ->where("end", ">", DB::raw("now()"))
+                                          ->paginate(10, pageName: "past")
         ]);
     }
 
