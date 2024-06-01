@@ -24,7 +24,7 @@
 * See statistics about your trips
 * Export your trips to CSV, JSON or PDF
 * Create own applications with our API
-* Available in German, English, Polish, French and Dutch
+* Available in German, English, Polish, French, Dutch and [more](https://translate.codeberg.org/engage/trawelling/)
 
 ### Security
 
@@ -43,7 +43,7 @@ However, we welcome anyone who wants to contribute to the project!
 If you find a bug or have an idea for a new feature, please feel free to open an issue / discussion on GitHub.
 We also encourage you to help us out by fixing bugs and implementing new features yourself.
 
-Please see the [contributing guidelines](docs/contributing.md) for more information.
+Please see the [contributing guidelines](docs/contributing) for more information.
 
 ## License
 
