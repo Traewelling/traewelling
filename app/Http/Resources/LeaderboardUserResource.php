@@ -8,6 +8,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * @OA\Schema(
  *      title="LeaderboardUserResource",
+ *      @OA\Property(property="id", type="integer", example="1"),
+ *      @OA\Property(property="displayName", type="string", example="Gertrud"),
  *      @OA\Property(property="username", type="string", description="username of user", example="Gertrud123"),
  *      @OA\Property(property="profilePicture", type="string", description="URL of the profile picture of the user", example="https://traewelling.de/@Gertrud123/picture"),
  *      @OA\Property(property="totalDuration", type="integer", description="duration travelled in minutes", example=6),
@@ -19,7 +21,9 @@ class LeaderboardUserResource extends JsonResource
 {
     public function toArray($request): array {
         return [
-            'username'       => $this->user->username,
+            'id'             => (int) $this->user->id,
+            'displayName'    => (string) $this->user->name,
+            'username'       => (string) $this->user->username,
             'profilePicture' => ProfilePictureController::getUrl($this->user),
             'trainDuration'  => (int) $this->duration, // @deprecated: remove after 2024-08
             'trainDistance'  => (float) $this->distance, // @deprecated: remove after 2024-08
