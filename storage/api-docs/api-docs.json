@@ -1247,13 +1247,13 @@
                 ]
             }
         },
-        "/operator": {
+        "/operators": {
             "get": {
                 "tags": [
                     "Checkin"
                 ],
                 "summary": "Get a list of all operators.",
-                "operationId": "5e836fb23709a92be4c939e036765dbb",
+                "operationId": "bcfcf8686980cf0fcdc751b2e13fa4f7",
                 "responses": {
                     "200": {
                         "description": "successful operation",
