@@ -92,7 +92,7 @@ function isPrideMonth(): bool {
     return Carbon::now()->month === 6;
 }
 
-function gay(): string {
+function prideFlag(): string {
     // only run in june
     if (!isPrideMonth()) {
         return '';

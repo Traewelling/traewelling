@@ -44,7 +44,7 @@
         <div id="app">
             <nav class="navbar navbar-expand-md navbar-dark bg-trwl" id="nav-main">
                 <div class="container">
-                    <a class="navbar-brand {{gay()}}" href="{{ url('/') }}">
+                    <a class="navbar-brand {{ prideFlag() }}" href="{{ url('/') }}">
                         {{ config('app.name') }}
                     </a>
 
