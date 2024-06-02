@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1/api/v1",
+            "url": "http://localhost:8000/api/v1",
             "description": "This instance"
         }
     ],
