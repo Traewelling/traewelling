@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1",
+            "url": "http://localhost:8000/api/v1/api/v1",
             "description": "This instance"
         }
     ],
@@ -4553,6 +4553,14 @@
             "LeaderboardUserResource": {
                 "title": "LeaderboardUserResource",
                 "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "displayName": {
+                        "type": "string",
+                        "example": "Gertrud"
+                    },
                     "username": {
                         "description": "username of user",
                         "type": "string",
@@ -5944,9 +5952,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
-                        "tokenUrl": "http://localhost:8000/oauth/token",
-                        "refreshUrl": "http://localhost:8000/auth/refresh",
+                        "authorizationUrl": "http://localhost:8000/api/v1/oauth/authorize",
+                        "tokenUrl": "http://localhost:8000/api/v1/oauth/token",
+                        "refreshUrl": "http://localhost:8000/api/v1/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",
