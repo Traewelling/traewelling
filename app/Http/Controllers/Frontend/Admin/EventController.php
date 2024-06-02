@@ -42,17 +42,17 @@ class EventController extends Controller
 
         return view('admin.events.list', [
             'events_future'  => $queryBase->clone()
-                                          ->orderBy("begin")
-                                          ->whereDate("begin", ">", DB::raw("now()"))
-                                          ->paginate(10, pageName: "future"),
+                                          ->orderBy('checkin_start')
+                                          ->whereDate('checkin_start', '>', DB::raw('now()'))
+                                          ->paginate(10, pageName: 'future'),
             'events_current' => $queryBase->clone()
-                                          ->orderBy("begin")
-                                          ->where("begin", "<", DB::raw("now()"))
-                                          ->where("end", ">", DB::raw("now()"))
-                                          ->paginate(10, pageName: "current"),
+                                          ->orderBy('checkin_start')
+                                          ->where('checkin_start', '<', DB::raw('now()'))
+                                          ->where('checkin_end', '>', DB::raw('now()'))
+                                          ->paginate(10, pageName: 'current'),
             'events_past'    => $queryBase->clone()
-                                          ->where("end", ">", DB::raw("now()"))
-                                          ->paginate(10, pageName: "past")
+                                          ->where('checkin_end', '<', DB::raw('now()'))
+                                          ->paginate(10, pageName: 'past')
         ]);
     }
 
