@@ -54,8 +54,31 @@ class EventController extends Controller
     }
 
     public function renderSuggestionCreation(int $id): View {
+        $suggestion     = EventSuggestion::findOrFail($id);
+        $parallelEvents = Event::where([
+                                           [DB::raw('DATE(checkin_start)'), '>=', $suggestion->end->toDateString()],
+                                           [DB::raw('DATE(checkin_end)'), '<=', $suggestion->begin->toDateString()]
+                                       ])
+                               ->orWhere([
+                                             [DB::raw('DATE(checkin_end)'), '>=', $suggestion->begin->toDateString()],
+                                             [DB::raw('DATE(checkin_end)'), '<=', $suggestion->end->toDateString()]
+                                         ])
+                               ->orWhere([
+                                             [DB::raw('DATE(checkin_start)'), '>=', $suggestion->begin->toDateString()],
+                                             [DB::raw('DATE(checkin_start)'), '<=', $suggestion->end->toDateString()]
+                                         ])
+                               ->get();
+
+        $parallelEvents->map(function ($event) use ($suggestion) {
+            similar_text($event->name, $suggestion->name, $perc);
+            $event->similarity = $perc;
+
+            return $event;
+        });
+
         return view('admin.events.suggestion-create', [
-            'eventSuggestion' => EventSuggestion::findOrFail($id)
+            'eventSuggestion' => $suggestion,
+            'parallelEvents'  => $parallelEvents->sortByDesc('similarity')
         ]);
     }
 
@@ -159,7 +182,7 @@ class EventController extends Controller
 
         $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, $event));
 
-        return redirect()->route('admin.events')->with('alert-success', 'Das Event wurde akzeptiert!');
+        return redirect()->route('admin.events.suggestions')->with('alert-success', 'Das Event wurde akzeptiert!');
     }
 
     /**

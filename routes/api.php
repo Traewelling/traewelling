@@ -177,7 +177,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::put('station/{oldStationId}/merge/{newStationId}', [StationController::class, 'merge']); // currently admin/backend only
 
         Route::apiResource('report', ReportController::class);
-        Route::apiResource('operator', OperatorController::class)->only(['index']);
+        Route::apiResource('operators', OperatorController::class)->only(['index']);
     });
 
     Route::group(['middleware' => ['privacy-policy']], static function() {

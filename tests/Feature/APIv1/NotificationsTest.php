@@ -304,7 +304,7 @@ class NotificationsTest extends ApiTestCase
                                        'event_end'    => $eventSuggestion->end
                                    ]
                          );
-        $response->assertRedirectToRoute('admin.events');
+        $response->assertRedirectToRoute('admin.events.suggestions');
 
         //save event for later
         $event = Event::first();

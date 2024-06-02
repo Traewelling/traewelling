@@ -13,12 +13,12 @@ class OperatorTest extends ApiTestCase
 
     use RefreshDatabase;
 
-    public function testOperatorIndex(): void {
+    public function testOperatorsIndex(): void {
         Passport::actingAs(User::factory()->create(), ['*']);
 
         HafasOperator::factory()->count(3)->create();
 
-        $response = $this->get('/api/v1/operator');
+        $response = $this->get('/api/v1/operators');
         $response->assertOk();
         $response->assertJsonCount(3, 'data');
         $response->assertJsonStructure([
