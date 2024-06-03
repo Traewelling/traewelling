@@ -59,9 +59,10 @@ class MastodonProfileDetails
                 // but has not told us yet.
                 Log::warning("Unable to fetch mastodon information for user#{$this->user->id} for Mastodon-Server '
                 . {$mastodonServer->domain}' and mastodon_id#{$this->user->socialProfile->mastodon_id}");
-                Log::warning($exception);
-                if ($exception->getCode() === 410 || $exception->getCode() === 404) {
+                if (in_array($exception->getCode(), [401, 404, 410])) {
                     $this->removeMastodonInformation();
+                } else {
+                    report($exception);
                 }
             }
         }
