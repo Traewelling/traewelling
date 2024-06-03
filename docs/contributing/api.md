@@ -2,11 +2,11 @@
 
 > [!NOTE]  
 > This readme is work in progress.
-> So, there are just some basic information about the API.
+> So this is currently just some basic information about the API.
 
 ## API Guidelines
 
-Even this has not really been implemented yet, we would refer to the
+Even though this has not really been implemented yet, we would refer to the
 [Zalando's API guidelines](https://opensource.zalando.com/restful-api-guidelines/)
 for future changes and new endpoints.
 
