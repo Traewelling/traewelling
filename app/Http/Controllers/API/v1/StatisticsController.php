@@ -187,7 +187,7 @@ class StatisticsController extends Controller
      *                      description="The purpose of travel",
      *                      type="array",
      *                      @OA\Items(
-     *                          @OA\Property(property="name", ref="#/components/schemas/BusinessEnum"),
+     *                          @OA\Property(property="name", ref="#/components/schemas/Business"),
      *                          @OA\Property(property="count", type="integer", example=11),
      *                          @OA\Property(property="duration", type="integer", example=425, description="Duration in
      *                                                            minutes"),
@@ -198,7 +198,7 @@ class StatisticsController extends Controller
      *                    description="The categories of the travel",
      *                    type="array",
      *                    @OA\Items(
-     *                        @OA\Property(property="name", ref="#/components/schemas/TrainCategoryEnum"),
+     *                        @OA\Property(property="name", ref="#/components/schemas/HafasTravelType"),
      *                        @OA\Property(property="count", type="integer", example=11),
      *                        @OA\Property(property="duration", type="integer", example=425, description="Duration in minutes"),
      *                    )

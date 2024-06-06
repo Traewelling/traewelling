@@ -2,8 +2,6 @@
 
 namespace App\Virtual\Models;
 
-use DateTime;
-
 /**
  * @OA\Schema(
  *     title="PointsCalculation",
@@ -50,7 +48,7 @@ class PointsCalculation
      * @OA\Property(
      *     title="reason",
      *     example=1,
-     *     ref="#/components/schemas/PointsReasonEnum"
+     *     ref="#/components/schemas/PointReason"
      * )
      *
      */

@@ -37,7 +37,7 @@ class Trip
 
     /**
      * @OA\Property (
-     *      ref="#/components/schemas/TrainCategoryEnum"
+     *      ref="#/components/schemas/HafasTravelType"
      * )
      *
      * @var string
