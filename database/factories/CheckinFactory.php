@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\Trip;
-use App\Models\Status;
 use App\Models\Checkin;
+use App\Models\Status;
+use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -33,17 +33,17 @@ class CheckinFactory extends Factory
             $checkin->status->update(['user_id' => $checkin->user_id]);
 
             $checkin->originStopover->update([
-                                                         'departure_planned' => $checkin->departure,
-                                                         'departure_real'    => $checkin->departure,
-                                                         'arrival_planned'   => $checkin->departure,
-                                                         'arrival_real'      => $checkin->departure,
-                                                     ]);
+                                                 'departure_planned' => $checkin->departure,
+                                                 'departure_real'    => $checkin->departure,
+                                                 'arrival_planned'   => $checkin->departure,
+                                                 'arrival_real'      => $checkin->departure,
+                                             ]);
             $checkin->destinationStopover->update([
-                                                              'departure_planned' => $checkin->arrival,
-                                                              'departure_real'    => $checkin->arrival,
-                                                              'arrival_planned'   => $checkin->arrival,
-                                                              'arrival_real'      => $checkin->arrival,
-                                                          ]);
+                                                      'departure_planned' => $checkin->arrival,
+                                                      'departure_real'    => $checkin->arrival,
+                                                      'arrival_planned'   => $checkin->arrival,
+                                                      'arrival_real'      => $checkin->arrival,
+                                                  ]);
         });
     }
 }

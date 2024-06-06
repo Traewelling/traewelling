@@ -251,7 +251,7 @@ class FrontendTransportController extends Controller
             return redirect()
                 ->route('dashboard')
                 ->with('checkin-collision', [
-                    'lineName'  => $exception->getCollision()->trip->linename,
+                    'lineName'  => $exception->checkin->trip->linename,
                     'validated' => $validated,
                 ]);
 

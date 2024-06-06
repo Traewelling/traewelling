@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enum\TravelType;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Transport\StationController;
+use App\Http\Resources\StationResource;
 use App\Models\Checkin;
 use App\Models\PolyLine;
 use App\Models\Station;
@@ -36,12 +37,7 @@ class TransportController extends Controller
         }
 
         return $stations->map(function(Station $station) {
-            return [
-                'id'            => $station->id,
-                'ibnr'          => $station->ibnr,
-                'rilIdentifier' => $station->rilIdentifier,
-                'name'          => $station->name
-            ];
+            return new StationResource($station);
         });
     }
 

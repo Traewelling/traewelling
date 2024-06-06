@@ -66,9 +66,9 @@ class StatusHelper
             $body           = $this->mastodon ? $this->getMastodonBody() : $this->status->body;
             $appendix       = $this->generateAppendix();
             $appendixLength = strlen($appendix) + 30;
-            $postText       = substr($body, 0, 280 - $appendixLength);
+            $postText       = substr($body, 0, 500 - $appendixLength);
             if (strlen($postText) !== strlen($body)) {
-                $postText .= '...';
+                $postText .= '…';
             }
             $postText .= $appendix;
 

@@ -97,6 +97,14 @@ class Checkin extends Model
         return $this->trip();
     }
 
+    public function originStation(): HasOne {
+        return $this->hasOne(Station::class, 'ibnr', 'origin');
+    }
+
+    public function destinationStation(): HasOne {
+        return $this->hasOne(Station::class, 'ibnr', 'destination');
+    }
+
     public function trip(): HasOne {
         return $this->hasOne(Trip::class, 'trip_id', 'trip_id');
     }

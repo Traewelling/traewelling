@@ -7,6 +7,11 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 /**
+ * BEFORE ADDING NEW FUNCTIONS TO THIS FILE, PLEASE CONSIDER CREATING A NEW SERVICE CLASS.
+ * And test it. 👉👈
+ */
+
+/**
  * @see https://stackoverflow.com/a/437642
  */
 function number($number, $decimals = 2) {
@@ -85,5 +90,5 @@ function errorMessage(Exception|Error $exception, ?string $text = null): array|n
         return $text;
     }
 
-    return $text . ' ' . __('messages.exception.reference', ['reference' => $exception->reference()]);
+    return $text . ' ' . __('messages.exception.reference', ['reference' => $exception->reference]);
 }

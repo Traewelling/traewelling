@@ -419,8 +419,6 @@ abstract class HafasController extends Controller
                                          'linename'       => $tripJson->line->name,
                                          'journey_number' => $tripJson->line?->fahrtNr === "0" ? null : $tripJson->line?->fahrtNr,
                                          'operator_id'    => $operator?->id,
-                                         'origin'         => $origin->ibnr,         //TODO: remove when origin and destination are removed from Trip
-                                         'destination'    => $destination->ibnr,    //TODO: remove when origin and destination are removed from Trip
                                          'origin_id'      => $origin->id,
                                          'destination_id' => $destination->id,
                                          'polyline_id'    => $polyline->id,

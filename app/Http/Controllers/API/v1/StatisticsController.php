@@ -19,7 +19,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Validation\Rule;
 
 class StatisticsController extends Controller
@@ -36,7 +35,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
@@ -45,7 +44,6 @@ class StatisticsController extends Controller
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
      *           {"passport": {"read-statistics"}}, {"token": {}}
-     *
      *       }
      *     )
      *
@@ -67,7 +65,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
@@ -99,7 +97,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
@@ -137,7 +135,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
@@ -189,7 +187,7 @@ class StatisticsController extends Controller
      *                      description="The purpose of travel",
      *                      type="array",
      *                      @OA\Items(
-     *                          @OA\Property(property="name", ref="#/components/schemas/BusinessEnum"),
+     *                          @OA\Property(property="name", ref="#/components/schemas/Business"),
      *                          @OA\Property(property="count", type="integer", example=11),
      *                          @OA\Property(property="duration", type="integer", example=425, description="Duration in
      *                                                            minutes"),
@@ -200,10 +198,9 @@ class StatisticsController extends Controller
      *                    description="The categories of the travel",
      *                    type="array",
      *                    @OA\Items(
-     *                        @OA\Property(property="name", ref="#/components/schemas/TrainCategoryEnum"),
+     *                        @OA\Property(property="name", ref="#/components/schemas/HafasTravelType"),
      *                        @OA\Property(property="count", type="integer", example=11),
-     *                        @OA\Property(property="duration", type="integer", example=425, description="Duration in
-     *                                                          minutes"),
+     *                        @OA\Property(property="duration", type="integer", example=425, description="Duration in minutes"),
      *                    )
      *                ),
      *                @OA\Property(
@@ -213,8 +210,7 @@ class StatisticsController extends Controller
      *                    @OA\Items(
      *                        @OA\Property(property="name", example="Gertruds Verkehrsgesellschaft mbH"),
      *                        @OA\Property(property="count", type="integer", example=10),
-     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in
-     *                                                          minutes"),
+     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in minutes"),
      *                    )
      *                ),
      *                @OA\Property(
@@ -224,8 +220,7 @@ class StatisticsController extends Controller
      *                    @OA\Items(
      *                        @OA\Property(property="date", type="string", example="2021-01-01T00:00:00.000Z"),
      *                        @OA\Property(property="count", type="integer", example=10),
-     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in
-     *                                                          minutes"),
+     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in minutes"),
      *                    )
      *               ),
      *            )
@@ -320,7 +315,7 @@ class StatisticsController extends Controller
      *                  @OA\Property (
      *                      property="statuses", type="array",
      *                      @OA\Items (
-     *                          ref="#/components/schemas/Status"
+     *                          ref="#/components/schemas/StatusResource"
      *                      ),
      *                  ),
      *                  @OA\Property (

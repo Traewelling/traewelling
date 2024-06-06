@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Dto;
 
-use OpenApi\Annotations as OA;
-
 /**
  * @OA\Schema(
  *     title="Coordinate",
@@ -38,7 +36,7 @@ class Coordinate implements \JsonSerializable
     }
 
     public static function fromGeoJson(\stdClass $point): ?self {
-        if (isset($point->geometry->coordinates)) {
+        if (isset($point->geometry->coordinates) && is_array($point->geometry->coordinates) && count($point->geometry->coordinates) === 2) {
             return new self($point->geometry->coordinates[1], $point->geometry->coordinates[0]);
         }
         return null;

@@ -9,6 +9,7 @@ use App\Models\Report;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rules\Enum;
@@ -25,25 +26,22 @@ class ReportController extends Controller
      *          required=true,
      *          @OA\JsonContent(
      *              required={"subject_type", "subject_id", "reason"},
-     *              @OA\Property(property="subject_type", type="string", enum={"Event", "Status", "User"},
-     *                                                    example="Status"),
+     *              @OA\Property(property="subject_type", type="string", enum={"Event", "Status", "User"}, example="Status"),
      *              @OA\Property(property="subject_id", type="integer", example=1),
-     *              @OA\Property(property="reason", type="string", enum={"inappropriate", "implausible", "spam",
-     *                                              "illegal", "other"}, example="inappropriate"),
-     *              @OA\Property(property="description", type="string", example="The status is inappropriate
-     *                                                   because...", nullable=true),
+     *              @OA\Property(property="reason", type="string", enum={"inappropriate", "implausible", "spam", "illegal", "other"}, example="inappropriate"),
+     *              @OA\Property(property="description", type="string", example="The status is inappropriate because...", nullable=true),
      *          ),
      *      ),
-     *      @OA\Response(response=200, description="The report was successfully created."),
+     *      @OA\Response(response=201, description="The report was successfully created."),
      *      @OA\Response(response=401, description="The user is not authenticated."),
      *      @OA\Response(response=422, description="The given data was invalid."),
      * )
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return Response
      */
-    public function store(Request $request): JsonResponse {
+    public function store(Request $request): Response {
         $validated = $request->validate([
                                             'subject_type' => ['required', new Enum(ReportableSubject::class)],
                                             'subject_id'   => ['required', 'integer', 'min:1'],
@@ -71,10 +69,7 @@ class ReportController extends Controller
             ]);
         }
 
-        return $this->sendResponse(
-            data: 'Report created.',
-            code: 201
-        );
+        return response()->noContent(201);
     }
 
     /**

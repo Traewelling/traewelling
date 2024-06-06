@@ -5,6 +5,7 @@ npm-debug.log
 tests-coverage/
 clover.xml
 .phpunit.cache/
+.DS_Store
 
 # Profile pictures
 public/uploads/avatars/*

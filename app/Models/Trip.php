@@ -19,8 +19,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string          $linename
  * @property string          $journey_number
  * @property int             $operator_id
- * @property int             $origin        //TODO: remove when origin and destination are removed from Trip
- * @property int             $destination   //TODO: remove when origin and destination are removed from Trip
  * @property int             $origin_id
  * @property int             $destination_id
  * @property int             $polyline_id
@@ -44,7 +42,6 @@ class Trip extends Model
     protected $table    = 'hafas_trips';
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'journey_number', 'operator_id', 'origin_id', 'destination_id',
-        'origin', 'destination', //TODO: remove when origin and destination are removed from Trip
         'polyline_id', 'departure', 'arrival', 'source', 'user_id', 'last_refreshed',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
@@ -54,8 +51,6 @@ class Trip extends Model
         'category'       => HafasTravelType::class,
         'journey_number' => 'integer',
         'operator_id'    => 'integer',
-        'origin'         => 'integer',
-        'destination'    => 'integer',
         'origin_id'      => 'integer',
         'destination_id' => 'integer',
         'polyline_id'    => 'integer',

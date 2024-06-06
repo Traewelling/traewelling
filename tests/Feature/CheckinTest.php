@@ -12,10 +12,9 @@ use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Helper\StatusHelper;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController;
-use App\Models\Trip;
 use App\Models\Station;
+use App\Models\Trip;
 use App\Models\User;
-use App\Providers\AuthServiceProvider;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -77,8 +76,8 @@ class CheckinTest extends FeatureTestCase
         // THEN: Expect the redirect to another stationboard
         $response->assertStatus(302);
         $response->assertRedirect(route('trains.stationboard', [
-            'stationId'  => 1,
-            'provider' => 'train',
+            'stationId' => 1,
+            'provider'  => 'train',
         ]));
     }
 
@@ -274,7 +273,7 @@ class CheckinTest extends FeatureTestCase
                 );
                 $this->fail("Expected exception for Collision Case $caseCount not thrown");
             } catch (CheckInCollisionException $exception) {
-                $this->assertEquals($baseTrip->linename, $exception->getCollision()->trip->first()->linename);
+                $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);
             } catch (HafasException $e) {
                 $this->markTestSkipped($e->getMessage());
             }
@@ -294,7 +293,7 @@ class CheckinTest extends FeatureTestCase
                 );
                 $this->assertTrue(true);
             } catch (CheckInCollisionException $exception) {
-                $this->assertEquals($baseTrip->linename, $exception->getCollision()->trip->first()->linename);
+                $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);
                 $this->fail("Exception for Case $caseCount thrown even though checkin should happen.");
             } catch (HafasException $e) {
                 $this->markTestSkipped($e->getMessage());

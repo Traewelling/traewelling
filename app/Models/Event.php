@@ -2,16 +2,35 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
+ * // properties
+ * @property int     id
+ * @property string  name
  * @property ?string hashtag
+ * @property int     station_id
+ * @property string  slug
+ * @property string  host
+ * @property string  url
+ * @property Carbon  checkin_start Timestamp from when checkins are allowed
+ * @property Carbon  checkin_end   Timestamp until when checkins are allowed
+ * @property Carbon  event_start   Timestamp when the event starts (if different from checkin_start)
+ * @property Carbon  event_end     Timestamp when the event ends (if different from checkin_end)
+ *
+ * // appends
+ * @property int     totalDistance
+ * @property int     totalDuration
+ * @property bool    isPride
  */
 class Event extends Model
 {
@@ -19,17 +38,19 @@ class Event extends Model
     use HasFactory, LogsActivity;
 
     protected $fillable = [
-        'name', 'hashtag', 'station_id', 'slug', 'host', 'url', 'begin', 'end', 'event_start', 'event_end'
+        'name', 'hashtag', 'station_id', 'slug', 'host', 'url',
+        'checkin_start', 'checkin_end',
+        'event_start', 'event_end'
     ];
     protected $hidden   = ['created_at', 'updated_at'];
-    protected $appends  = ['trainDistance', 'trainDuration', 'isPride'];
+    protected $appends  = ['totalDistance', 'totalDuration', 'isPride'];
     protected $casts    = [
-        'id'          => 'integer',
-        'station_id'  => 'integer',
-        'begin'       => 'datetime',
-        'end'         => 'datetime',
-        'event_start' => 'datetime',
-        'event_end'   => 'datetime',
+        'id'            => 'integer',
+        'station_id'    => 'integer',
+        'checkin_start' => 'datetime',
+        'checkin_end'   => 'datetime',
+        'event_start'   => 'datetime',
+        'event_end'     => 'datetime',
     ];
 
     public function station(): HasOne {
@@ -40,14 +61,18 @@ class Event extends Model
         return $this->hasMany(Status::class);
     }
 
-    public function getTrainDistanceAttribute(): float {
-        return Checkin::whereIn('status_id', $this->statuses()->select('id'))
-                      ->sum('distance');
+    public function getTotalDistanceAttribute(): int {
+        return Cache::remember('event_' . $this->id . '_total_distance', now()->addMinutes(30), function() {
+            return Checkin::whereIn('status_id', $this->statuses()->select('id'))
+                          ->sum('distance');
+        });
     }
 
-    public function getTrainDurationAttribute(): int {
-        return Checkin::whereIn('status_id', $this->statuses()->select('id'))
-                      ->sum('duration');
+    public function getTotalDurationAttribute(): int {
+        return Cache::remember('event_' . $this->id . '_total_duration', now()->addMinutes(30), function() {
+            return Checkin::whereIn('status_id', $this->statuses()->select('id'))
+                          ->sum('duration');
+        });
     }
 
     public function getIsPrideAttribute(): bool {
@@ -62,9 +87,32 @@ class Event extends Model
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults()
                          ->logOnlyDirty()
-                         ->logOnly([
-                                       'name', 'hashtag', 'station_id', 'slug', 'host',
-                                       'url', 'begin', 'end', 'event_start', 'event_end'
-                                   ]);
+                         ->logFillable();
+    }
+
+    /**
+     * @param string $slug the slug of the event
+     *
+     * @return Event|null returns the event with the given slug or null if it does not exist
+     */
+    public static function getBySlug(string $slug): ?Event {
+        return self::where('slug', '=', $slug)->firstOrFail();
+    }
+
+    /**
+     * Returns a query for events that are active (or upcoming) at the given timestamp.
+     *
+     * @param Carbon $timestamp
+     * @param bool   $showUpcoming
+     *
+     * @return Builder query for events that are active (or upcoming) at the given timestamp
+     */
+    public static function forTimestamp(Carbon $timestamp, bool $showUpcoming = false): Builder {
+        $query = self::where('checkin_end', '>=', $timestamp)
+                     ->orderBy('checkin_start', 'asc');
+        if (!$showUpcoming) {
+            $query->where('checkin_start', '<=', $timestamp);
+        }
+        return $query;
     }
 }

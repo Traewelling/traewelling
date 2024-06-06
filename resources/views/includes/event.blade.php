@@ -1,3 +1,4 @@
+@php use App\Models\Station; @endphp
 <div class="card status">
     <div class="card-header">
         <a href="{{ route('events.show', ['slug' => $event->slug]) }}">{{ $event->name }}</a>
@@ -19,15 +20,15 @@
             </tr>
             <tr>
                 <th class="ps-0">Beginn:</th>
-                <td class="text-break">{{ $event->begin->format('Y-m-d') }}</td>
+                <td class="text-break">{{ $event->checkin_start->format('Y-m-d') }}</td>
             </tr>
             <tr>
                 <th class="ps-0">Ende:</th>
-                <td class="text-break">{{ $event->end->format('Y-m-d') }}</td>
+                <td class="text-break">{{ $event->checkin_end->format('Y-m-d') }}</td>
             </tr>
             <tr>
                 <th class="ps-0">Station:</th>
-                <td class="text-break">{{ \App\Models\Station::find($event->trainstation)->name }}</td>
+                <td class="text-break">{{ Station::find($event->trainstation)->name }}</td>
             </tr>
         </table>
     </div>
