@@ -18,11 +18,11 @@ namespace App\Virtual\RequestBodies;
  *      ),
  *      @OA\Property (
  *          property="business",
- *          ref="#/components/schemas/BusinessEnum"
+ *          ref="#/components/schemas/Business"
  *      ),
  *      @OA\Property (
  *          property="visibility",
- *          ref="#/components/schemas/VisibilityEnum",
+ *          ref="#/components/schemas/StatusVisibility",
  *      ),
  *      @OA\Property (
  *          property="eventId",

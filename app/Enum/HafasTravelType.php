@@ -3,6 +3,16 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
+/**
+ * @OA\Schema(
+ *     title="category",
+ *     description="Category of transport. ",
+ *     type="string",
+ *     enum={"nationalExpress", "national", "regionalExp", "regional", "suburban", "bus", "ferry", "subway",
+ *     "tram", "taxi"},
+ *     example="suburban"
+ * )
+ */
 enum HafasTravelType: string
 {
     case NATIONAL_EXPRESS = 'nationalExpress';

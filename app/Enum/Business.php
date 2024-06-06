@@ -5,6 +5,18 @@ namespace App\Enum;
 
 use App\Interfaces\IconEnumInterface;
 
+/**
+ * @todo Rename this to something better matching the context.
+ *       -> TravelPurpose?
+ *
+ * @OA\Schema(
+ *     title="Business",
+ *     description="What type of travel (0=private, 1=business, 2=commute) did the user specify?",
+ *     type="integer",
+ *     enum={0,1,2},
+ *     example=0,
+ * )
+ */
 enum Business: int implements IconEnumInterface
 {
     case PRIVATE  = 0;

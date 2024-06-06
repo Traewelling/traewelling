@@ -1788,7 +1788,7 @@
                                                     "items": {
                                                         "properties": {
                                                             "name": {
-                                                                "$ref": "#/components/schemas/BusinessEnum"
+                                                                "$ref": "#/components/schemas/Business"
                                                             },
                                                             "count": {
                                                                 "type": "integer",
@@ -1809,7 +1809,7 @@
                                                     "items": {
                                                         "properties": {
                                                             "name": {
-                                                                "$ref": "#/components/schemas/TrainCategoryEnum"
+                                                                "$ref": "#/components/schemas/HafasTravelType"
                                                             },
                                                             "count": {
                                                                 "type": "integer",
@@ -3098,7 +3098,7 @@
                         "description": "Means of transport (default: all)",
                         "required": false,
                         "schema": {
-                            "$ref": "#/components/schemas/TravelTypeEnum"
+                            "$ref": "#/components/schemas/TravelType"
                         }
                     }
                 ],
@@ -3307,7 +3307,7 @@
                                                     "example": 1
                                                 },
                                                 "category": {
-                                                    "$ref": "#/components/schemas/TrainCategoryEnum"
+                                                    "$ref": "#/components/schemas/HafasTravelType"
                                                 },
                                                 "number": {
                                                     "type": "string",
@@ -4466,6 +4466,98 @@
                     "name": "Station"
                 }
             },
+            "Business": {
+                "title": "Business",
+                "description": "What type of travel (0=private, 1=business, 2=commute) did the user specify?",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "example": 0
+            },
+            "HafasTravelType": {
+                "title": "category",
+                "description": "Category of transport. ",
+                "type": "string",
+                "enum": [
+                    "nationalExpress",
+                    "national",
+                    "regionalExp",
+                    "regional",
+                    "suburban",
+                    "bus",
+                    "ferry",
+                    "subway",
+                    "tram",
+                    "taxi"
+                ],
+                "example": "suburban"
+            },
+            "MapProvider": {
+                "title": "MapProvider",
+                "description": "What type of map provider (cargo, open-railway-map) did the user specify?",
+                "type": "string",
+                "enum": [
+                    "cargo",
+                    "open-railway-map"
+                ],
+                "example": "cargo"
+            },
+            "MastodonVisibility": {
+                "title": "visibility",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for\n *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "example": 1
+            },
+            "PointReason": {
+                "title": "PointsReason",
+                "description": "What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points)",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "example": 1
+            },
+            "StatusVisibility": {
+                "title": "visibility",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the\n *      user specify?",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "example": 0
+            },
+            "TravelType": {
+                "title": "travelType",
+                "type": "string",
+                "enum": [
+                    "express",
+                    "regional",
+                    "suburban",
+                    "bus",
+                    "ferry",
+                    "subway",
+                    "tram",
+                    "taxi"
+                ],
+                "example": "suburban"
+            },
             "ClientResource": {
                 "title": "Client",
                 "properties": {
@@ -4677,10 +4769,10 @@
                         }
                     },
                     "business": {
-                        "$ref": "#/components/schemas/BusinessEnum"
+                        "$ref": "#/components/schemas/Business"
                     },
                     "visibility": {
-                        "$ref": "#/components/schemas/VisibilityEnum"
+                        "$ref": "#/components/schemas/StatusVisibility"
                     },
                     "likes": {
                         "description": "How many people have liked this status",
@@ -4830,10 +4922,10 @@
                         "nullable": true
                     },
                     "business": {
-                        "$ref": "#/components/schemas/BusinessEnum"
+                        "$ref": "#/components/schemas/Business"
                     },
                     "visibility": {
-                        "$ref": "#/components/schemas/VisibilityEnum"
+                        "$ref": "#/components/schemas/StatusVisibility"
                     },
                     "eventId": {
                         "title": "eventId",
@@ -5239,7 +5331,7 @@
                         "example": 0.25
                     },
                     "reason": {
-                        "$ref": "#/components/schemas/PointsReasonEnum"
+                        "$ref": "#/components/schemas/PointReason"
                     }
                 },
                 "type": "object",
@@ -5303,7 +5395,7 @@
                         "example": "BahnCard 100"
                     },
                     "visibility": {
-                        "$ref": "#/components/schemas/VisibilityEnum"
+                        "$ref": "#/components/schemas/StatusVisibility"
                     }
                 },
                 "type": "object",
@@ -5485,7 +5577,7 @@
                         "example": "1|323306|1|80|17072022"
                     },
                     "category": {
-                        "$ref": "#/components/schemas/TrainCategoryEnum"
+                        "$ref": "#/components/schemas/HafasTravelType"
                     },
                     "number": {
                         "title": "number",
@@ -5681,7 +5773,7 @@
                         "example": false
                     },
                     "defaultStatusVisibility": {
-                        "$ref": "#/components/schemas/VisibilityEnum"
+                        "$ref": "#/components/schemas/StatusVisibility"
                     },
                     "privacyHideDays": {
                         "title": "privacyHideDays",
@@ -5724,7 +5816,7 @@
                         "example": "https://chaos.social/@traewelling"
                     },
                     "mastodonVisibility": {
-                        "$ref": "#/components/schemas/VisibilityEnum"
+                        "$ref": "#/components/schemas/StatusVisibility"
                     }
                 },
                 "type": "object",
@@ -5792,10 +5884,10 @@
                         "nullable": true
                     },
                     "business": {
-                        "$ref": "#/components/schemas/BusinessEnum"
+                        "$ref": "#/components/schemas/Business"
                     },
                     "visibility": {
-                        "$ref": "#/components/schemas/VisibilityEnum"
+                        "$ref": "#/components/schemas/StatusVisibility"
                     },
                     "eventId": {
                         "description": "The ID of the event this status is related to - or null",
@@ -5830,99 +5922,6 @@
                 "xml": {
                     "name": "StatusUpdateBody"
                 }
-            },
-            "BusinessEnum": {
-                "title": "Business",
-                "description": "What type of travel (0=private, 1=business, 2=commute) did the user specify?",
-                "type": "integer",
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "example": 0
-            },
-            "MapProviderEnum": {
-                "title": "MapProvider",
-                "description": "What type of map provider (cargo, open-railway-map) did the user specify?",
-                "type": "string",
-                "enum": [
-                    "cargo",
-                    "open-railway-map"
-                ],
-                "example": "cargo"
-            },
-            "MastodonVisibilityEnum": {
-                "title": "visibility",
-                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for\n *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.",
-                "type": "integer",
-                "enum": [
-                    0,
-                    1,
-                    2,
-                    3
-                ],
-                "example": 1
-            },
-            "PointsReasonEnum": {
-                "title": "PointsReason",
-                "description": "What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points)",
-                "type": "integer",
-                "enum": [
-                    0,
-                    1,
-                    2,
-                    3
-                ],
-                "example": 1
-            },
-            "TrainCategoryEnum": {
-                "title": "category",
-                "description": "Category of transport. ",
-                "type": "string",
-                "enum": [
-                    "nationalExpress",
-                    "national",
-                    "regionalExp",
-                    "regional",
-                    "suburban",
-                    "bus",
-                    "ferry",
-                    "subway",
-                    "tram",
-                    "taxi"
-                ],
-                "example": "suburban"
-            },
-            "TravelTypeEnum": {
-                "title": "travelType",
-                "type": "string",
-                "enum": [
-                    "express",
-                    "regional",
-                    "suburban",
-                    "bus",
-                    "ferry",
-                    "subway",
-                    "tram",
-                    "taxi",
-                    "tram",
-                    "taxi"
-                ],
-                "example": "suburban"
-            },
-            "VisibilityEnum": {
-                "title": "visibility",
-                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the\n *     user specify?",
-                "type": "integer",
-                "enum": [
-                    0,
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "example": 0
             }
         },
         "parameters": {
