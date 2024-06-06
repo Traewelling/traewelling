@@ -16,13 +16,4 @@ return new class extends Migration
             $table->dropColumn('destination');
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void {
-        Schema::table('train_checkins', function(Blueprint $table) {
-            //TODO
-        });
-    }
 };
