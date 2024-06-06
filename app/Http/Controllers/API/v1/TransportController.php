@@ -98,7 +98,7 @@ class TransportController extends Controller
      *          description="Means of transport (default: all)",
      *          required=false,
      *          @OA\Schema(
-     *              ref="#/components/schemas/TravelTypeEnum"
+     *              ref="#/components/schemas/TravelType"
      *          )
      *      ),
      *      @OA\Response(
@@ -248,7 +248,7 @@ class TransportController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="object",
      *                  @OA\Property(property="id", type="int64", example=1),
-     *                  @OA\Property(property="category", ref="#/components/schemas/TrainCategoryEnum"),
+     *                  @OA\Property(property="category", ref="#/components/schemas/HafasTravelType"),
      *                  @OA\Property(property="number", type="string", example="4-a6s4-4"),
      *                  @OA\Property(property="lineName", type="string", example="S 4"),
      *                  @OA\Property(property="journeyNumber", type="int64", example="34427"),

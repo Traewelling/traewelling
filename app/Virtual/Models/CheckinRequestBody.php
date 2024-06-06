@@ -31,7 +31,7 @@ class CheckinRequestBody
 
     /**
      * @OA\Property (
-     *     ref="#/components/schemas/BusinessEnum",
+     *     ref="#/components/schemas/Business",
      * )
      *
      * @var integer
@@ -40,7 +40,7 @@ class CheckinRequestBody
 
     /**
      * @OA\Property (
-     *      ref="#/components/schemas/VisibilityEnum"
+     *      ref="#/components/schemas/StatusVisibility"
      * )
      *
      * @var integer
