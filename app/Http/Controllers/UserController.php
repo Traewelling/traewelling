@@ -41,7 +41,7 @@ class UserController extends Controller
                     ->with([
                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin',
                                'checkin.originStopover.station', 'checkin.destinationStopover.station',
-                               'checkin.Trip.stopovers.station',
+                               'checkin.trip.stopovers.station',
                            ])
                     ->where(function($query) {
                         $query->whereIn('statuses.visibility', [
