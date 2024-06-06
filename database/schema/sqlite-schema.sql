@@ -111,10 +111,6 @@ CREATE TABLE events (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, station_id B
 , approved_by INTEGER DEFAULT NULL, checkin_start DATETIME NOT NULL, checkin_end DATETIME NOT NULL, FOREIGN KEY (station_id) REFERENCES train_stations (id) ON UPDATE NO ACTION ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE);
 CREATE UNIQUE INDEX events_slug_unique ON events (slug);
 CREATE INDEX IDX_5387574A21BDB235 ON events (station_id);
-CREATE TABLE IF NOT EXISTS "reports" ("id" integer primary key autoincrement not null, "status" varchar not null default 'open', "subject_type" varchar not null, "subject_id" integer not null, "reason" varchar, "description" varchar, "reporter_id" integer, "created_at" datetime, "updated_at" datetime, foreign key("reporter_id") references "users"("id") on delete set null);
-CREATE INDEX "reports_subject_type_subject_id_index" on "reports" ("subject_type", "subject_id");
-CREATE INDEX "reports_status_index" on "reports" ("status");
-CREATE INDEX "poly_lines_parent_id_index" on "poly_lines" ("parent_id");
 INSERT INTO migrations VALUES(1,'2014_10_12_000000_create_users_table',1);
 INSERT INTO migrations VALUES(2,'2014_10_12_100000_create_password_resets_table',1);
 INSERT INTO migrations VALUES(3,'2016_06_01_000001_create_oauth_auth_codes_table',1);
@@ -308,3 +304,4 @@ INSERT INTO migrations VALUES(191,'2024_05_25_000000_add_source_index_to_polylin
 INSERT INTO migrations VALUES(192,'2024_05_25_000001_add_trip_id_arrival_departure_index_to_train_stopovers',3);
 INSERT INTO migrations VALUES(193,'2024_05_27_000000_drop_shadow_banned_from_users',3);
 INSERT INTO migrations VALUES(194,'2024_05_30_000000_add_prefix_to_begin_end_on_events',3);
+INSERT INTO migrations VALUES(195,'2024_05_22_000003_drop_origin_destination_from_check_in',3);
