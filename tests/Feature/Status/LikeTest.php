@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Status;
 
-use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Checkin;
 use App\Models\User;
 use App\Notifications\StatusLiked;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\FeatureTestCase;
 
@@ -55,7 +55,7 @@ class LikeTest extends FeatureTestCase
 
         $checkin->status->user->update(['likes_enabled' => false]);
 
-        $this->expectException(PermissionException::class);
+        $this->expectException(AuthorizationException::class);
         StatusBackend::createLike($likingUser, $checkin->status);
     }
 

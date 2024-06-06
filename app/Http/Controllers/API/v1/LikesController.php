@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\UserResource;
 use App\Models\Status;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -115,7 +115,7 @@ class LikesController extends Controller
                 error: __('controller.status.like-already'),
                 code:  409,
             );
-        } catch (PermissionException) {
+        } catch (AuthorizationException) {
             return $this->sendError(code: 403);
         } catch (ModelNotFoundException) {
             return $this->sendError(code: 404);
