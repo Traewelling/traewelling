@@ -440,8 +440,8 @@ class TransportController extends Controller
             return $this->sendResponse($checkinResponse, 201); //ToDo: Check if documented structure has changed
         } catch (CheckInCollisionException $exception) {
             return $this->sendError([
-                                        'status_id' => $exception->getCollision()->status_id,
-                                        'lineName'  => $exception->getCollision()->trip->linename
+                                        'status_id' => $exception->checkin->status_id,
+                                        'lineName'  => $exception->checkin->trip->linename
                                     ], 409);
 
         } catch (StationNotOnTripException) {

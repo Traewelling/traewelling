@@ -8,3 +8,4 @@ class InvalidMastodonException extends Exception
 {
     //
 }
+ 

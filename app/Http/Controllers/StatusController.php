@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
-use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\API\v1\Controller as APIController;
 use App\Http\Controllers\Backend\Support\LocationController;
@@ -15,6 +14,7 @@ use App\Models\Status;
 use App\Models\User;
 use App\Notifications\StatusLiked;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -122,17 +122,12 @@ class StatusController extends Controller
      * @param int  $statusId
      *
      * @return bool|null
-     * @throws PermissionException|ModelNotFoundException
+     * @throws ModelNotFoundException
+     * @throws AuthorizationException User is not allowed to delete this status
      */
     public static function DeleteStatus(User $user, int $statusId): ?bool {
-        $status = Status::find($statusId);
-
-        if ($status === null) {
-            throw new ModelNotFoundException();
-        }
-        if ($user->id != $status->user->id) {
-            throw new PermissionException();
-        }
+        $status = Status::findOrFail($statusId); // throws ModelNotFoundException
+        Gate::forUser($user)->authorize('delete', $status);
         $status->delete();
         return true;
     }
@@ -144,12 +139,11 @@ class StatusController extends Controller
      * @param Status $status
      *
      * @return Like
-     * @throws StatusAlreadyLikedException|PermissionException
+     * @throws StatusAlreadyLikedException
+     * @throws AuthorizationException User is not allowed to like this status
      */
     public static function createLike(User $user, Status $status): Like {
-        if ($user->cannot('like', $status)) {
-            throw new PermissionException();
-        }
+        Gate::forUser($user)->authorize('like', $status);
 
         if ($status->likes->contains('user_id', $user->id)) {
             throw new StatusAlreadyLikedException($user, $status);

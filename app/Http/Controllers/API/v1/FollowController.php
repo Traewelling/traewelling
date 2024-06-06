@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\AlreadyFollowingException;
-use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\User\FollowController as FollowBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\UserResource;
@@ -211,6 +210,9 @@ class FollowController extends Controller
     }
 
     /**
+     * @param Request $request
+     *
+     * @return JsonResponse
      * @todo paths should use kebab-case
      * @todo paths should not use verbs
      * @OA\Delete(
@@ -243,9 +245,6 @@ class FollowController extends Controller
      *       }
      *     )
      *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function removeFollower(Request $request): JsonResponse {
         $validated = $request->validate(['userId' => ['required',]]);
@@ -262,12 +261,15 @@ class FollowController extends Controller
             return $this->sendError('Unknown error', 500);
         } catch (ModelNotFoundException) {
             return $this->sendError('Follow not found');
-        } catch (PermissionException) {
+        } catch (AuthorizationException) {
             return $this->sendError('Permission denied', 403);
         }
     }
 
     /**
+     * @param Request $request
+     *
+     * @return JsonResponse
      * @todo paths should use kebab-case
      * @todo paths should not use verbs
      * @OA\Put(
@@ -301,9 +303,6 @@ class FollowController extends Controller
      *     )
      *
      *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function approveFollowRequest(Request $request): JsonResponse {
         $validated = $request->validate(['userId' => ['required',]]);
@@ -320,6 +319,9 @@ class FollowController extends Controller
     }
 
     /**
+     * @param Request $request
+     *
+     * @return JsonResponse
      * @todo paths should use kebab-case
      * @todo paths should not use verbs
      *
@@ -353,9 +355,6 @@ class FollowController extends Controller
      *       }
      *     )
      *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
     public function rejectFollowRequest(Request $request): JsonResponse {
         $validated = $request->validate(['userId' => ['required',]]);

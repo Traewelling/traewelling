@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Backend\User;
 
-use App\Exceptions\PermissionException;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Webhook;
 use App\Models\WebhookCreationRequest;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Gate;
 use Laravel\Passport\Token;
 
 abstract class TokenController extends Controller
@@ -20,15 +21,13 @@ abstract class TokenController extends Controller
     }
 
     /**
-     * @throws PermissionException
      * @throws ModelNotFoundException
+     * @throws AuthorizationException The user is not allowed to revoke this token.
      */
     public static function revokeToken(string $tokenId, User $user): void {
         $token = Token::findOrFail($tokenId);
 
-        if ($token->user->id !== $user->id) {
-            throw new PermissionException();
-        }
+        Gate::forUser($user)->authorize('delete', $token);
 
         $token->revoke();
         $client = $token->client()->first();

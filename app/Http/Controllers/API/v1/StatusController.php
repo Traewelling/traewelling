@@ -7,7 +7,6 @@ use App\Dto\GeoJson\Feature;
 use App\Dto\GeoJson\FeatureCollection;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
-use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Backend\User\DashboardController;
@@ -342,7 +341,7 @@ class StatusController extends Controller
                 200,
                 ['status' => 'success']
             );
-        } catch (PermissionException) {
+        } catch (AuthorizationException) {
             return $this->sendError('You are not allowed to delete this status.', 403);
         } catch (ModelNotFoundException) {
             return $this->sendError('No status found for this id.');
@@ -462,7 +461,7 @@ class StatusController extends Controller
             return $this->sendResponse(new StatusResource($status->fresh()));
         } catch (ModelNotFoundException) {
             return $this->sendError('Status not found');
-        } catch (PermissionException|AuthorizationException) {
+        } catch (AuthorizationException) {
             return $this->sendError('You are not authorized to edit this status', 403);
         } catch (InvalidArgumentException) {
             return $this->sendError('Invalid Arguments', 400);

@@ -14,11 +14,13 @@ use App\Models\Webhook;
 use App\Policies\FollowPolicy;
 use App\Policies\StatusPolicy;
 use App\Policies\StatusTagPolicy;
+use App\Policies\TokenPolicy;
 use App\Policies\UserPolicy;
 use App\Policies\WebhookPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Laravel\Passport\Passport;
+use Laravel\Passport\Token;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -32,7 +34,8 @@ class AuthServiceProvider extends ServiceProvider
         User::class      => UserPolicy::class,
         Follow::class    => FollowPolicy::class,
         Webhook::class   => WebhookPolicy::class,
-        StatusTag::class => StatusTagPolicy::class
+        StatusTag::class => StatusTagPolicy::class,
+        Token::class     => TokenPolicy::class,
     ];
 
     //ToDo Translate
@@ -72,16 +75,16 @@ class AuthServiceProvider extends ServiceProvider
         Passport::useClientModel(OAuthClient::class);
 
         // Override passport routes
-        Route::group(['prefix' => 'oauth', 'as' => 'oauth.'], function () {
+        Route::group(['prefix' => 'oauth', 'as' => 'oauth.'], function() {
             Route::get('authorize', [AuthorizationController::class, 'authorize'])
-                ->middleware(['web'])
-                ->name('authorizations.authorize');
+                 ->middleware(['web'])
+                 ->name('authorizations.authorize');
             Route::post('/authorize', [ApproveAuthorizationController::class, 'approve'])
-                ->middleware(['web'])
-                ->name('authorizations.approve');
+                 ->middleware(['web'])
+                 ->name('authorizations.approve');
             Route::post("/token", [AccessTokenController::class, 'issueToken'])
-                ->middleware("throttle")
-                ->name("authorizations.token");
+                 ->middleware("throttle")
+                 ->name("authorizations.token");
         });
         Passport::tokensCan(self::$scopes);
         Passport::setDefaultScope([

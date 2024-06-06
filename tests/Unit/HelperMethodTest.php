@@ -5,12 +5,13 @@ namespace Tests\Unit;
 use App\Exceptions\StationNotOnTripException;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Carbon as IlluminateCarbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Passport\Passport;
 use Mockery;
 use stdClass;
-use Illuminate\Support\Facades\App;
+use function secondsToDuration;
 
 class HelperMethodTest extends UnitTestCase
 {
@@ -54,7 +55,7 @@ class HelperMethodTest extends UnitTestCase
         ];
 
         foreach ($testcases as $input => $output) {
-            $this->assertEquals($output, durationToSpan(\secondsToDuration($input)));
+            $this->assertEquals($output, durationToSpan(secondsToDuration($input)));
         }
     }
 
@@ -172,18 +173,20 @@ class HelperMethodTest extends UnitTestCase
     }
 
     public function testHelperMethodWithReference(): void {
-        $exception = $this->mock(StationNotOnTripException::class, function($mock) {
-            $mock->shouldReceive('reference')->andReturn('referenceTest');
-        });
+        $exception = new StationNotOnTripException();
 
-        $text = __('messages.exception.reference', ['reference' => 'referenceTest']);
+        $text = __('messages.exception.reference', ['reference' => $exception->reference]);
 
         $this->assertStringEndsWith($text, errorMessage($exception));
         $this->assertStringEndsWith("Text? " . $text, errorMessage($exception, "Text?"));
+
+        $context = $exception->context();
+        $this->assertIsArray($context);
+        $this->assertEquals($exception->reference, $context['reference']);
     }
 
     public function testHelperMethodWithoutReference(): void {
-        $this->assertEquals(__('messages.exception.general'), errorMessage(new \Exception()));
-        $this->assertEquals("Text?", errorMessage(new \Exception(), "Text?"));
+        $this->assertEquals(__('messages.exception.general'), errorMessage(new Exception()));
+        $this->assertEquals("Text?", errorMessage(new Exception(), "Text?"));
     }
 }
