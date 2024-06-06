@@ -179,6 +179,10 @@ class HelperMethodTest extends UnitTestCase
 
         $this->assertStringEndsWith($text, errorMessage($exception));
         $this->assertStringEndsWith("Text? " . $text, errorMessage($exception, "Text?"));
+
+        $context = $exception->context();
+        $this->assertIsArray($context);
+        $this->assertEquals($exception->reference, $context['reference']);
     }
 
     public function testHelperMethodWithoutReference(): void {
