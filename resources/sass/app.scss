@@ -109,4 +109,7 @@ body {
 .text-pride {
     padding-left: 5px;
     padding-right: 5px;
+
+    // outline the text for better readability
+    text-shadow: -1px -1px 0 $trwlRot, 1px -1px 0 $trwlRot, -1px 1px 0 $trwlRot, 1px 1px 0 $trwlRot;
 }

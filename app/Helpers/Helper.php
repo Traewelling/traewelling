@@ -7,6 +7,11 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 /**
+ * BEFORE ADDING NEW FUNCTIONS TO THIS FILE, PLEASE CONSIDER CREATING A NEW SERVICE CLASS.
+ * And test it. 👉👈
+ */
+
+/**
  * @see https://stackoverflow.com/a/437642
  */
 function number($number, $decimals = 2) {
@@ -86,25 +91,4 @@ function errorMessage(Exception|Error $exception, ?string $text = null): array|n
     }
 
     return $text . ' ' . __('messages.exception.reference', ['reference' => $exception->reference()]);
-}
-
-function isPrideMonth(): bool {
-    return Carbon::now()->month === 6;
-}
-
-function prideFlag(): string {
-    // only run in june
-    if (!isPrideMonth()) {
-        return '';
-    }
-    $rand = random_int(0, 100);
-
-    if ($rand < 70) {
-        return 'Gay text-pride';
-    }
-
-    $classes = ['BiPlus', 'Trans', 'NonBinary', 'Asexual', 'Pansexual', 'GayMale', 'Lesbian', 'Intersex', 'GenderFluid',
-                'Agender', ' Polyamorous', 'Omnisexual', 'Polysexual', 'AroAce', 'Genderqueer', 'Queer'];
-
-    return $classes[array_rand($classes)] . ' text-pride';
 }
