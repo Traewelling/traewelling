@@ -171,12 +171,12 @@ class CheckinController
                 ->withErrors(__(
                                  'controller.transport.overlapping-checkin',
                                  [
-                                     'linename' => $e->getCollision()->trip->linename
+                                     'linename' => $e->checkin->trip->linename
                                  ]
                              ) . strtr(' <a href=":url">#:id</a>',
                                        [
-                                           ':url' => url('/status/' . $e->getCollision()->status->id),
-                                           ':id'  => $e->getCollision()->status->id,
+                                           ':url' => url('/status/' . $e->checkin->status->id),
+                                           ':id'  => $e->checkin->status->id,
                                        ]
                              ));
 

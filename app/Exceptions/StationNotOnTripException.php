@@ -2,8 +2,8 @@
 
 namespace App\Exceptions;
 
-use App\Models\Trip;
 use App\Models\Station;
+use App\Models\Trip;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -18,17 +18,17 @@ class StationNotOnTripException extends Referencable
      * @param Trip|null    $trip
      */
     public function __construct(
-        ?Station   $origin = null,
-        ?Station   $destination = null,
-        ?Carbon    $departure = null,
-        ?Carbon    $arrival = null,
-        ?Trip $trip = null
+        ?Station $origin = null,
+        ?Station $destination = null,
+        ?Carbon  $departure = null,
+        ?Carbon  $arrival = null,
+        ?Trip    $trip = null
     ) {
         $this->context = [
             'origin'      => $origin->id ?? null,
             'destination' => $destination->id ?? null,
-            'departure'   => $departure ? $departure->toIso8601String() : null,
-            'arrival'     => $arrival ? $arrival->toIso8601String() : null,
+            'departure'   => $departure?->toIso8601String(),
+            'arrival'     => $arrival?->toIso8601String(),
             'trip'        => $trip->trip_id ?? null
         ];
 

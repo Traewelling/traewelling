@@ -85,7 +85,7 @@ function errorMessage(Exception|Error $exception, ?string $text = null): array|n
         return $text;
     }
 
-    return $text . ' ' . __('messages.exception.reference', ['reference' => $exception->reference()]);
+    return $text . ' ' . __('messages.exception.reference', ['reference' => $exception->reference]);
 }
 
 function isPrideMonth(): bool {
