@@ -89,14 +89,6 @@ class Checkin extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    /**
-     * @return HasOne
-     * @deprecated use ->trip instead
-     */
-    public function HafasTrip(): HasOne {
-        return $this->trip();
-    }
-
     public function originStation(): HasOne {
         return $this->hasOne(Station::class, 'ibnr', 'origin');
     }
