@@ -360,7 +360,7 @@ abstract class HafasController extends Controller
      * @throws HafasException|JsonException
      */
     public static function fetchRawHafasTrip(string $tripId, string $lineName) {
-        $tripResponse = self::getHttpClient()->get("trips/$tripId", [
+        $tripResponse = self::getHttpClient()->get("trips/" . urlencode($tripId), [
             'lineName'  => $lineName,
             'polyline'  => 'true',
             'stopovers' => 'true'
