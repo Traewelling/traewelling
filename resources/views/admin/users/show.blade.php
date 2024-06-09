@@ -194,7 +194,7 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip_id])}}">
+                                            <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip->id])}}">
                                                 {{ $status->checkin->trip_id }}
                                             </a>
                                             <br/>
