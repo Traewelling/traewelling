@@ -62,7 +62,8 @@ class StatusResource extends JsonResource
                                   'operator'        => new OperatorResource($this?->checkin->trip->operator)
             ],
             'event'          => new EventResource($this?->event),
-            'userDetails'    => new LightUserResource($this->user) //TODO: rename this to user, after deprecated fields are removed (2024-08)
+            'userDetails'    => new LightUserResource($this->user), //TODO: rename this to user, after deprecated fields are removed (2024-08)
+            'tags'           => StatusTagResource::collection($this->tags)
         ];
     }
 }

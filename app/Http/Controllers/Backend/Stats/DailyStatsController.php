@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Backend\Stats;
 
-use App\Casts\UTCDateTime;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\User;
@@ -15,7 +14,7 @@ class DailyStatsController extends Controller
         $start = $date->clone()->startOfDay()->tz('UTC');
         $end   = $date->clone()->endOfDay()->tz('UTC');
 
-        return Status::with(['checkin'])
+        return Status::with(['checkin', 'tags'])
                      ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                      ->where('statuses.user_id', $user->id)
                      ->where('train_checkins.departure', '>=', $start)
