@@ -360,7 +360,7 @@ abstract class HafasController extends Controller
      * @throws HafasException|JsonException
      */
     public static function fetchRawHafasTrip(string $tripId, string $lineName) {
-        $tripResponse = self::getHttpClient()->get("trips/" . urlencode($tripId), [
+        $tripResponse = self::getHttpClient()->get("trips/" . rawurlencode($tripId), [
             'lineName'  => $lineName,
             'polyline'  => 'true',
             'stopovers' => 'true'
@@ -371,6 +371,7 @@ abstract class HafasController extends Controller
         }
         //sometimes HAFAS returnes 502 Bad Gateway
         if ($tripResponse->status() === 502) {
+            Log::error('Cannot fetch trip with id: ' . $tripId);
             throw new HafasException(__('messages.exception.hafas.502'));
         }
         Log::error('Unknown HAFAS Error (fetchRawHafasTrip)', [
