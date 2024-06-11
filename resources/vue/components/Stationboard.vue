@@ -26,7 +26,6 @@ export default {
             loading: false,
             stationName: null,
             trwlStationId: null,
-            nextFetched: 0,
             firstFetchTime: null,
             pushState: null,
             fastCheckinIbnr: null,
@@ -109,16 +108,7 @@ export default {
                             this.meta        = result.meta;
                             this.stationName = result.meta.station.name;
 
-                            if (this.nextFetched === 0) {
-                                this.firstFetchTime = DateTime.fromISO(this.meta?.times?.now);
-                            }
-
-                            if (this.data.length === 0 && this.nextFetched < 3) {
-                                this.nextFetched++;
-                                this.fetchNext();
-                            } else {
-                                this.nextFetched = 0;
-                            }
+                            this.firstFetchTime = DateTime.fromISO(this.meta?.times?.now);
                         });
                     }
                 });
@@ -165,7 +155,8 @@ export default {
                 window.notyf.error("No station found!");
             }
             if (urlParams.has('when')) {
-                this.fetchTime = DateTime.fromISO(urlParams.get('when')).setZone("UTC");
+                const fetchTime = DateTime.fromISO(urlParams.get('when')).setZone("UTC");
+                this.fetchTime  = fetchTime.isValid ? fetchTime : this.fetchTime;
             }
             this.stationName   = urlParams.get('stationName');
             this.trwlStationId = urlParams.get('stationId');
@@ -291,7 +282,9 @@ export default {
         <div class="card mb-1 dep-card mt-3 mb-3">
             <div class="text-center my-auto">
                 {{ trans("stationboard.no-departures") }}
-                ({{ formatTime(this.firstFetchTime) }} - {{ formatTime(this.meta?.times?.now) }})
+                <span v-if="firstFetchTime">
+                    ({{ formatTime(this.firstFetchTime) }} - {{ formatTime(this.meta?.times?.now) }})
+                </span>
             </div>
         </div>
     </template>
