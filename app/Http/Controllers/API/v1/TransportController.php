@@ -287,6 +287,8 @@ class TransportController extends Controller
             return $this->sendResponse(data: new TripResource($trip));
         } catch (StationNotOnTripException) {
             return $this->sendError(__('controller.transport.not-in-stopovers', [], 'en'), 400);
+        } catch (HafasException) {
+            return $this->sendError(__('messages.exception.hafas.502', [], 'en'), 503);
         }
     }
 
