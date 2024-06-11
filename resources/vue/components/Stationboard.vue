@@ -8,9 +8,11 @@ import CheckinInterface from "./CheckinInterface.vue";
 import StationAutocomplete from "./StationAutocomplete.vue";
 import {trans} from "laravel-vue-i18n";
 import StationBoardEntry from "./Checkin/StationBoardEntry.vue";
+import Spinner from "./Spinner.vue";
 
 export default {
     components: {
+        Spinner,
         StationBoardEntry,
         StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal
     },
@@ -243,9 +245,7 @@ export default {
         :time="now"
         :show-filter-button="true"
     />
-    <div v-if="loading" style="max-width: 200px;" class="spinner-grow text-trwl mx-auto p-2" role="status">
-        <span class="visually-hidden">Loading...</span>
-    </div>
+    <Spinner v-if="loading" />
     <FullScreenModal ref="modal">
         <template #header v-if="selectedTrain">
             <div class="col-1 align-items-center d-flex">
