@@ -82,9 +82,15 @@ class UserController
         $user      = User::findOrFail($validated['id']);
         $roles     = [];
         foreach (Role::all() as $role) {
+            if ($role->name === 'admin') {
+                continue;
+            }
             if (isset($validated['roles'][$role->name])) {
                 $roles[] = $role->name;
             }
+        }
+        if ($user->hasRole('admin')) {
+            $roles[] = 'admin';
         }
         $user->syncRoles($roles);
         return redirect()->route('admin.users.user', ['id' => $validated['id']]);

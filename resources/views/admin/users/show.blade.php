@@ -128,6 +128,7 @@
                             @foreach(Role::all() as $role)
                                 <li>
                                     <input id="{{$role->name}}" type="checkbox" name="roles[{{ $role->name }}]"
+                                           @if($role->name === 'admin') disabled @endif
                                            value="1" @if($user->hasRole($role->name)) checked @endif/>
                                     <label for="{{$role->name}}">{{ $role->name }}</label>
                                     <br/>
