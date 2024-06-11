@@ -1,9 +1,11 @@
 <script>
 import {DateTime} from "luxon";
 import {trans} from "laravel-vue-i18n";
+import Spinner from "./Spinner.vue";
 
 export default {
     name: "CheckinLineRun",
+    components: {Spinner},
     props: {
         selectedTrain: {
             type: Object,
@@ -106,9 +108,7 @@ export default {
     <div v-if="error" class="text-trwl mx-auto p-2">
         <p>{{ this.errorMessage }}</p>
     </div>
-    <div v-if="loading" class="spinner-grow text-trwl mx-auto p-2" style="max-width: 200px;" role="status">
-        <span class="visually-hidden">Loading...</span>
-    </div>
+    <Spinner v-if="loading" />
     <ul class="timeline" v-else>
         <li v-for="item in lineRun.stopovers" :key="item" @click.prevent="handleSetDestination(item)">
             <i class="trwl-bulletpoint" aria-hidden="true"></i>
