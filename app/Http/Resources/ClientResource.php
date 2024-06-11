@@ -6,6 +6,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * Model -> OAuthClient
+ * @OA\Schema(
+ *      title="Client",
+ *      @OA\Property(property="id", type="integer", example=1),
+ *      @OA\Property(property="name", type="string", example="Träwelling App"),
+ *      @OA\Property(property="privacyPolicyUrl", type="string", example="https://traewelling.de/privacy-policy")
+ * )
  */
 class ClientResource extends JsonResource
 {

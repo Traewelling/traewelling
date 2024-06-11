@@ -5,15 +5,29 @@ import {trans} from "laravel-vue-i18n";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import {DateTime} from "luxon";
+import {useUserStore} from "../stores/user";
+import AutocompleteListEntry from "./Checkin/AutocompleteListEntry.vue";
 
 export default {
+    setup() {
+        const userStore = useUserStore();
+        userStore.fetchSettings();
+
+        return {userStore};
+    },
     name: "StationAutocomplete",
     emits: ["update:station", "update:time", "update:travelType"],
-    components: {FullScreenModal, VueDatePicker},
+    components: {AutocompleteListEntry, FullScreenModal, VueDatePicker},
     props: {
         station: {
             type: Object,
-            required: false
+            required: false,
+            default: null,
+        },
+        stationName: {
+            type: String,
+            required: false,
+            default: null,
         },
         dashboard: {
             type: Boolean,
@@ -44,6 +58,7 @@ export default {
             stationInput: "",
             showFilter: false,
             date: null,
+            selectedStation: null,
             selectedType: null,
             fetchingGps: false,
             travelTypes: [
@@ -63,6 +78,14 @@ export default {
         showModal() {
             this.$refs.modal.show();
         },
+        setHome() {
+            if (!this.isHome) {
+                this.userStore.setHome(this.station).catch((error) => {
+                    console.error(error);
+                    window.notyf.error(trans('action.error') + " (" + trans('action.set-home') + ")");
+                })
+            }
+        },
         getRecent() {
             fetch(`/api/v1/trains/station/history`).then((response) => {
                 response.json().then((result) => {
@@ -72,7 +95,7 @@ export default {
         },
         autocomplete() {
             this.loading = true;
-            if (!this.stationInput || this.stationInput.length < 3) {
+            if (!this.stationInput || this.stationInput.length < 2) {
                 this.autocompleteList = [];
                 this.loading          = false;
                 return;
@@ -95,10 +118,14 @@ export default {
             this.setStation({name: this.stationInput});
         },
         setStation(item) {
-            this.stationInput = item.name;
+            this.stationInput    = item.name;
+            this.selectedStation = item;
             this.$emit("update:station", item);
             this.$refs.modal.hide();
-            window.location = "/trains/stationboard?station=" + item.name;
+            const url = `/stationboard?stationId=${item.id}&stationName=${item.name}`;
+            if (this.$props.dashboard) {
+                window.location = url;
+            }
         },
         setTravelType(travelType) {
             this.selectedType = this.selectedType === travelType.value ? null : travelType.value;
@@ -127,13 +154,17 @@ export default {
         stationInput: _.debounce(function () {
             this.autocomplete();
         }, 500),
+        stationName() {
+            this.stationInput = this.stationName ? this.stationName : this.stationInput;
+        },
         station() {
-            this.stationInput = this.station ? this.station.name : this.stationInput;
+            this.selectedStation = this.station;
         }
     },
     mounted() {
-        this.date         = this.time;
-        this.stationInput = this.station ? this.station.name : "";
+        this.date            = this.time;
+        this.stationInput    = this.stationName ? this.stationName : "";
+        this.selectedStation = this.station;
         this.getRecent();
     },
     computed: {
@@ -142,6 +173,9 @@ export default {
         },
         dark() {
             return localStorage.getItem('darkMode') === 'dark';
+        },
+        isHome() {
+            return this.userStore.getHome && this.station && this.userStore.getHome.id === this.station.id;
         }
     }
 }
@@ -158,30 +192,39 @@ export default {
         </template>
         <template #body>
             <ul class="list-group list-group-light list-group-small">
-                <li class="list-group-item autocomplete-item pb-3 mb-3" v-show="autocompleteList.length === 0"
-                    @click="setStationFromGps">
-                    <a href="#" class="text-trwl">
-                        <i class="fa fa-map-marker-alt"></i>
-                        {{ trans("stationboard.search-by-location") }}
-                    </a>
-                </li>
-                <li class="list-group-item autocomplete-item" v-for="item in recent"
-                    v-show="autocompleteList.length === 0">
-                    <a href="#" class="text-trwl" @click="setStation(item)">
-                        {{ item.name }} <span v-if="item.rilIdentifier">({{ item.rilIdentifier }})</span>
-                    </a>
-                </li>
-                <li class="list-group-item autocomplete-item" v-for="item in autocompleteList"
-                    @click="setStation(item)">
-                    <a href="#" class="text-trwl">
-                        {{ item.name }} <span v-if="item.rilIdentifier">({{ item.rilIdentifier }})</span>
-                    </a>
-                </li>
+                <AutocompleteListEntry
+                    v-show="autocompleteList.length === 0"
+                    :text="trans('stationboard.search-by-location')"
+                    prefix="fa fa-map-marker-alt"
+                    @click="setStationFromGps"
+                />
+                <AutocompleteListEntry
+                    v-show="autocompleteList.length === 0 && userStore.getHome"
+                    :station="userStore.getHome"
+                    prefix="fas fa-house"
+                    @click="setStation(userStore.getHome)"
+                />
+                <AutocompleteListEntry
+                    v-for="item in recent"
+                    v-show="autocompleteList.length === 0"
+                    :station="item"
+                    @click="setStation(item)"
+                />
+                <AutocompleteListEntry
+                    v-for="item in autocompleteList"
+                    :station="item"
+                    @click="setStation(item)"
+                />
             </ul>
         </template>
     </FullScreenModal>
     <div class="card mb-4">
-        <div class="card-header">{{ trans("stationboard.where-are-you") }}</div>
+        <div class="card-header">
+            {{ trans("stationboard.where-are-you") }}
+            <a v-if="!dashboard && station" href="#" class="float-end" @click.prevent="setHome">
+                <i @click="setHome" :class="{'fas': isHome, 'far': !isHome}" class="fa-star"></i>
+            </a>
+        </div>
         <div class="card-body">
             <div id="station-autocomplete-container" style="z-index: 3;">
                 <div class="input-group mb-2 mr-sm-2">

@@ -133,13 +133,16 @@ export default {
                 });
         },
         fetchEvents() {
-            fetch('/api/v1/activeEvents')
+            fetch('/api/v1/events')
                 .then((response) => response.json())
                 .then((results) => {
                     results.data.forEach(this.addEventMarker);
                 });
         },
         addEventMarker(event) {
+            if (!event.station) {
+                return;
+            }
             let marker = L.marker([event.station.latitude, event.station.longitude], {
                 title: event.name,
                 icon: eventIcon

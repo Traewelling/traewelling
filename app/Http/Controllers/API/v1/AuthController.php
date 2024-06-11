@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Resources\UserSettingsResource;
+use App\Http\Resources\UserAuthResource;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -56,7 +56,7 @@ class AuthController extends Controller
      *          description="successful operation",
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="object",
-     *                      ref="#/components/schemas/UserAuth"
+     *                      ref="#/components/schemas/UserAuthResource"
      *              )
      *          )
      *       ),
@@ -69,11 +69,11 @@ class AuthController extends Controller
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return UserAuthResource
      * @api v1
      */
-    public function user(Request $request): JsonResponse {
-        return $this->sendResponse(new UserSettingsResource($request->user()));
+    public function user(Request $request) {
+        return new UserAuthResource($request->user());
     }
 
     /**

@@ -15,10 +15,10 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 use function PHPUnit\Framework\assertEquals;
 
-class WebhookStatusTest extends TestCase
+class WebhookStatusTest extends FeatureTestCase
 {
     use RefreshDatabase;
 

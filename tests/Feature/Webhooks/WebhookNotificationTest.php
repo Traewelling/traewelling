@@ -7,11 +7,11 @@ use App\Jobs\MonitoredCallWebhookJob;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
 use function PHPUnit\Framework\assertEquals;
 
-class WebhookNotificationTest extends TestCase {
+class WebhookNotificationTest extends FeatureTestCase {
     use RefreshDatabase;
 
     public function testWebhookSendingOnNotification() {

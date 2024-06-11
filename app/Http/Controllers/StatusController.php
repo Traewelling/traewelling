@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
-use App\Events\StatusDeleteEvent;
 use App\Events\StatusUpdateEvent;
-use App\Exceptions\PermissionException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\API\v1\Controller as APIController;
 use App\Http\Controllers\Backend\Support\LocationController;
@@ -16,6 +14,7 @@ use App\Models\Status;
 use App\Models\User;
 use App\Notifications\StatusLiked;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -44,9 +43,9 @@ class StatusController extends Controller
     public static function getStatus(int $statusId): Status {
         return Status::where('id', $statusId)
                      ->with([
-                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin',
+                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin', 'tags',
                                 'checkin.originStation', 'checkin.destinationStation',
-                                'checkin.Trip.stopovers.station',
+                                'checkin.trip.stopovers.station',
                             ])
                      ->firstOrFail();
     }
@@ -63,7 +62,7 @@ class StatusController extends Controller
                                 'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
                                 'checkin.originStation', 'checkin.destinationStation',
                                 'checkin.trip.stopovers.station',
-                                'checkin.trip.polyline',
+                                'checkin.trip.polyline', 'tags',
                             ])
                      ->whereHas('checkin', function($query) {
                          $query->where('departure', '<', now())
@@ -71,7 +70,7 @@ class StatusController extends Controller
                      })
                      ->get()
                      ->filter(function(Status $status) {
-                         return Gate::allows('view', $status) && !$status->user->shadow_banned && $status->visibility !== StatusVisibility::UNLISTED;
+                         return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
                      })
                      ->sortByDesc(function(Status $status) {
                          return $status->checkin->departure;
@@ -103,7 +102,7 @@ class StatusController extends Controller
                           ->whereIn('id', $ids)
                           ->get()
                           ->filter(function(Status $status) {
-                              return Gate::allows('view', $status) && !$status->user->shadow_banned && $status->visibility !== StatusVisibility::UNLISTED;
+                              return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
                           })
                           ->values();
 
@@ -123,21 +122,13 @@ class StatusController extends Controller
      * @param int  $statusId
      *
      * @return bool|null
-     * @throws PermissionException|ModelNotFoundException
+     * @throws ModelNotFoundException
+     * @throws AuthorizationException User is not allowed to delete this status
      */
     public static function DeleteStatus(User $user, int $statusId): ?bool {
-        $status = Status::find($statusId);
-
-        if ($status === null) {
-            throw new ModelNotFoundException();
-        }
-        if ($user->id != $status->user->id) {
-            throw new PermissionException();
-        }
+        $status = Status::findOrFail($statusId); // throws ModelNotFoundException
+        Gate::forUser($user)->authorize('delete', $status);
         $status->delete();
-
-        StatusDeleteEvent::dispatch($status);
-
         return true;
     }
 
@@ -148,12 +139,11 @@ class StatusController extends Controller
      * @param Status $status
      *
      * @return Like
-     * @throws StatusAlreadyLikedException|PermissionException
+     * @throws StatusAlreadyLikedException
+     * @throws AuthorizationException User is not allowed to like this status
      */
     public static function createLike(User $user, Status $status): Like {
-        if ($user->cannot('like', $status)) {
-            throw new PermissionException();
-        }
+        Gate::forUser($user)->authorize('like', $status);
 
         if ($status->likes->contains('user_id', $user->id)) {
             throw new StatusAlreadyLikedException($user, $status);
@@ -205,7 +195,7 @@ class StatusController extends Controller
         $statuses = $event->statuses()
                           ->with([
                                      'user.blockedUsers', 'checkin.originStation',
-                                     'checkin.destinationStation', 'checkin.Trip.stopovers', 'event', 'likes',
+                                     'checkin.destinationStation', 'checkin.Trip.stopovers', 'event', 'likes', 'tags',
                                  ])
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
@@ -254,7 +244,7 @@ class StatusController extends Controller
         return auth()->user()->statuses()
                      ->with([
                                 'user', 'checkin.originStation', 'checkin.destinationStation',
-                                'checkin.Trip', 'event',
+                                'checkin.trip', 'event', 'tags',
                             ])
                      ->orderByDesc('created_at')
                      ->whereHas('checkin', function($query) {
@@ -270,9 +260,9 @@ class StatusController extends Controller
         string           $body = null,
         Event            $event = null
     ): Status {
-        if ($event !== null && !Carbon::now()->isBetween($event->begin, $event->end)) {
+        if ($event !== null && !Carbon::now()->isBetween($event->checkin_start, $event->checkin_end)) {
             Log::info('Event checkin was prevented because the event is not active anymore', [
-                'event' => $event->only(['id', 'name', 'begin', 'end']),
+                'event' => $event->only(['id', 'name', 'checkin_start', 'checkin_end']),
                 'user'  => $user->only(['id', 'username']),
             ]);
             $event = null;

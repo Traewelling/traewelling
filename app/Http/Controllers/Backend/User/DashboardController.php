@@ -17,9 +17,11 @@ abstract class DashboardController extends Controller
         $followingIDs   = $user->follows->pluck('id');
         $followingIDs[] = $user->id;
         return Status::with([
-                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin',
+                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin', 'tags',
+                                'mentions.mentioned',
                                 'checkin.originStation', 'checkin.destinationStation',
-                                'checkin.Trip.stopovers.station'
+                                'checkin.originStopover', 'checkin.destinationStopover',
+                                'checkin.trip.stopovers.station'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
@@ -40,8 +42,10 @@ abstract class DashboardController extends Controller
     public static function getGlobalDashboard(User $user): Paginator {
         return Status::with([
                                 'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin',
+                                'mentions.mentioned', 'tags',
                                 'checkin.originStation', 'checkin.destinationStation',
-                                'checkin.Trip.stopovers.station'
+                                'checkin.originStopover', 'checkin.destinationStopover',
+                                'checkin.trip.stopovers.station'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->join('users', 'statuses.user_id', '=', 'users.id')
@@ -69,7 +73,6 @@ abstract class DashboardController extends Controller
                                    ]);
                          });
                      })
-                     ->where('users.shadow_banned', false)
                      ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20))
                      ->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
                      ->whereNotIn('statuses.user_id', $user->blockedUsers()->select('blocked_id'))

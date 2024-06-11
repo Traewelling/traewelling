@@ -9,14 +9,13 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
-use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Jobs\PostStatusOnMastodon;
 use App\Models\Event;
-use App\Models\Status;
 use App\Models\Station;
+use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\User;
 use Carbon\Carbon;
@@ -26,7 +25,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
-use Intervention\Image\Exception\NotFoundException;
 use Throwable;
 
 class CheckinController
@@ -106,7 +104,7 @@ class CheckinController
             );
             return view('admin.checkin.trip', [
                 'hafasTrip' => $hafasTrip,
-                'events'    => EventBackend::activeEvents(),
+                'events'    => Event::forTimestamp(now())->get(),
                 'stopovers' => $hafasTrip->stopovers,
                 'user'      => $user,
             ]);
@@ -135,7 +133,7 @@ class CheckinController
                                         ]);
         try {
             $user = User::findOrFail($validated['userId']);
-        } catch (NotFoundException) {
+        } catch (ModelNotFoundException) {
             return redirect()->back()->withErrors('User non-existent');
         }
 
@@ -173,12 +171,12 @@ class CheckinController
                 ->withErrors(__(
                                  'controller.transport.overlapping-checkin',
                                  [
-                                     'linename' => $e->getCollision()->trip->linename
+                                     'linename' => $e->checkin->trip->linename
                                  ]
                              ) . strtr(' <a href=":url">#:id</a>',
                                        [
-                                           ':url' => url('/status/' . $e->getCollision()->status->id),
-                                           ':id'  => $e->getCollision()->status->id,
+                                           ':url' => url('/status/' . $e->checkin->status->id),
+                                           ':id'  => $e->checkin->status->id,
                                        ]
                              ));
 

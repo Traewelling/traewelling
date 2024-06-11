@@ -35,6 +35,7 @@ export default {
                 case 'FollowRequestIssued':
                     return 'fas fa-user-plus';
                 case 'MastodonNotSent':
+                case 'InvalidMastodonServer':
                     return 'fas fa-exclamation-triangle';
                 case 'StatusLiked':
                     return 'fas fa-heart';
@@ -51,6 +52,7 @@ export default {
         warnType() {
             switch (this.type) {
                 case 'MastodonNotSent':
+                case 'InvalidMastodonServer':
                     return 'warning';
                 default:
                     return 'neutral';

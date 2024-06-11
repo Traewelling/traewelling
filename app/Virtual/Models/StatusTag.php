@@ -38,7 +38,7 @@ class StatusTag
 
     /**
      * @OA\Property (
-     *      ref="#/components/schemas/VisibilityEnum"
+     *      ref="#/components/schemas/StatusVisibility"
      * )
      *
      * @var string

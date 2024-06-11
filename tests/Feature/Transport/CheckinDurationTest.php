@@ -4,9 +4,9 @@ namespace Tests\Feature\Transport;
 
 use App\Models\Checkin;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class CheckinDurationTest extends TestCase
+class CheckinDurationTest extends FeatureTestCase
 {
 
     use RefreshDatabase;

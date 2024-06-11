@@ -6,9 +6,9 @@ use App\Http\Controllers\Backend\Support\MentionHelper;
 use App\Models\Status;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class MentionTest extends TestCase
+class MentionTest extends FeatureTestCase
 {
     use RefreshDatabase;
 

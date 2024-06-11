@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
 /**
  * Load the publicly accessible files that any visitor can load without logging in.
@@ -14,7 +14,7 @@ use Tests\TestCase;
  * WHEN: A non-logged-in user tries to reach those pages
  * THEN: Show them to the user.
  */
-class StaticPagesThatMightHaveComputedPropertiesTest extends TestCase
+class StaticPagesThatMightHaveComputedPropertiesTest extends FeatureTestCase
 {
     use RefreshDatabase;
 

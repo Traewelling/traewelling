@@ -15,18 +15,12 @@ class RefreshPolyline implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
-    protected Trip $trip;
+    private Trip $trip;
 
     public function __construct(Trip $trip) {
         $this->trip = $trip;
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     * @throws \Exception
-     */
     public function handle(): void {
         BrouterController::reroutePolyline($this->trip);
     }

@@ -16,16 +16,25 @@ class UserController
 
     public function renderIndex(Request $request): View|RedirectResponse {
         $validated = $request->validate(['query' => ['nullable']]);
-
-        if (isset($validated['query'])) {
-            $users = User::where('id', $validated['query'])
-                         ->orWhere('name', 'like', '%' . $validated['query'] . '%')
-                         ->orWhere('username', 'like', '%' . $validated['query'] . '%')
-                         ->orWhere('email', 'like', '%' . $validated['query'] . '%')
-                         ->orderByDesc('last_login')
-                         ->simplePaginate(10);
-        } else {
+        if (!isset($validated['query'])) {
             $users = User::orderByDesc('last_login')->simplePaginate(10);
+        } else {
+            if (preg_match('/^["\'“”„].*["\'“”„]$/', $validated['query'])) {
+                $validated['query'] = substr($validated['query'], 1, -1);
+                $users              = User::where('id', $validated['query'])
+                                          ->orWhere('name', $validated['query'])
+                                          ->orWhere('username', $validated['query'])
+                                          ->orWhere('email', $validated['query'])
+                                          ->orderByDesc('last_login')
+                                          ->simplePaginate(10);
+            } else {
+                $users = User::where('id', $validated['query'])
+                             ->orWhere('name', 'like', '%' . $validated['query'] . '%')
+                             ->orWhere('username', 'like', '%' . $validated['query'] . '%')
+                             ->orWhere('email', 'like', '%' . $validated['query'] . '%')
+                             ->orderByDesc('last_login')
+                             ->simplePaginate(10);
+            }
         }
 
         if ($users->count() === 1) {

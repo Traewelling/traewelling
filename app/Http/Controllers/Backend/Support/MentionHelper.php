@@ -91,6 +91,13 @@ class MentionHelper
     }
 
     private function sendNotification(Mention $mention): void {
+        if ($mention->mentioned->id === $this->status->user_id) {
+            return;
+        }
+        if ($mention->mentioned->cannot('view', $this->status)) {
+            return;
+        }
+
         $found = false;
         // only send notification if the user has not been mentioned before
         foreach ($this->status->mentions as $oldMention) {

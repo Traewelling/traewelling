@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Frontend\Admin;
 use App\Enum\EventRejectionReason;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Admin\EventController as AdminEventBackend;
-use App\Http\Controllers\Backend\Admin\TelegramController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HafasController;
 use App\Models\Event;
@@ -19,7 +18,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
-use Spatie\Activitylog\Models\Activity;
 
 class EventController extends Controller
 {
@@ -30,34 +28,69 @@ class EventController extends Controller
         'host'                 => ['nullable', 'max:255'],
         'url'                  => ['nullable', 'url'],
         'nearest_station_name' => ['nullable', 'max:255'],
-        'begin'                => ['required', 'date'],
-        'end'                  => ['required', 'date'],
-        'event_start'          => ['nullable', 'date', 'after_or_equal:begin'],
-        'event_end'            => ['nullable', 'date', 'before_or_equal:end'],
+        'checkin_start'        => ['required', 'date'],
+        'checkin_end'          => ['required', 'date'],
+        'event_start'          => ['nullable', 'date', 'after_or_equal:checkin_start'],
+        'event_end'            => ['nullable', 'date', 'before_or_equal:checkin_end'],
     ];
 
     public function renderList(Request $request): View {
-        $events = Event::orderByDesc('end');
+        $queryBase = Event::query();
         if ($request->has('query')) {
-            $events->where('name', 'LIKE', '%' . strip_tags($request->get('query')) . '%');
+            $queryBase->where('name', 'LIKE', '%' . strip_tags($request->get('query')) . '%');
         }
+
         return view('admin.events.list', [
-            'events' => $events->paginate(10)
+            'events_future'  => $queryBase->clone()
+                                          ->orderBy('checkin_start')
+                                          ->whereDate('checkin_start', '>', DB::raw('now()'))
+                                          ->paginate(10, pageName: 'future'),
+            'events_current' => $queryBase->clone()
+                                          ->orderBy('checkin_start')
+                                          ->where('checkin_start', '<', DB::raw('now()'))
+                                          ->where('checkin_end', '>', DB::raw('now()'))
+                                          ->paginate(10, pageName: 'current'),
+            'events_past'    => $queryBase->clone()
+                                          ->where('checkin_end', '<', DB::raw('now()'))
+                                          ->paginate(10, pageName: 'past')
         ]);
     }
 
     public function renderSuggestions(): View {
         return view('admin.events.suggestions', [
             'suggestions' => EventSuggestion::where('processed', false)
-                                            ->where('end', '>', DB::raw('CURRENT_TIMESTAMP'))
+                                            ->where(DB::raw('DATE(end)'), '>=', DB::raw('DATE(CURRENT_TIMESTAMP)'))
                                             ->orderBy('begin')
                                             ->get()
         ]);
     }
 
     public function renderSuggestionCreation(int $id): View {
+        $suggestion     = EventSuggestion::findOrFail($id);
+        $parallelEvents = Event::where([
+                                           [DB::raw('DATE(checkin_start)'), '>=', $suggestion->end->toDateString()],
+                                           [DB::raw('DATE(checkin_end)'), '<=', $suggestion->begin->toDateString()]
+                                       ])
+                               ->orWhere([
+                                             [DB::raw('DATE(checkin_end)'), '>=', $suggestion->begin->toDateString()],
+                                             [DB::raw('DATE(checkin_end)'), '<=', $suggestion->end->toDateString()]
+                                         ])
+                               ->orWhere([
+                                             [DB::raw('DATE(checkin_start)'), '>=', $suggestion->begin->toDateString()],
+                                             [DB::raw('DATE(checkin_start)'), '<=', $suggestion->end->toDateString()]
+                                         ])
+                               ->get();
+
+        $parallelEvents->map(function($event) use ($suggestion) {
+            similar_text($event->name, $suggestion->name, $perc);
+            $event->similarity = $perc;
+
+            return $event;
+        });
+
         return view('admin.events.suggestion-create', [
-            'event' => EventSuggestion::findOrFail($id)
+            'eventSuggestion' => $suggestion,
+            'parallelEvents'  => $parallelEvents->sortByDesc('similarity')
         ]);
     }
 
@@ -117,7 +150,7 @@ class EventController extends Controller
                                         ]);
 
         $eventSuggestion = EventSuggestion::find($validated['suggestionId']);
-        $station    = null;
+        $station         = null;
 
         if ($eventSuggestion->user_id === auth()->user()->id && !auth()->user()?->hasRole('admin')) {
             return back()->with('alert-danger', 'You can\'t accept your own suggestion.');
@@ -132,17 +165,17 @@ class EventController extends Controller
         }
 
         $event = Event::create([
-                                   'name'        => $validated['name'],
-                                   'slug'        => AdminEventBackend::createSlugFromName($validated['name']),
-                                   'hashtag'     => $validated['hashtag'],
-                                   'host'        => $validated['host'],
-                                   'station_id'  => $station?->id,
-                                   'begin'       => Carbon::parse($validated['begin'])->toIso8601String(),
-                                   'end'         => Carbon::parse($validated['end'])->toIso8601String(),
-                                   'event_start' => Carbon::parse($validated['event_start'] ?? $validated['begin'])->toIso8601String(),
-                                   'event_end'   => Carbon::parse($validated['event_end'] ?? $validated['end'])->toIso8601String(),
-                                   'url'         => $validated['url'] ?? null,
-                                   'accepted_by' => auth()->user()->id,
+                                   'name'          => $validated['name'],
+                                   'slug'          => AdminEventBackend::createSlugFromName($validated['name']),
+                                   'hashtag'       => $validated['hashtag'],
+                                   'host'          => $validated['host'],
+                                   'station_id'    => $station?->id,
+                                   'checkin_start' => Carbon::parse($validated['begin'])->toIso8601String(),
+                                   'checkin_end'   => Carbon::parse($validated['end'])->toIso8601String(),
+                                   'event_start'   => Carbon::parse($validated['event_start'] ?? $validated['begin'])->toIso8601String(),
+                                   'event_end'     => Carbon::parse($validated['event_end'] ?? $validated['end'])->toIso8601String(),
+                                   'url'           => $validated['url'] ?? null,
+                                   'accepted_by'   => auth()->user()->id,
                                ]);
 
         $eventSuggestion->update(['processed' => true]);
@@ -161,7 +194,7 @@ class EventController extends Controller
 
         $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, $event));
 
-        return redirect()->route('admin.events')->with('alert-success', 'Das Event wurde akzeptiert!');
+        return redirect()->route('admin.events.suggestions')->with('alert-success', 'Das Event wurde akzeptiert!');
     }
 
     /**
@@ -179,19 +212,19 @@ class EventController extends Controller
             }
         }
 
-        Event::create([
-                          'name'        => $validated['name'],
-                          'slug'        => AdminEventBackend::createSlugFromName($validated['name']),
-                          'hashtag'     => $validated['hashtag'],
-                          'host'        => $validated['host'],
-                          'station_id'  => $station?->id,
-                          'begin'       => Carbon::parse($validated['begin'])->toIso8601String(),
-                          'end'         => Carbon::parse($validated['end'])->toIso8601String(),
-                          'event_start' => Carbon::parse($validated['event_start'] ?? $validated['begin'])->toIso8601String(),
-                          'event_end'   => Carbon::parse($validated['event_end'] ?? $validated['end'])->toIso8601String(),
-                          'url'         => $validated['url'] ?? null,
-                          'accepted_by' => auth()->user()->id
-                      ]);
+        $validated['slug']          = AdminEventBackend::createSlugFromName($validated['name']);
+        $validated['station_id']    = $station?->id;
+        $validated['checkin_start'] = Carbon::parse($validated['checkin_start'])->toIso8601String();
+        $validated['checkin_end']   = Carbon::parse($validated['checkin_end'])->toIso8601String();
+        if (isset($validated['event_start'])) {
+            $validated['event_start'] = Carbon::parse($validated['event_start'])->toIso8601String();
+        }
+        if (isset($validated['event_end'])) {
+            $validated['event_end'] = Carbon::parse($validated['event_end'])->toIso8601String();
+        }
+        $validated['accepted_by'] = auth()->user()->id;
+
+        Event::create($validated);
 
         return redirect()->route('admin.events')->with('alert-success', 'The event was created!');
     }
@@ -201,8 +234,9 @@ class EventController extends Controller
 
         $event = Event::findOrFail($id);
 
-        $validated['station_id'] = null;
-        if ($validated['nearest_station_name']) {
+        if (strlen($validated['nearest_station_name'] ?? '') === 0) {
+            $validated['station_id'] = null;
+        } elseif ($validated['nearest_station_name'] && $validated['nearest_station_name'] !== $event->station->name) {
             $station = HafasController::getStations($validated['nearest_station_name'], 1)->first();
 
             if ($station === null) {

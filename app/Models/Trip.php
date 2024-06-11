@@ -19,8 +19,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string          $linename
  * @property string          $journey_number
  * @property int             $operator_id
- * @property int             $origin
- * @property int             $destination
+ * @property int             $origin_id
+ * @property int             $destination_id
  * @property int             $polyline_id
  * @property UTCDateTime     $departure
  * @property UTCDateTime     $arrival
@@ -32,7 +32,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  *
  * @todo rename table only to "Trip" (without Hafas)
  * @todo rename "linename" to "line_name" (or something else, but not "linename")
- * @todo migrate origin & destination to use "id" instead of "ibnr" and rename to "origin_id" & "destination_id"
+ * @todo drop origin and destination, when origin_id and destination_id are added
  */
 class Trip extends Model
 {
@@ -41,7 +41,7 @@ class Trip extends Model
 
     protected $table    = 'hafas_trips';
     protected $fillable = [
-        'trip_id', 'category', 'number', 'linename', 'journey_number', 'operator_id', 'origin', 'destination',
+        'trip_id', 'category', 'number', 'linename', 'journey_number', 'operator_id', 'origin_id', 'destination_id',
         'polyline_id', 'departure', 'arrival', 'source', 'user_id', 'last_refreshed',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
@@ -51,8 +51,8 @@ class Trip extends Model
         'category'       => HafasTravelType::class,
         'journey_number' => 'integer',
         'operator_id'    => 'integer',
-        'origin'         => 'integer',
-        'destination'    => 'integer',
+        'origin_id'      => 'integer',
+        'destination_id' => 'integer',
         'polyline_id'    => 'integer',
         'departure'      => UTCDateTime::class,
         'arrival'        => UTCDateTime::class,
@@ -66,11 +66,11 @@ class Trip extends Model
     }
 
     public function originStation(): BelongsTo {
-        return $this->belongsTo(Station::class, 'origin', 'ibnr');
+        return $this->belongsTo(Station::class, 'origin_id', 'id');
     }
 
     public function destinationStation(): BelongsTo {
-        return $this->belongsTo(Station::class, 'destination', 'ibnr');
+        return $this->belongsTo(Station::class, 'destination_id', 'id');
     }
 
     public function operator(): BelongsTo {

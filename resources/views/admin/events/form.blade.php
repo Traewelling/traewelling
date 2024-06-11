@@ -52,7 +52,7 @@
                             <div class="col-md-8 text-left" id="station-autocomplete-container">
                                 <input type="text" id="station-autocomplete" name="nearest_station_name"
                                        class="form-control" placeholder="{{ __('stationboard.station-placeholder') }}"
-                                       value="{{$event?->nearest_station_name}}"
+                                       value="{{$event?->nearest_station_name ?? $event?->station?->name}}"
                                 />
                             </div>
                         </div>
@@ -68,18 +68,18 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-floating">
-                                    <input id="begin" type="datetime-local" class="form-control" name="begin"
-                                           required value="{{$event?->begin}}"
+                                    <input id="checkin_start" type="datetime-local" class="form-control" name="checkin_start"
+                                           required value="{{$event?->checkin_start}}"
                                     />
-                                    <label for="begin">Checkin {{ __('events.begin') }}:</label>
+                                    <label for="checkin_start">Checkin {{ __('events.begin') }}:</label>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-floating">
-                                    <input id="end" type="datetime-local" class="form-control" name="end"
-                                           required value="{{$event?->end}}"
+                                    <input id="checkin_end" type="datetime-local" class="form-control" name="checkin_end"
+                                           required value="{{$event?->checkin_end}}"
                                     />
-                                    <label for="end">Checkin {{ __('events.end') }}:</label>
+                                    <label for="checkin_end">Checkin {{ __('events.end') }}:</label>
                                 </div>
                             </div>
                         </div>

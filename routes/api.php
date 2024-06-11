@@ -18,7 +18,9 @@ use App\Http\Controllers\API\v1\FollowController;
 use App\Http\Controllers\API\v1\IcsController;
 use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\API\v1\NotificationsController;
+use App\Http\Controllers\API\v1\OperatorController;
 use App\Http\Controllers\API\v1\PrivacyPolicyController;
+use App\Http\Controllers\API\v1\ReportController;
 use App\Http\Controllers\API\v1\SessionController;
 use App\Http\Controllers\API\v1\SettingsController;
 use App\Http\Controllers\API\v1\StationController;
@@ -87,7 +89,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::post('checkin', [TransportController::class, 'create']);
             Route::group(['prefix' => 'station'], static function() {
                 Route::get('{name}/departures', [TransportController::class, 'getLegacyDepartures']); //ToDo: Remove this endpoint after 2024-06 (replaced by id)
-                Route::put('{name}/home', [TransportController::class, 'setHomeLegacy']); //ToDo: Remove this endpoint after 2024-06 (replaced by id)
+                Route::put('{name}/home', [TransportController::class, 'setHomeLegacy']);             //ToDo: Remove this endpoint after 2024-06 (replaced by id)
                 Route::get('nearby', [TransportController::class, 'getNextStationByCoordinates']);
                 Route::get('autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);
                 Route::get('history', [TransportController::class, 'getTrainStationHistory']);
@@ -173,6 +175,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
 
         Route::apiResource('station', StationController::class);                                        // currently admin/backend only
         Route::put('station/{oldStationId}/merge/{newStationId}', [StationController::class, 'merge']); // currently admin/backend only
+
+        Route::apiResource('report', ReportController::class);
+        Route::apiResource('operators', OperatorController::class)->only(['index']);
     });
 
     Route::group(['middleware' => ['privacy-policy']], static function() {
@@ -189,8 +194,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('event/{slug}', [EventController::class, 'show']);
             Route::get('event/{slug}/details', [EventController::class, 'showDetails']);
             Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
-            Route::get('events', [EventController::class, 'upcoming']);
-            Route::get('activeEvents', [EventController::class, 'activeEvents']);
+            Route::get('events', [EventController::class, 'index']);
+            Route::get('activeEvents', [EventController::class, 'activeEvents']); //@deprecated: remove after 2024-08
             Route::get('user/{username}', [UserController::class, 'show']);
             Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
         });

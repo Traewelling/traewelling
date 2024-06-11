@@ -113,19 +113,19 @@ class SettingsController extends Controller
      *                  property="defaultStatusVisibility",
      *                  type="integer",
      *                  nullable=true,
-     *                  @OA\Schema(ref="#/components/schemas/VisibilityEnum")
+     *                  @OA\Schema(ref="#/components/schemas/StatusVisibility")
      *              ),
      *              @OA\Property(
      *                   property="mastodonVisibility",
      *                   type="integer",
      *                   nullable=true,
-     *                   @OA\Schema(ref="#/components/schemas/MastodonVisibilityEnum")
+     *                   @OA\Schema(ref="#/components/schemas/MastodonVisibility")
      *               ),
      *              @OA\Property(
      *                   property="mapProvider",
      *                   type="string",
      *                   nullable=true,
-     *                   @OA\Schema(ref="#/components/schemas/MapProviderEnum")
+     *                   @OA\Schema(ref="#/components/schemas/MapProvider")
      *               )
      *         )
      *    ),

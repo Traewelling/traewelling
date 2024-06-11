@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enum\StatusVisibility;
 use App\Exceptions\AlreadyFollowingException;
-use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\User\BlockController;
 use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\User\TokenController;
@@ -40,7 +39,7 @@ class UserController extends Controller
         return $user->statuses()
                     ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                     ->with([
-                               'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin',
+                               'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin', 'tags',
                                'checkin.originStation', 'checkin.destinationStation',
                                'checkin.Trip.stopovers.station',
                            ])
@@ -173,7 +172,7 @@ class UserController extends Controller
         try {
             TokenController::revokeToken(tokenId: $validated['tokenId'], user: auth()->user());
             return redirect()->route('settings.tokens')->with('alert-success', __('settings.revoke-token.success'));
-        } catch (PermissionException) {
+        } catch (AuthorizationException) {
             return redirect()->route('settings.tokens')->withErrors(__('messages.exception.general'));
         }
     }

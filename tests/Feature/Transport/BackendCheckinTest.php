@@ -14,9 +14,9 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class BackendCheckinTest extends TestCase
+class BackendCheckinTest extends FeatureTestCase
 {
 
     use RefreshDatabase;
@@ -448,7 +448,7 @@ class BackendCheckinTest extends TestCase
         $this->assertTrue($trainCheckin->departure->isBefore($trainCheckin->arrival));
     }
 
-    public function testChangeTripDestination() {
+    public function testChangeTripDestination(): void {
         Http::fake([
                        '/stops/8000105'             => Http::response(self::FRANKFURT_HBF),
                        '/stops/8000105/departures*' => Http::response([self::ICE802]),

@@ -5,9 +5,9 @@ namespace Tests\Feature\Status;
 use App\Enum\TimeType;
 use App\Models\Checkin;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class TimeTypeTest extends TestCase
+class TimeTypeTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
