@@ -16,7 +16,7 @@ abstract class AccountDeletionController extends Controller
 {
 
     private static function getInactiveUsersSinceWeeks(int $weeks): Collection {
-        return User::where('users.last_login', '<', now()->subWeeks($weeks))
+        return User::where('users.last_activity', '<', now()->subWeeks($weeks))
                    ->whereNotNull('email')
                    ->get()
                    ->filter(static function(User $user) use ($weeks) {
