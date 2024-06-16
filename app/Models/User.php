@@ -44,7 +44,6 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon             last_login
  * @property Status[]           $statuses
  * @property SocialLoginProfile socialProfile
- * @property Carbon             last_activity
  *
  * @todo replace "role" with an explicit permission system - e.g. spatie/laravel-permission
  * @todo replace "experimental" also with an explicit permission system - user can add self to "experimental" group
@@ -61,7 +60,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
         'default_status_visibility', 'likes_enabled', 'private_profile', 'prevent_index', 'privacy_hide_days',
-        'language', 'last_login', 'mapprovider', 'timezone', 'last_activity'
+        'language', 'last_login', 'mapprovider', 'timezone',
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
@@ -83,7 +82,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'privacy_hide_days'         => 'integer',
         'last_login'                => 'datetime',
         'mapprovider'               => MapProvider::class,
-        'last_activity'             => 'datetime',
     ];
 
     public function getTrainDistanceAttribute(): float {

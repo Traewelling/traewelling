@@ -7,23 +7,6 @@ use Illuminate\Http\Request;
 
 class Authenticate extends Middleware
 {
-    public function handle($request, $next, ...$guards) {
-        parent::handle($request, $next, ...$guards);
-
-        if (empty($guards)) {
-            $guards = [null];
-        }
-
-        foreach ($guards as $guard) {
-            if ($this->auth->guard($guard)?->user()?->last_activity?->diffInMinutes(now()) > 60){
-                $this->auth->guard($guard)->user()->last_activity = now();
-                $this->auth->guard($guard)->user()->save();
-            }
-        }
-
-        return $next($request);
-    }
-
     /**
      * Get the path the user should be redirected to when they are not authenticated.
      *
