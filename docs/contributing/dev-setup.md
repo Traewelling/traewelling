@@ -52,6 +52,11 @@ php artisan passport:install
 Use your webserver of choice or the in php included dev server (`php artisan serve`) to boot the application.
 You should see the Träwelling homepage at http://localhost:8000.
 
+If you have seeded the database, you can log in using the following credentials:
+
+- Username: `Gertrud123` or `bob`
+- Password: `password`
+
 Additionally, for continuous functionality:
 
 - Create a cron job to run `php artisan schedule:run` every minute.
