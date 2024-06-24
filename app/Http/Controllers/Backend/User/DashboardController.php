@@ -29,6 +29,7 @@ abstract class DashboardController extends Controller
                        ->join('train_stopovers AS origin_stopover', 'train_checkins.origin_stopover_id', '=', 'origin_stopover.id')
                        ->join('users', 'statuses.user_id', '=', 'users.id')
                        ->where('origin_stopover.departure_real', '<', now()->addMinutes(20))
+                       ->where('origin_stopover.departure_real', '>', now()->subDays(2)) //TODO: discuss - dashboard should show statuses from the last 2 days. This is a performance dealbreaker
                        ->select('statuses.*')
                        ->orderByDesc('origin_stopover.departure_real'); // TODO: manual_departure
 
