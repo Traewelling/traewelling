@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Dto\MentionDto;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
+use App\Models\StatusTag;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Gate;
 
@@ -22,7 +23,8 @@ use Illuminate\Support\Facades\Gate;
  *      @OA\Property(property="createdAt", description="creation date of this status",type="string",format="datetime", example="2022-07-17T13:37:00+02:00"),
  *      @OA\Property(property="train", description="Train model"),
  *      @OA\Property(property="event", ref="#/components/schemas/EventResource", nullable=true),
- *      @OA\Property(property="userDetails", ref="#/components/schemas/LightUserResource")
+ *      @OA\Property(property="userDetails", ref="#/components/schemas/LightUserResource"),
+ *      @OA\Property(property="tags", type="array", @OA\Items(ref="#/components/schemas/StatusTagResource")),
  * )
  */
 class StatusResource extends JsonResource
@@ -62,7 +64,8 @@ class StatusResource extends JsonResource
                                   'operator'        => new OperatorResource($this?->checkin->trip->operator)
             ],
             'event'          => new EventResource($this?->event),
-            'userDetails'    => new LightUserResource($this->user) //TODO: rename this to user, after deprecated fields are removed (2024-08)
+            'userDetails'    => new LightUserResource($this->user), //TODO: rename this to user, after deprecated fields are removed (2024-08)
+            'tags'           => StatusTagResource::collection($this->tags->filter(fn(StatusTag $tag) => Gate::allows('view', $tag))),
         ];
     }
 }

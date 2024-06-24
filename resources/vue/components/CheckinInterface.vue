@@ -69,31 +69,36 @@ export default {
                 },
                 body: JSON.stringify(data),
             }).then((response) => {
+                this.loading = false;
                 if (response.ok) {
                     response.json().then((result) => {
                         localStorage.setItem("points", JSON.stringify(result.data.points));
                         localStorage.setItem("alsoOnThisConnection", JSON.stringify(result.data.alsoOnThisConnection));
                         this.$refs.tagList.postAllTags(result.data.status.id).then(() => {
-                            this.loading    = false;
                             window.location = "/status/" + result.data.status.id;
                         });
                     });
+                } else {
+                    switch (response.status) {
+                        case 400:
+                            response.json().then((result) => {
+                                this.notyf.error(result.message);
+                            });
+                            break;
+                        case 409:
+                            response.json().then(() => {
+                                this.collision = true;
+                                this.notyf.error(trans("checkin.conflict") + "<br>" + trans("checkin.conflict.question"));
+                            });
+                            break;
+                        default:
+                            this.notyf.error(trans("messages.exception.general"));
+                            break;
+                    }
                 }
-                if (response.status === 409) {
-                    this.loading = false;
-                    response.json().then(() => {
-                        this.collision = true;
-                        this.notyf.error(trans("checkin.conflict") + "<br>" + trans("checkin.conflict.question"));
-                    });
-                }
-                if (response.status === 500) {
-                    this.loading = false;
-                    this.notyf.error(trans("messages.exception.general"));
-                }
-            }).catch((reason) => {
-                console.log(reason);
+            }).catch(() => {
                 this.loading = false;
-                this.notyf.error(reason);
+                this.notyf.error(trans("messages.exception.general"));
             });
         },
         selectEvent(event) {

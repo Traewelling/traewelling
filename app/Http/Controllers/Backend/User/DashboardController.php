@@ -17,9 +17,15 @@ abstract class DashboardController extends Controller
         $followingIDs   = $user->follows->pluck('id');
         $followingIDs[] = $user->id;
         return Status::with([
-                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin',
+                                'event',
+                                'likes',
+                                'user.blockedByUsers',
+                                'user.blockedUsers',
+                                'checkin',
+                                'tags',
                                 'mentions.mentioned',
-                                'checkin.originStopover.station', 'checkin.destinationStopover.station',
+                                'checkin.originStopover.station',
+                                'checkin.destinationStopover.station',
                                 'checkin.trip.stopovers.station'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
@@ -40,10 +46,15 @@ abstract class DashboardController extends Controller
 
     public static function getGlobalDashboard(User $user): Paginator {
         return Status::with([
-                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin',
+                                'event',
+                                'likes',
+                                'user.blockedByUsers',
+                                'user.blockedUsers',
+                                'checkin',
                                 'mentions.mentioned',
-                                'checkin.originStopover.station', 'checkin.destinationStopover.station',
-                                'checkin.originStopover', 'checkin.destinationStopover',
+                                'tags',
+                                'checkin.originStopover.station',
+                                'checkin.destinationStopover.station',
                                 'checkin.trip.stopovers.station'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
