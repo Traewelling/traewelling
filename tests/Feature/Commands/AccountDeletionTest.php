@@ -7,9 +7,9 @@ use App\Models\Checkin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class AccountDeletionTest extends TestCase
+class AccountDeletionTest extends FeatureTestCase
 {
 
     use RefreshDatabase;
@@ -70,6 +70,8 @@ class AccountDeletionTest extends TestCase
     }
 
     public function testAccountDeletion(): void {
+        Mail::fake();
+
         $user = User::factory(['last_login' => now()->subWeeks(53)])->create();
         $this->assertCount(1, AccountDeletionController::getInactiveUsers());
         $this->assertFalse(AccountDeletionController::wasNotifiedAboutAccountDeletion($user));

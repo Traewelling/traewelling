@@ -7,7 +7,6 @@ use App\Dto\GeoJson\Feature;
 use App\Dto\GeoJson\FeatureCollection;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
-use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Backend\User\DashboardController;
@@ -15,16 +14,15 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
-use App\Models\Trip;
 use App\Models\Status;
 use App\Models\Stopover;
+use App\Models\Trip;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -54,7 +52,7 @@ class StatusController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/Status"
+     *                      ref="#/components/schemas/StatusResource"
      *                  )
      *              ),
      *              @OA\Property(property="links", ref="#/components/schemas/Links"),
@@ -93,7 +91,7 @@ class StatusController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/Status"
+     *                      ref="#/components/schemas/StatusResource"
      *                  )
      *              ),
      *              @OA\Property(property="links", ref="#/components/schemas/Links"),
@@ -133,7 +131,7 @@ class StatusController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/Status"
+     *                      ref="#/components/schemas/StatusResource"
      *                  )
      *              ),
      *              @OA\Property(property="links", ref="#/components/schemas/Links"),
@@ -165,7 +163,7 @@ class StatusController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/Status"
+     *                      ref="#/components/schemas/StatusResource"
      *                  )
      *              ),
      *          )
@@ -271,7 +269,7 @@ class StatusController extends Controller
      *          description="successful operation",
      *          @OA\JsonContent(
      *              @OA\Property(property="data",
-     *                      ref="#/components/schemas/Status"
+     *                      ref="#/components/schemas/StatusResource"
      *              ),
      *          )
      *       ),
@@ -343,7 +341,7 @@ class StatusController extends Controller
                 200,
                 ['status' => 'success']
             );
-        } catch (PermissionException) {
+        } catch (AuthorizationException) {
             return $this->sendError('You are not allowed to delete this status.', 403);
         } catch (ModelNotFoundException) {
             return $this->sendError('No status found for this id.');
@@ -374,7 +372,7 @@ class StatusController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(
      *                  property="data",
-     *                  ref="#/components/schemas/Status"
+     *                  ref="#/components/schemas/StatusResource"
      *              )
      *          )
      *       ),
@@ -399,6 +397,7 @@ class StatusController extends Controller
             'body'                      => ['nullable', 'max:280', 'nullable'],
             'business'                  => ['required', new Enum(Business::class)],
             'visibility'                => ['required', new Enum(StatusVisibility::class)],
+            'eventId'                   => ['nullable', 'integer', 'exists:events,id'],
 
             //Changing of Checkin-Metadata
             'manualDeparture'           => ['nullable', 'date'],
@@ -419,7 +418,7 @@ class StatusController extends Controller
             $this->authorize('update', $status);
 
             if (isset($validated['destinationId'], $validated['destinationArrivalPlanned'])
-                && ((int) $validated['destinationId']) !== $status->checkin->destinationStation->id) {
+                && ((int) $validated['destinationId']) !== $status->checkin->destinationStopover->station->id) {
                 $arrival  = Carbon::parse($validated['destinationArrivalPlanned'])->timezone(config('app.timezone'));
                 $stopover = Stopover::where('train_station_id', $validated['destinationId'])
                                     ->where('arrival_planned', $arrival)
@@ -435,11 +434,16 @@ class StatusController extends Controller
                 );
             }
 
-            $status->update([
-                                'body'       => $validated['body'] ?? null,
-                                'business'   => Business::from($validated['business']),
-                                'visibility' => StatusVisibility::from($validated['visibility']),
-                            ]);
+            $updatePayload = [
+                'body'       => $validated['body'] ?? null,
+                'business'   => Business::from($validated['business']),
+                'visibility' => StatusVisibility::from($validated['visibility']),
+            ];
+
+            if (array_key_exists('eventId', $validated)) { // don't use isset here as it would return false if eventId is null
+                $updatePayload['event_id'] = $validated['eventId'];
+            }
+            $status->update($updatePayload);
 
             if (array_key_exists('manualDeparture', $validated)) {
                 $manualDeparture = isset($validated['manualDeparture'])
@@ -457,7 +461,7 @@ class StatusController extends Controller
             return $this->sendResponse(new StatusResource($status->fresh()));
         } catch (ModelNotFoundException) {
             return $this->sendError('Status not found');
-        } catch (PermissionException|AuthorizationException) {
+        } catch (AuthorizationException) {
             return $this->sendError('You are not authorized to edit this status', 403);
         } catch (InvalidArgumentException) {
             return $this->sendError('Invalid Arguments', 400);
@@ -595,7 +599,7 @@ class StatusController extends Controller
      *          description="successful operation",
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="object",
-     *                      ref="#/components/schemas/Status"
+     *                      ref="#/components/schemas/StatusResource"
      *              )
      *          )
      *       ),

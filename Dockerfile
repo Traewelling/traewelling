@@ -1,4 +1,4 @@
-FROM node:21-alpine as NodeBuildContainer
+FROM node:22-alpine as NodeBuildContainer
 COPY . /usr/src/trwl
 WORKDIR /usr/src/trwl
 RUN npm install && npm run build && rm -rf node_modules
@@ -7,8 +7,9 @@ FROM composer:2 as ComposerBuildContainer
 COPY --from=NodeBuildContainer /usr/src/trwl /usr/src/trwl
 WORKDIR /usr/src/trwl
 RUN composer install --ignore-platform-reqs --no-interaction --no-progress --no-suggest --optimize-autoloader
+RUN php artisan optimize
 
-FROM php:8.3.3-apache
+FROM php:8.3.8-apache
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 RUN apt update && \

@@ -11,11 +11,14 @@ use Illuminate\Support\Collection;
 class DailyStatsController extends Controller
 {
     public static function getStatusesOnDate(User $user, Carbon $date): Collection {
-        return Status::with(['checkin'])
+        $start = $date->clone()->startOfDay()->tz('UTC');
+        $end   = $date->clone()->endOfDay()->tz('UTC');
+
+        return Status::with(['checkin', 'tags'])
                      ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                      ->where('statuses.user_id', $user->id)
-                     ->where('train_checkins.departure', '>=', $date->clone()->startOfDay())
-                     ->where('train_checkins.departure', '<=', $date->clone()->endOfDay())
+                     ->where('train_checkins.departure', '>=', $start)
+                     ->where('train_checkins.departure', '<=', $end)
                      ->select('statuses.*')
                      ->get()
                      ->sortBy('checkin.departure');

@@ -4,18 +4,19 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
-use Carbon\Carbon;
-use Illuminate\Contracts\Support\Renderable;
+use Illuminate\View\View;
 
 class EventController extends Controller
 {
-    public function renderEventOverview(): Renderable {
-        $liveAndUpcomingEvents = Event::with(['station'])
-                                      ->where('end', '>=', Carbon::now()->toIso8601String())
-                                      ->orderBy('begin')
-                                      ->paginate(15);
+    public function renderEventOverview(): View {
+        $events = Event::forTimestamp(
+            timestamp:    now(),
+            showUpcoming: true
+        )
+                       ->with(['station'])
+                       ->paginate(15);
         return view('events.overview', [
-            'liveAndUpcomingEvents' => $liveAndUpcomingEvents
+            'liveAndUpcomingEvents' => $events
         ]);
     }
 }

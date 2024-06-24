@@ -14,11 +14,12 @@ use App\Http\Resources\StatisticsTravelPurposeResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Status;
 use Carbon\Carbon;
+use DateTimeZone;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Date;
+use Illuminate\Validation\Rule;
 
 class StatisticsController extends Controller
 {
@@ -34,7 +35,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
@@ -43,7 +44,6 @@ class StatisticsController extends Controller
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
      *           {"passport": {"read-statistics"}}, {"token": {}}
-     *
      *       }
      *     )
      *
@@ -65,7 +65,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
@@ -97,7 +97,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
@@ -135,7 +135,7 @@ class StatisticsController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUser"
+     *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
@@ -187,7 +187,7 @@ class StatisticsController extends Controller
      *                      description="The purpose of travel",
      *                      type="array",
      *                      @OA\Items(
-     *                          @OA\Property(property="name", ref="#/components/schemas/BusinessEnum"),
+     *                          @OA\Property(property="name", ref="#/components/schemas/Business"),
      *                          @OA\Property(property="count", type="integer", example=11),
      *                          @OA\Property(property="duration", type="integer", example=425, description="Duration in
      *                                                            minutes"),
@@ -198,10 +198,9 @@ class StatisticsController extends Controller
      *                    description="The categories of the travel",
      *                    type="array",
      *                    @OA\Items(
-     *                        @OA\Property(property="name", ref="#/components/schemas/TrainCategoryEnum"),
+     *                        @OA\Property(property="name", ref="#/components/schemas/HafasTravelType"),
      *                        @OA\Property(property="count", type="integer", example=11),
-     *                        @OA\Property(property="duration", type="integer", example=425, description="Duration in
-     *                                                          minutes"),
+     *                        @OA\Property(property="duration", type="integer", example=425, description="Duration in minutes"),
      *                    )
      *                ),
      *                @OA\Property(
@@ -211,8 +210,7 @@ class StatisticsController extends Controller
      *                    @OA\Items(
      *                        @OA\Property(property="name", example="Gertruds Verkehrsgesellschaft mbH"),
      *                        @OA\Property(property="count", type="integer", example=10),
-     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in
-     *                                                          minutes"),
+     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in minutes"),
      *                    )
      *                ),
      *                @OA\Property(
@@ -222,8 +220,7 @@ class StatisticsController extends Controller
      *                    @OA\Items(
      *                        @OA\Property(property="date", type="string", example="2021-01-01T00:00:00.000Z"),
      *                        @OA\Property(property="count", type="integer", example=10),
-     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in
-     *                                                          minutes"),
+     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in minutes"),
      *                    )
      *               ),
      *            )
@@ -286,12 +283,27 @@ class StatisticsController extends Controller
      *      tags={"Statistics"},
      *      summary="Get statistics and statuses of one day",
      *      description="Returns all statuses and statistics for the requested day",
+     *      @OA\Parameter(
+     *          name="date",
+     *          in="path",
+     *          description="Date for the statistics in Format `YYYY-MM-DD`",
+     *          example="2024-04-09",
+     *          required=true,
+     *          @OA\Schema(type="string")
+     *       ),
+     *      @OA\Parameter (
+     *          name="timezone",
+     *          in="query",
+     *          description="Timezone for the date. If not set, the user's timezone will be used.",
+     *          example="Europe/Berlin",
+     *          @OA\Schema(type="string")
+     *      ),
      *      @OA\Parameter (
      *          name="withPolylines",
      *          in="query",
      *          description="If this parameter is set, the polylines will be returned as well. Otherwise attribute is
-     *          null.", example="",
-     *          @OA\Schema(type="string")
+     *          null.",
+     *          @OA\Schema(type="boolean")
      *      ),
      *      @OA\Response(
      *          response=200,
@@ -303,7 +315,7 @@ class StatisticsController extends Controller
      *                  @OA\Property (
      *                      property="statuses", type="array",
      *                      @OA\Items (
-     *                          ref="#/components/schemas/Status"
+     *                          ref="#/components/schemas/StatusResource"
      *                      ),
      *                  ),
      *                  @OA\Property (
@@ -346,10 +358,21 @@ class StatisticsController extends Controller
      * @return JsonResponse
      */
     public function getPersonalDailyStatistics(Request $request, string $dateString): JsonResponse {
-        $statuses = DailyStatsController::getStatusesOnDate(auth()->user(), Date::parse($dateString));
+        $validated = $request->validate([
+                                            'withPolylines' => ['nullable', Rule::in(['true', 'false'])],
+                                            'timezone'      => [
+                                                'nullable',
+                                                'string',
+                                                Rule::in(DateTimeZone::listIdentifiers())
+                                            ]
+                                        ]);
+        $statuses  = DailyStatsController::getStatusesOnDate(
+            auth()->user(),
+            Carbon::parse($dateString, $validated['timezone'] ?? auth()->user()->timezone)
+        );
 
         $polylines = null;
-        if ($request->has('withPolylines')) {
+        if (!empty($validated['withPolylines']) && $validated['withPolylines'] !== 'false') {
             $polylines = collect();
             $statuses->each(function(Status $status) use (&$polylines) {
                 $polylines->add(new Feature(LocationController::forStatus($status)->getMapLines()));

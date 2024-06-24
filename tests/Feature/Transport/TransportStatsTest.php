@@ -19,9 +19,9 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class TransportStatsTest extends TestCase
+class TransportStatsTest extends FeatureTestCase
 {
 
     use RefreshDatabase;

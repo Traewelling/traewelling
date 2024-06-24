@@ -16,6 +16,8 @@ import CheckinSuccessHelper from "../vue/components/CheckinSuccessHelper.vue";
 import {i18nVue} from "laravel-vue-i18n";
 import TagHelper from "../vue/components/TagHelper.vue";
 import TripCreationForm from "../vue/components/TripCreation/TripCreationForm.vue";
+import {createPinia} from 'pinia'
+import piniaPluginPersistedsState from 'pinia-plugin-persistedstate'
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -49,29 +51,33 @@ document.addEventListener("DOMContentLoaded", function () {
     let fallbackLang = "en";
     const urlParams  = new URLSearchParams(window.location.search);
     const lang       = urlParams.get("language");
+    const pinia      = createPinia();
+    pinia.use(piniaPluginPersistedsState);
 
     if (lang && lang.startsWith("de_")) {
         fallbackLang = "de";
+    }
+
+    const i18nOptions = {
+        fallbackLang: fallbackLang,
+        fallbackMissingTranslations: true,
+        resolve: (lang) => import(`../../lang/${lang}.json`)
     }
 
     if (document.getElementById("nav-main")) {
         const app = createApp({});
         app.component("NotificationBell", NotificationBell);
         app.config.devtools = true;
-        app.use(i18nVue, {
-            fallbackLang: fallbackLang,
-            resolve: (lang) => import(`../../lang/${lang}.json`)
-        });
+        app.use(pinia);
+        app.use(i18nVue, i18nOptions);
         app.mount("#nav-main");
     }
 
     if (document.getElementById("activeJourneys")) {
         const app2 = createApp({});
         app2.component("ActiveJourneyMap", ActiveJourneyMap);
-        app2.use(i18nVue, {
-            fallbackLang: fallbackLang,
-            resolve: (lang) => import(`../../lang/${lang}.json`)
-        });
+        app2.use(pinia);
+        app2.use(i18nVue, i18nOptions);
         app2.mount("#activeJourneys");
     }
 
@@ -79,36 +85,29 @@ document.addEventListener("DOMContentLoaded", function () {
         const app3 = createApp({});
         app3.component("Stationboard", Stationboard);
         app3.component("Stationautocomplete", StationAutocomplete);
-        app3.use(i18nVue, {
-            fallbackLang: fallbackLang,
-            resolve: (lang) => import(`../../lang/${lang}.json`)
-        });
+        app3.use(pinia);
+        app3.use(i18nVue, i18nOptions);
         app3.mount("#station-board-new");
     }
 
     if (document.getElementById("checkin-success-helper")) {
         const app4 = createApp({});
         app4.component("CheckinSuccessHelper", CheckinSuccessHelper);
-        app4.use(i18nVue, {
-            fallbackLang: fallbackLang,
-            resolve: (lang) => import(`../../lang/${lang}.json`)
-        });
+        app4.use(i18nVue, i18nOptions);
         app4.mount("#checkin-success-helper");
     }
 
     if (document.getElementById("tag-helper")) {
         const app5 = createApp({});
         app5.component("TagHelper", TagHelper);
-        app5.use(i18nVue, {
-            fallbackLang: fallbackLang,
-            resolve: (lang) => import(`../../lang/${lang}.json`)
-        });
+        app5.use(i18nVue, i18nOptions);
         app5.mount("#tag-helper");
     }
 
     if (document.getElementById("trip-creation-form")) {
         const app6 = createApp({});
         app6.component("TripCreationForm", TripCreationForm);
+        app6.use(i18nVue, i18nOptions);
         app6.mount("#trip-creation-form");
     }
 });

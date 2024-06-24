@@ -5,6 +5,7 @@ npm-debug.log
 tests-coverage/
 clover.xml
 .phpunit.cache/
+.DS_Store
 
 # Profile pictures
 public/uploads/avatars/*
@@ -21,9 +22,7 @@ app/storage/
 public/storage
 public/hot
 storage/*.key
-.env.*.php
-.env.php
-.env
+.env*
 Homestead.yaml
 Homestead.json
 

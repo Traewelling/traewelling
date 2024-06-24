@@ -2,6 +2,13 @@
 
 @section('title', 'User: ' . $user->username)
 
+@section('actions')
+    <a class="btn float-end btn-secondary" href="{{ route('profile', ['username' => $user->username]) }}">
+        <i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
+        <span class="d-none d-md-inline">Frontend</span>
+    </a>
+@endsection
+
 @section('content')
 
     <div class="row">
@@ -187,16 +194,16 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip_id])}}">
+                                            <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip->id])}}">
                                                 {{ $status->checkin->trip_id }}
                                             </a>
                                             <br/>
                                             <code>{{ $status->checkin->trip->linename }}</code>
                                         </td>
                                         <td>
-                                            {{ $status->checkin->originStation->name }}
+                                            {{ $status->checkin->originStopover->station->name }}
                                             &rarr;
-                                            {{ $status->checkin->destinationStation->name }}
+                                            {{ $status->checkin->destinationStopover->station->name }}
                                         </td>
                                         <td>{{ $status->checkin->points }}</td>
                                         <td>{{ $status->created_at }}</td>

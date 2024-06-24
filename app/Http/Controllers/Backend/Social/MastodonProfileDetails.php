@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Backend\Social;
 
 
-use App\Enum\CacheKey;
+use App\Helpers\CacheKey;
 use App\Models\MastodonServer;
 use App\Models\User;
 use Exception;
@@ -32,7 +32,7 @@ class MastodonProfileDetails
     }
 
     private function getData(): ?array {
-        return Cache::remember(CacheKey::getMastodonProfileInformationKey($this->user), 3600, function () {
+        return Cache::remember(CacheKey::getMastodonProfileInformationKey($this->user), 3600, function() {
             return $this->fetchProfileInformation();
         });
     }
@@ -59,10 +59,29 @@ class MastodonProfileDetails
                 // but has not told us yet.
                 Log::warning("Unable to fetch mastodon information for user#{$this->user->id} for Mastodon-Server '
                 . {$mastodonServer->domain}' and mastodon_id#{$this->user->socialProfile->mastodon_id}");
-                Log::warning($exception);
+                if (in_array($exception->getCode(), [401, 404, 410])) {
+                    $this->removeMastodonInformation();
+                } else {
+                    report($exception);
+                }
             }
         }
 
         return null;
+    }
+
+    private function removeMastodonInformation(): void {
+        if ($this->user->email_verified_at === null) {
+            Log::info("User#{$this->user->id} has not verified his email address yet."
+                      . "Not removing mastodon information.");
+            return;
+        }
+        Log::info("Removing mastodon information for user#{$this->user->id}");
+        $this->user->socialProfile->update([
+                                               'mastodon_id'         => null,
+                                               'mastodon_token'      => null,
+                                               'mastodon_server'     => null,
+                                               'mastodon_visibility' => 1,
+                                           ]);
     }
 }

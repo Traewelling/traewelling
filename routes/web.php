@@ -25,6 +25,7 @@ use App\Http\Controllers\Frontend\Stats\DailyStatsController;
 use App\Http\Controllers\Frontend\Support\SupportController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
+use App\Http\Controllers\Frontend\VueFrontendController;
 use App\Http\Controllers\Frontend\WebFingerController;
 use App\Http\Controllers\Frontend\WebhookController;
 use App\Http\Controllers\FrontendStaticController;
@@ -123,9 +124,11 @@ Route::get('/ics', [IcsController::class, 'renderIcs'])
  * All of these routes can only be used by fully registered users.
  */
 Route::middleware(['auth', 'privacy'])->group(function() {
-    Route::view('/beta/trip-creation', 'closed-beta.trip-creation')
-         ->can('create-manual-trip')
-         ->name('beta.trip-creation');
+
+    Route::redirect('/beta/trip-creation', '/trip/create'); //TODO: remove after 2024-06
+    Route::view('/trip/create', 'beta.trip-creation')
+         ->middleware(['can:create-manual-trip'])
+         ->name('trip.create');
 
     Route::post('/ics/createToken', [IcsController::class, 'createIcsToken'])
          ->name('ics.createToken'); //TODO: Replace with API Endpoint
@@ -227,17 +230,20 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/transport/train/autocomplete/{station}', [FrontendTransportController::class, 'TrainAutocomplete'])
          ->name('transport.train.autocomplete');
 
+    Route::get('/stationboard', [VueFrontendController::class, 'stationboard'])
+         ->name('stationboard');
+
     Route::get('/trains/stationboard', [FrontendTransportController::class, 'TrainStationboard'])
-         ->name('trains.stationboard');
+         ->name('trains.stationboard'); // TODO: Adapt with publish of vue stationboard, so that redirects still work
 
     Route::get('/trains/nearby', [FrontendTransportController::class, 'StationByCoordinates'])
-         ->name('trains.nearby');
+         ->name('trains.nearby'); // TODO: Adapt with publish of vue stationboard, so that redirects still work
 
     Route::get('/trains/trip', [FrontendTransportController::class, 'TrainTrip'])
-         ->name('trains.trip');
+         ->name('trains.trip'); // TODO: Adapt with publish of vue stationboard, so that redirects still work
 
     Route::post('/trains/checkin', [FrontendTransportController::class, 'TrainCheckin'])
-         ->name('trains.checkin'); //TODO: Replace with API Endpoint
+         ->name('trains.checkin');  // TODO: Adapt with publish of vue stationboard, so that redirects still work
 
     Route::get('/trains/setHome/', [FrontendTransportController::class, 'setTrainHome'])
          ->name('user.setHome'); //TODO: Replace with API Endpoint // why is this a GET request?

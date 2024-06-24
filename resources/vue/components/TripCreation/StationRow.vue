@@ -1,6 +1,7 @@
 <script>
 import FullScreenModal from "../FullScreenModal.vue";
 import _ from "lodash";
+import {trans} from "laravel-vue-i18n";
 
 export default {
     name: "StationRow",
@@ -8,7 +9,6 @@ export default {
     props: {
         placeholder: {
             type: String,
-            default: "Zwischenhalt"
         },
         arrival: {
             type: Boolean,
@@ -28,20 +28,27 @@ export default {
             stationInput: "",
             loading: false,
             autocompleteList: [],
+            id: "",
         };
     },
     computed: {
         timeFieldALabel() {
             if (this.arrival && this.departure) {
-                return 'Ankunft';
+                return trans("trip_creation.form.arrival");
             }
-            return this.arrival ? 'Ankunft' : 'Abfahrt';
+            return this.arrival ? trans("trip_creation.form.arrival") : trans("trip_creation.form.departure");
         },
         timeFieldBLabel() {
             if (this.arrival && this.departure) {
-                return 'Abfahrt';
+                return trans("trip_creation.form.departure");
             }
-            return this.arrival ? 'Ankunft' : 'Abfahrt';
+            return this.arrival ? trans("trip_creation.form.arrival") : trans("trip_creation.form.departure");
+        },
+        timeFieldAId() {
+            return "timeFieldA" + this.id;
+        },
+        timeFieldBId() {
+            return "timeFieldB" + this.id;
         }
     },
     methods: {
@@ -70,6 +77,12 @@ export default {
             });
         }
     },
+    mounted() {
+        // I hate it, it's extremely ugly, but it works
+        // see https://github.com/vuejs/vue/issues/5886
+        // There is a plugin for this, but it's not worth it with only one component
+        this.id = Math.random().toString().substring(2);
+    },
     watch: {
         stationInput: _.debounce(function() {
             this.autocomplete();
@@ -84,7 +97,7 @@ export default {
             <template #header>
                 <input type="text"
                        name="station"
-                       class="form-control"
+                       class="form-control mobile-input-fs-16"
                        :placeholder="placeholder"
                        v-model="stationInput"
                 />
@@ -99,33 +112,30 @@ export default {
                 </ul>
             </template>
         </FullScreenModal>
-        <label for="timeFieldB" class="form-label">{{placeholder}}</label>
-        <input type="text" class="form-control" :placeholder="placeholder" @focusin="showModal" v-model="stationInput">
+        <label :for="timeFieldBId" class="form-label">{{placeholder}}</label>
+        <input type="text" class="form-control mobile-input-fs-16" :placeholder="placeholder"
+               @focusin="showModal" v-model="stationInput">
     </div>
     <div :class="departure && arrival ? 'col col-md-4' : 'col-4'" v-if="departure && arrival">
-        <label for="timeFieldA" class="form-label">{{timeFieldALabel}}</label>
+        <label :for="timeFieldAId" class="form-label">{{timeFieldALabel}}</label>
         <input
-            id="timeFieldA"
+            :id="timeFieldAId"
             type="datetime-local"
-            class="form-control"
+            class="form-control mobile-input-fs-16"
             :placeholder="timeFieldALabel"
             :aria-label="timeFieldALabel"
             @input="$emit('update:timeFieldA', $event.target.value)"
         >
     </div>
     <div :class="departure && arrival ? 'col col-md-4' : 'col-4'">
-        <label for="timeFieldB" class="form-label">{{timeFieldBLabel}}</label>
+        <label :for="timeFieldBId" class="form-label">{{timeFieldBLabel}}</label>
         <input
-            id="timeFieldB"
+            :id="timeFieldBId"
             type="datetime-local"
-            class="form-control"
+            class="form-control mobile-input-fs-16"
             :placeholder="timeFieldBLabel"
             :aria-label="timeFieldBLabel"
             @input="$emit('update:timeFieldB', $event.target.value)"
         >
     </div>
 </template>
-
-<style scoped lang="scss">
-
-</style>

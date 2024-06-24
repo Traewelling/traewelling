@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Träwelling API",
-        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The\n *      API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body\n *      can be changed. Breaking changes will be announced on GitHub:\n *      https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md",
+        "description": "Träwelling user API description. This is an incomplete documentation with still many errors. The API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body can be changed. Breaking changes will be announced on GitHub: https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md",
         "contact": {
             "email": "support@traewelling.de"
         },
@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000",
+            "url": "https://traewelling.de/api/v1/api/v1",
             "description": "This instance"
         }
     ],
@@ -77,7 +77,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/UserAuth"
+                                            "$ref": "#/components/schemas/UserAuthResource"
                                         }
                                     },
                                     "type": "object"
@@ -164,7 +164,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/Event"
+                                            "$ref": "#/components/schemas/EventResource"
                                         }
                                     },
                                     "type": "object"
@@ -218,7 +218,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/EventDetails"
+                                            "$ref": "#/components/schemas/EventDetailsResource"
                                         }
                                     },
                                     "type": "object"
@@ -283,7 +283,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Status"
+                                                "$ref": "#/components/schemas/StatusResource"
                                             }
                                         },
                                         "links": {
@@ -322,18 +322,28 @@
                 "tags": [
                     "Events"
                 ],
-                "summary": "[Auth optional] Shows upcoming events with basic information",
-                "description": "Returns slug, name and duration for an event",
-                "operationId": "getUpcomingEvent",
+                "summary": "[Auth optional] Show active or upcoming events for the given timestamp",
+                "description": "Returns all active or upcoming events for the given timestamp. Default timestamp is now. If upcoming is set to true, all events ending after the timestamp are returned.",
+                "operationId": "9c949d287fe278f2f8de845eedbd12fa",
                 "parameters": [
                     {
-                        "name": "slug",
-                        "in": "path",
-                        "description": "slug for event",
+                        "name": "timestamp",
+                        "in": "query",
+                        "description": "The timestamp of view. Default is now.",
+                        "required": false,
                         "schema": {
                             "type": "string"
                         },
-                        "example": "weihnachten_2022"
+                        "example": "2022-08-01T12:00:00+02:00"
+                    },
+                    {
+                        "name": "upcoming",
+                        "in": "query",
+                        "description": "Show only upcoming events",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
                     }
                 ],
                 "responses": {
@@ -346,7 +356,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Event"
+                                                "$ref": "#/components/schemas/EventResource"
                                             }
                                         }
                                     },
@@ -357,9 +367,6 @@
                     },
                     "400": {
                         "description": "Bad request"
-                    },
-                    "404": {
-                        "description": "No Event found for this id"
                     }
                 },
                 "security": [
@@ -418,56 +425,14 @@
                 "tags": [
                     "Events"
                 ],
-                "summary": "Shows current events with basic information",
-                "description": "Returns array of current events, used for a basic overview during checkiused for a basic\n     *      overview during checkin",
-                "operationId": "getCurrentEvents",
-                "parameters": [
-                    {
-                        "name": "slug",
-                        "in": "path",
-                        "description": "slug for event",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "example": "weihnachten_2022"
-                    }
-                ],
+                "summary": "DEPRECATED - USE /events - removed after 2024-08",
+                "description": "DEPRECATED - USE /events - removed after 2024-08",
+                "operationId": "35401311136edc062ced8b22c9cd8722",
                 "responses": {
                     "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Event"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "404": {
-                        "description": "No Event found for this id"
+                        "description": "The events"
                     }
-                },
-                "security": [
-                    {
-                        "passport": [
-                            "read-statuses"
-                        ]
-                    },
-                    {
-                        "token": []
-                    }
-                ]
+                }
             }
         },
         "/user/{id}/follow": {
@@ -1282,6 +1247,44 @@
                 ]
             }
         },
+        "/operators": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Get a list of all operators.",
+                "operationId": "bcfcf8686980cf0fcdc751b2e13fa4f7",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/OperatorResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/static/privacy": {
             "get": {
                 "tags": [
@@ -1337,6 +1340,82 @@
                     },
                     "401": {
                         "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/report": {
+            "post": {
+                "tags": [
+                    "User",
+                    "Status",
+                    "Events"
+                ],
+                "summary": "Report a Status, Event or User to the admins.",
+                "operationId": "7a2c60a00b43cf41d9b72b6f15ad09ad",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "subject_type",
+                                    "subject_id",
+                                    "reason"
+                                ],
+                                "properties": {
+                                    "subject_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Event",
+                                            "Status",
+                                            "User"
+                                        ],
+                                        "example": "Status"
+                                    },
+                                    "subject_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "reason": {
+                                        "type": "string",
+                                        "enum": [
+                                            "inappropriate",
+                                            "implausible",
+                                            "spam",
+                                            "illegal",
+                                            "other"
+                                        ],
+                                        "example": "inappropriate"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "The status is inappropriate because...",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "The report was successfully created."
+                    },
+                    "401": {
+                        "description": "The user is not authenticated."
+                    },
+                    "422": {
+                        "description": "The given data was invalid."
                     }
                 },
                 "security": [
@@ -1499,7 +1578,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                                "$ref": "#/components/schemas/LeaderboardUserResource"
                                             }
                                         }
                                     },
@@ -1544,7 +1623,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                                "$ref": "#/components/schemas/LeaderboardUserResource"
                                             }
                                         }
                                     },
@@ -1589,7 +1668,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                                "$ref": "#/components/schemas/LeaderboardUserResource"
                                             }
                                         }
                                     },
@@ -1645,7 +1724,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/LeaderboardUser"
+                                                "$ref": "#/components/schemas/LeaderboardUserResource"
                                             }
                                         }
                                     },
@@ -1709,7 +1788,7 @@
                                                     "items": {
                                                         "properties": {
                                                             "name": {
-                                                                "$ref": "#/components/schemas/BusinessEnum"
+                                                                "$ref": "#/components/schemas/Business"
                                                             },
                                                             "count": {
                                                                 "type": "integer",
@@ -1730,14 +1809,14 @@
                                                     "items": {
                                                         "properties": {
                                                             "name": {
-                                                                "$ref": "#/components/schemas/TrainCategoryEnum"
+                                                                "$ref": "#/components/schemas/HafasTravelType"
                                                             },
                                                             "count": {
                                                                 "type": "integer",
                                                                 "example": 11
                                                             },
                                                             "duration": {
-                                                                "description": "Duration in\n     *                                                          minutes",
+                                                                "description": "Duration in minutes",
                                                                 "type": "integer",
                                                                 "example": 425
                                                             }
@@ -1758,7 +1837,7 @@
                                                                 "example": 10
                                                             },
                                                             "duration": {
-                                                                "description": "Duration in\n     *                                                          minutes",
+                                                                "description": "Duration in minutes",
                                                                 "type": "integer",
                                                                 "example": 424
                                                             }
@@ -1780,7 +1859,7 @@
                                                                 "example": 10
                                                             },
                                                             "duration": {
-                                                                "description": "Duration in\n     *                                                          minutes",
+                                                                "description": "Duration in minutes",
                                                                 "type": "integer",
                                                                 "example": 424
                                                             }
@@ -1826,13 +1905,31 @@
                 "operationId": "getDailyStatistics",
                 "parameters": [
                     {
+                        "name": "date",
+                        "in": "path",
+                        "description": "Date for the statistics in Format `YYYY-MM-DD`",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "2024-04-09"
+                    },
+                    {
+                        "name": "timezone",
+                        "in": "query",
+                        "description": "Timezone for the date. If not set, the user's timezone will be used.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Europe/Berlin"
+                    },
+                    {
                         "name": "withPolylines",
                         "in": "query",
                         "description": "If this parameter is set, the polylines will be returned as well. Otherwise attribute is\n     *          null.",
                         "schema": {
-                            "type": "string"
-                        },
-                        "example": ""
+                            "type": "boolean"
+                        }
                     }
                 ],
                 "responses": {
@@ -1847,7 +1944,7 @@
                                                 "statuses": {
                                                     "type": "array",
                                                     "items": {
-                                                        "$ref": "#/components/schemas/Status"
+                                                        "$ref": "#/components/schemas/StatusResource"
                                                     }
                                                 },
                                                 "polylines": {
@@ -1992,7 +2089,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Status"
+                                                "$ref": "#/components/schemas/StatusResource"
                                             }
                                         },
                                         "links": {
@@ -2055,7 +2152,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Status"
+                                                "$ref": "#/components/schemas/StatusResource"
                                             }
                                         },
                                         "links": {
@@ -2118,7 +2215,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Status"
+                                                "$ref": "#/components/schemas/StatusResource"
                                             }
                                         },
                                         "links": {
@@ -2170,7 +2267,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Status"
+                                                "$ref": "#/components/schemas/StatusResource"
                                             }
                                         }
                                     },
@@ -2319,7 +2416,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/Status"
+                                            "$ref": "#/components/schemas/StatusResource"
                                         }
                                     },
                                     "type": "object"
@@ -2384,7 +2481,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/Status"
+                                            "$ref": "#/components/schemas/StatusResource"
                                         }
                                     },
                                     "type": "object"
@@ -2605,7 +2702,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/Status"
+                                            "$ref": "#/components/schemas/StatusResource"
                                         }
                                     },
                                     "type": "object"
@@ -2969,25 +3066,25 @@
                 ]
             }
         },
-        "/trains/station/{name}/departures": {
+        "/station/{id}/departures": {
             "get": {
                 "tags": [
                     "Checkin"
                 ],
                 "summary": "Get departures from a station",
-                "description": "Get departures from a station",
+                "description": "Get departures from a station.",
                 "operationId": "getDepartures",
                 "parameters": [
                     {
-                        "name": "name",
+                        "name": "id",
                         "in": "path",
-                        "description": "Name of the station (replace slashes with spaces)",
+                        "description": "Träwelling-ID of the station (you can look this up with [trainStationAutocomplete](#/Checkin/trainStationAutocomplete))",
                         "required": true
                     },
                     {
                         "name": "when",
                         "in": "query",
-                        "description": "When to get the departures (default: now).\n    If you omit the timezone, the datetime is interpreted as localtime.\n    This is especially helpful when träwelling abroad.",
+                        "description": "When to get the departures (default: now). If you omit the timezone, the datetime is interpreted as localtime. This is especially helpful when träwelling abroad.",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -3001,7 +3098,7 @@
                         "description": "Means of transport (default: all)",
                         "required": false,
                         "schema": {
-                            "$ref": "#/components/schemas/TravelTypeEnum"
+                            "$ref": "#/components/schemas/TravelType"
                         }
                     }
                 ],
@@ -3015,7 +3112,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "description": "HAFAS Train model. This model might be subject to unexpected changes. See also\n     *                     external documentation at\n     *                     [https://v5.db.transport.rest/api.html#get-stopsiddepartures](https://v5.db.transport.rest/api.html#get-stopsiddepartures).",
+                                                "description": "HAFAS Train model. This model might be subject to unexpected changes. See also external documentation at [https://v5.db.transport.rest/api.html#get-stopsiddepartures](https://v5.db.transport.rest/api.html#get-stopsiddepartures).",
                                                 "externalDocs": "https://v5.db.transport.rest/api.html#get-stopsiddepartures",
                                                 "example": {
                                                     "tripId": "1|200513|0|81|6012023",
@@ -3141,17 +3238,17 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
                     "404": {
                         "description": "Station not found"
-                    },
-                    "502": {
-                        "description": "Error with our data provider"
                     },
                     "422": {
                         "description": "Invalid input"
                     },
-                    "401": {
-                        "description": "Unauthorized"
+                    "502": {
+                        "description": "Error with our data provider"
                     }
                 },
                 "security": [
@@ -3210,7 +3307,7 @@
                                                     "example": 1
                                                 },
                                                 "category": {
-                                                    "$ref": "#/components/schemas/TrainCategoryEnum"
+                                                    "$ref": "#/components/schemas/HafasTravelType"
                                                 },
                                                 "number": {
                                                     "type": "string",
@@ -3388,7 +3485,7 @@
                 ]
             }
         },
-        "/trains/station/{name}/home": {
+        "/station/{id}/home": {
             "put": {
                 "tags": [
                     "Checkin"
@@ -3397,11 +3494,11 @@
                 "operationId": "setHomeStation",
                 "parameters": [
                     {
-                        "name": "name",
+                        "name": "id",
                         "in": "path",
-                        "description": "Name of the station",
+                        "description": "Träwelling-ID of the station",
                         "required": true,
-                        "example": "Karlsruhe Hbf"
+                        "example": 1234
                     }
                 ],
                 "responses": {
@@ -3429,8 +3526,8 @@
                     "404": {
                         "description": "Station not found"
                     },
-                    "502": {
-                        "description": "Error with our data provider"
+                    "500": {
+                        "description": "Unknown error"
                     }
                 },
                 "security": [
@@ -3471,7 +3568,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/ShortTrainStation"
+                                                "$ref": "#/components/schemas/StationResource"
                                             }
                                         }
                                     },
@@ -3632,7 +3729,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Status"
+                                                "$ref": "#/components/schemas/StatusResource"
                                             }
                                         },
                                         "links": {
@@ -4369,6 +4466,452 @@
                     "name": "Station"
                 }
             },
+            "Business": {
+                "title": "Business",
+                "description": "What type of travel (0=private, 1=business, 2=commute) did the user specify?",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "example": 0
+            },
+            "HafasTravelType": {
+                "title": "category",
+                "description": "Category of transport. ",
+                "type": "string",
+                "enum": [
+                    "nationalExpress",
+                    "national",
+                    "regionalExp",
+                    "regional",
+                    "suburban",
+                    "bus",
+                    "ferry",
+                    "subway",
+                    "tram",
+                    "taxi"
+                ],
+                "example": "suburban"
+            },
+            "MapProvider": {
+                "title": "MapProvider",
+                "description": "What type of map provider (cargo, open-railway-map) did the user specify?",
+                "type": "string",
+                "enum": [
+                    "cargo",
+                    "open-railway-map"
+                ],
+                "example": "cargo"
+            },
+            "MastodonVisibility": {
+                "title": "visibility",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for\n *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "example": 1
+            },
+            "PointReason": {
+                "title": "PointsReason",
+                "description": "What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points)",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "example": 1
+            },
+            "StatusVisibility": {
+                "title": "visibility",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the\n *      user specify?",
+                "type": "integer",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "example": 0
+            },
+            "TravelType": {
+                "title": "travelType",
+                "type": "string",
+                "enum": [
+                    "express",
+                    "regional",
+                    "suburban",
+                    "bus",
+                    "ferry",
+                    "subway",
+                    "tram",
+                    "taxi"
+                ],
+                "example": "suburban"
+            },
+            "ClientResource": {
+                "title": "Client",
+                "properties": {
+                    "id": {
+                        "description": "Model -> OAuthClient",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Träwelling App"
+                    },
+                    "privacyPolicyUrl": {
+                        "type": "string",
+                        "example": "https://traewelling.de/privacy-policy"
+                    }
+                },
+                "type": "object"
+            },
+            "EventDetailsResource": {
+                "title": "EventDetails",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 39
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "9_euro_ticket"
+                    },
+                    "trainDistance": {
+                        "type": "integer",
+                        "example": 12345
+                    },
+                    "trainDuration": {
+                        "type": "integer",
+                        "example": 12345
+                    }
+                },
+                "type": "object"
+            },
+            "EventResource": {
+                "title": "Event",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 39
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "9-Euro-Ticket"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "9_euro_ticket"
+                    },
+                    "hashtag": {
+                        "type": "string",
+                        "example": "NeunEuroTicket"
+                    },
+                    "host": {
+                        "type": "string",
+                        "example": "9-Euro-Ticket GmbH"
+                    },
+                    "url": {
+                        "type": "string",
+                        "example": "https://9-euro-ticket.de"
+                    },
+                    "begin": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-01-01T00:00:00+00:00"
+                    },
+                    "end": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-01-02T00:00:00+00:00"
+                    },
+                    "station": {
+                        "$ref": "#/components/schemas/Station"
+                    }
+                },
+                "type": "object"
+            },
+            "LeaderboardUserResource": {
+                "title": "LeaderboardUserResource",
+                "properties": {
+                    "username": {
+                        "description": "username of user",
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "profilePicture": {
+                        "description": "URL of the profile picture of the user",
+                        "type": "string",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "totalDuration": {
+                        "description": "duration travelled in minutes",
+                        "type": "integer",
+                        "example": 6
+                    },
+                    "totalDistance": {
+                        "description": "distance travelled in meters",
+                        "type": "integer",
+                        "example": 12345
+                    },
+                    "points": {
+                        "description": "points of user",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "LightUserResource": {
+                "title": "LightUser",
+                "description": "User model with just basic information",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "displayName": {
+                        "type": "string",
+                        "example": "Gertrud"
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "profilePicture": {
+                        "type": "string",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "mastodonUrl": {
+                        "type": "string",
+                        "example": "https://traewelling.social/@Gertrud123"
+                    },
+                    "preventIndex": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object"
+            },
+            "OperatorResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "example": "db-regio-ag-nord"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "DB Regio AG Nord"
+                    }
+                },
+                "type": "object"
+            },
+            "StationResource": {
+                "title": "Station",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Karlsruhe Hbf"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "example": "48.993207"
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "example": "8.400977"
+                    },
+                    "ibnr": {
+                        "type": "string",
+                        "example": "8000191"
+                    },
+                    "rilIdentifier": {
+                        "type": "string",
+                        "example": "RK"
+                    }
+                },
+                "type": "object"
+            },
+            "StatusResource": {
+                "title": "Status",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 12345
+                    },
+                    "body": {
+                        "description": "User defined status text",
+                        "example": "Hello world!"
+                    },
+                    "bodyMentions": {
+                        "description": "Mentions in the status body",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MentionDto"
+                        }
+                    },
+                    "business": {
+                        "$ref": "#/components/schemas/Business"
+                    },
+                    "visibility": {
+                        "$ref": "#/components/schemas/StatusVisibility"
+                    },
+                    "likes": {
+                        "description": "How many people have liked this status",
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "liked": {
+                        "description": "Did the currently authenticated user like this status? (if unauthenticated = false)",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "isLikable": {
+                        "description": "Do the author of this status and the currently authenticated user allow liking of statuses? Only show the like UI if set to true",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "client": {
+                        "$ref": "#/components/schemas/ClientResource"
+                    },
+                    "createdAt": {
+                        "description": "creation date of this status",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2022-07-17T13:37:00+02:00"
+                    },
+                    "train": {
+                        "description": "Train model"
+                    },
+                    "event": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/EventResource"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "userDetails": {
+                        "$ref": "#/components/schemas/LightUserResource"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StatusTagResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "StatusTagResource": {
+                "title": "StatusTagResource",
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "example": "trwl:vehicle_number"
+                    },
+                    "value": {
+                        "type": "string",
+                        "example": "94 80 0450 921 D-AVG"
+                    },
+                    "visibility": {
+                        "type": "integer",
+                        "example": "1"
+                    }
+                },
+                "type": "object"
+            },
+            "UserAuthResource": {
+                "title": "UserAuth",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "displayName": {
+                        "type": "string",
+                        "example": "Gertrud"
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "profilePicture": {
+                        "type": "string",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "totalDistance": {
+                        "type": "integer",
+                        "example": "100"
+                    },
+                    "totalDuration": {
+                        "type": "integer",
+                        "example": "100"
+                    },
+                    "points": {
+                        "type": "integer",
+                        "example": "100"
+                    },
+                    "mastodonUrl": {
+                        "type": "string",
+                        "example": "https://mastodon.social/@Gertrud123",
+                        "nullable": true
+                    },
+                    "privateProfile": {
+                        "type": "boolean",
+                        "example": "false"
+                    },
+                    "preventIndex": {
+                        "type": "boolean",
+                        "example": "false"
+                    },
+                    "likes_enabled": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "home": {
+                        "$ref": "#/components/schemas/StationResource"
+                    },
+                    "language": {
+                        "type": "string",
+                        "example": "de"
+                    },
+                    "defaultStatusVisibility": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "admin",
+                            "open-beta",
+                            "closed-beta"
+                        ]
+                    }
+                },
+                "type": "object"
+            },
             "BearerTokenResponse": {
                 "title": "BearerTokenResponse",
                 "properties": {
@@ -4403,10 +4946,10 @@
                         "nullable": true
                     },
                     "business": {
-                        "$ref": "#/components/schemas/BusinessEnum"
+                        "$ref": "#/components/schemas/Business"
                     },
                     "visibility": {
-                        "$ref": "#/components/schemas/VisibilityEnum"
+                        "$ref": "#/components/schemas/StatusVisibility"
                     },
                     "eventId": {
                         "title": "eventId",
@@ -4497,149 +5040,13 @@
                         "description": "Statuses of other people on this connection",
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Status"
+                            "$ref": "#/components/schemas/StatusResource"
                         }
                     }
                 },
                 "type": "object",
                 "xml": {
                     "name": "CheckinResponse"
-                }
-            },
-            "Client": {
-                "title": "Client",
-                "description": "Client model",
-                "properties": {
-                    "id": {
-                        "title": "ID",
-                        "description": "ID",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 39
-                    },
-                    "name": {
-                        "title": "name",
-                        "description": "Name of client",
-                        "type": "string",
-                        "example": "Träwelling App"
-                    },
-                    "privacyPolicyUrl": {
-                        "title": "privacyPolicyUrl",
-                        "description": "URL to privacy policy",
-                        "type": "string",
-                        "example": "https://traewelling.de/privacy-policy"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Client"
-                }
-            },
-            "Event": {
-                "title": "Event",
-                "description": "Event model",
-                "properties": {
-                    "id": {
-                        "title": "ID",
-                        "description": "ID",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 39
-                    },
-                    "name": {
-                        "title": "name",
-                        "description": "Name of event",
-                        "type": "string",
-                        "example": "9-Euro-Ticket"
-                    },
-                    "slug": {
-                        "title": "slug",
-                        "description": "URL-Slug for event",
-                        "type": "string",
-                        "example": "9_euro_ticket"
-                    },
-                    "hashtag": {
-                        "title": "hashtag",
-                        "description": "social media hashtag for event",
-                        "type": "string",
-                        "example": "NeunEuroTicket"
-                    },
-                    "host": {
-                        "title": "host",
-                        "description": "host of the event",
-                        "example": "Die Bundesregierung"
-                    },
-                    "url": {
-                        "title": "url",
-                        "description": "external URL for this event",
-                        "type": "string",
-                        "example": "https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756"
-                    },
-                    "begin": {
-                        "title": "begin",
-                        "description": "Timestamp for the start of the event",
-                        "example": "2022-06-01T00:00:00+02:00"
-                    },
-                    "end": {
-                        "title": "end",
-                        "description": "Timestamp for the end of the event",
-                        "example": "2022-08-31T23:59:00+02:00"
-                    },
-                    "station": {
-                        "title": "station",
-                        "description": "nearest station for this event (nullable)",
-                        "type": "object",
-                        "nullable": "true",
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/Station"
-                            },
-                            {
-                                "type": "'null'"
-                            }
-                        ]
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Event"
-                }
-            },
-            "EventDetails": {
-                "title": "EventDetails",
-                "description": "Statistics/Details for Event",
-                "properties": {
-                    "id": {
-                        "title": "ID",
-                        "description": "ID",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 39
-                    },
-                    "slug": {
-                        "title": "slug",
-                        "description": "URL-Slug for event",
-                        "type": "string",
-                        "example": "9_euro_ticket"
-                    },
-                    "trainDistance": {
-                        "title": "trainDistance",
-                        "description": "Total travelled distance for this event in meters",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 627675656
-                    },
-                    "trainDuration": {
-                        "title": "trainDuration",
-                        "description": "Total travelled duration for this event in minutes",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 591443
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "EventDetails"
                 }
             },
             "EventSuggestion": {
@@ -4783,48 +5190,6 @@
                     "name": "PaginationMeta"
                 }
             },
-            "LeaderboardUser": {
-                "title": "LeaderboardUser",
-                "properties": {
-                    "username": {
-                        "title": "username",
-                        "description": "username of user",
-                        "type": "string",
-                        "example": "Gertrud123"
-                    },
-                    "profilePicture": {
-                        "title": "profilePicture",
-                        "description": "URL of the profile picture of the user",
-                        "type": "integer",
-                        "example": "https://traewelling.de/@Gertrud123/picture"
-                    },
-                    "trainDuration": {
-                        "title": "trainDuration",
-                        "description": "duration travelled by train in minutes",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 6
-                    },
-                    "trainDistance": {
-                        "title": "trainDistance",
-                        "description": "distance travelled by train in meters",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 12345
-                    },
-                    "points": {
-                        "title": "points",
-                        "description": "Current points of the last 7 days",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 300
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "LeaderboardUser"
-                }
-            },
             "LikeResponse": {
                 "title": "LikeResponse",
                 "properties": {
@@ -4918,7 +5283,7 @@
                         "format": "string",
                         "example": "2023-01-01T00:00:00+00:00"
                     },
-                    "updatedAtForHumans": {
+                    "createdAtForHumans": {
                         "title": "createdAtForHumans",
                         "description": "DON'T USE THIS ATTRIBUTE! This Attribute will be removed in the future. The date when the notification was created, but in human readable form",
                         "type": "string",
@@ -4929,26 +5294,6 @@
                 "type": "object",
                 "xml": {
                     "name": "Notification"
-                }
-            },
-            "Operator": {
-                "title": "Operator",
-                "description": "Operator of a mean of transport",
-                "properties": {
-                    "identifier": {
-                        "title": "identifier",
-                        "type": "string",
-                        "example": "sbb"
-                    },
-                    "name": {
-                        "title": "name",
-                        "type": "string",
-                        "example": "SBB"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Operator"
                 }
             },
             "PaginationPage": {
@@ -5010,7 +5355,7 @@
                         "example": 0.25
                     },
                     "reason": {
-                        "$ref": "#/components/schemas/PointsReasonEnum"
+                        "$ref": "#/components/schemas/PointReason"
                     }
                 },
                 "type": "object",
@@ -5057,132 +5402,6 @@
                     "name": "Polyline"
                 }
             },
-            "ShortTrainStation": {
-                "title": "ShortTrainStation",
-                "description": "shortened train station model",
-                "properties": {
-                    "ibnr": {
-                        "title": "ibnr",
-                        "description": "IBNR of the station",
-                        "type": "integer",
-                        "example": "8000191"
-                    },
-                    "rilIdentifier": {
-                        "title": "rilIdentifier",
-                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
-                        "type": "string",
-                        "example": "RK",
-                        "nullable": "true"
-                    },
-                    "name": {
-                        "title": "name",
-                        "description": "name of the station",
-                        "type": "string",
-                        "example": "Karlsruhe Hbf"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "ShortTrainStation"
-                }
-            },
-            "Status": {
-                "title": "Status",
-                "description": "Status model",
-                "properties": {
-                    "id": {
-                        "title": "ID",
-                        "description": "ID",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 12345
-                    },
-                    "body": {
-                        "title": "body",
-                        "description": "User defined status text",
-                        "example": "Hello world!"
-                    },
-                    "bodyMentions": {
-                        "title": "bodyMentions",
-                        "description": "Mentions in the status body",
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/MentionDto"
-                        }
-                    },
-                    "user": {
-                        "title": "user",
-                        "description": "user id",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 1
-                    },
-                    "username": {
-                        "title": "username",
-                        "description": "username (@-name)",
-                        "type": "string",
-                        "example": "Gertrud123"
-                    },
-                    "preventIndex": {
-                        "title": "preventIndex",
-                        "description": "Did the user choose to prevent search engines from indexing their profile?",
-                        "type": "boolean",
-                        "example": false
-                    },
-                    "business": {
-                        "$ref": "#/components/schemas/BusinessEnum"
-                    },
-                    "visibility": {
-                        "$ref": "#/components/schemas/VisibilityEnum"
-                    },
-                    "likes": {
-                        "title": "likes",
-                        "description": "How many people have liked this status",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 12
-                    },
-                    "liked": {
-                        "title": "liked",
-                        "description": "Did the currently authenticated user like this status? (if unauthenticated = false)",
-                        "type": "boolean",
-                        "example": true
-                    },
-                    "isLikable": {
-                        "title": "isLikable",
-                        "description": "Do the author of this status and the currently authenticated user allow liking of statuses? Only show the like UI if set to true",
-                        "type": "boolean",
-                        "example": true
-                    },
-                    "client": {
-                        "$ref": "#/components/schemas/Client"
-                    },
-                    "createdAt": {
-                        "title": "createdAt",
-                        "description": "creation date of this status",
-                        "type": "string",
-                        "format": "datetime",
-                        "example": "2022-07-17T13:37:00+02:00"
-                    },
-                    "train": {
-                        "$ref": "#/components/schemas/Trip"
-                    },
-                    "event": {
-                        "oneOf": [
-                            {
-                                "$ref": "#/components/schemas/Event"
-                            }
-                        ],
-                        "nullable": true,
-                        "title": "event",
-                        "description": "Event model (nullable)"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Status"
-                }
-            },
             "StatusTag": {
                 "title": "StatusTag",
                 "description": "StatusTag model",
@@ -5200,7 +5419,7 @@
                         "example": "BahnCard 100"
                     },
                     "visibility": {
-                        "$ref": "#/components/schemas/VisibilityEnum"
+                        "$ref": "#/components/schemas/StatusVisibility"
                     }
                 },
                 "type": "object",
@@ -5382,7 +5601,7 @@
                         "example": "1|323306|1|80|17072022"
                     },
                     "category": {
-                        "$ref": "#/components/schemas/TrainCategoryEnum"
+                        "$ref": "#/components/schemas/HafasTravelType"
                     },
                     "number": {
                         "title": "number",
@@ -5428,14 +5647,9 @@
                         "$ref": "#/components/schemas/Stopover"
                     },
                     "operator": {
-                        "oneOf": [
-                            {
-                                "$ref": "#/components/schemas/Operator"
-                            }
-                        ],
-                        "nullable": true,
                         "title": "operator",
-                        "description": "Operator of the mean of transport"
+                        "description": "Operator of the mean of transport",
+                        "nullable": true
                     }
                 },
                 "type": "object",
@@ -5547,109 +5761,6 @@
                     "name": "User"
                 }
             },
-            "UserAuth": {
-                "title": "UserAuth",
-                "description": "User auth model",
-                "properties": {
-                    "id": {
-                        "title": "ID",
-                        "description": "ID",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 1
-                    },
-                    "displayName": {
-                        "title": "displayName",
-                        "description": "Display name of the user",
-                        "example": "Gertrud"
-                    },
-                    "username": {
-                        "title": "username",
-                        "description": "username of user",
-                        "type": "string",
-                        "example": "Gertrud123"
-                    },
-                    "profilePicture": {
-                        "title": "profilePicture",
-                        "description": "URL of the profile picture of the user",
-                        "type": "integer",
-                        "example": "https://traewelling.de/@Gertrud123/picture"
-                    },
-                    "trainDistance": {
-                        "title": "trainDistance",
-                        "description": "distance travelled by train in meters",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 12345
-                    },
-                    "trainDuration": {
-                        "title": "trainDuration",
-                        "description": "duration travelled by train in minutes",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 6
-                    },
-                    "points": {
-                        "title": "points",
-                        "description": "Current points of the last 7 days",
-                        "type": "integer",
-                        "format": "int64",
-                        "example": 300
-                    },
-                    "mastodonUrl": {
-                        "title": "mastodonUrl",
-                        "description": "URL to the Mastodon profile of the user",
-                        "type": "string",
-                        "example": "https://chaos.social/@traewelling",
-                        "nullable": true
-                    },
-                    "privateProfile": {
-                        "title": "privateProfile",
-                        "description": "is this profile set to private?",
-                        "type": "boolean",
-                        "example": false
-                    },
-                    "privacyHideDays": {
-                        "title": "privacyHideDays",
-                        "description": "Hide all statuses after x days",
-                        "type": "integer",
-                        "example": 3,
-                        "nullable": true
-                    },
-                    "preventIndex": {
-                        "title": "preventIndex",
-                        "description": "Did the user choose to prevent search engines from indexing their profile?",
-                        "type": "boolean",
-                        "example": false
-                    },
-                    "role": {
-                        "title": "role",
-                        "description": "The permission-role of a user. Distinguishes access level to certain features.",
-                        "type": "integer",
-                        "example": 0
-                    },
-                    "home": {
-                        "oneOf": [
-                            {
-                                "$ref": "#/components/schemas/Station"
-                            }
-                        ],
-                        "nullable": true,
-                        "title": "home",
-                        "description": "The specified 'home'-station of this user"
-                    },
-                    "language": {
-                        "title": "language",
-                        "description": "what is the specified language of this user",
-                        "example": "en",
-                        "nullable": true
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "UserAuth"
-                }
-            },
             "UserProfileSettings": {
                 "title": "UserProfileSettings",
                 "description": "Model for all user profile settings",
@@ -5686,7 +5797,7 @@
                         "example": false
                     },
                     "defaultStatusVisibility": {
-                        "$ref": "#/components/schemas/VisibilityEnum"
+                        "$ref": "#/components/schemas/StatusVisibility"
                     },
                     "privacyHideDays": {
                         "title": "privacyHideDays",
@@ -5729,7 +5840,7 @@
                         "example": "https://chaos.social/@traewelling"
                     },
                     "mastodonVisibility": {
-                        "$ref": "#/components/schemas/VisibilityEnum"
+                        "$ref": "#/components/schemas/StatusVisibility"
                     }
                 },
                 "type": "object",
@@ -5791,40 +5902,40 @@
                 "description": "Status Update Body",
                 "properties": {
                     "body": {
-                        "title": "body",
                         "description": "Status-Text to be displayed alongside the checkin",
                         "maxLength": 280,
                         "example": "Wow. This train is extremely crowded!",
                         "nullable": true
                     },
                     "business": {
-                        "$ref": "#/components/schemas/BusinessEnum"
+                        "$ref": "#/components/schemas/Business"
                     },
                     "visibility": {
-                        "$ref": "#/components/schemas/VisibilityEnum"
+                        "$ref": "#/components/schemas/StatusVisibility"
+                    },
+                    "eventId": {
+                        "description": "The ID of the event this status is related to - or null",
+                        "example": "1",
+                        "nullable": true
                     },
                     "manualDeparture": {
-                        "title": "manualDeparture",
                         "description": "Manual departure time set by the user",
                         "format": "date",
                         "example": "2020-01-01 12:00:00",
                         "nullable": true
                     },
                     "manualArrival": {
-                        "title": "manualArrival",
                         "description": "Manual arrival time set by the user",
                         "format": "date",
                         "example": "2020-01-01 13:00:00",
                         "nullable": true
                     },
                     "destinationId": {
-                        "title": "destinationId",
                         "description": "Destination station id",
                         "example": "1",
                         "nullable": true
                     },
                     "destinationArrivalPlanned": {
-                        "title": "destinationArrivalPlanned",
                         "description": "Destination arrival time",
                         "format": "date",
                         "example": "2020-01-01 13:00:00",
@@ -5835,99 +5946,6 @@
                 "xml": {
                     "name": "StatusUpdateBody"
                 }
-            },
-            "BusinessEnum": {
-                "title": "Business",
-                "description": "What type of travel (0=private, 1=business, 2=commute) did the user specify?",
-                "type": "integer",
-                "enum": [
-                    0,
-                    1,
-                    2
-                ],
-                "example": 0
-            },
-            "MapProviderEnum": {
-                "title": "MapProvider",
-                "description": "What type of map provider (cargo, open-railway-map) did the user specify?",
-                "type": "string",
-                "enum": [
-                    "cargo",
-                    "open-railway-map"
-                ],
-                "example": "cargo"
-            },
-            "MastodonVisibilityEnum": {
-                "title": "visibility",
-                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for\n *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.",
-                "type": "integer",
-                "enum": [
-                    0,
-                    1,
-                    2,
-                    3
-                ],
-                "example": 1
-            },
-            "PointsReasonEnum": {
-                "title": "PointsReason",
-                "description": "What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points)",
-                "type": "integer",
-                "enum": [
-                    0,
-                    1,
-                    2,
-                    3
-                ],
-                "example": 1
-            },
-            "TrainCategoryEnum": {
-                "title": "category",
-                "description": "Category of transport. ",
-                "type": "string",
-                "enum": [
-                    "nationalExpress",
-                    "national",
-                    "regionalExp",
-                    "regional",
-                    "suburban",
-                    "bus",
-                    "ferry",
-                    "subway",
-                    "tram",
-                    "taxi"
-                ],
-                "example": "suburban"
-            },
-            "TravelTypeEnum": {
-                "title": "travelType",
-                "type": "string",
-                "enum": [
-                    "express",
-                    "regional",
-                    "suburban",
-                    "bus",
-                    "ferry",
-                    "subway",
-                    "tram",
-                    "taxi",
-                    "tram",
-                    "taxi"
-                ],
-                "example": "suburban"
-            },
-            "VisibilityEnum": {
-                "title": "visibility",
-                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the\n *     user specify?",
-                "type": "integer",
-                "enum": [
-                    0,
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "example": 0
             }
         },
         "parameters": {
@@ -5949,9 +5967,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
-                        "tokenUrl": "http://localhost:8000/oauth/token",
-                        "refreshUrl": "http://localhost:8000/auth/refresh",
+                        "authorizationUrl": "https://traewelling.de/api/v1/oauth/authorize",
+                        "tokenUrl": "https://traewelling.de/api/v1/oauth/token",
+                        "refreshUrl": "https://traewelling.de/api/v1/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",
@@ -5999,16 +6017,20 @@
             "description": "Checkin related endpoints. Regular process is departures -> trip -> checkin"
         },
         {
+            "name": "Dashboard",
+            "description": "API Endpoints of Dashboard"
+        },
+        {
             "name": "Events",
             "description": "Events that users can check in to"
         },
         {
-            "name": "Status",
-            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
+            "name": "Notifications",
+            "description": "Get notifications and mark them as read or unread"
         },
         {
-            "name": "Dashboard",
-            "description": "API Endpoints of Dashboard"
+            "name": "Status",
+            "description": "Endpoints for accessing and manipulating Statusses and their additional data"
         },
         {
             "name": "Likes",

@@ -10,9 +10,9 @@ use App\Models\Checkin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class UserBlockTest extends TestCase
+class UserBlockTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
@@ -84,14 +84,14 @@ class UserBlockTest extends TestCase
         $this->actingAs($this->bob)
              ->get(route('statuses.active'))
              ->assertOk()
-             ->assertSee($this->checkin->destinationStation->name);
+             ->assertSee($this->checkin->destinationStopover->station->name);
 
         $this->aliceBlocksBob();
 
         $this->actingAs($this->bob)
              ->get(route('statuses.active'))
              ->assertOk()
-             ->assertDontSee($this->checkin->destinationStation->name);
+             ->assertDontSee($this->checkin->destinationStopover->station->name);
     }
 
     public function testBobsStatusIsHiddenFromAlicesActiveJourneys(): void {

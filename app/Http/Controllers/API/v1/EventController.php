@@ -37,7 +37,7 @@ class EventController extends Controller
      *              @OA\Property (
      *                  property="data",
      *                  type="object",
-     *                      ref="#/components/schemas/Event"
+     *                      ref="#/components/schemas/EventResource"
      *              )
      *          )
      *       ),
@@ -57,7 +57,7 @@ class EventController extends Controller
      * @return EventResource
      */
     public function show(string $slug): EventResource {
-        return new EventResource(EventBackend::getBySlug($slug));
+        return new EventResource(Event::getBySlug($slug));
     }
 
     /**
@@ -81,7 +81,7 @@ class EventController extends Controller
      *              @OA\Property (
      *                  property="data",
      *                  type="object",
-     *                      ref="#/components/schemas/EventDetails"
+     *                      ref="#/components/schemas/EventDetailsResource"
      *              )
      *          )
      *       ),
@@ -100,7 +100,7 @@ class EventController extends Controller
      * @return EventDetailsResource
      */
     public function showDetails(string $slug): EventDetailsResource {
-        return new EventDetailsResource(EventBackend::getBySlug($slug));
+        return new EventDetailsResource(Event::getBySlug($slug));
     }
 
     /**
@@ -130,7 +130,7 @@ class EventController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/Status"
+     *                      ref="#/components/schemas/StatusResource"
      *                  )
      *              ),
      *              @OA\Property(property="links", ref="#/components/schemas/Links"),
@@ -159,16 +159,23 @@ class EventController extends Controller
     /**
      * @OA\Get(
      *      path="/events",
-     *      operationId="getUpcomingEvent",
      *      tags={"Events"},
-     *      summary="[Auth optional] Shows upcoming events with basic information",
-     *      description="Returns slug, name and duration for an event",
+     *      summary="[Auth optional] Show active or upcoming events for the given timestamp",
+     *      description="Returns all active or upcoming events for the given timestamp. Default timestamp is now. If upcoming is set to true, all events ending after the timestamp are returned.",
      *      @OA\Parameter (
-     *          name="slug",
-     *          in="path",
-     *          description="slug for event",
-     *          example="weihnachten_2022",
-     *          @OA\Schema(type="string")
+     *          name="timestamp",
+     *          in="query",
+     *          description="The timestamp of view. Default is now.",
+     *          example="2022-08-01T12:00:00+02:00",
+     *          @OA\Schema(type="string"),
+     *          required=false
+     *      ),
+     *      @OA\Parameter (
+     *          name="upcoming",
+     *          in="query",
+     *          description="Show only upcoming events",
+     *          required=false,
+     *          @OA\Schema(type="boolean")
      *      ),
      *      @OA\Response(
      *          response=200,
@@ -178,23 +185,28 @@ class EventController extends Controller
      *                  property="data",
      *                  type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/Event"
+     *                      ref="#/components/schemas/EventResource"
      *                  )
      *              )
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
      *           {"passport": {"read-statuses"}}, {"token": {}}
-     *
      *       }
      *     )
-     *
-     * Returns upcoming events
      */
-    public function upcoming(): AnonymousResourceCollection {
-        return EventResource::collection(EventBackend::getUpcomingEvents());
+    public function index(Request $request): AnonymousResourceCollection {
+        $validated = $request->validate([
+                                            'timestamp' => ['nullable', 'date'],
+                                            'upcoming'  => ['nullable'],
+                                        ]);
+
+        $validated['timestamp'] = isset($validated['timestamp']) ? Carbon::parse($validated['timestamp']) : now(); //default is now
+        $showUpcoming           = isset($validated['upcoming']) && $validated['upcoming'] === 'true';
+
+        $events = Event::forTimestamp($validated['timestamp'], $showUpcoming);
+        return EventResource::collection($events->simplePaginate());
     }
 
     /**
@@ -263,41 +275,15 @@ class EventController extends Controller
     /**
      * @OA\Get(
      *      path="/activeEvents",
-     *      operationId="getCurrentEvents",
      *      tags={"Events"},
-     *      summary="Shows current events with basic information",
-     *      description="Returns array of current events, used for a basic overview during checkiused for a basic
-     *      overview during checkin",
-     *      @OA\Parameter (
-     *          name="slug",
-     *          in="path",
-     *          description="slug for event",
-     *          example="weihnachten_2022",
-     *          @OA\Schema(type="string")
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @OA\JsonContent(
-     *              @OA\Property (
-     *                  property="data",
-     *                  type="array",
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/Event"
-     *                  )
-     *              )
-     *          )
-     *       ),
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No Event found for this id"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *
-     *       }
-     *     )
+     *      summary="DEPRECATED - USE /events - removed after 2024-08",
+     *      description="DEPRECATED - USE /events - removed after 2024-08",
+     *      @OA\Response(response=200, description="The events"),
+     * )
      * @return AnonymousResourceCollection
+     * @deprecated Use /events instead - removed after 2024-08
      */
     public function activeEvents(): AnonymousResourceCollection {
-        return EventResource::collection(EventBackend::activeEvents());
+        return EventResource::collection(Event::forTimestamp(now())->get());
     }
 }

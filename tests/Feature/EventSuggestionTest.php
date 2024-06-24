@@ -6,9 +6,9 @@ use App\Models\EventSuggestion;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class EventSuggestionTest extends TestCase
+class EventSuggestionTest extends FeatureTestCase
 {
     use RefreshDatabase;
 

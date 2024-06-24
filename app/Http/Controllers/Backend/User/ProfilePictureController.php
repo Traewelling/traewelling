@@ -7,7 +7,9 @@ use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
-use Intervention\Image\ImageManagerStatic as Image;
+use Intervention\Image\Encoders\PngEncoder;
+use Intervention\Image\ImageManager as Image;
+use Intervention\Image\Drivers\Gd\Driver;
 
 abstract class ProfilePictureController extends Controller
 {
@@ -63,26 +65,32 @@ abstract class ProfilePictureController extends Controller
         }
     }
 
-    /**
-     * @param User $user
-     *
-     * @return string Encoded PNG Image
-     */
-    private static function generateDefaultAvatar(User $user): string {
+    public static function generateBackgroundHash(string $username): string {
         $hash           = 0;
-        $usernameLength = strlen($user->username);
+        $usernameLength = strlen($username);
         for ($i = 0; $i < $usernameLength; $i++) {
-            $securedHash = ord(substr($user->username, $i, 1)) + (($hash << 5) - $hash);
+            $securedHash = ord(substr($username, $i, 1)) + (($hash << 5) - $hash);
             if ($securedHash <= 0) {
                 break;
             }
             $hash = $securedHash;
         }
 
-        $hex = dechex($hash & 0x00FFFFFF);
+        return str_pad(dechex($hash & 0x00FFFFFF), 6, "0");
+    }
 
-        return Image::canvas(512, 512, $hex)
-                    ->insert(public_path('/img/user.png'))
-                    ->encode('png')->getEncoded();
+    /**
+     * @param User $user
+     *
+     * @return string Encoded PNG Image
+     */
+    private static function generateDefaultAvatar(User $user): string {
+        $hex = self::generateBackgroundHash($user->username);
+
+        return (new Image(new Driver()))->create(512, 512)
+                    ->fill($hex)
+                    ->place(public_path('/img/user.png'))
+                    ->encode(new PngEncoder())
+                    ->toString();
     }
 }

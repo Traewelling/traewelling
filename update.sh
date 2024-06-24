@@ -19,6 +19,7 @@ run_migrations() {
 post_run() {
     php artisan optimize
     php artisan queue:restart
+    php artisan db:seed --class=Database\\Seeders\\Constants\\PermissionSeeder --force
     php artisan up
 }
 

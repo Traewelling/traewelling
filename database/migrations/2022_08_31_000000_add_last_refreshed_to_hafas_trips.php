@@ -9,7 +9,7 @@ return new class extends Migration
 
     public function up(): void {
         Schema::table('hafas_trips', static function(Blueprint $table) {
-            $table->timestamp('last_refreshed')->nullable()->after('delay');
+            $table->timestamp('last_refreshed')->nullable()->after('arrival');
         });
     }
 

@@ -58,10 +58,6 @@
                                 <i class="fa-solid fa-train"></i>
                                 Checkin
                             </a>
-                            <a class="nav-link" href="{{ route('admin.trip.create') }}">
-                                <i class="fa-solid fa-plus"></i>
-                                Trips
-                            </a>
                             <a class="nav-link" href="{{ route('admin.stations') }}">
                                 <i class="fa-solid fa-map-marker"></i>
                                 Stations
@@ -69,6 +65,10 @@
                             <a class="nav-link" href="{{ route('admin.activity') }}">
                                 <i class="fa-solid fa-hammer"></i>
                                 Activity
+                            </a>
+                            <a class="nav-link" href="{{ route('admin.reports') }}">
+                                <i class="fa-solid fa-flag"></i>
+                                Reports
                             </a>
                         @endif
                     </div>
@@ -84,9 +84,18 @@
             </div>
         </nav>
         <main class="container-fluid pt-3">
-            @hasSection('title')
-                <h1 class="mb-3 text-white fs-3" id="pageTitle">@yield('title')</h1>
-            @endif
+            <div class="row">
+                @hasSection('title')
+                    <div class="col">
+                        <h1 class="mb-3 text-white fs-3" id="pageTitle">@yield('title')</h1>
+                    </div>
+                @endif
+                @hasSection('actions')
+                    <div class="col-3 col-md-2">
+                        @yield('actions')
+                    </div>
+                @endif
+            </div>
             @if ($errors->any())
                 <div class="row">
                     <div class="col-md-12">

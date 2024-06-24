@@ -14,9 +14,9 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
-use Tests\TestCase;
+use Tests\FeatureTestCase;
 
-class BackendCheckinTest extends TestCase
+class BackendCheckinTest extends FeatureTestCase
 {
 
     use RefreshDatabase;
@@ -266,8 +266,8 @@ class BackendCheckinTest extends TestCase
         );
         $checkin  = $response['status']->checkin;
 
-        $this->assertEquals(8089047, $checkin->origin);
-        $this->assertEquals(8089090, $checkin->destination);
+        $this->assertEquals(8089047, $checkin->originStopover->station->ibnr);
+        $this->assertEquals(8089090, $checkin->destinationStopover->station->ibnr);
         $this->assertEquals('S 42', $checkin->trip->linename);
         $this->assertTrue($checkin->departure->isBefore($checkin->arrival));
     }
@@ -443,12 +443,12 @@ class BackendCheckinTest extends TestCase
         );
         $trainCheckin = $response['status']->checkin;
 
-        $this->assertEquals(102932, $trainCheckin->origin);
-        $this->assertEquals(104734, $trainCheckin->destination);
+        $this->assertEquals(102932, $trainCheckin->originStopover->station->ibnr);
+        $this->assertEquals(104734, $trainCheckin->destinationStopover->station->ibnr);
         $this->assertTrue($trainCheckin->departure->isBefore($trainCheckin->arrival));
     }
 
-    public function testChangeTripDestination() {
+    public function testChangeTripDestination(): void {
         Http::fake([
                        '/stops/8000105'             => Http::response(self::FRANKFURT_HBF),
                        '/stops/8000105/departures*' => Http::response([self::ICE802]),

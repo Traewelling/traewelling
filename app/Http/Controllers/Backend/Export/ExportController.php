@@ -27,8 +27,8 @@ abstract class ExportController extends Controller
     public static function getExportableStatuses(User $user, Carbon $timestampFrom, Carbon $timestampTo): Collection {
         $statuses = Status::with([
                                      //'checkin.trip.stopovers', TODO: This eager load is doing weird things. Some Trips aren't loaded and this throws some http 500. Loading this manually is working.
-                                     'checkin.originStation',
-                                     'checkin.destinationStation',
+                                     'checkin.originStopover.station',
+                                     'checkin.destinationStopover.station',
                                  ])
                           ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
                           ->where('statuses.user_id', $user->id)
@@ -93,19 +93,19 @@ abstract class ExportController extends Controller
             case ExportableColumn::JOURNEY_NUMBER:
                 return $status->checkin->trip->journey_number;
             case ExportableColumn::ORIGIN_NAME:
-                return $status->checkin->originStation->name;
+                return $status->checkin->originStopover->station->name;
             case ExportableColumn::ORIGIN_COORDINATES:
-                return $status->checkin->originStation->latitude
-                       . ',' . $status->checkin->originStation->longitude;
+                return $status->checkin->originStopover->station->latitude
+                       . ',' . $status->checkin->originStopover->station->longitude;
             case ExportableColumn::DEPARTURE_PLANNED:
                 return $status->checkin->originStopover?->departure_planned?->toIso8601String();
             case ExportableColumn::DEPARTURE_REAL:
                 return $status->checkin->originStopover?->departure?->toIso8601String();
             case ExportableColumn::DESTINATION_NAME:
-                return $status->checkin->destinationStation->name;
+                return $status->checkin->destinationStopover->station->name;
             case ExportableColumn::DESTINATION_COORDINATES:
-                return $status->checkin->destinationStation->latitude
-                       . ',' . $status->checkin->destinationStation->longitude;
+                return $status->checkin->destinationStopover->station->latitude
+                       . ',' . $status->checkin->destinationStopover->station->longitude;
             case ExportableColumn::ARRIVAL_PLANNED:
                 return $status->checkin->destinationStopover?->arrival_planned?->toIso8601String();
             case ExportableColumn::ARRIVAL_REAL:

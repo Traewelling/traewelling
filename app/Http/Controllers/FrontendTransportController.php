@@ -13,6 +13,7 @@ use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\Backend\Helper\StatusHelper;
 use App\Http\Controllers\Backend\Transport\HomeController;
+use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\Event;
@@ -36,8 +37,8 @@ class FrontendTransportController extends Controller
 {
     public function TrainAutocomplete(string $station): JsonResponse {
         try {
-            $TrainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($station);
-            return response()->json($TrainAutocompleteResponse);
+            $trainAutocompleteResponse = TransportBackend::getTrainStationAutocomplete($station);
+            return response()->json($trainAutocompleteResponse);
         } catch (HafasException $e) {
             abort(503, $e->getMessage());
         }
@@ -45,17 +46,16 @@ class FrontendTransportController extends Controller
 
     public function TrainStationboard(Request $request): Renderable|RedirectResponse {
         $validated = $request->validate([
-                                            'station'    => ['required_without:ibnr'],
-                                            'ibnr'       => ['required_without:station', 'numeric'],
+                                            'stationId'  => ['required_without_all:ibnr,station', 'numeric', 'exists:train_stations,id'],
+                                            'station'    => ['required_without_all:ibnr,stationId'],
+                                            'ibnr'       => ['required_without_all:station,stationId', 'numeric'],
                                             'when'       => ['nullable', 'date'],
                                             'travelType' => ['nullable', new Enum(TravelType::class)]
                                         ]);
 
-        $when = isset($validated['when'])
-            ? Carbon::parse($validated['when'], auth()->user()->timezone ?? config('app.timezone'))
-            : Carbon::now(auth()->user()->timezone ?? config('app.timezone'))->subMinutes(5);
-
-        try {
+        if (isset($validated['stationId'])) {
+            $station = Station::findOrFail($validated['stationId']);
+        } else {
             //Per default: Use the given station query for lookup
             $searchQuery = $validated['station'] ?? $validated['ibnr'];
 
@@ -68,17 +68,34 @@ class FrontendTransportController extends Controller
                     $searchQuery = $station->ibnr;
                 }
             }
-            $stationboardResponse = TransportBackend::getDepartures(
-                stationQuery: $searchQuery,
-                when:         $when,
-                travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
-                localtime:    true
+            $station = StationController::lookupStation($searchQuery);
+        }
+
+        if ($request->user()->hasRole('open-beta')) {
+            return redirect()->route('stationboard', ['stationId' => $station->id, 'stationName' => $station->name]);
+        }
+
+        $when = isset($validated['when'])
+            ? Carbon::parse($validated['when'], auth()->user()->timezone ?? config('app.timezone'))
+            : Carbon::now(auth()->user()->timezone ?? config('app.timezone'))->subMinutes(5);
+
+        try {
+            $stationboardResponse = HafasController::getDepartures(
+                station:   $station,
+                when:      $when,
+                type:      TravelType::tryFrom($validated['travelType'] ?? null),
+                localtime: true
             );
+
             return view('stationboard', [
-                                          'station'    => $stationboardResponse['station'],
-                                          'departures' => $stationboardResponse['departures'],
-                                          'times'      => $stationboardResponse['times'],
-                                          'latest'     => TransportController::getLatestArrivals(Auth::user())
+                                          'station'    => $station,
+                                          'departures' => $stationboardResponse,
+                                          'times'      => [
+                                              'now'  => $when,
+                                              'prev' => $when->clone()->subMinutes(15),
+                                              'next' => $when->clone()->addMinutes(15)
+                                          ],
+                                          'latest'     => StationController::getLatestArrivals(Auth::user())
                                       ]
             );
         } catch (HafasException $exception) {
@@ -96,7 +113,9 @@ class FrontendTransportController extends Controller
                                              ]);
         try {
             $nearestStation = HafasController::getNearbyStations(
-                $validatedInput['latitude'], $validatedInput['longitude'], 1
+                $validatedInput['latitude'],
+                $validatedInput['longitude'],
+                1
             )->first();
         } catch (HafasException) {
             return back()->with('error', __('messages.exception.generalHafas'));
@@ -107,8 +126,8 @@ class FrontendTransportController extends Controller
         }
 
         return redirect()->route('trains.stationboard', [
-            'station'  => $nearestStation->ibnr,
-            'provider' => 'train'
+            'stationId' => $nearestStation->id,
+            'provider'  => 'train'
         ]);
     }
 
@@ -117,9 +136,21 @@ class FrontendTransportController extends Controller
                                             'tripID'          => ['required'],
                                             'lineName'        => ['required'],
                                             'start'           => ['required', 'numeric'],
+                                            'destination'     => ['nullable', 'numeric'],
                                             'departure'       => ['required', 'date'],
                                             'searchedStation' => ['nullable', 'exists:train_stations,id'],
                                         ]);
+
+        if ($request->user()->hasRole('open-beta')) {
+            return redirect()->route('stationboard', [
+                'tripId'      => $validated['tripID'],
+                'lineName'    => $validated['lineName'],
+                'start'       => $validated['start'],
+                'departure'   => $validated['departure'],
+                'destination' => $validated['destination'] ?? null,
+                'idType'      => 'db-ibnr',
+            ]);
+        }
 
         try {
             $startStation = Station::where('ibnr', $validated['start'])->first();
@@ -127,7 +158,6 @@ class FrontendTransportController extends Controller
                 // in long term to support multiple data providers we only support IDs here - no IBNRs.
                 $startStation = Station::findOrFail($validated['start']);
             }
-            $departure = Carbon::parse($validated['departure']);
 
             $trip = TrainCheckinController::getHafasTrip(
                 $validated['tripID'],
@@ -136,10 +166,10 @@ class FrontendTransportController extends Controller
             );
 
             $encounteredStart = false;
-            $stopovers = $trip->stopovers
-                ->filter(function(Stopover $stopover) use ($departure, $startStation, &$encounteredStart): bool {
+            $stopovers        = $trip->stopovers
+                ->filter(function(Stopover $stopover) use ($startStation, &$encounteredStart): bool {
                     if (!$encounteredStart) { // this assumes stopovers being ordered correctly
-                        $encounteredStart = $stopover->departure_planned == $departure && $stopover->station->is($startStation);
+                        $encounteredStart = $stopover->station->is($startStation);
                         return false;
                     }
                     return true;
@@ -159,8 +189,8 @@ class FrontendTransportController extends Controller
                 'searchedStation' => isset($validated['searchedStation']) ? Station::findOrFail($validated['searchedStation']) : null,
                 'lastStopover'    => $lastStopover,
             ]);
-        } catch (HafasException $exception) {
-            return back()->with('error', $exception->getMessage());
+        } catch (HafasException) {
+            return redirect()->back()->with(['error' => __('messages.exception.generalHafas')]);
         } catch (StationNotOnTripException) {
             return redirect()->back()->with('error', __('controller.transport.not-in-stopovers'));
         }
@@ -221,7 +251,7 @@ class FrontendTransportController extends Controller
             return redirect()
                 ->route('dashboard')
                 ->with('checkin-collision', [
-                    'lineName'  => $exception->getCollision()->trip->linename,
+                    'lineName'  => $exception->checkin->trip->linename,
                     'validated' => $validated,
                 ]);
 

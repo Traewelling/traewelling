@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Frontend\Admin;
 
+use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
+use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\Station;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
 
 class StatusEditController extends Controller
@@ -51,6 +54,7 @@ class StatusEditController extends Controller
                                             'origin'      => ['required', 'exists:train_stations,id'],
                                             'destination' => ['required', 'exists:train_stations,id'],
                                             'body'        => ['nullable', 'string'],
+                                            'visibility'  => ['required', new Enum(StatusVisibility::class)],
                                         ]);
 
         $status = Status::find($validated['statusId']);
@@ -88,9 +92,15 @@ class StatusEditController extends Controller
                                      'arrival'                 => $newArrival,
                                      'distance'                => $distanceInMeters,
                                      'points'                  => $pointCalculation->points,
+                                     'duration'                => TrainCheckinController::calculateCheckinDuration(
+                                         $status->checkin,
+                                         false
+                                     ),
                                  ]);
 
         StatusUpdateEvent::dispatch($status->refresh());
+
+        $status->update(['visibility' => $validated['visibility']]);
 
         if ($status->body !== $validated['body']) {
             $status->update(['body' => $validated['body']]);

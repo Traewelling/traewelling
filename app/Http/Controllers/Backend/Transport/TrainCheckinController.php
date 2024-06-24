@@ -193,9 +193,7 @@ abstract class TrainCheckinController extends Controller
                                                         'status_id'               => $status->id,
                                                         'user_id'                 => $status->user_id,
                                                         'trip_id'                 => $trip->trip_id,
-                                                        'origin'                  => $firstStop->station->ibnr, //@todo: deprecated - use origin_stopover_id instead
                                                         'origin_stopover_id'      => $firstStop->id,
-                                                        'destination'             => $lastStop->station->ibnr, //@todo: deprecated - use destination_stopover_id instead
                                                         'destination_stopover_id' => $lastStop->id,
                                                         'distance'                => $distance,
                                                         'points'                  => $pointCalculation->points,
@@ -247,7 +245,6 @@ abstract class TrainCheckinController extends Controller
 
         $checkin->update([
                              'arrival'                 => $newDestinationStopover->arrival_planned,
-                             'destination'             => $newDestinationStopover->station->ibnr,
                              'destination_stopover_id' => $newDestinationStopover->id,
                              'distance'                => $newDistance,
                              'points'                  => $pointsResource->points,
@@ -282,10 +279,11 @@ abstract class TrainCheckinController extends Controller
         }
 
         //try to refresh the departure time of the origin station
-        RefreshStopover::dispatchIf(
-            $originStopover && !str_starts_with($hafasTrip->trip_id, 'manual-'),
-            $originStopover
-        );
+        if ($originStopover && !str_starts_with($hafasTrip->trip_id, 'manual-')) {
+            RefreshStopover::dispatchAfterResponse(
+                $originStopover
+            );
+        }
 
         return $hafasTrip;
     }
@@ -340,12 +338,14 @@ abstract class TrainCheckinController extends Controller
                    ));
     }
 
-    public static function calculateCheckinDuration(Checkin $checkin): int {
+    public static function calculateCheckinDuration(Checkin $checkin, bool $update = true): int {
         $departure = $checkin->manual_departure ?? $checkin->originStopover->departure ?? $checkin->departure;
         $arrival   = $checkin->manual_arrival ?? $checkin->destinationStopover->arrival ?? $checkin->arrival;
         $duration  = $arrival->diffInMinutes($departure);
         //don't use eloquent here, because it would trigger the observer (and this function) again
-        DB::table('train_checkins')->where('id', $checkin->id)->update(['duration' => $duration]);
+        if ($update) {
+            DB::table('train_checkins')->where('id', $checkin->id)->update(['duration' => $duration]);
+        }
         return $duration;
     }
 }

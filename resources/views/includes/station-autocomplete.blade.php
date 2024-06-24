@@ -42,7 +42,7 @@
             </div>
             <div class="list-group collapse" id="last-stations">
                 @if(auth()->user()->home)
-                    <a href="{{ route('trains.stationboard', ['provider' => 'train', 'station' => auth()->user()->home->ibnr ]) }}"
+                    <a href="{{ route('trains.stationboard', ['stationId' => auth()->user()->home->id ]) }}"
                        title="{{ auth()->user()->home->name }}" id="home-button"
                        class="list-group-item list-group-item-action">
                         <i class="fa fa-home mr-2"></i> {{ auth()->user()->home->name }}
@@ -54,7 +54,7 @@
                         class="list-group-item title list-group-item-action disabled">{{__('stationboard.last-stations')}}</span>
                 @endif
                 @foreach($latest as $station)
-                    <a href="{{ route('trains.stationboard', ['provider' => 'train', 'station' => $station->ibnr ]) }}"
+                    <a href="{{ route('trains.stationboard', ['stationId' => $station->id ]) }}"
                        title="{{ $station->name }}" id="home-button"
                        class="list-group-item list-group-item-action">
                         {{ $station->name }}

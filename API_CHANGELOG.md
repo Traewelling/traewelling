@@ -4,9 +4,70 @@ In this we try to keep track of changes to the API.
 Primarily this should document changes that are not backwards compatible or belongs to already documented endpoints.
 This is to help you keep track of the changes and to help you update your code accordingly.
 
+## 2024-06-01
+
+Changed `/operator` to `/operators`
+
+## 2024-05-31
+
+The `StatusResource` is now returning the whole `UserResource` for the user who created it in the `userDetails` field.
+Thus the following fields of the `StatusResource` are now **marked as deprecated and will be removed after August 2024**.
+
+- `user`
+- `username`
+- `profilePicture`
+- `preventIndex`
+
+This data is also available in the `userDetails` field.
+
+## 2024-05-30
+
+Added `GET /operator` endpoint to get a paginated list of all operators.
+
+## 2024-05-30
+
+Renamed `trainDuration` and `trainDistance` attributes to `totalDuration` and `totalDistance` in all `User` object.
+(We have more than just trains.)
+
+The old attributes will be removed after 2024-08.
+
+## 2024-05-30
+
+Deprecated `GET /activeEvents` endpoint, which will be removed after 2024-08.
+
+Change behavior of `GET /events` endpoint:
+
+- Add `timestamp` and `upcoming` query parameters to filter events by timestamp and upcoming events.
+- Default behavior (without query parameters) is to return active events.
+
+## 2024-05-28
+
+You can now edit the `eventId` of a status via the `PUT /status/{id}` endpoint.
+
+## 2024-04-27
+
+New endpoint `POST /report` for reporting a Status, Event or User to the admins.
+See the [documentation](https://traewelling.de/api/documentation) for more information.
+
+## 2024-03-16
+
+Replaced `GET /trains/station/{name}/departures` with `GET /station/{id}/departures`.
+The old endpoint is marked as deprecated and will be removed after 2024-06.
+
+Please note, that the ID is the Träwelling internal ID and not the IBNR!
+
+## 2024-03-10
+
+Replaced `PUT /trains/station/{name}/home` with `PUT /station/{id}/home`.
+The old endpoint is marked as deprecated and will be removed after 2024-06.
+
+Please note, that the ID is the Träwelling internal ID and not the IBNR!
+
 ## 2024-03-01
-> **warning**
-> Possibly breaking change: The implementation of next/prev links on user/{username}/statuses endpoint has been changed to adhere to the documentation.
+
+> [!WARNING]
+> Possibly breaking change: The implementation of next/prev links on user/{username}/statuses endpoint has been changed
+> to adhere to the documentation.
 
 ## 2024-01-21
 

@@ -23,7 +23,10 @@
                 <active-journey-map
                     map-provider="{{ Auth::user()->mapprovider ?? "default" }}"
                     :status-id="{{ $status->id }}"
-                />
+                    departure="{{ $status->checkin->departure->getTimestamp() }}"
+                    arrival="{{ $status->checkin->arrival->getTimestamp() }}"
+                >
+                </active-journey-map>
             </div>
         </div>
     @endif
@@ -55,9 +58,9 @@
                         </span>
                     </span>
 
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->checkin->originStation->ibnr])}}"
+                    <a href="{{route('trains.stationboard', ['stationId' => $status->checkin->originStopover->station->id ])}}"
                        class="text-trwl clearfix">
-                        {{$status->checkin->originStation->name}}
+                        {{$status->checkin->originStopover->station->name}}
                     </a>
 
                     <p class="train-status text-muted">
@@ -67,6 +70,8 @@
                                      src="{{ asset('img/' . $status->checkin->trip->category->value . '.svg') }}"
                                      alt="{{$status->checkin->trip->category->value}}"
                                 />
+                            @elseif($status->checkin->trip->category->value == 'taxi')
+                                <i class="fa fa-taxi d-inline" aria-hidden="true"></i>
                             @else
                                 <i class="fa fa-train d-inline" aria-hidden="true"></i>
                             @endif
@@ -123,7 +128,7 @@
                             @php
                                 $nextStation = \App\Http\Controllers\Backend\Transport\StatusController::getNextStationForStatus($status);
                             @endphp
-                            <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $nextStation?->ibnr])}}"
+                            <a href="{{route('trains.stationboard', ['stationId' => $nextStation?->id])}}"
                                class="text-trwl clearfix">
                                 {{$nextStation?->name}}
                             </a>
@@ -144,9 +149,9 @@
                             {{ userTime($display_arrival->time) }}
                         </span>
                     </span>
-                    <a href="{{route('trains.stationboard', ['provider' => 'train', 'station' => $status->checkin->destinationStation->ibnr])}}"
+                    <a href="{{route('trains.stationboard', ['stationId' => $status->checkin->destinationStopover->station->id])}}"
                        class="text-trwl clearfix">
-                        {{$status->checkin->destinationStation->name}}
+                        {{$status->checkin->destinationStopover->station->name}}
                     </a>
                 </li>
             </ul>
@@ -232,7 +237,7 @@
                                 <li>
                                     <button type="button" class="dropdown-item join"
                                             data-trwl-linename="{{$status->checkin->trip->linename}}"
-                                            data-trwl-stop-name="{{$status->checkin->destinationStation->name}}"
+                                            data-trwl-stop-name="{{$status->checkin->destinationStopover->station->name}}"
                                             data-trwl-trip-id="{{$status->checkin->trip_id}}"
                                             data-trwl-destination="{{$status->checkin->destination}}"
                                             data-trwl-arrival="{{$status->checkin->arrival}}"

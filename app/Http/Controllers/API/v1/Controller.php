@@ -11,10 +11,7 @@ use Throwable;
  * @OA\Info(
  *      version="1.0.0 - alpha",
  *      title="Träwelling API",
- *      description="Träwelling user API description. This is an incomplete documentation with still many errors. The
- *      API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body
- *      can be changed. Breaking changes will be announced on GitHub:
- *      https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md",
+ *      description="Träwelling user API description. This is an incomplete documentation with still many errors. The API is currently not yet stable. Endpoints are still being restructured. Both the URL and the request or body can be changed. Breaking changes will be announced on GitHub: https://github.com/Traewelling/traewelling/blob/develop/API_CHANGELOG.md",
  *      @OA\Contact(
  *          email="support@traewelling.de"
  *      ),
@@ -30,7 +27,7 @@ use Throwable;
  * )
  *
  * @OA\Server(
- *      url=L5_SWAGGER_CONST_HOST,
+ *      url=L5_SWAGGER_CONST_ENDPOINT,
  *      description="This instance"
  * )
  *
@@ -43,16 +40,20 @@ use Throwable;
  *     description="Checkin related endpoints. Regular process is departures -> trip -> checkin"
  * )
  * @OA\Tag(
+ *     name="Dashboard",
+ *     description="API Endpoints of Dashboard"
+ * )
+ * @OA\Tag(
  *     name="Events",
  *     description="Events that users can check in to"
  * )
  * @OA\Tag(
- *     name="Status",
- *     description="Endpoints for accessing and manipulating Statusses and their additional data"
+ *     name="Notifications",
+ *     description="Get notifications and mark them as read or unread"
  * )
  * @OA\Tag(
- *     name="Dashboard",
- *     description="API Endpoints of Dashboard"
+ *     name="Status",
+ *     description="Endpoints for accessing and manipulating Statusses and their additional data"
  * )
  * @OA\Tag(
  *     name="Likes",

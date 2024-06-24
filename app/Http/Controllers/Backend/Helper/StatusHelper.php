@@ -26,7 +26,7 @@ class StatusHelper
             number:  preg_match('/\s/', $this->status->checkin->trip->linename),
             replace: [
                          'lineName'    => $this->status->checkin->trip->linename,
-                         'destination' => $this->status->checkin->destinationStation->name,
+                         'destination' => $this->status->checkin->destinationStopover->station->name,
                          'hashtag'     => $this->status->event->hashtag
                      ]
         );
@@ -38,7 +38,7 @@ class StatusHelper
             number:  preg_match('/\s/', $this->status->checkin->trip->linename),
             replace: [
                          'lineName'    => $this->status->checkin->trip->linename,
-                         'destination' => $this->status->checkin->destinationStation->name
+                         'destination' => $this->status->checkin->destinationStopover->station->name
                      ]
         );
     }
@@ -52,7 +52,7 @@ class StatusHelper
 
         return strtr(' (@ :linename ➜ :destination:eventIntercept) #NowTräwelling', [
             ':linename'       => $this->status->checkin->trip->linename,
-            ':destination'    => $this->status->checkin->destinationStation->name,
+            ':destination'    => $this->status->checkin->destinationStopover->station->name,
             ':eventIntercept' => isset($eventIntercept) ? ' ' . $eventIntercept : ''
         ]);
     }
@@ -66,9 +66,9 @@ class StatusHelper
             $body           = $this->mastodon ? $this->getMastodonBody() : $this->status->body;
             $appendix       = $this->generateAppendix();
             $appendixLength = strlen($appendix) + 30;
-            $postText       = substr($body, 0, 280 - $appendixLength);
+            $postText       = substr($body, 0, 500 - $appendixLength);
             if (strlen($postText) !== strlen($body)) {
-                $postText .= '...';
+                $postText .= '…';
             }
             $postText .= $appendix;
 

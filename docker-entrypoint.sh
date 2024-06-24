@@ -2,10 +2,6 @@
 set -e
 role=${CONTAINER_ROLE:-app}
 
-if [ ${SEED_DB} == "true" ]; then
-    echo "Seeding database"
-    runuser -u www-data -- php artisan migrate:fresh --seed --force
-fi
 
 if [ "$role" = "launch-all-at-once" ]; then
 
@@ -26,7 +22,15 @@ else
     if [ "$role" = "app" ]; then
 
         echo "Running as app..."
-        runuser -u www-data -- php artisan migrate --force
+
+        if [ ${SEED_DB} == "true" ]; then
+            echo "Resetting OAuth keys and seeding database"
+            runuser -u www-data -- php artisan migrate:fresh --seed --force
+            runuser -u www-data -- php artisan passport:install --force --quiet --no-interaction
+        else
+            runuser -u www-data -- php artisan migrate --force
+        fi
+
         runuser -u www-data -- php artisan storage:link
         apache2-foreground
 

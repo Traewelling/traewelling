@@ -5,12 +5,13 @@ namespace Tests\Unit;
 use App\Exceptions\StationNotOnTripException;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Carbon as IlluminateCarbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Passport\Passport;
 use Mockery;
 use stdClass;
-use Illuminate\Support\Facades\App;
+use function secondsToDuration;
 
 class HelperMethodTest extends UnitTestCase
 {
@@ -54,7 +55,7 @@ class HelperMethodTest extends UnitTestCase
         ];
 
         foreach ($testcases as $input => $output) {
-            $this->assertEquals($output, durationToSpan(\secondsToDuration($input)));
+            $this->assertEquals($output, durationToSpan(secondsToDuration($input)));
         }
     }
 
@@ -105,9 +106,9 @@ class HelperMethodTest extends UnitTestCase
      * @dataProvider stationBoardTimezoneOffsetProvider
      */
     public function testStationBoardTimezoneOffset($expected, $departures): void {
-        $this->user = User::factory()->make();
+        $user = User::factory()->make();
 
-        $user = Mockery::mock($this->user)
+        $user = Mockery::mock($user)
                        ->shouldReceive('getAttribute')
                        ->with('timezone')
                        ->andReturn('Europe/Berlin')
@@ -150,6 +151,9 @@ class HelperMethodTest extends UnitTestCase
         $wrongCET       = clone $correctCEST;
         $wrongCET->when = $wrongTimestampCET;
 
+        $dstTimestamp       = new stdClass();
+        $dstTimestamp->when = '2024-03-31T13:00:00+02:00';
+
 
         return [
             'CEST, cancelled, correct timezone'          => [false, [$cancelledCorrectCEST, $correctCEST]],
@@ -164,22 +168,25 @@ class HelperMethodTest extends UnitTestCase
             'CET, not cancelled, wrong timezone'         => [true, [$wrongCET, $cancelledWrongCET]],
             'CET, cancelled, cancelled, wrong timezone'  => [false, [$cancelledCorrectCET, $cancelledWrongCET]],
             'CET, no stations'                           => [false, []],
+            'DST change'                                 => [false, [$dstTimestamp]],
         ];
     }
 
     public function testHelperMethodWithReference(): void {
-        $exception = $this->mock(StationNotOnTripException::class, function ($mock) {
-            $mock->shouldReceive('reference')->andReturn('referenceTest');
-        });
+        $exception = new StationNotOnTripException();
 
-        $text = __('messages.exception.reference', ['reference' => 'referenceTest']);
+        $text = __('messages.exception.reference', ['reference' => $exception->reference]);
 
         $this->assertStringEndsWith($text, errorMessage($exception));
         $this->assertStringEndsWith("Text? " . $text, errorMessage($exception, "Text?"));
+
+        $context = $exception->context();
+        $this->assertIsArray($context);
+        $this->assertEquals($exception->reference, $context['reference']);
     }
 
     public function testHelperMethodWithoutReference(): void {
-        $this->assertEquals(__('messages.exception.general'), errorMessage(new \Exception()));
-        $this->assertEquals("Text?", errorMessage(new \Exception(), "Text?"));
+        $this->assertEquals(__('messages.exception.general'), errorMessage(new Exception()));
+        $this->assertEquals("Text?", errorMessage(new Exception(), "Text?"));
     }
 }

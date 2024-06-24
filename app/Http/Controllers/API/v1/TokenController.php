@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Exceptions\PermissionException;
 use App\Http\Controllers\Backend\User\TokenController as BackendTokenController;
 use App\Http\Resources\TokenResource;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -21,7 +21,7 @@ class TokenController extends Controller
         try {
             BackendTokenController::revokeToken($validated['tokenId'], auth()->user());
             return $this->sendResponse(null, 204);
-        } catch (PermissionException) {
+        } catch (AuthorizationException) {
             return $this->sendError(null, 403);
         }
     }

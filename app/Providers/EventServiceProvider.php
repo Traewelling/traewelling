@@ -2,20 +2,19 @@
 
 namespace App\Providers;
 
-use App\Events\StatusDeleteEvent;
 use App\Events\StatusUpdateEvent;
 use App\Events\UserCheckedIn;
 use App\Jobs\PostStatusOnMastodon;
+use App\Listeners\CacheMissedListener;
 use App\Listeners\NotificationSentWebhookListener;
 use App\Listeners\RemoveAbsentWebhooksListener;
 use App\Listeners\StatusCreateCheckPolylineListener;
 use App\Listeners\StatusCreateWebhookListener;
-use App\Listeners\StatusDeleteWebhookListener;
 use App\Listeners\StatusUpdateWebhookListener;
+use App\Models\Checkin;
 use App\Models\Follow;
 use App\Models\Like;
 use App\Models\Status;
-use App\Models\Checkin;
 use App\Models\User;
 use App\Observers\CheckinObserver;
 use App\Observers\FollowObserver;
@@ -23,6 +22,7 @@ use App\Observers\LikeObserver;
 use App\Observers\StatusObserver;
 use App\Observers\UserObserver;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Cache\Events\CacheMissed;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Event;
@@ -47,15 +47,15 @@ class EventServiceProvider extends ServiceProvider
         StatusUpdateEvent::class      => [
             StatusUpdateWebhookListener::class
         ],
-        StatusDeleteEvent::class      => [
-            StatusDeleteWebhookListener::class
-        ],
         NotificationSent::class       => [
             NotificationSentWebhookListener::class
         ],
         WebhookCallFailedEvent::class => [
             RemoveAbsentWebhooksListener::class
-        ]
+        ],
+        CacheMissed::class            => [
+            CacheMissedListener::class
+        ],
     ];
 
     protected $observers = [

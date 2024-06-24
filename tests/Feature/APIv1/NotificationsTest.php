@@ -3,22 +3,22 @@
 namespace Tests\Feature\APIv1;
 
 use App\Enum\StatusVisibility;
-use Laravel\Passport\Passport;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Backend\User\FollowController as FollowBackend;
 use App\Http\Controllers\Backend\UserController as BackendUserController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
+use App\Models\Checkin;
 use App\Models\Event;
 use App\Models\EventSuggestion;
 use App\Models\Follow;
-use App\Models\Checkin;
 use App\Models\User;
 use App\Notifications\EventSuggestionProcessed;
 use App\Notifications\UserFollowed;
 use App\Notifications\UserJoinedConnection;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
 
 class NotificationsTest extends ApiTestCase
@@ -191,9 +191,9 @@ class NotificationsTest extends ApiTestCase
         $bobsData  = TrainCheckinController::checkin(
             user:        $bob,
             trip:        $aliceCheckIn->trip,
-            origin:      $aliceCheckIn->originStation,
+            origin:      $aliceCheckIn->originStopover->station,
             departure:   $aliceCheckIn->departure,
-            destination: $aliceCheckIn->destinationStation,
+            destination: $aliceCheckIn->destinationStopover->station,
             arrival:     $aliceCheckIn->arrival,
         );
         $bobStatus = $bobsData['status'];
@@ -230,9 +230,9 @@ class NotificationsTest extends ApiTestCase
         TrainCheckinController::checkin(
             user:        $bob,
             trip:        $aliceCheckIn->trip,
-            origin:      $aliceCheckIn->originStation,
+            origin:      $aliceCheckIn->originStopover->station,
             departure:   $aliceCheckIn->departure,
-            destination: $aliceCheckIn->destinationStation,
+            destination: $aliceCheckIn->destinationStopover->station,
             arrival:     $aliceCheckIn->arrival,
             visibility:  StatusVisibility::PRIVATE // <-- important in this test
         );
@@ -304,7 +304,7 @@ class NotificationsTest extends ApiTestCase
                                        'event_end'    => $eventSuggestion->end
                                    ]
                          );
-        $response->assertRedirectToRoute('admin.events');
+        $response->assertRedirectToRoute('admin.events.suggestions');
 
         //save event for later
         $event = Event::first();
@@ -321,11 +321,11 @@ class NotificationsTest extends ApiTestCase
                                           'data' => [
                                               'accepted'        => true,
                                               'event'           => [
-                                                  'id'    => $event->id,
-                                                  'slug'  => $event->slug,
-                                                  'name'  => $event->name,
-                                                  'begin' => $event->begin,
-                                                  'end'   => $event->end,
+                                                  'id'            => $event->id,
+                                                  'slug'          => $event->slug,
+                                                  'name'          => $event->name,
+                                                  'checkin_start' => $event->checkin_start,
+                                                  'checkin_end'   => $event->checkin_end,
                                               ],
                                               'suggestedName'   => $eventSuggestion->name,
                                               'rejectionReason' => null

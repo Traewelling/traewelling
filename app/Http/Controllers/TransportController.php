@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Enum\TravelType;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Transport\StationController;
-use App\Models\PolyLine;
+use App\Http\Resources\StationResource;
 use App\Models\Checkin;
+use App\Models\PolyLine;
 use App\Models\Station;
 use App\Models\User;
 use Carbon\Carbon;
@@ -36,12 +37,7 @@ class TransportController extends Controller
         }
 
         return $stations->map(function(Station $station) {
-            return [
-                'id'            => $station->id,
-                'ibnr'          => $station->ibnr,
-                'rilIdentifier' => $station->rilIdentifier,
-                'name'          => $station->name
-            ];
+            return new StationResource($station);
         });
     }
 
@@ -49,10 +45,13 @@ class TransportController extends Controller
      * @param string|int      $stationQuery
      * @param Carbon|null     $when
      * @param TravelType|null $travelType
+     * @param bool            $localtime
      *
      * @return array
      * @throws HafasException
-     * @api v1
+     * @deprecated use HafasController::getDepartures(...) directly instead (-> less overhead)
+     *
+     * @api        v1
      */
     #[ArrayShape([
         'station'    => Station::class,
@@ -126,7 +125,7 @@ class TransportController extends Controller
             return collect();
         }
 
-        $checkInsToCheck = Checkin::with(['Trip.stopovers', 'originStation', 'destinationStation'])
+        $checkInsToCheck = Checkin::with(['Trip.stopovers', 'originStopover.station', 'destinationStopover.station'])
                                   ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
                                   ->where('statuses.user_id', $user->id)
                                   ->where('departure', '>=', $start->clone()->subDays(3))
@@ -163,12 +162,5 @@ class TransportController extends Controller
                                         ], [
                                             'polyline' => $polyline
                                         ]);
-    }
-
-    /**
-     * @deprecated use StationController:getLatestArrivals(...) instead.
-     */
-    public static function getLatestArrivals(User $user, int $maxCount = 5): Collection {
-        return StationController::getLatestArrivals($user, $maxCount);
     }
 }

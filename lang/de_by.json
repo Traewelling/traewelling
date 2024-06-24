@@ -517,7 +517,6 @@
     "generic.error": "Feahler",
     "request-time": "agfrogat um :time",
     "support.privacy": "Dataschutzhinweis",
-    "checkin.points.earned": "Du kriagsch",
     "export.error.time": "Du kasch nur Fahrta über an Zeitraum vu maximal 365 Täg exportiera.",
     "export.error.amount": "Du hosch mehr als 2000 Fahrta agfrogt. Bitte versuach, den Zeitraum einzumschränka.",
     "notifications.eventSuggestionProcessed.lead": "Dei Feschtlavorschlag <b>:name</b> isch bearbeitet wora.",

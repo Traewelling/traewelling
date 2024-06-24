@@ -75,7 +75,7 @@ class UserProfileSettings
      * @OA\Property(
      *     title="defaultStatusVisibility",
      *     description="Default status visibility for new statuses",
-     *      ref="#/components/schemas/VisibilityEnum"
+     *      ref="#/components/schemas/StatusVisibility"
      * )
      *
      * @var integer
@@ -156,7 +156,7 @@ class UserProfileSettings
      * @OA\Property(
      *     title="mastodonVisibility",
      *     description="Post visibility for future posts to Mastodon",
-     *      ref="#/components/schemas/VisibilityEnum"
+     *      ref="#/components/schemas/StatusVisibility"
      * )
      *
      * @var integer

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Frontend\Admin\ActivityController;
 use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
+use App\Http\Controllers\Frontend\Admin\ReportController;
 use App\Http\Controllers\Frontend\Admin\StationController;
 use App\Http\Controllers\Frontend\Admin\StatusEditController;
 use App\Http\Controllers\Frontend\Admin\TripController;
@@ -25,6 +26,13 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
                  ->name('admin.checkin');
         });
 
+        Route::prefix('reports')->group(function() {
+            Route::get('/', [ReportController::class, 'renderReports'])
+                 ->name('admin.reports');
+            Route::get('/{id}', [ReportController::class, 'showReport'])
+                 ->name('admin.reports.show');
+        });
+
         Route::prefix('users')->group(function() {
             Route::get('/', [UserController::class, 'renderIndex'])
                  ->name('admin.users');
@@ -43,10 +51,8 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
         });
 
         Route::prefix('trip')->group(function() {
-            Route::view('/create', 'admin.trip.create')
-                 ->name('admin.trip.create');
-
             Route::get('/{id}', [TripController::class, 'renderTrip'])
+                 ->whereNumber('id')
                  ->name('admin.trip.show');
         });
 

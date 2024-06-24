@@ -1,4 +1,8 @@
-<!DOCTYPE html>
+@php
+    use App\Http\Controllers\Backend\VersionController;
+ use App\Services\PrideService;
+@endphp
+    <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -44,7 +48,7 @@
         <div id="app">
             <nav class="navbar navbar-expand-md navbar-dark bg-trwl" id="nav-main">
                 <div class="container">
-                    <a class="navbar-brand" href="{{ url('/') }}">
+                    <a class="navbar-brand {{ PrideService::getCssClassesForPrideFlag() }}" href="{{ url('/') }}">
                         {{ config('app.name') }}
                     </a>
 
@@ -115,7 +119,7 @@
                                     </div>
                                 </form>
                                 <li class="nav-item d-none d-md-inline-block">
-                                    <notification-bell :link="true"></notification-bell>
+                                    <notification-bell :link="true" :allow-fetch="false"></notification-bell>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" href="#" class="nav-link dropdown-toggle mdb-select"
@@ -292,7 +296,7 @@
                         <p class="mb-0 text-muted small">
                             Version
                             <a href="{{route('changelog')}}">
-                                {{ \App\Http\Controllers\Backend\VersionController::getVersion() }}
+                                {{ VersionController::getVersion() }}
                             </a>
                         </p>
                     </div>

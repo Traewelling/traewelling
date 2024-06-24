@@ -7,15 +7,14 @@ import CheckinLineRun from "./CheckinLineRun.vue";
 import CheckinInterface from "./CheckinInterface.vue";
 import StationAutocomplete from "./StationAutocomplete.vue";
 import {trans} from "laravel-vue-i18n";
+import StationBoardEntry from "./Checkin/StationBoardEntry.vue";
+import Spinner from "./Spinner.vue";
 
 export default {
-    components: {StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal},
-    props: {
-        station: {
-            type: String,
-            required: true,
-            default: "Karlsruhe Hbf"
-        }
+    components: {
+        Spinner,
+        StationBoardEntry,
+        StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal
     },
     data() {
         return {
@@ -27,7 +26,12 @@ export default {
             selectedTrain: null,
             selectedDestination: null,
             loading: false,
-            stationString: null,
+            stationName: null,
+            trwlStationId: null,
+            firstFetchTime: null,
+            pushState: null,
+            fastCheckinIbnr: null,
+            useInternalIdentifiers: false,
         };
     },
     methods: {
@@ -37,9 +41,19 @@ export default {
             this.selectedTrain       = selectedItem;
             this.show                = true;
             this.$refs.modal.show();
+
+            const data = new URLSearchParams({
+                tripId: selectedItem.tripId,
+                lineName: selectedItem.line.name,
+                start: this.meta.station.ibnr,
+                departure: selectedItem.when,
+            });
+
+            this.pushHistory(data);
         },
         updateStation(station) {
-            this.stationString = station.name;
+            this.stationName   = station.name;
+            this.trwlStationId = station.id;
             this.data          = [];
             this.fetchData();
         },
@@ -68,14 +82,22 @@ export default {
             } else {
                 time = this.fetchTime.minus({minutes: 5}).toString();
             }
+            if (this.trwlStationId === null) {
+                return;
+            }
 
-            let query      = this.stationString.replace(/%2F/, " ").replace(/\//, " ");
             let travelType = this.travelType ? this.travelType : "";
 
-            fetch(`/api/v1/trains/station/${query}/departures?when=${time}&travelType=${travelType}`)
+            this.pushHistory(new URLSearchParams({
+                stationId: this.trwlStationId,
+                stationName: this.stationName,
+                when: time,
+                travelType: travelType
+            }))
+
+            fetch(`/api/v1/station/${this.trwlStationId}/departures?when=${time}&travelType=${travelType}`)
                 .then((response) => {
                     this.loading = false;
-                    this.now     = DateTime.now();
                     if (response.ok) {
                         response.json().then((result) => {
                             if (appendPosition === 0) {
@@ -85,7 +107,10 @@ export default {
                             } else {
                                 this.data = result.data.concat(this.data);
                             }
-                            this.meta = result.meta;
+                            this.meta        = result.meta;
+                            this.stationName = result.meta.station.name;
+
+                            this.firstFetchTime = DateTime.fromISO(this.meta?.times?.now);
                         });
                     }
                 });
@@ -93,26 +118,109 @@ export default {
         formatTime(time) {
             return DateTime.fromISO(time).toFormat("HH:mm");
         },
-        //show divider if this.times.now is between this and the next item
-        showDivider(item, key) {
-            if (key === 0 || typeof this.meta.times === "undefined") {
-                return false;
+        isPast(item) {
+            return DateTime.fromISO(item.when) < DateTime.now();
+        },
+        async analyzeUrlParams() {
+            let urlParams  = new URLSearchParams(window.location.search);
+            this.fetchTime = DateTime.now().setZone("UTC");
+
+            if (urlParams.has('tripId')) {
+                if (!urlParams.has('destination')) {
+                    this.selectedDestination = null;
+                }
+                this.selectedTrain = {
+                    tripId: urlParams.get('tripId'),
+                    line: {
+                        name: urlParams.get('lineName')
+                    },
+                    stop: {
+                        id: urlParams.get('start')
+                    },
+                    plannedWhen: urlParams.get('departure'),
+                };
+                if (urlParams.has('destination')) {
+                    this.fastCheckinIbnr = urlParams.get('destination');
+                }
+                if (urlParams.has('idType')) {
+                    //ToDo change this form to use trwl-id per default and use db-ibnr for hafas-related-input
+                    this.useInternalIdentifiers = urlParams.get('idType') === 'trwl';
+                }
+                this.show = true;
+                this.$refs?.modal?.show();
+                return new Promise((resolve) => {
+                    resolve();
+                });
             }
-            const prev = DateTime.fromISO(this.data[key - 1].when);
-            const next = DateTime.fromISO(item.when);
-            return this.now >= prev && this.now <= next;
+
+            if (!urlParams.has('stationId')) {
+                window.notyf.error("No station found!");
+            }
+            if (urlParams.has('when')) {
+                const fetchTime = DateTime.fromISO(urlParams.get('when')).setZone("UTC");
+                this.fetchTime  = fetchTime.isValid ? fetchTime : this.fetchTime;
+            }
+            this.stationName   = urlParams.get('stationName');
+            this.trwlStationId = urlParams.get('stationId');
+            this.show          = false;
+            this.$refs.modal.hide();
+            return new Promise((resolve) => {
+                resolve();
+            });
+        },
+        popstateListener() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.toString() !== this.pushState.toString()) {
+                this.analyzeUrlParams().then(() => {
+                    if (!this.selectedTrain) {
+                        this.fetchData();
+                    }
+                });
+            }
+        },
+        pushHistory(data) {
+            this.pushState = data;
+            window.history.pushState({}, "", `?${data.toString()}`);
+        },
+        goBackToLineRun() {
+            this.selectedDestination = null;
+            this.fastCheckinIbnr     = null;
         }
     },
     mounted() {
-        this.fetchTime     = DateTime.now().setZone("UTC");
-        this.stationString = this.$props.station;
-        this.fetchData();
+        this.analyzeUrlParams().then(() => {
+            if (!this.selectedTrain) {
+                this.fetchData();
+            }
+        });
+
+        window.addEventListener('popstate', () => {
+            this.popstateListener();
+        });
+    },
+    watch: {
+        selectedDestination(value) {
+            if (value === null) {
+                window.history.back();
+            } else {
+                const params      = new URLSearchParams(window.location.search);
+                const destination = this.useInternalIdentifiers ? value.id : value.evaIdentifier;
+                params.set('destination', destination)
+                this.pushHistory(params);
+            }
+        }
     },
     computed: {
         now() {
             return Object.hasOwn(this.meta, "times") && Object.hasOwn(this.meta.times, "now")
                 ? DateTime.fromISO(this.meta.times.now).setZone("UTC")
                 : DateTime.now().setZone("UTC");
+        },
+        showLineRun() {
+            return !!this.selectedTrain && !this.selectedDestination;
+        },
+        showCheckinInterface() {
+            return !!this.selectedDestination;
         }
     }
 }
@@ -123,19 +231,20 @@ export default {
         v-on:update:time="updateTime"
         v-on:update:station="updateStation"
         v-on:update:travel-type="updateTravelType"
-        :station="{name: stationString}"
+        :stationName="stationName"
+        :station="meta?.station"
         :time="now"
+        :show-filter-button="true"
     />
-    <div v-if="loading" style="max-width: 200px;" class="spinner-grow text-trwl mx-auto p-2" role="status">
-        <span class="visually-hidden">Loading...</span>
-    </div>
+    <Spinner v-if="loading" />
     <FullScreenModal ref="modal">
         <template #header v-if="selectedTrain">
             <div class="col-1 align-items-center d-flex">
                 <ProductIcon :product="selectedTrain.line.product"/>
             </div>
             <div class="col-auto align-items-center d-flex me-3">
-                <LineIndicator :product-name="selectedTrain.line.product" :number="selectedTrain.line.name"/>
+                <LineIndicator :product-name="selectedTrain.line.product"
+                               :number="selectedTrain.line.name !== null ? selectedTrain.line.name : selectedTrain.line.fahrtNr"/>
             </div>
             <template v-if="selectedDestination">
                 <div class="col-auto align-items-center d-flex me-3">
@@ -146,61 +255,53 @@ export default {
                 </div>
             </template>
         </template>
-        <template #body v-if="!!selectedTrain && !selectedDestination">
-            <CheckinLineRun :selectedTrain="selectedTrain" v-model:destination="selectedDestination"/>
+        <template #body v-if="showLineRun">
+            <CheckinLineRun
+                :selectedTrain="selectedTrain"
+                :fastCheckinIbnr="fastCheckinIbnr"
+                :useInternalIdentifiers="useInternalIdentifiers"
+                v-model:destination="selectedDestination"
+            />
         </template>
-        <template #body v-if="!!selectedDestination">
-            <CheckinInterface :selectedTrain="selectedTrain" :selectedDestination="selectedDestination"/>
+        <template #close v-if="showCheckinInterface">
+            <button type="button" class="btn-close" aria-label="Back" @click="goBackToLineRun"></button>
+        </template>
+        <template #body v-if="showCheckinInterface">
+            <CheckinInterface
+                :selectedTrain="selectedTrain"
+                :selectedDestination="selectedDestination"
+                :useInternalIdentifiers="useInternalIdentifiers"
+            />
         </template>
     </FullScreenModal>
 
     <div class="text-center mb-2" v-if="!loading" @click="fetchPrevious">
         <button type="button" class="btn btn-primary"><i class="fa-solid fa-angle-up"></i></button>
     </div>
-    <template v-show="!loading" v-for="(item, key) in data" :key="item.id">
-        <div class="card mb-1 dep-card" @click="showModal(item)">
-            <div class="card-body d-flex py-0">
-                <div class="col-1 align-items-center d-flex justify-content-center">
-                    <ProductIcon :product="item.line.product"/>
-                </div>
-                <div class="col-2 align-items-center d-flex me-3 justify-content-center">
-                    <LineIndicator :productName="item.line.product" :number="item.line.name"/>
-                </div>
-                <div class="col align-items-center d-flex second-stop">
-                    <div>
-                        <span class="fw-bold fs-6">{{ item.direction }}</span><br>
-                        <span v-if="item.stop.name !== meta.station.name" class="text-muted small font-italic">
-                        {{ trans("stationboard.dep") }} {{ item.stop.name }}
-                    </span>
-                    </div>
-                </div>
-                <div class="col-auto ms-auto align-items-center d-flex">
-                    <div v-if="item.delay">
-                        <span class="text-muted text-decoration-line-through">{{
-                                formatTime(item.plannedWhen)
-                            }}<br></span>
-                        <span>{{ formatTime(item.when) }}</span>
-                    </div>
-                    <div v-else>
-                        <span>{{ formatTime(item.plannedWhen) }}</span>
-                    </div>
-                </div>
+    <template v-if="!loading && data.length === 0">
+        <div class="card mb-1 dep-card mt-3 mb-3">
+            <div class="text-center my-auto">
+                {{ trans("stationboard.no-departures") }}
+                <span v-if="firstFetchTime">
+                    ({{ formatTime(this.firstFetchTime) }} - {{ formatTime(this.meta?.times?.now) }})
+                </span>
             </div>
         </div>
-        <div v-if="showDivider(item, key)">
-            <hr>
-        </div>
     </template>
+    <StationBoardEntry
+        v-show="!loading"
+        v-for="item in data"
+        :key="item.id"
+        @click="showModal(item)"
+        :item="item"
+        :station="meta.station"
+    />
     <div class="text-center mt-2" v-if="!loading" @click="fetchNext">
         <button type="button" class="btn btn-primary"><i class="fa-solid fa-angle-down"></i></button>
     </div>
 </template>
 
 <style scoped lang="scss">
-.dep-card {
-    min-height: 4.25rem;
-}
-
 .product-icon {
     width: 1.25rem;
     height: 1.25rem;

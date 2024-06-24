@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace App\Dto;
 
-use OpenApi\Annotations as OA;
+use JsonSerializable;
+use stdClass;
 
 /**
  * @OA\Schema(
@@ -12,7 +13,7 @@ use OpenApi\Annotations as OA;
  *     @OA\Xml(name="Coordinate"),
  * )
  */
-class Coordinate implements \JsonSerializable
+readonly class Coordinate implements JsonSerializable
 {
     /**
      *
@@ -29,16 +30,16 @@ class Coordinate implements \JsonSerializable
      *     )
      * )
      */
-    public readonly float $latitude;
-    public readonly float $longitude;
+    public float $latitude;
+    public float $longitude;
 
     public function __construct(float $latitude, float $longitude) {
         $this->latitude  = $latitude;
         $this->longitude = $longitude;
     }
 
-    public static function fromGeoJson(\stdClass $point): ?self {
-        if (isset($point->geometry->coordinates)) {
+    public static function fromGeoJson(stdClass $point): ?self {
+        if (isset($point->geometry->coordinates) && is_array($point->geometry->coordinates) && count($point->geometry->coordinates) === 2) {
             return new self($point->geometry->coordinates[1], $point->geometry->coordinates[0]);
         }
         return null;

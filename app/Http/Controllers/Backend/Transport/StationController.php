@@ -59,13 +59,15 @@ abstract class StationController extends Controller
             'train_stations.id', 'train_stations.ibnr', 'train_stations.name',
             'train_stations.latitude', 'train_stations.longitude', 'train_stations.rilIdentifier',
         ];
-        return Station::join('train_checkins', 'train_checkins.destination', '=', 'train_stations.ibnr')
-                      ->where('train_checkins.user_id', $user->id)
-                      ->groupBy($groupAndSelect)
-                      ->select($groupAndSelect)
-                      ->orderByDesc(DB::raw('MAX(train_checkins.arrival)'))
-                      ->limit($maxCount)
-                      ->get();
+        return DB::table('train_checkins') //TODO: return Station objects
+                 ->join('train_stopovers', 'train_checkins.destination_stopover_id', '=', 'train_stopovers.id')
+                 ->join('train_stations', 'train_stopovers.train_station_id', '=', 'train_stations.id')
+                 ->where('train_checkins.user_id', $user->id)
+                 ->groupBy($groupAndSelect)
+                 ->select($groupAndSelect)
+                 ->orderByDesc(DB::raw('MAX(train_checkins.arrival)'))
+                 ->limit($maxCount)
+                 ->get();
     }
 
     public static function getAlternativeDestinationsForCheckin(Checkin $checkin): Collection {

@@ -12,9 +12,10 @@ use App\Models\Trip;
 use App\Models\PolyLine;
 use App\Models\Checkin;
 use App\Objects\LineSegment;
-use GuzzleHttp\Exception\ConnectException;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -34,7 +35,7 @@ abstract class BrouterController extends Controller
      * @param BrouterProfile $profile
      *
      * @return stdClass
-     * @throws JsonException|InvalidArgumentException|ConnectException
+     * @throws JsonException|InvalidArgumentException|ConnectionException
      */
     public static function getGeoJSONForRoute(
         array          $coordinates,
@@ -82,6 +83,20 @@ abstract class BrouterController extends Controller
         if (App::runningUnitTests()) {
             return;
         }
+
+        //0. Check if brouter Polyline is already available
+        $childPolyline   = PolyLine::where('parent_id', $trip->polyline_id)->orderBy('id', 'desc')->first();
+        $currentPolyline = $trip->polyline()->first();
+        if ($childPolyline?->source === 'brouter' || $currentPolyline?->source === 'brouter') {
+            Log::debug('[RefreshPolyline] Brouter Polyline already available for Trip#' . $trip->trip_id);
+
+            if ($currentPolyline?->source !== 'brouter') {
+                //If the current Polyline is not from Brouter, we need to recalculate the distance and points
+                self::recalculateDistanceAndPoints($trip, $childPolyline);
+            }
+            return;
+        }
+
         //1. Prepare coordinates from stations
         $coordinates = [];
         foreach ($trip->stopovers as $stopover) {
@@ -94,7 +109,7 @@ abstract class BrouterController extends Controller
         } catch (InvalidArgumentException) {
             Log::warning('[RefreshPolyline] Error while getting Polyline for Trip#' . $trip->trip_id . ' (Required data is missing in Brouter response)');
             return;
-        } catch (ConnectException) {
+        } catch (ConnectionException) {
             Log::info('[RefreshPolyline] Getting Polyline for Trip#' . $trip->trip_id . ' timed out.');
             return;
         }
@@ -119,10 +134,8 @@ abstract class BrouterController extends Controller
         $highestMappedKey = null;
         foreach ($trip->stopovers as $stopover) {
             $properties = [
-                'id'                => $stopover->station->ibnr,
-                'name'              => $stopover->station->name,
-                'departure_planned' => $stopover->departure_planned,
-                'arrival_planned'   => $stopover->arrival_planned,
+                'id'   => $stopover->station->ibnr,
+                'name' => $stopover->station->name,
             ];
 
             //Get feature with the lowest distance to station
@@ -148,13 +161,27 @@ abstract class BrouterController extends Controller
             $geoJson['features'][$closestFeatureKey]['properties'] = $properties;
         }
 
-        $polyline    = PolyLine::create([
-                                            'hash'      => Str::uuid(), //In this case a non required unique key
-                                            'polyline'  => json_encode($geoJson),
-                                            'source'    => 'brouter',
-                                            'parent_id' => $trip->polyline_id
-                                        ]);
-        $oldPolyLine = $trip->polyline_id;
+        $childPolyline = PolyLine::create([
+                                              'hash'      => Str::uuid(), //In this case a non required unique key
+                                              'polyline'  => json_encode($geoJson),
+                                              'source'    => 'brouter',
+                                              'parent_id' => $trip->polyline_id
+                                          ]);
+        self::recalculateDistanceAndPoints($trip, $childPolyline);
+    }
+
+    /**
+     * @param Trip     $trip
+     * @param          $polyline
+     *
+     * @return void
+     */
+    public static function recalculateDistanceAndPoints(Trip $trip, $polyline): void {
+        DB::beginTransaction();
+        $oldPolyLine = self::getOldPolyline($trip);
+        Log::debug('[RefreshPolyline] Recalculating distance and points for Trip#' . $trip->trip_id);
+        Log::debug('[RefreshPolyline] New Polyline ID: ' . $trip->polyline_id);
+        Log::debug('[RefreshPolyline] Old Polyline ID: ' . $oldPolyLine);
         $trip->update(['polyline_id' => $polyline->id]);
 
         //Refresh distance and points of trips
@@ -163,8 +190,11 @@ abstract class BrouterController extends Controller
             foreach ($checkinsToRecalc as $checkin) {
                 TrainCheckinController::refreshDistanceAndPoints($checkin->status);
             }
+            DB::commit();
         } catch (DistanceDeviationException) {
             $trip->update(['polyline_id' => $oldPolyLine]);
+            Log::debug('[RefreshPolyline] Distance Deviation detected. Reverting changes.');
+            DB::rollBack();
         }
     }
 
@@ -210,5 +240,20 @@ abstract class BrouterController extends Controller
             }
         }
         return false;
+    }
+
+    private static function getOldPolyline(Trip $trip): ?int {
+        $oldPolyLine = PolyLine::where('parent_id', $trip->polyline_id)->orderBy('id', 'desc')->first();
+        $limit       = 20;
+        while ($oldPolyLine?->source === 'brouter' && $limit-- > 0) {
+            $next = PolyLine::where('parent_id', $oldPolyLine->id)->orderBy('id', 'desc')->first();
+            if ($next) {
+                $oldPolyLine = $next;
+            } else {
+                break;
+            }
+        }
+
+        return $oldPolyLine->id ?? null;
     }
 }

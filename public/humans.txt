@@ -16,7 +16,7 @@
     Mastodon: jannik@chaos.social
     Location: Düsseldorf, Germany
 
-    Additional Credits to this contributors:
+    Additional credits go to these contributors:
         https://github.com/Traewelling/traewelling/graphs/contributors
 
 /* THANKS */
