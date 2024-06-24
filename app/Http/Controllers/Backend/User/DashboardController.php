@@ -6,7 +6,6 @@ use App\Enum\StatusVisibility;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -29,11 +28,11 @@ abstract class DashboardController extends Controller
                        ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                        ->join('train_stopovers AS origin_stopover', 'train_checkins.origin_stopover_id', '=', 'origin_stopover.id')
                        ->join('users', 'statuses.user_id', '=', 'users.id')
-                       ->where('origin_stopover.departure_real', '<', Carbon::now()->addMinutes(20))
+                       ->where('origin_stopover.departure_real', '<', now()->addMinutes(20))
                        ->select('statuses.*')
                        ->orderByDesc('origin_stopover.departure_real'); // TODO: manual_departure
 
-        // left join follows to check if user follows the status author (checked in the where clause)
+        // left join follows to check if user follows the status author (checked in caller function)
         $query->leftJoin('follows', function($join) use ($user) {
             $join->on('follows.follow_id', '=', 'users.id')
                  ->where('follows.user_id', '=', $user->id);
@@ -95,7 +94,7 @@ abstract class DashboardController extends Controller
             //Option 3: Status is from a followed BUT not unlisted or private
             $query->orWhere(function(Builder $query) {
                 // see join above
-                $query->where('follows.id', '!=', null)
+                $query->whereNotNull('follows.id')
                       ->whereNotIn('statuses.visibility', [
                           StatusVisibility::UNLISTED->value,
                           StatusVisibility::PRIVATE->value,
