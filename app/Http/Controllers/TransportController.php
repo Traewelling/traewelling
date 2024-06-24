@@ -125,7 +125,7 @@ class TransportController extends Controller
             return collect();
         }
 
-        $checkInsToCheck = Checkin::with(['Trip.stopovers', 'originStation', 'destinationStation'])
+        $checkInsToCheck = Checkin::with(['Trip.stopovers', 'originStopover.station', 'destinationStopover.station'])
                                   ->join('statuses', 'statuses.id', '=', 'train_checkins.status_id')
                                   ->where('statuses.user_id', $user->id)
                                   ->where('departure', '>=', $start->clone()->subDays(3))
@@ -162,12 +162,5 @@ class TransportController extends Controller
                                         ], [
                                             'polyline' => $polyline
                                         ]);
-    }
-
-    /**
-     * @deprecated use StationController:getLatestArrivals(...) instead.
-     */
-    public static function getLatestArrivals(User $user, int $maxCount = 5): Collection {
-        return StationController::getLatestArrivals($user, $maxCount);
     }
 }

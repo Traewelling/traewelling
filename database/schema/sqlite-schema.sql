@@ -81,11 +81,10 @@ CREATE UNIQUE INDEX users_username_unique ON users (username);
 CREATE UNIQUE INDEX users_email_unique ON users (email);
 CREATE TABLE statuses (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, body CLOB DEFAULT NULL COLLATE "BINARY", user_id BIGINT UNSIGNED NOT NULL, business SMALLINT UNSIGNED DEFAULT 0, created_at DATETIME DEFAULT NULL, updated_at DATETIME DEFAULT NULL, event_id INTEGER DEFAULT NULL, visibility INTEGER DEFAULT 0 NOT NULL, tweet_id VARCHAR(255) DEFAULT NULL COLLATE "BINARY", mastodon_post_id VARCHAR(255) DEFAULT NULL COLLATE "BINARY", "client_id" integer);
 CREATE INDEX statuses_user_id_mastodon_post_id_created_at_index ON statuses (user_id, mastodon_post_id, created_at);
-CREATE TABLE train_checkins (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, status_id BIGINT UNSIGNED NOT NULL, trip_id VARCHAR(255) NOT NULL, origin BIGINT UNSIGNED NOT NULL, destination BIGINT UNSIGNED NOT NULL, distance INTEGER UNSIGNED DEFAULT NULL --meters
+CREATE TABLE train_checkins (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, status_id BIGINT UNSIGNED NOT NULL, trip_id VARCHAR(255) NOT NULL, distance INTEGER UNSIGNED DEFAULT NULL --meters
 , departure DATETIME DEFAULT NULL, arrival DATETIME DEFAULT NULL, points INTEGER DEFAULT NULL, created_at DATETIME DEFAULT NULL, updated_at DATETIME DEFAULT NULL, user_id INTEGER DEFAULT NULL, forced BOOLEAN DEFAULT 0 NOT NULL, manual_departure DATETIME DEFAULT NULL, manual_arrival DATETIME DEFAULT NULL, duration INTEGER DEFAULT NULL, "origin_stopover_id" integer, "destination_stopover_id" integer);
 CREATE INDEX train_checkins_departure_arrival_status_id_index ON train_checkins (departure, arrival, status_id);
 CREATE INDEX train_checkins_user_id_arrival_index ON train_checkins (user_id, arrival);
-CREATE UNIQUE INDEX user_trip_origin_departure ON train_checkins (user_id, trip_id, origin, departure);
 CREATE UNIQUE INDEX train_checkins_status_id_unique ON train_checkins (status_id);
 CREATE TABLE IF NOT EXISTS "activity_log" ("id" integer primary key autoincrement not null, "log_name" varchar, "description" text not null, "subject_type" varchar, "subject_id" integer, "causer_type" varchar, "causer_id" integer, "properties" text, "created_at" datetime, "updated_at" datetime, "event" varchar, "batch_uuid" varchar);
 CREATE INDEX "subject" on "activity_log" ("subject_type", "subject_id");
@@ -305,3 +304,4 @@ INSERT INTO migrations VALUES(191,'2024_05_25_000000_add_source_index_to_polylin
 INSERT INTO migrations VALUES(192,'2024_05_25_000001_add_trip_id_arrival_departure_index_to_train_stopovers',3);
 INSERT INTO migrations VALUES(193,'2024_05_27_000000_drop_shadow_banned_from_users',3);
 INSERT INTO migrations VALUES(194,'2024_05_30_000000_add_prefix_to_begin_end_on_events',3);
+INSERT INTO migrations VALUES(195,'2024_05_22_000003_drop_origin_destination_from_check_in',3);

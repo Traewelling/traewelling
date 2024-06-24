@@ -95,7 +95,7 @@ class FrontendTransportController extends Controller
                                               'prev' => $when->clone()->subMinutes(15),
                                               'next' => $when->clone()->addMinutes(15)
                                           ],
-                                          'latest'     => TransportController::getLatestArrivals(Auth::user())
+                                          'latest'     => StationController::getLatestArrivals(Auth::user())
                                       ]
             );
         } catch (HafasException $exception) {

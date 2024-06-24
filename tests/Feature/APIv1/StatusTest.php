@@ -69,8 +69,8 @@ class StatusTest extends ApiTestCase
                                            ]
                                        ]);
 
-        $this->assertEquals($checkin->originStation->id, $response->json('data.train.origin.id'));
-        $this->assertEquals($checkin->destinationStation->id, $response->json('data.train.destination.id'));
+        $this->assertEquals($checkin->originStopover->station->id, $response->json('data.train.origin.id'));
+        $this->assertEquals($checkin->destinationStopover->station->id, $response->json('data.train.destination.id'));
     }
 
     public function testActiveStatusesDontShowStatusesFromTheFuture(): void {
@@ -85,8 +85,6 @@ class StatusTest extends ApiTestCase
                              'user_id'     => $user->id,
                              'departure'   => $trip->departure,
                              'arrival'     => $trip->arrival,
-                             'origin'      => $trip->originStation->ibnr,
-                             'destination' => $trip->destinationStation->ibnr,
                              'trip_id'     => $trip->trip_id,
                          ])->create();
 
@@ -167,8 +165,8 @@ class StatusTest extends ApiTestCase
                               'departure_real'    => $thirdTimestamp,
                           ])->create();
 
-        $this->assertNotEquals($checkin->originStation->id, $newStation->id);
-        $this->assertNotEquals($checkin->destinationStation->id, $newStation->id);
+        $this->assertNotEquals($checkin->originStopover->station->id, $newStation->id);
+        $this->assertNotEquals($checkin->destinationStopover->station->id, $newStation->id);
 
         $response = $this->put(
             uri:  '/api/v1/status/' . $checkin->status_id,
@@ -183,6 +181,6 @@ class StatusTest extends ApiTestCase
 
         $checkin = $checkin->fresh();
 
-        $this->assertEquals($checkin->destinationStation->id, $newStation->id);
+        $this->assertEquals($checkin->destinationStopover->station->id, $newStation->id);
     }
 }

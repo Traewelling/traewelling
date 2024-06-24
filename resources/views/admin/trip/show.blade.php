@@ -79,7 +79,7 @@
                                             </a>
                                         </td>
                                         <td>
-                                            {{$checkin->originStation->name}}
+                                            {{$checkin->originStopover->station->name}}
                                             <br/>
                                             <small>
                                                 dep {{$checkin->originStopover->departure_planned->format('H:i')}}
@@ -87,7 +87,7 @@
                                             </small>
                                         </td>
                                         <td>
-                                            {{$checkin->destinationStation->name}}
+                                            {{$checkin->destinationStopover->station->name}}
                                             <br/>
                                             <small>
                                                 arr {{$checkin->destinationStopover->arrival_planned->format('H:i')}}
