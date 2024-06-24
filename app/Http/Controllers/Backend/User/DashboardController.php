@@ -13,53 +13,50 @@ use Illuminate\Database\Eloquent\Builder;
 abstract class DashboardController extends Controller
 {
 
-    public static function getPrivateDashboard(User $user): Paginator {
-        $followingIDs   = $user->follows->pluck('id');
-        $followingIDs[] = $user->id;
-        return Status::with([
-                                'event',
-                                'likes',
-                                'user.blockedByUsers',
-                                'user.blockedUsers',
-                                'checkin',
-                                'tags',
-                                'mentions.mentioned',
-                                'checkin.originStopover.station',
-                                'checkin.destinationStopover.station',
-                                'checkin.trip.stopovers.station'
-                            ])
-                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                     ->select('statuses.*')
-                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20))
-                     ->orderBy('train_checkins.departure', 'desc')
-                     ->whereIn('statuses.user_id', $followingIDs)
-                     ->whereNotIn('statuses.user_id', $user->mutedUsers->pluck('id'))
-                     ->whereIn('statuses.visibility', [
-                         StatusVisibility::PUBLIC->value,
-                         StatusVisibility::FOLLOWERS->value,
-                         StatusVisibility::AUTHENTICATED->value
-                     ])
-                     ->orWhere('statuses.user_id', $user->id)
-                     ->latest()
-                     ->simplePaginate(15);
-    }
-
-    public static function getGlobalDashboard(User $user): Paginator {
+    private static function getGenericQuery(User $user): Builder {
         $query = Status::with([
                                   'event',
                                   'likes',
                                   'user.blockedByUsers',
                                   'user.blockedUsers',
                                   'checkin',
-                                  'mentions.mentioned',
                                   'tags',
+                                  'mentions.mentioned',
                                   'checkin.originStopover.station',
                                   'checkin.destinationStopover.station',
                                   'checkin.trip.stopovers.station'
                               ])
                        ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                        ->join('train_stopovers AS origin_stopover', 'train_checkins.origin_stopover_id', '=', 'origin_stopover.id')
-                       ->join('users', 'statuses.user_id', '=', 'users.id');
+                       ->join('users', 'statuses.user_id', '=', 'users.id')
+                       ->where('origin_stopover.departure_real', '<', Carbon::now()->addMinutes(20))
+                       ->select('statuses.*')
+                       ->orderByDesc('origin_stopover.departure_real'); // TODO: manual_departure
+
+        // left join follows to check if user follows the status author (checked in the where clause)
+        $query->leftJoin('follows', function($join) use ($user) {
+            $join->on('follows.follow_id', '=', 'users.id')
+                 ->where('follows.user_id', '=', $user->id);
+        });
+
+        return $query;
+    }
+
+    public static function getPrivateDashboard(User $user): Paginator {
+        $query = self::getGenericQuery($user);
+
+        return $query->whereNotNull('follows.id')
+                     ->whereIn('statuses.visibility', [
+                         StatusVisibility::PUBLIC->value,
+                         StatusVisibility::FOLLOWERS->value,
+                         StatusVisibility::AUTHENTICATED->value
+                     ])
+                     ->orWhere('statuses.user_id', $user->id)
+                     ->simplePaginate(15);
+    }
+
+    public static function getGlobalDashboard(User $user): Paginator {
+        $query = self::getGenericQuery($user);
 
         // exclude muted users
         $query->leftJoin('user_mutes', function($join) use ($user) {
@@ -78,12 +75,6 @@ abstract class DashboardController extends Controller
             $join->on('blocked_by_users.user_id', '=', 'users.id')
                  ->where('blocked_by_users.blocked_id', '=', $user->id);
         })->whereNull('blocked_by_users.id');
-
-        // left join follows to check if user follows the status author (checked in the where clause)
-        $query->leftJoin('follows', function($join) use ($user) {
-            $join->on('follows.follow_id', '=', 'users.id')
-                 ->where('follows.user_id', '=', $user->id);
-        });
 
         // only show statuses user is allowed to see
         $query->where(function(Builder $query) use ($user) {
@@ -112,12 +103,6 @@ abstract class DashboardController extends Controller
             });
         });
 
-        // don't show statuses longer than 20 minutes in the future (to avoid unnecessary clutter)
-        $query->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20));
-
-        return $query->select('statuses.*')
-                     ->orderByDesc('origin_stopover.departure_real')
-                     ->orderByDesc('origin_stopover.departure_planned')
-                     ->simplePaginate(15);
+        return $query->simplePaginate(15);
     }
 }
