@@ -257,9 +257,9 @@
                                                 data-trwl-linename="{{$status->checkin->trip->linename}}"
                                                 data-trwl-stop-name="{{$status->checkin->destinationStopover->station->name}}"
                                                 data-trwl-trip-id="{{$status->checkin->trip_id}}"
-                                                data-trwl-destination="{{$status->checkin->destination}}"
+                                                data-trwl-destination="{{$status->checkin->destinationStopover->station->id}}"
                                                 data-trwl-arrival="{{$status->checkin->arrival}}"
-                                                data-trwl-start="{{$status->checkin->origin}}"
+                                                data-trwl-start="{{$status->checkin->originStopover->station->id}}"
                                                 data-trwl-departure="{{$status->checkin->departure}}"
                                                 data-trwl-event-id="{{$status->event?->id}}"
                                         >
