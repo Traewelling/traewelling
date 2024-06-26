@@ -9,7 +9,7 @@ namespace App\Enum;
  *     description="Category of transport. ",
  *     type="string",
  *     enum={"nationalExpress", "national", "regionalExp", "regional", "suburban", "bus", "ferry", "subway",
- *     "tram", "taxi"},
+ *     "tram", "taxi", "plane"},
  *     example="suburban"
  * )
  */
@@ -25,6 +25,7 @@ enum HafasTravelType: string
     case SUBWAY           = 'subway';
     case TRAM             = 'tram';
     case TAXI             = 'taxi';
+    case PLANE            = 'plane';
 
     public function getEmoji(): string {
         return match ($this->value) {
@@ -36,6 +37,7 @@ enum HafasTravelType: string
             'subway'                      => '🚇',
             'tram'                        => '🚊',
             'taxi'                        => '🚖',
+            'plane'                       => '✈️',
             default                       => '',
         };
     }
