@@ -187,7 +187,7 @@
                                         </td>
                                         <td>
                                             <a class="btn btn-outline-primary btn-sm" href="{{ route('admin.trip', [
-    'tripId' => $departure->tripId,
+    'tripId' => rawurlencode($departure->tripId),
     'lineName' => $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr,
     'startIBNR' => $departure->stop->id,
     'departure' => $departure->plannedWhen,
