@@ -1,7 +1,7 @@
 @php
     use App\Enum\Business;
-    use App\Http\Controllers\Backend\Transport\StationController;
-    use App\Http\Controllers\Backend\User\ProfilePictureController;
+    use App\Http\Controllers\Backend\Helper\StatusHelper;use App\Http\Controllers\Backend\Transport\StationController;
+    use App\Http\Controllers\Backend\Transport\StatusController;use App\Http\Controllers\Backend\User\ProfilePictureController;use Illuminate\Support\Facades\Gate;
 @endphp
 <div class="card status mb-3" id="status-{{ $status->id }}"
      data-trwl-id="{{$status->id}}"
@@ -65,11 +65,13 @@
 
                     <p class="train-status text-muted">
                         <span>
-                            @if (file_exists(public_path('img/' . $status->checkin->trip->category->value . '.svg')))
+                            @if(file_exists(public_path('img/' . $status->checkin->trip->category->value . '.svg')))
                                 <img class="product-icon"
                                      src="{{ asset('img/' . $status->checkin->trip->category->value . '.svg') }}"
                                      alt="{{$status->checkin->trip->category->value}}"
                                 />
+                            @elseif($status->checkin->trip->category->value == 'plane')
+                                <i class="fa fa-plane d-inline" aria-hidden="true"></i>
                             @elseif($status->checkin->trip->category->value == 'taxi')
                                 <i class="fa fa-taxi d-inline" aria-hidden="true"></i>
                             @else
@@ -117,7 +119,7 @@
 
                     @if(!empty($status->body))
                         <p class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i>
-                            {!! \App\Http\Controllers\Backend\Transport\StatusController::getPrintableEscapedBody($status) !!}
+                            {!! StatusController::getPrintableEscapedBody($status) !!}
                         </p>
                     @endif
 
@@ -126,7 +128,7 @@
                             {{ __('stationboard.next-stop') }}
 
                             @php
-                                $nextStation = \App\Http\Controllers\Backend\Transport\StatusController::getNextStationForStatus($status);
+                                $nextStation = StatusController::getNextStationForStatus($status);
                             @endphp
                             <a href="{{route('trains.stationboard', ['stationId' => $nextStation?->id])}}"
                                class="text-trwl clearfix">
@@ -200,7 +202,7 @@
                                     type="button"
                                     data-trwl-share-url="{{ route('status', ['id' => $status->id]) }}"
                                     @if(auth()->user() && $status->user_id == auth()->user()->id)
-                                        data-trwl-share-text="{{ \App\Http\Controllers\Backend\Helper\StatusHelper::getSocialText($status) }}"
+                                        data-trwl-share-text="{{StatusHelper::getSocialText($status) }}"
                                     @else
                                         data-trwl-share-text="{{ $status->description }}"
                                 @endif
