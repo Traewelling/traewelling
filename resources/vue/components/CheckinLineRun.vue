@@ -16,7 +16,7 @@ export default {
             required: false,
             default: {}
         },
-        fastCheckinIbnr: {
+        fastCheckinId: {
             type: Number,
             required: false,
         },
@@ -69,7 +69,7 @@ export default {
                         }
                         return !remove;
                     });
-                    if (this.$props.fastCheckinIbnr) {
+                    if (this.$props.fastCheckinId) {
                         this.fastCheckin();
                     }
                 });
@@ -79,9 +79,16 @@ export default {
             });
         },
         fastCheckin() {
-            const destination = this.lineRun.stopovers.find((item) => {
-                return Number(item.evaIdentifier) === Number(this.fastCheckinIbnr);
-            })
+            let destination = null;
+            if (this.useInternalIdentifiers) {
+                destination = this.lineRun.stopovers.find((item) => {
+                    return Number(item.id) === Number(this.fastCheckinId);
+                });
+            } else {
+                destination = this.lineRun.stopovers.find((item) => {
+                    return Number(item.evaIdentifier) === Number(this.fastCheckinId);
+                });
+            }
 
             if (destination) {
                 this.handleSetDestination(destination);
