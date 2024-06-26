@@ -3,6 +3,7 @@
     use App\Http\Controllers\Backend\Helper\StatusHelper;use App\Http\Controllers\Backend\Transport\StationController;
     use App\Http\Controllers\Backend\Transport\StatusController;use App\Http\Controllers\Backend\User\ProfilePictureController;use Illuminate\Support\Facades\Gate;
 @endphp
+@php /** @var App\Models\Status $status */ @endphp
 <div class="card status mb-3" id="status-{{ $status->id }}"
      data-trwl-id="{{$status->id}}"
      data-date="{{userTime($status->checkin->departure, __('dateformat.with-weekday'))}}"
@@ -237,21 +238,37 @@
                                 </li>
                             @else
                                 <li>
-                                    <button type="button" class="dropdown-item join"
-                                            data-trwl-linename="{{$status->checkin->trip->linename}}"
-                                            data-trwl-stop-name="{{$status->checkin->destinationStopover->station->name}}"
-                                            data-trwl-trip-id="{{$status->checkin->trip_id}}"
-                                            data-trwl-destination="{{$status->checkin->destinationStopover->station->id}}"
-                                            data-trwl-arrival="{{$status->checkin->arrival}}"
-                                            data-trwl-start="{{$status->checkin->originStopover->station->id}}"
-                                            data-trwl-departure="{{$status->checkin->departure}}"
-                                            data-trwl-event-id="{{$status->event?->id}}"
-                                    >
-                                        <div class="dropdown-icon-suspense">
-                                            <i class="fas fa-user-plus" aria-hidden="true"></i>
-                                        </div>
-                                        {{__('status.join')}}
-                                    </button>
+                                    @if(auth()->check() && auth()->user()->hasRole('open-beta'))
+                                        <a href="{{ route('stationboard', [
+                                            'tripId' => $status->checkin->trip->id,
+                                            'lineName' => $status->checkin->trip->linename,
+                                            'start' => $status->checkin->originStopover->station->id,
+                                            'destination' => $status->checkin->destinationStopover->station->id,
+                                            'departure' => $status->checkin->originStopover->departure_planned->toIso8601String(),
+                                            'idType' => 'trwl'
+                                        ]) }}" class="dropdown-item">
+                                            <div class="dropdown-icon-suspense">
+                                                <i class="fas fa-user-plus" aria-hidden="true"></i>
+                                            </div>
+                                            {{__('status.join')}}
+                                        </a>
+                                    @else
+                                        <button type="button" class="dropdown-item join"
+                                                data-trwl-linename="{{$status->checkin->trip->linename}}"
+                                                data-trwl-stop-name="{{$status->checkin->destinationStopover->station->name}}"
+                                                data-trwl-trip-id="{{$status->checkin->trip_id}}"
+                                                data-trwl-destination="{{$status->checkin->destinationStopover->station->id}}"
+                                                data-trwl-arrival="{{$status->checkin->arrival}}"
+                                                data-trwl-start="{{$status->checkin->originStopover->station->id}}"
+                                                data-trwl-departure="{{$status->checkin->departure}}"
+                                                data-trwl-event-id="{{$status->event?->id}}"
+                                        >
+                                            <div class="dropdown-icon-suspense">
+                                                <i class="fas fa-user-plus" aria-hidden="true"></i>
+                                            </div>
+                                            {{__('status.join')}}
+                                        </button>
+                                    @endif
                                 </li>
                                 <x-mute-button :user="$status->user" :dropdown="true"/>
                                 <x-block-button :user="$status->user" :dropdown="true"/>
