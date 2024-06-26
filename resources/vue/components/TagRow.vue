@@ -61,6 +61,10 @@ export default {
         },
         setVisibility(visibility) {
             this.visibility = visibility;
+
+            if (this.list) {
+                this.updateTag();
+            }
         }
     },
     mounted() {
@@ -80,11 +84,6 @@ export default {
     watch: {
         exclude() {
             this.selectKey();
-        },
-        visibility() {
-            if (this.list) {
-                this.updateTag();
-            }
         },
         input: _.debounce(function(){
             if (this.list) {
