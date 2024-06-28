@@ -1,7 +1,9 @@
 @php
     use App\Enum\Business;
-    use App\Http\Controllers\Backend\Helper\StatusHelper;use App\Http\Controllers\Backend\Transport\StationController;
-    use App\Http\Controllers\Backend\Transport\StatusController;use App\Http\Controllers\Backend\User\ProfilePictureController;use Illuminate\Support\Facades\Gate;
+    use App\Http\Controllers\Backend\Helper\StatusHelper;
+    use App\Http\Controllers\Backend\Transport\StationController;
+    use App\Http\Controllers\Backend\Transport\StatusController;
+    use App\Http\Controllers\Backend\User\ProfilePictureController;
 @endphp
 @php /** @var App\Models\Status $status */ @endphp
 <div class="card status mb-3" id="status-{{ $status->id }}"
@@ -117,7 +119,7 @@
                             </span>
                         @endif
                     </p>
-
+ 
                     @if(!empty($status->body))
                         <p class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i>
                             {!! StatusController::getPrintableEscapedBody($status) !!}

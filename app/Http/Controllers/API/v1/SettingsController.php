@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Enum\MapProvider;
 use App\Enum\MastodonVisibility;
 use App\Enum\StatusVisibility;
+use App\Enum\User\FriendCheckinSetting;
 use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
 use App\Http\Resources\UserProfileSettingsResource;
@@ -54,39 +55,6 @@ class SettingsController extends Controller
             throw ValidationException::withMessages([__('auth.password')]);
         }
         unset($validated['password']);
-
-        try {
-            return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
-        } catch (RateLimitExceededException) {
-            return $this->sendError(error: __('email.verification.too-many-requests'), code: 400);
-        }
-    }
-
-    public function resendMail(): void {
-        try {
-            auth()->user()->sendEmailVerificationNotification();
-            $this->sendResponse('', 204);
-        } catch (RateLimitExceededException) {
-            $this->sendError(error: __('email.verification.too-many-requests'), code: 429);
-        }
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    public function updatePassword(Request $request): UserProfileSettingsResource|JsonResponse {
-        $userHasPassword = auth()->user()->password !== null;
-
-        $validated = $request->validate([
-                                            'currentPassword' => [Rule::requiredIf($userHasPassword)],
-                                            'password'        => ['required', 'string', 'min:8', 'confirmed']
-                                        ]);
-
-        if ($userHasPassword && !Hash::check($validated['currentPassword'], auth()->user()->password)) {
-            throw ValidationException::withMessages([__('controller.user.password-wrong')]);
-        }
-
-        $validated['password'] = Hash::make($validated['password']);
 
         try {
             return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
@@ -146,10 +114,9 @@ class SettingsController extends Controller
      */
     public function updateSettings(Request $request): UserProfileSettingsResource|JsonResponse {
         $validated = $request->validate([
-                                            'username'                => ['required',
-                                                                          'string',
-                                                                          'max:25',
-                                                                          'regex:/^[a-zA-Z0-9_]*$/'],
+                                            'username'                => [
+                                                'required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'
+                                            ],
                                             'displayName'             => ['required', 'string', 'max:50'],
                                             'privateProfile'          => ['boolean', 'nullable'],
                                             'preventIndex'            => ['boolean', 'nullable'],
@@ -163,7 +130,41 @@ class SettingsController extends Controller
                                                 new Enum(MastodonVisibility::class),
                                             ],
                                             'mapProvider'             => ['nullable', new Enum(MapProvider::class)],
+                                            'friendCheckin'           => ['nullable', new Enum(FriendCheckinSetting::class)]
                                         ]);
+
+        try {
+            return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
+        } catch (RateLimitExceededException) {
+            return $this->sendError(error: __('email.verification.too-many-requests'), code: 400);
+        }
+    }
+
+    public function resendMail(): void {
+        try {
+            auth()->user()->sendEmailVerificationNotification();
+            $this->sendResponse('', 204);
+        } catch (RateLimitExceededException) {
+            $this->sendError(error: __('email.verification.too-many-requests'), code: 429);
+        }
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function updatePassword(Request $request): UserProfileSettingsResource|JsonResponse {
+        $userHasPassword = auth()->user()->password !== null;
+
+        $validated = $request->validate([
+                                            'currentPassword' => [Rule::requiredIf($userHasPassword)],
+                                            'password'        => ['required', 'string', 'min:8', 'confirmed']
+                                        ]);
+
+        if ($userHasPassword && !Hash::check($validated['currentPassword'], auth()->user()->password)) {
+            throw ValidationException::withMessages([__('controller.user.password-wrong')]);
+        }
+
+        $validated['password'] = Hash::make($validated['password']);
 
         try {
             return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enum\User\FriendCheckinSetting;
 use App\Http\Controllers\Backend\User\BlockController;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -77,5 +78,21 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool {
         return $user->id === $model->id;
+    }
+
+    public function checkin(User $user, User $userToCheckin): bool {
+        if ($user->is($userToCheckin)) {
+            return true;
+        }
+        if ($userToCheckin->friend_checkin === FriendCheckinSetting::FORBIDDEN) {
+            return false;
+        }
+        if ($userToCheckin->friend_checkin === FriendCheckinSetting::FRIENDS) {
+            //TODO
+        }
+        if ($userToCheckin->friend_checkin === FriendCheckinSetting::LIST) {
+            //TODO
+        }
+        return false;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enum\MapProvider;
 use App\Enum\StatusVisibility;
+use App\Enum\User\FriendCheckinSetting;
 use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
 use App\Jobs\SendVerificationEmail;
@@ -25,25 +26,27 @@ use Mastodon;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
- * @property int                id
- * @property string             username
- * @property string             name
- * @property string             avatar
- * @property string             email
- * @property Carbon             email_verified_at
- * @property string             password
- * @property int                home_id
- * @property Carbon             privacy_ack_at
- * @property integer            default_status_visibility
- * @property boolean            private_profile
- * @property boolean            prevent_index
- * @property boolean            likes_enabled
- * @property MapProvider        mapprovider
- * @property int                privacy_hide_days
- * @property string             language
- * @property Carbon             last_login
- * @property Status[]           $statuses
- * @property SocialLoginProfile socialProfile
+ * @property int                  id
+ * @property string               username
+ * @property string               name
+ * @property string               avatar
+ * @property string               email
+ * @property Carbon               email_verified_at
+ * @property string               password
+ * @property int                  home_id
+ * @property Carbon               privacy_ack_at
+ * @property integer              default_status_visibility
+ * @property boolean              private_profile
+ * @property boolean              prevent_index
+ * @property boolean              likes_enabled
+ * @property MapProvider          mapprovider
+ * @property string               timezone
+ * @property FriendCheckinSetting friend_checkin
+ * @property int                  privacy_hide_days
+ * @property string               language
+ * @property Carbon               last_login
+ * @property Status[]             $statuses
+ * @property SocialLoginProfile   socialProfile
  *
  * @todo replace "role" with an explicit permission system - e.g. spatie/laravel-permission
  * @todo replace "experimental" also with an explicit permission system - user can add self to "experimental" group
@@ -60,7 +63,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
         'default_status_visibility', 'likes_enabled', 'private_profile', 'prevent_index', 'privacy_hide_days',
-        'language', 'last_login', 'mapprovider', 'timezone',
+        'language', 'last_login', 'mapprovider', 'timezone', 'friend_checkin',
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
@@ -82,14 +85,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'privacy_hide_days'         => 'integer',
         'last_login'                => 'datetime',
         'mapprovider'               => MapProvider::class,
+        'timezone'                  => 'string',
+        'friend_checkin'            => FriendCheckinSetting::class,
     ];
 
     public function getTrainDistanceAttribute(): float {
         return Checkin::where('user_id', $this->id)->sum('distance');
-    }
-
-    public function statuses(): HasMany {
-        return $this->hasMany(Status::class);
     }
 
     public function trainCheckins(): HasMany {
@@ -170,6 +171,10 @@ class User extends Authenticatable implements MustVerifyEmail
                       ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
                       ->select('points')
                       ->sum('points');
+    }
+
+    public function statuses(): HasMany {
+        return $this->hasMany(Status::class);
     }
 
     /**
