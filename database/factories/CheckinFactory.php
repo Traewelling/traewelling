@@ -16,9 +16,7 @@ class CheckinFactory extends Factory
             'status_id'               => Status::factory(),
             'user_id'                 => User::factory(),
             'trip_id'                 => $trip->trip_id,
-            'origin'                  => $trip->originStation->ibnr, //TODO: @deprecated - use origin_stopover_id in future instead
             'origin_stopover_id'      => $trip->stopovers->where('train_station_id', $trip->originStation->id)->first()->id,
-            'destination'             => $trip->destinationStation->ibnr, //TODO: @deprecated - use destination_stopover_id in future instead
             'destination_stopover_id' => $trip->stopovers->where('train_station_id', $trip->destinationStation->id)->first()->id,
             'distance'                => $this->faker->randomFloat(2, 0, 100),
             'departure'               => $trip->departure, //TODO: @deprecated - use origin_stopover_id in future instead

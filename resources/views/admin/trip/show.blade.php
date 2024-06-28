@@ -51,8 +51,13 @@
                         <tr>
                             <th>Polyline</th>
                             <td>
-                                <code>{{ $trip->polyline->id }}</code> ({{ $trip->polyline->source }})
-                                | parent: <code>{{ $trip->polyline->parent_id ?? "NULL" }}</code> {{ $trip->polyline->parent?->source }}
+                                @isset($trip->polyline)
+                                    <code>{{ $trip->polyline->id }}</code> ({{ $trip->polyline->source }})
+                                    | parent:
+                                    <code>{{ $trip->polyline->parent_id ?? "NULL" }}</code> {{ $trip->polyline->parent?->source }}
+                                @else
+                                    <span class="text-danger">No polyline</span>
+                                @endisset
                             </td>
                         </tr>
                     </table>
@@ -79,7 +84,7 @@
                                             </a>
                                         </td>
                                         <td>
-                                            {{$checkin->originStation->name}}
+                                            {{$checkin->originStopover->station->name}}
                                             <br/>
                                             <small>
                                                 dep {{$checkin->originStopover->departure_planned->format('H:i')}}
@@ -87,7 +92,7 @@
                                             </small>
                                         </td>
                                         <td>
-                                            {{$checkin->destinationStation->name}}
+                                            {{$checkin->destinationStopover->station->name}}
                                             <br/>
                                             <small>
                                                 arr {{$checkin->destinationStopover->arrival_planned->format('H:i')}}

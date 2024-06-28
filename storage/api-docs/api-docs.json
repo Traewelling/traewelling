@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1",
+            "url": "https://traewelling.de/api/v1/api/v1",
             "description": "This instance"
         }
     ],
@@ -4819,6 +4819,30 @@
                     },
                     "userDetails": {
                         "$ref": "#/components/schemas/LightUserResource"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StatusTagResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "StatusTagResource": {
+                "title": "StatusTagResource",
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "example": "trwl:vehicle_number"
+                    },
+                    "value": {
+                        "type": "string",
+                        "example": "94 80 0450 921 D-AVG"
+                    },
+                    "visibility": {
+                        "type": "integer",
+                        "example": "1"
                     }
                 },
                 "type": "object"
@@ -5951,9 +5975,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost:8000/api/v1/oauth/authorize",
-                        "tokenUrl": "http://localhost:8000/api/v1/oauth/token",
-                        "refreshUrl": "http://localhost:8000/api/v1/auth/refresh",
+                        "authorizationUrl": "https://traewelling.de/api/v1/oauth/authorize",
+                        "tokenUrl": "https://traewelling.de/api/v1/oauth/token",
+                        "refreshUrl": "https://traewelling.de/api/v1/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",

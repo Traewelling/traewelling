@@ -8,9 +8,11 @@ import CheckinInterface from "./CheckinInterface.vue";
 import StationAutocomplete from "./StationAutocomplete.vue";
 import {trans} from "laravel-vue-i18n";
 import StationBoardEntry from "./Checkin/StationBoardEntry.vue";
+import Spinner from "./Spinner.vue";
 
 export default {
     components: {
+        Spinner,
         StationBoardEntry,
         StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal
     },
@@ -26,7 +28,6 @@ export default {
             loading: false,
             stationName: null,
             trwlStationId: null,
-            nextFetched: 0,
             firstFetchTime: null,
             pushState: null,
             fastCheckinIbnr: null,
@@ -109,16 +110,7 @@ export default {
                             this.meta        = result.meta;
                             this.stationName = result.meta.station.name;
 
-                            if (this.nextFetched === 0) {
-                                this.firstFetchTime = DateTime.fromISO(this.meta?.times?.now);
-                            }
-
-                            if (this.data.length === 0 && this.nextFetched < 3) {
-                                this.nextFetched++;
-                                this.fetchNext();
-                            } else {
-                                this.nextFetched = 0;
-                            }
+                            this.firstFetchTime = DateTime.fromISO(this.meta?.times?.now);
                         });
                     }
                 });
@@ -165,7 +157,8 @@ export default {
                 window.notyf.error("No station found!");
             }
             if (urlParams.has('when')) {
-                this.fetchTime = DateTime.fromISO(urlParams.get('when')).setZone("UTC");
+                const fetchTime = DateTime.fromISO(urlParams.get('when')).setZone("UTC");
+                this.fetchTime  = fetchTime.isValid ? fetchTime : this.fetchTime;
             }
             this.stationName   = urlParams.get('stationName');
             this.trwlStationId = urlParams.get('stationId');
@@ -243,9 +236,7 @@ export default {
         :time="now"
         :show-filter-button="true"
     />
-    <div v-if="loading" style="max-width: 200px;" class="spinner-grow text-trwl mx-auto p-2" role="status">
-        <span class="visually-hidden">Loading...</span>
-    </div>
+    <Spinner v-if="loading" />
     <FullScreenModal ref="modal">
         <template #header v-if="selectedTrain">
             <div class="col-1 align-items-center d-flex">
@@ -267,7 +258,7 @@ export default {
         <template #body v-if="showLineRun">
             <CheckinLineRun
                 :selectedTrain="selectedTrain"
-                :fastCheckinIbnr="fastCheckinIbnr"
+                :fastCheckinId="fastCheckinIbnr"
                 :useInternalIdentifiers="useInternalIdentifiers"
                 v-model:destination="selectedDestination"
             />
@@ -291,7 +282,9 @@ export default {
         <div class="card mb-1 dep-card mt-3 mb-3">
             <div class="text-center my-auto">
                 {{ trans("stationboard.no-departures") }}
-                ({{ formatTime(this.firstFetchTime) }} - {{ formatTime(this.meta?.times?.now) }})
+                <span v-if="firstFetchTime">
+                    ({{ formatTime(this.firstFetchTime) }} - {{ formatTime(this.meta?.times?.now) }})
+                </span>
             </div>
         </div>
     </template>

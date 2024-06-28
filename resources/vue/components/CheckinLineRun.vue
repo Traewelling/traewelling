@@ -1,8 +1,11 @@
 <script>
 import {DateTime} from "luxon";
+import {trans} from "laravel-vue-i18n";
+import Spinner from "./Spinner.vue";
 
 export default {
     name: "CheckinLineRun",
+    components: {Spinner},
     props: {
         selectedTrain: {
             type: Object,
@@ -13,7 +16,7 @@ export default {
             required: false,
             default: {}
         },
-        fastCheckinIbnr: {
+        fastCheckinId: {
             type: Number,
             required: false,
         },
@@ -32,6 +35,8 @@ export default {
         return {
             lineRun: [],
             loading: false,
+            error: false,
+            errorMessage: ""
         };
     },
     methods: {
@@ -39,13 +44,20 @@ export default {
             this.$emit('update:destination', selected);
         },
         getLineRun() {
+            this.error   = false;
             this.loading = true;
+
             const params = new URLSearchParams({
                 hafasTripId: this.$props.selectedTrain.tripId,
                 lineName: this.$props.selectedTrain.line.name,
                 start: this.$props.selectedTrain.stop.id
             });
             fetch(`/api/v1/trains/trip?${params.toString()}`).then((response) => {
+                this.loading = false;
+                if (!response.ok) {
+                    this.error        = true;
+                    this.errorMessage = trans("messages.exception.hafas.502");
+                }
                 response.json().then((result) => {
                     this.lineRun           = result.data;
                     let remove             = true;
@@ -57,17 +69,26 @@ export default {
                         }
                         return !remove;
                     });
-                    this.loading           = false;
-                    if (this.$props.fastCheckinIbnr) {
+                    if (this.$props.fastCheckinId) {
                         this.fastCheckin();
                     }
                 });
+            }).catch(() => {
+                this.error        = true;
+                this.errorMessage = trans("messages.exception.hafas.502");
             });
         },
         fastCheckin() {
-            const destination = this.lineRun.stopovers.find((item) => {
-                return Number(item.evaIdentifier) === Number(this.fastCheckinIbnr);
-            })
+            let destination = null;
+            if (this.useInternalIdentifiers) {
+                destination = this.lineRun.stopovers.find((item) => {
+                    return Number(item.id) === Number(this.fastCheckinId);
+                });
+            } else {
+                destination = this.lineRun.stopovers.find((item) => {
+                    return Number(item.evaIdentifier) === Number(this.fastCheckinId);
+                });
+            }
 
             if (destination) {
                 this.handleSetDestination(destination);
@@ -90,9 +111,11 @@ export default {
 </script>
 
 <template>
-    <div v-if="loading" class="spinner-grow text-trwl mx-auto p-2" style="max-width: 200px;" role="status">
-        <span class="visually-hidden">Loading...</span>
+
+    <div v-if="error" class="text-trwl mx-auto p-2">
+        <p>{{ this.errorMessage }}</p>
     </div>
+    <Spinner v-if="loading" />
     <ul class="timeline" v-else>
         <li v-for="item in lineRun.stopovers" :key="item" @click.prevent="handleSetDestination(item)">
             <i class="trwl-bulletpoint" aria-hidden="true"></i>

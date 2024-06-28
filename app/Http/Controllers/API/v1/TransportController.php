@@ -12,6 +12,7 @@ use App\Exceptions\HafasException;
 use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\HomeController;
+use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
@@ -287,6 +288,8 @@ class TransportController extends Controller
             return $this->sendResponse(data: new TripResource($trip));
         } catch (StationNotOnTripException) {
             return $this->sendError(__('controller.transport.not-in-stopovers', [], 'en'), 400);
+        } catch (HafasException) {
+            return $this->sendError(__('messages.exception.hafas.502', [], 'en'), 503);
         }
     }
 
@@ -599,6 +602,6 @@ class TransportController extends Controller
      *     )
      */
     public function getTrainStationHistory(): AnonymousResourceCollection {
-        return StationResource::collection(TransportBackend::getLatestArrivals(auth()->user()));
+        return StationResource::collection(StationController::getLatestArrivals(auth()->user()));
     }
 }

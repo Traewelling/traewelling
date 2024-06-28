@@ -9,6 +9,24 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
+ * properties
+ * @property int         $id
+ * @property string      $trip_id
+ * @property int         $train_station_id
+ * @property UTCDateTime $arrival_planned
+ * @property UTCDateTime $arrival_real
+ * @property string      $arrival_platform_planned
+ * @property string      $arrival_platform_real
+ * @property UTCDateTime $departure_planned
+ * @property UTCDateTime $departure_real
+ * @property string      $departure_platform_planned
+ * @property string      $departure_platform_real
+ * @property bool        $cancelled
+ *
+ * relations
+ * @property Trip        $trip
+ * @property Station     $station
+ *
  * @todo rename table to "Stopover" (without Train - we have more than just trains)
  * @todo rename "train_station_id" to "station_id" - we have more than just trains.
  * @todo rename "cancelled" to "is_cancelled" - or split into "is_arrival_cancelled" and "is_departure_cancelled"? need

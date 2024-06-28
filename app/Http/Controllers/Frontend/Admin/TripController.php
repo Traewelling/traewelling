@@ -8,10 +8,9 @@ use Illuminate\View\View;
 class TripController
 {
 
-    public function renderTrip(string $id): View {
+    public function renderTrip(int $id): View {
         $trip = Trip::with(['checkins', 'polyline.parent'])
-                    ->where('trip_id', $id)
-                    ->firstOrFail();
+                    ->findOrFail($id);
         return view('admin.trip.show', [
             'trip' => $trip
         ]);

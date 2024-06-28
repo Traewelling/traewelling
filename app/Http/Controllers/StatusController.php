@@ -43,9 +43,15 @@ class StatusController extends Controller
     public static function getStatus(int $statusId): Status {
         return Status::where('id', $statusId)
                      ->with([
-                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'checkin',
-                                'checkin.originStation', 'checkin.destinationStation',
-                                'checkin.Trip.stopovers.station',
+                                'event',
+                                'likes',
+                                'user.blockedByUsers',
+                                'user.blockedUsers',
+                                'checkin',
+                                'tags',
+                                'checkin.originStopover.station',
+                                'checkin.destinationStopover.station',
+                                'checkin.trip.stopovers.station',
                             ])
                      ->firstOrFail();
     }
@@ -59,10 +65,16 @@ class StatusController extends Controller
      */
     public static function getActiveStatuses(): ?Collection {
         return Status::with([
-                                'event', 'likes', 'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
-                                'checkin.originStation', 'checkin.destinationStation',
+                                'event',
+                                'likes',
+                                'user.blockedByUsers',
+                                'user.blockedUsers',
+                                'user.followers',
+                                'checkin.originStopover.station',
+                                'checkin.destinationStopover.station',
                                 'checkin.trip.stopovers.station',
                                 'checkin.trip.polyline',
+                                'tags',
                             ])
                      ->whereHas('checkin', function($query) {
                          $query->where('departure', '<', now())
@@ -94,10 +106,13 @@ class StatusController extends Controller
         $ids = explode(',', $ids);
 
         $statuses = Status::with([
-                                     'user.blockedByUsers', 'user.blockedUsers', 'user.followers',
-                                     'checkin.originStation', 'checkin.destinationStation',
-                                     'checkin.Trip.stopovers.station',
-                                     'checkin.Trip.polyline',
+                                     'user.blockedByUsers',
+                                     'user.blockedUsers',
+                                     'user.followers',
+                                     'checkin.originStopover.station',
+                                     'checkin.destinationStopover.station',
+                                     'checkin.trip.stopovers.station',
+                                     'checkin.trip.polyline',
                                  ])
                           ->whereIn('id', $ids)
                           ->get()
@@ -194,8 +209,8 @@ class StatusController extends Controller
     public static function getStatusesByEvent(Event $event): array {
         $statuses = $event->statuses()
                           ->with([
-                                     'user.blockedUsers', 'checkin.originStation',
-                                     'checkin.destinationStation', 'checkin.Trip.stopovers', 'event', 'likes',
+                                     'user.blockedUsers', 'checkin.originStopover.station',
+                                     'checkin.destinationStopover.station', 'checkin.trip.stopovers', 'event', 'likes', 'tags',
                                  ])
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
@@ -243,8 +258,8 @@ class StatusController extends Controller
     public static function getFutureCheckins(): Paginator {
         return auth()->user()->statuses()
                      ->with([
-                                'user', 'checkin.originStation', 'checkin.destinationStation',
-                                'checkin.Trip', 'event',
+                                'user', 'checkin.originStopover.station', 'checkin.destinationStopover.station',
+                                'checkin.trip', 'event', 'tags',
                             ])
                      ->orderByDesc('created_at')
                      ->whereHas('checkin', function($query) {

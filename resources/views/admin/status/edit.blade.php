@@ -1,3 +1,4 @@
+@php use App\Enum\Business; @endphp
 @extends('admin.layout')
 
 @section('title', 'Status: ' . $status->id)
@@ -59,7 +60,7 @@
                                 <small>(Betreiber: {{$status->checkin->trip->operator?->name}})</small>
                             @endisset
                             <br/>
-                            <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip_id])}}">
+                            <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip->id])}}">
                                 {{ $status->checkin->trip_id }}
                             </a>
                         </div>
@@ -147,7 +148,7 @@
                                     <label class="form-label" for="form-business">Business</label>
                                     <select id="form-business" class="form-control" name="business" required>
                                         <option value="">bitte wählen</option>
-                                        @foreach(\App\Enum\Business::cases() as $case)
+                                        @foreach(Business::cases() as $case)
                                             <option value="{{$case->value}}"
                                                     @if($status->business->value == $case->value) selected @endif>
                                                 {{$case->name}}

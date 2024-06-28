@@ -194,16 +194,16 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip_id])}}">
+                                            <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip->id])}}">
                                                 {{ $status->checkin->trip_id }}
                                             </a>
                                             <br/>
                                             <code>{{ $status->checkin->trip->linename }}</code>
                                         </td>
                                         <td>
-                                            {{ $status->checkin->originStation->name }}
+                                            {{ $status->checkin->originStopover->station->name }}
                                             &rarr;
-                                            {{ $status->checkin->destinationStation->name }}
+                                            {{ $status->checkin->destinationStopover->station->name }}
                                         </td>
                                         <td>{{ $status->checkin->points }}</td>
                                         <td>{{ $status->created_at }}</td>

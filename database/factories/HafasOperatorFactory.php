@@ -10,7 +10,7 @@ class HafasOperatorFactory extends Factory
     public function definition(): array {
         $companyName = $this->faker->company;
         return [
-            'hafas_id' => Str::slug($companyName, '_'),
+            'hafas_id' => Str::slug($companyName . $this->faker->hexColor, '_'),
             'name'     => $companyName,
         ];
     }

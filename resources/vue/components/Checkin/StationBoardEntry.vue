@@ -31,7 +31,7 @@ export default defineComponent({
             if (!when) {
                 return false;
             }
-            return DateTime.fromISO(when) < DateTime.now();
+            return DateTime.fromISO(when).plus({minutes: 1}) < DateTime.now();
         },
         cancelled(): boolean {
             return this.item.cancelled || false;

@@ -52,6 +52,7 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
 
         Route::prefix('trip')->group(function() {
             Route::get('/{id}', [TripController::class, 'renderTrip'])
+                 ->whereNumber('id')
                  ->name('admin.trip.show');
         });
 

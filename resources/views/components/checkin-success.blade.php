@@ -59,9 +59,9 @@
                                     </a>
                                 </td>
                                 <td>-</td>
-                                <td>{{ $otherStatus->checkin->originStation->name }}</td>
+                                <td>{{ $otherStatus->checkin->originStopover->station->name }}</td>
                                 <td>➜</td>
-                                <td>{{ $otherStatus->checkin->destinationStation->name }}</td>
+                                <td>{{ $otherStatus->checkin->destinationStopover->station->name }}</td>
                             </tr>
                         @endif
                     @endforeach

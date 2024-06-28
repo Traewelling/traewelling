@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Revolution\Mastodon\Facades\Mastodon;
+use TypeError;
 
 class MastodonProfileDetails
 {
@@ -54,7 +55,7 @@ class MastodonProfileDetails
                                        options: MastodonController::getRequestOptions()
                                    );
                 }
-            } catch (Exception $exception) {
+            } catch (Exception|TypeError $exception) {
                 // The connection might be broken, or the instance is down, or $user has removed the api rights
                 // but has not told us yet.
                 Log::warning("Unable to fetch mastodon information for user#{$this->user->id} for Mastodon-Server '
