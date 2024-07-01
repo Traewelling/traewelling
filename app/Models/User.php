@@ -37,7 +37,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string               password
  * @property int                  home_id
  * @property Carbon               privacy_ack_at
- * @property integer              default_status_visibility
+ * @property StatusVisibility     default_status_visibility
  * @property boolean              private_profile
  * @property boolean              prevent_index
  * @property boolean              likes_enabled

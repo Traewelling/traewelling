@@ -21,6 +21,8 @@ use App\Http\Resources\StatusResource;
 use App\Http\Resources\TripResource;
 use App\Models\Event;
 use App\Models\Station;
+use App\Models\User;
+use App\Notifications\YouHaveBeenCheckedIn;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -402,25 +404,42 @@ class TransportController extends Controller
                                             'departure'   => ['required', 'date'],
                                             'arrival'     => ['required', 'date'],
                                             'force'       => ['nullable', 'boolean'],
-                                            'userId'      => ['nullable', 'integer', 'exists:users,id'], // if set: checkin for another user
+                                            'with'        => ['nullable', 'array'],
                                         ]);
+        if (isset($validated['with'])) {
+            if (count($validated['with']) > 10) {
+                return $this->sendError('You can only checkin for up to 10 users at once.', 400);
+            }
+            $withUsers = User::whereIn('id', $validated['with'])->get();
+            foreach ($withUsers as $user) {
+                if (!Auth::user()?->can('checkin', $user)) {
+                    return $this->sendError('You are not allowed to checkin for the given user.', 401);
+                }
+            }
+        }
 
         try {
             $searchKey          = empty($validated['ibnr']) ? 'id' : 'ibnr';
+            $trip               = HafasController::getHafasTrip($validated['tripId'], $validated['lineName']);
             $originStation      = Station::where($searchKey, $validated['start'])->first();
+            $departure          = Carbon::parse($validated['departure']);
             $destinationStation = Station::where($searchKey, $validated['destination'])->first();
+            $arrival            = Carbon::parse($validated['arrival']);
+            $travelReason       = Business::tryFrom($validated['business'] ?? Business::PRIVATE->value);
+            $event              = isset($validated['eventId']) ? Event::find($validated['eventId']) : null;
 
+            // check in the authenticated user
             $checkinResponse           = TrainCheckinController::checkin(
                 user:           Auth::user(),
-                trip:           HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
+                trip:           $trip,
                 origin:         $originStation,
-                departure:      Carbon::parse($validated['departure']),
+                departure:      $departure,
                 destination:    $destinationStation,
-                arrival:        Carbon::parse($validated['arrival']),
-                travelReason:   Business::tryFrom($validated['business'] ?? Business::PRIVATE->value),
+                arrival:        $arrival,
+                travelReason:   $travelReason,
                 visibility:     StatusVisibility::tryFrom($validated['visibility'] ?? StatusVisibility::PUBLIC->value),
                 body:           $validated['body'] ?? null,
-                event:          isset($validated['eventId']) ? Event::find($validated['eventId']) : null,
+                event:          $event,
                 force:          isset($validated['force']) && $validated['force'],
                 postOnMastodon: isset($validated['toot']) && $validated['toot'],
                 shouldChain:    isset($validated['chainPost']) && $validated['chainPost']
@@ -439,6 +458,22 @@ class TransportController extends Controller
                 ],
                 'additional'  => null, //unused old attribute (not removed so this isn't breaking)
             ];
+
+            // if isset, check in the other users with their default values
+            foreach ($withUsers ?? [] as $user) {
+                $checkin = TrainCheckinController::checkin(
+                    user:         $user,
+                    trip:         $trip,
+                    origin:       $originStation,
+                    departure:    $departure,
+                    destination:  $destinationStation,
+                    arrival:      $arrival,
+                    travelReason: $travelReason,
+                    visibility:   $user->default_status_visibility,
+                    event:        $event,
+                );
+                $user->notify(new YouHaveBeenCheckedIn($checkin['status'], auth()->user()));
+            }
 
             return $this->sendResponse($checkinResponse, 201); //ToDo: Check if documented structure has changed
         } catch (CheckInCollisionException $exception) {

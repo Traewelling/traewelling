@@ -4,7 +4,9 @@ namespace Tests\Feature\APIv1;
 
 use App\Enum\User\FriendCheckinSetting;
 use App\Http\Controllers\Backend\User\FollowController;
+use App\Models\Trip;
 use App\Models\User;
+use App\Notifications\YouHaveBeenCheckedIn;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
 use Tests\ApiTestCase;
@@ -30,13 +32,40 @@ class FriendCheckinTest extends ApiTestCase
         $userToCheckin = User::factory(['friend_checkin' => FriendCheckinSetting::FRIENDS->value])->create();
         $user          = User::factory()->create();
 
-        $this->assertFalse(Gate::forUser($user->fresh())->allows('checkin', $userToCheckin->fresh()));
+        $this->assertFalse(Gate::forUser($user->refresh())->allows('checkin', $userToCheckin->refresh()));
 
         // Create a follow relationship between the two users (following each other = friends)
         FollowController::createOrRequestFollow($user, $userToCheckin);
         FollowController::createOrRequestFollow($userToCheckin, $user);
 
-        $this->assertTrue(Gate::forUser($user->fresh())->allows('checkin', $userToCheckin->fresh()));
+        $this->assertTrue(Gate::forUser($user->refresh())->allows('checkin', $userToCheckin->refresh()));
+
+        // check that there are currently no checkins
+        $this->assertDatabaseCount('train_checkins', 0);
+
+        // check in both users
+        $trip = Trip::factory()->create();
+
+        $this->actAsApiUserWithAllScopes($user);
+        $response = $this->postJson(
+            uri:  '/api/v1/trains/checkin',
+            data: [
+                      'tripId'      => $trip->trip_id,
+                      'lineName'    => $trip->linename,
+                      'start'       => $trip->originStation->id,
+                      'departure'   => $trip->departure,
+                      'destination' => $trip->destinationStation->id,
+                      'arrival'     => $trip->arrival,
+                      'with'        => [
+                          $userToCheckin->id
+                      ]
+                  ],
+        );
+        $response->assertCreated();
+
+        $this->assertDatabaseHas('train_checkins', ['user_id' => $user->id, 'trip_id' => $trip->trip_id]);
+        $this->assertDatabaseHas('train_checkins', ['user_id' => $userToCheckin->id, 'trip_id' => $trip->trip_id]);
+        $this->assertDatabaseHas('notifications', ['type' => YouHaveBeenCheckedIn::class, 'notifiable_id' => $userToCheckin->id]);
     }
 
     public function testUserCanAllowCheckinsForTrustedUsers(): void {

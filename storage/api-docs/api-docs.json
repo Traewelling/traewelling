@@ -5025,8 +5025,8 @@
                         "example": "false",
                         "nullable": true
                     },
-                    "userId": {
-                        "description": "If set, the checkin will be created for all given users. If not set, the checkin will be created for the authenticated user. Please note, that you have to add the authenticated userId here too, if you want to checkin the authenticated User AND other users.",
+                    "traewellingWith": {
+                        "description": "If set, the checkin will be created for all given users as well. The user creating the checkin must be allowed to checkin for the other users. Max. 10 users.",
                         "type": "array",
                         "items": {
                             "type": "integer",
