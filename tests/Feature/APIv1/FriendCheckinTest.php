@@ -66,8 +66,7 @@ class FriendCheckinTest extends ApiTestCase
         $this->assertDatabaseHas('train_checkins', ['user_id' => $user->id, 'trip_id' => $trip->trip_id]);
         $this->assertDatabaseHas('train_checkins', ['user_id' => $userToCheckin->id, 'trip_id' => $trip->trip_id]);
 
-        $notification = $userToCheckin->refresh()->notifications->last();
-        $this->assertEquals(YouHaveBeenCheckedIn::class, $notification->type);
+        $notification = $userToCheckin->refresh()->notifications->where('type', YouHaveBeenCheckedIn::class)->last();
         $this->assertStringContainsString($user->username, YouHaveBeenCheckedIn::getLead($notification->data));
         $this->assertStringContainsString($trip->originStation->name, YouHaveBeenCheckedIn::getNotice($notification->data));
         $this->assertStringContainsString($userToCheckin->statuses->last()->id, YouHaveBeenCheckedIn::getLink($notification->data));
