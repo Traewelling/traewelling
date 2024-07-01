@@ -20,6 +20,7 @@ class SettingsController extends Controller
     /**
      * @OA\Get(
      *     path="/settings/profile",
+     *     operationId="getProfileSettings",
      *     tags={"Settings"},
      *     summary="Get the current user's profile settings",
      *     description="Get the current user's profile settings",
@@ -98,6 +99,7 @@ class SettingsController extends Controller
     /**
      * @OA\Put(
      *     path="/settings/profile",
+     *     operationId="updateProfileSettings",
      *     tags={"Settings"},
      *     summary="Update the current user's profile settings",
      *     description="Update the current user's profile settings",

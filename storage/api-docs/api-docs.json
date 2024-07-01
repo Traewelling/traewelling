@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "https://traewelling.de/api/v1/api/v1",
+            "url": "http://localhost:8000/api/v1",
             "description": "This instance"
         }
     ],
@@ -324,7 +324,7 @@
                 ],
                 "summary": "[Auth optional] Show active or upcoming events for the given timestamp",
                 "description": "Returns all active or upcoming events for the given timestamp. Default timestamp is now. If upcoming is set to true, all events ending after the timestamp are returned.",
-                "operationId": "9c949d287fe278f2f8de845eedbd12fa",
+                "operationId": "getEvents",
                 "parameters": [
                     {
                         "name": "timestamp",
@@ -427,7 +427,7 @@
                 ],
                 "summary": "DEPRECATED - USE /events - removed after 2024-08",
                 "description": "DEPRECATED - USE /events - removed after 2024-08",
-                "operationId": "35401311136edc062ced8b22c9cd8722",
+                "operationId": "getActiveEvents",
                 "responses": {
                     "200": {
                         "description": "The events"
@@ -1330,7 +1330,7 @@
                 ],
                 "summary": "Accept the current privacy policy",
                 "description": "Accept the current privacy policy",
-                "operationId": "4baaf2c20fed6c12e13df7493ffa62ad",
+                "operationId": "acceptPrivacyPolicy",
                 "responses": {
                     "204": {
                         "description": "Success"
@@ -1360,7 +1360,7 @@
                     "Events"
                 ],
                 "summary": "Report a Status, Event or User to the admins.",
-                "operationId": "7a2c60a00b43cf41d9b72b6f15ad09ad",
+                "operationId": "report",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1435,7 +1435,7 @@
                 ],
                 "summary": "Get the current user's profile settings",
                 "description": "Get the current user's profile settings",
-                "operationId": "47327232762d35b0766eee97b7cd62e9",
+                "operationId": "getProfileSettings",
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -1473,7 +1473,7 @@
                 ],
                 "summary": "Update the current user's profile settings",
                 "description": "Update the current user's profile settings",
-                "operationId": "1d28c273d1e6e8c15b8655008d0de07f",
+                "operationId": "updateProfileSettings",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -4491,7 +4491,8 @@
                     "ferry",
                     "subway",
                     "tram",
-                    "taxi"
+                    "taxi",
+                    "plane"
                 ],
                 "example": "suburban"
             },
@@ -4554,7 +4555,8 @@
                     "ferry",
                     "subway",
                     "tram",
-                    "taxi"
+                    "taxi",
+                    "plane"
                 ],
                 "example": "suburban"
             },
@@ -5967,9 +5969,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "https://traewelling.de/api/v1/oauth/authorize",
-                        "tokenUrl": "https://traewelling.de/api/v1/oauth/token",
-                        "refreshUrl": "https://traewelling.de/api/v1/auth/refresh",
+                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
+                        "tokenUrl": "http://localhost:8000/oauth/token",
+                        "refreshUrl": "http://localhost:8000/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",
