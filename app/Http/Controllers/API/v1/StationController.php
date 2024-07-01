@@ -21,7 +21,7 @@ class StationController extends Controller
         $this->authorize('create', Station::class);
 
         $validated = $request->validate([
-                                            'ibnr'          => ['required', 'numeric', 'unique:train_stations'],
+                                            'ibnr'          => ['nullable', 'numeric', 'unique:train_stations'],
                                             'rilIdentifier' => ['nullable', 'string', 'max:10'],
                                             'name'          => ['required', 'string', 'max:255'],
                                             'latitude'      => ['required', 'numeric', 'between:-90,90'],

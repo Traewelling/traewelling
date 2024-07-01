@@ -152,7 +152,17 @@ export default {
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    window.location.href = `/trains/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`;
+                    fetch(`/api/v1/trains/station/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`)
+                        .then((data) => {
+                            if (!data.ok) {
+                                notyf.error(trans("stationboard.position-unavailable"));
+                                this.fetchingGps = false;
+                            }
+                            data.json().then((result) => {
+                                this.setStation(result.data);
+                                this.fetchingGps = false;
+                            });
+                        })
                 },
                 () => {
                     this.fetchingGps = false;

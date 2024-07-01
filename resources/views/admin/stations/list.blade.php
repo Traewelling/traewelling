@@ -103,11 +103,11 @@
                             <label for="create-station-name" class="form-label">Name</label>
                         </div>
                         <div class="mb-3 form-floating">
-                            <input type="text" class="form-control" id="create-station-ibnr" required>
+                            <input type="text" class="form-control" id="create-station-ibnr">
                             <label for="create-station-ibnr" class="form-label">IBNR</label>
                         </div>
                         <div class="mb-3 form-floating">
-                            <input type="text" class="form-control" id="create-station-rilIdentifier" required>
+                            <input type="text" class="form-control" id="create-station-rilIdentifier">
                             <label for="create-station-rilIdentifier" class="form-label">RilIdentifier</label>
                         </div>
                         <div class="row mb-3">
