@@ -361,9 +361,9 @@ class TransportController extends Controller
     /**
      * @OA\Post(
      *      path="/trains/checkin",
-     *      operationId="createTrainCheckin",
+     *      operationId="createCheckin",
      *      tags={"Checkin"},
-     *      summary="Create a checkin",
+     *      summary="Check in to a trip.",
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(ref="#/components/schemas/CheckinRequestBody")
@@ -378,7 +378,6 @@ class TransportController extends Controller
      *       @OA\Response(response=401, description="Unauthorized"),
      *       security={
      *           {"passport": {"create-statuses"}}, {"token": {}}
-     *
      *       }
      *     )
      *
@@ -402,7 +401,8 @@ class TransportController extends Controller
                                             'destination' => ['required', 'numeric'],
                                             'departure'   => ['required', 'date'],
                                             'arrival'     => ['required', 'date'],
-                                            'force'       => ['nullable', 'boolean']
+                                            'force'       => ['nullable', 'boolean'],
+                                            'userId'      => ['nullable', 'integer', 'exists:users,id'], // if set: checkin for another user
                                         ]);
 
         try {

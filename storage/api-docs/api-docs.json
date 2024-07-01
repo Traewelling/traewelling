@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "https://traewelling.de/api/v1/api/v1",
+            "url": "http://localhost:8000/api/v1",
             "description": "This instance"
         }
     ],
@@ -3440,8 +3440,8 @@
                 "tags": [
                     "Checkin"
                 ],
-                "summary": "Create a checkin",
-                "operationId": "createTrainCheckin",
+                "summary": "Check in to a trip.",
+                "operationId": "createCheckin",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -4491,7 +4491,8 @@
                     "ferry",
                     "subway",
                     "tram",
-                    "taxi"
+                    "taxi",
+                    "plane"
                 ],
                 "example": "suburban"
             },
@@ -4554,9 +4555,20 @@
                     "ferry",
                     "subway",
                     "tram",
-                    "taxi"
+                    "taxi",
+                    "plane"
                 ],
                 "example": "suburban"
+            },
+            "FriendCheckinSetting": {
+                "title": "FriendCheckinSetting",
+                "type": "string",
+                "enum": [
+                    "forbidden",
+                    "friends",
+                    "list"
+                ],
+                "example": "forbidden"
             },
             "ClientResource": {
                 "title": "Client",
@@ -4938,8 +4950,6 @@
                 "description": "Fields for creating a train checkin",
                 "properties": {
                     "body": {
-                        "title": "body",
-                        "description": "Text that should be added to the post",
                         "type": "string",
                         "maxLength": 280,
                         "example": "Meine erste Fahrt nach Knuffingen!",
@@ -4952,76 +4962,81 @@
                         "$ref": "#/components/schemas/StatusVisibility"
                     },
                     "eventId": {
-                        "title": "eventId",
                         "description": "Id of an event the status should be connected to",
                         "type": "integer",
+                        "example": "1",
                         "nullable": true
                     },
                     "toot": {
-                        "title": "toot",
                         "description": "Should this status be posted to mastodon?",
                         "type": "boolean",
                         "example": "false",
                         "nullable": true
                     },
                     "chainPost": {
-                        "title": "chainPost",
                         "description": "Should this status be posted to mastodon as a chained post?",
                         "type": "boolean",
                         "example": "false",
                         "nullable": true
                     },
                     "ibnr": {
-                        "title": "ibnr",
-                        "description": "If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they\n     *     should be given as the Träwelling-ID. Default behavior is `false`.",
+                        "description": "If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they should be given as the Träwelling-ID. Default behavior is `false`.",
                         "type": "boolean",
                         "example": "true",
                         "nullable": true
                     },
                     "tripId": {
-                        "title": "tripId",
-                        "description": "The HAFAS tripId for the to be checked in train",
-                        "example": "1|323306|1|80|17072022"
+                        "description": "The tripId for the to be checked in train",
+                        "type": "string",
+                        "example": "b37ff515-22e1-463c-94de-3ad7964b5cb8",
+                        "nullable": true
                     },
                     "lineName": {
-                        "title": "lineName",
                         "description": "The line name for the to be checked in train",
-                        "example": "S 4"
+                        "type": "string",
+                        "example": "S 4",
+                        "nullable": true
                     },
                     "start": {
-                        "title": "start",
                         "description": "The Station-ID of the starting point (see `ibnr`)",
                         "type": "integer",
                         "example": "8000191"
                     },
                     "destination": {
-                        "title": "destination",
-                        "description": "The Station-ID of the destination (see `ibnr`)",
+                        "description": "The Station-ID of the destination point (see `ibnr`)",
                         "type": "integer",
-                        "example": "8079045"
+                        "example": "8000192"
                     },
                     "departure": {
-                        "title": "departure",
                         "description": "Timestamp of the departure",
+                        "type": "string",
+                        "format": "date-time",
                         "example": "2022-12-19T20:41:00+01:00"
                     },
                     "arrival": {
-                        "title": "arrival",
                         "description": "Timestamp of the arrival",
+                        "type": "string",
+                        "format": "date-time",
                         "example": "2022-12-19T20:42:00+01:00"
                     },
                     "force": {
-                        "title": "force",
-                        "description": "If true, the checkin will be created, even if a colliding checkin exists. No points will be\n     *     awarded.",
+                        "description": "If true, the checkin will be created, even if a colliding checkin exists. No points will be awarded.",
                         "type": "boolean",
                         "example": "false",
                         "nullable": true
+                    },
+                    "userId": {
+                        "description": "If set, the checkin will be created for all given users. If not set, the checkin will be created for the authenticated user. Please note, that you have to add the authenticated userId here too, if you want to checkin the authenticated User AND other users.",
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "example": "1"
+                        },
+                        "example": "[1, 2]",
+                        "nullable": true
                     }
                 },
-                "type": "object",
-                "xml": {
-                    "name": "CheckinRequestBody"
-                }
+                "type": "object"
             },
             "CheckinResponse": {
                 "title": "CheckinResponse",
@@ -5967,9 +5982,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "https://traewelling.de/api/v1/oauth/authorize",
-                        "tokenUrl": "https://traewelling.de/api/v1/oauth/token",
-                        "refreshUrl": "https://traewelling.de/api/v1/auth/refresh",
+                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
+                        "tokenUrl": "http://localhost:8000/oauth/token",
+                        "refreshUrl": "http://localhost:8000/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",
