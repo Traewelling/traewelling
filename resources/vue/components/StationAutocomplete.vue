@@ -7,6 +7,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import {DateTime} from "luxon";
 import {useUserStore} from "../stores/user";
 import AutocompleteListEntry from "./Checkin/AutocompleteListEntry.vue";
+import Spinner from "./Spinner.vue";
 
 export default {
     setup() {
@@ -17,7 +18,7 @@ export default {
     },
     name: "StationAutocomplete",
     emits: ["update:station", "update:time", "update:travelType"],
-    components: {AutocompleteListEntry, FullScreenModal, VueDatePicker},
+    components: {Spinner, AutocompleteListEntry, FullScreenModal, VueDatePicker},
     props: {
         station: {
             type: Object,
@@ -61,6 +62,7 @@ export default {
             selectedStation: null,
             selectedType: null,
             fetchingGps: false,
+            fetchingTextInput: false,
             travelTypes: [
                 {value: "express", color: "rgba(197,199,196,0.5)", icon: "fa-train", contrast: true},
                 {value: "regional", color: "rgba(193,18,28,0.5)", icon: "fa-train"},
@@ -100,13 +102,16 @@ export default {
                 this.loading          = false;
                 return;
             }
-            let query = this.stationInput.replace(/%2F/, " ").replace(/\//, " ");
-            fetch(`/api/v1/trains/station/autocomplete/${query}`).then((response) => {
-                response.json().then((result) => {
-                    this.autocompleteList = result.data;
-                    this.loading          = false;
-                });
+
+            this.fetchAutocomplete().then((result) => {
+                this.autocompleteList = result.data;
+                this.loading          = false;
             });
+        },
+        async fetchAutocomplete() {
+            let query = this.stationInput.replace(/%2F/, " ").replace(/\//, " ");
+            const res = await fetch(`/api/v1/trains/station/autocomplete/${query}`);
+            return await res.json();
         },
         showPicker() {
             this.$refs.picker.openMenu();
@@ -115,7 +120,13 @@ export default {
             this.$emit("update:time", DateTime.fromJSDate(this.date).setZone('UTC').toISO());
         },
         setStationFromText() {
-            this.setStation({name: this.stationInput});
+            this.fetchingTextInput = true;
+            this.fetchAutocomplete().then((result) => {
+                this.fetchingTextInput = false;
+                this.setStation(result.data.shift());
+            }).catch(() => {
+                this.fetchingTextInput = false;
+            });
         },
         setStation(item) {
             this.stationInput    = item.name;
@@ -141,13 +152,27 @@ export default {
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    window.location.href = `/trains/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`;
+                    fetch(`/api/v1/trains/station/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`)
+                        .then((data) => {
+                            if (!data.ok) {
+                                notyf.error(trans("stationboard.position-unavailable"));
+                                this.fetchingGps = false;
+                            }
+                            data.json().then((result) => {
+                                this.setStation(result.data);
+                                this.fetchingGps = false;
+                            });
+                        })
                 },
                 () => {
                     this.fetchingGps = false;
                     notyf.error(trans("stationboard.position-unavailable"));
                 }
             );
+        },
+        clearInput() {
+            this.stationInput = "";
+            this.$refs.stationInput.focus();
         }
     },
     watch: {
@@ -184,14 +209,22 @@ export default {
 <template>
     <FullScreenModal ref="modal">
         <template #header>
-            <input type="text" name="station" class="form-control mobile-input-fs-16"
-                   :placeholder="placeholder"
-                   v-model="stationInput"
-                   @keyup.enter="setStationFromText"
-            />
+            <div class="input-group mx-2">
+                <input type="search" name="station" class="form-control mobile-input-fs-16"
+                       :placeholder="placeholder"
+                       v-model="stationInput"
+                       :disabled="fetchingTextInput"
+                       @keyup.enter="setStationFromText"
+                       ref="stationInput"
+                />
+                <button class="btn btn-light" @click="clearInput">
+                    <i class="fa-solid fa-delete-left"></i>
+                </button>
+            </div>
         </template>
         <template #body>
-            <ul class="list-group list-group-light list-group-small">
+            <Spinner v-if="fetchingTextInput"></Spinner>
+            <ul class="list-group list-group-light list-group-small" v-show="!fetchingTextInput">
                 <AutocompleteListEntry
                     v-show="autocompleteList.length === 0"
                     :text="trans('stationboard.search-by-location')"
@@ -328,5 +361,31 @@ export default {
     .better-contrast:hover {
         color: #FFF;
     }
+}
+
+span.deleteicon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+span.deleteicon span {
+    position: absolute;
+    display: block;
+    right: 3px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    color: #fff;
+    background-color: #ccc;
+    font: 13px monospace;
+    text-align: center;
+    line-height: 1em;
+    cursor: pointer;
+}
+
+span.deleteicon input {
+    padding-right: 18px;
+    box-sizing: border-box;
 }
 </style>
