@@ -20,7 +20,7 @@ namespace App\Virtual\Models;
  *     @OA\Property(property="departure", type="string", format="date-time", example="2022-12-19T20:41:00+01:00", description="Timestamp of the departure"),
  *     @OA\Property(property="arrival", type="string", format="date-time", example="2022-12-19T20:42:00+01:00", description="Timestamp of the arrival"),
  *     @OA\Property(property="force", type="boolean", nullable=true, example="false", description="If true, the checkin will be created, even if a colliding checkin exists. No points will be awarded."),
- *     @OA\Property(property="traewellingWith", type="array", @OA\Items(type="integer", example="1"), example="[1, 2]", nullable=true, description="If set, the checkin will be created for all given users as well. The user creating the checkin must be allowed to checkin for the other users. Max. 10 users."),
+ *     @OA\Property(property="with", type="array", @OA\Items(type="integer", example="1"), example="[1, 2]", nullable=true, description="If set, the checkin will be created for all given users as well. The user creating the checkin must be allowed to checkin for the other users. Max. 10 users."),
  * )
  */
 class CheckinRequestBody

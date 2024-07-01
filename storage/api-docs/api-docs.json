@@ -5025,7 +5025,7 @@
                         "example": "false",
                         "nullable": true
                     },
-                    "traewellingWith": {
+                    "with": {
                         "description": "If set, the checkin will be created for all given users as well. The user creating the checkin must be allowed to checkin for the other users. Max. 10 users.",
                         "type": "array",
                         "items": {
