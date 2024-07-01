@@ -61,7 +61,10 @@
                         </span>
                     </span>
 
-                    <a href="{{route('trains.stationboard', ['stationId' => $status->checkin->originStopover->station->id ])}}"
+                    <a href="{{route('stationboard', [
+                        'stationId' => $status->checkin->originStopover->station->id,
+                        'stationName' => $status->checkin->originStopover->station->name,
+                    ])}}"
                        class="text-trwl clearfix">
                         {{$status->checkin->originStopover->station->name}}
                     </a>
@@ -133,7 +136,10 @@
                             @php
                                 $nextStation = StatusController::getNextStationForStatus($status);
                             @endphp
-                            <a href="{{route('trains.stationboard', ['stationId' => $nextStation?->id])}}"
+                            <a href="{{route('stationboard', [
+                                'stationId' => $nextStation?->id,
+                                'stationName' => $nextStation?->name
+                            ])}}"
                                class="text-trwl clearfix">
                                 {{$nextStation?->name}}
                             </a>
@@ -154,7 +160,10 @@
                             {{ userTime($display_arrival->time) }}
                         </span>
                     </span>
-                    <a href="{{route('trains.stationboard', ['stationId' => $status->checkin->destinationStopover->station->id])}}"
+                    <a href="{{route('stationboard', [
+                        'stationId' => $status->checkin->destinationStopover->station->id,
+                        'stationName' => $status->checkin->destinationStopover->station->name
+                    ])}}"
                        class="text-trwl clearfix">
                         {{$status->checkin->destinationStopover->station->name}}
                     </a>
@@ -240,8 +249,7 @@
                                 </li>
                             @else
                                 <li>
-                                    @if(auth()->check() && auth()->user()->hasRole('open-beta'))
-                                        <a href="{{ route('stationboard', [
+                                    <a href="{{ route('stationboard', [
                                             'tripId' => $status->checkin->trip->id,
                                             'lineName' => $status->checkin->trip->linename,
                                             'start' => $status->checkin->originStopover->station->id,
@@ -249,28 +257,11 @@
                                             'departure' => $status->checkin->originStopover->departure_planned->toIso8601String(),
                                             'idType' => 'trwl'
                                         ]) }}" class="dropdown-item">
-                                            <div class="dropdown-icon-suspense">
-                                                <i class="fas fa-user-plus" aria-hidden="true"></i>
-                                            </div>
-                                            {{__('status.join')}}
-                                        </a>
-                                    @else
-                                        <button type="button" class="dropdown-item join"
-                                                data-trwl-linename="{{$status->checkin->trip->linename}}"
-                                                data-trwl-stop-name="{{$status->checkin->destinationStopover->station->name}}"
-                                                data-trwl-trip-id="{{$status->checkin->trip_id}}"
-                                                data-trwl-destination="{{$status->checkin->destinationStopover->station->id}}"
-                                                data-trwl-arrival="{{$status->checkin->arrival}}"
-                                                data-trwl-start="{{$status->checkin->originStopover->station->id}}"
-                                                data-trwl-departure="{{$status->checkin->departure}}"
-                                                data-trwl-event-id="{{$status->event?->id}}"
-                                        >
-                                            <div class="dropdown-icon-suspense">
-                                                <i class="fas fa-user-plus" aria-hidden="true"></i>
-                                            </div>
-                                            {{__('status.join')}}
-                                        </button>
-                                    @endif
+                                        <div class="dropdown-icon-suspense">
+                                            <i class="fas fa-user-plus" aria-hidden="true"></i>
+                                        </div>
+                                        {{__('status.join')}}
+                                    </a>
                                 </li>
                                 <x-mute-button :user="$status->user" :dropdown="true"/>
                                 <x-block-button :user="$status->user" :dropdown="true"/>
