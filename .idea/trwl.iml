@@ -183,6 +183,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/intervention/gif" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/predis/predis" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/error-solutions" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/annotations" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/mime" />
       <excludePattern pattern=".devenv/*" />
       <excludePattern pattern=".direnv/*" />
     </content>

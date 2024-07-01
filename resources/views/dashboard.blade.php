@@ -64,13 +64,9 @@
                     </div>
                 @endif
 
-                @if(auth()->user()->hasRole('open-beta'))
-                    <div id="station-board-new">
-                        <Stationautocomplete :dashboard="true" :show-gps-button="true"></Stationautocomplete>
-                    </div>
-                @else
-                    @include('includes.station-autocomplete')
-                @endif
+                <div id="station-board-new">
+                    <Stationautocomplete :dashboard="true" :show-gps-button="true"></Stationautocomplete>
+                </div>
                 @if($future->count() >= 1)
                     <div class="accordion accordion-flush" id="accordionFutureCheckIns">
                         <div class="accordion-item">
