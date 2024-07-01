@@ -1,0 +1,92 @@
+<?php
+
+namespace App\Http\Controllers\API\v1;
+
+
+use App\Http\Resources\LightUserResource;
+use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
+
+class TrustedUserController extends Controller
+{
+
+    /**
+     * @OA\Get(
+     *     path="/user/{userId}/trusted",
+     *     summary="Get all trusted users for a user",
+     *     description="Get all trusted users for the current user or a specific user (admin only).",
+     *     tags={"User"},
+     *     @OA\Parameter(name="user", in="path", required=true, description="ID of the user", @OA\Schema(type="integer")),
+     *     @OA\Response(response="200", description="List of trusted users"),
+     *     @OA\Response(response="401", description="Unauthorized"),
+     *     @OA\Response(response="403", description="Forbidden"),
+     *     @OA\Response(response="404", description="User not found"),
+     *     @OA\Response(response="500", description="Internal Server Error"),
+     * )
+     * @throws AuthorizationException
+     */
+    public function index(User $user): AnonymousResourceCollection {
+        $this->authorize('update', $user);
+        return LightUserResource::collection($user->trustedUsers()->orderBy('id')->cursorPaginate(10));
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/user/{userId}/trusted",
+     *     summary="Add a user to the trusted users for a user",
+     *     description="Add a user to the trusted users for the current user or a specific user (admin only).",
+     *     tags={"User"},
+     *     @OA\Parameter(name="user", in="path", required=true, description="ID of the user who want's to trust.", @OA\Schema(type="integer")),
+     *     @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"user_id"},
+     *              @OA\Property(property="user_id", type="integer", example="1"),
+     *          )
+     *     ),
+     *     @OA\Response(response="201", description="User added to trusted users"),
+     *     @OA\Response(response="400", description="Bad Request"),
+     *     @OA\Response(response="401", description="Unauthorized"),
+     *     @OA\Response(response="403", description="Forbidden"),
+     *     @OA\Response(response="404", description="User not found"),
+     *     @OA\Response(response="500", description="Internal Server Error"),
+     * )
+     * @throws AuthorizationException
+     */
+    public function store(Request $request, User $user): Response {
+        $validated   = $request->validate([
+                                              'user_id' => ['required', 'exists:users,id'],
+                                          ]);
+        $trustedUser = User::find($validated['user_id']);
+        $this->authorize('update', $user);
+        $user->trustedUsers()->attach($trustedUser);
+        return response()->noContent(201);
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/user/{userId}/trusted/{trustedId}",
+     *     summary="Remove a user from the trusted users for a user",
+     *     description="Remove a user from the trusted users for the current user or a specific user (admin only).",
+     *     tags={"User"},
+     *     @OA\Parameter(name="user", in="path", required=true, description="ID of the user", @OA\Schema(type="integer")),
+     *     @OA\Parameter(name="trusted", in="path", required=true, description="ID of the trusted user", @OA\Schema(type="integer")),
+     *     @OA\Response(response="204", description="User removed from trusted users"),
+     *     @OA\Response(response="401", description="Unauthorized"),
+     *     @OA\Response(response="403", description="Forbidden"),
+     *     @OA\Response(response="404", description="User not found"),
+     *     @OA\Response(response="500", description="Internal Server Error"),
+     * )
+     * @throws AuthorizationException
+     */
+    public function destroy(int $user, int $trusted): Response {
+        $user    = User::findOrFail($user);
+        $trusted = User::findOrFail($trusted);
+        $this->authorize('update', $user);
+        $user->trustedUsers()->detach($trusted);
+        return response()->noContent();
+    }
+}
