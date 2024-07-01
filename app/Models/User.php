@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Passport\HasApiTokens;
@@ -26,6 +27,7 @@ use Mastodon;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
+ * // properties
  * @property int                  id
  * @property string               username
  * @property string               name
@@ -45,8 +47,25 @@ use Spatie\Permission\Traits\HasRoles;
  * @property int                  privacy_hide_days
  * @property string               language
  * @property Carbon               last_login
- * @property Status[]             $statuses
+ *
+ * // relationships
+ * @property Collection           trainCheckins
  * @property SocialLoginProfile   socialProfile
+ * @property Station              home
+ * @property Collection           likes
+ * @property Collection           follows
+ * @property Collection           blockedUsers
+ * @property Collection           blockedByUsers
+ * @property Collection           mutedUsers
+ * @property Collection           followRequests
+ * @property Collection           followers
+ * @property Collection           followings
+ * @property Collection           sessions
+ * @property Collection           icsTokens
+ * @property Collection           webhooks
+ * @property Collection           notifications
+ * @property Collection           statuses
+ * @property Collection           trustedUsers
  *
  * @todo replace "role" with an explicit permission system - e.g. spatie/laravel-permission
  * @todo replace "experimental" also with an explicit permission system - user can add self to "experimental" group
@@ -175,6 +194,10 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function statuses(): HasMany {
         return $this->hasMany(Status::class);
+    }
+
+    public function trustedUsers(): BelongsToMany {
+        return $this->belongsToMany(__CLASS__, 'trusted_users', 'user_id', 'trusted_id');
     }
 
     /**

@@ -80,19 +80,26 @@ class UserPolicy
         return $user->id === $model->id;
     }
 
+    /**
+     * Check if user can check in another user
+     *
+     * @param User $user
+     * @param User $userToCheckin
+     *
+     * @return bool
+     */
     public function checkin(User $user, User $userToCheckin): bool {
-        if ($user->is($userToCheckin)) {
-            return true;
-        }
         if ($userToCheckin->friend_checkin === FriendCheckinSetting::FORBIDDEN) {
             return false;
         }
         if ($userToCheckin->friend_checkin === FriendCheckinSetting::FRIENDS) {
-            //TODO
+            $userIsFollowingUserToCheckin  = $user->follows->contains('id', $userToCheckin->id);
+            $userIsFollowedByUserToCheckin = $user->followers->contains('id', $user->id);
+            return $userIsFollowingUserToCheckin && $userIsFollowedByUserToCheckin;
         }
         if ($userToCheckin->friend_checkin === FriendCheckinSetting::LIST) {
-            //TODO
+            return $userToCheckin->trustedUsers->contains('id', $user->id);
         }
-        return false;
+        return $user->is($userToCheckin);
     }
 }

@@ -23,11 +23,11 @@
                                     />
                                 </div>
 
-                                <a href="#" class="btn btn-primary mb-3" data-mdb-toggle="modal"
+                                <a href="#" class="btn btn-primary mb-1" data-mdb-toggle="modal"
                                    data-mdb-target="#uploadAvatarModal">
                                     {{__('settings.upload-image')}}
                                 </a>
-
+                                <br/>
                                 <a href="javascript:void(0)"
                                    class="btn btn-outline-danger btn-sm mb-3 {{isset(auth()->user()->avatar) ? '' : 'd-none'}}"
                                    id="btnModalDeleteProfilePicture"
