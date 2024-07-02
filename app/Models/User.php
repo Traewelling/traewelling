@@ -196,8 +196,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Status::class);
     }
 
-    public function trustedUsers(): BelongsToMany {
-        return $this->belongsToMany(__CLASS__, 'trusted_users', 'user_id', 'trusted_id');
+    public function trustedUsers(): HasMany {
+        return $this->hasMany(TrustedUser::class, 'user_id', 'id')
+                    ->with(['trusted'])
+                    ->whereNull('expires_at')->orWhere('expires_at', '>', now());
     }
 
     /**

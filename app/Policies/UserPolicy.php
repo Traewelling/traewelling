@@ -98,7 +98,7 @@ class UserPolicy
             return $userIsFollowingUserToCheckin && $userIsFollowedByUserToCheckin;
         }
         if ($userToCheckin->friend_checkin === FriendCheckinSetting::LIST) {
-            return $userToCheckin->trustedUsers->contains('id', $user->id);
+            return $userToCheckin->trustedUsers->contains('trusted_id', $user->id);
         }
         return $user->is($userToCheckin);
     }

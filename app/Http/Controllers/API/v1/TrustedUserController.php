@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\API\v1;
 
 
-use App\Http\Resources\LightUserResource;
+use App\Http\Resources\TrustedUserResource;
+use App\Models\TrustedUser;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class TrustedUserController extends Controller
      */
     public function index(User $user): AnonymousResourceCollection {
         $this->authorize('update', $user);
-        return LightUserResource::collection($user->trustedUsers()->orderBy('id')->cursorPaginate(10));
+        return TrustedUserResource::collection($user->trustedUsers()->orderBy('id')->cursorPaginate(10));
     }
 
     /**
@@ -45,6 +46,7 @@ class TrustedUserController extends Controller
      *          @OA\JsonContent(
      *              required={"user_id"},
      *              @OA\Property(property="user_id", type="integer", example="1"),
+     *              @OA\Property(property="expires_at", type="string", format="date-time", example="2024-07-28T00:00:00Z")
      *          )
      *     ),
      *     @OA\Response(response="201", description="User added to trusted users"),
@@ -58,11 +60,20 @@ class TrustedUserController extends Controller
      */
     public function store(Request $request, User $user): Response {
         $validated   = $request->validate([
-                                              'user_id' => ['required', 'exists:users,id'],
+                                              'user_id'    => ['required', 'exists:users,id'],
+                                              'expires_at' => ['nullable', 'date', 'after:now'],
                                           ]);
         $trustedUser = User::find($validated['user_id']);
         $this->authorize('update', $user);
-        $user->trustedUsers()->attach($trustedUser);
+        TrustedUser::updateOrCreate(
+            [
+                'user_id'    => $user->id,
+                'trusted_id' => $trustedUser->id,
+            ],
+            [
+                'expires_at' => $validated['expires_at'] ?? null,
+            ]
+        );
         return response()->noContent(201);
     }
 
@@ -86,7 +97,7 @@ class TrustedUserController extends Controller
         $user    = User::findOrFail($user);
         $trusted = User::findOrFail($trusted);
         $this->authorize('update', $user);
-        $user->trustedUsers()->detach($trusted);
+        TrustedUser::where('user_id', $user->id)->where('trusted_id', $trusted->id)->delete();
         return response()->noContent();
     }
 }

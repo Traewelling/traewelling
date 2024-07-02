@@ -75,12 +75,16 @@ class FriendCheckinTest extends ApiTestCase
     public function testUserCanAllowCheckinsForTrustedUsers(): void {
         $userToCheckin = User::factory(['friend_checkin' => FriendCheckinSetting::LIST->value])->create();
         $user          = User::factory()->create();
-
+        
         $this->assertFalse(Gate::forUser($user->fresh())->allows('checkin', $userToCheckin->fresh()));
 
         // Create a trusted relationship between the two users
-        // TODO: use backend function to create trusted relationship
-        $userToCheckin->trustedUsers()->attach($user);
+        $this->actAsApiUserWithAllScopes($userToCheckin);
+        $response = $this->postJson(
+            uri:  "/api/v1/user/{$userToCheckin->id}/trusted",
+            data: ['user_id' => $user->id]
+        );
+        $response->assertCreated();
 
         $this->assertTrue(Gate::forUser($user->fresh())->allows('checkin', $userToCheckin->fresh()));
     }
