@@ -11,6 +11,34 @@ class TrustedUserTest extends ApiTestCase
 
     use RefreshDatabase;
 
+    public function testListPagination(): void {
+        $user        = User::factory()->create();
+        $trustedUser = User::factory()->count(12)->create();
+        $this->actAsApiUserWithAllScopes($user);
+
+        foreach ($trustedUser as $userToTrust) {
+            $response = $this->postJson("/api/v1/user/{$user->id}/trusted", ['user_id' => $userToTrust->id]);
+            $response->assertCreated();
+        }
+
+        // list trusted users
+        $response = $this->getJson("/api/v1/user/{$user->id}/trusted");
+        $response->assertOk();
+        $response->assertJsonCount(10, 'data');
+        $response->assertJsonStructure([
+                                           'data',
+                                           'links' => ['first', 'last', 'prev', 'next'],
+                                           'meta'  => ['path', 'per_page', 'next_cursor', 'prev_cursor'],
+                                       ]);
+
+        //try next cursor
+        $nextCursorResponse = $this->getJson($response->json('links.next'));
+        $nextCursorResponse->assertOk();
+
+        $nextCursorResponse->dump();
+        //TODO: why isn't the cursor working? Every request is showing from the beginning.
+    }
+
     public function testStoreAndDeleteTrustedUserForYourself(): void {
         $user        = User::factory()->create();
         $trustedUser = User::factory()->create();

@@ -31,7 +31,7 @@ class TrustedUserController extends Controller
      */
     public function index(User $user): AnonymousResourceCollection {
         $this->authorize('update', $user);
-        return TrustedUserResource::collection($user->trustedUsers()->orderBy('id')->cursorPaginate(10));
+        return TrustedUserResource::collection($user->trustedUsers()->orderBy('trusted_id')->cursorPaginate(10));
     }
 
     /**
