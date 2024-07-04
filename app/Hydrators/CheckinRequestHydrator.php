@@ -27,18 +27,27 @@ class CheckinRequestHydrator
         $this->user      = $user ?? Auth::user();
     }
 
+    /**
+     * @throws HafasException
+     */
     public function hydrateFromApi(): CheckInRequestDto {
         $this->parseApiFields();
 
         return $this->dto;
     }
 
+    /**
+     * @throws HafasException
+     */
     public function hydrateFromAdmin(): CheckInRequestDto {
         $this->parseAdminFields();
 
         return $this->dto;
     }
 
+    /**
+     * @throws HafasException
+     */
     private function parseAdminFields(): void {
         $this->parseDefaultFields();
         $destinationStopover = Stopover::findOrFail($this->validated['destinationStopover']);
@@ -47,6 +56,9 @@ class CheckinRequestHydrator
             ->setArrival($destinationStopover->arrival_planned);
     }
 
+    /**
+     * @throws HafasException
+     */
     private function parseApiFields(): void {
         $this->parseDefaultFields();
 
