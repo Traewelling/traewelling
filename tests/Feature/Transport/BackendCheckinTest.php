@@ -198,7 +198,7 @@ class BackendCheckinTest extends FeatureTestCase
             ->setArrival($destinationStopover->arrival_planned);
         $backendResponse = TrainCheckinController::checkin($dto);
 
-        $status  = $backendResponse['status'];
+        $status  = $backendResponse->status;
         $checkin = $status->checkin;
 
         // Es wird tatsächlich die zeitlich spätere Station angenommen.
@@ -259,7 +259,7 @@ class BackendCheckinTest extends FeatureTestCase
             ->setDestination($destinationStopover->trainStation)
             ->setArrival($destinationStopover->arrival_planned);
         $response = TrainCheckinController::checkin($dto);
-        $checkin  = $response['status']->checkin;
+        $checkin  = $response->status->checkin;
 
         $this->assertEquals(8089047, $checkin->originStopover->station->ibnr);
         $this->assertEquals(8089090, $checkin->destinationStopover->station->ibnr);
@@ -318,7 +318,7 @@ class BackendCheckinTest extends FeatureTestCase
             ->setDestination($destinationStopover->trainStation)
             ->setArrival($destinationStopover->arrival_planned);
         $response     = TrainCheckinController::checkin($dto);
-        $trainCheckin = $response['status']->checkin;
+        $trainCheckin = $response->status->checkin;
         $distance     = $trainCheckin->distance;
 
         //We check, that the distance is between 500 and 1000 meters.
@@ -377,7 +377,7 @@ class BackendCheckinTest extends FeatureTestCase
             ->setDestination($destinationStopover->trainStation)
             ->setArrival($destinationStopover->arrival_planned);
         $response     = TrainCheckinController::checkin($dto);
-        $trainCheckin = $response['status']->checkin;
+        $trainCheckin = $response->status->checkin;
         $distance     = $trainCheckin->distance;
 
         //We check, that the distance is between 12000 and 12500 meters.
@@ -436,7 +436,7 @@ class BackendCheckinTest extends FeatureTestCase
             ->setDestination($destinationStopover->trainStation)
             ->setArrival($destinationStopover->arrival_planned);
         $response     = TrainCheckinController::checkin($dto);
-        $trainCheckin = $response['status']->checkin;
+        $trainCheckin = $response->status->checkin;
 
         $this->assertEquals(102932, $trainCheckin->originStopover->station->ibnr);
         $this->assertEquals(104734, $trainCheckin->destinationStopover->station->ibnr);
@@ -474,7 +474,7 @@ class BackendCheckinTest extends FeatureTestCase
             ->setDeparture($originStopover->departure_planned)
             ->setDestination($originalDestination->trainStation)
             ->setArrival($originalDestination->arrival_planned);
-        $status = TrainCheckinController::checkin($dto)['status'];
+        $status = TrainCheckinController::checkin($dto)->status;
 
         $this->assertEquals($originStopover->id, $status->checkin->originStopover->id);
         $this->assertEquals($originalDestination->id, $status->checkin->destinationStopover->id);

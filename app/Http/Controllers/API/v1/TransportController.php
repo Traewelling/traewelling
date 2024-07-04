@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Dto\Internal\CheckinSuccessDto;
 use App\Dto\Transport\Station as StationDto;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Http\Resources\CheckinSuccessResource;
 use App\Http\Resources\StationResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\TripResource;
@@ -372,7 +374,7 @@ class TransportController extends Controller
      *      @OA\Response(
      *          response=201,
      *          description="successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/CheckinResponse")
+     *          @OA\JsonContent(ref="#/components/schemas/CheckinSuccessResource")
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=409, description="Checkin collision"),
@@ -406,23 +408,10 @@ class TransportController extends Controller
                                         ]);
 
         try {
-            $checkinResponse           = TrainCheckinController::checkin((new CheckinRequestHydrator($validated))->hydrateFromApi());
-            $checkinResponse['status'] = new StatusResource($checkinResponse['status']);
+            $checkinResponse = TrainCheckinController::checkin((new CheckinRequestHydrator($validated))->hydrateFromApi());
 
-            //Rewrite ['points'] so the DTO will match the documented structure -> non-breaking api change
-            $pointsCalculation         = $checkinResponse['points'];
-            $checkinResponse['points'] = [
-                'points'      => $pointsCalculation->points,
-                'calculation' => [
-                    'base'     => $pointsCalculation->basePoints,
-                    'distance' => $pointsCalculation->distancePoints,
-                    'factor'   => $pointsCalculation->factor,
-                    'reason'   => $pointsCalculation->reason->value,
-                ],
-                'additional'  => null, //unused old attribute (not removed so this isn't breaking)
-            ];
-
-            return $this->sendResponse($checkinResponse, 201); //ToDo: Check if documented structure has changed
+            //ToDo: Check if documented structure has changed
+            return $this->sendResponse(new CheckinSuccessResource($checkinResponse), 201);
         } catch (CheckInCollisionException $exception) {
             return $this->sendError([
                                         'status_id' => $exception->checkin->status_id,

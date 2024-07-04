@@ -197,7 +197,7 @@ class NotificationsTest extends ApiTestCase
             ->setDestination($aliceCheckIn->destinationStopover->station)
             ->setArrival($aliceCheckIn->arrival);
         $bobsData  = TrainCheckinController::checkin($dto);
-        $bobStatus = $bobsData['status'];
+        $bobStatus = $bobsData->status;
 
         //Check if there is one notification
         $this->assertDatabaseCount('notifications', 1);

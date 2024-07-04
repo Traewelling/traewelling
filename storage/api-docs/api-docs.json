@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "https://traewelling.de/api/v1/api/v1",
+            "url": "http://localhost:8000/api/v1",
             "description": "This instance"
         }
     ],
@@ -3458,7 +3458,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/CheckinResponse"
+                                    "$ref": "#/components/schemas/CheckinSuccessResource"
                                 }
                             }
                         }
@@ -4560,6 +4560,25 @@
                 ],
                 "example": "suburban"
             },
+            "CheckinSuccessResource": {
+                "title": "CheckinResponse",
+                "properties": {
+                    "status": {
+                        "$ref": "#/components/schemas/StatusResource"
+                    },
+                    "points": {
+                        "$ref": "#/components/schemas/Points"
+                    },
+                    "alsoOnThisconnection": {
+                        "description": "Statuses of other people on this connection",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StatusResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "ClientResource": {
                 "title": "Client",
                 "properties": {
@@ -5016,32 +5035,6 @@
                 "type": "object",
                 "xml": {
                     "name": "CheckinRequestBody"
-                }
-            },
-            "CheckinResponse": {
-                "title": "CheckinResponse",
-                "properties": {
-                    "status": {
-                        "title": "status",
-                        "description": "StatusModel of the created status",
-                        "type": "string",
-                        "example": ""
-                    },
-                    "points": {
-                        "$ref": "#/components/schemas/Points"
-                    },
-                    "alsoOnThisConnection": {
-                        "title": "alsoOnThisconnection",
-                        "description": "Statuses of other people on this connection",
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/StatusResource"
-                        }
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "CheckinResponse"
                 }
             },
             "EventSuggestion": {
@@ -5962,9 +5955,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "https://traewelling.de/api/v1/oauth/authorize",
-                        "tokenUrl": "https://traewelling.de/api/v1/oauth/token",
-                        "refreshUrl": "https://traewelling.de/api/v1/auth/refresh",
+                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
+                        "tokenUrl": "http://localhost:8000/oauth/token",
+                        "refreshUrl": "http://localhost:8000/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",

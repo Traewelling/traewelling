@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Transport;
 
 use App\Dto\Internal\CheckInRequestDto;
+use App\Dto\Internal\CheckinSuccessDto;
 use App\Dto\PointCalculation;
 use App\Enum\Business;
 use App\Enum\PointReason;
@@ -47,12 +48,7 @@ abstract class TrainCheckinController extends Controller
      * @throws CheckInCollisionException
      * @throws AlreadyCheckedInException
      */
-    #[ArrayShape([
-        'status'               => Status::class,
-        'points'               => PointCalculation::class,
-        'alsoOnThisConnection' => AnonymousResourceCollection::class
-    ])]
-    public static function checkin(CheckInRequestDto $dto): array {
+    public static function checkin(CheckInRequestDto $dto): CheckinSuccessDto {
         if ($dto->departure->isAfter($dto->arrival)) {
             throw new InvalidArgumentException('Departure time must be before arrival time');
         }
@@ -106,11 +102,6 @@ abstract class TrainCheckinController extends Controller
      * @throws ModelNotFoundException
      * @throws AlreadyCheckedInException
      */
-    #[ArrayShape([
-        'status'               => Status::class,
-        'points'               => PointCalculation::class,
-        'alsoOnThisConnection' => AnonymousResourceCollection::class
-    ])]
     private static function createCheckin(
         Status  $status,
         Trip    $trip,
@@ -119,7 +110,7 @@ abstract class TrainCheckinController extends Controller
         Carbon  $departure,
         Carbon  $arrival,
         bool    $force = false,
-    ): array {
+    ): CheckinSuccessDto {
         $trip->load('stopovers');
 
         //Note: Compare with ->format because of timezone differences!
@@ -176,6 +167,7 @@ abstract class TrainCheckinController extends Controller
             forceCheckin:    $force,
         );
         try {
+            /** @var Checkin $checkin */
             $checkin              = Checkin::create([
                                                         'status_id'               => $status->id,
                                                         'user_id'                 => $status->user_id,
@@ -195,11 +187,7 @@ abstract class TrainCheckinController extends Controller
                 }
             }
 
-            return [
-                'status'               => $status,
-                'points'               => $pointCalculation,
-                'alsoOnThisConnection' => StatusResource::collection($alsoOnThisConnection)
-            ];
+            return new CheckinSuccessDto($status, $pointCalculation, $alsoOnThisConnection);
         } catch (PDOException $exception) {
             if ($exception->getCode() === 23000) { // Integrity constraint violation: Duplicate entry
                 throw new AlreadyCheckedInException();

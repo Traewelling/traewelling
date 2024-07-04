@@ -86,7 +86,7 @@ class ManualTripCreatorTest extends FeatureTestCase
 
         $this->assertDatabaseHas('train_checkins', [
             'trip_id' => $trip->trip_id,
-            'user_id' => $checkin['status']->checkin->user_id,
+            'user_id' => $checkin->status->checkin->user_id,
         ]);
     }
 }

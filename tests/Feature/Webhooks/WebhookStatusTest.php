@@ -213,6 +213,6 @@ class WebhookStatusTest extends FeatureTestCase
             ->setStatusVisibility(StatusVisibility::PUBLIC)
             ->setBody(self::EXAMPLE_BODY);
         $checkin = TrainCheckinController::checkin($dto);
-        return $checkin['status'];
+        return $checkin->status;
     }
 }
