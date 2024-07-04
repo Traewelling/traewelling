@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Dto\CheckinSuccess;
+use App\Dto\Internal\CheckInRequestDto;
 use App\Enum\Business;
 use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
@@ -12,6 +13,7 @@ use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Helper\StatusHelper;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController;
+use App\Hydrators\CheckinRequestHydrator;
 use App\Models\Station;
 use App\Models\Trip;
 use App\Models\User;
@@ -131,14 +133,14 @@ class CheckinTest extends FeatureTestCase
         );
 
         try {
-            TrainCheckinController::checkin(
-                user:        $user,
-                trip:        $baseTrip,
-                origin:      $baseTrip->originStation,
-                departure:   $baseTrip->departure,
-                destination: $baseTrip->destinationStation,
-                arrival:     $baseTrip->arrival,
-            );
+            $dto = new CheckInRequestDto();
+            $dto->setUser($user)
+                ->setTrip($baseTrip)
+                ->setOrigin($baseTrip->originStation)
+                ->setDeparture($baseTrip->departure)
+                ->setDestination($baseTrip->destinationStation)
+                ->setArrival($baseTrip->arrival);
+            TrainCheckinController::checkin($dto);
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
         }
@@ -146,14 +148,14 @@ class CheckinTest extends FeatureTestCase
         $caseCount = 1; //This variable is needed to output error messages in case of a failed test
         foreach ($collisionTrips as $trip) {
             try {
-                TrainCheckinController::checkin(
-                    user:        $user,
-                    trip:        $trip,
-                    origin:      $trip->originStation,
-                    departure:   $trip->departure,
-                    destination: $trip->destinationStation,
-                    arrival:     $trip->arrival,
-                );
+                $dto = new CheckInRequestDto();
+                $dto->setUser($user)
+                    ->setTrip($trip)
+                    ->setOrigin($trip->originStation)
+                    ->setDeparture($trip->departure)
+                    ->setDestination($trip->destinationStation)
+                    ->setArrival($trip->arrival);
+                TrainCheckinController::checkin($dto);
                 $this->fail("Expected exception for Collision Case $caseCount not thrown");
             } catch (CheckInCollisionException $exception) {
                 $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);
@@ -166,14 +168,14 @@ class CheckinTest extends FeatureTestCase
         //check normal checkin possibility
         foreach ($nonCollisionTrips as $trip) {
             try {
-                TrainCheckinController::checkin(
-                    user:        $user,
-                    trip:        $trip,
-                    origin:      $trip->originStation,
-                    departure:   $trip->departure,
-                    destination: $trip->destinationStation,
-                    arrival:     $trip->arrival,
-                );
+                $dto = new CheckInRequestDto();
+                $dto->setUser($user)
+                    ->setTrip($trip)
+                    ->setOrigin($trip->originStation)
+                    ->setDeparture($trip->departure)
+                    ->setDestination($trip->destinationStation)
+                    ->setArrival($trip->arrival);
+                TrainCheckinController::checkin($dto);
                 $this->assertTrue(true);
             } catch (CheckInCollisionException $exception) {
                 $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);

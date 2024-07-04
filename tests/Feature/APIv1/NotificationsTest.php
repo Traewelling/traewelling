@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\APIv1;
 
+use App\Dto\Internal\CheckInRequestDto;
 use App\Enum\StatusVisibility;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Backend\User\FollowController as FollowBackend;
@@ -188,14 +189,14 @@ class NotificationsTest extends ApiTestCase
         $this->assertDatabaseCount('notifications', 0);
 
         //bob also checks into the train (with same origin and destination - but not relevant)
-        $bobsData  = TrainCheckinController::checkin(
-            user:        $bob,
-            trip:        $aliceCheckIn->trip,
-            origin:      $aliceCheckIn->originStopover->station,
-            departure:   $aliceCheckIn->departure,
-            destination: $aliceCheckIn->destinationStopover->station,
-            arrival:     $aliceCheckIn->arrival,
-        );
+        $dto = new CheckInRequestDto();
+        $dto->setUser($bob)
+            ->setTrip($aliceCheckIn->trip)
+            ->setOrigin($aliceCheckIn->originStopover->station)
+            ->setDeparture($aliceCheckIn->departure)
+            ->setDestination($aliceCheckIn->destinationStopover->station)
+            ->setArrival($aliceCheckIn->arrival);
+        $bobsData  = TrainCheckinController::checkin($dto);
         $bobStatus = $bobsData['status'];
 
         //Check if there is one notification
@@ -227,15 +228,15 @@ class NotificationsTest extends ApiTestCase
 
         // WHEN: Bob also checks into the train (with same origin and destination - but not relevant)
         $bob = User::factory(['privacy_ack_at' => Carbon::now()])->create();
-        TrainCheckinController::checkin(
-            user:        $bob,
-            trip:        $aliceCheckIn->trip,
-            origin:      $aliceCheckIn->originStopover->station,
-            departure:   $aliceCheckIn->departure,
-            destination: $aliceCheckIn->destinationStopover->station,
-            arrival:     $aliceCheckIn->arrival,
-            visibility:  StatusVisibility::PRIVATE // <-- important in this test
-        );
+        $dto = new CheckInRequestDto();
+        $dto->setUser($bob)
+            ->setTrip($aliceCheckIn->trip)
+            ->setOrigin($aliceCheckIn->originStopover->station)
+            ->setDeparture($aliceCheckIn->departure)
+            ->setDestination($aliceCheckIn->destinationStopover->station)
+            ->setArrival($aliceCheckIn->arrival)
+            ->setStatusVisibility(StatusVisibility::PRIVATE);
+        TrainCheckinController::checkin($dto);
 
         //Check if there are no notifications
         $this->assertDatabaseCount('notifications', 0);

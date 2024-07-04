@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Transport;
 
+use App\Dto\Internal\CheckInRequestDto;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
@@ -45,14 +46,15 @@ class BackendCheckinTest extends FeatureTestCase
         $originStopover = $trip->stopovers->where('station.ibnr', $stationHannover->ibnr)->first();
 
         $this->expectException(StationNotOnTripException::class);
-        TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->station,
-            departure:   $originStopover->departure_planned,
-            destination: HafasController::getStation(8000001),
-            arrival:     $originStopover->departure_planned,
-        );
+
+        $dto = new CheckInRequestDto();
+        $dto->setUser($user)
+            ->setTrip($trip)
+            ->setOrigin($originStopover->trainStation)
+            ->setDeparture($originStopover->departure_planned)
+            ->setDestination(HafasController::getStation(8000001))
+            ->setArrival($originStopover->departure_planned);
+        TrainCheckinController::checkin($dto);
     }
 
     public function testSwitchedOriginAndDestinationShouldThrowException() {
@@ -85,14 +87,14 @@ class BackendCheckinTest extends FeatureTestCase
         $destinationStopover = $nextStopovers->first();
 
         $this->expectException(\InvalidArgumentException::class);
-        TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $destinationStopover->trainStation,
-            departure:   $destinationStopover->departure_planned,
-            destination: $originStopover->trainStation,
-            arrival:     $originStopover->arrival_planned,
-        );
+        $dto = new CheckInRequestDto();
+        $dto->setUser($user)
+            ->setTrip($trip)
+            ->setOrigin($destinationStopover->trainStation)
+            ->setDeparture($destinationStopover->departure_planned)
+            ->setDestination($originStopover->trainStation)
+            ->setArrival($originStopover->arrival_planned);
+        TrainCheckinController::checkin($dto);
     }
 
     public function testDuplicateCheckinsShouldThrowException() {
@@ -124,23 +126,16 @@ class BackendCheckinTest extends FeatureTestCase
             });
         $destinationStopover = $nextStopovers->first();
 
-        TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->station,
-            departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->station,
-            arrival:     $destinationStopover->arrival_planned,
-        );
+        $dto = new CheckInRequestDto();
+        $dto->setUser($user)
+            ->setTrip($trip)
+            ->setOrigin($originStopover->trainStation)
+            ->setDeparture($originStopover->departure_planned)
+            ->setDestination($destinationStopover->trainStation)
+            ->setArrival($destinationStopover->arrival_planned);
+        TrainCheckinController::checkin($dto);
         $this->expectException(CheckInCollisionException::class);
-        TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->station,
-            departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->station,
-            arrival:     $destinationStopover->arrival_planned,
-        );
+        TrainCheckinController::checkin($dto);
     }
 
     /**
@@ -194,14 +189,14 @@ class BackendCheckinTest extends FeatureTestCase
         $user = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
 
         // WHEN: User tries to check-in
-        $backendResponse = TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->station,
-            departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->station,
-            arrival:     $destinationStopover->departure_planned,
-        );
+        $dto = new CheckInRequestDto();
+        $dto->setUser($user)
+            ->setTrip($trip)
+            ->setOrigin($originStopover->trainStation)
+            ->setDeparture($originStopover->departure_planned)
+            ->setDestination($destinationStopover->trainStation)
+            ->setArrival($destinationStopover->arrival_planned);
+        $backendResponse = TrainCheckinController::checkin($dto);
 
         $status  = $backendResponse['status'];
         $checkin = $status->checkin;
@@ -256,14 +251,14 @@ class BackendCheckinTest extends FeatureTestCase
             })
             ->last();
 
-        $response = TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->station,
-            departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->station,
-            arrival:     $destinationStopover->arrival_planned,
-        );
+        $dto = new CheckInRequestDto();
+        $dto->setUser($user)
+            ->setTrip($trip)
+            ->setOrigin($originStopover->trainStation)
+            ->setDeparture($originStopover->departure_planned)
+            ->setDestination($destinationStopover->trainStation)
+            ->setArrival($destinationStopover->arrival_planned);
+        $response = TrainCheckinController::checkin($dto);
         $checkin  = $response['status']->checkin;
 
         $this->assertEquals(8089047, $checkin->originStopover->station->ibnr);
@@ -315,14 +310,14 @@ class BackendCheckinTest extends FeatureTestCase
             })
             ->first();
 
-        $response     = TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->trainStation,
-            departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->trainStation,
-            arrival:     $destinationStopover->arrival_planned,
-        );
+        $dto = new CheckInRequestDto();
+        $dto->setUser($user)
+            ->setTrip($trip)
+            ->setOrigin($originStopover->trainStation)
+            ->setDeparture($originStopover->departure_planned)
+            ->setDestination($destinationStopover->trainStation)
+            ->setArrival($destinationStopover->arrival_planned);
+        $response     = TrainCheckinController::checkin($dto);
         $trainCheckin = $response['status']->checkin;
         $distance     = $trainCheckin->distance;
 
@@ -374,14 +369,14 @@ class BackendCheckinTest extends FeatureTestCase
             })
             ->first();
 
-        $response     = TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->trainStation,
-            departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->trainStation,
-            arrival:     $destinationStopover->arrival_planned,
-        );
+        $dto = new CheckInRequestDto();
+        $dto->setUser($user)
+            ->setTrip($trip)
+            ->setOrigin($originStopover->trainStation)
+            ->setDeparture($originStopover->departure_planned)
+            ->setDestination($destinationStopover->trainStation)
+            ->setArrival($destinationStopover->arrival_planned);
+        $response     = TrainCheckinController::checkin($dto);
         $trainCheckin = $response['status']->checkin;
         $distance     = $trainCheckin->distance;
 
@@ -433,14 +428,14 @@ class BackendCheckinTest extends FeatureTestCase
             })
             ->first();
 
-        $response     = TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->trainStation,
-            departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->trainStation,
-            arrival:     $destinationStopover->arrival_planned,
-        );
+        $dto = new CheckInRequestDto();
+        $dto->setUser($user)
+            ->setTrip($trip)
+            ->setOrigin($originStopover->trainStation)
+            ->setDeparture($originStopover->departure_planned)
+            ->setDestination($destinationStopover->trainStation)
+            ->setArrival($destinationStopover->arrival_planned);
+        $response     = TrainCheckinController::checkin($dto);
         $trainCheckin = $response['status']->checkin;
 
         $this->assertEquals(102932, $trainCheckin->originStopover->station->ibnr);
@@ -472,14 +467,14 @@ class BackendCheckinTest extends FeatureTestCase
         $originalDestination = $trip->stopovers->where('trainStation.ibnr', self::AACHEN_HBF['id'])->first();
         $changedDestination  = $trip->stopovers->where('trainStation.ibnr', self::HANNOVER_HBF['id'])->first();
 
-        $status = TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->trainStation,
-            departure:   $originStopover->departure_planned,
-            destination: $originalDestination->trainStation,
-            arrival:     $originalDestination->arrival_planned,
-        )['status'];
+        $dto = new CheckInRequestDto();
+        $dto->setUser($user)
+            ->setTrip($trip)
+            ->setOrigin($originStopover->trainStation)
+            ->setDeparture($originStopover->departure_planned)
+            ->setDestination($originalDestination->trainStation)
+            ->setArrival($originalDestination->arrival_planned);
+        $status = TrainCheckinController::checkin($dto)['status'];
 
         $this->assertEquals($originStopover->id, $status->checkin->originStopover->id);
         $this->assertEquals($originalDestination->id, $status->checkin->destinationStopover->id);

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Webhooks;
 
+use App\Dto\Internal\CheckInRequestDto;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\WebhookEvent;
@@ -201,17 +202,17 @@ class WebhookStatusTest extends FeatureTestCase
         $origin      = HafasController::getStation(self::FRANKFURT_HBF['id']);
         $destination = HafasController::getStation(self::HANNOVER_HBF['id']);
 
-        $checkin = TrainCheckinController::checkin(
-            user:         $user,
-            trip:         $trip,
-            origin:       $origin,
-            departure:    Carbon::parse(self::DEPARTURE_TIME),
-            destination:  $destination,
-            arrival:      Carbon::parse(self::ARRIVAL_TIME),
-            travelReason: Business::PRIVATE,
-            visibility:   StatusVisibility::PUBLIC,
-            body:         self::EXAMPLE_BODY
-        );
+        $dto = new CheckInRequestDto();
+        $dto->setUser($user)
+            ->setTrip($trip)
+            ->setOrigin($origin)
+            ->setDeparture(Carbon::parse(self::DEPARTURE_TIME))
+            ->setDestination($destination)
+            ->setArrival(Carbon::parse(self::ARRIVAL_TIME))
+            ->setTravelReason(Business::PRIVATE)
+            ->setStatusVisibility(StatusVisibility::PUBLIC)
+            ->setBody(self::EXAMPLE_BODY);
+        $checkin = TrainCheckinController::checkin($dto);
         return $checkin['status'];
     }
 }
