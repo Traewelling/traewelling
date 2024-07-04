@@ -19,6 +19,7 @@ use App\Http\Controllers\TransportController as TransportBackend;
 use App\Http\Resources\StationResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\TripResource;
+use App\Hydrators\CheckinRequestHydrator;
 use App\Models\Event;
 use App\Models\Station;
 use Carbon\Carbon;
@@ -385,7 +386,6 @@ class TransportController extends Controller
      * @param Request $request
      *
      * @return JsonResponse
-     * @throws NotConnectedException
      */
     public function create(Request $request): JsonResponse {
         $validated = $request->validate([
@@ -406,25 +406,7 @@ class TransportController extends Controller
                                         ]);
 
         try {
-            $searchKey          = empty($validated['ibnr']) ? 'id' : 'ibnr';
-            $originStation      = Station::where($searchKey, $validated['start'])->first();
-            $destinationStation = Station::where($searchKey, $validated['destination'])->first();
-
-            $checkinResponse           = TrainCheckinController::checkin(
-                user:           Auth::user(),
-                trip:           HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
-                origin:         $originStation,
-                departure:      Carbon::parse($validated['departure']),
-                destination:    $destinationStation,
-                arrival:        Carbon::parse($validated['arrival']),
-                travelReason:   Business::tryFrom($validated['business'] ?? Business::PRIVATE->value),
-                visibility:     StatusVisibility::tryFrom($validated['visibility'] ?? StatusVisibility::PUBLIC->value),
-                body:           $validated['body'] ?? null,
-                event:          isset($validated['eventId']) ? Event::find($validated['eventId']) : null,
-                force:          isset($validated['force']) && $validated['force'],
-                postOnMastodon: isset($validated['toot']) && $validated['toot'],
-                shouldChain:    isset($validated['chainPost']) && $validated['chainPost']
-            );
+            $checkinResponse           = TrainCheckinController::checkin((new CheckinRequestHydrator($validated))->hydrateFromApi());
             $checkinResponse['status'] = new StatusResource($checkinResponse['status']);
 
             //Rewrite ['points'] so the DTO will match the documented structure -> non-breaking api change

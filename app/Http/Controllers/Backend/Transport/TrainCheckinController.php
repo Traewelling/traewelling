@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Transport;
 
+use App\Dto\Internal\CheckInRequestDto;
 use App\Dto\PointCalculation;
 use App\Enum\Business;
 use App\Enum\PointReason;
@@ -51,48 +52,34 @@ abstract class TrainCheckinController extends Controller
         'points'               => PointCalculation::class,
         'alsoOnThisConnection' => AnonymousResourceCollection::class
     ])]
-    public static function checkin(
-        User             $user,
-        Trip             $trip,
-        Station          $origin,
-        Carbon           $departure,
-        Station          $destination,
-        Carbon           $arrival,
-        Business         $travelReason = Business::PRIVATE,
-        StatusVisibility $visibility = StatusVisibility::PUBLIC,
-        ?string          $body = null,
-        ?Event           $event = null,
-        bool             $force = false,
-        bool             $postOnMastodon = false,
-        bool             $shouldChain = false
-    ): array {
-        if ($departure->isAfter($arrival)) {
+    public static function checkin(CheckInRequestDto $dto): array {
+        if ($dto->departure->isAfter($dto->arrival)) {
             throw new InvalidArgumentException('Departure time must be before arrival time');
         }
 
         try {
             $status = StatusBackend::createStatus(
-                user:       $user,
-                business:   $travelReason,
-                visibility: $visibility,
-                body:       $body,
-                event:      $event
+                user:       $dto->user,
+                business:   $dto->travelReason,
+                visibility: $dto->statusVisibility,
+                body:       $dto->body,
+                event:      $dto->event
             );
 
             $checkinResponse = self::createCheckin(
                 status:      $status,
-                trip:        $trip,
-                origin:      $origin,
-                destination: $destination,
-                departure:   $departure,
-                arrival:     $arrival,
-                force:       $force,
+                trip:        $dto->trip,
+                origin:      $dto->origin,
+                destination: $dto->destination,
+                departure:   $dto->departure,
+                arrival:     $dto->arrival,
+                force:       $dto->force,
             );
 
             UserCheckedIn::dispatch(
                 $status,
-                $postOnMastodon && $user->socialProfile?->mastodon_id !== null,
-                $shouldChain
+                $dto->postOnMastodon && $dto->user->socialProfile?->mastodon_id !== null,
+                $dto->shouldChain
             );
 
             return $checkinResponse;
