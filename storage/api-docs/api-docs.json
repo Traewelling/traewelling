@@ -4491,7 +4491,8 @@
                     "ferry",
                     "subway",
                     "tram",
-                    "taxi"
+                    "taxi",
+                    "plane"
                 ],
                 "example": "suburban"
             },
@@ -4554,7 +4555,8 @@
                     "ferry",
                     "subway",
                     "tram",
-                    "taxi"
+                    "taxi",
+                    "plane"
                 ],
                 "example": "suburban"
             },
@@ -4645,15 +4647,8 @@
             "LeaderboardUserResource": {
                 "title": "LeaderboardUserResource",
                 "properties": {
-                    "username": {
-                        "description": "username of user",
-                        "type": "string",
-                        "example": "Gertrud123"
-                    },
-                    "profilePicture": {
-                        "description": "URL of the profile picture of the user",
-                        "type": "string",
-                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    "user": {
+                        "$ref": "#/components/schemas/LightUserResource"
                     },
                     "totalDuration": {
                         "description": "duration travelled in minutes",

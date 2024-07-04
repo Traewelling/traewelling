@@ -84,14 +84,14 @@ class UserBlockTest extends FeatureTestCase
         $this->actingAs($this->bob)
              ->get(route('statuses.active'))
              ->assertOk()
-             ->assertSee($this->checkin->destinationStation->name);
+             ->assertSee($this->checkin->destinationStopover->station->name);
 
         $this->aliceBlocksBob();
 
         $this->actingAs($this->bob)
              ->get(route('statuses.active'))
              ->assertOk()
-             ->assertDontSee($this->checkin->destinationStation->name);
+             ->assertDontSee($this->checkin->destinationStopover->station->name);
     }
 
     public function testBobsStatusIsHiddenFromAlicesActiveJourneys(): void {

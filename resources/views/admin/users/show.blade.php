@@ -209,9 +209,9 @@
                                             <code>{{ $status->checkin->trip->linename }}</code>
                                         </td>
                                         <td>
-                                            {{ $status->checkin->originStation->name }}
+                                            {{ $status->checkin->originStopover->station->name }}
                                             &rarr;
-                                            {{ $status->checkin->destinationStation->name }}
+                                            {{ $status->checkin->destinationStopover->station->name }}
                                         </td>
                                         <td>{{ $status->checkin->points }}</td>
                                         <td>{{ $status->created_at }}</td>

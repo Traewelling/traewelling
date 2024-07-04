@@ -18,7 +18,15 @@ run_migrations() {
 
 post_run() {
     php artisan optimize
-    php artisan queue:restart
+
+    if [ -f /etc/systemd/system/traewelling-queue.service ]; then
+        sudo systemctl restart traewelling-queue
+    fi
+
+    if [ -f /etc/systemd/system/traewelling-queue-webhook.service ]; then
+        sudo systemctl restart traewelling-queue-webhook
+    fi
+
     php artisan db:seed --class=Database\\Seeders\\Constants\\PermissionSeeder --force
     php artisan up
 }

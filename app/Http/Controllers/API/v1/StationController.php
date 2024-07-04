@@ -21,7 +21,7 @@ class StationController extends Controller
         $this->authorize('create', Station::class);
 
         $validated = $request->validate([
-                                            'ibnr'          => ['required', 'numeric', 'unique:train_stations'],
+                                            'ibnr'          => ['nullable', 'numeric', 'unique:train_stations'],
                                             'rilIdentifier' => ['nullable', 'string', 'max:10'],
                                             'name'          => ['required', 'string', 'max:255'],
                                             'latitude'      => ['required', 'numeric', 'between:-90,90'],
@@ -96,8 +96,6 @@ class StationController extends Controller
                   ->performedOn($newStation)
                   ->log($logMessage);
 
-        Checkin::where('origin', $oldStation->ibnr)->update(['origin' => $newStation->ibnr]);
-        Checkin::where('destination', $oldStation->ibnr)->update(['destination' => $newStation->ibnr]);
         Stopover::where('train_station_id', $oldStation->id)->update(['train_station_id' => $newStation->id]);
         Trip::where('origin_id', $oldStation->id)->update(['origin_id' => $newStation->id]);
         Trip::where('destination_id', $oldStation->id)->update(['destination_id' => $newStation->id]);

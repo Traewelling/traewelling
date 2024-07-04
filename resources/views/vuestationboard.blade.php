@@ -8,17 +8,19 @@
             <div class="col-md-8 col-lg-7" id="station-board-new">
                 <Stationboard></Stationboard>
 
-                <div class="text-center mt-4">
-                    <hr/>
-                    <p>
-                        <span class="badge text-bg-info">Beta</span>
-                        {{__('missing-journey')}}
-                    </p>
-                    <a href="{{ route('trip.create') }}" class="btn btn-sm btn-outline-secondary">
-                        <i class="fa-solid fa-plus"></i>
-                        {{__('create-journey')}}
-                    </a>
-                </div>
+                @if(auth()->user()->hasRole('open-beta'))
+                    <div class="text-center mt-4">
+                        <hr/>
+                        <p>
+                            <span class="badge text-bg-info">Beta</span>
+                            {{__('missing-journey')}}
+                        </p>
+                        <a href="{{ route('trip.create') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="fa-solid fa-plus"></i>
+                            {{__('create-journey')}}
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

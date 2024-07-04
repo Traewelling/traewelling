@@ -109,12 +109,12 @@ class Status extends Model
     public function getDescriptionAttribute(): string {
         return __('description.status', [
             'username'    => $this->user->name,
-            'origin'      => $this->checkin->originStation->name .
-                             ($this->checkin->originStation->rilIdentifier ?
-                                 ' (' . $this->checkin->originStation->rilIdentifier . ')' : ''),
-            'destination' => $this->checkin->destinationStation->name .
-                             ($this->checkin->destinationStation->rilIdentifier ?
-                                 ' (' . $this->checkin->destinationStation->rilIdentifier . ')' : ''),
+            'origin'      => $this->checkin->originStopover->station->name .
+                             ($this->checkin->originStopover->station->rilIdentifier ?
+                                 ' (' . $this->checkin->originStopover->station->rilIdentifier . ')' : ''),
+            'destination' => $this->checkin->destinationStopover->station->name .
+                             ($this->checkin->destinationStopover->station->rilIdentifier ?
+                                 ' (' . $this->checkin->destinationStopover->station->rilIdentifier . ')' : ''),
             'date'        => $this->checkin->departure->isoFormat(__('datetime-format')),
             'lineName'    => $this->checkin->trip->linename
         ]);

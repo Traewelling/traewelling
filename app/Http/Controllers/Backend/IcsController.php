@@ -26,7 +26,7 @@ abstract class IcsController extends Controller
     ): Calendar {
         $icsToken = IcsToken::where([['token', $token], ['user_id', $user->id]])->firstOrFail();
 
-        $checkinQuery = Checkin::with(['status.tags', 'originStation', 'destinationStation', 'trip.stopovers'])
+        $checkinQuery = Checkin::with(['status.tags', 'originStopover.station', 'destinationStopover.station', 'trip.stopovers'])
                                ->where('user_id', $user->id)
                                ->orderByDesc('departure')
                                ->limit($limit);
@@ -52,8 +52,8 @@ abstract class IcsController extends Controller
                     $name .= __(
                         key:     'export.journey-from-to',
                         replace: [
-                                     'origin'      => $checkin->originStation->name,
-                                     'destination' => $checkin->destinationStation->name
+                                     'origin'      => $checkin->originStopover->station->name,
+                                     'destination' => $checkin->destinationStopover->station->name
                                  ],
                         locale:  $user->language
                     );
