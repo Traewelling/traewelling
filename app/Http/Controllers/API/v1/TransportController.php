@@ -11,7 +11,6 @@ use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
-use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
@@ -372,12 +371,9 @@ class TransportController extends Controller
                                             'departure'   => ['required', 'date'],
                                             'arrival'     => ['required', 'date'],
                                             'force'       => ['nullable', 'boolean'],
-                                            'with'        => ['nullable', 'array'],
+                                            'with'        => ['nullable', 'array', 'max:10'],
                                         ]);
         if (isset($validated['with'])) {
-            if (count($validated['with']) > 10) {
-                return $this->sendError('You can only checkin for up to 10 users at once.', 400);
-            }
             $withUsers = User::whereIn('id', $validated['with'])->get();
             foreach ($withUsers as $user) {
                 if (!Auth::user()?->can('checkin', $user)) {

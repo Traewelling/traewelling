@@ -75,7 +75,7 @@ class FriendCheckinTest extends ApiTestCase
     public function testUserCanAllowCheckinsForTrustedUsers(): void {
         $userToCheckin = User::factory(['friend_checkin' => FriendCheckinSetting::LIST->value])->create();
         $user          = User::factory()->create();
-        
+
         $this->assertFalse(Gate::forUser($user->fresh())->allows('checkin', $userToCheckin->fresh()));
 
         // Create a trusted relationship between the two users
@@ -87,6 +87,29 @@ class FriendCheckinTest extends ApiTestCase
         $response->assertCreated();
 
         $this->assertTrue(Gate::forUser($user->fresh())->allows('checkin', $userToCheckin->fresh()));
+    }
+
+    public function testUserCannotCheckinMoreThen10Users(): void {
+        $usersToCheckin = User::factory()->count(11)->create();
+        $user           = User::factory()->create();
+
+        $trip = Trip::factory()->create();
+
+        $this->actAsApiUserWithAllScopes($user);
+        $response = $this->postJson(
+            uri:  '/api/v1/trains/checkin',
+            data: [
+                      'tripId'      => $trip->trip_id,
+                      'lineName'    => $trip->linename,
+                      'start'       => $trip->originStation->id,
+                      'departure'   => $trip->departure,
+                      'destination' => $trip->destinationStation->id,
+                      'arrival'     => $trip->arrival,
+                      'with'        => $usersToCheckin->pluck('id')->toArray()
+                  ],
+        );
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('with');
     }
 }
 
