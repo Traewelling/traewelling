@@ -3651,7 +3651,7 @@
                 ],
                 "summary": "Get all trusted users for a user",
                 "description": "Get all trusted users for the current user or a specific user (admin only).",
-                "operationId": "5d1e940f6900373497a76522f3bcd9bc",
+                "operationId": "trustedUserIndex",
                 "parameters": [
                     {
                         "name": "user",
@@ -3687,7 +3687,7 @@
                 ],
                 "summary": "Add a user to the trusted users for a user",
                 "description": "Add a user to the trusted users for the current user or a specific user (admin only).",
-                "operationId": "f367af889d00c939741b2d93646e7fd1",
+                "operationId": "trustedUserStore",
                 "parameters": [
                     {
                         "name": "user",
@@ -3752,7 +3752,7 @@
                 ],
                 "summary": "Remove a user from the trusted users for a user",
                 "description": "Remove a user from the trusted users for the current user or a specific user (admin only).",
-                "operationId": "73fed32ea6148c7ad95aebf8a1cdc786",
+                "operationId": "trustedUserDestroy",
                 "parameters": [
                     {
                         "name": "user",

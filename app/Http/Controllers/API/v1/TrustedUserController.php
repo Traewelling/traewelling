@@ -17,6 +17,7 @@ class TrustedUserController extends Controller
     /**
      * @OA\Get(
      *     path="/user/{userId}/trusted",
+     *     operationId="trustedUserIndex",
      *     summary="Get all trusted users for a user",
      *     description="Get all trusted users for the current user or a specific user (admin only).",
      *     tags={"User"},
@@ -37,6 +38,7 @@ class TrustedUserController extends Controller
     /**
      * @OA\Post(
      *     path="/user/{userId}/trusted",
+     *     operationId="trustedUserStore",
      *     summary="Add a user to the trusted users for a user",
      *     description="Add a user to the trusted users for the current user or a specific user (admin only).",
      *     tags={"User"},
@@ -80,6 +82,7 @@ class TrustedUserController extends Controller
     /**
      * @OA\Delete(
      *     path="/user/{userId}/trusted/{trustedId}",
+     *     operationId="trustedUserDestroy",
      *     summary="Remove a user from the trusted users for a user",
      *     description="Remove a user from the trusted users for the current user or a specific user (admin only).",
      *     tags={"User"},
