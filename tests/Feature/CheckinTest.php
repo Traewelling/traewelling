@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\FeatureTestCase;
+use Tests\Helpers\CheckinRequestTestHydrator;
 
 class CheckinTest extends FeatureTestCase
 {
@@ -133,14 +134,7 @@ class CheckinTest extends FeatureTestCase
         );
 
         try {
-            $dto = new CheckInRequestDto();
-            $dto->setUser($user)
-                ->setTrip($baseTrip)
-                ->setOrigin($baseTrip->originStation)
-                ->setDeparture($baseTrip->departure)
-                ->setDestination($baseTrip->destinationStation)
-                ->setArrival($baseTrip->arrival);
-            TrainCheckinController::checkin($dto);
+            TrainCheckinController::checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($baseTrip));
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
         }
@@ -148,14 +142,7 @@ class CheckinTest extends FeatureTestCase
         $caseCount = 1; //This variable is needed to output error messages in case of a failed test
         foreach ($collisionTrips as $trip) {
             try {
-                $dto = new CheckInRequestDto();
-                $dto->setUser($user)
-                    ->setTrip($trip)
-                    ->setOrigin($trip->originStation)
-                    ->setDeparture($trip->departure)
-                    ->setDestination($trip->destinationStation)
-                    ->setArrival($trip->arrival);
-                TrainCheckinController::checkin($dto);
+                TrainCheckinController::checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($trip));
                 $this->fail("Expected exception for Collision Case $caseCount not thrown");
             } catch (CheckInCollisionException $exception) {
                 $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);
@@ -168,14 +155,7 @@ class CheckinTest extends FeatureTestCase
         //check normal checkin possibility
         foreach ($nonCollisionTrips as $trip) {
             try {
-                $dto = new CheckInRequestDto();
-                $dto->setUser($user)
-                    ->setTrip($trip)
-                    ->setOrigin($trip->originStation)
-                    ->setDeparture($trip->departure)
-                    ->setDestination($trip->destinationStation)
-                    ->setArrival($trip->arrival);
-                TrainCheckinController::checkin($dto);
+                TrainCheckinController::checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($trip));
                 $this->assertTrue(true);
             } catch (CheckInCollisionException $exception) {
                 $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);

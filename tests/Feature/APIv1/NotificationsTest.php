@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\APIv1;
 
-use App\Dto\Internal\CheckInRequestDto;
 use App\Enum\StatusVisibility;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Backend\User\FollowController as FollowBackend;
@@ -21,6 +20,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
+use Tests\Helpers\CheckinRequestTestHydrator;
 
 class NotificationsTest extends ApiTestCase
 {
@@ -189,14 +189,7 @@ class NotificationsTest extends ApiTestCase
         $this->assertDatabaseCount('notifications', 0);
 
         //bob also checks into the train (with same origin and destination - but not relevant)
-        $dto = new CheckInRequestDto();
-        $dto->setUser($bob)
-            ->setTrip($aliceCheckIn->trip)
-            ->setOrigin($aliceCheckIn->originStopover->station)
-            ->setDeparture($aliceCheckIn->departure)
-            ->setDestination($aliceCheckIn->destinationStopover->station)
-            ->setArrival($aliceCheckIn->arrival);
-        $bobsData  = TrainCheckinController::checkin($dto);
+        $bobsData  = TrainCheckinController::checkin((new CheckinRequestTestHydrator($bob))->hydrateFromCheckin($aliceCheckIn));
         $bobStatus = $bobsData->status;
 
         //Check if there is one notification
@@ -228,14 +221,8 @@ class NotificationsTest extends ApiTestCase
 
         // WHEN: Bob also checks into the train (with same origin and destination - but not relevant)
         $bob = User::factory(['privacy_ack_at' => Carbon::now()])->create();
-        $dto = new CheckInRequestDto();
-        $dto->setUser($bob)
-            ->setTrip($aliceCheckIn->trip)
-            ->setOrigin($aliceCheckIn->originStopover->station)
-            ->setDeparture($aliceCheckIn->departure)
-            ->setDestination($aliceCheckIn->destinationStopover->station)
-            ->setArrival($aliceCheckIn->arrival)
-            ->setStatusVisibility(StatusVisibility::PRIVATE);
+        $dto = (new CheckinRequestTestHydrator($bob))->hydrateFromCheckin($aliceCheckIn);
+        $dto->setStatusVisibility(StatusVisibility::PRIVATE);
         TrainCheckinController::checkin($dto);
 
         //Check if there are no notifications
