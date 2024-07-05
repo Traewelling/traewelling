@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\AlreadyAcceptedException;
-use App\Http\Controllers\Backend\PrivacyPolicyController;
+use App\Services\PrivacyPolicyService;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -17,7 +17,7 @@ class PrivacyAgreementController extends Controller
 {
 
     public function intercept(): Renderable {
-        $agreement = PrivacyPolicyController::getCurrentPrivacyPolicy();
+        $agreement = PrivacyPolicyService::getCurrentPrivacyPolicy();
         $user      = Auth::user();
 
         return view('legal.privacy-interception', ['agreement' => $agreement, 'user' => $user]);
@@ -25,7 +25,7 @@ class PrivacyAgreementController extends Controller
 
     public function ack(Request $request): RedirectResponse|JsonResponse {
         try {
-            PrivacyPolicyController::acceptPrivacyPolicy(user: auth()->user());
+            PrivacyPolicyService::acceptPrivacyPolicy(user: auth()->user());
         } catch (AlreadyAcceptedException) {
             return redirect()->route('dashboard');
         }
