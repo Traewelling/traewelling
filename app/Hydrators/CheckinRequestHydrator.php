@@ -8,25 +8,26 @@ use App\Dto\Internal\CheckInRequestDto;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Exceptions\HafasException;
-use App\Http\Controllers\HafasController;
 use App\Models\Event;
-use App\Models\Station;
-use App\Models\Stopover;
+use App\Repositories\CheckinHydratorRepository;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
+use JsonException;
 
 class CheckinRequestHydrator
 {
-    private CheckInRequestDto $dto;
-    private array             $validated;
-    private string            $searchKey;
-    private Authenticatable   $user;
+    private CheckInRequestDto         $dto;
+    private array                     $validated;
+    private string                    $searchKey;
+    private Authenticatable           $user;
+    private CheckinHydratorRepository $repository;
 
-    public function __construct(array $validated, ?Authenticatable $user = null, ?CheckInRequestDto $dto = null) {
-        $this->validated = $validated;
-        $this->dto       = $dto ?? new CheckInRequestDto();
-        $this->user      = $user ?? Auth::user();
+    public function __construct(array $validated, ?Authenticatable $user = null, ?CheckInRequestDto $dto = null, ?CheckinHydratorRepository $repository = null) {
+        $this->validated  = $validated;
+        $this->dto        = $dto ?? new CheckInRequestDto();
+        $this->user       = $user ?? Auth::user();
+        $this->repository = $repository ?? new CheckinHydratorRepository();
     }
 
     /**
@@ -40,6 +41,7 @@ class CheckinRequestHydrator
 
     /**
      * @throws HafasException
+     * @throws JsonException
      */
     public function hydrateFromAdmin(): CheckInRequestDto {
         $this->parseAdminFields();
@@ -49,23 +51,25 @@ class CheckinRequestHydrator
 
     /**
      * @throws HafasException
+     * @throws JsonException
      */
     private function parseAdminFields(): void {
         $this->parseDefaultFields();
-        $destinationStopover = Stopover::findOrFail($this->validated['destinationStopover']);
+        $destinationStopover = $this->repository->findOrFailStopover($this->validated['destinationStopover']);
 
         $this->dto->setDestination($destinationStopover->station)
-            ->setArrival($destinationStopover->arrival_planned);
+                  ->setArrival($destinationStopover->arrival_planned);
     }
 
     /**
      * @throws HafasException
+     * @throws JsonException
      */
     private function parseApiFields(): void {
         $this->parseDefaultFields();
 
         $arrival            = Carbon::parse($this->validated['arrival']);
-        $destinationStation = Station::where($this->searchKey, $this->validated['destination'])->first();
+        $destinationStation = $this->repository->getOneStation($this->searchKey, $this->validated['destination']);
 
         $this->dto->setArrival($arrival)
                   ->setDestination($destinationStation);
@@ -73,17 +77,19 @@ class CheckinRequestHydrator
 
     /**
      * @throws HafasException
+     * @throws JsonException
      */
     private function parseDefaultFields(): void {
         $this->searchKey = empty($this->validated['ibnr']) ? 'id' : 'ibnr';
-        $originStation   = Station::where($this->searchKey, $this->validated['start'])->first();
+        $originStation   = $this->repository->getOneStation($this->searchKey, $this->validated['start']);
         $departure       = Carbon::parse($this->validated['departure']);
         $travelReason    = Business::tryFrom($this->validated['business'] ?? Business::PRIVATE->value);
         $visibility      = StatusVisibility::tryFrom($this->validated['visibility'] ?? StatusVisibility::PUBLIC->value);
-        $event           = isset($this->validated['eventId']) ? Event::find($this->validated['eventId']) : null;
+        $event           = isset($this->validated['eventId']) ? $this->repository->findEvent($this->validated['eventId']) : null;
+        $trip            = $this->repository->getHafasTrip($this->validated['tripId'], $this->validated['lineName']);
 
         $this->dto->setUser($this->user)
-                  ->setTrip(HafasController::getHafasTrip($this->validated['tripId'], $this->validated['lineName']))
+                  ->setTrip($trip)
                   ->setOrigin($originStation)
                   ->setDeparture($departure)
                   ->setTravelReason($travelReason)

@@ -11,6 +11,7 @@ use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController;
 use App\Models\Stopover;
 use App\Models\User;
+use App\Repositories\CheckinHydratorRepository;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -41,7 +42,7 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->fail('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         $originStopover = $trip->stopovers->where('station.ibnr', $stationHannover->ibnr)->first();
 
@@ -72,7 +73,7 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->fail('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         $originStopover      = $trip->stopovers->where('station.ibnr', $station->ibnr)->first();
         $nextStopovers       = $trip->stopovers
@@ -106,7 +107,7 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->fail('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         $originStopover      = $trip->stopovers->where('station.ibnr', $station->ibnr)->first();
         $nextStopovers       = $trip->stopovers
@@ -214,7 +215,7 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->markTestSkipped('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         $user = User::factory()->create();
 
@@ -269,7 +270,7 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->markTestSkipped('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         // We hop in at Plantagenstr, Potsdam.
         $originStopover = $trip->stopovers->where('trainStation.ibnr', 736165)->first();
@@ -322,7 +323,7 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->markTestSkipped('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         // We hop in at Plantagenstr, Potsdam.
         $originStopover = $trip->stopovers->where('trainStation.ibnr', 736165)->first();
@@ -375,7 +376,7 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->fail('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         // We hop in at Flughafen Terminal 1, Frankfurt a.M.
         $originStopover = $trip->stopovers->where('trainStation.ibnr', 102932)->first();
@@ -415,7 +416,7 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->fail('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         $originStopover      = $trip->stopovers->where('trainStation.ibnr', self::FRANKFURT_HBF['id'])->first();
         $originalDestination = $trip->stopovers->where('trainStation.ibnr', self::AACHEN_HBF['id'])->first();

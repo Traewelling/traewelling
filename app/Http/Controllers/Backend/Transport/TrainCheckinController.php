@@ -30,6 +30,7 @@ use App\Models\Stopover;
 use App\Models\Trip;
 use App\Models\User;
 use App\Notifications\UserJoinedConnection;
+use App\Repositories\CheckinHydratorRepository;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -239,10 +240,11 @@ abstract class TrainCheckinController extends Controller
      * @return Trip
      * @throws HafasException
      * @throws StationNotOnTripException
+     * @throws \JsonException
      * @api v1
      */
     public static function getHafasTrip(string $tripId, string $lineName, int $startId): Trip {
-        $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
+        $hafasTrip = (new CheckinHydratorRepository())->getHafasTrip($tripId, $lineName);
         $hafasTrip->loadMissing(['stopovers', 'originStation', 'destinationStation']);
 
         $originStopover = $hafasTrip->stopovers->filter(function(Stopover $stopover) use ($startId) {
