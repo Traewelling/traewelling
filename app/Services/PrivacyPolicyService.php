@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Backend;
+namespace App\Services;
 
 use App\Exceptions\AlreadyAcceptedException;
 use App\Http\Controllers\Controller;
 use App\Models\PrivacyAgreement;
 use App\Models\User;
-use Carbon\Carbon;
 
-abstract class PrivacyPolicyController extends Controller
+abstract class PrivacyPolicyService extends Controller
 {
 
     public static function getCurrentPrivacyPolicy() {
-        return PrivacyAgreement::where('valid_at', '<=', Carbon::now()->toIso8601String())
-                                     ->orderByDesc('valid_at')
-                                     ->first();
+        return PrivacyAgreement::where('valid_at', '<=', now()->toIso8601String())
+                               ->orderByDesc('valid_at')
+                               ->first();
     }
 
     /**
@@ -27,6 +26,6 @@ abstract class PrivacyPolicyController extends Controller
             throw new AlreadyAcceptedException(agreement: $privacyPolicy, user: $user);
         }
 
-        $user->update(['privacy_ack_at' => Carbon::now()->toIso8601String()]);
+        $user->update(['privacy_ack_at' => now()->toIso8601String()]);
     }
 }
