@@ -18,10 +18,16 @@ class PrivacyPolicyServiceTest extends ApiTestCase
         $this->assertNull($user->privacy_ack_at);
 
         PrivacyPolicyService::acceptPrivacyPolicy($user);
-        
+
         $this->assertNotNull($user->refresh()->privacy_ack_at);
 
-        $this->expectException(AlreadyAcceptedException::class);
-        PrivacyPolicyService::acceptPrivacyPolicy($user);
+        // try/catch exception (not using assertThrows) to get the exception object
+        try {
+            PrivacyPolicyService::acceptPrivacyPolicy($user);
+            $this->fail('Expected AlreadyAcceptedException, but no exception was thrown');
+        } catch (AlreadyAcceptedException $exception) {
+            $this->assertEquals($user->privacy_ack_at, $exception->getUserAccepted());
+            $this->assertEquals(PrivacyPolicyService::getCurrentPrivacyPolicy()->valid_at, $exception->getPrivacyValidity());
+        }
     }
 }
