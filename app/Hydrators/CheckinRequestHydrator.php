@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Hydrators;
 
 use App\Dto\Internal\CheckInRequestDto;
@@ -88,8 +90,8 @@ class CheckinRequestHydrator
                   ->setStatusVisibility($visibility)
                   ->setBody($this->validated['body'] ?? null)
                   ->setEvent($event)
-                  ->setForce(!empty($this->validated['force']))
-                  ->setPostOnMastodon(!empty($this->validated['toot']))
-                  ->setShouldChain(!empty($this->validated['chainPost']));
+                  ->setForceFlag(!empty($this->validated['force']))
+                  ->setPostOnMastodonFlag(!empty($this->validated['toot']))
+                  ->setChainFlag(!empty($this->validated['chainPost']));
     }
 }

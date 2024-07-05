@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Dto\Internal;
 
 use App\Enum\Business;
@@ -22,18 +24,18 @@ class CheckInRequestDto
     public StatusVisibility $statusVisibility;
     public ?string          $body;
     public ?Event           $event;
-    public bool             $force;
-    public bool             $postOnMastodon;
-    public bool             $shouldChain;
+    public bool             $forceFlag;
+    public bool             $postOnMastodonFlag;
+    public bool             $chainFlag;
 
     public function __construct() {
-        $this->travelReason     = Business::PRIVATE;
-        $this->statusVisibility = StatusVisibility::PUBLIC;
-        $this->body             = null;
-        $this->event            = null;
-        $this->force            = false;
-        $this->postOnMastodon   = false;
-        $this->shouldChain      = false;
+        $this->travelReason       = Business::PRIVATE;
+        $this->statusVisibility   = StatusVisibility::PUBLIC;
+        $this->body               = null;
+        $this->event              = null;
+        $this->forceFlag          = false;
+        $this->postOnMastodonFlag = false;
+        $this->chainFlag          = false;
     }
 
     public function setUser(Authenticatable $user): CheckInRequestDto {
@@ -86,18 +88,18 @@ class CheckInRequestDto
         return $this;
     }
 
-    public function setForce(bool $force): CheckInRequestDto {
-        $this->force = $force;
+    public function setForceFlag(bool $forceFlag): CheckInRequestDto {
+        $this->forceFlag = $forceFlag;
         return $this;
     }
 
-    public function setPostOnMastodon(bool $postOnMastodon): CheckInRequestDto {
-        $this->postOnMastodon = $postOnMastodon;
+    public function setPostOnMastodonFlag(bool $postOnMastodonFlag): CheckInRequestDto {
+        $this->postOnMastodonFlag = $postOnMastodonFlag;
         return $this;
     }
 
-    public function setShouldChain(bool $shouldChain): CheckInRequestDto {
-        $this->shouldChain = $shouldChain;
+    public function setChainFlag(bool $chainFlag): CheckInRequestDto {
+        $this->chainFlag = $chainFlag;
         return $this;
     }
 }

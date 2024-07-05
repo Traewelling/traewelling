@@ -87,7 +87,7 @@ class CheckinController
     public function renderTrip(string $tripId, Request $request): RedirectResponse|View {
         $validated = $request->validate([
                                             'lineName'  => ['required'],
-                                            'startIBNR' => ['required', 'numeric'],
+                                            'start'     => ['required', 'numeric'],
                                             'departure' => ['required', 'date'],
                                             'userId'    => ['nullable', 'numeric']
                                         ]);
@@ -101,7 +101,7 @@ class CheckinController
             $hafasTrip = TrainCheckinController::getHafasTrip(
                 tripId:   $tripId,
                 lineName: $validated['lineName'],
-                startId:  $validated['startIBNR'],
+                startId:  $validated['start'],
             );
             return view('admin.checkin.trip', [
                 'hafasTrip' => $hafasTrip,
@@ -140,11 +140,11 @@ class CheckinController
         }
 
         try {
-            $dto = (new CheckinRequestHydrator($validated, $user))->hydrateFromAdmin();
+            $dto             = (new CheckinRequestHydrator($validated, $user))->hydrateFromAdmin();
             $backendResponse = TrainCheckinController::checkin($dto);
 
             return redirect()->route('admin.stationboard')
-                             ->with('alert-success', 'Checked in successfully. Earned points: ' . $backendResponse['points']->points);
+                             ->with('alert-success', 'Checked in successfully. Earned points: ' . $backendResponse->pointCalculation->points);
 
         } catch (CheckInCollisionException $e) {
             return redirect()

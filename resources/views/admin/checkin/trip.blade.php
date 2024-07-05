@@ -13,7 +13,7 @@
                         <input type="hidden" name="lineName" value="{{ $hafasTrip['linename'] }}"/>
                         <input type="hidden" id="input-destination" name="destination"
                                value="{{ $hafasTrip['destination'] }}"/>
-                        <input type="hidden" name="start" value="{{request()->startIBNR}}"/>
+                        <input type="hidden" name="start" value="{{request()->start}}"/>
                         <input type="hidden" name="ibnr" value="on"/>
                         <input type="hidden" name="departure" value="{{request()->departure}}"/>
                         <input type="hidden" name="userId" value="{{$user->id}}"/>

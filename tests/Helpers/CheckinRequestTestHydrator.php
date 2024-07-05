@@ -1,18 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Helpers;
 
 use App\Dto\Internal\CheckInRequestDto;
-use App\Enum\Business;
-use App\Enum\StatusVisibility;
-use App\Exceptions\HafasException;
-use App\Http\Controllers\HafasController;
 use App\Models\Checkin;
-use App\Models\Event;
-use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\Trip;
-use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class CheckinRequestTestHydrator

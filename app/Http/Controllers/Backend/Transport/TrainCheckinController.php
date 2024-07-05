@@ -69,13 +69,13 @@ abstract class TrainCheckinController extends Controller
                 destination: $dto->destination,
                 departure:   $dto->departure,
                 arrival:     $dto->arrival,
-                force:       $dto->force,
+                force:       $dto->forceFlag,
             );
 
             UserCheckedIn::dispatch(
                 $status,
-                $dto->postOnMastodon && $dto->user->socialProfile?->mastodon_id !== null,
-                $dto->shouldChain
+                $dto->postOnMastodonFlag && $dto->user->socialProfile?->mastodon_id !== null,
+                $dto->chainFlag
             );
 
             return $checkinResponse;

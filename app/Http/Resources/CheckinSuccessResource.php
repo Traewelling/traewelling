@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use App\Dto\Internal\CheckinSuccessDto;
@@ -19,7 +21,7 @@ class CheckinSuccessResource extends JsonResource
         /** @var CheckinSuccessDto $this */
         return [
             'status' => new StatusResource($this->status),
-            //Rewrite ['points'] so the DTO will match the documented structure -> non-breaking api change
+            //ToDo: Rewrite ['points'] so the DTO will match the documented structure -> non-breaking api change
             'points' => [
                 'points'      => $this->pointCalculation->points,
                 'calculation' => [
