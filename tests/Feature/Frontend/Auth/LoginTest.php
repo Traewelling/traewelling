@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Feature\Frontend;
+namespace Tests\Feature\Frontend\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\FeatureTestCase;
 
-class AuthTest extends FeatureTestCase
+class LoginTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
@@ -52,21 +52,5 @@ class AuthTest extends FeatureTestCase
         ]));
         $response->assertSessionHasErrors('login');
         $this->assertGuest();
-    }
-
-    public function testSuccessfulRegistration(): void {
-        $this->assertGuest();
-        $this->assertDatabaseMissing('users', ['username' => 'alice123']);
-        $response = $this->followingRedirects()
-                         ->post(route('register', [
-                             'username'              => 'alice123',
-                             'name'                  => 'Alice',
-                             'email'                 => 'alice@traewelling.de',
-                             'password'              => 'password',
-                             'password_confirmation' => 'password',
-                         ]));
-        $response->assertOk();
-        $response->assertViewIs('legal.privacy-interception');
-        $this->assertDatabaseHas('users', ['username' => 'alice123']);
     }
 }
