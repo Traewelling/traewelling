@@ -1472,7 +1472,6 @@
                     "Settings"
                 ],
                 "summary": "Update the current user's profile settings",
-                "description": "Update the current user's profile settings",
                 "operationId": "1d28c273d1e6e8c15b8655008d0de07f",
                 "requestBody": {
                     "required": true,
@@ -1483,7 +1482,7 @@
                                     "username": {
                                         "type": "string",
                                         "maxLength": 25,
-                                        "example": "gertrud123"
+                                        "example": "Gertrud123"
                                     },
                                     "displayName": {
                                         "type": "string",
@@ -1515,6 +1514,12 @@
                                     },
                                     "mapProvider": {
                                         "type": "string",
+                                        "example": "cargo",
+                                        "nullable": true
+                                    },
+                                    "friendCheckin": {
+                                        "type": "string",
+                                        "example": "forbidden",
                                         "nullable": true
                                     }
                                 },
@@ -3706,6 +3711,11 @@
                                     "user_id": {
                                         "type": "integer",
                                         "example": "1"
+                                    },
+                                    "expires_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2024-07-28T00:00:00Z"
                                     }
                                 },
                                 "type": "object"
@@ -4983,6 +4993,20 @@
                     "visibility": {
                         "type": "integer",
                         "example": "1"
+                    }
+                },
+                "type": "object"
+            },
+            "TrustedUserResource": {
+                "title": "TrustedUser",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/LightUserResource"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-07-28T00:00:00Z"
                     }
                 },
                 "type": "object"
