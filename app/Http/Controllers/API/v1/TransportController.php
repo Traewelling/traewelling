@@ -35,38 +35,6 @@ use Illuminate\Validation\Rules\Enum;
 class TransportController extends Controller
 {
     /**
-     * @see All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a space (%20)
-     */
-    public function getLegacyDepartures(Request $request, string $name): JsonResponse { //TODO: remove endpoint after 2024-06
-        $validated = $request->validate([
-                                            'when'       => ['nullable', 'date'],
-                                            'travelType' => ['nullable', new Enum(TravelType::class)],
-                                        ]);
-
-        try {
-            $trainStationboardResponse = TransportBackend::getDepartures(
-                stationQuery: $name,
-                when:         isset($validated['when']) ? Carbon::parse($validated['when']) : null,
-                travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
-                localtime:    isset($validated['when']) && !preg_match('(\+|Z)', $validated['when'])
-            );
-        } catch (HafasException) {
-            return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 502);
-        } catch (ModelNotFoundException) {
-            return $this->sendError(__('controller.transport.no-station-found', [], 'en'));
-        } catch (Exception $exception) {
-            report($exception);
-            return $this->sendError('An unknown error occurred.', 500);
-        }
-        return $this->sendResponse(
-            data:       $trainStationboardResponse['departures'],
-            additional: ["meta" => ['station' => StationDto::fromModel($trainStationboardResponse['station']),
-                                    'times'   => $trainStationboardResponse['times'],
-                        ]]
-        );
-    }
-
-    /**
      * @param Request $request
      * @param int     $stationId
      *
@@ -490,33 +458,6 @@ class TransportController extends Controller
             return $this->sendError(__('messages.exception.already-checkedin', [], 'en'), 400);
         }
     }
-
-    /**
-     * @param string $stationName
-     *
-     * @return JsonResponse
-     * @see        All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a space (%20)
-     * @deprecated Replaced by setHome (with "ID" instead of StationName and without "trains" in the path)
-     */
-    public function setHomeLegacy(string $stationName): JsonResponse { //ToDo: Remove this endpoint after 2024-06 (replaced by id)
-        try {
-            $station = HafasController::getStations(query: $stationName, results: 1)->first();
-            if ($station === null) {
-                return $this->sendError("Your query matches no station");
-            }
-
-            $station = HomeController::setHome(user: auth()->user(), station: $station);
-
-            return $this->sendResponse(
-                data: new StationResource($station),
-            );
-        } catch (HafasException) {
-            return $this->sendError("There has been an error with our data provider", 502);
-        } catch (ModelNotFoundException) {
-            return $this->sendError("Your query matches no station");
-        }
-    }
-
 
     /**
      * @OA\Put(
