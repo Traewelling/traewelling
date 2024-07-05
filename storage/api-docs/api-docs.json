@@ -3644,7 +3644,7 @@
                 ]
             }
         },
-        "/user/{userId}/trusted": {
+        "/user/{self|userId}/trusted": {
             "get": {
                 "tags": [
                     "User"
@@ -3656,7 +3656,7 @@
                     {
                         "name": "user",
                         "in": "path",
-                        "description": "ID of the user",
+                        "description": "ID of the user (or string 'self' for current user)",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -3692,7 +3692,7 @@
                     {
                         "name": "user",
                         "in": "path",
-                        "description": "ID of the user who want's to trust.",
+                        "description": "ID of the user (or string 'self' for current user) who want's to trust.",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -3745,7 +3745,7 @@
                 }
             }
         },
-        "/user/{userId}/trusted/{trustedId}": {
+        "/user/{self|userId}/trusted/{trustedId}": {
             "delete": {
                 "tags": [
                     "User"
@@ -3757,7 +3757,7 @@
                     {
                         "name": "user",
                         "in": "path",
-                        "description": "ID of the user",
+                        "description": "ID of the user (or string 'self' for current user)",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -5003,7 +5003,7 @@
                     "user": {
                         "$ref": "#/components/schemas/LightUserResource"
                     },
-                    "expires_at": {
+                    "expiresAt": {
                         "type": "string",
                         "format": "date-time",
                         "example": "2024-07-28T00:00:00Z"

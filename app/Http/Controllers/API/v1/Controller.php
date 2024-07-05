@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Models\OAuthClient;
+use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -132,5 +134,12 @@ class Controller extends \App\Http\Controllers\Controller
             Log::debug('Could not get current OAuth Client: ' . $throwable->getMessage());
             return null;
         }
+    }
+
+    protected function getUserOrSelf(string|int $userIdOrSelf): Authenticatable {
+        if ($userIdOrSelf === 'self') {
+            return auth()->user();
+        }
+        return User::findOrFail($userIdOrSelf);
     }
 }

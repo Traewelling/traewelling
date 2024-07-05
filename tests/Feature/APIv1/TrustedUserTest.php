@@ -17,12 +17,12 @@ class TrustedUserTest extends ApiTestCase
         $this->actAsApiUserWithAllScopes($user);
 
         foreach ($trustedUser as $userToTrust) {
-            $response = $this->postJson("/api/v1/user/{$user->id}/trusted", ['user_id' => $userToTrust->id]);
+            $response = $this->postJson("/api/v1/user/self/trusted", ['user_id' => $userToTrust->id]);
             $response->assertCreated();
         }
 
         // list trusted users
-        $response = $this->getJson("/api/v1/user/{$user->id}/trusted");
+        $response = $this->getJson("/api/v1/user/self/trusted");
         $response->assertOk();
         $response->assertJsonCount(10, 'data');
         $response->assertJsonStructure([
