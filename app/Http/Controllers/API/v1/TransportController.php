@@ -248,16 +248,16 @@ class TransportController extends Controller
      *          description="successful operation",
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="id", type="int64", example=1),
+     *                  @OA\Property(property="id", type="int", example=1),
      *                  @OA\Property(property="category", ref="#/components/schemas/HafasTravelType"),
      *                  @OA\Property(property="number", type="string", example="4-a6s4-4"),
      *                  @OA\Property(property="lineName", type="string", example="S 4"),
-     *                  @OA\Property(property="journeyNumber", type="int64", example="34427"),
+     *                  @OA\Property(property="journeyNumber", type="int", example="34427"),
      *                  @OA\Property(property="origin", ref="#/components/schemas/Station"),
      *                  @OA\Property(property="destination", ref="#/components/schemas/Station"),
      *                  @OA\Property(property="stopovers", type="array",
      *                      @OA\Items(
-     *                          ref="#/components/schemas/Stopover"
+     *                          ref="#/components/schemas/StopoverResource"
      *                      )
      *                  ),
      *              )

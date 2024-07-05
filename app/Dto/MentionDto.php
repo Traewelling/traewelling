@@ -27,7 +27,7 @@ readonly class MentionDto implements \JsonSerializable
     /**
      * @OA\Property(
      *     title="position",
-     *     format="int64",
+     *     format="int",
      *     example=0
      * )
      */
