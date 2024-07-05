@@ -35,6 +35,25 @@ class AuthTest extends FeatureTestCase
         $this->assertGuest();
     }
 
+    public function testTooManyLoginAttempts(): void {
+        $user = User::factory()->create();
+        $this->assertGuest();
+        for ($i = 0; $i < 5; $i++) {
+            $response = $this->post(route('login', [
+                'login'    => $user->username,
+                'password' => 'wrong password',
+            ]));
+            $response->assertRedirectToRoute('login');
+            $this->assertGuest();
+        }
+        $response = $this->post(route('login', [
+            'login'    => $user->username,
+            'password' => 'wrong password',
+        ]));
+        $response->assertSessionHasErrors('login');
+        $this->assertGuest();
+    }
+
     public function testSuccessfulRegistration(): void {
         $this->assertGuest();
         $this->assertDatabaseMissing('users', ['username' => 'alice123']);
