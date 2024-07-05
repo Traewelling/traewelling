@@ -1,54 +1,54 @@
 import {defineStore} from "pinia";
-import {User} from "../../types/User";
 import {ShortStation} from "../../types/Station";
+import {StationResource, UserAuthResource} from "../../types/Api";
 
 export const useUserStore = defineStore('user', {
     persist: true,
     state: () => ({
-        user: null as User | null,
+        user: null as UserAuthResource | null,
         loading: false,
         error: null as unknown | null,
         refreshed: "2021-08-01T12:00:00Z"
     }),
     getters: {
         getDisplayName(): string {
-            return this.user ? this.user.displayName : '';
+            return this.user?.displayName ?? '';
         },
         getUsername(): string {
-            return this.user ? this.user.username : '';
+            return this.user?.username ?? '';
         },
         getProfilePicture(): string {
-            return this.user ? this.user.profilePicture : '';
+            return this.user?.profilePicture ?? '';
         },
-        getTrainDistance(): number { // @todo: rename key - we have more than just trains
-            return this.user ? this.user.trainDistance : 0;
+        getTotalDistance(): number {
+            return this.user?.totalDistance ?? 0;
         },
-        getTrainDuration(): number { // @todo: rename key - we have more than just trains
-            return this.user ? this.user.trainDuration : 0;
+        getTotalDuration(): number {
+            return this.user?.totalDuration ?? 0;
         },
         getPoints(): number {
-            return this.user ? this.user.points : 0;
+            return this.user?.points ?? 0;
         },
         getMastodonUrl(): string | null {
-            return this.user ? this.user.mastodonUrl : null;
+            return this.user?.mastodonUrl ?? null;
         },
         isPrivateProfile(): boolean {
-            return this.user ? this.user.privateProfile : false;
-        },
-        getPrivacyHideDays(): number {
-            return this.user ? this.user.privacyHideDays : 0;
+            return this.user?.privateProfile ?? false;
         },
         isPreventIndex(): boolean {
-            return this.user ? this.user.preventIndex : false;
+            return this.user?.preventIndex ?? false;
         },
-        getRole(): number {
-            return this.user ? this.user.role : 0;
+        getRoles(): string[] {
+            return this.user?.roles ?? [];
         },
-        getHome(): ShortStation | null {
-            return this.user ? this.user.home : null;
+        getHome(): StationResource | null {
+            return this.user?.home ?? null;
         },
         getLanguage(): string {
-            return this.user ? this.user.language : '';
+            return this.user?.language ?? '';
+        },
+        hasBeta(): boolean {
+            return this.user?.roles?.includes('open-beta') ?? false;
         }
     },
     actions: {
