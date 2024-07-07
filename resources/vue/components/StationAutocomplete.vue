@@ -8,17 +8,19 @@ import {DateTime} from "luxon";
 import {useUserStore} from "../stores/user";
 import AutocompleteListEntry from "./Checkin/AutocompleteListEntry.vue";
 import Spinner from "./Spinner.vue";
+import LineIndicator from "./LineIndicator.vue";
+import ActiveStatusCard from "./ActiveStatusCard.vue";
 
 export default {
     setup() {
         const userStore = useUserStore();
         userStore.fetchSettings();
-
+        console.log(userStore.getRoles);
         return {userStore};
     },
     name: "StationAutocomplete",
     emits: ["update:station", "update:time", "update:travelType"],
-    components: {Spinner, AutocompleteListEntry, FullScreenModal, VueDatePicker},
+    components: {ActiveStatusCard, LineIndicator, Spinner, AutocompleteListEntry, FullScreenModal, VueDatePicker},
     props: {
         station: {
             type: Object,
@@ -319,6 +321,7 @@ export default {
         </div>
     </div>
 
+    <ActiveStatusCard v-if="userStore.hasBeta" />
 </template>
 
 <style lang="scss" scoped>

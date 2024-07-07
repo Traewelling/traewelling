@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "https://traewelling.de/api/v1/api/v1",
+            "url": "http://localhost:8000/api/v1",
             "description": "This instance"
         }
     ],
@@ -324,7 +324,7 @@
                 ],
                 "summary": "[Auth optional] Show active or upcoming events for the given timestamp",
                 "description": "Returns all active or upcoming events for the given timestamp. Default timestamp is now. If upcoming is set to true, all events ending after the timestamp are returned.",
-                "operationId": "9c949d287fe278f2f8de845eedbd12fa",
+                "operationId": "getEvents",
                 "parameters": [
                     {
                         "name": "timestamp",
@@ -427,7 +427,7 @@
                 ],
                 "summary": "DEPRECATED - USE /events - removed after 2024-08",
                 "description": "DEPRECATED - USE /events - removed after 2024-08",
-                "operationId": "35401311136edc062ced8b22c9cd8722",
+                "operationId": "getActiveEvents",
                 "responses": {
                     "200": {
                         "description": "The events"
@@ -705,7 +705,7 @@
                                     "userId": {
                                         "title": "userId",
                                         "description": "ID of the to-be-unfollowed user",
-                                        "format": "int64",
+                                        "format": "int",
                                         "example": 1
                                     }
                                 },
@@ -759,7 +759,7 @@
                                     "userId": {
                                         "title": "userId",
                                         "description": "ID of the user who sent the follow request",
-                                        "format": "int64",
+                                        "format": "int",
                                         "example": 1
                                     }
                                 },
@@ -810,7 +810,7 @@
                                     "userId": {
                                         "title": "userId",
                                         "description": "ID of the user who sent the follow request",
-                                        "format": "int64",
+                                        "format": "int",
                                         "example": 1
                                     }
                                 },
@@ -1330,7 +1330,7 @@
                 ],
                 "summary": "Accept the current privacy policy",
                 "description": "Accept the current privacy policy",
-                "operationId": "4baaf2c20fed6c12e13df7493ffa62ad",
+                "operationId": "acceptPrivacyPolicy",
                 "responses": {
                     "204": {
                         "description": "Success"
@@ -1360,7 +1360,7 @@
                     "Events"
                 ],
                 "summary": "Report a Status, Event or User to the admins.",
-                "operationId": "7a2c60a00b43cf41d9b72b6f15ad09ad",
+                "operationId": "report",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1435,7 +1435,7 @@
                 ],
                 "summary": "Get the current user's profile settings",
                 "description": "Get the current user's profile settings",
-                "operationId": "47327232762d35b0766eee97b7cd62e9",
+                "operationId": "getProfileSettings",
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -1473,7 +1473,7 @@
                 ],
                 "summary": "Update the current user's profile settings",
                 "description": "Update the current user's profile settings",
-                "operationId": "1d28c273d1e6e8c15b8655008d0de07f",
+                "operationId": "updateProfileSettings",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -2656,7 +2656,16 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/Stopovers"
+                                            "properties": {
+                                                "1": {
+                                                    "description": "Array of stopovers. Key describes trip id",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/StopoverResource"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -3303,7 +3312,7 @@
                                         "data": {
                                             "properties": {
                                                 "id": {
-                                                    "type": "int64",
+                                                    "type": "integer",
                                                     "example": 1
                                                 },
                                                 "category": {
@@ -3318,7 +3327,7 @@
                                                     "example": "S 4"
                                                 },
                                                 "journeyNumber": {
-                                                    "type": "int64",
+                                                    "type": "integer",
                                                     "example": "34427"
                                                 },
                                                 "origin": {
@@ -3330,7 +3339,7 @@
                                                 "stopovers": {
                                                     "type": "array",
                                                     "items": {
-                                                        "$ref": "#/components/schemas/Stopover"
+                                                        "$ref": "#/components/schemas/StopoverResource"
                                                     }
                                                 }
                                             },
@@ -3843,7 +3852,7 @@
                                     "userId": {
                                         "title": "userId",
                                         "description": "ID of the to-be-blocked user",
-                                        "format": "int64",
+                                        "format": "int",
                                         "example": 1
                                     }
                                 },
@@ -3911,7 +3920,7 @@
                                     "userId": {
                                         "title": "userId",
                                         "description": "ID of the to-be-unblocked user",
-                                        "format": "int64",
+                                        "format": "int",
                                         "example": 1
                                     }
                                 },
@@ -4382,7 +4391,7 @@
                         "title": "statusId",
                         "description": "ID of status",
                         "type": "integer",
-                        "format": "int64",
+                        "format": "int",
                         "example": 12345,
                         "deprecated": true
                     }
@@ -4402,7 +4411,7 @@
                     "position": {
                         "title": "position",
                         "type": "integer",
-                        "format": "int64",
+                        "format": "int",
                         "example": 0
                     },
                     "length": {
@@ -4794,7 +4803,7 @@
                         "example": "2022-07-17T13:37:00+02:00"
                     },
                     "train": {
-                        "description": "Train model"
+                        "$ref": "#/components/schemas/TransportResource"
                     },
                     "event": {
                         "oneOf": [
@@ -4830,6 +4839,183 @@
                     "visibility": {
                         "type": "integer",
                         "example": "1"
+                    }
+                },
+                "type": "object"
+            },
+            "StopoverResource": {
+                "title": "StopoverResource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 12345
+                    },
+                    "name": {
+                        "description": "name of the station",
+                        "type": "string",
+                        "example": "Karlsruhe Hbf"
+                    },
+                    "rilIdentifier": {
+                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
+                        "type": "string",
+                        "example": "RK",
+                        "nullable": true
+                    },
+                    "evaIdentifier": {
+                        "description": "IBNR identifier of Deutsche Bahn",
+                        "type": "string",
+                        "example": "8000191",
+                        "nullable": true
+                    },
+                    "arrival": {
+                        "description": "currently known arrival time. Equal to arrivalReal if known. Else equal to arrivalPlanned.",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-07-17T13:37:00+02:00",
+                        "nullable": true
+                    },
+                    "arrivalPlanned": {
+                        "description": "planned arrival according to timetable records",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-07-17T13:37:00+02:00",
+                        "nullable": true
+                    },
+                    "arrivalReal": {
+                        "description": "real arrival according to live data",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-07-17T13:37:00+02:00",
+                        "nullable": true
+                    },
+                    "arrivalPlatformPlanned": {
+                        "description": "planned arrival platform according to timetable records",
+                        "type": "string",
+                        "example": "5",
+                        "nullable": true
+                    },
+                    "arrivalPlatformReal": {
+                        "description": "real arrival platform according to live data",
+                        "type": "string",
+                        "example": "5 A-F",
+                        "nullable": true
+                    },
+                    "departure": {
+                        "description": "currently known departure time. Equal to departureReal if known. Else equal to departurePlanned.",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-07-17T13:37:00+02:00",
+                        "nullable": true
+                    },
+                    "departurePlanned": {
+                        "description": "planned departure according to timetable records",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-07-17T13:37:00+02:00",
+                        "nullable": true
+                    },
+                    "departureReal": {
+                        "description": "real departure according to live data",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-07-17T13:37:00+02:00",
+                        "nullable": true
+                    },
+                    "departurePlatformPlanned": {
+                        "description": "planned departure platform according to timetable records",
+                        "type": "string",
+                        "example": "5",
+                        "nullable": true
+                    },
+                    "departurePlatformReal": {
+                        "description": "real departure platform according to live data",
+                        "type": "string",
+                        "example": "5 A-F",
+                        "nullable": true
+                    },
+                    "platform": {
+                        "type": "string",
+                        "example": "5 A-F",
+                        "nullable": true
+                    },
+                    "isArrivalDelayed": {
+                        "description": "Is there a delay in the arrival time?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "isDepartureDelayed": {
+                        "description": "Is there a delay in the departure time?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "cancelled": {
+                        "description": "is this stopover cancelled?",
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object"
+            },
+            "TransportResource": {
+                "title": "TransportResource",
+                "properties": {
+                    "trip": {
+                        "type": "integer",
+                        "example": "4711"
+                    },
+                    "hafasId": {
+                        "type": "string",
+                        "example": "1|1234|567"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/HafasTravelType"
+                    },
+                    "number": {
+                        "description": "Internal number of the journey",
+                        "example": "4-a6s8-8"
+                    },
+                    "lineName": {
+                        "type": "string",
+                        "example": "S 1"
+                    },
+                    "journeyNumber": {
+                        "type": "integer",
+                        "example": 85639
+                    },
+                    "distance": {
+                        "description": "Distance in meters",
+                        "type": "integer",
+                        "example": 10000
+                    },
+                    "points": {
+                        "type": "integer",
+                        "example": 37
+                    },
+                    "duration": {
+                        "description": "Duration in minutes",
+                        "type": "integer",
+                        "example": 30
+                    },
+                    "manualDeparture": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-07-17T13:37:00+02:00",
+                        "nullable": true
+                    },
+                    "manualArrival": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2022-07-17T13:37:00+02:00",
+                        "nullable": true
+                    },
+                    "origin": {
+                        "$ref": "#/components/schemas/StopoverResource"
+                    },
+                    "destination": {
+                        "$ref": "#/components/schemas/StopoverResource"
+                    },
+                    "operator": {
+                        "$ref": "#/components/schemas/OperatorResource"
                     }
                 },
                 "type": "object"
@@ -5306,7 +5492,7 @@
                         "title": "points",
                         "description": "points",
                         "type": "integer",
-                        "format": "int64",
+                        "format": "int",
                         "example": 1
                     },
                     "calculation": {
@@ -5422,147 +5608,6 @@
                     "name": "StatusTag"
                 }
             },
-            "Stopover": {
-                "title": "Stopover",
-                "description": "stopover model",
-                "properties": {
-                    "id": {
-                        "title": "id",
-                        "description": "id",
-                        "type": "integer",
-                        "example": "12089"
-                    },
-                    "name": {
-                        "title": "name",
-                        "description": "name of the station",
-                        "type": "string",
-                        "example": "Karlsruhe Hbf"
-                    },
-                    "rilIdentifier": {
-                        "title": "rilIdentifier",
-                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
-                        "type": "string",
-                        "example": "RK",
-                        "nullable": "true"
-                    },
-                    "evaIdentifier": {
-                        "title": "evaIdentifier",
-                        "description": "IBNR identifier of Deutsche Bahn",
-                        "type": "integer",
-                        "example": "8000191"
-                    },
-                    "arrival": {
-                        "title": "arrival",
-                        "description": "currently known arrival time. Equal to arrivalReal if known. Else equal to arrivalPlanned.",
-                        "example": "2022-07-17T14:17:00+02:00",
-                        "nullable": true
-                    },
-                    "arrivalPlanned": {
-                        "title": "arrivalPlanned",
-                        "description": "planned arrival according to timetable records",
-                        "example": "2022-07-17T14:17:00+02:00",
-                        "nullable": true
-                    },
-                    "arrivalReal": {
-                        "title": "arrivalReal",
-                        "description": "real arrival according to live data",
-                        "example": "2022-07-17T14:17:00+02:00",
-                        "nullable": true
-                    },
-                    "arrivalPlatformPlanned": {
-                        "title": "arrivalPlatformPlanned",
-                        "description": "planned arrival platform according to timetable records",
-                        "type": "string",
-                        "example": "3",
-                        "nullable": true
-                    },
-                    "arrivalPlatformReal": {
-                        "title": "arrivalPlatformReal",
-                        "description": "real arrival platform according to live data",
-                        "type": "string",
-                        "example": "3",
-                        "nullable": true
-                    },
-                    "departure": {
-                        "title": "departure",
-                        "description": "currently known departure time. Equal to departureReal if known. Else equal to\n     *     departurePlanned.",
-                        "example": "2022-07-17T14:17:00+02:00",
-                        "nullable": true
-                    },
-                    "departurePlanned": {
-                        "title": "departurePlanned",
-                        "description": "planned departure according to timetable records",
-                        "example": "2022-07-17T14:17:00+02:00",
-                        "nullable": true
-                    },
-                    "departureReal": {
-                        "title": "departureReal",
-                        "description": "real departure according to live data",
-                        "example": "2022-07-17T14:17:00+02:00",
-                        "nullable": true
-                    },
-                    "departurePlatformPlanned": {
-                        "title": "departurePlatformPlanned",
-                        "description": "planned departure platform according to timetable records",
-                        "type": "string",
-                        "example": "3",
-                        "nullable": true
-                    },
-                    "departurePlatformReal": {
-                        "title": "departurePlatformReal",
-                        "description": "real departure platform according to live data",
-                        "type": "string",
-                        "example": "3",
-                        "nullable": true
-                    },
-                    "platform": {
-                        "title": "platform",
-                        "description": "platform",
-                        "type": "string",
-                        "example": "3",
-                        "nullable": "true"
-                    },
-                    "isArrivalDelayed": {
-                        "title": "isArrivalDelayed",
-                        "description": "Is there a delay in the arrival time?",
-                        "type": "boolean",
-                        "example": false
-                    },
-                    "isDepartureDelayed": {
-                        "title": "isDepartureDelayed",
-                        "description": "Is there a delay in the departure time?",
-                        "type": "boolean",
-                        "example": false
-                    },
-                    "cancelled": {
-                        "title": "cancelled",
-                        "description": "is this stopover cancelled?",
-                        "type": "boolean",
-                        "example": false
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Stopover"
-                }
-            },
-            "Stopovers": {
-                "title": "Stopovers",
-                "description": "Stopovers of a single status",
-                "properties": {
-                    "1": {
-                        "description": "Array of stopovers. Key describes trip id",
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Stopover"
-                        }
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Stopovers"
-                }
-            },
             "SuccessResponse": {
                 "title": "SuccessResponse",
                 "description": "Success Response",
@@ -5579,79 +5624,6 @@
                     "name": "SuccessResponse"
                 }
             },
-            "Trip": {
-                "title": "Trip",
-                "description": "Trip model",
-                "properties": {
-                    "trip": {
-                        "title": "trip",
-                        "description": "ID",
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "hafasId": {
-                        "title": "hafasId",
-                        "description": "Deutsche bahn internal HAFAS ID",
-                        "type": "string",
-                        "example": "1|323306|1|80|17072022"
-                    },
-                    "category": {
-                        "$ref": "#/components/schemas/HafasTravelType"
-                    },
-                    "number": {
-                        "title": "number",
-                        "description": "number of train",
-                        "type": "string",
-                        "example": "4-a6s4-4"
-                    },
-                    "journeyNumber": {
-                        "title": "journeyNumber",
-                        "description": "The number of the journey. Given by the transport company.",
-                        "type": "integer",
-                        "example": "3697",
-                        "nullable": true
-                    },
-                    "lineName": {
-                        "title": "lineName",
-                        "description": "name of the transport line",
-                        "type": "string",
-                        "example": "S 4"
-                    },
-                    "distance": {
-                        "title": "distance",
-                        "description": "travelled distance of this checkin in meters",
-                        "type": "integer",
-                        "example": 3349
-                    },
-                    "points": {
-                        "title": "points",
-                        "description": "points achieved for this checkin",
-                        "type": "integer",
-                        "example": 7
-                    },
-                    "duration": {
-                        "title": "duration",
-                        "description": "time traveled in this checkin in minutes",
-                        "type": "integer",
-                        "example": 7
-                    },
-                    "origin": {
-                        "$ref": "#/components/schemas/Stopover"
-                    },
-                    "destination": {
-                        "$ref": "#/components/schemas/Stopover"
-                    },
-                    "operator": {
-                        "title": "operator",
-                        "description": "Operator of the mean of transport",
-                        "nullable": true
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Trip"
-                }
-            },
             "User": {
                 "title": "User",
                 "description": "User model",
@@ -5660,7 +5632,7 @@
                         "title": "ID",
                         "description": "ID",
                         "type": "integer",
-                        "format": "int64",
+                        "format": "int",
                         "example": 1
                     },
                     "displayName": {
@@ -5684,21 +5656,21 @@
                         "title": "trainDistance",
                         "description": "distance travelled by train in meters",
                         "type": "integer",
-                        "format": "int64",
+                        "format": "int",
                         "example": 12345
                     },
                     "trainDuration": {
                         "title": "trainDuration",
                         "description": "duration travelled by train in minutes",
                         "type": "integer",
-                        "format": "int64",
+                        "format": "int",
                         "example": 6
                     },
                     "points": {
                         "title": "points",
                         "description": "Current points of the last 7 days",
                         "type": "integer",
-                        "format": "int64",
+                        "format": "int",
                         "example": 300
                     },
                     "mastodonUrl": {
@@ -5797,7 +5769,7 @@
                     "privacyHideDays": {
                         "title": "privacyHideDays",
                         "description": "Number of days after which a status is hidden from the public",
-                        "format": "int64",
+                        "format": "int",
                         "example": 1,
                         "nullable": true
                     },
@@ -5851,21 +5823,21 @@
                         "title": "ID",
                         "description": "ID",
                         "type": "integer",
-                        "format": "int64",
+                        "format": "int",
                         "example": 12345
                     },
                     "clientId": {
                         "title": "ClientID",
                         "description": "ID of the client which created this webhook",
                         "type": "integer",
-                        "format": "int64",
+                        "format": "int",
                         "example": 12345
                     },
                     "userId": {
                         "title": "UserID",
                         "description": "ID of the user which created this webhook",
                         "type": "integer",
-                        "format": "int64",
+                        "format": "int",
                         "example": 12345
                     },
                     "url": {
@@ -5962,9 +5934,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "https://traewelling.de/api/v1/oauth/authorize",
-                        "tokenUrl": "https://traewelling.de/api/v1/oauth/token",
-                        "refreshUrl": "https://traewelling.de/api/v1/auth/refresh",
+                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
+                        "tokenUrl": "http://localhost:8000/oauth/token",
+                        "refreshUrl": "http://localhost:8000/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",

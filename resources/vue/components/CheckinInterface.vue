@@ -5,14 +5,16 @@ import {trans} from "laravel-vue-i18n";
 import {useProfileSettingsStore} from "../stores/profileSettings";
 import EventDropdown from "./EventDropdown.vue";
 import TagList from "./TagList.vue";
+import {useActiveCheckin} from "../stores/activeCheckin";
 
 export default {
     components: {TagList, EventDropdown},
     setup() {
         const profileStore = useProfileSettingsStore();
         profileStore.fetchSettings();
+        const activeCheckin = useActiveCheckin();
 
-        return {profileStore};
+        return {profileStore, activeCheckin};
     },
     name: "CheckinInterface",
     props: {
@@ -72,6 +74,8 @@ export default {
                 this.loading = false;
                 if (response.ok) {
                     response.json().then((result) => {
+                        this.activeCheckin.reset();
+
                         localStorage.setItem("points", JSON.stringify(result.data.points));
                         localStorage.setItem("alsoOnThisConnection", JSON.stringify(result.data.alsoOnThisConnection));
                         this.$refs.tagList.postAllTags(result.data.status.id).then(() => {

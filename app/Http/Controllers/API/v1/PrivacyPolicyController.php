@@ -39,6 +39,7 @@ class PrivacyPolicyController extends Controller
     /**
      * @OA\Post(
      *     path="/settings/acceptPrivacy",
+     *     operationId="acceptPrivacyPolicy",
      *     tags={"Settings"},
      *     summary="Accept the current privacy policy",
      *     description="Accept the current privacy policy",

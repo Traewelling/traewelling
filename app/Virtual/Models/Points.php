@@ -19,7 +19,7 @@ class Points
      * @OA\Property(
      *     title="points",
      *     description="points",
-     *     format="int64",
+     *     format="int",
      *     example=1
      * )
      *
