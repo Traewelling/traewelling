@@ -8,10 +8,10 @@ class LineSegment
 {
     public readonly Coordinate $start;
     public readonly Coordinate $finish;
-    private int $distance;
+    private int                $distance;
 
     public function __construct(Coordinate $start, Coordinate $finish) {
-        $this->start = $start;
+        $this->start  = $start;
         $this->finish = $finish;
     }
 
@@ -25,20 +25,20 @@ class LineSegment
 
         $equatorialRadiusInMeters = 6378137;
 
-        $latA     = $this->start->latitude / 180 * M_PI;
-        $lonA     = $this->start->longitude / 180 * M_PI;
-        $latB     = $this->finish->latitude / 180 * M_PI;
-        $lonB     = $this->finish->longitude / 180 * M_PI;
+        $latA           = $this->start->latitude / 180 * M_PI;
+        $lonA           = $this->start->longitude / 180 * M_PI;
+        $latB           = $this->finish->latitude / 180 * M_PI;
+        $lonB           = $this->finish->longitude / 180 * M_PI;
         $this->distance = round(acos(sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA))
-                    * $equatorialRadiusInMeters);
+                                * $equatorialRadiusInMeters);
 
         return $this->distance;
     }
 
     public function interpolatePoint(float $percent): Coordinate {
         return new Coordinate(
-            $this->start->latitude + $percent * ($this->finish->latitude - $this->start->latitude),
-            $this->start->longitude + $percent * ($this->finish->longitude - $this->start->longitude)
+            round($this->start->latitude + $percent * ($this->finish->latitude - $this->start->latitude), 6),
+            round($this->start->longitude + $percent * ($this->finish->longitude - $this->start->longitude), 6)
         );
     }
 }

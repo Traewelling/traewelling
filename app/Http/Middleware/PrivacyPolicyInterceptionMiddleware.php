@@ -3,8 +3,8 @@
 namespace App\Http\Middleware;
 
 use App\Http\Controllers\API\v1\Controller;
-use App\Http\Controllers\Backend\PrivacyPolicyController;
 use App\Models\PrivacyAgreement;
+use App\Services\PrivacyPolicyService;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
@@ -21,7 +21,7 @@ class PrivacyPolicyInterceptionMiddleware extends Controller
      * @return mixed
      */
     public function handle(Request $request, Closure $next): mixed {
-        $agreement = PrivacyPolicyController::getCurrentPrivacyPolicy();
+        $agreement = PrivacyPolicyService::getCurrentPrivacyPolicy();
 
         $user = auth()->user();
         if ($user === null) {
