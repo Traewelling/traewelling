@@ -343,8 +343,9 @@ class TransportController extends Controller
      *          @OA\JsonContent(ref="#/components/schemas/CheckinResponse")
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=409, description="Checkin collision"),
      *       @OA\Response(response=401, description="Unauthorized"),
+     *       @OA\Response(response=403, description="Forbidden"),
+     *       @OA\Response(response=409, description="Checkin collision"),
      *       security={
      *           {"passport": {"create-statuses"}}, {"token": {}}
      *       }
@@ -377,7 +378,7 @@ class TransportController extends Controller
             $withUsers = User::whereIn('id', $validated['with'])->get();
             foreach ($withUsers as $user) {
                 if (!Auth::user()?->can('checkin', $user)) {
-                    return $this->sendError('You are not allowed to checkin for the given user.', 401);
+                    return $this->sendError('You are not allowed to checkin for the given user.', 403);
                 }
             }
         }
