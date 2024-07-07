@@ -66,6 +66,7 @@ class SettingsController extends Controller
     /**
      * @OA\Put(
      *      path="/settings/profile",
+     *      operationId="putProfileSettings",
      *      tags={"Settings"},
      *      summary="Update the current user's profile settings",
      *      @OA\RequestBody(
