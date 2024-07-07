@@ -23,7 +23,12 @@ class CheckinRequestHydrator
     private Authenticatable           $user;
     private CheckinHydratorRepository $repository;
 
-    public function __construct(array $validated, ?Authenticatable $user = null, ?CheckInRequestDto $dto = null, ?CheckinHydratorRepository $repository = null) {
+    public function __construct(
+        array                      $validated,
+        ?Authenticatable           $user = null,
+        ?CheckInRequestDto         $dto = null,
+        ?CheckinHydratorRepository $repository = null
+    ) {
         $this->validated  = $validated;
         $this->dto        = $dto ?? new CheckInRequestDto();
         $this->user       = $user ?? Auth::user();

@@ -174,7 +174,7 @@ class BackendCheckinTest extends FeatureTestCase
         $user = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
 
         // WHEN: User tries to check-in
-        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
+        $dto             = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
         $backendResponse = TrainCheckinController::checkin($dto);
 
         $status  = $backendResponse->status;
@@ -230,7 +230,7 @@ class BackendCheckinTest extends FeatureTestCase
             })
             ->last();
 
-        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
+        $dto      = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
         $response = TrainCheckinController::checkin($dto);
         $checkin  = $response->status->checkin;
 
@@ -283,7 +283,7 @@ class BackendCheckinTest extends FeatureTestCase
             })
             ->first();
 
-        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
+        $dto          = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
         $response     = TrainCheckinController::checkin($dto);
         $trainCheckin = $response->status->checkin;
         $distance     = $trainCheckin->distance;
@@ -336,7 +336,7 @@ class BackendCheckinTest extends FeatureTestCase
             })
             ->first();
 
-        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
+        $dto          = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
         $response     = TrainCheckinController::checkin($dto);
         $trainCheckin = $response->status->checkin;
         $distance     = $trainCheckin->distance;
@@ -389,7 +389,7 @@ class BackendCheckinTest extends FeatureTestCase
             })
             ->first();
 
-        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
+        $dto          = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
         $response     = TrainCheckinController::checkin($dto);
         $trainCheckin = $response->status->checkin;
 
@@ -422,7 +422,7 @@ class BackendCheckinTest extends FeatureTestCase
         $originalDestination = $trip->stopovers->where('trainStation.ibnr', self::AACHEN_HBF['id'])->first();
         $changedDestination  = $trip->stopovers->where('trainStation.ibnr', self::HANNOVER_HBF['id'])->first();
 
-        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $originalDestination);
+        $dto    = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $originalDestination);
         $status = TrainCheckinController::checkin($dto)->status;
 
         $this->assertEquals($originStopover->id, $status->checkin->originStopover->id);
