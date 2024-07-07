@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import {ShortStation} from "../../types/Station";
 import {StationResource, UserAuthResource} from "../../types/Api";
 
-export const useUserStore = defineStore('user', {
+export const useUserStore = defineStore("user", {
     persist: true,
     state: () => ({
         user: null as UserAuthResource | null,
@@ -12,13 +12,13 @@ export const useUserStore = defineStore('user', {
     }),
     getters: {
         getDisplayName(): string {
-            return this.user?.displayName ?? '';
+            return this.user?.displayName ?? "";
         },
         getUsername(): string {
-            return this.user?.username ?? '';
+            return this.user?.username ?? "";
         },
         getProfilePicture(): string {
-            return this.user?.profilePicture ?? '';
+            return this.user?.profilePicture ?? "";
         },
         getTotalDistance(): number {
             return this.user?.totalDistance ?? 0;
@@ -45,10 +45,10 @@ export const useUserStore = defineStore('user', {
             return this.user?.home ?? null;
         },
         getLanguage(): string {
-            return this.user?.language ?? '';
+            return this.user?.language ?? "";
         },
         hasBeta(): boolean {
-            return this.user?.roles?.includes('open-beta') ?? false;
+            return this.user?.roles?.includes("open-beta") ?? false;
         }
     },
     actions: {
@@ -60,7 +60,7 @@ export const useUserStore = defineStore('user', {
             }
 
             fetch(`/api/v1/station/${home.id}/home`, {
-                method: 'PUT'
+                method: "PUT"
             })
                 .then(response => response.json())
                 .then((data) => {
@@ -87,7 +87,7 @@ export const useUserStore = defineStore('user', {
             }
             this.loading = true;
             try {
-                this.user = await fetch('/api/v1/auth/user')
+                this.user = await fetch("/api/v1/auth/user")
                     .then((response: { json: () => any; }) => response.json())
                     .then((data: { data: any; }) => data.data);
                 this.refreshed = new Date().toString();
