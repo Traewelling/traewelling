@@ -458,6 +458,7 @@
     "transport_types.subway": "Subway",
     "transport_types.tram": "Tram",
     "transport_types.taxi": "Taxi",
+    "transport_types.plane": "Plane",
     "stats": "Statistics",
     "stats.range": "Date range",
     "stats.range.days": "Last :days days",
