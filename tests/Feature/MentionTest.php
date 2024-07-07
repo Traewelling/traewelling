@@ -20,6 +20,17 @@ class MentionTest extends FeatureTestCase
         $status = Status::factory()->create(['body' => $body]);
 
         $this->assertSame(2, $status->mentions->count());
+
+        // test MentionHelper
+        $helper   = new MentionHelper($status, $body);
+        $mentions = $helper->findUsersInString();
+        $this->assertCount(2, $mentions);
+        $mentionDto     = $mentions[0];
+        $jsonSerialized = $mentionDto->jsonSerialize();
+        $this->assertIsArray($jsonSerialized);
+        $this->assertArrayHasKey('user', $jsonSerialized);
+        $this->assertArrayHasKey('position', $jsonSerialized);
+        $this->assertArrayHasKey('length', $jsonSerialized);
     }
 
     public function testDeleteMentions(): void {
@@ -95,7 +106,7 @@ class MentionTest extends FeatureTestCase
 
     public function testMentionNotification(): void {
         $alice = User::factory()->create(['username' => 'alice']);
-        $bob = User::factory()->create(['username' => 'bob']);
+        $bob   = User::factory()->create(['username' => 'bob']);
 
         $status = Status::factory()->create(['body' => 'I\'m on my way with @alice and @bob']);
         $status->refresh();

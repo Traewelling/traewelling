@@ -32,7 +32,7 @@ class MentionHelper
     /**
      * @return MentionDto[]
      */
-    private function findUsersInString(): array {
+    public function findUsersInString(): array {
         $users   = [];
         $matches = self::findMentionsInString($this->body ?? '');
         foreach ($matches as $match) {
