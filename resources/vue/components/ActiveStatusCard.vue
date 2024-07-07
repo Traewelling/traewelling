@@ -25,7 +25,7 @@ export default defineComponent({
     methods: {
         getNextStation() {
             this.getProgress()
-            if (this.state.stopovers) {
+            if (this.state.stopovers && this.progress < 100) {
                 this.nextStation = NextStation.getNextStation(this.state.stopovers);
             }
         },
@@ -57,11 +57,14 @@ export default defineComponent({
         arrival() {
             const arr = this.state.status?.train?.destination?.arrival ?? this.state.status?.train?.destination?.departure ?? null;
             return DateTime.fromISO(arr);
+        },
+        showCard() {
+            return this.state.status !== null && this.state.status !== undefined;
         }
     },
     mounted() {
         this.fetchState();
-        this.getNextStation()
+        setTimeout(this.getNextStation,500);
         this.fetchInterval = setInterval(this.fetchState, 30000);
         this.nextStationInterval = setInterval(this.getNextStation, 10000);
     },
@@ -77,7 +80,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <div v-show="state.status !== null" class="fab-container d-md-none">
+    <div v-show="showCard" class="fab-container d-md-none">
         <div class="card hover-card w-75 shadow-3" @click="goToStatus">
             <div class="card-body py-2 px-3">
                 <p class="mb-0">{{ state.status?.train?.origin?.name }} <small
