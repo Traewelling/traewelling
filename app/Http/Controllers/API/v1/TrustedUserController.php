@@ -88,7 +88,7 @@ class TrustedUserController extends Controller
      *     summary="Remove a user from the trusted users for a user",
      *     description="Remove a user from the trusted users for the current user or a specific user (admin only).",
      *     tags={"User"},
-     *     @OA\Parameter(name="user", in="path", required=true, description="ID of the user (or string 'self' for current user)", @OA\Schema(type="integer")),
+     *     @OA\Parameter(name="user", in="path", required=true, description="ID of the user (or string 'self' for current user)", @OA\Schema(type="string")),
      *     @OA\Parameter(name="trusted", in="path", required=true, description="ID of the trusted user", @OA\Schema(type="integer")),
      *     @OA\Response(response="204", description="User removed from trusted users"),
      *     @OA\Response(response="401", description="Unauthorized"),
