@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Notifications\StatusLiked;
 use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -269,11 +270,11 @@ class StatusController extends Controller
     }
 
     public static function createStatus(
-        User             $user,
-        Business         $business,
-        StatusVisibility $visibility,
-        string           $body = null,
-        Event            $event = null
+        User|Authenticatable $user,
+        Business             $business,
+        StatusVisibility     $visibility,
+        string               $body = null,
+        Event                $event = null
     ): Status {
         if ($event !== null && !Carbon::now()->isBetween($event->checkin_start, $event->checkin_end)) {
             Log::info('Event checkin was prevented because the event is not active anymore', [

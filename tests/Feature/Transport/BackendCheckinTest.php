@@ -11,10 +11,12 @@ use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController;
 use App\Models\Stopover;
 use App\Models\User;
+use App\Repositories\CheckinHydratorRepository;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\FeatureTestCase;
+use Tests\Helpers\CheckinRequestTestHydrator;
 
 class BackendCheckinTest extends FeatureTestCase
 {
@@ -40,19 +42,16 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->fail('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         $originStopover = $trip->stopovers->where('station.ibnr', $stationHannover->ibnr)->first();
 
         $this->expectException(StationNotOnTripException::class);
-        TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->station,
-            departure:   $originStopover->departure_planned,
-            destination: HafasController::getStation(8000001),
-            arrival:     $originStopover->departure_planned,
-        );
+
+        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, null);
+        $dto->setDestination(HafasController::getStation(8000001))
+            ->setArrival($originStopover->departure_planned);
+        TrainCheckinController::checkin($dto);
     }
 
     public function testSwitchedOriginAndDestinationShouldThrowException() {
@@ -74,7 +73,7 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->fail('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         $originStopover      = $trip->stopovers->where('station.ibnr', $station->ibnr)->first();
         $nextStopovers       = $trip->stopovers
@@ -85,14 +84,8 @@ class BackendCheckinTest extends FeatureTestCase
         $destinationStopover = $nextStopovers->first();
 
         $this->expectException(\InvalidArgumentException::class);
-        TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $destinationStopover->trainStation,
-            departure:   $destinationStopover->departure_planned,
-            destination: $originStopover->trainStation,
-            arrival:     $originStopover->arrival_planned,
-        );
+        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $destinationStopover, $originStopover);
+        TrainCheckinController::checkin($dto);
     }
 
     public function testDuplicateCheckinsShouldThrowException() {
@@ -114,7 +107,7 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->fail('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         $originStopover      = $trip->stopovers->where('station.ibnr', $station->ibnr)->first();
         $nextStopovers       = $trip->stopovers
@@ -124,23 +117,10 @@ class BackendCheckinTest extends FeatureTestCase
             });
         $destinationStopover = $nextStopovers->first();
 
-        TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->station,
-            departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->station,
-            arrival:     $destinationStopover->arrival_planned,
-        );
+        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
+        TrainCheckinController::checkin($dto);
         $this->expectException(CheckInCollisionException::class);
-        TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->station,
-            departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->station,
-            arrival:     $destinationStopover->arrival_planned,
-        );
+        TrainCheckinController::checkin($dto);
     }
 
     /**
@@ -194,16 +174,10 @@ class BackendCheckinTest extends FeatureTestCase
         $user = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
 
         // WHEN: User tries to check-in
-        $backendResponse = TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->station,
-            departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->station,
-            arrival:     $destinationStopover->departure_planned,
-        );
+        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
+        $backendResponse = TrainCheckinController::checkin($dto);
 
-        $status  = $backendResponse['status'];
+        $status  = $backendResponse->status;
         $checkin = $status->checkin;
 
         // Es wird tatsächlich die zeitlich spätere Station angenommen.
@@ -241,7 +215,7 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->markTestSkipped('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         $user = User::factory()->create();
 
@@ -256,15 +230,9 @@ class BackendCheckinTest extends FeatureTestCase
             })
             ->last();
 
-        $response = TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->station,
-            departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->station,
-            arrival:     $destinationStopover->arrival_planned,
-        );
-        $checkin  = $response['status']->checkin;
+        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
+        $response = TrainCheckinController::checkin($dto);
+        $checkin  = $response->status->checkin;
 
         $this->assertEquals(8089047, $checkin->originStopover->station->ibnr);
         $this->assertEquals(8089090, $checkin->destinationStopover->station->ibnr);
@@ -302,7 +270,7 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->markTestSkipped('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         // We hop in at Plantagenstr, Potsdam.
         $originStopover = $trip->stopovers->where('trainStation.ibnr', 736165)->first();
@@ -315,15 +283,9 @@ class BackendCheckinTest extends FeatureTestCase
             })
             ->first();
 
-        $response     = TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->trainStation,
-            departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->trainStation,
-            arrival:     $destinationStopover->arrival_planned,
-        );
-        $trainCheckin = $response['status']->checkin;
+        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
+        $response     = TrainCheckinController::checkin($dto);
+        $trainCheckin = $response->status->checkin;
         $distance     = $trainCheckin->distance;
 
         //We check, that the distance is between 500 and 1000 meters.
@@ -361,7 +323,7 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->markTestSkipped('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         // We hop in at Plantagenstr, Potsdam.
         $originStopover = $trip->stopovers->where('trainStation.ibnr', 736165)->first();
@@ -374,15 +336,9 @@ class BackendCheckinTest extends FeatureTestCase
             })
             ->first();
 
-        $response     = TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->trainStation,
-            departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->trainStation,
-            arrival:     $destinationStopover->arrival_planned,
-        );
-        $trainCheckin = $response['status']->checkin;
+        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
+        $response     = TrainCheckinController::checkin($dto);
+        $trainCheckin = $response->status->checkin;
         $distance     = $trainCheckin->distance;
 
         //We check, that the distance is between 12000 and 12500 meters.
@@ -420,7 +376,7 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->fail('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         // We hop in at Flughafen Terminal 1, Frankfurt a.M.
         $originStopover = $trip->stopovers->where('trainStation.ibnr', 102932)->first();
@@ -433,15 +389,9 @@ class BackendCheckinTest extends FeatureTestCase
             })
             ->first();
 
-        $response     = TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->trainStation,
-            departure:   $originStopover->departure_planned,
-            destination: $destinationStopover->trainStation,
-            arrival:     $destinationStopover->arrival_planned,
-        );
-        $trainCheckin = $response['status']->checkin;
+        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
+        $response     = TrainCheckinController::checkin($dto);
+        $trainCheckin = $response->status->checkin;
 
         $this->assertEquals(102932, $trainCheckin->originStopover->station->ibnr);
         $this->assertEquals(104734, $trainCheckin->destinationStopover->station->ibnr);
@@ -466,20 +416,14 @@ class BackendCheckinTest extends FeatureTestCase
         if ($rawTrip === null) {
             $this->fail('Unable to find trip.');
         }
-        $trip = HafasController::getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
+        $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
         $originStopover      = $trip->stopovers->where('trainStation.ibnr', self::FRANKFURT_HBF['id'])->first();
         $originalDestination = $trip->stopovers->where('trainStation.ibnr', self::AACHEN_HBF['id'])->first();
         $changedDestination  = $trip->stopovers->where('trainStation.ibnr', self::HANNOVER_HBF['id'])->first();
 
-        $status = TrainCheckinController::checkin(
-            user:        $user,
-            trip:        $trip,
-            origin:      $originStopover->trainStation,
-            departure:   $originStopover->departure_planned,
-            destination: $originalDestination->trainStation,
-            arrival:     $originalDestination->arrival_planned,
-        )['status'];
+        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $originalDestination);
+        $status = TrainCheckinController::checkin($dto)->status;
 
         $this->assertEquals($originStopover->id, $status->checkin->originStopover->id);
         $this->assertEquals($originalDestination->id, $status->checkin->destinationStopover->id);

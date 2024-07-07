@@ -342,21 +342,6 @@ abstract class HafasController extends Controller
     }
 
     /**
-     * @param string $tripID
-     * @param string $lineName
-     *
-     * @return Trip
-     * @throws HafasException
-     */
-    public static function getHafasTrip(string $tripID, string $lineName): Trip {
-        if (is_numeric($tripID)) {
-            $trip = Trip::where('id', $tripID)->where('linename', $lineName)->first();
-        }
-        $trip = $trip ?? Trip::where('trip_id', $tripID)->where('linename', $lineName)->first();
-        return $trip ?? self::fetchHafasTrip($tripID, $lineName);
-    }
-
-    /**
      * @throws HafasException|JsonException
      */
     public static function fetchRawHafasTrip(string $tripId, string $lineName) {
@@ -386,7 +371,7 @@ abstract class HafasController extends Controller
      * @param string $lineName
      *
      * @return Trip
-     * @throws HafasException
+     * @throws HafasException|JsonException
      */
     public static function fetchHafasTrip(string $tripID, string $lineName): Trip {
         $tripJson    = self::fetchRawHafasTrip($tripID, $lineName);
