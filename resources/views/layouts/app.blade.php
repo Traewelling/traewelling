@@ -321,7 +321,6 @@
             var token            = '{{ csrf_token() }}';
             var urlFollow        = '{{ route('follow.create') }}';
             var urlFollowRequest = '{{ route('follow.request') }}';
-            var urlTrainTrip     = '{{ route('trains.trip') }}';
             var urlUnfollow      = '{{ route('follow.destroy') }}';
             var urlAutocomplete  = '{{ url('transport/train/autocomplete') }}';
             var mapprovider      = '{{ Auth::user()->mapprovider ?? "default" }}';
@@ -334,6 +333,5 @@
         </script>
     </body>
 
-    @include('includes.check-in-modal')
     @yield('footer')
 </html>

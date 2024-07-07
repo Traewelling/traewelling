@@ -125,7 +125,6 @@ Route::get('/ics', [IcsController::class, 'renderIcs'])
  */
 Route::middleware(['auth', 'privacy'])->group(function() {
 
-    Route::redirect('/beta/trip-creation', '/trip/create'); //TODO: remove after 2024-06
     Route::view('/trip/create', 'beta.trip-creation')
          ->middleware(['can:create-manual-trip'])
          ->name('trip.create');
@@ -230,26 +229,11 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/transport/train/autocomplete/{station}', [FrontendTransportController::class, 'TrainAutocomplete'])
          ->name('transport.train.autocomplete');
 
-    Route::get('/stationboard', [VueFrontendController::class, 'stationboard'])
-         ->name('stationboard');
+    Route::get('/stationboard', [VueFrontendController::class, 'stationboard'])->name('stationboard');
 
-    Route::get('/trains/stationboard', [FrontendTransportController::class, 'TrainStationboard'])
-         ->name('trains.stationboard'); // TODO: Adapt with publish of vue stationboard, so that redirects still work
+    Route::redirect('/trains/stationboard', '/stationboard')->name('trains.stationboard');
 
-    Route::get('/trains/nearby', [FrontendTransportController::class, 'StationByCoordinates'])
-         ->name('trains.nearby'); // TODO: Adapt with publish of vue stationboard, so that redirects still work
-
-    Route::get('/trains/trip', [FrontendTransportController::class, 'TrainTrip'])
-         ->name('trains.trip'); // TODO: Adapt with publish of vue stationboard, so that redirects still work
-
-    Route::post('/trains/checkin', [FrontendTransportController::class, 'TrainCheckin'])
-         ->name('trains.checkin');  // TODO: Adapt with publish of vue stationboard, so that redirects still work
-
-    Route::get('/trains/setHome/', [FrontendTransportController::class, 'setTrainHome'])
-         ->name('user.setHome'); //TODO: Replace with API Endpoint // why is this a GET request?
-
-    Route::get('/search/', [FrontendUserController::class, 'searchUser'])
-         ->name('userSearch');
+    Route::get('/search/', [FrontendUserController::class, 'searchUser'])->name('userSearch');
 
     Route::post('/user/block', [\App\Http\Controllers\Frontend\UserController::class, 'blockUser'])
          ->name('user.block'); //TODO: Replace with API Endpoint

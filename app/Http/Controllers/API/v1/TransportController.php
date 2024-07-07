@@ -33,38 +33,6 @@ use Illuminate\Validation\Rules\Enum;
 class TransportController extends Controller
 {
     /**
-     * @see All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a space (%20)
-     */
-    public function getLegacyDepartures(Request $request, string $name): JsonResponse { //TODO: remove endpoint after 2024-06
-        $validated = $request->validate([
-                                            'when'       => ['nullable', 'date'],
-                                            'travelType' => ['nullable', new Enum(TravelType::class)],
-                                        ]);
-
-        try {
-            $trainStationboardResponse = TransportBackend::getDepartures(
-                stationQuery: $name,
-                when:         isset($validated['when']) ? Carbon::parse($validated['when']) : null,
-                travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
-                localtime:    isset($validated['when']) && !preg_match('(\+|Z)', $validated['when'])
-            );
-        } catch (HafasException) {
-            return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 502);
-        } catch (ModelNotFoundException) {
-            return $this->sendError(__('controller.transport.no-station-found', [], 'en'));
-        } catch (Exception $exception) {
-            report($exception);
-            return $this->sendError('An unknown error occurred.', 500);
-        }
-        return $this->sendResponse(
-            data:       $trainStationboardResponse['departures'],
-            additional: ["meta" => ['station' => StationDto::fromModel($trainStationboardResponse['station']),
-                                    'times'   => $trainStationboardResponse['times'],
-                        ]]
-        );
-    }
-
-    /**
      * @param Request $request
      * @param int     $stationId
      *
@@ -248,16 +216,16 @@ class TransportController extends Controller
      *          description="successful operation",
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="id", type="int64", example=1),
+     *                  @OA\Property(property="id", type="int", example=1),
      *                  @OA\Property(property="category", ref="#/components/schemas/HafasTravelType"),
      *                  @OA\Property(property="number", type="string", example="4-a6s4-4"),
      *                  @OA\Property(property="lineName", type="string", example="S 4"),
-     *                  @OA\Property(property="journeyNumber", type="int64", example="34427"),
+     *                  @OA\Property(property="journeyNumber", type="int", example="34427"),
      *                  @OA\Property(property="origin", ref="#/components/schemas/Station"),
      *                  @OA\Property(property="destination", ref="#/components/schemas/Station"),
      *                  @OA\Property(property="stopovers", type="array",
      *                      @OA\Items(
-     *                          ref="#/components/schemas/Stopover"
+     *                          ref="#/components/schemas/StopoverResource"
      *                      )
      *                  ),
      *              )
@@ -455,33 +423,6 @@ class TransportController extends Controller
             return $this->sendError(__('messages.exception.already-checkedin', [], 'en'), 400);
         }
     }
-
-    /**
-     * @param string $stationName
-     *
-     * @return JsonResponse
-     * @see        All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a space (%20)
-     * @deprecated Replaced by setHome (with "ID" instead of StationName and without "trains" in the path)
-     */
-    public function setHomeLegacy(string $stationName): JsonResponse { //ToDo: Remove this endpoint after 2024-06 (replaced by id)
-        try {
-            $station = HafasController::getStations(query: $stationName, results: 1)->first();
-            if ($station === null) {
-                return $this->sendError("Your query matches no station");
-            }
-
-            $station = HomeController::setHome(user: auth()->user(), station: $station);
-
-            return $this->sendResponse(
-                data: new StationResource($station),
-            );
-        } catch (HafasException) {
-            return $this->sendError("There has been an error with our data provider", 502);
-        } catch (ModelNotFoundException) {
-            return $this->sendError("Your query matches no station");
-        }
-    }
-
 
     /**
      * @OA\Put(

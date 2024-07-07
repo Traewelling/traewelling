@@ -1,7 +1,7 @@
 <div class="card mb-4">
     <div class="card-header">{{__('stationboard.where-are-you')}}</div>
     <div class="card-body">
-        <form action="{{ route('trains.stationboard') }}" method="get" id="autocomplete-form">
+        <form action="{{ route('stationboard') }}" method="get" id="autocomplete-form">
             @isset(request()->when)
                 <input type="hidden" name="when" value="{{request()->when}}"/>
             @endisset
@@ -42,7 +42,7 @@
             </div>
             <div class="list-group collapse" id="last-stations">
                 @if(auth()->user()->home)
-                    <a href="{{ route('trains.stationboard', ['stationId' => auth()->user()->home->id ]) }}"
+                    <a href="{{ route('stationboard', ['stationId' => auth()->user()->home->id, 'stationName' => auth()->user()->home->name ]) }}"
                        title="{{ auth()->user()->home->name }}" id="home-button"
                        class="list-group-item list-group-item-action">
                         <i class="fa fa-home mr-2"></i> {{ auth()->user()->home->name }}
@@ -54,7 +54,7 @@
                         class="list-group-item title list-group-item-action disabled">{{__('stationboard.last-stations')}}</span>
                 @endif
                 @foreach($latest as $station)
-                    <a href="{{ route('trains.stationboard', ['stationId' => $station->id ]) }}"
+                    <a href="{{ route('stationboard', ['stationId' => $station->id, 'stationName' => $station->name ]) }}"
                        title="{{ $station->name }}" id="home-button"
                        class="list-group-item list-group-item-action">
                         {{ $station->name }}

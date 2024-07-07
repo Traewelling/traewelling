@@ -86,10 +86,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::group(['prefix' => 'trains', 'middleware' => ['scope:write-statuses']], static function() { //TODO: rename from "trains" -> we have more then trains...
             Route::get('trip', [TransportController::class, 'getTrip']);
             Route::post('trip', [TripController::class, 'createTrip']);
-            Route::post('checkin', [TransportController::class, 'create']);
+            Route::post('checkin', [TransportController::class, 'create'])->name('checkin');
             Route::group(['prefix' => 'station'], static function() {
-                Route::get('{name}/departures', [TransportController::class, 'getLegacyDepartures']); //ToDo: Remove this endpoint after 2024-06 (replaced by id)
-                Route::put('{name}/home', [TransportController::class, 'setHomeLegacy']);             //ToDo: Remove this endpoint after 2024-06 (replaced by id)
                 Route::get('nearby', [TransportController::class, 'getNextStationByCoordinates']);
                 Route::get('autocomplete/{query}', [TransportController::class, 'getTrainStationAutocomplete']);
                 Route::get('history', [TransportController::class, 'getTrainStationHistory']);

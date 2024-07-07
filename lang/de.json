@@ -488,6 +488,7 @@
     "transport_types.suburban": "S-Bahn",
     "transport_types.subway": "U-Bahn",
     "transport_types.tram": "Tram",
+    "transport_types.plane": "Flugzeug",
     "stats": "Statistiken",
     "stats.range": "Zeitspanne",
     "stats.range.days": "Letzte :days Tage",

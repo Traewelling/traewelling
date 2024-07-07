@@ -226,7 +226,7 @@ class FollowController extends Controller
      *              @OA\Property(
      *                  property="userId",
      *                  title="userId",
-     *                  format="int64",
+     *                  format="int",
      *                  description="ID of the to-be-unfollowed user",
      *                  example=1
      *              )
@@ -283,7 +283,7 @@ class FollowController extends Controller
      *     @OA\Property(
      *     property="userId",
      *     title="userId",
-     *     format="int64",
+     *     format="int",
      *     description="ID of the user who sent the follow request",
      *     example=1
      *     )
@@ -336,7 +336,7 @@ class FollowController extends Controller
      *              @OA\Property(
      *                  property="userId",
      *                  title="userId",
-     *                  format="int64",
+     *                  format="int",
      *                  description="ID of the user who sent the follow request",
      *                  example=1
      *              )

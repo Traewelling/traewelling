@@ -37,6 +37,7 @@ export default {
                 {value: "subway", text: "subway"},
                 {value: "tram", text: "tram"},
                 {value: "taxi", text: "taxi"},
+                {value: "plane", text: "plane"},
             ],
         };
     },

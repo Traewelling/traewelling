@@ -258,7 +258,7 @@ export default {
         <template #body v-if="showLineRun">
             <CheckinLineRun
                 :selectedTrain="selectedTrain"
-                :fastCheckinIbnr="fastCheckinIbnr"
+                :fastCheckinId="fastCheckinIbnr"
                 :useInternalIdentifiers="useInternalIdentifiers"
                 v-model:destination="selectedDestination"
             />
