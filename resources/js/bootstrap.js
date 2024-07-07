@@ -1,8 +1,8 @@
 import "lodash";
 import jQuery from "jquery";
 import * as Popper from '@popperjs/core';
-import {Input, Dropdown, Popover, Collapse, Modal, Tooltip, initMDB } from "mdb-ui-kit/js/mdb.es.min";
-initMDB({ Input, Dropdown, Popover, Popper, Collapse, Modal, Tooltip });
+
+// initMDB({Input, Dropdown, Popover, Popper, Collapse, Modal, Tooltip});
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -12,14 +12,16 @@ initMDB({ Input, Dropdown, Popover, Popper, Collapse, Modal, Tooltip });
 document.addEventListener("DOMContentLoaded", function () {
     try {
         window.Popper = Popper;
-        window.$ = window.jQuery = jQuery;
+        window.$      = window.jQuery = jQuery;
 
         import("bootstrap/js/dist/collapse");
         import("bootstrap/js/dist/alert");
         import("bootstrap/js/dist/button");
         import("bootstrap/js/dist/tab");
         import("bootstrap/js/dist/dropdown");
-        //window.mdb = mdb;
+        import("bootstrap/js/dist/modal");
+        import("bootstrap/js/dist/popover");
+        import("bootstrap/js/dist/tooltip");
     } catch (e) {
         throw new Error(e);
     }
