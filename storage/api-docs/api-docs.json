@@ -18,7 +18,7 @@
             "description": "Production Server"
         },
         {
-            "url": "http://localhost:8000/api/v1",
+            "url": "http://localhost:8000/api/v1/api/v1",
             "description": "This instance"
         }
     ],
@@ -1472,7 +1472,7 @@
                     "Settings"
                 ],
                 "summary": "Update the current user's profile settings",
-                "operationId": "1d28c273d1e6e8c15b8655008d0de07f",
+                "operationId": "putProfileSettings",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -3471,11 +3471,14 @@
                     "400": {
                         "description": "Bad request"
                     },
-                    "409": {
-                        "description": "Checkin collision"
-                    },
                     "401": {
                         "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "409": {
+                        "description": "Checkin collision"
                     }
                 },
                 "security": [
@@ -3659,7 +3662,7 @@
                         "description": "ID of the user (or string 'self' for current user)",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -3695,7 +3698,7 @@
                         "description": "ID of the user (or string 'self' for current user) who want's to trust.",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -3760,7 +3763,7 @@
                         "description": "ID of the user (or string 'self' for current user)",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     },
                     {
@@ -4699,6 +4702,7 @@
             },
             "TravelType": {
                 "title": "travelType",
+                "description": "When adding a new travel type, make sure to add it to the translation file as well.",
                 "type": "string",
                 "enum": [
                     "express",
@@ -6142,9 +6146,9 @@
                 "scheme": "https",
                 "flows": {
                     "authorizationCode": {
-                        "authorizationUrl": "http://localhost:8000/oauth/authorize",
-                        "tokenUrl": "http://localhost:8000/oauth/token",
-                        "refreshUrl": "http://localhost:8000/auth/refresh",
+                        "authorizationUrl": "http://localhost:8000/api/v1/oauth/authorize",
+                        "tokenUrl": "http://localhost:8000/api/v1/oauth/token",
+                        "refreshUrl": "http://localhost:8000/api/v1/auth/refresh",
                         "scopes": {
                             "read-statuses": "see all statuses",
                             "read-notifications": "see your notifications",
