@@ -21,7 +21,7 @@ class TrustedUserController extends Controller
      *     summary="Get all trusted users for a user",
      *     description="Get all trusted users for the current user or a specific user (admin only).",
      *     tags={"User"},
-     *     @OA\Parameter(name="user", in="path", required=true, description="ID of the user (or string 'self' for current user)", @OA\Schema(type="integer")),
+     *     @OA\Parameter(name="user", in="path", required=true, description="ID of the user (or string 'self' for current user)", @OA\Schema(type="string")),
      *     @OA\Response(response="200", description="List of trusted users"),
      *     @OA\Response(response="401", description="Unauthorized"),
      *     @OA\Response(response="403", description="Forbidden"),
