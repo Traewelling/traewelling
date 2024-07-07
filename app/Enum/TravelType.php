@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Enum;
 
 /**
+ * When adding a new travel type, make sure to add it to the translation file as well.
+ *
  * @todo Mit HafasTravelType abgleichen - warum wird dieses Enum hier für HAFAS Requests genutzt und nicht das HafasTravelType?
  *
  * @OA\Schema(
