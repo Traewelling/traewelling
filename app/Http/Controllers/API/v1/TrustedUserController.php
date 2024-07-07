@@ -43,7 +43,7 @@ class TrustedUserController extends Controller
      *     summary="Add a user to the trusted users for a user",
      *     description="Add a user to the trusted users for the current user or a specific user (admin only).",
      *     tags={"User"},
-     *     @OA\Parameter(name="user", in="path", required=true, description="ID of the user (or string 'self' for current user) who want's to trust.", @OA\Schema(type="integer")),
+     *     @OA\Parameter(name="user", in="path", required=true, description="ID of the user (or string 'self' for current user) who want's to trust.", @OA\Schema(type="string")),
      *     @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(
