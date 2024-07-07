@@ -2,6 +2,7 @@
 
 namespace Feature\Transport;
 
+use App\Dto\Internal\CheckInRequestDto;
 use App\Enum\HafasTravelType;
 use App\Enum\TripSource;
 use App\Http\Controllers\Backend\Transport\ManualTripCreator;
@@ -74,18 +75,18 @@ class ManualTripCreatorTest extends FeatureTestCase
 
         /**** Checkin ****/
 
-        $checkin = TrainCheckinController::checkin(
-            user:        User::factory()->create(),
-            trip:        $trip,
-            origin:      $originStation,
-            departure:   $departure,
-            destination: $destinationStation,
-            arrival:     $arrival
-        );
+        $dto = new CheckInRequestDto();
+        $dto->setUser(User::factory()->create())
+            ->setTrip($trip)
+            ->setOrigin($originStation)
+            ->setDeparture($departure)
+            ->setDestination($destinationStation)
+            ->setArrival($arrival);
+        $checkin = TrainCheckinController::checkin($dto);
 
         $this->assertDatabaseHas('train_checkins', [
             'trip_id' => $trip->trip_id,
-            'user_id' => $checkin['status']->checkin->user_id,
+            'user_id' => $checkin->status->checkin->user_id,
         ]);
     }
 }
