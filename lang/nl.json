@@ -812,5 +812,6 @@
     "action.error": "Deze actie kan niet worden uitgevoerd - probeer het later opnieuw.",
     "action.like": "Vind-ik-leukstatus",
     "action.dislike": "Vind-ik-niet-leukstatus",
-    "action.set-home": "Mijn station instellen"
+    "action.set-home": "Mijn station instellen",
+    "transport_types.plane": "Vliegtuig"
 }
