@@ -8,17 +8,18 @@ import {DateTime} from "luxon";
 import {useUserStore} from "../stores/user";
 import AutocompleteListEntry from "./Checkin/AutocompleteListEntry.vue";
 import Spinner from "./Spinner.vue";
+import LineIndicator from "./LineIndicator.vue";
+import ActiveStatusCard from "./ActiveStatusCard.vue";
 
 export default {
     setup() {
         const userStore = useUserStore();
         userStore.fetchSettings();
-
         return {userStore};
     },
     name: "StationAutocomplete",
     emits: ["update:station", "update:time", "update:travelType"],
-    components: {Spinner, AutocompleteListEntry, FullScreenModal, VueDatePicker},
+    components: {ActiveStatusCard, LineIndicator, Spinner, AutocompleteListEntry, FullScreenModal, VueDatePicker},
     props: {
         station: {
             type: Object,
@@ -83,7 +84,6 @@ export default {
         setHome() {
             if (!this.isHome) {
                 this.userStore.setHome(this.station).catch((error) => {
-                    console.error(error);
                     window.notyf.error(trans('action.error') + " (" + trans('action.set-home') + ")");
                 })
             }
@@ -319,6 +319,7 @@ export default {
         </div>
     </div>
 
+    <ActiveStatusCard v-if="userStore.hasBeta" />
 </template>
 
 <style lang="scss" scoped>

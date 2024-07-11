@@ -39,6 +39,7 @@
     "settings.connect": "Connecter",
     "notifications.userJoinedConnection.lead": "<b>@:username</b> est également sur ton trajet !",
     "transport_types.ferry": "ferry",
+    "transport_types.plane": "avion",
     "leaderboard.distance": "Distance",
     "controller.user.follow-404": "Cet abonnement n’existe pas.",
     "controller.transport.social-post-for": "pour #:hashtag",

@@ -126,7 +126,7 @@
                                             <a class="btn btn-outline-primary btn-sm" href="{{ route('admin.trip', [
     'tripId' => $departure->tripId,
     'lineName' => $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr,
-    'startIBNR' => $departure->stop->id,
+    'start' => $departure->stop->id,
     'departure' => $departure->plannedWhen,
     'userId' => $user->id]) }}">
                                                 <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i>
@@ -189,7 +189,7 @@
                                             <a class="btn btn-outline-primary btn-sm" href="{{ route('admin.trip', [
     'tripId' => rawurlencode($departure->tripId),
     'lineName' => $departure->line->name != null ? $departure->line->name : $departure->line->fahrtNr,
-    'startIBNR' => $departure->stop->id,
+    'start' => $departure->stop->id,
     'departure' => $departure->plannedWhen,
     'userId' => $user->id]) }}">
                                                 <i class="fas fa-arrow-alt-circle-right" aria-hidden="true"></i>

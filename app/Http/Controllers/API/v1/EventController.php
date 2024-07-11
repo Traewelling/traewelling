@@ -159,6 +159,7 @@ class EventController extends Controller
     /**
      * @OA\Get(
      *      path="/events",
+     *      operationId="getEvents",
      *      tags={"Events"},
      *      summary="[Auth optional] Show active or upcoming events for the given timestamp",
      *      description="Returns all active or upcoming events for the given timestamp. Default timestamp is now. If upcoming is set to true, all events ending after the timestamp are returned.",
@@ -275,6 +276,7 @@ class EventController extends Controller
     /**
      * @OA\Get(
      *      path="/activeEvents",
+     *      operationId="getActiveEvents",
      *      tags={"Events"},
      *      summary="DEPRECATED - USE /events - removed after 2024-08",
      *      description="DEPRECATED - USE /events - removed after 2024-08",

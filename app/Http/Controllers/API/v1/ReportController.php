@@ -19,6 +19,7 @@ class ReportController extends Controller
     /**
      * @OA\Post(
      *      path="/report",
+     *      operationId="report",
      *      summary="Report a Status, Event or User to the admins.",
      *      tags={"User", "Status", "Events"},
      *      security={{"passport": {}}, {"token": {}}},

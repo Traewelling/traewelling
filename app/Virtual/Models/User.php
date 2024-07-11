@@ -18,7 +18,7 @@ class User
      * @OA\Property(
      *     title="ID",
      *     description="ID",
-     *     format="int64",
+     *     format="int",
      *     example=1
      * )
      *
@@ -63,7 +63,7 @@ class User
      * @OA\Property(
      *     title="trainDistance",
      *     description="distance travelled by train in meters",
-     *     format="int64",
+     *     format="int",
      *     example=12345
      * )
      *
@@ -75,7 +75,7 @@ class User
      * @OA\Property(
      *     title="trainDuration",
      *     description="duration travelled by train in minutes",
-     *     format="int64",
+     *     format="int",
      *     example=6
      * )
      *
@@ -87,7 +87,7 @@ class User
      * @OA\Property(
      *     title="points",
      *     description="Current points of the last 7 days",
-     *     format="int64",
+     *     format="int",
      *     example=300
      * )
      *

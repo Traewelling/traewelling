@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Dto\Internal\CheckInRequestDto;
 use App\Enum\StatusTagKey;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Models\Event;
@@ -17,16 +18,18 @@ class CheckinSeeder extends Seeder
     public function run(): void {
         foreach (User::all() as $user) {
             $trip = Trip::all()->random();
+
+            $dto = new CheckInRequestDto();
+            $dto->setUser($user)
+                ->setTrip($trip)
+                ->setOrigin($trip->originStation)//Checkin from the first station...
+                ->setDeparture($trip->departure)
+                ->setDestination($trip->destinationStation)//...to the last station
+                ->setArrival($trip->arrival)
+                ->setEvent(random_int(0, 1) ? Event::all()->random() : null);
+
             try {
-                $checkinResponse = TrainCheckinController::checkin(
-                    user:        $user,
-                    trip:        $trip,
-                    origin:      $trip->originStation,      //Checkin from the first station...
-                    departure:   $trip->departure,
-                    destination: $trip->destinationStation, //...to the last station
-                    arrival:     $trip->arrival,
-                    event:       random_int(0, 1) ? Event::all()->random() : null,
-                );
+                $checkinResponse = TrainCheckinController::checkin($dto);
                 $status          = $checkinResponse['status'];
                 StatusTag::factory(['status_id' => $status->id])->create();
             } catch (Exception) {

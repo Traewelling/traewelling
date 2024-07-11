@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Dto\Internal\CheckinSuccessDto;
 use App\Dto\Transport\Station as StationDto;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
@@ -16,9 +17,11 @@ use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Http\Resources\CheckinSuccessResource;
 use App\Http\Resources\StationResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\TripResource;
+use App\Hydrators\CheckinRequestHydrator;
 use App\Models\Event;
 use App\Models\Station;
 use Carbon\Carbon;
@@ -32,38 +35,6 @@ use Illuminate\Validation\Rules\Enum;
 
 class TransportController extends Controller
 {
-    /**
-     * @see All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a space (%20)
-     */
-    public function getLegacyDepartures(Request $request, string $name): JsonResponse { //TODO: remove endpoint after 2024-06
-        $validated = $request->validate([
-                                            'when'       => ['nullable', 'date'],
-                                            'travelType' => ['nullable', new Enum(TravelType::class)],
-                                        ]);
-
-        try {
-            $trainStationboardResponse = TransportBackend::getDepartures(
-                stationQuery: $name,
-                when:         isset($validated['when']) ? Carbon::parse($validated['when']) : null,
-                travelType:   TravelType::tryFrom($validated['travelType'] ?? null),
-                localtime:    isset($validated['when']) && !preg_match('(\+|Z)', $validated['when'])
-            );
-        } catch (HafasException) {
-            return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 502);
-        } catch (ModelNotFoundException) {
-            return $this->sendError(__('controller.transport.no-station-found', [], 'en'));
-        } catch (Exception $exception) {
-            report($exception);
-            return $this->sendError('An unknown error occurred.', 500);
-        }
-        return $this->sendResponse(
-            data:       $trainStationboardResponse['departures'],
-            additional: ["meta" => ['station' => StationDto::fromModel($trainStationboardResponse['station']),
-                                    'times'   => $trainStationboardResponse['times'],
-                        ]]
-        );
-    }
-
     /**
      * @param Request $request
      * @param int     $stationId
@@ -248,16 +219,16 @@ class TransportController extends Controller
      *          description="successful operation",
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="id", type="int64", example=1),
+     *                  @OA\Property(property="id", type="int", example=1),
      *                  @OA\Property(property="category", ref="#/components/schemas/HafasTravelType"),
      *                  @OA\Property(property="number", type="string", example="4-a6s4-4"),
      *                  @OA\Property(property="lineName", type="string", example="S 4"),
-     *                  @OA\Property(property="journeyNumber", type="int64", example="34427"),
+     *                  @OA\Property(property="journeyNumber", type="int", example="34427"),
      *                  @OA\Property(property="origin", ref="#/components/schemas/Station"),
      *                  @OA\Property(property="destination", ref="#/components/schemas/Station"),
      *                  @OA\Property(property="stopovers", type="array",
      *                      @OA\Items(
-     *                          ref="#/components/schemas/Stopover"
+     *                          ref="#/components/schemas/StopoverResource"
      *                      )
      *                  ),
      *              )
@@ -371,7 +342,7 @@ class TransportController extends Controller
      *      @OA\Response(
      *          response=201,
      *          description="successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/CheckinResponse")
+     *          @OA\JsonContent(ref="#/components/schemas/CheckinSuccessResource")
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=409, description="Checkin collision"),
@@ -385,7 +356,6 @@ class TransportController extends Controller
      * @param Request $request
      *
      * @return JsonResponse
-     * @throws NotConnectedException
      */
     public function create(Request $request): JsonResponse {
         $validated = $request->validate([
@@ -406,41 +376,10 @@ class TransportController extends Controller
                                         ]);
 
         try {
-            $searchKey          = empty($validated['ibnr']) ? 'id' : 'ibnr';
-            $originStation      = Station::where($searchKey, $validated['start'])->first();
-            $destinationStation = Station::where($searchKey, $validated['destination'])->first();
+            $checkinResponse = TrainCheckinController::checkin((new CheckinRequestHydrator($validated))->hydrateFromApi());
 
-            $checkinResponse           = TrainCheckinController::checkin(
-                user:           Auth::user(),
-                trip:           HafasController::getHafasTrip($validated['tripId'], $validated['lineName']),
-                origin:         $originStation,
-                departure:      Carbon::parse($validated['departure']),
-                destination:    $destinationStation,
-                arrival:        Carbon::parse($validated['arrival']),
-                travelReason:   Business::tryFrom($validated['business'] ?? Business::PRIVATE->value),
-                visibility:     StatusVisibility::tryFrom($validated['visibility'] ?? StatusVisibility::PUBLIC->value),
-                body:           $validated['body'] ?? null,
-                event:          isset($validated['eventId']) ? Event::find($validated['eventId']) : null,
-                force:          isset($validated['force']) && $validated['force'],
-                postOnMastodon: isset($validated['toot']) && $validated['toot'],
-                shouldChain:    isset($validated['chainPost']) && $validated['chainPost']
-            );
-            $checkinResponse['status'] = new StatusResource($checkinResponse['status']);
-
-            //Rewrite ['points'] so the DTO will match the documented structure -> non-breaking api change
-            $pointsCalculation         = $checkinResponse['points'];
-            $checkinResponse['points'] = [
-                'points'      => $pointsCalculation->points,
-                'calculation' => [
-                    'base'     => $pointsCalculation->basePoints,
-                    'distance' => $pointsCalculation->distancePoints,
-                    'factor'   => $pointsCalculation->factor,
-                    'reason'   => $pointsCalculation->reason->value,
-                ],
-                'additional'  => null, //unused old attribute (not removed so this isn't breaking)
-            ];
-
-            return $this->sendResponse($checkinResponse, 201); //ToDo: Check if documented structure has changed
+            //ToDo: Check if documented structure has changed
+            return $this->sendResponse(new CheckinSuccessResource($checkinResponse), 201);
         } catch (CheckInCollisionException $exception) {
             return $this->sendError([
                                         'status_id' => $exception->checkin->status_id,
@@ -455,33 +394,6 @@ class TransportController extends Controller
             return $this->sendError(__('messages.exception.already-checkedin', [], 'en'), 400);
         }
     }
-
-    /**
-     * @param string $stationName
-     *
-     * @return JsonResponse
-     * @see        All slashes (as well as encoded to %2F) in $name need to be replaced, preferrably by a space (%20)
-     * @deprecated Replaced by setHome (with "ID" instead of StationName and without "trains" in the path)
-     */
-    public function setHomeLegacy(string $stationName): JsonResponse { //ToDo: Remove this endpoint after 2024-06 (replaced by id)
-        try {
-            $station = HafasController::getStations(query: $stationName, results: 1)->first();
-            if ($station === null) {
-                return $this->sendError("Your query matches no station");
-            }
-
-            $station = HomeController::setHome(user: auth()->user(), station: $station);
-
-            return $this->sendResponse(
-                data: new StationResource($station),
-            );
-        } catch (HafasException) {
-            return $this->sendError("There has been an error with our data provider", 502);
-        } catch (ModelNotFoundException) {
-            return $this->sendError("Your query matches no station");
-        }
-    }
-
 
     /**
      * @OA\Put(

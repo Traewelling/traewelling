@@ -203,7 +203,7 @@ class UserController extends Controller
      *              @OA\Property(
      *                  property="userId",
      *                  title="userId",
-     *                  format="int64",
+     *                  format="int",
      *                  description="ID of the to-be-blocked user",
      *                  example=1
      *              )
@@ -267,7 +267,7 @@ class UserController extends Controller
      *              @OA\Property(
      *                  property="userId",
      *                  title="userId",
-     *                  format="int64",
+     *                  format="int",
      *                  description="ID of the to-be-unblocked user",
      *                  example=1
      *              )

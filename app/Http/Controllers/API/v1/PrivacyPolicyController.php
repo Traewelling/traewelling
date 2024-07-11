@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Exceptions\AlreadyAcceptedException;
-use App\Http\Controllers\Backend\PrivacyPolicyController as PrivacyBackend;
 use App\Http\Resources\PrivacyPolicyResource;
+use App\Services\PrivacyPolicyService;
 use Illuminate\Http\JsonResponse;
 
 class PrivacyPolicyController extends Controller
@@ -33,12 +33,13 @@ class PrivacyPolicyController extends Controller
      * @return PrivacyPolicyResource
      */
     public function getPrivacyPolicy(): PrivacyPolicyResource {
-        return new PrivacyPolicyResource(PrivacyBackend::getCurrentPrivacyPolicy());
+        return new PrivacyPolicyResource(PrivacyPolicyService::getCurrentPrivacyPolicy());
     }
 
     /**
      * @OA\Post(
      *     path="/settings/acceptPrivacy",
+     *     operationId="acceptPrivacyPolicy",
      *     tags={"Settings"},
      *     summary="Accept the current privacy policy",
      *     description="Accept the current privacy policy",
@@ -54,7 +55,7 @@ class PrivacyPolicyController extends Controller
      */
     public function acceptPrivacyPolicy(): JsonResponse {
         try {
-            PrivacyBackend::acceptPrivacyPolicy(user: auth()->user());
+            PrivacyPolicyService::acceptPrivacyPolicy(user: auth()->user());
         } catch (AlreadyAcceptedException $exception) {
             $error = strtr("User already accepted privacy policy (valid from ptime) at utime", [
                 'ptime' => $exception->getPrivacyValidity(),

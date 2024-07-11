@@ -13,7 +13,8 @@
                         <input type="hidden" name="lineName" value="{{ $hafasTrip['linename'] }}"/>
                         <input type="hidden" id="input-destination" name="destination"
                                value="{{ $hafasTrip['destination'] }}"/>
-                        <input type="hidden" name="startIBNR" value="{{request()->startIBNR}}"/>
+                        <input type="hidden" name="start" value="{{request()->start}}"/>
+                        <input type="hidden" name="ibnr" value="on"/>
                         <input type="hidden" name="departure" value="{{request()->departure}}"/>
                         <input type="hidden" name="userId" value="{{$user->id}}"/>
 
@@ -22,6 +23,7 @@
                                 <div class="form-floating mb-2">
                                     <select class="form-select" name="destinationStopover" required>
                                         <option selected value="">Open this select menu</option>
+                                        @php /** @var \App\Models\Stopover $stopover */ @endphp
                                         @foreach($stopovers as $stopover)
                                             @if($stopover->arrival_planned->isBefore(\Carbon\Carbon::parse(request()->departure)))
                                                 @continue
@@ -103,7 +105,7 @@
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="shouldChain_check"
-                                           name="shouldChain_check" {{$user->mastodonUrl && \App\Http\Controllers\Backend\Social\MastodonController::getLastSavedPostIdFromUserStatuses($user) ? '' : 'disabled'}}>
+                                           name="chainPost" {{$user->mastodonUrl && \App\Http\Controllers\Backend\Social\MastodonController::getLastSavedPostIdFromUserStatuses($user) ? '' : 'disabled'}}>
                                     <label class="form-check-label" for="shouldChain_check">
                                         Toot Chaining
                                     </label>
