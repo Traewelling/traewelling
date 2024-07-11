@@ -15,7 +15,6 @@ export default {
     setup() {
         const userStore = useUserStore();
         userStore.fetchSettings();
-        console.log(userStore.getRoles);
         return {userStore};
     },
     name: "StationAutocomplete",
@@ -85,7 +84,6 @@ export default {
         setHome() {
             if (!this.isHome) {
                 this.userStore.setHome(this.station).catch((error) => {
-                    console.error(error);
                     window.notyf.error(trans('action.error') + " (" + trans('action.set-home') + ")");
                 })
             }

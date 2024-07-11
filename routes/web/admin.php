@@ -38,6 +38,8 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
                  ->name('admin.users');
             Route::get('/{id}', [UserController::class, 'renderUser'])
                  ->name('admin.users.user');
+            Route::post('/', [UserController::class, 'updateRoles'])
+                 ->name('admin.users.update-roles');
             Route::post('/update-mail', [UserController::class, 'updateMail'])
                  ->name('admin.users.update-mail');
         });

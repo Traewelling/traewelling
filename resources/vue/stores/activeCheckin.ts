@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
-import {StatusResource, StatusTag, StopoverResource} from "../../types/Api";
+import {StatusResource, StopoverResource} from "../../types/Api";
 
-export const useActiveCheckin = defineStore('activeStatus', {
+export const useActiveCheckin = defineStore("activeStatus", {
     // because of the persist option. This option is defined in the pinia persisted state plugin
     // @types-ignore
     persist: true,
@@ -20,7 +20,7 @@ export const useActiveCheckin = defineStore('activeStatus', {
             this.stopovers = null;
         },
         async fetchStopovers(trip: number): Promise<void> {
-            await fetch('/api/v1/stopovers/' + trip)
+            await fetch("/api/v1/stopovers/" + trip)
                 .then((response: { json: () => any; }) => response.json())
                 .then((data: { data: any; }) => {
                     if (data.data.hasOwnProperty(trip)) {
@@ -43,9 +43,14 @@ export const useActiveCheckin = defineStore('activeStatus', {
             }
             this.loading = true;
             try {
-                this.status = await fetch('/api/v1/user/statuses/active')
+                this.status = await fetch("/api/v1/user/statuses/active")
                     .then((response: { json: () => any; }) => response.json())
-                    .then((data: { data: any; }) => data.data);
+                    .then((data: { data: any; }) => {
+                        if (data.data.id) {
+                            return data.data;
+                        }
+                        return null;
+                    });
                 if (this.status?.train?.trip) {
                     await this.fetchStopovers(this.status.train.trip);
                 }
