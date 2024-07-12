@@ -13,7 +13,7 @@ class TripObserver
 {
     public function created(Trip $trip): void {
         // check if trip is out of allowed types and create an admin report if so
-        (new ReportService())->checkAndReport(
+        ReportService::checkAndReport(
             $trip->linename,
             ReportableSubject::TRIP,
             $trip->id

@@ -9,20 +9,15 @@ use App\Enum\Report\ReportReason;
 use App\Repositories\ReportRepository;
 use Illuminate\Support\Facades\Log;
 
-class ReportService
+abstract class ReportService
 {
-    private ReportRepository $reportRepository;
-    private array            $triggerWords;
+    private const array TRIGGER_WORDS = ['auto', 'fuss', 'fuß', 'fahrrad', 'foot', 'car', 'bike'];
 
-    public function __construct(?array $triggerWords = null, ?ReportRepository $reportRepository = null) {
-        $this->reportRepository = $reportRepository ?? new ReportRepository();
-        $this->triggerWords     = $triggerWords ?? ['auto', 'fuss', 'fuß', 'fahrrad', 'foot', 'car', 'bike'];
-    }
 
-    public function checkString(string $haystack): array {
+    public static function checkString(string $haystack): array {
         $matches = [];
 
-        foreach ($this->triggerWords as $triggerWord) {
+        foreach (self::TRIGGER_WORDS as $triggerWord) {
             if (str_contains(strtolower($haystack), $triggerWord)) {
                 $matches[] = $triggerWord;
             }
@@ -31,13 +26,13 @@ class ReportService
         return $matches;
     }
 
-    public function checkAndReport(string $haystack, ReportableSubject $subjectType, int $subjectId): void {
-        $matches = $this->checkString($haystack);
+    public static function checkAndReport(string $haystack, ReportableSubject $subjectType, int $subjectId): void {
+        $matches = self::checkString($haystack);
 
         $info = sprintf('Automatically reported: The %s is inappropriate because it contains the words "%s".', $subjectType->value, implode('", "', $matches));
         Log::info($info);
 
-        $this->reportRepository->createReport(
+        (new ReportRepository())->createReport(
             subjectType: $subjectType,
             subjectId:   $subjectId,
             reason:      ReportReason::INAPPROPRIATE,

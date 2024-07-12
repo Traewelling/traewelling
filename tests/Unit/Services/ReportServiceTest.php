@@ -12,8 +12,7 @@ class ReportServiceTest extends UnitTestCase
      * @dataProvider testCheckStringProvider
      */
     public function testCheckString(array $expected, string $haystack): void {
-        $reportService = new ReportService();
-        $result = $reportService->checkString($haystack);
+        $result = ReportService::checkString($haystack);
         // Sort result
         sort($result);
         sort($expected);
