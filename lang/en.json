@@ -792,7 +792,7 @@
     "trip_creation.limitations.3": "The trip is created public - so if you check in to a trip, everyone who can see your status can also check in to this trip.",
     "trip_creation.limitations.4": "The operator can't be set in this form (possible via API)",
     "trip_creation.limitations.5": "There are no visible error messages for this form. So, if nothing happens on submit... sorry. There is an error.",
-    "trip_creation.limitations.6": "Only the selectable types of trips are permitted (i.e. trips by car, bicycle, on foot, etc. are not permitted and may be deleted).",
+    "trip_creation.limitations.6": "Only the selectable types of trips are allowed (i.e. trips by car, bicycle, on foot, etc. are not permitted and may be deleted).",
     "action.error": "This action could not be executed. Please try again later.",
     "action.like": "Like status",
     "action.dislike": "Dislike status",
