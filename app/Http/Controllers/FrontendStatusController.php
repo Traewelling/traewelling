@@ -24,25 +24,11 @@ class FrontendStatusController extends Controller
     public function getDashboard(): Renderable|RedirectResponse {
         $statuses = DashboardController::getPrivateDashboard(auth()->user());
 
-        if ($statuses->isEmpty() || auth()->user()->follows->count() === 0) {
-            if (Session::has('checkin-success')) {
-                return redirect()->route('globaldashboard')
-                                 ->with('checkin-success', Session::get('checkin-success'));
-            }
-            if (Session::has('error')) {
-                return redirect()->route('globaldashboard')
-                                 ->with('error', Session::get('error'));
-            }
-            if (Session::has('checkin-collision')) {
-                return redirect()->route('globaldashboard')
-                                 ->with('checkin-collision', Session::get('checkin-collision'));
-            }
-            return redirect()->route('globaldashboard');
-        }
         return view('dashboard', [
             'statuses' => $statuses,
             'latest'   => StationController::getLatestArrivals(auth()->user()),
-            'future'   => StatusBackend::getFutureCheckins()
+            'future'   => StatusBackend::getFutureCheckins(),
+            'showGlobalButton' => auth()->user()->follows->count() === 0
         ]);
     }
 
@@ -50,7 +36,8 @@ class FrontendStatusController extends Controller
         return view('dashboard', [
             'statuses' => DashboardController::getGlobalDashboard(Auth::user()),
             'latest'   => StationController::getLatestArrivals(Auth::user()),
-            'future'   => StatusBackend::getFutureCheckins()
+            'future'   => StatusBackend::getFutureCheckins(),
+            'showGlobalButton' => false
         ]);
     }
 
