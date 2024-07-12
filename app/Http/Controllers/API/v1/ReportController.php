@@ -6,7 +6,7 @@ use App\Enum\Report\ReportableSubject;
 use App\Enum\Report\ReportReason;
 use App\Enum\Report\ReportStatus;
 use App\Models\Report;
-use App\Services\ReportService;
+use App\Repositories\ReportRepository;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -49,7 +49,7 @@ class ReportController extends Controller
                                             'description'  => ['nullable', 'string'],
                                         ]);
 
-        ReportService::createReport(
+        (new ReportRepository())->createReport(
             subjectType: ReportableSubject::fromValue($validated['subject_type']),
             subjectId:   $validated['subject_id'],
             reason:      ReportReason::fromValue($validated['reason']),

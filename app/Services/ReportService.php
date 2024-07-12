@@ -1,29 +1,47 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Services;
 
 use App\Enum\Report\ReportableSubject;
 use App\Enum\Report\ReportReason;
-use App\Models\Report;
-use App\Models\User;
+use App\Repositories\ReportRepository;
+use Illuminate\Support\Facades\Log;
 
-abstract class ReportService
+class ReportService
 {
+    private ReportRepository $reportRepository;
+    private array            $triggerWords;
 
-    public static function createReport(
-        ReportableSubject $subjectType,
-        string|int        $subjectId,
-        ReportReason      $reason,
-        ?string           $description = null,
-        User              $reporter = null,
-    ): void {
-        Report::create([
-                           'subject_type' => 'App\\Models\\' . $subjectType->value,
-                           'subject_id'   => $subjectId,
-                           'reason'       => $reason->value,
-                           'description'  => $description ?? null,
-                           'reporter_id'  => $reporter?->id,
-                       ]);
+    public function __construct(?array $triggerWords = null, ?ReportRepository $reportRepository = null) {
+        $this->reportRepository = $reportRepository ?? new ReportRepository();
+        $this->triggerWords     = $triggerWords ?? ['auto', 'fuss', 'fuß', 'fahrrad', 'foot', 'car', 'bike'];
     }
 
+    public function checkString(string $haystack): array {
+        $matches = [];
+
+        foreach ($this->triggerWords as $triggerWord) {
+            if (str_contains(strtolower($haystack), $triggerWord)) {
+                $matches[] = $triggerWord;
+            }
+        }
+
+        return $matches;
+    }
+
+    public function checkAndReport(string $haystack, ReportableSubject $subjectType, int $subjectId): void {
+        $matches = $this->checkString($haystack);
+
+        $info = sprintf('Automatically reported: The %s is inappropriate because it contains the words "%s".', $subjectType->value, implode('", "', $matches));
+        Log::info($info);
+
+        $this->reportRepository->createReport(
+            subjectType: $subjectType,
+            subjectId:   $subjectId,
+            reason:      ReportReason::INAPPROPRIATE,
+            description: $info,
+        );
+    }
 }
