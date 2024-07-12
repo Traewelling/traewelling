@@ -40,7 +40,7 @@
                 <div class="links">
                     <a href="{{ url('/login') }}">{{__('menu.login')}}</a>
                     <a href="{{ url('/leaderboard') }}">{{__('menu.leaderboard')}}</a>
-                    <a href="{{ route('static.about') }}">{{ __('menu.about')}}</a>
+                    <a href="https://help.traewelling.de/faq/" target="_blank">{{ __('menu.about')}}</a>
                     <a href="{{ url('/statuses/active') }}">{{__('menu.active')}}</a>
                 </div>
             </div>

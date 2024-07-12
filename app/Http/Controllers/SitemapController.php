@@ -40,7 +40,6 @@ class SitemapController extends Controller
     }
 
     private function addStatic(Sitemap $sitemap): void {
-        $sitemap->add(Url::create(route('static.about'))->setPriority(0.7));
         $sitemap->add(Url::create(route('leaderboard'))->setPriority(0.7));
         $sitemap->add(Url::create(route('statuses.active'))->setPriority(0.6));
 
