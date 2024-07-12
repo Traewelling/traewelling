@@ -792,6 +792,7 @@
     "trip_creation.limitations.3": "Der Trip wird öffentlich erstellt - wenn du also eincheckst, kann jeder, der deinen Status sehen kann, ebenfalls in diesen Trip einchecken.",
     "trip_creation.limitations.4": "Der Betreiber kann in diesem Formular nicht festgelegt werden (über API möglich)",
     "trip_creation.limitations.5": "Es gibt keine sichtbaren Fehlermeldungen für dieses Formular. Wenn also beim Absenden nichts passiert, liegt irgendwo ein Fehler vor.",
+    "trip_creation.limitations.6": "Es sind nur die auswählbaren Arten von Fahrten erwünscht (das heißt: Fahrten mit Auto, Fahrrad, zu Fuß, etc. sind nicht erlaubt und werden gelöscht)",
     "action.error": "Diese Aktion konnte leider nicht ausgeführt werden. Bitte versuche es später noch einmal.",
     "action.like": "Status liken",
     "action.dislike": "Status nicht mehr liken",

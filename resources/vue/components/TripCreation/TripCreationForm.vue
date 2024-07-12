@@ -216,6 +216,8 @@ export default {
                 <li>{{ trans("trip_creation.limitations.4") }}</li>
                 <li>{{ trans("trip_creation.limitations.5") }}</li>
             </ul>
+
+            <p class="fw-bold text-danger">{{ trans("trip_creation.limitations.6") }}</p>
         </div>
     </div>
 </template>
