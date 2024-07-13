@@ -16,7 +16,7 @@ class TrustedUserController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/user/{self|userId}/trusted",
+     *     path="/user/{user}/trusted",
      *     operationId="trustedUserIndex",
      *     summary="Get all trusted users for a user",
      *     description="Get all trusted users for the current user or a specific user (admin only).",
