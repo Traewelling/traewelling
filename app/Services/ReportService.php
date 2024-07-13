@@ -34,14 +34,18 @@ class ReportService
     public function checkAndReport(string $haystack, ReportableSubject $subjectType, int $subjectId): void {
         $matches = $this->checkString($haystack);
 
+        if ($matches === []) {
+            return;
+        }
+
         $info = sprintf('Automatically reported: The %s is inappropriate because it contains the words "%s".', $subjectType->value, implode('", "', $matches));
         Log::info($info);
 
         $this->reportRepository->createReport(
-            subjectType: $subjectType,
-            subjectId:   $subjectId,
-            reason:      ReportReason::INAPPROPRIATE,
-            description: $info,
+            $subjectType,
+            $subjectId,
+            ReportReason::INAPPROPRIATE,
+            $info,
         );
     }
 }
