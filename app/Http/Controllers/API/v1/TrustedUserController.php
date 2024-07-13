@@ -38,7 +38,7 @@ class TrustedUserController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/user/{self|userId}/trusted",
+     *     path="/user/{user}/trusted",
      *     operationId="trustedUserStore",
      *     summary="Add a user to the trusted users for a user",
      *     description="Add a user to the trusted users for the current user or a specific user (admin only).",
