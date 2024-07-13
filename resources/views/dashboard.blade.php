@@ -111,6 +111,22 @@
                 @include('includes.statuses', ['statuses' => $statuses, 'showDates' => true])
                 {{ $statuses->links() }}
 
+                @if($showGlobalButton)
+                    <div class="alert alert-info">
+                        <h4 class="alert-heading">
+                            <i class="fa-solid fa-binoculars"></i>
+                            {{ __('dashboard.empty') }}
+                        </h4>
+                        <p>{{ __('dashboard.empty.teaser') }}</p>
+                        <p>{{ __('dashboard.empty.discover1') }}
+                            <a href="{{route('statuses.active')}}">{{ __('menu.active') }}</a>
+                            {{ __('dashboard.empty.discover2') }}
+                            <a href="{{route('globaldashboard') }}">{{ __('menu.globaldashboard') }}</a>
+                            {{ __('dashboard.empty.discover3') }}
+                        </p>
+                    </div>
+                @endif
+
                 @include('includes.edit-modal')
                 @include('includes.delete-modal')
             </div>
