@@ -6,12 +6,11 @@ use App\Enum\Report\ReportableSubject;
 use App\Enum\Report\ReportReason;
 use App\Enum\Report\ReportStatus;
 use App\Models\Report;
+use App\Repositories\ReportRepository;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rules\Enum;
 
 class ReportController extends Controller
@@ -50,25 +49,13 @@ class ReportController extends Controller
                                             'description'  => ['nullable', 'string'],
                                         ]);
 
-        $report = Report::create([
-                                     'subject_type' => 'App\\Models\\' . $validated['subject_type'],
-                                     'subject_id'   => $validated['subject_id'],
-                                     'reason'       => $validated['reason'],
-                                     'description'  => $validated['description'],
-                                     'reporter_id'  => auth()->id(),
-                                 ]);
-
-        if (!App::runningUnitTests() && config('app.admin.notification.url') !== null) {
-            Http::post(config('app.admin.notification.url'), [
-                'chat_id'    => config('app.admin.notification.chat_id'),
-                'text'       => "<b>🚨 New Report for " . $validated['subject_type'] . "</b>" . PHP_EOL
-                                . "Reason: " . $validated['reason'] . PHP_EOL
-                                . "Description: " . ($validated['description'] ?? 'None') . PHP_EOL
-                                . "View Report: " . config('app.url') . "/admin/reports/" . $report->id . PHP_EOL
-                ,
-                'parse_mode' => 'HTML',
-            ]);
-        }
+        (new ReportRepository())->createReport(
+            subjectType: ReportableSubject::fromValue($validated['subject_type']),
+            subjectId:   $validated['subject_id'],
+            reason:      ReportReason::fromValue($validated['reason']),
+            description: $validated['description'],
+            reporter:    auth()->user()
+        );
 
         return response()->noContent(201);
     }
