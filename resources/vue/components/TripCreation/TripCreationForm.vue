@@ -121,7 +121,9 @@ export default {
             this.stopovers[key].arrivalPlanned = DateTime.fromISO(time).setZone(this.destinationTimezone);
         },
         checkDisallowed() {
-            this.showDisallowed = this.disallowed.includes(this.trainTypeInput.toLowerCase());
+            this.showDisallowed = this.disallowed.some((disallowed) => {
+                return this.trainTypeInput.toLowerCase().includes(disallowed);
+            });
         },
     }
 }
