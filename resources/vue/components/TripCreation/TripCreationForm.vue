@@ -199,7 +199,7 @@ export default {
                     <span class="text-danger" v-show="showDisallowed">
                         <i class="fas fa-triangle-exclamation"></i>
                         {{ trans('trip_creation.limitations.6') }}
-                        <a href="https://help.traewelling.de/rules/#manuelle-fahrten" target="_blank">
+                        <a :href="trans('trip_creation.limitations.6.link')" target="_blank">
                             {{ trans('trip_creation.limitations.6.rules') }}
                         </a>
                     </span>
@@ -233,7 +233,7 @@ export default {
 
             <p class="fw-bold text-danger">
                 {{ trans("trip_creation.limitations.6") }}
-                <a href="https://help.traewelling.de/rules/#manuelle-fahrten" target="_blank">
+                <a :href="trans('trip_creation.limitations.6.link')" target="_blank">
                     {{ trans('trip_creation.limitations.6.rules') }}
                 </a>
             </p>
