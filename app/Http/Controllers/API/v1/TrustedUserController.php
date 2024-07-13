@@ -83,7 +83,7 @@ class TrustedUserController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/user/{self|userId}/trusted/{trustedId}",
+     *     path="/user/{user}/trusted/{trustedId}",
      *     operationId="trustedUserDestroy",
      *     summary="Remove a user from the trusted users for a user",
      *     description="Remove a user from the trusted users for the current user or a specific user (admin only).",
