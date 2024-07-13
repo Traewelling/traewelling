@@ -2092,16 +2092,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v10.48.14",
+            "version": "v10.48.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "27cb4736bb7e60a5311ec73160068dfbcf98336b"
+                "reference": "1723e038c9ec99b434e5bed9c27f044bd50a4ffb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/27cb4736bb7e60a5311ec73160068dfbcf98336b",
-                "reference": "27cb4736bb7e60a5311ec73160068dfbcf98336b",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/1723e038c9ec99b434e5bed9c27f044bd50a4ffb",
+                "reference": "1723e038c9ec99b434e5bed9c27f044bd50a4ffb",
                 "shasum": ""
             },
             "require": {
@@ -2295,7 +2295,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-06-21T10:06:42+00:00"
+            "time": "2024-07-02T18:01:24+00:00"
         },
         {
             "name": "laravel/passport",
@@ -5645,22 +5645,21 @@
         },
         {
             "name": "revolution/laravel-mastodon-api",
-            "version": "3.1.2",
+            "version": "3.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kawax/laravel-mastodon-api.git",
-                "reference": "869d646a0c1d4d45706b1dfece7c26d5108069ec"
+                "reference": "bcca2ea44ee553e8b758b4fe265d2abfe1710f11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kawax/laravel-mastodon-api/zipball/869d646a0c1d4d45706b1dfece7c26d5108069ec",
-                "reference": "869d646a0c1d4d45706b1dfece7c26d5108069ec",
+                "url": "https://api.github.com/repos/kawax/laravel-mastodon-api/zipball/bcca2ea44ee553e8b758b4fe265d2abfe1710f11",
+                "reference": "bcca2ea44ee553e8b758b4fe265d2abfe1710f11",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "guzzlehttp/guzzle": "^7.5",
-                "illuminate/support": "^10.0||^11.0",
+                "illuminate/http": "^10.0||^11.0",
                 "php": "^8.1"
             },
             "require-dev": {
@@ -5698,9 +5697,9 @@
                 "mastodon"
             ],
             "support": {
-                "source": "https://github.com/kawax/laravel-mastodon-api/tree/3.1.2"
+                "source": "https://github.com/kawax/laravel-mastodon-api/tree/3.1.3"
             },
-            "time": "2024-04-04T07:32:28+00:00"
+            "time": "2024-07-02T04:21:34+00:00"
         },
         {
             "name": "romanzipp/laravel-queue-monitor",
