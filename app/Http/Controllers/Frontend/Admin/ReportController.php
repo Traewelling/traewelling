@@ -12,7 +12,7 @@ class ReportController extends Controller
     public function renderReports(): View {
         $this->authorize('viewAny', Report::class);
         return view('admin.reports.list', [
-            'reports' => Report::orderByDesc('status', 'created_at')->paginate(15),
+            'reports' => Report::orderByDesc('status')->orderByDesc('created_at')->paginate(15),
         ]);
     }
 
