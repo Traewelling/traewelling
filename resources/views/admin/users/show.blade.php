@@ -203,7 +203,7 @@
                                         </td>
                                         <td>
                                             <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip->id])}}">
-                                                {{ $status->checkin->trip_id }}
+                                                {{ $status->checkin->id }} ({{ $status->checkin->trip->source }})
                                             </a>
                                             <br/>
                                             <code>{{ $status->checkin->trip->linename }}</code>

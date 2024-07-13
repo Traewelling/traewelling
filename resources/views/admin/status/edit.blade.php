@@ -61,7 +61,7 @@
                             @endisset
                             <br/>
                             <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip->id])}}">
-                                {{ $status->checkin->trip_id }}
+                                {{ $status->checkin->id }} ({{ $status->checkin->trip->source }})
                             </a>
                         </div>
 

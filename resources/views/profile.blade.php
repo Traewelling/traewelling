@@ -26,15 +26,22 @@
                         @endif
                     </strong>
                 </h1>
-                <span class="d-flex flex-column flex-md-row justify-content-md-start align-items-md-center gap-md-2 gap-1 pt-1 pb-2 pb-md-0">
+                <span
+                    class="d-flex flex-column flex-md-row justify-content-md-start align-items-md-center gap-md-2 gap-1 pt-1 pb-2 pb-md-0">
                     <small class="font-weight-light profile-tag">{{ '@'. $user->username }}</small>
                     @auth
                         <div class="d-flex flex-row justify-content-md-start align-items-md-center gap-2">
                         @include('includes.follow-button')
-                        @if(auth()->user()->id != $user->id)
-                            <x-mute-button :user="$user"/>
-                            <x-block-button :user="$user"/>
-                        @endif
+                            @if(auth()->user()->id != $user->id)
+                                <x-mute-button :user="$user"/>
+                                <x-block-button :user="$user"/>
+                            @endif
+                            @if(auth()->user()->hasRole('admin'))
+                                <a href="{{ route('admin.users.user', ['id' => $user->id]) }}"
+                                   class="btn btn-sm btn-outline-light">
+                                    <i class="fa fa-tools"></i>
+                                </a>
+                            @endif
                         </div>
                     @endauth
                 </span>
@@ -42,7 +49,7 @@
                 @if(!$user->isAuthUserBlocked && !$user->isBlockedByAuthUser && !$user->muted)
                     <span class="profile-stats">
                             <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance / 1000) }}</span><span
-                                class="small font-weight-lighter">km</span>
+                            class="small font-weight-lighter">km</span>
                             <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
                             <span class="font-weight-bold ps-sm-2">
                                 <i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}
