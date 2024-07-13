@@ -148,7 +148,7 @@
                                         </li>
                                         @if(config('ticket.host') !== null)
                                             <li>
-                                                <a class="dropdown-item" href="{{ route('static.about') }}">
+                                                <a class="dropdown-item" href="https://help.traewelling.de/faq/" target="_blank">
                                                     <i class="fa-solid fa-bug" aria-hidden="true"></i>
                                                     {{ __('help') }}
                                                 </a>
@@ -205,7 +205,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item mb-2">
-                                    <a href="{{ route('static.about') }}" class="nav-link p-0 text-body-secondary">
+                                    <a href="https://help.traewelling.de/faq/" target="_blank" class="nav-link p-0 text-body-secondary">
                                         {{ __('menu.about') }}
                                     </a>
                                 </li>

@@ -48,11 +48,6 @@ class StaticPagesThatMightHaveComputedPropertiesTest extends FeatureTestCase
         $response->assertOk();
     }
 
-    public function testAboutGet() {
-        $response = $this->get('/about');
-        $response->assertOk();
-    }
-
     public function testProfilePageGet() {
         // GIVEN: A gdpr-acked user
         $user = User::factory()->create();
