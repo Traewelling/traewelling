@@ -2,6 +2,9 @@
 
 namespace Tests\Unit\Services;
 
+use App\Enum\Report\ReportableSubject;
+use App\Enum\Report\ReportReason;
+use App\Repositories\ReportRepository;
 use App\Services\ReportService;
 use Tests\Unit\UnitTestCase;
 
@@ -13,7 +16,7 @@ class ReportServiceTest extends UnitTestCase
      */
     public function testCheckString(array $expected, string $haystack): void {
         $reportService = new ReportService();
-        $result = $reportService->checkString($haystack);
+        $result        = $reportService->checkString($haystack);
         // Sort result
         sort($result);
         sort($expected);
@@ -21,29 +24,55 @@ class ReportServiceTest extends UnitTestCase
         $this->assertEquals($expected, $result);
     }
 
+
+    /**
+     * @dataProvider testCheckStringProvider
+     */
+    public function testCheckAndReport(array $expected, string $haystack): void {
+        $repository = $this->mock(ReportRepository::class);
+        if ($expected === []) {
+            $repository->shouldReceive('createReport')->never();
+        } else {
+            $info = 'Automatically reported: The Trip is inappropriate because it contains the words "' . implode('", "', $expected) . '".';
+
+            $repository
+                ->shouldReceive('createReport')
+                ->once()
+                ->with(
+                    ReportableSubject::TRIP,
+                    1,
+                    ReportReason::INAPPROPRIATE,
+                    $info
+                );
+        }
+
+        $reportService = new ReportService(null, $repository);
+        $reportService->checkAndReport($haystack, ReportableSubject::TRIP, 1);
+    }
+
     public static function testCheckStringProvider(): array {
         return [
-            'match first word' => [
+            'match first word'                                   => [
                 ['auto'],
                 'auto'
             ],
-            'match second word' => [
+            'match second word'                                  => [
                 ['fuss'],
                 'Was fuss'
             ],
-            'match multiple words' => [
+            'match multiple words'                               => [
                 ['auto', 'fuss'],
                 'auto und fuss'
             ],
-            'match none' => [
+            'match none'                                         => [
                 [],
                 'no match'
             ],
-            'match case insensitive' => [
+            'match case insensitive'                             => [
                 ['auto'],
                 'Auto'
             ],
-            'match with special characters' => [
+            'match with special characters'                      => [
                 ['fuß'],
                 'fuß'
             ],
@@ -51,9 +80,21 @@ class ReportServiceTest extends UnitTestCase
                 ['fuß'],
                 'Fuß'
             ],
-            'match without spaces' => [
+            'match without spaces'                               => [
                 ['auto'],
                 'autobus replacement'
+            ],
+            'match none with empty string'                       => [
+                [],
+                ''
+            ],
+            'match none with actual example'                     => [
+                [],
+                'ICE 123'
+            ],
+            'match none with u-bahn'                             => [
+                [],
+                'U 6'
             ],
         ];
     }
