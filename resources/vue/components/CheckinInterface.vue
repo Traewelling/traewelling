@@ -6,15 +6,17 @@ import {useProfileSettingsStore} from "../stores/profileSettings";
 import EventDropdown from "./EventDropdown.vue";
 import TagList from "./TagList.vue";
 import {useActiveCheckin} from "../stores/activeCheckin";
+import {checkinSuccessStore} from "../stores/checkinSuccess";
 
 export default {
     components: {TagList, EventDropdown},
     setup() {
         const profileStore = useProfileSettingsStore();
         profileStore.fetchSettings();
-        const activeCheckin = useActiveCheckin();
+        const activeCheckin  = useActiveCheckin();
+        const checkinSuccess = checkinSuccessStore();
 
-        return {profileStore, activeCheckin};
+        return {profileStore, activeCheckin, checkinSuccess};
     },
     name: "CheckinInterface",
     props: {
@@ -75,9 +77,8 @@ export default {
                 if (response.ok) {
                     response.json().then((result) => {
                         this.activeCheckin.reset();
+                        this.checkinSuccess.setResponse(result.data);
 
-                        localStorage.setItem("points", JSON.stringify(result.data.points));
-                        localStorage.setItem("alsoOnThisConnection", JSON.stringify(result.data.alsoOnThisConnection));
                         this.$refs.tagList.postAllTags(result.data.status.id).then(() => {
                             window.location = "/status/" + result.data.status.id;
                         });
