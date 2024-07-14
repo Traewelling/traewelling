@@ -4529,14 +4529,15 @@
             },
             "PointReason": {
                 "title": "PointsReason",
-                "description": "What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points)",
+                "description": "What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points, 4=manual trip => no points, 5=points disabled)",
                 "type": "integer",
                 "enum": [
                     0,
                     1,
                     2,
                     3,
-                    4
+                    4,
+                    5
                 ],
                 "example": 1
             },
@@ -4555,6 +4556,7 @@
             },
             "TravelType": {
                 "title": "travelType",
+                "description": "When adding a new travel type, make sure to add it to the translation file as well.",
                 "type": "string",
                 "enum": [
                     "express",

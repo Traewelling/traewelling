@@ -89,6 +89,7 @@
     "user.home-not-set": "Du hast noch keinen Heimatbahnhof festgelegt.",
     "user.private-profile": "Privates Profil",
     "user.likes-enabled": "\"Gefällt mir\"-Angaben anzeigen",
+    "user.points-enabled": "Punkte und Bestenliste anzeigen",
     "user.liked-status": "gefällt dieser Status.",
     "user.liked-own-status": "gefällt der eigene Status.",
     "user.invalid-mastodon": ":domain scheint keine Mastodon-Instanz zu sein.",

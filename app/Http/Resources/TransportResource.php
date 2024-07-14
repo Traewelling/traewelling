@@ -28,22 +28,23 @@ use OpenApi\Annotations as OA;
 class TransportResource extends JsonResource
 {
     public function toArray($request): array {
+        $likesEnabled = $request->user()?->likesEnabled ?? true;
         /** @var Checkin $this */
         return [
-                 'trip'            => (int) $this->trip->id,
-                 'hafasId'         => (string) $this->trip->trip_id,
-                 'category'        => (string) $this->trip->category->value,
-                 'number'          => (string) $this->trip->number,
-                 'lineName'        => (string) $this->trip->linename,
-                 'journeyNumber'   => $this->trip->journey_number,
-                 'distance'        => (int) $this->distance,
-                 'points'          => (int) $this->points,
-                 'duration'        => (int) $this->duration,
-                 'manualDeparture' => $this->manual_departure?->toIso8601String(),
-                 'manualArrival'   => $this->manual_arrival?->toIso8601String(),
-                 'origin'          => new StopoverResource($this->originStopover),
-                 'destination'     => new StopoverResource($this->destinationStopover),
-                 'operator'        => new OperatorResource($this?->trip->operator)
+            'trip'            => (int) $this->trip->id,
+            'hafasId'         => (string) $this->trip->trip_id,
+            'category'        => (string) $this->trip->category->value,
+            'number'          => (string) $this->trip->number,
+            'lineName'        => (string) $this->trip->linename,
+            'journeyNumber'   => $this->trip->journey_number,
+            'distance'        => (int) $this->distance,
+            'points'          => (int) $likesEnabled ? $this->points : 0,
+            'duration'        => (int) $this->duration,
+            'manualDeparture' => $this->manual_departure?->toIso8601String(),
+            'manualArrival'   => $this->manual_arrival?->toIso8601String(),
+            'origin'          => new StopoverResource($this->originStopover),
+            'destination'     => new StopoverResource($this->destinationStopover),
+            'operator'        => new OperatorResource($this?->trip->operator)
         ];
     }
 }

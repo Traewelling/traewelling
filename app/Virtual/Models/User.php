@@ -133,6 +133,15 @@ class User
 
     /**
      * @OA\Property (
+     *     title="pointsEnabled",
+     *     description="Does this profile allow points? Only offer the UI to show points at any status if this setting is set to true. If set to false, the points will always be displayed as 0",
+     *     type="boolean",
+     *     example=true
+     * )
+     */
+
+    /**
+     * @OA\Property (
      *     title="userInvisibleToMe",
      *     description="Can the currently authenticated user see the statuses of this user?",
      *     type="boolean",

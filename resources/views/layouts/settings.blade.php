@@ -103,7 +103,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{route('settings.privacy')}}">
                                     <i class="fas fa-user-secret" aria-hidden="true"></i>
-                                    {{ __('menu.privacy') }}
+                                    {{ __('settings.title-privacy') }}
                                 </a>
                             </li>
                             <li class="nav-item">

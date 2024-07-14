@@ -45,6 +45,7 @@
     "user.home-not-set": "You haven't set a home station yet.",
     "user.private-profile": "Private profile",
     "user.likes-enabled": "Show likes",
+    "user.points-enabled": "Show points and leaderboard",
     "user.liked-status": "likes this status.",
     "user.liked-own-status": "likes their own status.",
     "user.invalid-mastodon": ":domain doesn't seem to be a Mastodon instance.",
