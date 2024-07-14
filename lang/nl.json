@@ -777,5 +777,12 @@
     "action.dislike": "Vind-ik-niet-leukstatus",
     "action.set-home": "Mijn station instellen",
     "transport_types.plane": "Vliegtuig",
-    "trip_creation.limitations.6": "Let op: slechts een beperkt aantal reissoorten is toegestaan (reizen per auto, fiets of te voet zijn bijvoorbeeld niet toegestaan en kunnen worden verwijderd)."
+    "trip_creation.limitations.6": "Let op: slechts een beperkt aantal voertuigen is toegestaan (reizen per auto, fiets of te voet zijn bijvoorbeeld niet toegestaan en kunnen worden verwijderd). Zie ook:",
+    "dashboard.empty": "Je overzicht lijkt erg leeg.",
+    "dashboard.empty.teaser": "Als je wilt, kun je mensen volgen en hier zien waar ze zijn ingecheckt.",
+    "dashboard.empty.discover1": "Zoek personen om te volgen in de sectie",
+    "dashboard.empty.discover2": "of",
+    "dashboard.empty.discover3": "(let op: lange laadtijden)",
+    "trip_creation.limitations.6.rules": "Regels",
+    "trip_creation.limitations.6.link": "https://help.traewelling.de/en/features/manual-trips/#info"
 }
