@@ -4,6 +4,15 @@ namespace App\Notifications;
 
 use Illuminate\Notifications\Notification;
 
+/**
+ * Class TextNotification
+ *
+ * data: [
+ *    'locale' => 'de',
+ *    'textDe' => 'Hallo Welt',
+ *    'textEn' => 'Hello World'
+ * ]
+ */
 abstract class TextNotification extends Notification implements BaseNotification
 {
 
