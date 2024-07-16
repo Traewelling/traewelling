@@ -102,7 +102,7 @@ export default {
 
                         window.location.href = `/stationboard?${new URLSearchParams(query).toString()}`;
                     });
-                } else if (data.status === 422) {
+                } else if (data.status === 403 || data.status === 422) {
                     data.json().then((result) => {
                         alert(result.message);
                     });

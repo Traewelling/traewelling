@@ -8,7 +8,7 @@
             <div class="col-md-8 col-lg-7" id="station-board-new">
                 <Stationboard></Stationboard>
 
-                @if(auth()->user()->hasRole('open-beta'))
+                @if(auth()->user()->hasRole('open-beta') && !auth()->user()->can('disallow-manual-trips'))
                     <div class="text-center mt-4">
                         <hr/>
                         <p>
