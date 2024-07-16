@@ -14,25 +14,27 @@ class PermissionSeeder extends Seeder
 {
     public function run(): void {
         //Create roles
-        $roleAdmin          = Role::updateOrCreate(['name' => 'admin']);
-        $roleEventModerator = Role::updateOrCreate(['name' => 'event-moderator']);
-        $roleOpenBeta       = Role::updateOrCreate(['name' => 'open-beta']);
-        $roleClosedBeta     = Role::updateOrCreate(['name' => 'closed-beta']);
+        $roleAdmin               = Role::updateOrCreate(['name' => 'admin']);
+        $roleEventModerator      = Role::updateOrCreate(['name' => 'event-moderator']);
+        $roleOpenBeta            = Role::updateOrCreate(['name' => 'open-beta']);
+        $roleClosedBeta          = Role::updateOrCreate(['name' => 'closed-beta']);
+        $roleDisallowManualTrips = Role::updateOrCreate(['name' => 'disallow-manual-trips']);
 
         //Create permissions
-        $permissionViewBackend      = Permission::updateOrCreate(['name' => 'view-backend']);
-        $permissionViewEvents       = Permission::updateOrCreate(['name' => 'view-events']);
-        $permissionAcceptEvents     = Permission::updateOrCreate(['name' => 'accept-events']);
-        $permissionDenyEvents       = Permission::updateOrCreate(['name' => 'deny-events']);
-        $permissionCreateEvents     = Permission::updateOrCreate(['name' => 'create-events']);
-        $permissionUpdateEvents     = Permission::updateOrCreate(['name' => 'update-events']);
-        $permissionDeleteEvents     = Permission::updateOrCreate(['name' => 'delete-events']);
-        $permissionCreateManualTrip = Permission::updateOrCreate(['name' => 'create-manual-trip']);
-        $permissionViewActivity     = Permission::updateOrCreate(['name' => 'view activity']);
-        $permissionViewEventHistory = Permission::updateOrCreate(['name' => 'view event history']);
-        $permissionCreateStations   = Permission::updateOrCreate(['name' => 'create stations']);
-        $permissionUpdateStations   = Permission::updateOrCreate(['name' => 'update stations']);
-        $permissionDeleteStations   = Permission::updateOrCreate(['name' => 'delete stations']);
+        $permissionViewBackend         = Permission::updateOrCreate(['name' => 'view-backend']);
+        $permissionViewEvents          = Permission::updateOrCreate(['name' => 'view-events']);
+        $permissionAcceptEvents        = Permission::updateOrCreate(['name' => 'accept-events']);
+        $permissionDenyEvents          = Permission::updateOrCreate(['name' => 'deny-events']);
+        $permissionCreateEvents        = Permission::updateOrCreate(['name' => 'create-events']);
+        $permissionUpdateEvents        = Permission::updateOrCreate(['name' => 'update-events']);
+        $permissionDeleteEvents        = Permission::updateOrCreate(['name' => 'delete-events']);
+        $permissionCreateManualTrip    = Permission::updateOrCreate(['name' => 'create-manual-trip']);
+        $permissionViewActivity        = Permission::updateOrCreate(['name' => 'view activity']);
+        $permissionViewEventHistory    = Permission::updateOrCreate(['name' => 'view event history']);
+        $permissionCreateStations      = Permission::updateOrCreate(['name' => 'create stations']);
+        $permissionUpdateStations      = Permission::updateOrCreate(['name' => 'update stations']);
+        $permissionDeleteStations      = Permission::updateOrCreate(['name' => 'delete stations']);
+        $permissionDisallowManualTrips = Permission::updateOrCreate(['name' => 'disallow-manual-trips']);
 
         //Assign permissions to admin role
         $roleAdmin->givePermissionTo($permissionViewBackend);
@@ -48,6 +50,7 @@ class PermissionSeeder extends Seeder
         $roleAdmin->givePermissionTo($permissionCreateStations);
         $roleAdmin->givePermissionTo($permissionUpdateStations);
         $roleAdmin->givePermissionTo($permissionDeleteStations);
+        $roleDisallowManualTrips->givePermissionTo($permissionDisallowManualTrips);
 
         //Assign permissions to event-moderator role
         $roleEventModerator->givePermissionTo($permissionViewBackend);
