@@ -32,7 +32,7 @@ class TripController extends Controller
      */
     public function createTrip(Request $request): TripResource|JsonResponse {
         if (!auth()->user()?->can('create-manual-trip')) {
-            return response()->json('This endpoint is currently only available for open-beta users (you can enable open beta in your settings).', 403);
+            return response()->json(['message' => 'This endpoint is currently only available for open-beta users (you can enable open beta in your settings).'], 403);
         }
         if (auth()->user()?->can('disallow-manual-trips')) {
             return response()->json(['message' => 'You are not allowed to create manual trips'], 403);
