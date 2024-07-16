@@ -658,7 +658,7 @@
     "events.disclaimer.warranty": "Träwelling does not guarantee the correctness or completeness of the data.",
     "user.mapprovider": "Provider of map data",
     "user.timezone": "Timezone",
-    "map-providers.cargo": "Cargo",
+    "map-providers.cargo": "Carto",
     "map-providers.open-railway-map": "Open Railway Map",
     "active-journeys": "active journey|active journeys",
     "page-only-available-in-language": "This page is only available in :language.",

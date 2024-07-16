@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="http://lnkd.tech/editor#BuiltinGlobalGraphs">
+    <option name="disabled">
+      <set>
+        <option value="DC_AM" />
+        <option value="DC_E" />
+        <option value="DC_T" />
+        <option value="DC_TYPE" />
+        <option value="FOAF" />
+        <option value="FOAF_ORG" />
+        <option value="ML_XS" />
+        <option value="OWL2" />
+        <option value="RDF" />
+        <option value="RDFS" />
+        <option value="SHACL" />
+        <option value="SHACL_SHACL" />
+        <option value="SKOS" />
+        <option value="SKOS_ORG" />
+        <option value="SPIN_MODELING" />
+        <option value="SPIN_MODELING_ORG" />
+        <option value="SPIN_SPARQL" />
+        <option value="SPIN_SPARQL_ORG" />
+        <option value="SPIN_STD" />
+        <option value="SPIN_STD_ORG" />
+        <option value="VANN" />
+        <option value="VOAF" />
+        <option value="schemaorg_all_http" />
+        <option value="schemaorg_all_https" />
+      </set>
+    </option>
+  </component>
+  <component name="http://lnkd.tech/editor#GlobalGraphsAssignments">
+    <option name="assignments">
+      <map>
+        <entry key="urn:tag:lnslr.eu,2018:java:eu.lunisolar.lava.rdfvocab.get.lava.LavaCatalog">
+          <value>
+            <map>
+              <entry key="http://purl.org/dc/dcam">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/58ABCE836B2D0022BF4C4C921A8C34C6E2F4B4AB015C4649FCAFD9572ED4DB47" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://purl.org/dc/dcmitype">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/F987B11D556E556FEF95D7E9410C1C561FC1B7AC05CCD457128DC8962641B01E" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://purl.org/dc/elements/1.1">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/FFB46B7A21E40344B93BC4AD2E6808B24DD53E261995EC3A926DF6BCD87BBFA5" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://purl.org/dc/terms">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/13DF401072DD7015BF9D75162F3E41C8138075304B7B9CC1AA1E9C16DB976797" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://purl.org/vocab/vann">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/96DE3675A0EAE0C2979D58A21FB808417E0C75DA18EFB9FEB050135BBAC790CA" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://purl.org/vocommons/voaf">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/8FF39E5D8A3A8DBE88C790E499F2DAA0FC520CD825EBBE59E79A388361839150" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://schema.org">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/E52ACF02EFE0F70FC02F7D1FD609C2082D85ADB8CFD0B44B4BE7530B5573F5A0" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://spinrdf.org/sp">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/FD2A599D1CE5D78A65896D5CE0A34553533715EE61388AD5F6E2AC75CF36FE94" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://spinrdf.org/spin">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/D3AD62E6834CAD27C0F8283C13516DF090363B0F8A68568FFA0982FC8B59E54C" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://spinrdf.org/spl">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/08B41C2F767F3CF1AB7C8296EDBAB65E65375746BEAB6CCE85397CB99FA6462E" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://www.w3.org/1999/02/22-rdf-syntax-ns">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/93D52B1A5824C7DD6504CA79C16205C0B740A0BA68B7A14952780F52561186A2" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://www.w3.org/2000/01/rdf-schema">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/164A70B28D9AC4B828EEC7D9E4B548A9465A5E2C154D53A142CC5E18566E04EC" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://www.w3.org/2002/07/owl">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/718FA1DB7840D3315BFCE94398543F91437EF6FE933054FD93F5471D19262FC5" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://www.w3.org/2004/02/skos/core">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/2D0AC9174D7C53393C546802A19669534B44590EA00D807F4C149C6FFB4CF6BB" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://www.w3.org/ns/shacl">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/0E5D8AEA0EAB98A072D4A02FAAEE1EE914EC99EAB2CA473429726FAED4A13F69" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://www.w3.org/ns/shacl-shacl">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/250D6274CADC8FA5359D5DBC28BC943F1DE01ADB7FFC3369681216B583122E4A" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="http://xmlns.com/foaf/0.1">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/630DAF410F3C34ED9FE7302E4A8A5439488B68375789E7CF5DD137892DAC6789" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="https://schema.org">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/AF0AE97A2ABB6020F13284214F7A0A14434D0187D1BA00D3DE1311F2A534543B" />
+                  </set>
+                </value>
+              </entry>
+              <entry key="urn:tag:lnkd.tech,2020:MissingLink:XMLDataTypes">
+                <value>
+                  <set>
+                    <option value="urn:tag:lnkd.tech,2023:digest:sha-256/E7430AD6C9345DEC6A8C7E0665607B34D1F6B6FDC47A30FAC3FB146179213174" />
+                  </set>
+                </value>
+              </entry>
+            </map>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

@@ -621,7 +621,7 @@
     "scopes.read-statistics": "vedi le tue statistiche",
     "menu.oauth_authorize.scopes_title": "Questa applicazione richiede le seguenti autorizzazioni:",
     "user.mapprovider": "Fornitore di dati cartografici",
-    "map-providers.cargo": "Cargo",
+    "map-providers.cargo": "Carto",
     "events.disclaimer.warranty": "Träwelling non garantisce la correttezza o la completezza dei dati.",
     "page-only-available-in-language": "Questa pagina è disponibile solo in :language.",
     "language.en": "Inglese",

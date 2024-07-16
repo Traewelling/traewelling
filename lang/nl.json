@@ -632,7 +632,7 @@
     "scopes.extra-delete": "Verwijder je Träwelling-account",
     "notifications.readAll.success": "Alle meldingen zijn als gelezen gemarkeerd.",
     "notifications.socialNotShared.mastodon.0": "Er is een onbekende fout opgetreden tijdens het tooten.",
-    "map-providers.cargo": "Cargo",
+    "map-providers.cargo": "Carto",
     "map-providers.open-railway-map": "Open Railway Map",
     "user.mapprovider": "Kaartleverancier",
     "settings.twitter-deprecated": "Lees de verouderingsmelding",

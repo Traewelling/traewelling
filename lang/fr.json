@@ -614,7 +614,7 @@
     "settings.webhook-event-notifications-description": "Activités",
     "settings.webhook_event.checkin_create": "Création d'un check-in",
     "settings.webhook_event.notification": "Recevoir une notification",
-    "map-providers.cargo": "Cargo",
+    "map-providers.cargo": "Carto",
     "notifications.eventSuggestionProcessed.too-late": "Malheureusement, votre proposition a été soumise trop tard.",
     "notifications.eventSuggestionProcessed.not-applicable": "Votre suggestion n'apporte malheureusement aucune valeur ajoutée à la communauté.",
     "settings.twitter-deprecated": "Lire la note de dépréciation",
