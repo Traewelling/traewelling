@@ -554,7 +554,7 @@
     "events.disclaimer.warranty": "Träwelling nie gwarantuje poprawności ani całości danych.",
     "settings.delete-all-tokens": "Usuń wszystkie tokeny",
     "settings.twitter-deprecated": "Przeczytaj powiadomienie o wycofaniu",
-    "map-providers.cargo": "Cargo",
+    "map-providers.cargo": "Carto",
     "changelog": "Lista zmian",
     "time-is-manual": "Czas został nadpisany ręcznie",
     "notifications.eventSuggestionProcessed.duplicate": "Twoja sugestia już instnieje.",
