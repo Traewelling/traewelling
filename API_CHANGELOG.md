@@ -4,10 +4,17 @@ In this we try to keep track of changes to the API.
 Primarily this should document changes that are not backwards compatible or belongs to already documented endpoints.
 This is to help you keep track of the changes and to help you update your code accordingly.
 
+# 2024-07-17
+
+The Endpoint `/report` now correctly uses camelCase for the `subjectType` and `subjectId` field.
+Since the current usage of this endpoint is very low, the old snake_case fields will be removed after 2024-08-17.
+
 # 2024-06-28
 
-The `LeaderboardUserResource` is now returning the whole `LightUserResource` for the user who created it in the `user` field.
-Thus the following fields of the `LeaderboardUserResource` are now **marked as deprecated and will be removed after August 2024**.
+The `LeaderboardUserResource` is now returning the whole `LightUserResource` for the user who created it in the `user`
+field.
+Thus the following fields of the `LeaderboardUserResource` are now **marked as deprecated and will be removed after
+August 2024**.
 
 - `id`
 - `displayName`
@@ -22,8 +29,10 @@ Changed `/operator` to `/operators`
 
 ## 2024-05-31
 
-The `StatusResource` is now returning the whole `LightUserResource` for the user who created it in the `userDetails` field.
-Thus the following fields of the `StatusResource` are now **marked as deprecated and will be removed after August 2024**.
+The `StatusResource` is now returning the whole `LightUserResource` for the user who created it in the `userDetails`
+field.
+Thus the following fields of the `StatusResource` are now **marked as deprecated and will be removed after August 2024
+**.
 
 - `user`
 - `username`
