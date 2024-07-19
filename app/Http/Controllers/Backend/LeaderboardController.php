@@ -20,6 +20,10 @@ abstract class LeaderboardController extends Controller
         int    $limit = 20,
         bool   $onlyFollowings = false
     ): Collection {
+        if (auth()->user()?->points_enabled === false) {
+            return collect();
+        }
+
         if ($since == null) {
             $since = now()->subWeek();
         }
@@ -79,6 +83,11 @@ abstract class LeaderboardController extends Controller
     }
 
     public static function getMonthlyLeaderboard(Carbon $date): Collection {
+        if (auth()->user()?->likesEnabled === false) {
+            return collect();
+        }
+
+
         $data = DB::table('statuses')
                   ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                   ->join('users', 'statuses.user_id', '=', 'users.id')

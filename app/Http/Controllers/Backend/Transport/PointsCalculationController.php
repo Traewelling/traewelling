@@ -28,6 +28,10 @@ abstract class PointsCalculationController extends Controller
         bool            $forceCheckin = false,
         Carbon          $timestampOfView = null
     ): PointCalculation {
+        if (auth()->user()?->points_enabled === false) {
+            return self::returnZeroPoints();
+        }
+
         if ($timestampOfView == null) {
             $timestampOfView = now();
         }
@@ -56,6 +60,16 @@ abstract class PointsCalculationController extends Controller
             distancePoints: $distancePoints,
             reason:         $pointReason,
             factor:         $factor,
+        );
+    }
+
+    private static function returnZeroPoints(): PointCalculation {
+        return new PointCalculation(
+            points:         0,
+            basePoints:     0,
+            distancePoints: 0,
+            reason:         PointReason::POINTS_DISABLED,
+            factor:         0,
         );
     }
 

@@ -38,18 +38,27 @@ use Spatie\Permission\Traits\HasRoles;
  * @property boolean            private_profile
  * @property boolean            prevent_index
  * @property boolean            likes_enabled
+ * @property boolean            points_enabled
  * @property MapProvider        mapprovider
  * @property int                privacy_hide_days
  * @property string             language
  * @property Carbon             last_login
  * @property Status[]           $statuses
  * @property SocialLoginProfile socialProfile
+ * @property int                points
+ * @property boolean            userInvisibleToMe
+ * @property string             mastodonUrl
+ * @property int                train_distance
+ * @property int                train_duration
+ * @property boolean            following
+ * @property boolean            followPending
+ * @property boolean            muted
+ * @property boolean            isAuthUserBlocked
+ * @property boolean            isBlockedByAuthUser
  *
- * @todo replace "role" with an explicit permission system - e.g. spatie/laravel-permission
- * @todo replace "experimental" also with an explicit permission system - user can add self to "experimental" group
+ *
  * @todo rename home_id to home_station_id
  * @todo rename mapprovider to map_provider
- * @todo remove "twitterUrl" (Twitter isn't used by traewelling anymore)
  * @mixin Builder
  */
 class User extends Authenticatable implements MustVerifyEmail
@@ -59,8 +68,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
-        'default_status_visibility', 'likes_enabled', 'private_profile', 'prevent_index', 'privacy_hide_days',
-        'language', 'last_login', 'mapprovider', 'timezone',
+        'default_status_visibility', 'likes_enabled', 'points_enabled', 'private_profile', 'prevent_index',
+        'privacy_hide_days', 'language', 'last_login', 'mapprovider', 'timezone',
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
@@ -77,6 +86,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'home_id'                   => 'integer',
         'private_profile'           => 'boolean',
         'likes_enabled'             => 'boolean',
+        'points_enabled'            => 'boolean',
         'default_status_visibility' => StatusVisibility::class,
         'prevent_index'             => 'boolean',
         'privacy_hide_days'         => 'integer',

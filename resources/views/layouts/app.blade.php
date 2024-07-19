@@ -70,10 +70,12 @@
                                        href="{{ route('dashboard') }}">{{ __('menu.dashboard') }}</a>
                                 </li>
                             @endauth
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->is('leaderboard') ? 'active' : '' }}"
-                                   href="{{ route('leaderboard') }}">{{ __('menu.leaderboard') }}</a>
-                            </li>
+                            @if(!auth()->check() || auth()->user()->points_enabled)
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->is('leaderboard') ? 'active' : '' }}"
+                                       href="{{ route('leaderboard') }}">{{ __('menu.leaderboard') }}</a>
+                                </li>
+                            @endif
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->is('statuses/active') ? 'active' : '' }}"
                                    href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
@@ -148,7 +150,8 @@
                                         </li>
                                         @if(config('ticket.host') !== null)
                                             <li>
-                                                <a class="dropdown-item" href="https://help.traewelling.de/faq/" target="_blank">
+                                                <a class="dropdown-item" href="https://help.traewelling.de/faq/"
+                                                   target="_blank">
                                                     <i class="fa-solid fa-bug" aria-hidden="true"></i>
                                                     {{ __('help') }}
                                                 </a>
@@ -205,7 +208,8 @@
                                     </a>
                                 </li>
                                 <li class="nav-item mb-2">
-                                    <a href="https://help.traewelling.de/faq/" target="_blank" class="nav-link p-0 text-body-secondary">
+                                    <a href="https://help.traewelling.de/faq/" target="_blank"
+                                       class="nav-link p-0 text-body-secondary">
                                         {{ __('menu.about') }}
                                     </a>
                                 </li>
