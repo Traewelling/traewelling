@@ -83,7 +83,7 @@ abstract class LeaderboardController extends Controller
     }
 
     public static function getMonthlyLeaderboard(Carbon $date): Collection {
-        if (auth()->user()?->likesEnabled === false) {
+        if (auth()->user()?->points_enabled === false) {
             return collect();
         }
 
