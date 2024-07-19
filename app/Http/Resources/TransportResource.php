@@ -28,7 +28,7 @@ use OpenApi\Annotations as OA;
 class TransportResource extends JsonResource
 {
     public function toArray($request): array {
-        $likesEnabled = $request->user()?->likesEnabled ?? true;
+        $pointsEnabled = $request->user()?->points_enabled ?? true;
         /** @var Checkin $this */
         return [
             'trip'            => (int) $this->trip->id,
@@ -38,7 +38,7 @@ class TransportResource extends JsonResource
             'lineName'        => (string) $this->trip->linename,
             'journeyNumber'   => $this->trip->journey_number,
             'distance'        => (int) $this->distance,
-            'points'          => (int) $likesEnabled ? $this->points : 0,
+            'points'          => (int) $pointsEnabled ? $this->points : 0,
             'duration'        => (int) $this->duration,
             'manualDeparture' => $this->manual_departure?->toIso8601String(),
             'manualArrival'   => $this->manual_arrival?->toIso8601String(),
