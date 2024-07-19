@@ -78,7 +78,7 @@
                             @endif
                         </dd>
                         <dt>Created at</dt>
-                        <dd>{{ $report->created_at }}</dd>
+                        <dd>{{ userTime($report->created_at, 'Y-m-d H:i:s', false) }}</dd>
                     </dl>
                 </div>
             </div>

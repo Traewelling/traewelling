@@ -1355,9 +1355,7 @@
         "/report": {
             "post": {
                 "tags": [
-                    "User",
-                    "Status",
-                    "Events"
+                    "Report"
                 ],
                 "summary": "Report a Status, Event or User to the admins.",
                 "operationId": "report",
@@ -1367,12 +1365,12 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "subject_type",
-                                    "subject_id",
+                                    "subjectType",
+                                    "subjectId",
                                     "reason"
                                 ],
                                 "properties": {
-                                    "subject_type": {
+                                    "subjectType": {
                                         "type": "string",
                                         "enum": [
                                             "Event",
@@ -1381,7 +1379,7 @@
                                         ],
                                         "example": "Status"
                                     },
-                                    "subject_id": {
+                                    "subjectId": {
                                         "type": "integer",
                                         "example": 1
                                     },
@@ -4555,6 +4553,7 @@
             },
             "TravelType": {
                 "title": "travelType",
+                "description": "When adding a new travel type, make sure to add it to the translation file as well.",
                 "type": "string",
                 "enum": [
                     "express",
@@ -6023,6 +6022,10 @@
         {
             "name": "Webhooks",
             "description": "Manage Webhooks for third party applications"
+        },
+        {
+            "name": "Report",
+            "description": "Report a Status, Event or User to the admins"
         }
     ]
 }
