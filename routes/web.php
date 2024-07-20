@@ -22,7 +22,6 @@ use App\Http\Controllers\Frontend\Social\MastodonController;
 use App\Http\Controllers\Frontend\Social\SocialController;
 use App\Http\Controllers\Frontend\StatisticController;
 use App\Http\Controllers\Frontend\Stats\DailyStatsController;
-use App\Http\Controllers\Frontend\Support\SupportController;
 use App\Http\Controllers\Frontend\Transport\StatusController;
 use App\Http\Controllers\Frontend\User\ProfilePictureController;
 use App\Http\Controllers\Frontend\VueFrontendController;
@@ -145,9 +144,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         Route::get('/daily/{dateString}', [DailyStatsController::class, 'renderDailyStats'])
              ->name('stats.daily');
     });
-
-    Route::get('/support', [SupportController::class, 'renderSupportPage'])->name('support');
-    Route::post('/support/submit', [SupportController::class, 'submit'])->name('support.submit'); //TODO: Replace with API Endpoint
 
     Route::prefix('settings')->group(function() {
 
