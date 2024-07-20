@@ -784,5 +784,8 @@
     "dashboard.empty.discover2": "of",
     "dashboard.empty.discover3": "(let op: lange laadtijden)",
     "trip_creation.limitations.6.rules": "Regels",
-    "trip_creation.limitations.6.link": "https://help.traewelling.de/en/features/manual-trips/#info"
+    "trip_creation.limitations.6.link": "https://help.traewelling.de/en/features/manual-trips/#info",
+    "user.points-enabled": "Punten en klassement tonen",
+    "checkin.success.body2": "Je legt :distance km af op :lineName, van :origin naar :destination.",
+    "checkin.success.body": "Je bent ingecheckt!"
 }
