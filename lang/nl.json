@@ -599,7 +599,6 @@
     "user.likes-enabled": "Vind-ik-leuks tonen",
     "menu.oauth_authorize.scopes_title": "Deze app vereist de volgende rechten:",
     "scopes.write-notifications": "Markeer alle meldingen als ongelezen en wis ze",
-    "scopes.write-support-tickets": "Maak ondersteuningsverzoeken aan",
     "scopes.write-settings-privacy": "Wijzig je privacy-instellingen",
     "menu.oauth_authorize.third_party": "Deze app is geen officiële Träwelling-app!",
     "menu.oauth_authorize.third_party.more": "Wat houdt dit in?",

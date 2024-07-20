@@ -608,7 +608,6 @@
     "scopes.write-exports": "creare esportazioni dai tuoi dati",
     "scopes.write-followers": "accettare le richieste di follow e rimuovere i follower",
     "scopes.write-event-suggestions": "suggerire eventi a tuo nome",
-    "scopes.write-support-tickets": "creare richieste di assistenza a tuo nome",
     "menu.oauth_authorize.third_party": "Questa applicazione non è un'applicazione ufficiale di Träwelling!",
     "menu.oauth_authorize.third_party.more": "Che cosa significa questo?",
     "scopes.read-statuses": "vedi tutti i tuoi stati",

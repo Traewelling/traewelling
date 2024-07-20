@@ -148,15 +148,13 @@
                                                 <i class="fas fa-cog"></i> {{ __('menu.settings') }}
                                             </a>
                                         </li>
-                                        @if(config('ticket.host') !== null)
-                                            <li>
-                                                <a class="dropdown-item" href="https://help.traewelling.de/faq/"
-                                                   target="_blank">
-                                                    <i class="fa-solid fa-bug" aria-hidden="true"></i>
-                                                    {{ __('help') }}
-                                                </a>
-                                            </li>
-                                        @endif
+                                        <li>
+                                            <a class="dropdown-item" href="https://help.traewelling.de/faq/"
+                                               target="_blank">
+                                                <i class="fa-solid fa-bug" aria-hidden="true"></i>
+                                                {{ __('help') }}
+                                            </a>
+                                        </li>
                                         @if(auth()->user()->hasRole('admin') || auth()->user()->can('view-events'))
                                             <li>
                                                 <a class="dropdown-item" href="{{route('admin.dashboard')}}">

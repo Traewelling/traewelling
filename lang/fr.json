@@ -579,7 +579,6 @@
     "scopes.write-follows": "suivre et ne plus suivre les utilisateurs en votre nom",
     "scopes.write-followers": "accepter les demandes de suivi et supprimer des abonnés",
     "scopes.write-event-suggestions": "suggérer des événements en votre nom",
-    "scopes.write-support-tickets": "créer des demandes d'assistance en votre nom",
     "scopes.read-settings": "voir vos paramètres, e-mail, etc...",
     "scopes.write-settings-profile": "éditer votre profil",
     "scopes.read-settings-profile": "voir vos données de profil, par ex. e-mail",
