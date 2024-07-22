@@ -19,7 +19,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.5.2",
         "@vuepic/vue-datepicker": "^8.4.0",
-        "apexcharts": "^3.50.0",
+        "apexcharts": "^3.51.0",
         "awesomplete": "^1.1.5",
         "bootstrap-cookie-alert": "^1.2.1",
         "chart.js": "^2.9.4",
