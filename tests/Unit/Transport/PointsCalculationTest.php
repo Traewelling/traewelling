@@ -68,8 +68,8 @@ class PointsCalculationTest extends UnitTestCase
             '50km in an IC/ICE => 50/10 + 10 = 15 points'                      => [
                 15, HafasTravelType::NATIONAL_EXPRESS, now()->subMinutes(2), now()->addMinutes(10), TripSource::HAFAS
             ],
-            '50km in an RB => 50/10 + 5 = 10 points'                           => [
-                10, HafasTravelType::REGIONAL, now()->subMinutes(2), now()->addMinutes(10), TripSource::HAFAS
+            '50km in an RB => 50/10 + 6 = 11 points'                           => [
+                11, HafasTravelType::REGIONAL, now()->subMinutes(2), now()->addMinutes(10), TripSource::HAFAS
             ],
             '18km in a Bus => 20/10 + 2 = 4 points'                            => [
                 7, HafasTravelType::BUS, now()->subMinutes(2), now()->addMinutes(10), TripSource::HAFAS

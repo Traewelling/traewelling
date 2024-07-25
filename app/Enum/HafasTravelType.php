@@ -29,16 +29,17 @@ enum HafasTravelType: string
 
     public function getEmoji(): string {
         return match ($this->value) {
-            'nationalExpress', 'national' => '🚄',
-            'regionalExp', 'regional'     => '🚆',
-            'suburban'                    => '🚋',
-            'bus'                         => '🚌',
-            'ferry'                       => '⛴',
-            'subway'                      => '🚇',
-            'tram'                        => '🚊',
-            'taxi'                        => '🚖',
-            'plane'                       => '✈️',
-            default                       => '',
+            'nationalExpress'         => '🚄',
+            'regionalExp', 'national' => '🚆',
+            'regional'                => '🚞',
+            'suburban'                => '🚋',
+            'bus'                     => '🚌',
+            'ferry'                   => '⛴',
+            'subway'                  => '🚇',
+            'tram'                    => '🚊',
+            'taxi'                    => '🚖',
+            'plane'                   => '✈️',
+            default                   => '',
         };
     }
 
