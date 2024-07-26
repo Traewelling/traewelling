@@ -1,7 +1,10 @@
 @php
     use App\Enum\Business;
-    use App\Http\Controllers\Backend\Helper\StatusHelper;use App\Http\Controllers\Backend\Transport\StationController;
-    use App\Http\Controllers\Backend\Transport\StatusController;use App\Http\Controllers\Backend\User\ProfilePictureController;use Illuminate\Support\Facades\Gate;
+    use App\Enum\HafasTravelType;
+    use App\Http\Controllers\Backend\Helper\StatusHelper;
+    use App\Http\Controllers\Backend\Transport\StationController;
+    use App\Http\Controllers\Backend\Transport\StatusController;
+    use App\Http\Controllers\Backend\User\ProfilePictureController;
 @endphp
 @php /** @var App\Models\Status $status */ @endphp
 <div class="card status mb-3" id="status-{{ $status->id }}"
@@ -74,10 +77,12 @@
                                      src="{{ asset('img/' . $status->checkin->trip->category->value . '.svg') }}"
                                      alt="{{$status->checkin->trip->category->value}}"
                                 />
-                            @elseif($status->checkin->trip->category->value == 'plane')
+                            @elseif($status->checkin->trip->category === HafasTravelType::PLANE)
                                 <i class="fa fa-plane d-inline" aria-hidden="true"></i>
-                            @elseif($status->checkin->trip->category->value == 'taxi')
+                            @elseif($status->checkin->trip->category === HafasTravelType::TAXI)
                                 <i class="fa fa-taxi d-inline" aria-hidden="true"></i>
+                            @elseif($status->checkin->trip->category === HafasTravelType::FERRY)
+                                <i class="fa fa-ship d-inline" aria-hidden="true"></i>
                             @else
                                 <i class="fa fa-train d-inline" aria-hidden="true"></i>
                             @endif
