@@ -90,7 +90,7 @@
                                         <option value="">bitte wählen</option>
                                         @foreach($status->checkin->trip->stopovers as $stopover)
                                             <option value="{{$stopover->trainStation->id}}"
-                                                    @if($stopover->trainStation->ibnr == $status->checkin->origin) selected @endif>
+                                                    @if($stopover->is($status->checkin->originStopover)) selected @endif>
                                                 {{$stopover->trainStation->name}}
                                                 (A:{{userTime($stopover->arrival, 'H:m')}},
                                                 D:{{userTime($stopover->departure, 'H:m')}})
@@ -110,7 +110,7 @@
                                         <option value="">bitte wählen</option>
                                         @foreach($status->checkin->trip->stopovers as $stopover)
                                             <option value="{{$stopover->trainStation->id}}"
-                                                    @if($stopover->trainStation->ibnr == $status->checkin->destination) selected @endif>
+                                                    @if($stopover->is($status->checkin->destinationStopover)) selected @endif>
                                                 {{$stopover->trainStation->name}}
                                                 (A:{{userTime($stopover->arrival, 'H:m')}},
                                                 D:{{userTime($stopover->departure, 'H:m')}})
