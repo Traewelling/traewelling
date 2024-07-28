@@ -86,7 +86,7 @@ class UserProfileSettings
      * @OA\Property(
      *     title="privacyHideDays",
      *     description="Number of days after which a status is hidden from the public",
-     *     format="int64",
+     *     format="int",
      *     example=1,
      *     nullable=true
      * )

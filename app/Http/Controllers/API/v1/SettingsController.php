@@ -21,6 +21,7 @@ class SettingsController extends Controller
     /**
      * @OA\Get(
      *     path="/settings/profile",
+     *     operationId="getProfileSettings",
      *     tags={"Settings"},
      *     summary="Get the current user's profile settings",
      *     description="Get the current user's profile settings",
@@ -65,36 +66,60 @@ class SettingsController extends Controller
 
     /**
      * @OA\Put(
-     *      path="/settings/profile",
-     *      operationId="putProfileSettings",
-     *      tags={"Settings"},
-     *      summary="Update the current user's profile settings",
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\JsonContent(
-     *              @OA\Property(property="username", type="string", example="Gertrud123", maxLength=25),
-     *              @OA\Property(property="displayName", type="string", example="Gertrud", maxLength=50),
-     *              @OA\Property(property="privateProfile", type="boolean", example=false, nullable=true),
-     *              @OA\Property(property="preventIndex", type="boolean", example=false, nullable=true),
-     *              @OA\Property(property="privacyHideDays", type="integer", example=1, nullable=true),
-     *              @OA\Property(property="defaultStatusVisibility", type="integer", nullable=true, @OA\Schema(ref="#/components/schemas/StatusVisibility")),
-     *              @OA\Property(property="mastodonVisibility", type="integer", nullable=true, @OA\Schema(ref="#/components/schemas/MastodonVisibility")),
-     *              @OA\Property(property="mapProvider", type="string", nullable=true, @OA\Schema(ref="#/components/schemas/MapProvider"), example="cargo"),
-     *              @OA\Property(property="friendCheckin", type="string", nullable=true, @OA\Schema(ref="#/components/schemas/FriendCheckinSetting"), example="forbidden")
-     *          )
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="Success",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="data", type="object", ref="#/components/schemas/UserProfileSettings")
-     *          )
-     *      ),
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=422, description="Unprocessable Entity"),
-     *      @OA\Response(response=400, description="Bad Request"),
-     *      security={{"passport": {"write-settings"}}, {"token": {}}}
-     *  )
+     *     path="/settings/profile",
+     *     operationId="updateProfileSettings",
+     *     tags={"Settings"},
+     *     summary="Update the current user's profile settings",
+     *     description="Update the current user's profile settings",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="username", type="string", example="gertrud123", maxLength=25),
+     *             @OA\Property(property="displayName", type="string", example="Gertrud", maxLength=50),
+     *             @OA\Property(property="privateProfile", type="boolean", example=false, nullable=true),
+     *             @OA\Property(property="preventIndex", type="boolean", example=false, nullable=true),
+     *             @OA\Property(property="privacyHideDays", type="integer", example=1, nullable=true),
+     *             @OA\Property(
+     *                  property="defaultStatusVisibility",
+     *                  type="integer",
+     *                  nullable=true,
+     *                  @OA\Schema(ref="#/components/schemas/StatusVisibility")
+     *              ),
+     *              @OA\Property(
+     *                   property="mastodonVisibility",
+     *                   type="integer",
+     *                   nullable=true,
+     *                   @OA\Schema(ref="#/components/schemas/MastodonVisibility")
+     *               ),
+     *              @OA\Property(
+     *                   property="mapProvider",
+     *                   type="string",
+     *                   nullable=true,
+     *                   @OA\Schema(ref="#/components/schemas/MapProvider")
+     *               ),
+     *               @OA\Property(
+     *                  property="friendCheckin",
+     *                  type="string",
+     *                  nullable=true,
+     *                  @OA\Schema(ref="#/components/schemas/FriendCheckinSetting"),
+     *                  example="forbidden"
+     *               )
+     *         )
+     *    ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="object", ref="#/components/schemas/UserProfileSettings")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=422, description="Unprocessable Entity"),
+     *     @OA\Response(response=400, description="Bad Request"),
+     *     security={
+     *          {"passport": {"write-settings"}}, {"token": {}}
+     *     }
+     *     )
      */
     public function updateSettings(Request $request): UserProfileSettingsResource|JsonResponse {
         $validated = $request->validate([

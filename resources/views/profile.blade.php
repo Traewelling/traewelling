@@ -14,6 +14,7 @@
 @endif
 
 @section('content')
+    @php /** @var \App\Models\User $user */ @endphp
     <div class="px-md-4 py-md-5 py-4 mt-n4 profile-banner">
         <div class="container">
             <img alt="{{ __('settings.picture') }}"
@@ -26,30 +27,39 @@
                         @endif
                     </strong>
                 </h1>
-                <span class="d-flex flex-column flex-md-row justify-content-md-start align-items-md-center gap-md-2 gap-1 pt-1 pb-2 pb-md-0">
+                <span
+                    class="d-flex flex-column flex-md-row justify-content-md-start align-items-md-center gap-md-2 gap-1 pt-1 pb-2 pb-md-0">
                     <small class="font-weight-light profile-tag">{{ '@'. $user->username }}</small>
                     @auth
                         <div class="d-flex flex-row justify-content-md-start align-items-md-center gap-2">
                         @include('includes.follow-button')
-                        @if(auth()->user()->id != $user->id)
-                            <x-mute-button :user="$user"/>
-                            <x-block-button :user="$user"/>
-                        @endif
+                            @if(auth()->user()->id != $user->id)
+                                <x-mute-button :user="$user"/>
+                                <x-block-button :user="$user"/>
+                            @endif
+                            @if(auth()->user()->hasRole('admin'))
+                                <a href="{{ route('admin.users.user', ['id' => $user->id]) }}"
+                                   class="btn btn-sm btn-outline-light">
+                                    <i class="fa fa-tools"></i>
+                                </a>
+                            @endif
                         </div>
                     @endauth
                 </span>
 
                 @if(!$user->isAuthUserBlocked && !$user->isBlockedByAuthUser && !$user->muted)
                     <span class="profile-stats">
-                            <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance / 1000) }}</span><span
-                                class="small font-weight-lighter">km</span>
-                            <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
+                        <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance / 1000) }}</span>
+                        <span class="small font-weight-lighter">km</span>
+                        <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
+                        @if($user->points_enabled || auth()->check() && auth()->user()->points_enabled)
                             <span class="font-weight-bold ps-sm-2">
                                 <i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}
                             </span>
                             <span class="small font-weight-lighter">
                                 {{__('profile.points-abbr')}}
                             </span>
+                        @endif
                         @if($user->mastodonUrl)
                             <span class="font-weight-bold ps-sm-2">
                                 <a href="{{ $user->mastodonUrl }}" rel="me" class="text-white" target="_blank">

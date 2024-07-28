@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Dto\CheckinSuccess;
+use App\Dto\Internal\CheckInRequestDto;
 use App\Enum\Business;
 use App\Enum\PointReason;
 use App\Enum\StatusVisibility;
@@ -12,6 +13,7 @@ use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Helper\StatusHelper;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController;
+use App\Hydrators\CheckinRequestHydrator;
 use App\Models\Station;
 use App\Models\Trip;
 use App\Models\User;
@@ -20,6 +22,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\FeatureTestCase;
+use Tests\Helpers\CheckinRequestTestHydrator;
 
 class CheckinTest extends FeatureTestCase
 {
@@ -131,14 +134,7 @@ class CheckinTest extends FeatureTestCase
         );
 
         try {
-            TrainCheckinController::checkin(
-                user:        $user,
-                trip:        $baseTrip,
-                origin:      $baseTrip->originStation,
-                departure:   $baseTrip->departure,
-                destination: $baseTrip->destinationStation,
-                arrival:     $baseTrip->arrival,
-            );
+            TrainCheckinController::checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($baseTrip));
         } catch (HafasException $e) {
             $this->markTestSkipped($e->getMessage());
         }
@@ -146,14 +142,7 @@ class CheckinTest extends FeatureTestCase
         $caseCount = 1; //This variable is needed to output error messages in case of a failed test
         foreach ($collisionTrips as $trip) {
             try {
-                TrainCheckinController::checkin(
-                    user:        $user,
-                    trip:        $trip,
-                    origin:      $trip->originStation,
-                    departure:   $trip->departure,
-                    destination: $trip->destinationStation,
-                    arrival:     $trip->arrival,
-                );
+                TrainCheckinController::checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($trip));
                 $this->fail("Expected exception for Collision Case $caseCount not thrown");
             } catch (CheckInCollisionException $exception) {
                 $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);
@@ -166,14 +155,7 @@ class CheckinTest extends FeatureTestCase
         //check normal checkin possibility
         foreach ($nonCollisionTrips as $trip) {
             try {
-                TrainCheckinController::checkin(
-                    user:        $user,
-                    trip:        $trip,
-                    origin:      $trip->originStation,
-                    departure:   $trip->departure,
-                    destination: $trip->destinationStation,
-                    arrival:     $trip->arrival,
-                );
+                TrainCheckinController::checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($trip));
                 $this->assertTrue(true);
             } catch (CheckInCollisionException $exception) {
                 $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);

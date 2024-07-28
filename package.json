@@ -7,18 +7,19 @@
     },
     "devDependencies": {
         "@popperjs/core": "^2.11",
-        "@vitejs/plugin-vue": "^4.3.3",
+        "@types/luxon": "^3.4.2",
+        "@vitejs/plugin-vue": "^5.0.5",
         "bootstrap": "^5.3",
         "jquery": "^3.7.0",
-        "laravel-vite-plugin": "^1.0.0",
+        "laravel-vite-plugin": "^1.0.5",
         "lodash": "^4.17.21",
-        "sass": "^1.74.1",
-        "vite": "^5.2.8"
+        "sass": "^1.77.8",
+        "vite": "^5.3.3"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.5.2",
-        "@vuepic/vue-datepicker": "^8.4.0",
-        "apexcharts": "^3.46.0",
+        "@vuepic/vue-datepicker": "^9.0.1",
+        "apexcharts": "^3.50.0",
         "awesomplete": "^1.1.5",
         "bootstrap-cookie-alert": "^1.2.1",
         "chart.js": "^2.9.4",

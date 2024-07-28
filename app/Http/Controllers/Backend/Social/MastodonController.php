@@ -94,7 +94,8 @@ abstract class MastodonController extends Controller
             $info = Mastodon::domain($domain)->createApp(
                 client_name:   config('trwl.mastodon_appname'),
                 redirect_uris: config('trwl.mastodon_redirect'),
-                scopes:        'write read'
+                scopes:        'write read',
+                website:       config('app.url')
             );
             return MastodonServer::updateOrCreate([
                                                       'domain' => $domain,

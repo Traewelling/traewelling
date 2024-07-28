@@ -3,6 +3,7 @@
 @section('title', 'Report ' . $report->id)
 
 @section('content')
+    @php /** @var \App\Models\Report $report */ @endphp
     <div class="row">
         <div class="col-md-3">
             <div class="card mb-3">
@@ -24,7 +25,30 @@
                                 </a>
                             @endisset
                         </dd>
-                        <dt>Subject</dt>
+
+                        <dl>
+                            <dt>Subject</dt>
+                            <dd>
+                                @if( $report->subject_type === \App\Models\Trip::class )
+                                    <a href="{{ route('admin.trip.show', $report->subject_id) }}">
+                                        Trip #{{ $report->subject_id }}
+                                    </a>
+                                @elseif( $report->subject_type === \App\Models\User::class )
+                                    <a href="{{ route('admin.users.user', $report->subject_id) }}">
+                                        User #{{ $report->subject_id }}
+                                    </a>
+                                @elseif( $report->subject_type === \App\Models\Event::class )
+                                    <a href="{{ route('admin.events.edit', $report->subject_id) }}">
+                                        Event #{{ $report->subject_id }}
+                                    </a>
+                                @elseif( $report->subject_type === \App\Models\Status::class )
+                                    <a href="{{ route('admin.status.edit', ['statusId' => $report->subject_id]) }}">
+                                        Status #{{ $report->subject_id }}
+                                    </a>
+                                @endif
+                            </dd>
+                        </dl>
+                        <dt>Activity</dt>
                         <dd>
                             <a href="{{ route('admin.activity', ['subject_type' => $report->subject_type, 'subject_id' => $report->subject_id]) }}">
                                 {{ class_basename($report->subject_type) }} #{{ $report->subject_id }}
@@ -54,7 +78,7 @@
                             @endif
                         </dd>
                         <dt>Created at</dt>
-                        <dd>{{ $report->created_at }}</dd>
+                        <dd>{{ userTime($report->created_at, 'Y-m-d H:i:s', false) }}</dd>
                     </dl>
                 </div>
             </div>
@@ -65,6 +89,7 @@
                         <i class="fa-solid fa-magnifying-glass"></i>
                         Subject
                     </h2>
+
 
                     <code>ToDo: Show subject details depending on subject type</code>
                 </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Dto\Internal\CheckinSuccessDto;
 use App\Dto\Transport\Station as StationDto;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
@@ -15,9 +16,11 @@ use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
+use App\Http\Resources\CheckinSuccessResource;
 use App\Http\Resources\StationResource;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\TripResource;
+use App\Hydrators\CheckinRequestHydrator;
 use App\Models\Event;
 use App\Models\Station;
 use App\Models\User;
@@ -217,16 +220,16 @@ class TransportController extends Controller
      *          description="successful operation",
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="object",
-     *                  @OA\Property(property="id", type="int64", example=1),
+     *                  @OA\Property(property="id", type="int", example=1),
      *                  @OA\Property(property="category", ref="#/components/schemas/HafasTravelType"),
      *                  @OA\Property(property="number", type="string", example="4-a6s4-4"),
      *                  @OA\Property(property="lineName", type="string", example="S 4"),
-     *                  @OA\Property(property="journeyNumber", type="int64", example="34427"),
+     *                  @OA\Property(property="journeyNumber", type="int", example="34427"),
      *                  @OA\Property(property="origin", ref="#/components/schemas/Station"),
      *                  @OA\Property(property="destination", ref="#/components/schemas/Station"),
      *                  @OA\Property(property="stopovers", type="array",
      *                      @OA\Items(
-     *                          ref="#/components/schemas/Stopover"
+     *                          ref="#/components/schemas/StopoverResource"
      *                      )
      *                  ),
      *              )
@@ -340,7 +343,7 @@ class TransportController extends Controller
      *      @OA\Response(
      *          response=201,
      *          description="successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/CheckinResponse")
+     *          @OA\JsonContent(ref="#/components/schemas/CheckinSuccessResource")
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Unauthorized"),
@@ -354,7 +357,6 @@ class TransportController extends Controller
      * @param Request $request
      *
      * @return JsonResponse
-     * @throws NotConnectedException
      */
     public function create(Request $request): JsonResponse {
         $validated = $request->validate([
@@ -384,46 +386,9 @@ class TransportController extends Controller
         }
 
         try {
-            $searchKey          = empty($validated['ibnr']) ? 'id' : 'ibnr';
-            $trip               = HafasController::getHafasTrip($validated['tripId'], $validated['lineName']);
-            $originStation      = Station::where($searchKey, $validated['start'])->first();
-            $departure          = Carbon::parse($validated['departure']);
-            $destinationStation = Station::where($searchKey, $validated['destination'])->first();
-            $arrival            = Carbon::parse($validated['arrival']);
-            $travelReason       = Business::tryFrom($validated['business'] ?? Business::PRIVATE->value);
-            $event              = isset($validated['eventId']) ? Event::find($validated['eventId']) : null;
+            $checkinResponse = TrainCheckinController::checkin((new CheckinRequestHydrator($validated))->hydrateFromApi());
 
-            // check in the authenticated user
-            $checkinResponse           = TrainCheckinController::checkin(
-                user:           Auth::user(),
-                trip:           $trip,
-                origin:         $originStation,
-                departure:      $departure,
-                destination:    $destinationStation,
-                arrival:        $arrival,
-                travelReason:   $travelReason,
-                visibility:     StatusVisibility::tryFrom($validated['visibility'] ?? StatusVisibility::PUBLIC->value),
-                body:           $validated['body'] ?? null,
-                event:          $event,
-                force:          isset($validated['force']) && $validated['force'],
-                postOnMastodon: isset($validated['toot']) && $validated['toot'],
-                shouldChain:    isset($validated['chainPost']) && $validated['chainPost']
-            );
-            $checkinResponse['status'] = new StatusResource($checkinResponse['status']);
-
-            //Rewrite ['points'] so the DTO will match the documented structure -> non-breaking api change
-            $pointsCalculation         = $checkinResponse['points'];
-            $checkinResponse['points'] = [
-                'points'      => $pointsCalculation->points,
-                'calculation' => [
-                    'base'     => $pointsCalculation->basePoints,
-                    'distance' => $pointsCalculation->distancePoints,
-                    'factor'   => $pointsCalculation->factor,
-                    'reason'   => $pointsCalculation->reason->value,
-                ],
-                'additional'  => null, //unused old attribute (not removed so this isn't breaking)
-            ];
-
+            //ToDo: Check if documented structure has changed
             // if isset, check in the other users with their default values
             foreach ($withUsers ?? [] as $user) {
                 $checkin = TrainCheckinController::checkin(
@@ -440,7 +405,7 @@ class TransportController extends Controller
                 $user->notify(new YouHaveBeenCheckedIn($checkin['status'], auth()->user()));
             }
 
-            return $this->sendResponse($checkinResponse, 201); //ToDo: Check if documented structure has changed
+            return $this->sendResponse(new CheckinSuccessResource($checkinResponse), 201);
         } catch (CheckInCollisionException $exception) {
             return $this->sendError([
                                         'status_id' => $exception->checkin->status_id,

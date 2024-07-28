@@ -10,7 +10,9 @@ use App\Http\Resources\TripResource;
 use App\Models\HafasOperator;
 use App\Models\Station;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Enum;
 
@@ -22,15 +24,18 @@ class TripController extends Controller
      *
      * @param Request $request
      *
-     * @return TripResource
+     * @return TripResource|Response
      *
      * @todo add docs
      * @todo currently the stations need to be in the database. We need to add a fallback to HAFAS.
      *       -> later solve the problem for non-existing stations
      */
-    public function createTrip(Request $request): TripResource {
+    public function createTrip(Request $request): TripResource|JsonResponse {
         if (!auth()->user()?->can('create-manual-trip')) {
-            abort(403, 'this endpoint is currently only available for beta users');
+            return response()->json(['message' => 'This endpoint is currently only available for open-beta users (you can enable open beta in your settings).'], 403);
+        }
+        if (auth()->user()?->can('disallow-manual-trips')) {
+            return response()->json(['message' => 'You are not allowed to create manual trips'], 403);
         }
 
         $validated = $request->validate(

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
 
 class UserController
 {
@@ -70,6 +71,28 @@ class UserController
         if ($user->password === null) {
             $this->sendResetLinkEmail($request);
         }
+        return redirect()->route('admin.users.user', ['id' => $validated['id']]);
+    }
+
+    public function updateRoles(Request $request): RedirectResponse {
+        $validated = $request->validate([
+                                            'id'    => ['required', 'integer', 'exists:users,id'],
+                                            'roles' => ['array'],
+                                        ]);
+        $user      = User::findOrFail($validated['id']);
+        $roles     = [];
+        foreach (Role::all() as $role) {
+            if ($role->name === 'admin') {
+                continue;
+            }
+            if (isset($validated['roles'][$role->name])) {
+                $roles[] = $role->name;
+            }
+        }
+        if ($user->hasRole('admin')) {
+            $roles[] = 'admin';
+        }
+        $user->syncRoles($roles);
         return redirect()->route('admin.users.user', ['id' => $validated['id']]);
     }
 }

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Backend\Transport;
 
-use App\Dto\PointCalculation;
-use App\Enum\Business;
+use App\Dto\Internal\CheckInRequestDto;
+use App\Dto\Internal\CheckinSuccessDto;
 use App\Enum\PointReason;
-use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
 use App\Events\UserCheckedIn;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
@@ -15,27 +14,22 @@ use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
-use App\Http\Resources\StatusResource;
 use App\Jobs\RefreshStopover;
 use App\Models\Checkin;
-use App\Models\Event;
 use App\Models\Station;
 use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Trip;
-use App\Models\User;
 use App\Notifications\UserJoinedConnection;
+use App\Repositories\CheckinHydratorRepository;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\ArrayShape;
 use PDOException;
 
 abstract class TrainCheckinController extends Controller
@@ -46,53 +40,34 @@ abstract class TrainCheckinController extends Controller
      * @throws CheckInCollisionException
      * @throws AlreadyCheckedInException
      */
-    #[ArrayShape([
-        'status'               => Status::class,
-        'points'               => PointCalculation::class,
-        'alsoOnThisConnection' => AnonymousResourceCollection::class
-    ])]
-    public static function checkin(
-        User             $user,
-        Trip             $trip,
-        Station          $origin,
-        Carbon           $departure,
-        Station          $destination,
-        Carbon           $arrival,
-        Business         $travelReason = Business::PRIVATE,
-        StatusVisibility $visibility = StatusVisibility::PUBLIC,
-        ?string          $body = null,
-        ?Event           $event = null,
-        bool             $force = false,
-        bool             $postOnMastodon = false,
-        bool             $shouldChain = false
-    ): array {
-        if ($departure->isAfter($arrival)) {
+    public static function checkin(CheckInRequestDto $dto): CheckinSuccessDto {
+        if ($dto->departure->isAfter($dto->arrival)) {
             throw new InvalidArgumentException('Departure time must be before arrival time');
         }
 
         try {
             $status = StatusBackend::createStatus(
-                user:       $user,
-                business:   $travelReason,
-                visibility: $visibility,
-                body:       $body,
-                event:      $event
+                user:       $dto->user,
+                business:   $dto->travelReason,
+                visibility: $dto->statusVisibility,
+                body:       $dto->body,
+                event:      $dto->event
             );
 
             $checkinResponse = self::createCheckin(
                 status:      $status,
-                trip:        $trip,
-                origin:      $origin,
-                destination: $destination,
-                departure:   $departure,
-                arrival:     $arrival,
-                force:       $force,
+                trip:        $dto->trip,
+                origin:      $dto->origin,
+                destination: $dto->destination,
+                departure:   $dto->departure,
+                arrival:     $dto->arrival,
+                force:       $dto->forceFlag,
             );
 
             UserCheckedIn::dispatch(
                 $status,
-                $postOnMastodon && $user->socialProfile?->mastodon_id !== null,
-                $shouldChain
+                $dto->postOnMastodonFlag && $dto->user->socialProfile?->mastodon_id !== null,
+                $dto->chainFlag
             );
 
             return $checkinResponse;
@@ -119,11 +94,6 @@ abstract class TrainCheckinController extends Controller
      * @throws ModelNotFoundException
      * @throws AlreadyCheckedInException
      */
-    #[ArrayShape([
-        'status'               => Status::class,
-        'points'               => PointCalculation::class,
-        'alsoOnThisConnection' => AnonymousResourceCollection::class
-    ])]
     private static function createCheckin(
         Status  $status,
         Trip    $trip,
@@ -132,7 +102,7 @@ abstract class TrainCheckinController extends Controller
         Carbon  $departure,
         Carbon  $arrival,
         bool    $force = false,
-    ): array {
+    ): CheckinSuccessDto {
         $trip->load('stopovers');
 
         //Note: Compare with ->format because of timezone differences!
@@ -189,6 +159,7 @@ abstract class TrainCheckinController extends Controller
             forceCheckin:    $force,
         );
         try {
+            /** @var Checkin $checkin */
             $checkin              = Checkin::create([
                                                         'status_id'               => $status->id,
                                                         'user_id'                 => $status->user_id,
@@ -208,11 +179,7 @@ abstract class TrainCheckinController extends Controller
                 }
             }
 
-            return [
-                'status'               => $status,
-                'points'               => $pointCalculation,
-                'alsoOnThisConnection' => StatusResource::collection($alsoOnThisConnection)
-            ];
+            return new CheckinSuccessDto($status, $pointCalculation, $alsoOnThisConnection);
         } catch (PDOException $exception) {
             if ($exception->getCode() === 23000) { // Integrity constraint violation: Duplicate entry
                 throw new AlreadyCheckedInException();
@@ -264,10 +231,11 @@ abstract class TrainCheckinController extends Controller
      * @return Trip
      * @throws HafasException
      * @throws StationNotOnTripException
+     * @throws \JsonException
      * @api v1
      */
     public static function getHafasTrip(string $tripId, string $lineName, int $startId): Trip {
-        $hafasTrip = HafasController::getHafasTrip($tripId, $lineName);
+        $hafasTrip = (new CheckinHydratorRepository())->getHafasTrip($tripId, $lineName);
         $hafasTrip->loadMissing(['stopovers', 'originStation', 'destinationStation']);
 
         $originStopover = $hafasTrip->stopovers->filter(function(Stopover $stopover) use ($startId) {

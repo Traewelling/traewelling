@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property UTCDateTime $departure_real
  * @property string      $departure_platform_planned
  * @property string      $departure_platform_real
+ * @property bool        $isArrivalDelayed
+ * @property bool        $isDepartureDelayed
  * @property bool        $cancelled
  *
  * relations
@@ -59,7 +61,10 @@ class Stopover extends Model
         'departure_planned'          => UTCDateTime::class,
         'departure_real'             => UTCDateTime::class,
         'departure_platform_planned' => 'string',
-        'departure_platform_real'    => 'string'
+        'departure_platform_real'    => 'string',
+        'isArrivalDelayed'           => 'boolean',
+        'isDepartureDelayed'         => 'boolean',
+        'cancelled'                  => 'boolean',
     ];
 
     public function trip(): BelongsTo {

@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
+use OpenApi\Annotations as OA;
 
 class StatusController extends Controller
 {
@@ -561,9 +562,11 @@ class StatusController extends Controller
      *          description="successful operation",
      *          @OA\JsonContent(
      *              @OA\Property (
-     *                  property="data",
-     *                  type="object",
-     *                      ref="#/components/schemas/Stopovers"
+     *                  property="data", type="object",
+     *                  @OA\Property(
+     *                      property="1", type="array", description="Array of stopovers. Key describes trip id",
+     *                      @OA\Items(ref="#/components/schemas/StopoverResource")
+     *                  )
      *              )
      *          )
      *       ),

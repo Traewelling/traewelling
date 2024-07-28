@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Trip ' . $trip->trip_id)
+@section('title', 'Trip ' . $trip->id)
 
 @section('content')
 
@@ -12,6 +12,10 @@
                         <tr>
                             <th>ID</th>
                             <td><code>{{ $trip->id }}</code></td>
+                        </tr>
+                        <tr>
+                            <th>Trip ID</th>
+                            <td><input class="w-100" type="text" value="{{ $trip->trip_id }}" disabled/></td>
                         </tr>
                         <tr>
                             <th>Category</th>
@@ -46,7 +50,7 @@
                         </tr>
                         <tr>
                             <th>Last refreshed</th>
-                            <td>{{ $trip->last_refreshed?->format('c') }}</td>
+                            <td>{{ userTime($trip->last_refreshed?->format('c')) }}</td>
                         </tr>
                         <tr>
                             <th>Polyline</th>
@@ -140,7 +144,7 @@
                                         {{userTime($stopover->arrival_planned)}}
                                     </td>
                                     <td title="{{$stopover->arrival_real?->format('c')}}">
-                                        {{$stopover->arrival_real?->format('H:i')}}
+                                        {{userTime($stopover->arrival_real?->format('H:i'))}}
                                     </td>
                                     <td title="{{$stopover->departure_planned?->format('c')}}">
                                         {{userTime($stopover->departure_planned)}}

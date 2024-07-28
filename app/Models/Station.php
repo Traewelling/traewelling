@@ -10,17 +10,17 @@ use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
- * @property int     $id
- * @property int     $ibnr
- * @property string  $rilIdentifier
- * @property string  $name
- * @property double  $latitude
- * @property double  $longitude
- * @property int     $time_offset
- * @property bool    $shift_time
- * @property Event[] $events
- * @property Carbon  $created_at
- * @property Carbon  $updated_at
+ * @property int      $id
+ * @property int|null $ibnr
+ * @property string   $rilIdentifier
+ * @property string   $name
+ * @property double   $latitude
+ * @property double   $longitude
+ * @property int      $time_offset
+ * @property bool     $shift_time
+ * @property Event[]  $events
+ * @property Carbon   $created_at
+ * @property Carbon   $updated_at
  * @todo rename table to "Station" (without Train - we have more than just trains)
  */
 class Station extends Model

@@ -16,7 +16,7 @@ class Webhook {
      * @OA\Property(
      *     title="ID",
      *     description="ID",
-     *     format="int64",
+     *     format="int",
      *     example=12345
      * )
      *
@@ -29,7 +29,7 @@ class Webhook {
      * @OA\Property(
      *     title="ClientID",
      *     description="ID of the client which created this webhook",
-     *     format="int64",
+     *     format="int",
      *     example=12345
      * )
      *
@@ -42,7 +42,7 @@ class Webhook {
      * @OA\Property(
      *     title="UserID",
      *     description="ID of the user which created this webhook",
-     *     format="int64",
+     *     format="int",
      *     example=12345
      * )
      *

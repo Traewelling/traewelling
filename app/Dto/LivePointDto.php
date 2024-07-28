@@ -69,7 +69,7 @@ readonly class LivePointDto implements JsonSerializable
      * @OA\Property(
      *     title="statusId",
      *     description="ID of status",
-     *     format="int64",
+     *     format="int",
      *     example=12345
      * )
      **/

@@ -102,6 +102,16 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <div class="col-md-6 offset-md-4">
+                                <div class="custom-control custom-checkbox custom-control-inline">
+                                    <input id="points_enabled" type="checkbox"
+                                           class="custom-control-input @error('points_enabled') is-invalid @enderror"
+                                           name="points_enabled" {{ auth()->user()->points_enabled ? 'checked' : '' }} />
+                                    {{ __('user.points-enabled') }}
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="form-group row">
                             <div class="col-md-6 offset-md-4">

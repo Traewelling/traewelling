@@ -1,3 +1,4 @@
+@php use Spatie\Permission\Models\Role; @endphp
 @extends('admin.layout')
 
 @section('title', 'User: ' . $user->username)
@@ -121,19 +122,26 @@
             </div>
             <div class="card mb-3">
                 <div class="card-body">
-                    <h2 class="fs-5">Assigned roles</h2>
-                    @if($user->roles->count() > 0)
+                    <h2 class="fs-5">Roles</h2>
+                    <form method="post" action="{{ route('admin.users.update-roles') }}">
                         <ul>
-                            @foreach($user->roles as $role)
-                                <li><code>{{ $role->name }}</code></li>
+                            @foreach(Role::all() as $role)
+                                <li>
+                                    <input id="{{$role->name}}" type="checkbox" name="roles[{{ $role->name }}]"
+                                           @if($role->name === 'admin') disabled @endif
+                                           value="1" @if($user->hasRole($role->name)) checked @endif/>
+                                    <label for="{{$role->name}}">{{ $role->name }}</label>
+                                    <br/>
+                                    @foreach($role->permissions->pluck('name') as $permission)
+                                        <code>{{$permission}}</code> |
+                                    @endforeach
+                                </li>
                             @endforeach
                         </ul>
-                    @else
-                        <span class="text-danger">
-                            <i class="fa-solid fa-times"></i>
-                            No roles assigned - default permissions apply
-                        </span>
-                    @endif
+                        <input type="hidden" name="id" value="{{ $user->id }}"/>
+                        <input type="submit" class="btn btn-primary" value="Update"/>
+                        @csrf
+                    </form>
                 </div>
             </div>
         </div>
@@ -195,7 +203,7 @@
                                         </td>
                                         <td>
                                             <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip->id])}}">
-                                                {{ $status->checkin->trip_id }}
+                                                {{ $status->checkin->id }} ({{ $status->checkin->trip->source }})
                                             </a>
                                             <br/>
                                             <code>{{ $status->checkin->trip->linename }}</code>

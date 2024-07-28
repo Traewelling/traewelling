@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use stdClass;
@@ -15,7 +16,11 @@ class LeaderboardController extends Controller
 {
     private static string $cacheRetentionConfigKey = 'trwl.cache.leaderboard-retention-seconds';
 
-    public static function renderMonthlyLeaderboard(string $date): Renderable {
+    public static function renderMonthlyLeaderboard(string $date): Renderable|RedirectResponse {
+        if (auth()->user()?->points_enabled === false) {
+            return redirect()->route('dashboard');
+        }
+
         $date = Carbon::parse($date);
 
         $leaderboard = Cache::remember(
@@ -32,7 +37,11 @@ class LeaderboardController extends Controller
         ]);
     }
 
-    public function renderLeaderboard(): Renderable {
+    public function renderLeaderboard(): Renderable|RedirectResponse {
+        if (auth()->user()?->points_enabled === false) {
+            return redirect()->route('dashboard');
+        }
+
         $ttl = config(self::$cacheRetentionConfigKey);
 
         $usersLeaderboard = Cache::remember(
