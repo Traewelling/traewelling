@@ -390,7 +390,7 @@ class TransportController extends Controller
                 $dto->setUser($user);
                 $dto->setStatusVisibility($user->default_status_visibility);
                 $checkin = TrainCheckinController::checkin($dto);
-                $user->notify(new YouHaveBeenCheckedIn($checkin['status'], auth()->user()));
+                $user->notify(new YouHaveBeenCheckedIn($checkin->status, auth()->user()));
             }
 
             return $this->sendResponse(new CheckinSuccessResource($checkinResponse), 201);
