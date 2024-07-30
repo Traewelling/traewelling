@@ -17,19 +17,24 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property ReportReason $reason
  * @property string       $description
  * @property int          $reporter_id
+ * @property int          $admin_notification_id
  */
 class Report extends Model
 {
     use LogsActivity;
 
-    protected $fillable = ['status', 'subject_type', 'subject_id', 'reason', 'description', 'reporter_id'];
+    protected $fillable = [
+        'status', 'subject_type', 'subject_id', 'reason',
+        'description', 'reporter_id', 'admin_notification_id'
+    ];
     protected $casts    = [
-        'status'       => ReportStatus::class,
-        'subject_type' => 'string',
-        'subject_id'   => 'integer',
-        'reason'       => ReportReason::class,
-        'description'  => 'string',
-        'reporter_id'  => 'integer',
+        'status'                => ReportStatus::class,
+        'subject_type'          => 'string',
+        'subject_id'            => 'integer',
+        'reason'                => ReportReason::class,
+        'description'           => 'string',
+        'reporter_id'           => 'integer',
+        'admin_notification_id' => 'integer' //telegram message id
     ];
 
     public function reporter(): BelongsTo {
