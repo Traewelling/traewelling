@@ -1514,6 +1514,11 @@
                                     "mapProvider": {
                                         "type": "string",
                                         "nullable": true
+                                    },
+                                    "friendCheckin": {
+                                        "type": "string",
+                                        "example": "forbidden",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -3447,8 +3452,8 @@
                 "tags": [
                     "Checkin"
                 ],
-                "summary": "Create a checkin",
-                "operationId": "createTrainCheckin",
+                "summary": "Check in to a trip.",
+                "operationId": "createCheckin",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -3473,11 +3478,14 @@
                     "400": {
                         "description": "Bad request"
                     },
-                    "409": {
-                        "description": "Checkin collision"
-                    },
                     "401": {
                         "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "409": {
+                        "description": "Checkin collision"
                     }
                 },
                 "security": [
@@ -3644,6 +3652,154 @@
                         "token": []
                     }
                 ]
+            }
+        },
+        "/user/{user}/trusted": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get all trusted users for a user",
+                "description": "Get all trusted users for the current user or a specific user (admin only).",
+                "operationId": "trustedUserIndex",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID of the user (or string 'self' for current user)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of trusted users"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Add a user to the trusted users for a user",
+                "description": "Add a user to the trusted users for the current user or a specific user (admin only).",
+                "operationId": "trustedUserStore",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID of the user (or string 'self' for current user) who want's to trust.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "expires_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2024-07-28T00:00:00Z"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User added to trusted users"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/{user}/trusted/{trustedId}": {
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Remove a user from the trusted users for a user",
+                "description": "Remove a user from the trusted users for the current user or a specific user (admin only).",
+                "operationId": "trustedUserDestroy",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID of the user (or string 'self' for current user)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "trusted",
+                        "in": "path",
+                        "description": "ID of the trusted user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "User removed from trusted users"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
             }
         },
         "/settings/account": {
@@ -4569,6 +4725,16 @@
                 ],
                 "example": "suburban"
             },
+            "FriendCheckinSetting": {
+                "title": "FriendCheckinSetting",
+                "type": "string",
+                "enum": [
+                    "forbidden",
+                    "friends",
+                    "list"
+                ],
+                "example": "forbidden"
+            },
             "CheckinSuccessResource": {
                 "title": "CheckinResponse",
                 "properties": {
@@ -5039,6 +5205,20 @@
                 },
                 "type": "object"
             },
+            "TrustedUserResource": {
+                "title": "TrustedUser",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/LightUserResource"
+                    },
+                    "expiresAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-07-28T00:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
             "UserAuthResource": {
                 "title": "UserAuth",
                 "properties": {
@@ -5138,8 +5318,6 @@
                 "description": "Fields for creating a train checkin",
                 "properties": {
                     "body": {
-                        "title": "body",
-                        "description": "Text that should be added to the post",
                         "type": "string",
                         "maxLength": 280,
                         "example": "Meine erste Fahrt nach Knuffingen!",
@@ -5152,76 +5330,81 @@
                         "$ref": "#/components/schemas/StatusVisibility"
                     },
                     "eventId": {
-                        "title": "eventId",
                         "description": "Id of an event the status should be connected to",
                         "type": "integer",
+                        "example": "1",
                         "nullable": true
                     },
                     "toot": {
-                        "title": "toot",
                         "description": "Should this status be posted to mastodon?",
                         "type": "boolean",
                         "example": "false",
                         "nullable": true
                     },
                     "chainPost": {
-                        "title": "chainPost",
                         "description": "Should this status be posted to mastodon as a chained post?",
                         "type": "boolean",
                         "example": "false",
                         "nullable": true
                     },
                     "ibnr": {
-                        "title": "ibnr",
-                        "description": "If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they\n     *     should be given as the Träwelling-ID. Default behavior is `false`.",
+                        "description": "If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they should be given as the Träwelling-ID. Default behavior is `false`.",
                         "type": "boolean",
                         "example": "true",
                         "nullable": true
                     },
                     "tripId": {
-                        "title": "tripId",
-                        "description": "The HAFAS tripId for the to be checked in train",
-                        "example": "1|323306|1|80|17072022"
+                        "description": "The tripId for the to be checked in train",
+                        "type": "string",
+                        "example": "b37ff515-22e1-463c-94de-3ad7964b5cb8",
+                        "nullable": true
                     },
                     "lineName": {
-                        "title": "lineName",
                         "description": "The line name for the to be checked in train",
-                        "example": "S 4"
+                        "type": "string",
+                        "example": "S 4",
+                        "nullable": true
                     },
                     "start": {
-                        "title": "start",
                         "description": "The Station-ID of the starting point (see `ibnr`)",
                         "type": "integer",
                         "example": "8000191"
                     },
                     "destination": {
-                        "title": "destination",
-                        "description": "The Station-ID of the destination (see `ibnr`)",
+                        "description": "The Station-ID of the destination point (see `ibnr`)",
                         "type": "integer",
-                        "example": "8079045"
+                        "example": "8000192"
                     },
                     "departure": {
-                        "title": "departure",
                         "description": "Timestamp of the departure",
+                        "type": "string",
+                        "format": "date-time",
                         "example": "2022-12-19T20:41:00+01:00"
                     },
                     "arrival": {
-                        "title": "arrival",
                         "description": "Timestamp of the arrival",
+                        "type": "string",
+                        "format": "date-time",
                         "example": "2022-12-19T20:42:00+01:00"
                     },
                     "force": {
-                        "title": "force",
-                        "description": "If true, the checkin will be created, even if a colliding checkin exists. No points will be\n     *     awarded.",
+                        "description": "If true, the checkin will be created, even if a colliding checkin exists. No points will be awarded.",
                         "type": "boolean",
                         "example": "false",
                         "nullable": true
+                    },
+                    "with": {
+                        "description": "If set, the checkin will be created for all given users as well. The user creating the checkin must be allowed to checkin for the other users. Max. 10 users.",
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "example": "1"
+                        },
+                        "example": "[1, 2]",
+                        "nullable": true
                     }
                 },
-                "type": "object",
-                "xml": {
-                    "name": "CheckinRequestBody"
-                }
+                "type": "object"
             },
             "EventSuggestion": {
                 "title": "EventSuggestion",

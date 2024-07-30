@@ -48,18 +48,16 @@ use Spatie\Permission\Traits\HasRoles;
  * @property int                  privacy_hide_days
  * @property string               language
  * @property Carbon               last_login
- * @property Status[]           $statuses
- * @property SocialLoginProfile socialProfile
- * @property int                points
- * @property boolean            userInvisibleToMe
- * @property string             mastodonUrl
- * @property int                train_distance
- * @property int                train_duration
- * @property boolean            following
- * @property boolean            followPending
- * @property boolean            muted
- * @property boolean            isAuthUserBlocked
- * @property boolean            isBlockedByAuthUser
+ * @property int                  points
+ * @property boolean              userInvisibleToMe
+ * @property string               mastodonUrl
+ * @property int                  train_distance
+ * @property int                  train_duration
+ * @property boolean              following
+ * @property boolean              followPending
+ * @property boolean              muted
+ * @property boolean              isAuthUserBlocked
+ * @property boolean              isBlockedByAuthUser
  *
  * // relationships
  * @property Collection           trainCheckins

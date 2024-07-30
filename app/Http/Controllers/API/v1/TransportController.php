@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Dto\Internal\CheckinSuccessDto;
 use App\Dto\Transport\Station as StationDto;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
@@ -10,7 +9,6 @@ use App\Enum\TravelType;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
-use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
@@ -18,10 +16,8 @@ use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Http\Resources\CheckinSuccessResource;
 use App\Http\Resources\StationResource;
-use App\Http\Resources\StatusResource;
 use App\Http\Resources\TripResource;
 use App\Hydrators\CheckinRequestHydrator;
-use App\Models\Event;
 use App\Models\Station;
 use App\Models\User;
 use App\Notifications\YouHaveBeenCheckedIn;
@@ -386,22 +382,14 @@ class TransportController extends Controller
         }
 
         try {
-            $checkinResponse = TrainCheckinController::checkin((new CheckinRequestHydrator($validated))->hydrateFromApi());
+            $dto             = (new CheckinRequestHydrator($validated))->hydrateFromApi();
+            $checkinResponse = TrainCheckinController::checkin($dto);
 
-            //ToDo: Check if documented structure has changed
             // if isset, check in the other users with their default values
             foreach ($withUsers ?? [] as $user) {
-                $checkin = TrainCheckinController::checkin(
-                    user:         $user,
-                    trip:         $trip,
-                    origin:       $originStation,
-                    departure:    $departure,
-                    destination:  $destinationStation,
-                    arrival:      $arrival,
-                    travelReason: $travelReason,
-                    visibility:   $user->default_status_visibility,
-                    event:        $event,
-                );
+                $dto->setUser($user);
+                $dto->setStatusVisibility($user->default_status_visibility);
+                $checkin = TrainCheckinController::checkin($dto);
                 $user->notify(new YouHaveBeenCheckedIn($checkin['status'], auth()->user()));
             }
 
