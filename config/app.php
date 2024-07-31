@@ -264,18 +264,6 @@ return [
         'email'    => env('MIX_LEGAL_EMAIL')
     ],
 
-    'telegram' => [
-        'admin_id' => env('TELEGRAM_ADMIN_ID'),
-        'token'    => env('TELEGRAM_TOKEN')
-    ],
-
-    'admin' => [
-        'notification' => [
-            'url'     => env('ADMIN_NOTIFICATION_URL'),
-            'chat_id' => env('ADMIN_NOTIFICATION_CHAT_ID'),
-        ]
-    ],
-
     'privacy' => [
         'account-deletion' => [
             'send-notification' => (bool) env('PRIVACY_ACCOUNT_DELETION_SEND_NOTIFICATION', false),
@@ -284,5 +272,4 @@ return [
     ],
 
     'wikidata_fetcher_enabled' => env('WIKIDATA_FETCHER_ENABLED', false),
-
 ];

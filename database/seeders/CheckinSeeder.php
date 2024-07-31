@@ -3,11 +3,10 @@
 namespace Database\Seeders;
 
 use App\Dto\Internal\CheckInRequestDto;
-use App\Enum\StatusTagKey;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Models\Event;
-use App\Models\Trip;
 use App\Models\StatusTag;
+use App\Models\Trip;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Seeder;
@@ -30,7 +29,7 @@ class CheckinSeeder extends Seeder
 
             try {
                 $checkinResponse = TrainCheckinController::checkin($dto);
-                $status          = $checkinResponse['status'];
+                $status          = $checkinResponse->status;
                 StatusTag::factory(['status_id' => $status->id])->create();
             } catch (Exception) {
                 continue;

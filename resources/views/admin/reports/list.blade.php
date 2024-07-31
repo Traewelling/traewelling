@@ -61,6 +61,12 @@
                                         <i class="fa fa-eye"></i>
                                         View
                                     </a>
+                                    <a href="#" class="btn btn-sm btn-outline-primary edit-close"
+                                       data-id="{{ $report->id }}">
+                                        <i class="fa fa-close"></i>
+                                        Close
+                                    </a>
+
                                 </td>
                             </tr>
                         @endforeach
@@ -72,4 +78,37 @@
             </div>
         </div>
     </div>
+
+    <script>
+        let closeButtons = document.getElementsByClassName('edit-close');
+
+        let closeFunction = function () {
+            let id = this.getAttribute('data-id');
+
+            if (confirm('Are you sure you want to close report #' + id + '?')) {
+                fetch('/api/v1/report/' + id, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        status: 'closed',
+                        description: 'Closed by admin'
+                    }),
+                }).then(response => {
+                    if (response.status === 200) {
+                        window.location.reload();
+                        return;
+                    }
+                    response.json().then(data => {
+                        alert(data.message ?? 'Something went wrong. Please try again later.');
+                    });
+                });
+            }
+        }
+
+        Array.from(closeButtons).forEach(function (element) {
+            element.addEventListener('click', closeFunction);
+        });
+    </script>
 @endsection

@@ -87,6 +87,10 @@ use Throwable;
  *     name="Webhooks",
  *     description="Manage Webhooks for third party applications"
  * )
+ * @OA\Tag(
+ *     name="Report",
+ *     description="Report a Status, Event or User to the admins"
+ * )
  */
 class Controller extends \App\Http\Controllers\Controller
 {

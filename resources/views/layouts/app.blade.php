@@ -70,10 +70,12 @@
                                        href="{{ route('dashboard') }}">{{ __('menu.dashboard') }}</a>
                                 </li>
                             @endauth
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->is('leaderboard') ? 'active' : '' }}"
-                                   href="{{ route('leaderboard') }}">{{ __('menu.leaderboard') }}</a>
-                            </li>
+                            @if(!auth()->check() || auth()->user()->points_enabled)
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->is('leaderboard') ? 'active' : '' }}"
+                                       href="{{ route('leaderboard') }}">{{ __('menu.leaderboard') }}</a>
+                                </li>
+                            @endif
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->is('statuses/active') ? 'active' : '' }}"
                                    href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
@@ -146,14 +148,13 @@
                                                 <i class="fas fa-cog"></i> {{ __('menu.settings') }}
                                             </a>
                                         </li>
-                                        @if(config('ticket.host') !== null)
-                                            <li>
-                                                <a class="dropdown-item" href="{{ route('static.about') }}">
-                                                    <i class="fa-solid fa-bug" aria-hidden="true"></i>
-                                                    {{ __('help') }}
-                                                </a>
-                                            </li>
-                                        @endif
+                                        <li>
+                                            <a class="dropdown-item" href="https://help.traewelling.de/faq/"
+                                               target="_blank">
+                                                <i class="fa-solid fa-bug" aria-hidden="true"></i>
+                                                {{ __('help') }}
+                                            </a>
+                                        </li>
                                         @if(auth()->user()->hasRole('admin') || auth()->user()->can('view-events'))
                                             <li>
                                                 <a class="dropdown-item" href="{{route('admin.dashboard')}}">
@@ -205,7 +206,8 @@
                                     </a>
                                 </li>
                                 <li class="nav-item mb-2">
-                                    <a href="{{ route('static.about') }}" class="nav-link p-0 text-body-secondary">
+                                    <a href="https://help.traewelling.de/faq/" target="_blank"
+                                       class="nav-link p-0 text-body-secondary">
                                         {{ __('menu.about') }}
                                     </a>
                                 </li>

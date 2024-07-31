@@ -7,4 +7,5 @@ enum ReportableSubject: string
     case EVENT  = 'Event';
     case STATUS = 'Status';
     case USER   = 'User';
+    case TRIP   = 'Trip';
 }

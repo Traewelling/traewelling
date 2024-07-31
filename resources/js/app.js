@@ -67,7 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (document.getElementById("nav-main")) {
         const app = createApp({});
         app.component("NotificationBell", NotificationBell);
-        app.config.devtools = true;
         app.use(pinia);
         app.use(i18nVue, i18nOptions);
         app.mount("#nav-main");

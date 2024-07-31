@@ -39,6 +39,8 @@ export default {
                 {value: "taxi", text: "taxi"},
                 {value: "plane", text: "plane"},
             ],
+            disallowed: ["fahrrad", "auto", "fuss", "fuß", "foot", "car", "bike"],
+            showDisallowed: false,
         };
     },
     methods: {
@@ -100,7 +102,7 @@ export default {
 
                         window.location.href = `/stationboard?${new URLSearchParams(query).toString()}`;
                     });
-                } else if (data.status === 422) {
+                } else if (data.status === 403 || data.status === 422) {
                     data.json().then((result) => {
                         alert(result.message);
                     });
@@ -117,6 +119,11 @@ export default {
         },
         setStopoverArrival(time, key) {
             this.stopovers[key].arrivalPlanned = DateTime.fromISO(time).setZone(this.destinationTimezone);
+        },
+        checkDisallowed() {
+            this.showDisallowed = this.disallowed.some((disallowed) => {
+                return this.trainTypeInput.toLowerCase().includes(disallowed);
+            });
         },
     }
 }
@@ -176,7 +183,8 @@ export default {
                 <div class="row g-3 mt-1">
                     <div class="col-4">
                         <input type="text" class="form-control mobile-input-fs-16"
-                               :placeholder="trans('trip_creation.form.line')" v-model="trainTypeInput">
+                               :placeholder="trans('trip_creation.form.line')" v-model="trainTypeInput"
+                               @focusout="checkDisallowed">
                     </div>
                     <div class="col-4">
                         <input type="text" class="form-control mobile-input-fs-16"
@@ -189,11 +197,19 @@ export default {
                         </select>
                     </div>
                 </div>
+                <div class="row g-3 mt-1">
+                    <span class="text-danger" v-show="showDisallowed">
+                        <i class="fas fa-triangle-exclamation"></i>
+                        {{ trans('trip_creation.limitations.6') }}
+                        <a :href="trans('trip_creation.limitations.6.link')" target="_blank">
+                            {{ trans('trip_creation.limitations.6.rules') }}
+                        </a>
+                    </span>
+                </div>
                 <div class="row justify-content-end mt-3">
                     <div class="col-4">
-                        <button type="submit" class="btn btn-primary float-end">{{
-                                trans("trip_creation.form.save")
-                            }}
+                        <button type="submit" class="btn btn-primary float-end">
+                            {{ trans("trip_creation.form.save") }}
                         </button>
                     </div>
                 </div>
@@ -216,6 +232,13 @@ export default {
                 <li>{{ trans("trip_creation.limitations.4") }}</li>
                 <li>{{ trans("trip_creation.limitations.5") }}</li>
             </ul>
+
+            <p class="fw-bold text-danger">
+                {{ trans("trip_creation.limitations.6") }}
+                <a :href="trans('trip_creation.limitations.6.link')" target="_blank">
+                    {{ trans('trip_creation.limitations.6.rules') }}
+                </a>
+            </p>
         </div>
     </div>
 </template>

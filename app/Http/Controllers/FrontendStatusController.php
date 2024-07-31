@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Backend\EventController as EventBackend;
-use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
@@ -13,7 +11,6 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 
 /**
@@ -24,33 +21,20 @@ class FrontendStatusController extends Controller
     public function getDashboard(): Renderable|RedirectResponse {
         $statuses = DashboardController::getPrivateDashboard(auth()->user());
 
-        if ($statuses->isEmpty() || auth()->user()->follows->count() === 0) {
-            if (Session::has('checkin-success')) {
-                return redirect()->route('globaldashboard')
-                                 ->with('checkin-success', Session::get('checkin-success'));
-            }
-            if (Session::has('error')) {
-                return redirect()->route('globaldashboard')
-                                 ->with('error', Session::get('error'));
-            }
-            if (Session::has('checkin-collision')) {
-                return redirect()->route('globaldashboard')
-                                 ->with('checkin-collision', Session::get('checkin-collision'));
-            }
-            return redirect()->route('globaldashboard');
-        }
         return view('dashboard', [
-            'statuses' => $statuses,
-            'latest'   => StationController::getLatestArrivals(auth()->user()),
-            'future'   => StatusBackend::getFutureCheckins()
+            'statuses'         => $statuses,
+            'latest'           => StationController::getLatestArrivals(auth()->user()),
+            'future'           => StatusBackend::getFutureCheckins(),
+            'showGlobalButton' => auth()->user()->follows->count() === 0
         ]);
     }
 
     public function getGlobalDashboard(): Renderable {
         return view('dashboard', [
-            'statuses' => DashboardController::getGlobalDashboard(Auth::user()),
-            'latest'   => StationController::getLatestArrivals(Auth::user()),
-            'future'   => StatusBackend::getFutureCheckins()
+            'statuses'         => DashboardController::getGlobalDashboard(Auth::user()),
+            'latest'           => StationController::getLatestArrivals(Auth::user()),
+            'future'           => StatusBackend::getFutureCheckins(),
+            'showGlobalButton' => false
         ]);
     }
 
