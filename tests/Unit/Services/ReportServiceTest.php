@@ -12,7 +12,7 @@ class ReportServiceTest extends UnitTestCase
 {
 
     /**
-     * @dataProvider testCheckStringProvider
+     * @dataProvider checkStringProvider
      */
     public function testCheckString(array $expected, string $haystack): void {
         $reportService = new ReportService();
