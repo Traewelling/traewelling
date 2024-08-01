@@ -10,6 +10,7 @@ use App\Http\Controllers\HafasController;
 use App\Models\Event;
 use App\Models\EventSuggestion;
 use App\Notifications\EventSuggestionProcessed;
+use App\Services\TelegramService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -107,9 +108,9 @@ class EventController extends Controller
                                               ]);
         $eventSuggestion = EventSuggestion::find($validated['id']);
         $eventSuggestion->update(['processed' => true]);
-        if (!App::runningUnitTests() && config('app.admin.notification.url') !== null) {
+        if (!App::runningUnitTests() && config('services.telegram.admin.active')) {
             Http::post(config('app.admin.notification.url'), [
-                'chat_id'    => config('app.admin.notification.chat_id'),
+                'chat_id'    => config('services.telegram.admin.chat_id'),
                 'text'       => strtr("<b>Event suggestion denied</b>" . PHP_EOL .
                                       "Title: :name" . PHP_EOL
                                       . "Denial reason: :reason" . PHP_EOL
@@ -179,17 +180,15 @@ class EventController extends Controller
                                ]);
 
         $eventSuggestion->update(['processed' => true]);
-        if (!App::runningUnitTests() && config('app.admin.notification.url') !== null) {
-            Http::post(config('app.admin.notification.url'), [
-                'chat_id'    => config('app.admin.notification.chat_id'),
-                'text'       => strtr("<b>Event suggestion accepted</b>" . PHP_EOL .
-                                      "Title: :name" . PHP_EOL
-                                      . "Accepting user: :username" . PHP_EOL, [
-                                          ':name'     => $eventSuggestion->name,
-                                          ':username' => auth()->user()->username,
-                                      ]),
-                'parse_mode' => 'HTML',
-            ]);
+        if (!App::runningUnitTests() && TelegramService::isAdminActive()) {
+            TelegramService::admin()->sendMessage(
+                strtr("<b>Event suggestion accepted</b>" . PHP_EOL .
+                      "Title: :name" . PHP_EOL
+                      . "Accepting user: :username" . PHP_EOL, [
+                          ':name'     => $eventSuggestion->name,
+                          ':username' => auth()->user()->username,
+                      ])
+            );
         }
 
         $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, $event));

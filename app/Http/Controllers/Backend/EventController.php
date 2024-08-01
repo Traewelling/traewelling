@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\EventSuggestion;
 use App\Models\Station;
 use App\Models\User;
+use App\Services\TelegramService;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Support\Facades\Http;
 
 abstract class EventController extends Controller
 {
@@ -39,22 +39,20 @@ abstract class EventController extends Controller
                                                    ]);
 
         try {
-            if (config('app.admin.notification.url') !== null) {
-                Http::post(config('app.admin.notification.url'), [
-                    'chat_id'    => config('app.admin.notification.chat_id'),
-                    'text'       => strtr("<b>New event suggestion:</b>" . PHP_EOL .
-                                          "Title: :name" . PHP_EOL .
-                                          "Begin: :begin" . PHP_EOL .
-                                          "End: :end" . PHP_EOL .
-                                          "Suggested by user: :username", [
-                                              ':name'     => $eventSuggestion->name,
-                                              ':host'     => $eventSuggestion->host,
-                                              ':begin'    => $eventSuggestion->begin->format('d.m.Y'),
-                                              ':end'      => $eventSuggestion->end->format('d.m.Y'),
-                                              ':username' => $eventSuggestion->user->username,
-                                          ]),
-                    'parse_mode' => 'HTML',
-                ]);
+            if (TelegramService::isAdminActive()) {
+                TelegramService::admin()->sendMessage(
+                    strtr("<b>New event suggestion:</b>" . PHP_EOL .
+                          "Title: :name" . PHP_EOL .
+                          "Begin: :begin" . PHP_EOL .
+                          "End: :end" . PHP_EOL .
+                          "Suggested by user: :username", [
+                              ':name'     => $eventSuggestion->name,
+                              ':host'     => $eventSuggestion->host,
+                              ':begin'    => $eventSuggestion->begin->format('d.m.Y'),
+                              ':end'      => $eventSuggestion->end->format('d.m.Y'),
+                              ':username' => $eventSuggestion->user->username,
+                          ])
+                );
             }
         } catch (Exception $e) {
             report($e);
