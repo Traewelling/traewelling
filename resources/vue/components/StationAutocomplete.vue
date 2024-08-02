@@ -10,6 +10,7 @@ import AutocompleteListEntry from "./Checkin/AutocompleteListEntry.vue";
 import Spinner from "./Spinner.vue";
 import LineIndicator from "./LineIndicator.vue";
 import ActiveStatusCard from "./ActiveStatusCard.vue";
+import DatePickerButton from "./DatepickerButton.vue";
 
 export default {
     setup() {
@@ -19,7 +20,10 @@ export default {
     },
     name: "StationAutocomplete",
     emits: ["update:station", "update:time", "update:travelType"],
-    components: {ActiveStatusCard, LineIndicator, Spinner, AutocompleteListEntry, FullScreenModal, VueDatePicker},
+    components: {
+        DatePickerButton,
+        ActiveStatusCard, LineIndicator, Spinner, AutocompleteListEntry, FullScreenModal, VueDatePicker
+    },
     props: {
         station: {
             type: Object,
@@ -114,7 +118,8 @@ export default {
             return await res.json();
         },
         showPicker() {
-            this.$refs.picker.openMenu();
+            //this.$refs.picker.openMenu();
+            this.$refs.test.click()
         },
         setTime() {
             this.$emit("update:time", DateTime.fromJSDate(this.date).setZone('UTC').toISO());
@@ -278,9 +283,13 @@ export default {
                             <span class="visually-hidden">Loading...</span>
                         </div>
                     </button>
-                    <button type="button" class="btn btn-outline-dark stationSearchButton" @click="showPicker">
+                    <!-- ToDo: Conditionally show old and new date picker -->
+                    <button v-if="false " type="button" class="btn btn-outline-dark stationSearchButton"
+                            @click="showPicker">
                         <i class="fa fa-clock" aria-hidden="true"></i>
                     </button>
+                    <DatePickerButton button-class="btn btn-outline-dark stationSearchButton datepicker-button"
+                                      button-icon-class="fa fa-clock"/>
                 </div>
 
                 <div class="d-flex justify-content-center">
@@ -319,7 +328,7 @@ export default {
         </div>
     </div>
 
-    <ActiveStatusCard v-if="userStore.hasBeta" />
+    <ActiveStatusCard v-if="userStore.hasBeta"/>
 </template>
 
 <style lang="scss" scoped>
@@ -387,6 +396,27 @@ span.deleteicon span {
 
 span.deleteicon input {
     padding-right: 18px;
+    box-sizing: border-box;
+}
+
+.calendarWrapper {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    //background: transparent url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUgMHYxaDhWMGgxdjFoMmEyIDIgMCAwMTIgMnYxNGEyIDIgMCAwMS0yIDJIMmEyIDIgMCAwMS0yLTJWM2EyIDIgMCAwMTItMmgyVjBoMXptMTIgN0gxdjEwYTEgMSAwIDAwMSAxaDE0YTEgMSAwIDAwMS0xVjd6TTQgMTZ2MUgydi0xaDJ6bTMgMHYxSDV2LTFoMnptMyAwdjFIOHYtMWgyem0tNi0ydjFIMnYtMWgyem0zIDB2MUg1di0xaDJ6bTMgMHYxSDh2LTFoMnptMyAwdjFoLTJ2LTFoMnptMyAwdjFoLTJ2LTFoMnpNNCAxMnYxSDJ2LTFoMnptMyAwdjFINXYtMWgyem0zIDB2MUg4di0xaDJ6bTMgMHYxaC0ydi0xaDJ6bTMgMHYxaC0ydi0xaDJ6TTQgMTB2MUgydi0xaDJ6bTMgMHYxSDV2LTFoMnptMyAwdjFIOHYtMWgyem0zIDB2MWgtMnYtMWgyem0zIDB2MWgtMnYtMWgyek03IDh2MUg1VjhoMnptMyAwdjFIOFY4aDJ6bTMgMHYxaC0yVjhoMnptMyAwdjFoLTJWOGgyek00IDJIMmExIDEgMCAwMC0xIDF2M2gxNlYzYTEgMSAwIDAwLTEtMWgtMnYzaC0xVjJINXYzSDRWMnoiIGZpbGw9IiNBMEFFQzAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==') no-repeat center center;
+}
+
+.calendar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
     box-sizing: border-box;
 }
 </style>
