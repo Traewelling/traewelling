@@ -2,46 +2,14 @@
 @section('title', __('settings.title-profile'))
 
 @section('content')
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-7">
+    <div class="row">
+        <div class="col-md-7">
             <div class="card mb-3">
                 <div class="card-header">{{ __('settings.title-profile') }}</div>
 
                 <div class="card-body">
                     <form enctype="multipart/form-data" method="POST" action="{{ route('settings.profile') }}">
                         @csrf
-                        <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">
-                                {{ __('settings.picture') }}
-                            </label>
-                            <div class="col-md-6 text-center">
-                                <div class="image-box pb-2">
-                                    <img
-                                        src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
-                                        style="max-width: 96px" alt="{{__('settings.picture')}}"
-                                        id="theProfilePicture" loading="lazy" decoding="async"
-                                    />
-                                </div>
-
-                                <a href="#" class="btn btn-primary mb-1" data-mdb-toggle="modal"
-                                   data-mdb-target="#uploadAvatarModal">
-                                    {{__('settings.upload-image')}}
-                                </a>
-                                <br/>
-                                <a href="javascript:void(0)"
-                                   class="btn btn-outline-danger btn-sm mb-3 {{isset(auth()->user()->avatar) ? '' : 'd-none'}}"
-                                   id="btnModalDeleteProfilePicture"
-                                   data-mdb-toggle="modal"
-                                   data-mdb-target="#deleteProfilePictureModal"
-                                >
-                                    {{ __('settings.delete-profile-picture-btn') }}
-                                </a>
-
-                                @error('avatar')
-                                <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                                @enderror
-                            </div>
-                        </div>
 
                         <div class="form-group row">
                             <label for="name" class="col-md-4 col-form-label text-md-right">
@@ -168,6 +136,40 @@
                             </div>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card mb-3">
+                <div class="card-header">
+                    {{ __('settings.picture') }}
+                </div>
+                <div class="text-center pb-3 pt-3">
+                    <div class="image-box pb-2">
+                        <img
+                            src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl(auth()->user()) }}"
+                            style="max-width: 96px" alt="{{__('settings.picture')}}"
+                            id="theProfilePicture" loading="lazy" decoding="async"
+                        />
+                    </div>
+
+                    <a href="#" class="btn btn-primary mb-1" data-mdb-toggle="modal"
+                       data-mdb-target="#uploadAvatarModal">
+                        {{__('settings.upload-image')}}
+                    </a>
+                    <br/>
+                    <a href="javascript:void(0)"
+                       class="btn btn-outline-danger btn-sm mb-3 {{isset(auth()->user()->avatar) ? '' : 'd-none'}}"
+                       id="btnModalDeleteProfilePicture"
+                       data-mdb-toggle="modal"
+                       data-mdb-target="#deleteProfilePictureModal"
+                    >
+                        {{ __('settings.delete-profile-picture-btn') }}
+                    </a>
+
+                    @error('avatar')
+                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                    @enderror
                 </div>
             </div>
         </div>
