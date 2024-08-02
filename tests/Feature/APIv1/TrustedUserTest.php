@@ -17,7 +17,7 @@ class TrustedUserTest extends ApiTestCase
         $this->actAsApiUserWithAllScopes($user);
 
         foreach ($trustedUser as $userToTrust) {
-            $response = $this->postJson("/api/v1/user/self/trusted", ['user_id' => $userToTrust->id]);
+            $response = $this->postJson("/api/v1/user/self/trusted", ['userId' => $userToTrust->id]);
             $response->assertCreated();
         }
 
@@ -46,8 +46,8 @@ class TrustedUserTest extends ApiTestCase
 
         // trust user
         $response = $this->postJson("/api/v1/user/{$user->id}/trusted", [
-            'user_id'    => $trustedUser->id,
-            'expires_at' => now()->addDay()->toIso8601String(),
+            'userId'    => $trustedUser->id,
+            'expiresAt' => now()->addDay()->toIso8601String(),
         ]);
         $response->assertCreated();
         $this->assertDatabaseHas('trusted_users', ['user_id' => $user->id, 'trusted_id' => $trustedUser->id]);
@@ -84,7 +84,7 @@ class TrustedUserTest extends ApiTestCase
         $this->actAsApiUserWithAllScopes($user);
 
         // trust user
-        $response = $this->postJson("/api/v1/user/{$truster->id}/trusted", ['user_id' => $trustedUser->id]);
+        $response = $this->postJson("/api/v1/user/{$truster->id}/trusted", ['userId' => $trustedUser->id]);
         $response->assertForbidden();
 
         // list trusted users
@@ -103,7 +103,7 @@ class TrustedUserTest extends ApiTestCase
         $this->actAsApiUserWithAllScopes($user);
 
         // trust user
-        $response = $this->postJson("/api/v1/user/{$truster->id}/trusted", ['user_id' => $trustedUser->id]);
+        $response = $this->postJson("/api/v1/user/{$truster->id}/trusted", ['userId' => $trustedUser->id]);
         $response->assertCreated();
         $this->assertDatabaseHas('trusted_users', ['user_id' => $truster->id, 'trusted_id' => $trustedUser->id]);
 

@@ -48,8 +48,8 @@ class TrustedUserController extends Controller
      *          required=true,
      *          @OA\JsonContent(
      *              required={"user_id"},
-     *              @OA\Property(property="user_id", type="integer", example="1"),
-     *              @OA\Property(property="expires_at", type="string", format="date-time", example="2024-07-28T00:00:00Z")
+     *              @OA\Property(property="userId", type="integer", example="1"),
+     *              @OA\Property(property="expiresAt", type="string", format="date-time", example="2024-07-28T00:00:00Z")
      *          )
      *     ),
      *     @OA\Response(response="201", description="User added to trusted users"),
@@ -64,10 +64,10 @@ class TrustedUserController extends Controller
     public function store(Request $request, string|int $userIdOrSelf): Response {
         $user        = $this->getUserOrSelf($userIdOrSelf);
         $validated   = $request->validate([
-                                              'user_id'    => ['required', 'exists:users,id'],
-                                              'expires_at' => ['nullable', 'date', 'after:now'],
+                                              'userId'    => ['required', 'exists:users,id'],
+                                              'expiresAt' => ['nullable', 'date', 'after:now'],
                                           ]);
-        $trustedUser = User::find($validated['user_id']);
+        $trustedUser = User::find($validated['userId']);
         $this->authorize('update', $user);
         TrustedUser::updateOrCreate(
             [
@@ -75,7 +75,7 @@ class TrustedUserController extends Controller
                 'trusted_id' => $trustedUser->id,
             ],
             [
-                'expires_at' => $validated['expires_at'] ?? null,
+                'expires_at' => $validated['expiresAt'] ?? null,
             ]
         );
         return response()->noContent(201);
