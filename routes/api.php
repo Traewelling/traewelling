@@ -30,6 +30,7 @@ use App\Http\Controllers\API\v1\StatusTagController;
 use App\Http\Controllers\API\v1\TokenController;
 use App\Http\Controllers\API\v1\TransportController;
 use App\Http\Controllers\API\v1\TripController;
+use App\Http\Controllers\API\v1\TrustedUserController;
 use App\Http\Controllers\API\v1\UserController;
 use App\Http\Controllers\API\v1\WebhookController;
 use App\Http\Controllers\API\v1\YearInReviewController;
@@ -172,6 +173,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::apiResource('station', StationController::class);                                        // currently admin/backend only
         Route::put('station/{oldStationId}/merge/{newStationId}', [StationController::class, 'merge']); // currently admin/backend only
 
+        Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);
         Route::apiResource('report', ReportController::class);
         Route::apiResource('operators', OperatorController::class)->only(['index']);
     });

@@ -2,7 +2,9 @@
 
 namespace App\Policies;
 
+use App\Enum\User\FriendCheckinSetting;
 use App\Http\Controllers\Backend\User\BlockController;
+use App\Http\Controllers\Backend\User\FollowController;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
@@ -64,7 +66,7 @@ class UserPolicy
      * @return bool
      */
     public function update(User $user, User $model): bool {
-        return $user->id === $model->id;
+        return $user->id === $model->id || $user->hasRole('admin');
     }
 
     /**
@@ -77,5 +79,26 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool {
         return $user->id === $model->id;
+    }
+
+    /**
+     * Check if user can check in another user
+     *
+     * @param User $user
+     * @param User $userToCheckin
+     *
+     * @return bool
+     */
+    public function checkin(User $user, User $userToCheckin): bool {
+        if ($userToCheckin->friend_checkin === FriendCheckinSetting::FORBIDDEN) {
+            return false;
+        }
+        if ($userToCheckin->friend_checkin === FriendCheckinSetting::FRIENDS) {
+            return FollowController::isFollowingEachOther($user, $userToCheckin);
+        }
+        if ($userToCheckin->friend_checkin === FriendCheckinSetting::LIST) {
+            return $userToCheckin->trustedUsers->contains('trusted_id', $user->id);
+        }
+        return $user->is($userToCheckin);
     }
 }

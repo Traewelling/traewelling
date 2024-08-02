@@ -12,7 +12,7 @@ class ReportServiceTest extends UnitTestCase
 {
 
     /**
-     * @dataProvider testCheckStringProvider
+     * @dataProvider checkStringProvider
      */
     public function testCheckString(array $expected, string $haystack): void {
         $reportService = new ReportService();
@@ -26,7 +26,7 @@ class ReportServiceTest extends UnitTestCase
 
 
     /**
-     * @dataProvider testCheckStringProvider
+     * @dataProvider checkStringProvider
      */
     public function testCheckAndReport(array $expected, string $haystack): void {
         $repository = $this->mock(ReportRepository::class);
@@ -50,7 +50,7 @@ class ReportServiceTest extends UnitTestCase
         $reportService->checkAndReport($haystack, ReportableSubject::TRIP, 1);
     }
 
-    public static function testCheckStringProvider(): array {
+    public static function checkStringProvider(): array {
         return [
             'match first word'                                   => [
                 ['auto'],

@@ -3,7 +3,6 @@
 namespace Tests;
 
 use App\Models\User;
-use App\Providers\AuthServiceProvider;
 use Illuminate\Testing\TestResponse;
 use Laravel\Passport\Passport;
 
@@ -17,8 +16,11 @@ abstract class ApiTestCase extends FeatureTestCase
         $this->artisan('passport:keys', ['--no-interaction' => true]);
     }
 
-    protected function actAsApiUserWithAllScopes(): void {
-        Passport::actingAs(User::factory()->create(), ['*']);
+    protected function actAsApiUserWithAllScopes(User $user = null): void {
+        if ($user === null) {
+            $user = User::factory()->create();
+        }
+        Passport::actingAs($user, ['*']);
     }
 
     protected function assertUserResource(TestResponse $response): void {
