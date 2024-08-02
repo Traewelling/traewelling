@@ -123,4 +123,9 @@ abstract class FollowController extends Controller
         Cache::forget(CacheKey::getFriendsLeaderboardKey($user->id));
         return $userToFollow;
     }
+
+    public static function isFollowingEachOther(User $user, User $otherUser): bool {
+        return $user->userFollowers->contains('id', $otherUser->id)
+               && $user->userFollowings->contains('id', $otherUser->id);
+    }
 }

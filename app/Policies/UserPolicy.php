@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Enum\User\FriendCheckinSetting;
 use App\Http\Controllers\Backend\User\BlockController;
+use App\Http\Controllers\Backend\User\FollowController;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
@@ -93,9 +94,7 @@ class UserPolicy
             return false;
         }
         if ($userToCheckin->friend_checkin === FriendCheckinSetting::FRIENDS) {
-            $userIsFollowingUserToCheckin  = $user->follows->contains('id', $userToCheckin->id);
-            $userIsFollowedByUserToCheckin = $user->followers->contains('id', $user->id);
-            return $userIsFollowingUserToCheckin && $userIsFollowedByUserToCheckin;
+            return FollowController::isFollowingEachOther($user, $userToCheckin);
         }
         if ($userToCheckin->friend_checkin === FriendCheckinSetting::LIST) {
             return $userToCheckin->trustedUsers->contains('trusted_id', $user->id);

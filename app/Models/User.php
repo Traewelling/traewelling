@@ -69,8 +69,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Collection           blockedByUsers
  * @property Collection           mutedUsers
  * @property Collection           followRequests
- * @property Collection           followers
- * @property Collection           followings
+ * @property Collection           userFollowers
+ * @property Collection           userFollowings
  * @property Collection           sessions
  * @property Collection           icsTokens
  * @property Collection           webhooks
@@ -170,14 +170,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @deprecated
+     * @deprecated use ->userFollowers instead to get the users directly
      */
     public function followers(): HasMany {
         return $this->hasMany(Follow::class, 'follow_id', 'id');
     }
 
     /**
-     * @deprecated
+     * @deprecated use ->userFollowing instead to get the users directly
      */
     public function followings(): HasMany {
         return $this->hasMany(Follow::class, 'user_id', 'id');
@@ -212,18 +212,10 @@ class User extends Authenticatable implements MustVerifyEmail
                     ->whereNull('expires_at')->orWhere('expires_at', '>', now());
     }
 
-    /**
-     * @untested
-     * @todo test
-     */
     public function userFollowings(): BelongsToMany {
         return $this->belongsToMany(__CLASS__, 'follows', 'user_id', 'follow_id');
     }
 
-    /**
-     * @untested
-     * @todo test
-     */
     public function userFollowers(): BelongsToMany {
         return $this->belongsToMany(__CLASS__, 'follows', 'follow_id', 'user_id');
     }
