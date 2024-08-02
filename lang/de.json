@@ -146,6 +146,7 @@
     "events.request-button": "Melden",
     "events.notice": "Deine Meldung wird nur veröffentlicht, wenn das Träwelling-Team sie freigegeben hat.",
     "events.request.success": "Dein Vorschlag ist bei uns angekommen. Vielen Dank!",
+    "events.show-all-for-event": "Alle Check-ins zum Event anzeigen",
     "event": "Veranstaltung",
     "events": "Veranstaltungen",
     "auth.required": "Du musst eingeloggt sein, um diese Funktion nutzen zu können.",
