@@ -15,10 +15,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int         $train_station_id
  * @property UTCDateTime $arrival_planned
  * @property UTCDateTime $arrival_real
+ * @property UTCDateTime $arrival
  * @property string      $arrival_platform_planned
  * @property string      $arrival_platform_real
  * @property UTCDateTime $departure_planned
  * @property UTCDateTime $departure_real
+ * @property UTCDateTime $departure
  * @property string      $departure_platform_planned
  * @property string      $departure_platform_real
  * @property bool        $isArrivalDelayed
