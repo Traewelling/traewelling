@@ -64,7 +64,7 @@ export default defineComponent({
     },
     mounted() {
         this.fetchState();
-        setTimeout(this.getNextStation,500);
+        setTimeout(this.getNextStation, 500);
         this.fetchInterval = setInterval(this.fetchState, 30000);
         this.nextStationInterval = setInterval(this.getNextStation, 10000);
     },
@@ -81,13 +81,14 @@ export default defineComponent({
 
 <template>
     <div v-show="showCard" class="fab-container d-md-none">
-        <div class="card hover-card w-75 shadow-3" @click="goToStatus">
+        <div class="card hover-card w-100 shadow-sm" @click="goToStatus">
             <div class="card-body py-2 px-3">
                 <p class="mb-0">{{ state.status?.train?.origin?.name }} <small
                     class="float-end text-muted">{{ format(departure) }}</small></p>
 
                 <p class="ms-2 col-auto align-items-center d-flex my-0" v-show="state.status?.train?.lineName">
-                    <LineIndicator :product-name="state.status?.train?.category" :number="state.status?.train?.lineName ?? ''"/>
+                    <LineIndicator :product-name="state.status?.train?.category"
+                                   :number="state.status?.train?.lineName ?? ''"/>
                     <span class="ms-1" v-show="nextStation">next: {{ nextStation?.name }}</span>
                 </p>
                 <p class="mb-0">{{ state.status?.train?.destination?.name }} <small
@@ -113,7 +114,10 @@ export default defineComponent({
     position: fixed;
     bottom: 30px;
     left: 50%;
-    width: 400px;
-    margin-left: -200px;
+    width: 100%;
+    max-width: 100%;
+    margin-left: -50%;
+    padding-right: calc(var(--mdb-gutter-x) * 0.5);
+    padding-left: calc(var(--mdb-gutter-x) * 0.5);
 }
 </style>
