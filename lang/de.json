@@ -764,5 +764,7 @@
     "action.error": "Diese Aktion konnte leider nicht ausgeführt werden. Bitte versuche es später noch einmal.",
     "action.like": "Status liken",
     "action.dislike": "Status nicht mehr liken",
-    "action.set-home": "Heimathaltestelle setzen"
+    "action.set-home": "Heimathaltestelle setzen",
+    "notifications.youHaveBeenCheckedIn.lead": "Du wurdest von :username eingecheckt",
+    "notifications.youHaveBeenCheckedIn.notice": "Fahrt in :line von :origin nach :destination"
 }

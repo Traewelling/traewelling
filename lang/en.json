@@ -229,6 +229,8 @@
     "notifications.statusLiked.lead": "<b>@:likerUsername</b> liked your check-in.",
     "notifications.statusLiked.notice": "Journey in :line on :createdDate|Journey in line :line on :createdDate",
     "notifications.userFollowed.lead": "<b>@:followerUsername</b> follows you now.",
+    "notifications.youHaveBeenCheckedIn.lead": "You have been checked in by <b>@:username</b>",
+    "notifications.youHaveBeenCheckedIn.notice": "Journey in :line from :origin to :destination",
     "notifications.userRequestedFollow.lead": "<b>@:followerRequestUsername</b> wants to follow you.",
     "notifications.userRequestedFollow.notice": "To accept or decline the follow request, click here or go to your settings.",
     "notifications.userApprovedFollow.lead": "<b>@:followerRequestUsername</b> has approved your follow request.",

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Dto\Internal\CheckinSuccessDto;
 use App\Dto\Transport\Station as StationDto;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
@@ -10,20 +9,18 @@ use App\Enum\TravelType;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
-use App\Exceptions\NotConnectedException;
 use App\Exceptions\StationNotOnTripException;
-use App\Http\Controllers\Backend\Transport\HomeController;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\HafasController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Http\Resources\CheckinSuccessResource;
 use App\Http\Resources\StationResource;
-use App\Http\Resources\StatusResource;
 use App\Http\Resources\TripResource;
 use App\Hydrators\CheckinRequestHydrator;
-use App\Models\Event;
 use App\Models\Station;
+use App\Models\User;
+use App\Notifications\YouHaveBeenCheckedIn;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -332,9 +329,9 @@ class TransportController extends Controller
     /**
      * @OA\Post(
      *      path="/trains/checkin",
-     *      operationId="createTrainCheckin",
+     *      operationId="createCheckin",
      *      tags={"Checkin"},
-     *      summary="Create a checkin",
+     *      summary="Check in to a trip.",
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(ref="#/components/schemas/CheckinRequestBody")
@@ -345,11 +342,11 @@ class TransportController extends Controller
      *          @OA\JsonContent(ref="#/components/schemas/CheckinSuccessResource")
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=409, description="Checkin collision"),
      *       @OA\Response(response=401, description="Unauthorized"),
+     *       @OA\Response(response=403, description="Forbidden", @OA\JsonContent(ref="#/components/schemas/CheckinForbiddenWithUsersResponse")),
+     *       @OA\Response(response=409, description="Checkin collision"),
      *       security={
      *           {"passport": {"create-statuses"}}, {"token": {}}
-     *
      *       }
      *     )
      *
@@ -372,13 +369,43 @@ class TransportController extends Controller
                                             'destination' => ['required', 'numeric'],
                                             'departure'   => ['required', 'date'],
                                             'arrival'     => ['required', 'date'],
-                                            'force'       => ['nullable', 'boolean']
+                                            'force'       => ['nullable', 'boolean'],
+                                            'with'        => ['nullable', 'array', 'max:10'],
                                         ]);
+        if (isset($validated['with'])) {
+            $withUsers      = User::whereIn('id', $validated['with'])->get();
+            $forbiddenUsers = collect();
+            foreach ($withUsers as $user) {
+                if (!Auth::user()?->can('checkin', $user)) {
+                    $forbiddenUsers->push($user);
+                }
+            }
+            if ($forbiddenUsers->isNotEmpty()) {
+                $forbiddenUserIds = $forbiddenUsers->pluck('id')->toArray();
+                return response()->json(
+                    data:   [
+                                'message' => 'You are not allowed to check in the following users: ' . implode(',', $forbiddenUserIds),
+                                'meta'    => [
+                                    'invalidUsers' => $forbiddenUserIds
+                                ]
+                            ],
+                    status: 403
+                );
+            }
+        }
 
         try {
-            $checkinResponse = TrainCheckinController::checkin((new CheckinRequestHydrator($validated))->hydrateFromApi());
+            $dto             = (new CheckinRequestHydrator($validated))->hydrateFromApi();
+            $checkinResponse = TrainCheckinController::checkin($dto);
 
-            //ToDo: Check if documented structure has changed
+            // if isset, check in the other users with their default values
+            foreach ($withUsers ?? [] as $user) {
+                $dto->setUser($user);
+                $dto->setStatusVisibility($user->default_status_visibility);
+                $checkin = TrainCheckinController::checkin($dto);
+                $user->notify(new YouHaveBeenCheckedIn($checkin->status, auth()->user()));
+            }
+
             return $this->sendResponse(new CheckinSuccessResource($checkinResponse), 201);
         } catch (CheckInCollisionException $exception) {
             return $this->sendError([
