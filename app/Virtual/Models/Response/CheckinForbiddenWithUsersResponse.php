@@ -7,7 +7,7 @@ namespace App\Virtual\Models\Response;
  *      title="CheckinForbiddenWithUsersResponse",
  *      @OA\Property (
  *          property="message",
- *          example="You are not allowed to check in the following users: 1,2"
+ *          example="You are not allowed to check in the following users: 1"
  *      ),
  *      @OA\Property (
  *          property="meta",
