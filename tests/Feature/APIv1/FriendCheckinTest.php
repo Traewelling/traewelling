@@ -83,7 +83,7 @@ class FriendCheckinTest extends ApiTestCase
         $this->actAsApiUserWithAllScopes($userToCheckin);
         $response = $this->postJson(
             uri:  "/api/v1/user/{$userToCheckin->id}/trusted",
-            data: ['user_id' => $user->id]
+            data: ['userId' => $user->id]
         );
         $response->assertCreated();
 

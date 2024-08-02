@@ -3718,11 +3718,11 @@
                                     "user_id"
                                 ],
                                 "properties": {
-                                    "user_id": {
+                                    "userId": {
                                         "type": "integer",
                                         "example": "1"
                                     },
-                                    "expires_at": {
+                                    "expiresAt": {
                                         "type": "string",
                                         "format": "date-time",
                                         "example": "2024-07-28T00:00:00Z"
