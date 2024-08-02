@@ -373,11 +373,24 @@ class TransportController extends Controller
                                             'with'        => ['nullable', 'array', 'max:10'],
                                         ]);
         if (isset($validated['with'])) {
-            $withUsers = User::whereIn('id', $validated['with'])->get();
+            $withUsers      = User::whereIn('id', $validated['with'])->get();
+            $forbiddenUsers = collect();
             foreach ($withUsers as $user) {
                 if (!Auth::user()?->can('checkin', $user)) {
-                    return $this->sendError('You are not allowed to checkin for the given user.', 403);
+                    $forbiddenUsers->push($user);
                 }
+            }
+            if ($forbiddenUsers->isNotEmpty()) {
+                $forbiddenUserIds = $forbiddenUsers->pluck('id')->toArray();
+                return response()->json(
+                    data:   [
+                                'message' => 'You are not allowed to check in the following users: ' . implode(',', $forbiddenUserIds),
+                                'meta'    => [
+                                    'invalidUsers' => $forbiddenUserIds
+                                ]
+                            ],
+                    status: 403
+                );
             }
         }
 

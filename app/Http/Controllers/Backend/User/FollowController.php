@@ -118,7 +118,7 @@ abstract class FollowController extends Controller
                                      'user_id'   => $user->id,
                                      'follow_id' => $userToFollow->id
                                  ]);
-        $userToFollow->fresh();
+        $userToFollow->refresh();
         $userToFollow->notify(new UserFollowed($follow));
         Cache::forget(CacheKey::getFriendsLeaderboardKey($user->id));
         return $userToFollow;

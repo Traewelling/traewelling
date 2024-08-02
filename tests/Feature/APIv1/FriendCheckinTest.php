@@ -4,6 +4,7 @@ namespace Tests\Feature\APIv1;
 
 use App\Enum\User\FriendCheckinSetting;
 use App\Http\Controllers\Backend\User\FollowController;
+use App\Models\Follow;
 use App\Models\Trip;
 use App\Models\User;
 use App\Notifications\YouHaveBeenCheckedIn;
@@ -110,6 +111,38 @@ class FriendCheckinTest extends ApiTestCase
         );
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('with');
+    }
+
+    public function testErrorResponseShouldContainForbiddenUsers(): void {
+        $forbiddenUser = User::factory()->create(['friend_checkin' => FriendCheckinSetting::FORBIDDEN->value]);
+        $allowedUser   = User::factory()->create(['friend_checkin' => FriendCheckinSetting::FRIENDS->value]);
+        $user          = User::factory()->create();
+        $this->actAsApiUserWithAllScopes($user);
+
+        Follow::create(['user_id' => $user->id, 'follow_id' => $allowedUser->id]);
+        Follow::create(['user_id' => $allowedUser->id, 'follow_id' => $user->id]);
+
+        $trip = Trip::factory()->create();
+
+        $response = $this->postJson(
+            uri:  '/api/v1/trains/checkin',
+            data: [
+                      'tripId'      => $trip->trip_id,
+                      'lineName'    => $trip->linename,
+                      'start'       => $trip->originStation->id,
+                      'departure'   => $trip->departure,
+                      'destination' => $trip->destinationStation->id,
+                      'arrival'     => $trip->arrival,
+                      'with'        => [
+                          $forbiddenUser->id,
+                          $allowedUser->id
+                      ]
+                  ],
+        );
+        $response->assertStatus(403);
+        $response->assertJsonStructure(['message', 'meta' => ['invalidUsers']]);
+        $this->assertContains($forbiddenUser->id, $response->json('meta.invalidUsers'));
+        $this->assertNotContains($allowedUser->id, $response->json('meta.invalidUsers'));
     }
 }
 
