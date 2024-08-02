@@ -1,4 +1,5 @@
 @import "variables";
+@import "mdb-ui-kit/src/scss/free/_variables";
 
 :root.dark {
     --mdb-body-color: #{$dm-body};
@@ -6,11 +7,15 @@
 
     --mdb-link-color: #{$dm-lightblue};
     --mdb-btn-hover-color: #{$dm-lightblue};
-    --mdb-btn-hover-color: #{$dm-lightblue};
     --mdb-btn-focus-color: #{$dm-lightblue};
     --mdb-btn-active-color: #{$dm-lightblue};
 
     --mdb-nav-tabs-link-color: $dm-lightblue;
+
+    $box-shadow: 0 0.5rem 1rem rgba($gray-300, 0.15) !default;
+    $box-shadow-sm: 0 0.125rem 0.25rem rgba($gray-300, 0.075) !default;
+    $box-shadow-lg: 0 1rem 3rem rgba($gray-300, 0.175) !default;
+    $box-shadow-inset: inset 0 1px 2px rgba($gray-300, 0.075) !default;
 
     body {
         background-color: $dm-base;
@@ -46,6 +51,7 @@
         background-color: lighten($dm-base, 2%);
         border-color: lighten($dm-base, 30%) !important;
         color: lighten($dm-body, 8%) !important;
+
         &:focus {
             background-color: lighten($dm-base, 10%);
         }
@@ -55,6 +61,7 @@
         background-color: lighten($dm-base, 2%);
         color: $dm-body !important;
         border-color: lighten($dm-base, 30%) !important;
+
         &:focus {
             background-color: lighten($dm-base, 10%);
         }
@@ -116,6 +123,7 @@
         background: lighten($dm-base, 30%) !important;
         border-color: $dm-trwlRot-shape;
     }
+
     .text-trwl {
         color: $dm-trwlRot !important;
     }
@@ -130,16 +138,17 @@
         .progress {
             .progress-bar {
                 background: $dm-trwlRot-shape;
+
                 &.progress-pride {
                     background: linear-gradient(
-                        66deg,
-                        hsl(0, 75%, 60%) 0 14.28%,
-                        hsl(39, 75%, 47%) 0 28.57%,
-                        hsl(60, 65%, 50%) 0 42.85%,
-                        hsl(120, 75%, 40%) 0 57.14%,
-                        hsl(181, 75%, 40%) 0 71.42%,
-                        hsl(240, 75%, 60%) 0 85.71%,
-                        hsl(275, 75%, 35%) 0
+                            66deg,
+                            hsl(0, 75%, 60%) 0 14.28%,
+                            hsl(39, 75%, 47%) 0 28.57%,
+                            hsl(60, 65%, 50%) 0 42.85%,
+                            hsl(120, 75%, 40%) 0 57.14%,
+                            hsl(181, 75%, 40%) 0 71.42%,
+                            hsl(240, 75%, 60%) 0 85.71%,
+                            hsl(275, 75%, 35%) 0
                     );
                 }
             }
@@ -281,6 +290,7 @@
     .list-group-item {
         background-color: lighten($dm-base, 15%);
         color: $dm-body !important;
+
         &:hover {
             background-color: lighten($dm-base, 10%);
         }
@@ -338,6 +348,7 @@
     .alert-info {
         background-color: hsl(194, 80%, 20%);
         color: rgb(238, 238, 238);
+
         i {
             color: hsl(195, 63%, 70%);
         }
@@ -362,8 +373,8 @@
         background: linear-gradient(
                 #{rgba(darken($dm-trwlRot, 60%), 0.4)},
                 #{rgba(darken($dm-trwlRot, 60%), 0.4)}
-            ),
-            url("/images/covers/profile-background.png");
+        ),
+        url("/images/covers/profile-background.png");
         background-position: center;
     }
 
@@ -373,8 +384,7 @@
         --mdb-pagination-hover-border-color: #{$dm-base-20} !important;
         --mdb-pagination-focus-color: #{$dm-body} !important;
         --mdb-pagination-focus-bg: #{$dm-base-30} !important;
-        --mdb-pagination-focus-box-shadow: 0 0 0 0.25rem
-            rgba(59, 113, 202, 0.25);
+        --mdb-pagination-focus-box-shadow: 0 0 0 0.25rem rgba(59, 113, 202, 0.25);
         --mdb-pagination-active-color: #{$dm-body} !important;
         --mdb-pagination-active-bg: #{$dm-base-30} !important;
         --mdb-pagination-active-border-color: #{$dm-base-30} !important;
@@ -382,9 +392,11 @@
         --mdb-pagination-disabled-bg: #{$dm-base} !important;
         --mdb-pagination-disabled-border-color: #{$dm-base} !important;
     }
+
     a.page-link {
         color: #{$dm-body} !important;
     }
+
     .page-item {
         &.disabled {
             .page-link {
@@ -425,9 +437,9 @@
 
     .leaflet-layer {
         &:nth-child(1) .leaflet-tile {
-            filter: invert(1) grayscale(100%) sepia(100%) hue-rotate(180deg)
-                saturate(0.7);
+            filter: invert(1) grayscale(100%) sepia(100%) hue-rotate(180deg) saturate(0.7);
         }
+
         &:nth-child(2) .leaflet-tile {
             filter: invert(1) hue-rotate(180deg) grayscale(70%) opacity(0.65);
         }
@@ -440,5 +452,9 @@
 
     .leaflet-interactive {
         stroke: $dm-trwlRot-shape;
+    }
+
+    .shadow-sm {
+        box-shadow: $box-shadow-sm !important;
     }
 }
