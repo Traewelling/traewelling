@@ -3482,7 +3482,14 @@
                         "description": "Unauthorized"
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CheckinForbiddenWithUsersResponse"
+                                }
+                            }
+                        }
                     },
                     "409": {
                         "description": "Checkin collision"
@@ -5758,6 +5765,28 @@
                 "xml": {
                     "name": "Polyline"
                 }
+            },
+            "CheckinForbiddenWithUsersResponse": {
+                "title": "CheckinForbiddenWithUsersResponse",
+                "properties": {
+                    "message": {
+                        "description": "example: {\"message\":\"You are not allowed to check in the following users: 1\",\"meta\":{\"invalidUsers\":[1]}}",
+                        "example": "You are not allowed to check in the following users: 1,2"
+                    },
+                    "meta": {
+                        "properties": {
+                            "invalidUsers": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer",
+                                    "example": "1"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
             },
             "StatusTag": {
                 "title": "StatusTag",

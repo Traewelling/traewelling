@@ -343,7 +343,7 @@ class TransportController extends Controller
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Unauthorized"),
-     *       @OA\Response(response=403, description="Forbidden"),
+     *       @OA\Response(response=403, description="Forbidden", @OA\JsonContent(ref="#/components/schemas/CheckinForbiddenWithUsersResponse")),
      *       @OA\Response(response=409, description="Checkin collision"),
      *       security={
      *           {"passport": {"create-statuses"}}, {"token": {}}
