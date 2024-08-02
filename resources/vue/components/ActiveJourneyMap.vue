@@ -8,6 +8,8 @@
 
 <script>
 import 'leaflet';
+import {trans} from "laravel-vue-i18n";
+import {DtmRange} from "../helpers/DateRange";
 
 import('Leaflet-MovingMaker/MovingMarker');
 
@@ -66,6 +68,7 @@ export default {
         }
     },
     methods: {
+        trans,
         renderMap() {
             this.map = L.map(this.$refs.map, {
                 center: [50.3, 10.47],
@@ -148,11 +151,13 @@ export default {
                 icon: eventIcon
             }).addTo(this.map);
 
+            const range = DtmRange.fromISO(event.begin, event.end);
+
             marker.bindPopup(`
                 <strong><a href="${event.url}">${event.name}</a></strong><br />
                 <i class="fa fa-user-clock"></i> ${event.host}<br />
-                <i class="fa fa-calendar-day"></i> ${event.begin} - ${event.end}<br />
-                <a href="/event/${event.slug}">Alle Reisen zum Event anzeigen</a>`
+                <i class="fa fa-calendar-day"></i> ${range.toLocaleDateString()}<br />
+                <a href="/event/${event.slug}">${trans('events.show-all-for-event')}</a>`
             );
         },
         getIconForStatus(response) {
