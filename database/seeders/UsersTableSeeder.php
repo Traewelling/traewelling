@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\IcsToken;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class UsersTableSeeder extends Seeder
 {
@@ -23,7 +22,6 @@ class UsersTableSeeder extends Seeder
                                         'username' => 'Gertrud123',
                                         'name'     => 'Gertrud',
                                         'email'    => 'gertrud@traewelling.de',
-                                        'password' => Hash::make('thisisnotasecurepassword123'),
                                     ]);
             $gertrud->assignRole('admin');
             $gertrud->assignRole('closed-beta');
@@ -37,7 +35,6 @@ class UsersTableSeeder extends Seeder
                              'avatar'          => null, // no avatar
                              'email'           => 'bob@example.com',
                              'private_profile' => true,
-                             'password'        => Hash::make('thisisnotasecurepassword123')
                          ]);
         }
 
