@@ -144,7 +144,7 @@
                                 'stationName' => $nextStation?->name
                             ])}}"
                                class="text-trwl clearfix">
-                                {{$nextStation?->name}}
+                                {{$nextStation?->localized_name}}
                             </a>
                         </p>
                     @endif
