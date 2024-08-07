@@ -50,9 +50,9 @@ class StatusController extends Controller
                                 'user.blockedUsers',
                                 'checkin',
                                 'tags',
-                                'checkin.originStopover.station',
-                                'checkin.destinationStopover.station',
-                                'checkin.trip.stopovers.station',
+                                'checkin.originStopover.station.names',
+                                'checkin.destinationStopover.station.names',
+                                'checkin.trip.stopovers.station.names',
                             ])
                      ->firstOrFail();
     }
@@ -71,9 +71,9 @@ class StatusController extends Controller
                                 'user.blockedByUsers',
                                 'user.blockedUsers',
                                 'user.followers',
-                                'checkin.originStopover.station',
-                                'checkin.destinationStopover.station',
-                                'checkin.trip.stopovers.station',
+                                'checkin.originStopover.station.names',
+                                'checkin.destinationStopover.station.names',
+                                'checkin.trip.stopovers.station.names',
                                 'checkin.trip.polyline',
                                 'tags',
                             ])
@@ -110,9 +110,9 @@ class StatusController extends Controller
                                      'user.blockedByUsers',
                                      'user.blockedUsers',
                                      'user.followers',
-                                     'checkin.originStopover.station',
-                                     'checkin.destinationStopover.station',
-                                     'checkin.trip.stopovers.station',
+                                     'checkin.originStopover.station.names',
+                                     'checkin.destinationStopover.station.names',
+                                     'checkin.trip.stopovers.station.names',
                                      'checkin.trip.polyline',
                                  ])
                           ->whereIn('id', $ids)
@@ -210,8 +210,8 @@ class StatusController extends Controller
     public static function getStatusesByEvent(Event $event): array {
         $statuses = $event->statuses()
                           ->with([
-                                     'user.blockedUsers', 'checkin.originStopover.station',
-                                     'checkin.destinationStopover.station', 'checkin.trip.stopovers', 'event', 'likes', 'tags',
+                                     'user.blockedUsers', 'checkin.originStopover.station.names',
+                                     'checkin.destinationStopover.station.names', 'checkin.trip.stopovers', 'event', 'likes', 'tags',
                                  ])
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
@@ -259,7 +259,7 @@ class StatusController extends Controller
     public static function getFutureCheckins(): Paginator {
         return auth()->user()->statuses()
                      ->with([
-                                'user', 'checkin.originStopover.station', 'checkin.destinationStopover.station',
+                                'user', 'checkin.originStopover.station.names', 'checkin.destinationStopover.station.names',
                                 'checkin.trip', 'event', 'tags',
                             ])
                      ->orderByDesc('created_at')

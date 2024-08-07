@@ -64,6 +64,8 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
 
             Route::get('/{id}', [StationController::class, 'renderStation'])
                  ->name('admin.station');
+
+            Route::post('/{id}/wikidata', [StationController::class, 'fetchWikidata']);
         });
 
 

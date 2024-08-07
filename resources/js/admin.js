@@ -1,18 +1,20 @@
 import "awesomplete/awesomplete";
 
-window.addEventListener("load", () => {
-    import("./components/station-autocomplete");
-});
-
+import "leaflet/dist/leaflet.js";
+import "./components/maps";
 import * as Popper from "@popperjs/core";
-window.Popper = Popper;
-
 import "bootstrap";
 import "leaflet";
 import {createApp} from "vue";
 import TripCreationForm from "../vue/components/TripCreation/TripCreationForm.vue";
 
-document.addEventListener("DOMContentLoaded", function() {
+window.addEventListener("load", () => {
+    import("./components/station-autocomplete");
+});
+
+window.Popper = Popper;
+
+document.addEventListener("DOMContentLoaded", function () {
     const admin = createApp({});
     admin.component("TripCreationForm", TripCreationForm);
     admin.mount("#trip-creation-form");

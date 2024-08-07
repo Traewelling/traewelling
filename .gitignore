@@ -144,3 +144,5 @@ result*
 
 # laravel-vue-i18n
 lang/php_*.json
+
+*.sqlite

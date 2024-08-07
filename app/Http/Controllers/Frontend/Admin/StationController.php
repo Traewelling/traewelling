@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Frontend\Admin;
 use App\Dto\Coordinate;
 use App\Http\Controllers\Controller;
 use App\Models\Station;
+use App\Models\StationName;
 use App\Objects\LineSegment;
+use App\Services\Wikidata\WikidataQueryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class StationController extends Controller
@@ -50,5 +53,64 @@ class StationController extends Controller
             'station'               => $station,
             'stationsWithSameIfopt' => $stationsWithSameIfopt ?? [],
         ]);
+    }
+
+    /**
+     * !!!! Experimental Backend Function !!!!
+     * Fetches the Wikidata information for a station.
+     * Try to find matching Wikidata entity for the station and fetch it.
+     * Needs to be cleaned up and refactored, if it should be used consistently.
+     * Little testing if it works as expected.
+     */
+    public function fetchWikidata(int $id): void {
+        $station = Station::findOrFail($id);
+        $this->authorize('update', $station);
+
+        // P054 = IBNR
+        $sparqlQuery = <<<SPARQL
+            SELECT ?item WHERE { ?item wdt:P954 "{$station->ibnr}". }
+        SPARQL;
+
+        $objects = (new WikidataQueryService())->setQuery($sparqlQuery)->execute()->getObjects();
+        if (count($objects) > 1) {
+            Log::debug('More than one object found for station ' . $station->ibnr . ' (' . $station->id . ') - skipping');
+            return;
+        }
+
+        if (empty($objects)) {
+            Log::debug('No object found for station ' . $station->ibnr . ' (' . $station->id . ') - skipping');
+            return;
+        }
+
+        $object = $objects[0];
+        $station->update(['wikidata_id' => $object->qId]);
+        Log::debug('Fetched object ' . $object->qId . ' for station ' . $station->name . ' (Trwl-ID: ' . $station->id . ')');
+
+        $ifopt = $object->getClaims('P12393')[0]['mainsnak']['datavalue']['value'] ?? null;
+        if ($station->ifopt_a === null && $ifopt !== null) {
+            $splitIfopt = explode(':', $ifopt);
+            $station->update([
+                                 'ifopt_a' => $splitIfopt[0] ?? null,
+                                 'ifopt_b' => $splitIfopt[1] ?? null,
+                                 'ifopt_c' => $splitIfopt[2] ?? null,
+                             ]);
+        }
+
+        $rl100 = $object->getClaims('P8671')[0]['mainsnak']['datavalue']['value'] ?? null;
+        if ($station->rilIdentifier === null && $rl100 !== null) {
+            $station->update(['rilIdentifier' => $rl100]);
+        }
+
+        foreach ($object->getLabels() as $lang => $label) {
+            if ($label['value'] === null) {
+                continue;
+            }
+            StationName::updateOrCreate([
+                                            'station_id' => $station->id,
+                                            'language'   => $lang,
+                                        ], [
+                                            'name' => $label['value']
+                                        ]);
+        }
     }
 }

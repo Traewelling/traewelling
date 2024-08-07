@@ -5,22 +5,33 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
- * @property int      $id
- * @property int|null $ibnr
- * @property string   $rilIdentifier
- * @property string   $name
- * @property double   $latitude
- * @property double   $longitude
- * @property int      $time_offset
- * @property bool     $shift_time
- * @property Event[]  $events
- * @property Carbon   $created_at
- * @property Carbon   $updated_at
+ * // properties
+ * @property int         $id
+ * @property int|null    $ibnr
+ * @property string      $rilIdentifier
+ * @property string      $name
+ * @property double      $latitude
+ * @property double      $longitude
+ * @property int         $time_offset
+ * @property bool        $shift_time
+ * @property Event[]     $events
+ * @property Carbon      $created_at
+ * @property Carbon      $updated_at
+ *
+ * // relations
+ * @property Collection  $names
+ *
+ * // appends
+ * @property string|null $ifopt
+ * @property string|null $localized_name
+ *
+ *
  * @todo rename table to "Station" (without Train - we have more than just trains)
  */
 class Station extends Model
@@ -49,10 +60,10 @@ class Station extends Model
         'latitude'      => 'float',
         'longitude'     => 'float',
     ];
-    protected $appends  = ['ifopt'];
+    protected $appends  = ['ifopt', 'localized_name'];
 
-    public function wikidataEntity(): BelongsTo {
-        return $this->belongsTo(WikidataEntity::class, 'wikidata_id', 'id');
+    public function names(): HasMany {
+        return $this->hasMany(StationName::class, 'station_id', 'id');
     }
 
     public function getIfoptAttribute(): ?string {
@@ -66,6 +77,10 @@ class Station extends Model
             }
         }
         return $ifopt;
+    }
+
+    public function getLocalizedNameAttribute(): ?string {
+        return $this->names->where('language', app()->getLocale())->first()?->name ?? $this->name;
     }
 
     public function getActivitylogOptions(): LogOptions {
