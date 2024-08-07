@@ -29,7 +29,7 @@ class SettingsController extends Controller
      *          response=200,
      *          description="Success",
      *          @OA\JsonContent(
-     *              @OA\Property(property="data", type="object", ref="#/components/schemas/UserProfileSettings")
+     *              @OA\Property(property="data", type="object", ref="#/components/schemas/UserProfileSettingsResource")
      *          )
      *     ),
      *     @OA\Response(response=401, description="Unauthorized"),
@@ -91,7 +91,7 @@ class SettingsController extends Controller
      *         response=200,
      *         description="Success",
      *         @OA\JsonContent(
-     *             @OA\Property(property="data", type="object", ref="#/components/schemas/UserProfileSettings")
+     *             @OA\Property(property="data", type="object", ref="#/components/schemas/UserProfileSettingsResource")
      *         )
      *     ),
      *     @OA\Response(response=401, description="Unauthorized"),

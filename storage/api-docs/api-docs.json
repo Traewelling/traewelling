@@ -1442,7 +1442,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/UserProfileSettings"
+                                            "$ref": "#/components/schemas/UserProfileSettingsResource"
                                         }
                                     },
                                     "type": "object"
@@ -1543,7 +1543,7 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/UserProfileSettings"
+                                            "$ref": "#/components/schemas/UserProfileSettingsResource"
                                         }
                                     },
                                     "type": "object"
@@ -5308,6 +5308,64 @@
                 },
                 "type": "object"
             },
+            "UserProfileSettingsResource": {
+                "title": "UserProfileSettings",
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "example": "Gertrud123"
+                    },
+                    "displayName": {
+                        "type": "string",
+                        "example": "Gertrud"
+                    },
+                    "profilePicture": {
+                        "type": "string",
+                        "example": "https://traewelling.de/@Gertrud123/picture"
+                    },
+                    "privateProfile": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "preventIndex": {
+                        "description": "Did the user choose to prevent search engines from indexing their profile?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "defaultStatusVisibility": {
+                        "$ref": "#/components/schemas/StatusVisibility"
+                    },
+                    "privacyHideDays": {
+                        "description": "Number of days to hide the user's location history",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "password": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "gertrud@traewelling.de"
+                    },
+                    "emailVerified": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "profilePictureSet": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "mastodon": {
+                        "type": "string",
+                        "example": "https://mastodon.social/@Gertrud123"
+                    },
+                    "mastodonVisibility": {
+                        "$ref": "#/components/schemas/MastodonVisibility"
+                    }
+                },
+                "type": "object"
+            },
             "BearerTokenResponse": {
                 "title": "BearerTokenResponse",
                 "properties": {
@@ -5939,93 +5997,6 @@
                 "type": "object",
                 "xml": {
                     "name": "User"
-                }
-            },
-            "UserProfileSettings": {
-                "title": "UserProfileSettings",
-                "description": "Model for all user profile settings",
-                "properties": {
-                    "username": {
-                        "title": "username",
-                        "description": "username",
-                        "type": "string",
-                        "example": "Gertrud123"
-                    },
-                    "displayName": {
-                        "title": "displayName",
-                        "description": "Display name of the user",
-                        "example": "Gertrud"
-                    },
-                    "profilePicture": {
-                        "title": "profilePicture",
-                        "description": "URL of the profile picture of the user",
-                        "type": "integer",
-                        "example": "https://traewelling.de/@Gertrud123/picture"
-                    },
-                    "privateProfile": {
-                        "title": "privateProfile",
-                        "description": "Is the profile private?",
-                        "type": "boolean",
-                        "format": "boolean",
-                        "example": false
-                    },
-                    "preventIndex": {
-                        "title": "preventIndex",
-                        "description": "Did the user choose to prevent search engines from indexing their profile?",
-                        "type": "boolean",
-                        "format": "boolean",
-                        "example": false
-                    },
-                    "defaultStatusVisibility": {
-                        "$ref": "#/components/schemas/StatusVisibility"
-                    },
-                    "privacyHideDays": {
-                        "title": "privacyHideDays",
-                        "description": "Number of days after which a status is hidden from the public",
-                        "format": "int",
-                        "example": 1,
-                        "nullable": true
-                    },
-                    "password": {
-                        "title": "password",
-                        "description": "Does the user have a password set?",
-                        "type": "boolean",
-                        "format": "boolean",
-                        "example": true
-                    },
-                    "email": {
-                        "title": "email",
-                        "description": "The email address of the user",
-                        "type": "string",
-                        "example": "gertrud@example.com",
-                        "nullable": true
-                    },
-                    "emailVerified": {
-                        "title": "emailVerified",
-                        "description": "Is the email address verified?",
-                        "type": "boolean",
-                        "format": "boolean",
-                        "example": "https://chaos.social/@traewelling"
-                    },
-                    "profilePictureSet": {
-                        "title": "profilePictureSet",
-                        "description": "Has the user set a profile picture other then the default one?",
-                        "type": "boolean",
-                        "example": false
-                    },
-                    "mastodon": {
-                        "title": "mastodon",
-                        "description": "Mastodon URL of user",
-                        "type": "string",
-                        "example": "https://chaos.social/@traewelling"
-                    },
-                    "mastodonVisibility": {
-                        "$ref": "#/components/schemas/StatusVisibility"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "UserProfileSettings"
                 }
             },
             "Webhook": {
