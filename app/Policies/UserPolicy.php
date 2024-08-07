@@ -90,6 +90,9 @@ class UserPolicy
      * @return bool
      */
     public function checkin(User $user, User $userToCheckin): bool {
+        if ($user->is($userToCheckin)) {
+            return true;
+        }
         if ($userToCheckin->friend_checkin === FriendCheckinSetting::FORBIDDEN) {
             return false;
         }
@@ -99,6 +102,6 @@ class UserPolicy
         if ($userToCheckin->friend_checkin === FriendCheckinSetting::LIST) {
             return $userToCheckin->trustedUsers->contains('trusted_id', $user->id);
         }
-        return $user->is($userToCheckin);
+        return false;
     }
 }
