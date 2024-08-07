@@ -121,7 +121,7 @@ class TrustedUserController extends Controller
                 'expires_at' => $validated['expiresAt'] ?? null,
             ]
         );
-        return response()->noContent(201);
+        return response()->noContent(201, ['Content-Type' => 'application/json']);
     }
 
     /**
@@ -146,6 +146,6 @@ class TrustedUserController extends Controller
         $trusted = User::findOrFail($trusted);
         $this->authorize('update', $user);
         TrustedUser::where('user_id', $user->id)->where('trusted_id', $trusted->id)->delete();
-        return response()->noContent();
+        return response()->noContent(204, ['Content-Type' => 'application/json']);
     }
 }

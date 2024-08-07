@@ -61,8 +61,8 @@ class ReportController extends Controller
             description: $validated['description'],
             reporter:    auth()->user()
         );
-
-        return response()->noContent(201);
+        
+        return response()->noContent(201, ['Content-Type' => 'application/json']);
     }
 
     /**
