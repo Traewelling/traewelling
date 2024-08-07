@@ -2,6 +2,9 @@
 
 namespace Tests\Feature\APIv1;
 
+use App\Enum\User\FriendCheckinSetting;
+use App\Http\Controllers\Backend\User\FollowController;
+use App\Models\TrustedUser;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\ApiTestCase;
@@ -37,6 +40,32 @@ class TrustedUserTest extends ApiTestCase
 
         $nextCursorResponse->dump();
         //TODO: why isn't the cursor working? Every request is showing from the beginning.
+    }
+    
+    public function testIndexTrustedByUsers(): void {
+        $user = User::factory()->create();
+        $this->actAsApiUserWithAllScopes($user);
+
+        // create a friend which allow friend checkin
+        $friend = User::factory()->create(['friend_checkin' => FriendCheckinSetting::FRIENDS]);
+        FollowController::createOrRequestFollow($user, $friend);
+        FollowController::createOrRequestFollow($friend, $user);
+
+        // create a user which allow checkins by trusted users and trust the user (without expiration)
+        $truster = User::factory()->create(['friend_checkin' => FriendCheckinSetting::LIST]);
+        TrustedUser::create(['user_id' => $truster->id, 'trusted_id' => $user->id]);
+
+        // create a user which allow checkins by trusted users and trust the user (with expiration)
+        $truster2 = User::factory()->create(['friend_checkin' => FriendCheckinSetting::LIST]);
+        TrustedUser::create(['user_id' => $truster2->id, 'trusted_id' => $user->id, 'expires_at' => now()->addDay()]);
+
+        // when requesting the list of trusted by users, both users should be listed
+        $response = $this->getJson("/api/v1/user/self/trusted-by");
+        $response->assertOk();
+        $response->assertJsonCount(3, 'data');
+        $response->assertJsonFragment(['id' => $friend->id]);
+        $response->assertJsonFragment(['id' => $truster->id]);
+        $response->assertJsonFragment(['id' => $truster2->id]);
     }
 
     public function testStoreAndDeleteTrustedUserForYourself(): void {
