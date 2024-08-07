@@ -2,18 +2,18 @@ import "croppie/croppie";
 import API from "../api/api";
 
 var resize = $("#upload-demo").croppie({
-                                           enableExif: true,
-                                           enableOrientation: true,
-                                           viewport: {
-                                               width: 200,
-                                               height: 200,
-                                               type: "square"
-                                           },
-                                           boundary: {
-                                               width: 300,
-                                               height: 300
-                                           }
-                                       });
+    enableExif: true,
+    enableOrientation: true,
+    viewport: {
+        width: 400,
+        height: 400,
+        type: "square"
+    },
+    boundary: {
+        width: 400,
+        height: 400
+    }
+});
 
 $("#image").on("change", function () {
     $("#upload-demo").removeClass("d-none");

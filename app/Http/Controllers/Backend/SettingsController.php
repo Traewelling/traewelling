@@ -57,7 +57,8 @@ abstract class SettingsController extends Controller
         $filename = strtr(':userId_:time.png', [':userId' => Auth::user()->id, ':time' => time()]);
 
 
-        (new Image(new Driver()))->read($avatar)->resize(300, 300)
+        (new Image(new Driver()))->read($avatar)
+                                 ->resize(400, 400)
                                  ->save(public_path('/uploads/avatars/' . $filename));
 
         if (auth()->user()->avatar) {
