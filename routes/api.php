@@ -174,6 +174,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::put('station/{oldStationId}/merge/{newStationId}', [StationController::class, 'merge']); // currently admin/backend only
 
         Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);
+        Route::get('/user/self/trusted-by', [TrustedUserController::class, 'indexTrustedBy']);
         Route::apiResource('report', ReportController::class);
         Route::apiResource('operators', OperatorController::class)->only(['index']);
     });

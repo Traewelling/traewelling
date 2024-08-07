@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 
+use App\Enum\User\FriendCheckinSetting;
 use App\Http\Resources\TrustedUserResource;
 use App\Models\TrustedUser;
 use App\Models\User;
@@ -10,6 +11,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use stdClass;
 
 class TrustedUserController extends Controller
 {
@@ -22,7 +24,11 @@ class TrustedUserController extends Controller
      *     description="Get all trusted users for the current user or a specific user (admin only).",
      *     tags={"User"},
      *     @OA\Parameter(name="user", in="path", required=true, description="ID of the user (or string 'self' for current user)", @OA\Schema(type="string")),
-     *     @OA\Response(response="200", description="List of trusted users"),
+     *     @OA\Response(response="200", description="List of trusted users",
+     *           @OA\JsonContent(
+     *               @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/TrustedUserResource")),
+     *           )
+     *     ),
      *     @OA\Response(response="401", description="Unauthorized"),
      *     @OA\Response(response="403", description="Forbidden"),
      *     @OA\Response(response="404", description="User not found"),
@@ -34,6 +40,45 @@ class TrustedUserController extends Controller
         $user = $this->getUserOrSelf($userIdOrSelf);
         $this->authorize('update', $user);
         return TrustedUserResource::collection($user->trustedUsers()->orderBy('trusted_id')->cursorPaginate(10));
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/user/self/trusted-by",
+     *     operationId="trustedByUserIndex",
+     *     summary="Get all users who trust the current user",
+     *     tags={"User"},
+     *     @OA\Response(response="200", description="List of users who trust the current user",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/TrustedUserResource")),
+     *          )
+     *     ),
+     *     @OA\Response(response="401", description="Unauthorized"),
+     *     @OA\Response(response="403", description="Forbidden"),
+     *     @OA\Response(response="404", description="User not found"),
+     *     @OA\Response(response="500", description="Internal Server Error"),
+     * )
+     * @throws AuthorizationException
+     */
+    public function indexTrustedBy(): AnonymousResourceCollection {
+        $user = auth()->user();
+
+        $friends = $user?->userFollowers
+            ->filter(fn(User $otherUser) => $user->userFollowings->contains($otherUser))
+            ->filter(fn(User $otherUser) => $otherUser->friend_checkin === FriendCheckinSetting::FRIENDS);
+
+        $trustedByUsers = $user?->trustedByUsers
+            ->merge($friends)
+            ->map(function(TrustedUser|User $user) { //map data to match the TrustedUserResource
+                $std             = new stdClass();
+                $std->trusted    = $user instanceof TrustedUser ? $user->user : $user;
+                $std->expires_at = $user instanceof TrustedUser ? $user->expires_at : null;
+                return $std;
+            })
+            ->unique('trusted.id') //remove duplicates
+            ->sortBy('trusted.username');
+
+        return TrustedUserResource::collection($trustedByUsers);
     }
 
     /**
