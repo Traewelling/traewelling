@@ -47,8 +47,6 @@ Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
 
 Route::permanentRedirect('/about', 'https://help.traewelling.de/faq/');
 
-Route::permanentRedirect('/imprint', '/legal/');
-Route::permanentRedirect('/privacy', '/legal/privacy-policy');
 Route::prefix('legal')->group(function() {
     Route::view('/', 'legal.notice')
          ->name('legal.notice');
@@ -56,7 +54,6 @@ Route::prefix('legal')->group(function() {
          ->name('legal.privacy');
 });
 
-Route::redirect('/profile/{username}', '/@{username}');
 Route::get('/@{username}', [FrontendUserController::class, 'getProfilePage'])
      ->name('profile');
 
