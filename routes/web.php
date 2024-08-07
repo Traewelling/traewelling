@@ -191,9 +191,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         Route::get('/blocks', [SettingsController::class, 'renderBlockedUsers'])->name('settings.blocks');
         Route::get('/mutes', [SettingsController::class, 'renderMutedUsers'])->name('settings.mutes');
 
-        Route::post('/uploadProfileImage', [FrontendUserController::class, 'updateProfilePicture'])
-             ->name('settings.upload-image');
-
         Route::post('/delsession', [UserController::class, 'deleteSession'])
              ->name('delsession'); //TODO: Replace with API Endpoint
         Route::post('/deltoken', [UserController::class, 'deleteToken'])
