@@ -25,6 +25,7 @@ class UserFactory extends Factory
             'privacy_hide_days'         => $this->faker->numberBetween(7, 365),
             'language'                  => null,
             'likes_enabled'             => true,
+            'points_enabled'            => true,
             'friend_checkin'            => FriendCheckinSetting::FORBIDDEN,
         ];
     }

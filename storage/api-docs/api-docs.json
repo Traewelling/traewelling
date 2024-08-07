@@ -5415,6 +5415,14 @@
                     },
                     "friendCheckin": {
                         "$ref": "#/components/schemas/FriendCheckinSetting"
+                    },
+                    "likesEnabled": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "pointsEnabled": {
+                        "type": "boolean",
+                        "example": true
                     }
                 },
                 "type": "object"

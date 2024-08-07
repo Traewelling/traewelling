@@ -30,6 +30,8 @@ class SettingsTest extends ApiTestCase
                                        ]);
 
         $this->assertEquals(FriendCheckinSetting::FORBIDDEN->value, $response->json('data.friendCheckin'));
+        $this->assertTrue($response->json('data.likesEnabled'));
+        $this->assertTrue($response->json('data.pointsEnabled'));
     }
 
     public function testUpdateProfileSettings(): void {
