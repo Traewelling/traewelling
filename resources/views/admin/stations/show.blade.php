@@ -6,7 +6,7 @@
 @section('content')
 
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-6">
             <div class="card mb-3">
                 <div class="card-body">
                     <table class="table">
@@ -19,150 +19,112 @@
                             <td>{{ $station->name }}</td>
                         </tr>
                         <tr>
+                            <th>Wikidata ID</th>
+                            <td>
+                                <a href="https://www.wikidata.org/wiki/{{ $station->wikidata_id }}"
+                                   target="{{ $station->wikidata_id }}"
+                                >
+                                    {{ $station->wikidata_id }}
+                                </a>
+
+                                <a class="float-end btn btn-sm btn-outline-primary"
+                                   onclick="fetch('/admin/stations/{{ $station->id }}/wikidata', {
+                            method: 'POST',
+                            headers: {'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content}
+                       }).then(function() {location.reload()})"
+                                >
+                                    Fetch <small>experimental!</small>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
                             <th>IBNR</th>
-                            <td>{{ $station->ibnr }}</td>
+                            <td>
+                                <a href="https://reiseauskunft.bahn.de/bin/bhftafel.exe/en?input={{ $station->ibnr ?? '' }}&boardType=dep&time=actual&productsDefault=1111101&start=yes"
+                                   target="{{ $station->ibnr ?? '' }}"
+                                >
+                                    {{ $station->ibnr }}
+                                </a>
+                            </td>
                         </tr>
                         <tr>
                             <th>IFOPT</th>
-                            <td>{{ $station->ifopt }}</td>
+                            <td>
+                                {{ $station->ifopt }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>RL100</th>
+                            <td>
+                                <a href="https://iris.noncd.db.de/wbt/js/index.html?bhf={{ $station->rilIdentifier ?? '' }}&zeilen=50&seclang=en"
+                                   target="{{ $station->rilIdentifier ?? '' }}"
+                                >
+                                    {{ $station->rilIdentifier }}
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Names</th>
+                            <td>
+                                <table class="table table-bordered">
+                                    @foreach($station->names as $name)
+                                        <tr>
+                                            <td>{{ $name->language }}</td>
+                                            <td>{{ $name->name }}</td>
+                                        </tr>
+                                    @endforeach
+                                </table>
+                            </td>
                         </tr>
                     </table>
                 </div>
             </div>
+        </div>
 
+        <div class="col-md-6">
             <div class="card mb-3">
                 <div class="card-body">
-                    <h2 class="fs-4">Wikidata</h2>
+                    <h2 class="fs-4">Map view</h2>
+                    <div id="map" style="height: 200px;"></div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
 
-                    @isset($station->wikidataEntity)
+                            const map = L.map('map').setView([{{ $station->latitude }}, {{ $station->longitude }}], 13);
+                            setTilingLayer('open-railway-map', map);
 
-                        <table class="table">
-                            <tr>
-                                <th>Wikidata ID</th>
-                                <td>
-                                    <a href="https://www.wikidata.org/wiki/{{ $station->wikidata_id }}"
-                                       target="{{ $station->wikidata_id }}"
-                                    >
-                                        {{ $station->wikidata_id }}
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Labels</th>
-                                <td>
-                                    @foreach($station->wikidataEntity->data['labels'] ?? [] as $language => $label)
-                                        <i>{{$language}}</i>: {{$label}}<br/>
-                                    @endforeach
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>IBNR</th>
-                                <td>
-                                    @foreach($station->wikidataEntity->data['statements'][Property::IBNR->value] ?? [] as $statement)
-                                        <a href="https://reiseauskunft.bahn.de/bin/bhftafel.exe/en?input={{ $statement['value']['content'] ?? '' }}&boardType=dep&time=actual&productsDefault=1111101&start=yes"
-                                           target="{{ $statement['value']['content'] ?? '' }}"
-                                        >
-                                            {{ $statement['value']['content'] ?? '' }}
+                            L.marker([{{ $station->latitude }}, {{ $station->longitude }}]).addTo(map)
+                                .bindPopup('{{ $station->name }}')
+                                .openPopup();
+                        });
+                    </script>
+                </div>
+            </div>
+
+            @isset($station->ifopt_a)
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h2 class="fs-4">Stations with same Ifopt</h2>
+
+                        <table class="table table-striped table-hover">
+                            @foreach($stationsWithSameIfopt as $stationWithSameIfopt)
+                                <tr>
+                                    <td>
+                                        {{ $stationWithSameIfopt->id }}
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('admin.station', ['id' => $stationWithSameIfopt->id]) }}">
+                                            {{ $stationWithSameIfopt->name }}
                                         </a>
-                                    @endforeach
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>IFOPT</th>
-                                <td>
-                                    @foreach($station->wikidataEntity->data['statements'][Property::IFOPT->value] ?? [] as $statement)
-                                        <a href="https://www.fahrplanauskunft-mv.de/vmvsl3plus/departureMonitor?formik=origin%3D{{ urlencode($statement['value']['content'] ?? '') }}&lng=en"
-                                           target="{{ $statement['value']['content'] ?? '' }}"
-                                        >
-                                            {{ $statement['value']['content'] ?? '' }}
-                                        </a>
-                                    @endforeach
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Ril100</th>
-                                <td>
-                                    @foreach($station->wikidataEntity->data['statements'][Property::DEUTSCHE_BAHN_STATION_CODE->value] ?? [] as $statement)
-                                        <a href="https://iris.noncd.db.de/wbt/js/index.html?bhf={{ $statement['value']['content'] ?? '' }}&zeilen=50&seclang=en"
-                                           target="{{ $statement['value']['content'] ?? '' }}"
-                                        >
-                                            {{ $statement['value']['content'] ?? '' }}
-                                        </a>
-                                    @endforeach
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Last fetched</th>
-                                <td>
-                                    {{ $station->wikidataEntity->last_updated_at?->format('Y-m-d H:i:s') ?? 'never' }}
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td>
+                                        {{ $stationWithSameIfopt->distanceToSimilarStation }}m
+                                    </td>
+                                </tr>
+                            @endforeach
                         </table>
-                    @else
-                        <span class="fw-bold text-danger">No Wikidata entity for this station linked.</span>
-                        <hr/>
-                        <form class="wikidata-link">
-                            <input type="hidden" name="id" value="{{$station->id}}"/>
-                            <div class="form-floating">
-                                <input type="text" class="form-control" name="wikidata_id"
-                                       placeholder="Link Wikidata ID">
-                                <label for="wikidata_id">Link Wikidata ID</label>
-                            </div>
-                        </form>
-                        <script>
-                            document.querySelector('form.wikidata-link').addEventListener('submit', function (event) {
-                                event.preventDefault();
-
-                                const id         = document.querySelector('form.wikidata-link input[name="id"]').value;
-                                const wikidataId = document.querySelector('form.wikidata-link input[name="wikidata_id"]').value;
-
-                                fetch('/api/v1/station/' + id, {
-                                    method: 'PUT',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                                    },
-                                    body: JSON.stringify({
-                                        wikidata_id: wikidataId
-                                    })
-                                })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data.data) {
-                                            window.location.reload();
-                                        } else {
-                                            alert('Error linking Wikidata ID');
-                                        }
-                                    });
-                            });
-                        </script>
-                    @endisset
+                    </div>
                 </div>
-            </div>
-
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h2 class="fs-4">Stations with same Ifopt</h2>
-
-                    <table class="table table-striped table-hover">
-                        @foreach($stationsWithSameIfopt as $stationWithSameIfopt)
-                            <tr>
-                                <td>
-                                    {{ $stationWithSameIfopt->id }}
-                                </td>
-                                <td>
-                                    <a href="{{ route('admin.station', ['id' => $stationWithSameIfopt->id]) }}">
-                                        {{ $stationWithSameIfopt->name }}
-                                    </a>
-                                </td>
-                                <td>
-                                    {{ $stationWithSameIfopt->distanceToSimilarStation }}m
-                                </td>
-                            </tr>
-                        @endforeach
-                    </table>
-                </div>
-            </div>
+            @endisset
         </div>
     </div>
 

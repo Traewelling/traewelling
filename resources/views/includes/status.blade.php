@@ -64,10 +64,10 @@
 
                     <a href="{{route('stationboard', [
                         'stationId' => $status->checkin->originStopover->station->id,
-                        'stationName' => $status->checkin->originStopover->station->name,
+                        'stationName' => $status->checkin->originStopover->station->localized_name,
                     ])}}"
                        class="text-trwl clearfix">
-                        {{$status->checkin->originStopover->station->name}}
+                        {{$status->checkin->originStopover->station->localized_name}}
                     </a>
 
                     <p class="train-status text-muted">
@@ -165,10 +165,10 @@
                     </span>
                     <a href="{{route('stationboard', [
                         'stationId' => $status->checkin->destinationStopover->station->id,
-                        'stationName' => $status->checkin->destinationStopover->station->name
+                        'stationName' => $status->checkin->destinationStopover->station->localized_name
                     ])}}"
                        class="text-trwl clearfix">
-                        {{$status->checkin->destinationStopover->station->name}}
+                        {{$status->checkin->destinationStopover->station->localized_name}}
                     </a>
                 </li>
             </ul>
