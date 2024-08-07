@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\APIv1;
 
+use App\Enum\User\FriendCheckinSetting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
@@ -27,11 +28,15 @@ class SettingsTest extends ApiTestCase
                                                //...
                                            ]
                                        ]);
+
+        $this->assertEquals(FriendCheckinSetting::FORBIDDEN->value, $response->json('data.friendCheckin'));
     }
 
     public function testUpdateProfileSettings(): void {
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
+
+        $this->assertEquals(FriendCheckinSetting::FORBIDDEN, $user->friend_checkin);
 
         $response = $this->putJson(
             uri:  '/api/v1/settings/profile',
@@ -40,15 +45,17 @@ class SettingsTest extends ApiTestCase
                       'displayName'   => 'test',
                       'likesEnabled'  => true,
                       'pointsEnabled' => true,
+                      'friendCheckin' => FriendCheckinSetting::FRIENDS->value,
                   ],
         );
         $response->assertOk();
 
         $user = $user->refresh();
 
-        self::assertEquals('test', $user->username);
-        self::assertEquals('test', $user->name);
-        self::assertTrue($user->likes_enabled);
-        self::assertTrue($user->points_enabled);
+        $this->assertEquals('test', $user->username);
+        $this->assertEquals('test', $user->name);
+        $this->assertTrue($user->likes_enabled);
+        $this->assertTrue($user->points_enabled);
+        $this->assertEquals(FriendCheckinSetting::FRIENDS, $user->friend_checkin);
     }
 }

@@ -5362,6 +5362,9 @@
                     },
                     "mastodonVisibility": {
                         "$ref": "#/components/schemas/MastodonVisibility"
+                    },
+                    "friendCheckin": {
+                        "$ref": "#/components/schemas/FriendCheckinSetting"
                     }
                 },
                 "type": "object"

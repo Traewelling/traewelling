@@ -21,6 +21,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      @OA\Property(property="profilePictureSet",          type="boolean", example=true),
  *      @OA\Property(property="mastodon",                   type="string",  example="https://mastodon.social/@Gertrud123"),
  *      @OA\Property(property="mastodonVisibility",         ref="#/components/schemas/MastodonVisibility"),
+ *      @OA\Property(property="friendCheckin",              ref="#/components/schemas/FriendCheckinSetting"),
  * )
  */
 class UserProfileSettingsResource extends JsonResource
@@ -40,6 +41,7 @@ class UserProfileSettingsResource extends JsonResource
             'profilePictureSet'       => !empty($this->avatar),
             'mastodon'                => $this->mastodon_url,
             'mastodonVisibility'      => $this->socialProfile->mastodon_visibility->value,
+            'friendCheckin'           => $this->friend_checkin?->value,
         ];
     }
 }

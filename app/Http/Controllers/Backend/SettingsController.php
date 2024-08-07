@@ -30,6 +30,10 @@ abstract class SettingsController extends Controller
             $fields['name'] = $fields['displayName'];
             unset($fields['displayName']);
         }
+        if (array_key_exists('friendCheckin', $fields)) {
+            $fields['friend_checkin'] = $fields['friendCheckin'];
+            unset($fields['friendCheckin']);
+        }
 
         $user->update($fields);
 
