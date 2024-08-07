@@ -88,18 +88,6 @@ Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
      ->whereNumber('id')
      ->name('status');
 
-Route::prefix('blog')->group(function() {
-    Route::permanentRedirect('/', 'https://blog.traewelling.de')
-         ->name('blog.all');
-
-    Route::permanentRedirect('/{slug}', 'https://blog.traewelling.de/posts/{slug}')
-         ->name('blog.show');
-
-    Route::get('/cat/{category}', function($category) {
-        return redirect('https://blog.traewelling.de/categories/' . strtolower($category), 301);
-    })->name('blog.category');
-});
-
 /**
  * These routes can be used by logged in users although they have not signed the privacy policy yet.
  */
