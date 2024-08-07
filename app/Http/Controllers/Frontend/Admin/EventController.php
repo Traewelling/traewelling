@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\Admin;
 
 use App\Enum\EventRejectionReason;
 use App\Exceptions\HafasException;
+use App\Exceptions\TelegramException;
 use App\Http\Controllers\Backend\Admin\EventController as AdminEventBackend;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HafasController;
@@ -181,14 +182,18 @@ class EventController extends Controller
 
         $eventSuggestion->update(['processed' => true]);
         if (!App::runningUnitTests() && TelegramService::isAdminActive()) {
-            TelegramService::admin()->sendMessage(
-                strtr("<b>Event suggestion accepted</b>" . PHP_EOL .
-                      "Title: :name" . PHP_EOL
-                      . "Accepting user: :username" . PHP_EOL, [
-                          ':name'     => $eventSuggestion->name,
-                          ':username' => auth()->user()->username,
-                      ])
-            );
+            try {
+                TelegramService::admin()->sendMessage(
+                    strtr("<b>Event suggestion accepted</b>" . PHP_EOL .
+                          "Title: :name" . PHP_EOL
+                          . "Accepting user: :username" . PHP_EOL, [
+                              ':name'     => $eventSuggestion->name,
+                              ':username' => auth()->user()->username,
+                          ])
+                );
+            } catch (TelegramException $exception) {
+                report($exception);
+            }
         }
 
         $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, $event));

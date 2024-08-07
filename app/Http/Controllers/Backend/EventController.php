@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exceptions\TelegramException;
 use App\Http\Controllers\Controller;
 use App\Models\EventSuggestion;
 use App\Models\Station;
 use App\Models\User;
 use App\Services\TelegramService;
 use Carbon\Carbon;
-use Exception;
 
 abstract class EventController extends Controller
 {
@@ -54,8 +54,8 @@ abstract class EventController extends Controller
                           ])
                 );
             }
-        } catch (Exception $e) {
-            report($e);
+        } catch (TelegramException $exception) {
+            report($exception);
         }
 
         return $eventSuggestion;

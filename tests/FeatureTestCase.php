@@ -7,6 +7,7 @@ use App\Models\OAuthClient;
 use App\Models\User;
 use App\Models\Webhook;
 use App\Repositories\OAuthClientRepository;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class FeatureTestCase extends BaseTestCase
@@ -136,6 +137,12 @@ abstract class FeatureTestCase extends BaseTestCase
 
     protected function setUp(): void {
         parent::setUp();
+
+        if (!in_array(RefreshDatabase::class, class_uses($this), true)) {
+            //if class doesn't use RefreshDatabase trait, skip the migration and seeding
+            return;
+        }
+
         $this->artisan('db:seed --class=Database\\\\Seeders\\\\Constants\\\\PermissionSeeder');
         $this->artisan('db:seed --class=Database\\\\Seeders\\\\PrivacyAgreementSeeder');
     }
@@ -171,7 +178,7 @@ abstract class FeatureTestCase extends BaseTestCase
     }
 
     public function createWebhook(User $user, OAuthClient $client, array $events): Webhook {
-        $events = array_map(function ($event) {
+        $events  = array_map(function($event) {
             return $event->value;
         }, $events);
         $request = WebhookController::createWebhookRequest($user, $client, 'stub', "https://example.com", $events);
