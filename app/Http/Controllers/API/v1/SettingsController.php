@@ -74,36 +74,17 @@ class SettingsController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="username", type="string", example="gertrud123", maxLength=25),
-     *             @OA\Property(property="displayName", type="string", example="Gertrud", maxLength=50),
-     *             @OA\Property(property="privateProfile", type="boolean", example=false, nullable=true),
-     *             @OA\Property(property="preventIndex", type="boolean", example=false, nullable=true),
-     *             @OA\Property(property="privacyHideDays", type="integer", example=1, nullable=true),
-     *             @OA\Property(
-     *                  property="defaultStatusVisibility",
-     *                  type="integer",
-     *                  nullable=true,
-     *                  @OA\Schema(ref="#/components/schemas/StatusVisibility")
-     *              ),
-     *              @OA\Property(
-     *                   property="mastodonVisibility",
-     *                   type="integer",
-     *                   nullable=true,
-     *                   @OA\Schema(ref="#/components/schemas/MastodonVisibility")
-     *               ),
-     *              @OA\Property(
-     *                   property="mapProvider",
-     *                   type="string",
-     *                   nullable=true,
-     *                   @OA\Schema(ref="#/components/schemas/MapProvider")
-     *               ),
-     *               @OA\Property(
-     *                  property="friendCheckin",
-     *                  type="string",
-     *                  nullable=true,
-     *                  @OA\Schema(ref="#/components/schemas/FriendCheckinSetting"),
-     *                  example="forbidden"
-     *               )
+     *              @OA\Property(property="username",                   type="string",  example="gertrud123",                                       maxLength=25),
+     *              @OA\Property(property="displayName",                type="string",  example="Gertrud",                                          maxLength=50),
+     *              @OA\Property(property="privateProfile",             type="boolean", example=false,                                              nullable=true),
+     *              @OA\Property(property="preventIndex",               type="boolean", example=false,                                              nullable=true),
+     *              @OA\Property(property="privacyHideDays",            type="integer", example=1,                                                  nullable=true),
+     *              @OA\Property(property="defaultStatusVisibility",    type="integer", @OA\Schema(ref="#/components/schemas/StatusVisibility"),    nullable=true),
+     *              @OA\Property(property="mastodonVisibility",         type="integer", @OA\Schema(ref="#/components/schemas/MastodonVisibility"),  nullable=true),
+     *              @OA\Property(property="mapProvider",                type="string",  @OA\Schema(ref="#/components/schemas/MapProvider"),         nullable=true),
+     *              @OA\Property(property="friendCheckin",              type="string",  @OA\Schema(ref="#/components/schemas/FriendCheckinSetting"),nullable=true),
+     *              @OA\Property(property="likesEnabled",               type="boolean", example=true,                                               nullable=true),
+     *              @OA\Property(property="pointsEnabled",              type="boolean", example=true,                                               nullable=true),
      *         )
      *    ),
      *     @OA\Response(
@@ -139,7 +120,9 @@ class SettingsController extends Controller
                                                 new Enum(MastodonVisibility::class),
                                             ],
                                             'mapProvider'             => ['nullable', new Enum(MapProvider::class)],
-                                            'friendCheckin'           => ['nullable', new Enum(FriendCheckinSetting::class)]
+                                            'friendCheckin'           => ['nullable', new Enum(FriendCheckinSetting::class)],
+                                            'likesEnabled'            => ['nullable', 'boolean'],
+                                            'pointsEnabled'           => ['nullable', 'boolean'],
                                         ]);
 
         try {

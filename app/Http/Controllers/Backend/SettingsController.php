@@ -8,13 +8,13 @@ use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Intervention\Image\ImageManager as Image;
 use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager as Image;
 
 abstract class SettingsController extends Controller
 {
-    /** @throws RateLimitExceededException
-     * @todo Implement privacy_hide_days
+    /**
+     * @throws RateLimitExceededException if the user has exceeded the rate limit for sending verification emails
      */
     public static function updateSettings(array $fields, User $user = null): Authenticatable|null|User {
         if ($user === null) {
@@ -25,6 +25,10 @@ abstract class SettingsController extends Controller
             $fields['email_verified_at'] = null;
             $fields['email']             = strtolower($fields['email']);
             $user->sendEmailVerificationNotification();
+        }
+        if (array_key_exists('displayName', $fields)) {
+            $fields['name'] = $fields['displayName'];
+            unset($fields['displayName']);
         }
 
         $user->update($fields);
@@ -50,7 +54,7 @@ abstract class SettingsController extends Controller
 
 
         (new Image(new Driver()))->read($avatar)->resize(300, 300)
-             ->save(public_path('/uploads/avatars/' . $filename));
+                                 ->save(public_path('/uploads/avatars/' . $filename));
 
         if (auth()->user()->avatar) {
             File::delete(public_path('/uploads/avatars/' . auth()->user()->avatar));

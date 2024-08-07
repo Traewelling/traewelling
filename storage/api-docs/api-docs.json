@@ -1517,7 +1517,16 @@
                                     },
                                     "friendCheckin": {
                                         "type": "string",
-                                        "example": "forbidden",
+                                        "nullable": true
+                                    },
+                                    "likesEnabled": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "nullable": true
+                                    },
+                                    "pointsEnabled": {
+                                        "type": "boolean",
+                                        "example": true,
                                         "nullable": true
                                     }
                                 },
@@ -5770,8 +5779,7 @@
                 "title": "CheckinForbiddenWithUsersResponse",
                 "properties": {
                     "message": {
-                        "description": "example: {\"message\":\"You are not allowed to check in the following users: 1\",\"meta\":{\"invalidUsers\":[1]}}",
-                        "example": "You are not allowed to check in the following users: 1,2"
+                        "example": "You are not allowed to check in the following users: 1"
                     },
                     "meta": {
                         "properties": {
