@@ -54,7 +54,6 @@ class TrustedUserController extends Controller
      *          )
      *     ),
      *     @OA\Response(response="401", description="Unauthorized"),
-     *     @OA\Response(response="403", description="Forbidden"),
      *     @OA\Response(response="500", description="Internal Server Error"),
      * )
      * @throws AuthorizationException
