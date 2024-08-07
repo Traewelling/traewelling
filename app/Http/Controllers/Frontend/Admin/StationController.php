@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Frontend\Admin;
 
 use App\Dto\Coordinate;
-use App\Http\Controllers\Backend\Wikidata\WikidataFetchController;
 use App\Http\Controllers\Controller;
 use App\Models\Station;
 use App\Models\StationName;
-use App\Models\WikidataEntity;
 use App\Objects\LineSegment;
 use App\Services\Wikidata\WikidataQueryService;
 use Illuminate\Http\Request;
@@ -85,8 +83,6 @@ class StationController extends Controller
         }
 
         $object = $objects[0];
-        $entity = WikidataEntity::updateOrCreate(['id' => $object->qId]);
-        WikidataFetchController::fetchEntity($entity);
         $station->update(['wikidata_id' => $object->qId]);
         Log::debug('Fetched object ' . $object->qId . ' for station ' . $station->name . ' (Trwl-ID: ' . $station->id . ')');
 

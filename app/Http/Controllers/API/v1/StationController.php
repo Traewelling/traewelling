@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\Backend\Wikidata\WikidataFetchController;
 use App\Http\Resources\StationResource;
 use App\Models\Checkin;
 use App\Models\Event;
@@ -10,7 +9,6 @@ use App\Models\EventSuggestion;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\Trip;
-use App\Models\WikidataEntity;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -37,17 +35,11 @@ class StationController extends Controller
 
         $validated = $request->validate([
                                             'ibnr'          => ['nullable', 'numeric', 'unique:train_stations,ibnr,' . $station->id],
-                                            'wikidata_id'   => ['nullable', 'string', 'max:255'],
                                             'rilIdentifier' => ['nullable', 'string', 'max:10'],
                                             'name'          => ['nullable', 'string', 'max:255'],
                                             'latitude'      => ['nullable', 'numeric', 'between:-90,90'],
                                             'longitude'     => ['nullable', 'numeric', 'between:-180,180'],
                                         ]);
-
-        if (isset($validated['wikidata_id'])) {
-            $wikidataEntity = WikidataEntity::updateOrCreate(['id' => $validated['wikidata_id']]);
-            WikidataFetchController::fetchEntity($wikidataEntity->fresh());
-        }
 
         $station->update($validated);
         return new StationResource($station);

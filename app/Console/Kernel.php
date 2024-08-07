@@ -33,7 +33,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void {
         //every minute
         $schedule->command(RefreshCurrentTrips::class)->withoutOverlapping()->everyMinute();
-        $schedule->command(WikidataFetcher::class)->withoutOverlapping()->everyMinute();
 
         //every five minutes
         $schedule->command(CacheLeaderboard::class)->withoutOverlapping()->everyFiveMinutes();
