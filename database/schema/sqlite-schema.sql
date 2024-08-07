@@ -76,9 +76,6 @@ CREATE INDEX "model_has_permissions_model_id_model_type_index" on "model_has_per
 CREATE TABLE IF NOT EXISTS "model_has_roles" ("role_id" integer not null, "model_type" varchar not null, "model_id" integer not null, foreign key("role_id") references "roles"("id") on delete cascade, primary key ("role_id", "model_id", "model_type"));
 CREATE INDEX "model_has_roles_model_id_model_type_index" on "model_has_roles" ("model_id", "model_type");
 CREATE TABLE IF NOT EXISTS "role_has_permissions" ("permission_id" integer not null, "role_id" integer not null, foreign key("permission_id") references "permissions"("id") on delete cascade, foreign key("role_id") references "roles"("id") on delete cascade, primary key ("permission_id", "role_id"));
-CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(255) DEFAULT NULL COLLATE "BINARY", username VARCHAR(255) NOT NULL COLLATE "BINARY", avatar VARCHAR(255) DEFAULT NULL COLLATE "BINARY", email VARCHAR(255) DEFAULT NULL COLLATE "BINARY", email_verified_at DATETIME DEFAULT NULL, privacy_ack_at DATETIME DEFAULT NULL, password VARCHAR(255) DEFAULT NULL COLLATE "BINARY", home_id BIGINT UNSIGNED DEFAULT NULL, remember_token VARCHAR(255) DEFAULT NULL COLLATE "BINARY", created_at DATETIME DEFAULT NULL, updated_at DATETIME DEFAULT NULL, private_profile BOOLEAN DEFAULT 0 NOT NULL, prevent_index BOOLEAN DEFAULT 0 NOT NULL, language VARCHAR(255) DEFAULT NULL COLLATE "BINARY", last_login DATETIME DEFAULT NULL, default_status_visibility INTEGER DEFAULT 0 NOT NULL, privacy_hide_days INTEGER DEFAULT NULL, likes_enabled BOOLEAN DEFAULT 1 NOT NULL, mapprovider VARCHAR(255) DEFAULT 'cargo' NOT NULL COLLATE "BINARY", timezone VARCHAR(255) DEFAULT 'Europe/Berlin' NOT NULL COLLATE "BINARY");
-CREATE UNIQUE INDEX users_username_unique ON users (username);
-CREATE UNIQUE INDEX users_email_unique ON users (email);
 CREATE TABLE statuses (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, body CLOB DEFAULT NULL COLLATE "BINARY", user_id BIGINT UNSIGNED NOT NULL, business SMALLINT UNSIGNED DEFAULT 0, created_at DATETIME DEFAULT NULL, updated_at DATETIME DEFAULT NULL, event_id INTEGER DEFAULT NULL, visibility INTEGER DEFAULT 0 NOT NULL, tweet_id VARCHAR(255) DEFAULT NULL COLLATE "BINARY", mastodon_post_id VARCHAR(255) DEFAULT NULL COLLATE "BINARY", "client_id" integer);
 CREATE INDEX statuses_user_id_mastodon_post_id_created_at_index ON statuses (user_id, mastodon_post_id, created_at);
 CREATE TABLE train_checkins (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, status_id BIGINT UNSIGNED NOT NULL, trip_id VARCHAR(255) NOT NULL, distance INTEGER UNSIGNED DEFAULT NULL --meters
@@ -92,8 +89,7 @@ CREATE INDEX "causer" on "activity_log" ("causer_type", "causer_id");
 CREATE INDEX "activity_log_log_name_index" on "activity_log" ("log_name");
 CREATE TABLE IF NOT EXISTS "mentions" ("id" integer primary key autoincrement not null, "status_id" integer not null, "mentioned_id" integer not null, "position" integer not null, "length" integer not null, "created_at" datetime, "updated_at" datetime, foreign key("status_id") references "statuses"("id") on delete cascade, foreign key("mentioned_id") references "users"("id") on delete cascade);
 CREATE UNIQUE INDEX "mentions_status_id_mentioned_id_position_unique" on "mentions" ("status_id", "mentioned_id", "position");
-CREATE TABLE IF NOT EXISTS "wikidata_entities" ("id" varchar not null, "data" text, "last_updated_at" datetime, "created_at" datetime, "updated_at" datetime, primary key ("id"));
-CREATE TABLE IF NOT EXISTS "reports" ("id" integer primary key autoincrement not null, "status" varchar not null default 'open', "subject_type" varchar not null, "subject_id" integer not null, "reason" varchar, "description" varchar, "reporter_id" integer, "created_at" datetime, "updated_at" datetime, foreign key("reporter_id") references "users"("id") on delete set null);
+CREATE TABLE IF NOT EXISTS "reports" ("id" integer primary key autoincrement not null, "status" varchar not null default 'open', "subject_type" varchar not null, "subject_id" integer not null, "reason" varchar, "description" varchar, "reporter_id" integer, "created_at" datetime, "updated_at" datetime, "admin_notification_id" integer, foreign key("reporter_id") references "users"("id") on delete set null);
 CREATE INDEX "reports_subject_type_subject_id_index" on "reports" ("subject_type", "subject_id");
 CREATE INDEX "reports_status_index" on "reports" ("status");
 CREATE INDEX "poly_lines_parent_id_index" on "poly_lines" ("parent_id");
@@ -111,6 +107,13 @@ CREATE TABLE events (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, station_id B
 , approved_by INTEGER DEFAULT NULL, checkin_start DATETIME NOT NULL, checkin_end DATETIME NOT NULL, FOREIGN KEY (station_id) REFERENCES train_stations (id) ON UPDATE NO ACTION ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE);
 CREATE UNIQUE INDEX events_slug_unique ON events (slug);
 CREATE INDEX IDX_5387574A21BDB235 ON events (station_id);
+CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(50) NOT NULL, username VARCHAR(25) NOT NULL, avatar VARCHAR(255) DEFAULT NULL, email VARCHAR(255) DEFAULT NULL, email_verified_at DATETIME DEFAULT NULL, privacy_ack_at DATETIME DEFAULT NULL, password VARCHAR(255) DEFAULT NULL, home_id BIGINT UNSIGNED DEFAULT NULL, remember_token VARCHAR(255) DEFAULT NULL, created_at DATETIME DEFAULT NULL, updated_at DATETIME DEFAULT NULL, private_profile BOOLEAN DEFAULT 0 NOT NULL, prevent_index BOOLEAN DEFAULT 0 NOT NULL, language VARCHAR(255) DEFAULT NULL, last_login DATETIME DEFAULT NULL, default_status_visibility INTEGER DEFAULT 0 NOT NULL, privacy_hide_days INTEGER DEFAULT NULL, likes_enabled BOOLEAN DEFAULT 1 NOT NULL, mapprovider VARCHAR(255) DEFAULT 'cargo' NOT NULL, timezone VARCHAR(255) DEFAULT 'Europe/Berlin' NOT NULL, friend_checkin VARCHAR(255) DEFAULT 'forbidden' NOT NULL, "points_enabled" tinyint(1) not null default '1');
+CREATE UNIQUE INDEX users_username_unique ON users (username);
+CREATE UNIQUE INDEX users_email_unique ON users (email);
+CREATE TABLE IF NOT EXISTS "trusted_users" ("id" varchar not null, "user_id" integer not null, "trusted_id" integer not null, "expires_at" datetime, "created_at" datetime, "updated_at" datetime, foreign key("user_id") references "users"("id") on delete cascade, foreign key("trusted_id") references "users"("id") on delete cascade, primary key ("id"));
+CREATE UNIQUE INDEX "trusted_users_user_id_trusted_id_unique" on "trusted_users" ("user_id", "trusted_id");
+CREATE TABLE IF NOT EXISTS "station_names" ("id" varchar not null, "station_id" integer not null, "language" varchar not null, "name" varchar not null, "created_at" datetime, "updated_at" datetime, foreign key("station_id") references "train_stations"("id") on delete cascade, primary key ("id"));
+CREATE UNIQUE INDEX "station_names_station_id_language_unique" on "station_names" ("station_id", "language");
 INSERT INTO migrations VALUES(1,'2014_10_12_000000_create_users_table',1);
 INSERT INTO migrations VALUES(2,'2014_10_12_100000_create_password_resets_table',1);
 INSERT INTO migrations VALUES(3,'2016_06_01_000001_create_oauth_auth_codes_table',1);
@@ -305,3 +308,12 @@ INSERT INTO migrations VALUES(192,'2024_05_25_000001_add_trip_id_arrival_departu
 INSERT INTO migrations VALUES(193,'2024_05_27_000000_drop_shadow_banned_from_users',3);
 INSERT INTO migrations VALUES(194,'2024_05_30_000000_add_prefix_to_begin_end_on_events',3);
 INSERT INTO migrations VALUES(195,'2024_05_22_000003_drop_origin_destination_from_check_in',3);
+INSERT INTO migrations VALUES(196,'2024_06_28_000000_add_friend_checkin_setting_to_users',4);
+INSERT INTO migrations VALUES(197,'2024_07_07_000000_make_display_name_not_nullable_at_users',4);
+INSERT INTO migrations VALUES(198,'2024_07_07_000000_set_size_of_username_at_users',4);
+INSERT INTO migrations VALUES(199,'2024_07_14_081815_add_points_setting_to_users',4);
+INSERT INTO migrations VALUES(200,'2024_07_28_000001_add_trusted_users_table',4);
+INSERT INTO migrations VALUES(201,'2024_07_30_000000_add_admin_notification_id_to_reports',4);
+INSERT INTO migrations VALUES(202,'2024_08_07_000000_create_station_names_table',4);
+INSERT INTO migrations VALUES(203,'2024_08_07_000001_drop_foreign_wikidata_entity_on_station',4);
+INSERT INTO migrations VALUES(204,'2024_08_07_000002_drop_wikidata_entities',4);
