@@ -22,6 +22,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      @OA\Property(property="mastodon",                   type="string",  example="https://mastodon.social/@Gertrud123"),
  *      @OA\Property(property="mastodonVisibility",         ref="#/components/schemas/MastodonVisibility"),
  *      @OA\Property(property="friendCheckin",              ref="#/components/schemas/FriendCheckinSetting"),
+ *      @OA\Property(property="likesEnabled",               type="boolean", example=true),
+ *      @OA\Property(property="pointsEnabled",              type="boolean", example=true),
  * )
  */
 class UserProfileSettingsResource extends JsonResource
@@ -42,6 +44,8 @@ class UserProfileSettingsResource extends JsonResource
             'mastodon'                => $this->mastodon_url,
             'mastodonVisibility'      => $this->socialProfile->mastodon_visibility->value,
             'friendCheckin'           => $this->friend_checkin?->value,
+            'likesEnabled'            => (bool) $this->likes_enabled,
+            'pointsEnabled'           => (bool) $this->points_enabled,
         ];
     }
 }
