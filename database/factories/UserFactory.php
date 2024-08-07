@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enum\StatusVisibility;
+use App\Enum\User\FriendCheckinSetting;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
@@ -24,6 +25,7 @@ class UserFactory extends Factory
             'privacy_hide_days'         => $this->faker->numberBetween(7, 365),
             'language'                  => null,
             'likes_enabled'             => true,
+            'friend_checkin'            => FriendCheckinSetting::FORBIDDEN,
         ];
     }
 
