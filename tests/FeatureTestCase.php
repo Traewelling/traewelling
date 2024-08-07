@@ -7,6 +7,7 @@ use App\Models\OAuthClient;
 use App\Models\User;
 use App\Models\Webhook;
 use App\Repositories\OAuthClientRepository;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class FeatureTestCase extends BaseTestCase
@@ -137,7 +138,7 @@ abstract class FeatureTestCase extends BaseTestCase
     protected function setUp(): void {
         parent::setUp();
 
-        if (!in_array('RefreshDatabase', class_uses($this), true)) {
+        if (!in_array(RefreshDatabase::class, class_uses($this), true)) {
             //if class doesn't use RefreshDatabase trait, skip the migration and seeding
             return;
         }
