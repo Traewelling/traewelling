@@ -3,20 +3,28 @@
 namespace App\Http\Resources;
 
 use App\Http\Controllers\Backend\User\ProfilePictureController;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use JsonSerializable;
 
+/**
+ * @OA\Schema(
+ *      title="UserProfileSettings",
+ *      @OA\Property(property="username",                   type="string",  example="Gertrud123"),
+ *      @OA\Property(property="displayName",                type="string",  example="Gertrud"),
+ *      @OA\Property(property="profilePicture",             type="string",  example="https://traewelling.de/@Gertrud123/picture"),
+ *      @OA\Property(property="privateProfile",             type="boolean", example=false),
+ *      @OA\Property(property="preventIndex",               type="boolean", example=false,                                          description="Did the user choose to prevent search engines from indexing their profile?"),
+ *      @OA\Property(property="defaultStatusVisibility",    ref="#/components/schemas/StatusVisibility"),
+ *      @OA\Property(property="privacyHideDays",            type="integer", example=1,                                              description="Number of days to hide the user's location history"),
+ *      @OA\Property(property="password",                   type="boolean", example=true),
+ *      @OA\Property(property="email",                      type="string",  example="gertrud@traewelling.de"),
+ *      @OA\Property(property="emailVerified",              type="boolean", example=true),
+ *      @OA\Property(property="profilePictureSet",          type="boolean", example=true),
+ *      @OA\Property(property="mastodon",                   type="string",  example="https://mastodon.social/@Gertrud123"),
+ *      @OA\Property(property="mastodonVisibility",         ref="#/components/schemas/MastodonVisibility"),
+ * )
+ */
 class UserProfileSettingsResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param Request $request
-     *
-     * @return array
-     */
     public function toArray($request): array {
         return [
             'username'                => $this->username,
