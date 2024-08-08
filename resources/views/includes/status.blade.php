@@ -64,10 +64,14 @@
 
                     <a href="{{route('stationboard', [
                         'stationId' => $status->checkin->originStopover->station->id,
-                        'stationName' => $status->checkin->originStopover->station->localized_name,
+                        'stationName' => $status->checkin->originStopover->station->name,
                     ])}}"
                        class="text-trwl clearfix">
-                        {{$status->checkin->originStopover->station->localized_name}}
+                        @if(auth()->user()->hasRole('open-beta'))
+                            {{$status->checkin->originStopover->station->localized_name}}
+                        @else
+                            {{$status->checkin->originStopover->station->name}}
+                        @endif
                     </a>
 
                     <p class="train-status text-muted">
@@ -144,7 +148,11 @@
                                 'stationName' => $nextStation?->name
                             ])}}"
                                class="text-trwl clearfix">
-                                {{$nextStation?->localized_name}}
+                                @if(auth()->user()->hasRole('open-beta'))
+                                    {{$nextStation?->localized_name}}
+                                @else
+                                    {{$nextStation?->name}}
+                                @endif
                             </a>
                         </p>
                     @endif
@@ -165,10 +173,14 @@
                     </span>
                     <a href="{{route('stationboard', [
                         'stationId' => $status->checkin->destinationStopover->station->id,
-                        'stationName' => $status->checkin->destinationStopover->station->localized_name
+                        'stationName' => $status->checkin->destinationStopover->station->name
                     ])}}"
                        class="text-trwl clearfix">
-                        {{$status->checkin->destinationStopover->station->localized_name}}
+                        @if(auth()->user()->hasRole('open-beta'))
+                            {{$status->checkin->destinationStopover->station->localized_name}}
+                        @else
+                            {{$status->checkin->destinationStopover->station->name}}
+                        @endif
                     </a>
                 </li>
             </ul>
