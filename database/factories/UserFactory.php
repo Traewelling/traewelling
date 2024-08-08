@@ -22,7 +22,7 @@ class UserFactory extends Factory
             'private_profile'           => false,
             'default_status_visibility' => StatusVisibility::PUBLIC->value,
             'prevent_index'             => false,
-            'privacy_hide_days'         => $this->faker->numberBetween(7, 365),
+            'privacy_hide_days'         => 7,
             'language'                  => null,
             'likes_enabled'             => true,
             'points_enabled'            => true,

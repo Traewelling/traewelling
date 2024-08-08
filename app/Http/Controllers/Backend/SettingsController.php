@@ -26,18 +26,29 @@ abstract class SettingsController extends Controller
             $fields['email']             = strtolower($fields['email']);
             $user->sendEmailVerificationNotification();
         }
-        if (array_key_exists('displayName', $fields)) {
-            $fields['name'] = $fields['displayName'];
-            unset($fields['displayName']);
-        }
-        if (array_key_exists('friendCheckin', $fields)) {
-            $fields['friend_checkin'] = $fields['friendCheckin'];
-            unset($fields['friendCheckin']);
+
+        // map api fields to model fields for update
+        $mappings = [
+            'displayName'             => 'name',
+            'friendCheckin'           => 'friend_checkin',
+            'privateProfile'          => 'private_profile',
+            'likesEnabled'            => 'likes_enabled',
+            'pointsEnabled'           => 'points_enabled',
+            'preventIndex'            => 'prevent_index',
+            'privacyHideDays'         => 'privacy_hide_days',
+            'defaultStatusVisibility' => 'default_status_visibility',
+            'mapProvider'             => 'mapprovider',
+        ];
+        foreach ($mappings as $apiField => $modelField) {
+            if (array_key_exists($apiField, $fields)) {
+                $fields[$modelField] = $fields[$apiField];
+                unset($fields[$apiField]);
+            }
         }
 
         $user->update($fields);
 
-        if (in_array('mastodonVisibility', $fields, true)) {
+        if (array_key_exists('mastodonVisibility', $fields)) {
             $user->socialProfile->update(['mastodon_visibility' => $fields['mastodonVisibility']]);
         }
 
