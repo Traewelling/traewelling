@@ -20,7 +20,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property double      $longitude
  * @property int         $time_offset
  * @property bool        $shift_time
- * @property Event[]     $events
  * @property Carbon      $created_at
  * @property Carbon      $updated_at
  *
