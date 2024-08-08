@@ -67,7 +67,7 @@
                         'stationName' => $status->checkin->originStopover->station->name,
                     ])}}"
                        class="text-trwl clearfix">
-                        @if(auth()->user()->hasRole('open-beta'))
+                        @if(auth()->user()?->hasRole('open-beta'))
                             {{$status->checkin->originStopover->station->localized_name}}
                         @else
                             {{$status->checkin->originStopover->station->name}}
@@ -148,7 +148,7 @@
                                 'stationName' => $nextStation?->name
                             ])}}"
                                class="text-trwl clearfix">
-                                @if(auth()->user()->hasRole('open-beta'))
+                                @if(auth()->user()?->hasRole('open-beta'))
                                     {{$nextStation?->localized_name}}
                                 @else
                                     {{$nextStation?->name}}
@@ -176,7 +176,7 @@
                         'stationName' => $status->checkin->destinationStopover->station->name
                     ])}}"
                        class="text-trwl clearfix">
-                        @if(auth()->user()->hasRole('open-beta'))
+                        @if(auth()->user()?->hasRole('open-beta'))
                             {{$status->checkin->destinationStopover->station->localized_name}}
                         @else
                             {{$status->checkin->destinationStopover->station->name}}
