@@ -39,7 +39,7 @@
                                     Zeige verfügbare Daten zur Station
                                 </button>
                             </h2>
-                            <div id="collapseOne" class="accordion-collapse collapse show"
+                            <div id="collapseOne" class="accordion-collapse collapse"
                                  aria-labelledby="headingStationMeta"
                                  data-mdb-parent="#accordionStationMeta">
                                 <div class="accordion-body">
