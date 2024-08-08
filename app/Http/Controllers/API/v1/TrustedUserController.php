@@ -25,9 +25,9 @@ class TrustedUserController extends Controller
      *     tags={"User"},
      *     @OA\Parameter(name="user", in="path", required=true, description="ID of the user (or string 'self' for current user)", @OA\Schema(type="string")),
      *     @OA\Response(response="200", description="List of trusted users",
-     *           @OA\JsonContent(
-     *               @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/TrustedUserResource")),
-     *           )
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/TrustedUserResource")),
+     *          )
      *     ),
      *     @OA\Response(response="401", description="Unauthorized"),
      *     @OA\Response(response="403", description="Forbidden"),
@@ -39,7 +39,7 @@ class TrustedUserController extends Controller
     public function index(string|int $userIdOrSelf): AnonymousResourceCollection {
         $user = $this->getUserOrSelf($userIdOrSelf);
         $this->authorize('update', $user);
-        return TrustedUserResource::collection($user->trustedUsers()->orderBy('trusted_id')->cursorPaginate(10));
+        return TrustedUserResource::collection($user->trustedUsers);
     }
 
     /**
