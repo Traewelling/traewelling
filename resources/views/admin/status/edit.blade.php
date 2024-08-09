@@ -1,9 +1,10 @@
-@php use App\Enum\Business; @endphp
+@php use App\Enum\Business;use App\Models\Status; @endphp
 @extends('admin.layout')
 
 @section('title', 'Status: ' . $status->id)
 
 @section('actions')
+    @php /** @var Status $status */ @endphp
     <a class="btn btn-secondary float-end" href="{{ route('status', ['id' => $status->id]) }}">
         <i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
         <span class="d-none d-md-inline">Frontend</span>
@@ -163,6 +164,21 @@
                             nicht auf Plausibilität geprüft!</small>
                         <button type="submit" class="btn btn-primary btn-block">Speichern</button>
                     </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Tags
+                </div>
+                <div class="card-body">
+                    @foreach($status->tags as $tag)
+                        <span class="badge text-bg-danger">
+                             {{ str_replace('tag.title.', '', __('tag.title.' . $tag->key)) }}:
+                             <i>{{ $tag->value }}</i>
+                        </span>
+                    @endforeach
                 </div>
             </div>
         </div>
