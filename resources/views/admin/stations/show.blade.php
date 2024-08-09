@@ -64,7 +64,12 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Names</th>
+                            <th>
+                                <a href="https://www.wikidata.org/wiki/Property:P2561"
+                                   target="P2561">
+                                    Names
+                                </a>
+                            </th>
                             <td>
                                 <table class="table table-bordered">
                                     @foreach($station->names as $name)

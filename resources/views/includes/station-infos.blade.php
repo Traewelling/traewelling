@@ -71,6 +71,18 @@
                                                             {{$localizedName->language}}: {{$localizedName->name}}
                                                         </span>
                                 @endforeach
+
+
+                                @if($station->names->where('language', app()->getLocale())->count() === 0)
+                                    <br/>
+                                    <span class="badge bg-danger mt-2">
+                                        <i class="fa-solid fa-exclamation-triangle"></i>
+                                        Keine Bezeichnung in der aktuellen Sprache ({{app()->getLocale()}}) gefunden.
+                                        <br/>
+                                        Bitte ergänze die Daten auf Wikidata mit dem
+                                        <a href="https://www.wikidata.org/wiki/Property:P2561">Property:P2561</a>.
+                                    </span>
+                                @endif
                             </td>
                         </tr>
                         <tr>

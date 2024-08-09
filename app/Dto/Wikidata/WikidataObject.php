@@ -5,11 +5,11 @@ namespace App\Dto\Wikidata;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use JsonException;
 
-class WikidataObject
+readonly class WikidataObject
 {
 
-    public readonly string $qId;
-    private                $rawData;
+    public string $qId;
+    public array  $rawData;
 
     /**
      * @param string $qId
