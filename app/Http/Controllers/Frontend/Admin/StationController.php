@@ -101,15 +101,18 @@ class StationController extends Controller
             $station->update(['rilIdentifier' => $rl100]);
         }
 
-        foreach ($object->getLabels() as $lang => $label) {
-            if ($label['value'] === null) {
+        //get names
+        foreach ($object->getClaims('P2561') as $property) {
+            $text     = $property['mainsnak']['datavalue']['value']['text'] ?? null;
+            $language = $property['mainsnak']['datavalue']['value']['language'] ?? null;
+            if ($language === null || $text === null) {
                 continue;
             }
             StationName::updateOrCreate([
                                             'station_id' => $station->id,
-                                            'language'   => $lang,
+                                            'language'   => $language,
                                         ], [
-                                            'name' => $label['value']
+                                            'name' => $text
                                         ]);
         }
     }
