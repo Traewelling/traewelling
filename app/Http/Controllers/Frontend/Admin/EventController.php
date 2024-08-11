@@ -17,7 +17,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
 
@@ -109,20 +108,23 @@ class EventController extends Controller
                                               ]);
         $eventSuggestion = EventSuggestion::find($validated['id']);
         $eventSuggestion->update(['processed' => true]);
-        if (!App::runningUnitTests() && config('services.telegram.admin.active')) {
-            Http::post(config('app.admin.notification.url'), [
-                'chat_id'    => config('services.telegram.admin.chat_id'),
-                'text'       => strtr("<b>Event suggestion denied</b>" . PHP_EOL .
-                                      "Title: :name" . PHP_EOL
-                                      . "Denial reason: :reason" . PHP_EOL
-                                      . "Denial user: :username" . PHP_EOL, [
-                                          ':name'     => $eventSuggestion->name,
-                                          ':reason'   => EventRejectionReason::from($validated['rejectionReason'])->getReason(),
-                                          ':username' => auth()->user()->username,
-                                      ]),
-                'parse_mode' => 'HTML',
-            ]);
+        if (!App::runningUnitTests() && TelegramService::isAdminActive()) {
+            try {
+                TelegramService::admin()->sendMessage(
+                    strtr("<b>Event suggestion denied</b>" . PHP_EOL .
+                          "Title: :name" . PHP_EOL
+                          . "Denial reason: :reason" . PHP_EOL
+                          . "Denial user: :username" . PHP_EOL, [
+                              ':name'     => $eventSuggestion->name,
+                              ':reason'   => EventRejectionReason::from($validated['rejectionReason'])->getReason(),
+                              ':username' => auth()->user()->username,
+                          ])
+                );
+            } catch (TelegramException $exception) {
+                report($exception);
+            }
         }
+
         $eventSuggestion->user->notify(
             new EventSuggestionProcessed(
                 $eventSuggestion,
