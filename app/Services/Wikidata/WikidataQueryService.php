@@ -2,7 +2,7 @@
 
 namespace App\Services\Wikidata;
 
-use App\Dto\Wikidata\WikidataObject;
+use App\Dto\Wikidata\WikidataEntity;
 use EasyRdf\Sparql\Client;
 
 class WikidataQueryService
@@ -39,7 +39,7 @@ class WikidataQueryService
         foreach ($this->results as $result) {
             $uri             = $result->item->getUri();
             $qId             = substr($uri, strrpos($uri, '/') + 1);
-            $this->objects[] = WikidataObject::fetch($qId);
+            $this->objects[] = WikidataEntity::fetch($qId);
         }
     }
 }

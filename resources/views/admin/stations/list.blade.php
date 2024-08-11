@@ -212,6 +212,23 @@
                     </script>
                 </div>
             </div>
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2 class="fs-5">Import from Wikidata</h2>
+
+                    <form method="POST" action="{{route('backend.status.import.wikidata')}}">
+                        @csrf
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="input-import-wikidata-entity" required
+                                   name="qId">
+                            <label for="input-import-wikidata-entity" class="form-label">Wikidata ID</label>
+                        </div>
+                        <br/>
+                        <button type="submit" class="btn btn-primary">Import</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
