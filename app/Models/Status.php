@@ -20,7 +20,6 @@ use Illuminate\Support\Facades\Auth;
  * @property Business              business
  * @property StatusVisibility      visibility
  * @property int                   event_id
- * @property string                tweet_id
  * @property string                mastodon_post_id
  *
  * //relations
@@ -40,16 +39,7 @@ class Status extends Model
 
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'body',
-        'business',
-        'visibility',
-        'event_id',
-        'tweet_id',
-        'mastodon_post_id',
-        'client_id'
-    ];
+    protected $fillable = ['user_id', 'body', 'business', 'visibility', 'event_id', 'mastodon_post_id', 'client_id'];
     protected $hidden   = ['user_id', 'business'];
     protected $appends  = ['favorited', 'statusInvisibleToMe', 'description'];
     protected $casts    = [
@@ -58,7 +48,6 @@ class Status extends Model
         'business'         => Business::class,
         'visibility'       => StatusVisibility::class,
         'event_id'         => 'integer',
-        'tweet_id'         => 'string',
         'mastodon_post_id' => 'string',
         'client_id'        => 'integer'
     ];
