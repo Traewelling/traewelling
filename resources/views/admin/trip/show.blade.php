@@ -121,12 +121,11 @@
                             <tr>
                                 <th scope="col">Name</th>
                                 <th scope="col">TRWL-ID</th>
+                                <th scope="col">Wikidata</th>
                                 <th scope="col">IBNR</th>
-                                <th scope="col">RIL100</th>
-                                <th scope="col">Ankunft plan</th>
-                                <th scope="col">real</th>
-                                <th scope="col">Abfahrt plan</th>
-                                <th scope="col">real</th>
+                                <th scope="col">RL100</th>
+                                <th scope="col">Ankunft soll / ist</th>
+                                <th scope="col">Abfahrt soll / ist</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -138,18 +137,22 @@
                                         </a>
                                     </td>
                                     <td>{{$stopover->station?->id}}</td>
+                                    <td>
+                                        <a href="https://www.wikidata.org/wiki/{{$stopover->station?->wikidata_id}}"
+                                           target="__blank">
+                                            {{$stopover->station?->wikidata_id}}
+                                        </a>
+                                    </td>
                                     <td>{{$stopover->station?->ibnr}}</td>
                                     <td>{{$stopover->station?->rilIdentifier}}</td>
                                     <td title="{{$stopover->arrival_planned?->format('c')}}">
                                         {{userTime($stopover->arrival_planned)}}
-                                    </td>
-                                    <td title="{{$stopover->arrival_real?->format('c')}}">
+                                        /
                                         {{userTime($stopover->arrival_real?->format('H:i'))}}
                                     </td>
                                     <td title="{{$stopover->departure_planned?->format('c')}}">
                                         {{userTime($stopover->departure_planned)}}
-                                    </td>
-                                    <td title="{{$stopover->departure_real?->format('c')}}">
+                                        /
                                         {{userTime($stopover->departure_real)}}
                                     </td>
                                 </tr>
