@@ -47,8 +47,6 @@ Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
 
 Route::permanentRedirect('/about', 'https://help.traewelling.de/faq/');
 
-Route::permanentRedirect('/imprint', '/legal/');
-Route::permanentRedirect('/privacy', '/legal/privacy-policy');
 Route::prefix('legal')->group(function() {
     Route::view('/', 'legal.notice')
          ->name('legal.notice');
@@ -56,7 +54,6 @@ Route::prefix('legal')->group(function() {
          ->name('legal.privacy');
 });
 
-Route::redirect('/profile/{username}', '/@{username}');
 Route::get('/@{username}', [FrontendUserController::class, 'getProfilePage'])
      ->name('profile');
 
@@ -69,7 +66,6 @@ Route::get('/leaderboard/{date}', [LeaderboardController::class, 'renderMonthlyL
 Route::get('/statuses/active', [FrontendStatusController::class, 'getActiveStatuses'])
      ->name('statuses.active');
 
-Route::permanentRedirect('/statuses/event/{slug}', '/event/{slug}');
 Route::get('/event/{slug}', [FrontendStatusController::class, 'statusesByEvent'])
      ->name('event');
 
@@ -87,18 +83,6 @@ Route::get('/callback/mastodon', [MastodonController::class, 'callback']);
 Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
      ->whereNumber('id')
      ->name('status');
-
-Route::prefix('blog')->group(function() {
-    Route::permanentRedirect('/', 'https://blog.traewelling.de')
-         ->name('blog.all');
-
-    Route::permanentRedirect('/{slug}', 'https://blog.traewelling.de/posts/{slug}')
-         ->name('blog.show');
-
-    Route::get('/cat/{category}', function($category) {
-        return redirect('https://blog.traewelling.de/categories/' . strtolower($category), 301);
-    })->name('blog.category');
-});
 
 /**
  * These routes can be used by logged in users although they have not signed the privacy policy yet.
