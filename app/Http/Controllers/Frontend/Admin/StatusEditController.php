@@ -8,8 +8,8 @@ use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Controller;
-use App\Models\Status;
 use App\Models\Station;
+use App\Models\Status;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -55,6 +55,7 @@ class StatusEditController extends Controller
                                             'destination' => ['required', 'exists:train_stations,id'],
                                             'body'        => ['nullable', 'string'],
                                             'visibility'  => ['required', new Enum(StatusVisibility::class)],
+                                            'event_id'    => ['nullable', 'integer', 'exists:events,id'],
                                         ]);
 
         $status = Status::find($validated['statusId']);
@@ -100,7 +101,10 @@ class StatusEditController extends Controller
 
         StatusUpdateEvent::dispatch($status->refresh());
 
-        $status->update(['visibility' => $validated['visibility']]);
+        $status->update([
+                            'visibility' => $validated['visibility'],
+                            'event_id'   => $validated['event_id'],
+                        ]);
 
         if ($status->body !== $validated['body']) {
             $status->update(['body' => $validated['body']]);
