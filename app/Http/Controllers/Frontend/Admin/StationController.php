@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Station;
 use App\Models\StationName;
 use App\Objects\LineSegment;
+use App\Services\Wikidata\WikidataImportService;
 use App\Services\Wikidata\WikidataQueryService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
@@ -114,6 +116,27 @@ class StationController extends Controller
                                         ], [
                                             'name' => $text
                                         ]);
+        }
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return void
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @todo Make this an API endpoint when it is accessible for users too
+     */
+    public function importWikidata(Request $request): RedirectResponse {
+        $this->authorize('create', Station::class);
+        $validated = $request->validate([
+                                            'qId' => ['required', 'string', 'regex:/^Q\d+$/'],
+                                        ]);
+        try {
+            $station = WikidataImportService::importStation($validated['qId']);
+            return redirect()->route('admin.station', ['id' => $station->id])->with('success', 'Station imported successfully');
+        } catch (\Exception $exception) {
+            Log::error('Error while importing wikidata station (manually): ' . $exception->getMessage());
+            return redirect()->back()->with('alert-danger', 'Error while importing station: ' . $exception->getMessage());
         }
     }
 }
