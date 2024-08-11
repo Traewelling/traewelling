@@ -160,6 +160,18 @@
                             </div>
                         </div>
 
+                        <div class="mb-4">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label class="form-label" for="form-origin">Event ID</label>
+                                </div>
+                                <div class="col-8">
+                                    <input type="text" class="form-control" name="event_id"
+                                           value="{{$status->event_id}}">
+                                </div>
+                            </div>
+                        </div>
+
                         <small class="text-danger">Achtung: Hier sind Admin-Handlungen möglich. Die Änderungen werden
                             nicht auf Plausibilität geprüft!</small>
                         <button type="submit" class="btn btn-primary btn-block">Speichern</button>
