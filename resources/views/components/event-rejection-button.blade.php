@@ -22,6 +22,11 @@
         </li>
         <li>
             <button class="btn-link dropdown-item" name="rejectionReason"
+                    value="{{EventRejectionReason::MISSING_INFORMATION}}">Missing information
+            </button>
+        </li>
+        <li>
+            <button class="btn-link dropdown-item" name="rejectionReason"
                     value="{{EventRejectionReason::DEFAULT}}">No Reason
             </button>
         </li>

@@ -219,6 +219,7 @@
     "notifications.eventSuggestionProcessed.too-late": "Unfortunately, your proposal was submitted too late.",
     "notifications.eventSuggestionProcessed.duplicate": "Your suggestion already existed.",
     "notifications.eventSuggestionProcessed.not-applicable": "Your suggestion unfortunately has no added value for the community.",
+    "notifications.eventSuggestionProcessed.missing-information": "We can’t approve this event due to missing information. Please provide us with a specific source/website about this event.",
     "notifications.eventSuggestionProcessed.accepted": "Your suggestion was accepted.",
     "notifications.show": "Show notifications",
     "notifications.title": "Notifications",

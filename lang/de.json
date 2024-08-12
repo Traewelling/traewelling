@@ -242,6 +242,7 @@
     "notifications.eventSuggestionProcessed.too-late": "Dein Vorschlag wurde leider zu spät eingereicht.",
     "notifications.eventSuggestionProcessed.duplicate": "Dein Eventvorschlag existierte bereits.",
     "notifications.eventSuggestionProcessed.not-applicable": "Dein Vorschlag hat leider keinen Mehrwert für die Community.",
+    "notifications.eventSuggestionProcessed.missing-information": "Wir können diese Veranstaltung mangels Informationen nicht akzeptieren. Bitte stelle uns eine genaue Quelle/Webseite mit Informationen über diese Veranstaltung bereit.",
     "notifications.eventSuggestionProcessed.accepted": "Dein Vorschlag wurde angenommen.",
     "notifications.show": "Benachrichtigungen anzeigen",
     "notifications.title": "Benachrichtigungen",
