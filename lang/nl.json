@@ -783,5 +783,6 @@
     "checkin.success.body": "Je bent ingecheckt!",
     "events.show-all-for-event": "Alle check-ins van evenement tonen",
     "notifications.youHaveBeenCheckedIn.notice": "Reis op :line, van :origin naar :destination",
-    "notifications.youHaveBeenCheckedIn.lead": "Je bent ingecheckt door <b>@:username</b>"
+    "notifications.youHaveBeenCheckedIn.lead": "Je bent ingecheckt door <b>@:username</b>",
+    "notifications.eventSuggestionProcessed.missing-information": "We kunnen dit evenement niet goedkeuren, omdat er informatie ontbreekt. Geef een bron/website over dit evenement op."
 }
