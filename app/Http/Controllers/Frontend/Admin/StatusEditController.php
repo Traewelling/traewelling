@@ -56,6 +56,7 @@ class StatusEditController extends Controller
                                             'body'        => ['nullable', 'string'],
                                             'visibility'  => ['required', new Enum(StatusVisibility::class)],
                                             'event_id'    => ['nullable', 'integer', 'exists:events,id'],
+                                            'points'      => ['nullable', 'integer', 'gte:0'], //if null, points will be recalculated
                                         ]);
 
         $status = Status::find($validated['statusId']);
@@ -92,7 +93,7 @@ class StatusEditController extends Controller
                                      'departure'               => $newDeparture,
                                      'arrival'                 => $newArrival,
                                      'distance'                => $distanceInMeters,
-                                     'points'                  => $pointCalculation->points,
+                                     'points'                  => $validated['points'] ?? $pointCalculation->points,
                                      'duration'                => TrainCheckinController::calculateCheckinDuration(
                                          $status->checkin,
                                          false

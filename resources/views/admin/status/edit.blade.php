@@ -14,11 +14,11 @@
 @section('content')
     <div class="row">
         <div class="col-md-6">
-            <div class="card">
+            <div class="card mb-2">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-4">
-                            <label class="form-label" for="form-origin">Benutzer</label>
+                            <label class="form-label" for="form-origin">User</label>
                         </div>
                         <div class="col-8">
                             {{$status->user->name}}
@@ -28,56 +28,61 @@
                                 </a>
                             </small>
                         </div>
-                        <div class="col-4">
-                            <label>Stats</label>
-                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4"></div>
                         <div class="col-8">
                             {{ $status->likes->count() }} Likes |
                             {{ $status->checkin->distance / 1000 }} km |
-                            {!! durationToSpan(secondsToDuration($status->checkin->duration * 60))  !!} |
-                            {{ $status->checkin->points }} Punkte
+                            {!! durationToSpan(secondsToDuration($status->checkin->duration * 60))  !!}
                         </div>
-
+                    </div>
+                    <div class="row">
                         <div class="col-4">
-                            <label class="form-label" for="form-origin">Eingecheckt am</label>
+                            <label class="form-label" for="form-origin">Created at</label>
                         </div>
                         <div class="col-8">
                             {{$status->created_at->format('c')}}
                         </div>
-
+                    </div>
+                    <div class="row">
                         <div class="col-4">
-                            <label class="form-label" for="form-origin">Bearbeitet am</label>
+                            <label class="form-label" for="form-origin">Updated at</label>
                         </div>
                         <div class="col-8">
                             {{$status->updated_at->format('c')}}
                         </div>
-
+                    </div>
+                    <div class="row">
                         <div class="col-4">
-                            <label class="form-label" for="form-origin">Fahrt</label>
+                            <label class="form-label" for="form-origin">Trip</label>
                         </div>
                         <div class="col-8">
                             {{$status->checkin->trip->linename}}
                             @isset($status->checkin->trip->operator?->name)
-                                <small>(Betreiber: {{$status->checkin->trip->operator?->name}})</small>
+                                <small>(Operator: {{$status->checkin->trip->operator?->name}})</small>
                             @endisset
                             <br/>
                             <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip->id])}}">
                                 {{ $status->checkin->id }} ({{ $status->checkin->trip->source }})
                             </a>
                         </div>
-
+                    </div>
+                    <div class="row">
                         <div class="col-4">
                             <label>Client</label>
                         </div>
                         <div class="col-8">
                             @isset($status?->client)
                                 {{$status->client->name}} (#{{$status->client->id}})
+                            @else
+                                <span class="text-muted fw-light">No external client (Träwelling 🎉)</span>
                             @endisset
                         </div>
-
                     </div>
-                    <hr/>
-                    <form method="POST" action="{{route('admin.status.edit')}}">
+
+                    <form method="POST" action="{{route('admin.status.edit')}}" class="mt-3">
+
                         @csrf
                         <input type="hidden" name="statusId" value="{{$status->id}}"/>
 
@@ -172,15 +177,31 @@
                             </div>
                         </div>
 
-                        <small class="text-danger">Achtung: Hier sind Admin-Handlungen möglich. Die Änderungen werden
-                            nicht auf Plausibilität geprüft!</small>
-                        <button type="submit" class="btn btn-primary btn-block">Speichern</button>
+                        <div class="mb-4">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label class="form-label" for="form-origin">Points</label>
+                                </div>
+                                <div class="col-8">
+                                    <input type="number" class="form-control" name="points"
+                                           value="{{$status->checkin->points}}"/>
+                                    <small class="text-muted">
+                                        empty for recalculating
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fa-solid fa-save"></i>
+                            Save
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card">
+            <div class="card mb-2">
                 <div class="card-header">
                     Tags
                 </div>
