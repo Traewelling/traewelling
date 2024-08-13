@@ -40,7 +40,7 @@ abstract class EventController extends Controller
 
         try {
             if (TelegramService::isAdminActive()) {
-                TelegramService::admin()->sendMessage(
+                $messageId = TelegramService::admin()->sendMessage(
                     strtr("<b>New event suggestion:</b>" . PHP_EOL .
                           "Title: :name" . PHP_EOL .
                           "Begin: :begin" . PHP_EOL .
@@ -53,6 +53,7 @@ abstract class EventController extends Controller
                               ':username' => $eventSuggestion->user->username,
                           ])
                 );
+                $eventSuggestion->update(['admin_notification_id' => $messageId]);
             }
         } catch (TelegramException $exception) {
             report($exception);

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Frontend\Admin;
 
 use App\Enum\EventRejectionReason;
 use App\Exceptions\HafasException;
-use App\Exceptions\TelegramException;
 use App\Http\Controllers\Backend\Admin\EventController as AdminEventBackend;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HafasController;
@@ -15,7 +14,6 @@ use App\Services\TelegramService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
@@ -108,21 +106,9 @@ class EventController extends Controller
                                               ]);
         $eventSuggestion = EventSuggestion::find($validated['id']);
         $eventSuggestion->update(['processed' => true]);
-        if (!App::runningUnitTests() && TelegramService::isAdminActive()) {
-            try {
-                TelegramService::admin()->sendMessage(
-                    strtr("<b>Event suggestion denied</b>" . PHP_EOL .
-                          "Title: :name" . PHP_EOL
-                          . "Denial reason: :reason" . PHP_EOL
-                          . "Denial user: :username" . PHP_EOL, [
-                              ':name'     => $eventSuggestion->name,
-                              ':reason'   => EventRejectionReason::from($validated['rejectionReason'])->getReason(),
-                              ':username' => auth()->user()->username,
-                          ])
-                );
-            } catch (TelegramException $exception) {
-                report($exception);
-            }
+
+        if ($eventSuggestion->admin_notification_id !== null) {
+            TelegramService::admin()->deleteMessage($eventSuggestion->admin_notification_id);
         }
 
         $eventSuggestion->user->notify(
@@ -183,19 +169,9 @@ class EventController extends Controller
                                ]);
 
         $eventSuggestion->update(['processed' => true]);
-        if (!App::runningUnitTests() && TelegramService::isAdminActive()) {
-            try {
-                TelegramService::admin()->sendMessage(
-                    strtr("<b>Event suggestion accepted</b>" . PHP_EOL .
-                          "Title: :name" . PHP_EOL
-                          . "Accepting user: :username" . PHP_EOL, [
-                              ':name'     => $eventSuggestion->name,
-                              ':username' => auth()->user()->username,
-                          ])
-                );
-            } catch (TelegramException $exception) {
-                report($exception);
-            }
+
+        if ($eventSuggestion->admin_notification_id !== null) {
+            TelegramService::admin()->deleteMessage($eventSuggestion->admin_notification_id);
         }
 
         $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, $event));

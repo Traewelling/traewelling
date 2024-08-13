@@ -514,7 +514,7 @@
     "overlapping-checkin.force-yes": "Forcer.",
     "report-bug": "Signaler une erreur",
     "export.error.time": "Vous ne pouvez exporter des voyages que pour une période maximale de 365 jours.",
-    "notifications.eventSuggestionProcessed.lead": "Votre suggestion d'événement <b>:nom</b> a été modifiée.",
+    "notifications.eventSuggestionProcessed.lead": "Votre suggestion d'événement <b>:name</b> a été modifiée.",
     "other": "Autre",
     "exit": "Sortir",
     "platform": "Voie",
