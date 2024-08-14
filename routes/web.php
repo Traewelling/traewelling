@@ -17,6 +17,7 @@ use App\Http\Controllers\Frontend\DevController;
 use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\IcsController;
 use App\Http\Controllers\Frontend\LeaderboardController;
+use App\Http\Controllers\Frontend\OpenData\WikidataController;
 use App\Http\Controllers\Frontend\SettingsController;
 use App\Http\Controllers\Frontend\Social\MastodonController;
 use App\Http\Controllers\Frontend\Social\SocialController;
@@ -127,6 +128,11 @@ Route::middleware(['auth', 'privacy'])->group(function() {
              ->name('stats.stations');
         Route::get('/daily/{dateString}', [DailyStatsController::class, 'renderDailyStats'])
              ->name('stats.daily');
+    });
+    
+    Route::prefix('open-data')->group(function() {
+        Route::get('/wikidata', [WikidataController::class, 'indexHelpPage'])
+             ->name('open-data.wikidata');
     });
 
     Route::prefix('settings')->group(function() {
