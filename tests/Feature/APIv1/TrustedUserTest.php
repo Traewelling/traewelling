@@ -50,6 +50,10 @@ class TrustedUserTest extends ApiTestCase
         $truster2 = User::factory()->create(['friend_checkin' => FriendCheckinSetting::LIST]);
         TrustedUser::create(['user_id' => $truster2->id, 'trusted_id' => $user->id, 'expires_at' => now()->addDay()]);
 
+        // create a user which DON'T ALLOW checkins by trusted users but trust the user (should not be listed)
+        $fakeTruster = User::factory()->create(['friend_checkin' => FriendCheckinSetting::FORBIDDEN]);
+        TrustedUser::create(['user_id' => $fakeTruster->id, 'trusted_id' => $user->id]);
+
         // when requesting the list of trusted by users, both users should be listed
         $response = $this->getJson("/api/v1/user/self/trusted-by");
         $response->assertOk();
@@ -57,6 +61,7 @@ class TrustedUserTest extends ApiTestCase
         $response->assertJsonFragment(['id' => $friend->id]);
         $response->assertJsonFragment(['id' => $truster->id]);
         $response->assertJsonFragment(['id' => $truster2->id]);
+        $response->assertJsonMissing(['id' => $fakeTruster->id]);
     }
 
     public function testStoreAndDeleteTrustedUserForYourself(): void {
