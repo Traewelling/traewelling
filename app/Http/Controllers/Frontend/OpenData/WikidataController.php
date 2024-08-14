@@ -14,6 +14,7 @@ class WikidataController extends Controller
         $destinationStationsWithoutWikidata = Station::join('train_stopovers', 'train_stations.id', '=', 'train_stopovers.train_station_id')
                                                      ->join('train_checkins', 'train_checkins.destination_stopover_id', '=', 'train_stopovers.id')
                                                      ->where('train_checkins.user_id', auth()->id())
+                                                     ->where('train_stations.ibnr', '>', 1000000)
                                                      ->whereNull('train_stations.wikidata_id')
                                                      ->select('train_stations.*')
                                                      ->limit(50)
