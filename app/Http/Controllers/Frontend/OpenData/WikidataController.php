@@ -18,6 +18,8 @@ class WikidataController extends Controller
                                                      ->whereNull('train_stations.wikidata_id')
                                                      ->select('train_stations.*')
                                                      ->limit(50)
+                                                     ->orderByDesc('train_checkins.created_at')
+                                                     ->distinct()
                                                      ->get();
 
         return view('open-data.wikidata.index', [
