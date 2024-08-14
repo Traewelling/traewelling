@@ -66,6 +66,7 @@ class TrustedUserController extends Controller
             ->filter(fn(User $otherUser) => $otherUser->friend_checkin === FriendCheckinSetting::FRIENDS);
 
         $trustedByUsers = $user?->trustedByUsers
+            ->reject(fn(TrustedUser $trustedUser) => $trustedUser->user->friend_checkin !== FriendCheckinSetting::LIST)
             ->merge($friends)
             ->map(function(TrustedUser|User $user) { //map data to match the TrustedUserResource
                 $std             = new stdClass();
