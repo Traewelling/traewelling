@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Frontend\Admin;
 
 use App\Dto\Coordinate;
+use App\Exceptions\Wikidata\FetchException;
 use App\Http\Controllers\Controller;
 use App\Models\Station;
-use App\Models\StationName;
 use App\Objects\LineSegment;
 use App\Services\Wikidata\WikidataImportService;
-use App\Services\Wikidata\WikidataQueryService;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -65,58 +65,15 @@ class StationController extends Controller
      * Needs to be cleaned up and refactored, if it should be used consistently.
      * Little testing if it works as expected.
      */
-    public function fetchWikidata(int $id): void {
+    public function fetchWikidata(int $id): JsonResponse {
         $station = Station::findOrFail($id);
         $this->authorize('update', $station);
 
-        // P054 = IBNR
-        $sparqlQuery = <<<SPARQL
-            SELECT ?item WHERE { ?item wdt:P954 "{$station->ibnr}". }
-        SPARQL;
-
-        $objects = (new WikidataQueryService())->setQuery($sparqlQuery)->execute()->getObjects();
-        if (count($objects) > 1) {
-            Log::debug('More than one object found for station ' . $station->ibnr . ' (' . $station->id . ') - skipping');
-            return;
-        }
-
-        if (empty($objects)) {
-            Log::debug('No object found for station ' . $station->ibnr . ' (' . $station->id . ') - skipping');
-            return;
-        }
-
-        $object = $objects[0];
-        $station->update(['wikidata_id' => $object->qId]);
-        Log::debug('Fetched object ' . $object->qId . ' for station ' . $station->name . ' (Trwl-ID: ' . $station->id . ')');
-
-        $ifopt = $object->getClaims('P12393')[0]['mainsnak']['datavalue']['value'] ?? null;
-        if ($station->ifopt_a === null && $ifopt !== null) {
-            $splitIfopt = explode(':', $ifopt);
-            $station->update([
-                                 'ifopt_a' => $splitIfopt[0] ?? null,
-                                 'ifopt_b' => $splitIfopt[1] ?? null,
-                                 'ifopt_c' => $splitIfopt[2] ?? null,
-                             ]);
-        }
-
-        $rl100 = $object->getClaims('P8671')[0]['mainsnak']['datavalue']['value'] ?? null;
-        if ($station->rilIdentifier === null && $rl100 !== null) {
-            $station->update(['rilIdentifier' => $rl100]);
-        }
-
-        //get names
-        foreach ($object->getClaims('P2561') as $property) {
-            $text     = $property['mainsnak']['datavalue']['value']['text'] ?? null;
-            $language = $property['mainsnak']['datavalue']['value']['language'] ?? null;
-            if ($language === null || $text === null) {
-                continue;
-            }
-            StationName::updateOrCreate([
-                                            'station_id' => $station->id,
-                                            'language'   => $language,
-                                        ], [
-                                            'name' => $text
-                                        ]);
+        try {
+            WikidataImportService::searchStation($station);
+            return response()->json(['success' => 'Wikidata information fetched successfully']);
+        } catch (FetchException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 422);
         }
     }
 

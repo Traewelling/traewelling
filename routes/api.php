@@ -13,6 +13,7 @@
 
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
+use App\Http\Controllers\API\v1\ExperimentalController;
 use App\Http\Controllers\API\v1\ExportController;
 use App\Http\Controllers\API\v1\FollowController;
 use App\Http\Controllers\API\v1\IcsController;
@@ -177,6 +178,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::get('/user/self/trusted-by', [TrustedUserController::class, 'indexTrustedBy']);
         Route::apiResource('report', ReportController::class);
         Route::apiResource('operators', OperatorController::class)->only(['index']);
+
+        Route::prefix('experimental')->group(function() {
+            // undocumented, unstable, experimental endpoints. don't use in external applications!
+
+            Route::post('/station/{id}/wikidata', [ExperimentalController::class, 'fetchWikidata']);
+        });
     });
 
     Route::group(['middleware' => ['privacy-policy']], static function() {
