@@ -118,7 +118,7 @@ class FollowController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/settings/followers",
+     *      path="/user/self/followers",
      *      operationId="getFollowers",
      *      tags={"User/Follow", "Settings"},
      *      summary="List all followers",
@@ -151,7 +151,7 @@ class FollowController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/settings/follow-requests",
+     *      path="/user/self/follow-requests",
      *      operationId="getFollowRequests",
      *      tags={"User/Follow", "Settings"},
      *      summary="List all followers",
@@ -181,7 +181,7 @@ class FollowController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/settings/followings",
+     *      path="/user/self/followings",
      *      operationId="getFollowings",
      *      tags={"User/Follow", "Settings"},
      *      summary="List all users the current user is following",
@@ -237,21 +237,16 @@ class FollowController extends Controller
      * @todo paths should use kebab-case
      * @todo paths should not use verbs
      * @OA\Delete(
-     *      path="/user/removeFollower",
+     *      path="/user/self/followers/{userId}",
      *      operationId="removeFollower",
      *      tags={"User/Follow"},
      *      summary="Remove a follower",
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\JsonContent(
-     *              @OA\Property(
-     *                  property="userId",
-     *                  title="userId",
-     *                  format="int",
-     *                  description="ID of the to-be-unfollowed user",
-     *                  example=1
-     *              )
-     *          )
+     *      @OA\Parameter (
+     *          name="userId",
+     *          in="path",
+     *          description="User-ID",
+     *          example=1337,
+     *          @OA\Schema(type="integer")
      *      ),
      *      @OA\Response(
      *          response=200,
@@ -290,41 +285,36 @@ class FollowController extends Controller
      * @param Request $request
      *
      * @return JsonResponse
-     * @todo paths should use kebab-case
-     * @todo paths should not use verbs
      * @OA\Put(
-     *     path="/user/acceptFollowRequest",
+     *     path="/user/self/follow-requests/{userId}",
      *     operationId="acceptFollowRequest",
      *     tags={"User/Follow"},
      *     summary="Accept a follow request",
-     *     @OA\RequestBody(
-     *     required=true,
-     *     @OA\JsonContent(
-     *     @OA\Property(
-     *     property="userId",
-     *     title="userId",
-     *     format="int",
-     *     description="ID of the user who sent the follow request",
-     *     example=1
-     *     )
-     *    )
-     *  ),
-     *     @OA\Response(
-     *     response=200,
-     *     description="successful operation",
-     *    ),
-     *     @OA\Response(response=400, description="Bad request"),
-     *     @OA\Response(response=404, description="Request not found"),
-     *     @OA\Response(response=500, description="Unknown error"),
-     *       security={
-     *           {"passport": {"write-followers"}}, {"token": {}}
+     *     @OA\Parameter (
+     *           name="userId",
+     *           in="path",
+     *           description="User-ID",
+     *           example=1337,
+     *           @OA\Schema(type="integer")
+     *       ),
+     *       @OA\Response(
+     *           response=200,
+     *           description="successful operation",
+     *        ),
+     *        @OA\Response(response=400, description="Bad request"),
+     *        @OA\Response(response=403, description="Permission denied"),
+     *        @OA\Response(response=404, description="Request not found"),
+     *        security={
+     *            {"passport": {"write-followers"}}, {"token": {}}
      *
-     *       }
-     *     )
+     *        }
+     *      )
+     *
+     *
      *
      *
      */
-    public function appoveFollowRequestByUserId(int $userId): JsonResponse {
+    public function approveFollowRequestByUserId(int $userId): JsonResponse {
         try {
             FollowBackend::approveFollower(auth()->user()->id, $userId);
             return $this->sendResponse();
@@ -359,21 +349,16 @@ class FollowController extends Controller
      * @todo paths should not use verbs
      *
      * @OA\Delete(
-     *      path="/user/rejectFollowRequest",
+     *      path="/user/self/follow-requests/{userId}",
      *      operationId="rejectFollowRequest",
      *      tags={"User/Follow"},
      *      summary="Reject a follow request",
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\JsonContent(
-     *              @OA\Property(
-     *                  property="userId",
-     *                  title="userId",
-     *                  format="int",
-     *                  description="ID of the user who sent the follow request",
-     *                  example=1
-     *              )
-     *          )
+     *      @OA\Parameter (
+     *          name="userId",
+     *          in="path",
+     *          description="User-ID",
+     *          example=1337,
+     *          @OA\Schema(type="integer")
      *      ),
      *      @OA\Response(
      *          response=200,

@@ -113,9 +113,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::delete('/{userId}/follow', [FollowController::class, 'destroyFollow']);
             });
             Route::group(['middleware' => ['scope:write-followers']], static function() {
-                Route::delete('removeFollower', [FollowController::class, 'removeFollower']);
-                Route::delete('rejectFollowRequest', [FollowController::class, 'rejectFollowRequest']);
-                Route::put('approveFollowRequest', [FollowController::class, 'approveFollowRequest']);
+                Route::delete('removeFollower', [FollowController::class, 'removeFollower']); // TODO remove after 2024-10
+                Route::delete('rejectFollowRequest', [FollowController::class, 'rejectFollowRequest']); // TODO remove after 2024-10
+                Route::put('approveFollowRequest', [FollowController::class, 'approveFollowRequest']); // TODO remove after 2024-10
             });
             Route::group(['middleware' => ['scope:write-blocks']], static function() {
                 Route::post('/{userId}/block', [UserController::class, 'createBlock']);
@@ -160,9 +160,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::delete('token', [TokenController::class, 'revokeToken']);            //TODO: undocumented endpoint - document when stable
             });
             Route::group(['middleware' => ['scope:read-settings-followers']], static function() {
-                Route::get('followers', [FollowController::class, 'getFollowers']);
-                Route::get('follow-requests', [FollowController::class, 'getFollowRequests']);
-                Route::get('followings', [FollowController::class, 'getFollowings']);
+                Route::get('followers', [FollowController::class, 'getFollowers']); // TODO remove after 2024-10
+                Route::get('follow-requests', [FollowController::class, 'getFollowRequests']); // TODO remove after 2024-10
+                Route::get('followings', [FollowController::class, 'getFollowings']); // TODO remove after 2024-10
             });
         });
         Route::group(['prefix' => 'webhooks'], static function() {
@@ -185,10 +185,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::put('follow-requests/{userId}', [FollowController::class, 'approveFollowRequestByUserId']);
                 Route::delete('follow-requests/{userId}', [FollowController::class, 'rejectFollowRequestByUserId']);
             });
-        });
 
-        Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);
-        Route::get('/user/self/trusted-by', [TrustedUserController::class, 'indexTrustedBy']);
+            Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);
+            Route::get('trusted-by', [TrustedUserController::class, 'indexTrustedBy']);
+        });
         Route::apiResource('report', ReportController::class);
         Route::apiResource('operators', OperatorController::class)->only(['index']);
 
