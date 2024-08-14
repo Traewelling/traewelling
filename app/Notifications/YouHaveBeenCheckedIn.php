@@ -42,7 +42,7 @@ class YouHaveBeenCheckedIn extends Notification implements BaseNotification
     }
 
     public static function getNotice(array $data): ?string {
-        return __('notifications.userJoinedConnection.notice', [
+        return __('notifications.youHaveBeenCheckedIn.notice', [
                                                                  'line'        => $data['checkin']['line'],
                                                                  'origin'      => $data['checkin']['origin'],
                                                                  'destination' => $data['checkin']['destination'],
