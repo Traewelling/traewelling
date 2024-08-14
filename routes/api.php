@@ -174,6 +174,19 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::apiResource('station', StationController::class);                                        // currently admin/backend only
         Route::put('station/{oldStationId}/merge/{newStationId}', [StationController::class, 'merge']); // currently admin/backend only
 
+        Route::group(['prefix' => 'user/self'], static function() {
+            Route::group(['middleware' => ['scope:read-settings-followers']], static function() {
+                Route::get('followers', [FollowController::class, 'getFollowers']);
+                Route::get('follow-requests', [FollowController::class, 'getFollowRequests']);
+                Route::get('followings', [FollowController::class, 'getFollowings']);
+            });
+            Route::group(['middleware' => ['scope:write-followers']], static function() {
+                Route::delete('followers/{userId}', [FollowController::class, 'removeFollowerByUserId']);
+                Route::put('follow-requests/{userId}', [FollowController::class, 'approveFollowRequestByUserId']);
+                Route::delete('follow-requests/{userId}', [FollowController::class, 'rejectFollowRequestByUserId']);
+            });
+        });
+
         Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);
         Route::get('/user/self/trusted-by', [TrustedUserController::class, 'indexTrustedBy']);
         Route::apiResource('report', ReportController::class);
