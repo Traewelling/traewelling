@@ -238,7 +238,7 @@ export default {
             </ul>
         </div>
         <EventDropdown @select-event="selectEvent"/>
-        <FriendDropdown v-if="userStore.hasBeta" @select-event="selectFriends"/>
+        <FriendDropdown v-if="userStore.hasBeta" @select-user="selectFriends"/>
         <button class="col-auto float-end ms-auto btn btn-sm btn-outline-primary" @click="checkIn">
             <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <span v-if="loading" class="visually-hidden">Loading...</span>
