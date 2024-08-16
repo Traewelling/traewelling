@@ -1504,19 +1504,35 @@
                                         "nullable": true
                                     },
                                     "defaultStatusVisibility": {
-                                        "type": "integer",
+                                        "oneOf": [
+                                            {
+                                                "$ref": "#/components/schemas/StatusVisibility"
+                                            }
+                                        ],
                                         "nullable": true
                                     },
                                     "mastodonVisibility": {
-                                        "type": "integer",
+                                        "oneOf": [
+                                            {
+                                                "$ref": "#/components/schemas/MastodonVisibility"
+                                            }
+                                        ],
                                         "nullable": true
                                     },
                                     "mapProvider": {
-                                        "type": "string",
+                                        "oneOf": [
+                                            {
+                                                "$ref": "#/components/schemas/MapProvider"
+                                            }
+                                        ],
                                         "nullable": true
                                     },
                                     "friendCheckin": {
-                                        "type": "string",
+                                        "oneOf": [
+                                            {
+                                                "$ref": "#/components/schemas/FriendCheckinSetting"
+                                            }
+                                        ],
                                         "nullable": true
                                     },
                                     "likesEnabled": {
@@ -3756,7 +3772,8 @@
                                     "expiresAt": {
                                         "type": "string",
                                         "format": "date-time",
-                                        "example": "2024-07-28T00:00:00Z"
+                                        "example": "2024-07-28T00:00:00Z",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -3821,7 +3838,7 @@
                 }
             }
         },
-        "/user/{user}/trusted/{trustedId}": {
+        "/user/{user}/trusted/{trusted}": {
             "delete": {
                 "tags": [
                     "User"

@@ -767,5 +767,15 @@
     "action.dislike": "Status nicht mehr liken",
     "action.set-home": "Heimathaltestelle setzen",
     "notifications.youHaveBeenCheckedIn.lead": "Du wurdest von :username eingecheckt",
-    "notifications.youHaveBeenCheckedIn.notice": "Fahrt in :line von :origin nach :destination"
+    "notifications.youHaveBeenCheckedIn.notice": "Fahrt in :line von :origin nach :destination",
+    "settings.friend_checkin": "Freunde-Checkin",
+    "settings.allow_friend_checkin_for": "Freunde-Checkin erlauben für:",
+    "settings.friend_checkin.forbidden": "Niemanden",
+    "settings.friend_checkin.friends": "Freunde",
+    "settings.friend_checkin.list": "Gelistete Usern",
+    "settings.friend_checkin.add_user": "User hinzufügen",
+    "settings.find-users": "User finden",
+    "stationboard.friends-none": "Du hast keine Freunde.",
+    "stationboard.friends-set": "Hier kannst du Freunde verwalten:",
+    "stationboard.friend-filter": "Tippen, um nach Freunden zu filtern"
 }
