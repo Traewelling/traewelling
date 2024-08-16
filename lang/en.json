@@ -767,5 +767,15 @@
     "action.error": "This action could not be executed. Please try again later.",
     "action.like": "Like status",
     "action.dislike": "Dislike status",
-    "action.set-home": "Set home station"
+    "action.set-home": "Set home station",
+    "settings.friend_checkin": "Friend check-in",
+    "settings.allow_friend_checkin_for": "Allow friend check-in for",
+    "settings.friend_checkin.forbidden": "Nobody",
+    "settings.friend_checkin.friends": "Friends",
+    "settings.friend_checkin.list": "Trusted users",
+    "settings.friend_checkin.add_user": "Add user",
+    "settings.find-users": "Find users",
+    "stationboard.friends-none": "You don't have any friends.",
+    "stationboard.friends-set": "You can manage your friends here:",
+    "stationboard.friend-filter": "Filter for friends"
 }

@@ -6,7 +6,7 @@ import {createApp} from "vue";
 import NotificationBell from "../vue/components/NotificationBell.vue";
 import ActiveJourneyMap from "../vue/components/ActiveJourneyMap.vue";
 import Stationboard from "../vue/components/Stationboard.vue";
-import StationAutocomplete from "../vue/components/StationAutocomplete.vue";
+import StationAutocomplete from "../vue/components/StationAutocomplete/StationAutocomplete.vue";
 import "./bootstrap";
 import "awesomplete/awesomplete";
 import "leaflet/dist/leaflet.js";
@@ -18,6 +18,7 @@ import TagHelper from "../vue/components/TagHelper.vue";
 import TripCreationForm from "../vue/components/TripCreation/TripCreationForm.vue";
 import {createPinia} from 'pinia'
 import piniaPluginPersistedsState from 'pinia-plugin-persistedstate'
+import FriendCheckinSettings from "../vue/components/Settings/FriendCheckinSettings.vue";
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -108,6 +109,15 @@ document.addEventListener("DOMContentLoaded", function () {
         app6.component("TripCreationForm", TripCreationForm);
         app6.use(i18nVue, i18nOptions);
         app6.mount("#trip-creation-form");
+    }
+
+    if (document.getElementById("settings-friend-checkin")) {
+        const app7 = createApp({});
+        app7.component("FriendCheckinSettings", FriendCheckinSettings);
+        app7.use(i18nVue, i18nOptions);
+        app7.use(pinia);
+        app7.mount("#settings-friend-checkin");
+
     }
 });
 

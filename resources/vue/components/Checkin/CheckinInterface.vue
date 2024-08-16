@@ -2,21 +2,25 @@
 import {DateTime} from "luxon";
 import {Notyf} from "notyf";
 import {trans} from "laravel-vue-i18n";
-import {useProfileSettingsStore} from "../stores/profileSettings";
-import EventDropdown from "./EventDropdown.vue";
-import TagList from "./TagList.vue";
-import {useActiveCheckin} from "../stores/activeCheckin";
-import {checkinSuccessStore} from "../stores/checkinSuccess";
+import {useProfileSettingsStore} from "../../stores/profileSettings";
+import EventDropdown from "../EventDropdown.vue";
+import FriendDropdown from "../Helpers/FriendDropdown.vue";
+import TagList from "../TagList.vue";
+import {useActiveCheckin} from "../../stores/activeCheckin";
+import {checkinSuccessStore} from "../../stores/checkinSuccess";
+import {useUserStore} from "../../stores/user";
 
 export default {
-    components: {TagList, EventDropdown},
+    components: {TagList, EventDropdown, FriendDropdown},
     setup() {
+        const userStore = useUserStore();
+        userStore.fetchSettings();
         const profileStore = useProfileSettingsStore();
         profileStore.fetchSettings();
         const activeCheckin  = useActiveCheckin();
         const checkinSuccess = checkinSuccessStore();
 
-        return {profileStore, activeCheckin, checkinSuccess};
+        return {userStore, profileStore, activeCheckin, checkinSuccess};
     },
     name: "CheckinInterface",
     props: {
@@ -45,11 +49,14 @@ export default {
             notyf: new Notyf({position: {x: "right", y: "bottom"}}),
             collision: false,
             selectedEvent: null,
+            selectedFriends: []
         };
     },
     methods: {
         trans,
         checkIn() {
+            console.log(this.selectedFriends);
+            console.log(this.selectedFriends.map((friend) => friend.user.id));
             this.loading = true;
             const data   = {
                 body: this.statusText,
@@ -65,6 +72,7 @@ export default {
                 arrival: DateTime.fromISO(this.selectedDestination.arrivalPlanned).setZone("UTC").toISO(),
                 force: this.collision,
                 eventId: this.selectedEvent ? this.selectedEvent.id : null,
+                with: this.selectedFriends.map((friend) => friend.user.id)
             };
             fetch("/api/v1/trains/checkin", {
                 method: "POST",
@@ -108,6 +116,9 @@ export default {
         },
         selectEvent(event) {
             this.selectedEvent = event;
+        },
+        selectFriends(friends) {
+            this.selectedFriends = friends;
         }
     },
     computed: {
@@ -227,6 +238,7 @@ export default {
             </ul>
         </div>
         <EventDropdown @select-event="selectEvent"/>
+        <FriendDropdown v-if="userStore.hasBeta" @select-event="selectFriends"/>
         <button class="col-auto float-end ms-auto btn btn-sm btn-outline-primary" @click="checkIn">
             <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <span v-if="loading" class="visually-hidden">Loading...</span>

@@ -1,15 +1,16 @@
 <script>
-import FullScreenModal from "./FullScreenModal.vue";
+import FullScreenModal from "../FullScreenModal.vue";
 import _ from "lodash";
 import {trans} from "laravel-vue-i18n";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import {DateTime} from "luxon";
-import {useUserStore} from "../stores/user";
-import AutocompleteListEntry from "./Checkin/AutocompleteListEntry.vue";
-import Spinner from "./Spinner.vue";
-import LineIndicator from "./LineIndicator.vue";
-import ActiveStatusCard from "./ActiveStatusCard.vue";
+import {useUserStore} from "../../stores/user";
+import AutocompleteListEntry from "../Checkin/AutocompleteListEntry.vue";
+import Spinner from "../Spinner.vue";
+import LineIndicator from "../LineIndicator.vue";
+import ActiveStatusCard from "../ActiveStatusCard.vue";
+import FriendDropdown from "../Helpers/FriendDropdown.vue";
 
 export default {
     setup() {
@@ -19,7 +20,15 @@ export default {
     },
     name: "StationAutocomplete",
     emits: ["update:station", "update:time", "update:travelType"],
-    components: {ActiveStatusCard, LineIndicator, Spinner, AutocompleteListEntry, FullScreenModal, VueDatePicker},
+    components: {
+        ActiveStatusCard,
+        LineIndicator,
+        Spinner,
+        AutocompleteListEntry,
+        FullScreenModal,
+        VueDatePicker,
+        FriendDropdown
+    },
     props: {
         station: {
             type: Object,
@@ -319,7 +328,7 @@ export default {
         </div>
     </div>
 
-    <ActiveStatusCard v-if="userStore.hasBeta" />
+    <ActiveStatusCard v-if="userStore.hasBeta"/>
 </template>
 
 <style lang="scss" scoped>

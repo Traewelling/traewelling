@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-7">
+        <div class="col-md-7 col-lg-6">
             <div class="card mb-3">
                 <div class="card-header">{{ __('settings.title-privacy') }}</div>
 
@@ -139,6 +139,14 @@
                     </form>
                 </div>
             </div>
+        </div>
+        <div class="col-md-5">
+            @if(auth()->user()?->hasRole('open-beta'))
+                <div id="settings-friend-checkin">
+                    <friend-checkin-settings>
+                    </friend-checkin-settings>
+                </div>
+            @endif
         </div>
     </div>
 @endsection
