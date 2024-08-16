@@ -33,6 +33,53 @@ class TrustedUserTest extends ApiTestCase
                                        ]);
     }
 
+    public function testShowOnlyMyOwnTrustedUsers(): void {
+        $user  = User::factory()->create();
+        $user2 = User::factory()->create();
+        $user3 = User::factory()->create();
+
+        $this->actAsApiUserWithAllScopes($user2);
+        $response = $this->postJson("/api/v1/user/self/trusted", ['userId' => $user->id, 'expiresAt' => now()->addDay()->toIso8601String()]);
+        $response->assertCreated();
+        $response = $this->postJson("/api/v1/user/self/trusted", ['userId' => $user3->id]);
+        $response->assertCreated();
+
+        $this->actAsApiUserWithAllScopes($user);
+        $response = $this->postJson("/api/v1/user/self/trusted", ['userId' => $user3->id, 'expiresAt' => now()->addDay()->toIso8601String()]);
+        $response->assertCreated();
+
+        // list trusted users
+        $response = $this->getJson("/api/v1/user/self/trusted");
+        $data     = $response->json();
+        $this->assertCount(1, $data['data']);
+        $this->assertEquals($user3->id, $data['data'][0]['user']['id']);
+    }
+
+    public function testShowOnlyMyOwnTrustedByUsers(): void {
+        $user                 = User::factory()->create();
+        $user->friend_checkin = FriendCheckinSetting::LIST;
+        $user->save();
+        $user2                 = User::factory()->create();
+        $user2->friend_checkin = FriendCheckinSetting::LIST;
+        $user2->save();
+        $user3                 = User::factory()->create();
+        $user3->friend_checkin = FriendCheckinSetting::LIST;
+        $user3->save();
+
+        $this->actAsApiUserWithAllScopes($user);
+        $response = $this->postJson("/api/v1/user/self/trusted", ['userId' => $user3->id, 'expiresAt' => now()->addDay()->toIso8601String()]);
+        $response->assertCreated();
+        $this->actAsApiUserWithAllScopes($user2);
+        $response = $this->postJson("/api/v1/user/self/trusted", ['userId' => $user->id]);
+        $response->assertCreated();
+
+        $this->actAsApiUserWithAllScopes($user);
+        $response = $this->getJson("/api/v1/user/self/trusted-by");
+        $data     = $response->json();
+        $this->assertCount(1, $data['data']);
+        $this->assertEquals($user2->id, $data['data'][0]['user']['id']);
+    }
+
     public function testIndexTrustedByUsers(): void {
         $user = User::factory()->create();
         $this->actAsApiUserWithAllScopes($user);
