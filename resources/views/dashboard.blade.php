@@ -86,7 +86,7 @@
                                  aria-labelledby="flush-headingOne"
                                  data-mdb-parent="#accordionFutureCheckIns"
                             >
-                                <div class="accordion-body">
+                                <div class="accordion-body px-0">
                                     @include('includes.statuses', ['statuses' => $future, 'showDates' => false])
                                 </div>
                             </div>
