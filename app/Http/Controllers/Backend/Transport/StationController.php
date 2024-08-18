@@ -5,16 +5,24 @@ namespace App\Http\Controllers\Backend\Transport;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HafasController;
+use App\Http\Resources\StationResource;
 use App\Models\Checkin;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\User;
+use App\Repositories\StationRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-abstract class StationController extends Controller
+class StationController extends Controller
 {
+    private StationRepository $stationRepository;
+
+    public function __construct(?StationRepository $stationRepository = null) {
+        $this->stationRepository = $stationRepository ?? new StationRepository();
+    }
 
     /**
      * @throws HafasException
@@ -70,6 +78,9 @@ abstract class StationController extends Controller
                  ->get();
     }
 
+    /**
+     * @deprecated
+     */
     public static function getAlternativeDestinationsForCheckin(Checkin $checkin): Collection {
         $encounteredOrigin = false;
         return $checkin->trip->stopovers
@@ -87,5 +98,21 @@ abstract class StationController extends Controller
                     'arrival_planned' => userTime($stopover->arrival_planned ?? $stopover->departure_planned),
                 ];
             });
+    }
+
+    /**
+     * @param string $search
+     * @param string $lang
+     *
+     * @return AnonymousResourceCollection
+     */
+    public function index(string $search, string $lang): AnonymousResourceCollection {
+        $stations = $this->stationRepository->getStationByName($search, $lang);
+
+        if (count($stations) < 2) {
+            $stations->merge($this->stationRepository->getStationByName($search, $lang, true))->unique();
+        }
+
+        return StationResource::collection($stations);
     }
 }

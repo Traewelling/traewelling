@@ -171,7 +171,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::delete('/{webhookId}', [WebhookController::class, 'deleteWebhook']);
         });
 
-        Route::apiResource('station', StationController::class);                                        // currently admin/backend only
+        Route::apiResource('station', StationController::class); // TODO: rename to "stations" when stable
+        Route::apiResource('stations', StationController::class);
         Route::put('station/{oldStationId}/merge/{newStationId}', [StationController::class, 'merge']); // currently admin/backend only
 
         Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);

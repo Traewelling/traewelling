@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Http\Controllers\Backend\Transport\StationController as StationBackendController;
 use App\Http\Resources\StationResource;
 use App\Models\Checkin;
 use App\Models\Event;
@@ -26,22 +27,6 @@ class StationController extends Controller
                                             'longitude'     => ['required', 'numeric', 'between:-180,180'],
                                         ]);
         $station   = Station::create($validated);
-        return new StationResource($station);
-    }
-
-    public function update(Request $request, int $id): StationResource {
-        $station = Station::findOrFail($id);
-        $this->authorize('update', $station);
-
-        $validated = $request->validate([
-                                            'ibnr'          => ['nullable', 'numeric', 'unique:train_stations,ibnr,' . $station->id],
-                                            'rilIdentifier' => ['nullable', 'string', 'max:10'],
-                                            'name'          => ['nullable', 'string', 'max:255'],
-                                            'latitude'      => ['nullable', 'numeric', 'between:-90,90'],
-                                            'longitude'     => ['nullable', 'numeric', 'between:-180,180'],
-                                        ]);
-
-        $station->update($validated);
         return new StationResource($station);
     }
 
@@ -98,4 +83,61 @@ class StationController extends Controller
 
         return new StationResource($newStation);
     }
+
+    public function update(Request $request, int $id): StationResource {
+        $station = Station::findOrFail($id);
+        $this->authorize('update', $station);
+
+        $validated = $request->validate([
+                                            'ibnr'          => ['nullable', 'numeric', 'unique:train_stations,ibnr,' . $station->id],
+                                            'rilIdentifier' => ['nullable', 'string', 'max:10'],
+                                            'name'          => ['nullable', 'string', 'max:255'],
+                                            'latitude'      => ['nullable', 'numeric', 'between:-90,90'],
+                                            'longitude'     => ['nullable', 'numeric', 'between:-180,180'],
+                                        ]);
+
+        $station->update($validated);
+        return new StationResource($station);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/stations",
+     *      operationId="indexStation",
+     *      tags={"Checkin"},
+     *      summary="Search for stations",
+     *      description="UNSTABLE: This request returns an array of max. 20 station objects matching the query. **CAUTION:** All
+     *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
+     * @OA\Parameter(
+     *          name="query",
+     *          in="query",
+     *          description="station query",
+     *          example="Karls"
+     *     ),
+     * @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/StationResource"
+     *                  )
+     *              )
+     *          )
+     *       ),
+     * @OA\Response(response=401, description="Unauthorized"),
+     * @OA\Response(response=503, description="There has been an error with our data provider"),
+     *       security={
+     *          {"passport": {"create-statuses"}}, {"token": {}}
+     *
+     *       }
+     *     )
+     */
+    public function index(Request $request): JsonResponse {
+        $validated = $request->validate(['query' => 'string']);
+
+        $stations = (new StationBackendController())->index($validated['query'], $request->user()->language ?? app()->getLocale());
+        return $this->sendResponse($stations);
+    }
+
 }
