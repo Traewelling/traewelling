@@ -401,6 +401,7 @@ class TransportController extends Controller
             // if isset, check in the other users with their default values
             foreach ($withUsers ?? [] as $user) {
                 $dto->setUser($user);
+                $dto->setBody(null);
                 $dto->setStatusVisibility($user->default_status_visibility);
                 $checkin = TrainCheckinController::checkin($dto);
                 $user->notify(new YouHaveBeenCheckedIn($checkin->status, auth()->user()));
