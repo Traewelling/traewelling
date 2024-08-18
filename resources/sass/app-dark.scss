@@ -472,4 +472,8 @@
     .shadow-sm {
         box-shadow: $box-shadow-sm !important;
     }
+
+    .border-bottom {
+        border-bottom: 1px solid $dm-base-20 !important;
+    }
 }

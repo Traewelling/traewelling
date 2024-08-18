@@ -237,7 +237,7 @@ export default {
         :show-filter-button="true"
     />
     <Spinner v-if="loading"/>
-    <FullScreenModal ref="modal">
+    <FullScreenModal ref="modal" :body-class="{'p-0': showCheckinInterface}">
         <template #header v-if="selectedTrain">
             <div class="col-1 align-items-center d-flex">
                 <ProductIcon :product="selectedTrain.line.product"/>
