@@ -4,7 +4,7 @@
 :root.dark {
     --mdb-body-color: #{$dm-body};
     --mdb-modal-bg: #{$dm-base};
-    
+
     --mdb-link-color: #{$dm-lightblue};
     --mdb-btn-hover-color: #{$dm-lightblue};
     --mdb-btn-focus-color: #{$dm-lightblue};
@@ -467,5 +467,9 @@
 
     .shadow-sm {
         box-shadow: $box-shadow-sm !important;
+    }
+
+    .border-bottom {
+        border-bottom: 1px solid $dm-base-20 !important;
     }
 }

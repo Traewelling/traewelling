@@ -47,8 +47,8 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="col btn-group me-1">
-        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
+    <div class="col btn-group">
+        <button class="btn btn-sm dropdown-toggle btn-link px-2" type="button"
                 id="eventDropdown" data-mdb-dropdown-animation="off"
                 data-mdb-toggle="dropdown" aria-expanded="false" style="">
             <i class="fas" aria-hidden="true"
