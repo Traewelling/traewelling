@@ -186,9 +186,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::delete('follow-requests/{userId}', [FollowController::class, 'rejectFollowRequestByUserId']);
             });
 
-            Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);
             Route::get('trusted-by', [TrustedUserController::class, 'indexTrustedBy']);
         });
+
+        Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);
         Route::apiResource('report', ReportController::class);
         Route::apiResource('operators', OperatorController::class)->only(['index']);
 
