@@ -6,6 +6,7 @@ export default {
     name: "FullScreenModal",
     props: {
         title: String,
+        bodyClass: String,
     },
     data() {
         return {
@@ -40,7 +41,7 @@ export default {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </slot>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" :class="bodyClass">
                     <slot name="body"></slot>
                 </div>
                 <div class="modal-footer d-none">

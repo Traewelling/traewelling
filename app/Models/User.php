@@ -210,15 +210,19 @@ class User extends Authenticatable implements MustVerifyEmail
     public function trustedUsers(): HasMany {
         return $this->hasMany(TrustedUser::class, 'user_id', 'id')
                     ->with(['trusted'])
-                    ->whereNull('expires_at')
-                    ->orWhere('expires_at', '>', now());
+                    ->where(function($query) {
+                        $query->whereNull('expires_at')
+                              ->orWhere('expires_at', '>', now());
+                    });
     }
 
     public function trustedByUsers(): HasMany {
         return $this->hasMany(TrustedUser::class, 'trusted_id', 'id')
                     ->with(['user'])
-                    ->whereNull('expires_at')
-                    ->orWhere('expires_at', '>', now());
+                    ->where(function($query) {
+                        $query->whereNull('expires_at')
+                              ->orWhere('expires_at', '>', now());
+                    });
     }
 
     public function userFollowings(): BelongsToMany {

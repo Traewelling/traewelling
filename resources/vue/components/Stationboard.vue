@@ -4,8 +4,8 @@ import ProductIcon from "./ProductIcon.vue";
 import LineIndicator from "./LineIndicator.vue";
 import {DateTime} from "luxon";
 import CheckinLineRun from "./CheckinLineRun.vue";
-import CheckinInterface from "./CheckinInterface.vue";
-import StationAutocomplete from "./StationAutocomplete.vue";
+import CheckinInterface from "./Checkin/CheckinInterface.vue";
+import StationAutocomplete from "./StationAutocomplete/StationAutocomplete.vue";
 import {trans} from "laravel-vue-i18n";
 import StationBoardEntry from "./Checkin/StationBoardEntry.vue";
 import Spinner from "./Spinner.vue";
@@ -236,8 +236,8 @@ export default {
         :time="now"
         :show-filter-button="true"
     />
-    <Spinner v-if="loading" />
-    <FullScreenModal ref="modal">
+    <Spinner v-if="loading"/>
+    <FullScreenModal ref="modal" :body-class="{'p-0': showCheckinInterface}">
         <template #header v-if="selectedTrain">
             <div class="col-1 align-items-center d-flex">
                 <ProductIcon :product="selectedTrain.line.product"/>

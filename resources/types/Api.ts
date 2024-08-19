@@ -203,7 +203,7 @@ export enum MastodonVisibility {
 
 /**
  * PointsReason
- * What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points)
+ * What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points, 4=manual trip => no points, 5=points disabled)
  * @example 1
  */
 export enum PointReason {
@@ -231,6 +231,7 @@ export enum StatusVisibility {
 
 /**
  * travelType
+ * When adding a new travel type, make sure to add it to the translation file as well.
  * @example "suburban"
  */
 export enum TravelType {
@@ -243,6 +244,25 @@ export enum TravelType {
     Tram = "tram",
     Taxi = "taxi",
     Plane = "plane",
+}
+
+/**
+ * FriendCheckinSetting
+ * @example "forbidden"
+ */
+export enum FriendCheckinSetting {
+    Forbidden = "forbidden",
+    Friends = "friends",
+    List = "list",
+}
+
+/** CheckinResponse */
+export interface CheckinSuccessResource {
+    status?: StatusResource;
+    /** Points model */
+    points?: Points;
+    /** Statuses of other people on this connection */
+    alsoOnThisconnection?: StatusResource[];
 }
 
 /** Client */
@@ -300,16 +320,8 @@ export interface EventResource {
 
 /** LeaderboardUserResource */
 export interface LeaderboardUserResource {
-    /**
-     * username of user
-     * @example "Gertrud123"
-     */
-    username?: string;
-    /**
-     * URL of the profile picture of the user
-     * @example "https://traewelling.de/@Gertrud123/picture"
-     */
-    profilePicture?: string;
+    /** User model with just basic information */
+    user?: LightUserResource;
     /**
      * duration travelled in minutes
      * @example 6
@@ -330,11 +342,11 @@ export interface LeaderboardUserResource {
  */
 export interface LightUserResource {
     /** @example 1 */
-    id?: number;
+    id: number;
     /** @example "Gertrud" */
-    displayName?: string;
+    displayName: string;
     /** @example "Gertrud123" */
-    username?: string;
+    username: string;
     /** @example "https://traewelling.de/@Gertrud123/picture" */
     profilePicture?: string;
     /** @example "https://traewelling.social/@Gertrud123" */
@@ -563,6 +575,17 @@ export interface TransportResource {
     operator?: OperatorResource;
 }
 
+/** TrustedUser */
+export interface TrustedUserResource {
+    /** User model with just basic information */
+    user: LightUserResource;
+    /**
+     * @format date-time
+     * @example "2024-07-28T00:00:00Z"
+     */
+    expiresAt?: string;
+}
+
 /** UserAuth */
 export interface UserAuthResource {
     /** @example "1" */
@@ -596,6 +619,53 @@ export interface UserAuthResource {
     roles?: string[];
 }
 
+/** UserProfileSettings */
+export interface UserProfileSettingsResource {
+    /** @example "Gertrud123" */
+    username?: string;
+    /** @example "Gertrud" */
+    displayName?: string;
+    /** @example "https://traewelling.de/@Gertrud123/picture" */
+    profilePicture?: string;
+    /** @example false */
+    privateProfile?: boolean;
+    /**
+     * Did the user choose to prevent search engines from indexing their profile?
+     * @example false
+     */
+    preventIndex?: boolean;
+    /**
+     * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
+     *  *      user specify?
+     */
+    defaultStatusVisibility?: StatusVisibility;
+    /**
+     * Number of days to hide the user's location history
+     * @example 1
+     */
+    privacyHideDays?: number;
+    /** @example true */
+    password?: boolean;
+    /** @example "gertrud@traewelling.de" */
+    email?: string;
+    /** @example true */
+    emailVerified?: boolean;
+    /** @example true */
+    profilePictureSet?: boolean;
+    /** @example "https://mastodon.social/@Gertrud123" */
+    mastodon?: string;
+    /**
+     * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for
+     *  *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.
+     */
+    mastodonVisibility?: MastodonVisibility;
+    friendCheckin?: FriendCheckinSetting;
+    /** @example true */
+    likesEnabled?: boolean;
+    /** @example true */
+    pointsEnabled?: boolean;
+}
+
 /** BearerTokenResponse */
 export interface BearerTokenResponse {
     /**
@@ -618,8 +688,6 @@ export interface BearerTokenResponse {
  */
 export interface CheckinRequestBody {
     /**
-     * body
-     * Text that should be added to the post
      * @maxLength 280
      * @example "Meine erste Fahrt nach Knuffingen!"
      */
@@ -632,89 +700,67 @@ export interface CheckinRequestBody {
      */
     visibility?: StatusVisibility;
     /**
-     * eventId
      * Id of an event the status should be connected to
+     * @example "1"
      */
     eventId?: number | null;
     /**
-     * toot
      * Should this status be posted to mastodon?
      * @example "false"
      */
     toot?: boolean | null;
     /**
-     * chainPost
      * Should this status be posted to mastodon as a chained post?
      * @example "false"
      */
     chainPost?: boolean | null;
     /**
-     * ibnr
-     * If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they
-     *      *     should be given as the Träwelling-ID. Default behavior is `false`.
+     * If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they should be given as the Träwelling-ID. Default behavior is `false`.
      * @example "true"
      */
     ibnr?: boolean | null;
     /**
-     * tripId
-     * The HAFAS tripId for the to be checked in train
-     * @example "1|323306|1|80|17072022"
+     * The tripId for the to be checked in train
+     * @example "b37ff515-22e1-463c-94de-3ad7964b5cb8"
      */
-    tripId?: any;
+    tripId?: string | null;
     /**
-     * lineName
      * The line name for the to be checked in train
      * @example "S 4"
      */
-    lineName?: any;
+    lineName?: string | null;
     /**
-     * start
      * The Station-ID of the starting point (see `ibnr`)
      * @example "8000191"
      */
     start?: number;
     /**
-     * destination
-     * The Station-ID of the destination (see `ibnr`)
-     * @example "8079045"
+     * The Station-ID of the destination point (see `ibnr`)
+     * @example "8000192"
      */
     destination?: number;
     /**
-     * departure
      * Timestamp of the departure
+     * @format date-time
      * @example "2022-12-19T20:41:00+01:00"
      */
-    departure?: any;
+    departure?: string;
     /**
-     * arrival
      * Timestamp of the arrival
+     * @format date-time
      * @example "2022-12-19T20:42:00+01:00"
      */
-    arrival?: any;
+    arrival?: string;
     /**
-     * force
-     * If true, the checkin will be created, even if a colliding checkin exists. No points will be
-     *      *     awarded.
+     * If true, the checkin will be created, even if a colliding checkin exists. No points will be awarded.
      * @example "false"
      */
     force?: boolean | null;
-}
-
-/** CheckinResponse */
-export interface CheckinResponse {
     /**
-     * status
-     * StatusModel of the created status
-     * @example ""
+     * If set, the checkin will be created for all given users as well. The user creating the checkin must be allowed to checkin for the other users. Max. 10 users.
+     * @example "[1, 2]"
      */
-    status?: StatusResource;
-    /** Points model */
-    points?: Points;
-    /**
-     * alsoOnThisconnection
-     * Statuses of other people on this connection
-     */
-    alsoOnThisConnection?: StatusResource[];
+    with?: number[] | null;
 }
 
 /**
@@ -981,7 +1027,7 @@ export interface PointsCalculation {
      * @example 0.25
      */
     factor?: any;
-    /** What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points) */
+    /** What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points, 4=manual trip => no points, 5=points disabled) */
     reason?: PointReason;
 }
 
@@ -1003,6 +1049,15 @@ export interface Polyline {
     properties?: {
         /** @example 1337 */
         statusId?: number;
+    };
+}
+
+/** CheckinForbiddenWithUsersResponse */
+export interface CheckinForbiddenWithUsersResponse {
+    /** @example "You are not allowed to check in the following users: 1" */
+    message?: any;
+    meta?: {
+        invalidUsers?: number[];
     };
 }
 
@@ -1142,94 +1197,6 @@ export interface User {
      * @example false
      */
     preventIndex?: boolean;
-}
-
-/**
- * UserProfileSettings
- * Model for all user profile settings
- */
-export interface UserProfileSettings {
-    /**
-     * username
-     * username
-     * @example "Gertrud123"
-     */
-    username?: string;
-    /**
-     * displayName
-     * Display name of the user
-     * @example "Gertrud"
-     */
-    displayName?: any;
-    /**
-     * profilePicture
-     * URL of the profile picture of the user
-     * @example "https://traewelling.de/@Gertrud123/picture"
-     */
-    profilePicture?: number;
-    /**
-     * privateProfile
-     * Is the profile private?
-     * @format boolean
-     * @example false
-     */
-    privateProfile?: boolean;
-    /**
-     * preventIndex
-     * Did the user choose to prevent search engines from indexing their profile?
-     * @format boolean
-     * @example false
-     */
-    preventIndex?: boolean;
-    /**
-     * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
-     *  *      user specify?
-     */
-    defaultStatusVisibility?: StatusVisibility;
-    /**
-     * privacyHideDays
-     * Number of days after which a status is hidden from the public
-     * @format int
-     * @example 1
-     */
-    privacyHideDays?: any;
-    /**
-     * password
-     * Does the user have a password set?
-     * @format boolean
-     * @example true
-     */
-    password?: boolean;
-    /**
-     * email
-     * The email address of the user
-     * @example "gertrud@example.com"
-     */
-    email?: string | null;
-    /**
-     * emailVerified
-     * Is the email address verified?
-     * @format boolean
-     * @example "https://chaos.social/@traewelling"
-     */
-    emailVerified?: boolean;
-    /**
-     * profilePictureSet
-     * Has the user set a profile picture other then the default one?
-     * @example false
-     */
-    profilePictureSet?: boolean;
-    /**
-     * mastodon
-     * Mastodon URL of user
-     * @example "https://chaos.social/@traewelling"
-     */
-    mastodon?: string;
-    /**
-     * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
-     *  *      user specify?
-     */
-    mastodonVisibility?: StatusVisibility;
 }
 
 /**
@@ -1933,6 +1900,92 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
             }),
 
         /**
+         * @description Get all trusted users for the current user or a specific user (admin only).
+         *
+         * @tags User
+         * @name TrustedUserIndex
+         * @summary Get all trusted users for a user
+         * @request GET:/user/{user}/trusted
+         */
+        trustedUserIndex: (user: string, params: RequestParams = {}) =>
+            this.request<
+                {
+                    data?: TrustedUserResource[];
+                },
+                void
+            >({
+                path: `/user/${user}/trusted`,
+                method: "GET",
+                format: "json",
+                ...params,
+            }),
+
+        /**
+         * @description Add a user to the trusted users for the current user or a specific user (admin only).
+         *
+         * @tags User
+         * @name TrustedUserStore
+         * @summary Add a user to the trusted users for a user
+         * @request POST:/user/{user}/trusted
+         */
+        trustedUserStore: (
+            user: string,
+            data: {
+                /** @example "1" */
+                userId?: number;
+                /**
+                 * @format date-time
+                 * @example "2024-07-28T00:00:00Z"
+                 */
+                expiresAt?: string;
+            },
+            params: RequestParams = {},
+        ) =>
+            this.request<void, void>({
+                path: `/user/${user}/trusted`,
+                method: "POST",
+                body: data,
+                type: ContentType.Json,
+                ...params,
+            }),
+
+        /**
+         * No description
+         *
+         * @tags User
+         * @name TrustedByUserIndex
+         * @summary Get all users who trust the current user
+         * @request GET:/user/self/trusted-by
+         */
+        trustedByUserIndex: (params: RequestParams = {}) =>
+            this.request<
+                {
+                    data?: TrustedUserResource[];
+                },
+                void
+            >({
+                path: `/user/self/trusted-by`,
+                method: "GET",
+                format: "json",
+                ...params,
+            }),
+
+        /**
+         * @description Remove a user from the trusted users for the current user or a specific user (admin only).
+         *
+         * @tags User
+         * @name TrustedUserDestroy
+         * @summary Remove a user from the trusted users for a user
+         * @request DELETE:/user/{user}/trusted/{trustedId}
+         */
+        trustedUserDestroy: (user: string, trusted: number, params: RequestParams = {}) =>
+            this.request<void, void>({
+                path: `/user/${user}/trusted/${trusted}`,
+                method: "DELETE",
+                ...params,
+            }),
+
+        /**
          * @description Returns paginated statuses of a single user specified by the username
          *
          * @tags User, Status
@@ -2269,8 +2322,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         getProfileSettings: (params: RequestParams = {}) =>
             this.request<
                 {
-                    /** Model for all user profile settings */
-                    data?: UserProfileSettings;
+                    data?: UserProfileSettingsResource;
                 },
                 void
             >({
@@ -2308,16 +2360,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
                 preventIndex?: boolean | null;
                 /** @example 1 */
                 privacyHideDays?: number | null;
-                defaultStatusVisibility?: number | null;
-                mastodonVisibility?: number | null;
-                mapProvider?: string | null;
+                defaultStatusVisibility?: StatusVisibility | null;
+                mastodonVisibility?: MastodonVisibility | null;
+                mapProvider?: MapProvider | null;
+                friendCheckin?: FriendCheckinSetting | null;
+                /** @example true */
+                likesEnabled?: boolean | null;
+                /** @example true */
+                pointsEnabled?: boolean | null;
             },
             params: RequestParams = {},
         ) =>
             this.request<
                 {
-                    /** Model for all user profile settings */
-                    data?: UserProfileSettings;
+                    data?: UserProfileSettingsResource;
                 },
                 void
             >({
@@ -2762,7 +2818,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /**
          * No description
          *
-         * @tags User, Status, Events
+         * @tags Report
          * @name Report
          * @summary Report a Status, Event or User to the admins.
          * @request POST:/report
@@ -2771,9 +2827,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         report: (
             data: {
                 /** @example "Status" */
-                subject_type: "Event" | "Status" | "User";
+                subjectType: "Event" | "Status" | "User";
                 /** @example 1 */
-                subject_id: number;
+                subjectId: number;
                 /** @example "inappropriate" */
                 reason: "inappropriate" | "implausible" | "spam" | "illegal" | "other";
                 /** @example "The status is inappropriate because..." */
@@ -3505,13 +3561,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * No description
          *
          * @tags Checkin
-         * @name CreateTrainCheckin
-         * @summary Create a checkin
+         * @name CreateCheckin
+         * @summary Check in to a trip.
          * @request POST:/trains/checkin
          * @secure
          */
-        createTrainCheckin: (data: CheckinRequestBody, params: RequestParams = {}) =>
-            this.request<CheckinResponse, void>({
+        createCheckin: (data: CheckinRequestBody, params: RequestParams = {}) =>
+            this.request<CheckinSuccessResource, void | CheckinForbiddenWithUsersResponse>({
                 path: `/trains/checkin`,
                 method: "POST",
                 body: data,

@@ -93,7 +93,7 @@ class TrustedUserController extends Controller
      *          @OA\JsonContent(
      *              required={"user_id"},
      *              @OA\Property(property="userId", type="integer", example="1"),
-     *              @OA\Property(property="expiresAt", type="string", format="date-time", example="2024-07-28T00:00:00Z")
+     *              @OA\Property(property="expiresAt", type="string", format="date-time", example="2024-07-28T00:00:00Z", nullable=true),
      *          )
      *     ),
      *     @OA\Response(response="201", description="User added to trusted users"),
@@ -127,7 +127,7 @@ class TrustedUserController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/user/{user}/trusted/{trustedId}",
+     *     path="/user/{user}/trusted/{trusted}",
      *     operationId="trustedUserDestroy",
      *     summary="Remove a user from the trusted users for a user",
      *     description="Remove a user from the trusted users for the current user or a specific user (admin only).",

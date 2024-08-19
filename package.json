@@ -7,6 +7,7 @@
     },
     "devDependencies": {
         "@popperjs/core": "^2.11",
+        "@types/lodash": "^4.17.7",
         "@types/luxon": "^3.4.2",
         "@vitejs/plugin-vue": "^5.0.5",
         "bootstrap": "^5.3",

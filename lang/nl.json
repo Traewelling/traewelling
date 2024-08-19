@@ -784,5 +784,15 @@
     "events.show-all-for-event": "Alle check-ins van evenement tonen",
     "notifications.youHaveBeenCheckedIn.notice": "Reis op :line, van :origin naar :destination",
     "notifications.youHaveBeenCheckedIn.lead": "Je bent ingecheckt door <b>@:username</b>",
-    "notifications.eventSuggestionProcessed.missing-information": "We kunnen dit evenement niet goedkeuren, omdat er informatie ontbreekt. Geef een bron/website over dit evenement op."
+    "notifications.eventSuggestionProcessed.missing-information": "We kunnen dit evenement niet goedkeuren, omdat er informatie ontbreekt. Geef een bron/website over dit evenement op.",
+    "settings.friend_checkin.forbidden": "Niet",
+    "settings.friend_checkin.friends": "Vrienden",
+    "settings.friend_checkin.list": "Vertrouwde gebruikers",
+    "settings.friend_checkin.add_user": "Gebruiker toevoegen",
+    "settings.find-users": "Zoeken naar gebruikers",
+    "stationboard.friends-none": "Je hebt nog geen vrienden.",
+    "stationboard.friends-set": "Hier kun je je vrienden beheren:",
+    "stationboard.friend-filter": "Vrienden filteren",
+    "settings.friend_checkin": "Incheck van vrienden",
+    "settings.allow_friend_checkin_for": "Inchecken van vrienden toestaan:"
 }

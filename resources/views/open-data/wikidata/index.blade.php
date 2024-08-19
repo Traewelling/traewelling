@@ -45,21 +45,25 @@
                     <ul>
                         <li>
                             <a href="https://www.wikidata.org/wiki/Property:P954" target="P954">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                 IBNR
                             </a>
                         </li>
                         <li>
                             <a href="https://www.wikidata.org/wiki/Property:P12393" target="P12393">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                 IFOPT
                             </a>
                         </li>
                         <li>
                             <a href="https://www.wikidata.org/wiki/Property:P8671" target="P8671">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                 Ril 100 (DB-Betriebsstellenabkürzung)
                             </a>
                         </li>
                         <li>
                             <a href="https://www.wikidata.org/wiki/Property:P1448" target="P1448">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                 Official name
                             </a>
                         </li>
