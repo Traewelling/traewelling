@@ -1,4 +1,8 @@
-@php use App\Enum\Report\ReportableSubject;use App\Enum\Report\ReportReason; @endphp
+@php
+    use App\Enum\Report\ReportableSubject;
+    use App\Enum\Report\ReportReason;
+@endphp
+
 @extends('layouts.app')
 
 @section('title', __('report-something'))
@@ -10,7 +14,7 @@
                 <h1>{{__('report-something')}}</h1>
 
                 <form id="report">
-
+                    
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-floating mb-2 {{request()->has('subjectType') ? 'd-none' : ''}}">
