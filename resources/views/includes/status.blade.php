@@ -281,7 +281,7 @@
                                 <x-mute-button :user="$status->user" :dropdown="true"/>
                                 <x-block-button :user="$status->user" :dropdown="true"/>
                                 <li>
-                                    <a href="{{ route('report', ['subjectType' => 'status', 'subjectId' => $status->id]) }}"
+                                    <a href="{{ route('report', ['subjectType' => 'Status', 'subjectId' => $status->id]) }}"
                                        class="dropdown-item">
                                         <div class="dropdown-icon-suspense">
                                             <i class="fas fa-flag" aria-hidden="true"></i>
