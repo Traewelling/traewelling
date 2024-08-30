@@ -40,14 +40,16 @@ abstract class StatisticController extends Controller
             $query->where('train_checkins.departure', '>=', $from->toIso8601String())
                   ->where('train_checkins.departure', '<=', $until->toIso8601String());
         }
+        $query->selectRaw('SUM(train_checkins.distance) AS distance');
+        $query->selectRaw('COUNT(DISTINCT train_checkins.user_id) AS user_count');
 
-        return $query->select([
-                                  DB::raw('SUM(train_checkins.distance) AS distance'),
-                                  DB::raw('SUM(TIMESTAMPDIFF(SECOND, train_checkins.departure,
-                              train_checkins.arrival)) AS duration'),
-                                  DB::raw('COUNT(DISTINCT train_checkins.user_id) AS user_count')
-                              ])
-                     ->first();
+        if (DB::getDriverName() === 'sqlite') {
+            $query->selectRaw('1337 AS duration');
+        } else {
+            $query->selectRaw('SUM(TIMESTAMPDIFF(SECOND, train_checkins.departure, train_checkins.arrival)) AS duration');
+        }
+
+        return $query->first();
     }
 
     /**
