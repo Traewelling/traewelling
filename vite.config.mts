@@ -13,7 +13,7 @@ export default defineConfig({
                 "resources/sass/app-dark.scss",
                 "resources/js/admin.js",
                 "resources/sass/admin.scss",
-                "resources/sass/welcome.css",
+                "resources/css/welcome.css",
             ],
             refresh: true,
         }),

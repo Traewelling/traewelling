@@ -26,17 +26,28 @@ abstract class StatisticController extends Controller
             throw new InvalidArgumentException('since cannot be after until');
         }
 
-        return DB::table('train_checkins')
-                 ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
-                 ->where('train_checkins.departure', '>=', $from->toIso8601String())
-                 ->where('train_checkins.departure', '<=', $until->toIso8601String())
-                 ->select([
-                              DB::raw('SUM(train_checkins.distance) AS distance'),
-                              DB::raw('SUM(TIMESTAMPDIFF(SECOND, train_checkins.departure,
+        return self::globalCheckinQuery($from, $until);
+    }
+
+    public static function getGlobalCheckInStatsAllTime(): stdClass {
+        return self::globalCheckinQuery();
+    }
+
+    private static function globalCheckinQuery(?Carbon $from = null, ?Carbon $until = null): stdClass {
+        $query = DB::table('train_checkins');
+
+        if ($from !== null && $until !== null) {
+            $query->where('train_checkins.departure', '>=', $from->toIso8601String())
+                  ->where('train_checkins.departure', '<=', $until->toIso8601String());
+        }
+
+        return $query->select([
+                                  DB::raw('SUM(train_checkins.distance) AS distance'),
+                                  DB::raw('SUM(TIMESTAMPDIFF(SECOND, train_checkins.departure,
                               train_checkins.arrival)) AS duration'),
-                              DB::raw('COUNT(DISTINCT statuses.user_id) AS user_count')
-                          ])
-                 ->first();
+                                  DB::raw('COUNT(DISTINCT train_checkins.user_id) AS user_count')
+                              ])
+                     ->first();
     }
 
     /**
