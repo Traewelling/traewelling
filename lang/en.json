@@ -30,7 +30,7 @@
     "user.header-reset-pw": "Reset password",
     "user.login": "Log in",
     "user.login.mastodon": "Log in with mastodon",
-    "user.login.or": "Or",
+    "user.login.or": "or",
     "user.login-credentials": "Email address or username",
     "user.mastodon-instance-url": "Instance URL",
     "user.not-received-before": "If you didn't get the email, ",
