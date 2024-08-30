@@ -178,7 +178,7 @@ abstract class HafasController extends Controller
             'duration'                   => $duration,
             HTT::NATIONAL_EXPRESS->value => self::checkTravelType($type, TravelType::EXPRESS),
             HTT::NATIONAL->value         => self::checkTravelType($type, TravelType::EXPRESS),
-            HTT::REGIONAL_EXP->value     => self::checkTravelType($type, TravelType::REGIONAL),
+            HTT::REGIONAL_EXP->value     => self::checkTravelType($type, TravelType::EXPRESS),
             HTT::REGIONAL->value         => self::checkTravelType($type, TravelType::REGIONAL),
             HTT::SUBURBAN->value         => self::checkTravelType($type, TravelType::SUBURBAN),
             HTT::BUS->value              => self::checkTravelType($type, TravelType::BUS),
