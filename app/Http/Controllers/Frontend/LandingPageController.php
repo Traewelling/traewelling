@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Backend\StatisticController;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\View\View;
 use stdClass;
 
 class LandingPageController
@@ -39,15 +39,15 @@ class LandingPageController
         // Fallback: Show bogus values if really nothing is set
         if ($stats === null) {
             $stats             = new stdClass();
-            $stats->distance   = 5000000;
-            $stats->duration   = 80220;
-            $stats->user_count = 1000;
+            $stats->distance   = 0;
+            $stats->duration   = 0;
+            $stats->user_count = 0;
         }
 
         return $stats;
     }
 
-    public function renderLandingPage(): Renderable|RedirectResponse {
+    public function renderLandingPage(): View|RedirectResponse {
         if (Auth::check()) {
             return redirect()->route('dashboard');
         }
