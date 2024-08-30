@@ -113,6 +113,9 @@ Route::middleware(['auth', 'privacy'])->group(function() {
          ->middleware(['can:create-manual-trip'])
          ->name('trip.create');
 
+    Route::view('/report', 'report')
+         ->name('report');
+
     Route::post('/ics/createToken', [IcsController::class, 'createIcsToken'])
          ->name('ics.createToken'); //TODO: Replace with API Endpoint
     Route::post('/ics/revokeToken', [IcsController::class, 'revokeIcsToken'])

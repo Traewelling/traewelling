@@ -280,6 +280,15 @@
                                 </li>
                                 <x-mute-button :user="$status->user" :dropdown="true"/>
                                 <x-block-button :user="$status->user" :dropdown="true"/>
+                                <li>
+                                    <a href="{{ route('report', ['subjectType' => 'Status', 'subjectId' => $status->id]) }}"
+                                       class="dropdown-item">
+                                        <div class="dropdown-icon-suspense">
+                                            <i class="fas fa-flag" aria-hidden="true"></i>
+                                        </div>
+                                        {{__('status.report')}}
+                                    </a>
+                                </li>
                             @endif
                             @admin
                             <li>
