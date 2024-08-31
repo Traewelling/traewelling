@@ -16,6 +16,7 @@ use App\Http\Controllers\Frontend\ChangelogController;
 use App\Http\Controllers\Frontend\DevController;
 use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\IcsController;
+use App\Http\Controllers\Frontend\LandingPageController;
 use App\Http\Controllers\Frontend\LeaderboardController;
 use App\Http\Controllers\Frontend\OpenData\WikidataController;
 use App\Http\Controllers\Frontend\SettingsController;
@@ -28,7 +29,6 @@ use App\Http\Controllers\Frontend\User\ProfilePictureController;
 use App\Http\Controllers\Frontend\VueFrontendController;
 use App\Http\Controllers\Frontend\WebFingerController;
 use App\Http\Controllers\Frontend\WebhookController;
-use App\Http\Controllers\FrontendStaticController;
 use App\Http\Controllers\FrontendStatusController;
 use App\Http\Controllers\FrontendTransportController;
 use App\Http\Controllers\FrontendUserController;
@@ -43,7 +43,7 @@ Route::prefix('admin')->group(base_path('routes/web/admin.php'));
 Route::get('/@{username}/picture', [ProfilePictureController::class, 'generateProfilePicture'])
      ->name('profile.picture');
 
-Route::get('/', [FrontendStaticController::class, 'renderLandingPage'])
+Route::get('/', [LandingPageController::class, 'renderLandingPage'])
      ->name('static.welcome');
 
 Route::permanentRedirect('/about', 'https://help.traewelling.de/faq/');

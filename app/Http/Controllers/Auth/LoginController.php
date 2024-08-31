@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Backend\Auth\LoginController as BackendLoginController;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
@@ -43,11 +42,19 @@ class LoginController extends Controller
     }
 
     public function login(Request $request): Response {
-        $validated = $request->validate([
-                                            'login'    => ['required', 'max:255'],
-                                            'password' => ['required', 'min:8'],
-                                            'remember' => ['nullable',],
-                                        ]);
+        $validator = Validator::make($request->all(), [
+            'login'    => ['required', 'max:255'],
+            'password' => ['required', 'min:8'],
+            'remember' => ['nullable',],
+        ]);
+
+        if ($validator->fails()) {
+            return redirect(route('login'))
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $validated = $validator->validated();
 
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
