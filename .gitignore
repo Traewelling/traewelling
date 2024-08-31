@@ -9,7 +9,6 @@ clover.xml
 
 # Profile pictures
 public/uploads/avatars/*
-!public/uploads/avatars/user.jpg
 
 # vendor-views
 !resources/views/vendor

@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\CacheLeaderboard;
 use App\Console\Commands\CacheYearInReview;
+use App\Console\Commands\CleanUpProfilePictures;
 use App\Console\Commands\DatabaseCleaner\DatabaseCleaner;
 use App\Console\Commands\DatabaseCleaner\MastodonServers;
 use App\Console\Commands\HideStatus;
@@ -42,6 +43,7 @@ class Kernel extends ConsoleKernel
 
         //daily tasks
         $schedule->command(DatabaseCleaner::class)->daily();
+        $schedule->command(CleanUpProfilePictures::class)->daily();
 
         //weekly tasks
         $schedule->command(MastodonServers::class)->weekly();
