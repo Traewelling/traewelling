@@ -1,7 +1,7 @@
 import laravel from "laravel-vite-plugin";
 import vue from "@vitejs/plugin-vue";
 import i18n from 'laravel-vue-i18n/vite';
-import { defineConfig } from "vite";
+import {defineConfig} from "vite";
 
 export default defineConfig({
     plugins: [
@@ -13,7 +13,7 @@ export default defineConfig({
                 "resources/sass/app-dark.scss",
                 "resources/js/admin.js",
                 "resources/sass/admin.scss",
-                "resources/sass/welcome.scss",
+                "resources/css/welcome.css",
             ],
             refresh: true,
         }),

@@ -26,17 +26,30 @@ abstract class StatisticController extends Controller
             throw new InvalidArgumentException('since cannot be after until');
         }
 
-        return DB::table('train_checkins')
-                 ->join('statuses', 'train_checkins.status_id', '=', 'statuses.id')
-                 ->where('train_checkins.departure', '>=', $from->toIso8601String())
-                 ->where('train_checkins.departure', '<=', $until->toIso8601String())
-                 ->select([
-                              DB::raw('SUM(train_checkins.distance) AS distance'),
-                              DB::raw('SUM(TIMESTAMPDIFF(SECOND, train_checkins.departure,
-                              train_checkins.arrival)) AS duration'),
-                              DB::raw('COUNT(DISTINCT statuses.user_id) AS user_count')
-                          ])
-                 ->first();
+        return self::globalCheckinQuery($from, $until);
+    }
+
+    public static function getGlobalCheckInStatsAllTime(): stdClass {
+        return self::globalCheckinQuery();
+    }
+
+    private static function globalCheckinQuery(?Carbon $from = null, ?Carbon $until = null): stdClass {
+        $query = DB::table('train_checkins');
+
+        if ($from !== null && $until !== null) {
+            $query->where('train_checkins.departure', '>=', $from->toIso8601String())
+                  ->where('train_checkins.departure', '<=', $until->toIso8601String());
+        }
+        $query->selectRaw('SUM(train_checkins.distance) AS distance');
+        $query->selectRaw('COUNT(DISTINCT train_checkins.user_id) AS user_count');
+
+        if (DB::getDriverName() === 'sqlite') {
+            $query->selectRaw('1337 AS duration');
+        } else {
+            $query->selectRaw('SUM(TIMESTAMPDIFF(SECOND, train_checkins.departure, train_checkins.arrival)) AS duration');
+        }
+
+        return $query->first();
     }
 
     /**
@@ -217,17 +230,19 @@ abstract class StatisticController extends Controller
 
     public static function getUsedStations(User $user, Carbon $from, Carbon $until): Collection {
         $qUsedStations = DB::table('train_checkins')
+                           ->join('train_stopovers', 'train_checkins.trip_id', '=', 'train_stopovers.trip_id')
                            ->where('user_id', '=', $user->id)
                            ->where('departure', '>=', $from->toIso8601String())
                            ->where('departure', '<=', $until->toIso8601String())
-                           ->select(['origin', 'destination'])
+                           ->select(['origin_stopover_id', 'destination_stopover_id'])
                            ->get();
 
-        $usedStationIds = $qUsedStations->pluck('origin')
-                                        ->merge($qUsedStations->pluck('destination'))
+        $usedStationIds = $qUsedStations->pluck('origin_stopover_id')
+                                        ->merge($qUsedStations->pluck('destination_stopover_id'))
                                         ->unique();
 
-        return Station::whereIn('ibnr', $usedStationIds)->get();
+        return Station::join('train_stopovers', 'train_stopovers.train_station_id', '=', 'train_stations.id')
+                      ->whereIn('train_stopovers.id', $usedStationIds)->get();
     }
 
     public static function getPassedStations(User $user, Carbon $from = null, Carbon $to = null): Collection {
