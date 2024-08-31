@@ -64,15 +64,15 @@ export default {
             this.loading = true;
             if (!this.stationInput || this.stationInput.length < 3) {
                 this.autocompleteList = [];
-                this.loading = false;
+                this.loading          = false;
                 return;
             }
             let query = this.stationInput.replace(/%2F/, ' ').replace(/\//, ' ');
-            fetch(`/api/v1/trains/station/autocomplete/${query}`).then((response) => {
+            fetch(`/api/v1/stations/?query=${query}`).then((response) => {
                 response.json().then((result) => {
                     console.log(result.data);
                     this.autocompleteList = result.data;
-                    this.loading = false;
+                    this.loading          = false;
                 });
             });
         }
@@ -84,7 +84,7 @@ export default {
         this.id = Math.random().toString().substring(2);
     },
     watch: {
-        stationInput: _.debounce(function() {
+        stationInput: _.debounce(function () {
             this.autocomplete();
         }, 500),
     },
@@ -95,46 +95,46 @@ export default {
     <div :class="departure && arrival ? 'col-12 col-md-4' : 'col'">
         <FullScreenModal ref="modal">
             <template #header>
-                <input type="text"
-                       name="station"
-                       class="form-control mobile-input-fs-16"
+                <input v-model="stationInput"
                        :placeholder="placeholder"
-                       v-model="stationInput"
+                       class="form-control mobile-input-fs-16"
+                       name="station"
+                       type="text"
                 />
             </template>
             <template #body>
                 <ul class="list-group list-group-light list-group-small">
-                    <li class="list-group-item" v-for="item in autocompleteList" @click="setStation(item)">
-                        <a href="#" class="text-trwl">
-                            {{item.name}} <span v-if="item.rilIdentifier">({{item.rilIdentifier}})</span>
+                    <li v-for="item in autocompleteList" class="list-group-item" @click="setStation(item)">
+                        <a class="text-trwl" href="#">
+                            {{ item.name }} <span v-if="item.rilIdentifier">({{ item.rilIdentifier }})</span>
                         </a>
                     </li>
                 </ul>
             </template>
         </FullScreenModal>
-        <label :for="timeFieldBId" class="form-label">{{placeholder}}</label>
-        <input type="text" class="form-control mobile-input-fs-16" :placeholder="placeholder"
-               @focusin="showModal" v-model="stationInput">
+        <label :for="timeFieldBId" class="form-label">{{ placeholder }}</label>
+        <input v-model="stationInput" :placeholder="placeholder" class="form-control mobile-input-fs-16"
+               type="text" @focusin="showModal">
     </div>
-    <div :class="departure && arrival ? 'col col-md-4' : 'col-4'" v-if="departure && arrival">
-        <label :for="timeFieldAId" class="form-label">{{timeFieldALabel}}</label>
+    <div v-if="departure && arrival" :class="departure && arrival ? 'col col-md-4' : 'col-4'">
+        <label :for="timeFieldAId" class="form-label">{{ timeFieldALabel }}</label>
         <input
             :id="timeFieldAId"
-            type="datetime-local"
-            class="form-control mobile-input-fs-16"
-            :placeholder="timeFieldALabel"
             :aria-label="timeFieldALabel"
+            :placeholder="timeFieldALabel"
+            class="form-control mobile-input-fs-16"
+            type="datetime-local"
             @input="$emit('update:timeFieldA', $event.target.value)"
         >
     </div>
     <div :class="departure && arrival ? 'col col-md-4' : 'col-4'">
-        <label :for="timeFieldBId" class="form-label">{{timeFieldBLabel}}</label>
+        <label :for="timeFieldBId" class="form-label">{{ timeFieldBLabel }}</label>
         <input
             :id="timeFieldBId"
-            type="datetime-local"
-            class="form-control mobile-input-fs-16"
-            :placeholder="timeFieldBLabel"
             :aria-label="timeFieldBLabel"
+            :placeholder="timeFieldBLabel"
+            class="form-control mobile-input-fs-16"
+            type="datetime-local"
             @input="$emit('update:timeFieldB', $event.target.value)"
         >
     </div>

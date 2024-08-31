@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Station;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -18,6 +19,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class StationResource extends JsonResource
 {
     public function toArray($request): array {
+        /** @var Station $this */
         return [
             "id"            => $this->id,
             "name"          => $this->name,
