@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Helpers\CacheKey;
-use App\Models\Trip;
 use App\Models\PolyLine;
+use App\Models\Trip;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
@@ -22,24 +22,24 @@ class PrometheusServiceProvider extends ServiceProvider
          */
         Prometheus::addGauge('Users count')
                   ->helpText("How many users are registered on the website?")
-            ->label("state")
-            ->value(function() {
-                return [
-                    [Cache::get(CacheKey::USER_CREATED, 0), ["created"]],
-                    [Cache::get(CacheKey::USER_DELETED, 0), ["deleted"]]
-                ];
-            });
+                  ->label("state")
+                  ->value(function() {
+                      return [
+                          [Cache::get(CacheKey::USER_CREATED, 0), ["created"]],
+                          [Cache::get(CacheKey::USER_DELETED, 0), ["deleted"]]
+                      ];
+                  });
 
 
         Prometheus::addGauge('Status count')
                   ->helpText("How many statuses are posted on the website?")
-            ->label("state")
-            ->value(function() {
-                return [
-                    [Cache::get(CacheKey::STATUS_CREATED, 0), ["created"]],
-                    [Cache::get(CacheKey::STATUS_DELETED, 0), ["deleted"]]
-                ];
-            });
+                  ->label("state")
+                  ->value(function() {
+                      return [
+                          [Cache::get(CacheKey::STATUS_CREATED, 0), ["created"]],
+                          [Cache::get(CacheKey::STATUS_DELETED, 0), ["deleted"]]
+                      ];
+                  });
 
         Prometheus::addGauge('Hafas Trips count')
                   ->helpText("How many hafas trips are posted grouped by operator and mode of transport?")
@@ -50,6 +50,17 @@ class PrometheusServiceProvider extends ServiceProvider
                                  ->with("operator")
                                  ->get()
                                  ->map(fn($item) => [$item->total, [$item->operator?->name, $item->category]])
+                                 ->toArray();
+                  });
+
+        Prometheus::addGauge('Trip Source count')
+                  ->helpText("How many hafas trips are posted grouped by source?")
+                  ->label("source")
+                  ->value(function() {
+                      return Trip::groupBy("source")
+                                 ->selectRaw("count(*) AS total, source")
+                                 ->get()
+                                 ->map(fn($item) => [$item->total, [$item->source?->value]])
                                  ->toArray();
                   });
 
@@ -103,6 +114,14 @@ class PrometheusServiceProvider extends ServiceProvider
                   ->value(function() {
                       $iter = new \FilesystemIterator(public_path("uploads/avatars"));
                       return iterator_count($iter);
+                  });
+
+        Prometheus::addGauge("active_statuses_count")
+                  ->helpText("How many trips are en route?")
+                  ->value(function() {
+                      return Trip::where("departure", "<", now())
+                                 ->where("arrival", ">", now())
+                                 ->count();
                   });
 
         Prometheus::addGauge("is_maintenance_mode_active")
