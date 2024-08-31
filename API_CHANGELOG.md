@@ -4,6 +4,19 @@ In this we try to keep track of changes to the API.
 Primarily this should document changes that are not backwards compatible or belongs to already documented endpoints.
 This is to help you keep track of the changes and to help you update your code accordingly.
 
+# 2024-08-14
+
+The following endpoints were migrated to match the API conventions. Please also have a look at the API documentation
+
+- `GET /settings/followers` -> `GET /user/self/followers`
+- `DELETE /user/removeFollower` with userId in body -> `DELETE /user/self/followers/:id` without userId in body
+- `GET /settings/follow-requests` -> `GET /user/self/follow-requests`
+- `PUT /user/acceptFollowRequest` with userId in body -> `PUT /user/self/follow-requests/:userId` without userId in body
+- `DELETE /user/rejectFollowRequest` with userId in body -> `DELETE /user/self/follow-requests/:userId` without userId in body
+- `GET /settings/followings` -> `GET /user/self/followings`
+
+The old endpoints will be removed after 2024-09-30.
+
 # 2024-07-17
 
 The Endpoint `/report` now correctly uses camelCase for the `subjectType` and `subjectId` field.
