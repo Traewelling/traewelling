@@ -403,6 +403,7 @@ class TransportController extends Controller
                 $dto->setUser($user);
                 $dto->setBody(null);
                 $dto->setStatusVisibility($user->default_status_visibility);
+                $dto->setPostOnMastodonFlag(false);
                 $checkin = TrainCheckinController::checkin($dto);
                 $user->notify(new YouHaveBeenCheckedIn($checkin->status, auth()->user()));
                 $checkinResponse->alsoOnThisConnection->push($checkin->status);
