@@ -113,6 +113,13 @@ class StationController extends Controller
             $stations->merge($this->stationRepository->getStationByName($search, $lang, true))->unique();
         }
 
-        return StationResource::collection($stations);
+        $stations->map(function($station) use ($search) {
+            similar_text($station->name, $search, $percent);
+            $station->similarity = $percent;
+
+            return $station;
+        });
+
+        return StationResource::collection($stations->sortByDesc('similarity'));
     }
 }
