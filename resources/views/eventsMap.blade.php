@@ -17,6 +17,14 @@
                         </strong>
                     </h1>
                     <h2 class="h2-responsive">
+                        @if($event->start->isSameDay($event->end))
+                            {{$event->start->format('d.m.Y')}}
+                        @else
+                            {{$event->start->format('d.m.Y')}}
+                            - {{$event->end->format('d.m.Y')}}
+                        @endif
+                    </h2>
+                    <h2 class="h2-responsive">
                         <span class="font-weight-bold">
                             <i class="fa fa-route d-inline"></i>
                             {{ number($event->totalDistance / 1000, 0) }}

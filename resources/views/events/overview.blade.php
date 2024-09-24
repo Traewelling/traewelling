@@ -40,11 +40,14 @@
                                                     @endisset
                                                 </td>
                                                 <td>
-                                                    @if($event->checkin_start->isSameDay($event->end))
-                                                        {{$event->checkin_start->format('d.m.Y')}}
+                                                    @if($event->start->isSameDay($event->end))
+                                                        {{$event->start->format('d.m.Y')}}
                                                     @else
-                                                        {{$event->checkin_start->format('d.m.Y')}}
-                                                        - {{$event->checkin_end->format('d.m.Y')}}
+                                                        {{$event->start->format('d.m.Y')}}
+                                                        - {{$event->end->format('d.m.Y')}}
+                                                    @endif
+                                                    @if($event->event_start || $event->event_end)
+                                                        *
                                                     @endif
                                                 </td>
                                                 <td>
@@ -60,6 +63,9 @@
                                 </table>
                             </div>
                             {{$liveAndUpcomingEvents->links()}}
+                            <small class="text-muted">
+                                <sup>*</sup> {{__('events.disclaimer.extendedcheckin')}}
+                            </small>
                         @endif
                     </div>
                 </div>

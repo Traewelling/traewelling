@@ -653,6 +653,7 @@
     "delete": "Löschen",
     "active-tokens-count": ":count aktive Token|:count aktive Tokens",
     "user.blocked.text": "Du kannst die Check-ins von :username nicht sehen, da du den Nutzer blockiert hast.",
+    "events.disclaimer.extendedcheckin": "Erweiterter Zeitraum für Checkin vorhanden.",
     "events.disclaimer.organizer": "Träwelling ist nicht der Veranstalter.",
     "events.disclaimer.source": "Diese Veranstaltung wurde von einem Träwelling User vorgeschlagen und durch uns genehmigt.",
     "events.disclaimer.warranty": "Träwelling übernimmt keine Gewähr auf die Korrektheit oder Vollständigkeit der Daten.",
