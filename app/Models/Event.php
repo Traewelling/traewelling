@@ -33,6 +33,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property bool    isPride
  * @property Carbon  start         Timestamp of event starts (returns event_start or checkin_start)
  * @property Carbon  end           Timestamp of event ends (returns event_end or checkin_end)
+ * @property bool    hasExtendedCheckin
  */
 class Event extends Model
 {
@@ -83,11 +84,16 @@ class Event extends Model
     }
 
     public function getStartAttribute(): Carbon {
-        return $this->event_start?$this->event_start:$this->checkin_start;
+        return $this->event_start ? $this->event_start : $this->checkin_start;
     }
 
     public function getEndAttribute(): Carbon {
-        return $this->event_end?$this->event_end:$this->checkin_end;
+        return $this->event_end ? $this->event_end : $this->checkin_end;
+    }
+
+    public function getHasExtendedCheckinAttribute(): bool {
+        return ($this->event_start && $this->event_start != $this->checkin_start)
+            || ($this->event_end && $this->event_end != $this->checkin_end);
     }
 
     public function approvedBy(): HasOne {

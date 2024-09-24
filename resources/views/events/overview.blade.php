@@ -46,7 +46,7 @@
                                                         {{$event->start->format('d.m.Y')}}
                                                         - {{$event->end->format('d.m.Y')}}
                                                     @endif
-                                                    @if($event->event_start || $event->event_end)
+                                                    @if($event->hasExtendedCheckin)
                                                         *
                                                     @endif
                                                 </td>
