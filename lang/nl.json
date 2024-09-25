@@ -834,5 +834,6 @@
     "welcome.footer.links": "Links",
     "welcome.header.track": "Volg je reis en deel je reiservaringen.",
     "welcome.header.vehicles": "Per spoor, bus of boot.",
-    "welcome.header.open-source": "Open source en gratis, voor altijd."
+    "welcome.header.open-source": "Open source en gratis, voor altijd.",
+    "events.disclaimer.extendedcheckin": "Je hebt een verlengde inchecktijd."
 }
