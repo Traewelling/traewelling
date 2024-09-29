@@ -61,7 +61,7 @@
     "controller.user.follow-request-already-exists": "Du hast bereits angefragt, dieser Person zu folgen.",
     "controller.user.follow-request-ok": "Folgen angefragt.",
     "controller.user.password-changed-ok": "Passwort geändert.",
-    "controller.user.password-wrong": "Altes Passwort ist falsch.",
+    "controller.user.password-wrong": "Falsches Passwort.",
     "user.complete-registration": "Registration beenden",
     "user.displayname": "Anzeigename",
     "user.email": "E-Mail-Adresse",
