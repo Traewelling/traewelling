@@ -418,6 +418,11 @@ class StatusController extends Controller
             $status = Status::findOrFail($statusId);
             $this->authorize('update', $status);
 
+            //Check for disallowed status visibility changes
+            if(auth()->user()->can('disallow-status-visibility-change') && $validated['visibility'] !== StatusVisibility::PRIVATE->value) {
+                return $this->sendError('You are not allowed to change the visibility to anything else than private', 403);
+            }
+
             if (isset($validated['destinationId'], $validated['destinationArrivalPlanned'])
                 && ((int) $validated['destinationId']) !== $status->checkin->destinationStopover->station->id) {
                 $arrival  = Carbon::parse($validated['destinationArrivalPlanned'])->timezone(config('app.timezone'));

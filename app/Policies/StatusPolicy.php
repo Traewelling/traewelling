@@ -73,6 +73,10 @@ class StatusPolicy
         return Response::deny('Congratulations! You\'ve found an edge-case!');
     }
 
+    public function create(User $user): bool {
+        return $user->cannot('disallow-status-creation');
+    }
+
     /**
      * Determine whether the user can update the model.
      *
