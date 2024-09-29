@@ -37,6 +37,13 @@ $(".upload-image").on("click", function () {
             .then(() => {
                 document.getElementById("theProfilePicture").src = img;
                 document.getElementById("btnModalDeleteProfilePicture")?.classList.remove("d-none");
+            })
+            .catch(function (error) {
+                if(error.status === 403) {
+                    notyf.error("Forbidden: You are not allowed to upload a profile picture.");
+                } else {
+                    notyf.error("An error occured while uploading the profile picture.");
+                }
             });
     });
 });
