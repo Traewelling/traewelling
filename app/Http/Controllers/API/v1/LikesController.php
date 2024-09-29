@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\UserResource;
+use App\Models\Like;
 use App\Models\Status;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -104,6 +105,7 @@ class LikesController extends Controller
      */
     public function create(int $statusId): JsonResponse {
         try {
+            $this->authorize('create', Like::class);
             $status = Status::findOrFail($statusId);
             StatusBackend::createLike(Auth::user(), $status);
             return $this->sendResponse(

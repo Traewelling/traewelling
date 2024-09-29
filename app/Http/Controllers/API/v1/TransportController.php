@@ -19,6 +19,7 @@ use App\Http\Resources\StationResource;
 use App\Http\Resources\TripResource;
 use App\Hydrators\CheckinRequestHydrator;
 use App\Models\Station;
+use App\Models\Status;
 use App\Models\User;
 use App\Notifications\YouHaveBeenCheckedIn;
 use Carbon\Carbon;
@@ -355,6 +356,8 @@ class TransportController extends Controller
      * @return JsonResponse
      */
     public function create(Request $request): JsonResponse {
+        $this->authorize('create', Status::class);
+
         $validated = $request->validate([
                                             'body'        => ['nullable', 'max:280'],
                                             'business'    => ['nullable', new Enum(Business::class)],

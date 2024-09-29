@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\AlreadyFollowingException;
 use App\Http\Controllers\Backend\UserController as UserControllerAlias;
 use App\Http\Controllers\UserController as UserBackend;
+use App\Models\Follow;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Renderable;
@@ -49,6 +50,7 @@ class FrontendUserController extends Controller
         $userToFollow = User::find($validated['follow_id']);
 
         try {
+            $this->authorize('create', Follow::class);
             $createFollowResponse = UserBackend::createFollow(Auth::user(), $userToFollow);
         } catch (AlreadyFollowingException) {
             return response()->json(['message' => __('controller.user.follow-error')], 409);

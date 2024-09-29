@@ -6,12 +6,14 @@ use App\Http\Controllers\Backend\Auth\AccessTokenController;
 use App\Http\Controllers\Backend\Auth\ApproveAuthorizationController;
 use App\Http\Controllers\Backend\Auth\AuthorizationController;
 use App\Models\Follow;
+use App\Models\Like;
 use App\Models\OAuthClient;
 use App\Models\Status;
 use App\Models\StatusTag;
 use App\Models\User;
 use App\Models\Webhook;
 use App\Policies\FollowPolicy;
+use App\Policies\LikePolicy;
 use App\Policies\StatusPolicy;
 use App\Policies\StatusTagPolicy;
 use App\Policies\TokenPolicy;
@@ -33,6 +35,7 @@ class AuthServiceProvider extends ServiceProvider
         Status::class    => StatusPolicy::class,
         User::class      => UserPolicy::class,
         Follow::class    => FollowPolicy::class,
+        Like::class      => LikePolicy::class,
         Webhook::class   => WebhookPolicy::class,
         StatusTag::class => StatusTagPolicy::class,
         Token::class     => TokenPolicy::class,

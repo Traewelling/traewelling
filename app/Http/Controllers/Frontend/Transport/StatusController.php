@@ -36,10 +36,18 @@ class StatusController extends Controller
         try {
             $status = Status::findOrFail($validated['statusId']);
             $this->authorize('update', $status);
+
+            $newVisibility = StatusVisibility::from($validated['checkinVisibility']);
+
+            //Check for disallowed status visibility changes
+            if(auth()->user()->can('disallow-status-visibility-change') && $newVisibility != StatusVisibility::PRIVATE) {
+                return back()->with('error', 'You are not allowed to update non-private statuses. Please set the status to private.');
+            }
+
             $status->update([
                                 'body'       => $validated['body'] ?? null,
                                 'business'   => Business::from($validated['business_check']),
-                                'visibility' => StatusVisibility::from($validated['checkinVisibility']),
+                                'visibility' => $newVisibility,
                             ]);
 
             $status->checkin->update([

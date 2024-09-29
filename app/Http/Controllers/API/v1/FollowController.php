@@ -54,6 +54,7 @@ class FollowController extends Controller
      */
     public function createFollow(int $userId): JsonResponse {
         try {
+            $this->authorize('create', Follow::class);
             $userToFollow         = User::findOrFail($userId);
             $createFollowResponse = FollowBackend::createOrRequestFollow(Auth::user(), $userToFollow);
             return $this->sendResponse(new UserResource($createFollowResponse), 201);
