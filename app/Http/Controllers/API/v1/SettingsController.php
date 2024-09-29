@@ -186,6 +186,9 @@ class SettingsController extends Controller
      * @return JsonResponse
      */
     public function uploadProfilePicture(Request $request): JsonResponse {
+        if(auth()->user()->can('disallow-social-interaction')) {
+            return response()->json(null, 403);
+        }
         if (BackendSettingsController::updateProfilePicture($request->input('image'))) {
             return $this->sendResponse(['message' => __('settings.saved')]);
         }
