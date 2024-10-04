@@ -15,7 +15,8 @@
 <link rel="apple-touch-icon" sizes="167x167" href="{{ asset('images/icons/touch-icon-ipad-retina.png') }}"/>
 
 <meta name="mobile-web-app-capable" content="yes"/>
-<meta name="theme-color" content="#c72730"/>
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#c72730"/>
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#811a0e"/>
 <meta name="name" content="{{ config('app.name') }}"/>
 
 @hasSection('canonical')
