@@ -35,7 +35,7 @@
         "luxon": "^3.4.4",
         "mdb-ui-kit": "^6.4.1",
         "notyf": "^3.10.0",
-        "pinia": "^2.2.2",
+        "pinia": "^2.2.4",
         "pinia-plugin-persistedstate": "^3.2.1",
         "postcss": "^8.4.41",
         "vue": "^3.3.4"
