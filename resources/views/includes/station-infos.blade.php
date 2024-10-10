@@ -96,20 +96,50 @@
                     </table>
 
                     <div class="mx-4 mb-3">
-                        <a href="https://www.wikidata.org/wiki/{{ $station->wikidata_id }}"
-                           target="_blank"
-                           class="btn btn-sm btn-outline-secondary float-end">
-                            <i class="fa-solid fa-edit"></i>
-                            Bearbeiten
-                        </a>
-
                         <small>
                             Fehler gefunden? Auf Wikidata bearbeiten!
                             Derzeit aktualisieren wir die Daten von Wikidata nur sehr unregelmäßig.
                             Es kann daher lange dauern, bis deine Änderungen hier angezeigt
                             werden.
                         </small>
+                        <div>
+                            <a href="https://www.wikidata.org/wiki/{{ $station->wikidata_id }}"
+                               target="_blank"
+                               class="btn btn-sm btn-outline-secondary">
+                                <i class="fa-solid fa-edit"></i>
+                                Bearbeiten
+                            </a>
+                            <button class="btn btn-sm btn-outline-secondary" title="Neue Daten von Wikidata fetchen und damit die lokalen Daten hier aktualisieren." onclick="fetchWikidata({{$station->id}})">
+                                <i class="fa-solid fa-edit"></i>
+                                Stationsdaten refreshen
+                            </button>
+                        </div>
                     </div>
+
+                <script>
+                    // TODO: prevent duplicate code with `wikidata/index.blade.php` (by adding a `allowUpdate` parameter)
+                    function fetchWikidata(stationId) {
+                        console.log('Fetching Wikidata for station ' + stationId);
+                        fetch('/api/v1/experimental/station/' + stationId + '/wikidata?allowUpdate=1', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            }
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('wikidata result:', data);
+                                if (data.error) {
+                                    notyf.error(data.error || 'Error fetching Wikidata');
+                                } else {
+                                    notyf.success(data.message || 'Wikidata fetched');
+                                    document.getElementById('station-' + stationId).remove();
+                                }
+                            })
+                            .catch(error => notyf.error(error || 'Error during Wikidata fetch'))
+                    }
+                </script>
                 @else
                     <div class="mx-4 mb-3">
                         <p>
