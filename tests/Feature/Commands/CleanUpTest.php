@@ -8,10 +8,12 @@ use App\Models\PolyLine;
 use App\Models\Trip;
 use App\Models\User;
 use App\Notifications\StatusLiked;
+use App\Services\PolylineStorageService;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\MockObject\Exception;
 use Tests\FeatureTestCase;
 
 class CleanUpTest extends FeatureTestCase
@@ -96,17 +98,25 @@ class CleanUpTest extends FeatureTestCase
         $this->assertDatabaseCount('users', 0);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testPolylineWithoutAnyReferenceAreDeleted(): void {
         $this->assertDatabaseCount('poly_lines', 0);
+        $service = new PolylineStorageService();
 
-        PolyLine::create([
-                             'hash'     => Str::uuid(),
-                             'polyline' => json_encode(['some json data']),
-                         ]);
+        $polyline = PolyLine::create([
+                                         'hash'     => Str::uuid(),
+                                         'polyline' => json_encode(['some json data']),
+                                     ]);
+        $content  = $polyline->polyline; // this will store the polyline in the storage
+        $hash     = $polyline->hash;
         $this->assertDatabaseCount('poly_lines', 1);
+        $this->assertSame($content, $service->get($hash));
 
         $this->artisan('app:clean-db:polylines')->assertExitCode(Command::SUCCESS);
         $this->assertDatabaseCount('poly_lines', 0);
+        $this->assertSame('', $service->get($hash));
 
         //create a polyline with a reference and a parent
         //Checkin Factory creates a trip which creates a polyline
