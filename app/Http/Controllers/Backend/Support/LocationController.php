@@ -145,7 +145,7 @@ class LocationController
      * @throws JsonException
      */
     private function getPolylineWithTimestamps(): stdClass {
-        if (isset($this->trip->polyline)) {
+        if (!empty($this->trip->polyline)) {
             // decode GeoJSON object from polyline
             $geoJsonObj = json_decode($this->trip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
         } else {
