@@ -8,22 +8,19 @@ use Illuminate\Support\Facades\Storage;
 
 class PolylineStorageService
 {
-    private const string POLYLINE_STORAGE_PATH = 'polylines';
     private Filesystem $disk;
     private ?string    $content = null;
 
     public function __construct() {
         $this->disk = Storage::build([
-                                         'driver' => 'local', // ToDo: make this configurable in .env
-                                         'root'   => storage_path(self::POLYLINE_STORAGE_PATH),
+                                         'driver' => config('trwl.polyline_storage_driver'),
+                                         'root'   => storage_path(config('trwl.polyline_storage_path')),
                                      ]);
     }
 
-    public function store(string $content, string $hash = null): string {
+    public function store(string $content, string $hash = null): bool {
         $hash = $hash ?? md5($content);
-        $this->disk->put($this->storageName($hash), $content);
-
-        return $content;
+        return $this->disk->put($this->storageName($hash), $content);
     }
 
     public function get(string $hash): string {
@@ -46,10 +43,11 @@ class PolylineStorageService
         $hash    = $polyLine->getAttribute('hash');
 
         if (!$this->empty($content)) {
-            $content = $this->store($content, $hash);
-            $polyLine->update(['polyline' => '{}']);
+            $success = $this->store($content, $hash);
 
-            return $content;
+            if ($success && config('trwl.polyline_clear_after_copy')) {
+                $polyLine->update(['polyline' => '{}']);
+            }
         }
 
         return $this->get($hash);
