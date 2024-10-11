@@ -12,6 +12,7 @@ return [
     'mastodon_timeout_seconds'  => env("MASTODON_TIMEOUT_SECONDS", 5),
 
     # Brouter
+    'brouter'                  => env('BROUTER', true),
     'brouter_url'               => env('BROUTER_URL', 'https://brouter.de/'),
     'brouter_timeout'           => env('BROUTER_TIMEOUT', 10),
 
