@@ -167,7 +167,7 @@ class StatusController extends Controller
 
         $like = Like::create([
                                  'user_id'   => $user->id,
-                                 'status_id' => $status->id
+                                 'status_id' => $status->id,
                              ]);
 
         if (!$status->user->mutedUsers->contains('id', $user->id)) {
@@ -221,11 +221,13 @@ class StatusController extends Controller
 
                               //Option 1: User is public AND status is public
                               $query->where(function(Builder $query) {
+                                  $visibilities = [StatusVisibility::PUBLIC->value];
+                                  if (auth()->check()) {
+                                      $visibilities[] = StatusVisibility::AUTHENTICATED->value;
+                                  }
+
                                   $query->where('users.private_profile', 0)
-                                        ->whereIn('visibility', [
-                                            StatusVisibility::PUBLIC->value,
-                                            StatusVisibility::AUTHENTICATED->value
-                                        ]);
+                                        ->whereIn('visibility', $visibilities);
                               });
 
                               if (auth()->check()) {

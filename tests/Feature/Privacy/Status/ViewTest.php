@@ -4,12 +4,11 @@ namespace Tests\Feature\Privacy\Status;
 
 use App\Enum\StatusVisibility;
 use App\Http\Controllers\Backend\User\FollowController as FollowBackend;
+use App\Models\Checkin;
 use App\Models\Event;
 use App\Models\Follow;
 use App\Models\Status;
-use App\Models\Checkin;
 use App\Models\User;
-use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
@@ -129,19 +128,19 @@ class ViewTest extends ApiTestCase
         $foreignUser = User::factory()->create();
         $status      = Status::factory([
                                            'user_id'    => $foreignUser->id,
-                                           'visibility' => StatusVisibility::AUTHENTICATED
+                                           'visibility' => StatusVisibility::AUTHENTICATED,
                                        ])->create();
         $this->assertTrue($user->can('view', $status));
     }
 
     public function testPublicStatusFromPrivateProfileIsNotDisplayedOnEventsPage(): void {
         //create test scenario: Public Status with Event and Private Profile
-        $event        = Event::factory()->create();
+        $event   = Event::factory()->create();
         $checkin = Checkin::factory()->create();
         $checkin->status->update([
-                                          'visibility' => StatusVisibility::PUBLIC,
-                                          'event_id'   => $event->id,
-                                      ]);
+                                     'visibility' => StatusVisibility::PUBLIC,
+                                     'event_id'   => $event->id,
+                                 ]);
         $checkin->user->update(['private_profile' => true]);
 
         //request statuses for event
@@ -154,9 +153,9 @@ class ViewTest extends ApiTestCase
 
     public function testUnlistedStatusPolicyIsWorkingCorrectly(): void {
         //create alice and bob
-        $alice      = User::factory()->create();
+        $alice = User::factory()->create();
+        $bob   = User::factory()->create();
         Passport::actingAs($alice, ['*']);
-        $bob        = User::factory()->create();
 
         //create an unlisted status for bob
         $checkin = Checkin::factory(['user_id' => $bob->id])->create();
@@ -189,5 +188,23 @@ class ViewTest extends ApiTestCase
         $response = $this->get("/api/v1/status/{$checkin->status->id}");
         $response->assertOk();
         $response->assertJsonCount(1);
+    }
+
+    public function testAuthenticatedStatusIsNotVisibleForLoggedOutUsersOnEventPage(): void {
+        //create test scenario: Authenticated Status with Event
+        $event   = Event::factory()->create();
+        $checkin = Checkin::factory()->create();
+        $checkin->status->update([
+                                     'visibility' => StatusVisibility::AUTHENTICATED,
+                                     'event_id'   => $event->id,
+                                 ]);
+
+        $this->assertGuest();
+
+        $response = $this->get('/event/' . $event->slug);
+        $response->assertOk();
+
+        //check if status is not displayed
+        $response->assertDontSee('/status/' . $checkin->status->id);
     }
 }
