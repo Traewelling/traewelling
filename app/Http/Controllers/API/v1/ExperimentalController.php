@@ -40,7 +40,7 @@ class ExperimentalController extends Controller
 
     private static function checkGeneralRateLimit(): bool {
         $key = "fetch-wikidata-user:" . auth()->id();
-        if (RateLimiter::tooManyAttempts($key, 10)) {
+        if (RateLimiter::tooManyAttempts($key, 20)) {
             return false;
         }
         RateLimiter::increment($key);
