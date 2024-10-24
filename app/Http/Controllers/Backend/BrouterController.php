@@ -210,13 +210,17 @@ abstract class BrouterController extends Controller
             return;
         }
 
-        if (!self::checkIfPolylineHasMissingParts($trip)) {
-            Log::debug('no parts missing');
-            //Nothing to do here.
-            return;
+        try {
+            if (!self::checkIfPolylineHasMissingParts($trip)) {
+                Log::debug('no parts missing');
+                //Nothing to do here.
+                return;
+            }
+            Log::debug('parts missing: dispatch');
+            RefreshPolyline::dispatch($trip);
+        } catch (\Throwable $e) {
+            Log::error('Error while checking polyline', ['exception' => $e]);
         }
-        Log::debug('parts missing: dispatch');
-        RefreshPolyline::dispatch($trip);
     }
 
     private static function checkIfPolylineHasMissingParts(Trip $trip): bool {

@@ -106,8 +106,35 @@ abstract class HafasController extends Controller
     }
 
     private static function parseHafasStops(array $hafasResponse): Collection {
-        $payload = [];
+        $payload         = [];
+        $payloadIfopt    = [];
+        $payloadWikidata = [];
         foreach ($hafasResponse as $hafasStation) {
+            if (preg_match('/^(\w+)(:(\d+)){1,4}$/', $hafasStation->id)) {
+                $ifopt          = explode(':', $hafasStation->id);
+                $payloadIfopt[] = [
+                    'ifopt_a'   => $ifopt[0],
+                    'ifopt_b'   => $ifopt[1] ?? null,
+                    'ifopt_c'   => $ifopt[2] ?? null,
+                    'ifopt_d'   => $ifopt[3] ?? null,
+                    'ifopt_e'   => $ifopt[4] ?? null,
+                    'name'      => $hafasStation->name,
+                    'latitude'  => $hafasStation->location->latitude,
+                    'longitude' => $hafasStation->location->longitude,
+                ];
+                continue;
+            }
+
+            if (str_starts_with($hafasStation->id, 'Q')) {
+                $payloadWikidata[] = [
+                    'name'        => $hafasStation->name,
+                    'wikidata_id' => $hafasStation->id,
+                    'latitude'    => $hafasStation->location->latitude,
+                    'longitude'   => $hafasStation->location->longitude,
+                ];
+                continue;
+            }
+
             $payload[] = [
                 'ibnr'      => $hafasStation->id,
                 'name'      => $hafasStation->name,
@@ -115,7 +142,11 @@ abstract class HafasController extends Controller
                 'longitude' => $hafasStation?->location?->longitude,
             ];
         }
-        return self::upsertStations($payload);
+        $ibnr     = self::upsertStations($payload);
+        $ifopt    = self::upsertIfopt($payloadIfopt);
+        $wikidata = self::upsertWikidata($payloadWikidata);
+
+        return $wikidata->merge($ifopt)->merge($ibnr);
     }
 
     private static function upsertStations(array $payload) {
@@ -129,6 +160,45 @@ abstract class HafasController extends Controller
                           return array_search($station->ibnr, $ibnrs);
                       })
                       ->values();
+    }
+
+    private static function upsertIfopt(array $payload) {
+        $ifoptA   = array_column($payload, 'ifopt_a');
+        $stations = new Collection();
+        if (empty($ifoptA)) {
+            return $stations;
+        }
+        Station::upsert(
+            $payload,
+            ['ifopt_a', 'ifopt_b', 'ifopt_c', 'ifopt_d', 'ifopt_e'],
+            ['name', 'latitude', 'longitude']
+        );
+
+        foreach ($payload as $station) {
+            $stations->push(Station::where('ifopt_a', $station['ifopt_a'])
+                                   ->where('ifopt_b', $station['ifopt_b'])
+                                   ->where('ifopt_c', $station['ifopt_c'])
+                                   ->where('ifopt_d', $station['ifopt_d'])
+                                   ->where('ifopt_e', $station['ifopt_e'])
+                                   ->first());
+        }
+
+        return $stations;
+    }
+
+    private static function upsertWikidata(array $payload) {
+        $wikidataIds = array_column($payload, 'wikidata_id');
+        $stations    = new Collection();
+        if (empty($wikidataIds)) {
+            return $stations;
+        }
+        Station::upsert($payload, ['wikidata_id'], ['name', 'latitude', 'longitude']);
+
+        foreach ($payload as $station) {
+            $stations->push(Station::where('wikidata_id', $station['wikidata_id'])->first());
+        }
+
+        return $stations;
     }
 
     /**
