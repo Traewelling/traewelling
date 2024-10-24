@@ -99,11 +99,11 @@ abstract class PointsCalculationController extends Controller
         TripSource $tripSource,
         Carbon     $timestampOfView
     ): PointReason {
-        if ($forceCheckin) {
-            return PointReason::FORCED;
-        }
         if ($tripSource === TripSource::USER) {
             return PointReason::MANUAL_TRIP;
+        }
+        if ($forceCheckin) {
+            return PointReason::FORCED;
         }
 
         /**
