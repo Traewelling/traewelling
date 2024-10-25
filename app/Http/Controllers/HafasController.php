@@ -168,19 +168,19 @@ abstract class HafasController extends Controller
         if (empty($ifoptA)) {
             return $stations;
         }
-        Station::upsert(
-            $payload,
-            ['ifopt_a', 'ifopt_b', 'ifopt_c', 'ifopt_d', 'ifopt_e'],
-            ['name', 'latitude', 'longitude']
-        );
-
         foreach ($payload as $station) {
-            $stations->push(Station::where('ifopt_a', $station['ifopt_a'])
-                                   ->where('ifopt_b', $station['ifopt_b'])
-                                   ->where('ifopt_c', $station['ifopt_c'])
-                                   ->where('ifopt_d', $station['ifopt_d'])
-                                   ->where('ifopt_e', $station['ifopt_e'])
-                                   ->first());
+            $station = Station::updateOrCreate([
+                                                   'ifopt_a' => $station['ifopt_a'],
+                                                   'ifopt_b' => $station['ifopt_b'],
+                                                   'ifopt_c' => $station['ifopt_c'],
+                                                   'ifopt_d' => $station['ifopt_d'],
+                                                   'ifopt_e' => $station['ifopt_e'],
+                                               ], [
+                                                   'name'      => $station['name'],
+                                                   'latitude'  => $station['latitude'],
+                                                   'longitude' => $station['longitude'],
+                                               ]);
+            $stations->push($station);
         }
 
         return $stations;
@@ -192,10 +192,15 @@ abstract class HafasController extends Controller
         if (empty($wikidataIds)) {
             return $stations;
         }
-        Station::upsert($payload, ['wikidata_id'], ['name', 'latitude', 'longitude']);
-
         foreach ($payload as $station) {
-            $stations->push(Station::where('wikidata_id', $station['wikidata_id'])->first());
+            $station = Station::updateOrCreate([
+                                                   'wikidata_id' => $station['wikidata_id']
+                                               ], [
+                                                   'name'      => $station['name'],
+                                                   'latitude'  => $station['latitude'],
+                                                   'longitude' => $station['longitude'],
+                                               ]);
+            $stations->push($station);
         }
 
         return $stations;
