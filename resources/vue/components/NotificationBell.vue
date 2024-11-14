@@ -7,7 +7,7 @@ export default {
     setup() {
         const state = useNotificationsStore();
 
-        return { state };
+        return {state};
     },
     props: {
         link: {
@@ -47,18 +47,23 @@ export default {
     components: {
         ModalComponent,
         NotificationList
+    },
+    computed: {
+        count() {
+            return this.state.count < 0 ? 0 : this.state.count;
+        }
     }
 }
 </script>
 
 <template>
     <button @click="showModal" class="btn btn-link btn-transparent text-white notifications-board-toggle"
-       :class="{'nav-link': link, 'navbar-toggler': !link}" type="button"
-       aria-expanded="false"
-       :aria-label="$t('notifications.show')">
-        <span class="notifications-bell fa-bell" :class="{'fas': !!state.count,  'far': !state.count}"></span>
-        <span class="notifications-pill badge rounded-pill badge-notification" v-show="state.count">
-              {{ state.count }}
+            :class="{'nav-link': link, 'navbar-toggler': !link}" type="button"
+            aria-expanded="false"
+            :aria-label="$t('notifications.show')">
+        <span class="notifications-bell fa-bell" :class="{'fas': !!count,  'far': !count}"></span>
+        <span class="notifications-pill badge rounded-pill badge-notification" v-show="count">
+              {{ count }}
         </span>
     </button>
     <ModalComponent
