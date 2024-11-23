@@ -15,7 +15,7 @@ To set up a Träwelling instance you'll need:
   tests) (You can use [Docker Compose](https://docs.docker.com/compose/) and
   the [dev.docker-compose.yml](../../docker-compose.yml) for that)
 * [Composer](https://getcomposer.org/download/)
-* PHP 8.3 and the dependencies mentioned in composer.json
+* PHP and the dependencies mentioned in composer.json
 
 A local instance of [db-rest v5](https://github.com/derhuerst/db-rest/tree/5) is recommended for the connection to
 HAFAS. Alternatively you can use a public instance (see .env.example).
