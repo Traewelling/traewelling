@@ -105,7 +105,7 @@
                     "Auth"
                 ],
                 "summary": "Refresh Bearer Token",
-                "description": "This request issues a new Bearer-Token with a new expiration date while also revoking the old\r\n     *      token.",
+                "description": "This request issues a new Bearer-Token with a new expiration date while also revoking the old\n     *      token.",
                 "operationId": "refreshToken",
                 "responses": {
                     "200": {
@@ -828,7 +828,7 @@
                     "Likes"
                 ],
                 "summary": "[Auth optional] Get likes for status",
-                "description": "Returns array of users that liked the status. Can return an empty dataset when the status\r\n     *      author or the requesting user has deactivated likes",
+                "description": "Returns array of users that liked the status. Can return an empty dataset when the status\n     *      author or the requesting user has deactivated likes",
                 "operationId": "getLikesForStatus",
                 "parameters": [
                     {
@@ -1572,7 +1572,7 @@
                     "Checkin"
                 ],
                 "summary": "Search for stations",
-                "description": "UNSTABLE: This request returns an array of max. 20 station objects matching the query. **CAUTION:** All\r\n     *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
+                "description": "UNSTABLE: This request returns an array of max. 20 station objects matching the query. **CAUTION:** All\n     *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
                 "operationId": "indexStation",
                 "parameters": [
                     {
@@ -1854,7 +1854,7 @@
                                                                 "example": 11
                                                             },
                                                             "duration": {
-                                                                "description": "Duration in\r\n     *                                                            minutes",
+                                                                "description": "Duration in\n     *                                                            minutes",
                                                                 "type": "integer",
                                                                 "example": 425
                                                             }
@@ -1985,7 +1985,7 @@
                     {
                         "name": "withPolylines",
                         "in": "query",
-                        "description": "If this parameter is set, the polylines will be returned as well. Otherwise attribute is\r\n     *          null.",
+                        "description": "If this parameter is set, the polylines will be returned as well. Otherwise attribute is\n     *          null.",
                         "schema": {
                             "type": "boolean"
                         }
@@ -2251,7 +2251,7 @@
                     "Dashboard"
                 ],
                 "summary": "Get paginated future statuses of current user",
-                "description": "Returns paginated statuses of the authenticated user, that are more than 20 minutes in the\r\n     *      future",
+                "description": "Returns paginated statuses of the authenticated user, that are more than 20 minutes in the\n     *      future",
                 "operationId": "getFutureDashboard",
                 "parameters": [
                     {
@@ -2862,7 +2862,7 @@
                     "Status"
                 ],
                 "summary": "Create a StatusTag",
-                "description": "Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free\r\n     *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b>\r\n     *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions\r\n     *      we recommend the following tags in the trwl namespace:<br>\r\n     *      <ul>\r\n     *          <li>trwl:seat (i.e. 61)</li>\r\n     *          <li>trwl:wagon (i.e. 25)</li>\r\n     *          <li>trwl:ticket (i.e. BahnCard 100 first))</li>\r\n     *          <li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li>\r\n     *          <li>trwl:locomotive_class (BR424, BR450)</li>\r\n     *          <li>trwl:wagon_class (i.e. Bpmz)</li>\r\n     *          <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li>\r\n     *          <li>trwl:vehicle_number (i.e. 425 001, Tz9001, 123, ...)</li>\r\n     *          <li>trwl:passenger_rights (i.e. yes / no / ID of claim)</li>\r\n     *      </ul>",
+                "description": "Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free\n     *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b>\n     *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions\n     *      we recommend the following tags in the trwl namespace:<br>\n     *      <ul>\n     *          <li>trwl:seat (i.e. 61)</li>\n     *          <li>trwl:wagon (i.e. 25)</li>\n     *          <li>trwl:ticket (i.e. BahnCard 100 first))</li>\n     *          <li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li>\n     *          <li>trwl:locomotive_class (BR424, BR450)</li>\n     *          <li>trwl:wagon_class (i.e. Bpmz)</li>\n     *          <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li>\n     *          <li>trwl:vehicle_number (i.e. 425 001, Tz9001, 123, ...)</li>\n     *          <li>trwl:passenger_rights (i.e. yes / no / ID of claim)</li>\n     *      </ul>",
                 "operationId": "createSingleStatusTag",
                 "parameters": [
                     {
@@ -3626,7 +3626,7 @@
                     "Checkin"
                 ],
                 "summary": "Autocomplete for stations",
-                "description": "This request returns an array of max. 10 station objects matching the query. **CAUTION:** All\r\n     *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
+                "description": "This request returns an array of max. 10 station objects matching the query. **CAUTION:** All\n     *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
                 "operationId": "trainStationAutocomplete",
                 "parameters": [
                     {
@@ -3680,7 +3680,7 @@
                     "Checkin"
                 ],
                 "summary": "History for stations",
-                "description": "This request returns an array of max. 10 most recent station objects that the user has arrived\r\n     *      at.",
+                "description": "This request returns an array of max. 10 most recent station objects that the user has arrived\n     *      at.",
                 "operationId": "trainStationHistory",
                 "responses": {
                     "200": {
@@ -3932,7 +3932,7 @@
                                 "properties": {
                                     "confirmation": {
                                         "title": "confirmation",
-                                        "description": "Username of the to be deleted account (needs to match the currently logged in\r\n     *                  user)",
+                                        "description": "Username of the to be deleted account (needs to match the currently logged in\n     *                  user)",
                                         "example": "Gertrud123"
                                     }
                                 },
@@ -4109,7 +4109,7 @@
                     "User/Hide and Block"
                 ],
                 "summary": "Block a user",
-                "description": "Block a specific user. That user will not be able to see your statuses or profile information,\r\n     *      and cannot send you follow requests. Public statuses are still visible through the incognito mode.",
+                "description": "Block a specific user. That user will not be able to see your statuses or profile information,\n     *      and cannot send you follow requests. Public statuses are still visible through the incognito mode.",
                 "operationId": "createBlock",
                 "requestBody": {
                     "required": true,
@@ -4177,7 +4177,7 @@
                     "User/Hide and Block"
                 ],
                 "summary": "Unmute a user",
-                "description": "Unblock a specific user. They are now able to see your statuses and profile information again,\r\n     *      and send you follow requests.",
+                "description": "Unblock a specific user. They are now able to see your statuses and profile information again,\n     *      and send you follow requests.",
                 "operationId": "destroyBlock",
                 "requestBody": {
                     "required": true,
@@ -4247,7 +4247,7 @@
                     "User/Hide and Block"
                 ],
                 "summary": "Mute a user",
-                "description": "Mute a specific user. That way they will not be shown on your dashboard and in the active\r\n     *      journeys tab",
+                "description": "Mute a specific user. That way they will not be shown on your dashboard and in the active\n     *      journeys tab",
                 "operationId": "createMute",
                 "parameters": [
                     {
@@ -4305,7 +4305,7 @@
                     "User/Hide and Block"
                 ],
                 "summary": "Unmute a user",
-                "description": "Unmute a specific user. That way they will be shown on your dashboard and in the active\r\n     *      journeys tab again",
+                "description": "Unmute a specific user. That way they will be shown on your dashboard and in the active\n     *      journeys tab again",
                 "operationId": "destroyMute",
                 "parameters": [
                     {
@@ -4565,6 +4565,40 @@
                     }
                 ]
             }
+        },
+        "/year-in-review": {
+            "get": {
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Returns the year in review for the given year and authenticated user",
+                "description": "Please note: This endpoint is only available when the year in review feature is enabled in the backend configuration. There is no full documentation - this endpoint may change every year.",
+                "operationId": "getYearInReview",
+                "responses": {
+                    "200": {
+                        "description": "JSON object with the year in review data. The structure of the object may change every year. There is no full documentation at this point."
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Year in review is not active"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "create-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -4785,7 +4819,7 @@
             },
             "MastodonVisibility": {
                 "title": "visibility",
-                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for\r\n *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for\n *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.",
                 "type": "integer",
                 "enum": [
                     0,
@@ -4811,7 +4845,7 @@
             },
             "StatusVisibility": {
                 "title": "visibility",
-                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the\r\n *      user specify?",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the\n *      user specify?",
                 "type": "integer",
                 "enum": [
                     0,
