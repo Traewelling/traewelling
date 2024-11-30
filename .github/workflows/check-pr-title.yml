@@ -1,0 +1,23 @@
+name: Check if PR title starts with a Gitmoji
+
+on:
+  pull_request:
+    types: [ opened, edited, synchronize ]
+
+jobs:
+  check-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if PR title starts with emoji or emoji string
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const title = context.payload.pull_request.title;
+            const emojiRegex = /^[\u{1F300}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
+            const emojiStringRegex = /^:\w+:/;
+
+            if (!emojiRegex.test(title) && !emojiStringRegex.test(title)) {
+              core.setFailed('The PR title must start with a Gitmoji! See here: https://gitmoji.dev/');
+            }
+
+            console.log('PR title starts with a Gitmoji! 🎉');
