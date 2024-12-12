@@ -171,9 +171,9 @@ abstract class HafasController extends Controller
         TravelType $type = null,
         bool       $skipTimeShift = false
     ) {
-        $client   = self::getHttpClient();
-        $time     = $skipTimeShift ? $when : (clone $when)->shiftTimezone("Europe/Berlin");
-        $query    = [
+        $client = self::getHttpClient();
+        $time   = $skipTimeShift ? $when : (clone $when)->shiftTimezone("Europe/Berlin");
+        $query  = [
             'when'                       => $time->toIso8601String(),
             'duration'                   => $duration,
             HTT::NATIONAL_EXPRESS->value => self::checkTravelType($type, TravelType::EXPRESS),
@@ -187,7 +187,11 @@ abstract class HafasController extends Controller
             HTT::TRAM->value             => self::checkTravelType($type, TravelType::TRAM),
             HTT::TAXI->value             => self::checkTravelType($type, TravelType::TAXI),
         ];
-        $response = $client->get('/stops/' . $station->ibnr . '/departures', $query);
+        try {
+            $response = $client->get('/stops/' . $station->ibnr . '/departures', $query);
+        } catch (Exception $exception) {
+            throw new HafasException($exception->getMessage());
+        }
 
         if (!$response->ok()) {
             throw new HafasException(__('messages.exception.generalHafas'));

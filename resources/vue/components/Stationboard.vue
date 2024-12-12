@@ -112,6 +112,10 @@ export default {
 
                             this.firstFetchTime = DateTime.fromISO(this.meta?.times?.now);
                         });
+                    } else {
+                        if (response.status === 502) {
+                            window.notyf.error(trans("messages.exception.hafas.502"))
+                        }
                     }
                 });
         },
