@@ -5,14 +5,15 @@ namespace App\Helpers;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class CacheKey
 {
     // static keys
-    public const string STATUS_CREATED            = 'monitoring-counter-StatusCreated';
-    public const string STATUS_DELETED            = 'monitoring-counter-StatusDeleted';
-    public const string USER_CREATED              = 'monitoring-counter-UserCreated';
-    public const string USER_DELETED              = 'monitoring-counter-UserDeleted';
+    public const string STATUS_CREATED              = 'monitoring-counter-StatusCreated';
+    public const string STATUS_DELETED              = 'monitoring-counter-StatusDeleted';
+    public const string USER_CREATED                = 'monitoring-counter-UserCreated';
+    public const string USER_DELETED                = 'monitoring-counter-UserDeleted';
     public const string WEBHOOK_ABSENT              = 'monitoring-counter-WebhookAbsent';
     public const string LEADERBOARD_GLOBAL_POINTS   = 'LeaderboardGlobalPoints';
     public const string LEADERBOARD_GLOBAL_DISTANCE = 'LeaderboardGlobalDistance';
@@ -20,11 +21,11 @@ class CacheKey
     // dynamic keys
     private const string LEADERBOARD_FRIENDS = 'LeaderboardFriends';
     private const string LEADERBOARD_MONTH   = 'LeaderboardMonth';
-    private const string STATISTICS_GLOBAL  = 'StatisticsGlobal';
+    private const string STATISTICS_GLOBAL   = 'StatisticsGlobal';
 
     // formatting keys
-    private const string FOR                = '%s-for-%s';
-    private const string FROM_TO            = '%s-from-%s-to-%s';
+    private const string FOR                 = '%s-for-%s';
+    private const string FROM_TO             = '%s-from-%s-to-%s';
 
     public static function getFriendsLeaderboardKey(int $userId): string {
         return sprintf(self::FOR, self::LEADERBOARD_FRIENDS, $userId);
@@ -53,5 +54,13 @@ class CacheKey
 
     public static function getAccountDeletionNotificationTwoWeeksBeforeKey(User $user): string {
         return sprintf("account-deletion-notification-two-weeks-before-%s", $user->id);
+    }
+
+    public static function increment(string $key): void {
+        if (Cache::has($key)) {
+            Cache::increment($key);
+        } else {
+            Cache::put($key, 1);
+        }
     }
 }

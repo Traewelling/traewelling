@@ -4,7 +4,6 @@ namespace App\Listeners;
 
 use App\Helpers\CacheKey;
 use App\Models\Webhook;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
 
@@ -21,6 +20,6 @@ class RemoveAbsentWebhooksListener
             "webhookId" => $webhookId,
             "userId"    => $event->headers["X-Trwl-User-Id"]
         ]);
-        Cache::increment(CacheKey::WEBHOOK_ABSENT);
+        CacheKey::increment(CacheKey::WEBHOOK_ABSENT);
     }
 }

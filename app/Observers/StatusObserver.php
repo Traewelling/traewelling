@@ -10,12 +10,11 @@ use App\Models\Status;
 use App\Notifications\StatusLiked;
 use App\Notifications\UserJoinedConnection;
 use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Support\Facades\Cache;
 
 class StatusObserver
 {
     public function created(Status $status): void {
-        Cache::increment(CacheKey::STATUS_CREATED);
+        CacheKey::increment(CacheKey::STATUS_CREATED);
         MentionHelper::createMentions($status);
     }
 
@@ -24,7 +23,7 @@ class StatusObserver
     }
 
     public function deleted(Status $status): void {
-        Cache::increment(CacheKey::STATUS_DELETED);
+        CacheKey::increment(CacheKey::STATUS_DELETED);
 
         WebhookController::sendStatusWebhook(
             status: $status,

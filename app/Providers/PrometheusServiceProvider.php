@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Helpers\CacheKey;
+use App\Helpers\HCK;
 use App\Models\PolyLine;
 use App\Models\Trip;
 use Illuminate\Support\Facades\Cache;
@@ -91,6 +92,27 @@ class PrometheusServiceProvider extends ServiceProvider
                   ->labels(["job_name", "queue"])
                   ->value(function() {
                       return $this->getJobsByDisplayName("failed_jobs");
+                  });
+
+        Prometheus::addGauge("failed_hafas_requests_count")
+                  ->helpText("How many hafas requests have failed?")
+                  ->labels(["request_name"])
+                  ->value(function() {
+                      return $this->getHafasByType(HCK::getFailures());
+                  });
+
+        Prometheus::addGauge("not_ok_hafas_requests_count")
+                  ->helpText("How many hafas requests are not ok?")
+                  ->labels(["request_name"])
+                  ->value(function() {
+                      return $this->getHafasByType(HCK::getNotOks());
+                  });
+
+        Prometheus::addGauge("succeeded_hafas_requests_count")
+                  ->helpText("How many hafas requests have succeeded?")
+                  ->labels(["request_name"])
+                  ->value(function() {
+                      return $this->getHafasByType(HCK::getSuccesses());
                   });
 
         Prometheus::addGauge("completed_jobs_count")
@@ -191,5 +213,14 @@ class PrometheusServiceProvider extends ServiceProvider
             array_keys($counts),
             array_values($counts)
         );
+    }
+
+    private function getHafasByType(array $getFailures): array {
+        $values = [];
+        foreach ($getFailures as $key => $name) {
+            $values[$name] = Cache::get($key, 0);
+        }
+
+        return array_map(fn($value, $key) => [$value, [$key]], $values, array_keys($values));
     }
 }
