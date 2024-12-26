@@ -26,13 +26,21 @@
                             <td>
                                 {{ $station->time_offset ?? 'null' }}
                                 <a class="float-end btn btn-sm btn-outline-primary"
-                                   onclick="fetch('/admin/stations/{{ $station->id }}/timereset', {
-                            method: 'POST',
-                            headers: {'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content}
-                       }).then(function() {location.reload()})"
+                                   onclick="resetTimeOffset({{$station->id}})"
                                 >
                                     Reset Time Offset
                                 </a>
+                                <script>
+                                    function resetTimeOffset(stationId) {
+                                        fetch('/api/v1/stations/' + stationId, {
+                                            method: 'PUT',
+                                            body: JSON.stringify({time_offset: null}),
+                                            headers: {'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content}
+                                        }).then(function () {
+                                            location.reload();
+                                        })
+                                    }
+                                </script>
                             </td>
                         </tr>
                         <tr>

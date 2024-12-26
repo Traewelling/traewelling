@@ -94,7 +94,12 @@ class StationController extends Controller
                                             'name'          => ['nullable', 'string', 'max:255'],
                                             'latitude'      => ['nullable', 'numeric', 'between:-90,90'],
                                             'longitude'     => ['nullable', 'numeric', 'between:-180,180'],
+                                            'time_offset'   => ['nullable', 'numeric'],
                                         ]);
+        
+        if (array_key_exists('time_offset', $request->json()->all()) && $request->json('time_offset') === null) {
+            $validated['time_offset'] = null;
+        }
 
         $station->update($validated);
         return new StationResource($station);

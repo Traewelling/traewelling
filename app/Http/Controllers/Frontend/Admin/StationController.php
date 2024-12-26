@@ -77,15 +77,6 @@ class StationController extends Controller
         }
     }
 
-    public function resetTime(int $id): RedirectResponse {
-        $station = Station::findOrFail($id);
-        $this->authorize('update', $station);
-        $station->update(['time_offset' => null]);
-        $station->save();
-
-        return redirect()->route('admin.station', ['id' => $station->id])->with('alert-success', 'Station time reset successfully');
-    }
-
     /**
      * @param Request $request
      *
