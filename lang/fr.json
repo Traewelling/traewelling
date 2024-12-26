@@ -819,5 +819,6 @@
     "stationboard.friend-filter": "Filtrer les amis",
     "settings.friend_checkin": "Enregistrements d'amis",
     "settings.allow_friend_checkin_for": "Autoriser l'enregistrement d'un ami pour",
-    "settings.friend_checkin.forbidden": "Personne"
+    "settings.friend_checkin.forbidden": "Personne",
+    "profile.follows-you": "Vous suit"
 }

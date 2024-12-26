@@ -9,7 +9,7 @@ WORKDIR /usr/src/trwl
 RUN composer install --ignore-platform-reqs --no-interaction --no-progress --no-suggest --optimize-autoloader
 RUN php artisan optimize
 
-FROM php:8.4.1-apache
+FROM php:8.4.2-apache
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 RUN apt update && \
