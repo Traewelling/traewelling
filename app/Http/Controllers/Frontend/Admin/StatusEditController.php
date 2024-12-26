@@ -22,7 +22,7 @@ class StatusEditController extends Controller
         $validated    = $request->validate([
                                                'userQuery' => ['nullable', 'max:255'],
                                            ]);
-        $lastStatuses = Status::orderBy('created_at', 'desc')->limit(20);
+        $lastStatuses = Status::orderBy('created_at', 'desc');
 
         if (isset($validated['userQuery'])) {
             $lastStatuses = $lastStatuses->whereIn(
@@ -34,7 +34,7 @@ class StatusEditController extends Controller
         }
 
         return view('admin.status.main', [
-            'lastStatuses' => $lastStatuses->get(),
+            'lastStatuses' => $lastStatuses->paginate(10),
         ]);
     }
 
