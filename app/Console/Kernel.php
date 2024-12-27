@@ -48,7 +48,7 @@ class Kernel extends ConsoleKernel
         //weekly tasks
         $schedule->command(MastodonServers::class)->weekly();
 
-        if (config('trwl.year_in_review.backend')) {
+        if (config('trwl.year_in_review.scheduler')) {
             $schedule->command(CacheYearInReview::class)->withoutOverlapping()->dailyAt('2:00');
         }
     }

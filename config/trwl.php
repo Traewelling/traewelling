@@ -59,8 +59,9 @@ return [
         'hafas'                               => env('HAFAS_CACHE', false),
     ],
     'year_in_review'            => [
-        'alert'   => env('YEAR_IN_REVIEW_ALERT', false),
-        'backend' => env('YEAR_IN_REVIEW_BACKEND', false),
+        'alert'     => env('YEAR_IN_REVIEW_ALERT', false),
+        'backend'   => env('YEAR_IN_REVIEW_BACKEND', false),
+        'scheduler' => env('YEAR_IN_REVIEW_SCHEDULER', false),
     ],
     'webhooks_active'           => env('WEBHOOKS_ACTIVE', false),
     'webfinger_active'          => env('WEBFINGER_ACTIVE', false),
