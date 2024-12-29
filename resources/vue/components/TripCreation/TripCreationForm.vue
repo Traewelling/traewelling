@@ -6,6 +6,9 @@ import {trans} from "laravel-vue-i18n";
 export default {
     name: "TripCreationForm",
     components: {StationRow},
+    mounted() {
+        this.loadOperators();
+    },
     data() {
         return {
             form: {
@@ -39,6 +42,7 @@ export default {
                 {value: "taxi", text: "taxi"},
                 {value: "plane", text: "plane"},
             ],
+            operators: null,
             disallowed: ["fahrrad", "auto", "fuss", "fuß", "foot", "car", "bike"],
             showDisallowed: false,
         };
@@ -125,6 +129,20 @@ export default {
                 return this.trainTypeInput.toLowerCase().includes(disallowed);
             });
         },
+        loadOperators() {
+            fetch("/api/v1/operators", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }).then((data) => {
+                if (data.ok) {
+                    data.json().then((result) => {
+                        this.operators = result.data;
+                    });
+                }
+            });
+        }
     }
 }
 </script>
@@ -181,12 +199,12 @@ export default {
                     ></StationRow>
                 </div>
                 <div class="row g-3 mt-1">
-                    <div class="col-4">
+                    <div class="col-3">
                         <input type="text" class="form-control mobile-input-fs-16"
                                :placeholder="trans('trip_creation.form.line')" v-model="trainTypeInput"
                                @focusout="checkDisallowed">
                     </div>
-                    <div class="col-4">
+                    <div class="col-3">
                         <input type="text" class="form-control mobile-input-fs-16"
                                :placeholder="trans('trip_creation.form.number')" v-model="journeyNumberInput">
                     </div>
@@ -194,6 +212,12 @@ export default {
                         <select class="form-select" v-model="form.category">
                             <option selected>{{ trans("trip_creation.form.travel_type") }}</option>
                             <option v-for="category in categories" :value="category.value">{{ category.text }}</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select class="form-select" v-model="form.operatorId">
+                            <option selected>{{ trans("trip_creation.form.operator") }}</option>
+                            <option v-for="operator in operators" :value="operator.id">{{ operator.name }}</option>
                         </select>
                     </div>
                 </div>
