@@ -35,9 +35,7 @@ use stdClass;
  * @property Trip               $trip
  * @property Status             $status
  * @property User               $user
- * @property Station            $originStation
  * @property Stopover           $originStopover
- * @property Station            $destinationStation
  * @property Stopover           $destinationStopover
  *
  * //appends
