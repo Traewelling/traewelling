@@ -743,6 +743,7 @@
     "support.rate_limit_exceeded": "Du hast vor kurzem bereits eine Support-Anfrage erstellt. Bitte warte noch etwas, bevor du eine weitere Anfrage erstellst.",
     "missing-journey": "Ist deine Fahrt nicht dabei?",
     "create-journey": "Fahrt erstellen",
+    "trip_creation.no-valid-times": "Die Zeiten der Stationen sind nicht in einer zeitlich korrekten Reihenfolge.",
     "trip_creation.title": "Reise manuell erstellen",
     "trip_creation.beta": "Bitte beachte, dass sich die Erstellung von Fahrten derzeit im Beta-Stadium befindet. Du kannst Fahrten manuell erstellen, indem du die Stationen und Zeiten eingibst. Dabei gibt es einige Einschränkungen, die unten aufgeführt sind.",
     "trip_creation.beta2": "Solltest du auf Probleme stoßen, melde diese bitte an uns.",

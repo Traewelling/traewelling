@@ -745,6 +745,7 @@
     "support.rate_limit_exceeded": "You have recently created a support request. Please wait a bit before creating another request.",
     "missing-journey": "Haven't found your journey?",
     "create-journey": "Create journey",
+    "trip_creation.no-valid-times": "The times of the stations are not in the correct chronological order.",
     "trip_creation.title": "Create trip manually",
     "trip_creation.beta": "Please note, that the creation of trips is currently in beta. You can create trips manually by entering the stations and times. There are some limitations, which are listed below.",
     "trip_creation.beta2": "If you encounter any issues, please report them to us.",

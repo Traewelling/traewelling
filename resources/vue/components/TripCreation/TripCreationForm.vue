@@ -45,6 +45,9 @@ export default {
             operators: null,
             disallowed: ["fahrrad", "auto", "fuss", "fuß", "foot", "car", "bike"],
             showDisallowed: false,
+            validation: {
+                times: null
+            }
         };
     },
     methods: {
@@ -66,6 +69,7 @@ export default {
         },
         setDeparture(time) {
             this.form.originDeparturePlanned = DateTime.fromISO(time).setZone(this.originTimezone);
+            this.validateTimes();
         },
         setDestination(item) {
             this.destination        = item;
@@ -73,8 +77,34 @@ export default {
         },
         setArrival(time) {
             this.form.destinationArrivalPlanned = DateTime.fromISO(time).setZone(this.destinationTimezone);
+            this.validateTimes();
+        },
+        validateTimes() {
+            console.log("Validating times");
+            //iterate over stopovers and destination, check if time is valid
+            let time = DateTime.fromISO(this.form.originDeparturePlanned);
+
+            this.stopovers.forEach((stopover) => {
+                if (time > DateTime.fromISO(stopover.departurePlanned)) {
+                    this.validation.times = false;
+                    return false;
+                }
+                time = DateTime.fromISO(stopover.arrivalPlanned);
+            });
+
+            if (time > DateTime.fromISO(this.form.destinationArrivalPlanned)) {
+                this.validation.times = false;
+                return false;
+            }
+            this.validation.times = true;
+            return true;
         },
         sendForm() {
+            if (!this.validateTimes()) {
+                notyf.error(trans("trip_creation.no-valid-times"));
+                return;
+            }
+
             this.form.lineName      = this.trainTypeInput;
             this.form.journeyNumber = !isNaN(this.journeyNumberInput) && !isNaN(parseInt(this.journeyNumberInput))
                 ? parseInt(this.journeyNumberInput) : null;
@@ -108,10 +138,10 @@ export default {
                     });
                 } else if (data.status === 403 || data.status === 422) {
                     data.json().then((result) => {
-                        alert(result.message);
+                        notyf.error(result.message);
                     });
                 } else {
-                    alert(trans("messages.exception.general-values"));
+                    notyf.error(trans("messages.exception.general-values"));
                 }
             });
         },
@@ -120,9 +150,11 @@ export default {
         },
         setStopoverDeparture(time, key) {
             this.stopovers[key].departurePlanned = DateTime.fromISO(time).setZone(this.originTimezone);
+            this.validateTimes();
         },
         setStopoverArrival(time, key) {
             this.stopovers[key].arrivalPlanned = DateTime.fromISO(time).setZone(this.destinationTimezone);
+            this.validateTimes();
         },
         checkDisallowed() {
             this.showDisallowed = this.disallowed.some((disallowed) => {
@@ -231,6 +263,11 @@ export default {
                     </span>
                 </div>
                 <div class="row justify-content-end mt-3">
+                    <div class="col-12">
+                        <div class="alert alert-danger" v-if="validation.times === false">
+                            {{ trans("trip_creation.no-valid-times") }}
+                        </div>
+                    </div>
                     <div class="col-4">
                         <button type="submit" class="btn btn-primary float-end">
                             {{ trans("trip_creation.form.save") }}
