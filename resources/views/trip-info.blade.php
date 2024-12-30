@@ -38,37 +38,39 @@
                 </table>
             </div>
 
-            <div class="col-md-5">
-                <h2>{{__('trip-info.in-this-connection')}}</h2>
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>{{__('trip-info.user')}}</th>
-                            <th>{{__('trip-info.origin')}}</th>
-                            <th>{{__('trip-info.destination')}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($trip->checkins as $checkin)
-                            @can('view', $checkin->status)
-                                <tr>
-                                    <td>
-                                        <a href="{{route('profile', ['username' => $checkin->user->username])}}">
-                                            <img
-                                                src="{{\App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($checkin->user)}}"
-                                                alt="{{$checkin->user->name}}" style="max-height: 1em;"
-                                                class="avatar">
-                                            {{$checkin->user->name}}
-                                        </a>
-                                    </td>
-                                    <td>{{$checkin->originStopover->station->name}}</td>
-                                    <td>{{$checkin->destinationStopover->station->name}}</td>
-                                </tr>
-                            @endcan
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+            @if($trip->checkins->count() > 0)
+                <div class="col-md-5">
+                    <h2>{{__('trip-info.in-this-connection')}}</h2>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>{{__('trip-info.user')}}</th>
+                                <th>{{__('trip-info.origin')}}</th>
+                                <th>{{__('trip-info.destination')}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($trip->checkins as $checkin)
+                                @can('view', $checkin->status)
+                                    <tr>
+                                        <td>
+                                            <a href="{{route('profile', ['username' => $checkin->user->username])}}">
+                                                <img
+                                                    src="{{\App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($checkin->user)}}"
+                                                    alt="{{$checkin->user->name}}" style="max-height: 1em;"
+                                                    class="avatar">
+                                                {{$checkin->user->name}}
+                                            </a>
+                                        </td>
+                                        <td>{{$checkin->originStopover->station->name}}</td>
+                                        <td>{{$checkin->destinationStopover->station->name}}</td>
+                                    </tr>
+                                @endcan
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
         </div>
     </div>
 
