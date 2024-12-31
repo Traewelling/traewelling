@@ -13,17 +13,16 @@ public/uploads/avatars/*
 # vendor-views
 !resources/views/vendor
 
-# Laravel 4 specific
+# Laravel specific
 bootstrap/compiled.php
 app/storage/
-
-# Laravel 5 & Lumen specific
 public/storage
 public/hot
 storage/*.key
 .env*
 Homestead.yaml
 Homestead.json
+storage/framework/maintenance.php
 
 # Rocketeer PHP task runner and deployment package. https://github.com/rocketeers/rocketeer
 .rocketeer/
