@@ -100,7 +100,7 @@
             "@php artisan key:generate --ansi"
         ],
         "post-install-cmd": [
-            "./generate-version.sh"
+          "scripts/generate-version.sh"
         ]
     }
 }
