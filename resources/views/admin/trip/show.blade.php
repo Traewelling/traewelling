@@ -68,7 +68,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-body">
                     <h2 class="card-title fs-5">Checkins</h2>
                     @if($trip->checkins->count() === 0)
@@ -112,12 +112,12 @@
             </div>
         </div>
         <div class="col-md-8">
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-body">
                     <h2 class="card-title fs-5">Stopovers</h2>
-
-                    <table class="table table-striped">
-                        <thead>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
                             <tr>
                                 <th scope="col">Name</th>
                                 <th scope="col">TRWL-ID</th>
@@ -127,8 +127,8 @@
                                 <th scope="col">Ankunft soll / ist</th>
                                 <th scope="col">Abfahrt soll / ist</th>
                             </tr>
-                        </thead>
-                        <tbody>
+                            </thead>
+                            <tbody>
                             @foreach($trip->stopovers as $stopover)
                                 <tr>
                                     <td>
@@ -157,8 +157,9 @@
                                     </td>
                                 </tr>
                             @endforeach
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
