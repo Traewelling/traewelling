@@ -32,6 +32,6 @@ class OperatorController extends Controller
      * @return AnonymousResourceCollection
      */
     public function index(): AnonymousResourceCollection {
-        return OperatorResource::collection(HafasOperator::orderBy('name')->cursorPaginate(100));
+        return OperatorResource::collection(HafasOperator::orderBy('name')->cursorPaginate(250));
     }
 }
