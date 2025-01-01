@@ -62,7 +62,7 @@ class MastodonProfileDetails
                 . {$mastodonServer->domain}' and mastodon_id#{$this->user->socialProfile->mastodon_id}");
                 if (in_array($exception->getCode(), [401, 404, 410])) {
                     $this->removeMastodonInformation();
-                } else {
+                } elseif(config('logging.level') === 'debug') {
                     report($exception);
                 }
             }
