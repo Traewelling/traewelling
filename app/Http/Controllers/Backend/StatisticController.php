@@ -245,7 +245,7 @@ abstract class StatisticController extends Controller
                       ->whereIn('train_stopovers.id', $usedStationIds)->get();
     }
 
-    public static function getPassedStations(User $user, Carbon $from = null, Carbon $to = null): Collection {
+    public static function getPassedStations(User $user, ?Carbon $from = null, ?Carbon $to = null): Collection {
         $query = DB::table('train_checkins')
                    ->join('train_stopovers', 'train_checkins.trip_id', '=', 'train_stopovers.trip_id')
                    ->where('user_id', '=', $user->id)

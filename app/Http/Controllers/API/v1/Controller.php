@@ -106,9 +106,9 @@ class Controller extends \App\Http\Controllers\Controller
     }
 
     public function sendResponse(
-        mixed $data = null,
+        $data = null,
         int   $code = 200,
-        array $additional = null
+        ?array $additional = null
     ): JsonResponse {
         $disclaimer = [
             'message'       => 'APIv1 is not officially released for use and is also not fully documented. Use at your own risk. Data fields may change at any time without notice.',
@@ -132,7 +132,7 @@ class Controller extends \App\Http\Controllers\Controller
         return response()->json($response, $code);
     }
 
-    public function sendError(array|string $error = null, int $code = 404, array $additional = null): JsonResponse {
+    public function sendError(array|string|null $error = null, int $code = 404, ?array $additional = null): JsonResponse {
         $response = [
             'message' => $error,
         ];

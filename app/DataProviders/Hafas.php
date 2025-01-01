@@ -147,7 +147,7 @@ class Hafas extends Controller implements DataProviderInterface
         Station    $station,
         Carbon     $when,
         int        $duration = 15,
-        TravelType $type = null,
+        ?TravelType $type = null,
         bool       $skipTimeShift = false
     ) {
         $time  = $skipTimeShift ? $when : (clone $when)->shiftTimezone("Europe/Berlin");
@@ -195,7 +195,7 @@ class Hafas extends Controller implements DataProviderInterface
         Station    $station,
         Carbon     $when,
         int        $duration = 15,
-        TravelType $type = null,
+        ?TravelType $type = null,
         bool       $localtime = false
     ): Collection {
         try {

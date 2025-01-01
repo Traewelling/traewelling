@@ -275,8 +275,8 @@ class StatusController extends Controller
         User|Authenticatable $user,
         Business             $business,
         StatusVisibility     $visibility,
-        string               $body = null,
-        Event                $event = null
+        ?string               $body = null,
+        ?Event                $event = null
     ): Status {
         if ($event !== null && !Carbon::now()->isBetween($event->checkin_start, $event->checkin_end)) {
             Log::info('Event checkin was prevented because the event is not active anymore', [

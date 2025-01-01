@@ -15,8 +15,8 @@ abstract class LeaderboardController extends Controller
 {
     public static function getLeaderboard(
         string $orderBy = 'points',
-        Carbon $since = null,
-        Carbon $until = null,
+        ?Carbon $since = null,
+        ?Carbon $until = null,
         int    $limit = 20,
         bool   $onlyFollowings = false
     ): Collection {
