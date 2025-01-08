@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Backend\Transport\BahnWebApiController;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
@@ -19,6 +20,9 @@ use Illuminate\View\View;
 class FrontendStatusController extends Controller
 {
     public function getDashboard(): Renderable|RedirectResponse {
+
+        BahnWebApiController::searchStation('Karlsruhe Hbf');
+
         $statuses = DashboardController::getPrivateDashboard(auth()->user());
 
         return view('dashboard', [

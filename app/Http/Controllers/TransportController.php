@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
+use App\Exceptions\HafasException;
 use App\Http\Controllers\API\v1\ExperimentalController;
+use App\Http\Controllers\Backend\Transport\BahnWebApiController;
 use App\Http\Resources\StationResource;
 use App\Models\Checkin;
 use App\Models\PolyLine;
@@ -42,7 +44,15 @@ class TransportController extends Controller
         } elseif (preg_match('/^Q\d+$/', $query)) {
             $stations = self::getStationsByWikidataId($query);
         } elseif (!isset($stations) || $stations[0] === null) {
-            $stations = $this->dataProvider->getStations($query);
+            $stations = null;
+            try {
+                $stations = $this->dataProvider->getStations($query);
+            } catch (HafasException) {
+
+            }
+            if ($stations === null || $stations->isEmpty()) {
+                $stations = BahnWebApiController::searchStation($query);
+            }
         }
         return $stations->map(function(Station $station) {
             return new StationResource($station);

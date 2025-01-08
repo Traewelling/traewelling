@@ -23,7 +23,7 @@ return [
 
     # DB_REST
     'db_rest'                   => env('DB_REST', 'https://v5.db.transport.rest/'),
-    'db_rest_timeout'           => env('DB_REST_TIMEOUT', 10),
+    'db_rest_timeout'           => env('DB_REST_TIMEOUT', 3),
 
     # Points
     'base_points'               => [

@@ -42,7 +42,7 @@ class Station extends Model
     protected $fillable = [
         'ibnr', 'wikidata_id', 'rilIdentifier',
         'ifopt_a', 'ifopt_b', 'ifopt_c', 'ifopt_d', 'ifopt_e',
-        'name', 'latitude', 'longitude', 'time_offset', 'shift_time'
+        'name', 'latitude', 'longitude', 'source', 'time_offset', 'shift_time'
     ];
     protected $hidden   = ['created_at', 'updated_at', 'time_offset', 'shift_time'];
     protected $casts    = [
