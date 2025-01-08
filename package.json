@@ -25,6 +25,7 @@
         "apexcharts": "^4.1.0",
         "autoprefixer": "^10.4.20",
         "awesomplete": "^1.1.5",
+        "axios": "^1.7.9",
         "bootstrap-cookie-alert": "^1.2.1",
         "chart.js": "^2.9.4",
         "croppie": "^2.6.5",
