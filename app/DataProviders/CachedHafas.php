@@ -40,7 +40,7 @@ class CachedHafas extends Hafas implements DataProviderInterface
         );
     }
 
-    public function getDepartures(Station $station, Carbon $when, int $duration = 15, TravelType $type = null, bool $localtime = false): Collection {
+    public function getDepartures(Station $station, Carbon $when, int $duration = 15, TravelType|null $type = null, bool $localtime = false): Collection {
         $filterWhen = clone $when;
         $when       = clone $when;
         $when->subMinutes(2);
