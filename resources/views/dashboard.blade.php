@@ -16,7 +16,7 @@
                     <p>
                         🇬🇧
                         Due to a service interruption in the timetable interface we use, the check-in function is
-                        currently not available.
+                        currently not fully available and can be very slow.
                     </p>
                     <p class="text-center mx-0 my-0">
                         Have a look at our <a href="https://chaos.social/@traewelling" target="mastotrwl">Mastodon account</a> for updates.
@@ -25,7 +25,7 @@
                     <p>
                         🇩🇪
                         Aufgrund einer Serviceunterbrechung bei der von uns genutzten Fahrplanschnittstelle ist die
-                        Check-in-Funktion aktuell nicht verfügbar.
+                        Check-in-Funktion aktuell nicht vollständig verfügbar und kann sehr langsam sein.
                     </p>
                     <p class="text-center">
                         Aktuelle Informationen gibt es auf unserem <a href="https://chaos.social/@traewelling" target="mastotrwl">Mastodon-Account</a>.
