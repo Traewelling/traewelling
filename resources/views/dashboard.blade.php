@@ -6,6 +6,32 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
+
+                <div class="alert alert-danger">
+                    <h4 class="alert-heading">
+                        <i class="fa-solid fa-exclamation-triangle"></i>
+                        Service Disruption // Serviceunterbrechung
+                        <i class="fa-solid fa-exclamation-triangle"></i>
+                    </h4>
+                    <p>
+                        🇬🇧
+                        Due to a service interruption in the timetable interface we use, the check-in function is
+                        currently not available.
+                    </p>
+                    <p class="text-center mx-0 my-0">
+                        Have a look at our <a href="https://chaos.social/@traewelling" target="mastotrwl">Mastodon account</a> for updates.
+                    </p>
+                    <hr/>
+                    <p>
+                        🇩🇪
+                        Aufgrund einer Serviceunterbrechung bei der von uns genutzten Fahrplanschnittstelle ist die
+                        Check-in-Funktion aktuell nicht verfügbar.
+                    </p>
+                    <p class="text-center">
+                        Aktuelle Informationen gibt es auf unserem <a href="https://chaos.social/@traewelling" target="mastotrwl">Mastodon-Account</a>.
+                    </p>
+                </div>
+
                 @if(session()->has('checkin-collision'))
                     <div class="alert alert-danger" id="checkin-collision-alert">
                         <h2 class="fs-4">
