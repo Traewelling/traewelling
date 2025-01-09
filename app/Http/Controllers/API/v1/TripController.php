@@ -53,7 +53,7 @@ class TripController extends Controller
                 'stopovers.*.stationId'     => ['required', 'exists:train_stations,id'],
                 'stopovers.*.arrival'       => ['required_without:stopovers.*.departure', 'required_with:stopovers.*.arrivalReal', 'date'],
                 'stopovers.*.arrivalReal'   => ['nullable', 'date'],
-                'stopovers.*.departure'     => ['required_without:stopovers.*.arrival,null', 'required_with:stopovers.*.departureReal', 'date'],
+                'stopovers.*.departure'     => ['required_without:stopovers.*.arrival', 'required_with:stopovers.*.departureReal', 'date'],
                 'stopovers.*.departureReal' => ['nullable', 'date'],
             ]
         );
