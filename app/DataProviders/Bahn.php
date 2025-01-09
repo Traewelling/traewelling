@@ -172,7 +172,7 @@ class Bahn extends Controller implements DataProviderInterface
             CacheKey::increment(HCK::DEPARTURES_SUCCESS);
             foreach ($entries as $rawDeparture) {
                 //trip
-                $tripLineName      = $rawDeparture['verkehrmittel']['name'] ?? '';
+                $tripLineName      = $rawDeparture['verkehrmittel']['mittelText'] ?? '';
                 $tripNumber        = preg_replace('/\s/', '-', strtolower($tripLineName)) ?? '';
                 $tripJourneyNumber = preg_replace('/\D/', '', $rawDeparture['verkehrmittel']['name']);
                 $category          = isset($rawDeparture['verkehrmittel']['produktGattung']) ? ReiseloesungCategory::tryFrom($rawDeparture['verkehrmittel']['produktGattung']) : ReiseloesungCategory::UNKNOWN;
