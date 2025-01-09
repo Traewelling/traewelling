@@ -118,9 +118,9 @@
                                         </div>
                                         <div class="form-group col-md-6">
                                             <div class="md-form input-group mt-2">
-                                                <input type="text" name="domain" class="form-control"
+                                                <input type="url" name="domain" class="form-control"
                                                        placeholder="{{__('user.mastodon-instance-url')}}"
-                                                       aria-describedby="button-addon4">
+                                                       aria-describedby="button-addon4" required>
                                                 <button class="btn btn-md btn-primary m-0 px-3" type="submit"><i
                                                             class="fab fa-mastodon"></i> Mastodon
                                                 </button>
