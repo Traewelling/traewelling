@@ -25,9 +25,7 @@ return [
     'db_rest'                   => env('DB_REST', 'https://v5.db.transport.rest/'),
     'db_rest_timeout'           => env('DB_REST_TIMEOUT', 3),
 
-    'data_provider' => env('DATA_PROVIDER', 'bahn'),
-
-    'bahn'             => env('BAHN', 'https://www.bahn.de/web/api/reiseloesung/'),
+    'data_provider'    => env('DATA_PROVIDER', 'bahn'),
 
     # Points
     'base_points'      => [

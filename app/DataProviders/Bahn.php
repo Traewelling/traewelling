@@ -2,7 +2,6 @@
 
 namespace App\DataProviders;
 
-use App\DataProviders\Repositories\StationRepository;
 use App\Dto\Internal\Departure;
 use App\Enum\ReiseloesungCategory;
 use App\Enum\TravelType;
@@ -19,7 +18,6 @@ use App\Models\Stopover;
 use App\Models\Trip;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -28,32 +26,12 @@ use PDOException;
 
 class Bahn extends Controller implements DataProviderInterface
 {
-
-    private function client(): PendingRequest {
-        return Http::baseUrl(config('trwl.bahn'))
-                   ->timeout(config('trwl.db_rest_timeout'));
-    }
-
     public function getStationByRilIdentifier(string $rilIdentifier): ?Station {
         $station = Station::where('rilIdentifier', $rilIdentifier)->first();
         if ($station !== null) {
             return $station;
         }
-
-        try {
-            $response = $this->client()->get("/stations/$rilIdentifier");
-            if ($response->ok() && !empty($response->body()) && $response->body() !== '[]') {
-                $data    = json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
-                $station = StationRepository::parseHafasStopObject($data);
-                CacheKey::increment(HCK::STATIONS_SUCCESS);
-            } else {
-                CacheKey::increment(HCK::STATIONS_NOT_OK);
-            }
-        } catch (Exception $exception) {
-            CacheKey::increment(HCK::STATIONS_FAILURE);
-            report($exception);
-        }
-        return $station;
+        return null;
     }
 
     public function getStationsByFuzzyRilIdentifier(string $rilIdentifier): Collection {
@@ -123,35 +101,7 @@ class Bahn extends Controller implements DataProviderInterface
      * @throws HafasException
      */
     public function getNearbyStations(float $latitude, float $longitude, int $results = 8): Collection {
-        try {
-            $response = $this->client()->get(
-                "/stops/nearby",
-                [
-                    'latitude'  => $latitude,
-                    'longitude' => $longitude,
-                    'results'   => $results
-                ]
-            );
-
-            if (!$response->ok()) {
-                CacheKey::increment(HCK::NEARBY_NOT_OK);
-                throw new HafasException(__('messages.exception.generalHafas'));
-            }
-
-            $data     = json_decode($response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR);
-            $stations = Repositories\StationRepository::parseHafasStops($data);
-
-            foreach ($data as $hafasStation) {
-                $station           = $stations->where('ibnr', $hafasStation->id)->first();
-                $station->distance = $hafasStation->distance;
-            }
-
-            CacheKey::increment(HCK::NEARBY_SUCCESS);
-            return $stations;
-        } catch (JsonException $exception) {
-            CacheKey::increment(HCK::NEARBY_FAILURE);
-            throw new HafasException($exception->getMessage());
-        }
+        throw new HafasException("Method currently not supported");
     }
 
     /**
