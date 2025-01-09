@@ -15,7 +15,7 @@
                             @csrf
 
                             <div class="form-group row mb-3">
-                                <label for="name"
+                                <label for="username"
                                        class="col-md-4 col-form-label text-md-right">{{ __('user.username') }}</label>
 
                                 <div class="col-md-6">
@@ -23,7 +23,7 @@
                                     <div class="input-group">
                                         <span class="input-group-text" id="basic-addon1">@</span>
 
-                                        <input id="name" type="text"
+                                        <input id="username" type="text"
                                                class="form-control @error('username') is-invalid @enderror"
                                                name="username" value="{{ old('username') }}" required autofocus>
                                     </div>
