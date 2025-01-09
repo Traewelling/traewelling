@@ -1,29 +1,32 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Hydrators;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Dto\Internal\Departure;
+use App\Http\Resources\StationResource;
+use Illuminate\Support\Collection;
 
-class DepartureResource extends JsonResource
+class DepartureHydrator
 {
-    /**
-     * $this = \App\Dto\Transport\Departure::class
-     *
-     */
-    public function toArray(Request $request): array {
-        return [
 
-            "tripId"              => $this->trip->trip_id,
+    public static function map(Collection $collection): Collection {
+        return $collection->map(function($request) {
+            return self::mapSingle($request);
+        });
+    }
+
+    public static function mapSingle(Departure $request) {
+        $content = [
+            "tripId"              => $request->trip->trip_id,
             "stop"                => [
                 "type"     => "stop",
-                "id"       => $this->station->ibnr,
-                "name"     => $this->station->name,
+                "id"       => $request->station->ibnr,
+                "name"     => $request->station->name,
                 "location" => [
                     "type"      => "location",
-                    "id"        => $this->station->ibnr,
-                    "latitude"  => $this->station->latitude,
-                    "longitude" => $this->station->longitude
+                    "id"        => $request->station->ibnr,
+                    "latitude"  => $request->station->latitude,
+                    "longitude" => $request->station->longitude
                 ],
                 "products" => [
                     "nationalExpress" => true, //TODO
@@ -38,23 +41,23 @@ class DepartureResource extends JsonResource
                     "taxi"            => true, //TODO
                 ]
             ],
-            "when"                => $this->realDeparture?->toIso8601String(),
-            "plannedWhen"         => $this->plannedDeparture->toIso8601String(),
-            "delay"               => $this->getDelay(), //TODO: make it deprecated
+            "when"                => $request->realDeparture?->toIso8601String(),
+            "plannedWhen"         => $request->plannedDeparture->toIso8601String(),
+            "delay"               => $request->getDelay(), //TODO: make it deprecated
             "platform"            => null,
             "plannedPlatform"     => null,
-            "direction"           => $this->trip->destinationStation->name,
+            "direction"           => $request->trip->destinationStation->name,
             "provenance"          => null,
             "line"                => [
                 "type"        => "line",
-                "id"          => $this->trip->linename,
-                "fahrtNr"     => $this->trip->number,
-                "name"        => $this->trip->linename,
+                "id"          => $request->trip->linename,
+                "fahrtNr"     => $request->trip->number,
+                "name"        => $request->trip->linename,
                 "public"      => true,
                 "adminCode"   => "80____",
-                "productName" => $this->trip->linename, //TODO
+                "productName" => $request->trip->linename, //TODO
                 "mode"        => "train", //TODO
-                "product"     => $this->trip->category,
+                "product"     => $request->trip->category,
                 "operator"    => null,/*[ //TODO
                     "type" => "operator",
                     "id"   => "db-fernverkehr-ag",
@@ -65,13 +68,13 @@ class DepartureResource extends JsonResource
             "origin"              => null,
             "destination"         => [
                 "type"     => "stop",
-                "id"       => $this->trip->destinationStation->ibnr,
-                "name"     => $this->trip->destinationStation->name,
+                "id"       => $request->trip->destinationStation->ibnr,
+                "name"     => $request->trip->destinationStation->name,
                 "location" => [
                     "type"      => "location",
-                    "id"        => $this->trip->destinationStation->ibnr,
-                    "latitude"  => $this->trip->destinationStation->latitude,
-                    "longitude" => $this->trip->destinationStation->longitude
+                    "id"        => $request->trip->destinationStation->ibnr,
+                    "latitude"  => $request->trip->destinationStation->latitude,
+                    "longitude" => $request->trip->destinationStation->longitude
                 ],
                 "products" => [
                     "nationalExpress" => true, //TODO
@@ -93,7 +96,10 @@ class DepartureResource extends JsonResource
             "longitude" => 8.142888
         ],*/
             "loadFactor"          => null,
-            "station"             => new StationResource($this->station)
+            "station"             => new StationResource($request->station)
         ];
+
+        // convert to stdClass
+        return json_decode(json_encode($content));
     }
 }

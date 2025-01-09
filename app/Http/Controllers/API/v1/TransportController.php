@@ -11,12 +11,10 @@ use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
-use App\Http\Controllers\Backend\Transport\BahnWebApiController;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Http\Resources\CheckinSuccessResource;
-use App\Http\Resources\DepartureResource;
 use App\Http\Resources\StationResource;
 use App\Http\Resources\TripResource;
 use App\Hydrators\CheckinRequestHydrator;
@@ -160,7 +158,9 @@ class TransportController extends Controller
                 when:      $timestamp,
                 type:      TravelType::tryFrom($validated['travelType'] ?? null),
                 localtime: isset($validated['when']) && !preg_match('(\+|Z)', $validated['when'])
-            )->sortBy(function($departure) {
+            );
+
+            $departures = $departures->sortBy(function($departure) {
                 return $departure->when ?? $departure->plannedWhen;
             });
 
@@ -178,26 +178,12 @@ class TransportController extends Controller
                             ]
             );
         } catch (HafasException) {
-            return $this->sendResponse(
-                data:       DepartureResource::collection(BahnWebApiController::getDepartures($station)),
-                additional: [
-                                'meta' => [
-                                    'station' => StationDto::fromModel($station),
-                                    'times'   => [
-                                        'now'  => $timestamp,
-                                        'prev' => $timestamp->clone()->subMinutes(15),
-                                        'next' => $timestamp->clone()->addMinutes(15)
-                                    ],
-                                ]
-                            ]
-            );
-
             return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 502);
         } catch (ModelNotFoundException) {
             return $this->sendError(__('controller.transport.no-station-found', [], 'en'));
         } catch (Exception $exception) {
             report($exception);
-            return $this->sendError('An unknown error occurred.', 500);
+            return $this->sendError('An unknown error occurred.', 500, null, $exception);
         }
     }
 
@@ -531,8 +517,14 @@ class TransportController extends Controller
         try {
             $trainAutocompleteResponse = (new TransportBackend(Hafas::class))->getTrainStationAutocomplete($query);
             return $this->sendResponse($trainAutocompleteResponse);
-        } catch (HafasException) {
-            return $this->sendError("There has been an error with our data provider", 503);
+        } catch (HafasException $e) {
+            // check if app is in debug mode
+            return $this->sendError(
+                "There has been an error with our data provider",
+                503,
+                null,
+                $e
+            );
         }
     }
 

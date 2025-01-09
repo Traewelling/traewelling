@@ -6,6 +6,7 @@ use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
 use App\Models\OAuthClient;
 use App\Models\User;
+use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
@@ -107,7 +108,7 @@ class Controller extends \App\Http\Controllers\Controller
 
     public function sendResponse(
         $data = null,
-        int   $code = 200,
+        int $code = 200,
         ?array $additional = null
     ): JsonResponse {
         $disclaimer = [
@@ -132,10 +133,27 @@ class Controller extends \App\Http\Controllers\Controller
         return response()->json($response, $code);
     }
 
-    public function sendError(array|string|null $error = null, int $code = 404, ?array $additional = null): JsonResponse {
+    public function sendError(
+        array|string|null $error = null,
+        int               $code = 404,
+        ?array            $additional = null,
+        ?Exception        $exception = null
+    ): JsonResponse {
         $response = [
             'message' => $error,
         ];
+
+        if ($exception !== null && config('app.debug')) {
+            $response['exception'] = [
+                'message' => $exception->getMessage(),
+                'file'    => $exception->getFile(),
+                'line'    => $exception->getLine(),
+                'code'    => $exception->getCode(),
+                'trace'   => $exception->getTrace(),
+            ];
+        }
+
+
         $response = $additional ? array_merge($response, ["meta" => $additional]) : $response;
         return response()->json($response, $code);
     }
