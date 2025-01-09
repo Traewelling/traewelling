@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
  *
  * @return string|array|null
  */
-function __(string $key = null, array $replace = [], string $locale = null) {
+function __(?string $key = null, array $replace = [], ?string $locale = null) {
     if (is_null($key)) {
         return $key;
     }

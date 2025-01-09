@@ -17,7 +17,7 @@ class DepartureHydrator
 
     public static function mapSingle(Departure $request) {
         $content = [
-            "tripId"              => $request->trip->trip_id,
+            "tripId"              => $request->trip->tripId,
             "stop"                => [
                 "type"     => "stop",
                 "id"       => $request->station->ibnr,
@@ -46,16 +46,16 @@ class DepartureHydrator
             "delay"               => $request->getDelay(), //TODO: make it deprecated
             "platform"            => null,
             "plannedPlatform"     => null,
-            "direction"           => $request->trip->destinationStation->name,
+            "direction"           => $request->trip->direction,
             "provenance"          => null,
             "line"                => [
                 "type"        => "line",
-                "id"          => $request->trip->linename,
+                "id"          => $request->trip->lineName,
                 "fahrtNr"     => $request->trip->number,
-                "name"        => $request->trip->linename,
+                "name"        => $request->trip->lineName,
                 "public"      => true,
                 "adminCode"   => "80____",
-                "productName" => $request->trip->linename, //TODO
+                "productName" => $request->trip->lineName, //TODO
                 "mode"        => "train", //TODO
                 "product"     => $request->trip->category,
                 "operator"    => null,/*[ //TODO
@@ -68,13 +68,13 @@ class DepartureHydrator
             "origin"              => null,
             "destination"         => [
                 "type"     => "stop",
-                "id"       => $request->trip->destinationStation->ibnr,
-                "name"     => $request->trip->destinationStation->name,
+                "id"       => 0,
+                "name"     => $request->trip->direction,
                 "location" => [
                     "type"      => "location",
-                    "id"        => $request->trip->destinationStation->ibnr,
-                    "latitude"  => $request->trip->destinationStation->latitude,
-                    "longitude" => $request->trip->destinationStation->longitude
+                    "id"        => 0,
+                    "latitude"  => 0,
+                    "longitude" => 0
                 ],
                 "products" => [
                     "nationalExpress" => true, //TODO

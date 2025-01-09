@@ -12,9 +12,9 @@ readonly class Departure
     public Station     $station;
     public Carbon      $plannedDeparture;
     public Carbon|null $realDeparture;
-    public Trip        $trip;
+    public BahnTrip $trip;
 
-    public function __construct(Station $station, Carbon $plannedDeparture, Carbon|null $realDeparture, Trip $trip) {
+    public function __construct(Station $station, Carbon $plannedDeparture, Carbon|null $realDeparture, BahnTrip $trip) {
         $this->station          = $station;
         $this->plannedDeparture = $plannedDeparture;
         $this->realDeparture    = $realDeparture;
