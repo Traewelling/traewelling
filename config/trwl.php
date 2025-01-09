@@ -25,9 +25,7 @@ return [
     'db_rest'                   => env('DB_REST', 'https://v5.db.transport.rest/'),
     'db_rest_timeout'           => env('DB_REST_TIMEOUT', 3),
 
-    # Transitous
-    'transitous'                => env('TRANSITOUS', 'https://routing.spline.de/api/'),
-    'transitous_timeout'        => env('TRANSITOUS_TIMEOUT', 3),
+    'data_provider' => env('DATA_PROVIDER', 'bahn'),
 
     'bahn'             => env('BAHN', 'https://www.bahn.de/web/api/reiseloesung/'),
 
@@ -62,7 +60,7 @@ return [
     'cache'            => [
         'global-statistics-retention-seconds' => env('GLOBAL_STATISTICS_CACHE_RETENTION_SECONDS', 60 * 60),
         'leaderboard-retention-seconds'       => env('LEADERBOARD_CACHE_RETENTION_SECONDS', 5 * 60),
-        'hafas'                               => env('HAFAS_CACHE', false),
+        'data_provider'                       => env('DATA_PROVIDER_CACHE', false),
     ],
     'year_in_review'   => [
         'alert'     => env('YEAR_IN_REVIEW_ALERT', false),
