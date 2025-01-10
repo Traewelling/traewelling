@@ -25,6 +25,8 @@ class StationSearchTest extends FeatureTestCase
     use RefreshDatabase;
 
     public function testStringSearch(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         $searchResults = [self::HANNOVER_HBF];
         Http::fake(["*" => Http::response($searchResults)]);
 
@@ -41,6 +43,8 @@ class StationSearchTest extends FeatureTestCase
     }
 
     public function testDs100Search(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake(["*/stations/" . self::HANNOVER_HBF['ril100'] => Http::response(self::HANNOVER_HBF)]);
 
         $station = CheckinController::lookupStation(self::HANNOVER_HBF['ril100']);
@@ -68,6 +72,8 @@ class StationSearchTest extends FeatureTestCase
      * @throws HafasException
      */
     public function testGetNearbyStations(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake(["*/stops/nearby*" => Http::response([array_merge(
                                                              self::HANNOVER_HBF,
                                                              ["distance" => 421]
