@@ -174,20 +174,20 @@ class Bahn extends Controller implements DataProviderInterface
             CacheKey::increment(HCK::DEPARTURES_SUCCESS);
             foreach ($entries as $rawDeparture) {
                 //trip
-                $journeyId         = $rawDeparture['journeyId'];
-                $departureStopId   = $rawDeparture['bahnhofsId'];
-                $tripLineName      = $rawDeparture['verkehrmittel']['mittelText'] ?? '';
-                $category          = isset($rawDeparture['verkehrmittel']['produktGattung']) ? ReiseloesungCategory::tryFrom($rawDeparture['verkehrmittel']['produktGattung']) : ReiseloesungCategory::UNKNOWN;
-                $category          = $category ?? ReiseloesungCategory::UNKNOWN;
-                $hafasTravelType   = $category->getHTT()->value;
+                $journeyId       = $rawDeparture['journeyId'];
+                $departureStopId = $rawDeparture['bahnhofsId'];
+                $tripLineName    = $rawDeparture['verkehrmittel']['mittelText'] ?? '';
+                $category        = isset($rawDeparture['verkehrmittel']['produktGattung']) ? ReiseloesungCategory::tryFrom($rawDeparture['verkehrmittel']['produktGattung']) : ReiseloesungCategory::UNKNOWN;
+                $category        = $category ?? ReiseloesungCategory::UNKNOWN;
+                $hafasTravelType = $category->getHTT()->value;
 
-                $platformPlanned   = $rawDeparture['gleis'] ?? '';
-                $platformReal      = $rawDeparture['ezGleis'] ?? $platformPlanned;
+                $platformPlanned = $rawDeparture['gleis'] ?? '';
+                $platformReal    = $rawDeparture['ezGleis'] ?? $platformPlanned;
                 try {
                     $departureStation = Station::where('ibnr', [$departureStopId])->first();
                     if ($departureStation === null) {
                         // if station does not exist, request it from API
-                        $stationsFromApi = $this->getStations($departureStopId, 1);
+                        $stationsFromApi  = $this->getStations($departureStopId, 1);
                         $departureStation = $stationsFromApi->first();
                     }
                 } catch (Exception $exception) {
@@ -199,7 +199,7 @@ class Bahn extends Controller implements DataProviderInterface
                 Cache::add($journeyId, [
                     'category' => $hafasTravelType,
                     'lineName' => $tripLineName
-                ], now()->addMinutes(30));
+                ],         now()->addMinutes(30));
 
                 preg_match('/#ZE#(\d+)/', $journeyId, $matches);
                 $journeyNumber = 0;
@@ -293,7 +293,7 @@ class Bahn extends Controller implements DataProviderInterface
             throw new HafasException(__('messages.exception.generalHafas'));
         }
         // get cached data from departure board
-        $cachedData = Cache::get($tripID);
+        $cachedData          = Cache::get($tripID);
         $stopoverCacheFromDB = Station::whereIn('ibnr', collect($rawJourney['halte'])->pluck('extId'))->get();
 
         $originStation      = $stopoverCacheFromDB->where('ibnr', $rawJourney['halte'][0]['extId'])->first() ?? self::getStationFromHalt($rawJourney['halte'][0]);
@@ -321,22 +321,21 @@ class Bahn extends Controller implements DataProviderInterface
             $tripNumber = $matches[1];
         }
 
-
-        $journey = Trip::create([
-                                    'trip_id'        => $tripID,
-                                    'category'       => $category,
-                                    'number'         => $tripNumber,
-                                    'linename'       => $tripLineName,
-                                    'journey_number' => $tripNumber,
-                                    'operator_id'    => null, //TODO
-                                    'origin_id'      => $originStation->id,
-                                    'destination_id' => $destinationStation->id,
-                                    'polyline_id'    => null,
-                                    'departure'      => $departure,
-                                    'arrival'        => $arrival,
-                                    'source'         => TripSource::BAHN_WEB_API,
-                                ]);
-
+        $journey = Trip::updateOrCreate([
+                                            'trip_id' => $tripID,
+                                        ], [
+                                            'category'       => $category,
+                                            'number'         => $tripNumber,
+                                            'linename'       => $tripLineName,
+                                            'journey_number' => $tripNumber,
+                                            'operator_id'    => null, //TODO
+                                            'origin_id'      => $originStation->id,
+                                            'destination_id' => $destinationStation->id,
+                                            'polyline_id'    => null,
+                                            'departure'      => $departure,
+                                            'arrival'        => $arrival,
+                                            'source'         => TripSource::BAHN_WEB_API,
+                                        ]);
 
         $stopovers = collect();
         foreach ($rawJourney['halte'] as $rawHalt) {
@@ -347,8 +346,8 @@ class Bahn extends Controller implements DataProviderInterface
             $arrivalPlanned   = isset($rawHalt['ankunftsZeitpunkt']) ? Carbon::parse($rawHalt['ankunftsZeitpunkt'], $timezone) : null;
             $arrivalReal      = isset($rawHalt['ezAnkunftsZeitpunkt']) ? Carbon::parse($rawHalt['ezAnkunftsZeitpunkt'], $timezone) : null;
             // new API does not differ between departure and arrival platform
-            $platformPlanned  = $rawHalt['gleis'] ?? null;
-            $platformReal     = $rawHalt['ezGleis'] ?? $platformPlanned;
+            $platformPlanned = $rawHalt['gleis'] ?? null;
+            $platformReal    = $rawHalt['ezGleis'] ?? $platformPlanned;
 
             $stopover = new Stopover([
                                          'train_station_id'           => $station->id,
