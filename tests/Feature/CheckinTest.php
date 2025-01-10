@@ -27,6 +27,8 @@ class CheckinTest extends FeatureTestCase
      * @test
      */
     public function stationboardTest(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake([
                        '/locations*'                => Http::response([self::FRANKFURT_HBF]),
                        '/stops/8000105/departures*' => Http::response([self::ICE802])

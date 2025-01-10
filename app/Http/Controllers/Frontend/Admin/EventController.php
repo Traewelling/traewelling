@@ -75,17 +75,27 @@ class EventController extends Controller
     public function renderSuggestionCreation(int $id): View {
         $suggestion     = EventSuggestion::findOrFail($id);
         $parallelEvents = Event::where([
-                                           [DB::raw('DATE(checkin_start)'), '>=', $suggestion->end->toDateString()],
-                                           [DB::raw('DATE(checkin_end)'), '<=', $suggestion->begin->toDateString()]
+                                           [DB::raw('DATE(checkin_start)'), '>=', $suggestion->begin->toDateString()],
+                                           [DB::raw('DATE(checkin_end)'), '<=', $suggestion->end->toDateString()]
                                        ])
-                               ->orWhere([
-                                             [DB::raw('DATE(checkin_end)'), '>=', $suggestion->begin->toDateString()],
-                                             [DB::raw('DATE(checkin_end)'), '<=', $suggestion->end->toDateString()]
-                                         ])
-                               ->orWhere([
-                                             [DB::raw('DATE(checkin_start)'), '>=', $suggestion->begin->toDateString()],
-                                             [DB::raw('DATE(checkin_start)'), '<=', $suggestion->end->toDateString()]
-                                         ])
+                               ->orWhere(function($query) use ($suggestion) {
+                                   $query->where([
+                                                     [DB::raw('DATE(checkin_start)'), '<=', $suggestion->begin->toDateString()],
+                                                     [DB::raw('DATE(checkin_end)'), '>=', $suggestion->begin->toDateString()]
+                                                 ]);
+                               })
+                               ->orWhere(function($query) use ($suggestion) {
+                                   $query->where([
+                                                     [DB::raw('DATE(checkin_start)'), '<=', $suggestion->begin->toDateString()],
+                                                     [DB::raw('DATE(checkin_end)'), '>=', $suggestion->begin->toDateString()]
+                                                 ]);
+                               })
+                               ->orWhere(function($query) use ($suggestion) {
+                                   $query->where([
+                                                     [DB::raw('DATE(checkin_start)'), '<=', $suggestion->end->toDateString()],
+                                                     [DB::raw('DATE(checkin_end)'), '>=', $suggestion->end->toDateString()]
+                                                 ]);
+                               })
                                ->get();
 
         $parallelEvents->map(function($event) use ($suggestion) {

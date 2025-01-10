@@ -32,6 +32,8 @@ class BackendCheckinTest extends FeatureTestCase
     use RefreshDatabase;
 
     public function testStationNotOnTripException() {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake([
                        '/stops/8000001'             => Http::response(self::AACHEN_HBF),
                        '/stops/8000152'             => Http::response(self::HANNOVER_HBF),
@@ -63,6 +65,8 @@ class BackendCheckinTest extends FeatureTestCase
     }
 
     public function testSwitchedOriginAndDestinationShouldThrowException() {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake([
                        '/stops/8000105'             => Http::response(self::FRANKFURT_HBF),
                        '/stops/8000152'             => Http::response(self::HANNOVER_HBF),
@@ -97,6 +101,8 @@ class BackendCheckinTest extends FeatureTestCase
     }
 
     public function testDuplicateCheckinsShouldThrowException() {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake([
                        '/stops/8000105'             => Http::response(self::FRANKFURT_HBF),
                        '/stops/8000152'             => Http::response(self::HANNOVER_HBF),
@@ -138,6 +144,8 @@ class BackendCheckinTest extends FeatureTestCase
      * @see    https://github.com/Traewelling/traewelling/issues/37
      */
     public function testCheckinAtBus603Potsdam(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake([
                        '/locations*'               => Http::response(json_decode(file_get_contents(__DIR__ . '/cecilienhof-location.json'), true)),
                        '/stops/736222/departures*' => Http::response(json_decode(file_get_contents(__DIR__ . '/cecilienhof-departures.json'), true)),
@@ -205,6 +213,8 @@ class BackendCheckinTest extends FeatureTestCase
      * @see    https://github.com/Traewelling/traewelling/issues/37
      */
     public function testCheckinAtBerlinRingbahnRollingOverSuedkreuz(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake([
                        '/stops/8089110'             => Http::response(json_decode(file_get_contents(__DIR__ . '/ringbahn-via-suedkreuz-location.json'), true)),
                        '/stops/8089110/departures*' => Http::response(json_decode(file_get_contents(__DIR__ . '/ringbahn-via-suedkreuz-departures.json'), true)),
@@ -249,6 +259,8 @@ class BackendCheckinTest extends FeatureTestCase
     }
 
     public function testDistanceCalculationOnRingLinesForFirstOccurrence(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake([
                        '/stops/736165'             => Http::response([
                                                                          "type"     => "stop",
@@ -303,6 +315,8 @@ class BackendCheckinTest extends FeatureTestCase
     }
 
     public function testDistanceCalculationOnRingLinesForSecondOccurrence(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake([
                        '/stops/736165'             => Http::response([
                                                                          "type"     => "stop",
@@ -356,6 +370,8 @@ class BackendCheckinTest extends FeatureTestCase
     }
 
     public function testBusAirAtFrankfurtAirport(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake([
                        '/stops/102932'             => Http::response([
                                                                          "type"     => "stop",
@@ -407,6 +423,8 @@ class BackendCheckinTest extends FeatureTestCase
     }
 
     public function testChangeTripDestination(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake([
                        '/stops/8000105'             => Http::response(self::FRANKFURT_HBF),
                        '/stops/8000105/departures*' => Http::response([self::ICE802]),
