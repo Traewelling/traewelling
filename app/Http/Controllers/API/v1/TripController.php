@@ -20,20 +20,9 @@ class TripController extends Controller
 {
 
     /**
-     * Undocumented beta endpoint - only specific users have access
-     *
-     * @param Request $request
-     *
-     * @return TripResource|Response
-     *
-     * @todo add docs
-     * @todo currently the stations need to be in the database. We need to add a fallback to HAFAS.
-     *       -> later solve the problem for non-existing stations
+     * @todo add docs when endpoint is stable
      */
     public function createTrip(Request $request): TripResource|JsonResponse {
-        if (!auth()->user()?->can('create-manual-trip')) {
-            return response()->json(['message' => 'This endpoint is currently only available for open-beta users (you can enable open beta in your settings).'], 403);
-        }
         if (auth()->user()?->can('disallow-manual-trips')) {
             return response()->json(['message' => 'You are not allowed to create manual trips'], 403);
         }
