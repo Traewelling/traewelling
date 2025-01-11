@@ -825,5 +825,6 @@
     "trip-info.in-this-connection": "In dieser Verbindung",
     "trip-info.user": "User",
     "trip-info.origin": "Abfahrtsort",
-    "trip-info.destination": "Zielort"
+    "trip-info.destination": "Zielort",
+    "requested-timestamp": "Abfragezeitpunkt"
 }

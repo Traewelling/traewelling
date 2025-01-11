@@ -825,5 +825,6 @@
     "trip-info.in-this-connection": "In this connection",
     "trip-info.user": "User",
     "trip-info.origin": "Origin",
-    "trip-info.destination": "Destination"
+    "trip-info.destination": "Destination",
+    "requested-timestamp": "Requested timestamp"
 }
