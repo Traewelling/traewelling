@@ -764,7 +764,6 @@
     "trip_creation.form.stopover": "Parada",
     "trip_creation.form.departure": "Salida",
     "trip_creation.limitations.2.small": "(intentamos aproximar la ruta con Brouter, pero no siempre funciona)",
-    "trip_creation.limitations.4": "El operador no se puede establecer en este formulario (pero si mediante la API)",
     "trip_creation.limitations.5": "No hay errores visibles en este formulario. Si nada pasa cuando le das a enviar... Es que hay un error.",
     "trip_creation.limitations.3": "El viaje será público - si haces check-in en el viaje, todo el mundo que pueda ver tu estado también podrá hacer check-in.",
     "trip_creation.limitations.2": "Las rutas del mapa son en línea recta desde las estaciones proporcionadas",

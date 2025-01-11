@@ -727,7 +727,6 @@
     "trip_creation.limitations.1": "Seules les stations disponibles dans le DB Navigator sont prises en charge",
     "trip_creation.limitations.2": "Les itinéraires sur la carte sont générés directement à partir des stations données",
     "trip_creation.limitations.2.small": "(nous essayons d'obtenir un itinéraire approximatif via Brouter, mais cela ne fonctionne pas toujours correctement)",
-    "trip_creation.limitations.4": "L'opérateur ne peut pas être défini dans ce formulaire (possible via l'API)",
     "trip_creation.limitations.5": "Il n'y a pas de message d'erreur visible pour ce formulaire. Donc, si rien ne se passe lors de la soumission c'est qu'il y a une erreur.",
     "notifications.userMentioned.lead": "Vous avez été mentionné dans un statut.",
     "notifications.userMentioned.notice": "Vous avez été mentionné dans un statut par @:username.",

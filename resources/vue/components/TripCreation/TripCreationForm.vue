@@ -18,7 +18,7 @@ export default {
         destinationArrivalPlanned: "",
         lineName: "",
         journeyNumber: 0,
-        operatorId: null,
+        operatorId: "",
         category: "",
         stopovers: [],
       },
@@ -241,36 +241,51 @@ export default {
           ></StationRow>
         </div>
         <div class="row g-3 mt-1">
-          <div class="col-3">
-            <input type="text" class="form-control mobile-input-fs-16"
-                   :placeholder="trans('trip_creation.form.line')" v-model="trainTypeInput"
-                   @focusout="checkDisallowed">
+          <div class="col-12 col-md-3">
+            <div class="form-floating">
+              <input type="text" class="form-control mobile-input-fs-16"
+                     v-model="trainTypeInput"
+                     @focusout="checkDisallowed"
+              >
+              <label v-text="trans('trip_creation.form.line')"></label>
+            </div>
           </div>
-          <div class="col-3">
-            <input type="text" class="form-control mobile-input-fs-16"
-                   :placeholder="trans('trip_creation.form.number')" v-model="journeyNumberInput">
+          <div class="col-12 col-md-3">
+            <div class="form-floating">
+              <input type="text" class="form-control mobile-input-fs-16"
+                     v-model="journeyNumberInput"
+              >
+              <label v-text="trans('trip_creation.form.number')"></label>
+            </div>
           </div>
-          <div class="col">
-            <select class="form-select" v-model="form.category">
-              <option selected>{{ trans("trip_creation.form.travel_type") }}</option>
-              <option v-for="category in categories" :value="category.value">{{ category.text }}</option>
-            </select>
+          <div class="col-12 col-md-3">
+            <div class="form-floating">
+              <select class="form-select" v-model="form.category">
+                <option value="">-/-</option>
+                <option v-for="category in categories" :value="category.value">{{ category.text }}</option>
+              </select>
+              <label v-text="trans('trip_creation.form.travel_type')"></label>
+            </div>
           </div>
-          <div class="col">
-            <select class="form-select" v-model="form.operatorId">
-              <option selected>{{ trans("export.title.operator") }}</option>
-              <option v-for="operator in operators" :value="operator.id">{{ operator.name }}</option>
-            </select>
+          <div class="col-12 col-md-3">
+            <div class="form-floating">
+              <select class="form-select" v-model="form.operatorId">
+                <option value="">-/-</option>
+                <option v-for="operator in operators" :value="operator.id">{{ operator.name }}</option>
+              </select>
+              <label v-text="trans('export.title.operator')"></label>
+            </div>
           </div>
         </div>
+
         <div class="row g-3 mt-1">
-                    <span class="text-danger" v-show="showDisallowed">
-                        <i class="fas fa-triangle-exclamation"></i>
-                        {{ trans('trip_creation.limitations.6') }}
-                        <a :href="trans('trip_creation.limitations.6.link')" target="_blank">
-                            {{ trans('trip_creation.limitations.6.rules') }}
-                        </a>
-                    </span>
+          <span class="text-danger" v-show="showDisallowed">
+            <i class="fas fa-triangle-exclamation"></i>
+            {{ trans('trip_creation.limitations.6') }}
+            <a :href="trans('trip_creation.limitations.6.link')" target="_blank">
+              {{ trans('trip_creation.limitations.6.rules') }}
+            </a>
+          </span>
         </div>
         <div class="row justify-content-end mt-3">
           <div class="col-12">
@@ -300,7 +315,6 @@ export default {
           <small>{{ trans("trip_creation.limitations.2.small") }}</small>
         </li>
         <li>{{ trans("trip_creation.limitations.3") }}</li>
-        <li>{{ trans("trip_creation.limitations.4") }}</li>
         <li>{{ trans("trip_creation.limitations.5") }}</li>
       </ul>
 

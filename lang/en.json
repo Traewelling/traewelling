@@ -765,7 +765,6 @@
     "trip_creation.limitations.2": "The routes on the map are generated straight from the given stations",
     "trip_creation.limitations.2.small": "(we try to approximate a route via Brouter, but this may not always work properly)",
     "trip_creation.limitations.3": "The trip is created public - so if you check in to a trip, everyone who can see your status can also check in to this trip.",
-    "trip_creation.limitations.4": "The operator can't be set in this form (possible via API)",
     "trip_creation.limitations.5": "There are no visible error messages for this form. So, if nothing happens on submit... sorry. There is an error.",
     "trip_creation.limitations.6": "Only the selectable types of vehicles are allowed (i.e. trips by car, bicycle, on foot, etc. are not permitted and may be deleted). See also:",
     "trip_creation.limitations.6.rules": "Rules",

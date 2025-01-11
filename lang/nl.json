@@ -758,7 +758,6 @@
     "trip_creation.title": "Eigen reis toevoegen",
     "checkin.success.title": "Inchecken gelukt!",
     "messages.exception.general-values": "Er is een onbekende fout opgetreden. Probeer het opnieuw met andere waarden.",
-    "trip_creation.limitations.4": "De vervoerder kan niet direct worden gekozen (wel via de api)",
     "trip_creation.limitations.5": "Er worden geen foutmeldingen getoond, dus als er niks gebeurt, dan is er sprake van een fout.",
     "missing-journey": "Heb je je reis nog niet gevonden?",
     "trip_creation.limitations.2.small": "(we trachten om een route via Brouter op te maken, maar dit werkt niet altijd naar behoren)",
