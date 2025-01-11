@@ -113,7 +113,6 @@ Route::get('/ics', [IcsController::class, 'renderIcs'])
 Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::view('/trip/create', 'beta.trip-creation')
-         ->middleware(['can:create-manual-trip'])
          ->name('trip.create');
 
     Route::view('/report', 'report')
