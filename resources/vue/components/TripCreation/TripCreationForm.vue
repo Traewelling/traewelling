@@ -191,25 +191,10 @@ export default {
 
 <template>
   <div>
-    <h1 class="fs-2">
+    <h1 class="fs-2 mb-2">
       <i class="fa fa-plus" aria-hidden="true"></i>
       {{ trans("trip_creation.title") }}
     </h1>
-
-    <div class="alert alert-info">
-      <h2 class="fs-5">
-        <i class="fa fa-info-circle" aria-hidden="true"></i>
-        Beta
-      </h2>
-
-      {{ trans("trip_creation.beta") }}
-      <br/>
-      {{ trans("trip_creation.beta2") }}
-      <a href="https://github.com/Traewelling/traewelling/issues/new/choose" target="_blank"
-         class="float-end btn btn-sm btn-outline-danger">
-        {{ trans("trip_creation.report_issue") }}
-      </a>
-    </div>
 
     <div class="card mb-3">
       <form @submit.prevent="sendForm" class="card-body">
