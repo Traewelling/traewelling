@@ -7,17 +7,17 @@
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
 
-                <div class="alert alert-danger" role="alert">
+                <div class="alert alert-warning" role="alert">
                     <h4 class="alert-heading">
                         <i class="fa-solid fa-exclamation-triangle" aria-hidden="true"></i>
-                        Service Disruption // Serviceunterbrechung
+                        Limited Functionality // Eingeschränkte Funktionalität
                         <i class="fa-solid fa-exclamation-triangle" aria-hidden="true"></i>
                     </h4>
                     <div lang="en" xml:lang="en">
                         <p>
                             🇬🇧
-                            Due to a service interruption in the timetable interface we use,
-                            the check-in function is currently not fully available.
+                            Our services are operational again, but with limited functionality.
+                            Expect various errors, and not all features are working as intended.
                         </p>
                         <p class="text-center mx-0 my-0">
                             Have a look at our <a href="https://chaos.social/@traewelling" target="mastotrwl"
@@ -34,8 +34,8 @@
                     <div lang="de" xml:lang="de">
                         <p>
                             🇩🇪
-                            Aufgrund einer Serviceunterbrechung bei der von uns genutzten Fahrplanschnittstelle ist die
-                            Check-in-Funktion aktuell nicht vollständig verfügbar.
+                            Unser Dienst ist wieder verfügbar, jedoch mit eingeschränkter Funktionalität.
+                            Es kommt zu verschiedenen Fehlern und nicht alle Features funktionieren wie erwartet.
                         </p>
                         <p class="text-center mx-0 my-0">
                             Aktuelle Informationen gibt es auf unserem <a href="https://chaos.social/@traewelling"
