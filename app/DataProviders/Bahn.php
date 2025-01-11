@@ -318,10 +318,14 @@ class Bahn extends Controller implements DataProviderInterface
         }
 
         $tripLineName = $cachedData['lineName'] ?? '';
-        preg_match('/#ZE#(\d+)/', $tripID, $matches);
-        $tripNumber = 0;
-        if (count($matches) > 1) {
-            $tripNumber = $matches[1];
+
+        // get trip number from first stop
+        $tripNumber = isset($rawJourney['halte'][0]['nummer']) ? (int) $rawJourney['halte'][0]['nummer'] : 0;
+        if ($tripNumber === 0) {
+            preg_match('/#ZE#(\d+)/', $tripID, $matches);
+            if (count($matches) > 1) {
+                $tripNumber = $matches[1];
+            }
         }
 
         $stopovers = collect();
