@@ -73,4 +73,20 @@ class Handler extends ExceptionHandler
 
         return $response;
     }
+
+    /**
+     * Builds the exception's context array.
+     *
+     * @return array
+     */
+    protected function context(): array {
+        try {
+            return array_merge(parent::context(), [
+                'url' => request()?->fullUrl(),
+            ]);
+        } catch (Throwable) {
+            // If request() is not available (e.g. in Artisan commands), return the default context.
+            return parent::context();
+        }
+    }
 }
