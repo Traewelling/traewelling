@@ -126,19 +126,18 @@ class LocationController
     }
 
     private function getDistanceFromGeoJson(stdClass $geoJson): int {
-        $fullD        = 0;
+        $fullDistance = 0;
         $lastStopover = null;
         foreach ($geoJson->features as $stopover) {
             $stopover = Coordinate::fromGeoJson($stopover);
-            if ($lastStopover === null) {
+            if ($lastStopover === null || $stopover === null) {
                 $lastStopover = $stopover;
                 continue;
             }
-            $fullD        += (new LineSegment($lastStopover, $stopover))->calculateDistance();
+            $fullDistance += (new LineSegment($lastStopover, $stopover))->calculateDistance();
             $lastStopover = $stopover;
         }
-
-        return $fullD;
+        return $fullDistance;
     }
 
     /**
