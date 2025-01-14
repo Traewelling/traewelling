@@ -287,15 +287,18 @@ class LocationController
             $geoJson      = $this->getPolylineBetween();
             $lastStopover = null;
             foreach ($geoJson->features as $stopover) {
-                if ($lastStopover !== null) {
-                    $distance += (new LineSegment(
-                        new Coordinate(
-                            $lastStopover->geometry->coordinates[1],
-                            $lastStopover->geometry->coordinates[0]
-                        ),
-                        new Coordinate($stopover->geometry->coordinates[1], $stopover->geometry->coordinates[0])
-                    ))->calculateDistance();
+                if ($lastStopover === null || !isset($stopover->geometry->coordinates[0]) || !isset($stopover->geometry->coordinates[1])) {
+                    $lastStopover = $stopover;
+                    continue;
                 }
+
+                $distance += (new LineSegment(
+                    new Coordinate(
+                        $lastStopover->geometry->coordinates[1],
+                        $lastStopover->geometry->coordinates[0]
+                    ),
+                    new Coordinate($stopover->geometry->coordinates[1], $stopover->geometry->coordinates[0])
+                ))->calculateDistance();
 
                 $lastStopover = $stopover;
             }
