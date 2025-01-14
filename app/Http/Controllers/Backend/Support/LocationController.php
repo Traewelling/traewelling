@@ -64,9 +64,6 @@ class LocationController
         return $newStopovers;
     }
 
-    /**
-     * @throws JsonException
-     */
     public function calculateLivePosition(): ?LivePointDto {
         $newStopovers = $this->filterStopoversFromStatus();
 
@@ -86,43 +83,46 @@ class LocationController
                 $this->status
             );
         }
+        try {
+            $now               = Carbon::now()->timestamp;
+            $percentage        = ($now - $newStopovers[0]->departure->timestamp)
+                                 / ($newStopovers[1]->arrival->timestamp - $newStopovers[0]->departure->timestamp);
+            $this->origin      = $newStopovers[0];
+            $this->destination = $newStopovers[1];
+            $polyline          = $this->getPolylineBetween(false);
 
-        $now               = Carbon::now()->timestamp;
-        $percentage        = ($now - $newStopovers[0]->departure->timestamp)
-                             / ($newStopovers[1]->arrival->timestamp - $newStopovers[0]->departure->timestamp);
-        $this->origin      = $newStopovers[0];
-        $this->destination = $newStopovers[1];
-        $polyline          = $this->getPolylineBetween(false);
+            $meters      = $this->getDistanceFromGeoJson($polyline) * $percentage;
+            $recentPoint = null;
+            $distance    = 0;
+            foreach ($polyline->features as $key => $point) {
+                $point = Coordinate::fromGeoJson($point);
+                if ($recentPoint !== null && $point !== null) {
+                    $lineSegment = new LineSegment($recentPoint, $point);
 
-        $meters      = $this->getDistanceFromGeoJson($polyline) * $percentage;
-        $recentPoint = null;
-        $distance    = 0;
-        foreach ($polyline->features as $key => $point) {
-            $point = Coordinate::fromGeoJson($point);
-            if ($recentPoint !== null && $point !== null) {
-                $lineSegment = new LineSegment($recentPoint, $point);
-
-                $distance += $lineSegment->calculateDistance();
-                if ($distance >= $meters) {
-                    break;
+                    $distance += $lineSegment->calculateDistance();
+                    if ($distance >= $meters) {
+                        break;
+                    }
                 }
+                $recentPoint = $point ?? $recentPoint;
             }
-            $recentPoint = $point ?? $recentPoint;
+
+            $currentPosition = $lineSegment->interpolatePoint($meters / $distance);
+
+            $polyline->features = array_slice($polyline->features, $key);
+            array_unshift($polyline->features, Feature::fromCoordinate($currentPosition));
+
+            return new LivePointDto(
+                null,
+                $polyline,
+                $newStopovers[1]->arrival->timestamp,
+                $newStopovers[1]->departure->timestamp,
+                $this->trip->linename,
+                $this->status,
+            );
+        } catch (Exception) {
+            return null;
         }
-
-        $currentPosition = $lineSegment->interpolatePoint($meters / $distance);
-
-        $polyline->features = array_slice($polyline->features, $key);
-        array_unshift($polyline->features, Feature::fromCoordinate($currentPosition));
-
-        return new LivePointDto(
-            null,
-            $polyline,
-            $newStopovers[1]->arrival->timestamp,
-            $newStopovers[1]->departure->timestamp,
-            $this->trip->linename,
-            $this->status,
-        );
     }
 
     private function getDistanceFromGeoJson(stdClass $geoJson): int {
