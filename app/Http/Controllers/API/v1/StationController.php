@@ -153,25 +153,24 @@ class StationController extends Controller
      *      tags={"Checkin"},
      *      summary="Show station",
      *      description="This request returns a single station object",
-     * @OA\Parameter(
+     *      @OA\Parameter(
      *          name="id",
      *          in="path",
      *          description="station id",
      *          example="1337"
-     *     ),
-     * @OA\Response(
+     *      ),
+     *      @OA\Response(
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="object", ref="#/components/schemas/StationResource")
      *          )
-     *       ),
-     * @OA\Response(response=401, description="Unauthorized"),
-     * @OA\Response(response=503, description="There has been an error with our data provider"),
-     *       security={
+     *      ),
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=503, description="There has been an error with our data provider"),
+     *      security={
      *          {"passport": {"create-statuses"}}, {"token": {}}
-     *
-     *       }
+     *      }
      *     )
      */
     public function show(int $id): JsonResponse {
