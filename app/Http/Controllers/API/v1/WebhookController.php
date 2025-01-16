@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Http\Controllers\API\v1\Controller as APIController;
 use App\Http\Controllers\Backend\WebhookController as WebhookBackend;
 use App\Http\Resources\WebhookResource;
 use App\Models\Webhook;
@@ -18,8 +19,8 @@ class WebhookController extends Controller
      *     path="/webhooks",
      *     operationId="getWebhooks",
      *     tags={"Webhooks"},
-     *     summary="Get webhooks for current user.",
-     *     description="Returns all webhooks which are created for the current user.",
+     *     summary="Get webhooks for current user and current application.",
+     *     description="Returns all webhooks which are created for the current user and which the current authorized applicaton has access to.",
      *     @OA\Response(
      *         response=200,
      *         description="successful operation",
@@ -38,7 +39,14 @@ class WebhookController extends Controller
      * )
      */
     public function index(): AnonymousResourceCollection {
-        return WebhookResource::collection(Webhook::where('user_id', auth()->id())->get());
+        $currentClient = APIController::getCurrentOAuthClient();
+
+        $query = Webhook::where('user_id', auth()->id());
+        if ($currentClient !== null) { // null = Traewelling itself or personal access token
+            $query->where('client_id', $currentClient->id);
+        }
+
+        return WebhookResource::collection($query->get());
     }
 
     /**
@@ -47,7 +55,7 @@ class WebhookController extends Controller
      *      operationId="getSingleWebhook",
      *      tags={"Webhooks"},
      *      summary="Get single webhook",
-     *      description="Returns a single webhook Object, if user is authorized to see it",
+     *      description="Returns a single webhook Object, if user and application is authorized to see it",
      *      @OA\Parameter (
      *          name="id",
      *          in="path",
@@ -72,11 +80,9 @@ class WebhookController extends Controller
      *     )
      */
     public function show(int $webhookId): WebhookResource|JsonResponse {
-        $webhook = Webhook::where('user_id', auth()->id())
-                          ->where('id', '=', $webhookId)
-                          ->first();
+        $webhook = $this->getWebhookForUserAndCurrentClient($webhookId);
         if ($webhook == null) {
-            return $this->sendError('No webhook found for this id.');
+            return response()->json(null, 404);
         }
         return new WebhookResource($webhook);
     }
@@ -86,7 +92,7 @@ class WebhookController extends Controller
      *      path="/webhooks/{id}",
      *      operationId="deleteWebhook",
      *      tags={"Webhooks"},
-     *      summary="Delete a webhook if the user is authorized to do",
+     *      summary="Delete a webhook if the user and application is authorized to do",
      *      description="",
      *      @OA\Parameter (
      *          name="id",
@@ -106,14 +112,32 @@ class WebhookController extends Controller
      */
     public function destroy(int $webhookId): JsonResponse {
         try {
-            $webhook = Webhook::findOrFail($webhookId);
+            $webhook = $this->getWebhookForUserAndCurrentClient($webhookId);
+            if ($webhook == null) {
+                return response()->json(null, 404);
+            }
+
             $this->authorize('delete', $webhook);
             $webhook->delete();
             return response()->json(null, 204);
         } catch (AuthorizationException) {
             return $this->sendError('You are not allowed to delete this webhook', 403);
-        } catch (ModelNotFoundException) {
-            return $this->sendError('No webhook found for this id.');
         }
+    }
+
+    /**
+     * @param int $webhookId
+     *
+     * @return Webhook|null null if not found or not authorized for client
+     */
+    private function getWebhookForUserAndCurrentClient(int $webhookId): ?Webhook {
+        $currentClient = APIController::getCurrentOAuthClient();
+
+        $query = Webhook::where('user_id', auth()->id());
+        if ($currentClient !== null) { // null = Traewelling itself or personal access token
+            $query->where('client_id', $currentClient->id);
+        }
+
+        return $query->where('id', '=', $webhookId)->first();
     }
 }

@@ -161,8 +161,7 @@ class Controller extends \App\Http\Controllers\Controller
     public static function getCurrentOAuthClient(): OAuthClient|null {
         try {
             return request()?->user()?->token()?->client;
-        } catch (Throwable $throwable) {
-            Log::debug('Could not get current OAuth Client: ' . $throwable->getMessage());
+        } catch (Throwable) {
             return null;
         }
     }

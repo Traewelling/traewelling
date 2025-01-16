@@ -67,7 +67,6 @@ export default {
     async fetchWebhooks() {
       axios.get('/api/v1/webhooks')
           .then(response => {
-            console.log(response.data)
             this.webhooks = response.data.data;
           })
           .catch(error => {
