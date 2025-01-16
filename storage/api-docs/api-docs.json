@@ -1605,7 +1605,7 @@
                 ]
             }
         },
-        "/station/{id}": {
+        "/stations/{id}": {
             "get": {
                 "tags": [
                     "Checkin"
