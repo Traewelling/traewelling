@@ -445,6 +445,11 @@ class StatusController extends Controller
                 'visibility' => StatusVisibility::from($validated['visibility']),
             ];
 
+            if($status->lock_visibility) {
+                // If moderation has locked the visibility, prevent the user from changing it
+                unset($updatePayload['visibility']);
+            }
+
             if (array_key_exists('eventId', $validated)) { // don't use isset here as it would return false if eventId is null
                 $updatePayload['event_id'] = $validated['eventId'];
             }
