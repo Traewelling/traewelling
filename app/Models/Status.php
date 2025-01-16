@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * //properties
@@ -41,7 +43,7 @@ use Illuminate\Support\Facades\Auth;
 class Status extends Model
 {
 
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $fillable = [
         'user_id', 'body', 'business', 'visibility', 'event_id', 'mastodon_post_id', 'client_id',
@@ -125,5 +127,9 @@ class Status extends Model
      */
     public function getStatusInvisibleToMeAttribute(): bool {
         return !request()?->user()?->can('view', $this);
+    }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()->logOnly(['moderation_notes', 'lock_visibility', 'hide_body']);
     }
 }
