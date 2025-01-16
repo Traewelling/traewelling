@@ -148,7 +148,7 @@ class StationController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/station/{id}",
+     *      path="/stations/{id}",
      *      operationId="showStation",
      *      tags={"Checkin"},
      *      summary="Show station",

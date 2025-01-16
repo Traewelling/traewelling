@@ -97,7 +97,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::prefix('station')->middleware(['scope:write-statuses'])->group(static function() {
             Route::put('/{id}/home', [TransportController::class, 'setHome'])->whereNumber('id');
             Route::get('/{id}/departures', [TransportController::class, 'getDepartures'])->whereNumber('id');
-            Route::get('/{id}', [StationController::class, 'show'])->whereNumber('id');
         });
 
         Route::group(['prefix' => 'statistics', 'middleware' => 'scope:read-statistics'], static function() {
