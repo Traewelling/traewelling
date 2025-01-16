@@ -270,9 +270,6 @@
     "transport_types.bus": "Bus",
     "transport_types.business": "Zakenreis",
     "transport_types.businessPlural": "Zakenreizen",
-    "transport_types.express": "Sneltrein/Intercity",
-    "transport_types.national": "Intercity (IC, EC, …)",
-    "transport_types.nationalExpress": "Hogesnelheidstrein (ICE, RJ, TGV, …)",
     "transport_types.ferry": "Veerboot",
     "transport_types.private": "Privéreis",
     "transport_types.privatePlural": "Privéreizen",
@@ -513,7 +510,6 @@
     "stationboard.check-chainPost": "Toevoegen aan recentste check-in",
     "status.visibility.0": "Openbaar",
     "status.visibility.2.detail": "Alleen zichtbaar voor (goedgekeurde) volgers",
-    "transport_types.regionalExp": "Sneltrein",
     "stats.trips": "Ritten",
     "stats.no-data": "Er zijn gegevens over deze periode beschikbaar.",
     "stats.purpose": "Reisdoelen",
@@ -741,9 +737,6 @@
     "create-journey": "Reis toevoegen",
     "trip_creation.limitations.1": "Je kunt alleen stations toevoegen die beschikbaar zijn in DB Navigator",
     "trip_creation.limitations.2": "De routekaarten zijn overgenomen van de opgegeven stations",
-    "trip_creation.beta": "Let op: het toevoegen van reizen bevindt zich momenteel in de testfase. Je kunt eigen reizen toevoegen door stationsnamen en tijden in te vullen. Wel zijn er enkele beperkingen, die hieronder worden benoemd.",
-    "trip_creation.beta2": "Als je problemen ervaart, meld ze dan aan ons.",
-    "trip_creation.report_issue": "Probleem melden",
     "trip_creation.form.origin": "Vertrekstation",
     "trip_creation.form.destination": "Aankomststation",
     "trip_creation.form.add_stopover": "Overstap toevoegen",
@@ -758,7 +751,6 @@
     "trip_creation.title": "Eigen reis toevoegen",
     "checkin.success.title": "Inchecken gelukt!",
     "messages.exception.general-values": "Er is een onbekende fout opgetreden. Probeer het opnieuw met andere waarden.",
-    "trip_creation.limitations.4": "De vervoerder kan niet direct worden gekozen (wel via de api)",
     "trip_creation.limitations.5": "Er worden geen foutmeldingen getoond, dus als er niks gebeurt, dan is er sprake van een fout.",
     "missing-journey": "Heb je je reis nog niet gevonden?",
     "trip_creation.limitations.2.small": "(we trachten om een route via Brouter op te maken, maar dit werkt niet altijd naar behoren)",
@@ -845,5 +837,6 @@
     "trip-info.in-this-connection": "Op deze verbinding",
     "trip-info.user": "Gebruiker",
     "trip-info.origin": "Beginpunt",
-    "trip-info.destination": "Eindpunt"
+    "trip-info.destination": "Eindpunt",
+    "requested-timestamp": "Verzocht tijdstip"
 }

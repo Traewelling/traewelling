@@ -4,7 +4,7 @@
     use App\Http\Controllers\Backend\Helper\StatusHelper;
     use App\Http\Controllers\Backend\Transport\StationController;
     use App\Http\Controllers\Backend\Transport\StatusController;
-    use App\Http\Controllers\Backend\User\ProfilePictureController;
+    use App\Http\Controllers\Backend\User\ProfilePictureController;use Illuminate\Support\Facades\Gate;
 @endphp
 @php /** @var App\Models\Status $status */ @endphp
 <div class="card status mb-3" id="status-{{ $status->id }}"
@@ -74,7 +74,7 @@
                         @endif
                     </a>
 
-                    <p class="train-status text-muted">
+                    <p class="train-status text-muted m-0">
                         <span>
                             @if(file_exists(public_path('img/' . $status->checkin->trip->category->value . '.svg')))
                                 <img class="product-icon"
@@ -130,8 +130,31 @@
                         @endif
                     </p>
 
-                    @if(!empty($status->body))
-                        <p class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i>
+                    @if(auth()->check() && auth()->id() === $status->user_id)
+                        @if($status->moderation_notes)
+                            <p class="text-warning font-italic m-0">
+                                <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                {{ $status->moderation_notes }}
+                            </p>
+                        @endif
+
+                        @if($status->lock_visibility)
+                            <p class="text-warning font-italic m-0">
+                                <i class="fas fa-lock" aria-hidden="true"></i>
+                                {{ __('status.locked-visibility') }}
+                            </p>
+                        @endif
+
+                        @if($status->hide_body)
+                            <p class="text-warning font-italic m-0">
+                                <i class="fas fa-eye-slash" aria-hidden="true"></i>
+                                {{ __('status.hidden-body') }}
+                            </p>
+                        @endif
+                    @endif
+
+                    @if(!empty($status->body) && Gate::allows('viewBody', $status))
+                        <p class="status-body mt-2"><i class="fas fa-quote-right" aria-hidden="true"></i>
                             {!! StatusController::getPrintableEscapedBody($status) !!}
                         </p>
                     @endif
@@ -333,7 +356,7 @@
             </li>
         </ul>
     </div>
-    @if(\Illuminate\Support\Facades\Gate::allows('like', $status) && Route::current()->uri == "status/{id}")
+    @if(Gate::allows('like', $status) && Route::current()->uri == "status/{id}")
         @foreach($status->likes as $like)
             <div class="card-footer text-muted clearfix">
                 <a href="{{ route('profile', ['username' => $like->user->username]) }}">

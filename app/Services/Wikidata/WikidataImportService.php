@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 class WikidataImportService
 {
 
-    // supported types global definieren
+    // supported types global definieren - todo: support wikidata hierarchie so we don't need to define all types separately
     private const SUPPORTED_TYPES = [
         'Q55490', // Durchgangsbahnhof
         'Q18543139', // Hauptbahnhof
@@ -21,6 +21,8 @@ class WikidataImportService
         'Q124817561', // Betriebsstelle
         'Q644371', // internationaler Flughafen
         'Q21836433', // Flughafen
+        'Q1248784', // auch Flughafen
+        'Q94993988', // Verkehrslandeplatz
         'Q1335652', // airport railway station
         'Q63979268', // people mover station
         'Q953806', // Bushaltestelle

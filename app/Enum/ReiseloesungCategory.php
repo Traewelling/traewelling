@@ -33,4 +33,18 @@ enum ReiseloesungCategory: string
             default               => HafasTravelType::REGIONAL,
         };
     }
+
+    public static function fromTravelType(TravelType|null $travelType): ?array {
+        return match ($travelType) {
+            TravelType::EXPRESS  => [ReiseloesungCategory::ICE, ReiseloesungCategory::EC_IC],
+            TravelType::REGIONAL => [ReiseloesungCategory::IR, ReiseloesungCategory::REGIONAL],
+            TravelType::SUBURBAN => [ReiseloesungCategory::SBAHN],
+            TravelType::BUS      => [ReiseloesungCategory::BUS],
+            TravelType::FERRY    => [ReiseloesungCategory::SCHIFF],
+            TravelType::SUBWAY   => [ReiseloesungCategory::UBAHN],
+            TravelType::TRAM     => [ReiseloesungCategory::TRAM],
+            TravelType::TAXI     => [ReiseloesungCategory::ANRUFPFLICHTIG],
+            default              => null
+        };
+    }
 }

@@ -1605,6 +1605,57 @@
                 ]
             }
         },
+        "/stations/{id}": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Show station",
+                "description": "This request returns a single station object",
+                "operationId": "showStation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "station id",
+                        "example": "1337"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/StationResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "503": {
+                        "description": "There has been an error with our data provider"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "create-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/leaderboard": {
             "get": {
                 "tags": [
@@ -4362,8 +4413,8 @@
                 "tags": [
                     "Webhooks"
                 ],
-                "summary": "Get webhooks for current user and current application",
-                "description": "Returns all webhooks which are created for the current user and which the current authorized applicaton has access to.",
+                "summary": "Get webhooks for current user.",
+                "description": "Returns all webhooks which are created for the current user.",
                 "operationId": "getWebhooks",
                 "responses": {
                     "200": {
@@ -4404,7 +4455,7 @@
                     "Webhooks"
                 ],
                 "summary": "Get single webhook",
-                "description": "Returns a single webhook Object, if user and application is authorized to see it",
+                "description": "Returns a single webhook Object, if user is authorized to see it",
                 "operationId": "getSingleWebhook",
                 "parameters": [
                     {
@@ -4453,7 +4504,7 @@
                 "tags": [
                     "Webhooks"
                 ],
-                "summary": "Delete a webhook if the user and application are authorized to do",
+                "summary": "Delete a webhook if the user is authorized to do",
                 "description": "",
                 "operationId": "deleteWebhook",
                 "parameters": [
@@ -4468,15 +4519,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/SuccessResponse"
-                                }
-                            }
-                        }
+                    "204": {
+                        "description": "Webhook deleted."
                     },
                     "400": {
                         "description": "Bad request"

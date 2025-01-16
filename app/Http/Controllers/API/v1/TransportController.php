@@ -319,7 +319,18 @@ class TransportController extends Controller
                 results:   1
             )->first();
         } catch (HafasException) {
-            return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 503);
+            $upperLeft  = [
+                'latitude'  => $validated['latitude'] + 0.0015,
+                'longitude' => $validated['longitude'] + 0.0015
+            ];
+            $lowerRight = [
+                'latitude'  => $validated['latitude'] - 0.0015,
+                'longitude' => $validated['longitude'] - 0.0015
+            ];
+
+            $nearestStation = Station::whereBetween('latitude', [$lowerRight['latitude'], $upperLeft['latitude']])
+                                     ->whereBetween('longitude', [$lowerRight['longitude'], $upperLeft['longitude']])
+                                     ->first();
         }
 
         if ($nearestStation === null) {

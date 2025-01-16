@@ -22,6 +22,9 @@ use Illuminate\Validation\Rules\Enum;
 class StatusController extends Controller
 {
 
+    /**
+     * @deprecated Use API endpoint instead
+     */
     public function updateStatus(Request $request): JsonResponse|RedirectResponse {
         $validated = $request->validate([
                                             'statusId'              => ['required', 'exists:statuses,id'],
@@ -44,11 +47,18 @@ class StatusController extends Controller
                 return back()->with('error', 'You are not allowed to update non-private statuses. Please set the status to private.');
             }
 
-            $status->update([
-                                'body'       => $validated['body'] ?? null,
-                                'business'   => Business::from($validated['business_check']),
-                                'visibility' => $newVisibility,
-                            ]);
+            $statusPayload = [
+                'body'       => $validated['body'] ?? null,
+                'business'   => Business::from($validated['business_check']),
+                'visibility' => $newVisibility,
+            ];
+
+            if($status->lock_visibility) {
+                // If moderation has locked the visibility, prevent the user from changing it
+                unset($statusPayload['visibility']);
+            }
+
+            $status->update($statusPayload);
 
             $status->checkin->update([
                                          'manual_departure' => isset($validated['manualDeparture']) ?

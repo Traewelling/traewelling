@@ -119,7 +119,7 @@ class Bahn extends Controller implements DataProviderInterface
         //urgh, there is no lat/lon - extract it from id
         // example id: A=1@O=Druseltal, Kassel@X=9414484@Y=51301106@U=81@L=714800@
         $matches = [];
-        preg_match('/@X=(\d+)@Y=(\d+)/', $rawHalt['id'], $matches);
+        preg_match('/@X=(-?\d+)@Y=(-?\d+)/', $rawHalt['id'], $matches);
         $latitude  = $matches[2] / 1000000;
         $longitude = $matches[1] / 1000000;
 
@@ -157,11 +157,18 @@ class Bahn extends Controller implements DataProviderInterface
             $when = clone $when;
 
             $when->tz($timezone);
-            $response = Http::get("https://www.bahn.de/web/api/reiseloesung/abfahrten", [
-                'ortExtId' => $station->ibnr,
-                'datum'    => $when->format('Y-m-d'),
-                'zeit'     => $when->format('H:i'),
-            ]);
+
+            $params = '?ortExtId=' . $station->ibnr . '&datum=' . $when->format('Y-m-d') . '&zeit=' . $when->format('H:i');
+
+            $filterCategory = ReiseloesungCategory::fromTravelType($type);
+            if (isset($filterCategory)) {
+                foreach($filterCategory as $category) {
+                    $params = $params . '&verkehrsmittel[]=' . $category->value;
+                }
+            }
+
+            $requestUrl = "https://www.bahn.de/web/api/reiseloesung/abfahrten" . $params;
+            $response = Http::get($requestUrl);
 
             if (!$response->ok()) {
                 CacheKey::increment(HCK::DEPARTURES_NOT_OK);
@@ -198,17 +205,21 @@ class Bahn extends Controller implements DataProviderInterface
                     $departureStation = $station;
                 }
 
+                preg_match('/#ZE#(\d+)/', $journeyId, $matches);
+                $journeyNumber = 0;
+                if (count($matches) > 1) {
+                    $journeyNumber = $matches[1];
+
+                    if (empty($tripLineName)) {
+                        $tripLineName = $matches[1];
+                    }
+                }
+
                 // Cache data used for trip creation since another endpoints do not provide them
                 Cache::add($journeyId, [
                     'category' => $hafasTravelType,
                     'lineName' => $tripLineName
                 ],         now()->addMinutes(30));
-
-                preg_match('/#ZE#(\d+)/', $journeyId, $matches);
-                $journeyNumber = 0;
-                if (count($matches) > 1) {
-                    $journeyNumber = $matches[1];
-                }
 
                 $departure = new Departure(
                     station:          $departureStation,
@@ -318,10 +329,14 @@ class Bahn extends Controller implements DataProviderInterface
         }
 
         $tripLineName = $cachedData['lineName'] ?? '';
-        preg_match('/#ZE#(\d+)/', $tripID, $matches);
-        $tripNumber = 0;
-        if (count($matches) > 1) {
-            $tripNumber = $matches[1];
+
+        // get trip number from first stop
+        $tripNumber = isset($rawJourney['halte'][0]['nummer']) ? (int) $rawJourney['halte'][0]['nummer'] : 0;
+        if ($tripNumber === 0) {
+            preg_match('/#ZE#(\d+)/', $tripID, $matches);
+            if (count($matches) > 1) {
+                $tripNumber = $matches[1];
+            }
         }
 
         $stopovers = collect();

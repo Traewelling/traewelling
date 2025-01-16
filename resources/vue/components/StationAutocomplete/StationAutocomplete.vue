@@ -356,10 +356,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-.autocomplete-item {
-  background-color: var(--mdb-modal-bg) !important;
-}
-
 .slide-fade-leave-active,
 .slide-fade-enter-active {
   transition: all 0.3s ease-out;

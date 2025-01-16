@@ -169,12 +169,6 @@ class SettingsController extends Controller
         ]);
     }
 
-    public function renderWebhooks(): Renderable {
-        return view('settings.webhooks', [
-            'webhooks' => WebhookController::index(user: auth()->user()),
-        ]);
-    }
-
     /**
      * Approve a follow request
      *

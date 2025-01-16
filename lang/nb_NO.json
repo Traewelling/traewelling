@@ -397,7 +397,6 @@
     "transport_types.national": "Langdistansetransport (IC, EC, ...)",
     "transport_types.nationalExpress": "Langdistansetransport (IC, EC, ...)",
     "transport_types.regional": "regional",
-    "transport_types.regionalExp": "Regional Express",
     "stats.personal": "Personlig statistikk fra :fromDate til :toDate",
     "stats.global": "Global statistikk",
     "stats.companies": "Trafikkfirma",
