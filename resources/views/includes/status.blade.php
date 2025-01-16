@@ -160,7 +160,7 @@
                     @endif
 
                     @if($status->checkin->departure->isPast() && $status->checkin->arrival->isFuture())
-                        <p class="text-muted font-italic">
+                        <p class="text-muted font-italic mt-2">
                             {{ __('stationboard.next-stop') }}
 
                             @php
