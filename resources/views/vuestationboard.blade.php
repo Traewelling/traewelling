@@ -2,6 +2,13 @@
 
 @section('title', 'RIS')
 
+@php
+    $createTripQuery = '';
+    if (isset($station)) {
+        $createTripQuery = '?from=' . $station->id;
+    }
+@endphp
+
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
@@ -15,7 +22,8 @@
                             <i class="fa-solid fa-plus"></i>
                             {{__('missing-journey')}}
                         </p>
-                        <a href="{{ route('trip.create') }}" class="btn btn-sm btn-outline-secondary">
+                        <a href="{{ route('trip.create') . $createTripQuery }}"
+                           class="btn btn-sm btn-outline-secondary">
                             <i class="fa-solid fa-plus"></i>
                             {{__('create-journey')}}
                         </a>

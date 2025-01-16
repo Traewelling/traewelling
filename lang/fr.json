@@ -387,7 +387,6 @@
     "status.visibility.0": "Public",
     "status.visibility.3": "Privé",
     "date-format": "DD/MM/YYYY",
-    "transport_types.regionalExp": "TER",
     "status.visibility.1": "Non listé",
     "status.visibility.3.detail": "Visible seulement pour toi",
     "status.visibility.0.detail": "Visible pour tous, affiché sur le tableau de bord, avec les évènements, etc.",

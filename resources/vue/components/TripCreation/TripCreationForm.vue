@@ -1,13 +1,16 @@
 <script>
-import StationRow from "./StationRow.vue";
 import {DateTime} from "luxon";
 import {trans} from "laravel-vue-i18n";
+import StationInput from "./StationInput.vue";
+import TripCreationMap from "./TripCreationMap.vue";
 
 export default {
   name: "TripCreationForm",
-  components: {StationRow},
+  components: {TripCreationMap, StationInput},
   mounted() {
+    this.initForm();
     this.loadOperators();
+    this.getOriginFromQuery();
   },
   data() {
     return {
@@ -19,9 +22,10 @@ export default {
         lineName: "",
         journeyNumber: 0,
         operatorId: "",
-        category: "",
+        category: {},
         stopovers: [],
       },
+      tripDataActive: true,
       originTimezone: "Europe/Berlin",
       destinationTimezone: "Europe/Berlin",
       stopovers: [],
@@ -29,18 +33,20 @@ export default {
       destination: {},
       journeyNumberInput: "",
       trainTypeInput: "",
+      selectedCategory: {},
+      selectedOperator: null,
       categories: [
-        {value: "nationalExpress", text: "nationalExpress"},
-        {value: "national", text: "national"},
-        {value: "regionalExp", text: "regionalExpress"},
-        {value: "regional", text: "regional"},
-        {value: "suburban", text: "suburban"},
-        {value: "bus", text: "bus"},
-        {value: "ferry", text: "ferry"},
-        {value: "subway", text: "subway"},
-        {value: "tram", text: "tram"},
-        {value: "taxi", text: "taxi"},
-        {value: "plane", text: "plane"},
+        {value: "nationalExpress", text: "nationalExpress", emoji: "🚄"},
+        {value: "national", text: "national", emoji: "🚅"},
+        {value: "regionalExp", text: "regionalExpress", emoji: "🚆"},
+        {value: "regional", text: "regional", emoji: "🚞"},
+        {value: "suburban", text: "suburban", emoji: "🚋"},
+        {value: "bus", text: "bus", emoji: "🚌"},
+        {value: "ferry", text: "ferry", emoji: "⛴"},
+        {value: "subway", text: "subway", emoji: "🚇"},
+        {value: "tram", text: "tram", emoji: "🚊"},
+        {value: "taxi", text: "taxi", emoji: "🚖"},
+        {value: "plane", text: "plane", emoji: "✈️"},
       ],
       operators: [],
       disallowed: ["fahrrad", "auto", "fuss", "fuß", "foot", "car", "bike"],
@@ -63,11 +69,20 @@ export default {
       };
       this.stopovers.push(dummyStopover);
     },
+    showData() {
+      this.tripDataActive = true;
+    },
+    showMap() {
+      this.tripDataActive = false;
+      this.$refs.map.invalidateSize();
+    },
     removeStopover(index) {
+      this.$refs.map.removeMarker(index);
       this.stopovers.splice(index, 1);
       this.validateTimes(); // Optional: Zeiten erneut validieren
     },
     setOrigin(item) {
+      this.$refs.map.addMarker(item, "origin", this.stopovers.length);
       this.origin = item;
       this.form.originId = item.id;
     },
@@ -76,6 +91,7 @@ export default {
       this.validateTimes();
     },
     setDestination(item) {
+      this.$refs.map.addMarker(item, "destination", this.stopovers.length);
       this.destination = item;
       this.form.destinationId = item.id;
     },
@@ -119,6 +135,7 @@ export default {
           arrival: stopover.arrivalPlanned,
         };
       });
+      this.form.category = this.selectedCategory.value;
 
       fetch("/api/v1/trains/trip", {
         method: "POST",
@@ -150,6 +167,7 @@ export default {
       });
     },
     setStopoverStation(item, key) {
+      this.$refs.map.addMarker(item, key, this.stopovers.length);
       this.stopovers[key].station = item;
     },
     setStopoverDeparture(time, key) {
@@ -164,6 +182,40 @@ export default {
       this.showDisallowed = this.disallowed.some((disallowed) => {
         return this.trainTypeInput.toLowerCase().includes(disallowed);
       });
+    },
+    guessModeOfTransport() {
+      // todo: guess mode of transport based on line input
+      // e.g.: if line starts with ICE or TGV, set category to nationalExpress
+    },
+    getOriginFromQuery() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const stationId = urlParams.get("from");
+
+      if (stationId) {
+        fetch(`/api/v1/stations/${stationId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(response.statusText);
+              }
+              return response.json();
+            })
+            .then((result) => {
+              console.log(result.data);
+              this.$refs.originInput.setStation(result.data);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+      }
+    },
+    onLineInput() {
+      this.checkDisallowed()
+      this.guessModeOfTransport();
     },
     loadOperators(cursor = null) {
       fetch("/api/v1/operators?cursor=" + cursor, {
@@ -188,147 +240,213 @@ export default {
           .catch((error) => {
             console.error(error);
           });
+    },
+    initForm() {
+      this.selectedCategory = this.categories[0];
+    },
+    onChangeCat(event) {
+      console.log(event);
+      console.log(this.selectedCategory)
     }
   }
 }
 </script>
 
 <template>
-  <div>
-    <h1 class="fs-2 mb-2">
-      <i class="fa fa-plus" aria-hidden="true"></i>
-      {{ trans("trip_creation.title") }}
-    </h1>
-
-    <div class="card mb-3">
-      <form @submit.prevent="sendForm" class="card-body">
-        <div class="row g-3 mb-3">
-          <div class="d-flex align-items-center w-100">
-            <StationRow
-                :placeholder="trans('trip_creation.form.origin')"
-                :arrival="false"
-                v-on:update:station="setOrigin"
-                v-on:update:timeFieldB="setDeparture"
-            ></StationRow>
+  <div class="row mt-n4 mb-4 border-bottom d-block d-md-none">
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" :class="{'active': tripDataActive}" @click="showData">
+          {{ trans('trip_creation.form.trip_data') }}
+        </button>
+      </li>
+      <li class="nav-item" role="presentation" @click="showMap">
+        <button class="nav-link" :class="{'active': !tripDataActive}">
+          {{ trans('trip_creation.form.map') }}
+        </button>
+      </li>
+    </ul>
+  </div>
+  <div class="row full-height mt-n4 mx-0">
+    <div class="col d-md-block col-md-5 col-lg-4 col-xl-3 p-0 h-100" :class="{'d-none': !tripDataActive}">
+      <div class="accordion accordion-flush border-bottom" id="TripCreationMetaDataAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="accordionTripInfo">
+            <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse"
+                    data-mdb-target="#collapseTripInfo" aria-expanded="false" aria-controls="collapseTripInfo">
+              <div class="d-flex justify-start w-100">
+                <i class="fa-solid fa-list-check"></i>
+                <span class="d-flex justify-content-between w-100 px-2">
+                  <span class="fw-bold" v-if="!trainTypeInput.length">
+                    {{ trans('trip_creation.form.trip_data') }}
+                  </span>
+                  <span class="fw-bold" v-else>
+                    {{ trainTypeInput }}
+                    <span class="fw-lighter fst-italic text-secondary">{{ journeyNumberInput }}</span>
+                  </span>
+                </span>
+              </div>
+            </button>
+          </h2>
+          <div id="collapseTripInfo" class="accordion-collapse collapse" aria-labelledby="accordionTripInfo"
+               data-mdb-parent="#accordionTripInfo">
+            <div class="accordion-body">
+              <input type="text" class="form-control mb-2" :placeholder="trans('trip_creation.form.line')"
+                     :aria-label="trans('trip_creation.form.line')" aria-describedby="basic-addon1"
+                     v-model="trainTypeInput" @focusout="onLineInput"
+              >
+              <input type="text" class="form-control" :placeholder="trans('trip_creation.form.number')"
+                     :aria-label="trans('trip_creation.form.number')" aria-describedby="basic-addon1"
+                     v-model="journeyNumberInput"
+              >
+              <div class="alert alert-danger mt-2" v-show="showDisallowed">
+                <i class="fas fa-triangle-exclamation"></i>
+                {{ trans('trip_creation.limitations.6') }}
+                <a :href="trans('trip_creation.limitations.6.link')" target="_blank">
+                  {{ trans('trip_creation.limitations.6.rules') }}
+                </a>
+              </div>
+            </div>
           </div>
         </div>
-        <a href="#" @click="addStopover">{{ trans("trip_creation.form.add_stopover") }}
-          <i class="fa fa-plus" aria-hidden="true"></i>
-        </a>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="accordionTripCategory">
+            <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse"
+                    data-mdb-target="#collapseTripCategory" aria-expanded="false" aria-controls="collapseTripCategory">
+              <div class="d-flex justify-start w-100">
+                {{ this.selectedCategory.emoji }}
+                <span class="d-flex justify-content-between w-100 px-2">
+                  <span class="fw-bold">{{ trans('trip_creation.form.travel_type') }}</span>
+                  <span>{{ trans("transport_types." + this.selectedCategory.value) }}</span>
+                </span>
+              </div>
+            </button>
+          </h2>
+          <div id="collapseTripCategory" class="accordion-collapse collapse" aria-labelledby="accordionTripCategory"
+               data-mdb-parent="#accordionTripCategory">
+            <div class="accordion-body">
+              <ul class="list-group">
+                <li v-for="item in categories" class="list-group-item">
+                  <input type="radio" class="form-check-input me-1" name="categoryRadio" :id="item.value" :value="item"
+                         v-model="selectedCategory" @change="onChangeCat">
+                  <label class="form-check-label stretched-link" :for="item.value">
+                    {{ item.emoji }} {{ trans("transport_types." + item.value) }}
+                  </label>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="accordionTripOperator">
+            <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse"
+                    data-mdb-target="#collapseTripOperator" aria-expanded="false" aria-controls="collapseTripOperator">
+              <div class="d-flex justify-start w-100">
+                <i class="fa-solid fa-building"></i>
+                <span class="d-flex justify-content-between w-100 px-2">
+                  <span class="fw-bold" v-if="selectedOperator == null">
+                    {{ trans('export.title.operator') }}
+                  </span>
+                  <span class="fw-bold" v-else>
+                    {{ selectedOperator.name }}
+                  </span>
+                </span>
+              </div>
+            </button>
+          </h2>
+          <div id="collapseTripOperator" class="accordion-collapse collapse" aria-labelledby="accordionTripOperator"
+               data-mdb-parent="#accordionTripOperator">
+            <div class="accordion-body">
+              <!-- todo: make searchable -->
+              <select class="form-select" v-model="selectedOperator">
+                <option selected>-/-</option>
+                <option v-for="operator in operators" :value="operator">{{ operator.name }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <form @submit.prevent="sendForm" class="px-4 mt-4">
+        <StationInput
+            ref="originInput"
+            :placeholder="trans('trip_creation.form.origin')"
+            :arrival="false"
+            v-on:update:station="setOrigin"
+            v-on:update:timeFieldB="setDeparture"
+        ></StationInput>
+
         <div class="row g-3 mt-1" v-for="(stopover, key) in stopovers" :key="key">
           <div class="d-flex align-items-center w-100">
             <div class="flex-grow-1 d-flex">
-              <StationRow
+              <StationInput
                   :placeholder="trans('trip_creation.form.stopover')"
                   v-on:update:station="setStopoverStation($event, key)"
                   v-on:update:timeFieldB="setStopoverDeparture($event, key)"
                   v-on:update:timeFieldA="setStopoverArrival($event, key)"
-              ></StationRow>
-
-              <button type="button" class="btn btn-danger btn-sm ms-3"
-                      @click="removeStopover(key)"
-                      style="height: calc(3.5rem);"
-              >
-                <i class="fa fa-trash" aria-hidden="true"></i>
-              </button>
-            </div>
-          </div>
-          <hr class="my-2">
-        </div>
-        <div class="row g-3 mt-1">
-          <div class="d-flex align-items-center w-100">
-            <StationRow
-                :placeholder="trans('trip_creation.form.destination')"
-                :departure="false"
-                v-on:update:station="setDestination"
-                v-on:update:timeFieldB="setArrival"
-            ></StationRow>
-          </div>
-        </div>
-        <div class="row g-3 mt-1">
-          <div class="col-12 col-md-3">
-            <div class="form-floating">
-              <input type="text" class="form-control mobile-input-fs-16"
-                     v-model="trainTypeInput"
-                     @focusout="checkDisallowed"
-              >
-              <label v-text="trans('trip_creation.form.line')"></label>
-            </div>
-          </div>
-          <div class="col-12 col-md-3">
-            <div class="form-floating">
-              <input type="text" class="form-control mobile-input-fs-16"
-                     v-model="journeyNumberInput"
-              >
-              <label v-text="trans('trip_creation.form.number')"></label>
-            </div>
-          </div>
-          <div class="col-12 col-md-3">
-            <div class="form-floating">
-              <select class="form-select" v-model="form.category">
-                <option value="">-/-</option>
-                <option v-for="category in categories" :value="category.value">{{ category.text }}</option>
-              </select>
-              <label v-text="trans('trip_creation.form.travel_type')"></label>
-            </div>
-          </div>
-          <div class="col-12 col-md-3">
-            <div class="form-floating">
-              <select class="form-select" v-model="form.operatorId">
-                <option value="">-/-</option>
-                <option v-for="operator in operators" :value="operator.id">{{ operator.name }}</option>
-              </select>
-              <label v-text="trans('export.title.operator')"></label>
+                  v-on:delete="removeStopover(key)"
+              ></StationInput>
             </div>
           </div>
         </div>
 
-        <div class="row g-3 mt-1">
-          <span class="text-danger" v-show="showDisallowed">
-            <i class="fas fa-triangle-exclamation"></i>
-            {{ trans('trip_creation.limitations.6') }}
-            <a :href="trans('trip_creation.limitations.6.link')" target="_blank">
-              {{ trans('trip_creation.limitations.6.rules') }}
-            </a>
-          </span>
+        <div class="mb-2 px-3">
+          <a href="#" @click="addStopover">{{ trans("trip_creation.form.add_stopover") }}
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </a>
         </div>
-        <div class="row justify-content-end mt-3">
-          <div class="col-12">
-            <div class="alert alert-danger" v-if="validation.times === false">
-              {{ trans("trip_creation.no-valid-times") }}
-            </div>
-          </div>
-          <div class="col-4">
-            <button type="submit" class="btn btn-primary float-end">
-              {{ trans("trip_creation.form.save") }}
-            </button>
-          </div>
+
+        <StationInput
+            :placeholder="trans('trip_creation.form.destination')"
+            :arrival="true"
+            :departure="false"
+            v-on:update:station="setDestination"
+            v-on:update:timeFieldB="setArrival"
+        ></StationInput>
+
+        <div class="mt-4 border-top pt-4 d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary">
+            {{ trans("trip_creation.form.save") }}
+          </button>
         </div>
+
       </form>
+
+      <div class="alert alert-warning m-2">
+        <h2 class="fs-5">
+          <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+          {{ trans("trip_creation.limitations") }}
+        </h2>
+
+        <ul>
+          <li>{{ trans("trip_creation.limitations.1") }}</li>
+          <li>
+            {{ trans("trip_creation.limitations.2") }}
+            <small>{{ trans("trip_creation.limitations.2.small") }}</small>
+          </li>
+          <li>{{ trans("trip_creation.limitations.3") }}</li>
+          <li>{{ trans("trip_creation.limitations.5") }}</li>
+        </ul>
+
+        <p class="fw-bold text-danger">
+          {{ trans("trip_creation.limitations.6") }}
+          <a :href="trans('trip_creation.limitations.6.link')" target="_blank">
+            {{ trans('trip_creation.limitations.6.rules') }}
+          </a>
+        </p>
+      </div>
+
     </div>
-
-    <div class="alert alert-warning">
-      <h2 class="fs-5">
-        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-        {{ trans("trip_creation.limitations") }}
-      </h2>
-
-      <ul>
-        <li>{{ trans("trip_creation.limitations.1") }}</li>
-        <li>
-          {{ trans("trip_creation.limitations.2") }}
-          <small>{{ trans("trip_creation.limitations.2.small") }}</small>
-        </li>
-        <li>{{ trans("trip_creation.limitations.3") }}</li>
-        <li>{{ trans("trip_creation.limitations.5") }}</li>
-      </ul>
-
-      <p class="fw-bold text-danger">
-        {{ trans("trip_creation.limitations.6") }}
-        <a :href="trans('trip_creation.limitations.6.link')" target="_blank">
-          {{ trans('trip_creation.limitations.6.rules') }}
-        </a>
-      </p>
+    <div class="col d-md-block bg-warning px-0" :class="{'d-none': tripDataActive}">
+      <TripCreationMap ref="map"></TripCreationMap>
     </div>
   </div>
 </template>
+
+<style scoped>
+.full-height {
+  min-height: 90vh;
+}
+</style>
