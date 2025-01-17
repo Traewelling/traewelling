@@ -439,6 +439,9 @@ class Bahn extends Controller implements DataProviderInterface
             $geoJson['features'][$closestFeatureKey]['properties'] = $properties;
         }
 
+        // Make features to array again, if they get broken by the code above
+        $geoJson['features'] = array_values($geoJson['features']);
+
         $geoJsonString = json_encode($geoJson);
         $polyline = PolyLine::create([
                                         'hash' =>       md5($geoJsonString),
