@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\User;
 
 use App\Helpers\CacheKey;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Backend\UserController;
 use App\Mail\AccountDeletionNotificationTwoWeeksBefore;
 use App\Models\User;
 use Exception;
@@ -67,7 +68,7 @@ abstract class AccountDeletionController extends Controller
                 }
 
                 Log::info('Deleting inactive user ' . $user->id . ' (' . $user->email . ')');
-                $user->delete();
+                UserController::deleteUserAccount($user);
             } catch (Exception $e) {
                 Log::error('Error deleting inactive user ' . $user->id . ' (' . $user->email . '): ' . $e->getMessage());
             }
