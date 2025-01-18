@@ -667,5 +667,6 @@
     "welcome.stats.duration": "lat w podróży",
     "profile.youre-blocked-information-text": "Zostałeś zablokowany przez użytkownika @:username, nie możesz zobaczyć jego meldunków.",
     "settings.colorscheme.auto": "Ustawienia systemowe",
-    "dashboard.empty.teaser": "Możesz obserwować innych użytkowników, żeby zobaczyć tutaj ich meldunki."
+    "dashboard.empty.teaser": "Możesz obserwować innych użytkowników, żeby zobaczyć tutaj ich meldunki.",
+    "welcome.stats.million": ":count Million | :count Miliony | :count Milionów"
 }

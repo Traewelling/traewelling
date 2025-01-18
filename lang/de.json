@@ -814,7 +814,7 @@
   "welcome.hero.map.description": "Beobachte die Position deines Verkehrsmittels auf der Karte und teile deine Reisen mit anderen.",
   "welcome.hero.mobile.title": "Mobile first",
   "welcome.hero.mobile.description": "Träwelling ist für mobile Geräte optimiert und kann einfach unterwegs genutzt werden.",
-  "welcome.stats.million": "Millionen",
+  "welcome.stats.million": ":count Millionen",
   "welcome.stats.distance": "kilometer gereist",
   "welcome.stats.registered": "Registrierte user",
   "welcome.stats.duration": "Jahre Reisezeit",

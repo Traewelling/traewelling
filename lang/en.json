@@ -814,7 +814,7 @@
   "welcome.hero.map.description": "See your vehicle's location on the map and share your journey with others.",
   "welcome.hero.mobile.title": "Mobile first",
   "welcome.hero.mobile.description": "Träwelling is optimized for mobile devices and can be used on the go.",
-  "welcome.stats.million": "Million",
+  "welcome.stats.million": ":count Million",
   "welcome.stats.distance": "kilometers travelled",
   "welcome.stats.registered": "users registered",
   "welcome.stats.duration": "years travel time",

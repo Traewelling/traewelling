@@ -789,7 +789,7 @@
     "welcome.hero.map.description": "Voyez l'emplacement de votre mode de transport sur la carte et partagez votre trajet avec d'autres personnes.",
     "welcome.hero.mobile.title": "Priorité au mobile",
     "welcome.hero.mobile.description": "Träwelling est optimisé pour les appareils mobiles et peut être utilisé en déplacement.",
-    "welcome.stats.million": "Million",
+    "welcome.stats.million": ":count Million",
     "welcome.stats.distance": "kilomètres parcourus",
     "welcome.hero.stats.description": "Vous pouvez recueillir des statistiques sur les opérateurs de transport les plus utilisés, les modes de transport et bien plus encore !",
     "notifications.eventSuggestionProcessed.missing-information": "Nous ne pouvons pas approuver cet événement en raison d'informations manquantes. Veuillez nous fournir une source ou un site web spécifique sur cet événement.",

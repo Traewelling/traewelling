@@ -98,8 +98,7 @@
                                                     </svg>
                                                 </div>
                                                 <div class="stat-value text-primary">
-                                                    {{ round($stats->distance/1000/1000/1000,1) }}
-                                                    {{ __('welcome.stats.million') }}
+                                                    {{ trans_choice('welcome.stats.million', round($stats->distance/1000/1000/1000,1)) }}
                                                 </div>
                                                 <div class="stat-desc">{{ __('welcome.stats.distance') }}</div>
                                             </div>

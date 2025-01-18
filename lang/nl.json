@@ -817,7 +817,7 @@
     "welcome.hero.map.description": "Bekijk de locatie van je voer- of vaartuig of de kaart en deel je reis met anderen.",
     "welcome.hero.mobile.title": "Mobiele focus",
     "welcome.hero.mobile.description": "Träwelling is gemaakt voor mobiele apparaten en kan daarom makkelijk onderweg gebruikt worden.",
-    "welcome.stats.million": "Miljoen",
+    "welcome.stats.million": ":count Miljoen",
     "welcome.stats.distance": "kilometers gereisd",
     "welcome.stats.registered": "geregistreerde gebruikers",
     "welcome.stats.duration": "jaren aan reistijd",

@@ -802,7 +802,7 @@
     "welcome.hero.stats.title": "Recopilar estadísticas",
     "welcome.hero.map.title": "Mapa interactivo y estados",
     "welcome.hero.mobile.title": "Mobile first",
-    "welcome.stats.million": "Millones",
+    "welcome.stats.million": ":count Millones",
     "welcome.stats.distance": "de kilómetros viajados",
     "welcome.stats.registered": "usuarios registrados",
     "welcome.stats.duration": "años de viaje",
