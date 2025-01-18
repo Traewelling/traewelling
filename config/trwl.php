@@ -3,14 +3,6 @@
 return [
     'post_social'               => env('POST_SOCIAL', false),
 
-    # Mastodon
-    'mastodon_domain'           => env('MASTODON_DOMAIN'),
-    'mastodon_id'               => env('MASTODON_ID'),
-    'mastodon_secret'           => env('MASTODON_SECRET'),
-    'mastodon_redirect'         => env('MASTODON_REDIRECT'),
-    'mastodon_appname'          => env('MASTODON_APPNAME'),
-    'mastodon_timeout_seconds'  => env("MASTODON_TIMEOUT_SECONDS", 5),
-
     # Brouter
     'brouter'                   => env('BROUTER', true),
     'brouter_url'               => env('BROUTER_URL', 'https://brouter.de/'),

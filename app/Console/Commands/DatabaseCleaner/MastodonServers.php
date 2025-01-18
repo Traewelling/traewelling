@@ -68,7 +68,7 @@ class MastodonServers extends Command
                         'client_id'     => $server->client_id,
                         'client_secret' => $server->client_secret,
                         'grant_type'    => 'client_credentials',
-                        'redirect_uri'  => config('trwl.mastodon_redirect'),
+                        'redirect_uri'  => config('services.mastodon.redirect'),
                     ],
                     'http_errors' => false,
                 ]);

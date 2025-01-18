@@ -77,8 +77,8 @@ abstract class MastodonController extends Controller
     private static function createMastodonServer(string $domain): MastodonServer {
         try {
             $info = Mastodon::domain($domain)->createApp(
-                client_name:   config('trwl.mastodon_appname'),
-                redirect_uris: config('trwl.mastodon_redirect'),
+                client_name:   config('services.mastodon.client_name'), //TODO: why is client name required here?
+                redirect_uris: config('services.mastodon.redirect'),
                 scopes:        'write read',
                 website:       config('app.url')
             );
@@ -220,6 +220,6 @@ abstract class MastodonController extends Controller
     }
 
     public static function getRequestOptions(): array {
-        return [RequestOptions::TIMEOUT => config("trwl.mastodon_timeout_seconds")];
+        return [RequestOptions::TIMEOUT => config('services.mastodon.timeout')];
     }
 }
