@@ -17,6 +17,7 @@ class WikidataImportService
         'Q55490', // Durchgangsbahnhof
         'Q18543139', // Hauptbahnhof
         'Q27996466', // Bahnhof (betrieblich)
+        'Q27996460', // Haltepunkt
         'Q55488', // Bahnhof (Verkehrsanlage einer Bahn)
         'Q124817561', // Betriebsstelle
         'Q644371', // internationaler Flughafen
@@ -29,11 +30,17 @@ class WikidataImportService
         'Q2175765', // Straßenbahnhaltestelle
         'Q44782', // Hafen
         'Q15310171', // Seehafen
-        'Q928830', //U-Bahnhof
+        'Q928830', // U-Bahnhof
         'Q22808403', // unterirdische Haltestelle
         'Q55485', // dead-end railway station
         'Q55491', // underground railway station
         'Q7886778', // union station
+        'Q27996461', // Anschlussstelle
+        'Q55493', // Güterbahnhof
+        'Q519608', // Rangierbahnhof
+        'Q65227640', // Betriebsbahnhof
+        'Q336764', // Abzweigstelle
+        'Q27996463', // Überleitstelle
     ];
 
     public static function importStation(string $qId): Station {
