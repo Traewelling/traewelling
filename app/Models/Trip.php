@@ -48,6 +48,7 @@ class Trip extends Model
     protected $casts    = [
         'id'             => 'integer',
         'trip_id'        => 'string',
+        'number'         => 'string',
         'category'       => HafasTravelType::class,
         'journey_number' => 'integer',
         'operator_id'    => 'integer',
