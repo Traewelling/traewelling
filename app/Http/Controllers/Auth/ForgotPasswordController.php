@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\CacheKey;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
@@ -37,7 +38,7 @@ class ForgotPasswordController extends Controller
         }
 
         // rate limit: 1 attempt per 60 minutes (link is valid for 60 minutes)
-        $throttleKey = 'password_reset_' . $request->email;
+        $throttleKey = CacheKey::getPasswordResetThrottleKey($user);
         if (cache()->has($throttleKey)) {
             return $this->sendResetLinkFailedResponse($request, Password::RESET_THROTTLED);
         }
