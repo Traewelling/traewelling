@@ -9,7 +9,7 @@ use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
 use App\Jobs\SendVerificationEmail;
 use Carbon\Carbon;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -84,10 +84,10 @@ use Spatie\Permission\Traits\HasRoles;
  * @todo rename mapprovider to map_provider
  * @mixin Builder
  */
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
 
-    use Notifiable, HasApiTokens, HasFactory, HasRoles;
+    use Notifiable, HasApiTokens, HasFactory, HasRoles, MustVerifyEmail;
 
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
