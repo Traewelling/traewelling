@@ -6,48 +6,6 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
-
-                <div class="alert alert-warning" role="alert">
-                    <h4 class="alert-heading">
-                        <i class="fa-solid fa-exclamation-triangle" aria-hidden="true"></i>
-                        Limited Functionality // Eingeschränkte Funktionalität
-                        <i class="fa-solid fa-exclamation-triangle" aria-hidden="true"></i>
-                    </h4>
-                    <div lang="en" xml:lang="en">
-                        <p>
-                            🇬🇧
-                            Our services are operational again, but with limited functionality.
-                            Expect various errors, and not all features are working as intended.
-                        </p>
-                        <p class="text-center mx-0 my-0">
-                            Have a look at our <a href="https://chaos.social/@traewelling" target="mastotrwl"
-                                                  title="Visit Travelynx for a similar service">Mastodon account</a> for
-                            updates.
-                        </p>
-                        <p class="text-center mx-0 my-0">
-                            Alternatively, you can try <a href="https://travelynx.de" target="_blank"
-                                                          title="Besuche Travelynx, einen ähnlichen Dienst">Travelynx</a>,
-                            a similar service.
-                        </p>
-                    </div>
-                    <hr/>
-                    <div lang="de" xml:lang="de">
-                        <p>
-                            🇩🇪
-                            Unser Dienst ist wieder verfügbar, jedoch mit eingeschränkter Funktionalität.
-                            Es kommt zu verschiedenen Fehlern und nicht alle Features funktionieren wie erwartet.
-                        </p>
-                        <p class="text-center mx-0 my-0">
-                            Aktuelle Informationen gibt es auf unserem <a href="https://chaos.social/@traewelling"
-                                                                          target="mastotrwl">Mastodon-Account</a>.
-                        </p>
-                        <p class="text-center mx-0 my-0">
-                            Alternativ kannst du dir <a href="https://travelynx.de" target="_blank">Travelynx</a>
-                            anschauen, einen ähnlichen Dienst.
-                        </p>
-                    </div>
-                </div>
-
                 @if(session()->has('checkin-collision'))
                     <div class="alert alert-danger" id="checkin-collision-alert">
                         <h2 class="fs-4">
