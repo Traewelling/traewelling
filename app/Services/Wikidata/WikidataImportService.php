@@ -75,7 +75,7 @@ class WikidataImportService
             throw new \InvalidArgumentException('IBNR ' . $ibnr . ' already in use');
         }
 
-        return Station::create(
+        $station = Station::create(
             [
                 'name'          => $name,
                 'latitude'      => $coordinates->latitude,
@@ -91,6 +91,8 @@ class WikidataImportService
                 'source'        => 'wikidata',
             ]
         );
+        self::saveStationNames($station, $wikidataEntity);
+        return $station;
     }
 
     /**
@@ -133,19 +135,27 @@ class WikidataImportService
             $station->update(['rilIdentifier' => $rl100]);
         }
 
-        //get names
-        foreach ($object->getClaims('P2561') as $property) {
-            $text     = $property['mainsnak']['datavalue']['value']['text'] ?? null;
-            $language = $property['mainsnak']['datavalue']['value']['language'] ?? null;
-            if ($language === null || $text === null) {
-                continue;
-            }
-            StationName::updateOrCreate([
-                                            'station_id' => $station->id,
-                                            'language'   => $language,
-                                        ], [
-                                            'name' => $text
-                                        ]);
+        self::saveStationNames($station, $object);
+    }
+
+    private static function saveStationNames(Station $station, WikidataEntity $wikidataEntity): void {
+        self::saveNameClaims($station, $wikidataEntity->getClaims('P2561')); //P2561 = name
+        self::saveNameClaims($station, $wikidataEntity->getClaims('P1448')); //P1448 = official name
+    }
+
+    private static function saveNameClaims(Station $station, array $claims): void {
+        foreach ($claims as $name) {
+            $text     = $name['mainsnak']['datavalue']['value']['text'];
+            $language = $name['mainsnak']['datavalue']['value']['language'];
+            StationName::updateOrCreate(
+                [
+                    'station_id' => $station->id,
+                    'language'   => $language,
+                ],
+                [
+                    'name' => $text,
+                ]
+            );
         }
     }
 

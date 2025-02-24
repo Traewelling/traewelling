@@ -28,7 +28,7 @@
                         <td>{{$station->id}}</td>
                     </tr>
                     <tr>
-                        <th>HAFAS-ID oder IBNR</th>
+                        <th>DB-ID oder IBNR</th>
                         <td>{{$station->ibnr}}</td>
                     </tr>
                     <tr>
@@ -37,6 +37,7 @@
                             <a href="https://www.openstreetmap.org/?mlat={{$station->latitude}}&mlon={{$station->longitude}}&zoom=14"
                                target="_blank">
                                 {{$station->latitude}}, {{$station->longitude}}
+                                <i class="fa-solid fa-external-link"></i>
                             </a>
                         </td>
                     </tr>
@@ -52,9 +53,6 @@
 
                 <div class="mx-4">
                     <p class="fs-5">OpenData</p>
-                    <span>Wir versuchen in nächster Zeit mehr Daten von
-                        <a href="https://www.wikidata.org/wiki/">Wikidata</a> zu beziehen.
-                    </span>
                 </div>
                 @isset($station->wikidata_id)
                     <div class="mx-4 mb-3">
@@ -68,20 +66,24 @@
                             <td>
                                 @foreach($station->names as $localizedName)
                                     <span class="badge bg-secondary me-1">
-                                                            {{$localizedName->language}}: {{$localizedName->name}}
-                                                        </span>
+                                        {{$localizedName->language}}: {{$localizedName->name}}
+                                    </span>
                                 @endforeach
 
-
                                 @if($station->names->where('language', app()->getLocale())->count() === 0)
-                                    <br/>
-                                    <span class="badge bg-danger mt-2">
+                                    <div class="alert alert-danger">
                                         <i class="fa-solid fa-exclamation-triangle"></i>
                                         Keine Bezeichnung in der aktuellen Sprache ({{app()->getLocale()}}) gefunden.
-                                        <br/>
-                                        Bitte ergänze die Daten auf Wikidata mit dem
-                                        <a href="https://www.wikidata.org/wiki/Property:P2561">Property:P2561</a>.
-                                    </span>
+                                        <br/><br/>
+                                        Bitte ergänze die Daten auf Wikidata mit den Properties:
+                                        <ul>
+                                            <li><a href="https://www.wikidata.org/wiki/Property:P1448">P1448
+                                                    (offizieller
+                                                    Name)</a></li>
+                                            <li><a href="https://www.wikidata.org/wiki/Property:P2561">P2561 (Name)</a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 @endif
                             </td>
                         </tr>
@@ -109,37 +111,40 @@
                                 <i class="fa-solid fa-edit"></i>
                                 Bearbeiten
                             </a>
-                            <button class="btn btn-sm btn-outline-secondary" title="Neue Daten von Wikidata fetchen und damit die lokalen Daten hier aktualisieren." onclick="fetchWikidata({{$station->id}})">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    title="Neue Daten von Wikidata fetchen und damit die lokalen Daten hier aktualisieren."
+                                    onclick="fetchWikidata({{$station->id}})">
                                 <i class="fa-solid fa-edit"></i>
                                 Stationsdaten refreshen
                             </button>
                         </div>
                     </div>
 
-                <script>
-                    // TODO: prevent duplicate code with `wikidata/index.blade.php` (by adding a `allowUpdate` parameter)
-                    function fetchWikidata(stationId) {
-                        console.log('Fetching Wikidata for station ' + stationId);
-                        fetch('/api/v1/experimental/station/' + stationId + '/wikidata?allowUpdate=1', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            }
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log('wikidata result:', data);
-                                if (data.error) {
-                                    notyf.error(data.error || 'Error fetching Wikidata');
-                                } else {
-                                    notyf.success(data.message || 'Wikidata fetched');
-                                    document.getElementById('station-' + stationId).remove();
+                    <script>
+                        // TODO: prevent duplicate code with `wikidata/index.blade.php` (by adding a `allowUpdate` parameter)
+                        function fetchWikidata(stationId) {
+                            console.log('Fetching Wikidata for station ' + stationId);
+                            fetch('/api/v1/experimental/station/' + stationId + '/wikidata?allowUpdate=1', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                                 }
                             })
-                            .catch(error => notyf.error(error || 'Error during Wikidata fetch'))
-                    }
-                </script>
+                                .then(async response => {
+                                    let data = await response.json();
+                                    if (response.status === 200) {
+                                        notyf.success(data.message || 'Wikidata fetched');
+                                    } else {
+                                        notyf.error(data.error || 'Error fetching Wikidata');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error(error);
+                                    notyf.error('Error fetching Wikidata');
+                                });
+                        }
+                    </script>
                 @else
                     <div class="mx-4 mb-3">
                         <p>
