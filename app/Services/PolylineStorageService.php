@@ -18,7 +18,7 @@ class PolylineStorageService
                                      ]);
     }
 
-    private function store(string $content, string $hash = null): bool {
+    private function store(string $content, ?string $hash = null): bool {
         $hash = $hash ?? md5($content);
 
         if ($this->disk->exists($this->storageName($hash))) {

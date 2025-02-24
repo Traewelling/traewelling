@@ -24,7 +24,7 @@ class EventController extends Controller
 {
     private DataProviderInterface $dataProvider;
 
-    public function __construct(string $dataProvider = null) {
+    public function __construct(?string $dataProvider = null) {
         $dataProvider       ??= Hafas::class;
         $this->dataProvider = (new DataProviderBuilder())->build($dataProvider);
     }

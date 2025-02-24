@@ -14,13 +14,13 @@ class Feature implements \JsonSerializable
     private string $type;
     private ?int   $statusId;
 
-    public function __construct(array $coordinates, string $type = 'LineString', int $statusId = null) {
+    public function __construct(array $coordinates, string $type = 'LineString', ?int $statusId = null) {
         $this->coordinates = $coordinates;
         $this->type        = $type;
         $this->statusId    = $statusId;
     }
 
-    public static function fromCoordinate(Coordinate $coordinate) {
+    public static function fromCoordinate(Coordinate $coordinate): self {
         return new self([$coordinate->longitude, $coordinate->latitude], 'Point');
     }
 

@@ -78,10 +78,10 @@ class CheckinController
         'times'      => "array"
     ])]
     public static function getDeprecatedDepartures(
-        string|int $stationQuery,
-        Carbon     $when = null,
-        TravelType $travelType = null,
-        bool       $localtime = false
+        string|int  $stationQuery,
+        ?Carbon     $when = null,
+        ?TravelType $travelType = null,
+        bool        $localtime = false
     ): array {
         $station = self::lookupStation($stationQuery);
 
