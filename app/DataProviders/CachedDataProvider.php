@@ -70,7 +70,7 @@ class CachedDataProvider implements DataProviderInterface
 
         // filter entries by when and duration
         return $departures->filter(function($departure) use ($filterWhen, $duration) {
-            $depWhen = Carbon::parse($departure->when);
+            $depWhen = Carbon::parse($departure->when ?? $departure->plannedWhen);
             return $depWhen->between($filterWhen, $filterWhen->copy()->addMinutes($duration));
         });
     }
