@@ -8,6 +8,7 @@ use App\Models\Checkin;
 use App\Models\Event;
 use App\Models\EventSuggestion;
 use App\Models\Station;
+use App\Models\StationIdentifier;
 use App\Models\Stopover;
 use App\Models\Trip;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -78,6 +79,7 @@ class StationController extends Controller
         Trip::where('destination_id', $oldStation->id)->update(['destination_id' => $newStation->id]);
         Event::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
         EventSuggestion::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
+        StationIdentifier::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
 
         $oldStation->delete();
 
