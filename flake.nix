@@ -27,7 +27,13 @@
           languages = {
             php.enable = true;
             php.package = pkgs.php83;
-            javascript.enable = true;
+            javascript = {
+              enable = true;
+              npm = {
+                enable = true;
+                install.enable = true;
+              };
+            };
           };
           dotenv.enable = true;
           services.mysql = {
@@ -50,7 +56,7 @@
           scripts = let
             composer = "${config.languages.php.packages.composer}/bin/composer";
             php = "${config.languages.php.package}/bin/php";
-            npm = "${config.languages.javascript.package}/bin/npm";
+            npm = "${config.languages.javascript.npm.package}/bin/npm";
             mysql = config.services.mysql.package;
 
             envKeys = builtins.attrNames config.env;
