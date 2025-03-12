@@ -43,8 +43,26 @@ class StatusController extends Controller
             $newVisibility = StatusVisibility::from($validated['checkinVisibility']);
 
             //Check for disallowed status visibility changes
-            if(auth()->user()->can('disallow-status-visibility-change') && $newVisibility != StatusVisibility::PRIVATE) {
+            if (auth()->user()->can('disallow-status-visibility-change') && $newVisibility != StatusVisibility::PRIVATE) {
                 return back()->with('error', 'You are not allowed to update non-private statuses. Please set the status to private.');
+            }
+
+            // check duration of manual arrival and departure
+            $arrivalDelay   = 0;
+            $departureDelay = 0;
+            if (isset($validated['manualDeparture'])) {
+                $manualDeparture = Carbon::parse($validated['manualDeparture'], auth()->user()->timezone);
+                $departureDelay  = abs($manualDeparture->diffInHours($status->checkin->departure));
+
+            }
+
+            if (isset($validated['manualArrival'])) {
+                $manualArrival = Carbon::parse($validated['manualArrival'], auth()->user()->timezone);
+                $arrivalDelay  = abs($manualArrival->diffInHours($status->checkin->arrival));
+            }
+
+            if ($departureDelay > config('trwl.max_delay_time') || $arrivalDelay > config('trwl.max_delay_time')) {
+                return back()->with('error', 'The delay of the manual arrival or departure is too high.');
             }
 
             $statusPayload = [
@@ -53,7 +71,7 @@ class StatusController extends Controller
                 'visibility' => $newVisibility,
             ];
 
-            if($status->lock_visibility) {
+            if ($status->lock_visibility) {
                 // If moderation has locked the visibility, prevent the user from changing it
                 unset($statusPayload['visibility']);
             }

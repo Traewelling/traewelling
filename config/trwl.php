@@ -59,4 +59,6 @@ return [
     ],
     'webhooks_active'  => env('WEBHOOKS_ACTIVE', false),
     'webfinger_active' => env('WEBFINGER_ACTIVE', false),
+    'max_journey_time' => env('MAX_JOURNEY_TIME', 48),
+    'max_delay_time'   => env('MAX_DELAY_TIME', 24),
 ];
