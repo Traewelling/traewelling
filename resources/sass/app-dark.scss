@@ -24,16 +24,16 @@
   }
 
   a {
-    color: $dm-trwlBlue;
+    color: $dm-trwlBlue !important;
   }
 
-  a.btn {
-    color: $white;
+  .nav-link {
+    color: $white !important;
   }
 
   .accordion-item {
     background-color: $dm-base;
-    color: $white;
+    color: $white !important;
     border: 1px solid $dm-base-20;
   }
 

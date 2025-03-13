@@ -33,5 +33,11 @@ export default defineComponent({
 <style scoped lang="scss">
 .autocomplete-item {
   background-color: var(--bs-modal-bg) !important;
+  border: none;
+  border-bottom: 1px solid var(--bs-light);
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
 }
 </style>

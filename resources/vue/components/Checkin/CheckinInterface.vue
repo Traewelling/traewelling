@@ -156,16 +156,16 @@ export default {
 </script>
 
 <template>
-  <div class="form-outline">
+  <div class="form-floating">
         <textarea
             name="body"
             id="message-text"
             class="form-control mobile-input-fs-16 pt-4"
             v-model="statusText"
             :maxlength="allowedChars"
-            style="min-height: 130px;">
+            style="min-height: 130px; border: none;">
         </textarea>
-    <label for="message-text" class="form-label pt-4 ms-0">
+    <label for="message-text" class="form-label pt-4 ms-0" :class="{'d-none': statusText.length}">
       {{ trans("stationboard.label-message") }}
     </label>
   </div>
@@ -264,3 +264,13 @@ export default {
     <TagList ref="tagList" :cache-locally="true"/>
   </div>
 </template>
+
+<style scoped>
+.form-floating > .form-control:not(:placeholder-shown) ~ label::after {
+  background-color: transparent;
+}
+
+.form-control:focus {
+  box-shadow: none;
+}
+</style>

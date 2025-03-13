@@ -1,5 +1,6 @@
 @import "./font-awesome";
 @import "lgbtq.css";
+@import "base";
 // Variables
 @import "variables";
 
@@ -26,6 +27,19 @@ a {
 .hover-card {
   background-color: $light;
 }
+
+.btn-primary {
+  color: $white !important;
+}
+
+.btn-link {
+  color: $blue;
+}
+
+.btn-outline-primary {
+  color: $blue !important;
+}
+
 
 @import "notyf/notyf.min.css";
 
