@@ -114,6 +114,9 @@ class LocationController
                 $point ?? $recentPoint,
                 $distance < 1 ? 0 : $meters / $distance
             );
+            if ($currentPosition === null) {
+                return null;
+            }
 
             $polyline->features = array_slice($polyline->features, $key);
             array_unshift($polyline->features, Feature::fromCoordinate($currentPosition));
