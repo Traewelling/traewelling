@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enum\HafasTravelType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class ManualTripCreationRequest extends FormRequest
 {
