@@ -19,9 +19,9 @@
                     @if($latest->count() > 0 || auth()->user()->home)
                         <button type="button"
                                 class="btn btn-outline-dark stationSearchButton"
-                                data-mdb-ripple-color="dark"
-                                data-mdb-toggle="collapse"
-                                data-mdb-target="#last-stations"
+                                data-bs-ripple-color="dark"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#last-stations"
                                 title="{{__('stationboard.last-stations')}}"
                         >
                             <i class="fa fa-history"></i>
@@ -31,7 +31,7 @@
                     <button type="button"
                             class="btn btn-outline-dark stationSearchButton"
                             id="gps-button"
-                            data-mdb-ripple-color="dark"
+                            data-bs-ripple-color="dark"
                             title="{{__('stationboard.search-by-location')}}">
                         <i class="fa fa-map-marker-alt"></i>
                         <div class="spinner-border d-none" role="status" style="height: 1rem; width: 1rem;">
@@ -64,8 +64,8 @@
             <button class="btn btn-outline-primary float-end" type="submit">
                 {{__('stationboard.submit-search')}}
             </button>
-            <button class="btn btn-outline-secondary" type="button" data-mdb-toggle="collapse"
-                    data-mdb-target="#collapseFilter" aria-expanded="false">
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseFilter" aria-expanded="false">
                 {{__('stationboard.filter-products')}}
             </button>
             <div class="collapse" id="collapseFilter">

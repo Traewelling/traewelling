@@ -233,7 +233,7 @@ export default {
 
 <style>
 .autocomplete-item {
-  background-color: var(--mdb-modal-bg) !important;
+  background-color: var(--bs-modal-bg) !important;
 }
 
 .input-group-button {

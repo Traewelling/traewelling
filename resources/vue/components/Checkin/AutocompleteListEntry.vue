@@ -32,6 +32,6 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .autocomplete-item {
-  background-color: var(--mdb-modal-bg) !important;
+  background-color: var(--bs-modal-bg) !important;
 }
 </style>

@@ -2,11 +2,11 @@
     <div class="accordion-item">
         <h2 class="accordion-header" id="headingStationMeta">
             <button
-                data-mdb-collapse-init
+                data-bs-collapse-init
                 class="accordion-button"
                 type="button"
-                data-mdb-toggle="collapse"
-                data-mdb-target="#collapseOne"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseOne"
                 aria-expanded="true"
                 aria-controls="collapseOne"
             >
@@ -16,7 +16,7 @@
         </h2>
         <div id="collapseOne" class="accordion-collapse collapse"
              aria-labelledby="headingStationMeta"
-             data-mdb-parent="#accordionStationMeta">
+             data-bs-parent="#accordionStationMeta">
             <div class="accordion-body p-0">
                 <table class="table table-hover table-striped">
                     <tr>

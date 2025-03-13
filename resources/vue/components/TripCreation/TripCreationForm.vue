@@ -274,8 +274,8 @@ export default {
       <div class="accordion accordion-flush border-bottom" id="TripCreationMetaDataAccordion">
         <div class="accordion-item">
           <h2 class="accordion-header" id="accordionTripInfo">
-            <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse"
-                    data-mdb-target="#collapseTripInfo" aria-expanded="false" aria-controls="collapseTripInfo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseTripInfo" aria-expanded="false" aria-controls="collapseTripInfo">
               <div class="d-flex justify-start w-100">
                 <i class="fa-solid fa-list-check"></i>
                 <span class="d-flex justify-content-between w-100 px-2">
@@ -291,7 +291,7 @@ export default {
             </button>
           </h2>
           <div id="collapseTripInfo" class="accordion-collapse collapse" aria-labelledby="accordionTripInfo"
-               data-mdb-parent="#accordionTripInfo">
+               data-bs-parent="#accordionTripInfo">
             <div class="accordion-body">
               <input type="text" class="form-control mb-2" :placeholder="trans('trip_creation.form.line')"
                      :aria-label="trans('trip_creation.form.line')" aria-describedby="basic-addon1"
@@ -314,8 +314,8 @@ export default {
 
         <div class="accordion-item">
           <h2 class="accordion-header" id="accordionTripCategory">
-            <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse"
-                    data-mdb-target="#collapseTripCategory" aria-expanded="false" aria-controls="collapseTripCategory">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseTripCategory" aria-expanded="false" aria-controls="collapseTripCategory">
               <div class="d-flex justify-start w-100">
                 {{ this.selectedCategory.emoji }}
                 <span class="d-flex justify-content-between w-100 px-2">
@@ -326,7 +326,7 @@ export default {
             </button>
           </h2>
           <div id="collapseTripCategory" class="accordion-collapse collapse" aria-labelledby="accordionTripCategory"
-               data-mdb-parent="#accordionTripCategory">
+               data-bs-parent="#accordionTripCategory">
             <div class="accordion-body">
               <ul class="list-group">
                 <li v-for="item in categories" class="list-group-item">
@@ -343,8 +343,8 @@ export default {
 
         <div class="accordion-item">
           <h2 class="accordion-header" id="accordionTripOperator">
-            <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse"
-                    data-mdb-target="#collapseTripOperator" aria-expanded="false" aria-controls="collapseTripOperator">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseTripOperator" aria-expanded="false" aria-controls="collapseTripOperator">
               <div class="d-flex justify-start w-100">
                 <i class="fa-solid fa-building"></i>
                 <span class="d-flex justify-content-between w-100 px-2">
@@ -359,7 +359,7 @@ export default {
             </button>
           </h2>
           <div id="collapseTripOperator" class="accordion-collapse collapse" aria-labelledby="accordionTripOperator"
-               data-mdb-parent="#accordionTripOperator">
+               data-bs-parent="#accordionTripOperator">
             <div class="accordion-body">
               <!-- todo: make searchable -->
               <select class="form-select" v-model="selectedOperator">

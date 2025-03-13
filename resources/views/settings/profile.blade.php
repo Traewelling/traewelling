@@ -132,7 +132,7 @@
                             <label for="experimental" class="col-md-4 col-form-label text-md-right">
                                 {{ __('settings.experimental') }}
                                 <i class="fas fa-info-circle" title="{{__('settings.experimental.description')}}"
-                                   data-mdb-toggle="tooltip"></i>
+                                   data-bs-toggle="tooltip"></i>
                             </label>
                             <div class="col-md-6">
                                 <select class="form-control" name="experimental" id="experimental">
@@ -176,16 +176,16 @@
                         />
                     </div>
 
-                    <a href="#" class="btn btn-primary mb-1" data-mdb-toggle="modal"
-                       data-mdb-target="#uploadAvatarModal">
+                    <a href="#" class="btn btn-primary mb-1" data-bs-toggle="modal"
+                       data-bs-target="#uploadAvatarModal">
                         {{__('settings.upload-image')}}
                     </a>
                     <br/>
                     <a href="javascript:void(0)"
                        class="btn btn-outline-danger btn-sm mb-3 {{isset(auth()->user()->avatar) ? '' : 'd-none'}}"
                        id="btnModalDeleteProfilePicture"
-                       data-mdb-toggle="modal"
-                       data-mdb-target="#deleteProfilePictureModal"
+                       data-bs-toggle="modal"
+                       data-bs-target="#deleteProfilePictureModal"
                     >
                         {{ __('settings.delete-profile-picture-btn') }}
                     </a>
@@ -204,7 +204,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="mb-0">{{__('settings.upload-image')}}</h5>
-                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <p>
@@ -214,7 +214,7 @@
 
                     <div id="upload-demo" class="d-none"></div>
                     <button class="btn btn-primary btn-block upload-image d-none" id="upload-button"
-                            data-mdb-dismiss="modal"
+                            data-bs-dismiss="modal"
                     >
                         {{__('settings.upload-image')}}
                     </button>
@@ -229,20 +229,20 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="mb-0">{{__('settings.delete-profile-picture')}}:</h5>
-                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <p>{!! __('settings.delete-profile-picture-desc') !!}</p>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-outline-danger" data-mdb-dismiss="modal"
+                    <button class="btn btn-outline-danger" data-bs-dismiss="modal"
                             aria-label="{{ __('settings.delete-profile-picture-no') }}">
                         {{ __('settings.delete-profile-picture-no') }}
                     </button>
                     <a href="#" class="btn btn-danger"
                        onclick="Settings.deleteProfilePicture()"
-                       data-mdb-toggle="modal"
-                       data-mdb-target="#deleteProfilePictureModal"
+                       data-bs-toggle="modal"
+                       data-bs-target="#deleteProfilePictureModal"
                     >
                         {{ __('settings.delete-profile-picture-yes') }}
                     </a>
