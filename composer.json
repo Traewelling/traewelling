@@ -22,7 +22,7 @@
         "ext-simplexml": "*",
         "ext-sodium": "*",
         "barryvdh/laravel-dompdf": "^3.0",
-        "darkaonline/l5-swagger": "^8.3",
+        "darkaonline/l5-swagger": "^9.0",
         "doctrine/dbal": "^3.1.4",
         "easyrdf/easyrdf": "^1.1",
         "guzzlehttp/guzzle": "^7.1",
