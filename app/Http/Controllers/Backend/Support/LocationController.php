@@ -109,7 +109,11 @@ class LocationController
                 $recentPoint = $point ?? $recentPoint;
             }
 
-            $currentPosition = $this->geoService->interpolatePoint($recentPoint, $point ?? $recentPoint, $meters / $distance);
+            $currentPosition = $this->geoService->interpolatePoint(
+                $recentPoint,
+                $point ?? $recentPoint,
+                $distance < 1 ? 0 : $meters / $distance
+            );
 
             $polyline->features = array_slice($polyline->features, $key);
             array_unshift($polyline->features, Feature::fromCoordinate($currentPosition));
