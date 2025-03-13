@@ -207,17 +207,19 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>
-                        <strong>{{__('settings.choose-file')}}: </strong>
-                        <input type="file" id="image">
-                    </p>
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">{{__('settings.choose-file')}}</label>
+                        <input class="form-control" type="file" id="image" accept="image/*">
+                    </div>
 
                     <div id="upload-demo" class="d-none"></div>
-                    <button class="btn btn-primary btn-block upload-image d-none" id="upload-button"
-                            data-bs-dismiss="modal"
-                    >
-                        {{__('settings.upload-image')}}
-                    </button>
+                    <div class="d-grid">
+                        <button class="btn btn-primary upload-image d-none" id="upload-button"
+                                data-bs-dismiss="modal"
+                        >
+                            {{__('settings.upload-image')}}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -239,13 +241,13 @@
                             aria-label="{{ __('settings.delete-profile-picture-no') }}">
                         {{ __('settings.delete-profile-picture-no') }}
                     </button>
-                    <a href="#" class="btn btn-danger"
-                       onclick="Settings.deleteProfilePicture()"
-                       data-bs-toggle="modal"
-                       data-bs-target="#deleteProfilePictureModal"
+                    <button class="btn btn-danger"
+                            onclick="Settings.deleteProfilePicture()"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteProfilePictureModal"
                     >
                         {{ __('settings.delete-profile-picture-yes') }}
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>

@@ -13,7 +13,6 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "bootstrap": "^5.3",
     "daisyui": "^5.0.3",
-    "jquery": "^3.7.0",
     "laravel-vite-plugin": "^1.2.0",
     "lodash": "^4.17.21",
     "sass": "^1.85.1",

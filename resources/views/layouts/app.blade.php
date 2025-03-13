@@ -124,12 +124,12 @@
                             <notification-bell :link="true" :allow-fetch="false"></notification-bell>
                         </li>
                         <li class="nav-item dropdown">
-                            <a id="navbarDropdown" href="#" class="nav-link dropdown-toggle select"
-                               role="button" data-bs-dropdown-animation="off" data-bs-toggle="dropdown"
-                               aria-haspopup="true" aria-expanded="false">
+                            <button id="navbarDropdown" class="nav-link dropdown-toggle select"
+                                    data-bs-dropdown-animation="off" data-bs-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
                                 {{ Auth::user()->name }}
                                 <span class="caret"></span>
-                            </a>
+                            </button>
 
                             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 <li>
@@ -310,15 +310,7 @@
 </div>
 
 <script>
-    /**
-     * Let's only keep the JS here that is needed, e.g. Routes or CSRF tokens and put the rest
-     * in the compontents folder. I moved the touch controls that were here and are needed for
-     * checkin into components/stationboard.js.
-     */
     var token = '{{ csrf_token() }}';
-    var urlFollow = '{{ route('follow.create') }}';
-    var urlFollowRequest = '{{ route('follow.request') }}';
-    var urlUnfollow = '{{ route('follow.destroy') }}';
     var urlAutocomplete = '{{ url('transport/train/autocomplete') }}';
     var mapprovider = '{{ Auth::user()->mapprovider ?? "default" }}';
 

@@ -1,5 +1,4 @@
 import "lodash";
-import jQuery from "jquery";
 import * as Popper from '@popperjs/core';
 
 /**
@@ -10,7 +9,6 @@ import * as Popper from '@popperjs/core';
 document.addEventListener("DOMContentLoaded", function () {
     try {
         window.Popper = Popper;
-        window.$      = window.jQuery = jQuery;
 
         import("bootstrap/js/dist/collapse");
         import("bootstrap/js/dist/alert");
