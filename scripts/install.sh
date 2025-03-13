@@ -188,6 +188,11 @@ restart_services() {
   done
 }
 
+remove_old_log() {
+  echo -e "${YELLOW}Removing old logs...${RESET}"
+  rm -f "${REPO_ROOT}/storage/logs/install-*.log"
+}
+
 run_installation() {
   welcome_message
   check_dependencies | sed "s/^/[DependencyCheck] /"
@@ -202,4 +207,5 @@ run_installation() {
   echo -e "\n\n${GREEN}Application updated successfully at $(date --iso-8601=seconds)!${RESET}"
 }
 
+remove_old_log
 run_installation 2>&1 | tee -a "${REPO_ROOT}/storage/logs/install-$(date --iso-8601=seconds).log"
