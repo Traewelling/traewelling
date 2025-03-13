@@ -25,7 +25,7 @@ readonly class LineSegment
     /**
      * @deprecated Use GeoService::interpolatePoint instead
      */
-    public function interpolatePoint(float $percent): Coordinate {
+    public function interpolatePoint(float $percent): ?Coordinate {
         return (new GeoService())->interpolatePoint($this->start, $this->finish, $percent);
     }
 }
