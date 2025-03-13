@@ -14,17 +14,17 @@
 
     <div class="divider">{{ __('user.login.or') }}</div>
 
-    <label class="form-control">
+    <fieldset class="fieldset">
         <div class="label">
             <span class="label-text">{{ __('user.login-credentials') }}</span>
         </div>
 
-        <input type="text" class="input input-bordered" id="login" name="login"
+        <input type="text" class="input w-full input-bordered" id="login" name="login"
                required autocomplete="username" autocapitalize="none" autofocus
         />
-    </label>
+    </fieldset>
 
-    <label class="form-control">
+    <fieldset class="fieldset">
         <div class="label">
             <span class="label-text">{{ __('user.password') }}</span>
             <a class="label-text link link-secondary" href="{{ route('password.request') }}">
@@ -32,12 +32,12 @@
             </a>
         </div>
 
-        <input type="password" id="password" name="password" class="input input-bordered"
+        <input type="password" id="password" name="password" class="input w-full input-bordered"
                required autocomplete="current-password"
         />
-    </label>
+    </fieldset>
 
-    <div class="form-control">
+    <div class="fieldset">
         <label class="cursor-pointer label self-start gap-2">
             <input type="checkbox" class="checkbox" id="remember" name="remember"/>
             <span class="label-text">{{ __('user.remember-me') }}</span>
