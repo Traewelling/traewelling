@@ -13,31 +13,17 @@
     @parent
     @if($topOperators->count() > 0)
         <script>
-            new ApexCharts(document.querySelector("#chart_companies"), {
-                chart: {
-                    type: 'pie'
-                },
-                series: [
-                    @foreach($topOperators as $operator)
-                        {{$operator->duration}},
-                    @endforeach
-                ],
-                labels: [
-                    @foreach($topOperators as $operator)
-                        '{{$operator->name ?? __('other')}}',
-                    @endforeach
-                ],
-                legend: {
-                    position: 'bottom'
-                },
-                tooltip: {
-                    y: {
-                        formatter: function (value) {
-                            return value + ' {{__('time.minutes')}}';
-                        }
-                    }
-                },
-            }).render();
+            let chartCompaniesSeries = [
+                @foreach($topOperators as $operator)
+                    {{$operator->duration}},
+                @endforeach
+            ];
+            let chartCompaniesLabels = [
+                @foreach($topOperators as $operator)
+                    '{{$operator->name ?? __('other')}}',
+                @endforeach
+            ];
+            let chartCompaniesMinutes = "{{ __ ('time.minutes') }}";
         </script>
     @endif
 @endsection

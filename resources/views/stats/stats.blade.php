@@ -2,11 +2,6 @@
 
 @section('title', __('stats'))
 
-@section('head')
-    @parent
-    <script src="{{ asset('js/stats.js') }}"></script>
-@endsection
-
 @section('content')
     <div class="container">
         <div class="row">

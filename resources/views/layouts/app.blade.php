@@ -311,14 +311,7 @@
 
 <script>
     var token = '{{ csrf_token() }}';
-    var urlAutocomplete = '{{ url('transport/train/autocomplete') }}';
     var mapprovider = '{{ Auth::user()->mapprovider ?? "default" }}';
-
-    let translations = {
-        stationboard: {
-            position_unavailable: '{{__('stationboard.position-unavailable')}}',
-        }
-    };
 </script>
 </body>
 

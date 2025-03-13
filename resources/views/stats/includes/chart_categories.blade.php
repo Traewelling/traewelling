@@ -13,32 +13,19 @@
 @section('footer')
     @parent
     @if($topCategories->count() > 0)
+        TEST
         <script>
-            new ApexCharts(document.querySelector("#chart_favourite_types"), {
-                chart: {
-                    type: 'pie'
-                },
-                series: [
-                    @foreach($topCategories as $category)
-                        {{$category->duration}},
-                    @endforeach
-                ],
-                labels: [
-                    @foreach($topCategories as $category)
-                        '{{$category->name}}',
-                    @endforeach
-                ],
-                legend: {
-                    position: 'bottom'
-                },
-                tooltip: {
-                    y: {
-                        formatter: function (value) {
-                            return value + ' {{__('time.minutes')}}';
-                        }
-                    }
-                },
-            }).render();
+            let categorySeries = [
+                @foreach($topCategories as $category)
+                    {{$category->duration}},
+                @endforeach
+            ];
+            let categoryLabels = [
+                @foreach($topCategories as $category)
+                    '{{$category->name}}',
+                @endforeach
+            ];
+            let categoryMinutes = "{{ __('time.minutes') }}";
         </script>
     @endif
 @endsection

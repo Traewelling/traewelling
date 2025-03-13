@@ -144,6 +144,7 @@ window.addEventListener("load", () => {
     import("./components/timepicker");
     import("./components/export");
     import("./components/business-check-in");
+    import("./components/stats")
     import("./appControls");
     import("bootstrap-cookie-alert/cookiealert");
 });
