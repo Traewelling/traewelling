@@ -8,7 +8,8 @@
                 <div class="card-header">{{ __('settings.title-profile') }}</div>
 
                 <div class="card-body">
-                    <form enctype="multipart/form-data" method="POST" action="{{ route('settings.profile') }}">
+                    <form class="d-grid gap-1" enctype="multipart/form-data" method="POST"
+                          action="{{ route('settings.profile') }}">
                         @csrf
 
                         <div class="form-group row">
@@ -151,7 +152,7 @@
                         </div>
 
 
-                        <div class="form-group row mb-0">
+                        <div class="form-group row mt-3">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('settings.btn-update') }}

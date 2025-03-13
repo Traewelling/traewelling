@@ -146,4 +146,5 @@ window.addEventListener("load", () => {
     import("./components/stats")
     import("./appControls");
     import("bootstrap-cookie-alert/cookiealert");
+    import("./components/tooltips");
 });
