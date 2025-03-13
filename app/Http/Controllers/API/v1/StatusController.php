@@ -25,6 +25,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
@@ -390,6 +391,7 @@ class StatusController extends Controller
                 return $this->sendError('You are not allowed to change the visibility to anything else than private', 403);
             }
 
+            DB::beginTransaction();
             if (isset($validated['destinationId'], $validated['destinationArrivalPlanned'])
                 && ((int) $validated['destinationId']) !== $status->checkin->destinationStopover->station->id) {
                 $arrival  = Carbon::parse($validated['destinationArrivalPlanned'])->timezone(config('app.timezone'));
@@ -413,7 +415,7 @@ class StatusController extends Controller
                 'visibility' => StatusVisibility::from($validated['visibility']),
             ];
 
-            if($status->lock_visibility) {
+            if ($status->lock_visibility) {
                 // If moderation has locked the visibility, prevent the user from changing it
                 unset($updatePayload['visibility']);
             }
@@ -436,12 +438,32 @@ class StatusController extends Controller
                 $status->checkin->update(['manual_arrival' => $manualArrival]);
             }
 
+            // check duration of manual arrival and departure
+            $arrivalDelay   = 0;
+            $departureDelay = 0;
+            if (!empty($manualDeparture)) {
+                $departureDelay = abs($manualDeparture->diffInHours($status->checkin->departure));
+            }
+
+            if (!empty($manualArrival)) {
+                $arrivalDelay = abs($manualArrival->diffInHours($status->checkin->arrival));
+            }
+
+            if ($departureDelay > config('trwl.max_delay_time') || $arrivalDelay > config('trwl.max_delay_time')) {
+                DB::rollBack();
+                return $this->sendError('The delay of the manual arrival or departure is too high.', 400);
+            }
+
+            DB::commit();
             return $this->sendResponse(new StatusResource($status->fresh()));
         } catch (ModelNotFoundException) {
+            DB::rollBack();
             return $this->sendError('Status not found');
         } catch (AuthorizationException) {
+            DB::rollBack();
             return $this->sendError('You are not authorized to edit this status', 403);
         } catch (InvalidArgumentException) {
+            DB::rollBack();
             return $this->sendError('Invalid Arguments', 400);
         }
     }

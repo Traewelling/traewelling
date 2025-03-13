@@ -12,7 +12,6 @@ use App\Models\Station;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Enum;
 
@@ -77,6 +76,15 @@ class TripController extends Controller
         }
 
         $trip = $creator->createFullTrip();
+
+        $duration = $trip->departure->diffInHours($trip->arrival);
+        if ($duration > config('trwl.max_journey_time')) {
+            DB::rollBack();
+
+            return response()->json([
+                                        'message' => sprintf('Trip duration exceeds maximum allowed duration of %d hours', config('trwl.max_journey_time')),
+                                    ], 400);
+        }
 
         DB::commit();
 

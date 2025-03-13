@@ -1,3 +1,4 @@
+@php use App\Http\Controllers\Backend\User\ProfilePictureController; @endphp
 @extends('admin.layout')
 
 @section('title', 'Trip ' . $trip->id)
@@ -145,20 +146,36 @@
                                     </td>
                                     <td>{{$stopover->station?->ibnr}}</td>
                                     <td>{{$stopover->station?->rilIdentifier}}</td>
-                                    <td title="{{$stopover->arrival_planned?->format('c')}}">
-                                        {{userTime($stopover->arrival_planned)}}
+                                    <td title="{{$stopover->arrival_planned?->format('Y-m-d')}}">
+                                        <span
+                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->arrival_planned->format('ddmm')) }};">
+                                            {{userTime($stopover->arrival_planned)}}
+                                        </span>
                                         /
-                                        {{userTime($stopover->arrival_real?->format('H:i'))}}
+                                        <span
+                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->arrival_real?->format('ddmm') ?? '') }};">
+                                            {{userTime($stopover->arrival_real)}}
+                                        </span>
                                     </td>
-                                    <td title="{{$stopover->departure_planned?->format('c')}}">
-                                        {{userTime($stopover->departure_planned)}}
+                                    <td title="{{$stopover->departure_planned?->format('Y-m-d')}}">
+                                        <span
+                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->departure_planned->format('ddmm')) }};">
+                                            {{userTime($stopover->departure_planned)}}
+                                        </span>
                                         /
+                                        <span
+                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->departure_real?->format('ddmm') ?? '') }};">
                                         {{userTime($stopover->departure_real)}}
+                                        </span>
                                     </td>
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
+                        <div class="alert alert-info">
+                            <strong>Info:</strong> The colors of the times are based on the day of the year.
+                            This way you can easily see if there is a date change.
+                        </div>
                     </div>
                 </div>
             </div>

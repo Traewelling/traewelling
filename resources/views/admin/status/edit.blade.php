@@ -40,6 +40,33 @@
                     </div>
                     <div class="row">
                         <div class="col-4">
+                            Departure
+                        </div>
+                        <div class="col-8">
+                            {{$status->checkin->departure}}
+                            @if($status->checkin->manual_departure)
+                                <small>
+                                    manual: {{ $status->checkin->manual_departure }}
+                                </small>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            Arrival
+                        </div>
+                        <div class="col-8">
+                            {{$status->checkin->arrival}}
+                            @if($status->checkin->manual_arrival)
+                                <small>
+                                    manual: {{ $status->checkin->manual_arrival }}
+                                </small>
+                            @endif
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-4">
                             <label class="form-label" for="form-origin">Created at</label>
                         </div>
                         <div class="col-8">
@@ -54,6 +81,7 @@
                             {{$status->updated_at->format('c')}}
                         </div>
                     </div>
+                    <hr>
                     <div class="row">
                         <div class="col-4">
                             <label class="form-label" for="form-origin">Trip</label>
@@ -205,7 +233,8 @@
                                 <div class="form-floating">
                                     <select class="form-select" name="lock_visibility">
                                         <option value="0" @if($status->lock_visibility == 0) selected @endif>No</option>
-                                        <option value="1" @if($status->lock_visibility == 1) selected @endif>Yes</option>
+                                        <option value="1" @if($status->lock_visibility == 1) selected @endif>Yes
+                                        </option>
                                     </select>
                                     <label>Lock Visibility?</label>
                                 </div>
