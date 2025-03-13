@@ -1,5 +1,5 @@
 import _ from "lodash";
-import {Follow} from "./components/Follow";
+import {Follow} from "./api/Follow";
 
 document.querySelectorAll('.status .like').forEach((likeButton) => {
     likeButton.addEventListener('click', (pointerEvent) => {

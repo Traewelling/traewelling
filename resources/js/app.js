@@ -140,8 +140,7 @@ window.addEventListener("load", () => {
     import("./components/progressbar");
     import("./components/settings");
     import("./components/station-autocomplete");
-    import("./components/Status");
-    import("./components/timepicker");
+    import("./api/Status");
     import("./components/export");
     import("./components/business-check-in");
     import("./components/stats")

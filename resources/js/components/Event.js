@@ -1,10 +1,9 @@
-'use strict';
-import API from "../api/api";
+import {Event} from "../api/Event";
 
 document.querySelector('form#event-suggest')?.addEventListener('submit', function (event) {
     event.preventDefault();
 
-    TrwlEvent.suggest(
+    Event.suggest(
         document.querySelector('form#event-suggest input[name="name"]').value,
         document.querySelector('form#event-suggest input[name="host"]').value,
         document.querySelector('form#event-suggest input[name="begin"]').value,
@@ -23,11 +22,3 @@ document.querySelector('form#event-suggest')?.addEventListener('submit', functio
     document.querySelector('form#event-suggest input[name="hashtag"]').value        = '';
     document.querySelector('form#event-suggest input[name="nearestStation"]').value = '';
 });
-window.TrwlEvent = class TrwlEvent {
-
-    static suggest(name, host, begin, end, url, hashtag, nearestStation) {
-        API.request('/event', 'POST', {
-            name, host, begin, end, url, hashtag, nearestStation
-        }).then(API.handleDefaultResponse);
-    }
-}
