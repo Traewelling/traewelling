@@ -83,6 +83,14 @@ class EventServiceProvider extends ServiceProvider
         Event::listen(function(WebhookCallFailedEvent $event) {
             // remove payload from log message to avoid logging useless data
             if (!app()->hasDebugModeEnabled()) {
+                // payload could be json so try to decode it
+                if (is_string($event->payload)) {
+                    $payload = json_decode($event->payload, true);
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $event->payload = $payload;
+                    }
+                }
+
                 $payload        = is_array($event->payload) ? $payload['payload'] ?? null : $event->payload;
                 $event->payload = [
                     'event' => $payload
