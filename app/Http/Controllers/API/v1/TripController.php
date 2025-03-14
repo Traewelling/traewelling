@@ -53,10 +53,10 @@ class TripController extends Controller
                 );
             }
 
-            $trip     = $creator->createFullTrip();
-            $duration = $trip->departure->diffInHours($trip->arrival);
-            if ($duration > config('trwl.max_journey_time')) {
-                throw new ManualTripValidationException(sprintf('Trip duration exceeds maximum allowed duration of %d hours', config('trwl.max_journey_time')));
+            $trip            = $creator->createFullTrip();
+            $durationInHours = $trip->departure->diffInHours($trip->arrival);
+            if ($durationInHours > config('trwl.max_journey_hours')) {
+                throw new ManualTripValidationException(sprintf('Trip duration exceeds maximum allowed duration of %d hours', config('trwl.max_journey_hours')));
             }
 
         } catch (ManualTripValidationException $e) {
