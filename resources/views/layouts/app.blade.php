@@ -3,7 +3,7 @@
  use App\Services\PrideService;
 @endphp
     <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" data-bs-theme="dark">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>@yield('title') - {{ config('app.name', 'Träwelling') }}</title>
@@ -16,7 +16,7 @@
         if (localStorage.getItem("darkMode") === null) {
             localStorage.setItem("darkMode", "auto");
         }
-        var darkModeSetting = localStorage.getItem("darkMode");
+        let darkModeSetting = localStorage.getItem("darkMode");
         if (darkModeSetting === "auto") {
             darkModeSetting = window.matchMedia("(prefers-color-scheme: dark)")
                 .matches
@@ -28,6 +28,7 @@
         } else {
             document.documentElement.classList.remove("dark");
         }
+        document.documentElement.setAttribute("data-bs-theme", darkModeSetting);
     </script>
     <!-- Fonts -->
     <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
@@ -271,10 +272,14 @@
                                     <i class="fas fa-circle-half-stroke"></i></i> {{__('settings.colorscheme.set')}}
                                 </button>
                                 <div class="dropdown-menu">
-                                    <div class="dropdown-item" id="colorModeToggleLight"><i
-                                            class="fas fa-sun"></i> {{__('settings.colorscheme.light')}}</div>
-                                    <div class="dropdown-item" id="colorModeToggleDark"><i
-                                            class="fas fa-moon"></i> {{__('settings.colorscheme.dark')}}</div>
+                                    <div class="dropdown-item" id="colorModeToggleLight">
+                                        <i class="fas fa-sun"></i>
+                                        {{__('settings.colorscheme.light')}}
+                                    </div>
+                                    <div class="dropdown-item" id="colorModeToggleDark">
+                                        <i class="fas fa-moon"></i>
+                                        {{__('settings.colorscheme.dark')}}
+                                    </div>
                                     <div class="dropdown-item" id="colorModeToggleAuto">
                                         <i class="fas fa-circle-half-stroke"></i>
                                         {{__('settings.colorscheme.auto')}}
