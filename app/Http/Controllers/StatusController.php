@@ -78,6 +78,7 @@ class StatusController extends Controller
                                 'tags',
                             ])
                      ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
+                     ->where('train_checkins.departure', '>', now()->subHours(config('trwl.max_journey_hours'))) // to reduce the amount of data the database has to process
                      ->where('train_checkins.departure', '<', now())
                      ->where('train_checkins.arrival', '>', now())
                      ->select('statuses.*')
