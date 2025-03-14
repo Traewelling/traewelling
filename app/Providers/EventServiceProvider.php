@@ -80,6 +80,16 @@ class EventServiceProvider extends ServiceProvider
 
         // Dispatch Jobs from Events
         Event::listen(fn(UserCheckedIn $event) => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status, $event->shouldChain));
-        Event::listen(fn(WebhookCallFailedEvent $event) => Log::warning("Webhook call failed", ['event' => $event]));
+        Event::listen(function(WebhookCallFailedEvent $event) {
+            // remove payload from log message to avoid logging useless data
+            if (!app()->hasDebugModeEnabled()) {
+                $payload        = json_decode($event->payload);
+                $event->payload = [
+                    'event' => $payload->event ?? null,
+                ];
+            }
+
+            Log::warning("Webhook call failed", ['event' => $event]);
+        });
     }
 }
