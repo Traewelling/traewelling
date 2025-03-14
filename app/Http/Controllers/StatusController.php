@@ -166,7 +166,7 @@ class StatusController extends Controller
             throw new StatusAlreadyLikedException($user, $status);
         }
 
-        $like = Like::create([
+        $like = Like::updateOrCreate([
                                  'user_id'   => $user->id,
                                  'status_id' => $status->id,
                              ]);
