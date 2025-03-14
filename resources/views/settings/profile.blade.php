@@ -69,7 +69,7 @@
                                 {{ __('user.mapprovider') }}
                             </label>
                             <div class="col-md-6">
-                                <select class="form-control" name="mapprovider">
+                                <select class="form-select" name="mapprovider">
                                     <option value="{{ App\Enum\MapProvider::CARGO->value }}"
                                             @if(auth()->user()->mapprovider == App\Enum\MapProvider::CARGO) selected @endif>
                                         {{__('map-providers.cargo')}}
@@ -92,7 +92,7 @@
                                     {{ __('user.data_provider') }}
                                 </label>
                                 <div class="col-md-6">
-                                    <select class="form-control" name="data_provider">
+                                    <select class="form-select" name="data_provider">
                                         <option value="{{ App\Enum\DataProvider::DEFAULT->value }}"
                                                 @if(auth()->user()->data_provider == App\Enum\DataProvider::DEFAULT) selected @endif>
                                             {{__('data-providers.default')}}
@@ -136,7 +136,7 @@
                                    data-bs-toggle="tooltip"></i>
                             </label>
                             <div class="col-md-6">
-                                <select class="form-control" name="experimental" id="experimental">
+                                <select class="form-select" name="experimental" id="experimental">
                                     <option value="1" @if(auth()->user()->hasRole('open-beta')) selected @endif>
                                         {{__('settings.allow')}}
                                     </option>

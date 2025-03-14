@@ -18,7 +18,7 @@
                                    data-bs-toggle="tooltip"></i>
                             </label>
                             <div class="col-md-6">
-                                <select class="form-control" name="prevent_index">
+                                <select class="form-select" name="prevent_index">
                                     <option value="0" @if(auth()->user()->prevent_index == 0) selected @endif>
                                         {{__('settings.allow')}}
                                     </option>
@@ -37,7 +37,7 @@
                                 {{ __('settings.visibility.default') }}
                             </label>
                             <div class="col-md-6">
-                                <select class="form-control" name="default_status_visibility">
+                                <select class="form-select" name="default_status_visibility">
                                     @foreach(\App\Enum\StatusVisibility::cases() as $visibility)
                                         <option value="{{$visibility->value}}"
                                                 @if(auth()->user()->default_status_visibility === $visibility) selected @endif>
@@ -77,7 +77,7 @@
                                 {{ __('settings.mastodon.visibility') }}
                             </label>
                             <div class="col-md-6">
-                                <select class="form-control" name="mastodon_visibility">
+                                <select class="form-select" name="mastodon_visibility">
                                     @foreach(\App\Enum\MastodonVisibility::cases() as $visibility)
                                         <option value="{{$visibility->value}}"
                                                 @if(auth()->user()->socialProfile->mastodon_visibility === $visibility) selected @endif>

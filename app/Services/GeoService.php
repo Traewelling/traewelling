@@ -41,7 +41,11 @@ class GeoService
     }
 
 
-    public function interpolatePoint(Coordinate $start, Coordinate $end, float $percent): Coordinate {
+    public function interpolatePoint(?Coordinate $start, ?Coordinate $end, float $percent): ?Coordinate {
+        if ($start === null || $end === null) {
+            return $start ?? $end ?? null;
+        }
+
         return new Coordinate(
             round($start->latitude + $percent * ($end->latitude - $start->latitude), 6),
             round($start->longitude + $percent * ($end->longitude - $start->longitude), 6)

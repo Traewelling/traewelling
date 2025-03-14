@@ -184,13 +184,16 @@ abstract class MastodonController extends Controller
         // Mastodon transmits ids as strings
         // and since we want to use === whenever possible, we convert the mastodon_id to a string.
         $mastodonUserId = (string) $user->socialProfile->mastodon_id;
-        $onlyThread     = array_filter($context['descendants'], function($toot) use ($mastodonUserId): bool {
+        $descendants    = $context['descendants'] ?? [];
+        $onlyThread     = array_filter($descendants, function($toot) use ($mastodonUserId): bool {
+            $visibility = $toot['visibility'] ?? '';
+            $accountId  = $toot['account']['id'] ?? [];
             return
                 // We never want to interact with any direct messages
-                $toot['visibility'] !== 'direct'
+                $visibility !== 'direct'
 
                 // Only take posts that are from $OP.
-                && $toot['account']['id'] === $mastodonUserId
+                && $accountId === $mastodonUserId
 
                 // Only take posts that are direct replies to a post by OP, discarding posts from OP that don't
                 // contribute to the original thread.

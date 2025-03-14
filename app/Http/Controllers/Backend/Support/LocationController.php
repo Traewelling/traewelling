@@ -109,7 +109,14 @@ class LocationController
                 $recentPoint = $point ?? $recentPoint;
             }
 
-            $currentPosition = $this->geoService->interpolatePoint($recentPoint, $point ?? $recentPoint, $meters / $distance);
+            $currentPosition = $this->geoService->interpolatePoint(
+                $recentPoint,
+                $point ?? $recentPoint,
+                $distance < 1 ? 0 : $meters / $distance
+            );
+            if ($currentPosition === null) {
+                return null;
+            }
 
             $polyline->features = array_slice($polyline->features, $key);
             array_unshift($polyline->features, Feature::fromCoordinate($currentPosition));
@@ -142,18 +149,26 @@ class LocationController
         return $fullDistance;
     }
 
+    private function emptyGeoJson(): stdClass {
+        $geoJson           = new stdClass();
+        $geoJson->type     = 'FeatureCollection';
+        $geoJson->features = [];
+        return $geoJson;
+    }
+
     /**
      * @throws JsonException
      */
     private function getPolylineWithTimestamps(): stdClass {
+        $geoJsonObj = $this->emptyGeoJson();
         if (!empty($this->trip->polyline)) {
             // decode GeoJSON object from polyline
-            $geoJsonObj = json_decode($this->trip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
-        } else {
-            // create empty GeoJSON object
-            $geoJsonObj           = new stdClass();
-            $geoJsonObj->type     = 'FeatureCollection';
-            $geoJsonObj->features = [];
+            try {
+                $geoJsonObj = json_decode($this->trip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
+            } catch (JsonException $e) {
+                // if decoding fails, return empty GeoJSON object
+                $geoJsonObj = $this->emptyGeoJson();
+            }
         }
         $stopovers = $this->trip->stopovers;
 
