@@ -54,17 +54,6 @@ class Handler extends ExceptionHandler
      * @throws Throwable
      */
     public function render($request, Throwable $exception) {
-        // create referencable exception, if running in production, not already referencable and not maintenance mode
-        if (
-            !config('app.debug')
-            && !$exception instanceof Referencable
-            && (!in_array(get_class($exception), $this->dontReference) || $exception->getCode() === 500)
-        ) {
-            $name = get_class($exception);
-            //ToDo: $exception = new Referencable();
-            Log::error(sprintf('Reference for above exception of type %s: %s', $name, 'nonexistent-reference'));
-        }
-
         $response = parent::render($request, $exception);
 
         if ($response instanceof JsonResponse && !config('app.debug') && $exception instanceof Referencable) {
