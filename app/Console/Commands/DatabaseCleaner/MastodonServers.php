@@ -133,9 +133,10 @@ class MastodonServers extends Command
     }
 
     private function fetchUsers(MastodonServer $server): Collection {
-        return User::leftJoin('social_login_profiles', 'users.id', '=', 'social_login_profiles.user_id')
-                   ->where('social_login_profiles.mastodon_server', $server->id)
-                   ->get();
+        $userIds = DB::table('social_login_profiles')
+                     ->where('mastodon_server', $server->id)
+                     ->pluck('user_id');
+        return User::whereIn('id', $userIds)->get();
     }
 
     private function notifyUsers(Collection $users, MastodonServer $server): void {
