@@ -101,6 +101,10 @@ a {
   font-size: map-get($font-sizes, 4);
 }
 
+.nav-link {
+  color: $white !important;
+}
+
 .profile-tag {
   font-size: map-get($font-sizes, 6);
 }
