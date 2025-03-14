@@ -10,6 +10,7 @@ use App\Events\StatusUpdateEvent;
 use App\Events\UserCheckedIn;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\CheckinException;
 use App\Exceptions\DistanceDeviationException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
@@ -41,13 +42,15 @@ abstract class TrainCheckinController extends Controller
      * @throws StationNotOnTripException
      * @throws CheckInCollisionException
      * @throws AlreadyCheckedInException
+     * @throws CheckinException
      */
     public static function checkin(CheckInRequestDto $dto): CheckinSuccessDto {
         if ($dto->departure->isAfter($dto->arrival)) {
-            throw new InvalidArgumentException('Departure time must be before arrival time');
+            throw new CheckinException('Departure time must be before arrival time');
         }
 
         try {
+            DB::beginTransaction();
             $status = StatusBackend::createStatus(
                 user:       $dto->user,
                 business:   $dto->travelReason,
@@ -72,20 +75,16 @@ abstract class TrainCheckinController extends Controller
                 $dto->chainFlag
             );
 
+            DB::commit();
             return $checkinResponse;
         } catch (PDOException $exception) {
-            if (isset($status)) {
-                $status->delete();
-            }
+            DB::rollBack();
             if ((int) $exception->getCode() === 23000) { // Integrity constraint violation: Duplicate entry
                 throw new AlreadyCheckedInException();
             }
             throw $exception; // Other scenarios are not handled
         } catch (Exception $exception) {
-            // Delete status if it was created and rethrow exception, so it can be handled by the caller
-            if (isset($status)) {
-                $status->delete();
-            }
+            DB::rollBack();
             throw $exception;
         }
     }
