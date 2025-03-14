@@ -34,9 +34,11 @@ function __(?string $key = null, array $replace = [], ?string $locale = null) {
         return $translation;
     }
 
-    //What? Why we don't have these translation in german? This is our main language.
-    //When we are reaching this line something is broken. Please fix it.
-    Log::warning('Missing translation for key: ' . $key);
+    if (!(str_starts_with($key, 'tag.title.') && !str_starts_with($key, 'tag.title.trwl'))) {
+        //What? Why we don't have these translation in german? This is our main language.
+        //When we are reaching this line something is broken. Please fix it.
+        Log::warning('Missing translation for key: ' . $key);
+    }
     //But nevermind, first return the key:
     return trans($key, $replace, $locale);
 }
