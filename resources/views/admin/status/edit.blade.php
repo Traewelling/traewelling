@@ -122,7 +122,7 @@
                         <div class="row mb-2">
                             <div class="col">
                                 <div class="form-floating">
-                                    <select id="form-origin" class="form-control" name="origin" required>
+                                    <select id="form-origin" class="form-select" name="origin" required>
                                         <option value="">bitte wählen</option>
                                         @foreach($status->checkin->trip->stopovers as $stopover)
                                             <option value="{{$stopover->trainStation->id}}"
@@ -138,7 +138,7 @@
                             </div>
                             <div class="col">
                                 <div class="form-floating">
-                                    <select id="form-origin" class="form-control" name="destination" required>
+                                    <select id="form-origin" class="form-select" name="destination" required>
                                         <option value="">bitte wählen</option>
                                         @foreach($status->checkin->trip->stopovers as $stopover)
                                             <option value="{{$stopover->trainStation->id}}"
@@ -163,7 +163,7 @@
                         <div class="row mb-2">
                             <div class="col">
                                 <div class="form-floating">
-                                    <select id="form-visibility" class="form-control" name="visibility" required>
+                                    <select id="form-visibility" class="form-select" name="visibility" required>
                                         <option value="">bitte wählen</option>
                                         @foreach(\App\Enum\StatusVisibility::cases() as $case)
                                             <option value="{{$case->value}}"
@@ -177,7 +177,7 @@
                             </div>
                             <div class="col">
                                 <div class="form-floating">
-                                    <select id="form-business" class="form-control" name="business" required>
+                                    <select id="form-business" class="form-select" name="business" required>
                                         <option value="">bitte wählen</option>
                                         @foreach(Business::cases() as $case)
                                             <option value="{{$case->value}}"

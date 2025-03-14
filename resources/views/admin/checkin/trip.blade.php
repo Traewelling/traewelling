@@ -69,7 +69,7 @@
                         <div class="row mt-1">
                             <div class="col-md-6">
                                 <div class="form-floating mb-2">
-                                    <select name="business" required class="form-control">
+                                    <select name="business" required class="form-select">
                                         <option value="">bitte wählen</option>
                                         @foreach(\App\Enum\Business::cases() as $case)
                                             <option value="{{$case->value}}">
@@ -82,7 +82,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating mb-2">
-                                    <select name="visibility" required class="form-control" id="formVisibility">
+                                    <select name="visibility" required class="form-select" id="formVisibility">
                                         <option value="">bitte wählen</option>
                                         @foreach(\App\Enum\StatusVisibility::cases() as $case)
                                             <option value="{{$case->value}}">
