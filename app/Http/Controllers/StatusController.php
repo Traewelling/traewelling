@@ -85,6 +85,7 @@ class StatusController extends Controller
                      ->filter(function(Status $status) {
                          return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
                      })
+                     ->reject(fn(Status $status) => $status->checkin === null)
                      ->sortByDesc(function(Status $status) {
                          return $status->checkin->departure;
                      })->values();
@@ -275,8 +276,8 @@ class StatusController extends Controller
         User|Authenticatable $user,
         Business             $business,
         StatusVisibility     $visibility,
-        ?string               $body = null,
-        ?Event                $event = null
+        ?string              $body = null,
+        ?Event               $event = null
     ): Status {
         if ($event !== null && !Carbon::now()->isBetween($event->checkin_start, $event->checkin_end)) {
             Log::info('Event checkin was prevented because the event is not active anymore', [
