@@ -206,7 +206,7 @@ class LocationController
 
             $mapLines = [];
             foreach ($geoJson->features as $feature) {
-                if (isset($feature->geometry->coordinates[0], $feature->geometry->coordinates[1])) {
+                if (!empty($feature->geometry->coordinates[0]) && !empty($feature->geometry->coordinates[1])) {
                     $mapLines[] = [
                         $feature->geometry->coordinates[$invert ? 1 : 0],
                         $feature->geometry->coordinates[$invert ? 0 : 1]
@@ -217,8 +217,8 @@ class LocationController
         } catch (Exception $exception) {
             report($exception);
             return [
-                [$this->origin->latitude, $this->origin->longitude],
-                [$this->destination->latitude, $this->destination->longitude]
+                [$this->origin->station->longitude, $this->origin->station->latitude],
+                [$this->destination->station->longitude, $this->destination->station->latitude]
             ];
         }
     }
