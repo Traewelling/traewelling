@@ -13,7 +13,6 @@
 @section('footer')
     @parent
     @if($topCategories->count() > 0)
-        TEST
         <script>
             let categorySeries = [
                 @foreach($topCategories as $category)
