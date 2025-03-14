@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Dto\Coordinate;
+use App\Dto\Internal\CheckInRequestDto;
+use App\Dto\Internal\CheckinSuccessDto;
 use App\Dto\Transport\Station as StationDto;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
+use App\Exceptions\CheckinException;
 use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\StationController;
@@ -25,12 +28,14 @@ use App\Notifications\YouHaveBeenCheckedIn;
 use App\Services\GeoService;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
+use Throwable;
 
 class TransportController extends Controller
 {
@@ -368,6 +373,7 @@ class TransportController extends Controller
     public function create(Request $request): JsonResponse {
         $this->authorize('create', Status::class);
 
+        $withUsers = null;
         $validated = $request->validate([
                                             'body'        => ['nullable', 'max:280'],
                                             'business'    => ['nullable', new Enum(Business::class)],
@@ -412,15 +418,7 @@ class TransportController extends Controller
             $checkinResponse = TrainCheckinController::checkin($dto);
 
             // if isset, check in the other users with their default values
-            foreach ($withUsers ?? [] as $user) {
-                $dto->setUser($user);
-                $dto->setBody(null);
-                $dto->setStatusVisibility($user->default_status_visibility);
-                $dto->setPostOnMastodonFlag(false);
-                $checkin = TrainCheckinController::checkin($dto);
-                $user->notify(new YouHaveBeenCheckedIn($checkin->status, auth()->user()));
-                $checkinResponse->alsoOnThisConnection->push($checkin->status);
-            }
+            $this->checkinOtherUsers($withUsers, $dto, $checkinResponse);
 
             return $this->sendResponse(new CheckinSuccessResource($checkinResponse), 201);
         } catch (CheckInCollisionException $exception) {
@@ -431,12 +429,16 @@ class TransportController extends Controller
 
         } catch (StationNotOnTripException) {
             return $this->sendError('Given stations are not on the trip/have wrong departure/arrival.', 400);
-        } catch (HafasException $exception) {
+        } catch (HafasException|CheckinException $exception) {
             return $this->sendError($exception->getMessage(), 400);
         } catch (AlreadyCheckedInException) {
             return $this->sendError(__('messages.exception.already-checkedin', [], 'en'), 400);
+        } catch (Exception $exception) {
+            report($exception);
+            return $this->sendError('An unknown error occurred.', 500, null, $exception);
         }
     }
+
 
     /**
      * @OA\Put(
@@ -564,5 +566,21 @@ class TransportController extends Controller
      */
     public function getTrainStationHistory(): AnonymousResourceCollection {
         return StationResource::collection(StationController::getLatestArrivals(auth()->user()));
+    }
+
+    public function checkinOtherUsers(?Collection $withUsers, CheckInRequestDto $dto, CheckinSuccessDto $checkinResponse): void {
+        foreach ($withUsers ?? [] as $user) {
+            $dto->setUser($user);
+            $dto->setBody(null);
+            $dto->setStatusVisibility($user->default_status_visibility);
+            $dto->setPostOnMastodonFlag(false);
+            try {
+                $checkin = TrainCheckinController::checkin($dto);
+            } catch (Throwable) {
+                continue;
+            }
+            $user->notify(new YouHaveBeenCheckedIn($checkin->status, auth()->user()));
+            $checkinResponse->alsoOnThisConnection->push($checkin->status);
+        }
     }
 }
