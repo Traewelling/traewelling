@@ -1,4 +1,4 @@
-<table class="table table-striped table-hover table-dark" aria-describedby="{{$describedBy}}">
+<table class="table table-striped table-hover" aria-describedby="{{$describedBy}}">
     <thead>
     <tr>
         <th scope="col">{{ __('leaderboard.rank') }}</th>
