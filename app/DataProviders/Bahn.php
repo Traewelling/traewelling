@@ -2,6 +2,7 @@
 
 namespace App\DataProviders;
 
+use App\DataProviders\Repositories\BahnRepository;
 use App\Dto\Coordinate;
 use App\Dto\Internal\BahnTrip;
 use App\Dto\Internal\Departure;
@@ -26,11 +27,17 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use JsonException;
+use Throwable;
 
 class Bahn extends Controller implements DataProviderInterface
 {
-    public function getStationByRilIdentifier(string $rilIdentifier): ?Station
-    {
+    private BahnRepository $repository;
+
+    public function __construct(?BahnRepository $repository = null) {
+        $this->repository = $repository ?? new BahnRepository();
+    }
+
+    public function getStationByRilIdentifier(string $rilIdentifier): ?Station {
         $station = Station::where('rilIdentifier', $rilIdentifier)->first();
         if ($station !== null) {
             return $station;
@@ -38,11 +45,10 @@ class Bahn extends Controller implements DataProviderInterface
         return null;
     }
 
-    public function getStationsByFuzzyRilIdentifier(string $rilIdentifier): Collection
-    {
+    public function getStationsByFuzzyRilIdentifier(string $rilIdentifier): Collection {
         $stations = Station::where('rilIdentifier', 'LIKE', "$rilIdentifier%")
-            ->orderBy('rilIdentifier')
-            ->get();
+                           ->orderBy('rilIdentifier')
+                           ->get();
         if ($stations->count() === 0) {
             $station = $this->getStationByRilIdentifier(rilIdentifier: $rilIdentifier);
             if ($station !== null) {
@@ -55,17 +61,16 @@ class Bahn extends Controller implements DataProviderInterface
     /**
      * @throws HafasException
      */
-    public function getStations(string $query, int $results = 10): Collection
-    {
+    public function getStations(string $query, int $results = 10): Collection {
         try {
-            $url = "https://www.bahn.de/web/api/reiseloesung/orte?suchbegriff=" . urlencode($query) . "&typ=ALL&limit=" . $results;
+            $url      = "https://www.bahn.de/web/api/reiseloesung/orte?suchbegriff=" . urlencode($query) . "&typ=ALL&limit=" . $results;
             $response = Http::get($url);
 
             if (!$response->ok()) {
                 CacheKey::increment(HCK::LOCATIONS_NOT_OK);
             }
 
-            $json = $response->json();
+            $json   = $response->json();
             $extIds = [];
             foreach ($json as $rawStation) {
                 if (!isset($rawStation['extId'])) {
@@ -83,12 +88,12 @@ class Bahn extends Controller implements DataProviderInterface
                 $station = $stationCache->where('ibnr', $rawStation['extId'])->first();
                 if ($station === null) {
                     $station = Station::create([
-                        'name' => $rawStation['name'],
-                        'latitude' => $rawStation['lat'],
-                        'longitude' => $rawStation['lon'],
-                        'ibnr' => $rawStation['extId'],
-                        'source' => 'bahn-web-api',
-                    ]);
+                                                   'name'      => $rawStation['name'],
+                                                   'latitude'  => $rawStation['lat'],
+                                                   'longitude' => $rawStation['lon'],
+                                                   'ibnr'      => $rawStation['extId'],
+                                                   'source'    => 'bahn-web-api',
+                                               ]);
                 }
                 $stations->push($station);
             }
@@ -106,13 +111,11 @@ class Bahn extends Controller implements DataProviderInterface
     /**
      * @throws HafasException
      */
-    public function getNearbyStations(float $latitude, float $longitude, int $results = 8): Collection
-    {
+    public function getNearbyStations(float $latitude, float $longitude, int $results = 8): Collection {
         throw new HafasException("Method currently not supported");
     }
 
-    private function getStationFromHalt(array $rawHalt)
-    {
+    private function getStationFromHalt(array $rawHalt) {
         //$station = Station::where('ibnr', $rawHalt['extId'])->first();
         //if($station !== null) {
         //    return $station;
@@ -122,26 +125,26 @@ class Bahn extends Controller implements DataProviderInterface
         // example id: A=1@O=Druseltal, Kassel@X=9414484@Y=51301106@U=81@L=714800@
         $matches = [];
         preg_match('/@X=(-?\d+)@Y=(-?\d+)/', $rawHalt['id'], $matches);
-        $latitude = $matches[2] / 1000000;
+        $latitude  = $matches[2] / 1000000;
         $longitude = $matches[1] / 1000000;
 
         return Station::updateOrCreate([
-            'ibnr' => $rawHalt['extId'],
-        ], [
-            'name' => $rawHalt['name'],
-            'latitude' => $latitude ?? 0, // Hello Null-Island
-            'longitude' => $longitude ?? 0, // Hello Null-Island
-            'source' => TripSource::BAHN_WEB_API->value,
-        ]);
+                                           'ibnr' => $rawHalt['extId'],
+                                       ], [
+                                           'name'      => $rawHalt['name'],
+                                           'latitude'  => $latitude ?? 0, // Hello Null-Island
+                                           'longitude' => $longitude ?? 0, // Hello Null-Island
+                                           'source'    => TripSource::BAHN_WEB_API->value,
+                                       ]);
     }
 
 
     /**
-     * @param Station $station
-     * @param Carbon $when
-     * @param int $duration
+     * @param Station         $station
+     * @param Carbon          $when
+     * @param int             $duration
      * @param TravelType|null $type
-     * @param bool $localtime
+     * @param bool            $localtime
      *
      * @return Collection
      * @throws HafasException
@@ -152,8 +155,7 @@ class Bahn extends Controller implements DataProviderInterface
         int         $duration = 15,
         ?TravelType $type = null,
         bool        $localtime = false
-    )
-    {
+    ) {
         if (empty($station->ibnr)) {
             throw new HafasException(__('messages.exception.generalHafas'));
         }
@@ -175,36 +177,36 @@ class Bahn extends Controller implements DataProviderInterface
             }
 
             $requestUrl = "https://www.bahn.de/web/api/reiseloesung/abfahrten" . $params;
-            $response = Http::get($requestUrl);
+            $response   = Http::get($requestUrl);
 
             if (!$response->ok()) {
                 CacheKey::increment(HCK::DEPARTURES_NOT_OK);
                 Log::error('Unknown HAFAS Error (fetchDepartures)', [
                     'status' => $response->status(),
-                    'body' => $response->body()
+                    'body'   => $response->body()
                 ]);
                 throw new HafasException(__('messages.exception.generalHafas'));
             }
 
             $departures = collect();
-            $entries = $response->json('entries');
+            $entries    = $response->json('entries');
             CacheKey::increment(HCK::DEPARTURES_SUCCESS);
             foreach ($entries as $rawDeparture) {
                 //trip
-                $journeyId = $rawDeparture['journeyId'];
+                $journeyId       = $rawDeparture['journeyId'];
                 $departureStopId = $rawDeparture['bahnhofsId'];
-                $tripLineName = $rawDeparture['verkehrmittel']['mittelText'] ?? '';
-                $category = isset($rawDeparture['verkehrmittel']['produktGattung']) ? ReiseloesungCategory::tryFrom($rawDeparture['verkehrmittel']['produktGattung']) : ReiseloesungCategory::UNKNOWN;
-                $category = $category ?? ReiseloesungCategory::UNKNOWN;
+                $tripLineName    = $rawDeparture['verkehrmittel']['mittelText'] ?? '';
+                $category        = isset($rawDeparture['verkehrmittel']['produktGattung']) ? ReiseloesungCategory::tryFrom($rawDeparture['verkehrmittel']['produktGattung']) : ReiseloesungCategory::UNKNOWN;
+                $category        = $category ?? ReiseloesungCategory::UNKNOWN;
                 $hafasTravelType = $category->getHTT()->value;
 
                 $platformPlanned = $rawDeparture['gleis'] ?? '';
-                $platformReal = $rawDeparture['ezGleis'] ?? $platformPlanned;
+                $platformReal    = $rawDeparture['ezGleis'] ?? $platformPlanned;
                 try {
                     $departureStation = Station::where('ibnr', [$departureStopId])->first();
                     if ($departureStation === null) {
                         // if station does not exist, request it from API
-                        $stationsFromApi = $this->getStations($departureStopId, 1);
+                        $stationsFromApi  = $this->getStations($departureStopId, 1);
                         $departureStation = $stationsFromApi->first();
                     }
                 } catch (Exception $exception) {
@@ -226,26 +228,26 @@ class Bahn extends Controller implements DataProviderInterface
                 Cache::add($journeyId, [
                     'category' => $hafasTravelType,
                     'lineName' => $tripLineName
-                ], now()->addMinutes(30));
+                ],         now()->addMinutes(30));
 
                 if ($departureStation === null) {
                     continue;
                 }
 
                 $departure = new Departure(
-                    station: $departureStation,
+                    station:          $departureStation,
                     plannedDeparture: Carbon::parse($rawDeparture['zeit'], $timezone),
-                    realDeparture: isset($rawDeparture['ezZeit']) ? Carbon::parse($rawDeparture['ezZeit'], $timezone) : null,
-                    trip: new BahnTrip(
-                        tripId: $journeyId,
-                        direction: $rawDeparture['terminus'] ?? '',
-                        lineName: $tripLineName,
-                        number: $journeyNumber,
-                        category: $hafasTravelType,
-                        journeyNumber: $journeyNumber,
-                    ),
-                    plannedPlatform: $platformPlanned,
-                    realPlatform: $platformReal,
+                    realDeparture:    isset($rawDeparture['ezZeit']) ? Carbon::parse($rawDeparture['ezZeit'], $timezone) : null,
+                    trip:             new BahnTrip(
+                                          tripId:        $journeyId,
+                                          direction:     $rawDeparture['terminus'] ?? '',
+                                          lineName:      $tripLineName,
+                                          number:        $journeyNumber,
+                                          category:      $hafasTravelType,
+                                          journeyNumber: $journeyNumber,
+                                      ),
+                    plannedPlatform:  $platformPlanned,
+                    realPlatform:     $platformReal,
                 );
 
                 $departures->push($departure);
@@ -265,12 +267,11 @@ class Bahn extends Controller implements DataProviderInterface
     /**
      * @throws HafasException
      */
-    private function fetchJourney(string $journeyId, bool $poly = false): array|null
-    {
+    private function fetchJourney(string $journeyId, bool $poly = false): array|null {
         try {
             $response = Http::get("https://www.bahn.de/web/api/reiseloesung/fahrt", [
                 'journeyId' => $journeyId,
-                'poly' => $poly ? 'true' : 'false',
+                'poly'      => $poly ? 'true' : 'false',
             ]);
 
             if ($response->ok()) {
@@ -282,7 +283,7 @@ class Bahn extends Controller implements DataProviderInterface
             CacheKey::increment(HCK::TRIPS_FAILURE);
             Log::error('Unknown HAFAS Error (fetchJourney)', [
                 'status' => $response->status(),
-                'body' => $response->body()
+                'body'   => $response->body()
             ]);
             report($exception);
             throw new HafasException(__('messages.exception.generalHafas'));
@@ -291,7 +292,7 @@ class Bahn extends Controller implements DataProviderInterface
         CacheKey::increment(HCK::TRIPS_NOT_OK);
         Log::error('Unknown HAFAS Error (fetchRawHafasTrip)', [
             'status' => $response->status(),
-            'body' => $response->body()
+            'body'   => $response->body()
         ]);
         throw new HafasException(__('messages.exception.generalHafas'));
     }
@@ -299,8 +300,7 @@ class Bahn extends Controller implements DataProviderInterface
     /**
      * @throws HafasException|JsonException
      */
-    public function fetchRawHafasTrip(string $tripId, string $lineName)
-    {
+    public function fetchRawHafasTrip(string $tripId, string $lineName) {
         return $this->fetchJourney($tripId, true);
     }
 
@@ -311,8 +311,7 @@ class Bahn extends Controller implements DataProviderInterface
      * @return Trip
      * @throws HafasException|JsonException
      */
-    public function fetchHafasTrip(string $tripID, string $lineName): Trip
-    {
+    public function fetchHafasTrip(string $tripID, string $lineName): Trip {
         $timezone = "Europe/Berlin";
 
         $rawJourney = $this->fetchJourney($tripID, true);
@@ -321,13 +320,13 @@ class Bahn extends Controller implements DataProviderInterface
             throw new HafasException(__('messages.exception.generalHafas'));
         }
         // get cached data from departure board
-        $cachedData = Cache::get($tripID);
+        $cachedData          = Cache::get($tripID);
         $stopoverCacheFromDB = Station::whereIn('ibnr', collect($rawJourney['halte'])->pluck('extId'))->get();
 
-        $originStation = $stopoverCacheFromDB->where('ibnr', $rawJourney['halte'][0]['extId'])->first() ?? self::getStationFromHalt($rawJourney['halte'][0]);
+        $originStation      = $stopoverCacheFromDB->where('ibnr', $rawJourney['halte'][0]['extId'])->first() ?? self::getStationFromHalt($rawJourney['halte'][0]);
         $destinationStation = $stopoverCacheFromDB->where('ibnr', $rawJourney['halte'][count($rawJourney['halte']) - 1]['extId'])->first() ?? self::getStationFromHalt($rawJourney['halte'][count($rawJourney['halte']) - 1]);
-        $departure = isset($rawJourney['halte'][0]['abfahrtsZeitpunkt']) ? Carbon::parse($rawJourney['halte'][0]['abfahrtsZeitpunkt'], $timezone) : null;
-        $arrival = isset($rawJourney['halte'][count($rawJourney['halte']) - 1]['ankunftsZeitpunkt']) ? Carbon::parse($rawJourney['halte'][count($rawJourney['halte']) - 1]['ankunftsZeitpunkt'], $timezone) : null;
+        $departure          = isset($rawJourney['halte'][0]['abfahrtsZeitpunkt']) ? Carbon::parse($rawJourney['halte'][0]['abfahrtsZeitpunkt'], $timezone) : null;
+        $arrival            = isset($rawJourney['halte'][count($rawJourney['halte']) - 1]['ankunftsZeitpunkt']) ? Carbon::parse($rawJourney['halte'][count($rawJourney['halte']) - 1]['ankunftsZeitpunkt'], $timezone) : null;
 
         foreach ($rawJourney['halte'] as $halt) {
             if (!empty($halt['kategorie'])) {
@@ -345,7 +344,7 @@ class Bahn extends Controller implements DataProviderInterface
         $tripLineName = $cachedData['lineName'] ?? $lineName ?? '';
 
         // get trip number from first stop
-        $tripNumber = isset($rawJourney['halte'][0]['nummer']) ? (int)$rawJourney['halte'][0]['nummer'] : 0;
+        $tripNumber = isset($rawJourney['halte'][0]['nummer']) ? (int) $rawJourney['halte'][0]['nummer'] : 0;
         if ($tripNumber === 0) {
             preg_match('/#ZE#(\d+)/', $tripID, $matches);
             if (count($matches) > 1) {
@@ -358,59 +357,58 @@ class Bahn extends Controller implements DataProviderInterface
             $station = $stopoverCacheFromDB->where('ibnr', $rawHalt['extId'])->first() ?? self::getStationFromHalt($rawHalt);
 
             $departurePlanned = isset($rawHalt['abfahrtsZeitpunkt']) ? Carbon::parse($rawHalt['abfahrtsZeitpunkt'], $timezone) : null;
-            $departureReal = isset($rawHalt['ezAbfahrtsZeitpunkt']) ? Carbon::parse($rawHalt['ezAbfahrtsZeitpunkt'], $timezone) : null;
-            $arrivalPlanned = isset($rawHalt['ankunftsZeitpunkt']) ? Carbon::parse($rawHalt['ankunftsZeitpunkt'], $timezone) : null;
-            $arrivalReal = isset($rawHalt['ezAnkunftsZeitpunkt']) ? Carbon::parse($rawHalt['ezAnkunftsZeitpunkt'], $timezone) : null;
+            $departureReal    = isset($rawHalt['ezAbfahrtsZeitpunkt']) ? Carbon::parse($rawHalt['ezAbfahrtsZeitpunkt'], $timezone) : null;
+            $arrivalPlanned   = isset($rawHalt['ankunftsZeitpunkt']) ? Carbon::parse($rawHalt['ankunftsZeitpunkt'], $timezone) : null;
+            $arrivalReal      = isset($rawHalt['ezAnkunftsZeitpunkt']) ? Carbon::parse($rawHalt['ezAnkunftsZeitpunkt'], $timezone) : null;
             // new API does not differ between departure and arrival platform
             $platformPlanned = $rawHalt['gleis'] ?? null;
-            $platformReal = $rawHalt['ezGleis'] ?? $platformPlanned;
+            $platformReal    = $rawHalt['ezGleis'] ?? $platformPlanned;
 
             $stopover = new Stopover([
-                'train_station_id' => $station->id,
-                'arrival_planned' => $arrivalPlanned ?? $departurePlanned,
-                'arrival_real' => $arrivalReal ?? $departureReal ?? null,
-                'departure_planned' => $departurePlanned ?? $arrivalPlanned,
-                'departure_real' => $departureReal ?? $arrivalReal ?? null,
-                'arrival_platform_planned' => $platformPlanned,
-                'departure_platform_planned' => $platformPlanned,
-                'arrival_platform_real' => $platformReal,
-                'departure_platform_real' => $platformReal,
-            ]);
+                                         'train_station_id'           => $station->id,
+                                         'arrival_planned'            => $arrivalPlanned ?? $departurePlanned,
+                                         'arrival_real'               => $arrivalReal ?? $departureReal ?? null,
+                                         'departure_planned'          => $departurePlanned ?? $arrivalPlanned,
+                                         'departure_real'             => $departureReal ?? $arrivalReal ?? null,
+                                         'arrival_platform_planned'   => $platformPlanned,
+                                         'departure_platform_planned' => $platformPlanned,
+                                         'arrival_platform_real'      => $platformReal,
+                                         'departure_platform_real'    => $platformReal,
+                                     ]);
             $stopovers->push($stopover);
         }
 
         $polyLine = isset($rawJourney['polylineGroup']) ? $this->getPolyLineFromTrip($rawJourney, $stopovers) : null;
 
         $journey = Trip::updateOrCreate([
-            'trip_id' => $tripID,
-        ], [
-            'category' => $category,
-            'number' => $tripNumber,
-            'linename' => $tripLineName,
-            'journey_number' => $tripNumber,
-            'operator_id' => null, //TODO
-            'origin_id' => $originStation->id,
-            'destination_id' => $destinationStation->id,
-            'polyline_id' => $polyLine?->id,
-            'departure' => $departure,
-            'arrival' => $arrival,
-            'source' => TripSource::BAHN_WEB_API,
-        ]);
-        $journey->stopovers()->saveMany($stopovers);
+                                            'trip_id' => $tripID,
+                                        ], [
+                                            'category'       => $category,
+                                            'number'         => $tripNumber,
+                                            'linename'       => $tripLineName,
+                                            'journey_number' => $tripNumber,
+                                            'operator_id'    => null, //TODO
+                                            'origin_id'      => $originStation->id,
+                                            'destination_id' => $destinationStation->id,
+                                            'polyline_id'    => $polyLine?->id,
+                                            'departure'      => $departure,
+                                            'arrival'        => $arrival,
+                                            'source'         => TripSource::BAHN_WEB_API,
+                                        ]);
+        $this->repository->createStopovers($journey, $stopovers);
 
         return $journey;
     }
 
-    private function getPolyLineFromTrip($journey, Collection $stopovers): PolyLine
-    {
+    private function getPolyLineFromTrip($journey, Collection $stopovers): PolyLine {
         $polyLine = $journey['polylineGroup'];
         $features = [];
         foreach ($polyLine['polylineDescriptions'] as $description) {
             foreach ($description['coordinates'] as $coordinate) {
-                $feature = [
-                    'type' => 'Feature',
-                    'geometry' => [
-                        'type' => 'Point',
+                $feature    = [
+                    'type'       => 'Feature',
+                    'geometry'   => [
+                        'type'        => 'Point',
                         'coordinates' => [
                             $coordinate['lng'],
                             $coordinate['lat']
@@ -427,12 +425,12 @@ class Bahn extends Controller implements DataProviderInterface
         $highestMappedKey = null;
         foreach ($stopovers as $stopover) {
             $properties = [
-                'id' => $stopover->station->ibnr,
+                'id'   => $stopover->station->ibnr,
                 'name' => $stopover->station->name,
             ];
 
             //Get feature with the lowest distance to station
-            $minDistance = null;
+            $minDistance       = null;
             $closestFeatureKey = null;
             foreach ($geoJson['features'] as $key => $feature) {
                 if (($highestMappedKey !== null && $key <= $highestMappedKey) || !isset($feature['geometry']['coordinates'])) {
@@ -446,11 +444,11 @@ class Bahn extends Controller implements DataProviderInterface
                 ))->calculateDistance();
 
                 if ($minDistance === null || $distance < $minDistance) {
-                    $minDistance = $distance;
+                    $minDistance       = $distance;
                     $closestFeatureKey = $key;
                 }
             }
-            $highestMappedKey = $closestFeatureKey;
+            $highestMappedKey                                      = $closestFeatureKey;
             $geoJson['features'][$closestFeatureKey]['properties'] = $properties;
         }
 
@@ -458,12 +456,18 @@ class Bahn extends Controller implements DataProviderInterface
         $geoJson['features'] = array_values($geoJson['features']);
 
         $geoJsonString = json_encode($geoJson);
-        $polyline = PolyLine::create([
-            'hash' => md5($geoJsonString),
-            'polyline' => $geoJsonString,
-            'source' => 'hafas', // maybe add a new one?
-            'parent_id' => null
-        ]);
+        try {
+            $polyline = PolyLine::create([
+                                             'hash'      => md5($geoJsonString),
+                                             'polyline'  => $geoJsonString,
+                                             'source'    => 'hafas', // maybe add a new one?
+                                             'parent_id' => null
+                                         ]);
+        } catch (Throwable $th) {
+            Log::error('Failed creating Polyline: ' . $th->getMessage());
+            $polyline = PolyLine::where('hash', md5($geoJsonString))->first();
+        }
+
         return $polyline;
     }
 }
