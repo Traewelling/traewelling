@@ -847,5 +847,8 @@
     "status.hidden-body": "De statustekst is niet zichtbaar voor andere gebruikers.",
     "status.locked-visibility": "Je kunt de zichtbaarheid van deze status niet aanpassen.",
     "successfully-deleted": "Verwijderd",
-    "transport_types.express": "Sneltreinen"
+    "transport_types.express": "Sneltreinen",
+    "user.data_provider": "Gegevensdienst",
+    "data-providers.default": "Standaard",
+    "data-providers.transitous": "transitous.org"
 }
