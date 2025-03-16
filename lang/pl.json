@@ -682,5 +682,8 @@
     "welcome.hero.stats.description": "Możesz przeglądać statystyki najczęściej używanych przewoźników, środków transportu i więcej!",
     "welcome.hero.map.title": "Interaktywna mapa i statusy",
     "welcome.hero.map.description": "Zobacz lokalizację twojego pojazdu na mapie oraz podziel się podróżą z innymi.",
-    "welcome.hero.mobile.description": "Träwelling jest zaprojektowany dla urządzeń mobilnych i może być używany gdziekolwiek jesteś."
+    "welcome.hero.mobile.description": "Träwelling jest zaprojektowany dla urządzeń mobilnych i może być używany gdziekolwiek jesteś.",
+    "data-providers.default": "Domyślny",
+    "data-providers.transitous": "transitous.org",
+    "user.data_provider": "Dostawca danych"
 }
