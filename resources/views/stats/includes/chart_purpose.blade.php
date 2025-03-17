@@ -13,31 +13,33 @@
     @parent
     @if($travelPurposes->count() > 0)
         <script>
-            new ApexCharts(document.querySelector("#chart_purpose"), {
-                chart: {
-                    type: 'pie'
-                },
-                series: [
-                    @foreach($travelPurposes as $row)
-                        {{$row->duration}},
-                    @endforeach
-                ],
-                labels: [
-                    @foreach($travelPurposes as $row)
-                        '{{$row->reason}}',
-                    @endforeach
-                ],
-                legend: {
-                    position: 'bottom'
-                },
-                tooltip: {
-                    y: {
-                        formatter: function (value) {
-                            return value + ' {{__('time.minutes')}}';
+            document.addEventListener('DOMContentLoaded', function() {
+                new ApexCharts(document.querySelector("#chart_purpose"), {
+                    chart: {
+                        type: 'pie'
+                    },
+                    series: [
+                        @foreach($travelPurposes as $row)
+                            {{$row->duration}},
+                        @endforeach
+                    ],
+                    labels: [
+                        @foreach($travelPurposes as $row)
+                            '{{$row->reason}}',
+                        @endforeach
+                    ],
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        y: {
+                            formatter: function (value) {
+                                return value + ' {{__('time.minutes')}}';
+                            }
                         }
-                    }
-                },
-            }).render();
+                    },
+                }).render();
+            });
         </script>
     @endif
 @endsection
