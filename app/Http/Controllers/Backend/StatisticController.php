@@ -67,6 +67,9 @@ abstract class StatisticController extends Controller
         Carbon $until,
         int    $limit = 10
     ): Collection {
+        $from->startOfDay();
+        $until->endOdDay();
+
         if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
@@ -109,6 +112,9 @@ abstract class StatisticController extends Controller
         Carbon $until,
         int    $limit = 10
     ): Collection {
+        $from->startOfDay();
+        $until->endOdDay();
+
         if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
@@ -146,11 +152,12 @@ abstract class StatisticController extends Controller
      * @api v1
      */
     public static function getDailyTravelTimeByUser(User $user, Carbon $from, Carbon $until): Collection {
+        $from->startOfDay();
+        $until->endOdDay();
+
         if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
-        $from->setTime(0, 0);
-        $until->setTime(0, 0);
 
         $dateList = collect();
         for ($date = $from->clone(); $date->isBefore($until); $date->addDay()) {
@@ -204,6 +211,9 @@ abstract class StatisticController extends Controller
      * @api v1
      */
     public static function getTravelPurposes(User $user, Carbon $from, Carbon $until): Collection {
+        $from->startOfDay();
+        $until->endOdDay();
+
         if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
