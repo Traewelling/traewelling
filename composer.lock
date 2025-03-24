@@ -1316,16 +1316,16 @@
         },
         {
             "name": "egulias/email-validator",
-            "version": "4.0.3",
+            "version": "4.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/egulias/EmailValidator.git",
-                "reference": "b115554301161fa21467629f1e1391c1936de517"
+                "reference": "d42c8731f0624ad6bdc8d3e5e9a4524f68801cfa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/b115554301161fa21467629f1e1391c1936de517",
-                "reference": "b115554301161fa21467629f1e1391c1936de517",
+                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/d42c8731f0624ad6bdc8d3e5e9a4524f68801cfa",
+                "reference": "d42c8731f0624ad6bdc8d3e5e9a4524f68801cfa",
                 "shasum": ""
             },
             "require": {
@@ -1371,7 +1371,7 @@
             ],
             "support": {
                 "issues": "https://github.com/egulias/EmailValidator/issues",
-                "source": "https://github.com/egulias/EmailValidator/tree/4.0.3"
+                "source": "https://github.com/egulias/EmailValidator/tree/4.0.4"
             },
             "funding": [
                 {
@@ -1379,7 +1379,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-12-27T00:36:43+00:00"
+            "time": "2025-03-06T22:45:56+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -5565,16 +5565,16 @@
         },
         {
             "name": "ramsey/collection",
-            "version": "2.1.0",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/collection.git",
-                "reference": "3c5990b8a5e0b79cd1cf11c2dc1229e58e93f109"
+                "reference": "344572933ad0181accbf4ba763e85a0306a8c5e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/collection/zipball/3c5990b8a5e0b79cd1cf11c2dc1229e58e93f109",
-                "reference": "3c5990b8a5e0b79cd1cf11c2dc1229e58e93f109",
+                "url": "https://api.github.com/repos/ramsey/collection/zipball/344572933ad0181accbf4ba763e85a0306a8c5e2",
+                "reference": "344572933ad0181accbf4ba763e85a0306a8c5e2",
                 "shasum": ""
             },
             "require": {
@@ -5635,9 +5635,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ramsey/collection/issues",
-                "source": "https://github.com/ramsey/collection/tree/2.1.0"
+                "source": "https://github.com/ramsey/collection/tree/2.1.1"
             },
-            "time": "2025-03-02T04:48:29+00:00"
+            "time": "2025-03-22T05:38:12+00:00"
         },
         {
             "name": "ramsey/uuid",
@@ -5791,35 +5791,35 @@
         },
         {
             "name": "romanzipp/laravel-queue-monitor",
-            "version": "5.3.7",
+            "version": "5.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romanzipp/Laravel-Queue-Monitor.git",
-                "reference": "7412f5315bbb2fa5ea4a05743d615e56b397a96e"
+                "reference": "1e0404fa513616a63004e8d7b3ddc20fbbdd9e41"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romanzipp/Laravel-Queue-Monitor/zipball/7412f5315bbb2fa5ea4a05743d615e56b397a96e",
-                "reference": "7412f5315bbb2fa5ea4a05743d615e56b397a96e",
+                "url": "https://api.github.com/repos/romanzipp/Laravel-Queue-Monitor/zipball/1e0404fa513616a63004e8d7b3ddc20fbbdd9e41",
+                "reference": "1e0404fa513616a63004e8d7b3ddc20fbbdd9e41",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-mbstring": "*",
-                "illuminate/database": "^5.5|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
-                "illuminate/queue": "^5.5|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
-                "illuminate/support": "^5.5|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+                "illuminate/database": ">=5.5",
+                "illuminate/queue": ">=5.5",
+                "illuminate/support": ">=5.5",
                 "nesbot/carbon": "^2.0|^3.0",
                 "php": "^8.0"
             },
             "require-dev": {
-                "doctrine/dbal": "^3.1",
+                "doctrine/dbal": "^3.1|^4.2",
                 "friendsofphp/php-cs-fixer": "^3.0",
-                "laravel/framework": "^5.5|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+                "laravel/framework": ">=5.5",
                 "mockery/mockery": "^1.3.2",
                 "orchestra/testbench": ">=3.8",
-                "phpstan/phpstan": "^0.12.99|^1.0",
-                "phpunit/phpunit": "^8.5.23|^9.0|^10.5",
+                "phpstan/phpstan": "^0.12.99|^1.0|^2.1",
+                "phpunit/phpunit": ">=8.5.23",
                 "romanzipp/php-cs-fixer-config": "^3.0"
             },
             "type": "library",
@@ -5849,7 +5849,7 @@
             "description": "Queue Monitoring for Laravel Database Job Queue",
             "support": {
                 "issues": "https://github.com/romanzipp/Laravel-Queue-Monitor/issues",
-                "source": "https://github.com/romanzipp/Laravel-Queue-Monitor/tree/5.3.7"
+                "source": "https://github.com/romanzipp/Laravel-Queue-Monitor/tree/5.4.0"
             },
             "funding": [
                 {
@@ -5857,7 +5857,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-12-05T14:46:27+00:00"
+            "time": "2025-03-20T07:45:05+00:00"
         },
         {
             "name": "sabberworm/php-css-parser",
