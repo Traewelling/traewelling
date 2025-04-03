@@ -214,6 +214,26 @@ class Bahn extends Controller implements DataProviderInterface
                     $departureStation = $station;
                 }
 
+                $terminus = $rawDeparture['terminus'] ?? '';
+
+                // if terminus isn't filled by DB, there's IBNR in journey id
+                if (empty($terminus) && preg_match('/#TO#(\d+)/', $journeyId, $matches)) {
+                    try {
+                        $terminusStation = Station::where('ibnr', [$matches[1]])->first();
+
+                        if ($terminusStation === null) {
+                            // if station does not exist, request it from API
+                            $stationsFromApi  = $this->getStations($matches[1], 1);
+                            $terminusStation = $stationsFromApi->first();
+                        }
+
+                        $terminus = $terminusStation['name'];
+                    } catch (Exception $exception) {
+                        Log::error($exception->getMessage());
+                        $terminus = '';
+                    }
+                }
+
                 preg_match('/#ZE#(\d+)/', $journeyId, $matches);
                 $journeyNumber = 0;
                 if (count($matches) > 1) {
@@ -240,7 +260,7 @@ class Bahn extends Controller implements DataProviderInterface
                     realDeparture:    isset($rawDeparture['ezZeit']) ? Carbon::parse($rawDeparture['ezZeit'], $timezone) : null,
                     trip:             new BahnTrip(
                                           tripId:        $journeyId,
-                                          direction:     $rawDeparture['terminus'] ?? '',
+                                          direction:     $terminus,
                                           lineName:      $tripLineName,
                                           number:        $journeyNumber,
                                           category:      $hafasTravelType,
