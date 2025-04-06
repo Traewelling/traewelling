@@ -439,17 +439,17 @@ class StatusController extends Controller
             }
 
             // check duration of manual arrival and departure
-            $arrivalDelay   = 0;
-            $departureDelay = 0;
+            $arrivalDelayInHours   = 0;
+            $departureDelayInHours = 0;
             if (!empty($manualDeparture)) {
-                $departureDelay = abs($manualDeparture->diffInHours($status->checkin->departure));
+                $departureDelayInHours = abs($manualDeparture->diffInHours($status->checkin->departure));
             }
 
             if (!empty($manualArrival)) {
-                $arrivalDelay = abs($manualArrival->diffInHours($status->checkin->arrival));
+                $arrivalDelayInHours = abs($manualArrival->diffInHours($status->checkin->arrival));
             }
 
-            if ($departureDelay > config('trwl.max_delay_time') || $arrivalDelay > config('trwl.max_delay_time')) {
+            if ($departureDelayInHours > config('trwl.max_delay_hours') || $arrivalDelayInHours > config('trwl.max_delay_hours')) {
                 DB::rollBack();
                 return $this->sendError('The delay of the manual arrival or departure is too high.', 400);
             }

@@ -61,7 +61,7 @@ class StatusController extends Controller
                 $arrivalDelay  = abs($manualArrival->diffInHours($status->checkin->arrival));
             }
 
-            if ($departureDelay > config('trwl.max_delay_time') || $arrivalDelay > config('trwl.max_delay_time')) {
+            if ($departureDelay > config('trwl.max_delay_hours') || $arrivalDelay > config('trwl.max_delay_hours')) {
                 return back()->with('error', 'The delay of the manual arrival or departure is too high.');
             }
 

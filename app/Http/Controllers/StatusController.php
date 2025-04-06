@@ -77,10 +77,11 @@ class StatusController extends Controller
                                 'checkin.trip.polyline',
                                 'tags',
                             ])
-                     ->whereHas('checkin', function($query) {
-                         $query->where('departure', '<', now())
-                               ->where('arrival', '>', now());
-                     })
+                     ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
+                     ->where('train_checkins.departure', '>', now()->subHours(config('trwl.max_journey_hours'))) // to reduce the amount of data the database has to process
+                     ->where('train_checkins.departure', '<', now())
+                     ->where('train_checkins.arrival', '>', now())
+                     ->select('statuses.*')
                      ->get()
                      ->filter(function(Status $status) {
                          return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
@@ -167,9 +168,9 @@ class StatusController extends Controller
         }
 
         $like = Like::updateOrCreate([
-                                 'user_id'   => $user->id,
-                                 'status_id' => $status->id,
-                             ]);
+                                         'user_id'   => $user->id,
+                                         'status_id' => $status->id,
+                                     ]);
 
         if (!$status->user->mutedUsers->contains('id', $user->id)) {
             $status->user->notify(new StatusLiked($like));

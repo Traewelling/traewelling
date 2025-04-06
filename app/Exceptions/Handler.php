@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -42,6 +43,7 @@ class Handler extends ExceptionHandler
         AuthenticationException::class,
         NotFoundHttpException::class,
         ThrottleRequestsException::class,
+        ValidationException::class
     ];
 
     /**
@@ -54,17 +56,6 @@ class Handler extends ExceptionHandler
      * @throws Throwable
      */
     public function render($request, Throwable $exception) {
-        // create referencable exception, if running in production, not already referencable and not maintenance mode
-        if (
-            !config('app.debug')
-            && !$exception instanceof Referencable
-            && (!in_array(get_class($exception), $this->dontReference) || $exception->getCode() === 500)
-        ) {
-            $name = get_class($exception);
-            //ToDo: $exception = new Referencable();
-            Log::error(sprintf('Reference for above exception of type %s: %s', $name, 'nonexistent-reference'));
-        }
-
         $response = parent::render($request, $exception);
 
         if ($response instanceof JsonResponse && !config('app.debug') && $exception instanceof Referencable) {

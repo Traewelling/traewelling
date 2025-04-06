@@ -148,7 +148,7 @@ abstract class MastodonController extends Controller
             ]);
 
             $status->update(['mastodon_post_id' => $postResponse['id']]);
-            Log::info("Posted on Mastodon (domain=" . $mastodonDomain . "): " . $statusText);
+            Log::debug("Posted on Mastodon (domain=" . $mastodonDomain . "): " . $statusText);
         } catch (GuzzleException $e) {
             $status->user->notify(new MastodonNotSent($e->getCode(), $status));
             throw $e;

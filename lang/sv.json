@@ -376,7 +376,7 @@
     "stats.time-in-minutes": "Restid i minuter",
     "stats.companies": "trafikföretag",
     "stats.week-short": "v.",
-    "stats.trips": "Resor",
+    "stats.trips": ":count Resor",
     "stats.global.explain": "De globala statistiker avser till incheckningar av alla Träweller under perioden från :fromDate till :toDate.",
     "dashboard.future": "Dina Check-Ins i framtiden",
     "description.status": "Resan från :username från :origin till :destination på :datum i :lineName.",
