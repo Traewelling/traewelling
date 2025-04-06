@@ -404,7 +404,7 @@
     "stats.companies": "Aziende di trasporto",
     "stats.volume": "Il tuo numero di viaggi",
     "stats.per-week": "per settimana",
-    "stats.trips": "Viaggi",
+    "stats.trips": ":count Viaggi",
     "stats.time-in-minutes": "Tempo di viaggio in minuti",
     "stats.purpose": "Scopo dei tuoi viaggi",
     "stats.week-short": "set.",

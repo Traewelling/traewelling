@@ -336,7 +336,7 @@
     "stats.global": "Globale Statistike",
     "stats.companies": "Dei Lieblingsverkehrsunnernehme",
     "stats.per-week": "pro Kalennerwoch",
-    "stats.trips": "Fahrte",
+    "stats.trips": ":count Fahrte",
     "controller.user.follow-error": "Du kannsch dere Person ned folche.",
     "date-format": "DD.MM.YYYY",
     "transport_types.regionalExp": "D-Zuuch",

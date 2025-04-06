@@ -510,7 +510,7 @@
     "stationboard.check-chainPost": "Toevoegen aan recentste check-in",
     "status.visibility.0": "Openbaar",
     "status.visibility.2.detail": "Alleen zichtbaar voor (goedgekeurde) volgers",
-    "stats.trips": "Ritten",
+    "stats.trips": ":count Ritten",
     "stats.no-data": "Er zijn gegevens over deze periode beschikbaar.",
     "stats.purpose": "Reisdoelen",
     "description.status": "De reis van :username van :origin naar :destination op :date in :lineName.",

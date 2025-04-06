@@ -437,7 +437,7 @@
     "notifications.mastodon-server.exception": "No se ha podido establecer una conexión con tu instancia de Mastodon :domain. Por favor, verifica los ajustes o reconecta la cuenta. Si el problema continua, contacta con nuestro soporte.",
     "stationboard.timezone": "Hemos detectado que tu zona horaria es diferente a la de la estación. Las horas aqui mostradas son en tu zona horaria <i>:timezone</i>.",
     "stats.time": "Tu tiempo de viaje diario",
-    "stats.trips": "Viajes",
+    "stats.trips": ":count Viajes",
     "go-to-settings": "Ir a los ajustes",
     "experimental-features": "Funciones experimentales",
     "settings.delete-webhook.success": "El webhook ha sido eliminado",

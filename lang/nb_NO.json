@@ -405,7 +405,7 @@
     "transport_types.tram": "trikk",
     "stats.volume": "Reisevolumet ditt",
     "stats.per-week": "per kalenderuke",
-    "stats.trips": "Rides",
+    "stats.trips": ":count Rides",
     "stats.no-data": "Det er ingen data i perioden.",
     "stats.categories": "Transportmidler for dine reiser",
     "stats.time-in-minutes": "Reisetid i minutter",

@@ -244,7 +244,7 @@
     "stats": "Statystyki",
     "stats.personal": "Statystyki osobiste od :fromDate do :toDate",
     "stats.global": "Statystyki globalne",
-    "stats.trips": "podróż(-e/-y)",
+    "stats.trips": ":count podróż|:count podróże|:count podróży",
     "stats.week-short": "tydz.",
     "stats.global.distance": "Dystans podróży wszystkich użytkowników",
     "stats.global.active": "Aktywni podróżnicy",
