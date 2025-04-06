@@ -214,8 +214,8 @@ export default {
   </FullScreenModal>
 
   <!-- Station Input -->
-  <div class="input-group">
-    <input type="text" class="form-control mb-2" :placeholder="placeholder"
+  <div class="input-group mb-2">
+    <input type="text" class="form-control" :placeholder="placeholder"
            :aria-label="placeholder" aria-describedby="basic-addon1"
            v-model="sidebarStationInput" @focusin="showModal"
     >
@@ -225,7 +225,7 @@ export default {
     <span class="input-group-text font-monospace" @click="showModalFocusTime">
       {{ this.timeFieldB }}
     </span>
-    <button class="btn btn-sm btn-outline-danger input-group-button py-1" type="button" @click="$emit('delete')">
+    <button class="btn btn-sm btn-outline-danger" type="button" @click="$emit('delete')">
       <i class="fas fa-trash-alt"></i>
     </button>
   </div>
@@ -233,7 +233,13 @@ export default {
 
 <style>
 .autocomplete-item {
-  background-color: var(--mdb-modal-bg) !important;
+  background-color: var(--bs-modal-bg) !important;
+  border: none;
+  border-bottom: 1px solid var(--bs-light);
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
 }
 
 .input-group-button {

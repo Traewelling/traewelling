@@ -7,7 +7,7 @@ import NotificationBell from "../vue/components/NotificationBell.vue";
 import ActiveJourneyMap from "../vue/components/ActiveJourneyMap.vue";
 import Stationboard from "../vue/components/Stationboard.vue";
 import StationAutocomplete from "../vue/components/StationAutocomplete/StationAutocomplete.vue";
-import "./bootstrap";
+import "bootstrap";
 import "awesomplete/awesomplete";
 import "leaflet/dist/leaflet.js";
 import "./api/api";
@@ -140,12 +140,11 @@ window.addEventListener("load", () => {
     import("./components/progressbar");
     import("./components/settings");
     import("./components/station-autocomplete");
-    import("./components/stationboard");
-    import("./components/stationboard-gps");
-    import("./components/Status");
-    import("./components/timepicker");
+    import("./api/Status");
     import("./components/export");
     import("./components/business-check-in");
+    import("./components/stats")
     import("./appControls");
     import("bootstrap-cookie-alert/cookiealert");
+    import("./components/tooltips");
 });

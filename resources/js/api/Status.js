@@ -1,4 +1,5 @@
-import API from "../api/api";
+import API from "./api";
+
 window.Status = class Status {
 
     static destroy(statusId) {

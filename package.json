@@ -7,18 +7,17 @@
   },
   "devDependencies": {
     "@popperjs/core": "^2.11",
+    "@tailwindcss/vite": "^4.0.14",
     "@types/lodash": "^4.17.16",
     "@types/luxon": "^3.4.2",
     "@vitejs/plugin-vue": "^5.2.1",
     "bootstrap": "^5.3",
     "daisyui": "^5.0.3",
-    "jquery": "^3.7.0",
     "laravel-vite-plugin": "^1.2.0",
     "lodash": "^4.17.21",
     "sass": "^1.85.1",
     "tailwindcss": "^4.0.0",
-    "vite": "^6.0.11",
-    "@tailwindcss/vite": "^4.0.14"
+    "vite": "^6.0.11"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.1",
@@ -35,7 +34,6 @@
     "Leaflet-MovingMaker": "^0.0.1",
     "lgbtq.css": "^2.0.7",
     "luxon": "^3.4.4",
-    "mdb-ui-kit": "^6.4.1",
     "notyf": "^3.10.0",
     "pinia": "^3.0.1",
     "pinia-plugin-persistedstate": "^4.1.3",

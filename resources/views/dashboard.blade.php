@@ -73,8 +73,8 @@
                             <h2 class="accordion-header" id="flush-headingOne">
                                 <button class="accordion-button collapsed"
                                         type="button"
-                                        data-mdb-toggle="collapse"
-                                        data-mdb-target="#future-check-ins"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#future-check-ins"
                                         aria-expanded="false"
                                         aria-controls="future-check-ins"
                                 >
@@ -84,7 +84,7 @@
                             <div id="future-check-ins"
                                  class="accordion-collapse collapse"
                                  aria-labelledby="flush-headingOne"
-                                 data-mdb-parent="#accordionFutureCheckIns"
+                                 data-bs-parent="#accordionFutureCheckIns"
                             >
                                 <div class="accordion-body px-0">
                                     @include('includes.statuses', ['statuses' => $future, 'showDates' => false])

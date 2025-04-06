@@ -10,7 +10,6 @@ export default defineConfig({
         laravel({
             input: [
                 "resources/js/app.js",
-                "resources/js/stats.js",
                 "resources/sass/app.scss",
                 "resources/sass/app-dark.scss",
                 "resources/js/admin.js",

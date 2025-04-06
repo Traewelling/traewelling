@@ -57,7 +57,7 @@
                             </small>
                             &nbsp;
                         @endisset
-                        <span data-mdb-toggle="tooltip" title="{{$display_departure->type->getTooltip()}}">
+                        <span data-bs-toggle="tooltip" title="{{$display_departure->type->getTooltip()}}">
                             {{ userTime($display_departure->time) }}
                         </span>
                     </span>
@@ -111,8 +111,8 @@
                         @if($status->business !== Business::PRIVATE)
                             <span class="pl-sm-2">
                                 <i class="fa {{$status->business->faIcon()}}"
-                                   data-mdb-toggle="tooltip"
-                                   data-mdb-placement="top"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
                                    title="{{$status->business->title()}}"
                                    aria-hidden="true">
                                 </i>
@@ -190,7 +190,7 @@
                             </small>
                             &nbsp;
                         @endisset
-                        <span data-mdb-toggle="tooltip" title="{{$display_arrival->type->getTooltip()}}">
+                        <span data-bs-toggle="tooltip" title="{{$display_arrival->type->getTooltip()}}">
                             {{ userTime($display_arrival->time) }}
                         </span>
                     </span>
@@ -236,12 +236,12 @@
             <li class="like-text list-inline-item">
                 <i class="fas {{$status->visibility->faIcon()}} visibility-icon text-small"
                    aria-hidden="true" title="{{$status->visibility->title()}}"
-                   data-mdb-toggle="tooltip"
-                   data-mdb-placement="top"></i>
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="top"></i>
             </li>
             <li class="like-text list-inline-item">
                 <div class="dropdown">
-                    <a href="#" data-mdb-toggle="dropdown" aria-expanded="false">
+                    <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                         &nbsp;
                         <i class="fa fa-ellipsis-vertical" aria-hidden="true"></i>
                         &nbsp;
@@ -276,8 +276,8 @@
                                 </li>
                                 <li>
                                     <button class="dropdown-item delete" type="button"
-                                            data-mdb-toggle="modal"
-                                            data-mdb-target="#modal-status-delete"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal-status-delete"
                                             onclick="document.querySelector('#modal-status-delete input[name=\'statusId\']').value = '{{$status->id}}';">
                                         <div class="dropdown-icon-suspense">
                                             <i class="fas fa-trash" aria-hidden="true"></i>

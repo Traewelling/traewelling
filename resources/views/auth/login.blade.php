@@ -92,10 +92,10 @@
                                     </div>
                                     <div class="form-group col-md-6">
                                         <a
-                                                href="#"
-                                                class="btn btn-md btn-primary m-0 px-3"
-                                                data-mdb-target="#mastodon-auth"
-                                                data-mdb-toggle="modal"
+                                            href="#"
+                                            class="btn btn-md btn-primary m-0 px-3"
+                                            data-bs-target="#mastodon-auth"
+                                            data-bs-toggle="modal"
                                         >
                                             <i class="fab fa-mastodon"></i> Mastodon
                                         </a>

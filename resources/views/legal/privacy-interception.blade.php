@@ -37,7 +37,7 @@
                                 <div class="row justify-content-center">
                                     <div class="col-md-8 col-lg-7 my-2">
                                         <a class="btn btn-link pr-0" href="javascript:void(0)" role="button"
-                                           data-mdb-toggle="modal" data-mdb-target="#deleteUserModal">
+                                           data-bs-toggle="modal" data-bs-target="#deleteUserModal">
                                             {{ __('settings.delete-account') }}
                                         </a>
                                         <button type="submit" class="btn btn-success">
@@ -52,7 +52,7 @@
                             {{__('privacy.sign.more')}}
                         </button>
                         <a class="btn btn-block btn-outline-secondary pr-0" href="javascript:void(0)" role="button"
-                           data-mdb-toggle="modal" data-mdb-target="#deleteUserModal">
+                           data-bs-toggle="modal" data-bs-target="#deleteUserModal">
                             {{ __('settings.delete-account.more') }}
                         </a>
                         <hr/>
