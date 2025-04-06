@@ -22,12 +22,8 @@ class TransportController extends Controller
 {
     private DataProviderInterface $dataProvider;
 
-    /**
-     * @template T of DataProviderInterface
-     * @param class-string<T> $dataProvider
-     */
-    public function __construct(string $dataProvider) {
-        $this->dataProvider = (new DataProviderBuilder())->build($dataProvider);
+    public function __construct(?User $user = null) {
+        $this->dataProvider = (new DataProviderBuilder())->build(null, $user);
     }
 
     /**

@@ -420,21 +420,6 @@
                 ]
             }
         },
-        "/activeEvents": {
-            "get": {
-                "tags": [
-                    "Events"
-                ],
-                "summary": "DEPRECATED - USE /events - removed after 2024-08",
-                "description": "DEPRECATED - USE /events - removed after 2024-08",
-                "operationId": "getActiveEvents",
-                "responses": {
-                    "200": {
-                        "description": "The events"
-                    }
-                }
-            }
-        },
         "/user/{id}/follow": {
             "post": {
                 "tags": [
@@ -1620,6 +1605,57 @@
                 ]
             }
         },
+        "/stations/{id}": {
+            "get": {
+                "tags": [
+                    "Checkin"
+                ],
+                "summary": "Show station",
+                "description": "This request returns a single station object",
+                "operationId": "showStation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "station id",
+                        "example": "1337"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/StationResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "503": {
+                        "description": "There has been an error with our data provider"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "create-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/leaderboard": {
             "get": {
                 "tags": [
@@ -2127,69 +2163,6 @@
                 "summary": "Get paginated statuses of personal dashboard",
                 "description": "Returns paginated statuses of personal dashboard",
                 "operationId": "getDashboard",
-                "parameters": [
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "Page of pagination",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/StatusResource"
-                                            }
-                                        },
-                                        "links": {
-                                            "$ref": "#/components/schemas/Links"
-                                        },
-                                        "meta": {
-                                            "$ref": "#/components/schemas/PaginationMeta"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "401": {
-                        "description": "Not logged in"
-                    }
-                },
-                "security": [
-                    {
-                        "passport": [
-                            "read-statuses"
-                        ]
-                    },
-                    {
-                        "token": []
-                    }
-                ]
-            }
-        },
-        "/dashboard/global": {
-            "get": {
-                "tags": [
-                    "Dashboard"
-                ],
-                "summary": "Get paginated statuses of global dashboard",
-                "description": "Returns paginated statuses of global dashboard",
-                "operationId": "getGlobalDashboard",
                 "parameters": [
                     {
                         "name": "page",
@@ -2781,7 +2754,7 @@
                     "401": {
                         "description": "Unauthorized"
                     },
-                    "404": {
+                    "204": {
                         "description": "No active checkin"
                     }
                 },
@@ -4386,7 +4359,7 @@
                     {
                         "name": "username",
                         "in": "query",
-                        "description": "Search for Username"
+                        "description": "Search for parts username"
                     },
                     {
                         "name": "name",
@@ -4440,7 +4413,7 @@
                 "tags": [
                     "Webhooks"
                 ],
-                "summary": "Get webhooks for current user and current application",
+                "summary": "Get webhooks for current user and current application.",
                 "description": "Returns all webhooks which are created for the current user and which the current authorized applicaton has access to.",
                 "operationId": "getWebhooks",
                 "responses": {
@@ -4531,7 +4504,7 @@
                 "tags": [
                     "Webhooks"
                 ],
-                "summary": "Delete a webhook if the user and application are authorized to do",
+                "summary": "Delete a webhook if the user and application is authorized to do",
                 "description": "",
                 "operationId": "deleteWebhook",
                 "parameters": [
@@ -4546,15 +4519,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/SuccessResponse"
-                                }
-                            }
-                        }
+                    "204": {
+                        "description": "Webhook deleted."
                     },
                     "400": {
                         "description": "Bad request"
@@ -4772,7 +4738,8 @@
                         "title": "ibnr",
                         "description": "IBNR of the station",
                         "type": "integer",
-                        "example": "8000191"
+                        "example": "8000191",
+                        "nullable": true
                     },
                     "rilIdentifier": {
                         "title": "rilIdentifier",
@@ -4797,6 +4764,16 @@
                     2
                 ],
                 "example": 0
+            },
+            "DataProvider": {
+                "title": "DataProvider",
+                "description": "What type of data provider did the user specify? (users need to be in closed-beta for this to take effect)",
+                "type": "string",
+                "enum": [
+                    "default",
+                    "transitous"
+                ],
+                "example": "cargo"
             },
             "HafasTravelType": {
                 "title": "category",

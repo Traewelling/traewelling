@@ -40,13 +40,13 @@ class FeatureCollection implements \JsonSerializable
 
     public function __construct(Collection $features, string $type = 'FeatureCollection') {
         $this->features = $features;
-        $this->type = $type;
+        $this->type     = $type;
     }
 
     public function toArray(): array {
         return [
             'type'     => $this->type,
-            'features' => $this->features
+            'features' => $this->features->toArray(),
         ];
     }
 

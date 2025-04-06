@@ -12,8 +12,14 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Throwable;
 
-class CachedHafas extends Hafas implements DataProviderInterface
+class CachedDataProvider implements DataProviderInterface
 {
+    private DataProviderInterface $dataProvider;
+
+    public function __construct(DataProviderInterface $dataProvider) {
+        $this->dataProvider = $dataProvider;
+    }
+
     public function fetchHafasTrip(string $tripID, string $lineName): Trip {
         $key = CacheKey::getHafasTripKey($tripID, $lineName);
 
@@ -21,7 +27,7 @@ class CachedHafas extends Hafas implements DataProviderInterface
             $key,
             now()->addMinutes(15),
             function() use ($tripID, $lineName) {
-                return parent::fetchHafasTrip($tripID, $lineName);
+                return $this->dataProvider->fetchHafasTrip($tripID, $lineName);
             },
             HCK::TRIPS_SUCCESS
         );
@@ -34,13 +40,13 @@ class CachedHafas extends Hafas implements DataProviderInterface
             $key,
             now()->addMinutes(15),
             function() use ($query, $results) {
-                return parent::getStations($query, $results);
+                return $this->dataProvider->getStations($query, $results);
             },
             HCK::LOCATIONS_SUCCESS
         );
     }
 
-    public function getDepartures(Station $station, Carbon $when, int $duration = 15, TravelType $type = null, bool $localtime = false): Collection {
+    public function getDepartures(Station $station, Carbon $when, int $duration = 15, TravelType|null $type = null, bool $localtime = false): Collection {
         $filterWhen = clone $when;
         $when       = clone $when;
         $when->subMinutes(2);
@@ -57,14 +63,14 @@ class CachedHafas extends Hafas implements DataProviderInterface
             $key,
             now()->addMinutes(15),
             function() use ($station, $when, $duration, $type, $localtime) {
-                return parent::getDepartures($station, $when, $duration, $type, $localtime);
+                return $this->dataProvider->getDepartures($station, $when, $duration, $type, $localtime);
             },
             HCK::DEPARTURES_SUCCESS
         );
 
         // filter entries by when and duration
         return $departures->filter(function($departure) use ($filterWhen, $duration) {
-            $depWhen = Carbon::parse($departure->when);
+            $depWhen = Carbon::parse($departure->when ?? $departure->plannedWhen);
             return $depWhen->between($filterWhen, $filterWhen->copy()->addMinutes($duration));
         });
     }
@@ -76,7 +82,7 @@ class CachedHafas extends Hafas implements DataProviderInterface
             $key,
             now()->addMinutes(15),
             function() use ($rilIdentifier) {
-                return parent::getStationByRilIdentifier($rilIdentifier);
+                return $this->dataProvider->getStationByRilIdentifier($rilIdentifier);
             },
             HCK::STATIONS_SUCCESS
         );
@@ -89,7 +95,7 @@ class CachedHafas extends Hafas implements DataProviderInterface
             $key,
             now()->addMinutes(15),
             function() use ($rilIdentifier) {
-                return parent::getStationsByFuzzyRilIdentifier($rilIdentifier);
+                return $this->dataProvider->getStationsByFuzzyRilIdentifier($rilIdentifier);
             },
             HCK::STATIONS_SUCCESS
         );
@@ -110,5 +116,13 @@ class CachedHafas extends Hafas implements DataProviderInterface
             Cache::put($key, null, $expires);
             throw $e;
         }
+    }
+
+    public function fetchRawHafasTrip(string $tripId, string $lineName) {
+        $this->dataProvider->fetchRawHafasTrip($tripId, $lineName);
+    }
+
+    public function getNearbyStations(float $latitude, float $longitude, int $results) {
+        $this->dataProvider->getNearbyStations($latitude, $longitude, $results);
     }
 }

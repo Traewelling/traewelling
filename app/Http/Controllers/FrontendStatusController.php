@@ -19,6 +19,7 @@ use Illuminate\View\View;
 class FrontendStatusController extends Controller
 {
     public function getDashboard(): Renderable|RedirectResponse {
+
         $statuses = DashboardController::getPrivateDashboard(auth()->user());
 
         return view('dashboard', [
@@ -26,15 +27,6 @@ class FrontendStatusController extends Controller
             'latest'           => StationController::getLatestArrivals(auth()->user()),
             'future'           => StatusBackend::getFutureCheckins(),
             'showGlobalButton' => auth()->user()->follows->count() === 0
-        ]);
-    }
-
-    public function getGlobalDashboard(): Renderable {
-        return view('dashboard', [
-            'statuses'         => DashboardController::getGlobalDashboard(Auth::user()),
-            'latest'           => StationController::getLatestArrivals(Auth::user()),
-            'future'           => StatusBackend::getFutureCheckins(),
-            'showGlobalButton' => false
         ]);
     }
 

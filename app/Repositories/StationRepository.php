@@ -8,11 +8,12 @@ use App\DataProviders\Hafas;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\Station;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class StationRepository
 {
     public function getStationByName(string $name, string $lang, bool $invertLanguage = false): Collection {
-        $provider = new TransportBackend(Hafas::class);
+        $provider = new TransportBackend(Auth::user());
         return $provider->getTrainStationAutocomplete($name);
 
         /*

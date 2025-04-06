@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Backend\Transport;
 
 use App\Enum\HafasTravelType;
 use App\Enum\TripSource;
+use App\Exceptions\ManualTripValidationException;
 use App\Http\Controllers\Controller;
 use App\Models\HafasOperator;
 use App\Models\Station;
@@ -122,6 +123,9 @@ class ManualTripCreator extends Controller
         return $this;
     }
 
+    /**
+     * @throws ManualTripValidationException
+     */
     public function addStopover(
         Station $station,
         ?Carbon $plannedDeparture,
@@ -130,13 +134,13 @@ class ManualTripCreator extends Controller
         ?Carbon $realArrival
     ): ManualTripCreator {
         if ($plannedDeparture === null && $plannedArrival === null) {
-            throw new InvalidArgumentException('Either arrival or departure must be set');
+            throw new ManualTripValidationException('Either arrival or departure must be set');
         }
         if ($plannedDeparture !== null && $plannedArrival !== null && $plannedDeparture->isBefore($plannedArrival)) {
-            throw new InvalidArgumentException('Departure must be after arrival');
+            throw new ManualTripValidationException('Departure must be after arrival');
         }
         if ($realDeparture !== null && $realArrival !== null && $realDeparture->isBefore($realArrival)) {
-            throw new InvalidArgumentException('Real departure must be after real arrival');
+            throw new ManualTripValidationException('Real departure must be after real arrival');
         }
 
         $this->stopovers[] = [

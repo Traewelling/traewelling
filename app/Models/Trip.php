@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property UTCDateTime     $arrival
  * @property UTCDateTime     $last_refreshed
  * @property TripSource      $source
+ * @property ?string         $motis_source
  * @property int             $user_id
  * @property                 $stopovers
  * @property PolyLine        $polyLine
@@ -42,12 +43,13 @@ class Trip extends Model
     protected $table    = 'hafas_trips';
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'journey_number', 'operator_id', 'origin_id', 'destination_id',
-        'polyline_id', 'departure', 'arrival', 'source', 'user_id', 'last_refreshed',
+        'polyline_id', 'departure', 'arrival', 'source', 'motis_source', 'user_id', 'last_refreshed',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $casts    = [
         'id'             => 'integer',
         'trip_id'        => 'string',
+        'number'         => 'string',
         'category'       => HafasTravelType::class,
         'journey_number' => 'integer',
         'operator_id'    => 'integer',

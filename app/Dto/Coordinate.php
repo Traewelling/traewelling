@@ -52,4 +52,8 @@ readonly class Coordinate implements JsonSerializable
     public function jsonSerialize(): array {
         return $this->toArray();
     }
+
+    public function __toString(): string {
+        return $this->latitude . ',' . $this->longitude;
+    }
 }

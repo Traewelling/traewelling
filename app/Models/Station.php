@@ -12,23 +12,24 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * // properties
- * @property int         $id
- * @property int|null    $ibnr
- * @property string      $rilIdentifier
- * @property string      $name
- * @property double      $latitude
- * @property double      $longitude
- * @property int         $time_offset
- * @property bool        $shift_time
- * @property Carbon      $created_at
- * @property Carbon      $updated_at
+ * @property int                 $id
+ * @property int|null            $ibnr
+ * @property string              $rilIdentifier
+ * @property string              $name
+ * @property double              $latitude
+ * @property double              $longitude
+ * @property int                 $time_offset
+ * @property bool                $shift_time
+ * @property Carbon              $created_at
+ * @property Carbon              $updated_at
  *
  * // relations
- * @property Collection  $names
+ * @property Collection          $names
+ * @property StationIdentifier[] $stationIdentifiers
  *
  * // appends
- * @property string|null $ifopt
- * @property string|null $localized_name
+ * @property string|null         $ifopt
+ * @property string|null         $localized_name
  *
  *
  * @todo rename table to "Station" (without Train - we have more than just trains)
@@ -42,7 +43,7 @@ class Station extends Model
     protected $fillable = [
         'ibnr', 'wikidata_id', 'rilIdentifier',
         'ifopt_a', 'ifopt_b', 'ifopt_c', 'ifopt_d', 'ifopt_e',
-        'name', 'latitude', 'longitude', 'time_offset', 'shift_time'
+        'name', 'latitude', 'longitude', 'source', 'time_offset', 'shift_time'
     ];
     protected $hidden   = ['created_at', 'updated_at', 'time_offset', 'shift_time'];
     protected $casts    = [
@@ -86,5 +87,9 @@ class Station extends Model
         return LogOptions::defaults()
                          ->dontSubmitEmptyLogs()
                          ->logOnlyDirty();
+    }
+
+    public function stationIdentifiers(): HasMany {
+        return $this->hasMany(StationIdentifier::class, 'station_id', 'id');
     }
 }

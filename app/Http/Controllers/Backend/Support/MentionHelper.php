@@ -16,7 +16,7 @@ class MentionHelper
     private Status  $status;
     private bool    $isCreating;
 
-    public function __construct(Status $status, string $body = null) {
+    public function __construct(Status $status, ?string $body = null) {
         $this->status = $status;
         $status->load('mentions', 'mentions.mentioned');
         $this->body       = $body ?? $status->body;
@@ -46,7 +46,7 @@ class MentionHelper
         return $users;
     }
 
-    public static function createMentions(Status $status, string $string = null): void {
+    public static function createMentions(Status $status, ?string $string = null): void {
         $self = new self($status, $string);
         $self->parseAndCreate();
     }

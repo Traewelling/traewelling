@@ -4,6 +4,7 @@ namespace Tests\Unit\Dto;
 
 use App\Dto\Coordinate;
 use App\Objects\LineSegment;
+use App\Services\GeoService;
 use JsonException;
 use Tests\Unit\UnitTestCase;
 
@@ -88,11 +89,22 @@ class CoordinateTest extends UnitTestCase
         $this->assertEquals(63, $lineSegment->calculateDistance());
     }
 
-    public function testCoordinateInterpolation(): void {
+    /**
+     * @deprecated
+     */
+    public function testCoordinateInterpolationDeprecated(): void {
         $coordinate1            = new Coordinate(49.013935, 8.404461);
         $coordinate2            = new Coordinate(49.013367, 8.404392);
         $lineSegment            = new LineSegment($coordinate1, $coordinate2);
         $interpolatedCoordinate = $lineSegment->interpolatePoint(0.5);
+        $this->assertEquals(49.013651, $interpolatedCoordinate->latitude);
+        $this->assertEquals(8.404427, $interpolatedCoordinate->longitude);
+    }
+
+    public function testCoordinateInterpolation(): void {
+        $coordinate1            = new Coordinate(49.013935, 8.404461);
+        $coordinate2            = new Coordinate(49.013367, 8.404392);
+        $interpolatedCoordinate = (new GeoService)->interpolatePoint($coordinate1, $coordinate2, 0.5);
         $this->assertEquals(49.013651, $interpolatedCoordinate->latitude);
         $this->assertEquals(8.404427, $interpolatedCoordinate->longitude);
     }

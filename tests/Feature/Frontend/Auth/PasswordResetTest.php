@@ -13,11 +13,27 @@ class PasswordResetTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
+    public function testPasswordResetAfterCreation(): void {
+        $this->assertGuest();
+        Notification::fake();
+
+        $user     = User::factory(['created_at' => now()])->create();
+        $response = $this->followingRedirects()
+                         ->post(route('password.email'), [
+                             'email' => $user->email,
+                         ]);
+        $response->assertOk();
+        $mails = DB::table('password_resets')->where('email', $user->email)->get();
+        $this->assertEmpty($mails);
+
+        Notification::assertNothingSent();
+    }
+
     public function testPasswordReset(): void {
         $this->assertGuest();
         Notification::fake();
 
-        $user     = User::factory()->create();
+        $user     = User::factory(['created_at' => now()->subDay()])->create();
         $response = $this->followingRedirects()
                          ->post(route('password.email'), [
                              'email' => $user->email,
@@ -40,7 +56,7 @@ class PasswordResetTest extends FeatureTestCase
     public function testPasswordResetWithCorrectToken(): void {
         $this->assertGuest();
 
-        $user = User::factory()->create();
+        $user = User::factory(['created_at' => now()->subDay()])->create();
         Notification::fake();
         $response = $this->followingRedirects()
                          ->post(route('password.email'), [

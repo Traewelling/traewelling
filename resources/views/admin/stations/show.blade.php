@@ -90,6 +90,23 @@
                         </tr>
                         <tr>
                             <th>
+                                Identifier
+                            </th>
+                            <td>
+                                <table class="table table-bordered">
+                                    @foreach($station->stationIdentifiers as $identifier)
+                                        <tr>
+                                            <td>{{ $identifier->type }}</td>
+                                            <td>{{ $identifier->identifier }}</td>
+                                            <td>{{ $identifier->name }}</td>
+                                            <td>{{ $identifier->origin }}</td>
+                                        </tr>
+                                    @endforeach
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
                                 <a href="https://www.wikidata.org/wiki/Property:P2561"
                                    target="P2561">
                                     Names

@@ -14,7 +14,7 @@ interface DataProviderInterface
 
     public function getStations(string $query, int $results);
 
-    public function getDepartures(Station $station, Carbon $when, int $duration = 15, TravelType $type = null, bool $localtime = false);
+    public function getDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false);
 
     public function getNearbyStations(float $latitude, float $longitude, int $results);
 

@@ -26,6 +26,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
@@ -73,39 +74,7 @@ class StatusController extends Controller
     }
 
     /**
-     * @OA\Get(
-     *      path="/dashboard/global",
-     *      operationId="getGlobalDashboard",
-     *      tags={"Dashboard"},
-     *      summary="Get paginated statuses of global dashboard",
-     *      description="Returns paginated statuses of global dashboard",
-     *      @OA\Parameter (
-     *          name="page",
-     *          description="Page of pagination",
-     *          required=false,
-     *          in="query",
-     *          @OA\Schema(type="integer")
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="data", type="array",
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/StatusResource"
-     *                  )
-     *              ),
-     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
-     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
-     *          )
-     *       ),
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=401, description="Not logged in"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     *
+     * @deprecated
      */
     public static function getGlobalDashboard(): AnonymousResourceCollection {
         return StatusResource::collection(DashboardController::getGlobalDashboard(Auth::user()));
@@ -452,6 +421,7 @@ class StatusController extends Controller
                 return $this->sendError('You are not allowed to change the visibility to anything else than private', 403);
             }
 
+            DB::beginTransaction();
             if (isset($validated['destinationId'], $validated['destinationArrivalPlanned'])
                 && ((int) $validated['destinationId']) !== $status->checkin->destinationStopover->station->id) {
                 $arrival  = Carbon::parse($validated['destinationArrivalPlanned'])->timezone(config('app.timezone'));
@@ -475,6 +445,11 @@ class StatusController extends Controller
                 'visibility' => StatusVisibility::from($validated['visibility']),
             ];
 
+            if ($status->lock_visibility) {
+                // If moderation has locked the visibility, prevent the user from changing it
+                unset($updatePayload['visibility']);
+            }
+
             if (array_key_exists('eventId', $validated)) { // don't use isset here as it would return false if eventId is null
                 $updatePayload['event_id'] = $validated['eventId'];
             }
@@ -493,12 +468,32 @@ class StatusController extends Controller
                 $status->checkin->update(['manual_arrival' => $manualArrival]);
             }
 
+            // check duration of manual arrival and departure
+            $arrivalDelayInHours   = 0;
+            $departureDelayInHours = 0;
+            if (!empty($manualDeparture)) {
+                $departureDelayInHours = abs($manualDeparture->diffInHours($status->checkin->departure));
+            }
+
+            if (!empty($manualArrival)) {
+                $arrivalDelayInHours = abs($manualArrival->diffInHours($status->checkin->arrival));
+            }
+
+            if ($departureDelayInHours > config('trwl.max_delay_hours') || $arrivalDelayInHours > config('trwl.max_delay_hours')) {
+                DB::rollBack();
+                return $this->sendError('The delay of the manual arrival or departure is too high.', 400);
+            }
+
+            DB::commit();
             return $this->sendResponse(new StatusResource($status->fresh()));
         } catch (ModelNotFoundException) {
+            DB::rollBack();
             return $this->sendError('Status not found');
         } catch (AuthorizationException) {
+            DB::rollBack();
             return $this->sendError('You are not authorized to edit this status', 403);
         } catch (InvalidArgumentException) {
+            DB::rollBack();
             return $this->sendError('Invalid Arguments', 400);
         }
     }
@@ -641,26 +636,22 @@ class StatusController extends Controller
      *          )
      *       ),
      *       @OA\Response(response=401, description="Unauthorized"),
-     *       @OA\Response(response=404, description="No active checkin"),
+     *       @OA\Response(response=204, description="No active checkin"),
      *       security={
      *          {"passport": {"read-statuses"}}, {"token": {}}
-     *
      *       }
      *     )
-     *
-     * @return JsonResponse
      */
-    public function getActiveStatus(): JsonResponse {
+    public function getActiveStatus(): StatusResource|JsonResponse {
         $latestStatuses = UserBackend::statusesForUser(user: Auth::user());
-        if ($latestStatuses->count() === 0) {
-            return $this->sendError('User doesn\'t have any checkins');
-        }
-        foreach ($latestStatuses as $status) {
-            if ($status->checkin->originStopover->departure->isPast()
-                && $status->checkin->destinationStopover->arrival->isFuture()) {
-                return $this->sendResponse(new StatusResource($status));
+        if ($latestStatuses->count() > 0) {
+            foreach ($latestStatuses as $status) {
+                if ($status->checkin->originStopover->departure->isPast()
+                    && $status->checkin->destinationStopover->arrival->isFuture()) {
+                    return new StatusResource($status);
+                }
             }
         }
-        return $this->sendError('No active status');
+        return response()->json(null, 204);
     }
 }

@@ -41,9 +41,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        Registered::class             => [
-            //SendEmailVerificationNotification::class,
-        ],
+        Registered::class             => [],
         UserCheckedIn::class          => [
             StatusCreateWebhookListener::class,
             StatusCreateCheckPolylineListener::class,
@@ -82,6 +80,24 @@ class EventServiceProvider extends ServiceProvider
 
         // Dispatch Jobs from Events
         Event::listen(fn(UserCheckedIn $event) => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status, $event->shouldChain));
-        Event::listen(fn(WebhookCallFailedEvent $event) => Log::warning("Webhook call failed", ['event' => $event]));
+        Event::listen(function(WebhookCallFailedEvent $event) {
+            // remove payload from log message to avoid logging useless data
+            if (!app()->hasDebugModeEnabled()) {
+                // payload could be json so try to decode it
+                if (is_string($event->payload)) {
+                    $payload = json_decode($event->payload, true);
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $event->payload = $payload;
+                    }
+                }
+
+                $payload        = is_array($event->payload) ? $payload['payload'] ?? null : $event->payload;
+                $event->payload = [
+                    'event' => $payload
+                ];
+            }
+
+            Log::warning("Webhook call failed", ['event' => $event]);
+        });
     }
 }

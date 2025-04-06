@@ -23,10 +23,11 @@ class RefreshStopover implements ShouldQueue
         $this->stopover = $stopover;
     }
 
-    /**
-     * @throws HafasException
-     */
     public function handle(): void {
-        (new HafasStopoverService(Hafas::class))->refreshStopover($this->stopover);
+        try {
+            (new HafasStopoverService(Hafas::class))->refreshStopover($this->stopover);
+        } catch (\Exception $exception) {
+            report($exception);
+        }
     }
 }

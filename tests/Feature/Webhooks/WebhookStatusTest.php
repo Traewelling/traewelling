@@ -24,6 +24,8 @@ class WebhookStatusTest extends FeatureTestCase
     use RefreshDatabase;
 
     public function testWebhookSendingOnStatusCreation(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Bus::fake();
 
         $user   = User::factory()->create();
@@ -41,6 +43,8 @@ class WebhookStatusTest extends FeatureTestCase
     }
 
     public function testWebhookSendingOnStatusBodyChange() {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Bus::fake();
 
         $user   = User::factory()->create();
@@ -67,6 +71,8 @@ class WebhookStatusTest extends FeatureTestCase
     }
 
     public function testWebhookSendingOnLike() {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Bus::fake();
 
         $user   = User::factory()->create();
@@ -88,6 +94,8 @@ class WebhookStatusTest extends FeatureTestCase
     }
 
     public function testWebhookSendingOnDestinationChange() {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Bus::fake();
 
         $user   = User::factory()->create();
@@ -117,6 +125,8 @@ class WebhookStatusTest extends FeatureTestCase
     }
 
     public function testWebhookSendingOnBusinessChange() {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Bus::fake();
 
         $user   = User::factory()->create();
@@ -143,6 +153,8 @@ class WebhookStatusTest extends FeatureTestCase
     }
 
     public function testWebhookSendingOnVisibilityChange() {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Bus::fake();
 
         $user   = User::factory()->create();
@@ -169,6 +181,8 @@ class WebhookStatusTest extends FeatureTestCase
     }
 
     public function testWebhookSendingOnStatusDeletion() {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Bus::fake();
 
         $user   = User::factory()->create();

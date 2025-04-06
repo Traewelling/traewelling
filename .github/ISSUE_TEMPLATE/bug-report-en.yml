@@ -1,0 +1,50 @@
+name: "🇬🇧 Report an Issue in English"
+description: "Report a bug or unexpected behavior in English"
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the problem
+      description: Please describe clearly what went wrong. Feel free to include screenshots, but make sure to anonymize any personal data.
+      placeholder: |
+        Example: 
+        "When I click 'Login,' an error message appears ... 
+         I cannot log in ... 
+         Here is a screenshot (data redacted) ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: What steps did you take before the issue occurred?
+      description: The more detailed the description, the faster we can reproduce and fix the issue.
+      placeholder: |
+        1. Opened the website ...
+        2. Clicked on 'Login' ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: What did you expect to happen?
+      description: How did you expect the system to behave?
+      placeholder: |
+        I expected to be redirected to a confirmation page after logging in ...
+    validations:
+      required: false
+
+  - type: textarea
+    id: browser_logs
+    attributes:
+      label: Browser console or error messages (optional)
+      description: If you know how to open the browser console, please copy relevant logs here. Otherwise, you can leave this field empty.
+      render: bash
+
+  - type: textarea
+    id: additional_info
+    attributes:
+      label: Any additional hints or information? (optional)
+      description: If you’ve tried fixing the issue yoursel

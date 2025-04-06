@@ -4,7 +4,7 @@
     use App\Http\Controllers\Backend\Helper\StatusHelper;
     use App\Http\Controllers\Backend\Transport\StationController;
     use App\Http\Controllers\Backend\Transport\StatusController;
-    use App\Http\Controllers\Backend\User\ProfilePictureController;
+    use App\Http\Controllers\Backend\User\ProfilePictureController;use Illuminate\Support\Facades\Gate;
 @endphp
 @php /** @var App\Models\Status $status */ @endphp
 <div class="card status mb-3" id="status-{{ $status->id }}"
@@ -57,7 +57,7 @@
                             </small>
                             &nbsp;
                         @endisset
-                        <span data-mdb-toggle="tooltip" title="{{$display_departure->type->getTooltip()}}">
+                        <span data-bs-toggle="tooltip" title="{{$display_departure->type->getTooltip()}}">
                             {{ userTime($display_departure->time) }}
                         </span>
                     </span>
@@ -74,7 +74,7 @@
                         @endif
                     </a>
 
-                    <p class="train-status text-muted">
+                    <p class="train-status text-muted m-0">
                         <span>
                             @if(file_exists(public_path('img/' . $status->checkin->trip->category->value . '.svg')))
                                 <img class="product-icon"
@@ -111,8 +111,8 @@
                         @if($status->business !== Business::PRIVATE)
                             <span class="pl-sm-2">
                                 <i class="fa {{$status->business->faIcon()}}"
-                                   data-mdb-toggle="tooltip"
-                                   data-mdb-placement="top"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
                                    title="{{$status->business->title()}}"
                                    aria-hidden="true">
                                 </i>
@@ -130,14 +130,37 @@
                         @endif
                     </p>
 
-                    @if(!empty($status->body))
-                        <p class="status-body"><i class="fas fa-quote-right" aria-hidden="true"></i>
+                    @if(auth()->check() && auth()->id() === $status->user_id)
+                        @if($status->moderation_notes)
+                            <p class="text-warning font-italic m-0">
+                                <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                {{ $status->moderation_notes }}
+                            </p>
+                        @endif
+
+                        @if($status->lock_visibility)
+                            <p class="text-warning font-italic m-0">
+                                <i class="fas fa-lock" aria-hidden="true"></i>
+                                {{ __('status.locked-visibility') }}
+                            </p>
+                        @endif
+
+                        @if($status->hide_body)
+                            <p class="text-warning font-italic m-0">
+                                <i class="fas fa-eye-slash" aria-hidden="true"></i>
+                                {{ __('status.hidden-body') }}
+                            </p>
+                        @endif
+                    @endif
+
+                    @if(!empty($status->body) && Gate::allows('viewBody', $status))
+                        <p class="status-body mt-2"><i class="fas fa-quote-right" aria-hidden="true"></i>
                             {!! StatusController::getPrintableEscapedBody($status) !!}
                         </p>
                     @endif
 
                     @if($status->checkin->departure->isPast() && $status->checkin->arrival->isFuture())
-                        <p class="text-muted font-italic">
+                        <p class="text-muted font-italic mt-2">
                             {{ __('stationboard.next-stop') }}
 
                             @php
@@ -167,7 +190,7 @@
                             </small>
                             &nbsp;
                         @endisset
-                        <span data-mdb-toggle="tooltip" title="{{$display_arrival->type->getTooltip()}}">
+                        <span data-bs-toggle="tooltip" title="{{$display_arrival->type->getTooltip()}}">
                             {{ userTime($display_arrival->time) }}
                         </span>
                     </span>
@@ -213,12 +236,12 @@
             <li class="like-text list-inline-item">
                 <i class="fas {{$status->visibility->faIcon()}} visibility-icon text-small"
                    aria-hidden="true" title="{{$status->visibility->title()}}"
-                   data-mdb-toggle="tooltip"
-                   data-mdb-placement="top"></i>
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="top"></i>
             </li>
             <li class="like-text list-inline-item">
                 <div class="dropdown">
-                    <a href="#" data-mdb-toggle="dropdown" aria-expanded="false">
+                    <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                         &nbsp;
                         <i class="fa fa-ellipsis-vertical" aria-hidden="true"></i>
                         &nbsp;
@@ -253,8 +276,8 @@
                                 </li>
                                 <li>
                                     <button class="dropdown-item delete" type="button"
-                                            data-mdb-toggle="modal"
-                                            data-mdb-target="#modal-status-delete"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal-status-delete"
                                             onclick="document.querySelector('#modal-status-delete input[name=\'statusId\']').value = '{{$status->id}}';">
                                         <div class="dropdown-icon-suspense">
                                             <i class="fas fa-trash" aria-hidden="true"></i>
@@ -333,7 +356,7 @@
             </li>
         </ul>
     </div>
-    @if(\Illuminate\Support\Facades\Gate::allows('like', $status) && Route::current()->uri == "status/{id}")
+    @if(Gate::allows('like', $status) && Route::current()->uri == "status/{id}")
         @foreach($status->likes as $like)
             <div class="card-footer text-muted clearfix">
                 <a href="{{ route('profile', ['username' => $like->user->username]) }}">

@@ -18,13 +18,12 @@ class WebhookResource extends JsonResource
     public function toArray($request): array {
         return [
             'id'        => $this->id,
-            'clientId'  => $this->oauth_client_id,
-            'userId'    => $this->user_id,
+            'clientId'  => $this->oauth_client_id, // TODO: should be removed
+            'client'    => new ClientResource($this->client),
+            'userId'    => $this->user_id, // TODO: should be removed and replaced with user object
             'url'       => $this->url,
             'createdAt' => $this->created_at->toIso8601String(),
-            'events'    => array_map(function($event) {
-                return WebhookEvent::from($event)->name();
-            }, $this->events),
+            'events'    => WebhookEventResource::collection($this->events),
         ];
     }
 }

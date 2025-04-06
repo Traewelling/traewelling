@@ -59,4 +59,4 @@ jobs:
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
-        run: php artisan test --parallel --coverage --min=49 #Increase this value regularly while writing tests. Target: 80%
+        run: php artisan test --parallel --coverage

@@ -62,8 +62,7 @@
                     <div class="row text-center fs-5" id="daily-stats-statsbar">
                         <div class="col-6 mb-3 col-lg-3">
                             <i class="fa-solid fa-train"></i>
-                            {{$statuses->count()}}
-                            {{__('stats.trips')}}
+                            {{ trans_choice('stats.trips', $statuses->count()) }}
                         </div>
                         <div class="col-6 mb-3 col-lg-3">
                             <i class="fa-solid fa-route"></i>

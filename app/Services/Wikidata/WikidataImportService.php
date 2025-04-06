@@ -12,21 +12,35 @@ use Illuminate\Support\Facades\Log;
 class WikidataImportService
 {
 
-    // supported types global definieren
+    // supported types global definieren - todo: support wikidata hierarchie so we don't need to define all types separately
     private const SUPPORTED_TYPES = [
         'Q55490', // Durchgangsbahnhof
         'Q18543139', // Hauptbahnhof
         'Q27996466', // Bahnhof (betrieblich)
+        'Q27996460', // Haltepunkt
         'Q55488', // Bahnhof (Verkehrsanlage einer Bahn)
         'Q124817561', // Betriebsstelle
         'Q644371', // internationaler Flughafen
         'Q21836433', // Flughafen
+        'Q1248784', // auch Flughafen
+        'Q94993988', // Verkehrslandeplatz
+        'Q1335652', // airport railway station
+        'Q63979268', // people mover station
         'Q953806', // Bushaltestelle
         'Q2175765', // Straßenbahnhaltestelle
         'Q44782', // Hafen
         'Q15310171', // Seehafen
-        'Q928830', //U-Bahnhof
+        'Q928830', // U-Bahnhof
         'Q22808403', // unterirdische Haltestelle
+        'Q55485', // dead-end railway station
+        'Q55491', // underground railway station
+        'Q7886778', // union station
+        'Q27996461', // Anschlussstelle
+        'Q55493', // Güterbahnhof
+        'Q519608', // Rangierbahnhof
+        'Q65227640', // Betriebsbahnhof
+        'Q336764', // Abzweigstelle
+        'Q27996463', // Überleitstelle
     ];
 
     public static function importStation(string $qId): Station {
@@ -61,7 +75,7 @@ class WikidataImportService
             throw new \InvalidArgumentException('IBNR ' . $ibnr . ' already in use');
         }
 
-        return Station::create(
+        $station = Station::create(
             [
                 'name'          => $name,
                 'latitude'      => $coordinates->latitude,
@@ -74,8 +88,11 @@ class WikidataImportService
                 'ifopt_c'       => $splittedIfopt[2] ?? null,
                 'ifopt_d'       => $splittedIfopt[3] ?? null,
                 'ifopt_e'       => $splittedIfopt[4] ?? null,
+                'source'        => 'wikidata',
             ]
         );
+        self::saveStationNames($station, $wikidataEntity);
+        return $station;
     }
 
     /**
@@ -118,19 +135,27 @@ class WikidataImportService
             $station->update(['rilIdentifier' => $rl100]);
         }
 
-        //get names
-        foreach ($object->getClaims('P2561') as $property) {
-            $text     = $property['mainsnak']['datavalue']['value']['text'] ?? null;
-            $language = $property['mainsnak']['datavalue']['value']['language'] ?? null;
-            if ($language === null || $text === null) {
-                continue;
-            }
-            StationName::updateOrCreate([
-                                            'station_id' => $station->id,
-                                            'language'   => $language,
-                                        ], [
-                                            'name' => $text
-                                        ]);
+        self::saveStationNames($station, $object);
+    }
+
+    private static function saveStationNames(Station $station, WikidataEntity $wikidataEntity): void {
+        self::saveNameClaims($station, $wikidataEntity->getClaims('P2561')); //P2561 = name
+        self::saveNameClaims($station, $wikidataEntity->getClaims('P1448')); //P1448 = official name
+    }
+
+    private static function saveNameClaims(Station $station, array $claims): void {
+        foreach ($claims as $name) {
+            $text     = $name['mainsnak']['datavalue']['value']['text'];
+            $language = $name['mainsnak']['datavalue']['value']['language'];
+            StationName::updateOrCreate(
+                [
+                    'station_id' => $station->id,
+                    'language'   => $language,
+                ],
+                [
+                    'name' => $text,
+                ]
+            );
         }
     }
 

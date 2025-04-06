@@ -26,8 +26,7 @@ class StatusTest extends ApiTestCase
         Passport::actingAs($user, ['*']);
 
         $response = $this->get('/api/v1/user/statuses/active');
-        $response->assertNotFound();
-        $this->assertEquals('User doesn\'t have any checkins', $response->json('message'));
+        $response->assertNoContent();
     }
 
     public function testActiveStatusesShowStatusesCurrentlyUnderway(): void {
@@ -89,8 +88,7 @@ class StatusTest extends ApiTestCase
                          ])->create();
 
         $response = $this->get('/api/v1/user/statuses/active');
-        $response->assertNotFound();
-        $this->assertEquals('No active status', $response->json('message'));
+        $response->assertNoContent();
     }
 
     public function testStatusUpdate(): void {

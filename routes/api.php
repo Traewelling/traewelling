@@ -155,11 +155,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::delete('token', [TokenController::class, 'revokeToken']);            //TODO: undocumented endpoint - document when stable
             });
         });
-        Route::group(['prefix' => 'webhooks'], static function() {
-            Route::get('/', [WebhookController::class, 'getWebhooks']);
-            Route::get('/{webhookId}', [WebhookController::class, 'getWebhook']);
-            Route::delete('/{webhookId}', [WebhookController::class, 'deleteWebhook']);
-        });
+
+        Route::apiResource('webhooks', WebhookController::class)->only(['index', 'show', 'destroy']);
 
         Route::apiResource('station', StationController::class); // TODO: rename to "stations" when stable
         Route::apiResource('stations', StationController::class);

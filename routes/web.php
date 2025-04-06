@@ -113,7 +113,6 @@ Route::get('/ics', [IcsController::class, 'renderIcs'])
 Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::view('/trip/create', 'beta.trip-creation')
-         ->middleware(['can:create-manual-trip'])
          ->name('trip.create');
 
     Route::view('/report', 'report')
@@ -173,7 +172,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
         Route::get('/security/ics', [SettingsController::class, 'renderIcs'])->name('settings.ics');
         Route::get('/security/api-tokens', [SettingsController::class, 'renderToken'])->name('settings.tokens');
-        Route::get('/security/webhooks', [SettingsController::class, 'renderWebhooks'])->name('settings.webhooks');
+        Route::view('/security/webhooks', 'settings.webhooks')->name('settings.webhooks');
 
         Route::get('/follower', [SettingsController::class, 'renderFollowerSettings'])
              ->name('settings.follower');
@@ -191,15 +190,10 @@ Route::middleware(['auth', 'privacy'])->group(function() {
              ->name('delsession'); //TODO: Replace with API Endpoint
         Route::post('/deltoken', [UserController::class, 'deleteToken'])
              ->name('deltoken'); //TODO: Replace with API Endpoint
-        Route::post('/delwebhook', [WebhookController::class, 'deleteWebhook'])
-             ->name('delwebhook'); //TODO: Replace with API Endpoint
     });
 
     Route::get('/dashboard', [FrontendStatusController::class, 'getDashboard'])
          ->name('dashboard');
-
-    Route::get('/dashboard/global', [FrontendStatusController::class, 'getGlobalDashboard'])
-         ->name('globaldashboard');
 
     Route::post('/status/update', [StatusController::class, 'updateStatus'])
          ->name('status.update'); //TODO: Replace with API Endpoint

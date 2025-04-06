@@ -108,4 +108,8 @@ class CacheKey
             Cache::put($key, 1);
         }
     }
+
+    public static function getPasswordResetThrottleKey(?User $user): string {
+        return 'password_reset_' . $user?->id;
+    }
 }

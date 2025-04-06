@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\DataProvider;
 use App\Enum\MapProvider;
 use App\Enum\StatusVisibility;
 use App\Enum\User\FriendCheckinSetting;
@@ -9,7 +10,7 @@ use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
 use App\Jobs\SendVerificationEmail;
 use Carbon\Carbon;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -24,6 +25,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Passport\HasApiTokens;
 use Mastodon;
+use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -43,6 +45,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property boolean              likes_enabled
  * @property boolean              points_enabled
  * @property MapProvider          mapprovider
+ * @property string               data_provider
  * @property string               timezone
  * @property FriendCheckinSetting friend_checkin
  * @property int                  privacy_hide_days
@@ -84,15 +87,15 @@ use Spatie\Permission\Traits\HasRoles;
  * @todo rename mapprovider to map_provider
  * @mixin Builder
  */
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
 
-    use Notifiable, HasApiTokens, HasFactory, HasRoles;
+    use Notifiable, HasApiTokens, HasFactory, HasRoles, HasPermissions, MustVerifyEmail;
 
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
         'default_status_visibility', 'likes_enabled', 'points_enabled', 'private_profile', 'prevent_index',
-        'privacy_hide_days', 'language', 'last_login', 'mapprovider', 'timezone', 'friend_checkin',
+        'privacy_hide_days', 'language', 'last_login', 'mapprovider', 'timezone', 'friend_checkin', 'data_provider',
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
@@ -115,6 +118,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'privacy_hide_days'         => 'integer',
         'last_login'                => 'datetime',
         'mapprovider'               => MapProvider::class,
+        'data_provider'             => DataProvider::class,
         'timezone'                  => 'string',
         'friend_checkin'            => FriendCheckinSetting::class,
     ];
