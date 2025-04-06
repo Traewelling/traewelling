@@ -344,7 +344,7 @@
     "stats.no-data": "Il n'y a pas de données disponibles pour la période.",
     "stats": "Statistiques",
     "dashboard.future": "Tes enregistrements à venir",
-    "stats.trips": "trajets",
+    "stats.trips": ":count trajets",
     "stats.per-week": "par semaine",
     "stats.time-in-minutes": "Temps de parcours en minutes",
     "stats.week-short": "S",

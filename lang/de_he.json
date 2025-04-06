@@ -344,7 +344,7 @@
     "stats.per-week": "pro Kalennerwoche",
     "dashboard.future": "Dei Scheck-ins inde Zukunft",
     "user.muted.text": "Du koannschd die Scheck-Ins vunn :username nedd seje, doa du denn Benutzer stummgeschaltet hoaschd.",
-    "stats.trips": "Fahrte",
+    "stats.trips": ":count Fahrte",
     "stats.personal": "Persönlich Statistike vum :fromDate bis :toDate",
     "stats.global.duration": "Reisedauer aller Träweller",
     "controller.user.follow-error": "Du koannschd dieser Person nedd folge.",
