@@ -457,7 +457,7 @@
     "stats.volume": "Your travel volume",
     "stats.time": "Your daily travel time",
     "stats.per-week": "per week",
-    "stats.trips": ":count Journey | :count Journeys",
+    "stats.trips": ":count Journey|:count Journeys",
     "stats.no-data": "There is no data available in the period.",
     "stats.time-in-minutes": "Travel time in minutes",
     "stats.purpose": "Purpose of your travels",

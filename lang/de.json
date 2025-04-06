@@ -490,7 +490,7 @@
     "stats.volume": "Dein Reisevolumen",
     "stats.time": "Deine tägliche Reisezeit",
     "stats.per-week": "pro Kalenderwoche",
-    "stats.trips": ":count Fahrt | :count Fahrten",
+    "stats.trips": ":count Fahrt|:count Fahrten",
     "stats.no-data": "Es sind keine Daten in dem Zeitraum vorhanden.",
     "stats.time-in-minutes": "Reisezeit in Minuten",
     "stats.purpose": "Zwecke deiner Reisen",
