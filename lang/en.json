@@ -143,7 +143,7 @@
     "export.error.amount": "You have requested more than 2000 trips. Please try to limit the period.",
     "export.gdpr": "GDPR-Export",
     "export.gdpr.description": "Here you can export all your data. This process can take up to 48 hours.",
-    "export.gdpr.recent": "Your last export was on :date. You can export your data every 30 days.",
+    "export.gdpr.recent": "Your export was requested last on :date. You will get an E-Mail when it's ready to download. You can export your data every 30 days.",
     "export.title": "Export data",
     "export.type": "Type",
     "export.number": "Number",

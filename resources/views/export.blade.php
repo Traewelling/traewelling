@@ -183,24 +183,38 @@
                             @endphp
 
                             @if($recent)
+                                <br/>
                                 {{ __('export.gdpr.recent', ['date' => userTime($recent, __('datetime-format'))]) }}
                             @endif
 
                             <hr/>
 
-                            <form method="POST" action="/api/v1/export/gdpr">
-                                <input type="hidden" name="frontend" value="1"/>
-                                @csrf
-                                <div class="row pt-2">
-                                    <div class="col text-end">
-                                        <button type="submit"
-                                                class="btn btn-primary" @disabled($recent && $recent->diffInDays(now()) < 30)>
-                                            <i class="fa-solid fa-download"></i>
-                                            {{__('export.request')}}
-                                        </button>
-                                    </div>
+                            <div class="row pt-2">
+                                <div class="col text-end">
+                                    <button type="submit"
+                                            class="btn btn-primary"
+                                            @disabled($recent && $recent->diffInDays(now()) < 30)
+                                            onclick="requestExport()"
+                                    >
+                                        <i class="fa-solid fa-download"></i>
+                                        {{__('export.request')}}
+                                    </button>
                                 </div>
-                            </form>
+                            </div>
+
+                            <script>
+                                // quick and dirty :)
+                                function requestExport() {
+                                    fetch('/api/v1/export/gdpr', {method: "POST"})
+                                        .then(response => {
+                                            if (response.ok) {
+                                                location.reload();
+                                            } else {
+                                                notyf.error("{{__('export.gdpr.error')}}");
+                                            }
+                                        })
+                                }
+                            </script>
                         </div>
                     </div>
                 @endif

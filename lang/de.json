@@ -162,7 +162,7 @@
     "export.error.amount": "Du hast mehr als 2000 Fahrten angefragt. Bitte versuche den Zeitraum einzuschränken.",
     "export.gdpr": "DSGVO-Export",
     "export.gdpr.description": "Hier kannst du deine gesamten Daten exportieren. Dieser Vorgang kann bis zu 48 Stunden dauern.",
-    "export.gdpr.recent": "Dein letzter Export war am :date. Du kannst deine Daten alle 30 Tage exportieren.",
+    "export.gdpr.recent": "Deinen letzten Export hast du am :date angefragt. Wenn der Export fertig ist erhältst du eine E-Mail. Du kannst deine Daten alle 30 Tage exportieren.",
     "export.submit": "Exportieren als",
     "export.request": "Export anfordern",
     "export.title": "Exportieren",
