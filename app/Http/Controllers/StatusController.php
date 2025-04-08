@@ -230,34 +230,7 @@ class StatusController extends Controller
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
                           ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
-                          ->where(function(Builder $query) {
-                              //Visibility checks: One of the following options must be true
-
-                              //Option 1: User is public AND status is public
-                              $query->where(function(Builder $query) {
-                                  $visibilities = [StatusVisibility::PUBLIC->value];
-                                  if (auth()->check()) {
-                                      $visibilities[] = StatusVisibility::AUTHENTICATED->value;
-                                  }
-
-                                  $query->where('users.private_profile', 0)
-                                        ->whereIn('visibility', $visibilities);
-                              });
-
-                              if (auth()->check()) {
-                                  //Option 2: Status is from oneself
-                                  $query->orWhere('users.id', auth()->id());
-
-                                  //Option 3: Status is from a followed BUT not unlisted or private
-                                  $query->orWhere(function(Builder $query) {
-                                      $query->whereIn('users.id', auth()->user()->follows()->select('follow_id'))
-                                            ->whereNotIn('visibility', [
-                                                StatusVisibility::UNLISTED->value,
-                                                StatusVisibility::PRIVATE->value,
-                                            ]);
-                                  });
-                              }
-                          })
+                          ->where(Backend\Transport\StatusController::filterStatusVisibility(auth()->user()))
                           ->orderBy('train_checkins.departure', 'desc');
 
         if (auth()->check()) {

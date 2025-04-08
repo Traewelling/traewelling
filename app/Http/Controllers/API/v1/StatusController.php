@@ -18,6 +18,7 @@ use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Trip;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -217,6 +218,35 @@ class StatusController extends Controller
      */
     public function getLivePositionForStatus($ids): AnonymousResourceCollection {
         return JsonResource::collection(StatusBackend::getLivePositionForStatus($ids));
+    }
+
+    /**
+     * Experimental - do not add to docs now.
+     *
+     * Used in Lokbuch for testing.
+     */
+    public function list(Request $request): AnonymousResourceCollection {
+        $validated = $request->validate([
+                                            'body' => ['nullable', 'string', 'max:32'],
+                                        ]);
+
+        $user  = auth()->user();
+        $query = Status::query()->orderByDesc('created_at');
+
+        if (isset($validated['body'])) {
+            $query->where('body', 'like', '%' . $validated['body'] . '%');
+        }
+
+        $query->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+              ->join('users', 'statuses.user_id', '=', 'users.id')
+              ->where(\App\Http\Controllers\Backend\Transport\StatusController::filterStatusVisibility($user))
+              ->where('train_checkins.departure', '<', now()->addMinutes(20))
+              ->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
+              ->whereNotIn('statuses.user_id', $user->blockedUsers()->select('blocked_id'))
+              ->whereNotIn('statuses.user_id', $user->blockedByUsers()->select('user_id'))
+              ->select('statuses.*');
+
+        return StatusResource::collection($query->cursorPaginate(20));
     }
 
     /**

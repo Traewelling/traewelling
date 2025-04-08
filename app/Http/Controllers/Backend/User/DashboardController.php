@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Backend\User;
 
 use App\Enum\StatusVisibility;
+use App\Http\Controllers\Backend\Transport\StatusController;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Builder;
 
 abstract class DashboardController extends Controller
 {
@@ -59,30 +59,7 @@ abstract class DashboardController extends Controller
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->join('users', 'statuses.user_id', '=', 'users.id')
-                     ->where(function(Builder $query) use ($user) {
-                         //Visibility checks: One of the following options must be true
-
-                         //Option 1: User is public AND status is public
-                         $query->where(function(Builder $query) {
-                             $query->where('users.private_profile', 0)
-                                   ->whereIn('visibility', [
-                                       StatusVisibility::PUBLIC->value,
-                                       StatusVisibility::AUTHENTICATED->value
-                                   ]);
-                         });
-
-                         //Option 2: Status is from oneself
-                         $query->orWhere('users.id', $user->id);
-
-                         //Option 3: Status is from a followed BUT not unlisted or private
-                         $query->orWhere(function(Builder $query) use ($user) {
-                             $query->whereIn('users.id', $user->follows()->select('follow_id'))
-                                   ->whereNotIn('statuses.visibility', [
-                                       StatusVisibility::UNLISTED->value,
-                                       StatusVisibility::PRIVATE->value,
-                                   ]);
-                         });
-                     })
+                     ->where(StatusController::filterStatusVisibility($user))
                      ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20))
                      ->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
                      ->whereNotIn('statuses.user_id', $user->blockedUsers()->select('blocked_id'))
