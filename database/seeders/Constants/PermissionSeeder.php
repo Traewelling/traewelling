@@ -20,7 +20,7 @@ class PermissionSeeder extends Seeder
         $roleClosedBeta             = Role::updateOrCreate(['name' => 'closed-beta']);
         $roleDisallowManualTrips    = Role::updateOrCreate(['name' => 'disallow-manual-trips']);
         $roleDeactivateAccountUsage = Role::updateOrCreate(['name' => 'deactivate-account-usage']);
-        $roleTestGdprExport         = Role::updateOrCreate(['name' => 'test-gdpr-export']);                      //TODO: remove this permission when GDPR export is no longer in testing
+        Role::updateOrCreate(['name' => 'test-gdpr-export']);                                                    //TODO: remove this permission when GDPR export is no longer in testing
 
         //Create permissions
         $permissionViewBackend                    = Permission::updateOrCreate(['name' => 'view-backend']);
