@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
+use App\Exceptions\RateLimitExceededException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\API\v1\Controller as APIController;
 use App\Http\Controllers\Backend\Support\LocationController;
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -151,7 +153,7 @@ class StatusController extends Controller
     }
 
     /**
-     * Create a Statuslike for a given User
+     * Create a StatusLike for a given User
      *
      * @param User   $user
      * @param Status $status
@@ -159,8 +161,18 @@ class StatusController extends Controller
      * @return Like
      * @throws StatusAlreadyLikedException
      * @throws AuthorizationException User is not allowed to like this status
+     * @throws RateLimitExceededException
      */
     public static function createLike(User $user, Status $status): Like {
+        $rateLimiterKey = "create-like:{$user->id}";
+        if (RateLimiter::tooManyAttempts($rateLimiterKey, config('rate_limits.status_like.max_attempts'))) {
+            throw new RateLimitExceededException(
+                limit: config('rate_limits.status_like.max_attempts'),
+                reset: RateLimiter::availableIn($rateLimiterKey),
+            );
+        }
+        RateLimiter::hit($rateLimiterKey, 60 * config('rate_limits.status_like.decay_minutes'));
+
         Gate::forUser($user)->authorize('like', $status);
 
         if ($status->likes->contains('user_id', $user->id)) {

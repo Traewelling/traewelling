@@ -13,10 +13,11 @@ jobs:
         with:
           script: |
             const title = context.payload.pull_request.title;
-            const emojis = ["🎨","⚡️","🔥","🐛","🚑️","✨","📝","🚀","💄","🎉","✅","🔒️","🔐","🔖","🚨","🚧","💚","⬇️","⬆️","📌","👷","📈","♻️","➕","➖","🔧","🔨","🌐","✏️","💩","⏪️","🔀","📦️","👽️","🚚","📄","💥","🍱","♿️","💡","🍻","💬","🗃️","🔊","🔇","👥","🚸","🏗️","📱","🤡","🥚","🙈","📸","⚗️","🔍️","🏷️","🌱","🚩","🥅","💫","🗑️","🛂","🩹","🧐","⚰️","🧪","👔","🩺","🧱","🧑‍💻","💸","🧵","🦺","✈️"];
-            const hasGitmoji = emojis.some(emoji => title.startsWith(emoji));
+            const emojisUnicode = ["🎨","⚡️","🔥","🐛","🚑️","✨","📝","🚀","💄","🎉","✅","🔒️","🔐","🔖","🚨","🚧","💚","⬇️","⬆️","📌","👷","📈","♻️","➕","➖","🔧","🔨","🌐","✏️","💩","⏪️","🔀","📦️","👽️","🚚","📄","💥","🍱","♿️","💡","🍻","💬","🗃️","🔊","🔇","👥","🚸","🏗️","📱","🤡","🥚","🙈","📸","⚗️","🔍️","🏷️","🌱","🚩","🥅","💫","🗑️","🛂","🩹","🧐","⚰️","🧪","👔","🩺","🧱","🧑‍💻","💸","🧵","🦺","✈️"];
+            const emojiStrings = [":art:", ":zap:", ":fire:", ":bug:", ":ambulance:", ":sparkles:", ":memo:", ":rocket:", ":lipstick:", ":tada:", ":white_check_mark:", ":lock:", ":closed_lock_with_key:", ":bookmark:", ":rotating_light:", ":construction:", ":green_heart:", ":arrow_down:", ":arrow_up:", ":pushpin:", ":construction_worker:", ":chart_with_upwards_trend:", ":recycle:", ":heavy_plus_sign:", ":heavy_minus_sign:", ":wrench:", ":hammer:", ":globe_with_meridians:", ":pencil2:", ":poop:", ":rewind:", ":twisted_rightwards_arrows:", ":package:", ":alien:", ":truck:", ":page_facing_up:", ":boom:", ":bento:", ":wheelchair:", ":bulb:", ":beers:", ":speech_balloon:", ":card_file_box:", ":loud_sound:", ":mute:", ":busts_in_silhouette:", ":children_crossing:", ":building_construction:", ":iphone:", ":clown_face:", ":egg:", ":see_no_evil:", ":camera_flash:", ":alembic:", ":mag:", ":label:", ":seedling:", ":triangular_flag_on_post:", ":goal_net:", ":dizzy:", ":wastebasket:", ":passport_control:", ":adhesive_bandage:", ":monocle_face:", ":coffin:", ":test_tube:", ":necktie:", ":stethoscope:", ":bricks:", ":technologist:", ":money_with_wings:", ":thread:", ":safety_vest:", ":airplane:"];
+            const hasGitmoji = emojisUnicode.some(unicodeEmoji => title.startsWith(unicodeEmoji)) || emojiStrings.some(emojiString => title.startsWith(emojiString));
             if (!hasGitmoji) {
-              core.setFailed('❌ PR title does not start with a Gitmoji! 😞');
+              core.setFailed('❌ PR title does not start with a Gitmoji! 😞 \n\nPlease start your PR title with a Gitmoji or emoji string. For example:\n\n- 🎨 Add new feature\n- :sparkles: Improve performance\n- :bug: Fix issue\n See [Gitmoji](https://gitmoji.dev/) for more details.');
               return;
             }
             

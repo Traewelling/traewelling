@@ -63,43 +63,47 @@ class Bahn extends Controller implements DataProviderInterface
      */
     public function getStations(string $query, int $results = 10): Collection {
         try {
-            $url      = "https://www.bahn.de/web/api/reiseloesung/orte?suchbegriff=" . urlencode($query) . "&typ=ALL&limit=" . $results;
-            $response = Http::get($url);
+            return Cache::remember('provider_bahn_stations_' . $query . '_' . $results, now()->addMinutes(5), function() use ($query, $results) {
+                $url      = "https://www.bahn.de/web/api/reiseloesung/orte?suchbegriff=" . urlencode($query) . "&typ=ALL&limit=" . $results;
+                $response = Http::get($url);
 
-            if (!$response->ok()) {
-                CacheKey::increment(HCK::LOCATIONS_NOT_OK);
-            }
-
-            $json   = $response->json();
-            $extIds = [];
-            foreach ($json as $rawStation) {
-                if (!isset($rawStation['extId'])) {
-                    continue;
+                if (!$response->ok()) {
+                    CacheKey::increment(HCK::LOCATIONS_NOT_OK);
+                    throw new HafasException(); // if the request fails, we don't want to cache it
                 }
-                $extIds[] = $rawStation['extId'];
-            }
-            $stationCache = Station::whereIn('ibnr', $extIds)->get();
 
-            $stations = collect();
-            foreach ($json as $rawStation) {
-                if (!isset($rawStation['extId'])) {
-                    continue;
+                $json = $response->json();
+                Log::debug('Response from bahn.de/web/api/reiseloesung/orte', ['query' => $query, 'json' => $json]);
+                $extIds = [];
+                foreach ($json as $rawStation) {
+                    if (!isset($rawStation['extId'])) {
+                        continue;
+                    }
+                    $extIds[] = $rawStation['extId'];
                 }
-                $station = $stationCache->where('ibnr', $rawStation['extId'])->first();
-                if ($station === null) {
-                    $station = Station::create([
-                                                   'name'      => $rawStation['name'],
-                                                   'latitude'  => $rawStation['lat'],
-                                                   'longitude' => $rawStation['lon'],
-                                                   'ibnr'      => $rawStation['extId'],
-                                                   'source'    => 'bahn-web-api',
-                                               ]);
-                }
-                $stations->push($station);
-            }
+                $stationCache = Station::whereIn('ibnr', $extIds)->get();
 
-            CacheKey::increment(HCK::LOCATIONS_SUCCESS);
-            return $stations;
+                $stations = collect();
+                foreach ($json as $rawStation) {
+                    if (!isset($rawStation['extId'])) {
+                        continue;
+                    }
+                    $station = $stationCache->where('ibnr', $rawStation['extId'])->first();
+                    if ($station === null) {
+                        $station = Station::create([
+                                                       'name'      => $rawStation['name'],
+                                                       'latitude'  => $rawStation['lat'],
+                                                       'longitude' => $rawStation['lon'],
+                                                       'ibnr'      => $rawStation['extId'],
+                                                       'source'    => 'bahn-web-api',
+                                                   ]);
+                    }
+                    $stations->push($station);
+                }
+
+                CacheKey::increment(HCK::LOCATIONS_SUCCESS);
+                return $stations;
+            });
         } catch (JsonException $exception) {
             throw new HafasException($exception->getMessage());
         } catch (Exception $exception) {
@@ -188,6 +192,10 @@ class Bahn extends Controller implements DataProviderInterface
                 throw new HafasException(__('messages.exception.generalHafas'));
             }
 
+            Log::debug("Response from $requestUrl", [
+                'json' => $response->json()
+            ]);
+
             $departures = collect();
             $entries    = $response->json('entries');
             CacheKey::increment(HCK::DEPARTURES_SUCCESS);
@@ -223,7 +231,7 @@ class Bahn extends Controller implements DataProviderInterface
 
                         if ($terminusStation === null) {
                             // if station does not exist, request it from API
-                            $stationsFromApi  = $this->getStations($matches[1], 1);
+                            $stationsFromApi = $this->getStations($matches[1], 1);
                             $terminusStation = $stationsFromApi->first();
                         }
 
@@ -296,6 +304,7 @@ class Bahn extends Controller implements DataProviderInterface
 
             if ($response->ok()) {
                 CacheKey::increment(HCK::TRIPS_SUCCESS);
+                Log::debug('Response from bahn.de/web/api/reiseloesung/fahrt', ['journeyId' => $journeyId, 'json' => $response->json()]);
                 return $response->json();
             }
 
