@@ -3,6 +3,7 @@
 namespace App\Services\PersonalDataSelection;
 
 use App\Http\Controllers\Backend\User\TokenController;
+use App\Http\Resources\GdprExport\UserExport;
 use App\Models\Event;
 use App\Models\EventSuggestion;
 use App\Models\Mention;
@@ -18,13 +19,21 @@ class UserGdprDataService
     }
 
     private function addUserPersonalData(PersonalDataSelection $personalDataSelection, User $userModel): void {
-        $userData = $userModel->only([
-                                         'name', 'username', 'home_id', 'private_profile', 'default_status_visibility',
-                                         'default_status_sensitivity', 'prevent_index', 'privacy_hide_days', 'language',
-                                         'timezone', 'friend_checkin', 'likes_enabled', 'points_enabled', 'mapprovider',
-                                         'email', 'email_verified_at', 'privacy_ack_at',
-                                         'last_login', 'created_at', 'updated_at'
-                                     ]);
+        // add profile picture if exists
+        if ($userModel->avatar && file_exists(public_path('/uploads/avatars/' . $userModel->avatar))) {
+            $personalDataSelection->addFile(public_path('/uploads/avatars/' . $userModel->avatar));
+        }
+
+        // add raw model data
+        $personalDataSelection->add('user.json', UserExport::toArray($userModel));
+
+
+        // TODO:
+        // ATTENTION:
+        // The following lines are commented out because they need to be replaced with a ExportResource to prevent
+        // exposing sensitive data.
+
+        return;
 
         $webhooks = $userModel->webhooks()->with('events')->get();
         $webhooks = $webhooks->map(function($webhook) {
@@ -32,12 +41,6 @@ class UserGdprDataService
                                       'oauth_client_id', 'created_at', 'updated_at'
                                   ]);
         });
-
-
-        if ($userModel->avatar && file_exists(public_path('/uploads/avatars/' . $userModel->avatar))) {
-            $personalDataSelection
-                ->addFile(public_path('/uploads/avatars/' . $userModel->avatar));
-        }
 
         $personalDataSelection
             ->add('user.json', $userData)
