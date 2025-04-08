@@ -20,6 +20,7 @@ import {createPinia} from 'pinia'
 import piniaPluginPersistedsState from 'pinia-plugin-persistedstate'
 import FriendCheckinSettings from "../vue/components/Settings/FriendCheckinSettings.vue";
 import WebhookSettings from "../vue/components/Settings/Webhooks.vue";
+import Request from "../vue/components/Events/Request.vue";
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -129,6 +130,14 @@ document.addEventListener("DOMContentLoaded", function () {
         app8.use(pinia);
         app8.mount("#settings-webhooks");
     }
+
+    if (document.getElementById("vue-request-events")) {
+        const app9 = createApp({});
+        app9.component("Request", Request);
+        app9.use(i18nVue, i18nOptions);
+        app9.use(pinia);
+        app9.mount("#vue-request-events");
+    }
 });
 
 /**
@@ -136,7 +145,6 @@ document.addEventListener("DOMContentLoaded", function () {
  */
 window.addEventListener("load", () => {
     import("./components/DarkModeToggle");
-    import("./components/Event");
     import("./components/progressbar");
     import("./components/settings");
     import("./components/station-autocomplete");
