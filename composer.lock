@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b873c92ac977aa9f09fa5909c4e69049",
+    "content-hash": "1a74cf5194f6c61a2c2d5faebe9eef8b",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -6431,6 +6431,83 @@
                 }
             ],
             "time": "2025-02-28T20:29:57+00:00"
+        },
+        {
+            "name": "spatie/laravel-personal-data-export",
+            "version": "4.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-personal-data-export.git",
+                "reference": "842edb8f90d4aaddf4b370e45b3034cb3c435932"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-personal-data-export/zipball/842edb8f90d4aaddf4b370e45b3034cb3c435932",
+                "reference": "842edb8f90d4aaddf4b370e45b3034cb3c435932",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-zip": "*",
+                "illuminate/filesystem": "^9.0|^10.0|^11.0|^12.0",
+                "illuminate/queue": "^9.0|^10.0|^11.0|^12.0",
+                "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
+                "nesbot/carbon": "^2.63|^3.0",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.9",
+                "spatie/temporary-directory": "^2.0"
+            },
+            "require-dev": {
+                "laravel/legacy-factories": "^1.0.4",
+                "mockery/mockery": "^1.4",
+                "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0",
+                "spatie/invade": "^1.0|^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\PersonalDataExport\\PersonalDataExportServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\PersonalDataExport\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Create personal data downloads in a Laravel app",
+            "homepage": "https://github.com/spatie/laravel-personal-data-export",
+            "keywords": [
+                "gdpr",
+                "personal",
+                "personal-data-export",
+                "spatie",
+                "zip"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-personal-data-export/issues",
+                "source": "https://github.com/spatie/laravel-personal-data-export/tree/4.3.1"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                }
+            ],
+            "time": "2025-02-19T07:05:03+00:00"
         },
         {
             "name": "spatie/laravel-prometheus",
