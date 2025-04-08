@@ -43,6 +43,11 @@ return [
 
     'disks' => [
 
+        'personal-data-exports' => [
+            'driver' => 'local',
+            'root' => storage_path('app/personal-data-exports'),
+        ],
+
         'local' => [
             'driver' => 'local',
             'root'   => storage_path('app'),

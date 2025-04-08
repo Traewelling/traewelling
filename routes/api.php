@@ -106,6 +106,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
         Route::group(['prefix' => 'export', 'middleware' => 'scope:write-exports'], static function() {
             Route::post('statuses', [ExportController::class, 'generateStatusExport']); //TODO: undocumented endpoint - document when stable
+            Route::post('gdpr', [ExportController::class, 'requestGdprExport']);        //TODO: undocumented endpoint - document when stable
         });
         Route::group(['prefix' => 'user'], static function() {
             Route::group(['middleware' => ['scope:write-follows']], static function() {

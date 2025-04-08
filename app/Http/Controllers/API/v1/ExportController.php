@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Enum\ExportableColumn;
 use App\Exceptions\DataOverflowException;
 use App\Http\Controllers\Backend\Export\ExportController as ExportBackend;
+use App\Jobs\MonitoredPersonalDataExportJob;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -15,6 +16,20 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExportController extends Controller
 {
+    public function requestGdprExport(Request $request): JsonResponse|Response|RedirectResponse {
+        $user = $request->user();
+
+        if ($user->recent_gdpr_export && $user->recent_gdpr_export->diffInDays(now()) < 30) {
+            return response()->json(['error' => __('export.error.gdpr-time', ['date' => userTime($user->recent_gdpr_export)])], 400);
+        }
+
+        $user->update(['recent_gdpr_export' => now()]);
+
+        dispatch(new MonitoredPersonalDataExportJob($user));
+
+        return response()->json(['message' => __('export.requested')], 202);
+    }
+
     public function generateStatusExport(Request $request): JsonResponse|StreamedResponse|Response|RedirectResponse {
         $validated = $request->validate([
                                             'from'      => ['required', 'date', 'before_or_equal:until'],
@@ -26,7 +41,7 @@ class ExportController extends Controller
         $from  = Carbon::parse($validated['from']);
         $until = Carbon::parse($validated['until']);
         if ($from->diffInDays($until) > 365) {
-            return back()->with('error', __('export.error.time'));
+            return response()->json(['error' => __('export.error.time')], 400);
         }
 
         if ($validated['filetype'] === 'json') {
@@ -49,7 +64,7 @@ class ExportController extends Controller
                 filetype: $validated['filetype']
             );
         } catch (DataOverflowException) {
-            return back()->with('error', __('export.error.amount'));
+            return response()->json(['error' => __('export.error.amount')], 406);
         }
     }
 }

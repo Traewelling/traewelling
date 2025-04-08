@@ -9,6 +9,7 @@ use App\Enum\User\FriendCheckinSetting;
 use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
 use App\Jobs\SendVerificationEmail;
+use App\Services\PersonalDataSelection\UserGdprDataService;
 use Carbon\Carbon;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,6 +28,8 @@ use Laravel\Passport\HasApiTokens;
 use Mastodon;
 use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\PersonalDataExport\ExportsPersonalData;
+use Spatie\PersonalDataExport\PersonalDataSelection;
 
 /**
  * // properties
@@ -61,6 +64,9 @@ use Spatie\Permission\Traits\HasRoles;
  * @property boolean              muted
  * @property boolean              isAuthUserBlocked
  * @property boolean              isBlockedByAuthUser
+ * @property ?Carbon              recent_gdpr_export
+ * @property Carbon               created_at
+ * @property Carbon               updated_at
  *
  * // relationships
  * @property Collection           trainCheckins
@@ -87,7 +93,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @todo rename mapprovider to map_provider
  * @mixin Builder
  */
-class User extends Authenticatable
+class User extends Authenticatable implements ExportsPersonalData
 {
 
     use Notifiable, HasApiTokens, HasFactory, HasRoles, HasPermissions, MustVerifyEmail;
@@ -95,7 +101,7 @@ class User extends Authenticatable
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
         'default_status_visibility', 'likes_enabled', 'points_enabled', 'private_profile', 'prevent_index',
-        'privacy_hide_days', 'language', 'last_login', 'mapprovider', 'timezone', 'friend_checkin', 'data_provider',
+        'privacy_hide_days', 'language', 'last_login', 'mapprovider', 'timezone', 'friend_checkin', 'data_provider', 'recent_gdpr_export',
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
@@ -121,6 +127,7 @@ class User extends Authenticatable
         'data_provider'             => DataProvider::class,
         'timezone'                  => 'string',
         'friend_checkin'            => FriendCheckinSetting::class,
+        'recent_gdpr_export'        => 'datetime',
     ];
 
     public function getTrainDistanceAttribute(): float {
@@ -336,5 +343,17 @@ class User extends Authenticatable
 
     protected function getDefaultGuardName(): string {
         return 'web';
+    }
+
+    public function oAuthClients(): HasMany {
+        return $this->hasMany(OAuthClient::class, 'user_id', 'id');
+    }
+
+    public function selectPersonalData(PersonalDataSelection $personalDataSelection): void {
+        (new UserGdprDataService())($personalDataSelection, $this);
+    }
+
+    public function personalDataExportName(): string {
+        return $this->username;
     }
 }

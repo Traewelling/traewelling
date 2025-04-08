@@ -92,6 +92,7 @@ Route::get('/trip/{id}', [FrontendTransportController::class, 'getTrip'])
  * These routes can be used by logged in users although they have not signed the privacy policy yet.
  */
 Route::middleware(['auth'])->group(function() {
+    Route::personalDataExports('personal-data-exports');
 
     Route::get('/gdpr-intercept', [PrivacyAgreementController::class, 'intercept'])
          ->name('gdpr.intercept');

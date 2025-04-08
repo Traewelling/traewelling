@@ -61,4 +61,9 @@ return [
     'webfinger_active'  => env('WEBFINGER_ACTIVE', false),
     'max_journey_hours' => (int) env('MAX_JOURNEY_HOURS', 48),
     'max_delay_hours'   => (int) env('MAX_DELAY_HOURS', 24),
+
+    # A/B Testing
+    'ab_testing'        => [
+        'gdpr_export' => env('AB_TESTING_GDPR_EXPORT', false),
+    ]
 ];

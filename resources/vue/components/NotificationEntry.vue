@@ -45,23 +45,25 @@ export default {
           return 'fa fa-train';
         case 'UserMentioned':
           return 'fas fa-at';
-        default:
-          return 'far fa-envelope';
-      }
-    },
-    warnType() {
-      switch (this.type) {
-        case 'MastodonNotSent':
-        case 'InvalidMastodonServer':
-          return 'warning';
-        default:
-          return 'neutral';
-      }
-    },
-    read() {
-      return this.readAt ?? false;
-    }
-  },
+        case 'PersonalDataExportedNotification':
+                    return 'fas fa-download';
+                default:
+                    return 'far fa-envelope';
+            }
+        },
+        warnType() {
+            switch (this.type) {
+                case 'MastodonNotSent':
+                case 'InvalidMastodonServer':
+                    return 'warning';
+                default:
+                    return 'neutral';
+            }
+        },
+        read() {
+            return this.readAt ?? false;
+        }
+        },
 }
 </script>
 

@@ -12,6 +12,7 @@ use App\Console\Commands\RefreshCurrentTrips;
 use App\Console\Commands\WikidataFetcher;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Spatie\PersonalDataExport\Commands\CleanOldPersonalDataExportsCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -44,6 +45,7 @@ class Kernel extends ConsoleKernel
         //daily tasks
         $schedule->command(DatabaseCleaner::class)->daily();
         $schedule->command(CleanUpProfilePictures::class)->daily();
+        $schedule->command(CleanOldPersonalDataExportsCommand::class)->daily();
 
         //weekly tasks
         $schedule->command(MastodonServers::class)->weekly();

@@ -14,6 +14,7 @@ use Laravel\Passport\Passport;
 class WebhookCreationRequest extends Model {
     public $timestamps = false;
     protected $fillable = ['id', 'user_id', 'oauth_client_id', 'revoked', 'expires_at', 'events', 'url'];
+    protected $hidden = ['url'];
     protected $casts = [
         'id' => 'string',
         'user_id' => 'integer',
