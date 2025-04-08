@@ -2,23 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Dto\CheckinSuccess;
-use App\Dto\Internal\CheckInRequestDto;
-use App\Enum\Business;
-use App\Enum\PointReason;
-use App\Enum\StatusVisibility;
-use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
-use App\Http\Controllers\Backend\Helper\StatusHelper;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
-use App\Http\Controllers\TransportController;
-use App\Hydrators\CheckinRequestHydrator;
+use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Models\Station;
 use App\Models\Trip;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\FeatureTestCase;
@@ -36,6 +27,8 @@ class CheckinTest extends FeatureTestCase
      * @test
      */
     public function stationboardTest(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake([
                        '/locations*'                => Http::response([self::FRANKFURT_HBF]),
                        '/stops/8000105/departures*' => Http::response([self::ICE802])
@@ -43,7 +36,7 @@ class CheckinTest extends FeatureTestCase
 
         $requestDate = Carbon::parse(self::DEPARTURE_TIME);
 
-        $trainStationboard = TransportController::getDepartures(
+        $trainStationboard = CheckinController::getDeprecatedDepartures(
             stationQuery: self::FRANKFURT_HBF['name'],
             when:         $requestDate
         );

@@ -4,7 +4,7 @@
 
 @section('head')
     @parent
-    <script src="{{ asset('js/stats.js') }}"></script>
+    @vite(['resources/js/stats.js'])
 @endsection
 
 @section('content')

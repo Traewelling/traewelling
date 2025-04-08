@@ -2,23 +2,12 @@
 
 namespace Feature\Transport;
 
-use App\Enum\TravelType;
-use App\Exceptions\CheckInCollisionException;
-use App\Exceptions\HafasException;
-use App\Exceptions\StationNotOnTripException;
-use App\Http\Controllers\API\v1\LikesController;
 use App\Http\Controllers\Backend\Stats\TransportStatsController;
-use App\Http\Controllers\Backend\Transport\TrainCheckinController;
-use App\Http\Controllers\HafasController;
 use App\Http\Controllers\StatusController as StatusBackend;
-use App\Http\Controllers\TransportController;
 use App\Models\Checkin;
-use App\Models\Stopover;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 use Tests\FeatureTestCase;
 
 class TransportStatsTest extends FeatureTestCase

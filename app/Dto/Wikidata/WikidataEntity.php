@@ -3,6 +3,7 @@
 namespace App\Dto\Wikidata;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Http;
 use JsonException;
 
 readonly class WikidataEntity
@@ -23,8 +24,8 @@ readonly class WikidataEntity
         }
         $instance      = new self();
         $instance->qId = $qId;
-        $json          = json_decode(file_get_contents('https://www.wikidata.org/wiki/Special:EntityData/' . $qId . '.json'), true, 512, JSON_THROW_ON_ERROR);
 
+        $json = Http::get('https://www.wikidata.org/wiki/Special:EntityData/' . $qId . '.json')->json();
         if (!isset($json['entities'][$qId])) {
             throw new ModelNotFoundException('Entity not found');
         }

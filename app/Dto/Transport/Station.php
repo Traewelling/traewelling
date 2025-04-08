@@ -61,12 +61,13 @@ class Station
      * @OA\Property(
      *     title="ibnr",
      *     description="IBNR of the station",
-     *     example="8000191"
+     *     example="8000191",
+     *     nullable=true
      * )
      *
-     * @var int
+     * @var ?int
      */
-    public readonly int $ibnr;
+    public readonly ?int $ibnr;
 
     /**
      * @OA\Property (
@@ -100,7 +101,7 @@ class Station
         return $this;
     }
 
-    public function setIbnr(int $ibnr): self {
+    public function setIbnr(?int $ibnr): self {
         $this->ibnr = $ibnr;
         return $this;
     }

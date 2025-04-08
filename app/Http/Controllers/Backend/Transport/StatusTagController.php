@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Gate;
 
 abstract class StatusTagController extends Controller
 {
-    public static function getVisibleTagsForUser(Status $status, User $user = null): Collection {
+    public static function getVisibleTagsForUser(Status $status, ?User $user = null): Collection {
         return $status->tags->filter(function(StatusTag $tag) use ($user) {
             return Gate::forUser($user)->allows('view', $tag);
         });

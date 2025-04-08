@@ -75,7 +75,7 @@ class TrustedUserController extends Controller
                 return $std;
             })
             ->unique('trusted.id') //remove duplicates
-            ->sortBy('trusted.username');
+            ->sortBy('trusted.username', SORT_FLAG_CASE | SORT_NATURAL);
 
         return TrustedUserResource::collection($trustedByUsers);
     }

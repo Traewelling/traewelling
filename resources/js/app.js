@@ -7,7 +7,7 @@ import NotificationBell from "../vue/components/NotificationBell.vue";
 import ActiveJourneyMap from "../vue/components/ActiveJourneyMap.vue";
 import Stationboard from "../vue/components/Stationboard.vue";
 import StationAutocomplete from "../vue/components/StationAutocomplete/StationAutocomplete.vue";
-import "./bootstrap";
+import "bootstrap";
 import "awesomplete/awesomplete";
 import "leaflet/dist/leaflet.js";
 import "./api/api";
@@ -19,6 +19,7 @@ import TripCreationForm from "../vue/components/TripCreation/TripCreationForm.vu
 import {createPinia} from 'pinia'
 import piniaPluginPersistedsState from 'pinia-plugin-persistedstate'
 import FriendCheckinSettings from "../vue/components/Settings/FriendCheckinSettings.vue";
+import WebhookSettings from "../vue/components/Settings/Webhooks.vue";
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -58,6 +59,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (lang && lang.startsWith("de_")) {
         fallbackLang = "de";
     }
+
+    // TODO: As we add more vue components here, we should consider embedding them in a better way
 
     const i18nOptions = {
         fallbackLang: fallbackLang,
@@ -117,7 +120,14 @@ document.addEventListener("DOMContentLoaded", function () {
         app7.use(i18nVue, i18nOptions);
         app7.use(pinia);
         app7.mount("#settings-friend-checkin");
+    }
 
+    if (document.getElementById("settings-webhooks")) {
+        const app8 = createApp({});
+        app8.component("Webhooks", WebhookSettings);
+        app8.use(i18nVue, i18nOptions);
+        app8.use(pinia);
+        app8.mount("#settings-webhooks");
     }
 });
 
@@ -130,12 +140,11 @@ window.addEventListener("load", () => {
     import("./components/progressbar");
     import("./components/settings");
     import("./components/station-autocomplete");
-    import("./components/stationboard");
-    import("./components/stationboard-gps");
-    import("./components/Status");
-    import("./components/timepicker");
+    import("./api/Status");
     import("./components/export");
     import("./components/business-check-in");
+    import("./components/stats")
     import("./appControls");
     import("bootstrap-cookie-alert/cookiealert");
+    import("./components/tooltips");
 });

@@ -15,8 +15,8 @@ abstract class LeaderboardController extends Controller
 {
     public static function getLeaderboard(
         string $orderBy = 'points',
-        Carbon $since = null,
-        Carbon $until = null,
+        ?Carbon $since = null,
+        ?Carbon $until = null,
         int    $limit = 20,
         bool   $onlyFollowings = false
     ): Collection {
@@ -130,11 +130,13 @@ abstract class LeaderboardController extends Controller
     }
 
     private static function getDurationSelector(): string {
-        if (config('database.default') === 'mysql') {
+        $driver = config('database.default');
+
+        if ($driver === 'mysql' || $driver === 'mariadb') {
             return 'SUM(TIMESTAMPDIFF(MINUTE, train_checkins.departure, train_checkins.arrival))';
         }
 
-        if (config('database.default') === 'sqlite') {
+        if ($driver === 'sqlite') {
             // Sorry for this disgusting code. But we test with SQLite.
             // There are different functions than with MySQL/MariaDB.
             return 'SUM((JULIANDAY(train_checkins.arrival) - JULIANDAY(train_checkins.departure)) * 1440)';

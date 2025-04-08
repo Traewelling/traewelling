@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Enum\DataProvider;
 use App\Enum\MapProvider;
 use App\Enum\MastodonVisibility;
 use App\Enum\StatusVisibility;
@@ -11,7 +12,6 @@ use App\Http\Controllers\Backend\User\FollowController;
 use App\Http\Controllers\Backend\User\FollowController as SettingsBackend;
 use App\Http\Controllers\Backend\User\SessionController;
 use App\Http\Controllers\Backend\User\TokenController;
-use App\Http\Controllers\Backend\WebhookController;
 use App\Http\Controllers\Controller;
 use DateTimeZone;
 use Illuminate\Contracts\Support\Renderable;
@@ -46,14 +46,15 @@ class SettingsController extends Controller
 
     public function updateMainSettings(Request $request): RedirectResponse {
         $validated = $request->validate([
-                                            'username'     => [
+                                            'username'      => [
                                                 'required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'
                                             ],
-                                            'name'         => ['required', 'string', 'max:50'],
-                                            'email'        => ['required', 'string', 'email:rfc,dns', 'max:255'],
-                                            'mapprovider'  => ['required', new Enum(MapProvider::class)],
-                                            'timezone'     => ['required', Rule::in(DateTimeZone::listIdentifiers())],
-                                            'experimental' => ['required', 'boolean'],
+                                            'name'          => ['required', 'string', 'max:50'],
+                                            'email'         => ['required', 'string', 'email:rfc,dns', 'max:255'],
+                                            'mapprovider'   => ['required', new Enum(MapProvider::class)],
+                                            'data_provider' => ['nullable', new Enum(DataProvider::class)],
+                                            'timezone'      => ['required', Rule::in(DateTimeZone::listIdentifiers())],
+                                            'experimental'  => ['required', 'boolean'],
                                         ]);
 
         if (auth()->user()->username !== $validated['username']) {
@@ -166,12 +167,6 @@ class SettingsController extends Controller
     public function renderToken(): Renderable {
         return view('settings.api-token', [
             'tokens' => TokenController::index(user: auth()->user()),
-        ]);
-    }
-
-    public function renderWebhooks(): Renderable {
-        return view('settings.webhooks', [
-            'webhooks' => WebhookController::index(user: auth()->user()),
         ]);
     }
 

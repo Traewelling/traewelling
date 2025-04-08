@@ -16,6 +16,8 @@ class TransportTest extends ApiTestCase
     use RefreshDatabase;
 
     public function testGetDeparturesFetchTripAndCheckin(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake([
                        '/locations*'                              => Http::response([self::FRANKFURT_HBF]),
                        '/stops/8000105/departures*'               => Http::response([self::ICE802]),
@@ -151,6 +153,8 @@ class TransportTest extends ApiTestCase
     }
 
     public function testGetStationByCoordinates(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake(["*/stops/nearby*" => Http::response([array_merge(
                                                              self::HANNOVER_HBF,
                                                              ["distance" => 421]
@@ -173,6 +177,8 @@ class TransportTest extends ApiTestCase
     }
 
     public function testGetStationByCoordinatesIfNoStationIsNearby(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         Http::fake(["*/stops/nearby*" => Http::response([])]);
 
         $this->actAsApiUserWithAllScopes();
@@ -195,6 +201,8 @@ class TransportTest extends ApiTestCase
     }
 
     public function testAutocompleteWithDs100(): void {
+        $this->skipTestBecauseOfLegacyApiUsage();
+
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
 

@@ -46,40 +46,6 @@ class UserBlockTest extends FeatureTestCase
              ->assertForbidden();
     }
 
-    public function testAlicesStatusIsHiddenFromBobsGlobalDashboard(): void {
-        $this->actingAs($this->bob)
-             ->get(route('globaldashboard'))
-             ->assertSee($this->alice->username);
-
-        $this->aliceBlocksBob();
-
-        $this->actingAs($this->bob)
-             ->get(route('globaldashboard'))
-             ->assertOk()
-             ->assertDontSee($this->alice->username);
-    }
-
-    public function testBobsStatusIsHiddenFromAlicesGlobalDashboard(): void {
-        Checkin::factory(['user_id' => $this->bob->id])->create();
-
-        $this->actingAs($this->alice)
-             ->get(route('globaldashboard'))
-             ->assertOk()
-             ->assertSee(ProfilePictureController::getUrl($this->bob))
-             ->assertSee(ProfilePictureController::getUrl($this->alice));
-
-        $this->aliceBlocksBob();
-
-        $this->actingAs($this->alice)
-             ->get(route('globaldashboard'))
-             ->assertOk()
-            // Bob's name is present in the session bag due the "you successfully blocked bob' message. Instead, we
-            // check that Bob's profile picture is not there, while Alice's picture is still there (from the checkin
-            // in self::setUp).
-             ->assertDontSee(ProfilePictureController::getUrl($this->bob))
-             ->assertSee(ProfilePictureController::getUrl($this->alice));
-    }
-
     public function testAlicesStatusIsHiddenFromBobsActiveJourneys(): void {
         $this->actingAs($this->bob)
              ->get(route('statuses.active'))

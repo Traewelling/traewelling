@@ -8,6 +8,7 @@ use App\Models\Checkin;
 use App\Models\Event;
 use App\Models\EventSuggestion;
 use App\Models\Station;
+use App\Models\StationIdentifier;
 use App\Models\Stopover;
 use App\Models\Trip;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -78,6 +79,7 @@ class StationController extends Controller
         Trip::where('destination_id', $oldStation->id)->update(['destination_id' => $newStation->id]);
         Event::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
         EventSuggestion::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
+        StationIdentifier::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
 
         $oldStation->delete();
 
@@ -94,7 +96,12 @@ class StationController extends Controller
                                             'name'          => ['nullable', 'string', 'max:255'],
                                             'latitude'      => ['nullable', 'numeric', 'between:-90,90'],
                                             'longitude'     => ['nullable', 'numeric', 'between:-180,180'],
+                                            'time_offset'   => ['nullable', 'numeric'],
                                         ]);
+
+        if (array_key_exists('time_offset', $request->json()->all()) && $request->json('time_offset') === null) {
+            $validated['time_offset'] = null;
+        }
 
         $station->update($validated);
         return new StationResource($station);
@@ -140,4 +147,37 @@ class StationController extends Controller
         return $this->sendResponse($stations);
     }
 
+
+    /**
+     * @OA\Get(
+     *      path="/stations/{id}",
+     *      operationId="showStation",
+     *      tags={"Checkin"},
+     *      summary="Show station",
+     *      description="This request returns a single station object",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="station id",
+     *          example="1337"
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="object", ref="#/components/schemas/StationResource")
+     *          )
+     *      ),
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=503, description="There has been an error with our data provider"),
+     *      security={
+     *          {"passport": {"create-statuses"}}, {"token": {}}
+     *      }
+     *     )
+     */
+    public function show(int $id): JsonResponse {
+        $station = Station::findOrFail($id);
+
+        return $this->sendResponse(new StationResource($station));
+    }
 }

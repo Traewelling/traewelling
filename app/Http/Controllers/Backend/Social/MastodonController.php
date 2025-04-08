@@ -77,8 +77,8 @@ abstract class MastodonController extends Controller
     private static function createMastodonServer(string $domain): MastodonServer {
         try {
             $info = Mastodon::domain($domain)->createApp(
-                client_name:   config('trwl.mastodon_appname'),
-                redirect_uris: config('trwl.mastodon_redirect'),
+                client_name:   config('services.mastodon.client_name'), //TODO: why is client name required here?
+                redirect_uris: config('services.mastodon.redirect'),
                 scopes:        'write read',
                 website:       config('app.url')
             );
@@ -148,7 +148,7 @@ abstract class MastodonController extends Controller
             ]);
 
             $status->update(['mastodon_post_id' => $postResponse['id']]);
-            Log::info("Posted on Mastodon (domain=" . $mastodonDomain . "): " . $statusText);
+            Log::debug("Posted on Mastodon (domain=" . $mastodonDomain . "): " . $statusText);
         } catch (GuzzleException $e) {
             $status->user->notify(new MastodonNotSent($e->getCode(), $status));
             throw $e;
@@ -184,13 +184,16 @@ abstract class MastodonController extends Controller
         // Mastodon transmits ids as strings
         // and since we want to use === whenever possible, we convert the mastodon_id to a string.
         $mastodonUserId = (string) $user->socialProfile->mastodon_id;
-        $onlyThread     = array_filter($context['descendants'], function($toot) use ($mastodonUserId): bool {
+        $descendants    = $context['descendants'] ?? [];
+        $onlyThread     = array_filter($descendants, function($toot) use ($mastodonUserId): bool {
+            $visibility = $toot['visibility'] ?? '';
+            $accountId  = $toot['account']['id'] ?? [];
             return
                 // We never want to interact with any direct messages
-                $toot['visibility'] !== 'direct'
+                $visibility !== 'direct'
 
                 // Only take posts that are from $OP.
-                && $toot['account']['id'] === $mastodonUserId
+                && $accountId === $mastodonUserId
 
                 // Only take posts that are direct replies to a post by OP, discarding posts from OP that don't
                 // contribute to the original thread.
@@ -220,6 +223,6 @@ abstract class MastodonController extends Controller
     }
 
     public static function getRequestOptions(): array {
-        return [RequestOptions::TIMEOUT => config("trwl.mastodon_timeout_seconds")];
+        return [RequestOptions::TIMEOUT => config('services.mastodon.timeout')];
     }
 }

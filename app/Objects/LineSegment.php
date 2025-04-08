@@ -3,42 +3,29 @@
 namespace App\Objects;
 
 use App\Dto\Coordinate;
+use App\Services\GeoService;
 
-class LineSegment
+readonly class LineSegment
 {
-    public readonly Coordinate $start;
-    public readonly Coordinate $finish;
-    private int                $distance;
+    public Coordinate $start;
+    public Coordinate $finish;
 
     public function __construct(Coordinate $start, Coordinate $finish) {
         $this->start  = $start;
         $this->finish = $finish;
     }
 
+    /**
+     * @deprecated Use GeoService::calculateDistance instead
+     */
     public function calculateDistance(): int {
-        if (
-            $this->start->longitude === $this->finish->longitude
-            && $this->start->latitude === $this->finish->latitude
-        ) {
-            return 0.0;
-        }
-
-        $equatorialRadiusInMeters = 6378137;
-
-        $latA           = $this->start->latitude / 180 * M_PI;
-        $lonA           = $this->start->longitude / 180 * M_PI;
-        $latB           = $this->finish->latitude / 180 * M_PI;
-        $lonB           = $this->finish->longitude / 180 * M_PI;
-        $this->distance = round(acos(sin($latA) * sin($latB) + cos($latA) * cos($latB) * cos($lonB - $lonA))
-                                * $equatorialRadiusInMeters);
-
-        return $this->distance;
+        return (new GeoService())->getDistance($this->start, $this->finish);
     }
 
-    public function interpolatePoint(float $percent): Coordinate {
-        return new Coordinate(
-            round($this->start->latitude + $percent * ($this->finish->latitude - $this->start->latitude), 6),
-            round($this->start->longitude + $percent * ($this->finish->longitude - $this->start->longitude), 6)
-        );
+    /**
+     * @deprecated Use GeoService::interpolatePoint instead
+     */
+    public function interpolatePoint(float $percent): ?Coordinate {
+        return (new GeoService())->interpolatePoint($this->start, $this->finish, $percent);
     }
 }

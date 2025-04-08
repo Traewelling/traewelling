@@ -13,75 +13,17 @@
     @parent
     @if($travelTime->count() > 0)
         <script>
-            new ApexCharts(document.querySelector("#chart_triptime_calendar"), {
-                series: [
-                    {
-                        name: '{{__('stats.time-in-minutes')}}',
-                        data: [
-                                @foreach($travelTime as $row)
-                            {
-                                x: new Date('{{$row->date->toIso8601String()}}').getTime(),
-                                y: {{$row->duration ?? 0}}
-                            },
-                            @endforeach
-                        ]
-                    }
-                ],
-                chart: {
-                    type: 'area',
-                    stacked: false,
-                    height: 350,
-                    zoom: {
-                        type: 'x',
-                        enabled: true,
-                        autoScaleYaxis: true
-                    },
-                    toolbar: {
-                        autoSelected: 'zoom'
-                    }
+            let chartTripTimeCalendarName = '{{__('stats.time')}}';
+            let chartTripTimeCalendarData = [
+                    @foreach($travelTime as $row)
+                {
+                    x: new Date('{{$row->date->toIso8601String()}}').getTime(),
+                    y: {{$row->duration ?? 0}}
                 },
-                dataLabels: {
-                    enabled: false
-                },
-                markers: {
-                    size: 0,
-                },
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        shadeIntensity: 1,
-                        inverseColors: false,
-                        opacityFrom: 0.5,
-                        opacityTo: 0,
-                        stops: [0, 90, 100]
-                    },
-                },
-                yaxis: {
-                    labels: {
-                        formatter: function (value) {
-                            return value + ' {{__('time.minutes')}}';
-                        }
-                    },
-                },
-                xaxis: {
-                    type: 'datetime',
-                    labels: {
-                        datetimeUTC: false,
-                        datetimeFormatter: {
-                            year: 'yyyy',
-                            month: 'MMM \'yy',
-                            day: 'dd MMM',
-                            hour: 'HH:mm'
-                        }
-                    }
-                },
-                tooltip: {
-                    shared: false,
-                    x: {
-                        format: 'dd MMM yyyy HH:mm'
-                    }
-                }
-            }).render();
+                @endforeach
+            ];
+            let chartTripTimeCalendarMinutes = "{{__('time.minutes')}}";
+            ;
         </script>
     @endif
 @endsection

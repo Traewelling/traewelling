@@ -1,0 +1,53 @@
+name: "🇩🇪 Fehler auf Deutsch melden"
+description: "Melde einen Fehler oder ein unerwartetes Verhalten auf Deutsch"
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Beschreibe das Problem
+      description: Bitte schildere uns verständlich, was nicht funktioniert hat. Füge gerne Screenshots hinzu und achte dabei auf die Anonymisierung persönlicher Daten.
+      placeholder: |
+        Beispiel: 
+        "Wenn ich auf 'Login' klicke, erscheint eine Fehlermeldung ... 
+         Ich kann mich nicht anmelden ... 
+         Hier ist ein Screenshot (Daten geschwärzt) ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Was hast du Schritt für Schritt gemacht, bevor der Fehler auftrat?
+      description: Je genauer die Beschreibung, desto schneller können wir den Fehler nachstellen und beheben.
+      placeholder: |
+        1. Webseite geöffnet ...
+        2. Auf 'Login' geklickt ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Was hast du erwartet?
+      description: Wie hätte das System deiner Meinung nach eigentlich reagieren sollen?
+      placeholder: |
+        Ich dachte, ich würde nach dem Login zu einer Bestätigungsseite weitergeleitet werden ...
+    validations:
+      required: false
+
+  - type: textarea
+    id: browser_logs
+    attributes:
+      label: Browser-Konsole oder Fehlermeldungen (optional)
+      description: Falls du weißt, wie du die Browser-Konsole öffnest, kopiere hier bitte relevante Logs. Andernfalls kannst du dieses Feld leer lassen.
+      render: bash
+
+  - type: textarea
+    id: additional_info
+    attributes:
+      label: Weitere Hinweise oder Informationen? (optional)
+      description: Falls du schon versucht hast, den Fehler selbst zu beheben (z.B. Browser-Cache leeren), oder andere Anmerkungen hast, schreib sie hier rein.
+      placeholder: "Ich habe schon versucht, mich ab- und wieder anzumelden ..."
+    validations:
+      required: false

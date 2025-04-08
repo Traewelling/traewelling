@@ -1,32 +1,5 @@
 import _ from "lodash";
-import { Modal } from "bootstrap";
-
-$(document).on("click", ".join", function (event) {
-    event.preventDefault();
-
-    const source = getDataset(event);
-    const modalWrapper = $("#checkinModal");
-    const modal = new Modal(modalWrapper);
-    modalWrapper
-        .find(".modal-title")
-        .html(
-            source.trwlLinename +
-            ' <i class="fas fa-arrow-alt-circle-right"></i> ' +
-            source.trwlStopName
-        );
-    modalWrapper.find("#input-tripID").val(source.trwlTripId);
-    modalWrapper.find("#input-destination").val(source.trwlDestination);
-    modalWrapper.find("#input-arrival").val(source.trwlArrival);
-    modalWrapper.find("#input-start").val(source.trwlStart);
-    modalWrapper.find("#input-departure").val(source.trwlDeparture);
-    // case for small number of events
-    modalWrapper.find("#event_check").each(function () {
-        $(this).prop("checked", $(this).val() === source.trwlEventId);
-    });
-    // case for large number of events
-    modalWrapper.find("#event-dropdown").val(source.trwlEventId);
-    modal.show();
-});
+import {Follow} from "./api/Follow";
 
 document.querySelectorAll('.status .like').forEach((likeButton) => {
     likeButton.addEventListener('click', (pointerEvent) => {
@@ -46,6 +19,9 @@ document.querySelectorAll('.status .like').forEach((likeButton) => {
             Status.like(statusId)
                 .then(response => {
                     if (!response.ok) {
+                        if(response.status === 429) {
+                            notyf.error('HTTP 429: Too many requests');
+                        }
                         return;
                     }
 
@@ -71,7 +47,7 @@ document.querySelectorAll('.status .like').forEach((likeButton) => {
                 if (!response.ok) {
                     return;
                 }
-                const peaches = pointerEvent.target.className.includes('peach');
+                const peaches                 = pointerEvent.target.className.includes('peach');
                 pointerEvent.target.className = `like far fa-star ${peaches ? 'peach' : ''}`;
 
                 response.json().then((data) => {
@@ -87,96 +63,85 @@ document.querySelectorAll('.status .like').forEach((likeButton) => {
     })
 });
 
-$(document).on("click", ".follow", function (event) {
-    event.preventDefault();
-    let userId         = event.target.dataset["userid"];
-    let privateProfile = event.target.dataset["private"];
-    let following      = event.target.dataset["following"];
+const followButtons = document.querySelectorAll('.follow');
+followButtons.forEach((followButton) => {
+    followButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        let userId         = event.target.dataset["userid"];
+        let privateProfile = event.target.dataset["private"] === "yes";
+        let following      = event.target.dataset["following"] === "yes";
 
-    if (privateProfile === "no") {
-        if (following === "no") {
-            $.ajax({
-                method: "POST",
-                url: urlFollow,
-                data: {follow_id: userId, _token: token}
-            }).done(function () {
-                event.target.dataset["following"] = "yes";
-                event.target.classList.add("btn-danger");
-                event.target.classList.remove("btn-primary");
-                event.target.innerText = window.translUnfollow;
-            });
+        if (!following) {
+            Follow.create(userId)
+                .then((response) => {
+                    if (response.ok) {
+                        event.target.dataset["following"] = "yes";
+                        event.target.classList.add(privateProfile ? "disabled" : "btn-danger");
+                        event.target.classList.remove("btn-primary");
+                        event.target.innerText = window.translUnfollow;
+                    }
+                });
         } else {
-            $.ajax({
-                method: "POST",
-                url: urlUnfollow,
-                data: {follow_id: userId, _token: token}
-            }).done(function () {
-                event.target.dataset["following"] = "no";
-                event.target.classList.add("btn-primary");
-                event.target.classList.remove("btn-danger");
-                event.target.innerText = window.translFollow;
-            });
-        }
-    } else {
-        if (following === "no") {
-            $.ajax({
-                method: "POST",
-                url: urlFollowRequest,
-                data: {follow_id: userId, _token: token}
-            }).done(function () {
-                event.target.dataset["following"] = "yes";
-                event.target.classList.add("disabled");
-                event.target.innerText = window.translPending;
-            });
-        } else {
-            $.ajax({
-                method: "POST",
-                url: urlUnfollow,
-                data: {follow_id: userId, _token: token}
-            }).done(function () {
-                location.reload();
-            });
-        }
-    }
-});
-
-$(document).on("click", ".disconnect", function (event) {
-    event.preventDefault();
-
-    let provider = event.target.dataset["provider"];
-    $.ajax({
-        method: "POST",
-        url: urlDisconnect,
-        data: {provider: provider, _token: token},
-        success: function () {
-            location.reload();
-        },
-        error: function (request) {
-            notyf.error(request.responseText);
+            Follow.destroy(userId)
+                .then((response) => {
+                    if (response.ok) {
+                        if (privateProfile) {
+                            location.reload();
+                        }
+                        event.target.dataset["following"] = "no";
+                        event.target.classList.add("btn-primary");
+                        event.target.classList.remove("btn-danger");
+                        event.target.innerText = window.translFollow;
+                    }
+                });
         }
     });
 });
 
-$(document).on("click", ".trwl-share", function (event) {
-    event.preventDefault();
 
-    let shareText = getDataset(event).trwlShareText;
-    let shareUrl  = getDataset(event).trwlShareUrl;
+const socialLoginProviderDisconnectButtons = document.querySelectorAll('.disconnect');
+socialLoginProviderDisconnectButtons.forEach((disconnectButton) => {
+    disconnectButton.addEventListener('click', (event) => {
+        event.preventDefault();
 
-    if (navigator.share) {
-        navigator.share({
-            title: "Träwelling",
-            text: shareText,
-            url: shareUrl
-        })
-            .catch(console.error);
-    } else {
-        navigator.clipboard.writeText(shareText + " " + shareUrl)
-            .then(() => {
-                window.notyf.success('Copied to clipboard');
-            });
-    }
+        let provider = event.target.dataset["provider"];
+        fetch(urlDisconnect, {
+            method: 'POST',
+            body: JSON.stringify({provider: provider}),
+        }).then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                response.text().then(text => {
+                    notyf.error(text);
+                });
+            }
+        });
+    });
+});
 
+const shareButtons = document.querySelectorAll('.trwl-share');
+shareButtons.forEach((shareButton) => {
+    shareButton.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        let shareText = getDataset(event).trwlShareText;
+        let shareUrl  = getDataset(event).trwlShareUrl;
+
+        if (navigator.share) {
+            navigator.share({
+                title: "Träwelling",
+                text: shareText,
+                url: shareUrl
+            })
+                .catch(console.error);
+        } else {
+            navigator.clipboard.writeText(shareText + " " + shareUrl)
+                .then(() => {
+                    window.notyf.success('Copied to clipboard');
+                });
+        }
+    });
 });
 
 function getDataset(event) {

@@ -38,6 +38,7 @@ abstract class SettingsController extends Controller
             'privacyHideDays'         => 'privacy_hide_days',
             'defaultStatusVisibility' => 'default_status_visibility',
             'mapProvider'             => 'mapprovider',
+            'dataProvider'            => 'data_provider',
         ];
         foreach ($mappings as $apiField => $modelField) {
             if (array_key_exists($apiField, $fields)) {

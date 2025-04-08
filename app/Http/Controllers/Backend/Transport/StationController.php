@@ -2,16 +2,12 @@
 
 namespace App\Http\Controllers\Backend\Transport;
 
-use App\Exceptions\HafasException;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\HafasController;
 use App\Http\Resources\StationResource;
 use App\Models\Checkin;
-use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\User;
 use App\Repositories\StationRepository;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -22,36 +18,6 @@ class StationController extends Controller
 
     public function __construct(?StationRepository $stationRepository = null) {
         $this->stationRepository = $stationRepository ?? new StationRepository();
-    }
-
-    /**
-     * @throws HafasException
-     * @throws ModelNotFoundException
-     */
-    public static function lookupStation(string|int $query): Station {
-        //Lookup by station ibnr
-        if (is_numeric($query)) {
-            $station = Station::where('ibnr', $query)->first();
-            if ($station !== null) {
-                return $station;
-            }
-        }
-
-        //Lookup by ril identifier
-        if (!is_numeric($query) && strlen($query) <= 5 && ctype_upper($query)) {
-            $station = HafasController::getStationByRilIdentifier($query);
-            if ($station !== null) {
-                return $station;
-            }
-        }
-
-        //Lookup HAFAS
-        $station = HafasController::getStations(query: $query, results: 1)->first();
-        if ($station !== null) {
-            return $station;
-        }
-
-        throw new ModelNotFoundException;
     }
 
     /**

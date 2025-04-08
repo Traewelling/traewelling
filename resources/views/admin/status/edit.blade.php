@@ -15,6 +15,7 @@
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-2">
+                <div class="card-header">Details</div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-4">
@@ -39,6 +40,33 @@
                     </div>
                     <div class="row">
                         <div class="col-4">
+                            Departure
+                        </div>
+                        <div class="col-8">
+                            {{$status->checkin->departure}}
+                            @if($status->checkin->manual_departure)
+                                <small>
+                                    manual: {{ $status->checkin->manual_departure }}
+                                </small>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            Arrival
+                        </div>
+                        <div class="col-8">
+                            {{$status->checkin->arrival}}
+                            @if($status->checkin->manual_arrival)
+                                <small>
+                                    manual: {{ $status->checkin->manual_arrival }}
+                                </small>
+                            @endif
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-4">
                             <label class="form-label" for="form-origin">Created at</label>
                         </div>
                         <div class="col-8">
@@ -53,6 +81,7 @@
                             {{$status->updated_at->format('c')}}
                         </div>
                     </div>
+                    <hr>
                     <div class="row">
                         <div class="col-4">
                             <label class="form-label" for="form-origin">Trip</label>
@@ -68,7 +97,7 @@
                             </a>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mb-2">
                         <div class="col-4">
                             <label>Client</label>
                         </div>
@@ -80,19 +109,20 @@
                             @endisset
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <form method="POST" action="{{route('admin.status.edit')}}" class="mt-3">
-
+            <div class="card mb-2">
+                <div class="card-header">Moderation</div>
+                <div class="card-body">
+                    <form method="POST" action="{{route('admin.status.edit')}}">
                         @csrf
                         <input type="hidden" name="statusId" value="{{$status->id}}"/>
 
-                        <div class="mb-4">
-                            <div class="row">
-                                <div class="col-4">
-                                    <label class="form-label" for="form-origin">Origin / Abfahrtsort</label>
-                                </div>
-                                <div class="col-8">
-                                    <select id="form-origin" class="form-control" name="origin" required>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <div class="form-floating">
+                                    <select id="form-origin" class="form-select" name="origin" required>
                                         <option value="">bitte wählen</option>
                                         @foreach($status->checkin->trip->stopovers as $stopover)
                                             <option value="{{$stopover->trainStation->id}}"
@@ -103,16 +133,12 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    <label class="form-label" for="form-origin">Origin</label>
                                 </div>
                             </div>
-                        </div>
-                        <div class="mb-4">
-                            <div class="row">
-                                <div class="col-4">
-                                    <label class="form-label" for="form-origin">Destination / Ankunftsort</label>
-                                </div>
-                                <div class="col-8">
-                                    <select id="form-origin" class="form-control" name="destination" required>
+                            <div class="col">
+                                <div class="form-floating">
+                                    <select id="form-origin" class="form-select" name="destination" required>
                                         <option value="">bitte wählen</option>
                                         @foreach($status->checkin->trip->stopovers as $stopover)
                                             <option value="{{$stopover->trainStation->id}}"
@@ -123,24 +149,21 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    <label class="form-label" for="form-origin">Destination</label>
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-4">
-                            <div class="row">
-                                <div class="col-4">
-                                    <label class="form-label" for="form-origin">Status</label>
-                                </div>
-                                <div class="col-8">
-                                    <textarea class="form-control" name="body">{{$status->body}}</textarea>
-                                </div>
-                            </div>
+
+                        <div class="form-floating mb-2">
+                            <textarea class="form-control" name="body" maxlength="255"
+                                      style="min-height: 100px;">{{$status->body}}</textarea>
+                            <label class="form-label" for="form-origin">Body</label>
                         </div>
-                        <div class="mb-4">
-                            <div class="row">
-                                <div class="col">
-                                    <label class="form-label" for="form-visibility">Visibility</label>
-                                    <select id="form-visibility" class="form-control" name="visibility" required>
+
+                        <div class="row mb-2">
+                            <div class="col">
+                                <div class="form-floating">
+                                    <select id="form-visibility" class="form-select" name="visibility" required>
                                         <option value="">bitte wählen</option>
                                         @foreach(\App\Enum\StatusVisibility::cases() as $case)
                                             <option value="{{$case->value}}"
@@ -149,10 +172,12 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    <label class="form-label" for="form-visibility">Visibility</label>
                                 </div>
-                                <div class="col">
-                                    <label class="form-label" for="form-business">Business</label>
-                                    <select id="form-business" class="form-control" name="business" required>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating">
+                                    <select id="form-business" class="form-select" name="business" required>
                                         <option value="">bitte wählen</option>
                                         @foreach(Business::cases() as $case)
                                             <option value="{{$case->value}}"
@@ -161,36 +186,71 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    <label class="form-label" for="form-business">Business</label>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mb-4">
-                            <div class="row">
-                                <div class="col-4">
-                                    <label class="form-label" for="form-origin">Event ID</label>
-                                </div>
-                                <div class="col-8">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-floating mb-2">
                                     <input type="text" class="form-control" name="event_id"
-                                           value="{{$status->event_id}}">
+                                           value="{{$status->event_id}}"
+                                    />
+                                    <label class="form-label" for="form-origin">Event ID (empty = none)</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating mb-2">
+                                    <input type="number" class="form-control" name="points"
+                                           value="{{$status->checkin->points}}"
+                                    />
+                                    <label class="form-label" for="form-origin">Points (empty for recalculating)</label>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mb-4">
-                            <div class="row">
-                                <div class="col-4">
-                                    <label class="form-label" for="form-origin">Points</label>
+                        <hr/>
+                        <h2 class="fs-5 text-warning mb-0">
+                            Danger Zone
+                        </h2>
+                        <small>
+                            <i class="fa-solid fa-exclamation-triangle"></i>
+                            The note will be visible to the user.
+                            Explain why you changed the status.
+                        </small>
+
+                        <div class="my-2">
+                            <div class="form-floating">
+                                <textarea class="form-control" name="moderation_notes" maxlength="255"
+                                          style="min-height: 100px;">{{$status->moderation_notes}}</textarea>
+                                <label class="form-label" for="form-origin">Moderation Notes</label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-floating">
+                                    <select class="form-select" name="lock_visibility">
+                                        <option value="0" @if($status->lock_visibility == 0) selected @endif>No</option>
+                                        <option value="1" @if($status->lock_visibility == 1) selected @endif>Yes
+                                        </option>
+                                    </select>
+                                    <label>Lock Visibility?</label>
                                 </div>
-                                <div class="col-8">
-                                    <input type="number" class="form-control" name="points"
-                                           value="{{$status->checkin->points}}"/>
-                                    <small class="text-muted">
-                                        empty for recalculating
-                                    </small>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating">
+                                    <select class="form-select" name="hide_body">
+                                        <option value="0" @if($status->hide_body == 0) selected @endif>No</option>
+                                        <option value="1" @if($status->hide_body == 1) selected @endif>Yes</option>
+                                    </select>
+                                    <label>Hide Body from Public?</label>
                                 </div>
                             </div>
                         </div>
+
+                        <hr/>
 
                         <button type="submit" class="btn btn-primary btn-block">
                             <i class="fa-solid fa-save"></i>

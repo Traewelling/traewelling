@@ -26,7 +26,7 @@ abstract class PointsCalculationController extends Controller
         Carbon          $arrival,
         TripSource      $tripSource,
         bool            $forceCheckin = false,
-        Carbon          $timestampOfView = null
+        ?Carbon         $timestampOfView = null
     ): PointCalculation {
         if (auth()->user()?->points_enabled === false) {
             return self::returnZeroPoints();

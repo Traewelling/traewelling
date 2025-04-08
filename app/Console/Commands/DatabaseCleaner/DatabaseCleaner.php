@@ -18,6 +18,7 @@ class DatabaseCleaner extends Command
         $this->call(TrustedUser::class);
         $this->call(Trips::class);
         $this->call(RefreshPrometheusCache::class);
+        $this->call(CleanUpDanglingStatuses::class);
 
         $this->call('queue-monitor:purge', ['--beforeDays' => 7]);
         $this->call('activitylog:clean');

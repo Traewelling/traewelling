@@ -69,6 +69,10 @@ class MastodonController extends Controller
         config(['services.mastodon.client_id' => $server->client_id]);
         config(['services.mastodon.client_secret' => $server->client_secret]);
 
+        if (request()->has('error')) {
+            return redirect()->route('login')->with('error', \request('error_description'));
+        }
+
         $socialiteUser = Socialite::driver(driver: 'mastodon')->user();
         $user          = MastodonBackend::getUserFromSocialite($socialiteUser, $server);
         if (!auth()->check()) {

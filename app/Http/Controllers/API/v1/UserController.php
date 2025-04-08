@@ -435,7 +435,7 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/user/search/{query}",
+     *      path="/user/search/{?query}",
      *      operationId="searchUsers",
      *      tags={"User"},
      *      summary="Get paginated statuses for single user",
@@ -443,7 +443,7 @@ class UserController extends Controller
      *      @OA\Parameter (
      *           name="query",
      *           in="path",
-     *           description="username",
+     *           description="If this is given, the search will be performed on the username and (display)name (or-search)",
      *           example="Gertrud123",
      *      ),
      *      @OA\Parameter (
@@ -452,6 +452,16 @@ class UserController extends Controller
      *          required=false,
      *          in="query",
      *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Parameter (
+     *          name="username",
+     *          in="query",
+     *          description="Search for parts username",
+     *      ),
+     *      @OA\Parameter (
+     *          name="name",
+     *          in="query",
+     *          description="Search for parts of users (display)name",
      *      ),
      *      @OA\Response(
      *          response=200,
@@ -473,9 +483,33 @@ class UserController extends Controller
      *     )
      *
      */
-    public function search(string $query): AnonymousResourceCollection|JsonResponse {
+    public function search(Request $request, ?string $query = null): AnonymousResourceCollection|JsonResponse {
         try {
-            return UserResource::collection(BackendUserBackend::searchUser($query));
+            $validated = $request->validate([
+                                                'username' => ['nullable', 'string', 'max:255'],
+                                                'name'     => ['nullable', 'string', 'max:255'],
+                                            ]);
+            if (empty($validated) && isset($query)) {
+                // if no specific search criteria is given, search for the query in username and display_name
+                return UserResource::collection(BackendUserBackend::searchUser($query));
+            }
+
+            if (empty($validated)) {
+                return response()->json(null, 400);
+            }
+
+            $users = User::query();
+
+            if (isset($validated['username'])) {
+                $users->where('username', 'like', "%{$validated['username']}%");
+            }
+
+            if (isset($validated['name'])) {
+                $users->where('name', 'like', "%{$validated['name']}%");
+            }
+
+            return UserResource::collection($users->simplePaginate(10));
+
         } catch (InvalidArgumentException) {
             return $this->sendError(['message' => __('messages.exception.general')], 400);
         }

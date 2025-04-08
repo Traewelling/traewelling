@@ -34,7 +34,7 @@ class UserController extends Controller
      * @api v1
      * @frontend
      */
-    public static function statusesForUser(User $user, int $limit = null): ?Paginator {
+    public static function statusesForUser(User $user, ?int $limit = null): ?Paginator {
         Gate::authorize('view', $user);
         return $user->statuses()
                     ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')

@@ -5,78 +5,45 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API\v1;
 
 use App\Enum\HafasTravelType;
+use App\Exceptions\ManualTripValidationException;
 use App\Http\Controllers\Backend\Transport\ManualTripCreator;
+use App\Http\Requests\ManualTripCreationRequest;
 use App\Http\Resources\TripResource;
 use App\Models\HafasOperator;
 use App\Models\Station;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rules\Enum;
+use Throwable;
 
 class TripController extends Controller
 {
 
     /**
-     * Undocumented beta endpoint - only specific users have access
-     *
-     * @param Request $request
-     *
-     * @return TripResource|Response
-     *
-     * @todo add docs
-     * @todo currently the stations need to be in the database. We need to add a fallback to HAFAS.
-     *       -> later solve the problem for non-existing stations
+     * @todo add docs when endpoint is stable
      */
-    public function createTrip(Request $request): TripResource|JsonResponse {
-        if (!auth()->user()?->can('create-manual-trip')) {
-            return response()->json(['message' => 'This endpoint is currently only available for open-beta users (you can enable open beta in your settings).'], 403);
-        }
-        if (auth()->user()?->can('disallow-manual-trips')) {
-            return response()->json(['message' => 'You are not allowed to create manual trips'], 403);
-        }
-
-        $validated = $request->validate(
-            [
-                'category'                  => ['required', new Enum(HafasTravelType::class)],
-                'lineName'                  => ['required'],
-                'journeyNumber'             => ['nullable', 'numeric', 'min:1'],
-                'operatorId'                => ['nullable', 'numeric', 'exists:hafas_operators,id'],
-                'originId'                  => ['required', 'exists:train_stations,id'],
-                'originDeparturePlanned'    => ['required', 'date'],
-                'originDepartureReal'       => ['nullable', 'date'],
-                'destinationId'             => ['required', 'exists:train_stations,id'],
-                'destinationArrivalPlanned' => ['required', 'date'],
-                'destinationArrivalReal'    => ['nullable', 'date'],
-                'stopovers.*.stationId'     => ['required', 'exists:train_stations,id'],
-                'stopovers.*.arrival'       => ['required_without:stopovers.*.departure', 'required_with:stopovers.*.arrivalReal', 'date'],
-                'stopovers.*.arrivalReal'   => ['nullable', 'date'],
-                'stopovers.*.departure'     => ['required_without:stopovers.*.arrival,null', 'required_with:stopovers.*.departureReal', 'date'],
-                'stopovers.*.departureReal' => ['nullable', 'date'],
-            ]
-        );
+    public function createTrip(ManualTripCreationRequest $request): TripResource|JsonResponse {
+        $validated = $request->validated();
 
         DB::beginTransaction();
 
-        $creator = new ManualTripCreator();
-        $creator->setCategory(HafasTravelType::from($validated['category']))
-                ->setLine($validated['lineName'], $validated['journeyNumber'])
-                ->setOperator(HafasOperator::find($validated['operatorId']))
-                ->setOrigin(
-                    Station::findOrFail($validated['originId']),
-                    Carbon::parse($validated['originDeparturePlanned']),
-                    isset($validated['originDepartureReal']) ? Carbon::parse($validated['originDepartureReal']) : null
-                )
-                ->setDestination(
-                    Station::findOrFail($validated['destinationId']),
-                    Carbon::parse($validated['destinationArrivalPlanned']),
-                    isset($validated['destinationArrivalReal']) ? Carbon::parse($validated['destinationArrivalReal']) : null
-                );
+        try {
+            $creator = new ManualTripCreator();
+            $creator->setCategory(HafasTravelType::from($validated['category']))
+                    ->setLine($validated['lineName'], $validated['journeyNumber'])
+                    ->setOperator(HafasOperator::find($validated['operatorId']))
+                    ->setOrigin(
+                        Station::findOrFail($validated['originId']),
+                        Carbon::parse($validated['originDeparturePlanned']),
+                        isset($validated['originDepartureReal']) ? Carbon::parse($validated['originDepartureReal']) : null
+                    )
+                    ->setDestination(
+                        Station::findOrFail($validated['destinationId']),
+                        Carbon::parse($validated['destinationArrivalPlanned']),
+                        isset($validated['destinationArrivalReal']) ? Carbon::parse($validated['destinationArrivalReal']) : null
+                    );
 
-        if (isset($validated['stopovers'])) {
-            foreach ($validated['stopovers'] as $stopover) {
+            foreach ($validated['stopovers'] ?? [] as $stopover) {
                 $creator->addStopover(
                     Station::findOrFail($stopover['stationId']),
                     isset($stopover['departure']) ? Carbon::parse($stopover['departure']) : null,
@@ -85,9 +52,21 @@ class TripController extends Controller
                     isset($stopover['arrivalReal']) ? Carbon::parse($stopover['arrivalReal']) : null
                 );
             }
-        }
 
-        $trip = $creator->createFullTrip();
+            $trip            = $creator->createFullTrip();
+            $durationInHours = $trip->departure->diffInHours($trip->arrival);
+            if ($durationInHours > config('trwl.max_journey_hours')) {
+                throw new ManualTripValidationException(sprintf('Trip duration exceeds maximum allowed duration of %d hours', config('trwl.max_journey_hours')));
+            }
+
+        } catch (ManualTripValidationException $e) {
+            DB::rollBack();
+            return response()->json(['message' => $e->getMessage()], 400);
+        } catch (Throwable $e) {
+            DB::rollBack();
+            report($e);
+            return response()->json(['message' => 'An error occurred while creating the trip'], 500);
+        }
 
         DB::commit();
 

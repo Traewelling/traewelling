@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Admin;
 
+use App\DataProviders\DataProviderBuilder;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Enum\TravelType;
@@ -10,26 +11,98 @@ use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Exceptions\TrainCheckinAlreadyExistException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
-use App\Http\Controllers\HafasController;
-use App\Http\Controllers\TransportController as TransportBackend;
 use App\Hydrators\CheckinRequestHydrator;
-use App\Jobs\PostStatusOnMastodon;
 use App\Models\Event;
 use App\Models\Station;
 use App\Models\Status;
-use App\Models\Stopover;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
+use JetBrains\PhpStorm\ArrayShape;
 use Throwable;
 
 class CheckinController
 {
+    /**
+     * @throws HafasException
+     * @throws ModelNotFoundException
+     * @deprecated adapt admin panel to api endpoints
+     */
+    public static function lookupStation(string|int $query): Station {
+        $dataProvider = (new DataProviderBuilder)->build();
+
+        //Lookup by station ibnr
+        if (is_numeric($query)) {
+            $station = Station::where('ibnr', $query)->first();
+            if ($station !== null) {
+                return $station;
+            }
+        }
+
+        //Lookup by ril identifier
+        if (!is_numeric($query) && strlen($query) <= 5 && ctype_upper($query)) {
+            $station = $dataProvider->getStationByRilIdentifier($query);
+            if ($station !== null) {
+                return $station;
+            }
+        }
+
+        //Lookup HAFAS
+        $station = $dataProvider->getStations(query: $query, results: 1)->first();
+        if ($station !== null) {
+            return $station;
+        }
+
+        throw new ModelNotFoundException;
+    }
+
+    /**
+     * @param string|int      $stationQuery
+     * @param Carbon|null     $when
+     * @param TravelType|null $travelType
+     * @param bool            $localtime
+     *
+     * @return array
+     * @throws HafasException
+     * @deprecated use DataProviderInterface->getDepartures(...) directly instead (-> less overhead)
+     */
+    #[ArrayShape([
+        'station'    => Station::class,
+        'departures' => Collection::class,
+        'times'      => "array"
+    ])]
+    public static function getDeprecatedDepartures(
+        string|int  $stationQuery,
+        ?Carbon     $when = null,
+        ?TravelType $travelType = null,
+        bool        $localtime = false
+    ): array {
+        $station = self::lookupStation($stationQuery);
+
+        $when  = $when ?? Carbon::now()->subMinutes(5);
+        $times = [
+            'now'  => $when,
+            'prev' => $when->clone()->subMinutes(15),
+            'next' => $when->clone()->addMinutes(15)
+        ];
+
+        $departures = (new DataProviderBuilder)->build()->getDepartures(
+            station:   $station,
+            when:      $when,
+            type:      $travelType,
+            localtime: $localtime
+        )->sortBy(function($departure) {
+            return $departure->when ?? $departure->plannedWhen;
+        });
+
+        return ['station' => $station, 'departures' => $departures->values(), 'times' => $times];
+    }
 
     public function renderStationboard(Request $request): View|RedirectResponse {
         $validated = $request->validate([
@@ -56,7 +129,7 @@ class CheckinController
 
         if (isset($validated['station'])) {
             try {
-                $trainStationboardResponse = TransportBackend::getDepartures(
+                $trainStationboardResponse = self::getDeprecatedDepartures(
                     stationQuery: $validated['station'],
                     when:         $when,
                     travelType:   TravelType::tryFrom($validated['filter'] ?? null),

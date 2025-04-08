@@ -87,11 +87,11 @@ class Stopover extends Model
 
     // These two methods are a ticking time bomb and I hope we'll never see it explode. 💣
     public function getArrivalAttribute(): ?Carbon {
-        return ($this->arrival_real ?? $this->arrival_planned) ?? $this->departure;
+        return ($this->arrival_real ?? $this->arrival_planned) ?? $this?->departure;
     }
 
     public function getDepartureAttribute(): ?Carbon {
-        return ($this->departure_real ?? $this->departure_planned) ?? $this->arrival;
+        return ($this->departure_real ?? $this->departure_planned) ?? $this?->arrival;
     }
 
     public function getPlatformAttribute(): ?string {

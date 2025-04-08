@@ -16,6 +16,8 @@ class PolylinesToFiles extends Command
         $start = microtime(true);
         $rows  = DB::table('poly_lines')
                    ->where('polyline', '!=', '{}')
+                   ->orderBy('id', 'desc')
+                   ->limit(1000)
                    ->get();
         $this->info('Found ' . $rows->count() . ' polylines.');
         $affectedRows = 0;

@@ -31,8 +31,7 @@
                                     @foreach($apps as $app)
                                         <tr>
                                             <td>
-                                                <a href="{{route('dev.apps.edit', ['appId' => $app->id])}}"
-                                                   class="text-white">
+                                                <a href="{{route('dev.apps.edit', ['appId' => $app->id])}}">
                                                     {{ $app->name }}
                                                 </a>
                                             </td>

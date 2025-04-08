@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Enum\DataProvider;
 use App\Enum\MapProvider;
 use App\Enum\MastodonVisibility;
 use App\Enum\StatusVisibility;
@@ -120,6 +121,7 @@ class SettingsController extends Controller
                                                 new Enum(MastodonVisibility::class),
                                             ],
                                             'mapProvider'             => ['nullable', new Enum(MapProvider::class)],
+                                            'dataProvider'            => ['nullable', new Enum(DataProvider::class)],
                                             'friendCheckin'           => ['nullable', new Enum(FriendCheckinSetting::class)],
                                             'likesEnabled'            => ['nullable', 'boolean'],
                                             'pointsEnabled'           => ['nullable', 'boolean'],

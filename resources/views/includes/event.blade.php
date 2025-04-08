@@ -40,7 +40,7 @@
                 </a>
             </li>
             <li class="list-inline-item">
-                <a href="#" role="button" data-mdb-toggle="modal" data-mdb-target="#delete-modal-{{ $event->id }}">
+                <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#delete-modal-{{ $event->id }}">
                     <i class="fas fa-trash"></i>
                 </a>
             </li>
@@ -58,13 +58,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">{{__('modals.deleteEvent-title')}}</h4>
-                <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 {!! __('modals.deleteEvent-body', ['name' => $event->name]) !!}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-mdb-dismiss="modal">{{__('menu.abort')}}</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{__('menu.abort')}}</button>
                 <a href="{{ URL::signedRoute('events.delete', ['slug' => $event->slug]) }}" class="btn btn-danger"
                    id="modal-delete">{{__('modals.delete-confirm')}}</a>
             </div>

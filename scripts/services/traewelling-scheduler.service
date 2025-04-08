@@ -1,0 +1,9 @@
+[Unit]
+Description=Traewelling Scheduler
+
+[Service]
+Type=oneshot
+User=REPLACE_USER
+Restart=on-failure
+WorkingDirectory=REPLACE_ROOT_PATH
+ExecStart=php artisan schedule:run

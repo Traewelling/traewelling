@@ -2,7 +2,7 @@
     <div class="card-header">{{ __('settings.title-password') }}</div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route('password.change') }}">
+        <form method="POST" class="d-grid gap-1" action="{{ route('password.change') }}">
             @csrf
             <input type="hidden" name="username" autocomplete="username">
 
@@ -53,7 +53,7 @@
                 </div>
             </div>
 
-            <div class="form-group row mb-0">
+            <div class="form-group row mt-3">
                 <div class="col-md-6 offset-md-4">
                     <button type="submit" class="btn btn-primary">
                         {{ __('settings.btn-update') }}
