@@ -19,6 +19,9 @@ document.querySelectorAll('.status .like').forEach((likeButton) => {
             Status.like(statusId)
                 .then(response => {
                     if (!response.ok) {
+                        if(response.status === 429) {
+                            notyf.error('HTTP 429: Too many requests');
+                        }
                         return;
                     }
 
