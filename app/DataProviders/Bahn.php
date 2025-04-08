@@ -70,7 +70,8 @@ class Bahn extends Controller implements DataProviderInterface
                 CacheKey::increment(HCK::LOCATIONS_NOT_OK);
             }
 
-            $json   = $response->json();
+            $json = $response->json();
+            Log::debug('Response from bahn.de/web/api/reiseloesung/orte', ['query' => $query, 'json' => $json]);
             $extIds = [];
             foreach ($json as $rawStation) {
                 if (!isset($rawStation['extId'])) {
@@ -188,6 +189,10 @@ class Bahn extends Controller implements DataProviderInterface
                 throw new HafasException(__('messages.exception.generalHafas'));
             }
 
+            Log::debug("Response from $requestUrl", [
+                'json' => $response->json()
+            ]);
+
             $departures = collect();
             $entries    = $response->json('entries');
             CacheKey::increment(HCK::DEPARTURES_SUCCESS);
@@ -223,7 +228,7 @@ class Bahn extends Controller implements DataProviderInterface
 
                         if ($terminusStation === null) {
                             // if station does not exist, request it from API
-                            $stationsFromApi  = $this->getStations($matches[1], 1);
+                            $stationsFromApi = $this->getStations($matches[1], 1);
                             $terminusStation = $stationsFromApi->first();
                         }
 
@@ -296,6 +301,7 @@ class Bahn extends Controller implements DataProviderInterface
 
             if ($response->ok()) {
                 CacheKey::increment(HCK::TRIPS_SUCCESS);
+                Log::debug('Response from bahn.de/web/api/reiseloesung/fahrt', ['journeyId' => $journeyId, 'json' => $response->json()]);
                 return $response->json();
             }
 
