@@ -850,5 +850,12 @@
     "transport_types.express": "Sneltreinen",
     "user.data_provider": "Gegevensdienst",
     "data-providers.default": "Standaard",
-    "data-providers.transitous": "transitous.org"
+    "data-providers.transitous": "transitous.org",
+    "export.gdpr": "GDPR-export",
+    "export.gdpr.description": "Hier kun je al je gegevens exporteren. Let op: dit kan tot wel 48 uur duren.",
+    "export.error.gdpr-time": "Je kunt alle gegevens slechts iedere 30 dagen exporteren. De vorige export was op :date.",
+    "export.request": "Verzoek",
+    "export.gdpr.recent": "Je exportverzoek dateert van :date. Je ontvangt een e-mail zodra alle gegevens zijn verzameld. Let op: je kunt je gegevens slechts iedere 30 dagen exporteren.",
+    "notifications.personalDataExported.lead": "De export staat klaar!",
+    "notifications.personalDataExported.notice": "Je kunt de export downloaden tot en met :date."
 }
