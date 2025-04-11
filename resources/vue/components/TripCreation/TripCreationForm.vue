@@ -102,7 +102,6 @@ export default {
       this.validateTimes();
     },
     validateTimes() {
-      console.log("Validating times");
       //iterate over stopovers and destination, check if time is valid
       let time = DateTime.fromISO(this.form.originDeparturePlanned);
 
@@ -207,7 +206,6 @@ export default {
               return response.json();
             })
             .then((result) => {
-              console.log(result.data);
               this.$refs.originInput.setStation(result.data);
             })
             .catch((error) => {
@@ -246,10 +244,6 @@ export default {
     initForm() {
       this.selectedCategory = this.categories[0];
     },
-    onChangeCat(event) {
-      console.log(event);
-      console.log(this.selectedCategory)
-    }
   }
 }
 </script>
@@ -331,7 +325,7 @@ export default {
               <ul class="list-group">
                 <li v-for="item in categories" class="list-group-item">
                   <input type="radio" class="form-check-input me-1" name="categoryRadio" :id="item.value" :value="item"
-                         v-model="selectedCategory" @change="onChangeCat">
+                         v-model="selectedCategory">
                   <label class="form-check-label stretched-link" :for="item.value">
                     {{ item.emoji }} {{ trans("transport_types." + item.value) }}
                   </label>

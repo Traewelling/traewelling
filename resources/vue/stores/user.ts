@@ -53,7 +53,6 @@ export const useUserStore = defineStore("user", {
     },
     actions: {
         async setHome(home: ShortStation | any): Promise<void> {
-            console.log(home);
             const curStation = this.user?.home;
             if (this.user) {
                 this.user.home = home;
