@@ -75,7 +75,7 @@ class PermissionSeeder extends Seeder
 
         //Revoke permissions from closed-beta role
         $roleClosedBeta->revokePermissionTo($permissionCreateManualTrip);                                        //now in open-beta
-        $roleClosedBeta->givePermissionTo($permissionUseTransitous);
+        $roleClosedBeta->revokePermissionTo($permissionUseTransitous);                                           // now released
 
         //Assign permissions to open-beta role
         $roleOpenBeta->givePermissionTo($permissionCreateManualTrip);
