@@ -15,7 +15,6 @@ use App\Helpers\CacheKey;
 use App\Helpers\HCK;
 use App\Http\Controllers\Controller;
 use App\Hydrators\DepartureHydrator;
-use App\Models\MotisSourceLicense;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\Trip;
@@ -179,22 +178,8 @@ class Motis extends Controller implements DataProviderInterface
             CacheKey::increment(HCK::DEPARTURES_SUCCESS);
             foreach ($entries as $rawDeparture) {
                 // check Motis Source
-                $source = $rawDeparture['source'];
-                // extract two groups from regex (\w+)/(\w{2})_
-                preg_match('/(?<country>\w{2})_(?<name>.*)\.gtfs/', $source, $matches);
-                $name    = $matches['name'] ?? '';
-                $country = $matches['country'] ?? '';
-                if (empty($name) || empty($country)) {
-                    Log::error('no matching license format found in ' . $source);
-                    continue;
-                }
-                $source = MotisSourceLicense::where([
-                                                        'provider' => $this->source->value,
-                                                        'country'  => $country,
-                                                        'name'     => $name,
-                                                        'active'   => true
-                                                    ])->count();
-                if ($source === 0) {
+                $license = $this->motisRepository->getLicense($rawDeparture['source'], $this->source);
+                if (empty($license)) {
                     continue;
                 }
 
@@ -309,6 +294,7 @@ class Motis extends Controller implements DataProviderInterface
         $arrival            = isset($leg['to']['arrival']) ? Carbon::parse($leg['to']['arrival']) : null;
         $category           = MotisCategory::tryFrom($leg['mode'])?->getHTT()->value ?? HafasTravelType::REGIONAL;
         $tripLineName       = !empty($leg['routeShortName']) ? $leg['routeShortName'] : $lineName;
+        $license            = $this->motisRepository->getLicense($leg['source'], $this->source);
 
         // add origin and destination to stopovers
         $rawStopovers[] = $leg['from'];
@@ -348,18 +334,19 @@ class Motis extends Controller implements DataProviderInterface
         $journey = Trip::updateOrCreate([
                                             'trip_id' => $tripID,
                                         ], [
-                                            'category'       => $category,
-                                            'number'         => $tripLineName,
-                                            'linename'       => $tripLineName,
-                                            'journey_number' => null,
-                                            'operator_id'    => null, //TODO
-                                            'origin_id'      => $originStation->id,
-                                            'destination_id' => $destinationStation->id,
-                                            'polyline_id'    => null, //TODO
-                                            'departure'      => $departure,
-                                            'arrival'        => $arrival,
-                                            'source'         => $this->source->value,
-                                            'motis_source'   => $this->source->value . '/' . $leg['source'],
+                                            'category'                => $category,
+                                            'number'                  => $tripLineName,
+                                            'linename'                => $tripLineName,
+                                            'journey_number'          => null,
+                                            'operator_id'             => null, //TODO
+                                            'origin_id'               => $originStation->id,
+                                            'destination_id'          => $destinationStation->id,
+                                            'polyline_id'             => null, //TODO
+                                            'departure'               => $departure,
+                                            'arrival'                 => $arrival,
+                                            'source'                  => $this->source->value,
+                                            'motis_source'            => $this->source->value . '/' . $leg['source'],
+                                            'motis_source_license_id' => $license?->id ?? null,
                                         ]);
         $journey->stopovers()->saveMany($stopovers);
 

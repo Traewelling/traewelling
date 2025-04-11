@@ -12,24 +12,25 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * @property int             $id
- * @property string          $trip_id
- * @property HafasTravelType $category
- * @property string          $number
- * @property string          $linename
- * @property string          $journey_number
- * @property int             $operator_id
- * @property int             $origin_id
- * @property int             $destination_id
- * @property int             $polyline_id
- * @property UTCDateTime     $departure
- * @property UTCDateTime     $arrival
- * @property UTCDateTime     $last_refreshed
- * @property TripSource      $source
- * @property ?string         $motis_source
- * @property int             $user_id
- * @property                 $stopovers
- * @property PolyLine        $polyLine
+ * @property int                $id
+ * @property string             $trip_id
+ * @property HafasTravelType    $category
+ * @property string             $number
+ * @property string             $linename
+ * @property string             $journey_number
+ * @property int                $operator_id
+ * @property int                $origin_id
+ * @property int                $destination_id
+ * @property int                $polyline_id
+ * @property UTCDateTime        $departure
+ * @property UTCDateTime        $arrival
+ * @property UTCDateTime        $last_refreshed
+ * @property TripSource         $source
+ * @property ?string            $motis_source
+ * @property int                $user_id
+ * @property                    $stopovers
+ * @property PolyLine           $polyLine
+ * @property MotisSourceLicense $motisSourceLicense
  *
  * @todo rename table only to "Trip" (without Hafas)
  * @todo rename "linename" to "line_name" (or something else, but not "linename")
@@ -43,7 +44,7 @@ class Trip extends Model
     protected $table    = 'hafas_trips';
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'journey_number', 'operator_id', 'origin_id', 'destination_id',
-        'polyline_id', 'departure', 'arrival', 'source', 'motis_source', 'user_id', 'last_refreshed',
+        'polyline_id', 'departure', 'arrival', 'source', 'motis_source', 'user_id', 'last_refreshed', 'motis_source_license_id'
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $casts    = [
@@ -94,5 +95,9 @@ class Trip extends Model
      */
     public function user(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function motisSourceLicense(): BelongsTo {
+        return $this->belongsTo(MotisSourceLicense::class, 'motis_source_license_id', 'id');
     }
 }

@@ -4,7 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property string $id
+ * @property string $provider
+ * @property string $country
+ * @property string $name
+ * @property string $license
+ * @property string $license_url
+ * @property string $source_url
+ * @property string $spdx
+ * @property bool   $active
+ */
 class MotisSourceLicense extends Model
 {
     use HasUuids;
@@ -39,4 +51,8 @@ class MotisSourceLicense extends Model
             'url'  => 'https://spdx.org/licenses/CC0-1.0.html'
         ],
     ];
+
+    public function trips(): HasMany {
+        return $this->hasMany(Trip::class);
+    }
 }
