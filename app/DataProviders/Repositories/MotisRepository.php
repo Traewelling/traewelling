@@ -5,32 +5,32 @@ namespace App\DataProviders\Repositories;
 use App\Dto\Coordinate;
 use App\Enum\DataProvider;
 use App\Helpers\Formatter;
+use App\Models\MotisSourceLicense;
 use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Services\GeoService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class MotisRepository
 {
     private GeoService $geoService;
     private const string TYPE = 'motis';
 
-    public function __construct(?GeoService $geoService = null)
-    {
+    public function __construct(?GeoService $geoService = null) {
         $this->geoService = $geoService ?? new GeoService();
     }
 
-    public function createStation(mixed $rawStation, DataProvider $source): Station
-    {
+    public function createStation(mixed $rawStation, DataProvider $source): Station {
         $coordinates = new Coordinate($rawStation['lat'], $rawStation['lon']);
-        $bbox = $this->geoService->getBoundingBox($coordinates, 100);
+        $bbox        = $this->geoService->getBoundingBox($coordinates, 100);
 
         $stations = Station::whereBetween('latitude', [$bbox->lowerRight->latitude, $bbox->upperLeft->latitude])
-            ->whereBetween('longitude', [$bbox->lowerRight->longitude, $bbox->upperLeft->longitude])
-            ->get();
+                           ->whereBetween('longitude', [$bbox->lowerRight->longitude, $bbox->upperLeft->longitude])
+                           ->get();
 
         $simplifiedRawStationName = Formatter::simplifyStationName($rawStation['name']);
-        $stations = $stations->map(function ($station) use ($simplifiedRawStationName) {
+        $stations                 = $stations->map(function($station) use ($simplifiedRawStationName) {
             $stationName = Formatter::simplifyStationName($station->name);
 
             similar_text($stationName, $simplifiedRawStationName, $percent);
@@ -38,7 +38,7 @@ class MotisRepository
             return $station;
         });
 
-        $stations = $stations->filter(function ($station) {
+        $stations = $stations->filter(function($station) {
             return $station->motisRepositoryTempPercent > 90;
         });
         $stations = $stations->sortBy('ibnr', SORT_ASC);
@@ -46,10 +46,10 @@ class MotisRepository
 
         if ($stations->isEmpty()) {
             $station = new Station([
-                'name' => $rawStation['name'],
-                'latitude' => $rawStation['lat'],
-                'longitude' => $rawStation['lon']
-            ]);
+                                       'name'      => $rawStation['name'],
+                                       'latitude'  => $rawStation['lat'],
+                                       'longitude' => $rawStation['lon']
+                                   ]);
             $station->save();
         } else {
             $station = $stations->first();
@@ -57,28 +57,46 @@ class MotisRepository
 
         StationIdentifier::updateOrCreate(
             [
-                'type' => self::TYPE,
-                'origin' => $source->value,
+                'type'       => self::TYPE,
+                'origin'     => $source->value,
                 'identifier' => $rawStation['stopId'],
             ],
             [
                 'station_id' => $station->id,
-                'name' => $rawStation['name']
+                'name'       => $rawStation['name']
             ]
         );
         return $station;
     }
 
-    public function getStationsByIdentifiers(string|array $stationIds, DataProvider $source): Collection
-    {
+    public function getStationsByIdentifiers(string|array $stationIds, DataProvider $source): Collection {
         if (is_string($stationIds)) {
             $stationIds = [$stationIds];
         }
 
-        return Station::whereRelation('stationIdentifiers', function ($query) use ($stationIds, $source) {
+        return Station::whereRelation('stationIdentifiers', function($query) use ($stationIds, $source) {
             $query->whereIn('identifier', $stationIds)
-                ->where('type', static::TYPE)
-                ->where('origin', $source->value);
+                  ->where('type', static::TYPE)
+                  ->where('origin', $source->value);
         })->get();
+    }
+
+    public function getLicense(string $gtfsSource, DataProvider $source): ?MotisSourceLicense {
+        $matches = [];
+        preg_match('/(?<country>\w{2})_(?<name>.*)\.gtfs/', $gtfsSource, $matches);
+        $name    = $matches['name'] ?? '';
+        $country = $matches['country'] ?? '';
+        if (empty($name) || empty($country)) {
+            Log::error('no matching license format found in ' . $gtfsSource);
+            return null;
+        }
+
+        return MotisSourceLicense::where([
+                                             'provider' => $source->value,
+                                             'country'  => $country,
+                                             'name'     => $name,
+                                             'active'   => true
+                                         ])
+                                 ->first();
     }
 }
