@@ -13,8 +13,8 @@ class FetchTransitousLicenses extends Command
     private const string REPO = 'https://github.com/public-transport/transitous/archive/refs/heads/main.zip';
     private const string PATH = 'tmp/transitous';
 
-    protected $signature   = 'app:fetch-transitous-licenses';
-    protected $description = 'Command description';
+    protected $signature   = 'trwl:fetch-transitous-licenses';
+    protected $description = 'Fetch License data from transitous repository';
 
     public function handle(): int {
         // fetch the git repository https://github.com/public-transport/transitous.git
@@ -40,8 +40,7 @@ class FetchTransitousLicenses extends Command
 
         // Download the zip file
         $this->info('Downloading repository...');
-        $head     = Http::head(self::REPO);
-        $response = $head->status() === 200 ? Http::get(self::REPO) : null;
+        $response = Http::get(self::REPO);
         if (empty($response) || $response->status() !== 200) {
             $this->error('Failed to download repository');
             return self::FAILURE;
