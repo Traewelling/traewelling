@@ -13,6 +13,7 @@ use App\Enum\TravelType;
 use App\Exceptions\HafasException;
 use App\Helpers\CacheKey;
 use App\Helpers\HCK;
+use App\Http\Controllers\Backend\VersionController;
 use App\Http\Controllers\Controller;
 use App\Hydrators\DepartureHydrator;
 use App\Models\Station;
@@ -69,7 +70,7 @@ class Motis extends Controller implements DataProviderInterface
     public function getStations(string $query, int $results = 10): Collection {
         try {
             $url      = sprintf(self::API_URL . "/geocode?text=%s&limit=%d&type=STOP", urlencode($query), $results);
-            $response = Http::get($url);
+            $response = Http::withUserAgent(VersionController::getUserAgent())->get($url);
 
             if (!$response->ok()) {
                 CacheKey::increment(HCK::LOCATIONS_NOT_OK);
@@ -95,7 +96,7 @@ class Motis extends Controller implements DataProviderInterface
         $center = new Coordinate($latitude, $longitude);
         $bbox   = $this->geoService->getBoundingBox($center, 100);
 
-        $response = Http::get(self::API_URL . '/map/stops', [
+        $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . '/map/stops', [
             'min' => (string) $bbox->lowerRight,
             'max' => (string) $bbox->upperLeft,
         ]);
@@ -162,7 +163,7 @@ class Motis extends Controller implements DataProviderInterface
                 }
             }
 
-            $response = Http::get(self::API_URL . '/stoptimes', $params);
+            $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . '/stoptimes', $params);
 
             if (!$response->ok()) {
                 CacheKey::increment(HCK::DEPARTURES_NOT_OK);
@@ -238,7 +239,7 @@ class Motis extends Controller implements DataProviderInterface
      */
     private function fetchJourney(string $tripId): array|null {
         try {
-            $response = Http::get(self::API_URL . "/trip", ['tripId' => $tripId,]);
+            $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . "/trip", ['tripId' => $tripId,]);
 
             if ($response->ok()) {
                 CacheKey::increment(HCK::TRIPS_SUCCESS);

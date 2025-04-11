@@ -7,6 +7,17 @@ use Exception;
 
 abstract class VersionController extends Controller
 {
+    public static function getUserAgent(): string {
+        $version = self::getVersion() ?: self::getCurrentGitCommit() ?: 'unknown';
+        return sprintf(
+            '%s/%s (%s; bot; contact: %s)',
+            config('app.name'),
+            $version,
+            config('app.url'),
+            config('app.legal.email')
+        );
+    }
+
     public static function getVersion(): bool|string {
         if (file_exists(base_path() . '/VERSION')) {
             return trim(file_get_contents(base_path() . '/VERSION'));
