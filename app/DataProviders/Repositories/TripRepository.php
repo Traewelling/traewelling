@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-class BahnRepository
+class TripRepository
 {
     /**
      * @param Trip                 $trip
@@ -16,7 +16,7 @@ class BahnRepository
      *
      * @return void
      */
-    public function createStopovers(Trip $trip, Collection $stopovers): void {
+    public function tryToSaveStopovers(Trip $trip, Collection $stopovers): void {
         foreach ($stopovers as $stopover) {
             try {
                 $trip->stopovers()->save($stopover);
