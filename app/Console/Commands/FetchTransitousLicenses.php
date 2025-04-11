@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\MotisSource;
+use App\Models\MotisSourceLicense;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -95,13 +95,13 @@ class FetchTransitousLicenses extends Command
                     'version'     => $license['version'] ?? '',
                     'type'        => $license['type'] ?? '',
                     'spdx'        => $license['license']['spdx-identifier'] ?? '',
-                    'active'      => array_key_exists($license['license']['spdx-identifier'] ?? '', MotisSource::SPDX),
+                    'active'      => array_key_exists($license['license']['spdx-identifier'] ?? '', MotisSourceLicense::SPDX),
                 ];
                 $this->info(
                     sprintf('[%s] Found license: %s (%s) %s', $country, $tmp['name'], $tmp['spdx'], $tmp['active'] ? 'active' : 'inactive')
                 );
 
-                MotisSource::updateOrCreate(
+                MotisSourceLicense::updateOrCreate(
                     [
                         'provider' => 'transitous',
                         'country'  => $country,
