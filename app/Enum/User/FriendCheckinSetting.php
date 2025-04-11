@@ -17,4 +17,3 @@ enum FriendCheckinSetting: string
     case FRIENDS   = 'friends';   // user who are following each other
     case LIST      = 'list';      // specific list of users
 }
-

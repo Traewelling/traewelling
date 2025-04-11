@@ -6,4 +6,3 @@ class UserAlreadyMutedException extends Referencable
 {
     //
 }
-

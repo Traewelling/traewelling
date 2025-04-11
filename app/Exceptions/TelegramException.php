@@ -8,4 +8,3 @@ class TelegramException extends Exception
 {
     //
 }
-

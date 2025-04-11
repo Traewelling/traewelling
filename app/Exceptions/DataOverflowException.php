@@ -6,4 +6,3 @@ class DataOverflowException extends Referencable
 {
     //
 }
-
