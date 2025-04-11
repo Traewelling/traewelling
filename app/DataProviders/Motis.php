@@ -15,6 +15,7 @@ use App\Helpers\CacheKey;
 use App\Helpers\HCK;
 use App\Http\Controllers\Controller;
 use App\Hydrators\DepartureHydrator;
+use App\Models\MotisSourceLicense;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\Trip;
@@ -177,6 +178,26 @@ class Motis extends Controller implements DataProviderInterface
             $entries    = $response->json('stopTimes');
             CacheKey::increment(HCK::DEPARTURES_SUCCESS);
             foreach ($entries as $rawDeparture) {
+                // check Motis Source
+                $source = $rawDeparture['source'];
+                // extract two groups from regex (\w+)/(\w{2})_
+                preg_match('/(?<country>\w{2})_(?<name>.*)\.gtfs/', $source, $matches);
+                $name    = $matches['name'] ?? '';
+                $country = $matches['country'] ?? '';
+                if (empty($name) || empty($country)) {
+                    Log::error('no matching license format found in ' . $source);
+                    continue;
+                }
+                $source = MotisSourceLicense::where([
+                                                        'provider' => $this->source->value,
+                                                        'country'  => $country,
+                                                        'name'     => $name,
+                                                        'active'   => true
+                                                    ])->count();
+                if ($source === 0) {
+                    continue;
+                }
+
                 //trip
                 $tripId              = $rawDeparture['tripId'];
                 $rawDepartureStation = $rawDeparture['place'];
