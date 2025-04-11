@@ -18,7 +18,6 @@ use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Gate;
@@ -55,6 +54,7 @@ class StatusController extends Controller
                                 'checkin.originStopover.station.names',
                                 'checkin.destinationStopover.station.names',
                                 'checkin.trip.stopovers.station.names',
+                                'checkin.trip.motisSourceLicense'
                             ])
                      ->firstOrFail();
     }

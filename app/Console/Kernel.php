@@ -7,6 +7,7 @@ use App\Console\Commands\CacheYearInReview;
 use App\Console\Commands\CleanUpProfilePictures;
 use App\Console\Commands\DatabaseCleaner\DatabaseCleaner;
 use App\Console\Commands\DatabaseCleaner\MastodonServers;
+use App\Console\Commands\FetchTransitousLicenses;
 use App\Console\Commands\HideStatus;
 use App\Console\Commands\RefreshCurrentTrips;
 use App\Console\Commands\WikidataFetcher;
@@ -46,6 +47,7 @@ class Kernel extends ConsoleKernel
         $schedule->command(DatabaseCleaner::class)->daily();
         $schedule->command(CleanUpProfilePictures::class)->daily();
         $schedule->command(CleanOldPersonalDataExportsCommand::class)->daily();
+        $schedule->command(FetchTransitousLicenses::class)->daily();
 
         //weekly tasks
         $schedule->command(MastodonServers::class)->weekly();
