@@ -83,7 +83,7 @@ class MotisRepository
 
     public function getLicense(string $gtfsSource, DataProvider $source): ?MotisSourceLicense {
         $matches = [];
-        preg_match('/(?<country>\w{2})_(?<name>.*)\.gtfs/', $gtfsSource, $matches);
+        preg_match('/(?<name>(?<country>.*)_.*\.gtfs)/', $gtfsSource, $matches);
         $name    = $matches['name'] ?? '';
         $country = $matches['country'] ?? '';
         if (empty($name) || empty($country)) {
@@ -94,7 +94,7 @@ class MotisRepository
         return MotisSourceLicense::where([
                                              'provider' => $source->value,
                                              'country'  => $country,
-                                             'name'     => $name,
+                                             'name'     => $name . '.zip',
                                              'active'   => true
                                          ])
                                  ->first();

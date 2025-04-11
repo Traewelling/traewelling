@@ -8,7 +8,7 @@
     $dataOrigin = null;
     if ($status->checkin->trip->motisSourceLicense) {
        $license = \App\Models\MotisSourceLicense::SPDX[$status->checkin->trip->motisSourceLicense->spdx];
-       $dataOrigin = $status->checkin->trip->motisSourceLicense->name;
+       $dataOrigin = $status->checkin->trip->motisSourceLicense->human_name ?? $status->checkin->trip->motisSourceLicense->name;
        $provider = $status->checkin->trip->motisSourceLicense->provider;
     }
 @endphp

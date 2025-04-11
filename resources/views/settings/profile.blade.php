@@ -86,29 +86,6 @@
                             </div>
                         </div>
 
-                        @if(auth()->user()?->hasPermissionTo('use-transitous'))
-                            <div class="form-group row">
-                                <label for="data_provider" class="col-md-4 col-form-label text-md-right">
-                                    {{ __('user.data_provider') }}
-                                </label>
-                                <div class="col-md-6">
-                                    <select class="form-select" name="data_provider">
-                                        <option value="{{ App\Enum\DataProvider::DEFAULT->value }}"
-                                                @if(auth()->user()->data_provider == App\Enum\DataProvider::DEFAULT) selected @endif>
-                                            {{__('data-providers.default')}}
-                                        </option>
-                                        <option value="{{ App\Enum\DataProvider::TRANSITOUS->value }}"
-                                                @if(auth()->user()->data_provider == App\Enum\DataProvider::TRANSITOUS) selected @endif>
-                                            {{__('data-providers.transitous')}}
-                                        </option>
-                                    </select>
-
-                                    @error('email')
-                                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                                    @enderror
-                                </div>
-                            </div>
-                        @endif
                         <div class="form-group row">
                             <label for="timezone" class="col-md-4 col-form-label text-md-right">
                                 {{ __('user.timezone') }}
