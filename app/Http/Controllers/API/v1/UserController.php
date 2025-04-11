@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\v1;
 
-
 use App\Exceptions\UserAlreadyBlockedException;
 use App\Exceptions\UserAlreadyMutedException;
 use App\Exceptions\UserNotBlockedException;

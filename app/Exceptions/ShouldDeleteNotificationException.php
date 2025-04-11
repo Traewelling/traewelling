@@ -10,4 +10,3 @@ namespace App\Exceptions;
 class ShouldDeleteNotificationException extends Referencable
 {
 }
-

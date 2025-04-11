@@ -20,7 +20,10 @@ class ExportController extends Controller
         $user = $request->user();
 
         if ($user->recent_gdpr_export && $user->recent_gdpr_export->diffInDays(now()) < 30) {
-            return response()->json(['error' => __('export.error.gdpr-time', ['date' => userTime($user->recent_gdpr_export)])], 400);
+            return response()->json(
+                ['error' => __('export.error.gdpr-time', ['date' => userTime($user->recent_gdpr_export)])],
+                400
+            );
         }
 
         $user->update(['recent_gdpr_export' => now()]);
@@ -35,7 +38,10 @@ class ExportController extends Controller
                                             'from'      => ['required', 'date', 'before_or_equal:until'],
                                             'until'     => ['required', 'date', 'after_or_equal:from'],
                                             'columns.*' => ['required', Rule::enum(ExportableColumn::class)],
-                                            'filetype'  => ['required', Rule::in(['pdf', 'csv_human', 'csv_machine', 'json'])],
+                                            'filetype'  => [
+                                                'required',
+                                                Rule::in(['pdf', 'csv_human', 'csv_machine', 'json'])
+                                            ],
                                         ]);
 
         $from  = Carbon::parse($validated['from']);

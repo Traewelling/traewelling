@@ -171,7 +171,8 @@ class Motis extends Controller implements DataProviderInterface
                 }
             }
 
-            $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . '/stoptimes', $params);
+            $response = Http::withUserAgent(VersionController::getUserAgent())
+                            ->get(self::API_URL . '/stoptimes', $params);
 
             if (!$response->ok()) {
                 CacheKey::increment(HCK::DEPARTURES_NOT_OK);

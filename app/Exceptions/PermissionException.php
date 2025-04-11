@@ -9,4 +9,3 @@ class PermissionException extends Referencable
 {
     //
 }
-

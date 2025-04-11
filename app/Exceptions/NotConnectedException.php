@@ -6,4 +6,3 @@ class NotConnectedException extends Referencable
 {
     //
 }
-

@@ -123,7 +123,6 @@
                     <script>
                         // TODO: prevent duplicate code with `wikidata/index.blade.php` (by adding a `allowUpdate` parameter)
                         function fetchWikidata(stationId) {
-                            console.log('Fetching Wikidata for station ' + stationId);
                             fetch('/api/v1/experimental/station/' + stationId + '/wikidata?allowUpdate=1', {
                                 method: 'POST',
                                 headers: {

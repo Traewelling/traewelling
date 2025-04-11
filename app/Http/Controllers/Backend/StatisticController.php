@@ -161,11 +161,11 @@ abstract class StatisticController extends Controller
 
         $dateList = collect();
         for ($date = $from->clone(); $date->isBefore($until); $date->addDay()) {
-            $e           = collect();
-            $e->date     = $date->clone();
-            $e->count    = 0;
-            $e->duration = 0;
-            $dateList->push($e);
+            $collection           = collect();
+            $collection->date     = $date->clone();
+            $collection->count    = 0;
+            $collection->duration = 0;
+            $dateList->push($collection);
         }
 
         $data = DB::table('train_checkins')
@@ -190,11 +190,11 @@ abstract class StatisticController extends Controller
                 $obj->count    = (int) $row->count;
                 $obj->duration = (int) $row->duration;
             } else {
-                $e           = collect();
-                $e->date     = Carbon::parse($row->date);
-                $e->count    = 0;
-                $e->duration = 0;
-                $dateList->push($e);
+                $collection           = collect();
+                $collection->date     = Carbon::parse($row->date);
+                $collection->count    = 0;
+                $collection->duration = 0;
+                $dateList->push($collection);
             }
         }
 

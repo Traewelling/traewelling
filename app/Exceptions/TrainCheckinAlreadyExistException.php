@@ -6,4 +6,3 @@ class TrainCheckinAlreadyExistException extends Referencable
 {
     //
 }
-

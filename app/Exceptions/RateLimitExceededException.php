@@ -2,8 +2,6 @@
 
 namespace App\Exceptions;
 
-use Carbon\Carbon;
-
 class RateLimitExceededException extends Referencable
 {
 
@@ -28,4 +26,3 @@ class RateLimitExceededException extends Referencable
     }
 
 }
-

@@ -4,7 +4,6 @@
 
 @section('head')
     @parent
-    @vite(['resources/js/stats.js'])
 @endsection
 
 @section('content')

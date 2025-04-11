@@ -27,10 +27,9 @@ class PersonalDataExportedNotification extends MainPersonalDataExportedNotificat
         return route('personal-data-exports', $data['zipFilename']);
     }
 
-    public function toArray(): array
-    {
+    public function toArray(): array {
         return [
-            'zipFilename' => $this->zipFilename,
+            'zipFilename'      => $this->zipFilename,
             'deletionDatetime' => $this->deletionDatetime,
         ];
     }

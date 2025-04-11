@@ -28,4 +28,3 @@ class ReportTest extends ApiTestCase
         $response->assertHeader('Content-Type', 'application/json');
     }
 }
-

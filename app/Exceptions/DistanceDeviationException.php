@@ -6,4 +6,3 @@ class DistanceDeviationException extends Referencable
 {
     //
 }
-

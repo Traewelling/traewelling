@@ -56,8 +56,6 @@ export default {
   methods: {
     trans,
     checkIn() {
-      console.log(this.selectedFriends);
-      console.log(this.selectedFriends.map((friend) => friend.user.id));
       this.loading = true;
       const data = {
         body: this.statusText,
