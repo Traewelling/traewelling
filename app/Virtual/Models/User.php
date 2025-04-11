@@ -2,7 +2,6 @@
 
 namespace App\Virtual\Models;
 
-
 /**
  * @OA\Schema(
  *     title="User",

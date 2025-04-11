@@ -32,11 +32,11 @@ class ForgotPasswordController extends Controller
 
     public function sendResetLinkEmail(Request $request): JsonResponse|RedirectResponse {
         $user = User::where('email', $request->email)->first();
-        if ($user !== null && $user->created_at->diffInMinutes() < 60) {
+        if (
+            ($user !== null && $user->created_at->diffInMinutes() < 60)
+            || ($user !== null && $user->email_verified_at === null && $user->created_at->diffInDays() < 7)
+        ) {
             // prevent new registered users from sending password reset email instantly
-            return $this->sendResetLinkFailedResponse($request, Password::RESET_THROTTLED);
-        } else if($user !== null && $user->email_verified_at === null && $user->created_at->diffInDays() < 7) {
-            // prevent unverified users from sending password reset email shortly after registration
             return $this->sendResetLinkFailedResponse($request, Password::RESET_THROTTLED);
         }
 

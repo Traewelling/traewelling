@@ -9,8 +9,8 @@ use Illuminate\Cache\Events\CacheMissed;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
 
-
-class CacheMissedListener {
+class CacheMissedListener
+{
     public function handle(CacheMissed $event): void {
         switch ($event->key) {
             case CacheKey::USER_CREATED:
@@ -28,6 +28,7 @@ class CacheMissedListener {
                 // do nothing
         }
     }
+
     private function setWebhookAbsent(): void {
         Cache::set(CacheKey::WEBHOOK_ABSENT, 0);
     }
@@ -44,8 +45,8 @@ class CacheMissedListener {
         $count      = (new Status)->count();
         $highest_id = $this->getHighestId(Status::query());
 
-            Cache::set(CacheKey::STATUS_CREATED, $highest_id);
-            Cache::set(CacheKey::STATUS_DELETED, $highest_id - $count);
+        Cache::set(CacheKey::STATUS_CREATED, $highest_id);
+        Cache::set(CacheKey::STATUS_DELETED, $highest_id - $count);
     }
 
 

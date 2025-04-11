@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\v1;
 
-
 use App\Enum\User\FriendCheckinSetting;
 use App\Http\Resources\TrustedUserResource;
 use App\Models\TrustedUser;
