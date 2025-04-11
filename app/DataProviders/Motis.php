@@ -3,6 +3,7 @@
 namespace App\DataProviders;
 
 use App\DataProviders\Repositories\MotisRepository;
+use App\DataProviders\Repositories\TripRepository;
 use App\Dto\Coordinate;
 use App\Dto\Internal\BahnTrip;
 use App\Dto\Internal\Departure;
@@ -33,14 +34,21 @@ class Motis extends Controller implements DataProviderInterface
 
     private GeoService      $geoService;
     private MotisRepository $motisRepository;
+    private TripRepository  $tripRepository;
     private DataProvider    $source;
 
     private const string API_URL = 'https://api.transitous.org/api/v1';
 
-    public function __construct(DataProvider $source, ?MotisRepository $motisRepository = null, ?GeoService $geoService = null) {
+    public function __construct(
+        DataProvider     $source,
+        ?MotisRepository $motisRepository = null,
+        ?GeoService      $geoService = null,
+        ?TripRepository  $tripRepository = null
+    ) {
         $this->source          = $source;
         $this->motisRepository = $motisRepository ?? new MotisRepository();
         $this->geoService      = $geoService ?? new GeoService();
+        $this->tripRepository  = $tripRepository ?? new TripRepository();
     }
 
     public function getStationByRilIdentifier(string $rilIdentifier): ?Station {
@@ -349,7 +357,7 @@ class Motis extends Controller implements DataProviderInterface
                                             'motis_source'            => $this->source->value . '/' . $leg['source'],
                                             'motis_source_license_id' => $license?->id ?? null,
                                         ]);
-        $journey->stopovers()->saveMany($stopovers);
+        $this->tripRepository->tryToSaveStopovers($journey, $stopovers);
 
         return $journey;
     }

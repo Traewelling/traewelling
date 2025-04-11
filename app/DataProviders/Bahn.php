@@ -2,7 +2,7 @@
 
 namespace App\DataProviders;
 
-use App\DataProviders\Repositories\BahnRepository;
+use App\DataProviders\Repositories\TripRepository;
 use App\Dto\Coordinate;
 use App\Dto\Internal\BahnTrip;
 use App\Dto\Internal\Departure;
@@ -31,10 +31,10 @@ use Throwable;
 
 class Bahn extends Controller implements DataProviderInterface
 {
-    private BahnRepository $repository;
+    private TripRepository $tripRepository;
 
-    public function __construct(?BahnRepository $repository = null) {
-        $this->repository = $repository ?? new BahnRepository();
+    public function __construct(?TripRepository $repository = null) {
+        $this->tripRepository = $repository ?? new TripRepository();
     }
 
     public function getStationByRilIdentifier(string $rilIdentifier): ?Station {
@@ -253,10 +253,14 @@ class Bahn extends Controller implements DataProviderInterface
                 }
 
                 // Cache data used for trip creation since another endpoints do not provide them
-                Cache::add($journeyId, [
-                    'category' => $hafasTravelType,
-                    'lineName' => $tripLineName
-                ],         now()->addMinutes(30));
+                Cache::add(
+                    $journeyId,
+                    [
+                        'category' => $hafasTravelType,
+                        'lineName' => $tripLineName
+                    ],
+                    now()->addMinutes(30)
+                );
 
                 if ($departureStation === null) {
                     continue;
@@ -424,7 +428,7 @@ class Bahn extends Controller implements DataProviderInterface
                                             'arrival'        => $arrival,
                                             'source'         => TripSource::BAHN_WEB_API,
                                         ]);
-        $this->repository->createStopovers($journey, $stopovers);
+        $this->tripRepository->tryToSaveStopovers($journey, $stopovers);
 
         return $journey;
     }
