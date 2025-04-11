@@ -44,8 +44,7 @@
         "spatie/laravel-sitemap": "^7.2.1",
         "spatie/laravel-validation-rules": "^3.2",
         "spatie/laravel-webhook-server": "^3.4",
-        "trwl/socialite-mastodon": "^1.2",
-        "ext-zip": "*"
+        "trwl/socialite-mastodon": "^1.2"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
