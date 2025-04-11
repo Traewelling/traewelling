@@ -18,7 +18,7 @@
                             We have changed the data provider <b>from Deutsche Bahn to Transitous</b>.
                         </p>
                         <p class="text-center mx-0 my-0">
-                            Please inform yourself on our <a href="https://help.trawelling.de/features/timetable/">help page</a>.
+                            Please inform yourself on our <a href="https://help.traewelling.de/features/timetable/">help page</a>.
                         </p>
                     </div>
                     <hr>
@@ -28,7 +28,7 @@
                             Wir haben den Datenprovider <b>von der Deutschen Bahn zu Transitous</b> gewechselt.
                         </p>
                         <p class="text-center mx-0 my-0">
-                            Bitte informiere dich dazu auf unserer <a href="https://help.trawelling.de/features/timetable/">Hilfe-Seite</a>.
+                            Bitte informiere dich dazu auf unserer <a href="https://help.traewelling.de/features/timetable/">Hilfe-Seite</a>.
                         </p>
                     </div>
                 </div>
