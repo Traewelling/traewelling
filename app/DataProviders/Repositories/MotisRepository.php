@@ -29,9 +29,10 @@ class MotisRepository
                            ->whereBetween('longitude', [$bbox->lowerRight->longitude, $bbox->upperLeft->longitude])
                            ->get();
 
-        $simplifiedRawStationName = Formatter::simplifyStationName($rawStation['name']);
-        $stations                 = $stations->map(function($station) use ($simplifiedRawStationName) {
-            $stationName = Formatter::simplifyStationName($station->name);
+        $city                     = Formatter::getCityFromAreas($rawStation['areas']);
+        $simplifiedRawStationName = Formatter::simplifyStationName($rawStation['name'], $city);
+        $stations                 = $stations->map(function($station) use ($simplifiedRawStationName, $city) {
+            $stationName = Formatter::simplifyStationName($station->name, $city);
 
             similar_text($stationName, $simplifiedRawStationName, $percent);
             $station->motisRepositoryTempPercent = $percent;
