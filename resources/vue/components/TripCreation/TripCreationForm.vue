@@ -419,7 +419,8 @@ export default {
         <ul>
           <li>
             {{ trans("trip_creation.limitations.2") }}
-            <small>{{ trans("trip_creation.limitations.2.small") }}</small>
+            <small>(<a href="https://help.traewelling.de/features/map/"
+                       target="_blank">{{ trans("messages.cookie-notice-learn") }}</a>)</small>
           </li>
           <li>{{ trans("trip_creation.limitations.3") }}</li>
           <li>{{ trans("trip_creation.limitations.5") }}</li>

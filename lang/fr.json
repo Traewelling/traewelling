@@ -724,7 +724,6 @@
     "trip_creation.form.departure": "Départ",
     "trip_creation.form.arrival": "Arrivée",
     "trip_creation.limitations.2": "Les itinéraires sur la carte sont générés directement à partir des stations données",
-    "trip_creation.limitations.2.small": "(nous essayons d'obtenir un itinéraire approximatif via Brouter, mais cela ne fonctionne pas toujours correctement)",
     "trip_creation.limitations.5": "Il n'y a pas de message d'erreur visible pour ce formulaire. Donc, si rien ne se passe lors de la soumission c'est qu'il y a une erreur.",
     "notifications.userMentioned.lead": "Vous avez été mentionné dans un statut.",
     "notifications.userMentioned.notice": "Vous avez été mentionné dans un statut par @:username.",
