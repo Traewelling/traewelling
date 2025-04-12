@@ -10,6 +10,7 @@ use App\Models\Checkin;
 use App\Models\PolyLine;
 use App\Models\Station;
 use App\Models\User;
+use App\Repositories\StationRepository;
 use App\Services\Wikidata\WikidataImportService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -21,9 +22,11 @@ use Illuminate\Support\Facades\Log;
 class TransportController extends Controller
 {
     private DataProviderInterface $dataProvider;
+    private StationRepository     $stationRepository;
 
-    public function __construct(?User $user = null) {
-        $this->dataProvider = (new DataProviderBuilder())->build(null, $user);
+    public function __construct(?User $user = null, ?StationRepository $stationRepository = null) {
+        $this->dataProvider      = (new DataProviderBuilder())->build(null, $user);
+        $this->stationRepository = $stationRepository ?? new StationRepository();
     }
 
     /**
@@ -39,6 +42,12 @@ class TransportController extends Controller
             $stations = self::getStationsByWikidataId($query);
         } elseif (!isset($stations) || $stations[0] === null) {
             $stations = $this->dataProvider->getStations($query);
+            if ($stations->count() < 10) {
+                $remaining  = 10 - $stations->count();
+                $dbStations = $this->stationRepository->getStationByName($query, 'de', true, $remaining);
+                $stations   = $stations->merge($dbStations);
+            }
+
         }
         return $stations->map(function(Station $station) {
             return new StationResource($station);
