@@ -25,6 +25,11 @@
 
   a {
     color: $dm-trwlBlue !important;
+
+  }
+
+  a.btn {
+    color: var(--bs-btn-color) !important;
   }
 
   .nav-link {
