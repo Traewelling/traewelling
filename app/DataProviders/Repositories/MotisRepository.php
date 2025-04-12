@@ -29,7 +29,7 @@ class MotisRepository
                            ->whereBetween('longitude', [$bbox->lowerRight->longitude, $bbox->upperLeft->longitude])
                            ->get();
 
-        $city                     = Formatter::getCityFromAreas($rawStation['areas']);
+        $city                     = Formatter::getCityFromAreas($rawStation['areas'] ?? []);
         $name                     = Formatter::cityStationName($rawStation['name'], $city);
         $simplifiedRawStationName = Formatter::simplifyStationName($rawStation['name'], $city);
         $stations                 = $stations->map(function($station) use ($simplifiedRawStationName, $city) {
