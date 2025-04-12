@@ -35,4 +35,27 @@ class FormatterTest extends UnitTestCase
     public function testSimplifyStationName($stationName, $city, $expected) {
         $this->assertEquals($expected, Formatter::simplifyStationName($stationName, $city));
     }
+
+    public static function stationMatchingProvider(): array {
+        return [
+            ['Karlsruhe Hbf', 'Karlsruhe Hbf', 'Karlsruhe', true],
+            ['Karlsruhe Hbf', 'Karlsruhe Hbf', 'Karlsruhe', true],
+            ['Regierungsplatz, Landshut', 'Landshut, Regierungsplatz', 'Landshut', true],
+            ['Karlsruhe Hauptfriedhof', 'Hauptfriedhof', 'Karlsruhe', true],
+            ['Karlsruhe, Stuttgarter Straße', 'Stuttgart, Karlsruher Straße', 'Stuttgart', false],
+            ['Füttererstraße', 'Altdorfer Straße', '', false],
+            ['Landshut, Füttererstraße', 'Landshut, Altdorfer Straße', 'Landshut', false],
+        ];
+    }
+
+    /**
+     * @dataProvider stationMatchingProvider
+     */
+    public function testMapping($dbStation, $motisStation, $city, $match) {
+        $dbSimplified    = Formatter::simplifyStationName($dbStation, $city);
+        $motisSimplified = Formatter::simplifyStationName($motisStation, $city);
+
+        similar_text($dbSimplified, $motisSimplified, $percent);
+        $this->assertEquals($match, $percent > 90);
+    }
 }

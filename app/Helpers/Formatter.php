@@ -11,8 +11,8 @@ class Formatter
         if ($city) {
             // 2. Remove City names from station names
             // "Karlsruhe Hbf" -> "HBF"
-            $city        = strtoupper($city);
-            $stationName = str_replace($city, '', $stationName);
+            $city        = '/\b' . strtoupper($city) . '\b/';
+            $stationName = preg_replace($city, '', $stationName);
         }
 
         // 3. Remove special characters
