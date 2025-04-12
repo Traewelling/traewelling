@@ -94,8 +94,8 @@ export default defineComponent({
         <p class="mb-0">{{ state.status?.train?.destination?.name }} <small
             class="float-end text-muted">{{ format(arrival) }}</small></p>
 
-        <div class="progress">
-          <div class="progress-bar bg-trwl" role="progressbar" :style="`width: ${progress}%`"
+        <div class="progress active-status-progress">
+          <div class="progress-bar active-status-progress bg-trwl" role="progressbar" :style="`width: ${progress}%`"
                :aria-valuenow="progress" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
       </div>
@@ -104,6 +104,11 @@ export default defineComponent({
 </template>
 
 <style scoped lang="scss">
+.active-status-progress {
+  height: 4px;
+  line-height: 4px;
+}
+
 .fab-container {
   z-index: 50;
   display: flex;
