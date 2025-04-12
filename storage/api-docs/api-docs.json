@@ -913,6 +913,9 @@
                     },
                     "409": {
                         "description": "Status already liked by user"
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded"
                     }
                 },
                 "security": [
