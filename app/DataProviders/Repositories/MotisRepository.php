@@ -30,6 +30,7 @@ class MotisRepository
                            ->get();
 
         $city                     = Formatter::getCityFromAreas($rawStation['areas']);
+        $name                     = Formatter::cityStationName($rawStation['name'], $city);
         $simplifiedRawStationName = Formatter::simplifyStationName($rawStation['name'], $city);
         $stations                 = $stations->map(function($station) use ($simplifiedRawStationName, $city) {
             $stationName = Formatter::simplifyStationName($station->name, $city);
@@ -47,7 +48,7 @@ class MotisRepository
 
         if ($stations->isEmpty()) {
             $station = new Station([
-                                       'name'      => $rawStation['name'],
+                                       'name'      => $name,
                                        'latitude'  => $rawStation['lat'],
                                        'longitude' => $rawStation['lon']
                                    ]);
@@ -64,7 +65,7 @@ class MotisRepository
             ],
             [
                 'station_id' => $station->id,
-                'name'       => $rawStation['name']
+                'name'       => $name
             ]
         );
         return $station;

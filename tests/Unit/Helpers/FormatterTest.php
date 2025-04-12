@@ -58,4 +58,25 @@ class FormatterTest extends UnitTestCase
         similar_text($dbSimplified, $motisSimplified, $percent);
         $this->assertEquals($match, $percent > 90);
     }
+
+    public static function appendStationProvider(): array {
+        return [
+            ['Karlsruhe Hbf', 'Karlsruhe', 'Karlsruhe Hbf'],
+            ['Tullastraße', 'Karlsruhe', 'Tullastraße, Karlsruhe'],
+            ['Karlsruhe, Tullastraße', 'Karlsruhe', 'Karlsruhe, Tullastraße'],
+            ['Karlsruhe Hbf', null, 'Karlsruhe Hbf'],
+            ['Tullastraße', 'München', 'Tullastraße, München'],
+            ['Karlsruhe, Tullastraße', 'München', 'Karlsruhe, Tullastraße, München'], // lol
+            ['Karlsruhe Hbf', null, 'Karlsruhe Hbf'],
+            ['Tullastraße', null, 'Tullastraße'],
+            ['Karlsruhe, Tullastraße', null, 'Karlsruhe, Tullastraße'],
+        ];
+    }
+
+    /**
+     * @dataProvider appendStationProvider
+     */
+    public function testAppendStation($stationName, $city, $expected) {
+        $this->assertEquals($expected, Formatter::cityStationName($stationName, $city));
+    }
 }

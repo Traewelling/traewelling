@@ -4,6 +4,20 @@ namespace App\Helpers;
 
 class Formatter
 {
+    public static function cityStationName(string $stationName, ?string $city = null): string {
+        if ($city) {
+            $tempCity        = preg_quote(strtoupper($city));
+            $tempStationName = strtoupper($stationName);
+
+            // if the station does not contain the city name as single word in regex, add it
+            if (!preg_match('/\b' . $tempCity . '\b/', $tempStationName)) {
+                $stationName = $stationName . ', ' . $city;
+            }
+        }
+
+        return $stationName;
+    }
+
     public static function simplifyStationName(string $stationName, ?string $city = null): string {
         // 1. Set to uppercase
         $stationName = strtoupper($stationName);
@@ -11,7 +25,7 @@ class Formatter
         if ($city) {
             // 2. Remove City names from station names
             // "Karlsruhe Hbf" -> "HBF"
-            $city        = '/\b' . strtoupper($city) . '\b/';
+            $city        = '/\b' . preg_quote(strtoupper($city)) . '\b/';
             $stationName = preg_replace($city, '', $stationName);
         }
 
