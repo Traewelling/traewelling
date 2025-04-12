@@ -46,24 +46,24 @@ export default {
         case 'UserMentioned':
           return 'fas fa-at';
         case 'PersonalDataExportedNotification':
-                    return 'fas fa-download';
-                default:
-                    return 'far fa-envelope';
-            }
-        },
-        warnType() {
-            switch (this.type) {
-                case 'MastodonNotSent':
-                case 'InvalidMastodonServer':
-                    return 'warning';
-                default:
-                    return 'neutral';
-            }
-        },
-        read() {
-            return this.readAt ?? false;
-        }
-        },
+          return 'fas fa-download';
+        default:
+          return 'far fa-envelope';
+      }
+    },
+    warnType() {
+      switch (this.type) {
+        case 'MastodonNotSent':
+        case 'InvalidMastodonServer':
+          return 'warning';
+        default:
+          return 'neutral';
+      }
+    },
+    read() {
+      return this.readAt ?? false;
+    }
+  },
 }
 </script>
 
@@ -95,8 +95,10 @@ div {
   line-height: var(--bs-body-line-height);
 }
 
-a {
-  color: $text-color;
+.notification {
+  a {
+    color: white !important;
+  }
 }
 
 .unread {
