@@ -41,6 +41,7 @@ class WikidataImportService
         'Q65227640', // Betriebsbahnhof
         'Q336764', // Abzweigstelle
         'Q27996463', // Überleitstelle
+        'Q44696264', //Seilbahnstation
     ];
 
     public static function importStation(string $qId): Station {
