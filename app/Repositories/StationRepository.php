@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\DataProviders\Hafas;
 use App\Http\Controllers\TransportController as TransportBackend;
 use App\Models\Station;
 use Illuminate\Support\Collection;
@@ -36,6 +35,8 @@ class StationRepository
                       ->select('train_stations.*')
                       ->distinct()
                       ->limit(20)
+                      ->orderBy('relevance', 'desc')
+                      ->orderBy('train_stations.name', 'asc')
                       ->get();
     }
 }
