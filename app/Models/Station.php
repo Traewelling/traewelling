@@ -15,9 +15,17 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property int                 $id
  * @property int|null            $ibnr
  * @property string              $rilIdentifier
+ * @property string|null         $wikidata_id
+ * @property string|null         $ifopt_a
+ * @property int|null            $ifopt_b
+ * @property int|null            $ifopt_c
+ * @property int|null            $ifopt_d
+ * @property int|null            $ifopt_e
  * @property string              $name
  * @property double              $latitude
  * @property double              $longitude
+ * @property string              $source
+ * @property int                 $relevance
  * @property int                 $time_offset
  * @property bool                $shift_time
  * @property Carbon              $created_at
@@ -42,7 +50,7 @@ class Station extends Model
     protected $table    = 'train_stations';
     protected $fillable = [
         'ibnr', 'wikidata_id', 'rilIdentifier',
-        'ifopt_a', 'ifopt_b', 'ifopt_c', 'ifopt_d', 'ifopt_e',
+        'ifopt_a', 'ifopt_b', 'ifopt_c', 'ifopt_d', 'ifopt_e', 'relevance',
         'name', 'latitude', 'longitude', 'source', 'time_offset', 'shift_time'
     ];
     protected $hidden   = ['created_at', 'updated_at', 'time_offset', 'shift_time'];

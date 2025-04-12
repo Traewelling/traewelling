@@ -147,6 +147,9 @@ class Motis extends Controller implements DataProviderInterface
     ): Collection {
         try {
             $station->load('stationIdentifiers');
+            $station->relevance++;
+            $station->save();
+
             $transitousIdentifier = $station->stationIdentifiers->where('type', 'motis')->where('origin', $this->source->value)->first();
             if ($transitousIdentifier === null) {
                 $station              = $this->getNearbyStations($station->latitude, $station->longitude)->first();
