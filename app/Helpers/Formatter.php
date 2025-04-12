@@ -4,16 +4,15 @@ namespace App\Helpers;
 
 class Formatter
 {
-    public static function simplifyStationName(string $stationName): string {
+    public static function simplifyStationName(string $stationName, ?string $city = null): string {
         // 1. Set to uppercase
         $stationName = strtoupper($stationName);
 
-        // 2. Remove City names from public transport stations
-        // "Hauptfriedhof, south entrance, Karlsruhe" -> "Hauptfriedhof, south entrance"
-        $exploded = explode(',', $stationName);
-        if (count($exploded) > 1) {
-            array_pop($exploded);
-            $stationName = implode(',', $exploded);
+        if ($city) {
+            // 2. Remove City names from station names
+            // "Karlsruhe Hbf" -> "HBF"
+            $city        = '/\b' . strtoupper($city) . '\b/';
+            $stationName = preg_replace($city, '', $stationName);
         }
 
         // 3. Remove special characters
@@ -52,5 +51,16 @@ class Formatter
 
         // 6. remove spaces
         return str_replace(' ', '', $stationName);
+    }
+
+    public static function getCityFromAreas(array $areas): ?string {
+        foreach ($areas as $area) {
+            $default = $area['default'] ?? false;
+            if ($default) {
+                return $area['name'];
+            }
+        }
+
+        return null;
     }
 }
