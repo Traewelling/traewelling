@@ -169,6 +169,7 @@ class Motis extends Controller implements DataProviderInterface
                 foreach ($filterCategory as $category) {
                     $params['mode'][] = $category->value;
                 }
+                $params['mode'] = implode(',', $params['mode']);
             }
 
             $response = Http::withUserAgent(VersionController::getUserAgent())
