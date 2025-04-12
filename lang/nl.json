@@ -857,5 +857,13 @@
     "export.request": "Verzoek",
     "export.gdpr.recent": "Je exportverzoek dateert van :date. Je ontvangt een e-mail zodra alle gegevens zijn verzameld. Let op: je kunt je gegevens slechts iedere 30 dagen exporteren.",
     "notifications.personalDataExported.lead": "De export staat klaar!",
-    "notifications.personalDataExported.notice": "Je kunt de export downloaden tot en met :date."
+    "notifications.personalDataExported.notice": "Je kunt de export downloaden tot en met :date.",
+    "license.info": "Licentie",
+    "license.provided": "De gegevens zijn afkomstig van :provider en uitgebracht door :sourge onder de :license.",
+    "events.notice.helppage": "hulppagina",
+    "events.request.warn.duration": "Evenementen langer dan drie dagen worden mogelijk afgewezen.",
+    "events.request.warn.url": "Evenementen zonder url/bron hebben een grotere kans om afgewezen te worden.",
+    "events.request.warn.confirm": "Weet je zeker dat je dit evenement wilt voorstellen?",
+    "events.notice.help": "Als je niet zeker weet of je evenement geschikt is, bekijk dan onze hulppagina's:",
+    "events.request.warn.date": "Evenementen dienen minimaal twee weken van tevoren aangekondigd te worden, anders worden ze mogelijk niet op tijd verwerkt."
 }
