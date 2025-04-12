@@ -775,7 +775,6 @@
   "trip_creation.form.number": "Nummer (optional)",
   "trip_creation.form.save": "Speichern",
   "trip_creation.limitations": "Aktuelle Einschränkungen",
-  "trip_creation.limitations.1": "Es werden nur Haltestellen unterstützt, die im DB Navigator vorhanden sind",
   "trip_creation.limitations.2": "Die Routen auf der Karte werden direkt aus den angegebenen Stationen erzeugt",
   "trip_creation.limitations.2.small": "(wir versuchen, eine Route über Brouter zu finden, aber das funktioniert nicht immer zuverlässig)",
   "trip_creation.limitations.3": "Der Trip wird öffentlich erstellt - wenn du also eincheckst, kann jeder, der deinen Status sehen kann, ebenfalls in diesen Trip einchecken.",

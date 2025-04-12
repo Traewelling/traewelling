@@ -417,7 +417,6 @@ export default {
         </h2>
 
         <ul>
-          <li>{{ trans("trip_creation.limitations.1") }}</li>
           <li>
             {{ trans("trip_creation.limitations.2") }}
             <small>{{ trans("trip_creation.limitations.2.small") }}</small>

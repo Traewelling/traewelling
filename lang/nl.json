@@ -735,7 +735,6 @@
     "stationboard.event-filter": "Typ om evenementen te filteren",
     "stationboard.events-propose": "Je kunt hier een voorstel doen:",
     "create-journey": "Reis toevoegen",
-    "trip_creation.limitations.1": "Je kunt alleen stations toevoegen die beschikbaar zijn in DB Navigator",
     "trip_creation.limitations.2": "De routekaarten zijn overgenomen van de opgegeven stations",
     "trip_creation.form.origin": "Vertrekstation",
     "trip_creation.form.destination": "Aankomststation",

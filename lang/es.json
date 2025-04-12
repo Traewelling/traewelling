@@ -650,7 +650,6 @@
     "map-providers.cargo": "Carto",
     "trip_creation.form.save": "Guardar",
     "trip_creation.limitations": "Limitaciones actuales",
-    "trip_creation.limitations.1": "Solo es compatible con las estaciones disponibles en DB Navigator",
     "trip_creation.form.arrival": "Llegada",
     "trip_creation.form.line": "Línea (C1, AVE 13, …)",
     "trip_creation.form.travel_type": "Típo de viaje",
