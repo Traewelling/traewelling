@@ -17,7 +17,13 @@ return [
     'db_rest'                   => env('DB_REST', 'https://v5.db.transport.rest/'),
     'db_rest_timeout'           => env('DB_REST_TIMEOUT', 3),
 
-    'data_provider'     => env('DATA_PROVIDER', 'transitous'),
+    'data_provider' => env('DATA_PROVIDER', 'transitous'),
+
+    'motis'             => [
+        'radius'        => (int) env('MOTIS_RADIUS', 200),
+        'nearby_radius' => (int) env('MOTIS_NEARBY_RADIUS', 200),
+        'results'       => (int) env('MOTIS_RESULTS', 50),
+    ],
 
     # Points
     'base_points'       => [
