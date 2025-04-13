@@ -17,7 +17,7 @@ class OperatorResource extends JsonResource
     public function toArray($request) {
         return [
             'id'         => $this->id,
-            'identifier' => $this->hafas_id, //TODO: rename to... i don't know, but not identifier
+            'identifier' => $this->hafas_id ?? '', //TODO: rename to... i don't know, but not identifier
             'name'       => $this->name
         ];
     }

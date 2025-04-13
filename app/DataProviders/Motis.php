@@ -17,6 +17,7 @@ use App\Helpers\HCK;
 use App\Http\Controllers\Backend\VersionController;
 use App\Http\Controllers\Controller;
 use App\Hydrators\DepartureHydrator;
+use App\Models\HafasOperator;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\Trip;
@@ -163,6 +164,7 @@ class Motis extends Controller implements DataProviderInterface
 
             // Still no identifier found...? We can't continue here.
             if ($transitousIdentifier === null) {
+                Log::debug('No MOTIS identifier found for station', ['station' => $station->only(['id', 'name'])]);
                 throw new HafasException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
             }
 
@@ -187,7 +189,7 @@ class Motis extends Controller implements DataProviderInterface
 
             if (!$response->ok()) {
                 CacheKey::increment(HCK::DEPARTURES_NOT_OK);
-                Log::error('Unknown HAFAS Error (fetchDepartures)', [
+                Log::error('Unknown MOTIS Error (getDepartures)', [
                     'status' => $response->status(),
                     'body'   => $response->body()
                 ]);
@@ -237,6 +239,7 @@ class Motis extends Controller implements DataProviderInterface
                                           number:        $tripId,
                                           category:      $hafasTravelType,
                                           journeyNumber: $tripId,
+                                          operator:      $this->parseOperator($rawDeparture),
                                       ),
                     plannedPlatform:  $platformPlanned,
                     realPlatform:     $platformReal,
@@ -248,11 +251,32 @@ class Motis extends Controller implements DataProviderInterface
             return DepartureHydrator::map($departures);
 
         } catch (JsonException $exception) {
+            Log::debug('JSON Error (getDepartures)', [
+                'status' => $response->status(),
+                'body'   => $response->body()
+            ]);
             throw new HafasException($exception->getMessage()); //TODO: Throw a more specific exception instead of HAFAS
         } catch (Exception $exception) {
             CacheKey::increment(HCK::DEPARTURES_FAILURE);
+            Log::debug('Unknown Error (getDepartures)', [
+                'status' => $response->status(),
+                'body'   => $response->body()
+            ]);
             throw new HafasException($exception->getMessage()); //TODO: Throw a more specific exception instead of HAFAS
         }
+    }
+
+    private function parseOperator(array $rawDeparture): ?HafasOperator {
+        if (!isset($rawDeparture['agencyId']) || !isset($rawDeparture['agencyName'])) {
+            return null;
+        }
+
+        return HafasOperator::updateOrCreate([
+                                                 'motis_id' => $rawDeparture['agencyId'],
+                                                 'motis_source' => $this->source->value,
+                                             ], [
+                                                 'name' => $rawDeparture['agencyName'],
+                                             ]);
     }
 
 
@@ -318,6 +342,7 @@ class Motis extends Controller implements DataProviderInterface
         $category           = MotisCategory::tryFrom($leg['mode'])?->getHTT()->value ?? HafasTravelType::REGIONAL;
         $tripLineName       = !empty($leg['routeShortName']) ? $leg['routeShortName'] : $lineName;
         $license            = $this->motisRepository->getLicense($leg['source'], $this->source);
+        $operator           = $this->parseOperator($leg);
 
         // add origin and destination to stopovers
         $rawStopovers[] = $leg['from'];
@@ -361,7 +386,7 @@ class Motis extends Controller implements DataProviderInterface
                                             'number'                  => $tripLineName,
                                             'linename'                => $tripLineName,
                                             'journey_number'          => null,
-                                            'operator_id'             => null, //TODO
+                                            'operator_id'             => $operator?->id,
                                             'origin_id'               => $originStation->id,
                                             'destination_id'          => $destinationStation->id,
                                             'polyline_id'             => null, //TODO
