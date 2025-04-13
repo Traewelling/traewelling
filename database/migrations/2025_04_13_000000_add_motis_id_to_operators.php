@@ -9,6 +9,7 @@ return new class extends Migration
     public function up(): void {
         Schema::table('hafas_operators', function(Blueprint $table) {
             $table->unsignedBigInteger('motis_id')->nullable()->unique()->after('name');
+$table->string('motis_source')->nullable()->after('motis_id');
         });
     }
 
