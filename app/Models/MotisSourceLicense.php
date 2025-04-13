@@ -4,19 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property string $id
- * @property string $provider
- * @property string $country
- * @property string $name
- * @property string $human_name
- * @property string $license
- * @property string $license_url
- * @property string $source_url
- * @property string $spdx
- * @property bool   $active
+ * @property string       $id
+ * @property string       $provider
+ * @property string       $country
+ * @property string       $name
+ * @property string       $human_name
+ * @property string       $license
+ * @property string       $license_url
+ * @property string       $source_url
+ * @property string       $spdx
+ * @property bool         $active
+ * @property bool         $force_active
+ *
+ * --- Relations
+ * @property-read License $otherLicense
  */
 class MotisSourceLicense extends Model
 {
@@ -32,7 +37,8 @@ class MotisSourceLicense extends Model
         'license_url',
         'source_url',
         'spdx',
-        'active'
+        'active',
+        'force_active',
     ];
 
     public const array SPDX = [
@@ -68,5 +74,9 @@ class MotisSourceLicense extends Model
 
     public function trips(): HasMany {
         return $this->hasMany(Trip::class);
+    }
+
+    public function otherLicense(): BelongsTo {
+        return $this->belongsTo(License::class);
     }
 }
