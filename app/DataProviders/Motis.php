@@ -102,7 +102,7 @@ class Motis extends Controller implements DataProviderInterface
      */
     public function getNearbyStations(float $latitude, float $longitude, int $results = 8): Collection {
         $center = new Coordinate($latitude, $longitude);
-        $bbox   = $this->geoService->getBoundingBox($center, 100);
+        $bbox   = $this->geoService->getBoundingBox($center, config('trwl.motis.nearby_radius'));
 
         $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . '/map/stops', [
             'min' => (string) $bbox->lowerRight,
@@ -162,9 +162,9 @@ class Motis extends Controller implements DataProviderInterface
 
             $params = [
                 'stopId' => $transitousIdentifier->identifier,
-                'radius' => 100,
+                'radius' => config('trwl.motis.radius'),
                 'time'   => $when->toIso8601String(),
-                'n'      => 50
+                'n'      => config('trwl.motis.results'),
             ];
 
             $filterCategory = MotisCategory::fromTravelType($type);
