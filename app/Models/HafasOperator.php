@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property int    $id
- * @property string $name
- * @property string $hafas_id
- * @property int    $motis_id
- * @property string $motis_source
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property int     $id
+ * @property string  $name
+ * @property ?string $hafas_id
+ * @property ?int    $motis_id
+ * @property ?string $motis_source
+ * @property Carbon  $created_at
+ * @property Carbon  $updated_at
  *
  * @todo rename table only to "Operator" (or "TransportOperator", ..., but not HAFAS)
  */
