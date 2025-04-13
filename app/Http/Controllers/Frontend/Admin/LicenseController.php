@@ -32,6 +32,7 @@ class LicenseController
         }
 
 
+        $licenses->appends($request->validated())->links();
         return view(
             'admin.license.index',
             [
