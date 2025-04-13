@@ -20,9 +20,10 @@ return [
     'data_provider' => env('DATA_PROVIDER', 'transitous'),
 
     'motis'             => [
-        'radius'        => (int) env('MOTIS_RADIUS', 200),
-        'nearby_radius' => (int) env('MOTIS_NEARBY_RADIUS', 200),
-        'results'       => (int) env('MOTIS_RESULTS', 50),
+        'radius'          => (int) env('MOTIS_RADIUS', 200),
+        'nearby_radius'   => (int) env('MOTIS_NEARBY_RADIUS', 200),
+        'results'         => (int) env('MOTIS_RESULTS', 50),
+        'filter_licenses' => (bool) env('MOTIS_FILTER_LICENSES', false),
     ],
 
     # Points
