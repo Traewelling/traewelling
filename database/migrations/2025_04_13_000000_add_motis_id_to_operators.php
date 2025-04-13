@@ -16,6 +16,7 @@ return new class extends Migration
     public function down(): void {
         Schema::table('hafas_operators', function(Blueprint $table) {
             $table->dropColumn('motis_id');
+            $table->dropColumn('motis_source');
         });
     }
 };
