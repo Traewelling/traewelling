@@ -13,7 +13,7 @@ class HafasOperator extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['hafas_id', 'name'];
+    protected $fillable = ['name', 'hafas_id', 'motis_id'];
 
     public function trips(): HasMany {
         return $this->hasMany(Trip::class, 'operator_id', 'id');
