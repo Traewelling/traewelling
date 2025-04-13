@@ -341,6 +341,7 @@ class Motis extends Controller implements DataProviderInterface
         $category           = MotisCategory::tryFrom($leg['mode'])?->getHTT()->value ?? HafasTravelType::REGIONAL;
         $tripLineName       = !empty($leg['routeShortName']) ? $leg['routeShortName'] : $lineName;
         $license            = $this->motisRepository->getLicense($leg['source'], $this->source);
+        $operator           = $this->parseOperator($leg);
 
         // add origin and destination to stopovers
         $rawStopovers[] = $leg['from'];
@@ -384,7 +385,7 @@ class Motis extends Controller implements DataProviderInterface
                                             'number'                  => $tripLineName,
                                             'linename'                => $tripLineName,
                                             'journey_number'          => null,
-                                            'operator_id'             => null, //TODO
+                                            'operator_id'             => $operator?->id,
                                             'origin_id'               => $originStation->id,
                                             'destination_id'          => $destinationStation->id,
                                             'polyline_id'             => null, //TODO
