@@ -191,10 +191,12 @@ class Motis extends Controller implements DataProviderInterface
             $entries    = $response->json('stopTimes');
             CacheKey::increment(HCK::DEPARTURES_SUCCESS);
             foreach ($entries as $rawDeparture) {
-                // check Motis Source
-                $license = $this->motisRepository->getLicense($rawDeparture['source'], $this->source);
-                if (empty($license)) {
-                    continue;
+                if (config('trwl.motis.filter_licenses')) {
+                    // Check if the source is licensed under an acceptable license
+                    $license = $this->motisRepository->getLicense($rawDeparture['source'], $this->source);
+                    if (empty($license)) {
+                        continue;
+                    }
                 }
 
                 //trip
