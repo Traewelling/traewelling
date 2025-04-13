@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ?string      $country
  * @property ?string      $name
  * @property ?string      $human_name
- * @property ?string      $license
+ * @property ?string      $sources
  * @property ?string      $license_url
  * @property ?string      $source_url
  * @property ?string      $spdx
@@ -33,7 +33,7 @@ class MotisSourceLicense extends Model
         'country',
         'name',
         'human_name',
-        'license',
+        'sources',
         'license_url',
         'source_url',
         'spdx',

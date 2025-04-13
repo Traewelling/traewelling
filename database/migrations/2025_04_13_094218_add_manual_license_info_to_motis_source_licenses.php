@@ -9,7 +9,7 @@ return new class extends Migration
 {
     public function up(): void {
         Schema::table('motis_source_licenses', function(Blueprint $table) {
-            $table->foreignIdFor(License::class)->after('spdx')->constrained();
+            $table->foreignIdFor(License::class)->after('spdx')->nullable()->constrained();
             $table->boolean('force_active')->default(false)->after('active');
         });
     }

@@ -3,7 +3,8 @@
 use App\Http\Controllers\Frontend\Admin\ActivityController;
 use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
-use App\Http\Controllers\Frontend\Admin\LicenseController;
+use App\Http\Controllers\Frontend\Admin\LicensesController;
+use App\Http\Controllers\Frontend\Admin\MotisSourceController;
 use App\Http\Controllers\Frontend\Admin\ReportController;
 use App\Http\Controllers\Frontend\Admin\StationController;
 use App\Http\Controllers\Frontend\Admin\StatusEditController;
@@ -17,10 +18,15 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
 
     Route::middleware('role:admin')->group(static function() {
         // these routes are only accessible for admins
-        Route::prefix('license')->group(static function() {
-            Route::get('/', [LicenseController::class, 'index'])
-                 ->name('admin.license');
-            Route::post('/', [LicenseController::class, 'show'])->name('admin.license.show');
+        Route::prefix('sources')->group(static function() {
+            Route::get('/', [MotisSourceController::class, 'index'])
+                 ->name('admin.sources');
+            Route::post('/', [MotisSourceController::class, 'show'])->name('admin.sources.show');
+        });
+        Route::prefix('licenses')->group(static function() {
+            Route::get('/', [LicensesController::class, 'index'])
+                 ->name('admin.licenses');
+            Route::post('/', [LicensesController::class, 'show'])->name('admin.licenses.show');
         });
 
         Route::prefix('checkin')->group(function() {

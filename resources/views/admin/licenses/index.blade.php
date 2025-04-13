@@ -5,10 +5,14 @@
 @section('content')
 
     @php
-        /** @var \App\Models\MotisSourceLicense[] $licenses
+        /**
+        * @var \App\Models\License[] $licenses
         * @var \App\Http\Requests\admin\LicenseIndexFilterRequest $filter
         */
     @endphp
+    <div class="mb-3">
+        <a href="{{ route('admin.sources') }}">Sources</a> | <a href="{{ route('admin.licenses') }}" class="text-muted">Licenses</a>
+    </div>
     <div class="row mb-4">
         <div class="col-12">
             <div class="card">
@@ -16,10 +20,6 @@
                     <h5 class="card-title">Filters</h5>
                     <form>
                         <div class="row">
-                            <div class="col">
-                                <input class="form-control" placeholder="Countrycode" name="country"
-                                       value="{{ $filter->country }}">
-                            </div>
                             <div class="col">
                                 <input class="form-control" placeholder="Source Name" name="name"
                                        value="{{ $filter->name }}">
@@ -29,20 +29,28 @@
                                        value="{{ $filter->human_name }}">
                             </div>
                             <div class="col-1">
-                                <select class="form-select" name="active">
+                                <select class="form-select" name="automatically_activate_source">
                                     <option value="">Active</option>
-                                    <option value="1" {{ $filter->active === 1 ? 'selected' : '' }}>Yes</option>
-                                    <option value="0" {{ $filter->active === 0 ? 'selected' : '' }}>No</option>
+                                    <option
+                                            value="1" {{ $filter->automatically_activate_source === 1 ? 'selected' : '' }}>
+                                        Yes
+                                    </option>
+                                    <option
+                                            value="0" {{ $filter->automatically_activate_source === 0 ? 'selected' : '' }}>
+                                        No
+                                    </option>
                                 </select>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-end">
+                        <div class="d-flex justify-content-between">
+                            <a class="btn btn-outline-primary mt-3">New</a>
                             <button type="submit" class="btn btn-primary mt-3">Filter</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+
     </div>
     <div class="row">
         <div class="col-12">
@@ -52,11 +60,12 @@
                         <table class="table table-striped table-hover" aria-labelledby="pageTitle">
                             <thead>
                             <tr>
-                                <th>Country</th>
+                                <th></th>
                                 <th>Source Name</th>
                                 <th>Human Name</th>
+                                <th>Attribution</th>
                                 <th>License</th>
-                                <th>SPDX</th>
+                                <th>Source</th>
                                 <th>Active</th>
                                 <th>Actions</th>
                             </tr>
@@ -64,18 +73,22 @@
                             <tbody>
                             @foreach($licenses as $license)
                                 <tr>
-                                    <td>{{ $license->country }}</td>
                                     <td>{{ $license->name }}</td>
                                     <td>{{ $license->human_name }}</td>
+                                    <td><input type="text" disabled value="{{ $license->attribution }}"</td>
                                     @if ($license->license_url)
                                         <td><a href="{{$license->license_url}}" target="_blank">Link</a></td>
                                     @else
                                         <td>-</td>
                                     @endif
+                                    @if ($license->source_url)
+                                        <td><a href="{{$license->source_url}}" target="_blank">Link</a></td>
+                                    @else
+                                        <td>-</td>
+                                    @endif
                                     <td>{{ $license->spdx }}</td>
-                                    <td>{{ $license->active }}</td>
                                     <td class="text-end">
-                                        <a href="{{ route('admin.license.show', ['id' => $license->id]) }}"
+                                        <a href="{{ route('admin.sources.show', ['id' => $license->id]) }}"
                                            class="btn btn-primary btn-sm">
                                             Edit
                                         </a>

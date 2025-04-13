@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Frontend\Admin;
 
-use App\Http\Requests\admin\LicenseIndexFilterRequest;
+use App\Http\Requests\admin\SourceIndexFilterRequest;
 use App\Models\MotisSourceLicense;
 
-class LicenseController
+class MotisSourceController
 {
-    public function index(LicenseIndexFilterRequest $request)
-    {
+    public function index(SourceIndexFilterRequest $request) {
         $licenses = MotisSourceLicense::paginate(50);
         if (!empty($request->validated())) {
             $licenses = MotisSourceLicense::whereNotNull('id');
@@ -26,18 +25,18 @@ class LicenseController
                 $licenses->where('active', $request->active);
             }
             $licenses = $licenses->orderBy('active', 'desc')
-                ->orderBy('country')
-                ->orderBy('name')
-                ->paginate(50);
+                                 ->orderBy('country')
+                                 ->orderBy('name')
+                                 ->paginate(50);
         }
 
 
         $licenses->appends($request->validated())->links();
         return view(
-            'admin.license.index',
+            'admin.sources.index',
             [
                 'licenses' => $licenses,
-                'filter' => $request,
+                'filter'   => $request,
             ]
         );
     }

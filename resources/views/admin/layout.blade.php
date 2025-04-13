@@ -70,7 +70,7 @@
                         <i class="fa-solid fa-flag"></i>
                         Reports
                     </a>
-                    <a class="nav-link" href="{{ route('admin.license') }}">
+                    <a class="nav-link" href="{{ route('admin.sources') }}">
                         <i class="fa-solid fa-section"></i>
                         Licenses
                     </a>
