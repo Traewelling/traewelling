@@ -273,7 +273,7 @@ class Motis extends Controller implements DataProviderInterface
 
         return HafasOperator::updateOrCreate([
                                                  'motis_id' => $rawDeparture['agencyId'],
-'motis_source' => $this->source->value
+                                                 'motis_source' => $this->source->value,
                                              ], [
                                                  'name' => $rawDeparture['agencyName'],
                                              ]);
