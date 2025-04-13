@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property bool         $force_active
  *
  * --- Relations
- * @property-read License $otherLicense
+ * @property-read License $manualLicense
  */
 class MotisSourceLicense extends Model
 {
@@ -76,7 +76,7 @@ class MotisSourceLicense extends Model
         return $this->hasMany(Trip::class);
     }
 
-    public function otherLicense(): BelongsTo {
-        return $this->belongsTo(License::class);
+    public function manualLicense(): BelongsTo {
+        return $this->belongsTo(License::class, 'license_id', 'id');
     }
 }

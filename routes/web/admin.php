@@ -22,11 +22,14 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
             Route::get('/', [MotisSourceController::class, 'index'])
                  ->name('admin.sources');
             Route::post('/', [MotisSourceController::class, 'show'])->name('admin.sources.show');
+            Route::post('/mass-assign', [MotisSourceController::class, 'massAssign'])
+                 ->name('admin.sources.mass-assign');
         });
         Route::prefix('licenses')->group(static function() {
             Route::get('/', [LicensesController::class, 'index'])
                  ->name('admin.licenses');
             Route::post('/', [LicensesController::class, 'show'])->name('admin.licenses.show');
+
         });
 
         Route::prefix('checkin')->group(function() {

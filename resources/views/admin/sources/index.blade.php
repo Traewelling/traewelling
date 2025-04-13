@@ -5,7 +5,9 @@
 @section('content')
 
     @php
-        /** @var \App\Models\MotisSourceLicense[] $licenses
+        /**
+        * @var \App\Models\MotisSourceLicense[] $sources
+        * @var \App\Models\License[] $licenses
         * @var \App\Http\Requests\admin\SourceIndexFilterRequest $filter
         */
     @endphp
@@ -47,51 +49,76 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover" aria-labelledby="pageTitle">
-                            <thead>
-                            <tr>
-                                <th>Country</th>
-                                <th>Source Name</th>
-                                <th>Human Name</th>
-                                <th>License</th>
-                                <th>SPDX</th>
-                                <th>Active</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($licenses as $license)
+    <form method="POST" action="{{ route('admin.sources.mass-assign') }}">
+        {{ csrf_field() }}
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Mass assign</h5>
+                        <div class="d-flex justify-content-between">
+                            <select class="form-select" name="license_id">
+                                <option value="">Select License</option>
+                                @foreach($licenses as $license)
+                                    <option value="{{ $license->id }}">{{ $license->name }}</option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="btn btn-primary">Assign</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover" aria-labelledby="pageTitle">
+                                <thead>
                                 <tr>
-                                    <td>{{ $license->country }}</td>
-                                    <td>{{ $license->name }}</td>
-                                    <td>{{ $license->human_name }}</td>
-                                    @if ($license->license_url)
-                                        <td><a href="{{$license->license_url}}" target="_blank">Link</a></td>
-                                    @else
-                                        <td>-</td>
-                                    @endif
-                                    <td>{{ $license->spdx }}</td>
-                                    <td>{{ $license->active }}</td>
-                                    <td class="text-end">
-                                        <a href="{{ route('admin.sources.show', ['id' => $license->id]) }}"
-                                           class="btn btn-primary btn-sm">
-                                            Edit
-                                        </a>
-                                    </td>
+                                    <th></th>
+                                    <th>Country</th>
+                                    <th>Source Name</th>
+                                    <th>Human Name</th>
+                                    <th>License</th>
+                                    <th>SPDX</th>
+                                    <th>Manual License</th>
+                                    <th>Active</th>
+                                    <th>Actions</th>
                                 </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                @foreach($sources as $source)
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="source_ids[]" value="{{ $source->id }}">
+                                        </td>
+                                        <td>{{ $source->country }}</td>
+                                        <td>{{ $source->name }}</td>
+                                        <td>{{ $source->human_name }}</td>
+                                        @if ($source->license_url)
+                                            <td><a href="{{$source->license_url}}" target="_blank">Link</a></td>
+                                        @else
+                                            <td>-</td>
+                                        @endif
+                                        <td>{{ $source->spdx }}</td>
+                                        <td>{{ $source->manualLicense?->name }}</td>
+                                        <td>{{ $source->active }}</td>
+                                        <td class="text-end">
+                                            <a href="{{ route('admin.sources.show', ['id' => $source->id]) }}"
+                                               class="btn btn-primary btn-sm">
+                                                Edit
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    {{ $licenses->links() }}
+    </form>
+    {{ $sources->links() }}
 
 @endsection

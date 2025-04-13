@@ -7,7 +7,8 @@ use App\Models\License;
 
 class LicensesController
 {
-    public function index(LicenseIndexFilterRequest $request) {
+    public function index(LicenseIndexFilterRequest $request)
+    {
         $licenses = License::paginate(50);
         if (!empty($request->validated())) {
             $licenses = License::whereNotNull('id');
@@ -22,8 +23,8 @@ class LicensesController
                 $licenses->where('automatically_activate_source', $request->automatically_activate_source);
             }
             $licenses = $licenses->orderBy('automatically_activate_source', 'desc')
-                                 ->orderBy('name')
-                                 ->paginate(50);
+                ->orderBy('name')
+                ->paginate(50);
         }
 
 
@@ -32,7 +33,7 @@ class LicensesController
             'admin.licenses.index',
             [
                 'licenses' => $licenses,
-                'filter'   => $request,
+                'filter' => $request,
             ]
         );
     }
