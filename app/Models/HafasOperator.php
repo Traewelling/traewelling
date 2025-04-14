@@ -27,7 +27,7 @@ class HafasOperator extends Model
         'id'           => 'integer',
         'name'         => 'string',
         'hafas_id'     => 'string',
-        'motis_id'     => 'integer',
+        'motis_id'     => 'string',
         'motis_source' => 'string',
     ];
 
