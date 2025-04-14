@@ -70,6 +70,10 @@ class MotisSourceLicense extends Model
             'name' => 'Creative Commons Attribution 3.0 Unported (CC BY 3.0)',
             'url'  => 'https://spdx.org/licenses/CC-BY-3.0.html'
         ],
+        'etalab-2.0'   => [
+            'name' => 'Etalab Open License 2.0',
+            'url'  => 'https://spdx.org/licenses/etalab-2.0.html'
+        ],
     ];
 
     public function trips(): HasMany {

@@ -97,7 +97,7 @@ div {
 
 .notification {
   a {
-    color: white !important;
+    color: $text-color;
   }
 }
 
@@ -137,7 +137,7 @@ a ::v-deep(b) {
   font-weight: bold;
 }
 
-.dark {
+.dark { // class .dark ist on <html> element
   .fas,
   .far,
   .fa {
@@ -158,4 +158,5 @@ a ::v-deep(b) {
     }
   }
 }
+
 </style>
