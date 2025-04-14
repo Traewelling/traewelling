@@ -3,6 +3,8 @@
 use App\Http\Controllers\Frontend\Admin\ActivityController;
 use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
+use App\Http\Controllers\Frontend\Admin\LicensesController;
+use App\Http\Controllers\Frontend\Admin\MotisSourceController;
 use App\Http\Controllers\Frontend\Admin\ReportController;
 use App\Http\Controllers\Frontend\Admin\StationController;
 use App\Http\Controllers\Frontend\Admin\StatusEditController;
@@ -16,6 +18,15 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
 
     Route::middleware('role:admin')->group(static function() {
         // these routes are only accessible for admins
+        Route::prefix('sources')->group(static function() {
+            Route::get('/', [MotisSourceController::class, 'index'])
+                 ->name('admin.sources');
+            Route::post('/', [MotisSourceController::class, 'show'])->name('admin.sources.show');
+            Route::post('/mass-assign', [MotisSourceController::class, 'massAssign'])
+                 ->name('admin.sources.mass-assign');
+        });
+        Route::resource('licenses', LicensesController::class)
+             ->only(['create', 'store', 'index']);
 
         Route::prefix('checkin')->group(function() {
             Route::get('/', [CheckinController::class, 'renderStationboard'])

@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Event;
+use App\Services\LicenseService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
@@ -18,6 +19,12 @@ use Illuminate\View\View;
  */
 class FrontendStatusController extends Controller
 {
+    private LicenseService $licenseService;
+
+    public function __construct(LicenseService $licenseService) {
+        $this->licenseService = $licenseService;
+    }
+
     public function getDashboard(): Renderable|RedirectResponse {
 
         $statuses = DashboardController::getPrivateDashboard(auth()->user());
@@ -77,6 +84,7 @@ class FrontendStatusController extends Controller
                 'origin'      => $status->checkin->originStopover->station->name
             ]),
             'image'       => ProfilePictureController::getUrl($status->user),
+            'license'     => $this->licenseService->getLicenseData($status),
         ]);
     }
 }
