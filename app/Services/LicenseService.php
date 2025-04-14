@@ -47,13 +47,24 @@ class LicenseService
     }
 
     public function getDefaultLicenseData(MotisSourceLicense $license, ?string $spdxIdentifier = null): LicenseDto {
-        $spdx       = $spdxIdentifier ? MotisSourceLicense::SPDX[$spdxIdentifier] : MotisSourceLicense::SPDX[$license->spdx];
-        $dataOrigin = $license->human_name ?? $license->name;
-        $provider   = $license->provider;
+        $spdx        = $spdxIdentifier ? MotisSourceLicense::SPDX[$spdxIdentifier] : MotisSourceLicense::SPDX[$license->spdx];
+        $dataOrigin  = $license->human_name ?? $license->name;
+        $provider    = $license->provider;
+        $attribution = __('license.provided', ['provider' => $provider, 'source' => $dataOrigin, 'license' => $spdx['name']]);
+
+        if ($spdx['attribution'] ?? false) {
+            $attribution = strtr(
+                $spdx['attribution'],
+                [
+                    ':source' => $dataOrigin,
+                ]
+            );
+        }
+
 
         return new LicenseDto(
             $spdx['name'],
-            __('license.provided', ['provider' => $provider, 'source' => $dataOrigin, 'license' => $spdx['name']]),
+            $attribution,
             $spdx['url'],
             $license->source_url
         );
