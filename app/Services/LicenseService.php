@@ -11,17 +11,19 @@ use App\Models\Status;
 
 class LicenseService
 {
-    public function getLicenseData(Status $status): LicenseDto {
+    public function getLicenseData(Status $status): ?LicenseDto {
         $status->load('checkin.trip.motisSourceLicense');
 
-        if ($status->checkin->trip->motisSourceLicense->manualLicense) {
+        if ($status?->checkin->trip?->motisSourceLicense?->manualLicense) {
             return $this->getManualLicenseData(
                 $status->checkin->trip->motisSourceLicense->manualLicense,
                 $status->checkin->trip->motisSourceLicense
             );
-        } else {
+        } elseif ($status?->checkin?->trip?->motisSourceLicense?->spdx) {
             return $this->getDefaultLicenseData($status->checkin->trip->motisSourceLicense);
         }
+
+        return null;
     }
 
     public function getManualLicenseData(License $license, MotisSourceLicense $source): LicenseDto {
