@@ -10,18 +10,15 @@ use Illuminate\Support\Facades\Http;
 class FetchTransitousLicenses extends Command
 {
     private const string LICENSE_URL = 'https://api.transitous.org/gtfs/license.json';
-    private const string PATH = 'tmp/transitous';
 
-    protected $signature = 'trwl:fetch-transitous-licenses';
+    protected $signature   = 'trwl:fetch-transitous-licenses';
     protected $description = 'Fetch License data from transitous repository';
 
-    public function handle(): int
-    {
+    public function handle(): int {
         return $this->parseLicenses();
     }
 
-    private function getLicenseJson(): array
-    {
+    private function getLicenseJson(): array {
         $this->info('Downloading licenses...');
         $response = Http::get(self::LICENSE_URL);
         if (empty($response) || $response->status() !== 200) {
@@ -36,38 +33,41 @@ class FetchTransitousLicenses extends Command
         }
     }
 
-    private function parseLicenses(): int
-    {
+    private function parseLicenses(): int {
         $this->info('Reading licenses...');
         $licenses = $this->getLicenseJson();
 
         foreach ($licenses as $license) {
-            $country = $license['region_code'];
-            $spdx = $license['spdx_license_identifier'] ?? $license['rt_spdx_license_identifier'] ?? '';
+            $country    = $license['region_code'];
+            $spdx       = $license['spdx_license_identifier'] ?? $license['rt_spdx_license_identifier'] ?? '';
             $licenseUrl = $license['license_url'] ?? '';
-            $name = $license['filename'];
-            $humanName = $license['human_name'] ?? null;
-            $source = $license['source_url'] ?? '';
-            $active = array_key_exists($spdx, MotisSourceLicense::SPDX);
+            $name       = $license['filename'];
+            $humanName  = $license['human_name'] ?? null;
+            $source     = $license['source_url'] ?? '';
+            $active     = array_key_exists($spdx, MotisSourceLicense::SPDX);
 
             $this->info(
                 sprintf('[%s] Found license: %s (%s) %s', $country, $name, $spdx, $active ? 'active' : 'inactive')
             );
 
-            MotisSourceLicense::updateOrCreate(
-                [
-                    'provider' => 'transitous',
-                    'country' => $country,
-                    'name' => $name,
-                ],
-                [
-                    'license_url' => $licenseUrl,
-                    'source_url' => $source,
-                    'spdx' => $spdx,
-                    'human_name' => $humanName,
-                    'active' => $active,
-                ]
-            );
+            $where    = [
+                'provider' => 'transitous',
+                'country'  => $country,
+                'name'     => $name,
+            ];
+            $dbSource = MotisSourceLicense::with('manualLicense')->where($where)->first();
+
+            $forceActive = $dbSource?->manualLicense?->automatically_activate_source ?? $dbSource?->force_active ?? false;
+
+            $payload = [
+                'license_url' => $licenseUrl,
+                'source_url'  => $source,
+                'spdx'        => $spdx,
+                'human_name'  => $humanName,
+                'active'      => $forceActive || $active,
+            ];
+
+            MotisSourceLicense::updateOrCreate($where, $payload);
         }
 
         return self::SUCCESS;
