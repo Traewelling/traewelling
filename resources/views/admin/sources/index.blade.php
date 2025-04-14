@@ -80,6 +80,7 @@
                                     <th>Source Name</th>
                                     <th>Human Name</th>
                                     <th>License</th>
+                                    <th>Source</th>
                                     <th>SPDX</th>
                                     <th>Manual License</th>
                                     <th>Active</th>
@@ -97,6 +98,11 @@
                                         <td>{{ $source->human_name }}</td>
                                         @if ($source->license_url)
                                             <td><a href="{{$source->license_url}}" target="_blank">Link</a></td>
+                                        @else
+                                            <td>-</td>
+                                        @endif
+                                        @if ($source->source_url)
+                                            <td><a href="{{$source->source_url}}" target="_blank">Link</a></td>
                                         @else
                                             <td>-</td>
                                         @endif

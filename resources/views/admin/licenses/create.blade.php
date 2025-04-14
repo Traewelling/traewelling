@@ -43,7 +43,7 @@
                                 <input class="form-control" placeholder="License URL" name="license_url">
                             </div>
                             <div class="col">
-                                <input class="form-control" placeholder="License Text URL" name="source_url">
+                                <input class="form-control" placeholder="Source URL" name="source_url">
                             </div>
                             <div class="col-1">
                                 <input class="form-control" placeholder="SPDX ID" name="spdx_id">

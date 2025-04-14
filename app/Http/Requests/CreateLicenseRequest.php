@@ -8,7 +8,7 @@ class CreateLicenseRequest extends FormRequest
 {
     public function rules(): array {
         return [
-            'name'                          => 'required|string|max:255',
+            'name'                          => 'nullable|string|max:255',
             'human_name'                    => 'nullable|string|max:255',
             'attribution'                   => 'nullable|string|max:255',
             'license_url'                   => 'nullable|url|max:255',

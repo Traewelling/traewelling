@@ -2,15 +2,10 @@
 
 @section('title', $title)
 @php
-    /** @var \App\Models\Status $status */
-    $license = null;
-    $provider = null;
-    $dataOrigin = null;
-    if ($status->checkin->trip->motisSourceLicense) {
-       $license = \App\Models\MotisSourceLicense::SPDX[$status->checkin->trip->motisSourceLicense->spdx];
-       $dataOrigin = $status->checkin->trip->motisSourceLicense->human_name ?? $status->checkin->trip->motisSourceLicense->name;
-       $provider = $status->checkin->trip->motisSourceLicense->provider;
-    }
+    /**
+      * @var \App\Models\Status $status
+      * @var \App\Dto\LicenseDto $license
+      */
 @endphp
 @section('canonical', route('status', ['id' => $status->id]))
 
@@ -49,7 +44,7 @@
                 @if($license)
                     <div class="float-end">
                         <span data-bs-toggle="tooltip"
-                              title="{{__('license.provided', ['provider' => $provider, 'source' => $dataOrigin, 'license' => $license['name']] )}}">
+                              title="{{ $license->attributionString }}">
                         <i class="fas fa-info-circle"></i>
                             {{ __('license.info') }}
                         </span>
