@@ -74,6 +74,19 @@ class MotisSourceLicense extends Model
             'name' => 'Etalab Open License 2.0',
             'url'  => 'https://spdx.org/licenses/etalab-2.0.html'
         ],
+        'NLOD-1.0'     => [
+            'name' => 'Norwegian Licence for Open Government Data (NLOD) 1.0',
+            'url'  => 'https://spdx.org/licenses/NLOD-1.0.html'
+        ],
+        'OGL-UK-3.0'   => [
+            'name'        => 'Open Government License v3.0 (UK)',
+            'url'         => 'https://spdx.org/licenses/OGL-UK-3.0.html',
+            'attribution' => 'Contains public sector information licensed under the Open Government Licence v3.0, provided by :source.',
+        ],
+        'ODC-By-1.0'   => [
+            'name' => 'Open Data Commons Attribution License v1.0 (ODC-By-1.0)',
+            'url'  => 'https://spdx.org/licenses/ODC-By-1.0.html',
+        ],
     ];
 
     public function trips(): HasMany {
