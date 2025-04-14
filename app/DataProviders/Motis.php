@@ -19,6 +19,7 @@ use App\Http\Controllers\Controller;
 use App\Hydrators\DepartureHydrator;
 use App\Models\HafasOperator;
 use App\Models\Station;
+use App\Models\StationIdentifier;
 use App\Models\Stopover;
 use App\Models\Trip;
 use App\Services\GeoService;
@@ -144,30 +145,63 @@ class Motis extends Controller implements DataProviderInterface
         ?TravelType $type = null,
         bool        $localtime = false
     ): Collection {
+        $station->loadMissing('stationIdentifiers');
+
+        // Increase station relevance for improved station search
+        $station->increment('relevance');
+
+        // Try to get a MOTIS-compatible identifier for the station from the current source
+        $transitousIdentifiers = StationIdentifier::where('station_id', $station->id)
+                                                  ->where('type', 'motis')
+                                                  ->where('origin', $this->source->value)
+                                                  ->orderBy('relevance', 'desc')
+                                                  ->orderBy('updated_at', 'desc')
+                                                  ->orderBy('created_at', 'desc')
+                                                  ->get();
+
+        // If no identifier found, try to find a nearby station instead
+        if (empty($transitousIdentifiers)) {
+            $station               = $this->getNearbyStations($station->latitude, $station->longitude)->first();
+            $transitousIdentifiers = $station->stationIdentifiers->where('type', 'motis')->where('origin', $this->source->value)->get();
+        }
+
+        // Still no identifier found...? We can't continue here.
+        if (empty($transitousIdentifiers)) {
+            Log::debug('No MOTIS identifier found for station', ['station' => $station->only(['id', 'name'])]);
+            throw new HafasException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
+        }
+
+        $count = 0;
+        foreach ($transitousIdentifiers as $identifier) {
+            $count++;
+            $departures = $this->getDeparturesFromApi($station, $identifier, $when, $type);
+
+            if ($departures->count() === 0) {
+                $identifier->decrement('relevance');
+                $identifier->save();
+                continue;
+            }
+
+            // If we have a result, we can stop searching
+            if ($count > 1) {
+                $identifier->increment('relevance');
+                $identifier->save();
+            }
+            return $departures;
+        }
+
+        // No departures found for any identifier
+        Log::debug('No departures found for station', ['station' => $station->only(['id', 'name'])]);
+        return collect();
+    }
+
+    private function getDeparturesFromApi(
+        Station           $station,
+        StationIdentifier $transitousIdentifier,
+        Carbon            $when,
+        ?TravelType       $type
+    ): Collection {
         try {
-            $station->loadMissing('stationIdentifiers');
-
-            // Increase station relevance for improved station search
-            $station->increment('relevance');
-
-            // Try to get a MOTIS-compatible identifier for the station from the current source
-            $transitousIdentifier = $station->stationIdentifiers
-                ->where('type', 'motis')
-                ->where('origin', $this->source->value)
-                ->first();
-
-            // If no identifier found, try to find a nearby station instead
-            if ($transitousIdentifier === null) {
-                $station              = $this->getNearbyStations($station->latitude, $station->longitude)->first();
-                $transitousIdentifier = $station->stationIdentifiers->where('type', 'motis')->where('origin', $this->source->value)->first();
-            }
-
-            // Still no identifier found...? We can't continue here.
-            if ($transitousIdentifier === null) {
-                Log::debug('No MOTIS identifier found for station', ['station' => $station->only(['id', 'name'])]);
-                throw new HafasException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
-            }
-
             $params = [
                 'stopId' => $transitousIdentifier->identifier,
                 'radius' => config('trwl.motis.radius'),
@@ -199,57 +233,7 @@ class Motis extends Controller implements DataProviderInterface
             $departures = collect();
             $entries    = $response->json('stopTimes');
             CacheKey::increment(HCK::DEPARTURES_SUCCESS);
-            foreach ($entries as $rawDeparture) {
-                if (config('trwl.motis.filter_licenses')) {
-                    // Check if the source is licensed under an acceptable license
-                    $license = $this->motisRepository->getLicense($rawDeparture['source'], $this->source);
-                    if (empty($license)) {
-                        continue;
-                    }
-                }
-
-                //trip
-                $tripId              = $rawDeparture['tripId'];
-                $rawDepartureStation = $rawDeparture['place'];
-                $tripLineName        = $rawDeparture['routeShortName'] ?? '';
-                $category            = MotisCategory::tryFrom($rawDeparture['mode']);
-                $hafasTravelType     = $category->getHTT()->value;
-
-                $platformPlanned = $rawDepartureStation['scheduledTrack'] ?? '';
-                $platformReal    = $rawDepartureStation['track'] ?? $platformPlanned;
-                try {
-                    $departureStation = $this->motisRepository->getStationsByIdentifiers([$rawDepartureStation['stopId']], $this->source)->first();
-                    if ($departureStation === null) {
-                        // if station does not exist, request it from API
-                        $departureStation = $this->motisRepository->createStation($rawDepartureStation, $this->source);
-                    }
-                } catch (Exception $exception) {
-                    Log::error($exception->getMessage());
-                    $departureStation = $station;
-                }
-
-                $departure = new Departure(
-                    station:          $departureStation,
-                    plannedDeparture: Carbon::parse($rawDepartureStation['scheduledDeparture']),
-                    realDeparture:    isset($rawDepartureStation['departure']) ? Carbon::parse($rawDepartureStation['departure']) : null,
-                    trip:             new BahnTrip(
-                                          tripId:        $tripId,
-                                          direction:     $rawDeparture['headsign'],
-                                          lineName:      $tripLineName,
-                                          number:        $tripId,
-                                          category:      $hafasTravelType,
-                                          journeyNumber: $tripId,
-                                          operator:      $this->parseOperator($rawDeparture),
-                                      ),
-                    plannedPlatform:  $platformPlanned,
-                    realPlatform:     $platformReal,
-                );
-
-                $departures->push($departure);
-            }
-
-            return DepartureHydrator::map($departures);
-
+            return $this->mapDepartures($entries, $station, $departures);
         } catch (JsonException $exception) {
             Log::debug('JSON Error (getDepartures)', [
                 'status' => $response->status(),
@@ -274,7 +258,7 @@ class Motis extends Controller implements DataProviderInterface
 
             return HafasOperator::updateOrCreate([
                                                      'motis_id' => $rawDeparture['agencyId'],
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               'motis_source' => $this->source->value,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       'motis_source' => $this->source->value,
                                                  ], [
                                                      'name' => $rawDeparture['agencyName'],
                                                  ]);
@@ -434,5 +418,65 @@ class Motis extends Controller implements DataProviderInterface
             $stations->push($station);
         }
         return $stations;
+    }
+
+    /**
+     * @param mixed      $entries
+     * @param Station    $station
+     * @param Collection $departures
+     *
+     * @return Collection
+     */
+    public function mapDepartures(mixed $entries, Station $station, Collection $departures): Collection {
+        foreach ($entries as $rawDeparture) {
+            if (config('trwl.motis.filter_licenses')) {
+                // Check if the source is licensed under an acceptable license
+                $license = $this->motisRepository->getLicense($rawDeparture['source'], $this->source);
+                if (empty($license)) {
+                    continue;
+                }
+            }
+
+            //trip
+            $tripId              = $rawDeparture['tripId'];
+            $rawDepartureStation = $rawDeparture['place'];
+            $tripLineName        = $rawDeparture['routeShortName'] ?? '';
+            $category            = MotisCategory::tryFrom($rawDeparture['mode']);
+            $hafasTravelType     = $category->getHTT()->value;
+
+            $platformPlanned = $rawDepartureStation['scheduledTrack'] ?? '';
+            $platformReal    = $rawDepartureStation['track'] ?? $platformPlanned;
+            try {
+                $departureStation = $this->motisRepository->getStationsByIdentifiers([$rawDepartureStation['stopId']], $this->source)->first();
+                if ($departureStation === null) {
+                    // if station does not exist, request it from API
+                    $departureStation = $this->motisRepository->createStation($rawDepartureStation, $this->source);
+                }
+            } catch (Exception $exception) {
+                Log::error($exception->getMessage());
+                $departureStation = $station;
+            }
+
+            $departure = new Departure(
+                station:          $departureStation,
+                plannedDeparture: Carbon::parse($rawDepartureStation['scheduledDeparture']),
+                realDeparture:    isset($rawDepartureStation['departure']) ? Carbon::parse($rawDepartureStation['departure']) : null,
+                trip:             new BahnTrip(
+                                      tripId:        $tripId,
+                                      direction:     $rawDeparture['headsign'],
+                                      lineName:      $tripLineName,
+                                      number:        $tripId,
+                                      category:      $hafasTravelType,
+                                      journeyNumber: $tripId,
+                                      operator:      $this->parseOperator($rawDeparture),
+                                  ),
+                plannedPlatform:  $platformPlanned,
+                realPlatform:     $platformReal,
+            );
+
+            $departures->push($departure);
+        }
+
+        return DepartureHydrator::map($departures);
     }
 }

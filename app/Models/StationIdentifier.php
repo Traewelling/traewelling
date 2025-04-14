@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property string  id
+ * @property string  relevance
  * @property string  station_id
  * @property string  identifier
  * @property ?string name
@@ -19,7 +20,7 @@ class StationIdentifier extends Model
 {
     use HasUuids;
 
-    protected $fillable = ['station_id', 'identifier', 'type', 'origin', 'name'];
+    protected $fillable = ['relevance', 'station_id', 'identifier', 'type', 'origin', 'name'];
     protected $visible  = [
         'station_id',
         'identifier',
@@ -27,6 +28,7 @@ class StationIdentifier extends Model
         'origin',
         // Relations
         'station',
+        'relevance',
     ];
 
     public function station(): BelongsTo {
