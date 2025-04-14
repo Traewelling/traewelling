@@ -11,7 +11,7 @@
         */
     @endphp
     <div class="mb-3">
-        <a href="{{ route('admin.sources') }}">Sources</a> | <a href="{{ route('admin.licenses') }}" class="text-muted">Licenses</a>
+        <a href="{{ route('admin.sources') }}">Sources</a> | <a href="{{ route('licenses.index') }}" class="text-muted">Licenses</a>
     </div>
     <div class="row mb-4">
         <div class="col-12">
@@ -43,7 +43,7 @@
                             </div>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <a class="btn btn-outline-primary mt-3">New</a>
+                            <a href="{{route('licenses.create')}}" class="btn btn-outline-primary mt-3">New</a>
                             <button type="submit" class="btn btn-primary mt-3">Filter</button>
                         </div>
                     </form>
@@ -60,13 +60,13 @@
                         <table class="table table-striped table-hover" aria-labelledby="pageTitle">
                             <thead>
                             <tr>
-                                <th></th>
                                 <th>Source Name</th>
                                 <th>Human Name</th>
                                 <th>Attribution</th>
                                 <th>License</th>
                                 <th>Source</th>
                                 <th>Active</th>
+                                <th>Automatically Activate Source</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
@@ -75,7 +75,7 @@
                                 <tr>
                                     <td>{{ $license->name }}</td>
                                     <td>{{ $license->human_name }}</td>
-                                    <td><input type="text" disabled value="{{ $license->attribution }}"</td>
+                                    <td><input type="text" disabled value="{{ $license->attribution }}"/></td>
                                     @if ($license->license_url)
                                         <td><a href="{{$license->license_url}}" target="_blank">Link</a></td>
                                     @else
@@ -87,11 +87,12 @@
                                         <td>-</td>
                                     @endif
                                     <td>{{ $license->spdx }}</td>
+                                    <td>{{ $license->automatically_activate_source }}</td>
                                     <td class="text-end">
-                                        <a href="{{ route('admin.sources.show', ['id' => $license->id]) }}"
-                                           class="btn btn-primary btn-sm">
-                                            Edit
-                                        </a>
+                                        {{--                                        <a href="{{ route('admin.sources.show', ['id' => $license->id]) }}"--}}
+                                        {{--                                           class="btn btn-primary btn-sm">--}}
+                                        {{--                                            Edit--}}
+                                        {{--                                        </a>--}}
                                     </td>
                                 </tr>
                             @endforeach

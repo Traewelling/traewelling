@@ -12,7 +12,7 @@
         */
     @endphp
     <div class="mb-3">
-        <a href="{{ route('admin.sources') }}" class="text-muted">Sources</a> | <a href="{{ route('admin.licenses') }}">Licenses</a>
+        <a href="{{ route('admin.sources') }}" class="text-muted">Sources</a> | <a href="{{ route('licenses.index') }}">Licenses</a>
     </div>
     <div class="row mb-4">
         <div class="col-12">
@@ -104,10 +104,10 @@
                                         <td>{{ $source->manualLicense?->name }}</td>
                                         <td>{{ $source->active }}</td>
                                         <td class="text-end">
-                                            <a href="{{ route('admin.sources.show', ['id' => $source->id]) }}"
-                                               class="btn btn-primary btn-sm">
-                                                Edit
-                                            </a>
+                                            {{--                                            <a href="{{ route('admin.sources.show', ['id' => $source->id]) }}"--}}
+                                            {{--                                               class="btn btn-primary btn-sm">--}}
+                                            {{--                                                Edit--}}
+                                            {{--                                            </a>--}}
                                         </td>
                                     </tr>
                                 @endforeach

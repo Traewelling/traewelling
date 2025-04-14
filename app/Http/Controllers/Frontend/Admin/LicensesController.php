@@ -3,7 +3,13 @@
 namespace App\Http\Controllers\Frontend\Admin;
 
 use App\Http\Requests\admin\LicenseIndexFilterRequest;
+use App\Http\Requests\CreateLicenseRequest;
 use App\Models\License;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 
 class LicensesController
 {
@@ -36,5 +42,17 @@ class LicensesController
                 'filter' => $request,
             ]
         );
+    }
+
+    public function create(): View|Application|Factory
+    {
+        return view('admin.licenses.create');
+    }
+
+    public function store(CreateLicenseRequest $request): Redirector|RedirectResponse
+    {
+        License::create($request->validated());
+        return redirect(route('licenses.index'))
+            ->with('success', 'License created successfully');
     }
 }

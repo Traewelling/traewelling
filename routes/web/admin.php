@@ -25,12 +25,8 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
             Route::post('/mass-assign', [MotisSourceController::class, 'massAssign'])
                  ->name('admin.sources.mass-assign');
         });
-        Route::prefix('licenses')->group(static function() {
-            Route::get('/', [LicensesController::class, 'index'])
-                 ->name('admin.licenses');
-            Route::post('/', [LicensesController::class, 'show'])->name('admin.licenses.show');
-
-        });
+        Route::resource('licenses', LicensesController::class)
+             ->only(['create', 'store', 'index']);
 
         Route::prefix('checkin')->group(function() {
             Route::get('/', [CheckinController::class, 'renderStationboard'])

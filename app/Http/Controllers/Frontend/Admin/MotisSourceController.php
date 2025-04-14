@@ -15,11 +15,17 @@ class MotisSourceController
     {
         $license = License::where('id', $request->license_id)->firstOrFail();
 
+        $update = [
+            'license_id' => $license->id,
+            'force_active' => $license->automatically_activate_source,
+        ];
+
+        if ($license->automatically_activate_source) {
+            $update['active'] = 1;
+        }
+
         MotisSourceLicense::whereIn('id', $request->source_ids)
-            ->update([
-                'license_id' => $license->id,
-                'force_active' => $license->automatically_activate_source,
-            ]);
+            ->update($update);
 
         return redirect(route('admin.sources'))
             ->with('success', 'Sources assigned successfully');
