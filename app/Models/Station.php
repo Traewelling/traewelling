@@ -100,4 +100,8 @@ class Station extends Model
     public function stationIdentifiers(): HasMany {
         return $this->hasMany(StationIdentifier::class, 'station_id', 'id');
     }
+
+    public function stopovers(): HasMany {
+        return $this->hasMany(Stopover::class, 'station_id', 'id');
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Checkin;
 use App\Models\Station;
 use Illuminate\Support\Collection;
 
@@ -32,6 +33,19 @@ abstract class StationService
                       ->whereBetween('longitude', [$minLng, $maxLng])
                       ->where('id', '!=', $station->id)
                       ->orderBy('distance')
+                      ->limit($limit)
+                      ->get();
+    }
+
+    public static function getLatestCheckins(Station $station, int $limit = 10): Collection {
+        return Checkin::where(function($query) use ($station) {
+            $query->whereHas('originStopover', function($subQuery) use ($station) {
+                $subQuery->where('train_station_id', $station->id);
+            })->orWhereHas('destinationStopover', function($subQuery) use ($station) {
+                $subQuery->where('train_station_id', $station->id);
+            });
+        })
+                      ->orderByDesc('created_at')
                       ->limit($limit)
                       ->get();
     }

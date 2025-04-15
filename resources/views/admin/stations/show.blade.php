@@ -6,7 +6,6 @@
 @section('title', 'Station - ' . $station->name)
 
 @section('content')
-
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-3">
@@ -210,6 +209,42 @@
                                     >
                                         {{ $nearbyStation->id }} → {{ $station->id }}
                                     </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2 class="fs-4">Latest checkins</h2>
+
+                    <table class="table table-striped table-hover">
+                        <tbody>
+                        @foreach($latestCheckins as $checkin)
+                            <tr>
+                                <td>
+                                    <a href="{{ route('admin.status.edit', ['id' => $checkin->status_id]) }}">
+                                        {{ $checkin->id }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ $checkin->user->name }}
+                                </td>
+                                <td>
+                                    <a href="/admin/stations/{{$checkin->originStopover->train_station_id}}">
+                                        {{ $checkin->originStopover->station->name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="/admin/stations/{{$checkin->destinationStopover->train_station_id}}">
+                                    {{ $checkin->destinationStopover->station->name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ $checkin->created_at?->diffForHumans() }}
                                 </td>
                             </tr>
                         @endforeach
