@@ -6,7 +6,7 @@ use App\Models\HafasOperator;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-abstract class OperatorService
+class OperatorService
 {
     private const MAPPING_FILE_PATH  = 'storage/operator-mapping.csv';
     private const OPERATOR_FILE_PATH = 'storage/operator-operators.csv';
@@ -19,7 +19,7 @@ abstract class OperatorService
      *
      * @return HafasOperator|null
      */
-    public static function parseTransitousOperator(?string $agencyId, ?string $agencyName): ?HafasOperator {
+    public function parseTransitousOperator(?string $agencyId, ?string $agencyName): ?HafasOperator {
         if (is_null($agencyId) || is_null($agencyName)) {
             Log::debug('Agency ID or name is null', [
                 'agencyId'   => $agencyId,

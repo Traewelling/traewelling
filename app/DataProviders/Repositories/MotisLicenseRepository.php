@@ -6,7 +6,7 @@ use App\Enum\DataProvider;
 use App\Models\MotisSourceLicense;
 use Illuminate\Support\Facades\Log;
 
-class TransitousLicenseRepository
+class MotisLicenseRepository
 {
     public function getLicense(string $gtfsSource, DataProvider $source): ?MotisSourceLicense {
         $matches = [];

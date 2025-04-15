@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\DataProviders\Hydrators;
 
+use App\DataProviders\Repositories\MotisLicenseRepository;
 use App\DataProviders\Repositories\StationRepository;
-use App\DataProviders\Repositories\TransitousLicenseRepository;
 use App\Dto\Internal\BahnTrip;
 use App\Dto\Internal\Departure;
 use App\Enum\DataProvider;
@@ -15,6 +15,7 @@ use App\Hydrators\DepartureHydrator;
 use App\Models\HafasOperator;
 use App\Models\Station;
 use App\Models\Stopover;
+use App\Services\OperatorService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Collection;
@@ -23,13 +24,19 @@ use Illuminate\Support\Facades\Log;
 class MotisHydrator
 {
 
-    private TransitousLicenseRepository $motisRepository;
+    private MotisLicenseRepository $motisRepository;
     private StationRepository $stationRepository;
+    private OperatorService $operatorService;
 
-    public function __construct(?TransitousLicenseRepository $motisRepository = null, ?StationRepository $stationRepository = null)
+    public function __construct(
+        ?MotisLicenseRepository $motisRepository = null,
+        ?StationRepository      $stationRepository = null,
+        ?OperatorService        $operatorService = null
+    )
     {
-        $this->motisRepository = $motisRepository ?? new TransitousLicenseRepository();
+        $this->motisRepository = $motisRepository ?? new MotisLicenseRepository();
         $this->stationRepository = $stationRepository ?? new StationRepository();
+        $this->operatorService = $operatorService ?? new OperatorService();
     }
 
     public function parseLegToStopovers(mixed $leg, DataProvider $source): Collection
@@ -110,24 +117,12 @@ class MotisHydrator
         ];
     }
 
-    public function parseOperator(array $rawDeparture): ?HafasOperator
+    public function parseOperator(array $leg): ?HafasOperator
     {
-        try {
-            if (!isset($rawDeparture['agencyId']) || !isset($rawDeparture['agencyName'])) {
-                return null;
-            }
-
-            return HafasOperator::updateOrCreate(
-                ['motis_id' => $rawDeparture['agencyId']],
-                ['name' => $rawDeparture['agencyName']]
-            );
-        } catch (Exception $exception) {
-            Log::error('Error parsing operator', [
-                'rawDeparture' => $rawDeparture,
-                'exception' => $exception,
-            ]);
-            return null;
-        }
+        return $this->operatorService->parseTransitousOperator(
+            agencyId: $leg['agencyId'] ?? null,
+            agencyName: $leg['agencyName'] ?? null,
+        );
     }
 
     public function mapDepartures(mixed $entries, Station $station, Collection $departures, DataProvider $source): Collection
