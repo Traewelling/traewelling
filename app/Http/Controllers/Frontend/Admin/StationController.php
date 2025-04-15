@@ -7,6 +7,7 @@ use App\Exceptions\Wikidata\FetchException;
 use App\Http\Controllers\Controller;
 use App\Models\Station;
 use App\Objects\LineSegment;
+use App\Services\StationService;
 use App\Services\Wikidata\WikidataImportService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
@@ -55,6 +56,7 @@ class StationController extends Controller
         return view('admin.stations.show', [
             'station'               => $station,
             'stationsWithSameIfopt' => $stationsWithSameIfopt ?? [],
+            'nearbyStations'        => StationService::getNearbyStations($station),
         ]);
     }
 

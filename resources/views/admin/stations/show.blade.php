@@ -172,6 +172,31 @@
                     </div>
                 </div>
             @endisset
+
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2 class="fs-4">Nearby Stations</h2>
+
+                    <table class="table table-striped table-hover">
+                        @foreach($nearbyStations as $nearbyStation)
+                            <tr>
+                                <td>
+                                    {{ $nearbyStation->id }}
+                                </td>
+                                <td>
+                                    <a href="{{ route('admin.station', ['id' => $nearbyStation->id]) }}">
+                                        {{ $nearbyStation->name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ number_format($nearbyStation->distance, 3, ',', '.') }} km
+                                </td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
