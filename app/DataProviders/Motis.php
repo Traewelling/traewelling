@@ -266,33 +266,6 @@ class Motis extends Controller implements DataProviderInterface
         }
     }
 
-    private function parseOperator(array $rawDeparture): ?HafasOperator {
-        return OperatorService::parseTransitousOperator(
-            agencyId:   $rawDeparture['agencyId'] ?? null,
-            agencyName: $rawDeparture['agencyName'] ?? null,
-        );
-
-        try {
-            if (!isset($rawDeparture['agencyId']) || !isset($rawDeparture['agencyName'])) {
-                return null;
-            }
-
-            return HafasOperator::updateOrCreate([
-                                                     'motis_id' => $rawDeparture['agencyId'],
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           'motis_source' => $this->source->value,
-                                                 ], [
-                                                     'name' => $rawDeparture['agencyName'],
-                                                 ]);
-        } catch (Exception $exception) {
-            Log::error('Error parsing operator', [
-                'rawDeparture' => $rawDeparture,
-                'exception'    => $exception,
-            ]);
-            return null;
-        }
-    }
-
-
     /**
      * @throws HafasException
      */
@@ -355,7 +328,8 @@ class Motis extends Controller implements DataProviderInterface
         $category           = MotisCategory::tryFrom($leg['mode'])?->getHTT()->value ?? HafasTravelType::REGIONAL;
         $tripLineName       = !empty($leg['routeShortName']) ? $leg['routeShortName'] : $lineName;
         $license            = $this->motisRepository->getLicense($leg['source'], $this->source);
-        $operator           = OperatorService::parseTransitousOperator(
+        $operatorService    = new OperatorService();
+        $operatorOrNull     = $operatorService->parseTransitousOperator(
             agencyId:   $leg['agencyId'] ?? null,
             agencyName: $leg['agencyName'] ?? null,
         );
@@ -402,7 +376,7 @@ class Motis extends Controller implements DataProviderInterface
                                             'number'                  => $tripLineName,
                                             'linename'                => $tripLineName,
                                             'journey_number'          => null,
-                                            'operator_id'             => $operator?->id,
+                                            'operator_id'             => $operatorOrNull?->id,
                                             'origin_id'               => $originStation->id,
                                             'destination_id'          => $destinationStation->id,
                                             'polyline_id'             => null, //TODO
@@ -480,6 +454,12 @@ class Motis extends Controller implements DataProviderInterface
                 Log::error($exception->getMessage());
                 $departureStation = $station;
             }
+            $operatorService = new OperatorService();
+            $operatorOrNull  = $operatorService->parseTransitousOperator(
+                agencyId:   $rawDeparture['agencyId'] ?? null,
+                agencyName: $rawDeparture['agencyName'] ?? null,
+            );
+
 
             $departure = new Departure(
                 station:          $departureStation,
@@ -492,10 +472,7 @@ class Motis extends Controller implements DataProviderInterface
                                       number:        $tripId,
                                       category:      $hafasTravelType,
                                       journeyNumber: $tripId,
-                                      operator:      OperatorService::parseTransitousOperator(
-                                                         agencyId:   $rawDeparture['agencyId'] ?? null,
-                                                         agencyName: $rawDeparture['agencyName'] ?? null,
-                                                     ),
+                                      operator:      $operatorOrNull,
                                   ),
                 plannedPlatform:  $platformPlanned,
                 realPlatform:     $platformReal,
