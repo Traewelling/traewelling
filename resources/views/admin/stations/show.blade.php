@@ -184,25 +184,57 @@
                     <h2 class="fs-4">Nearby Stations</h2>
 
                     <table class="table table-striped table-hover">
+                        <tbody>
                         @foreach($nearbyStations as $nearbyStation)
                             <tr>
                                 <td>
-                                    {{ $nearbyStation->id }}
-                                </td>
-                                <td>
+                                    [{{ $nearbyStation->id }}]
                                     <a href="{{ route('admin.station', ['id' => $nearbyStation->id]) }}">
                                         {{ $nearbyStation->name }}
                                     </a>
+                                    <br>
+                                    <small>
+                                        ({{ number_format($nearbyStation->distance, 3, ',', '.') }} km)
+                                    </small>
                                 </td>
-                                <td>
-                                    {{ number_format($nearbyStation->distance, 3, ',', '.') }} km
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-outline-info"
+                                            onclick="mergeStations({{ $station->id }}, {{ $nearbyStation->id }})"
+                                            title="Merge {{ $station->id }} into {{ $nearbyStation->id }}"
+                                    >
+                                        {{ $station->id }} → {{ $nearbyStation->id }}
+                                    </button>
+                                    <br>
+                                    <button class="btn btn-sm btn-outline-info"
+                                            onclick="mergeStations({{ $nearbyStation->id }}, {{ $station->id }})"
+                                    >
+                                        {{ $nearbyStation->id }} → {{ $station->id }}
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
+                        </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        function mergeStations(oldStationId, newStationId) {
+            fetch('/api/v1/station/' + oldStationId + '/merge/' + newStationId, {
+                method: 'PUT',
+            }).then(response => {
+                if (response.status === 200) {
+                    notyf.success('Stations merged successfully');
+                    location.href = '/admin/stations/' + newStationId;
+                    return;
+                }
+                response.json().then(data => {
+                    notyf.error(data.message ?? 'Something went wrong. Please try again later.');
+                });
+            });
+        }
+    </script>
 
 @endsection
