@@ -11,6 +11,7 @@ use App\Console\Commands\FetchTransitousLicenses;
 use App\Console\Commands\HideStatus;
 use App\Console\Commands\ReduceRelevance;
 use App\Console\Commands\RefreshCurrentTrips;
+use App\Console\Commands\RefreshOperatorMappings;
 use App\Console\Commands\WikidataFetcher;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -27,6 +28,7 @@ class Kernel extends ConsoleKernel
 
         //hourly tasks
         $schedule->command(HideStatus::class)->hourly();
+        $schedule->command(RefreshOperatorMappings::class)->hourly();
 
         //daily tasks
         $schedule->command(DatabaseCleaner::class)->daily();
