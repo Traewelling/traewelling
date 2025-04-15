@@ -97,7 +97,6 @@ class MotisHydrator
                 );
                 $stopovers->push($stopover);
             } catch (Exception $exception) {
-                dump($exception->getMessage());
                 Log::error('Failed to upsert stopover', [
                     'stopover' => $rawStop,
                     'error' => $exception->getMessage(),
