@@ -2,6 +2,7 @@
 
 namespace App\DataProviders;
 
+use App\DataProviders\Hydrators\MotisHydrator;
 use App\DataProviders\Repositories\MotisRepository;
 use App\DataProviders\Repositories\TripRepository;
 use App\Dto\Coordinate;
@@ -39,6 +40,7 @@ class Motis extends Controller implements DataProviderInterface
     private MotisRepository $motisRepository;
     private TripRepository  $tripRepository;
     private DataProvider    $source;
+    private MotisHydrator   $hydrator;
 
     private const string API_URL = 'https://api.transitous.org/api/v1';
 
@@ -46,12 +48,14 @@ class Motis extends Controller implements DataProviderInterface
         DataProvider     $source,
         ?MotisRepository $motisRepository = null,
         ?GeoService      $geoService = null,
-        ?TripRepository  $tripRepository = null
+        ?TripRepository  $tripRepository = null,
+        ?MotisHydrator   $hydrator = null,
     ) {
         $this->source          = $source;
         $this->motisRepository = $motisRepository ?? new MotisRepository();
         $this->geoService      = $geoService ?? new GeoService();
         $this->tripRepository  = $tripRepository ?? new TripRepository();
+        $this->hydrator        = $hydrator ?? new MotisHydrator();
     }
 
     public function getStationByRilIdentifier(string $rilIdentifier): ?Station {
@@ -279,7 +283,7 @@ class Motis extends Controller implements DataProviderInterface
 
             return HafasOperator::updateOrCreate([
                                                      'motis_id' => $rawDeparture['agencyId'],
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           'motis_source' => $this->source->value,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       'motis_source' => $this->source->value,
                                                  ], [
                                                      'name' => $rawDeparture['agencyName'],
                                                  ]);
@@ -340,79 +344,14 @@ class Motis extends Controller implements DataProviderInterface
     public function fetchHafasTrip(string $tripID, string $lineName): Trip {
         $rawJourney = $this->fetchJourney($tripID);
         if ($rawJourney === null) {
-            // sorry
-            throw new HafasException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
+            //TODO: Throw a more specific exception instead of HAFAS
+            throw new HafasException(__('messages.exception.generalHafas'));
         }
         // get cached data from departure board
-        $leg                 = $rawJourney['legs'][0];
-        $rawStopovers        = $leg['intermediateStops'];
-        $stopoverCacheFromDB = $this->motisRepository->getStationsByIdentifiers(array_column($rawStopovers, 'stopId'), $this->source);
+        $leg = $rawJourney['legs'][0];
 
-        $originStation      = $this->motisRepository->getStationsByIdentifiers($leg['from']['stopId'], $this->source)->first() ?? $this->motisRepository->createStation($leg['from'], $this->source);
-        $destinationStation = $this->motisRepository->getStationsByIdentifiers($leg['to']['stopId'], $this->source)->first() ?? $this->motisRepository->createStation($leg['to'], $this->source);
-        $departure          = isset($leg['from']['departure']) ? Carbon::parse($leg['from']['departure']) : null;
-        $arrival            = isset($leg['to']['arrival']) ? Carbon::parse($leg['to']['arrival']) : null;
-        $category           = MotisCategory::tryFrom($leg['mode'])?->getHTT()->value ?? HafasTravelType::REGIONAL;
-        $tripLineName       = !empty($leg['routeShortName']) ? $leg['routeShortName'] : $lineName;
-        $license            = $this->motisRepository->getLicense($leg['source'], $this->source);
-        $operator           = OperatorService::parseTransitousOperator(
-            agencyId:   $leg['agencyId'] ?? null,
-            agencyName: $leg['agencyName'] ?? null,
-        );
-
-        // add origin and destination to stopovers
-        $rawStopovers[] = $leg['from'];
-        $rawStopovers[] = $leg['to'];
-
-        $stopovers = collect();
-        foreach ($rawStopovers as $rawStop) {
-            $station = $stopoverCacheFromDB->where('stationIdentifiers', function($query) use ($rawStop) {
-                $query->where('identifier', $rawStop['stopId'])
-                      ->where('type', 'motis')
-                      ->where('origin', $this->source->value);
-            })->first();
-            $station = $station ?? $this->motisRepository->createStation($rawStop, $this->source);
-
-            $departurePlanned = isset($rawStop['scheduledDeparture']) ? Carbon::parse($rawStop['scheduledDeparture']) : null;
-            $departureReal    = isset($rawStop['departure']) ? Carbon::parse($rawStop['departure']) : null;
-            $arrivalPlanned   = isset($rawStop['scheduledArrival']) ? Carbon::parse($rawStop['scheduledArrival']) : null;
-            $arrivalReal      = isset($rawStop['arrival']) ? Carbon::parse($rawStop['arrival']) : null;
-            // new API does not differ between departure and arrival platform
-            $platformPlanned = $rawStop['scheduledTrack'] ?? null;
-            $platformReal    = $rawStop['track'] ?? $platformPlanned;
-
-            $stopover = new Stopover([
-                                         'train_station_id'           => $station->id,
-                                         'arrival_planned'            => $arrivalPlanned ?? $departurePlanned,
-                                         'arrival_real'               => $arrivalReal ?? $departureReal ?? null,
-                                         'departure_planned'          => $departurePlanned ?? $arrivalPlanned,
-                                         'departure_real'             => $departureReal ?? $arrivalReal ?? null,
-                                         'arrival_platform_planned'   => $platformPlanned,
-                                         'departure_platform_planned' => $platformPlanned,
-                                         'arrival_platform_real'      => $platformReal,
-                                         'departure_platform_real'    => $platformReal,
-                                     ]);
-            $stopovers->push($stopover);
-        }
-
-        $journey = Trip::updateOrCreate([
-                                            'trip_id' => $tripID,
-                                        ], [
-                                            'category'                => $category,
-                                            'number'                  => $tripLineName,
-                                            'linename'                => $tripLineName,
-                                            'journey_number'          => null,
-                                            'operator_id'             => $operator?->id,
-                                            'origin_id'               => $originStation->id,
-                                            'destination_id'          => $destinationStation->id,
-                                            'polyline_id'             => null, //TODO
-                                            'departure'               => $departure,
-                                            'arrival'                 => $arrival,
-                                            'source'                  => $this->source->value,
-                                            'motis_source'            => $this->source->value . '/' . $leg['source'],
-                                            'motis_source_license_id' => $license?->id ?? null,
-                                        ]);
-        $this->tripRepository->tryToSaveStopovers($journey, $stopovers);
+        $journey = Trip::updateOrCreate(['trip_id' => $tripID], $this->getTripData($leg, $lineName));
+        $this->tripRepository->tryToSaveStopovers($journey, $this->parseLegToStopovers($leg));
 
         return $journey;
     }
@@ -505,5 +444,86 @@ class Motis extends Controller implements DataProviderInterface
         }
 
         return DepartureHydrator::map($departures);
+    }
+
+    public function getStopoverData($station, mixed $rawStop): array {
+        $station = $station ?? $this->motisRepository->createStation($rawStop, $this->source);
+
+        $departurePlanned = isset($rawStop['scheduledDeparture']) ? Carbon::parse($rawStop['scheduledDeparture']) : null;
+        $departureReal    = isset($rawStop['departure']) ? Carbon::parse($rawStop['departure']) : null;
+        $arrivalPlanned   = isset($rawStop['scheduledArrival']) ? Carbon::parse($rawStop['scheduledArrival']) : null;
+        $arrivalReal      = isset($rawStop['arrival']) ? Carbon::parse($rawStop['arrival']) : null;
+        // new API does not differ between departure and arrival platform
+        $platformPlanned = $rawStop['scheduledTrack'] ?? null;
+        $platformReal    = $rawStop['track'] ?? $platformPlanned;
+
+        return [
+            'train_station_id'           => $station->id,
+            'arrival_planned'            => $arrivalPlanned ?? $departurePlanned,
+            'arrival_real'               => $arrivalReal ?? $departureReal ?? null,
+            'departure_planned'          => $departurePlanned ?? $arrivalPlanned,
+            'departure_real'             => $departureReal ?? $arrivalReal ?? null,
+            'arrival_platform_planned'   => $platformPlanned,
+            'departure_platform_planned' => $platformPlanned,
+            'arrival_platform_real'      => $platformReal,
+            'departure_platform_real'    => $platformReal,
+        ];
+    }
+
+    /**
+     * @param mixed  $leg
+     * @param string $lineName
+     *
+     * @return array
+     */
+    public function getTripData(mixed $leg, string $lineName): array {
+        $originStation      = $this->motisRepository->getStationsByIdentifiers($leg['from']['stopId'], $this->source)->first() ?? $this->motisRepository->createStation($leg['from'], $this->source);
+        $destinationStation = $this->motisRepository->getStationsByIdentifiers($leg['to']['stopId'], $this->source)->first() ?? $this->motisRepository->createStation($leg['to'], $this->source);
+        $departure          = isset($leg['from']['departure']) ? Carbon::parse($leg['from']['departure']) : null;
+        $arrival            = isset($leg['to']['arrival']) ? Carbon::parse($leg['to']['arrival']) : null;
+        $category           = MotisCategory::tryFrom($leg['mode'])?->getHTT()->value ?? HafasTravelType::REGIONAL;
+        $tripLineName       = !empty($leg['routeShortName']) ? $leg['routeShortName'] : $lineName;
+        $license            = $this->motisRepository->getLicense($leg['source'], $this->source);
+        $operator           = $this->parseOperator($leg);
+
+
+        return [
+            'category'                => $category,
+            'number'                  => $tripLineName,
+            'linename'                => $tripLineName,
+            'journey_number'          => null,
+            'operator_id'             => $operator?->id,
+            'origin_id'               => $originStation->id,
+            'destination_id'          => $destinationStation->id,
+            'polyline_id'             => null, //TODO
+            'departure'               => $departure,
+            'arrival'                 => $arrival,
+            'source'                  => $this->source->value,
+            'motis_source'            => $this->source->value . '/' . $leg['source'],
+            'motis_source_license_id' => $license?->id ?? null,
+        ];
+    }
+
+
+    public function parseLegToStopovers(mixed $leg): Collection {
+        $rawStopovers        = $leg['intermediateStops'];
+        $stopoverCacheFromDB = $this->motisRepository->getStationsByIdentifiers(array_column($rawStopovers, 'stopId'), $this->source);
+
+        // add origin and destination to stopovers
+        $rawStopovers[] = $leg['from'];
+        $rawStopovers[] = $leg['to'];
+
+        $stopovers = collect();
+        foreach ($rawStopovers as $rawStop) {
+            $station = $stopoverCacheFromDB->where('stationIdentifiers', function($query) use ($rawStop) {
+                $query->where('identifier', $rawStop['stopId'])
+                      ->where('type', 'motis')
+                      ->where('origin', $this->source->value);
+            })->first();
+
+            $stopover = new Stopover($this->getStopoverData($station, $rawStop));
+            $stopovers->push($stopover);
+        }
+        return $stopovers;
     }
 }
