@@ -4,10 +4,12 @@
         <div class="modal-content">
             <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
                 <div class="modal-body">
-                    <div class="form-outline">
+                    <div class="form-floating">
                         <input type="text" name="domain" class="form-control" required
                                aria-describedby="button-addon4">
-                        <label class="form-label" for="domain">{{__('user.mastodon-instance-url')}}</label>
+                        <label class="form-label" for="domain">
+                            {{__('user.mastodon-instance-url')}}
+                        </label>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -99,26 +99,36 @@ followButtons.forEach((followButton) => {
 });
 
 
-const socialLoginProviderDisconnectButtons = document.querySelectorAll('.disconnect');
-socialLoginProviderDisconnectButtons.forEach((disconnectButton) => {
-    disconnectButton.addEventListener('click', (event) => {
+document.querySelectorAll('.disconnect').forEach((button) => {
+    button.addEventListener('click', async (event) => {
         event.preventDefault();
 
-        let provider = event.target.dataset["provider"];
-        fetch(urlDisconnect, {
-            method: 'POST',
-            body: JSON.stringify({provider: provider}),
-        }).then(response => {
+        const provider = event.target.dataset.provider;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        try {
+            const response = await fetch(urlDisconnect, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({ provider })
+            });
+
             if (response.ok) {
                 location.reload();
             } else {
-                response.text().then(text => {
-                    notyf.error(text);
-                });
+                const errorText = await response.text();
+                notyf.error(errorText);
             }
-        });
+        } catch (error) {
+            notyf.error('Ein unerwarteter Fehler ist aufgetreten.');
+            console.error('Fetch-Error:', error);
+        }
     });
 });
+
 
 const shareButtons = document.querySelectorAll('.trwl-share');
 shareButtons.forEach((shareButton) => {
