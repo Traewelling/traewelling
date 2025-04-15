@@ -1,4 +1,3 @@
-@php use App\Enum\Wikidata\Property; @endphp
 @extends('admin.layout')
 @php
     /** @var \App\Models\Station $station */
@@ -58,7 +57,7 @@
                             headers: {'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content}
                        }).then(function() {location.reload()})"
                                 >
-                                    Fetch <small>experimental!</small>
+                                    Fetch
                                 </a>
                             </td>
                         </tr>
@@ -130,22 +129,29 @@
 
         <div class="col-md-6">
             <div class="card mb-3">
-                <div class="card-body">
-                    <h2 class="fs-4">Map view</h2>
+                <div class="card-body" style="padding: 0;">
                     <div id="map" style="height: 200px;"></div>
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function () {
-
-                            const map = L.map('map').setView([{{ $station->latitude }}, {{ $station->longitude }}], 13);
-                            setTilingLayer('open-railway-map', map);
-
-                            L.marker([{{ $station->latitude }}, {{ $station->longitude }}]).addTo(map)
-                                .bindPopup('{{ $station->name }}')
-                                .openPopup();
-                        });
-                    </script>
                 </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const map = L.map('map').setView([{{ $station->latitude }}, {{ $station->longitude }}], 13);
+                        setTilingLayer('open-railway-map', map);
+
+                        const iconHtml = '<i class="fas fa-map-marker-alt fa-2x" style="color: red;"></i>';
+                        const customIcon = L.divIcon({
+                            html: iconHtml,
+                            className: '',
+                            iconSize: [30, 30],
+                            iconAnchor: [15, 15]
+                        });
+
+                        L.marker([{{ $station->latitude }}, {{ $station->longitude }}], {icon: customIcon}).addTo(map)
+                            .bindPopup('{{ $station->name }}')
+                            .openPopup();
+                    });
+                </script>
             </div>
+
 
             @isset($station->ifopt_a)
                 <div class="card mb-3">
@@ -172,7 +178,6 @@
                     </div>
                 </div>
             @endisset
-
 
             <div class="card mb-3">
                 <div class="card-body">
