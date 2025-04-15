@@ -460,7 +460,7 @@ class Motis extends Controller implements DataProviderInterface
             $departure = new Departure(
                 station:          $departureStation,
                 plannedDeparture: Carbon::parse($rawDepartureStation['scheduledDeparture']),
-                realDeparture:    isset($rawDepartureStation['departure']) ? Carbon::parse($rawDepartureStation['departure']) : null,
+                realDeparture:    !empty($rawDeparture['realTime']) ? Carbon::parse($rawDepartureStation['departure']) : null,
                 trip:             new BahnTrip(
                                       tripId:        $tripId,
                                       direction:     $rawDeparture['headsign'],
