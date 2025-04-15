@@ -15,6 +15,7 @@ use App\Hydrators\DepartureHydrator;
 use App\Models\HafasOperator;
 use App\Models\Station;
 use App\Models\Stopover;
+use App\Models\Trip;
 use App\Services\OperatorService;
 use Carbon\Carbon;
 use Exception;
@@ -39,7 +40,7 @@ class MotisHydrator
         $this->operatorService = $operatorService ?? new OperatorService();
     }
 
-    public function parseLegToStopovers(mixed $leg, DataProvider $source): Collection
+    public function parseLegToNewStopovers(mixed $leg, DataProvider $source): Collection
     {
         $rawStopovers = $leg['intermediateStops'];
         $stopoverCacheFromDB = $this->stationRepository->getStationsByIdentifiers(array_column($rawStopovers, 'stopId'), $source);
@@ -62,6 +63,50 @@ class MotisHydrator
         return $stopovers;
     }
 
+    public function parseLegToUpdateStopovers(mixed $leg, Trip $trip, DataProvider $source): Collection
+    {
+        $rawStopovers = $leg['intermediateStops'];
+        $stopoverCacheFromDB = $this->stationRepository->getStationsByIdentifiers(array_column($rawStopovers, 'stopId'), $source);
+
+        // add origin and destination to stopovers
+        $rawStopovers[] = $leg['from'];
+        $rawStopovers[] = $leg['to'];
+
+        $stopovers = collect();
+        $key = ['trip_id', 'train_station_id', 'departure_planned', 'arrival_planned'];
+        foreach ($rawStopovers as $rawStop) {
+            $station = $stopoverCacheFromDB->where('stationIdentifiers', function ($query) use ($rawStop, $source) {
+                $query->where('identifier', $rawStop['stopId'])
+                    ->where('type', 'motis')
+                    ->where('origin', $source->value);
+            })->first();
+            $stopoverData = $this->getStopoverData($station, $rawStop, $source);
+            $stopoverData['trip_id'] = $trip->trip_id;
+
+            try {
+                $stopover = Stopover::upsert(
+                    $stopoverData,
+                    $key,
+                    [
+                        'arrival_real',
+                        'departure_real',
+                        'arrival_platform_real',
+                        'departure_platform_real',
+                        'cancelled',
+                    ]
+                );
+                $stopovers->push($stopover);
+            } catch (Exception $exception) {
+                dump($exception->getMessage());
+                Log::error('Failed to upsert stopover', [
+                    'stopover' => $rawStop,
+                    'error' => $exception->getMessage(),
+                ]);
+            }
+        }
+
+        return $stopovers;
+    }
 
     public function getStopoverData($station, mixed $rawStop, DataProvider $source): array
     {

@@ -4,7 +4,10 @@ namespace App\Console\Commands;
 
 use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
+use App\DataProviders\Hydrators\MotisHydrator;
+use App\DataProviders\Motis;
 use App\DataProviders\Repositories\TripRepository;
+use App\Enum\DataProvider;
 use App\Enum\TripSource;
 use App\Exceptions\HafasException;
 use App\Models\Checkin;
@@ -17,10 +20,12 @@ class RefreshCurrentTrips extends Command
     protected $description = 'Refresh delay data from current active trips';
 
     private TripRepository $tripRepository;
+    private MotisHydrator  $motisHydrator;
 
-    public function __construct(?TripRepository $tripRepository = null) {
+    public function __construct(?TripRepository $tripRepository = null, ?MotisHydrator $motisHydrator = null) {
         parent::__construct();
         $this->tripRepository = $tripRepository ?? new TripRepository();
+        $this->motisHydrator  = $motisHydrator ?? new MotisHydrator();
     }
 
     private function getDataProvider(): DataProviderInterface {
@@ -29,13 +34,14 @@ class RefreshCurrentTrips extends Command
     }
 
     public function handle(): int {
+        if ($this->getDataProvider() instanceof Motis === false) {
+            $this->error('Currently only Motis is supported for this command.');
+            return 1;
+        }
+
         $this->info('Getting trips to be refreshed...');
 
-        $trips = $this->tripRepository->getCurrentActiveTrips(TripSource::TRANSITOUS)
-                                      ->where('last_refreshed', '<', now()->subMinutes(5))
-                                      ->orWhereNull('last_refreshed')
-                                      ->orderBy('departure')
-                                      ->get();
+        $trips = $this->tripRepository->getCurrentActiveTrips(TripSource::TRANSITOUS);
 
         if ($trips->isEmpty()) {
             $this->info('No trips to be refreshed');
@@ -50,10 +56,14 @@ class RefreshCurrentTrips extends Command
                 $this->info('Refreshing trip ' . $trip->trip_id . ' (' . $trip->linename . ')...');
                 $trip->update(['last_refreshed' => now()]);
 
-                $rawHafas = $this->getDataProvider()->fetchRawHafasTrip($trip->trip_id, $trip->linename);
+                $rawJourney = $this->getDataProvider()->fetchRawHafasTrip($trip->trip_id, $trip->linename);
+                $stopovers  = $this->motisHydrator->parseLegToUpdateStopovers(
+                    $rawJourney['legs'][0],
+                    $trip,
+                    DataProvider::TRANSITOUS
+                );
 
-
-                $this->info('Updated ' . $updatedCounts->stopovers . ' stopovers.');
+                $this->info(sprintf('Updated stopovers: %d', $stopovers->count()));
 
                 //set duration for refreshed trips to null, so it will be recalculated
                 Checkin::where('trip_id', $trip->trip_id)->update(['duration' => null]);
@@ -64,7 +74,7 @@ class RefreshCurrentTrips extends Command
                     report($exception);
                 }
             } catch (HafasException) {
-                // Do nothing
+                $this->error('-> Skipping, due to HafasException');
             } catch (\Exception $exception) {
                 report($exception);
             }
