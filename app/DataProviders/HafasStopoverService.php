@@ -7,6 +7,9 @@ use App\Models\Stopover;
 use Carbon\Carbon;
 use stdClass;
 
+/**
+ * @deprecated
+ */
 class HafasStopoverService
 {
     private DataProviderInterface $dataProvider;
@@ -85,7 +88,7 @@ class HafasStopoverService
      * @throws HafasException
      */
     public function refreshStopover(Stopover $stopover): void {
-        if($stopover->departure_planned === null) {
+        if ($stopover->departure_planned === null) {
             return;
         }
         $departure = $this->dataProvider->getDepartures(
