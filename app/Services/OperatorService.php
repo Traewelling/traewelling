@@ -172,19 +172,13 @@ class OperatorService {
         ]);
 
         foreach($operatorMappings as $mapping) {
-            // Compare by motis_id.
-            if(isset($mapping['motis_id']) && (string)$mapping['motis_id'] === $agencyId) {
-                Log::debug('Mapping found by motis_id', ['agencyId' => $agencyId]);
-                return $mapping;
-            }
-
-            // Compare by motis_name (case-insensitive).
-            if(isset($mapping['motis_name']) &&
-               strtolower(trim($mapping['motis_name'])) === strtolower(trim($agencyName))) {
-                Log::debug('Mapping found by motis_name', [
-                    'agencyName'  => $agencyName,
-                    'matchedName' => $mapping['motis_name'],
-                ]);
+            if(
+                isset($mapping['motis_id'])
+                && (string)$mapping['motis_id'] === $agencyId
+                && isset($mapping['motis_name'])
+                && strtolower(trim($mapping['motis_name'])) === strtolower(trim($agencyName))
+            ) {
+                Log::debug('Mapping found', ['agencyId' => $agencyId, 'agencyName' => $agencyName]);
                 return $mapping;
             }
         }
