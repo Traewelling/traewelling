@@ -57,6 +57,7 @@ class StationController extends Controller
             'station'               => $station,
             'stationsWithSameIfopt' => $stationsWithSameIfopt ?? [],
             'nearbyStations'        => StationService::getNearbyStations($station),
+            'latestCheckins'        => StationService::getLatestCheckins($station),
         ]);
     }
 

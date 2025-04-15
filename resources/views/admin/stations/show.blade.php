@@ -1,4 +1,3 @@
-@php use App\Enum\Wikidata\Property; @endphp
 @extends('admin.layout')
 @php
     /** @var \App\Models\Station $station */
@@ -7,7 +6,6 @@
 @section('title', 'Station - ' . $station->name)
 
 @section('content')
-
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-3">
@@ -58,7 +56,7 @@
                             headers: {'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content}
                        }).then(function() {location.reload()})"
                                 >
-                                    Fetch <small>experimental!</small>
+                                    Fetch
                                 </a>
                             </td>
                         </tr>
@@ -130,22 +128,29 @@
 
         <div class="col-md-6">
             <div class="card mb-3">
-                <div class="card-body">
-                    <h2 class="fs-4">Map view</h2>
+                <div class="card-body" style="padding: 0;">
                     <div id="map" style="height: 200px;"></div>
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function () {
-
-                            const map = L.map('map').setView([{{ $station->latitude }}, {{ $station->longitude }}], 13);
-                            setTilingLayer('open-railway-map', map);
-
-                            L.marker([{{ $station->latitude }}, {{ $station->longitude }}]).addTo(map)
-                                .bindPopup('{{ $station->name }}')
-                                .openPopup();
-                        });
-                    </script>
                 </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const map = L.map('map').setView([{{ $station->latitude }}, {{ $station->longitude }}], 13);
+                        setTilingLayer('open-railway-map', map);
+
+                        const iconHtml = '<i class="fas fa-map-marker-alt fa-2x" style="color: red;"></i>';
+                        const customIcon = L.divIcon({
+                            html: iconHtml,
+                            className: '',
+                            iconSize: [30, 30],
+                            iconAnchor: [15, 15]
+                        });
+
+                        L.marker([{{ $station->latitude }}, {{ $station->longitude }}], {icon: customIcon}).addTo(map)
+                            .bindPopup('{{ $station->name }}')
+                            .openPopup();
+                    });
+                </script>
             </div>
+
 
             @isset($station->ifopt_a)
                 <div class="card mb-3">
@@ -173,31 +178,98 @@
                 </div>
             @endisset
 
-
             <div class="card mb-3">
                 <div class="card-body">
                     <h2 class="fs-4">Nearby Stations</h2>
 
                     <table class="table table-striped table-hover">
+                        <tbody>
                         @foreach($nearbyStations as $nearbyStation)
                             <tr>
                                 <td>
-                                    {{ $nearbyStation->id }}
-                                </td>
-                                <td>
+                                    [{{ $nearbyStation->id }}]
                                     <a href="{{ route('admin.station', ['id' => $nearbyStation->id]) }}">
                                         {{ $nearbyStation->name }}
                                     </a>
+                                    <br>
+                                    <small>
+                                        ({{ number_format($nearbyStation->distance, 3, ',', '.') }} km)
+                                    </small>
                                 </td>
-                                <td>
-                                    {{ number_format($nearbyStation->distance, 3, ',', '.') }} km
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-outline-info"
+                                            onclick="mergeStations({{ $station->id }}, {{ $nearbyStation->id }})"
+                                            title="Merge {{ $station->id }} into {{ $nearbyStation->id }}"
+                                    >
+                                        {{ $station->id }} → {{ $nearbyStation->id }}
+                                    </button>
+                                    <br>
+                                    <button class="btn btn-sm btn-outline-info"
+                                            onclick="mergeStations({{ $nearbyStation->id }}, {{ $station->id }})"
+                                    >
+                                        {{ $nearbyStation->id }} → {{ $station->id }}
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2 class="fs-4">Latest checkins</h2>
+
+                    <table class="table table-striped table-hover">
+                        <tbody>
+                        @foreach($latestCheckins as $checkin)
+                            <tr>
+                                <td>
+                                    <a href="{{ route('admin.status.edit', ['id' => $checkin->status_id]) }}">
+                                        {{ $checkin->id }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ $checkin->user->name }}
+                                </td>
+                                <td>
+                                    <a href="/admin/stations/{{$checkin->originStopover->train_station_id}}">
+                                        {{ $checkin->originStopover->station->name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="/admin/stations/{{$checkin->destinationStopover->train_station_id}}">
+                                    {{ $checkin->destinationStopover->station->name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ $checkin->created_at?->diffForHumans() }}
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        function mergeStations(oldStationId, newStationId) {
+            fetch('/api/v1/station/' + oldStationId + '/merge/' + newStationId, {
+                method: 'PUT',
+            }).then(response => {
+                if (response.status === 200) {
+                    notyf.success('Stations merged successfully');
+                    location.href = '/admin/stations/' + newStationId;
+                    return;
+                }
+                response.json().then(data => {
+                    notyf.error(data.message ?? 'Something went wrong. Please try again later.');
+                });
+            });
+        }
+    </script>
 
 @endsection
