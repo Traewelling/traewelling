@@ -22,9 +22,10 @@ class HafasOperator extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'hafas_id', 'motis_id', 'motis_source'];
+    protected $fillable = ['wikidata_id', 'name', 'hafas_id', 'motis_id', 'motis_source'];
     protected $casts    = [
         'id'           => 'integer',
+        'wikidata_id'  => 'string',
         'name'         => 'string',
         'hafas_id'     => 'string',
         'motis_id'     => 'string',
