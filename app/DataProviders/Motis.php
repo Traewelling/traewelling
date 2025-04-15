@@ -3,13 +3,10 @@
 namespace App\DataProviders;
 
 use App\DataProviders\Hydrators\MotisHydrator;
-use App\DataProviders\Repositories\MotisRepository;
+use App\DataProviders\Repositories\StationRepository;
 use App\DataProviders\Repositories\TripRepository;
 use App\Dto\Coordinate;
-use App\Dto\Internal\BahnTrip;
-use App\Dto\Internal\Departure;
 use App\Enum\DataProvider;
-use App\Enum\HafasTravelType;
 use App\Enum\MotisCategory;
 use App\Enum\TravelType;
 use App\Exceptions\HafasException;
@@ -17,11 +14,8 @@ use App\Helpers\CacheKey;
 use App\Helpers\HCK;
 use App\Http\Controllers\Backend\VersionController;
 use App\Http\Controllers\Controller;
-use App\Hydrators\DepartureHydrator;
-use App\Models\HafasOperator;
 use App\Models\Station;
 use App\Models\StationIdentifier;
-use App\Models\Stopover;
 use App\Models\Trip;
 use App\Services\GeoService;
 use App\Services\OperatorService;
@@ -36,26 +30,26 @@ use JsonException;
 class Motis extends Controller implements DataProviderInterface
 {
 
-    private GeoService      $geoService;
-    private MotisRepository $motisRepository;
-    private TripRepository  $tripRepository;
-    private DataProvider    $source;
-    private MotisHydrator   $hydrator;
+    private GeoService        $geoService;
+    private StationRepository $stationRepository;
+    private TripRepository    $tripRepository;
+    private DataProvider      $source;
+    private MotisHydrator     $hydrator;
 
     private const string API_URL = 'https://api.transitous.org/api/v1';
 
     public function __construct(
-        DataProvider     $source,
-        ?MotisRepository $motisRepository = null,
-        ?GeoService      $geoService = null,
-        ?TripRepository  $tripRepository = null,
-        ?MotisHydrator   $hydrator = null,
+        DataProvider       $source,
+        ?GeoService        $geoService = null,
+        ?TripRepository    $tripRepository = null,
+        ?MotisHydrator     $hydrator = null,
+        ?StationRepository $stationRepository = null
     ) {
-        $this->source          = $source;
-        $this->motisRepository = $motisRepository ?? new MotisRepository();
-        $this->geoService      = $geoService ?? new GeoService();
-        $this->tripRepository  = $tripRepository ?? new TripRepository();
-        $this->hydrator        = $hydrator ?? new MotisHydrator();
+        $this->source            = $source;
+        $this->geoService        = $geoService ?? new GeoService();
+        $this->tripRepository    = $tripRepository ?? new TripRepository();
+        $this->hydrator          = $hydrator ?? new MotisHydrator();
+        $this->stationRepository = $stationRepository ?? new StationRepository();
     }
 
     public function getStationByRilIdentifier(string $rilIdentifier): ?Station {
@@ -253,7 +247,7 @@ class Motis extends Controller implements DataProviderInterface
             $departures = collect();
             $entries    = $response->json('stopTimes');
             CacheKey::increment(HCK::DEPARTURES_SUCCESS);
-            return $this->mapDepartures($entries, $station, $departures);
+            return $this->hydrator->mapDepartures($entries, $station, $departures, $this->source);
         } catch (JsonException $exception) {
             Log::debug('JSON Error (getDepartures)', [
                 'status' => $response->status(),
@@ -271,11 +265,6 @@ class Motis extends Controller implements DataProviderInterface
     }
 
     private function parseOperator(array $rawDeparture): ?HafasOperator {
-        return OperatorService::parseTransitousOperator(
-            agencyId:   $rawDeparture['agencyId'] ?? null,
-            agencyName: $rawDeparture['agencyName'] ?? null,
-        );
-
         try {
             if (!isset($rawDeparture['agencyId']) || !isset($rawDeparture['agencyName'])) {
                 return null;
@@ -350,13 +339,13 @@ class Motis extends Controller implements DataProviderInterface
         // get cached data from departure board
         $leg = $rawJourney['legs'][0];
 
-        $journey = Trip::updateOrCreate(['trip_id' => $tripID], $this->getTripData($leg, $lineName));
-        $this->tripRepository->tryToSaveStopovers($journey, $this->parseLegToStopovers($leg));
+        $journey = Trip::updateOrCreate(['trip_id' => $tripID], $this->hydrator->getTripData($leg, $lineName, $this->source));
+        $this->tripRepository->tryToSaveStopovers($journey, $this->hydrator->parseLegToStopovers($leg, $this->source));
 
         return $journey;
     }
 
-    public function filterStopsFromResults(Response $response, string $identifier = 'id'): Collection {
+    private function filterStopsFromResults(Response $response, string $identifier = 'id'): Collection {
         $json        = $response->json();
         $rawStations = [];
         foreach ($json as $stationEntry) {
@@ -366,7 +355,7 @@ class Motis extends Controller implements DataProviderInterface
             $rawStations[] = $stationEntry;
         }
         $stationIds         = array_column($rawStations, $identifier);
-        $stationCache       = $this->motisRepository->getStationsByIdentifiers($stationIds, $this->source);
+        $stationCache       = $this->stationRepository->getStationsByIdentifiers($stationIds, $this->source);
         $stationIdentifiers = $stationCache->pluck('stationIdentifiers')->flatten();
 
         $stations = collect();
@@ -376,154 +365,10 @@ class Motis extends Controller implements DataProviderInterface
 
             if ($station === null) {
                 $rawStation['stopId'] = $rawStation[$identifier];
-                $station              = $this->motisRepository->createStation($rawStation, $this->source);
+                $station              = $this->stationRepository->createMotisStation($rawStation, $this->source);
             }
             $stations->push($station);
         }
         return $stations;
-    }
-
-    /**
-     * @param mixed      $entries
-     * @param Station    $station
-     * @param Collection $departures
-     *
-     * @return Collection
-     */
-    public function mapDepartures(mixed $entries, Station $station, Collection $departures): Collection {
-        foreach ($entries as $rawDeparture) {
-            if (config('trwl.motis.filter_licenses')) {
-                // Check if the source is licensed under an acceptable license
-                $license = $this->motisRepository->getLicense($rawDeparture['source'], $this->source);
-                if (empty($license)) {
-                    continue;
-                }
-            }
-
-            //trip
-            $tripId              = $rawDeparture['tripId'];
-            $rawDepartureStation = $rawDeparture['place'];
-            $tripLineName        = $rawDeparture['routeShortName'] ?? '';
-            $category            = MotisCategory::tryFrom($rawDeparture['mode']);
-            $hafasTravelType     = $category->getHTT()->value;
-
-            $platformPlanned = $rawDepartureStation['scheduledTrack'] ?? '';
-            $platformReal    = $rawDepartureStation['track'] ?? $platformPlanned;
-            try {
-                $departureStation = $this->motisRepository->getStationsByIdentifiers([$rawDepartureStation['stopId']], $this->source)->first();
-                if ($departureStation === null) {
-                    // if station does not exist, request it from API
-                    $departureStation = $this->motisRepository->createStation($rawDepartureStation, $this->source);
-                }
-            } catch (Exception $exception) {
-                Log::error($exception->getMessage());
-                $departureStation = $station;
-            }
-
-            $departure = new Departure(
-                station:          $departureStation,
-                plannedDeparture: Carbon::parse($rawDepartureStation['scheduledDeparture']),
-                realDeparture:    !empty($rawDeparture['realTime']) ? Carbon::parse($rawDepartureStation['departure']) : null,
-                trip:             new BahnTrip(
-                                      tripId:        $tripId,
-                                      direction:     $rawDeparture['headsign'],
-                                      lineName:      $tripLineName,
-                                      number:        $tripId,
-                                      category:      $hafasTravelType,
-                                      journeyNumber: $tripId,
-                                      operator:      OperatorService::parseTransitousOperator(
-                                                         agencyId:   $rawDeparture['agencyId'] ?? null,
-                                                         agencyName: $rawDeparture['agencyName'] ?? null,
-                                                     ),
-                                  ),
-                plannedPlatform:  $platformPlanned,
-                realPlatform:     $platformReal,
-            );
-
-            $departures->push($departure);
-        }
-
-        return DepartureHydrator::map($departures);
-    }
-
-    public function getStopoverData($station, mixed $rawStop): array {
-        $station = $station ?? $this->motisRepository->createStation($rawStop, $this->source);
-
-        $departurePlanned = isset($rawStop['scheduledDeparture']) ? Carbon::parse($rawStop['scheduledDeparture']) : null;
-        $departureReal    = isset($rawStop['departure']) ? Carbon::parse($rawStop['departure']) : null;
-        $arrivalPlanned   = isset($rawStop['scheduledArrival']) ? Carbon::parse($rawStop['scheduledArrival']) : null;
-        $arrivalReal      = isset($rawStop['arrival']) ? Carbon::parse($rawStop['arrival']) : null;
-        // new API does not differ between departure and arrival platform
-        $platformPlanned = $rawStop['scheduledTrack'] ?? null;
-        $platformReal    = $rawStop['track'] ?? $platformPlanned;
-
-        return [
-            'train_station_id'           => $station->id,
-            'arrival_planned'            => $arrivalPlanned ?? $departurePlanned,
-            'arrival_real'               => $arrivalReal ?? $departureReal ?? null,
-            'departure_planned'          => $departurePlanned ?? $arrivalPlanned,
-            'departure_real'             => $departureReal ?? $arrivalReal ?? null,
-            'arrival_platform_planned'   => $platformPlanned,
-            'departure_platform_planned' => $platformPlanned,
-            'arrival_platform_real'      => $platformReal,
-            'departure_platform_real'    => $platformReal,
-        ];
-    }
-
-    /**
-     * @param mixed  $leg
-     * @param string $lineName
-     *
-     * @return array
-     */
-    public function getTripData(mixed $leg, string $lineName): array {
-        $originStation      = $this->motisRepository->getStationsByIdentifiers($leg['from']['stopId'], $this->source)->first() ?? $this->motisRepository->createStation($leg['from'], $this->source);
-        $destinationStation = $this->motisRepository->getStationsByIdentifiers($leg['to']['stopId'], $this->source)->first() ?? $this->motisRepository->createStation($leg['to'], $this->source);
-        $departure          = isset($leg['from']['departure']) ? Carbon::parse($leg['from']['departure']) : null;
-        $arrival            = isset($leg['to']['arrival']) ? Carbon::parse($leg['to']['arrival']) : null;
-        $category           = MotisCategory::tryFrom($leg['mode'])?->getHTT()->value ?? HafasTravelType::REGIONAL;
-        $tripLineName       = !empty($leg['routeShortName']) ? $leg['routeShortName'] : $lineName;
-        $license            = $this->motisRepository->getLicense($leg['source'], $this->source);
-        $operator           = $this->parseOperator($leg);
-
-
-        return [
-            'category'                => $category,
-            'number'                  => $tripLineName,
-            'linename'                => $tripLineName,
-            'journey_number'          => null,
-            'operator_id'             => $operator?->id,
-            'origin_id'               => $originStation->id,
-            'destination_id'          => $destinationStation->id,
-            'polyline_id'             => null, //TODO
-            'departure'               => $departure,
-            'arrival'                 => $arrival,
-            'source'                  => $this->source->value,
-            'motis_source'            => $this->source->value . '/' . $leg['source'],
-            'motis_source_license_id' => $license?->id ?? null,
-        ];
-    }
-
-
-    public function parseLegToStopovers(mixed $leg): Collection {
-        $rawStopovers        = $leg['intermediateStops'];
-        $stopoverCacheFromDB = $this->motisRepository->getStationsByIdentifiers(array_column($rawStopovers, 'stopId'), $this->source);
-
-        // add origin and destination to stopovers
-        $rawStopovers[] = $leg['from'];
-        $rawStopovers[] = $leg['to'];
-
-        $stopovers = collect();
-        foreach ($rawStopovers as $rawStop) {
-            $station = $stopoverCacheFromDB->where('stationIdentifiers', function($query) use ($rawStop) {
-                $query->where('identifier', $rawStop['stopId'])
-                      ->where('type', 'motis')
-                      ->where('origin', $this->source->value);
-            })->first();
-
-            $stopover = new Stopover($this->getStopoverData($station, $rawStop));
-            $stopovers->push($stopover);
-        }
-        return $stopovers;
     }
 }
