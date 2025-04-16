@@ -10,6 +10,7 @@ use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\API\v1\Controller as APIController;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Models\Event;
+use App\Models\Follow;
 use App\Models\Like;
 use App\Models\Status;
 use App\Models\User;
@@ -164,15 +165,7 @@ class StatusController extends Controller
      * @throws RateLimitExceededException
      */
     public static function createLike(User $user, Status $status): Like {
-        $rateLimiterKey = "create-like:{$user->id}";
-        if (RateLimiter::tooManyAttempts($rateLimiterKey, config('rate_limits.status_like.max_attempts'))) {
-            throw new RateLimitExceededException(
-                limit: config('rate_limits.status_like.max_attempts'),
-                reset: RateLimiter::availableIn($rateLimiterKey),
-            );
-        }
-        RateLimiter::hit($rateLimiterKey, 60 * config('rate_limits.status_like.decay_minutes'));
-
+        self::likeRateLimiter($user, $status->user);
         Gate::forUser($user)->authorize('like', $status);
 
         if ($status->likes->contains('user_id', $user->id)) {
@@ -281,5 +274,33 @@ class StatusController extends Controller
                                   'event_id'   => $event?->id,
                                   'client_id'  => APIController::getCurrentOAuthClient()?->id,
                               ]);
+    }
+
+    /**
+     * @throws RateLimitExceededException
+     * The rate limiter only hits if the users don't follow each other.
+     */
+    public static function likeRateLimiter(User $user, User $user2): void {
+
+        $followEachOther = Follow::where('follows.user_id', $user->id)
+                                 ->where('follows.follow_id', $user2->id)
+                                 ->join('follows as f2', function($join) use ($user2) {
+                                     $join->on('follows.user_id', '=', 'f2.follow_id')
+                                          ->where('f2.user_id', $user2->id);
+                                 })
+                                 ->count() > 0;
+
+        if ($followEachOther) {
+            return;
+        }
+
+        $rateLimiterKey = "create-like:{$user->id}";
+        if (RateLimiter::tooManyAttempts($rateLimiterKey, config('rate_limits.status_like.max_attempts'))) {
+            throw new RateLimitExceededException(
+                limit: config('rate_limits.status_like.max_attempts'),
+                reset: RateLimiter::availableIn($rateLimiterKey),
+            );
+        }
+        RateLimiter::hit($rateLimiterKey, 60 * config('rate_limits.status_like.decay_minutes'));
     }
 }
