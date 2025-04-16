@@ -48,6 +48,7 @@ class MotisHydrator
         // add origin and destination to stopovers
         $rawStopovers[] = $leg['from'];
         $rawStopovers[] = $leg['to'];
+        $realTime       = $leg['realTime'] ?? false;
 
         $stopovers = collect();
         foreach ($rawStopovers as $rawStop) {
@@ -57,7 +58,7 @@ class MotisHydrator
                     ->where('origin', $source->value);
             })->first();
 
-            $stopover = new Stopover($this->getStopoverData($station, $rawStop, $source));
+            $stopover = new Stopover($this->getStopoverData($station, $rawStop, $source, $realTime));
             $stopovers->push($stopover);
         }
         return $stopovers;
@@ -71,6 +72,7 @@ class MotisHydrator
         // add origin and destination to stopovers
         $rawStopovers[] = $leg['from'];
         $rawStopovers[] = $leg['to'];
+        $realTime       = $leg['realTime'] ?? false;
 
         $stopovers = collect();
         $key = ['trip_id', 'train_station_id', 'departure_planned', 'arrival_planned'];
@@ -80,7 +82,7 @@ class MotisHydrator
                     ->where('type', 'motis')
                     ->where('origin', $source->value);
             })->first();
-            $stopoverData = $this->getStopoverData($station, $rawStop, $source);
+            $stopoverData = $this->getStopoverData($station, $rawStop, $source, $realTime);
             $stopoverData['trip_id'] = $trip->trip_id;
 
             try {
@@ -107,7 +109,7 @@ class MotisHydrator
         return $stopovers;
     }
 
-    public function getStopoverData($station, mixed $rawStop, DataProvider $source): array
+    public function getStopoverData($station, mixed $rawStop, DataProvider $source, bool $realTime = false): array
     {
         $station = $station ?? $this->stationRepository->createMotisStation($rawStop, $source);
 
@@ -122,13 +124,13 @@ class MotisHydrator
         return [
             'train_station_id' => $station->id,
             'arrival_planned' => $arrivalPlanned ?? $departurePlanned,
-            'arrival_real' => $arrivalReal ?? $departureReal ?? null,
+            'arrival_real' => $realTime ? $arrivalReal ?? $departureReal ?? null : null,
             'departure_planned' => $departurePlanned ?? $arrivalPlanned,
-            'departure_real' => $departureReal ?? $arrivalReal ?? null,
+            'departure_real' => $realTime ? $departureReal ?? $arrivalReal ?? null : null,
             'arrival_platform_planned' => $platformPlanned,
             'departure_platform_planned' => $platformPlanned,
-            'arrival_platform_real' => $platformReal,
-            'departure_platform_real' => $platformReal,
+            'arrival_platform_real' => $realTime ? $platformReal : null,
+            'departure_platform_real' => $realTime ? $platformReal : null,
         ];
     }
 
