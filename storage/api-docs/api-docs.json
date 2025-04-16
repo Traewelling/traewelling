@@ -3343,45 +3343,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "category": {
-                                                    "$ref": "#/components/schemas/HafasTravelType"
-                                                },
-                                                "number": {
-                                                    "type": "string",
-                                                    "example": "4-a6s4-4"
-                                                },
-                                                "lineName": {
-                                                    "type": "string",
-                                                    "example": "S 4"
-                                                },
-                                                "journeyNumber": {
-                                                    "type": "integer",
-                                                    "example": "34427"
-                                                },
-                                                "origin": {
-                                                    "$ref": "#/components/schemas/Station"
-                                                },
-                                                "destination": {
-                                                    "$ref": "#/components/schemas/Station"
-                                                },
-                                                "stopovers": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/components/schemas/StopoverResource"
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/TripResource"
                                 }
                             }
                         }
@@ -4911,6 +4873,20 @@
                 },
                 "type": "object"
             },
+            "DataSourceResource": {
+                "title": "DataSourceResource",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "foobar"
+                    },
+                    "attribution": {
+                        "type": "string",
+                        "example": "Provided by foobar under CC BY 4.0"
+                    }
+                },
+                "type": "object"
+            },
             "EventDetailsResource": {
                 "title": "EventDetails",
                 "properties": {
@@ -5339,6 +5315,51 @@
                     },
                     "operator": {
                         "$ref": "#/components/schemas/OperatorResource"
+                    }
+                },
+                "type": "object"
+            },
+            "TripResource": {
+                "title": "TripResource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/HafasTravelType"
+                    },
+                    "number": {
+                        "type": "string",
+                        "example": "4-a6s4-4"
+                    },
+                    "lineName": {
+                        "type": "string",
+                        "example": "S 4"
+                    },
+                    "journeyNumber": {
+                        "type": "integer",
+                        "example": "34427"
+                    },
+                    "origin": {
+                        "$ref": "#/components/schemas/Station"
+                    },
+                    "destination": {
+                        "$ref": "#/components/schemas/Station"
+                    },
+                    "stopovers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StopoverResource"
+                        }
+                    },
+                    "dataSource": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/DataSourceResource"
+                            }
+                        ],
+                        "nullable": true
                     }
                 },
                 "type": "object"

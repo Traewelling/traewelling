@@ -84,7 +84,7 @@ class FrontendStatusController extends Controller
                 'origin'      => $status->checkin->originStopover->station->name
             ]),
             'image'       => ProfilePictureController::getUrl($status->user),
-            'license'     => $this->licenseService->getLicenseData($status),
+            'license'     => $this->licenseService->getLicenseDataForStatus($status),
         ]);
     }
 }
