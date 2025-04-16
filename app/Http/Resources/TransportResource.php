@@ -22,7 +22,8 @@ use OpenApi\Annotations as OA;
  *     @OA\Property(property="manualArrival", type="string", format="date-time", example="2022-07-17T13:37:00+02:00", nullable=true),
  *     @OA\Property(property="origin", ref="#/components/schemas/StopoverResource"),
  *     @OA\Property(property="destination", ref="#/components/schemas/StopoverResource"),
- *     @OA\Property(property="operator", ref="#/components/schemas/OperatorResource")
+ *     @OA\Property(property="operator", ref="#/components/schemas/OperatorResource"),
+ *     @OA\Property(property="dataSource", ref="#/components/schemas/DataSourceResource"),
  * )
  */
 class TransportResource extends JsonResource
@@ -44,7 +45,8 @@ class TransportResource extends JsonResource
             'manualArrival'   => $this->manual_arrival?->toIso8601String(),
             'origin'          => new StopoverResource($this->originStopover),
             'destination'     => new StopoverResource($this->destinationStopover),
-            'operator'        => new OperatorResource($this?->trip->operator)
+            'operator'        => new OperatorResource($this?->trip->operator),
+            'dataSource'      => $this->trip->motisSourceLicense ? new DataSourceResource($this->trip->motisSourceLicense) : null,
         ];
     }
 }
