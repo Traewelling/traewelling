@@ -2,21 +2,29 @@
 
 namespace App\Http\Controllers\Backend\Transport;
 
+use App\DataProviders\DataProviderBuilder;
+use App\DataProviders\DataProviderInterface;
+use App\Http\Controllers\API\v1\ExperimentalController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StationResource;
 use App\Models\Checkin;
+use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\User;
 use App\Repositories\StationRepository;
+use App\Services\Wikidata\WikidataImportService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class StationController extends Controller
 {
-    private StationRepository $stationRepository;
+    private DataProviderInterface $dataProvider;
+    private StationRepository     $stationRepository;
 
-    public function __construct(?StationRepository $stationRepository = null) {
+    public function __construct(?StationRepository $stationRepository = null, ?User $user = null) {
+        $this->dataProvider      = (new DataProviderBuilder())->build(null, $user);
         $this->stationRepository = $stationRepository ?? new StationRepository();
     }
 
@@ -70,9 +78,26 @@ class StationController extends Controller
      * @param string $search
      * @param string $lang
      *
-     * @return AnonymousResourceCollection
+     * @return Collection
      */
-    public function index(string $search, string $lang): AnonymousResourceCollection {
+    public function search(string $search, string $lang): Collection {
+        if (!is_numeric($search) && strlen($search) <= 5 && ctype_upper($search)) {
+            $stations = $this->getStationsByFuzzyRilIdentifier($search);
+            if ($stations->isNotEmpty()) {
+                return $stations;
+            }
+        } elseif (preg_match('/^Q\d+$/', $search)) {
+            return $this->getStationsByWikidataId($search);
+        }
+
+        $stations = $this->dataProvider->getStations($search);
+        if ($stations->count() < 10) {
+            $remaining  = 10 - $stations->count();
+            $dbStations = $this->stationRepository->getStationByName($search, 'de', true, $remaining);
+            $stations   = $stations->merge($dbStations);
+        }
+        return $stations;
+/*
         $stations = $this->stationRepository->getStationByName($search, $lang);
 
         if (count($stations) < 2) {
@@ -86,6 +111,48 @@ class StationController extends Controller
             return $station;
         });
 
-        return StationResource::collection($stations->sortByDesc('similarity'));
+        return $stations->sortByDesc('similarity');
+*/
+    }
+
+    public function getStationsByWikidataId(string $wikidataId): Collection {
+        $stations = Station::where('wikidata_id', $wikidataId)->get();
+
+        if ($stations->isEmpty() && ExperimentalController::checkGeneralRateLimit() && ExperimentalController::checkWikidataIdRateLimit($wikidataId)) {
+            try {
+                Log::debug('Lookup Wikidata ID as User searched it', ['wikidataId' => $wikidataId]);
+                $station = WikidataImportService::importStation($wikidataId);
+                Log::info('Saved Station from Wikidata.', [$station->only(['id', 'name', 'wikidata_id'])]);
+                $stations->push($station);
+            } catch (\InvalidArgumentException $exception) {
+                // ignore in frontend, just log for debugging
+                Log::debug('Could not import Station from Wikidata: ' . $exception->getMessage(), ['wikidataId' => $wikidataId]);
+            } catch (\Exception $exception) {
+                report($exception);
+            }
+        }
+
+        return $stations;
+    }
+
+    public function getStationsByFuzzyRilIdentifier(string $rilIdentifier): Collection {
+        $stations = Station::where('rilIdentifier', 'LIKE', "$rilIdentifier%")
+                           ->orderBy('rilIdentifier')
+                           ->get();
+        if ($stations->count() === 0) {
+            $station = $this->getStationByRilIdentifier(rilIdentifier: $rilIdentifier);
+            if ($station !== null) {
+                $stations->push($station);
+            }
+        }
+        return $stations;
+    }
+
+    public function getStationByRilIdentifier(string $rilIdentifier): ?Station {
+        $station = Station::where('rilIdentifier', $rilIdentifier)->first();
+        if ($station !== null) {
+            return $station;
+        }
+        return null;
     }
 }

@@ -21,58 +21,6 @@ use Illuminate\Support\Facades\Log;
  */
 class TransportController extends Controller
 {
-    private DataProviderInterface $dataProvider;
-    private StationRepository     $stationRepository;
-
-    public function __construct(?User $user = null, ?StationRepository $stationRepository = null) {
-        $this->dataProvider      = (new DataProviderBuilder())->build(null, $user);
-        $this->stationRepository = $stationRepository ?? new StationRepository();
-    }
-
-    /**
-     * @param string $query
-     *
-     * @return Collection
-     * @api v1
-     */
-    public function getTrainStationAutocomplete(string $query): Collection {
-        if (!is_numeric($query) && strlen($query) <= 5 && ctype_upper($query)) {
-            $stations = $this->dataProvider->getStationsByFuzzyRilIdentifier(rilIdentifier: $query);
-        } elseif (preg_match('/^Q\d+$/', $query)) {
-            $stations = self::getStationsByWikidataId($query);
-        } elseif (!isset($stations) || $stations[0] === null) {
-            $stations = $this->dataProvider->getStations($query);
-            if ($stations->count() < 10) {
-                $remaining  = 10 - $stations->count();
-                $dbStations = $this->stationRepository->getStationByName($query, 'de', true, $remaining);
-                $stations   = $stations->merge($dbStations);
-            }
-
-        }
-        return $stations->map(function(Station $station) {
-            return new StationResource($station);
-        });
-    }
-
-    private static function getStationsByWikidataId(string $wikidataId): Collection {
-        $stations = Station::where('wikidata_id', $wikidataId)->get();
-
-        if ($stations->isEmpty() && ExperimentalController::checkGeneralRateLimit() && ExperimentalController::checkWikidataIdRateLimit($wikidataId)) {
-            try {
-                Log::debug('Lookup Wikidata ID as User searched it', ['wikidataId' => $wikidataId]);
-                $station = WikidataImportService::importStation($wikidataId);
-                Log::info('Saved Station from Wikidata.', [$station->only(['id', 'name', 'wikidata_id'])]);
-                $stations->push($station);
-            } catch (\InvalidArgumentException $exception) {
-                // ignore in frontend, just log for debugging
-                Log::debug('Could not import Station from Wikidata: ' . $exception->getMessage(), ['wikidataId' => $wikidataId]);
-            } catch (\Exception $exception) {
-                report($exception);
-            }
-        }
-
-        return $stations;
-    }
 
     /**
      * Check if there are colliding CheckIns

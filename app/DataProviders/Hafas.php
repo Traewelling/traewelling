@@ -9,6 +9,7 @@ use App\Enum\TripSource;
 use App\Exceptions\HafasException;
 use App\Helpers\CacheKey;
 use App\Helpers\HCK;
+use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasOperator;
@@ -57,17 +58,12 @@ class Hafas extends Controller implements DataProviderInterface
         return $station;
     }
 
+    /**
+     * @deprecated
+     */
     public function getStationsByFuzzyRilIdentifier(string $rilIdentifier): Collection {
-        $stations = Station::where('rilIdentifier', 'LIKE', "$rilIdentifier%")
-                           ->orderBy('rilIdentifier')
-                           ->get();
-        if ($stations->count() === 0) {
-            $station = $this->getStationByRilIdentifier(rilIdentifier: $rilIdentifier);
-            if ($station !== null) {
-                $stations->push($station);
-            }
-        }
-        return $stations;
+        $stationController = new StationController();
+        return $stationController->getStationsByFuzzyRilIdentifier($rilIdentifier);
     }
 
     /**

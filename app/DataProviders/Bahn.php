@@ -13,6 +13,7 @@ use App\Enum\TripSource;
 use App\Exceptions\HafasException;
 use App\Helpers\CacheKey;
 use App\Helpers\HCK;
+use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Controller;
 use App\Hydrators\DepartureHydrator;
 use App\Models\PolyLine;
@@ -45,17 +46,12 @@ class Bahn extends Controller implements DataProviderInterface
         return null;
     }
 
+    /**
+     * @deprecated
+     */
     public function getStationsByFuzzyRilIdentifier(string $rilIdentifier): Collection {
-        $stations = Station::where('rilIdentifier', 'LIKE', "$rilIdentifier%")
-                           ->orderBy('rilIdentifier')
-                           ->get();
-        if ($stations->count() === 0) {
-            $station = $this->getStationByRilIdentifier(rilIdentifier: $rilIdentifier);
-            if ($station !== null) {
-                $stations->push($station);
-            }
-        }
-        return $stations;
+        $stationController = new StationController();
+        return $stationController->getStationsByFuzzyRilIdentifier($rilIdentifier);
     }
 
     /**

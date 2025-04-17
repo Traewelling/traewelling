@@ -20,5 +20,8 @@ interface DataProviderInterface
 
     public function getStationByRilIdentifier(string $rilIdentifier);
 
+    /**
+     * @deprecated
+     */
     public function getStationsByFuzzyRilIdentifier(string $rilIdentifier);
 }

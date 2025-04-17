@@ -5,6 +5,7 @@ namespace App\DataProviders;
 use App\Enum\TravelType;
 use App\Helpers\CacheKey;
 use App\Helpers\HCK;
+use App\Http\Controllers\Backend\Transport\StationController;
 use App\Models\Station;
 use App\Models\Trip;
 use Carbon\Carbon;
@@ -95,7 +96,8 @@ class CachedDataProvider implements DataProviderInterface
             $key,
             now()->addMinutes(15),
             function() use ($rilIdentifier) {
-                return $this->dataProvider->getStationsByFuzzyRilIdentifier($rilIdentifier);
+                $stationController = new StationController();
+                return $stationController->getStationsByFuzzyRilIdentifier($rilIdentifier);
             },
             HCK::STATIONS_SUCCESS
         );
