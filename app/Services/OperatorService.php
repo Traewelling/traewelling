@@ -229,6 +229,13 @@ class OperatorService
             // Update all trips to point to the new operator
             $oldOperator->trips()->update(['operator_id' => $newOperator->id]);
 
+            // Update columns with old values, if newOperator has null values
+            $newOperator->update([
+                'hafas_id'     => $newOperator->hafas_id ?? $oldOperator->hafas_id,
+                'motis_id'     => $newOperator->motis_id ?? $oldOperator->motis_id,
+                'motis_source' => $newOperator->motis_source ?? $oldOperator->motis_source,
+            ]);
+
             // Delete the old operator
             $oldOperator->delete();
         });
