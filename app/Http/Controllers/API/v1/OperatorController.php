@@ -4,6 +4,9 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Resources\OperatorResource;
 use App\Models\HafasOperator;
+use App\Services\OperatorService;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class OperatorController extends Controller
@@ -33,5 +36,23 @@ class OperatorController extends Controller
      */
     public function index(): AnonymousResourceCollection {
         return OperatorResource::collection(HafasOperator::orderBy('name')->cursorPaginate(250));
+    }
+
+    public function merge(int $oldOperatorId, int $newOperatorId): JsonResponse {
+        $oldOperator = HafasOperator::findOrFail($oldOperatorId);
+        $newOperator = HafasOperator::findOrFail($newOperatorId);
+
+        // check if user is allowed to update and delete operators - because merging is a combination of both
+        $this->authorize('update', $newOperator);
+        $this->authorize('delete', $oldOperator);
+
+        try {
+            $operatorService = new OperatorService();
+            $operatorService->mergeOperators($oldOperator, $newOperator);
+            return response()->json(null, 204);
+        } catch (Exception $exception) {
+            report($exception);
+            return response()->json(['error' => 'Failed to merge operators'], 500);
+        }
     }
 }
