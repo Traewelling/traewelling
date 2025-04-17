@@ -6,7 +6,8 @@ use App\Models\HafasOperator;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class OperatorService {
+class OperatorService
+{
     private const string MAPPING_FILE_PATH  = 'storage/operator-mapping.csv';
     private const string OPERATOR_FILE_PATH = 'storage/operator-operators.csv';
 
@@ -19,7 +20,7 @@ class OperatorService {
      * @return HafasOperator|null
      */
     public function parseTransitousOperator(?string $agencyId, ?string $agencyName): ?HafasOperator {
-        if(is_null($agencyId) || is_null($agencyName)) {
+        if (is_null($agencyId) || is_null($agencyName)) {
             Log::debug('Agency ID or name is null', [
                 'agencyId'   => $agencyId,
                 'agencyName' => $agencyName,
@@ -42,11 +43,11 @@ class OperatorService {
             Log::debug('Mapping search result', ['mappingFound' => !is_null($foundMapping)]);
 
             // If a mapping with a valid wikidata_id is found:
-            if($foundMapping) {
+            if ($foundMapping) {
                 $wikidataId = $foundMapping['wikidata_id'] ?? null;
 
                 // Check if a valid wikidata_id exists (not empty or "null").
-                if(!$wikidataId || strtolower($wikidataId) === 'null') {
+                if (!$wikidataId || strtolower($wikidataId) === 'null') {
                     Log::debug('Found mapping without a valid wikidata_id', ['foundMapping' => $foundMapping]);
                     return null;
                 }
@@ -69,7 +70,7 @@ class OperatorService {
                 ['motis_id' => $agencyId],
                 ['name' => $agencyName]
             );
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             Log::error('Error parsing operator', [
                 'exception' => $exception,
             ]);
@@ -86,25 +87,25 @@ class OperatorService {
         $mappingFilePath = base_path(self::MAPPING_FILE_PATH);
         Log::debug('Loading operator mapping CSV file', ['filePath' => $mappingFilePath]);
 
-        if(!file_exists($mappingFilePath)) {
+        if (!file_exists($mappingFilePath)) {
             Log::debug('Operator mapping file does not exist', ['filePath' => $mappingFilePath]);
             return [];
         }
 
         $operatorMappings = [];
 
-        if(($handle = fopen($mappingFilePath, 'r')) !== false) {
+        if (($handle = fopen($mappingFilePath, 'r')) !== false) {
             // Read the first line as header.
             $header = fgetcsv($handle);
-            if($header === false) {
+            if ($header === false) {
                 Log::debug('Error reading CSV header');
                 fclose($handle);
                 return [];
             }
 
             // Read each subsequent line as a mapping.
-            while(($data = fgetcsv($handle)) !== false) {
-                if(count($data) !== count($header)) {
+            while (($data = fgetcsv($handle)) !== false) {
+                if (count($data) !== count($header)) {
                     continue; // Skip malformed rows.
                 }
                 $operatorMappings[] = array_combine($header, $data);
@@ -124,29 +125,29 @@ class OperatorService {
         $operatorFilePath = base_path(self::OPERATOR_FILE_PATH);
         Log::debug('Loading official operator names from CSV', ['filePath' => $operatorFilePath]);
 
-        if(!file_exists($operatorFilePath)) {
+        if (!file_exists($operatorFilePath)) {
             Log::debug('Official operator names file does not exist', ['filePath' => $operatorFilePath]);
             return [];
         }
 
         $officialOperators = [];
 
-        if(($handle = fopen($operatorFilePath, 'r')) !== false) {
+        if (($handle = fopen($operatorFilePath, 'r')) !== false) {
             $header = fgetcsv($handle);
-            if($header === false) {
+            if ($header === false) {
                 Log::debug('Error reading header from official names CSV');
                 fclose($handle);
                 return [];
             }
 
-            while(($data = fgetcsv($handle)) !== false) {
-                if(count($data) !== count($header)) {
+            while (($data = fgetcsv($handle)) !== false) {
+                if (count($data) !== count($header)) {
                     continue; // Skip malformed rows.
                 }
                 $row        = array_combine($header, $data);
                 $wikidataId = $row['wikidata_id'] ?? null;
                 $name       = $row['name'] ?? null;
-                if($wikidataId && $name) {
+                if ($wikidataId && $name) {
                     $officialOperators[$wikidataId] = $name;
                 }
             }
@@ -171,10 +172,10 @@ class OperatorService {
             'agencyName' => $agencyName,
         ]);
 
-        foreach($operatorMappings as $mapping) {
-            if(
+        foreach ($operatorMappings as $mapping) {
+            if (
                 isset($mapping['motis_id'])
-                && (string)$mapping['motis_id'] === $agencyId
+                && (string) $mapping['motis_id'] === $agencyId
                 && isset($mapping['motis_name'])
                 && strtolower(trim($mapping['motis_name'])) === strtolower(trim($agencyName))
             ) {
@@ -190,11 +191,12 @@ class OperatorService {
     public function refreshFiles(): void {
         $this->refreshFile('mapping', self::MAPPING_FILE_PATH);
         $this->refreshFile('operators', self::OPERATOR_FILE_PATH);
+        $this->refreshOperators();
     }
 
     private function refreshFile(string $remoteFilename, string $localFilename): void {
         $response = Http::get("https://raw.githubusercontent.com/Traewelling/transitous-wikidata-operator-matching/refs/heads/main/$remoteFilename.csv");
-        if($response->successful()) {
+        if ($response->successful()) {
             $csvContent      = $response->body();
             $mappingFilePath = base_path($localFilename);
             file_put_contents($mappingFilePath, $csvContent);
@@ -204,6 +206,20 @@ class OperatorService {
                 'status' => $response->status(),
                 'body'   => $response->body(),
             ]);
+        }
+    }
+
+    /**
+     * After new operator.csv file is downloaded, this function is called to refresh the operators in the database.
+     * Users can change the operator names in the CSV file, and this function will update the database accordingly.
+     */
+    private function refreshOperators(): void {
+        $operators = $this->loadOperatorOfficialNames();
+        foreach ($operators as $wikidataId => $name) {
+            HafasOperator::updateOrCreate(
+                ['wikidata_id' => $wikidataId],
+                ['name' => $name]
+            );
         }
     }
 }
