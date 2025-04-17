@@ -15,6 +15,8 @@
                                 <th>Trwl-ID</th>
                                 <th>WikiData</th>
                                 <th>Name</th>
+                                <th>Legacy Hafas ID</th>
+                                <th>Motis ID</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -27,12 +29,23 @@
                                             {{$operator->wikidata_id}}
                                         </a>
                                     </td>
+                                    <td>{{$operator->name}}</td>
+                                    <td>{{$operator->hafas_id}}</td>
                                     <td>
-                                        {{$operator->name}}
+                                        <span onclick="copyMotisToClipboard('{{$operator->motis_id}}', '{{$operator->name}}')">
+                                            {{$operator->motis_id}}
+                                        </span>
                                     </td>
                                 </tr>
                             @endforeach
                             </tbody>
+                            <script>
+                                function copyMotisToClipboard(motisId, name) {
+                                    // temporary function to help maintaining https://github.com/Traewelling/transitous-wikidata-operator-matching
+                                    navigator.clipboard.writeText(motisId + ',"' + name + '",');
+                                    notyf.success('Copied to clipboard: ' + motisId + ',"' + name + '",');
+                                }
+                            </script>
                         </table>
                     </div>
                 </div>
@@ -74,15 +87,15 @@
                                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                                     }
                                 })
-                                .then(response => {
-                                    if (response.ok) {
-                                        notyf.success('Operators merged successfully');
-                                        document.getElementById('old-operator-id').value = '';
-                                        document.getElementById('new-operator-id').value = '';
-                                    } else {
-                                        notyf.error('Failed to merge operators');
-                                    }
-                                })
+                                    .then(response => {
+                                        if (response.ok) {
+                                            notyf.success('Operators merged successfully');
+                                            document.getElementById('old-operator-id').value = '';
+                                            document.getElementById('new-operator-id').value = '';
+                                        } else {
+                                            notyf.error('Failed to merge operators');
+                                        }
+                                    })
                             } else {
                                 notyf.error('Please fill in both operator IDs');
                             }
