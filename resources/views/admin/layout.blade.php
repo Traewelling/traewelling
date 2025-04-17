@@ -62,6 +62,10 @@
                         <i class="fa-solid fa-map-marker"></i>
                         Stations
                     </a>
+                    <a class="nav-link" href="{{ route('admin.operators') }}">
+                        <i class="fa-solid fa-train"></i>
+                        Operators
+                    </a>
                     <a class="nav-link" href="{{ route('admin.activity') }}">
                         <i class="fa-solid fa-hammer"></i>
                         Activity

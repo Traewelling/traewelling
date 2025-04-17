@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\HafasOperator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -221,5 +222,15 @@ class OperatorService
                 ['name' => $name]
             );
         }
+    }
+
+    public function mergeOperators(HafasOperator $oldOperator, HafasOperator $newOperator): void {
+        DB::transaction(function() use ($oldOperator, $newOperator) {
+            // Update all trips to point to the new operator
+            $oldOperator->trips()->update(['operator_id' => $newOperator->id]);
+
+            // Delete the old operator
+            $oldOperator->delete();
+        });
     }
 }

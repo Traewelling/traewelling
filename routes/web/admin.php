@@ -5,6 +5,7 @@ use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Frontend\Admin\LicensesController;
 use App\Http\Controllers\Frontend\Admin\MotisSourceController;
+use App\Http\Controllers\Frontend\Admin\OperatorController;
 use App\Http\Controllers\Frontend\Admin\ReportController;
 use App\Http\Controllers\Frontend\Admin\StationController;
 use App\Http\Controllers\Frontend\Admin\StatusEditController;
@@ -80,6 +81,10 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
             Route::post('/{id}/wikidata', [StationController::class, 'fetchWikidata']);
         });
 
+        Route::prefix('operators')->group(function() {
+            Route::get('/', [OperatorController::class, 'renderList'])
+                 ->name('admin.operators');
+        });
 
         Route::get('activity', [ActivityController::class, 'render'])
              ->name('admin.activity');
