@@ -19,6 +19,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class StationResource extends JsonResource
 {
     public function toArray($request): array {
+        $this->load('areas');
         /** @var Station $this */
         return [
             "id"            => $this->id,
@@ -26,7 +27,8 @@ class StationResource extends JsonResource
             "latitude"      => $this->latitude,
             "longitude"     => $this->longitude,
             "ibnr"          => $this->ibnr,
-            "rilIdentifier" => $this->rilIdentifier
+            "rilIdentifier" => $this->rilIdentifier,
+            "areas"         => AreaResource::collection($this->areas)
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Spatie\Activitylog\LogOptions;
@@ -34,6 +35,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * // relations
  * @property Collection          $names
  * @property StationIdentifier[] $stationIdentifiers
+ * @property Collection|Area[]   $areas
  *
  * // appends
  * @property string|null         $ifopt
@@ -103,5 +105,11 @@ class Station extends Model
 
     public function stopovers(): HasMany {
         return $this->hasMany(Stopover::class, 'station_id', 'id');
+    }
+
+    public function areas(): BelongsToMany {
+        return $this->belongsToMany(Area::class, 'areas_stations_maps')
+                    ->withPivot('default')
+                    ->using(AreasStationsMap::class);
     }
 }

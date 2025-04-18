@@ -365,6 +365,10 @@ class Motis extends Controller implements DataProviderInterface
             if ($station === null) {
                 $rawStation['stopId'] = $rawStation[$identifier];
                 $station              = $this->stationRepository->createMotisStation($rawStation, $this->source);
+            } else {
+                if (!empty($rawStation['areas'])) {
+                    $this->stationRepository->updateStationAreas($station, $rawStation['areas']);
+                }
             }
             $stations->push($station);
         }
