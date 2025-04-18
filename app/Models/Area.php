@@ -22,10 +22,11 @@ class Area extends Model
 {
     use HasUuids;
 
-    protected $fillable = [
-        'id',
-        'name',
-        'adminLevel',
+    protected $fillable = ['id', 'name', 'adminLevel'];
+    protected $casts    = [
+        'id'         => 'string',
+        'name'       => 'string',
+        'adminLevel' => 'integer',
     ];
 
     public function stations(): BelongsToMany {
@@ -33,5 +34,4 @@ class Area extends Model
                     ->withPivot(['default'])
                     ->using(AreasStationsMap::class);
     }
-
 }

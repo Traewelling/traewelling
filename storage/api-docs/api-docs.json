@@ -4835,6 +4835,24 @@
                 ],
                 "example": "forbidden"
             },
+            "AreaResource": {
+                "title": "Area",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Karlsruhe"
+                    },
+                    "default": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "adminLevel": {
+                        "type": "integer",
+                        "example": "1"
+                    }
+                },
+                "type": "object"
+            },
             "CheckinSuccessResource": {
                 "title": "CheckinResponse",
                 "properties": {
@@ -5049,6 +5067,12 @@
                     "rilIdentifier": {
                         "type": "string",
                         "example": "RK"
+                    },
+                    "areas": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AreaResource"
+                        }
                     }
                 },
                 "type": "object"
@@ -5315,6 +5339,9 @@
                     },
                     "operator": {
                         "$ref": "#/components/schemas/OperatorResource"
+                    },
+                    "dataSource": {
+                        "$ref": "#/components/schemas/DataSourceResource"
                     }
                 },
                 "type": "object"

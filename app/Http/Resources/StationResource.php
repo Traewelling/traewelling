@@ -13,13 +13,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     @OA\Property(property="latitude", type="number", example="48.993207"),
  *     @OA\Property(property="longitude", type="number", example="8.400977"),
  *     @OA\Property(property="ibnr", type="string", example="8000191"),
- *     @OA\Property(property="rilIdentifier", type="string", example="RK")
+ *     @OA\Property(property="rilIdentifier", type="string", example="RK"),
+ *     @OA\Property(property="areas", type="array", @OA\Items(ref="#/components/schemas/AreaResource")),
  * )
  */
 class StationResource extends JsonResource
 {
     public function toArray($request): array {
-        $this->load('areas');
         /** @var Station $this */
         return [
             "id"            => $this->id,
@@ -28,7 +28,7 @@ class StationResource extends JsonResource
             "longitude"     => $this->longitude,
             "ibnr"          => $this->ibnr,
             "rilIdentifier" => $this->rilIdentifier,
-            "areas"         => AreaResource::collection($this->areas)
+            "areas"         => AreaResource::collection($this->whenLoaded('areas')),
         ];
     }
 }

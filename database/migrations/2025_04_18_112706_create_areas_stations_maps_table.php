@@ -13,7 +13,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignIdFor(Station::class)->constrained();
             $table->foreignIdFor(Area::class)->constrained();
-            $table->boolean('default')->default(false);
+            $table->boolean('default')->default(false)->comment('Whether it\'s the default area for the station');
             $table->timestamps();
         });
     }

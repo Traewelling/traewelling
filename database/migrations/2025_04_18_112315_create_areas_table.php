@@ -6,9 +6,8 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
-    {
-        Schema::create('areas', function (Blueprint $table) {
+    public function up(): void {
+        Schema::create('areas', function(Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
             $table->tinyInteger('adminLevel')->default(0);
@@ -16,8 +15,7 @@ return new class extends Migration
         });
     }
 
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('areas');
     }
 };
