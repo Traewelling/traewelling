@@ -19,6 +19,14 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class StationResource extends JsonResource
 {
+    private bool $areasSet;
+
+    public function __construct($station) {
+        $this->areasSet = $station instanceof Station;
+
+        parent::__construct($station);
+    }
+
     public function toArray($request): array {
         /** @var Station $this */
         return [
@@ -28,7 +36,7 @@ class StationResource extends JsonResource
             "longitude"     => $this->longitude,
             "ibnr"          => $this->ibnr,
             "rilIdentifier" => $this->rilIdentifier,
-            "areas"         => AreaResource::collection($this->whenLoaded('areas')),
+            "areas"         => $this->areasSet ? AreaResource::collection($this->whenLoaded('areas')) : null,
         ];
     }
 }
