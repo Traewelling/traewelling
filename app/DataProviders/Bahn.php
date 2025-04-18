@@ -2,6 +2,7 @@
 
 namespace App\DataProviders;
 
+use App\DataProviders\Repositories\StationRepository;
 use App\DataProviders\Repositories\TripRepository;
 use App\Dto\Coordinate;
 use App\Dto\Internal\BahnTrip;
@@ -13,7 +14,6 @@ use App\Enum\TripSource;
 use App\Exceptions\HafasException;
 use App\Helpers\CacheKey;
 use App\Helpers\HCK;
-use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Controller;
 use App\Hydrators\DepartureHydrator;
 use App\Models\PolyLine;
@@ -32,26 +32,16 @@ use Throwable;
 
 class Bahn extends Controller implements DataProviderInterface
 {
-    private TripRepository $tripRepository;
+    private TripRepository    $tripRepository;
+    private StationRepository $stationRepository;
 
-    public function __construct(?TripRepository $repository = null) {
-        $this->tripRepository = $repository ?? new TripRepository();
+    public function __construct(?TripRepository $repository = null, ?StationRepository $stationRepository = null) {
+        $this->tripRepository    = $repository ?? new TripRepository();
+        $this->stationRepository = $stationRepository ?? new StationRepository();
     }
 
     public function getStationByRilIdentifier(string $rilIdentifier): ?Station {
-        $station = Station::where('rilIdentifier', $rilIdentifier)->first();
-        if ($station !== null) {
-            return $station;
-        }
-        return null;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function getStationsByFuzzyRilIdentifier(string $rilIdentifier): Collection {
-        $stationController = new StationController();
-        return $stationController->getStationsByFuzzyRilIdentifier($rilIdentifier);
+        $this->stationRepository->getStationByRilIdentifier($rilIdentifier);
     }
 
     /**

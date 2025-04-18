@@ -9,7 +9,6 @@ use App\Enum\TripSource;
 use App\Exceptions\HafasException;
 use App\Helpers\CacheKey;
 use App\Helpers\HCK;
-use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\TransportController;
 use App\Models\HafasOperator;
@@ -29,6 +28,12 @@ use PDOException;
 class Hafas extends Controller implements DataProviderInterface
 {
 
+    private StationRepository $stationRepository;
+
+    public function __construct(?StationRepository $stationRepository = null) {
+        $this->stationRepository = $stationRepository ?? new StationRepository();
+    }
+
     private function client(): PendingRequest {
         throw new Exception('Stop Hafas from Hafassing us.');
 
@@ -37,7 +42,7 @@ class Hafas extends Controller implements DataProviderInterface
     }
 
     public function getStationByRilIdentifier(string $rilIdentifier): ?Station {
-        $station = Station::where('rilIdentifier', $rilIdentifier)->first();
+        $station = $this->stationRepository->getStationByRilIdentifier($rilIdentifier);
         if ($station !== null) {
             return $station;
         }
@@ -56,14 +61,6 @@ class Hafas extends Controller implements DataProviderInterface
             report($exception);
         }
         return $station;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function getStationsByFuzzyRilIdentifier(string $rilIdentifier): Collection {
-        $stationController = new StationController();
-        return $stationController->getStationsByFuzzyRilIdentifier($rilIdentifier);
     }
 
     /**
@@ -142,11 +139,11 @@ class Hafas extends Controller implements DataProviderInterface
      * @throws JsonException
      */
     private function fetchDepartures(
-        Station    $station,
-        Carbon     $when,
-        int        $duration = 15,
+        Station     $station,
+        Carbon      $when,
+        int         $duration = 15,
         ?TravelType $type = null,
-        bool       $skipTimeShift = false
+        bool        $skipTimeShift = false
     ) {
         $time  = $skipTimeShift ? $when : (clone $when)->shiftTimezone("Europe/Berlin");
         $query = [
@@ -190,11 +187,11 @@ class Hafas extends Controller implements DataProviderInterface
      * @throws HafasException
      */
     public function getDepartures(
-        Station    $station,
-        Carbon     $when,
-        int        $duration = 15,
+        Station     $station,
+        Carbon      $when,
+        int         $duration = 15,
         ?TravelType $type = null,
-        bool       $localtime = false
+        bool        $localtime = false
     ): Collection {
         try {
             $requestTime = is_null($station->time_offset) || $localtime

@@ -40,7 +40,7 @@ const popularStations = [
     function fetchStations() {
         if (input.value.length < 2) return;
 
-        fetch("/transport/train/autocomplete/" + encodeURI(input.value))
+        fetch("/admin/transport/train/autocomplete/" + encodeURI(input.value))
             .then(res => res.json())
             .then(json => {
                 window.awesomplete.list = json.map(station => {

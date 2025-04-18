@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\Admin;
 
 use App\Dto\Coordinate;
+use App\Exceptions\HafasException;
 use App\Exceptions\Wikidata\FetchException;
 use App\Http\Controllers\Controller;
 use App\Models\Station;
@@ -98,6 +99,16 @@ class StationController extends Controller
         } catch (\Exception $exception) {
             Log::error('Error while importing wikidata station (manually): ' . $exception->getMessage());
             return redirect()->back()->with('alert-danger', 'Error while importing station: ' . $exception->getMessage());
+        }
+    }
+
+    public function TrainAutocomplete(string $station): JsonResponse {
+        try {
+            $provider                  = new \App\Http\Controllers\Backend\Transport\StationController();
+            $trainAutocompleteResponse = $provider->search($station);
+            return response()->json($trainAutocompleteResponse);
+        } catch (HafasException $e) {
+            abort(503, $e->getMessage());
         }
     }
 }

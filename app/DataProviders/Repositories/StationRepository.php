@@ -131,4 +131,8 @@ class StationRepository
         );
         return $station;
     }
+
+    public function getStationByrilIdentifier(string $rilIdentifier): ?Station {
+        return Station::where('rilIdentifier', $rilIdentifier)->first();
+    }
 }

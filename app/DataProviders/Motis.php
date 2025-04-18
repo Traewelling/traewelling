@@ -12,7 +12,6 @@ use App\Enum\TravelType;
 use App\Exceptions\HafasException;
 use App\Helpers\CacheKey;
 use App\Helpers\HCK;
-use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\VersionController;
 use App\Http\Controllers\Controller;
 use App\Models\Station;
@@ -53,19 +52,7 @@ class Motis extends Controller implements DataProviderInterface
     }
 
     public function getStationByRilIdentifier(string $rilIdentifier): ?Station {
-        $station = Station::where('rilIdentifier', $rilIdentifier)->first();
-        if ($station !== null) {
-            return $station;
-        }
-        return null;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function getStationsByFuzzyRilIdentifier(string $rilIdentifier): Collection {
-        $stationController = new StationController();
-        return $stationController->getStationsByFuzzyRilIdentifier($rilIdentifier);
+        return $this->stationRepository->getStationByrilIdentifier($rilIdentifier);
     }
 
     /**
@@ -258,28 +245,6 @@ class Motis extends Controller implements DataProviderInterface
             throw new HafasException($exception->getMessage()); //TODO: Throw a more specific exception instead of HAFAS
         }
     }
-
-    private function parseOperator(array $rawDeparture): ?HafasOperator {
-        try {
-            if (!isset($rawDeparture['agencyId']) || !isset($rawDeparture['agencyName'])) {
-                return null;
-            }
-
-            return HafasOperator::updateOrCreate([
-                                                     'motis_id' => $rawDeparture['agencyId'],
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               'motis_source' => $this->source->value,
-                                                 ], [
-                                                     'name' => $rawDeparture['agencyName'],
-                                                 ]);
-        } catch (Exception $exception) {
-            Log::error('Error parsing operator', [
-                'rawDeparture' => $rawDeparture,
-                'exception'    => $exception,
-            ]);
-            return null;
-        }
-    }
-
 
     /**
      * @throws HafasException

@@ -143,7 +143,7 @@ class StationController extends Controller
     public function index(Request $request): JsonResponse {
         $validated = $request->validate(['query' => 'string']);
 
-        $stations = (new StationBackendController())->search($validated['query'], $request->user()->language ?? app()->getLocale());
+        $stations = (new StationBackendController())->search($validated['query']);
         return $this->sendResponse(StationResource::collection($stations));
     }
 

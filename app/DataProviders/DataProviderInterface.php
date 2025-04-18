@@ -18,10 +18,8 @@ interface DataProviderInterface
 
     public function getNearbyStations(float $latitude, float $longitude, int $results);
 
-    public function getStationByRilIdentifier(string $rilIdentifier);
-
     /**
-     * @deprecated
+     * @deprecated only needed for HAFAS. Use StationRepository->getStationByName() instead
      */
-    public function getStationsByFuzzyRilIdentifier(string $rilIdentifier);
+    public function getStationByRilIdentifier(string $rilIdentifier);
 }

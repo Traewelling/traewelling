@@ -30,7 +30,6 @@ use App\Http\Controllers\Frontend\VueFrontendController;
 use App\Http\Controllers\Frontend\WebFingerController;
 use App\Http\Controllers\Frontend\WebhookController;
 use App\Http\Controllers\FrontendStatusController;
-use App\Http\Controllers\FrontendTransportController;
 use App\Http\Controllers\FrontendUserController;
 use App\Http\Controllers\PrivacyAgreementController;
 use App\Http\Controllers\SitemapController;
@@ -84,9 +83,6 @@ Route::get('/callback/mastodon', [MastodonController::class, 'callback']);
 Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
      ->whereNumber('id')
      ->name('status');
-
-Route::get('/trip/{id}', [FrontendTransportController::class, 'getTrip'])
-     ->whereNumber('id');
 
 /**
  * These routes can be used by logged in users although they have not signed the privacy policy yet.
@@ -209,9 +205,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::post('/destroyfollow', [FrontendUserController::class, 'destroyFollow'])
          ->name('follow.destroy'); //TODO: Replace with API Endpoint
-
-    Route::get('/transport/train/autocomplete/{station}', [FrontendTransportController::class, 'TrainAutocomplete'])
-         ->name('transport.train.autocomplete');
 
     Route::get('/stationboard', [VueFrontendController::class, 'stationboard'])->name('stationboard');
 
