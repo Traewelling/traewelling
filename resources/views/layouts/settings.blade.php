@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-bs-theme="dark">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>@yield('title') - {{__('menu.settings')}} - {{ config('app.name', 'Träwelling') }}</title>
@@ -12,7 +12,7 @@
         if (localStorage.getItem("darkMode") === null) {
             localStorage.setItem("darkMode", "auto");
         }
-        var darkModeSetting = localStorage.getItem("darkMode");
+        let darkModeSetting = localStorage.getItem("darkMode");
         if (darkModeSetting === "auto") {
             darkModeSetting = window.matchMedia("(prefers-color-scheme: dark)")
                 .matches
@@ -24,6 +24,7 @@
         } else {
             document.documentElement.classList.remove("dark");
         }
+        document.documentElement.setAttribute("data-bs-theme", darkModeSetting);
     </script>
 
     <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
