@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {ShortStation} from "../../../types/Station";
+import {Area, ShortStation} from "../../../types/Station";
 
 export default defineComponent({
   name: "AutocompleteListEntry",
@@ -18,6 +18,21 @@ export default defineComponent({
       required: false
     }
   },
+  methods: {
+    getArea(): string {
+      if (this.$props.station?.areas) {
+        let defaultArea: null | Area = this.$props.station.areas.find((area: Area) => area.default);
+        let country: null | Area = this.$props.station.areas.find((area: Area) => area.adminLevel === 2);
+        if (defaultArea) {
+          return country ? `${defaultArea.name}, ${country.name}` : defaultArea.name;
+        }
+        if (country) {
+          return country.name;
+        }
+      }
+      return '';
+    }
+  },
 })
 </script>
 
@@ -26,6 +41,7 @@ export default defineComponent({
     <a href="#" class="text-trwl">
       <i v-show="prefix" :class="prefix"></i>
       {{ station?.name || text }} <span v-if="station?.rilIdentifier">({{ station.rilIdentifier }})</span>
+      <span class="text-sm text-muted overflow-hidden">{{ getArea() }}</span>
     </a>
   </li>
 </template>

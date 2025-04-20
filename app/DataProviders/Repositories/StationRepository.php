@@ -5,6 +5,7 @@ namespace App\DataProviders\Repositories;
 use App\Dto\Coordinate;
 use App\Enum\DataProvider;
 use App\Helpers\Formatter;
+use App\Models\Area;
 use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Services\GeoService;
@@ -75,11 +76,12 @@ class StationRepository
             $stationIds = [$stationIds];
         }
 
-        return Station::whereRelation('stationIdentifiers', function($query) use ($stationIds, $source, $type) {
-            $query->whereIn('identifier', $stationIds)
-                  ->where('type', $type)
-                  ->where('origin', $source->value);
-        })->get();
+        return Station::with('areas')
+                      ->whereRelation('stationIdentifiers', function($query) use ($stationIds, $source, $type) {
+                          $query->whereIn('identifier', $stationIds)
+                                ->where('type', $type)
+                                ->where('origin', $source->value);
+                      })->get();
     }
 
     public function createMotisStation(mixed $rawStation, DataProvider $source): Station {
@@ -91,7 +93,6 @@ class StationRepository
                            ->get();
 
         $city                     = Formatter::getCityFromAreas($rawStation['areas'] ?? []);
-        $name                     = Formatter::cityStationName($rawStation['name'], $city);
         $simplifiedRawStationName = Formatter::simplifyStationName($rawStation['name'], $city);
         $stations                 = $stations->map(function($station) use ($simplifiedRawStationName, $city) {
             $stationName = Formatter::simplifyStationName($station->name, $city);
@@ -109,13 +110,17 @@ class StationRepository
 
         if ($stations->isEmpty()) {
             $station = new Station([
-                                       'name'      => $name,
+                                       'name'      => $rawStation['name'],
                                        'latitude'  => $rawStation['lat'],
                                        'longitude' => $rawStation['lon']
                                    ]);
             $station->save();
         } else {
             $station = $stations->first();
+        }
+
+        if (!empty($rawStation['areas'])) {
+            $this->updateStationAreas($station, $rawStation['areas']);
         }
 
         StationIdentifier::updateOrCreate(
@@ -126,9 +131,27 @@ class StationRepository
             ],
             [
                 'station_id' => $station->id,
-                'name'       => $name
+                'name'       => $rawStation['name']
             ]
         );
         return $station;
+    }
+
+    public function updateStationAreas(Station $station, $areas): void {
+        $station->load('areas');
+        $newAreas = [];
+        foreach ($areas as $area) {
+            if (!$area['default'] && (int) $area['adminLevel'] !== 2) {
+                continue;
+            }
+            $areaModel = Area::updateOrCreate([
+                                                  'name'       => $area['name'],
+                                                  'adminLevel' => $area['adminLevel'] ?? 0
+                                              ]);
+
+            $newAreas[$areaModel->id] = ['default' => $area['default'] ?? 0];
+        }
+
+        $station->areas()->sync($newAreas);
     }
 }

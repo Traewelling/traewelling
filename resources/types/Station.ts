@@ -5,4 +5,11 @@ export type ShortStation = {
     longitude: number;
     ibnr: number;
     rilIdentifier: string;
+    areas: Area[];
 }
+
+export type Area = {
+    name: string;
+    default: boolean;
+    adminLevel: number;
+};
