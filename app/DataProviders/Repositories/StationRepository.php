@@ -84,6 +84,35 @@ class StationRepository
                       })->get();
     }
 
+    public function getStationByIfopt(string $ifopt): ?Station {
+        $ifoptParts = explode(':', $ifopt);
+        if (count($ifoptParts) < 3) {
+            return null;
+        }
+        return Station::with(['areas', 'stationIdentifiers'])->where([
+                                                                         'ifopt_a' => $ifoptParts[0],
+                                                                         'ifopt_b' => $ifoptParts[1],
+                                                                         'ifopt_c' => $ifoptParts[2],
+                                                                     ])->first();
+    }
+
+    public function updateStationIdentifier(?Station $station, string $identifier, DataProvider $source, string $type = 'motis'): void {
+        if (!$station) {
+            return;
+        }
+        StationIdentifier::updateOrCreate(
+            [
+                'type'       => $type,
+                'origin'     => $source->value,
+                'identifier' => $identifier,
+            ],
+            [
+                'station_id' => $station->id,
+                'name'       => $station->name
+            ]
+        );
+    }
+
     public function createMotisStation(mixed $rawStation, DataProvider $source): Station {
         $coordinates = new Coordinate($rawStation['lat'], $rawStation['lon']);
         $bbox        = $this->geoService->getBoundingBox($coordinates, 100);
@@ -153,5 +182,16 @@ class StationRepository
         }
 
         $station->areas()->sync($newAreas);
+    }
+
+    public function updateOrCreateByIfopt(mixed $stationId, DataProvider $source): ?Station {
+        $station = null;
+        // currently we can only handle DELFI, because other providers don't seem to use (real) ifopt ids
+        if (str_starts_with($stationId, 'de-DELFI_')) {
+            $ifopt   = str_replace('de-DELFI_', '', $stationId);
+            $station = $this->getStationByIfopt($ifopt);
+            $this->updateStationIdentifier($station, $stationId, $source);
+        }
+        return $station;
     }
 }
