@@ -13,6 +13,7 @@
 
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\ChangelogController;
+use App\Http\Controllers\Frontend\DebugController;
 use App\Http\Controllers\Frontend\DevController;
 use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\IcsController;
@@ -232,3 +233,8 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 Route::get('/sitemap.xml', [SitemapController::class, 'renderSitemap']);
 
 Route::get('/.well-known/webfinger', [WebFingerController::class, 'endpoint']);
+
+Route::prefix('debug')->group(function() {
+    // routes for debugging purposes and to show users which data is used by current instance
+    Route::get('/motis-sources', [DebugController::class, 'showMotisSources']);
+});
