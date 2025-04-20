@@ -126,10 +126,6 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
              Route::post('/edit/{id}', [AdminEventController::class, 'edit'])
                   ->middleware('permission:update-events');
          });
-
-    Route::get('/transport/train/autocomplete/{station}', [StationController::class, 'TrainAutocomplete'])
-         ->name('transport.train.autocomplete');
-
 });
 
 
