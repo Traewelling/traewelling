@@ -115,7 +115,7 @@ class StationRepository
 
     public function createMotisStation(mixed $rawStation, DataProvider $source): Station {
         $coordinates = new Coordinate($rawStation['lat'], $rawStation['lon']);
-        $bbox        = $this->geoService->getBoundingBox($coordinates, 100);
+        $bbox        = $this->geoService->getBoundingBox($coordinates, config('trwl.motis.nearby_radius'));
 
         $stations = Station::whereBetween('latitude', [$bbox->lowerRight->latitude, $bbox->upperLeft->latitude])
                            ->whereBetween('longitude', [$bbox->lowerRight->longitude, $bbox->upperLeft->longitude])
