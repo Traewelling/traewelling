@@ -263,28 +263,6 @@ class Motis extends Controller implements DataProviderInterface
         }
     }
 
-    private function parseOperator(array $rawDeparture): ?HafasOperator {
-        try {
-            if (!isset($rawDeparture['agencyId']) || !isset($rawDeparture['agencyName'])) {
-                return null;
-            }
-
-            return HafasOperator::updateOrCreate([
-                                                     'motis_id' => $rawDeparture['agencyId'],
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               'motis_source' => $this->source->value,
-                                                 ], [
-                                                     'name' => $rawDeparture['agencyName'],
-                                                 ]);
-        } catch (Exception $exception) {
-            Log::error('Error parsing operator', [
-                'rawDeparture' => $rawDeparture,
-                'exception'    => $exception,
-            ]);
-            return null;
-        }
-    }
-
-
     /**
      * @throws HafasException
      */
@@ -364,7 +342,10 @@ class Motis extends Controller implements DataProviderInterface
 
             if ($station === null) {
                 $rawStation['stopId'] = $rawStation[$identifier];
-                $station              = $this->stationRepository->createMotisStation($rawStation, $this->source);
+                $stationId            = $rawStation[$identifier];
+
+                $station = $this->stationRepository->updateOrCreateByIfopt($stationId, $this->source);
+                $station = $station ?? $this->stationRepository->createMotisStation($rawStation, $this->source);
             } else {
                 if (!empty($rawStation['areas'])) {
                     $this->stationRepository->updateStationAreas($station, $rawStation['areas']);
