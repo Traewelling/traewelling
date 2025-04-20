@@ -134,8 +134,11 @@ class StationRepository
         $stations = $stations->filter(function($station) {
             return $station->motisRepositoryTempPercent > 90;
         });
-        $stations = $stations->sortBy('ibnr', SORT_ASC);
-        $stations = $stations->sortBy('motisRepositoryTempPercent', SORT_ASC);
+        $stations = $stations->sortBy([
+                                          ['ibnr', 'desc'],
+                                          ['relevance', 'desc'],
+                                          ['motisRepositoryTempPercent', 'desc']
+                                      ]);
 
         if ($stations->isEmpty()) {
             $station = new Station([
