@@ -169,6 +169,10 @@ class StationRepository
         return $station;
     }
 
+    public function getStationByrilIdentifier(string $rilIdentifier): ?Station {
+        return Station::where('rilIdentifier', $rilIdentifier)->first();
+    }
+
     public function updateStationAreas(Station $station, $areas): void {
         $station->load('areas');
         $newAreas = [];
