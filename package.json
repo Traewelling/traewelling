@@ -17,7 +17,7 @@
     "lodash": "^4.17.21",
     "sass": "^1.85.1",
     "tailwindcss": "^4.1.4",
-    "vite": "^6.2.6"
+    "vite": "^6.3.3"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.1",
