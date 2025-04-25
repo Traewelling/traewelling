@@ -14,6 +14,7 @@ use App\Models\Trip;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StationController extends Controller
 {
@@ -66,6 +67,18 @@ class StationController extends Controller
         $this->authorize('update', $oldStation);
         $this->authorize('delete', $oldStation);
 
+        StationIdentifier::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
+
+        DB::transaction(function() use ($newStation, $oldStation) {
+            Stopover::where('train_station_id', $oldStation->id)->update(['train_station_id' => $newStation->id]);
+            Trip::where('origin_id', $oldStation->id)->update(['origin_id' => $newStation->id]);
+            Trip::where('destination_id', $oldStation->id)->update(['destination_id' => $newStation->id]);
+            Event::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
+            EventSuggestion::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
+
+            $oldStation->delete();
+        });
+
         $logMessage = 'Merged station ' . $oldStation->name . ' (' . $oldStation->id . ') into ' . $newStation->name . ' (' . $newStation->id . ')';
         activity()->causedBy(auth()->user())
                   ->performedOn($oldStation)
@@ -73,15 +86,6 @@ class StationController extends Controller
         activity()->causedBy(auth()->user())
                   ->performedOn($newStation)
                   ->log($logMessage);
-
-        Stopover::where('train_station_id', $oldStation->id)->update(['train_station_id' => $newStation->id]);
-        Trip::where('origin_id', $oldStation->id)->update(['origin_id' => $newStation->id]);
-        Trip::where('destination_id', $oldStation->id)->update(['destination_id' => $newStation->id]);
-        Event::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
-        EventSuggestion::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
-        StationIdentifier::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
-
-        $oldStation->delete();
 
         return new StationResource($newStation);
     }

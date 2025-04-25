@@ -716,5 +716,13 @@
     "export.nominal": "Dane nominalne",
     "export.columns": "Które kolumny chcesz wyeksportować?",
     "export.nominal-tags": "Dane nominalne i Tagi",
-    "export.all": "Wszystkie pola"
+    "export.all": "Wszystkie pola",
+    "export.error.gdpr-time": "Możesz wyeksportować swoje pełne dane tylko raz na 30 dni. Ostatnio eksportowałeś swoje dane: :date.",
+    "notifications.personalDataExported.notice": "Będziesz mógł pobrać swoje dane do :date.",
+    "notifications.personalDataExported.lead": "Eksport twoich danych jest gotowy!",
+    "status.hidden-body": "Ten status nie jest widoczny dla innych użytkowników.",
+    "status.locked-visibility": "Nie możesz zmienić widoczności tego statusu.",
+    "license.info": "Licencja",
+    "export.gdpr.recent": "Eksport twoich danych został zlecony :date. Otrzymasz email kiedy będzie gotowy do pobrania. Możesz wyeksportować swoje dane raz na 30 dni.",
+    "export.gdpr.description": "Tutaj możesz wyeksportować wszystkie swoje dane. Przygotowanie eksportu może zając do 48 godzin."
 }

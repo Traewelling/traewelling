@@ -22,15 +22,17 @@ class Formatter
         // 1. Set to uppercase
         $stationName = strtoupper($stationName);
 
+
+        // 3. Remove special characters
+        $stationName = preg_replace('/[^A-Za-z\s]/', '', $stationName);
+
         if ($city) {
+            $city = preg_replace('/[^A-Za-z\s]/', '', $city);
             // 2. Remove City names from station names
             // "Karlsruhe Hbf" -> "HBF"
             $city        = '/\b' . preg_quote(strtoupper($city)) . '\b/';
             $stationName = preg_replace($city, '', $stationName);
         }
-
-        // 3. Remove special characters
-        $stationName = preg_replace('/[^A-Za-z\s]/', '', $stationName);
 
         // 4. Remove words, characters and prefixes
         $removals = [
