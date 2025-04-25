@@ -12,7 +12,8 @@ class StationRepository
     public function getStationByName(string $name, string $lang, bool $invertLanguage = false, int $limit = 20): Collection {
         $invertLanguage = $invertLanguage ? '!=' : '=';
 
-        return Station::leftJoin('station_names', 'station_names.station_id', '=', 'train_stations.id')
+        return Station::with('areas')
+                      ->leftJoin('station_names', 'station_names.station_id', '=', 'train_stations.id')
                       ->where('station_names.name', 'LIKE', "$name")
                       ->where('station_names.language', $invertLanguage, $lang)
                       ->orWhere('train_stations.name', 'LIKE', "$name")

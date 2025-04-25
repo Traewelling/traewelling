@@ -44,8 +44,12 @@ class TransportController extends Controller
             $stations = $this->dataProvider->getStations($query);
             if ($stations->count() < 10) {
                 $remaining  = 10 - $stations->count();
-                $dbStations = $this->stationRepository->getStationByName($query, 'de', true, $remaining);
-                $stations   = $stations->merge($dbStations);
+                $dbStations = $this->stationRepository->getStationByName($query, 'de', true);
+                // remove duplicates
+                $dbStations = $dbStations->filter(function(Station $station) use ($stations) {
+                    return !$stations->contains('id', $station->id);
+                });
+                $stations   = $stations->merge($dbStations->take($remaining));
             }
 
         }
