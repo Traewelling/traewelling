@@ -6,6 +6,7 @@ use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
 use App\Http\Controllers\Controller;
 use App\Models\Checkin;
+use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\User;
 use App\Repositories\StationRepository;
@@ -81,8 +82,12 @@ class StationController extends Controller
         $stations = $this->dataProvider->getStations($search);
         if ($stations->count() < 10) {
             $remaining  = 10 - $stations->count();
-            $dbStations = $this->stationRepository->getStationByName($search, 'de', true, $remaining);
-            $stations   = $stations->merge($dbStations);
+            $dbStations = $this->stationRepository->getStationByName($search, 'de', true);
+            // remove duplicates
+            $dbStations = $dbStations->filter(function(Station $station) use ($stations) {
+                return !$stations->contains('id', $station->id);
+            });
+            $stations   = $stations->merge($dbStations->take($remaining));
         }
         return $stations;
     }
