@@ -67,9 +67,29 @@ class StationController extends Controller
         $this->authorize('update', $oldStation);
         $this->authorize('delete', $oldStation);
 
+        // do this before the transaction, so new checkins will be created with the new station, if transaction fails
         StationIdentifier::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
 
         DB::transaction(function() use ($newStation, $oldStation) {
+            // Before the update: remove duplicates in stopovers
+            $potentialDuplicates = Stopover::where('train_station_id', $oldStation->id)->get();
+
+            foreach ($potentialDuplicates as $oldStopover) {
+                // check if the dates are the same (then it can be safely removed)
+                $duplicate = Stopover::where('train_station_id', $newStation->id)
+                                     ->where('trip_id', $oldStopover->trip_id)
+                                     ->where('departure_planned', $oldStopover->departure_planned)
+                                     ->where('arrival_planned', $oldStopover->arrival_planned)
+                                     ->first();
+
+                if ($duplicate) {
+                    // if there is a duplicate: move stopovers and then delete the old one
+                    Checkin::where('origin_stopover_id', $oldStopover->id)->update(['origin_stopover_id' => $duplicate->id]);
+                    Checkin::where('destination_stopover_id', $oldStopover->id)->update(['destination_stopover_id' => $duplicate->id]);
+                    $oldStopover->delete();
+                }
+            }
+
             Stopover::where('train_station_id', $oldStation->id)->update(['train_station_id' => $newStation->id]);
             Trip::where('origin_id', $oldStation->id)->update(['origin_id' => $newStation->id]);
             Trip::where('destination_id', $oldStation->id)->update(['destination_id' => $newStation->id]);
@@ -147,8 +167,8 @@ class StationController extends Controller
     public function index(Request $request): JsonResponse {
         $validated = $request->validate(['query' => 'string']);
 
-        $stations = (new StationBackendController())->index($validated['query'], $request->user()->language ?? app()->getLocale());
-        return $this->sendResponse($stations);
+        $stations = (new StationBackendController())->search($validated['query']);
+        return $this->sendResponse(StationResource::collection($stations));
     }
 
 

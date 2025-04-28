@@ -16,7 +16,6 @@ use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
-use App\Http\Controllers\TransportController as TransportBackend;
 use App\Http\Resources\CheckinSuccessResource;
 use App\Http\Resources\StationResource;
 use App\Http\Resources\TripResource;
@@ -510,7 +509,7 @@ class TransportController extends Controller
      */
     public function getTrainStationAutocomplete(string $query): JsonResponse {
         try {
-            $trainAutocompleteResponse = (new TransportBackend(Auth::user()))->getTrainStationAutocomplete($query);
+            $trainAutocompleteResponse = (new StationController())->search($query);
             return $this->sendResponse($trainAutocompleteResponse);
         } catch (HafasException $e) {
             // check if app is in debug mode

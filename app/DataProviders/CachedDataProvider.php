@@ -88,19 +88,6 @@ class CachedDataProvider implements DataProviderInterface
         );
     }
 
-    public function getStationsByFuzzyRilIdentifier(string $rilIdentifier): Collection {
-        $key = CacheKey::getHafasStationsFuzzyKey($rilIdentifier);
-
-        return $this->remember(
-            $key,
-            now()->addMinutes(15),
-            function() use ($rilIdentifier) {
-                return $this->dataProvider->getStationsByFuzzyRilIdentifier($rilIdentifier);
-            },
-            HCK::STATIONS_SUCCESS
-        );
-    }
-
     private function remember(string $key, Carbon $expires, callable $callback, ?string $ident = null): mixed {
         if (Cache::has($key)) {
             CacheKey::increment(CacheKey::getHafasCacheHitKey($ident));

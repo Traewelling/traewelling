@@ -87,6 +87,10 @@ class MotisSourceLicense extends Model
             'name' => 'Open Data Commons Attribution License v1.0 (ODC-By-1.0)',
             'url'  => 'https://spdx.org/licenses/ODC-By-1.0.html',
         ],
+        'CC-BY-NC-4.0' => [
+            'name' => 'Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)',
+            'url'  => 'https://spdx.org/licenses/CC-BY-NC-4.0.html'
+        ]
     ];
 
     public function trips(): HasMany {

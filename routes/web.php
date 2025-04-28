@@ -86,9 +86,6 @@ Route::get('/status/{id}', [FrontendStatusController::class, 'getStatus'])
      ->whereNumber('id')
      ->name('status');
 
-Route::get('/trip/{id}', [FrontendTransportController::class, 'getTrip'])
-     ->whereNumber('id');
-
 /**
  * These routes can be used by logged in users although they have not signed the privacy policy yet.
  */

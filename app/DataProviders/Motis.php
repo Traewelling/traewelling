@@ -52,24 +52,7 @@ class Motis extends Controller implements DataProviderInterface
     }
 
     public function getStationByRilIdentifier(string $rilIdentifier): ?Station {
-        $station = Station::where('rilIdentifier', $rilIdentifier)->first();
-        if ($station !== null) {
-            return $station;
-        }
-        return null;
-    }
-
-    public function getStationsByFuzzyRilIdentifier(string $rilIdentifier): Collection {
-        $stations = Station::where('rilIdentifier', 'LIKE', "$rilIdentifier%")
-                           ->orderBy('rilIdentifier')
-                           ->get();
-        if ($stations->count() === 0) {
-            $station = $this->getStationByRilIdentifier(rilIdentifier: $rilIdentifier);
-            if ($station !== null) {
-                $stations->push($station);
-            }
-        }
-        return $stations;
+        return $this->stationRepository->getStationByrilIdentifier($rilIdentifier);
     }
 
     /**
