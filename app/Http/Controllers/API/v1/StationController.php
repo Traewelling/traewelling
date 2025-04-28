@@ -83,7 +83,9 @@ class StationController extends Controller
                                      ->first();
 
                 if ($duplicate) {
-                    // if there is a duplicate: remove old stopover
+                    // if there is a duplicate: move stopovers and then delete the old one
+                    Checkin::where('origin_stopover_id', $oldStopover->id)->update(['origin_stopover_id' => $duplicate->id]);
+                    Checkin::where('destination_stopover_id', $oldStopover->id)->update(['destination_stopover_id' => $duplicate->id]);
                     $oldStopover->delete();
                 }
             }
