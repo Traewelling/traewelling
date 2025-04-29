@@ -64,7 +64,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        {{$stations->links()}}
+                        {{$stations->appends(request()->query())->links()}}
 
                         <script>
                             // not beautiful, but works ;)
