@@ -42,61 +42,75 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Wikidata ID</th>
-                            <td>
-                                <a href="https://www.wikidata.org/wiki/{{ $station->wikidata_id }}"
-                                   target="{{ $station->wikidata_id }}"
-                                >
-                                    {{ $station->wikidata_id }}
-                                </a>
-
-                                <a class="float-end btn btn-sm btn-outline-primary"
-                                   onclick="fetch('/admin/stations/{{ $station->id }}/wikidata', {
-                            method: 'POST',
-                            headers: {'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content}
-                       }).then(function() {location.reload()})"
-                                >
-                                    Fetch
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>IBNR</th>
-                            <td>
-                                <a href="https://reiseauskunft.bahn.de/bin/bhftafel.exe/en?input={{ $station->ibnr ?? '' }}&boardType=dep&time=actual&productsDefault=1111101&start=yes"
-                                   target="{{ $station->ibnr ?? '' }}"
-                                >
-                                    {{ $station->ibnr }}
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>IFOPT</th>
-                            <td>
-                                {{ $station->ifopt }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>RL100</th>
-                            <td>
-                                <a href="https://iris.noncd.db.de/wbt/js/index.html?bhf={{ $station->rilIdentifier ?? '' }}&zeilen=50&seclang=en"
-                                   target="{{ $station->rilIdentifier ?? '' }}"
-                                >
-                                    {{ $station->rilIdentifier }}
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
                             <th>
                                 Identifier
                             </th>
                             <td>
                                 <table class="table table-bordered">
+                                    @if($station->wikidata_id)
+                                        <tr>
+                                            <td>wikidata</td>
+                                            <td>
+                                                <a href="https://www.wikidata.org/wiki/{{ $station->wikidata_id }}"
+                                                   target="{{ $station->wikidata_id }}">
+                                                    {{ $station->wikidata_id }}
+                                                </a>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    @endif
+
+                                    @if($station->ibnr)
+                                        <tr>
+                                            <td>legacy-hafas (ibnr)</td>
+                                            <td>
+                                                <a href="https://reiseauskunft.bahn.de/bin/bhftafel.exe/en?input={{ $station->ibnr ?? '' }}&boardType=dep&time=actual&productsDefault=1111101&start=yes"
+                                                   target="{{ $station->ibnr ?? '' }}"
+                                                >
+                                                    {{ $station->ibnr }}
+                                                </a>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    @endif
+
+                                    @if($station->ifopt)
+                                        <tr>
+                                            <td>ifopt</td>
+                                            <td>
+                                                <a href="https://transmodel-ids.toolforge.org/ifopt/{{ urlencode($station->ifopt) }}"
+                                                   target="{{ $station->ifopt }}">
+                                                    {{ $station->ifopt }}
+                                                </a>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    @endif
+
+                                    @if($station->rilIdentifier)
+                                        <tr>
+                                            <td>ril</td>
+                                            <td>
+                                                <a href="https://iris.noncd.db.de/wbt/js/index.html?bhf={{ $station->rilIdentifier ?? '' }}&zeilen=50&seclang=en"
+                                                   target="{{ $station->rilIdentifier ?? '' }}"
+                                                >
+                                                    {{ $station->rilIdentifier }}
+                                                </a>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    @endif
+
                                     @foreach($station->stationIdentifiers as $identifier)
                                         <tr>
                                             <td>{{ $identifier->type }}</td>
                                             <td>
-                                                <a href="{{$identifier->getRawTransitousApiLinkToDepartures()}}" target="_blank">
+                                                <a href="{{$identifier->getRawTransitousApiLinkToDepartures()}}"
+                                                   target="_blank">
                                                     {{ $identifier->identifier }}
                                                 </a>
                                             </td>
@@ -125,6 +139,12 @@
                                 </table>
                             </td>
                         </tr>
+                        <tr>
+                            <th>Created at</th>
+                            <td>
+                                {{ $station->created_at?->toIso8601String() }}
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -133,7 +153,7 @@
         <div class="col-md-6">
             <div class="card mb-3">
                 <div class="card-body" style="padding: 0;">
-                    <div id="map" style="height: 200px;"></div>
+                    <div id="map" style="height: 300px;"></div>
                 </div>
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
@@ -230,20 +250,22 @@
                         @foreach($latestCheckins as $checkin)
                             <tr>
                                 <td>
-                                    <a href="{{ route('admin.status.edit', ['id' => $checkin->status_id]) }}">
+                                    <a href="{{ route('admin.status.edit', ['statusId' => $checkin->status_id]) }}">
                                         {{ $checkin->id }}
                                     </a>
                                 </td>
                                 <td>
-                                    {{ $checkin->user->name }}
+                                    <a href="/admin/users/{{$checkin->user->id}}">
+                                        {{ $checkin->user->name }}
+                                    </a>
                                 </td>
                                 <td>
-                                    <a href="/admin/stations/{{$checkin->originStopover->train_station_id}}">
+                                    <a href="/admin/stations/{{$checkin->originStopover->station->id}}">
                                         {{ $checkin->originStopover->station->name }}
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="/admin/stations/{{$checkin->destinationStopover->train_station_id}}">
+                                    <a href="/admin/stations/{{$checkin->destinationStopover->station->id}}">
                                         {{ $checkin->destinationStopover->station->name }}
                                     </a>
                                 </td>
