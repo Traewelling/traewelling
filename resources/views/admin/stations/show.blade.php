@@ -95,7 +95,11 @@
                                     @foreach($station->stationIdentifiers as $identifier)
                                         <tr>
                                             <td>{{ $identifier->type }}</td>
-                                            <td>{{ $identifier->identifier }}</td>
+                                            <td>
+                                                <a href="{{$identifier->getRawTransitousApiLinkToDepartures()}}" target="_blank">
+                                                    {{ $identifier->identifier }}
+                                                </a>
+                                            </td>
                                             <td>{{ $identifier->name }}</td>
                                             <td>{{ $identifier->origin }}</td>
                                         </tr>
@@ -240,7 +244,7 @@
                                 </td>
                                 <td>
                                     <a href="/admin/stations/{{$checkin->destinationStopover->train_station_id}}">
-                                    {{ $checkin->destinationStopover->station->name }}
+                                        {{ $checkin->destinationStopover->station->name }}
                                     </a>
                                 </td>
                                 <td>
