@@ -10,6 +10,8 @@ export type ShortStation = {
 
 export type Area = {
     name: string;
-    default: boolean;
     adminLevel: number;
+    pivot: {
+        default: boolean;
+    }
 };

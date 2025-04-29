@@ -21,7 +21,7 @@ export default defineComponent({
   methods: {
     getArea(): string {
       if (this.$props.station?.areas) {
-        let defaultArea: null | Area = this.$props.station.areas.find((area: Area) => area.default);
+        let defaultArea: null | Area = this.$props.station.areas.find((area: Area) => area.pivot.default);
         let country: null | Area = this.$props.station.areas.find((area: Area) => area.adminLevel === 2);
         if (defaultArea) {
           return country ? `${defaultArea.name}, ${country.name}` : defaultArea.name;
