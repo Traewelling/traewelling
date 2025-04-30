@@ -510,7 +510,7 @@ class TransportController extends Controller
     public function getTrainStationAutocomplete(string $query): JsonResponse {
         try {
             $trainAutocompleteResponse = (new StationController())->search($query);
-            return $this->sendResponse($trainAutocompleteResponse);
+            return $this->sendResponse(StationResource::collection($trainAutocompleteResponse));
         } catch (HafasException $e) {
             // check if app is in debug mode
             return $this->sendError(

@@ -6,6 +6,7 @@ use App\Dto\Coordinate;
 use App\Exceptions\HafasException;
 use App\Exceptions\Wikidata\FetchException;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\StationResource;
 use App\Models\Station;
 use App\Objects\LineSegment;
 use App\Services\StationService;
@@ -106,7 +107,7 @@ class StationController extends Controller
         try {
             $provider                  = new \App\Http\Controllers\Backend\Transport\StationController();
             $trainAutocompleteResponse = $provider->search($station);
-            return response()->json($trainAutocompleteResponse);
+            return response()->json(StationResource::collection($trainAutocompleteResponse));
         } catch (HafasException $e) {
             abort(503, $e->getMessage());
         }
