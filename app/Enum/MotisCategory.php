@@ -37,22 +37,22 @@ enum MotisCategory: string
     // todo: this needs to be better
     public function getHTT(): HafasTravelType {
         return match ($this->name) {
-            'HIGHSPEED_RAIL'     => HafasTravelType::NATIONAL_EXPRESS,
-            'REGIONAL_FAST_RAIL' => HafasTravelType::NATIONAL,
-            'METRO'              => HafasTravelType::SUBURBAN,
-            'BUS'                => HafasTravelType::BUS,
-            'FERRY'              => HafasTravelType::FERRY,
-            'SUBWAY'             => HafasTravelType::SUBWAY,
-            'TRAM'               => HafasTravelType::TRAM,
-            'COACH'              => HafasTravelType::TAXI,
-            default              => HafasTravelType::REGIONAL,
+            'HIGHSPEED_RAIL', 'REGIONAL_FAST_RAIL' => HafasTravelType::NATIONAL_EXPRESS,
+            'LONG_DISTANCE'                        => HafasTravelType::REGIONAL_EXP,
+            'METRO'                                => HafasTravelType::SUBURBAN,
+            'BUS'                                  => HafasTravelType::BUS,
+            'FERRY'                                => HafasTravelType::FERRY,
+            'SUBWAY'                               => HafasTravelType::SUBWAY,
+            'TRAM'                                 => HafasTravelType::TRAM,
+            'COACH'                                => HafasTravelType::TAXI,
+            default                                => HafasTravelType::REGIONAL,
         };
     }
 
     // todo: this needs to be better
     public static function fromTravelType(TravelType|null $travelType): ?array {
         return match ($travelType) {
-            TravelType::EXPRESS  => [MotisCategory::HIGHSPEED_RAIL,],
+            TravelType::EXPRESS  => [MotisCategory::HIGHSPEED_RAIL, MotisCategory::LONG_DISTANCE, MotisCategory::NIGHT_RAIL, MotisCategory::REGIONAL_FAST_RAIL],
             TravelType::REGIONAL => [MotisCategory::REGIONAL_FAST_RAIL, MotisCategory::REGIONAL_RAIL],
             TravelType::SUBURBAN => [MotisCategory::METRO],
             TravelType::BUS      => [MotisCategory::BUS],
