@@ -73,7 +73,7 @@ const getIcon = (alert: AlertResource): string => {
       {{ getTitle(alert) }}
     </h4>
     <div class="flex-1">
-      <pre>{{ getContent(alert) }}</pre>
+      <pre class="alert-pre">{{ getContent(alert) }}</pre>
       <p v-if="getUrl(alert)">
         <a :href="getUrl(alert)" target="_blank" class="text-blue-500 hover:underline">
           {{ getUrl(alert) }}
@@ -82,3 +82,11 @@ const getIcon = (alert: AlertResource): string => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.alert-pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--bs-body-font-family), sans-serif;
+}
+</style>
