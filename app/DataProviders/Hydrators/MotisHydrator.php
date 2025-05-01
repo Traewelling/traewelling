@@ -106,7 +106,7 @@ class MotisHydrator
         return $stopovers;
     }
 
-    public function getStopoverData($station, mixed $rawStop, DataProvider $source, bool $realTime = false): array {
+    private function getStopoverData($station, mixed $rawStop, DataProvider $source, bool $realTime = false): array {
         $station = $station ?? $this->stationRepository->updateOrCreateByIfopt($rawStop['stopId'], $source);
         $station = $station ?? $this->stationRepository->createMotisStation($rawStop, $source);
 
@@ -163,14 +163,15 @@ class MotisHydrator
         ];
     }
 
-    public function parseOperator(array $leg): ?HafasOperator {
+    private function parseOperator(array $leg): ?HafasOperator {
         return $this->operatorService->parseTransitousOperator(
             agencyId:   $leg['agencyId'] ?? null,
             agencyName: $leg['agencyName'] ?? null,
         );
     }
 
-    public function mapDepartures(mixed $entries, Station $station, Collection $departures, DataProvider $source): Collection {
+    public function mapDepartures(mixed $entries, Station $station, DataProvider $source): Collection {
+        $departures = collect();
         foreach ($entries as $rawDeparture) {
             if (config('trwl.motis.filter_licenses')) {
                 // Check if the source is licensed under an acceptable license

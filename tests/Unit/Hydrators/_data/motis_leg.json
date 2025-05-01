@@ -1,0 +1,63 @@
+{
+  "duration": 10800,
+  "startTime": "2025-05-01T10:00:00Z",
+  "endTime": "2025-05-01T13:00:00Z",
+  "transfers": 0,
+  "legs": [
+    {
+      "mode": "REGIONAL_FAST_RAIL",
+      "from": {
+        "name": "Start Station",
+        "stopId": "trwl-demo-station:station:1",
+        "lat": 48.87857,
+        "lon": 2.360305,
+        "level": 0,
+        "departure": "2025-05-01T10:01:00Z",
+        "scheduledDeparture": "2025-05-01T10:00:00Z",
+        "vertexType": "TRANSIT"
+      },
+      "to": {
+        "name": "End Station",
+        "stopId": "trwl-demo-station:station:3",
+        "lat": 48.956619999999994,
+        "lon": 2.8733082,
+        "level": 0,
+        "arrival": "2025-05-01T15:10:00Z",
+        "scheduledArrival": "2025-05-01T15:10:00Z",
+        "vertexType": "TRANSIT"
+      },
+      "duration": 10800,
+      "startTime": "2025-05-01T10:00:00Z",
+      "endTime": "2025-05-01T13:00:00Z",
+      "scheduledStartTime": "2025-05-01T10:00:00Z",
+      "scheduledEndTime": "2025-05-01T13:00:00Z",
+      "realTime": false,
+      "headsign": "Best Destination",
+      "routeColor": "f58f53",
+      "agencyName": "ACME",
+      "agencyUrl": "https://www.acme.com",
+      "agencyId": "trwl-demo-agency",
+      "tripId": "20250501:trwl-demo-trip:trip:1",
+      "routeShortName": "P",
+      "source": "trwl-demo.gtfs.zip/stop_times.txt:270360:270365",
+      "intermediateStops": [
+        {
+          "name": "Middle station",
+          "stopId": "trwl-demo-station:station:2",
+          "lat": 48.87412,
+          "lon": 2.5833807000000006,
+          "level": 0,
+          "arrival": "2025-05-01T11:00:00Z",
+          "departure": "2025-05-01T11:00:00Z",
+          "scheduledArrival": "2025-05-01T11:05:00Z",
+          "scheduledDeparture": "2025-05-01T11:05:00Z",
+          "vertexType": "TRANSIT"
+        }
+      ],
+      "legGeometry": {
+        "points": "idk we don't care",
+        "length": 0
+      }
+    }
+  ]
+}
