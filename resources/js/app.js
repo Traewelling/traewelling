@@ -21,6 +21,7 @@ import piniaPluginPersistedsState from 'pinia-plugin-persistedstate'
 import FriendCheckinSettings from "../vue/components/Settings/FriendCheckinSettings.vue";
 import WebhookSettings from "../vue/components/Settings/Webhooks.vue";
 import Request from "../vue/components/Events/Request.vue";
+import ApiAlerts from "../vue/components/ApiAlerts.vue";
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -89,6 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const app3 = createApp({});
         app3.component("Stationboard", Stationboard);
         app3.component("Stationautocomplete", StationAutocomplete);
+        app3.component("Apialerts", ApiAlerts);
         app3.use(pinia);
         app3.use(i18nVue, i18nOptions);
         app3.mount("#station-board-new");

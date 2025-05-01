@@ -6,36 +6,6 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
-                <div class="alert alert-warning" role="alert">
-                    <h4 class="alert-heading">
-                        <i class="fa-solid fa-exclamation-triangle" aria-hidden="true"></i>
-                        Change of Data provider // Änderung des Datenproviders
-                        <i class="fa-solid fa-exclamation-triangle" aria-hidden="true"></i>
-                    </h4>
-                    <div lang="en" xml:lang="en">
-                        <p>
-                            🇬🇧
-                            We have changed the data provider <b>from Deutsche Bahn to Transitous</b>.
-                        </p>
-                        <p class="text-center mx-0 my-0">
-                            Please inform yourself on our <a href="https://help.traewelling.de/en/features/timetable/">help
-                                page</a>.
-                        </p>
-                    </div>
-                    <hr>
-                    <div lang="de" xml:lang="de">
-                        <p>
-                            🇩🇪
-                            Wir haben den Datenprovider <b>von der Deutschen Bahn zu Transitous</b> gewechselt.
-                        </p>
-                        <p class="text-center mx-0 my-0">
-                            Bitte informiere dich dazu auf unserer <a
-                                href="https://help.traewelling.de/features/timetable/">Hilfe-Seite</a>.
-                        </p>
-                    </div>
-                </div>
-
-
                 @if(session()->has('checkin-collision'))
                     <div class="alert alert-danger" id="checkin-collision-alert">
                         <h2 class="fs-4">
@@ -95,6 +65,7 @@
                 @endif
 
                 <div id="station-board-new">
+                    <Apialerts></Apialerts>
                     <Stationautocomplete :dashboard="true" :show-gps-button="true"></Stationautocomplete>
                 </div>
                 @if($future->count() >= 1)

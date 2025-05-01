@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\API\v1\AlertController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\ExperimentalController;
@@ -93,6 +94,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::get('history', [TransportController::class, 'getTrainStationHistory']);
             });
         });
+
+        Route::get('alerts', [AlertController::class, 'index']);
 
         Route::prefix('station')->middleware(['scope:write-statuses'])->group(static function() {
             Route::put('/{id}/home', [TransportController::class, 'setHome'])->whereNumber('id');

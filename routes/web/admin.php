@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Backend\Admin\AlertController;
 use App\Http\Controllers\Frontend\Admin\ActivityController;
 use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
@@ -13,18 +14,34 @@ use App\Http\Controllers\Frontend\Admin\TripController;
 use App\Http\Controllers\Frontend\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
+const CREATE = '/create';
+
 Route::middleware(['auth', 'permission:view-backend'])->group(function() {
     Route::view('/', 'admin.dashboard') //attention: route accessible for admins and event-moderators!
          ->name('admin.dashboard');
 
-    Route::middleware('role:admin')->group(static function() {
+    Route::middleware('role:admin')->group(function() {
         // these routes are only accessible for admins
-        Route::prefix('sources')->group(static function() {
+        Route::prefix('sources')->group(function() {
             Route::get('/', [MotisSourceController::class, 'index'])
                  ->name('admin.sources');
             Route::post('/', [MotisSourceController::class, 'show'])->name('admin.sources.show');
             Route::post('/mass-assign', [MotisSourceController::class, 'massAssign'])
                  ->name('admin.sources.mass-assign');
+        });
+        Route::prefix('alerts')->group(function() {
+            Route::get('/', [AlertController::class, 'index'])
+                 ->name('admin.alerts');
+            Route::post('/delete', [AlertController::class, 'destroy'])
+                 ->name('admin.alerts.destroy');
+            Route::get(CREATE, [AlertController::class, 'create'])
+                 ->name('admin.alerts.create');
+            Route::post(CREATE, [AlertController::class, 'store'])
+                 ->name('admin.alerts.create');
+            Route::get('/{id}/edit', [AlertController::class, 'edit'])
+                 ->name('admin.alerts.edit');
+            Route::post('/{id}/edit', [AlertController::class, 'update'])
+                 ->name('admin.alerts.update');
         });
         Route::resource('licenses', LicensesController::class)
              ->only(['create', 'store', 'index']);
@@ -114,10 +131,10 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
                  //->middleware(['can:accept-events']) - TODO: working in the browser, but not in the tests
                   ->name('admin.events.suggestions.accept.do');
 
-             Route::view('/create', 'admin.events.form')
+             Route::view(CREATE, 'admin.events.form')
                   ->middleware('permission:create-events')
                   ->name('admin.events.create');
-             Route::post('/create', [AdminEventController::class, 'create'])
+             Route::post(CREATE, [AdminEventController::class, 'create'])
                   ->middleware('permission:create-events');
 
              Route::get('/edit/{id}', [AdminEventController::class, 'renderEdit'])

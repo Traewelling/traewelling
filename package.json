@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "api": "npx swagger-typescript-api generate --path storage/api-docs/api-docs.json --custom-config {} --output resources/types --name='Api.gen.ts'"
   },
   "devDependencies": {
     "@popperjs/core": "^2.11",
@@ -17,6 +18,7 @@
     "lodash": "^4.17.21",
     "sass": "^1.85.1",
     "tailwindcss": "^4.1.4",
+    "swagger-typescript-api": "^13.1.1",
     "vite": "^6.3.3"
   },
   "dependencies": {
