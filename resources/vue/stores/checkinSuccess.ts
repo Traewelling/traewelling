@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {CheckinResponse} from "../../types/Api";
+import {CheckinResponse} from "../../types/Api.gen";
 
 export const checkinSuccessStore = defineStore("checkinSuccess", {
     persist: true,

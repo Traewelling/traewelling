@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {trans} from "laravel-vue-i18n";
-import {Api, User} from "../../../types/Api";
+import {Api, User} from "../../../types/Api.gen";
 import _ from "lodash";
 
 export default defineComponent({

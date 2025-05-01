@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {ShortStation} from "../../types/Station";
-import {StationResource, UserAuthResource} from "../../types/Api";
+import {StationResource, UserAuthResource} from "../../types/Api.gen";
 
 export const useUserStore = defineStore("user", {
     persist: true,

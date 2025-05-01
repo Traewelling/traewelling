@@ -23,6 +23,35 @@
         }
     ],
     "paths": {
+        "/alerts": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get all active alerts",
+                "operationId": "getActiveAlerts",
+                "responses": {
+                    "200": {
+                        "description": "List of active alerts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AlertResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/auth/logout": {
             "post": {
                 "tags": [
@@ -4834,6 +4863,82 @@
                     "list"
                 ],
                 "example": "forbidden"
+            },
+            "AlertResource": {
+                "required": [
+                    "id",
+                    "type",
+                    "active_from",
+                    "active_until",
+                    "url",
+                    "translations"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "type": {
+                        "type": "enum",
+                        "enum": [
+                            "info",
+                            "warning",
+                            "danger",
+                            "success"
+                        ],
+                        "example": "info"
+                    },
+                    "active_from": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-10-01T00:00:00Z"
+                    },
+                    "active_until": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-10-31T23:59:59Z",
+                        "nullable": true
+                    },
+                    "url": {
+                        "type": "string",
+                        "example": "https://example.com",
+                        "nullable": true
+                    },
+                    "translations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AlertTranslationResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "AlertTranslationResource": {
+                "required": [
+                    "title",
+                    "content",
+                    "url",
+                    "locale"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Alert Title"
+                    },
+                    "content": {
+                        "type": "string",
+                        "example": "Alert Content"
+                    },
+                    "url": {
+                        "type": "string",
+                        "example": "https://example.com"
+                    },
+                    "locale": {
+                        "type": "string",
+                        "example": "en"
+                    }
+                },
+                "type": "object"
             },
             "AreaResource": {
                 "title": "Area",

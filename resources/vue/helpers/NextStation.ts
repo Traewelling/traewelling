@@ -1,7 +1,7 @@
-import {StopoverResource} from "../../types/Api";
+import {StopoverResource} from "../../types/Api.gen";
 
 export class NextStation {
-    public static getNextStation(stations: StopoverResource[]): StopoverResource|null {
+    public static getNextStation(stations: StopoverResource[]): StopoverResource | null {
         stations = stations.filter((stopover: StopoverResource) => {
             const time = stopover.departure ?? stopover.arrival ?? null;
             return time && Date.parse(time).toFixed() >= Date.now().toFixed();
