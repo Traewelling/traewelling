@@ -14,8 +14,6 @@ use App\Http\Controllers\Frontend\Admin\TripController;
 use App\Http\Controllers\Frontend\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
-const CREATE = '/create';
-
 Route::middleware(['auth', 'permission:view-backend'])->group(function() {
     Route::view('/', 'admin.dashboard') //attention: route accessible for admins and event-moderators!
          ->name('admin.dashboard');
@@ -34,9 +32,9 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
                  ->name('admin.alerts');
             Route::post('/delete', [AlertController::class, 'destroy'])
                  ->name('admin.alerts.destroy');
-            Route::get(CREATE, [AlertController::class, 'create'])
+            Route::get('/create', [AlertController::class, 'create'])
                  ->name('admin.alerts.create');
-            Route::post(CREATE, [AlertController::class, 'store'])
+            Route::post('/create', [AlertController::class, 'store'])
                  ->name('admin.alerts.create');
             Route::get('/{id}/edit', [AlertController::class, 'edit'])
                  ->name('admin.alerts.edit');
@@ -131,10 +129,10 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
                  //->middleware(['can:accept-events']) - TODO: working in the browser, but not in the tests
                   ->name('admin.events.suggestions.accept.do');
 
-             Route::view(CREATE, 'admin.events.form')
+             Route::view('/create', 'admin.events.form')
                   ->middleware('permission:create-events')
                   ->name('admin.events.create');
-             Route::post(CREATE, [AdminEventController::class, 'create'])
+             Route::post('/create', [AdminEventController::class, 'create'])
                   ->middleware('permission:create-events');
 
              Route::get('/edit/{id}', [AdminEventController::class, 'renderEdit'])
