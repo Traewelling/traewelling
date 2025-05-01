@@ -44,15 +44,6 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
         Route::resource('licenses', LicensesController::class)
              ->only(['create', 'store', 'index']);
 
-        Route::prefix('checkin')->group(function() {
-            Route::get('/', [CheckinController::class, 'renderStationboard'])
-                 ->name('admin.stationboard');
-            Route::get('/trip/{tripId}', [CheckinController::class, 'renderTrip'])
-                 ->name('admin.trip');
-            Route::post('/checkin', [CheckinController::class, 'checkin'])
-                 ->name('admin.checkin');
-        });
-
         Route::prefix('reports')->group(function() {
             Route::get('/', [ReportController::class, 'renderReports'])
                  ->name('admin.reports');
