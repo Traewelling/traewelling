@@ -33,7 +33,7 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
             Route::post('/delete', [AlertController::class, 'destroy'])
                  ->name('admin.alerts.destroy');
             Route::get('/create', [AlertController::class, 'create'])
-                 ->name('admin.alerts.create');
+                 ->name('admin.alerts.store');
             Route::post('/create', [AlertController::class, 'store'])
                  ->name('admin.alerts.create');
             Route::get('/{id}/edit', [AlertController::class, 'edit'])
