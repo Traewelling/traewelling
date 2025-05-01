@@ -44,6 +44,7 @@ class WikidataImportService
         'Q44696264', //Seilbahnstation
         'Q1478783', // Fährhafen
         'Q4303352', // passenger ship terminal
+        'Q55678', // railway stop, Haltepunkt, Haltestelle
     ];
 
     public static function importStation(string $qId): Station {
