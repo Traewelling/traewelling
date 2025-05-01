@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {trans} from "laravel-vue-i18n";
-import {Api, FriendCheckinSetting, LightUserResource, TrustedUserResource, User} from "../../../types/Api";
+import {Api, FriendCheckinSetting, LightUserResource, TrustedUserResource, User} from "../../../types/Api.gen";
 import UserSearchDropdown from "../Helpers/UserSearchDropdown.vue";
 import {Notyf} from "notyf";
 

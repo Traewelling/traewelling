@@ -2,7 +2,7 @@
 import {defineComponent} from 'vue'
 import {useActiveCheckin} from "../stores/activeCheckin";
 import {NextStation} from "../helpers/NextStation";
-import {StopoverResource} from "../../types/Api";
+import {StopoverResource} from "../../types/Api.gen";
 import {DateTime} from "luxon";
 import LineIndicator from "./LineIndicator.vue";
 

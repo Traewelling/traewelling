@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ref} from "vue";
-import {AlertResource, AlertTranslationResource, Api} from "../../types/Api";
+import {AlertResource, AlertTranslationResource, Api} from "../../types/Api.gen";
 import {getActiveLanguage} from "laravel-vue-i18n";
 
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});

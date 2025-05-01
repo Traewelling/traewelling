@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {StatusResource, StopoverResource} from "../../types/Api";
+import {StatusResource, StopoverResource} from "../../types/Api.gen";
 
 export const useActiveCheckin = defineStore("activeStatus", {
     // because of the persist option. This option is defined in the pinia persisted state plugin
@@ -28,7 +28,7 @@ export const useActiveCheckin = defineStore("activeStatus", {
                     }
                 });
         },
-        async fetchActiveStatus() : Promise<void>{
+        async fetchActiveStatus(): Promise<void> {
             // remove status if it arrived more than 2 Minutes ago
 
             const time = this.status?.train?.destination?.arrival ?? this.status?.train?.destination?.departure ?? null;

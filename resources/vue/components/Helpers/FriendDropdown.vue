@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {trans} from "laravel-vue-i18n";
-import {Api, TrustedUserResource} from "../../../types/Api";
+import {Api, TrustedUserResource} from "../../../types/Api.gen";
 
 export default defineComponent({
   setup() {
