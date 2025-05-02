@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Http\Controllers\Backend\Admin\EventController as AdminEventBackend;
 use App\Http\Controllers\Backend\EventController as EventBackend;
 use App\Http\Controllers\StatusController;
 use App\Http\Resources\EventDetailsResource;
@@ -15,6 +16,20 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class EventController extends Controller
 {
+
+    private const VALIDATOR_RULES = [
+        'name'                 => ['required', 'max:255'],
+        'hashtag'              => ['nullable', 'max:30'],
+        'host'                 => ['nullable', 'max:255'],
+        'url'                  => ['nullable', 'url'],
+        'nearest_station_name' => ['nullable', 'max:255'],
+        'checkin_start'        => ['required', 'date'],
+        'checkin_end'          => ['required', 'date'],
+        'event_start'          => ['nullable', 'date', 'after_or_equal:checkin_start'],
+        'event_end'            => ['nullable', 'date', 'before_or_equal:checkin_end'],
+    ];
+
+
     /**
      * @OA\Get(
      *      path="/event/{slug}",
@@ -270,5 +285,62 @@ class EventController extends Controller
             return $this->sendResponse(data: ['message' => __('events.request.success')], code: 201);
         }
         return $this->sendError(error: __('messages.exception.general'), code: 500);
+    }
+
+    public function store(Request $request): JsonResponse|EventResource {
+        $this->authorize('create', Event::class);
+        $validated = $request->validate(self::VALIDATOR_RULES);
+
+        $station = null;
+        if (isset($validated['nearest_station_name'])) {
+            $station = $this->dataProvider->getStations($validated['nearest_station_name'], 1)->first();
+
+            if ($station === null) {
+                return response()->json(['error' => 'Station not found'], 404);
+            }
+        }
+
+        $validated['slug']          = AdminEventBackend::createSlugFromName($validated['name']);
+        $validated['station_id']    = $station?->id;
+        $validated['checkin_start'] = Carbon::parse($validated['checkin_start'])->toIso8601String();
+        $validated['checkin_end']   = Carbon::parse($validated['checkin_end'])->toIso8601String();
+        if (isset($validated['event_start'])) {
+            $validated['event_start'] = Carbon::parse($validated['event_start'])->toIso8601String();
+        }
+        if (isset($validated['event_end'])) {
+            $validated['event_end'] = Carbon::parse($validated['event_end'])->toIso8601String();
+        }
+        $validated['accepted_by'] = auth()->user()->id;
+
+        $event = Event::create($validated);
+        return new EventResource($event);
+    }
+
+    public function update(int $id, Request $request): EventResource|JsonResponse {
+        $validated = $request->validate(self::VALIDATOR_RULES);
+
+        $event = Event::findOrFail($id);
+        $this->authorize('update', $event);
+
+        if (strlen($validated['nearest_station_name'] ?? '') === 0) {
+            $validated['station_id'] = null;
+        } elseif ($validated['nearest_station_name'] && $validated['nearest_station_name'] !== $event->station?->name) {
+            $station = $this->dataProvider->getStations($validated['nearest_station_name'], 1)->first();
+
+            if ($station === null) {
+                return response()->json(['error' => 'Station not found'], 404);
+            }
+            $validated['station_id'] = $station->id;
+        }
+
+        $event->update($validated);
+        return new EventResource($event);
+    }
+
+    public function destroy(int $id): JsonResponse {
+        $event = Event::find($id);
+        $this->authorize('delete', $event);
+        $event->delete();
+        return response()->json(null, 204);
     }
 }

@@ -29,18 +29,6 @@ class EventController extends Controller
         $this->dataProvider = (new DataProviderBuilder())->build($dataProvider);
     }
 
-    private const VALIDATOR_RULES = [
-        'name'                 => ['required', 'max:255'],
-        'hashtag'              => ['nullable', 'max:30'],
-        'host'                 => ['nullable', 'max:255'],
-        'url'                  => ['nullable', 'url'],
-        'nearest_station_name' => ['nullable', 'max:255'],
-        'checkin_start'        => ['required', 'date'],
-        'checkin_end'          => ['required', 'date'],
-        'event_start'          => ['nullable', 'date', 'after_or_equal:checkin_start'],
-        'event_end'            => ['nullable', 'date', 'before_or_equal:checkin_end'],
-    ];
-
     public function renderList(Request $request): View {
         $queryBase = Event::query();
         if ($request->has('query')) {
@@ -195,65 +183,5 @@ class EventController extends Controller
         $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, $event));
 
         return redirect()->route('admin.events.suggestions')->with('alert-success', 'Das Event wurde akzeptiert!');
-    }
-
-    /**
-     * @throws HafasException
-     */
-    public function create(Request $request): RedirectResponse {
-        $validated = $request->validate(self::VALIDATOR_RULES);
-
-        $station = null;
-        if (isset($validated['nearest_station_name'])) {
-            $station = $this->dataProvider->getStations($validated['nearest_station_name'], 1)->first();
-
-            if ($station === null) {
-                return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
-            }
-        }
-
-        $validated['slug']          = AdminEventBackend::createSlugFromName($validated['name']);
-        $validated['station_id']    = $station?->id;
-        $validated['checkin_start'] = Carbon::parse($validated['checkin_start'])->toIso8601String();
-        $validated['checkin_end']   = Carbon::parse($validated['checkin_end'])->toIso8601String();
-        if (isset($validated['event_start'])) {
-            $validated['event_start'] = Carbon::parse($validated['event_start'])->toIso8601String();
-        }
-        if (isset($validated['event_end'])) {
-            $validated['event_end'] = Carbon::parse($validated['event_end'])->toIso8601String();
-        }
-        $validated['accepted_by'] = auth()->user()->id;
-
-        Event::create($validated);
-
-        return redirect()->route('admin.events')->with('alert-success', 'The event was created!');
-    }
-
-    public function edit(int $id, Request $request): RedirectResponse {
-        $validated = $request->validate(self::VALIDATOR_RULES);
-
-        $event = Event::findOrFail($id);
-
-        if (strlen($validated['nearest_station_name'] ?? '') === 0) {
-            $validated['station_id'] = null;
-        } elseif ($validated['nearest_station_name'] && $validated['nearest_station_name'] !== $event->station->name) {
-            $station = $this->dataProvider->getStations($validated['nearest_station_name'], 1)->first();
-
-            if ($station === null) {
-                return back()->with('alert-danger', 'Die Station konnte nicht gefunden werden.');
-            }
-            $validated['station_id'] = $station->id;
-        }
-
-        $event->update($validated);
-
-        return redirect()->route('admin.events')->with('alert-success', 'Das Event wurde bearbeitet!');
-    }
-
-    public function deleteEvent(Request $request): RedirectResponse {
-        $validated = $request->validate(['id' => ['required', 'exists:events,id']]);
-        $event     = Event::find($validated['id']);
-        $event->delete();
-        return redirect()->route('admin.events')->with('alert-success', 'Das Event wurde gelöscht!');
     }
 }

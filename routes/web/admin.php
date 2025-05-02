@@ -30,16 +30,10 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
         Route::prefix('alerts')->group(function() {
             Route::get('/', [AlertController::class, 'index'])
                  ->name('admin.alerts');
-            Route::post('/delete', [AlertController::class, 'destroy'])
-                 ->name('admin.alerts.destroy');
             Route::get('/create', [AlertController::class, 'create'])
                  ->name('admin.alerts.store');
-            Route::post('/create', [AlertController::class, 'store'])
-                 ->name('admin.alerts.create');
             Route::get('/{id}/edit', [AlertController::class, 'edit'])
                  ->name('admin.alerts.edit');
-            Route::post('/{id}/edit', [AlertController::class, 'update'])
-                 ->name('admin.alerts.update');
         });
         Route::resource('licenses', LicensesController::class)
              ->only(['create', 'store', 'index']);
@@ -103,9 +97,6 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
 
              Route::get('/', [AdminEventController::class, 'renderList'])
                   ->name('admin.events');
-             Route::post('/delete', [AdminEventController::class, 'deleteEvent'])
-                  ->middleware('permission:delete-events')
-                  ->name('admin.events.delete');
 
              Route::get('/suggestions', [AdminEventController::class, 'renderSuggestions'])
                   ->middleware('permission:accept-events|deny-events')
@@ -123,8 +114,6 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
              Route::view('/create', 'admin.events.form')
                   ->middleware('permission:create-events')
                   ->name('admin.events.create');
-             Route::post('/create', [AdminEventController::class, 'create'])
-                  ->middleware('permission:create-events');
 
              Route::get('/edit/{id}', [AdminEventController::class, 'renderEdit'])
                   ->middleware('permission:update-events')
