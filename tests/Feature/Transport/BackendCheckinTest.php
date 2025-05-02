@@ -6,7 +6,6 @@ use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
 use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
-use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Frontend\Admin\CheckinController;
@@ -135,69 +134,6 @@ class BackendCheckinTest extends FeatureTestCase
         TrainCheckinController::checkin($dto);
         $this->expectException(CheckInCollisionException::class);
         TrainCheckinController::checkin($dto);
-    }
-
-    /**
-     * Testing checkins where the line forms a ring structure (e.g. Potsdams 603 Bus).
-     * Previously, TRWL produced negative trip durations, or unexpected route distances.
-     *
-     * @see    https://github.com/Traewelling/traewelling/issues/37
-     */
-    public function testCheckinAtBus603Potsdam(): void {
-        $this->skipTestBecauseOfLegacyApiUsage();
-
-        Http::fake([
-                       '/locations*'               => Http::response(json_decode(file_get_contents(__DIR__ . '/cecilienhof-location.json'), true)),
-                       '/stops/736222/departures*' => Http::response(json_decode(file_get_contents(__DIR__ . '/cecilienhof-departures.json'), true)),
-                       '/trips*'                   => Http::response(json_decode(file_get_contents(__DIR__ . '/cecilienhof-tripinfo.json'), true)),
-                   ]);
-
-        // First: Get a train that's fine for our stuff
-        $timestamp = Carbon::parse("2023-01-15 10:15");
-        try {
-            $trainStationboard = CheckinController::getDeprecatedDepartures(
-                stationQuery: 'Schloss Cecilienhof, Potsdam',
-                when:         $timestamp,
-                travelType:   TravelType::BUS
-            );
-        } catch (HafasException $exception) {
-            $this->fail($exception->getMessage());
-        }
-
-        if (count($trainStationboard['departures']) === 0) {
-            $this->fail('Unable to find matching bus.');
-        }
-
-        // The bus runs in a 20min interval
-        $departure = $trainStationboard['departures'][0];
-
-        // Third: Get the trip information
-        try {
-            $trip = TrainCheckinController::getHafasTrip(
-                tripId:   $departure->tripId,
-                lineName: $departure->line->name,
-                startId:  $departure->stop->location->id
-            );
-        } catch (HafasException $exception) {
-            $this->markTestSkipped($exception->getMessage());
-        }
-
-        //Höhenstr., Potsdam
-        $originStopover = $trip->stopovers->where('station.ibnr', '736140')->first();
-        //Rathaus, Potsdam
-        $destinationStopover = $trip->stopovers->where('station.ibnr', '736160')->last();
-
-        $user = User::factory(['privacy_ack_at' => Carbon::yesterday()])->create();
-
-        // WHEN: User tries to check-in
-        $dto             = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
-        $backendResponse = TrainCheckinController::checkin($dto);
-
-        $status  = $backendResponse->status;
-        $checkin = $status->checkin;
-
-        // Es wird tatsächlich die zeitlich spätere Station angenommen.
-        $this->assertTrue($checkin->arrival > $checkin->departure);
     }
 
     /**

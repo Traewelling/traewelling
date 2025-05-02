@@ -9,9 +9,7 @@ use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Models\Station;
 use App\Models\Trip;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Http;
 use Tests\FeatureTestCase;
 use Tests\Helpers\CheckinRequestTestHydrator;
 
@@ -21,31 +19,6 @@ class CheckinTest extends FeatureTestCase
     use RefreshDatabase;
 
     private string $plus_one_day_then_8pm = "+1 day 8:00";
-
-    /**
-     * Use the stationboard api and check if it works.
-     * @test
-     */
-    public function stationboardTest(): void {
-        $this->skipTestBecauseOfLegacyApiUsage();
-
-        Http::fake([
-                       '/locations*'                => Http::response([self::FRANKFURT_HBF]),
-                       '/stops/8000105/departures*' => Http::response([self::ICE802])
-                   ]);
-
-        $requestDate = Carbon::parse(self::DEPARTURE_TIME);
-
-        $trainStationboard = CheckinController::getDeprecatedDepartures(
-            stationQuery: self::FRANKFURT_HBF['name'],
-            when:         $requestDate
-        );
-
-        $departures = $trainStationboard['departures'];
-
-        $this->assertCount(1, $departures);
-        $this->assertEquals(self::TRIP_ID, $departures[0]->tripId);
-    }
 
     /**
      * Test if the checkin collision is truly working

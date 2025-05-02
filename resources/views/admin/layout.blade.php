@@ -54,10 +54,6 @@
                         <i class="fa-solid fa-broadcast-tower"></i>
                         Status
                     </a>
-                    <a class="nav-link" href="{{ route('admin.stationboard') }}">
-                        <i class="fa-solid fa-train"></i>
-                        Checkin
-                    </a>
                     <a class="nav-link" href="{{ route('admin.stations') }}">
                         <i class="fa-solid fa-map-marker"></i>
                         Stations
