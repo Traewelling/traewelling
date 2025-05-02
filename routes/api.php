@@ -95,8 +95,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             });
         });
 
-        Route::get('alerts', [AlertController::class, 'index']);
-
         Route::prefix('station')->middleware(['scope:write-statuses'])->group(static function() {
             Route::put('/{id}/home', [TransportController::class, 'setHome'])->whereNumber('id');
             Route::get('/{id}/departures', [TransportController::class, 'getDepartures'])->whereNumber('id');
@@ -184,6 +182,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);
         Route::apiResource('report', ReportController::class);
         Route::apiResource('operators', OperatorController::class)->only(['index']);
+        Route::apiResource('alerts', AlertController::class);
         Route::put('/operators/{oldOperatorId}/merge/{newOperatorId}', [OperatorController::class, 'merge']); // currently admin/backend only
 
         Route::prefix('experimental')->group(function() {

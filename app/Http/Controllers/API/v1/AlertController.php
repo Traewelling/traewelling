@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Http\Requests\StoreAlertRequest;
 use App\Http\Resources\AlertResource;
 use App\Models\Alert;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use OpenApi\Annotations as OA;
+use Illuminate\Support\Facades\DB;
 
 class AlertController extends Controller
 {
@@ -21,6 +23,7 @@ class AlertController extends Controller
      * )
      */
     public function index(): AnonymousResourceCollection {
+        $this->authorize('viewAny', Alert::class);
         $now = now()->startOfDay();
 
         $alerts = Alert::with('translations')
@@ -34,5 +37,63 @@ class AlertController extends Controller
                        ->get();
 
         return AlertResource::collection($alerts);
+    }
+
+    /**
+     * No documentation, as this is not a public endpoint.
+     */
+    public function store(StoreAlertRequest $request): AlertResource {
+        $this->authorize('create', Alert::class);
+        $alert = new Alert();
+        $this->updateOrCreate($request, $alert);
+        return new AlertResource($alert);
+    }
+
+    /**
+     * No documentation, as this is not a public endpoint.
+     */
+    public function update(StoreAlertRequest $request, string $id): AlertResource {
+        $alert = Alert::findOrFail($id);
+        $this->authorize('update', $alert);
+        $this->updateOrCreate($request, $alert);
+        return new AlertResource($alert);
+    }
+
+    /**
+     * No documentation, as this is not a public endpoint.
+     */
+    public function destroy(Alert $alert): JsonResponse {
+        $this->authorize('delete', $alert);
+        $alert->delete();
+        return response()->json(null, 204);
+    }
+
+    private function updateOrCreate(StoreAlertRequest $request, Alert $alert): void {
+        DB::beginTransaction();
+        $alert->type         = $request->type;
+        $alert->active_from  = $request->active_from;
+        $alert->active_until = $request->active_until;
+        $alert->url          = $request->url;
+        $alert->save();
+
+        $alert->translations()->updateOrCreate(
+            ['locale' => 'de'],
+            [
+                'title'   => $request->title_de,
+                'content' => $request->content_de,
+                'url'     => $request->url_de,
+            ]
+        );
+
+        $alert->translations()->updateOrCreate(
+            ['locale' => 'en'],
+            [
+                'title'   => $request->title_en,
+                'content' => $request->content_en,
+                'url'     => $request->url_en,
+            ]
+        );
+
+        DB::commit();
     }
 }

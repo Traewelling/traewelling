@@ -47,7 +47,7 @@
                                 $now = now()->startOfDay();
                                 $active = $alert->active_from <= $now && ($alert->active_until >= $now || $alert->active_until == null);
                             @endphp
-                            <tr>
+                            <tr data-id="{{ $alert->id }}">
                                 <td>
                                     @if($active)
                                         <div class="spinner-grow text-success" style="width: 1rem; height: 1rem;"></div>
@@ -75,15 +75,11 @@
                                        class="btn btn-primary btn-sm">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('admin.alerts.destroy', $alert->id) }}" method="POST"
-                                          class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Are you sure?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
+                                    <button type="button"
+                                            class="btn btn-danger btn-sm btn-delete-alert"
+                                            data-id="{{ $alert->id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
@@ -93,6 +89,38 @@
             </div>
         </div>
     </div>
-    </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.btn-delete-alert').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const id = this.getAttribute('data-id');
+                    if (!confirm('Are you sure you want to delete this alert?')) {
+                        return;
+                    }
+                    fetch(`/api/v1/alerts/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json',
+                        },
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                // remove the row from the table
+                                const row = document.querySelector(`tr[data-id='${id}']`);
+                                row && row.remove();
+                                notyf.success('Alert deleted successfully.');
+                            } else {
+                                return response.json().then(err => Promise.reject(err));
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Delete failed:', error);
+                            notyf.error('Failed to delete the alert. Please try again.');
+                        });
+                });
+            });
+        });
+    </script>
 @endsection
