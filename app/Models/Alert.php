@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string                  $id
@@ -33,7 +34,7 @@ class Alert extends Model
         'active_until' => 'datetime',
     ];
 
-    public function translations() {
+    public function translations(): HasMany {
         return $this->hasMany(AlertTranslation::class, 'alert_id', 'id');
     }
 }

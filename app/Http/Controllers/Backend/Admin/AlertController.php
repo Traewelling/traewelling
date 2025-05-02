@@ -30,16 +30,6 @@ class AlertController extends Controller
         ]);
     }
 
-    public function store(StoreAlertRequest $request): RedirectResponse
-    {
-        $alert = new Alert();
-        $this->updateOrCreate($request, $alert);
-
-        return redirect()
-            ->route('admin.alerts')
-            ->with('success', __('Alert created successfully.'));
-    }
-
     public function edit(string $alertId): View
     {
         $alert = Alert::with('translations')
@@ -50,52 +40,5 @@ class AlertController extends Controller
         ]);
     }
 
-    public function update(StoreAlertRequest $request, string $id): RedirectResponse
-    {
-        $alert = Alert::findOrFail($id);
-        $this->updateOrCreate($request, $alert);
 
-        return redirect()
-            ->route('admin.alerts')
-            ->with('success', __('Alert updated successfully.'));
-    }
-
-    public function destroy(Alert $alert): RedirectResponse
-    {
-        $alert->delete();
-
-        return redirect()
-            ->route('admin.alerts')
-            ->with('success', __('Alert deleted successfully.'));
-    }
-
-    private function updateOrCreate(StoreAlertRequest $request, Alert $alert): void
-    {
-        DB::beginTransaction();
-        $alert->type = $request->type;
-        $alert->active_from = $request->active_from;
-        $alert->active_until = $request->active_until;
-        $alert->url = $request->url;
-        $alert->save();
-
-        $alert->translations()->updateOrCreate(
-            ['locale' => 'de'],
-            [
-                'title' => $request->title_de,
-                'content' => $request->content_de,
-                'url' => $request->url_de,
-            ]
-        );
-
-        $alert->translations()->updateOrCreate(
-            ['locale' => 'en'],
-            [
-                'title' => $request->title_en,
-                'content' => $request->content_en,
-                'url' => $request->url_en,
-            ]
-        );
-
-        DB::commit();
-    }
 }

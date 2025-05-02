@@ -41,6 +41,7 @@ class PermissionSeeder extends Seeder
         $permissionDisallowStatusVisibilityChange = Permission::updateOrCreate(['name' => 'disallow-status-visibility-change']);
         $permissionDisallowSocialInteraction      = Permission::updateOrCreate(['name' => 'disallow-social-interaction']);
         $permissionUseTransitous                  = Permission::updateOrCreate(['name' => 'use-transitous']);
+        $permissionAlertManage                    = Permission::updateOrCreate(['name' => 'alerts.manage']);
 
         //Assign permissions to admin role
         $roleAdmin->givePermissionTo($permissionViewBackend);
@@ -56,6 +57,7 @@ class PermissionSeeder extends Seeder
         $roleAdmin->givePermissionTo($permissionCreateStations);
         $roleAdmin->givePermissionTo($permissionUpdateStations);
         $roleAdmin->givePermissionTo($permissionDeleteStations);
+        $roleAdmin->givePermissionTo($permissionAlertManage);
 
         //Assign permissions to disallow-manual-trips role
         $roleDisallowManualTrips->givePermissionTo($permissionDisallowManualTrips);
