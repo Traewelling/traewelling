@@ -226,10 +226,9 @@ class Motis extends Controller implements DataProviderInterface
                 throw new HafasException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
             }
 
-            $departures = collect();
-            $entries    = $response->json('stopTimes');
+            $entries = $response->json('stopTimes');
             CacheKey::increment(HCK::DEPARTURES_SUCCESS);
-            return $this->hydrator->mapDepartures($entries, $station, $departures, $this->source);
+            return $this->hydrator->mapDepartures($entries, $station, $this->source);
         } catch (JsonException $exception) {
             Log::debug('JSON Error (getDepartures)', [
                 'status' => $response->status(),
