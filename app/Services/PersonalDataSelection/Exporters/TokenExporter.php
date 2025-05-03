@@ -13,5 +13,14 @@ class TokenExporter extends AbstractExporter
 
     protected string $fileName = 'tokens.json';
     protected string $relation = 'tokens';
-    // todo: columns
+    protected array  $columns  = [
+        'user_id',
+        'client_id',
+        'name',
+        'scopes',
+        'revoked',
+        'expires_at',
+        'created_at',
+        'updated_at',
+    ];
 }
