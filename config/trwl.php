@@ -72,5 +72,11 @@ return [
     # A/B Testing
     'ab_testing'        => [
         'gdpr_export' => env('AB_TESTING_GDPR_EXPORT', false),
-    ]
+    ],
+
+    'gdpr_export' => [
+        'days'    => env('GDPR_EXPORT_DAYS', 14),
+        'timeout' => env('GDPR_EXPORT_TIMEOUT', 60 * 60 * 24),
+        'tries'   => env('GDPR_EXPORT_TRIES', 3),
+    ],
 ];
