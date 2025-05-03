@@ -11,20 +11,26 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
 class Exporter
 {
     private PersonalDataSelection $personalDataSelection;
-    private array                 $exporters = [];
-    private User                  $user;
+    private array $exporters = [];
+    private User $user;
 
     public function __construct(
         PersonalDataSelection $personalDataSelection,
         User                  $user
-    ) {
+    )
+    {
         $this->personalDataSelection = $personalDataSelection;
-        $this->user                  = $user;
+        $this->user = $user;
     }
 
-    public function export(array $exporters): void {
+    public function export(array $exporters, bool $export = true): void
+    {
         $this->exporters = $exporters;
         $this->checkClasses();
+
+        if (!$export) {
+            return;
+        }
 
         /** @var AbstractExporter $exporter */
         foreach ($this->exporters as $exporter) {
@@ -34,7 +40,8 @@ class Exporter
     }
 
 
-    private function checkClasses(): void {
+    private function checkClasses(): void
+    {
         foreach ($this->exporters as $exporter) {
             if (!class_exists($exporter) || !is_subclass_of($exporter, AbstractExporter::class)) {
                 throw new InvalidArgumentException(sprintf('%s is not of type %s', $exporter, AbstractExporter::class));

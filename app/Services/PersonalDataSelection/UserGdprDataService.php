@@ -36,41 +36,44 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
 
 class UserGdprDataService
 {
-    public function addUserPersonalData(PersonalDataSelection $personalDataSelection, User $userModel): void {
+    public function addUserPersonalData(PersonalDataSelection $personalDataSelection, User $userModel, bool $export = true): void {
         if ($userModel->avatar && file_exists(public_path('/uploads/avatars/' . $userModel->avatar))) {
             $personalDataSelection->addFile(public_path('/uploads/avatars/' . $userModel->avatar));
         }
 
         $exporter = new Exporter($personalDataSelection, $userModel);
-        $exporter->export([
-                              ActivityLogExporter::class,
-                              AppsExporter::class,
-                              BlocksExporter::class,
-                              EventsExporter::class,
-                              EventSuggestionsExporter::class,
-                              FollowRequestsExporter::class,
-                              FollowingsExporter::class,
-                              FollowsExporter::class,
-                              FollowsRequestsExporter::class,
-                              HomeExporter::class,
-                              IcsTokenExporter::class,
-                              LikesExporter::class,
-                              MentionExporter::class,
-                              MutesExporter::class,
-                              NotificationsExporter::class,
-                              PasswordResetsExporter::class,
-                              PermissionExporter::class,
-                              ReportsExporter::class,
-                              RoleExporter::class,
-                              SessionExporter::class,
-                              SocialProfileExporter::class,
-                              StatusExporter::class,
-                              TokenExporter::class,
-                              TripsExporter::class,
-                              TrustedUsersExporter::class,
-                              UserDataExporter::class,
-                              WebhookCreationRequestExporter::class,
-                              WebhookExporter::class,
-                          ]);
+        $exporter->export(
+            [
+                ActivityLogExporter::class,
+                AppsExporter::class,
+                BlocksExporter::class,
+                EventsExporter::class,
+                EventSuggestionsExporter::class,
+                FollowRequestsExporter::class,
+                FollowingsExporter::class,
+                FollowsExporter::class,
+                FollowsRequestsExporter::class,
+                HomeExporter::class,
+                IcsTokenExporter::class,
+                LikesExporter::class,
+                MentionExporter::class,
+                MutesExporter::class,
+                NotificationsExporter::class,
+                PasswordResetsExporter::class,
+                PermissionExporter::class,
+                ReportsExporter::class,
+                RoleExporter::class,
+                SessionExporter::class,
+                SocialProfileExporter::class,
+                StatusExporter::class,
+                TokenExporter::class,
+                TripsExporter::class,
+                TrustedUsersExporter::class,
+                UserDataExporter::class,
+                WebhookCreationRequestExporter::class,
+                WebhookExporter::class,
+            ],
+            $export
+        );
     }
 }
