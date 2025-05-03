@@ -30,6 +30,7 @@ class WikidataImportService
         'Q2175765', // Straßenbahnhaltestelle
         'Q44782', // Hafen
         'Q15310171', // Seehafen
+        'Q2296568', // river station
         'Q928830', // U-Bahnhof
         'Q22808403', // unterirdische Haltestelle
         'Q55485', // dead-end railway station
