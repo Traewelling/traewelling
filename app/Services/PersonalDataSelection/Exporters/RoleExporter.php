@@ -13,5 +13,7 @@ class RoleExporter extends AbstractExporter
 
     protected string $fileName = 'roles.json';
     protected string $relation = 'roles';
-    // todo: columns
+    protected array  $columns  = [
+        'name', 'guard_name', 'created_at', 'updated_at'
+    ];
 }

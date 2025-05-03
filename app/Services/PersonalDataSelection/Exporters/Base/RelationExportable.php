@@ -24,7 +24,7 @@ trait RelationExportable
         }
 
         if (!empty($this->columns)) {
-            return $relation->get()->only($this->columns)->toJson();
+            return $relation->select($this->columns)->get()->toJson();
         }
 
         return $relation->get()->toJson();
