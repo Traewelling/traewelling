@@ -1,69 +1,69 @@
 <script>
 export default {
-  props: {
-    "id": String,
-    "type": String,
-    "leadFormatted": String,
-    "lead": String,
-    "noticeFormatted": String,
-    "notice": String,
-    "link": String,
-    "data": Object,
-    "readAt": String,
-    "createdAt": String,
-    "createdAtForHumans": String
-  },
-  emits: ['toggle-read'],
-  methods: {
-    toggleUnread() {
-      this.$emit('toggle-read')
-    }
-  },
-  computed: {
-    internalLink() {
-      if (this.link) {
-        return this.link;
-      }
-      return "#";
+    props: {
+        "id": String,
+        "type": String,
+        "leadFormatted": String,
+        "lead": String,
+        "noticeFormatted": String,
+        "notice": String,
+        "link": String,
+        "data": Object,
+        "readAt": String,
+        "createdAt": String,
+        "createdAtForHumans": String
     },
-    icon() {
-      switch (this.type) {
-        case 'EventSuggestionProcessed':
-          return 'fa-regular fa-calendar';
-        case 'FollowRequestApproved':
-          return 'fas fa-user-plus';
-        case 'FollowRequestIssued':
-          return 'fas fa-user-plus';
-        case 'MastodonNotSent':
-        case 'InvalidMastodonServer':
-          return 'fas fa-exclamation-triangle';
-        case 'StatusLiked':
-          return 'fas fa-heart';
-        case 'UserFollowed':
-          return 'fas fa-user-friends';
-        case 'UserJoinedConnection':
-          return 'fa fa-train';
-        case 'UserMentioned':
-          return 'fas fa-at';
-        case 'PersonalDataExportedNotification':
-          return 'fas fa-download';
-        default:
-          return 'far fa-envelope';
-      }
+    emits: ['toggle-read'],
+    methods: {
+        toggleUnread() {
+            this.$emit('toggle-read')
+        }
     },
-    warnType() {
-      switch (this.type) {
-        case 'MastodonNotSent':
-        case 'InvalidMastodonServer':
-          return 'warning';
-        default:
-          return 'neutral';
-      }
-    },
-    read() {
-      return this.readAt ?? false;
-    }
-  },
+    computed: {
+        internalLink() {
+            if (this.link) {
+                return this.link;
+            }
+            return "#";
+        },
+        icon() {
+            switch (this.type) {
+                case 'EventSuggestionProcessed':
+                    return 'fa-regular fa-calendar';
+                case 'FollowRequestApproved':
+                    return 'fas fa-user-plus';
+                case 'FollowRequestIssued':
+                    return 'fas fa-user-plus';
+                case 'MastodonNotSent':
+                case 'InvalidMastodonServer':
+                    return 'fas fa-exclamation-triangle';
+                case 'StatusLiked':
+                    return 'fas fa-heart';
+                case 'UserFollowed':
+                    return 'fas fa-user-friends';
+                case 'UserJoinedConnection':
+                    return 'fa fa-train';
+                case 'UserMentioned':
+                    return 'fas fa-at';
+                case 'PersonalDataExportedNotification':
+                    return 'fas fa-download';
+                default:
+                    return 'far fa-envelope';
+            }
+        },
+        warnType() {
+            switch (this.type) {
+                case 'MastodonNotSent':
+                case 'InvalidMastodonServer':
+                    return 'warning';
+                default:
+                    return 'neutral';
+            }
+        },
+        read() {
+            return this.readAt ?? false;
+        }
+        },
 }
 </script>
 

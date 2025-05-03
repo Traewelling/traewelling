@@ -17,12 +17,24 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class ExportController extends Controller
 {
     public function requestGdprExport(Request $request): JsonResponse|Response|RedirectResponse {
+        $validated = $request->validate([
+                                            'frontend' => ['nullable', 'boolean'],
+                                        ]);
+
         $user = $request->user();
 
-        if ($user->recent_gdpr_export && $user->recent_gdpr_export->diffInDays(now()) < 30) {
-            return response()->json(
-                ['error' => __('export.error.gdpr-time', ['date' => userTime($user->recent_gdpr_export)])],
-                400
+        if (!(config('trwl.ab_testing.gdpr_export') || $user->hasRole('test-gdpr-export'))) {
+            return $this->frontendOrJson($validated, ['error' => __('export.error.gdpr')]);
+        }
+
+
+        if ($user->recent_gdpr_export && $user->recent_gdpr_export->diffInDays(now()) < config('trwl.gdpr_export.days')) {
+            return $this->frontendOrJson(
+                $validated,
+                ['error' => __('export.error.gdpr-time', [
+                    'date' => userTime($user->recent_gdpr_export),
+                    'days' => config('trwl.gdpr_export.days')
+                ])]
             );
         }
 
@@ -30,7 +42,7 @@ class ExportController extends Controller
 
         dispatch(new MonitoredPersonalDataExportJob($user));
 
-        return response()->json(['message' => __('export.requested')], 202);
+        return $this->frontendOrJson($validated, ['message' => __('export.requested')], 200);
     }
 
     public function generateStatusExport(Request $request): JsonResponse|StreamedResponse|Response|RedirectResponse {
@@ -42,12 +54,13 @@ class ExportController extends Controller
                                                 'required',
                                                 Rule::in(['pdf', 'csv_human', 'csv_machine', 'json'])
                                             ],
+                                            'frontend'  => ['nullable', 'boolean'],
                                         ]);
 
         $from  = Carbon::parse($validated['from']);
         $until = Carbon::parse($validated['until']);
         if ($from->diffInDays($until) > 365) {
-            return response()->json(['error' => __('export.error.time')], 400);
+            return $this->frontendOrJson($validated, ['error' => __('export.error.time')]);
         }
 
         if ($validated['filetype'] === 'json') {
@@ -70,7 +83,19 @@ class ExportController extends Controller
                 filetype: $validated['filetype']
             );
         } catch (DataOverflowException) {
-            return response()->json(['error' => __('export.error.amount')], 406);
+            return $this->frontendOrJson($validated, ['error' => __('export.error.amount')], 406);
         }
+    }
+
+    private function frontendOrJson(array $validated, array $data, int $status = 400): RedirectResponse|JsonResponse {
+        if (empty($validated['frontend'])) {
+            return response()->json($data, $status);
+        }
+
+        if (array_key_exists('error', $data)) {
+            return redirect('export')->with($data);
+        }
+
+        return redirect('export')->with('success', $data['message']);
     }
 }

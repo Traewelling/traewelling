@@ -108,4 +108,16 @@ class CoordinateTest extends UnitTestCase
         $this->assertEquals(49.013651, $interpolatedCoordinate->latitude);
         $this->assertEquals(8.404427, $interpolatedCoordinate->longitude);
     }
+
+    public function testCoordinateInterpolationWithNull(): void {
+        $coordinate1            = new Coordinate(49.013935, 8.404461);
+        $interpolatedCoordinate = (new GeoService)->interpolatePoint($coordinate1, null, 0.5);
+        $this->assertEquals($coordinate1, $interpolatedCoordinate);
+
+        $interpolatedCoordinate = (new GeoService)->interpolatePoint(null, $coordinate1, 0.5);
+        $this->assertEquals($coordinate1, $interpolatedCoordinate);
+
+        $interpolatedCoordinate = (new GeoService)->interpolatePoint(null, null, 0.5);
+        $this->assertEquals(null, $interpolatedCoordinate);
+    }
 }

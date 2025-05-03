@@ -34,6 +34,9 @@ class OAuthClient extends PassportClient
         'secret',
     ];
 
+    public static function newFactory() {
+        return parent::newFactory();
+    }
 
     public function isConfidential(): bool {
         return $this->secret != null;
