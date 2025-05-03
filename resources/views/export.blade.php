@@ -184,7 +184,7 @@
 
                             @if($recent)
                                 <br/>
-                                {{ __('export.gdpr.recent', ['date' => userTime($recent, __('datetime-format'))]) }}
+                                {{ __('export.gdpr.recent', ['date' => userTime($recent, __('datetime-format')), 'days' => config('trwl.gdpr_export.days')]) }}
                             @endif
 
                             <hr/>
@@ -193,7 +193,7 @@
                                 <div class="col text-end">
                                     <button type="submit"
                                             class="btn btn-primary"
-                                            @disabled($recent && $recent->diffInDays(now()) < 30)
+                                            @disabled($recent && $recent->diffInDays(now()) < config('trwl.gdpr_export.days'))
                                             onclick="requestExport()"
                                     >
                                         <i class="fa-solid fa-download"></i>

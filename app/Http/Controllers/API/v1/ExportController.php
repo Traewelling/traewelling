@@ -23,7 +23,7 @@ class ExportController extends Controller
 
         $user = $request->user();
 
-        if ($user->recent_gdpr_export && $user->recent_gdpr_export->diffInDays(now()) < 30) {
+        if ($user->recent_gdpr_export && $user->recent_gdpr_export->diffInDays(now()) < config('trwl.gdpr_export.days')) {
             return $this->frontendOrJson($validated, ['error' => __('export.error.gdpr-time', ['date' => userTime($user->recent_gdpr_export)])]);
         }
 
