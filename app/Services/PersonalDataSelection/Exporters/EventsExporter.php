@@ -8,7 +8,10 @@ use App\Models\Event;
 use App\Services\PersonalDataSelection\Exporters\Base\AbstractExporter;
 use App\Services\PersonalDataSelection\Exporters\Base\ModelExportable;
 
-class EventExporter extends AbstractExporter
+/**
+ * This class is responsible for exporting the events the user has approved.
+ */
+class EventsExporter extends AbstractExporter
 {
     use ModelExportable;
 

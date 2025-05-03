@@ -13,5 +13,5 @@ class SessionExporter extends AbstractExporter
 
     protected string $fileName = 'sessions.json';
     protected string $relation = 'sessions';
-    // todo: columns
+    protected array  $columns  = ['id', 'user_id', 'ip_address', 'user_agent', 'last_activity'];
 }

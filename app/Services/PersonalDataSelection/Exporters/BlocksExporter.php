@@ -7,6 +7,9 @@ namespace App\Services\PersonalDataSelection\Exporters;
 use App\Services\PersonalDataSelection\Exporters\Base\AbstractExporter;
 use App\Services\PersonalDataSelection\Exporters\Base\DatabaseExportable;
 
+/**
+ * This class is responsible for exporting the blocks the user has made.
+ */
 class BlocksExporter extends AbstractExporter
 {
     use DatabaseExportable;

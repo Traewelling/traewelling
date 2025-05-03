@@ -7,13 +7,12 @@ use App\Services\PersonalDataSelection\Exporters\ActivityLogExporter;
 use App\Services\PersonalDataSelection\Exporters\AppsExporter;
 use App\Services\PersonalDataSelection\Exporters\Base\Exporter;
 use App\Services\PersonalDataSelection\Exporters\BlocksExporter;
-use App\Services\PersonalDataSelection\Exporters\EventExporter;
+use App\Services\PersonalDataSelection\Exporters\EventsExporter;
 use App\Services\PersonalDataSelection\Exporters\EventSuggestionsExporter;
 use App\Services\PersonalDataSelection\Exporters\FollowingsExporter;
 use App\Services\PersonalDataSelection\Exporters\FollowRequestsExporter;
 use App\Services\PersonalDataSelection\Exporters\FollowsExporter;
 use App\Services\PersonalDataSelection\Exporters\FollowsRequestsExporter;
-use App\Services\PersonalDataSelection\Exporters\HafasTripsExporter;
 use App\Services\PersonalDataSelection\Exporters\HomeExporter;
 use App\Services\PersonalDataSelection\Exporters\IcsTokenExporter;
 use App\Services\PersonalDataSelection\Exporters\LikesExporter;
@@ -28,6 +27,7 @@ use App\Services\PersonalDataSelection\Exporters\SessionExporter;
 use App\Services\PersonalDataSelection\Exporters\SocialProfileExporter;
 use App\Services\PersonalDataSelection\Exporters\StatusExporter;
 use App\Services\PersonalDataSelection\Exporters\TokenExporter;
+use App\Services\PersonalDataSelection\Exporters\TripsExporter;
 use App\Services\PersonalDataSelection\Exporters\TrustedUsersExporter;
 use App\Services\PersonalDataSelection\Exporters\UserDataExporter;
 use App\Services\PersonalDataSelection\Exporters\WebhookCreationRequestExporter;
@@ -47,33 +47,33 @@ class UserGdprDataService
 
         $exporter = new Exporter($personalDataSelection, $userModel);
         $exporter->export([
-                              StatusExporter::class,
-                              FollowRequestsExporter::class,
-                              FollowsRequestsExporter::class,
-                              FollowsExporter::class,
-                              FollowingsExporter::class,
-                              HafasTripsExporter::class,
-                              BlocksExporter::class,
-                              MutesExporter::class,
-                              ReportsExporter::class,
-                              TrustedUsersExporter::class,
                               ActivityLogExporter::class,
-                              PasswordResetsExporter::class,
-                              EventExporter::class,
-                              EventSuggestionsExporter::class,
-                              WebhookCreationRequestExporter::class,
-                              MentionExporter::class,
-                              SocialProfileExporter::class,
-                              TokenExporter::class,
-                              IcsTokenExporter::class,
                               AppsExporter::class,
-                              SessionExporter::class,
-                              NotificationsExporter::class,
-                              LikesExporter::class,
+                              BlocksExporter::class,
+                              EventsExporter::class,
+                              EventSuggestionsExporter::class,
+                              FollowRequestsExporter::class,
+                              FollowingsExporter::class,
+                              FollowsExporter::class,
+                              FollowsRequestsExporter::class,
                               HomeExporter::class,
-                              RoleExporter::class,
+                              IcsTokenExporter::class,
+                              LikesExporter::class,
+                              MentionExporter::class,
+                              MutesExporter::class,
+                              NotificationsExporter::class,
+                              PasswordResetsExporter::class,
                               PermissionExporter::class,
+                              ReportsExporter::class,
+                              RoleExporter::class,
+                              SessionExporter::class,
+                              SocialProfileExporter::class,
+                              StatusExporter::class,
+                              TokenExporter::class,
+                              TripsExporter::class,
+                              TrustedUsersExporter::class,
                               UserDataExporter::class,
+                              WebhookCreationRequestExporter::class,
                               WebhookExporter::class,
                           ]);
     }

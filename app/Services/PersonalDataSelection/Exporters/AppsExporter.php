@@ -7,6 +7,9 @@ namespace App\Services\PersonalDataSelection\Exporters;
 use App\Services\PersonalDataSelection\Exporters\Base\AbstractExporter;
 use App\Services\PersonalDataSelection\Exporters\Base\RelationExportable;
 
+/**
+ * This class is responsible for exporting the OAuth clients the user has created. NOT the ones the user has authorized.
+ */
 class AppsExporter extends AbstractExporter
 {
     use RelationExportable;
