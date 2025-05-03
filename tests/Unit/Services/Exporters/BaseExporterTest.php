@@ -24,14 +24,14 @@ class BaseExporterTest extends UnitTestCase
 
     public function testMissingFileName() {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Property $fileName must be set in Tests\Unit\Services\Exporters\TestExporter');
+        $this->expectExceptionMessage('Property $fileName must be set in Tests\Unit\Services\Exporters\TestBaseExporter');
 
         new TestExporter($this->user);
     }
 
     public function testValidationFailed() {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Export validation failed in Tests\Unit\Services\Exporters\TestExporter');
+        $this->expectExceptionMessage('Export validation failed in Tests\Unit\Services\Exporters\TestBaseExporter');
 
         $exporter                 = new TestExporter($this->user, "test.csv");
         $exporter->failValidation = true;
@@ -40,7 +40,7 @@ class BaseExporterTest extends UnitTestCase
 
     public function testEmptyFileName() {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Property $fileName must be set in Tests\Unit\Services\Exporters\TestExporter');
+        $this->expectExceptionMessage('Property $fileName must be set in Tests\Unit\Services\Exporters\TestBaseExporter');
 
         $exporter = new TestExporter($this->user, "0");
         $exporter->getData();
