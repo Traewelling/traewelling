@@ -350,7 +350,7 @@ class User extends Authenticatable implements ExportsPersonalData
     }
 
     public function selectPersonalData(PersonalDataSelection $personalDataSelection): void {
-        (new UserGdprDataService())($personalDataSelection, $this);
+        (new UserGdprDataService())->addUserPersonalData($personalDataSelection, $this);
     }
 
     public function personalDataExportName(): string {
