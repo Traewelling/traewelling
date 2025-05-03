@@ -8,7 +8,8 @@
                 <div class="card-header">{{ __('settings.title-profile') }}</div>
 
                 <div class="card-body">
-                    <form enctype="multipart/form-data" method="POST" action="{{ route('settings.profile') }}">
+                    <form class="d-grid gap-1" enctype="multipart/form-data" method="POST"
+                          action="{{ route('settings.profile') }}">
                         @csrf
 
                         <div class="form-group row">
@@ -68,7 +69,7 @@
                                 {{ __('user.mapprovider') }}
                             </label>
                             <div class="col-md-6">
-                                <select class="form-control" name="mapprovider">
+                                <select class="form-select" name="mapprovider">
                                     <option value="{{ App\Enum\MapProvider::CARGO->value }}"
                                             @if(auth()->user()->mapprovider == App\Enum\MapProvider::CARGO) selected @endif>
                                         {{__('map-providers.cargo')}}
@@ -109,10 +110,10 @@
                             <label for="experimental" class="col-md-4 col-form-label text-md-right">
                                 {{ __('settings.experimental') }}
                                 <i class="fas fa-info-circle" title="{{__('settings.experimental.description')}}"
-                                   data-mdb-toggle="tooltip"></i>
+                                   data-bs-toggle="tooltip"></i>
                             </label>
                             <div class="col-md-6">
-                                <select class="form-control" name="experimental" id="experimental">
+                                <select class="form-select" name="experimental" id="experimental">
                                     <option value="1" @if(auth()->user()->hasRole('open-beta')) selected @endif>
                                         {{__('settings.allow')}}
                                     </option>
@@ -128,7 +129,7 @@
                         </div>
 
 
-                        <div class="form-group row mb-0">
+                        <div class="form-group row mt-3">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('settings.btn-update') }}
@@ -153,16 +154,16 @@
                         />
                     </div>
 
-                    <a href="#" class="btn btn-primary mb-1" data-mdb-toggle="modal"
-                       data-mdb-target="#uploadAvatarModal">
+                    <a href="#" class="btn btn-primary mb-1" data-bs-toggle="modal"
+                       data-bs-target="#uploadAvatarModal">
                         {{__('settings.upload-image')}}
                     </a>
                     <br/>
                     <a href="javascript:void(0)"
                        class="btn btn-outline-danger btn-sm mb-3 {{isset(auth()->user()->avatar) ? '' : 'd-none'}}"
                        id="btnModalDeleteProfilePicture"
-                       data-mdb-toggle="modal"
-                       data-mdb-target="#deleteProfilePictureModal"
+                       data-bs-toggle="modal"
+                       data-bs-target="#deleteProfilePictureModal"
                     >
                         {{ __('settings.delete-profile-picture-btn') }}
                     </a>
@@ -181,20 +182,22 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="mb-0">{{__('settings.upload-image')}}</h5>
-                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>
-                        <strong>{{__('settings.choose-file')}}: </strong>
-                        <input type="file" id="image">
-                    </p>
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">{{__('settings.choose-file')}}</label>
+                        <input class="form-control" type="file" id="image" accept="image/*">
+                    </div>
 
                     <div id="upload-demo" class="d-none"></div>
-                    <button class="btn btn-primary btn-block upload-image d-none" id="upload-button"
-                            data-mdb-dismiss="modal"
-                    >
-                        {{__('settings.upload-image')}}
-                    </button>
+                    <div class="d-grid">
+                        <button class="btn btn-primary upload-image d-none" id="upload-button"
+                                data-bs-dismiss="modal"
+                        >
+                            {{__('settings.upload-image')}}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -206,23 +209,23 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="mb-0">{{__('settings.delete-profile-picture')}}:</h5>
-                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <p>{!! __('settings.delete-profile-picture-desc') !!}</p>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-outline-danger" data-mdb-dismiss="modal"
+                    <button class="btn btn-outline-danger" data-bs-dismiss="modal"
                             aria-label="{{ __('settings.delete-profile-picture-no') }}">
                         {{ __('settings.delete-profile-picture-no') }}
                     </button>
-                    <a href="#" class="btn btn-danger"
-                       onclick="Settings.deleteProfilePicture()"
-                       data-mdb-toggle="modal"
-                       data-mdb-target="#deleteProfilePictureModal"
+                    <button class="btn btn-danger"
+                            onclick="Settings.deleteProfilePicture()"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteProfilePictureModal"
                     >
                         {{ __('settings.delete-profile-picture-yes') }}
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>

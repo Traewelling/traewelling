@@ -22,13 +22,13 @@
         "ext-simplexml": "*",
         "ext-sodium": "*",
         "barryvdh/laravel-dompdf": "^3.0",
-        "darkaonline/l5-swagger": "^8.3",
+        "darkaonline/l5-swagger": "^9.0",
         "doctrine/dbal": "^3.1.4",
         "easyrdf/easyrdf": "^1.1",
         "guzzlehttp/guzzle": "^7.1",
         "intervention/image": "^3.5",
         "jenssegers/agent": "^2.6",
-        "laravel/framework": "^10.0",
+        "laravel/framework": "^11.0",
         "laravel/passport": "^12.0",
         "laravel/socialite": "^5.0",
         "laravel/tinker": "^2.0",
@@ -41,7 +41,7 @@
         "spatie/laravel-permission": "^6.1",
         "spatie/laravel-personal-data-export": "^4.3",
         "spatie/laravel-prometheus": "^1.0",
-        "spatie/laravel-sitemap": "^7.0",
+        "spatie/laravel-sitemap": "^7.2.1",
         "spatie/laravel-validation-rules": "^3.2",
         "spatie/laravel-webhook-server": "^3.4",
         "trwl/socialite-mastodon": "^1.2"
@@ -54,10 +54,10 @@
         "fakerphp/faker": "^1.9",
         "filp/whoops": "^2.0",
         "mockery/mockery": "^1.0",
-        "nunomaduro/collision": "^7.0",
+        "nunomaduro/collision": "^8.1",
         "phpunit/phpunit": "^10.0",
         "roave/security-advisories": "dev-latest",
-        "spatie/laravel-ignition": "2.8.0"
+        "spatie/laravel-ignition": "2.9.1"
     },
     "config": {
         "optimize-autoloader": true,
@@ -101,7 +101,7 @@
             "@php artisan key:generate --ansi"
         ],
         "post-install-cmd": [
-            "./generate-version.sh"
+          "scripts/generate-version.sh"
         ]
     }
 }

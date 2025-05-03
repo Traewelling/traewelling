@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\API\v1\AlertController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\ExperimentalController;
@@ -113,18 +114,13 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::post('/{userId}/follow', [FollowController::class, 'createFollow']);
                 Route::delete('/{userId}/follow', [FollowController::class, 'destroyFollow']);
             });
-            Route::group(['middleware' => ['scope:write-followers']], static function() {
-                Route::delete('removeFollower', [FollowController::class, 'removeFollower']);           // TODO remove after 2024-10
-                Route::delete('rejectFollowRequest', [FollowController::class, 'rejectFollowRequest']); // TODO remove after 2024-10
-                Route::put('approveFollowRequest', [FollowController::class, 'approveFollowRequest']);  // TODO remove after 2024-10
-            });
             Route::group(['middleware' => ['scope:write-blocks']], static function() {
                 Route::post('/{userId}/block', [UserController::class, 'createBlock']);
                 Route::delete('/{userId}/block', [UserController::class, 'destroyBlock']);
                 Route::post('/{userId}/mute', [UserController::class, 'createMute']);
                 Route::delete('/{userId}/mute', [UserController::class, 'destroyMute']);
             });
-            Route::get('search/{query}', [UserController::class, 'search'])->middleware(['scope:read-search']);
+            Route::get('search/{query?}', [UserController::class, 'search'])->middleware(['scope:read-search']);
             Route::get('statuses/active', [StatusController::class, 'getActiveStatus'])
                  ->middleware(['scope:read-statuses']);
         });
@@ -160,17 +156,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::delete('tokens', [TokenController::class, 'revokeAllTokens']);       //TODO: undocumented endpoint - document when stable
                 Route::delete('token', [TokenController::class, 'revokeToken']);            //TODO: undocumented endpoint - document when stable
             });
-            Route::group(['middleware' => ['scope:read-settings-followers']], static function() {
-                Route::get('followers', [FollowController::class, 'getFollowers']);            // TODO remove after 2024-10
-                Route::get('follow-requests', [FollowController::class, 'getFollowRequests']); // TODO remove after 2024-10
-                Route::get('followings', [FollowController::class, 'getFollowings']);          // TODO remove after 2024-10
-            });
         });
-        Route::group(['prefix' => 'webhooks'], static function() {
-            Route::get('/', [WebhookController::class, 'getWebhooks']);
-            Route::get('/{webhookId}', [WebhookController::class, 'getWebhook']);
-            Route::delete('/{webhookId}', [WebhookController::class, 'deleteWebhook']);
-        });
+
+        Route::apiResource('webhooks', WebhookController::class)->only(['index', 'show', 'destroy']);
 
         Route::apiResource('station', StationController::class); // TODO: rename to "stations" when stable
         Route::apiResource('stations', StationController::class);
@@ -194,6 +182,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         Route::apiResource('user.trusted', TrustedUserController::class)->only(['index', 'store', 'destroy']);
         Route::apiResource('report', ReportController::class);
         Route::apiResource('operators', OperatorController::class)->only(['index']);
+        Route::apiResource('alerts', AlertController::class);
+        Route::put('/operators/{oldOperatorId}/merge/{newOperatorId}', [OperatorController::class, 'merge']); // currently admin/backend only
 
         Route::prefix('experimental')->group(function() {
             // undocumented, unstable, experimental endpoints. don't use in external applications!
@@ -207,6 +197,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('statuses', [StatusController::class, 'enRoute']);
             Route::get('positions', [StatusController::class, 'livePositions']);
             Route::get('positions/{ids}', [StatusController::class, 'getLivePositionForStatus']);
+            Route::get('status', [StatusController::class, 'list']);
             Route::get('status/{id}', [StatusController::class, 'show']);
             Route::get('status/{id}/likes', [LikesController::class, 'show']);
             Route::get('status/{statusId}/tags', [StatusTagController::class, 'index']);
@@ -217,7 +208,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('event/{slug}/details', [EventController::class, 'showDetails']);
             Route::get('event/{slug}/statuses', [EventController::class, 'statuses']);
             Route::get('events', [EventController::class, 'index']);
-            Route::get('activeEvents', [EventController::class, 'activeEvents']); //@deprecated: remove after 2024-08
             Route::get('user/{username}', [UserController::class, 'show']);
             Route::get('user/{username}/statuses', [UserController::class, 'statuses']);
         });

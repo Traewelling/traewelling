@@ -19,6 +19,30 @@ class StationTest extends ApiTestCase
         $response->assertForbidden();
     }
 
+    public function testAdminCanAccessStationListBackend(): void {
+        $user = User::factory()->create();
+        $user->assignRole('admin');
+        Passport::actingAs($user, ['*']);
+        $response = $this->get('/admin/stations?query=Karlsruhe');
+        $response->assertOk();
+    }
+
+    public function testUserCantAccessStationViewBackend(): void {
+        $user = User::factory()->create();
+        $station  = Station::factory()->create();
+        $response = $this->actingAs($user)->get('/admin/stations/' . $station->id);
+        $response->assertForbidden();
+    }
+
+    public function testAdminCanAccessStationViewBackend(): void {
+        $user = User::factory()->create();
+        $user->assignRole('admin');
+        Passport::actingAs($user, ['*']);
+        $station  = Station::factory()->create();
+        $response = $this->get('/admin/stations/' . $station->id);
+        $response->assertOk();
+    }
+
     public function testUserCannotCreateStation(): void {
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);

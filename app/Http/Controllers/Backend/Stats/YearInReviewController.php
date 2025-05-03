@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Backend\Stats;
 
 use App\Helpers\CacheKey;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\StatusResource;
 use App\Http\Resources\StationResource;
+use App\Http\Resources\StatusResource;
 use App\Models\Checkin;
 use App\Models\User;
 use Carbon\Carbon;

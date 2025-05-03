@@ -1,0 +1,13 @@
+[Unit]
+Description=Traewelling Queue worker
+
+[Service]
+Type=simple
+User=REPLACE_USER
+Restart=always
+RuntimeMaxSec=3600
+WorkingDirectory=REPLACE_ROOT_PATH
+ExecStart=php artisan queue:work --max-time=600 --tries=3
+
+[Install]
+WantedBy=multi-user.target

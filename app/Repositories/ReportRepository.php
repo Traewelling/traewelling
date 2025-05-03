@@ -16,7 +16,7 @@ class ReportRepository
         string|int        $subjectId,
         ReportReason      $reason,
         ?string           $description = null,
-        User              $reporter = null,
+        ?User             $reporter = null,
     ): void {
         Report::create([
                            'subject_type' => 'App\\Models\\' . $subjectType->value,

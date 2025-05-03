@@ -18,6 +18,9 @@ class DistanceCalculationTest extends FeatureTestCase
 
     use RefreshDatabase;
 
+    /**
+     * @deprecated Remove once LineSegment is removed
+     */
     public function test_distance_calculation_between_hanover_and_karlsruhe(): void {
         $result = new LineSegment(
             new Coordinate(52.376589, 9.741083),
@@ -26,6 +29,9 @@ class DistanceCalculationTest extends FeatureTestCase
         $this->assertEquals(388213, $result->calculateDistance());
     }
 
+    /**
+     * @deprecated Remove once LineSegment is removed
+     */
     public function test_distance_calculation_between_hanover_hbf_and_hanover_kroepcke() {
         $result = new LineSegment(
             new Coordinate(52.376589, 9.741083),

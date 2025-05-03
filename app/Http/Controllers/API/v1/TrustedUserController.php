@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\v1;
 
-
 use App\Enum\User\FriendCheckinSetting;
 use App\Http\Resources\TrustedUserResource;
 use App\Models\TrustedUser;
@@ -75,7 +74,7 @@ class TrustedUserController extends Controller
                 return $std;
             })
             ->unique('trusted.id') //remove duplicates
-            ->sortBy('trusted.username');
+            ->sortBy('trusted.username', SORT_FLAG_CASE | SORT_NATURAL);
 
         return TrustedUserResource::collection($trustedByUsers);
     }

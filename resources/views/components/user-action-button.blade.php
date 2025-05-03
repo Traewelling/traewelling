@@ -6,9 +6,9 @@
             <button type="submit"
                     @class(['btn btn-sm btn-primary' => !$dropdown, 'dropdown-item' => $dropdown])
                     @unless($showText())
-                        data-mdb-toggle="tooltip" title="{{ $getText() }}"
-                    @endunless
-                    @disabled($isDisabled())
+                        data-bs-toggle="tooltip" title="{{ $getText() }}"
+                @endunless
+                @disabled($isDisabled())
             >
                 <div class="dropdown-icon-suspense">
                     <i class="fas {{ $getIcon() }}"></i>

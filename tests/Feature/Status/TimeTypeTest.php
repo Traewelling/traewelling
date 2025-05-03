@@ -30,8 +30,12 @@ class TimeTypeTest extends FeatureTestCase
         $checkin->originStopover->update(['departure_real' => null]);
 
         // WHEN
-        if ($manual) $this->setManualDeparture($checkin, 8);
-        if ($delay) $this->setDelayedTrainDeparture($checkin, 5);
+        if ($manual) {
+            $this->setManualDeparture($checkin, 8);
+        }
+        if ($delay) {
+            $this->setDelayedTrainDeparture($checkin, 5);
+        }
 
         // THEN
         $this->assertEquals($expected, $checkin->displayDeparture->type);
@@ -72,10 +76,10 @@ class TimeTypeTest extends FeatureTestCase
 
     private function setDelayedTrainDeparture(Checkin $checkin, int $min): void {
         $checkin->originStopover->update([
-                                                     'departure_real' => $checkin->originStopover->departure_planned
-                                                         ->copy()
-                                                         ->addMinutes($min)
-                                                 ]);
+                                             'departure_real' => $checkin->originStopover->departure_planned
+                                                 ->copy()
+                                                 ->addMinutes($min)
+                                         ]);
     }
 
     private function setManualDeparture(Checkin $checkin, int $min): void {

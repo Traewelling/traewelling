@@ -72,35 +72,34 @@
 
                 <table class="table">
                     <thead>
-                        <tr>
-                            <th>Station</th>
-                            <th>IBNR</th>
-                            <th>IFOPT</th>
-                            <th>Ril100</th>
-                            <th>Wikidata</th>
-                        </tr>
+                    <tr>
+                        <th>Station</th>
+                        <th>IBNR</th>
+                        <th>IFOPT</th>
+                        <th>Ril100</th>
+                        <th>Wikidata</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        @foreach($destinationStationsWithoutWikidata as $station)
-                            <tr id="station-{{$station->id}}">
-                                <td>{{$station->name}}</td>
-                                <td>{{$station->ibnr}}</td>
-                                <td>{{$station->ifopt}}</td>
-                                <td>{{$station->rilIdentifier}}</td>
-                                <td>
-                                    <button class="btn btn-primary btn-sm" onclick="fetchWikidata({{$station->id}})">
-                                        <i class="fas fa-link"></i>
-                                        Fetch
-                                    </button>
-                                </td>
-                            </tr>
-                        @endforeach
+                    @foreach($destinationStationsWithoutWikidata as $station)
+                        <tr id="station-{{$station->id}}">
+                            <td>{{$station->name}}</td>
+                            <td>{{$station->ibnr}}</td>
+                            <td>{{$station->ifopt}}</td>
+                            <td>{{$station->rilIdentifier}}</td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" onclick="fetchWikidata({{$station->id}})">
+                                    <i class="fas fa-link"></i>
+                                    Fetch
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
 
                 <script>
                     function fetchWikidata(stationId) {
-                        console.log('Fetching Wikidata for station ' + stationId);
                         fetch('/api/v1/experimental/station/' + stationId + '/wikidata', {
                             method: 'POST',
                             headers: {
@@ -110,7 +109,6 @@
                         })
                             .then(response => response.json())
                             .then(data => {
-                                console.log(data);
                                 if (data.error) {
                                     notyf.error(data.error || 'Error fetching Wikidata');
                                 } else {

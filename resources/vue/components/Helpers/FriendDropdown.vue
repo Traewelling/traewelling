@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {trans} from "laravel-vue-i18n";
-import {Api, TrustedUserResource} from "../../../types/Api";
+import {Api, TrustedUserResource} from "../../../types/Api.gen";
 
 export default defineComponent({
   setup() {
@@ -64,9 +64,9 @@ export default defineComponent({
     <button class="btn btn-sm dropdown-toggle btn-link px-2"
             type="button"
             id="friendDropdown"
-            data-mdb-dropdown-animation="off"
-            data-mdb-toggle="dropdown"
-            data-mdb-auto-close="outside"
+            data-bs-dropdown-animation="off"
+            data-bs-toggle="dropdown"
+            data-bs-auto-close="outside"
             aria-expanded="false"
     >
       <i class="fas"

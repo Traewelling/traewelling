@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Controllers\Backend\Admin\AlertController;
 use App\Http\Controllers\Frontend\Admin\ActivityController;
 use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Http\Controllers\Frontend\Admin\EventController as AdminEventController;
+use App\Http\Controllers\Frontend\Admin\LicensesController;
+use App\Http\Controllers\Frontend\Admin\MotisSourceController;
+use App\Http\Controllers\Frontend\Admin\OperatorController;
 use App\Http\Controllers\Frontend\Admin\ReportController;
 use App\Http\Controllers\Frontend\Admin\StationController;
 use App\Http\Controllers\Frontend\Admin\StatusEditController;
@@ -14,17 +18,31 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
     Route::view('/', 'admin.dashboard') //attention: route accessible for admins and event-moderators!
          ->name('admin.dashboard');
 
-    Route::middleware('role:admin')->group(static function() {
+    Route::middleware('role:admin')->group(function() {
         // these routes are only accessible for admins
-
-        Route::prefix('checkin')->group(function() {
-            Route::get('/', [CheckinController::class, 'renderStationboard'])
-                 ->name('admin.stationboard');
-            Route::get('/trip/{tripId}', [CheckinController::class, 'renderTrip'])
-                 ->name('admin.trip');
-            Route::post('/checkin', [CheckinController::class, 'checkin'])
-                 ->name('admin.checkin');
+        Route::prefix('sources')->group(function() {
+            Route::get('/', [MotisSourceController::class, 'index'])
+                 ->name('admin.sources');
+            Route::post('/', [MotisSourceController::class, 'show'])->name('admin.sources.show');
+            Route::post('/mass-assign', [MotisSourceController::class, 'massAssign'])
+                 ->name('admin.sources.mass-assign');
         });
+        Route::prefix('alerts')->group(function() {
+            Route::get('/', [AlertController::class, 'index'])
+                 ->name('admin.alerts');
+            Route::post('/delete', [AlertController::class, 'destroy'])
+                 ->name('admin.alerts.destroy');
+            Route::get('/create', [AlertController::class, 'create'])
+                 ->name('admin.alerts.store');
+            Route::post('/create', [AlertController::class, 'store'])
+                 ->name('admin.alerts.create');
+            Route::get('/{id}/edit', [AlertController::class, 'edit'])
+                 ->name('admin.alerts.edit');
+            Route::post('/{id}/edit', [AlertController::class, 'update'])
+                 ->name('admin.alerts.update');
+        });
+        Route::resource('licenses', LicensesController::class)
+             ->only(['create', 'store', 'index']);
 
         Route::prefix('reports')->group(function() {
             Route::get('/', [ReportController::class, 'renderReports'])
@@ -69,6 +87,10 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
             Route::post('/{id}/wikidata', [StationController::class, 'fetchWikidata']);
         });
 
+        Route::prefix('operators')->group(function() {
+            Route::get('/', [OperatorController::class, 'renderList'])
+                 ->name('admin.operators');
+        });
 
         Route::get('activity', [ActivityController::class, 'render'])
              ->name('admin.activity');

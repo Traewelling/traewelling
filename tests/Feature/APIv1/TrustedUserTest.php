@@ -191,4 +191,3 @@ class TrustedUserTest extends ApiTestCase
         $this->assertDatabaseMissing('trusted_users', ['user_id' => $truster->id, 'trusted_id' => $trustedUser->id]);
     }
 }
-

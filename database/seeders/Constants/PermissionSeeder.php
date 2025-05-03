@@ -20,7 +20,7 @@ class PermissionSeeder extends Seeder
         $roleClosedBeta             = Role::updateOrCreate(['name' => 'closed-beta']);
         $roleDisallowManualTrips    = Role::updateOrCreate(['name' => 'disallow-manual-trips']);
         $roleDeactivateAccountUsage = Role::updateOrCreate(['name' => 'deactivate-account-usage']);
-        $roleTestGdprExport         = Role::updateOrCreate(['name' => 'test-gdpr-export']);                      //TODO: remove this permission when GDPR export is no longer in testing
+        Role::updateOrCreate(['name' => 'test-gdpr-export']);                                                    //TODO: remove this permission when GDPR export is no longer in testing
 
         //Create permissions
         $permissionViewBackend                    = Permission::updateOrCreate(['name' => 'view-backend']);
@@ -40,6 +40,8 @@ class PermissionSeeder extends Seeder
         $permissionDisallowStatusCreation         = Permission::updateOrCreate(['name' => 'disallow-status-creation']);
         $permissionDisallowStatusVisibilityChange = Permission::updateOrCreate(['name' => 'disallow-status-visibility-change']);
         $permissionDisallowSocialInteraction      = Permission::updateOrCreate(['name' => 'disallow-social-interaction']);
+        $permissionUseTransitous                  = Permission::updateOrCreate(['name' => 'use-transitous']);
+        $permissionAlertManage                    = Permission::updateOrCreate(['name' => 'alerts.manage']);
 
         //Assign permissions to admin role
         $roleAdmin->givePermissionTo($permissionViewBackend);
@@ -55,6 +57,7 @@ class PermissionSeeder extends Seeder
         $roleAdmin->givePermissionTo($permissionCreateStations);
         $roleAdmin->givePermissionTo($permissionUpdateStations);
         $roleAdmin->givePermissionTo($permissionDeleteStations);
+        $roleAdmin->givePermissionTo($permissionAlertManage);
 
         //Assign permissions to disallow-manual-trips role
         $roleDisallowManualTrips->givePermissionTo($permissionDisallowManualTrips);
@@ -74,6 +77,7 @@ class PermissionSeeder extends Seeder
 
         //Revoke permissions from closed-beta role
         $roleClosedBeta->revokePermissionTo($permissionCreateManualTrip);                                        //now in open-beta
+        $roleClosedBeta->revokePermissionTo($permissionUseTransitous);                                           // now released
 
         //Assign permissions to open-beta role
         $roleOpenBeta->givePermissionTo($permissionCreateManualTrip);

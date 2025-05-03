@@ -7,7 +7,7 @@ import NotificationBell from "../vue/components/NotificationBell.vue";
 import ActiveJourneyMap from "../vue/components/ActiveJourneyMap.vue";
 import Stationboard from "../vue/components/Stationboard.vue";
 import StationAutocomplete from "../vue/components/StationAutocomplete/StationAutocomplete.vue";
-import "./bootstrap";
+import "bootstrap";
 import "awesomplete/awesomplete";
 import "leaflet/dist/leaflet.js";
 import "./api/api";
@@ -19,6 +19,9 @@ import TripCreationForm from "../vue/components/TripCreation/TripCreationForm.vu
 import {createPinia} from 'pinia'
 import piniaPluginPersistedsState from 'pinia-plugin-persistedstate'
 import FriendCheckinSettings from "../vue/components/Settings/FriendCheckinSettings.vue";
+import WebhookSettings from "../vue/components/Settings/Webhooks.vue";
+import Request from "../vue/components/Events/Request.vue";
+import ApiAlerts from "../vue/components/ApiAlerts.vue";
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -59,6 +62,8 @@ document.addEventListener("DOMContentLoaded", function () {
         fallbackLang = "de";
     }
 
+    // TODO: As we add more vue components here, we should consider embedding them in a better way
+
     const i18nOptions = {
         fallbackLang: fallbackLang,
         fallbackMissingTranslations: true,
@@ -85,6 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const app3 = createApp({});
         app3.component("Stationboard", Stationboard);
         app3.component("Stationautocomplete", StationAutocomplete);
+        app3.component("Apialerts", ApiAlerts);
         app3.use(pinia);
         app3.use(i18nVue, i18nOptions);
         app3.mount("#station-board-new");
@@ -117,7 +123,22 @@ document.addEventListener("DOMContentLoaded", function () {
         app7.use(i18nVue, i18nOptions);
         app7.use(pinia);
         app7.mount("#settings-friend-checkin");
+    }
 
+    if (document.getElementById("settings-webhooks")) {
+        const app8 = createApp({});
+        app8.component("Webhooks", WebhookSettings);
+        app8.use(i18nVue, i18nOptions);
+        app8.use(pinia);
+        app8.mount("#settings-webhooks");
+    }
+
+    if (document.getElementById("vue-request-events")) {
+        const app9 = createApp({});
+        app9.component("Request", Request);
+        app9.use(i18nVue, i18nOptions);
+        app9.use(pinia);
+        app9.mount("#vue-request-events");
     }
 });
 
@@ -126,16 +147,14 @@ document.addEventListener("DOMContentLoaded", function () {
  */
 window.addEventListener("load", () => {
     import("./components/DarkModeToggle");
-    import("./components/Event");
     import("./components/progressbar");
     import("./components/settings");
     import("./components/station-autocomplete");
-    import("./components/stationboard");
-    import("./components/stationboard-gps");
-    import("./components/Status");
-    import("./components/timepicker");
+    import("./api/Status");
     import("./components/export");
     import("./components/business-check-in");
+    import("./components/stats")
     import("./appControls");
     import("bootstrap-cookie-alert/cookiealert");
+    import("./components/tooltips");
 });

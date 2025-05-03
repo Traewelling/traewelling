@@ -4,7 +4,6 @@
 
 @section('head')
     @parent
-    <script src="{{ asset('js/stats.js') }}"></script>
 @endsection
 
 @section('content')

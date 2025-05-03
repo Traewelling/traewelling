@@ -2,56 +2,25 @@
 
 namespace App\Http\Controllers\Backend\Transport;
 
-use App\Exceptions\HafasException;
+use App\DataProviders\DataProviderBuilder;
+use App\DataProviders\DataProviderInterface;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\HafasController;
-use App\Http\Resources\StationResource;
 use App\Models\Checkin;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\User;
 use App\Repositories\StationRepository;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class StationController extends Controller
 {
-    private StationRepository $stationRepository;
+    private DataProviderInterface $dataProvider;
+    private StationRepository     $stationRepository;
 
     public function __construct(?StationRepository $stationRepository = null) {
+        $this->dataProvider      = (new DataProviderBuilder())->build();
         $this->stationRepository = $stationRepository ?? new StationRepository();
-    }
-
-    /**
-     * @throws HafasException
-     * @throws ModelNotFoundException
-     */
-    public static function lookupStation(string|int $query): Station {
-        //Lookup by station ibnr
-        if (is_numeric($query)) {
-            $station = Station::where('ibnr', $query)->first();
-            if ($station !== null) {
-                return $station;
-            }
-        }
-
-        //Lookup by ril identifier
-        if (!is_numeric($query) && strlen($query) <= 5 && ctype_upper($query)) {
-            $station = HafasController::getStationByRilIdentifier($query);
-            if ($station !== null) {
-                return $station;
-            }
-        }
-
-        //Lookup HAFAS
-        $station = HafasController::getStations(query: $query, results: 1)->first();
-        if ($station !== null) {
-            return $station;
-        }
-
-        throw new ModelNotFoundException;
     }
 
     /**
@@ -100,26 +69,26 @@ class StationController extends Controller
             });
     }
 
-    /**
-     * @param string $search
-     * @param string $lang
-     *
-     * @return AnonymousResourceCollection
-     */
-    public function index(string $search, string $lang): AnonymousResourceCollection {
-        $stations = $this->stationRepository->getStationByName($search, $lang);
-
-        if (count($stations) < 2) {
-            $stations->merge($this->stationRepository->getStationByName($search, $lang, true))->unique();
+    public function search(string $search): Collection {
+        if (!is_numeric($search) && strlen($search) <= 5 && ctype_upper($search)) {
+            $stations = $this->stationRepository->getStationsByFuzzyRilIdentifier($search);
+            if ($stations->isNotEmpty()) {
+                return $stations;
+            }
+        } elseif (preg_match('/^Q\d+$/', $search)) {
+            return $this->stationRepository->getStationsByWikidataId($search);
         }
 
-        $stations->map(function($station) use ($search) {
-            similar_text($station->name, $search, $percent);
-            $station->similarity = $percent;
-
-            return $station;
-        });
-
-        return StationResource::collection($stations->sortByDesc('similarity'));
+        $stations = $this->dataProvider->getStations($search);
+        if ($stations->count() < 10) {
+            $remaining  = 10 - $stations->count();
+            $dbStations = $this->stationRepository->getStationByName($search, 'de', true);
+            // remove duplicates
+            $dbStations = $dbStations->filter(function(Station $station) use ($stations) {
+                return !$stations->contains('id', $station->id);
+            });
+            $stations   = $stations->merge($dbStations->take($remaining));
+        }
+        return $stations;
     }
 }

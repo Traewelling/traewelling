@@ -99,13 +99,15 @@
                                         </td>
                                         <td>
                                             <small>{{__('status.visibility.' . $status->visibility->value)}}</small>
-                                            <br />
+                                            <br/>
                                             <small>{{__('stationboard.business.' . strtolower($status->business->name))}}</small>
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
+
+                        {{$lastStatuses->links()}}
                     </div>
                 </div>
             </div>

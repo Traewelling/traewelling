@@ -15,7 +15,7 @@
                             @csrf
 
                             <div class="form-group row mb-3">
-                                <label for="name"
+                                <label for="username"
                                        class="col-md-4 col-form-label text-md-right">{{ __('user.username') }}</label>
 
                                 <div class="col-md-6">
@@ -23,7 +23,7 @@
                                     <div class="input-group">
                                         <span class="input-group-text" id="basic-addon1">@</span>
 
-                                        <input id="name" type="text"
+                                        <input id="username" type="text"
                                                class="form-control @error('username') is-invalid @enderror"
                                                name="username" value="{{ old('username') }}" required autofocus>
                                     </div>
@@ -77,7 +77,7 @@
                                 <div class="col-md-6">
                                     <input id="password" type="password"
                                            class="form-control @error('password') is-invalid @enderror" name="password"
-                                           required autocomplete="new-password">
+                                           required autocomplete="new-password" minlength="8">
 
                                     @error('password')
                                     <span class="invalid-feedback" role="alert">
@@ -93,7 +93,7 @@
 
                                 <div class="col-md-6">
                                     <input id="password-confirm" type="password" class="form-control"
-                                           name="password_confirmation" required autocomplete="new-password">
+                                           name="password_confirmation" required autocomplete="new-password" minlength="8">
                                 </div>
                             </div>
 
@@ -118,9 +118,9 @@
                                         </div>
                                         <div class="form-group col-md-6">
                                             <div class="md-form input-group mt-2">
-                                                <input type="text" name="domain" class="form-control"
+                                                <input type="url" name="domain" class="form-control"
                                                        placeholder="{{__('user.mastodon-instance-url')}}"
-                                                       aria-describedby="button-addon4">
+                                                       aria-describedby="button-addon4" required>
                                                 <button class="btn btn-md btn-primary m-0 px-3" type="submit"><i
                                                             class="fab fa-mastodon"></i> Mastodon
                                                 </button>

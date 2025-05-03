@@ -1,3 +1,4 @@
+@php use App\Http\Controllers\Backend\User\ProfilePictureController; @endphp
 @extends('admin.layout')
 
 @section('title', 'Trip ' . $trip->id)
@@ -68,7 +69,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-body">
                     <h2 class="card-title fs-5">Checkins</h2>
                     @if($trip->checkins->count() === 0)
@@ -112,12 +113,12 @@
             </div>
         </div>
         <div class="col-md-8">
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-body">
                     <h2 class="card-title fs-5">Stopovers</h2>
-
-                    <table class="table table-striped">
-                        <thead>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
                             <tr>
                                 <th scope="col">Name</th>
                                 <th scope="col">TRWL-ID</th>
@@ -127,8 +128,8 @@
                                 <th scope="col">Ankunft soll / ist</th>
                                 <th scope="col">Abfahrt soll / ist</th>
                             </tr>
-                        </thead>
-                        <tbody>
+                            </thead>
+                            <tbody>
                             @foreach($trip->stopovers as $stopover)
                                 <tr>
                                     <td>
@@ -145,20 +146,37 @@
                                     </td>
                                     <td>{{$stopover->station?->ibnr}}</td>
                                     <td>{{$stopover->station?->rilIdentifier}}</td>
-                                    <td title="{{$stopover->arrival_planned?->format('c')}}">
-                                        {{userTime($stopover->arrival_planned)}}
+                                    <td title="{{$stopover->arrival_planned?->format('Y-m-d')}}">
+                                        <span
+                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->arrival_planned->format('ddmm')) }};">
+                                            {{userTime($stopover->arrival_planned)}}
+                                        </span>
                                         /
-                                        {{userTime($stopover->arrival_real?->format('H:i'))}}
+                                        <span
+                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->arrival_real?->format('ddmm') ?? '') }};">
+                                            {{userTime($stopover->arrival_real)}}
+                                        </span>
                                     </td>
-                                    <td title="{{$stopover->departure_planned?->format('c')}}">
-                                        {{userTime($stopover->departure_planned)}}
+                                    <td title="{{$stopover->departure_planned?->format('Y-m-d')}}">
+                                        <span
+                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->departure_planned->format('ddmm')) }};">
+                                            {{userTime($stopover->departure_planned)}}
+                                        </span>
                                         /
+                                        <span
+                                            style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->departure_real?->format('ddmm') ?? '') }};">
                                         {{userTime($stopover->departure_real)}}
+                                        </span>
                                     </td>
                                 </tr>
                             @endforeach
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                        <div class="alert alert-info">
+                            <strong>Info:</strong> The colors of the times are based on the day of the year.
+                            This way you can easily see if there is a date change.
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

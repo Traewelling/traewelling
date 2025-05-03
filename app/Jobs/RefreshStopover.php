@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Http\Controllers\HafasController;
+use App\DataProviders\Hafas;
+use App\DataProviders\HafasStopoverService;
+use App\Exceptions\HafasException;
 use App\Models\Stopover;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -22,6 +24,10 @@ class RefreshStopover implements ShouldQueue
     }
 
     public function handle(): void {
-        HafasController::refreshStopover($this->stopover);
+        try {
+            (new HafasStopoverService(Hafas::class))->refreshStopover($this->stopover);
+        } catch (\Exception $exception) {
+            report($exception);
+        }
     }
 }

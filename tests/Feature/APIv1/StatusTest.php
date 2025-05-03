@@ -26,8 +26,7 @@ class StatusTest extends ApiTestCase
         Passport::actingAs($user, ['*']);
 
         $response = $this->get('/api/v1/user/statuses/active');
-        $response->assertNotFound();
-        $this->assertEquals('User doesn\'t have any checkins', $response->json('message'));
+        $response->assertNoContent();
     }
 
     public function testActiveStatusesShowStatusesCurrentlyUnderway(): void {
@@ -82,15 +81,14 @@ class StatusTest extends ApiTestCase
         $trip      = Trip::factory(['departure' => $departure, 'arrival' => $arrival])->create();
 
         Checkin::factory([
-                             'user_id'     => $user->id,
-                             'departure'   => $trip->departure,
-                             'arrival'     => $trip->arrival,
-                             'trip_id'     => $trip->trip_id,
+                             'user_id'   => $user->id,
+                             'departure' => $trip->departure,
+                             'arrival'   => $trip->arrival,
+                             'trip_id'   => $trip->trip_id,
                          ])->create();
 
         $response = $this->get('/api/v1/user/statuses/active');
-        $response->assertNotFound();
-        $this->assertEquals('No active status', $response->json('message'));
+        $response->assertNoContent();
     }
 
     public function testStatusUpdate(): void {
@@ -182,5 +180,50 @@ class StatusTest extends ApiTestCase
         $checkin = $checkin->fresh();
 
         $this->assertEquals($checkin->destinationStopover->station->id, $newStation->id);
+    }
+
+    public function testStatusListEndpoint(): void {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        $response = $this->get('/api/v1/status');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+        $response->assertJsonStructure([
+                                           'data'  => [],
+                                           'links' => [
+                                               'first',
+                                               'last',
+                                               'prev',
+                                               'next',
+                                           ],
+                                           'meta'  => [
+                                               'path',
+                                               'per_page',
+                                               'next_cursor',
+                                               'prev_cursor',
+                                           ],
+                                       ]);
+
+        $checkin = Checkin::factory(['user_id' => $user->id])->create();
+        $checkin->status->update([
+                                     'body'       => '#MyFirstJourney',
+                                     'visibility' => StatusVisibility::PUBLIC->value,
+                                 ]);
+
+        // generic list without query
+        $response = $this->get('/api/v1/status');
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+
+        // query for #MyFirstJourney
+        $response = $this->get('/api/v1/status?body=%23MyFirstJourney');
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+
+        // query for something else
+        $response = $this->get('/api/v1/status?body=somethingelse');
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
     }
 }

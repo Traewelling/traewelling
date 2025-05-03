@@ -49,6 +49,7 @@ function updateDarkMode() {
     } else {
         document.documentElement.classList.remove("dark");
     }
+    document.documentElement.setAttribute("data-bs-theme", darkModeSetting);
 }
 
 function mountListeners() {

@@ -2,8 +2,8 @@
     <button class="btn btn-sm btn-outline-primary dropdown-toggle trwl-visibility-button"
             type="button"
             id="visibilityDropdownButton"
-            data-mdb-dropdown-animation="off"
-            data-mdb-toggle="dropdown"
+            data-bs-dropdown-animation="off"
+            data-bs-toggle="dropdown"
             aria-expanded="false"
     >
         <i class="fa fa-{{['globe-americas', 'lock-open', 'user-friends', 'lock', 'user-check'][auth()->user()?->default_status_visibility->value ?? 0]}}"

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Virtual\Models\Laravel;
+
 /**
  * @OA\Schema(
  *     title="Links",

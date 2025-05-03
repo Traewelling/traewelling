@@ -8,11 +8,13 @@ use App\Models\Checkin;
 use App\Models\Event;
 use App\Models\EventSuggestion;
 use App\Models\Station;
+use App\Models\StationIdentifier;
 use App\Models\Stopover;
 use App\Models\Trip;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StationController extends Controller
 {
@@ -65,6 +67,51 @@ class StationController extends Controller
         $this->authorize('update', $oldStation);
         $this->authorize('delete', $oldStation);
 
+        // do this before the transaction, so new checkins will be created with the new station, if transaction fails
+        StationIdentifier::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
+
+        DB::transaction(function() use ($newStation, $oldStation) {
+            // Before the update: remove duplicates in stopovers
+            $potentialDuplicates = Stopover::where('train_station_id', $oldStation->id)->get();
+
+            foreach ($potentialDuplicates as $oldStopover) {
+                // check if the dates are the same (then it can be safely removed)
+                $duplicate = Stopover::where('train_station_id', $newStation->id)
+                                     ->where('trip_id', $oldStopover->trip_id)
+                                     ->where('departure_planned', $oldStopover->departure_planned)
+                                     ->where('arrival_planned', $oldStopover->arrival_planned)
+                                     ->first();
+
+                if ($duplicate) {
+                    // if there is a duplicate: move stopovers and then delete the old one
+                    Checkin::where('origin_stopover_id', $oldStopover->id)->update(['origin_stopover_id' => $duplicate->id]);
+                    Checkin::where('destination_stopover_id', $oldStopover->id)->update(['destination_stopover_id' => $duplicate->id]);
+                    $oldStopover->delete();
+                }
+            }
+
+            Stopover::where('train_station_id', $oldStation->id)->update(['train_station_id' => $newStation->id]);
+            Trip::where('origin_id', $oldStation->id)->update(['origin_id' => $newStation->id]);
+            Trip::where('destination_id', $oldStation->id)->update(['destination_id' => $newStation->id]);
+            Event::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
+            EventSuggestion::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
+
+            // merge columns from old->new if they are null
+            $columns = ['ibnr', 'wikidata_id', 'rilIdentifier', 'ifopt_a', 'ifopt_b', 'ifopt_c', 'ifopt_d', 'ifopt_e'];
+            foreach ($columns as $column) {
+                if ($newStation->{$column} === null && $oldStation->{$column} !== null) {
+                    $newStation->{$column} = $oldStation->{$column};
+                }
+            }
+
+            $oldStation->delete();
+
+            // save AFTER deletion to avoid foreign key constraint errors
+            if ($newStation->isDirty()) {
+                $newStation->save();
+            }
+        });
+
         $logMessage = 'Merged station ' . $oldStation->name . ' (' . $oldStation->id . ') into ' . $newStation->name . ' (' . $newStation->id . ')';
         activity()->causedBy(auth()->user())
                   ->performedOn($oldStation)
@@ -72,14 +119,6 @@ class StationController extends Controller
         activity()->causedBy(auth()->user())
                   ->performedOn($newStation)
                   ->log($logMessage);
-
-        Stopover::where('train_station_id', $oldStation->id)->update(['train_station_id' => $newStation->id]);
-        Trip::where('origin_id', $oldStation->id)->update(['origin_id' => $newStation->id]);
-        Trip::where('destination_id', $oldStation->id)->update(['destination_id' => $newStation->id]);
-        Event::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
-        EventSuggestion::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
-
-        $oldStation->delete();
 
         return new StationResource($newStation);
     }
@@ -94,7 +133,12 @@ class StationController extends Controller
                                             'name'          => ['nullable', 'string', 'max:255'],
                                             'latitude'      => ['nullable', 'numeric', 'between:-90,90'],
                                             'longitude'     => ['nullable', 'numeric', 'between:-180,180'],
+                                            'time_offset'   => ['nullable', 'numeric'],
                                         ]);
+
+        if (array_key_exists('time_offset', $request->json()->all()) && $request->json('time_offset') === null) {
+            $validated['time_offset'] = null;
+        }
 
         $station->update($validated);
         return new StationResource($station);
@@ -136,8 +180,41 @@ class StationController extends Controller
     public function index(Request $request): JsonResponse {
         $validated = $request->validate(['query' => 'string']);
 
-        $stations = (new StationBackendController())->index($validated['query'], $request->user()->language ?? app()->getLocale());
-        return $this->sendResponse($stations);
+        $stations = (new StationBackendController())->search($validated['query']);
+        return $this->sendResponse(StationResource::collection($stations));
     }
 
+
+    /**
+     * @OA\Get(
+     *      path="/stations/{id}",
+     *      operationId="showStation",
+     *      tags={"Checkin"},
+     *      summary="Show station",
+     *      description="This request returns a single station object",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="station id",
+     *          example="1337"
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="object", ref="#/components/schemas/StationResource")
+     *          )
+     *      ),
+     *      @OA\Response(response=401, description="Unauthorized"),
+     *      @OA\Response(response=503, description="There has been an error with our data provider"),
+     *      security={
+     *          {"passport": {"create-statuses"}}, {"token": {}}
+     *      }
+     *     )
+     */
+    public function show(int $id): JsonResponse {
+        $station = Station::findOrFail($id);
+
+        return $this->sendResponse(new StationResource($station));
+    }
 }

@@ -39,7 +39,10 @@ class ExportController extends Controller
                                             'from'      => ['required', 'date', 'before_or_equal:until'],
                                             'until'     => ['required', 'date', 'after_or_equal:from'],
                                             'columns.*' => ['required', Rule::enum(ExportableColumn::class)],
-                                            'filetype'  => ['required', Rule::in(['pdf', 'csv_human', 'csv_machine', 'json'])],
+                                            'filetype'  => [
+                                                'required',
+                                                Rule::in(['pdf', 'csv_human', 'csv_machine', 'json'])
+                                            ],
                                             'frontend'  => ['nullable', 'boolean'],
                                         ]);
 

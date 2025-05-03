@@ -22,7 +22,7 @@ class StatusEditController extends Controller
         $validated    = $request->validate([
                                                'userQuery' => ['nullable', 'max:255'],
                                            ]);
-        $lastStatuses = Status::orderBy('created_at', 'desc')->limit(20);
+        $lastStatuses = Status::orderBy('created_at', 'desc');
 
         if (isset($validated['userQuery'])) {
             $lastStatuses = $lastStatuses->whereIn(
@@ -34,7 +34,7 @@ class StatusEditController extends Controller
         }
 
         return view('admin.status.main', [
-            'lastStatuses' => $lastStatuses->get(),
+            'lastStatuses' => $lastStatuses->paginate(10),
         ]);
     }
 
@@ -50,13 +50,16 @@ class StatusEditController extends Controller
 
     public function edit(Request $request): RedirectResponse {
         $validated = $request->validate([
-                                            'statusId'    => ['required', 'exists:statuses,id'],
-                                            'origin'      => ['required', 'exists:train_stations,id'],
-                                            'destination' => ['required', 'exists:train_stations,id'],
-                                            'body'        => ['nullable', 'string'],
-                                            'visibility'  => ['required', new Enum(StatusVisibility::class)],
-                                            'event_id'    => ['nullable', 'integer', 'exists:events,id'],
-                                            'points'      => ['nullable', 'integer', 'gte:0'], //if null, points will be recalculated
+                                            'statusId'         => ['required', 'exists:statuses,id'],
+                                            'origin'           => ['required', 'exists:train_stations,id'],
+                                            'destination'      => ['required', 'exists:train_stations,id'],
+                                            'body'             => ['nullable', 'string'],
+                                            'visibility'       => ['required', new Enum(StatusVisibility::class)],
+                                            'event_id'         => ['nullable', 'integer', 'exists:events,id'],
+                                            'points'           => ['nullable', 'integer', 'gte:0'], //if null, points will be recalculated
+                                            'moderation_notes' => ['nullable', 'string', 'max:255'],
+                                            'lock_visibility'  => ['nullable', 'boolean'],
+                                            'hide_body'        => ['nullable', 'boolean'],
                                         ]);
 
         $status = Status::find($validated['statusId']);
@@ -102,16 +105,29 @@ class StatusEditController extends Controller
 
         StatusUpdateEvent::dispatch($status->refresh());
 
-        $status->update([
-                            'visibility' => $validated['visibility'],
-                            'event_id'   => $validated['event_id'],
-                        ]);
+        $payload = [
+            'visibility'       => $validated['visibility'],
+            'event_id'         => $validated['event_id'],
+            'moderation_notes' => null,
+        ];
 
         if ($status->body !== $validated['body']) {
-            $status->update(['body' => $validated['body']]);
+            $payload['body'] = $validated['body'];
+        }
+        if (isset($validated['moderation_notes'])) {
+            $payload['moderation_notes'] = $validated['moderation_notes'];
+        }
+        if (isset($validated['lock_visibility'])) {
+            $payload['lock_visibility'] = $validated['lock_visibility'];
+        }
+        if (isset($validated['hide_body'])) {
+            $payload['hide_body'] = $validated['hide_body'];
         }
 
-        return redirect()->route('admin.status')->with('alert-success', 'Der Status wurde bearbeitet.');
+        $status->update($payload);
+
+        return redirect()->route('admin.status.edit', ['statusId' => $status->id])
+                         ->with('alert-success', 'Status successfully updated');
     }
 
 }

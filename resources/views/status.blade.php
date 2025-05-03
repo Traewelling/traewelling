@@ -1,6 +1,12 @@
 @extends('layouts.app')
 
 @section('title', $title)
+@php
+    /**
+      * @var \App\Models\Status $status
+      * @var \App\Dto\LicenseDto $license
+      */
+@endphp
 @section('canonical', route('status', ['id' => $status->id]))
 
 @if($status->user->prevent_index)
@@ -35,6 +41,15 @@
                 @endif
                 <h2 class="fs-5">{{ userTime($status->checkin->departure,__('dateformat.with-weekday')) }}</h2>
                 @include('includes.status')
+                @if($license)
+                    <div class="float-end">
+                        <span data-bs-toggle="tooltip"
+                              title="{{ $license->attributionString }}">
+                        <i class="fas fa-info-circle"></i>
+                            {{ __('license.info') }}
+                        </span>
+                    </div>
+                @endif
                 <div id="tag-helper">
                     <tag-helper
                         :status-id="{{ $status->id }}"

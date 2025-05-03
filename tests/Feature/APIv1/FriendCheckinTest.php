@@ -145,4 +145,3 @@ class FriendCheckinTest extends ApiTestCase
         $this->assertNotContains($allowedUser->id, $response->json('meta.invalidUsers'));
     }
 }
-

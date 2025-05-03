@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\HafasController;
+use App\DataProviders\Repositories\StationRepository;
 use App\Models\Stopover;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -51,7 +51,7 @@ class CreateTrainStopoversTable extends Migration
 
                   foreach ($stopovers as $stopover) {
 
-                      $hafasStop = HafasController::parseHafasStopObject($stopover->stop);
+                      $hafasStop = StationRepository::parseHafasStopObject($stopover->stop);
 
                       Stopover::updateOrCreate(
                           [

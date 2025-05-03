@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Exceptions\RateLimitExceededException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Resources\UserResource;
@@ -94,6 +95,7 @@ class LikesController extends Controller
      *       @OA\Response(response=403, description="User not authorized to access this status"),
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=409, description="Status already liked by user"),
+     *       @OA\Response(response=429, description="Rate limit exceeded"),
      *       security={
      *           {"passport": {"write-likes"}}, {"token": {}}
      *       }
@@ -121,6 +123,12 @@ class LikesController extends Controller
             return $this->sendError(code: 403);
         } catch (ModelNotFoundException) {
             return $this->sendError(code: 404);
+        } catch (RateLimitExceededException $exception) {
+            return response()->json(null, 429, [
+                'X-RateLimit-Limit'     => $exception->limit,
+                'X-RateLimit-Remaining' => $exception->remaining,
+                'X-RateLimit-Reset'     => $exception->reset,
+            ]);
         }
     }
 

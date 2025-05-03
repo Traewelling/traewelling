@@ -79,7 +79,7 @@ class UserRedirectionTest extends FeatureTestCase
 
         // If the user opens the app again, they get intercepted again.
         $response = $this->actingAs($user)
-                         ->get('/dashboard/global');
+                         ->get('/dashboard');
         $response->assertStatus(302);
         $response->assertRedirect('/gdpr-intercept');
         $this->followRedirects($response)

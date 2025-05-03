@@ -9,7 +9,7 @@ use App\Dto\LivePointDto;
 use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Trip;
-use App\Objects\LineSegment;
+use App\Services\GeoService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Collection;
@@ -18,29 +18,33 @@ use stdClass;
 
 class LocationController
 {
-    private Trip      $trip;
-    private ?Stopover $origin;
-    private ?Stopover $destination;
-    private ?Status   $status;
+    private Trip       $trip;
+    private ?Stopover  $origin;
+    private ?Stopover  $destination;
+    private ?Status    $status;
+    private GeoService $geoService;
 
     public function __construct(
-        Trip     $trip,
-        Stopover $origin = null,
-        Stopover $destination = null,
-        Status   $status = null
+        Trip        $trip,
+        ?Stopover   $origin = null,
+        ?Stopover   $destination = null,
+        ?Status     $status = null,
+        ?GeoService $geoService = null
     ) {
         $this->trip        = $trip;
         $this->origin      = $origin;
         $this->destination = $destination;
         $this->status      = $status;
+        $this->geoService  = $geoService ?? new GeoService();
     }
 
-    public static function forStatus(Status $status): LocationController {
+    public static function forStatus(Status $status, ?GeoService $geoService = null): LocationController {
         return new self(
             $status->checkin->trip,
             $status->checkin->originStopover,
             $status->checkin->destinationStopover,
-            $status
+            $status,
+            $geoService
         );
     }
 
@@ -64,9 +68,6 @@ class LocationController
         return $newStopovers;
     }
 
-    /**
-     * @throws JsonException
-     */
     public function calculateLivePosition(): ?LivePointDto {
         $newStopovers = $this->filterStopoversFromStatus();
 
@@ -86,73 +87,88 @@ class LocationController
                 $this->status
             );
         }
+        try {
+            $now               = Carbon::now()->timestamp;
+            $percentage        = ($now - $newStopovers[0]->departure->timestamp)
+                                 / ($newStopovers[1]->arrival->timestamp - $newStopovers[0]->departure->timestamp);
+            $this->origin      = $newStopovers[0];
+            $this->destination = $newStopovers[1];
+            $polyline          = $this->getPolylineBetween(false);
 
-        $now               = Carbon::now()->timestamp;
-        $percentage        = ($now - $newStopovers[0]->departure->timestamp)
-                             / ($newStopovers[1]->arrival->timestamp - $newStopovers[0]->departure->timestamp);
-        $this->origin      = $newStopovers[0];
-        $this->destination = $newStopovers[1];
-        $polyline          = $this->getPolylineBetween(false);
-
-        $meters      = $this->getDistanceFromGeoJson($polyline) * $percentage;
-        $recentPoint = null;
-        $distance    = 0;
-        foreach ($polyline->features as $key => $point) {
-            $point = Coordinate::fromGeoJson($point);
-            if ($recentPoint !== null && $point !== null) {
-                $lineSegment = new LineSegment($recentPoint, $point);
-
-                $distance += $lineSegment->calculateDistance();
-                if ($distance >= $meters) {
-                    break;
+            $meters      = $this->getDistanceFromGeoJson($polyline) * $percentage;
+            $recentPoint = null;
+            $distance    = 0;
+            foreach ($polyline->features as $key => $point) {
+                $point = Coordinate::fromGeoJson($point);
+                if ($recentPoint !== null && $point !== null) {
+                    $distance += $this->geoService->getDistance($recentPoint, $point);
+                    if ($distance >= $meters) {
+                        break;
+                    }
                 }
+                $recentPoint = $point ?? $recentPoint;
             }
-            $recentPoint = $point ?? $recentPoint;
+
+            $currentPosition = $this->geoService->interpolatePoint(
+                $recentPoint,
+                $point ?? $recentPoint,
+                $distance < 1 ? 0 : $meters / $distance
+            );
+            if ($currentPosition === null) {
+                return null;
+            }
+
+            $polyline->features = array_slice($polyline->features, $key);
+            array_unshift($polyline->features, Feature::fromCoordinate($currentPosition));
+
+            return new LivePointDto(
+                null,
+                $polyline,
+                $newStopovers[1]->arrival->timestamp,
+                $newStopovers[1]->departure->timestamp,
+                $this->trip->linename,
+                $this->status,
+            );
+        } catch (Exception) {
+            return null;
         }
-
-        $currentPosition = $lineSegment->interpolatePoint($meters / $distance);
-
-        $polyline->features = array_slice($polyline->features, $key);
-        array_unshift($polyline->features, Feature::fromCoordinate($currentPosition));
-
-        return new LivePointDto(
-            null,
-            $polyline,
-            $newStopovers[1]->arrival->timestamp,
-            $newStopovers[1]->departure->timestamp,
-            $this->trip->linename,
-            $this->status,
-        );
     }
 
     private function getDistanceFromGeoJson(stdClass $geoJson): int {
-        $fullD        = 0;
+        $fullDistance = 0;
         $lastStopover = null;
         foreach ($geoJson->features as $stopover) {
             $stopover = Coordinate::fromGeoJson($stopover);
-            if ($lastStopover === null) {
+            if ($lastStopover === null || $stopover === null) {
                 $lastStopover = $stopover;
                 continue;
             }
-            $fullD        += (new LineSegment($lastStopover, $stopover))->calculateDistance();
+            $fullDistance += $this->geoService->getDistance($lastStopover, $stopover);
             $lastStopover = $stopover;
         }
+        return $fullDistance;
+    }
 
-        return $fullD;
+    private function emptyGeoJson(): stdClass {
+        $geoJson           = new stdClass();
+        $geoJson->type     = 'FeatureCollection';
+        $geoJson->features = [];
+        return $geoJson;
     }
 
     /**
      * @throws JsonException
      */
     private function getPolylineWithTimestamps(): stdClass {
+        $geoJsonObj = $this->emptyGeoJson();
         if (!empty($this->trip->polyline)) {
             // decode GeoJSON object from polyline
-            $geoJsonObj = json_decode($this->trip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
-        } else {
-            // create empty GeoJSON object
-            $geoJsonObj           = new stdClass();
-            $geoJsonObj->type     = 'FeatureCollection';
-            $geoJsonObj->features = [];
+            try {
+                $geoJsonObj = json_decode($this->trip->polyline->polyline, false, 512, JSON_THROW_ON_ERROR);
+            } catch (JsonException $e) {
+                // if decoding fails, return empty GeoJSON object
+                $geoJsonObj = $this->emptyGeoJson();
+            }
         }
         $stopovers = $this->trip->stopovers;
 
@@ -190,7 +206,7 @@ class LocationController
 
             $mapLines = [];
             foreach ($geoJson->features as $feature) {
-                if (isset($feature->geometry->coordinates[0], $feature->geometry->coordinates[1])) {
+                if (!empty($feature->geometry->coordinates[0]) && !empty($feature->geometry->coordinates[1])) {
                     $mapLines[] = [
                         $feature->geometry->coordinates[$invert ? 1 : 0],
                         $feature->geometry->coordinates[$invert ? 0 : 1]
@@ -201,8 +217,8 @@ class LocationController
         } catch (Exception $exception) {
             report($exception);
             return [
-                [$this->origin->latitude, $this->origin->longitude],
-                [$this->destination->latitude, $this->destination->longitude]
+                [$this->origin->station->longitude, $this->origin->station->latitude],
+                [$this->destination->station->longitude, $this->destination->station->latitude]
             ];
         }
     }
@@ -287,15 +303,18 @@ class LocationController
             $geoJson      = $this->getPolylineBetween();
             $lastStopover = null;
             foreach ($geoJson->features as $stopover) {
-                if ($lastStopover !== null) {
-                    $distance += (new LineSegment(
-                        new Coordinate(
-                            $lastStopover->geometry->coordinates[1],
-                            $lastStopover->geometry->coordinates[0]
-                        ),
-                        new Coordinate($stopover->geometry->coordinates[1], $stopover->geometry->coordinates[0])
-                    ))->calculateDistance();
+                if ($lastStopover === null || !isset($stopover->geometry->coordinates[0]) || !isset($stopover->geometry->coordinates[1])) {
+                    $lastStopover = $stopover;
+                    continue;
                 }
+
+                $distance += $this->geoService->getDistance(
+                    new Coordinate(
+                        $lastStopover->geometry->coordinates[1],
+                        $lastStopover->geometry->coordinates[0]
+                    ),
+                    new Coordinate($stopover->geometry->coordinates[1], $stopover->geometry->coordinates[0])
+                );
 
                 $lastStopover = $stopover;
             }
@@ -324,10 +343,10 @@ class LocationController
                 $lastStopover = $stopover;
                 continue;
             }
-            $distance     += (new LineSegment(
+            $distance     += $this->geoService->getDistance(
                 new Coordinate($lastStopover->station->latitude, $lastStopover->station->longitude),
                 new Coordinate($stopover->station->latitude, $stopover->station->longitude)
-            ))->calculateDistance();
+            );
             $lastStopover = $stopover;
         }
         return $distance;

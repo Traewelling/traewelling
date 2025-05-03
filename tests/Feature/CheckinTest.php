@@ -2,25 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Dto\CheckinSuccess;
-use App\Dto\Internal\CheckInRequestDto;
-use App\Enum\Business;
-use App\Enum\PointReason;
-use App\Enum\StatusVisibility;
-use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\HafasException;
-use App\Http\Controllers\Backend\Helper\StatusHelper;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
-use App\Http\Controllers\TransportController;
-use App\Hydrators\CheckinRequestHydrator;
+use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Models\Station;
 use App\Models\Trip;
 use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Http;
 use Tests\FeatureTestCase;
 use Tests\Helpers\CheckinRequestTestHydrator;
 
@@ -30,29 +19,6 @@ class CheckinTest extends FeatureTestCase
     use RefreshDatabase;
 
     private string $plus_one_day_then_8pm = "+1 day 8:00";
-
-    /**
-     * Use the stationboard api and check if it works.
-     * @test
-     */
-    public function stationboardTest(): void {
-        Http::fake([
-                       '/locations*'                => Http::response([self::FRANKFURT_HBF]),
-                       '/stops/8000105/departures*' => Http::response([self::ICE802])
-                   ]);
-
-        $requestDate = Carbon::parse(self::DEPARTURE_TIME);
-
-        $trainStationboard = TransportController::getDepartures(
-            stationQuery: self::FRANKFURT_HBF['name'],
-            when:         $requestDate
-        );
-
-        $departures = $trainStationboard['departures'];
-
-        $this->assertCount(1, $departures);
-        $this->assertEquals(self::TRIP_ID, $departures[0]->tripId);
-    }
 
     /**
      * Test if the checkin collision is truly working

@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Event;
+use App\Services\LicenseService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\RedirectResponse;
@@ -18,7 +19,14 @@ use Illuminate\View\View;
  */
 class FrontendStatusController extends Controller
 {
+    private LicenseService $licenseService;
+
+    public function __construct(LicenseService $licenseService) {
+        $this->licenseService = $licenseService;
+    }
+
     public function getDashboard(): Renderable|RedirectResponse {
+
         $statuses = DashboardController::getPrivateDashboard(auth()->user());
 
         return view('dashboard', [
@@ -26,15 +34,6 @@ class FrontendStatusController extends Controller
             'latest'           => StationController::getLatestArrivals(auth()->user()),
             'future'           => StatusBackend::getFutureCheckins(),
             'showGlobalButton' => auth()->user()->follows->count() === 0
-        ]);
-    }
-
-    public function getGlobalDashboard(): Renderable {
-        return view('dashboard', [
-            'statuses'         => DashboardController::getGlobalDashboard(Auth::user()),
-            'latest'           => StationController::getLatestArrivals(Auth::user()),
-            'future'           => StatusBackend::getFutureCheckins(),
-            'showGlobalButton' => false
         ]);
     }
 
@@ -85,6 +84,7 @@ class FrontendStatusController extends Controller
                 'origin'      => $status->checkin->originStopover->station->name
             ]),
             'image'       => ProfilePictureController::getUrl($status->user),
+            'license'     => $this->licenseService->getLicenseDataForStatus($status),
         ]);
     }
 }

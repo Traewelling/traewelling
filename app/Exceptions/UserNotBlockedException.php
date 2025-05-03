@@ -6,4 +6,3 @@ class UserNotBlockedException extends Referencable
 {
     //
 }
-

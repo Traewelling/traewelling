@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Frontend\Admin;
 
 use App\Dto\Coordinate;
+use App\Exceptions\HafasException;
 use App\Exceptions\Wikidata\FetchException;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\StationResource;
 use App\Models\Station;
 use App\Objects\LineSegment;
+use App\Services\StationService;
 use App\Services\Wikidata\WikidataImportService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
@@ -55,6 +58,8 @@ class StationController extends Controller
         return view('admin.stations.show', [
             'station'               => $station,
             'stationsWithSameIfopt' => $stationsWithSameIfopt ?? [],
+            'nearbyStations'        => StationService::getNearbyStations($station),
+            'latestCheckins'        => StationService::getLatestCheckins($station),
         ]);
     }
 
@@ -95,6 +100,16 @@ class StationController extends Controller
         } catch (\Exception $exception) {
             Log::error('Error while importing wikidata station (manually): ' . $exception->getMessage());
             return redirect()->back()->with('alert-danger', 'Error while importing station: ' . $exception->getMessage());
+        }
+    }
+
+    public function TrainAutocomplete(string $station): JsonResponse {
+        try {
+            $provider                  = new \App\Http\Controllers\Backend\Transport\StationController();
+            $trainAutocompleteResponse = $provider->search($station);
+            return response()->json(StationResource::collection($trainAutocompleteResponse));
+        } catch (HafasException $e) {
+            abort(503, $e->getMessage());
         }
     }
 }

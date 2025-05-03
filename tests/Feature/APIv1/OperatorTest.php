@@ -3,6 +3,7 @@
 namespace Tests\Feature\APIv1;
 
 use App\Models\HafasOperator;
+use App\Models\Station;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
@@ -41,5 +42,47 @@ class OperatorTest extends ApiTestCase
                                                'prev_cursor',
                                            ],
                                        ]);
+    }
+
+    public function testUserCannotMergeOperators(): void {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        $oldOperator = HafasOperator::factory()->create();
+        $newOperator = HafasOperator::factory()->create();
+
+        $response = $this->put('/api/v1/operators/' . $oldOperator->id . '/merge/' . $newOperator->id);
+        $response->assertForbidden();
+        $this->assertDatabaseHas('hafas_operators', [
+            'id' => $oldOperator->id,
+        ]);
+    }
+
+    public function testAdminCanMergeStation(): void {
+        $user = User::factory()->create();
+        $user->assignRole('admin');
+        Passport::actingAs($user, ['*']);
+
+        $oldOperator = HafasOperator::factory()->create();
+        $newOperator = HafasOperator::factory()->create();
+
+        $response = $this->put('/api/v1/operators/' . $oldOperator->id . '/merge/' . $newOperator->id);
+        $response->assertNoContent();
+        $this->assertDatabaseMissing('hafas_operators', [
+            'id' => $oldOperator->id,
+        ]);
+    }
+
+    public function testUserCantAccessOperatorsListBackend(): void {
+        $user = User::factory()->create();
+        $response = $this->actingAs($user)->get('/admin/operators');
+        $response->assertForbidden();
+    }
+
+    public function testAdminCanAccessOperatorsListBackend(): void {
+        $user = User::factory()->create();
+        $user->assignRole('admin');
+        $response = $this->actingAs($user)->get('/admin/operators');
+        $response->assertOk();
     }
 }

@@ -1,12 +1,13 @@
 <div class="btn-group">
     <button class="btn btn-sm btn-outline-primary dropdown-toggle trwl-business-button
-            type="button"
-            id="businessDropdownButton"
-            data-mdb-dropdown-animation="off"
-            data-mdb-toggle="dropdown"
-            aria-expanded="false"
+            type=" button
+    "
+    id="businessDropdownButton"
+    data-bs-dropdown-animation="off"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
     >
-        <i class="fa fa-user"></i>
+    <i class="fa fa-user"></i>
     </button>
     <ul id="businessDropdown" class="dropdown-menu" aria-labelledby="businessDropdownButton">
         <li class="dropdown-item trwl-business-item" data-trwl-business="0">

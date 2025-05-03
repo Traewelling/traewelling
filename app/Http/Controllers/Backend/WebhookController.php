@@ -56,25 +56,6 @@ abstract class WebhookController extends Controller
         return $webhook;
     }
 
-    /**
-     * Deletes a webhook
-     *
-     * @throws AuthorizationException
-     */
-    public static function deleteWebhook(
-        Webhook          $webhook,
-        OAuthClient|null $client
-    ): bool {
-        Gate::authorize("delete", $webhook);
-        // Checking if the client is allowed to delete here,
-        // because I found no way of doing that in the policy.
-        if ($client != null && $client->id != $webhook->client->id) {
-            throw new AuthorizationException();
-        }
-        $webhook->delete();
-        return true;
-    }
-
     public static function sendStatusWebhook(Status $status, WebhookEventEnum $event): void {
         self::dispatchWebhook($status->user, $event, [
             'status' => new StatusResource($status)

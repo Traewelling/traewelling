@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Backend\Stats;
 
 use App\Http\Controllers\Controller;
-use App\Models\Status;
 use App\Models\Checkin;
 use App\Models\Station;
 use App\Models\User;
@@ -200,10 +199,7 @@ abstract class TransportStatsController extends Controller
             throw new InvalidArgumentException('sortBy must be either "desc" or "asc"');
         }
         return self::getTrainCheckinsBetween($user, $from, $to, true)
-                   ->join('train_stopovers', 'train_checkins.trip_id', '=', 'train_stopovers.trip_id')
-                   ->join('train_stations', 'train_checkins.destination', '=', 'train_stations.ibnr')
-                   ->whereRaw('train_stopovers.train_station_id = train_stations.id')
-                   ->whereRaw('train_stopovers.arrival_planned = train_checkins.arrival')
+                   ->join('train_stopovers', 'train_checkins.destination_stopover_id', '=', 'train_stopovers.id')
                    ->select([
                                 'train_checkins.*',
                                 DB::raw('TIMESTAMPDIFF(MINUTE, train_stopovers.arrival_planned, train_stopovers.arrival_real) as delay'),
@@ -224,10 +220,7 @@ abstract class TransportStatsController extends Controller
      */
     public static function getTotalArrivalDelay(User $user, Carbon $from, Carbon $to): int {
         return self::getTrainCheckinsBetween($user, $from, $to, true)
-                   ->join('train_stopovers', 'train_checkins.trip_id', '=', 'train_stopovers.trip_id')
-                   ->join('train_stations', 'train_checkins.destination', '=', 'train_stations.ibnr')
-                   ->whereRaw('train_stopovers.train_station_id = train_stations.id')
-                   ->whereRaw('train_stopovers.arrival_planned = train_checkins.arrival')
+                   ->join('train_stopovers', 'train_checkins.destination_stopover_id', '=', 'train_stopovers.id')
                    ->select([
                                 DB::raw('SUM(TIMESTAMPDIFF(MINUTE, train_stopovers.arrival_planned, train_stopovers.arrival_real)) as delay'),
                             ])
@@ -236,17 +229,19 @@ abstract class TransportStatsController extends Controller
 
     public static function getTopDestinations(User $user, Carbon $from, Carbon $to, int $limit = null): Collection {
         $data     = self::getTrainCheckinsBetween($user, $from, $to)
-                        ->groupBy('destination')
+                        ->join('train_stopovers', 'train_checkins.destination_stopover_id', '=', 'train_stopovers.id')
+                        ->join('train_stations', 'train_stopovers.train_station_id', '=', 'train_stations.id')
+                        ->groupBy('train_stations.id')
                         ->select([
-                                     'destination',
+                                     'train_stations.id',
                                      DB::raw('COUNT(*) as count'),
                                  ])
                         ->orderByDesc('count')
                         ->limit($limit)
                         ->get();
-        $stations = Station::whereIn('ibnr', $data->pluck('destination'))->get();
+        $stations = Station::whereIn('id', $data->pluck('id'))->get();
         return $data->map(function($model) use ($stations) {
-            $model->station = $stations->firstWhere('ibnr', $model->destination);
+            $model->station = $stations->firstWhere('id', $model->id);
             unset($model->destination);
             return $model;
         });
@@ -263,9 +258,11 @@ abstract class TransportStatsController extends Controller
      */
     public static function getLonelyStations(User $user, Carbon $from, Carbon $to): Collection {
         $ownDestinations = self::getTrainCheckinsBetween($user, $from, $to)
-                               ->groupBy('destination')
+                               ->join('train_stopovers', 'train_checkins.destination_stopover_id', '=', 'train_stopovers.id')
+                               ->join('train_stations', 'train_stopovers.train_station_id', '=', 'train_stations.id')
+                               ->groupBy('train_stations.id')
                                ->select([
-                                            'destination',
+                                            'train_stations.id',
                                             DB::raw('COUNT(*) as count'),
                                         ])
                                ->distinct()
@@ -276,27 +273,29 @@ abstract class TransportStatsController extends Controller
                                });
 
         $otherUsers = DB::table('train_checkins')
+                        ->join('train_stopovers', 'train_checkins.destination_stopover_id', '=', 'train_stopovers.id')
+                        ->join('train_stations', 'train_stopovers.train_station_id', '=', 'train_stations.id')
                         ->where('user_id', '!=', $user->id)
                         ->whereBetween('departure', [$from, $to])
-                        ->whereIn('destination', $ownDestinations->pluck('destination'))
-                        ->groupBy('destination')
+                        ->whereIn('train_stations.id', $ownDestinations->pluck('id'))
+                        ->groupBy('train_stations.id')
                         ->select([
-                                     'destination',
+                                     'train_stations.id',
                                      DB::raw('COUNT(*) as count'),
                                  ])
                         ->get();
 
         foreach ($otherUsers as $other) {
-            $ownDestinations->firstWhere('destination', $other->destination)->otherUsers = $other->count;
+            $ownDestinations->firstWhere('id', $other->id)->otherUsers = $other->count;
         }
 
-        $lonelyStations = $ownDestinations->where('otherUsers', 0)->pluck('destination');
+        $lonelyStations = $ownDestinations->where('otherUsers', 0)->pluck('id');
 
-        return Station::whereIn('ibnr', $lonelyStations)->get()
+        return Station::whereIn('id', $lonelyStations)->get()
                       ->map(function($station) use ($ownDestinations) {
-                               $station->count = $ownDestinations->firstWhere('destination', $station->ibnr)->count;
-                               return $station;
-                           });
+                          $station->count = $ownDestinations->firstWhere('id', $station->id)->count;
+                          return $station;
+                      });
     }
 
     public static function getMostLikedStatus(User $user, Carbon $from, Carbon $to, int $limit = 3): Collection {

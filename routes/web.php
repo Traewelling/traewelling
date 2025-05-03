@@ -13,6 +13,7 @@
 
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\ChangelogController;
+use App\Http\Controllers\Frontend\DebugController;
 use App\Http\Controllers\Frontend\DevController;
 use App\Http\Controllers\Frontend\EventController;
 use App\Http\Controllers\Frontend\IcsController;
@@ -111,7 +112,6 @@ Route::get('/ics', [IcsController::class, 'renderIcs'])
 Route::middleware(['auth', 'privacy'])->group(function() {
 
     Route::view('/trip/create', 'beta.trip-creation')
-         ->middleware(['can:create-manual-trip'])
          ->name('trip.create');
 
     Route::view('/report', 'report')
@@ -171,7 +171,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 
         Route::get('/security/ics', [SettingsController::class, 'renderIcs'])->name('settings.ics');
         Route::get('/security/api-tokens', [SettingsController::class, 'renderToken'])->name('settings.tokens');
-        Route::get('/security/webhooks', [SettingsController::class, 'renderWebhooks'])->name('settings.webhooks');
+        Route::view('/security/webhooks', 'settings.webhooks')->name('settings.webhooks');
 
         Route::get('/follower', [SettingsController::class, 'renderFollowerSettings'])
              ->name('settings.follower');
@@ -189,15 +189,10 @@ Route::middleware(['auth', 'privacy'])->group(function() {
              ->name('delsession'); //TODO: Replace with API Endpoint
         Route::post('/deltoken', [UserController::class, 'deleteToken'])
              ->name('deltoken'); //TODO: Replace with API Endpoint
-        Route::post('/delwebhook', [WebhookController::class, 'deleteWebhook'])
-             ->name('delwebhook'); //TODO: Replace with API Endpoint
     });
 
     Route::get('/dashboard', [FrontendStatusController::class, 'getDashboard'])
          ->name('dashboard');
-
-    Route::get('/dashboard/global', [FrontendStatusController::class, 'getGlobalDashboard'])
-         ->name('globaldashboard');
 
     Route::post('/status/update', [StatusController::class, 'updateStatus'])
          ->name('status.update'); //TODO: Replace with API Endpoint
@@ -235,3 +230,8 @@ Route::middleware(['auth', 'privacy'])->group(function() {
 Route::get('/sitemap.xml', [SitemapController::class, 'renderSitemap']);
 
 Route::get('/.well-known/webfinger', [WebFingerController::class, 'endpoint']);
+
+Route::prefix('debug')->group(function() {
+    // routes for debugging purposes and to show users which data is used by current instance
+    Route::get('/motis-sources', [DebugController::class, 'showMotisSources']);
+});

@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void {
         Schema::create('trusted_users', static function(Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->char('id', 36)->primary();
 
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('trusted_id')->constrained('users')->onDelete('cascade');

@@ -1,0 +1,14 @@
+{
+    "trip-info.user": "Notandi",
+    "about.feature-missing-heading": "Hvernig tilkynni ég villur eða geri athugasemdir um úrbætur?",
+    "about.tram": "Sporvagn / léttlest, strætó, neðanjarðarlest",
+    "about.feature-missing": "Ef að þig langar að koma með tillögur um úrbætur eða að tilkynna um villu, greindu frá því beint í <a href=\"https://github.com/Traewelling/traewelling/issues/new/choose\" target=\"_blank\">GitHub repository-inu</a> okkar.",
+    "about.block1": "Träwelling er ókeypis check-in-þjónusta sem gerir þér kleift að segja vinum þínum hvar þú ert, og þar sem þú getur skráð ferðir þínar með almenningssamgöngum. Í stuttu máli er hægt að skrá sig inn í lestir og fá stig fyrir það.",
+    "about.express": "InterCity, EuroCity",
+    "about.international": "InterCityExpress, TGV, RailJet",
+    "about.suburban": "úthverfaleið, ferja",
+    "admin.greeting": "Hæ",
+    "admin.usage": "Notkun",
+    "admin.checkins": "Skráningar",
+    "admin.registered-users": "Skráðir notendur"
+}

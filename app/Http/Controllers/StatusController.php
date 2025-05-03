@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
 use App\Events\StatusUpdateEvent;
+use App\Exceptions\RateLimitExceededException;
 use App\Exceptions\StatusAlreadyLikedException;
 use App\Http\Controllers\API\v1\Controller as APIController;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Models\Event;
+use App\Models\Follow;
 use App\Models\Like;
 use App\Models\Status;
 use App\Models\User;
@@ -17,11 +19,11 @@ use Carbon\Carbon;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -53,6 +55,7 @@ class StatusController extends Controller
                                 'checkin.originStopover.station.names',
                                 'checkin.destinationStopover.station.names',
                                 'checkin.trip.stopovers.station.names',
+                                'checkin.trip.motisSourceLicense'
                             ])
                      ->firstOrFail();
     }
@@ -77,14 +80,16 @@ class StatusController extends Controller
                                 'checkin.trip.polyline',
                                 'tags',
                             ])
-                     ->whereHas('checkin', function($query) {
-                         $query->where('departure', '<', now())
-                               ->where('arrival', '>', now());
-                     })
+                     ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
+                     ->where('train_checkins.departure', '>', now()->subHours(config('trwl.max_journey_hours'))) // to reduce the amount of data the database has to process
+                     ->where('train_checkins.departure', '<', now())
+                     ->where('train_checkins.arrival', '>', now())
+                     ->select('statuses.*')
                      ->get()
                      ->filter(function(Status $status) {
                          return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
                      })
+                     ->reject(fn(Status $status) => $status->checkin === null)
                      ->sortByDesc(function(Status $status) {
                          return $status->checkin->departure;
                      })->values();
@@ -149,7 +154,7 @@ class StatusController extends Controller
     }
 
     /**
-     * Create a Statuslike for a given User
+     * Create a StatusLike for a given User
      *
      * @param User   $user
      * @param Status $status
@@ -157,18 +162,20 @@ class StatusController extends Controller
      * @return Like
      * @throws StatusAlreadyLikedException
      * @throws AuthorizationException User is not allowed to like this status
+     * @throws RateLimitExceededException
      */
     public static function createLike(User $user, Status $status): Like {
+        self::likeRateLimiter($user, $status->user);
         Gate::forUser($user)->authorize('like', $status);
 
         if ($status->likes->contains('user_id', $user->id)) {
             throw new StatusAlreadyLikedException($user, $status);
         }
 
-        $like = Like::create([
-                                 'user_id'   => $user->id,
-                                 'status_id' => $status->id,
-                             ]);
+        $like = Like::updateOrCreate([
+                                         'user_id'   => $user->id,
+                                         'status_id' => $status->id,
+                                     ]);
 
         if (!$status->user->mutedUsers->contains('id', $user->id)) {
             $status->user->notify(new StatusLiked($like));
@@ -216,34 +223,7 @@ class StatusController extends Controller
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
                           ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
-                          ->where(function(Builder $query) {
-                              //Visibility checks: One of the following options must be true
-
-                              //Option 1: User is public AND status is public
-                              $query->where(function(Builder $query) {
-                                  $visibilities = [StatusVisibility::PUBLIC->value];
-                                  if (auth()->check()) {
-                                      $visibilities[] = StatusVisibility::AUTHENTICATED->value;
-                                  }
-
-                                  $query->where('users.private_profile', 0)
-                                        ->whereIn('visibility', $visibilities);
-                              });
-
-                              if (auth()->check()) {
-                                  //Option 2: Status is from oneself
-                                  $query->orWhere('users.id', auth()->id());
-
-                                  //Option 3: Status is from a followed BUT not unlisted or private
-                                  $query->orWhere(function(Builder $query) {
-                                      $query->whereIn('users.id', auth()->user()->follows()->select('follow_id'))
-                                            ->whereNotIn('visibility', [
-                                                StatusVisibility::UNLISTED->value,
-                                                StatusVisibility::PRIVATE->value,
-                                            ]);
-                                  });
-                              }
-                          })
+                          ->where(Backend\Transport\StatusController::filterStatusVisibility(auth()->user()))
                           ->orderBy('train_checkins.departure', 'desc');
 
         if (auth()->check()) {
@@ -275,8 +255,8 @@ class StatusController extends Controller
         User|Authenticatable $user,
         Business             $business,
         StatusVisibility     $visibility,
-        string               $body = null,
-        Event                $event = null
+        ?string              $body = null,
+        ?Event               $event = null
     ): Status {
         if ($event !== null && !Carbon::now()->isBetween($event->checkin_start, $event->checkin_end)) {
             Log::info('Event checkin was prevented because the event is not active anymore', [
@@ -294,5 +274,33 @@ class StatusController extends Controller
                                   'event_id'   => $event?->id,
                                   'client_id'  => APIController::getCurrentOAuthClient()?->id,
                               ]);
+    }
+
+    /**
+     * @throws RateLimitExceededException
+     * The rate limiter only hits if the users don't follow each other.
+     */
+    public static function likeRateLimiter(User $user, User $user2): void {
+
+        $followEachOther = Follow::where('follows.user_id', $user->id)
+                                 ->where('follows.follow_id', $user2->id)
+                                 ->join('follows as f2', function($join) use ($user2) {
+                                     $join->on('follows.user_id', '=', 'f2.follow_id')
+                                          ->where('f2.user_id', $user2->id);
+                                 })
+                                 ->count() > 0;
+
+        if ($followEachOther) {
+            return;
+        }
+
+        $rateLimiterKey = "create-like:{$user->id}";
+        if (RateLimiter::tooManyAttempts($rateLimiterKey, config('rate_limits.status_like.max_attempts'))) {
+            throw new RateLimitExceededException(
+                limit: config('rate_limits.status_like.max_attempts'),
+                reset: RateLimiter::availableIn($rateLimiterKey),
+            );
+        }
+        RateLimiter::hit($rateLimiterKey, 60 * config('rate_limits.status_like.decay_minutes'));
     }
 }

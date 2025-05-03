@@ -68,7 +68,7 @@ class MastodonServers extends Command
                         'client_id'     => $server->client_id,
                         'client_secret' => $server->client_secret,
                         'grant_type'    => 'client_credentials',
-                        'redirect_uri'  => config('trwl.mastodon_redirect'),
+                        'redirect_uri'  => config('services.mastodon.redirect'),
                     ],
                     'http_errors' => false,
                 ]);
@@ -133,9 +133,10 @@ class MastodonServers extends Command
     }
 
     private function fetchUsers(MastodonServer $server): Collection {
-        return User::leftJoin('social_login_profiles', 'users.id', '=', 'social_login_profiles.user_id')
-                   ->where('social_login_profiles.mastodon_server', $server->id)
-                   ->get();
+        $userIds = DB::table('social_login_profiles')
+                     ->where('mastodon_server', $server->id)
+                     ->pluck('user_id');
+        return User::whereIn('id', $userIds)->get();
     }
 
     private function notifyUsers(Collection $users, MastodonServer $server): void {

@@ -59,7 +59,7 @@ class LanguageTest extends FeatureTestCase
         $user     = User::factory()->create();
         $this->assertDatabaseMissing('users', ['username' => $user->username, 'language' => 'de']);
         $response = $this->actingAs($user)
-                         ->get(route('globaldashboard', ['language' => 'de']));
+                         ->get(route('dashboard', ['language' => 'de']));
         $response->assertOk();
         $response->assertViewIs('dashboard');
         $this->assertDatabaseHas('users', ['username' => $user->username, 'language' => 'de']);

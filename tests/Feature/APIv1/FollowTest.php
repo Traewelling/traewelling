@@ -35,7 +35,7 @@ class FollowTest extends ApiTestCase
         ]);
 
         //User 1 shouldn't have followers...
-        $response = $this->get('/api/v1/settings/followers');
+        $response = $this->get('/api/v1/user/self/followers');
         $response->assertOk();
         $response->assertJsonStructure([
                                            'data',
@@ -56,7 +56,7 @@ class FollowTest extends ApiTestCase
         $this->assertCount(0, $response->json('data'));
 
         //...but user1 should have one following.
-        $response = $this->get('/api/v1/settings/followings');
+        $response = $this->get('/api/v1/user/self/followings');
         $response->assertOk();
         $this->assertCount(1, $response->json('data'));
     }
