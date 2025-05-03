@@ -23,8 +23,19 @@ class ExportController extends Controller
 
         $user = $request->user();
 
+        if (!(config('trwl.ab_testing.gdpr_export') || $user->hasRole('test-gdpr-export'))) {
+            return $this->frontendOrJson($validated, ['error' => __('export.error.gdpr')]);
+        }
+
+
         if ($user->recent_gdpr_export && $user->recent_gdpr_export->diffInDays(now()) < config('trwl.gdpr_export.days')) {
-            return $this->frontendOrJson($validated, ['error' => __('export.error.gdpr-time', ['date' => userTime($user->recent_gdpr_export)])]);
+            return $this->frontendOrJson(
+                $validated,
+                ['error' => __('export.error.gdpr-time', [
+                    'date' => userTime($user->recent_gdpr_export),
+                    'days' => config('trwl.gdpr_export.days')
+                ])]
+            );
         }
 
         $user->update(['recent_gdpr_export' => now()]);

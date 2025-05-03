@@ -210,7 +210,7 @@
                                             if (response.ok) {
                                                 location.reload();
                                             } else {
-                                                notyf.error("{{__('export.gdpr.error')}}");
+                                                notyf.error("{{__('export.error.gdpr')}}");
                                             }
                                         })
                                 }
