@@ -21,7 +21,7 @@ export default {
         destinationArrivalPlanned: "",
         lineName: "",
         journeyNumber: 0,
-        operatorId: "",
+        operatorId: null,
         category: {},
         stopovers: [],
       },
@@ -137,6 +137,7 @@ export default {
         };
       });
       this.form.category = this.selectedCategory.value;
+      this.form.operatorId = this.selectedOperator ? this.selectedOperator.id : null;
 
       fetch("/api/v1/trains/trip", {
         method: "POST",
