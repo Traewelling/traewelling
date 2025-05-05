@@ -36,6 +36,7 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  * @property int                  id
  * @property string               username
  * @property string               name
+ * @property string|null          bio
  * @property string               avatar
  * @property string               email
  * @property Carbon               email_verified_at
@@ -54,19 +55,22 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  * @property int                  privacy_hide_days
  * @property string               language
  * @property Carbon               last_login
- * @property int                  points
- * @property boolean              userInvisibleToMe
  * @property string               mastodonUrl
- * @property int                  train_distance
- * @property int                  train_duration
- * @property boolean              following
- * @property boolean              followPending
- * @property boolean              muted
- * @property boolean              isAuthUserBlocked
- * @property boolean              isBlockedByAuthUser
  * @property ?Carbon              recent_gdpr_export
  * @property Carbon               created_at
  * @property Carbon               updated_at
+ *
+ * // appends
+ * @property-read boolean         following
+ * @property-read boolean         followPending
+ * @property-read boolean         muted
+ * @property-read boolean         isAuthUserBlocked
+ * @property-read boolean         isBlockedByAuthUser
+ * @property-read bool            followedBy
+ * @property-read int             train_distance
+ * @property-read int             train_duration
+ * @property-read boolean         userInvisibleToMe
+ * @property-read int             points
  *
  * // relationships
  * @property Collection           trainCheckins
@@ -87,6 +91,8 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  * @property Collection           statuses
  * @property Collection           trustedUsers
  * @property Collection           trustedByUsers
+ * @property Collection           oAuthClients
+ * @property Collection           profileLinks
  *
  *
  * @todo rename home_id to home_station_id
@@ -102,6 +108,7 @@ class User extends Authenticatable implements ExportsPersonalData
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
         'default_status_visibility', 'likes_enabled', 'points_enabled', 'private_profile', 'prevent_index',
         'privacy_hide_days', 'language', 'last_login', 'mapprovider', 'timezone', 'friend_checkin', 'data_provider', 'recent_gdpr_export',
+        'bio'
     ];
     protected $hidden   = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
@@ -355,5 +362,9 @@ class User extends Authenticatable implements ExportsPersonalData
 
     public function personalDataExportName(): string {
         return $this->username;
+    }
+
+    public function profileLinks(): HasMany {
+        return $this->hasMany(ProfileLink::class, 'user_id', 'id');
     }
 }

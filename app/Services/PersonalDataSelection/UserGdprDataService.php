@@ -21,6 +21,7 @@ use App\Services\PersonalDataSelection\Exporters\MutesExporter;
 use App\Services\PersonalDataSelection\Exporters\NotificationsExporter;
 use App\Services\PersonalDataSelection\Exporters\PasswordResetsExporter;
 use App\Services\PersonalDataSelection\Exporters\PermissionExporter;
+use App\Services\PersonalDataSelection\Exporters\ProfileLinksExporter;
 use App\Services\PersonalDataSelection\Exporters\ReportsExporter;
 use App\Services\PersonalDataSelection\Exporters\RoleExporter;
 use App\Services\PersonalDataSelection\Exporters\SessionExporter;
@@ -56,6 +57,7 @@ class UserGdprDataService
                 HomeExporter::class,
                 IcsTokenExporter::class,
                 LikesExporter::class,
+                ProfileLinksExporter::class,
                 MentionExporter::class,
                 MutesExporter::class,
                 NotificationsExporter::class,

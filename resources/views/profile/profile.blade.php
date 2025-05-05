@@ -15,7 +15,7 @@
 
 @section('content')
     @php /** @var \App\Models\User $user */ @endphp
-    <div class="px-md-4 py-md-5 py-4 mt-n4 profile-banner">
+    <div class="px-md-4 py-md-5 pt-2 pb-0 mt-n4 profile-banner">
         <div class="container">
             <img alt="{{ __('settings.picture') }}"
                  src="{{ \App\Http\Controllers\Backend\User\ProfilePictureController::getUrl($user) }}"
@@ -43,29 +43,6 @@
                 <div class="d-flex py-3 flex-row justify-content-md-start align-items-md-center gap-1 ">
                     @include('profile.partials.actions')
                 </div>
-
-                @if(!$user->isAuthUserBlocked && !$user->isBlockedByAuthUser && !$user->muted)
-                    <span class="profile-stats">
-                        <span class="font-weight-bold"><i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance / 1000) }}</span>
-                        <span class="small font-weight-lighter">km</span>
-                        <span class="font-weight-bold ps-sm-2"><i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}</span>
-                        @if($user->points_enabled || auth()->check() && auth()->user()->points_enabled)
-                            <span class="font-weight-bold ps-sm-2">
-                                <i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}
-                            </span>
-                            <span class="small font-weight-lighter">
-                                {{__('profile.points-abbr')}}
-                            </span>
-                        @endif
-                        @if($user->mastodonUrl)
-                            <span class="font-weight-bold ps-sm-2">
-                                <a href="{{ $user->mastodonUrl }}" rel="me" class="text-white" target="_blank">
-                                    <i class="fab fa-mastodon d-inline"></i>
-                                </a>
-                            </span>
-                        @endif
-                    </span>
-                @endif
             </div>
         </div>
     </div>
