@@ -38,23 +38,25 @@
     </ul>
 </div>
 
-<div class="card mb-4">
-    <div class="card-header">
-        {{ __('profile.info') }}
+@if (!empty($user->bio) || !$user->profileLinks->isEmpty())
+    <div class="card mb-4">
+        <div class="card-header">
+            {{ __('profile.info') }}
+        </div>
+        <div class="card-body">
+            @if ($user->bio)
+                <h5>{{ __('profile.bio') }}</h5>
+                <p>{{ $user->bio }}</p>
+            @endif
+            <h5>{{ __('welcome.footer.social') }}</h5>
+            @php /** @var \App\Models\ProfileLink $link */ @endphp
+            @foreach($user->profileLinks as $link)
+                <div class="btn-broup shadow-none">
+                    <a href="{{ $link->url }}" class="btn btn-sm" target="_blank">
+                        <i class="{{ $link->name->getIcon() }}"></i>
+                    </a>
+                </div>
+            @endforeach
+        </div>
     </div>
-    <div class="card-body">
-        @if ($user->bio)
-            <h5>{{ __('profile.bio') }}</h5>
-            <p>{{ $user->bio }}</p>
-        @endif
-        <h5>{{ __('welcome.footer.social') }}</h5>
-        @php /** @var \App\Models\ProfileLink $link */ @endphp
-        @foreach($user->profileLinks as $link)
-            <div class="btn-broup shadow-none">
-                <a href="{{ $link->url }}" class="btn btn-sm" target="_blank">
-                    <i class="{{ $link->name->getIcon() }}"></i>
-                </a>
-            </div>
-        @endforeach
-    </div>
-</div>
+@endif
