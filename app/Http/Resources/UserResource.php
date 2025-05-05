@@ -28,7 +28,9 @@ use OpenApi\Annotations as OA;
  *     @OA\Property(property="following",  description="Does the currently authenticated user follow this user?",  type="boolean",  example=false),
  *     @OA\Property(property="followPending",  description="Is there a currently pending follow request?",  type="boolean",  example=false),
  *     @OA\Property(property="followedBy",  description="Is the user following you?",  type="boolean",  example=false),
- *     @OA\Property(property="preventIndex",  description="Did the user choose to prevent search engines from indexing their profile?",  type="boolean",  example=false)
+ *     @OA\Property(property="preventIndex",  description="Did the user choose to prevent search engines from indexing their profile?",  type="boolean",  example=false),
+ *     @OA\Property(property="bio",  description="Bio of the user",  type="string",  example="Hi there! I am Gertrud!"),
+ *     @OA\Property(property="profileLinks",  description="Profile links of the user",  type="array",  @OA\Items(ref="#/components/schemas/ProfileLinkResource")),
  * )
  */
 class UserResource extends JsonResource
@@ -57,6 +59,8 @@ class UserResource extends JsonResource
             'following' => (bool)$this->following,
             'followPending' => (bool)$this->followPending,
             'followedBy' => (bool)$this->followedBy,
+            'bio' => $this->bio,
+            'profileLinks' => ProfileLinkResource::collection($this->profileLinks),
         ];
     }
 }

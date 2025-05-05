@@ -5794,6 +5794,18 @@
                         "description": "Did the user choose to prevent search engines from indexing their profile?",
                         "type": "boolean",
                         "example": false
+                    },
+                    "bio": {
+                        "description": "Bio of the user",
+                        "type": "string",
+                        "example": "Hi there! I am Gertrud!"
+                    },
+                    "profileLinks": {
+                        "description": "Profile links of the user",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProfileLinkResource"
+                        }
                     }
                 },
                 "type": "object"
