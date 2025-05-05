@@ -61,16 +61,16 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  * @property Carbon               updated_at
  *
  * // appends
- * @property boolean              following
- * @property boolean              followPending
- * @property boolean              muted
- * @property boolean              isAuthUserBlocked
- * @property boolean              isBlockedByAuthUser
+ * @property-read boolean         following
+ * @property-read boolean         followPending
+ * @property-read boolean         muted
+ * @property-read boolean         isAuthUserBlocked
+ * @property-read boolean         isBlockedByAuthUser
  * @property-read bool            followedBy
- * @property int                  train_distance
- * @property int                  train_duration
- * @property boolean              userInvisibleToMe
- * @property int                  points
+ * @property-read int             train_distance
+ * @property-read int             train_duration
+ * @property-read boolean         userInvisibleToMe
+ * @property-read int             points
  *
  * // relationships
  * @property Collection           trainCheckins
