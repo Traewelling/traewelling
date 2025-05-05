@@ -84,7 +84,7 @@ services:
 
   db-rest:
     # we are stuck on db-rest version 5,
-    image: derhuerst/db-rest:5
+    image: derhuerst/db-rest:6
     restart: always
     depends_on:
       - redis
