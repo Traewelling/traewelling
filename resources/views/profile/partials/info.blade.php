@@ -43,9 +43,10 @@
         {{ __('profile.info') }}
     </div>
     <div class="card-body">
-        <h5>{{ __('profile.bio') }}</h5>
-        <p>Hallo, ich bin ein lustiger, typ, der hier eine Bio an seinem Profil hinterlegt hat. Das sieht alles sehr
-            funny aus. Blah Blah Blah.</p>
+        @if ($user->bio)
+            <h5>{{ __('profile.bio') }}</h5>
+            <p>{{ $user->bio }}</p>
+        @endif
         <h5>{{ __('welcome.footer.social') }}</h5>
         @php /** @var \App\Models\ProfileLink $link */ @endphp
         @foreach($user->profileLinks as $link)

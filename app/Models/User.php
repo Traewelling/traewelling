@@ -36,6 +36,7 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  * @property int                  id
  * @property string               username
  * @property string               name
+ * @property string|null          bio
  * @property string               avatar
  * @property string               email
  * @property Carbon               email_verified_at
