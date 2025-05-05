@@ -50,13 +50,13 @@
             @endif
             <h5>{{ __('welcome.footer.social') }}</h5>
             @php /** @var \App\Models\ProfileLink $link */ @endphp
-            @foreach($user->profileLinks as $link)
-                <div class="btn-broup shadow-none">
+            <div class="btn-broup shadow-none">
+                @foreach($user->profileLinks as $link)
                     <a href="{{ $link->url }}" class="btn btn-sm" target="_blank">
                         <i class="{{ $link->name->getIcon() }}"></i>
                     </a>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
     </div>
 @endif
