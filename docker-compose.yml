@@ -82,17 +82,6 @@ services:
     env_file:
       - .env.docker
 
-  db-rest:
-    # we are stuck on db-rest version 5,
-    image: derhuerst/db-rest:5
-    restart: always
-    depends_on:
-      - redis
-    environment:
-      REDIS_URL: "redis://redis:6379"
-    networks:
-      - internal
-
   redis:
     image: redis
     restart: always
