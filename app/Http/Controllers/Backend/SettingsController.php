@@ -27,6 +27,11 @@ abstract class SettingsController extends Controller
             $user->sendEmailVerificationNotification();
         }
 
+        if (array_key_exists('profileLinks', $fields)) {
+            self::updateProfileLinks($fields['profileLinks'], $user);
+            unset($fields['profileLinks']);
+        }
+
         // map api fields to model fields for update
         // this is necessary because the API uses different field names than the model
         // don't add your field if your api field is identical to the model field
@@ -57,6 +62,19 @@ abstract class SettingsController extends Controller
 
         return $user;
     }
+
+    private static function updateProfileLinks(array $profileLinks, User $user): void {
+        $user->profileLinks()->delete();
+        foreach ($profileLinks as $link) {
+
+
+            $user->profileLinks()->create([
+                                              'name' => $link['name'],
+                                              'url'  => $link['url'],
+                                          ]);
+        }
+    }
+
 
     public static function deleteProfilePicture(User $user): bool {
         if ($user->avatar !== null) {

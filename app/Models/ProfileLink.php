@@ -28,7 +28,6 @@ class ProfileLink extends Model
     ];
 
     protected $casts = [
-        'id'         => 'uuid',
         'name'       => ProfileLinkName::class,
         'created_at' => 'datetime',
         'updated_at' => 'datetime',

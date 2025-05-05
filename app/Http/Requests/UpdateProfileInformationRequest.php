@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Enum\DataProvider;
 use App\Enum\MapProvider;
 use App\Enum\MastodonVisibility;
+use App\Enum\ProfileLinkName;
 use App\Enum\StatusVisibility;
 use App\Enum\User\FriendCheckinSetting;
 use Illuminate\Foundation\Http\FormRequest;
@@ -27,6 +28,7 @@ use OpenApi\Annotations as OA;
  *    @OA\Property(property="likesEnabled",               type="boolean", example=true,nullable=true),
  *    @OA\Property(property="pointsEnabled",              type="boolean", example=true,nullable=true),
  *    @OA\Property(property="bio",                  type="string",  example="Hi there! I am Gertrud!", maxLength=500, nullable=true),
+ *    @OA\Property(property="profileLinks",               type="array",  @OA\Items(ref="#/components/schemas/ProfileLinkResource"), nullable=true),
  * )
  */
 class UpdateProfileInformationRequest extends FormRequest
@@ -54,6 +56,8 @@ class UpdateProfileInformationRequest extends FormRequest
             'likesEnabled'            => ['nullable', 'boolean'],
             'pointsEnabled'           => ['nullable', 'boolean'],
             'bio'                     => ['nullable', 'string', 'max:500'],
+            'profileLinks.*.name'     => ['required', 'string', new Enum(ProfileLinkName::class)],
+            'profileLinks.*.url'      => ['required', 'string', 'url', 'max:255'],
         ];
     }
 }

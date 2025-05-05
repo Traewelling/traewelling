@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Http\Controllers\Backend\User\ProfilePictureController;
+use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -12,9 +13,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      @OA\Property(property="displayName",                type="string",  example="Gertrud"),
  *      @OA\Property(property="profilePicture",             type="string",  example="https://traewelling.de/@Gertrud123/picture"),
  *      @OA\Property(property="privateProfile",             type="boolean", example=false),
- *      @OA\Property(property="preventIndex",               type="boolean", example=false,                                          description="Did the user choose to prevent search engines from indexing their profile?"),
+ *      @OA\Property(property="preventIndex",               type="boolean", example=false, description="Did the user choose to prevent search engines from indexing their profile?"),
  *      @OA\Property(property="defaultStatusVisibility",    ref="#/components/schemas/StatusVisibility"),
- *      @OA\Property(property="privacyHideDays",            type="integer", example=1,                                              description="Number of days to hide the user's location history"),
+ *      @OA\Property(property="privacyHideDays",            type="integer", example=1,  description="Number of days to hide the user's location history"),
  *      @OA\Property(property="password",                   type="boolean", example=true),
  *      @OA\Property(property="email",                      type="string",  example="gertrud@traewelling.de"),
  *      @OA\Property(property="emailVerified",              type="boolean", example=true),
@@ -25,11 +26,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      @OA\Property(property="likesEnabled",               type="boolean", example=true),
  *      @OA\Property(property="pointsEnabled",              type="boolean", example=true),
  *      @OA\Property(property="bio",                        type="string",  example="Hi there! I am Gertrud!"),
+ *      @OA\Property(property="profileLinks",               type="array",  @OA\Items(ref="#/components/schemas/ProfileLinkResource")),
  * )
  */
 class UserProfileSettingsResource extends JsonResource
 {
     public function toArray($request): array {
+        /** @var User $this */
         return [
             'username'                => $this->username,
             'displayName'             => $this->name,
@@ -38,7 +41,7 @@ class UserProfileSettingsResource extends JsonResource
             'preventIndex'            => (bool) $this->prevent_index,
             'defaultStatusVisibility' => (int) $this->default_status_visibility->value,
             'privacyHideDays'         => (int) $this->privacy_hide_days,
-            'password'                => (bool) $this->password,
+            'password'                => (bool) !empty($this->password),
             'email'                   => $this->email,
             'emailVerified'           => !empty($this->email_verified_at),
             'profilePictureSet'       => !empty($this->avatar),
@@ -48,6 +51,7 @@ class UserProfileSettingsResource extends JsonResource
             'likesEnabled'            => (bool) $this->likes_enabled,
             'pointsEnabled'           => (bool) $this->points_enabled,
             'bio'                     => $this->bio,
+            'profileLinks'            => ProfileLinkResource::collection($this->profileLinks)
         ];
     }
 }

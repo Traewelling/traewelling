@@ -4871,6 +4871,13 @@
                         "maxLength": 500,
                         "example": "Hi there! I am Gertrud!",
                         "nullable": true
+                    },
+                    "profileLinks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProfileLinkResource"
+                        },
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -5153,6 +5160,30 @@
                     "name": {
                         "type": "string",
                         "example": "DB Regio AG Nord"
+                    }
+                },
+                "type": "object"
+            },
+            "ProfileLinkResource": {
+                "title": "ProfileLinkResource",
+                "description": "ProfileLinkResource",
+                "properties": {
+                    "name": {
+                        "type": "enum",
+                        "enum": [
+                            "website",
+                            "instagram",
+                            "twitter",
+                            "facebook",
+                            "mastodon",
+                            "tiktok",
+                            "github"
+                        ],
+                        "example": "website"
+                    },
+                    "url": {
+                        "type": "string",
+                        "example": "https://traewelling.de"
                     }
                 },
                 "type": "object"
@@ -5659,6 +5690,10 @@
                     "pointsEnabled": {
                         "type": "boolean",
                         "example": true
+                    },
+                    "bio": {
+                        "type": "string",
+                        "example": "Hi there! I am Gertrud!"
                     }
                 },
                 "type": "object"
