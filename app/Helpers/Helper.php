@@ -47,11 +47,11 @@ function secondsToDuration(int $seconds): array {
 function durationToSpan(array $duration): string {
     $return = $duration["minutes"] . "<small>min</small>";
 
-    if ($duration["hours"] > 0) {
+    if ($duration["hours"] > 0 || $duration["days"] > 0 || $duration["years"] > 0) {
         $return = $duration["hours"] . "<small>h</small>&nbsp;" . $return;
     }
 
-    if ($duration["days"] > 0) {
+    if ($duration["days"] > 0 || $duration["years"] > 0) {
         $return = $duration["days"] . "<small>d</small>&nbsp;" . $return;
     }
 
