@@ -24,6 +24,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      @OA\Property(property="friendCheckin",              ref="#/components/schemas/FriendCheckinSetting"),
  *      @OA\Property(property="likesEnabled",               type="boolean", example=true),
  *      @OA\Property(property="pointsEnabled",              type="boolean", example=true),
+ *      @OA\Property(property="bio",                        type="string",  example="Hi there! I am Gertrud!"),
  * )
  */
 class UserProfileSettingsResource extends JsonResource
@@ -46,6 +47,7 @@ class UserProfileSettingsResource extends JsonResource
             'friendCheckin'           => $this->friend_checkin?->value,
             'likesEnabled'            => (bool) $this->likes_enabled,
             'pointsEnabled'           => (bool) $this->points_enabled,
+            'bio'                     => $this->bio,
         ];
     }
 }

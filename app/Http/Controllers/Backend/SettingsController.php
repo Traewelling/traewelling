@@ -28,6 +28,8 @@ abstract class SettingsController extends Controller
         }
 
         // map api fields to model fields for update
+        // this is necessary because the API uses different field names than the model
+        // don't add your field if your api field is identical to the model field
         $mappings = [
             'displayName'             => 'name',
             'friendCheckin'           => 'friend_checkin',

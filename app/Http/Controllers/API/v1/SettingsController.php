@@ -2,19 +2,14 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Enum\DataProvider;
-use App\Enum\MapProvider;
-use App\Enum\MastodonVisibility;
-use App\Enum\StatusVisibility;
-use App\Enum\User\FriendCheckinSetting;
 use App\Exceptions\RateLimitExceededException;
 use App\Http\Controllers\Backend\SettingsController as BackendSettingsController;
+use App\Http\Requests\UpdateProfileInformationRequest;
 use App\Http\Resources\UserProfileSettingsResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 
 class SettingsController extends Controller
@@ -74,19 +69,7 @@ class SettingsController extends Controller
      *     description="Update the current user's profile settings",
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *              @OA\Property(property="username",                   type="string",  example="gertrud123",                                       maxLength=25),
-     *              @OA\Property(property="displayName",                type="string",  example="Gertrud",                                          maxLength=50),
-     *              @OA\Property(property="privateProfile",             type="boolean", example=false,                                              nullable=true),
-     *              @OA\Property(property="preventIndex",               type="boolean", example=false,                                              nullable=true),
-     *              @OA\Property(property="privacyHideDays",            type="integer", example=1,                                                  nullable=true),
-     *              @OA\Property(property="defaultStatusVisibility",    ref="#/components/schemas/StatusVisibility",    nullable=true),
-     *              @OA\Property(property="mastodonVisibility",         ref="#/components/schemas/MastodonVisibility",  nullable=true),
-     *              @OA\Property(property="mapProvider",                ref="#/components/schemas/MapProvider",         nullable=true),
-     *              @OA\Property(property="friendCheckin",              ref="#/components/schemas/FriendCheckinSetting",nullable=true),
-     *              @OA\Property(property="likesEnabled",               type="boolean", example=true,                                               nullable=true),
-     *              @OA\Property(property="pointsEnabled",              type="boolean", example=true,                                               nullable=true),
-     *         )
+     *         @OA\JsonContent(ref="#/components/schemas/UpdateProfileInformationRequest")
      *    ),
      *     @OA\Response(
      *         response=200,
@@ -103,32 +86,9 @@ class SettingsController extends Controller
      *     }
      *     )
      */
-    public function updateSettings(Request $request): UserProfileSettingsResource|JsonResponse {
-        $validated = $request->validate([
-                                            'username'                => [
-                                                'required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'
-                                            ],
-                                            'displayName'             => ['required', 'string', 'max:50'],
-                                            'privateProfile'          => ['boolean', 'nullable'],
-                                            'preventIndex'            => ['boolean', 'nullable'],
-                                            'privacyHideDays'         => ['integer', 'nullable', 'gte:1'],
-                                            'defaultStatusVisibility' => [
-                                                'nullable',
-                                                new Enum(StatusVisibility::class),
-                                            ],
-                                            'mastodonVisibility'      => [
-                                                'nullable',
-                                                new Enum(MastodonVisibility::class),
-                                            ],
-                                            'mapProvider'             => ['nullable', new Enum(MapProvider::class)],
-                                            'dataProvider'            => ['nullable', new Enum(DataProvider::class)],
-                                            'friendCheckin'           => ['nullable', new Enum(FriendCheckinSetting::class)],
-                                            'likesEnabled'            => ['nullable', 'boolean'],
-                                            'pointsEnabled'           => ['nullable', 'boolean'],
-                                        ]);
-
+    public function updateSettings(UpdateProfileInformationRequest $request): UserProfileSettingsResource|JsonResponse {
         try {
-            return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
+            return new UserProfileSettingsResource(BackendSettingsController::updateSettings($request->validated()));
         } catch (RateLimitExceededException) {
             return $this->sendError(error: __('email.verification.too-many-requests'), code: 400);
         }
@@ -188,7 +148,7 @@ class SettingsController extends Controller
      * @return JsonResponse
      */
     public function uploadProfilePicture(Request $request): JsonResponse {
-        if(auth()->user()->can('disallow-social-interaction')) {
+        if (auth()->user()->can('disallow-social-interaction')) {
             return response()->json(null, 403);
         }
         if (BackendSettingsController::updateProfilePicture($request->input('image'))) {

@@ -1471,76 +1471,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "properties": {
-                                    "username": {
-                                        "type": "string",
-                                        "maxLength": 25,
-                                        "example": "gertrud123"
-                                    },
-                                    "displayName": {
-                                        "type": "string",
-                                        "maxLength": 50,
-                                        "example": "Gertrud"
-                                    },
-                                    "privateProfile": {
-                                        "type": "boolean",
-                                        "example": false,
-                                        "nullable": true
-                                    },
-                                    "preventIndex": {
-                                        "type": "boolean",
-                                        "example": false,
-                                        "nullable": true
-                                    },
-                                    "privacyHideDays": {
-                                        "type": "integer",
-                                        "example": 1,
-                                        "nullable": true
-                                    },
-                                    "defaultStatusVisibility": {
-                                        "oneOf": [
-                                            {
-                                                "$ref": "#/components/schemas/StatusVisibility"
-                                            }
-                                        ],
-                                        "nullable": true
-                                    },
-                                    "mastodonVisibility": {
-                                        "oneOf": [
-                                            {
-                                                "$ref": "#/components/schemas/MastodonVisibility"
-                                            }
-                                        ],
-                                        "nullable": true
-                                    },
-                                    "mapProvider": {
-                                        "oneOf": [
-                                            {
-                                                "$ref": "#/components/schemas/MapProvider"
-                                            }
-                                        ],
-                                        "nullable": true
-                                    },
-                                    "friendCheckin": {
-                                        "oneOf": [
-                                            {
-                                                "$ref": "#/components/schemas/FriendCheckinSetting"
-                                            }
-                                        ],
-                                        "nullable": true
-                                    },
-                                    "likesEnabled": {
-                                        "type": "boolean",
-                                        "example": true,
-                                        "nullable": true
-                                    },
-                                    "pointsEnabled": {
-                                        "type": "boolean",
-                                        "example": true,
-                                        "nullable": true
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/UpdateProfileInformationRequest"
                             }
                         }
                     }
@@ -4863,6 +4794,86 @@
                     "list"
                 ],
                 "example": "forbidden"
+            },
+            "UpdateProfileInformationRequest": {
+                "title": "UpdateProfileInformationRequest",
+                "description": "UpdateProfileInformationRequest",
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "maxLength": 25,
+                        "example": "gertrud123"
+                    },
+                    "displayName": {
+                        "type": "string",
+                        "maxLength": 50,
+                        "example": "Gertrud"
+                    },
+                    "privateProfile": {
+                        "type": "boolean",
+                        "example": false,
+                        "nullable": true
+                    },
+                    "preventIndex": {
+                        "type": "boolean",
+                        "example": false,
+                        "nullable": true
+                    },
+                    "privacyHideDays": {
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "defaultStatusVisibility": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/StatusVisibility"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "mastodonVisibility": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/MastodonVisibility"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "mapProvider": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/MapProvider"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "friendCheckin": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/FriendCheckinSetting"
+                            }
+                        ],
+                        "nullable": true
+                    },
+                    "likesEnabled": {
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": true
+                    },
+                    "pointsEnabled": {
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": true
+                    },
+                    "bio": {
+                        "type": "string",
+                        "maxLength": 500,
+                        "example": "Hi there! I am Gertrud!",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
             },
             "AlertResource": {
                 "required": [
