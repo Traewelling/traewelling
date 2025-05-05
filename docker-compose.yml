@@ -69,7 +69,7 @@ services:
       - ./avatars:/var/www/html/public/uploads/avatars
 
   database:
-    image: mariadb:10
+    image: mariadb:11
     restart: 'always'
     ports:
       - "3306:3306"
