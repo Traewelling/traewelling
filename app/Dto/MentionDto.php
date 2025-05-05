@@ -20,7 +20,7 @@ readonly class MentionDto implements \JsonSerializable
      * @OA\Property(
      *     title="user",
      *     nullable="true",
-     *     ref="#/components/schemas/User"
+     *     ref="#/components/schemas/UserResource"
      * )
      */
     public User $user;

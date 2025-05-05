@@ -37,7 +37,7 @@ class FollowController extends Controller
      *          response=201,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *              @OA\Property(property="data", type="object", ref="#/components/schemas/User")
+     *              @OA\Property(property="data", type="object", ref="#/components/schemas/UserResource")
      *         )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
@@ -86,7 +86,7 @@ class FollowController extends Controller
      *          response=200,
      *          description="successful operation",
      *          @OA\JsonContent(
-     *              @OA\Property(property="data", type="object", ref="#/components/schemas/User")
+     *              @OA\Property(property="data", type="object", ref="#/components/schemas/UserResource")
      *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
@@ -129,7 +129,7 @@ class FollowController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/User"
+     *                      ref="#/components/schemas/UserResource"
      *                  )
      *              ),
      *              @OA\Property(property="links", ref="#/components/schemas/Links"),
@@ -162,7 +162,7 @@ class FollowController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/User"
+     *                      ref="#/components/schemas/UserResource"
      *                  )
      *              ),
      *              @OA\Property(property="links", ref="#/components/schemas/Links"),
@@ -192,7 +192,7 @@ class FollowController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/User"
+     *                      ref="#/components/schemas/UserResource"
      *                  )
      *              ),
      *              @OA\Property(property="links", ref="#/components/schemas/Links"),

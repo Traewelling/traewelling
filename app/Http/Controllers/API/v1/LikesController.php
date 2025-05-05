@@ -39,7 +39,7 @@ class LikesController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="data", type="array",
      *                  @OA\Items(
-     *                      ref="#/components/schemas/User"
+     *                      ref="#/components/schemas/UserResource"
      *                  )
      *              ),
      *          )
