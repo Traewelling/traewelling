@@ -87,6 +87,8 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  * @property Collection           statuses
  * @property Collection           trustedUsers
  * @property Collection           trustedByUsers
+ * @property Collection           oAuthClients
+ * @property Collection           profileLinks
  *
  *
  * @todo rename home_id to home_station_id
@@ -355,5 +357,9 @@ class User extends Authenticatable implements ExportsPersonalData
 
     public function personalDataExportName(): string {
         return $this->username;
+    }
+
+    public function profileLinks(): HasMany {
+        return $this->hasMany(ProfileLink::class, 'user_id', 'id');
     }
 }

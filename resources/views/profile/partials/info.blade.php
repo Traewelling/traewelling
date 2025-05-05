@@ -1,3 +1,4 @@
+@php /** @var \App\Models\User $user */ @endphp
 <div class="card mb-4">
     <div class="card-header">
         {{ __('profile.statistics') }}
@@ -43,42 +44,16 @@
     </div>
     <div class="card-body">
         <h5>{{ __('profile.bio') }}</h5>
-        <p>Hallo, ich bin ein lustiger, typ, der hier eine Bio an seinem Profil hinterlegt hat. Das sieht alles sehr funny aus. Blah Blah Blah.</p>
+        <p>Hallo, ich bin ein lustiger, typ, der hier eine Bio an seinem Profil hinterlegt hat. Das sieht alles sehr
+            funny aus. Blah Blah Blah.</p>
         <h5>{{ __('welcome.footer.social') }}</h5>
-        <div class="btn-group shadow-none">
-            <a href="#" class="btn btn-sm">
-                <i class="fab fa-mastodon"></i>
-            </a>
-        </div>
-        <div class="btn-group shadow-none">
-            <a href="#" class="btn btn-sm">
-                <i class="fab fa-instagram"></i>
-            </a>
-        </div>
-        <div class="btn-group shadow-none">
-            <a href="#" class="btn btn-sm">
-                <i class="fab fa-twitter"></i>
-            </a>
-        </div>
-        <div class="btn-group shadow-none">
-            <a href="#" class="btn btn-sm">
-                <i class="fab fa-twitch"></i>
-            </a>
-        </div>
-        <div class="btn-group shadow-none">
-            <a href="#" class="btn btn-sm">
-                <i class="fab fa-github"></i>
-            </a>
-        </div>
-        <div class="btn-group shadow-none">
-            <a href="#" class="btn btn-sm">
-                <i class="fab fa-facebook"></i>
-            </a>
-        </div>
-        <div class="btn-group shadow-none">
-            <a href="#" class="btn btn-sm">
-                <i class="fab fa-tiktok"></i>
-            </a>
-        </div>
+        @php /** @var \App\Models\ProfileLink $link */ @endphp
+        @foreach($user->profileLinks as $link)
+            <div class="btn-broup shadow-none">
+                <a href="{{ $link->url }}" class="btn btn-sm" target="_blank">
+                    <i class="{{ $link->name->getIcon() }}"></i>
+                </a>
+            </div>
+        @endforeach
     </div>
 </div>
