@@ -55,19 +55,22 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  * @property int                  privacy_hide_days
  * @property string               language
  * @property Carbon               last_login
- * @property int                  points
- * @property boolean              userInvisibleToMe
  * @property string               mastodonUrl
- * @property int                  train_distance
- * @property int                  train_duration
+ * @property ?Carbon              recent_gdpr_export
+ * @property Carbon               created_at
+ * @property Carbon               updated_at
+ *
+ * // appends
  * @property boolean              following
  * @property boolean              followPending
  * @property boolean              muted
  * @property boolean              isAuthUserBlocked
  * @property boolean              isBlockedByAuthUser
- * @property ?Carbon              recent_gdpr_export
- * @property Carbon               created_at
- * @property Carbon               updated_at
+ * @property-read bool            followedBy
+ * @property int                  train_distance
+ * @property int                  train_duration
+ * @property boolean              userInvisibleToMe
+ * @property int                  points
  *
  * // relationships
  * @property Collection           trainCheckins
