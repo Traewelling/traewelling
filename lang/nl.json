@@ -864,5 +864,8 @@
     "events.request.warn.confirm": "Weet je zeker dat je dit evenement wilt voorstellen?",
     "events.notice.help": "Als je niet zeker weet of je evenement geschikt is, bekijk dan onze hulppagina's:",
     "events.request.warn.date": "Evenementen dienen minimaal twee weken van tevoren aangekondigd te worden, anders worden ze mogelijk niet op tijd verwerkt.",
-    "export.error.gdpr": "Het exportverzoek is mislukt - probeer het later opnieuw."
+    "export.error.gdpr": "Het exportverzoek is mislukt - probeer het later opnieuw.",
+    "profile.statistics": "Statistieken",
+    "profile.info": "Informatie",
+    "profile.bio": "Biografie"
 }
