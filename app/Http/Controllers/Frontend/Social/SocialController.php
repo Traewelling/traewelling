@@ -15,16 +15,14 @@ class SocialController extends Controller
 
     public function destroyProvider(Request $request): Response|Application|ResponseFactory {
         $validated = $request->validate([
-                                            'provider' => ['required', Rule::in(['mastodon', 'twitter'])]
+                                            'provider' => ['required', Rule::in(['mastodon'])]
                                         ]);
 
         $user = auth()->user();
-        if ($user->password === null
-            && !($user->socialProfile->twitter_id !== null && $user->socialProfile->mastodon_id !== null)) {
+        if ($user->password === null && $user->socialProfile->mastodon_id === null) {
             return response(__('controller.social.delete-set-password'), 406);
         }
-        if ($user->email === null
-            && !($user->socialProfile->twitter_id !== null && $user->socialProfile->mastodon_id !== null)) {
+        if ($user->email === null && $user->socialProfile->mastodon_id === null) {
             return response(__('controller.social.delete-set-email'), 406);
         }
 
@@ -32,12 +30,7 @@ class SocialController extends Controller
             return response(__('controller.social.delete-never-connected'), 404);
         }
 
-        if ($validated['provider'] === 'twitter') {
-            //Twitter destroy is possible as we keep saving the last known user id
-            $user->socialProfile->update([
-                                             'twitter_id' => null,
-                                         ]);
-        } elseif ($validated['provider'] === 'mastodon') {
+        if ($validated['provider'] === 'mastodon') {
             $user->socialProfile->update([
                                              'mastodon_id'     => null,
                                              'mastodon_server' => null,
