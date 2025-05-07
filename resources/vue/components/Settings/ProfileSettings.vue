@@ -122,8 +122,8 @@ getDefaultUserData();
               name="bio"
               v-model="userData.bio"
               :errors="errors.bio"
-              :title="trans('user.bio')"
-              :placeholder="trans('user.placeholder-bio')"
+              :title="trans('profile.bio')"
+              :placeholder="trans('profile.bio')"
           />
           <Input
               name="email"
