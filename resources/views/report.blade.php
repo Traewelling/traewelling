@@ -14,7 +14,7 @@
                 <h1>{{__('report-something')}}</h1>
 
                 <form id="report">
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-floating mb-2 {{request()->has('subjectType') ? 'd-none' : ''}}">
@@ -59,6 +59,9 @@
                                   style="min-height: 100px;"></textarea>
                         <label for="description">{{__('report.description')}}</label>
                     </div>
+                    <div class="form-text text-danger mb-2 d-none" id="error-text">
+                        {{__('report.min-length')}}
+                    </div>
 
                     <button class="btn btn-sm btn-outline-primary" type="submit">
                         {{__('report.submit')}}
@@ -71,9 +74,25 @@
                     // maybe you want to help us out and make it better?
                     // Create a Pull Request on GitHub!
                     // https://github.com/Traewelling/traewelling
+                    const description = document.getElementById('description');
+                    const errorText = document.getElementById('error-text');
+                    description.addEventListener('focusout', (event) => {
+                        if (event.target.value.length > 10) {
+                            event.target.classList.remove('is-invalid');
+                            errorText.classList.add('d-none');
+                        } else {
+                            event.target.classList.add('is-invalid');
+                            errorText.classList.remove('d-none');
+                        }
+                    })
 
                     document.getElementById('report').addEventListener('submit', function (event) {
                         event.preventDefault();
+                        if (description.value.length < 10) {
+                            description.classList.add('is-invalid');
+                            errorText.classList.remove('d-none');
+                            return;
+                        }
 
                         let formData = new FormData(this);
 

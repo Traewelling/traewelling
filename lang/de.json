@@ -807,6 +807,7 @@
   "report.subjectType": "Was möchtest du melden?",
   "report.subjectId": "ID des Objekts",
   "report.submit": "Absenden",
+  "report.min-length": "Die Beschreibung muss mindestens 10 Zeichen lang sein.",
   "report.success": "Deine Meldung wurde erfolgreich übermittelt. Wir schauen uns das an.",
   "report.error": "Beim Übermitteln deiner Meldung ist ein Fehler aufgetreten.",
   "report-reason.inappropriate": "Unangemessen",
