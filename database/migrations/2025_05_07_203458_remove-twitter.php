@@ -8,6 +8,7 @@ return new class extends Migration
 {
     public function up(): void {
         Schema::table('social_login_profiles', function(Blueprint $table) {
+            $table->dropUnique(['twitter_id']);
             $table->dropColumn('twitter_id');
         });
     }
@@ -15,6 +16,7 @@ return new class extends Migration
     public function down(): void {
         Schema::table('social_login_profiles', function(Blueprint $table) {
             $table->string('twitter_id')->after('user_id')->nullable();
+            $table->unique(['twitter_id']);
         });
     }
 };
