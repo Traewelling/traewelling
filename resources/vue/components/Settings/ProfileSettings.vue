@@ -10,8 +10,17 @@ import {
   UpdateProfileInformationRequest,
   UserProfileSettingsResource
 } from "../../../types/Api.gen";
+import Input from "./Partials/Input.vue";
+import Select from "./Partials/Select.vue";
+import {SelectOption} from "./Partials/SelectOption";
 
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
+const providers = Object.values(MapProvider).map((provider) => {
+  return {value: provider, translationKey: `map-providers.${provider}`} as SelectOption
+});
+
+
+const errors = ref({} as any);
 
 const userData = ref(
     {
@@ -65,6 +74,7 @@ const getDefaultUserData = () => {
 }
 
 const updateProfile = () => {
+  errors.value = {};
   api.settings.updateProfileSettings(userData.value).then(res => {
     console.log(res);
     if (res.ok) {
@@ -74,10 +84,11 @@ const updateProfile = () => {
     console.error(res);
     if (res.status === 422) {
       // Handle validation errors
-      const errors = res.error.errors;
-      for (const field in errors) {
-        if (errors.hasOwnProperty(field)) {
-          console.error(`${field}: ${errors[field].join(', ')}`);
+      errors.value = res.error.errors;
+
+      for (const field in errors.value) {
+        if (errors.value.hasOwnProperty(field)) {
+          console.error(`${field}: ${errors.value[field].join(', ')}`);
         }
       }
     } else {
@@ -98,60 +109,35 @@ getDefaultUserData();
 
       <div class="card-body">
         <form class="d-grid gap-1" @submit.prevent="updateProfile">
-          <div class="form-group row">
-            <label for="name" class="col-md-4 col-form-label text-md-right">
-              {{ trans('user.username') }}
-            </label>
-
-            <div class="col-md-6">
-              <div class="input-group">
-                <span class="input-group-text">@</span>
-                <input id="username" type="text"
-                       class="form-control"
-                       name="username"
-                       v-model="userData.username"
-                       required
-                />
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="name" class="col-md-4 col-form-label text-md-right">
-              {{ trans('user.displayname') }}
-            </label>
-            <div class="col-md-6">
-              <input id="name" type="text"
-                     class="form-control" name="name"
-                     v-model="userData.displayName" required autocomplete="name"/>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="email" class="col-md-4 col-form-label text-md-right">
-              {{ trans('user.email') }}
-            </label>
-            <div class="col-md-6">
-              <input id="email" type="email"
-                     class="form-control" name="email"
-                     v-model="userData.email" required
-                     autocomplete="email"/>
-
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="mapprovider" class="col-md-4 col-form-label text-md-right">
-              {{ trans('user.mapprovider') }}
-            </label>
-            <div class="col-md-6">
-              <select class="form-select" name="mapprovider" v-model="userData.mapProvider">
-                <option v-for="provider in Object.values(MapProvider)" :key="provider" :value="provider">
-                  {{ trans('map-providers.' + provider) }}
-                </option>
-              </select>
-            </div>
-          </div>
+          <Input
+              name="username"
+              v-model="userData.username"
+              prefix="@"
+              :errors="errors.username"
+              :title="trans('user.username')"
+          />
+          <Input
+              name="name"
+              v-model="userData.displayName"
+              :errors="errors.displayName"
+              :title="trans('user.displayname')"
+              autocomplete="name"
+          />
+          <Input
+              name="email"
+              v-model="userData.email"
+              :errors="errors.email"
+              :title="trans('user.email')"
+              autocomplete="email"
+              required="true"
+          />
+          <Select
+              :title="trans('user.mapprovider')"
+              :name="'mapprovider'"
+              v-model="userData.mapProvider"
+              :options="providers"
+              :errors="errors.mapProvider"
+          />
 
           <div class="form-group row">
             <label for="timezone" class="col-md-4 col-form-label text-md-right">
@@ -160,6 +146,7 @@ getDefaultUserData();
             <div class="col-md-6">
               <input
                   class="form-control"
+                  :class="{ 'is-invalid': errors.timezone }"
                   list="datalistOptions"
                   id="timezone"
                   name="timezone"
@@ -170,6 +157,9 @@ getDefaultUserData();
                         :key="timezone"
                         :value="timezone"/>
               </datalist>
+              <span v-if="errors.timezone" class="invalid-feedback" role="alert"><strong>{{
+                  errors.timezone.join(', ')
+                }}</strong></span>
             </div>
           </div>
 
