@@ -93,7 +93,8 @@
 
                                 <div class="col-md-6">
                                     <input id="password-confirm" type="password" class="form-control"
-                                           name="password_confirmation" required autocomplete="new-password" minlength="8">
+                                           name="password_confirmation" required autocomplete="new-password"
+                                           minlength="8">
                                 </div>
                             </div>
 
@@ -111,18 +112,12 @@
                                 <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
                                     <div class="row">
                                         <div class="form-group col-md-6">
-                                            <a href="https://blog.traewelling.de/posts/twitter-deprecation/"
-                                               class="btn btn-md btn-tertiary mt-2">
-                                                <i class="fab fa-twitter"></i> Twitter
-                                            </a>
-                                        </div>
-                                        <div class="form-group col-md-6">
                                             <div class="md-form input-group mt-2">
                                                 <input type="url" name="domain" class="form-control"
                                                        placeholder="{{__('user.mastodon-instance-url')}}"
                                                        aria-describedby="button-addon4" required>
                                                 <button class="btn btn-md btn-primary m-0 px-3" type="submit"><i
-                                                            class="fab fa-mastodon"></i> Mastodon
+                                                        class="fab fa-mastodon"></i> Mastodon
                                                 </button>
                                             </div>
                                         </div>
