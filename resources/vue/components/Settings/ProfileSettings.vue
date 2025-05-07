@@ -15,6 +15,7 @@ import Select from "./Partials/Select.vue";
 import {SelectOption} from "./Partials/SelectOption";
 import DataLilst from "./Partials/DataLilst.vue";
 import {Notyf} from "notyf";
+import Textfield from "./Partials/Textfield.vue";
 
 const notyf = new Notyf({position: {x: "right", y: "bottom"}});
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
@@ -116,6 +117,13 @@ getDefaultUserData();
               :errors="errors.displayName"
               :title="trans('user.displayname')"
               autocomplete="name"
+          />
+          <Textfield
+              name="bio"
+              v-model="userData.bio"
+              :errors="errors.bio"
+              :title="trans('user.bio')"
+              :placeholder="trans('user.placeholder-bio')"
           />
           <Input
               name="email"
