@@ -30,6 +30,8 @@ use OpenApi\Annotations as OA;
  *    @OA\Property(property="bio",                  type="string",  example="Hi there! I am Gertrud!", maxLength=500, nullable=true),
  *    @OA\Property(property="experimental",               type="boolean", example=false, description="Experimental features enabled"),
  *    @OA\Property(property="profileLinks",               type="array",  @OA\Items(ref="#/components/schemas/ProfileLinkResource"), nullable=true),
+ *    @OA\Property(property="timezone",                   type="string",  example="Europe/Berlin"),
+ *    @OA\Property(property="email",                      type="string",  example="mail@example.com", format="email", maxLength=255),
  * )
  */
 class UpdateProfileInformationRequest extends FormRequest
@@ -60,6 +62,8 @@ class UpdateProfileInformationRequest extends FormRequest
             'experimental'            => ['boolean', 'nullable'],
             'profileLinks.*.name'     => ['required', 'string', new Enum(ProfileLinkName::class)],
             'profileLinks.*.url'      => ['required', 'string', 'url', 'max:255'],
+            'timezone'                => ['required', 'string'],
+            'email'                   => ['required', 'string', 'email:rfc,dns', 'max:255'],
         ];
     }
 }

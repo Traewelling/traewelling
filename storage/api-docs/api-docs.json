@@ -4883,6 +4883,16 @@
                             "$ref": "#/components/schemas/ProfileLinkResource"
                         },
                         "nullable": true
+                    },
+                    "timezone": {
+                        "type": "string",
+                        "example": "Europe/Berlin"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 255,
+                        "example": "mail@example.com"
                     }
                 },
                 "type": "object"

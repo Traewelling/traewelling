@@ -306,6 +306,14 @@ export interface UpdateProfileInformationRequest {
    */
   experimental?: boolean;
   profileLinks?: ProfileLinkResource[] | null;
+  /** @example "Europe/Berlin" */
+  timezone?: string;
+  /**
+   * @format email
+   * @maxLength 255
+   * @example "mail@example.com"
+   */
+  email?: string;
 }
 
 export interface AlertResource {

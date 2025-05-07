@@ -1,31 +1,64 @@
 <script setup lang="ts">
 import {trans} from "laravel-vue-i18n";
 import {ref} from "vue";
-import {Api, MapProvider, UserProfileSettingsResource} from "../../../types/Api.gen";
+import {
+  Api,
+  FriendCheckinSetting,
+  MapProvider,
+  MastodonVisibility,
+  StatusVisibility,
+  UpdateProfileInformationRequest
+} from "../../../types/Api.gen";
 
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
 
-const defaultUserData = ref(null as UserProfileSettingsResource | null);
-
-const roles = {
-  'open-beta': 'open-beta',
-  'admin': 'admin',
-}
+const updateData = ref(
+    {
+      username: "",
+      displayName: "",
+      privateProfile: false,
+      preventIndex: false,
+      privacyHideDays: 1,
+      defaultStatusVisibility: StatusVisibility.Value0,
+      mastodonVisibility: MastodonVisibility.Value0,
+      mapProvider: MapProvider.Cargo,
+      friendCheckin: FriendCheckinSetting.Value0,
+      likesEnabled: false,
+      pointsEnabled: false,
+      bio: "",
+      experimental: false,
+      profileLinks: [],
+      email: "",
+      timezone: "",
+    } as UpdateProfileInformationRequest
+);
 
 const getDefaultUserData = () => {
   api.settings.getProfileSettings().then(res => {
-    if (res.ok) {
-      defaultUserData.value = res.data.data;
+    if (res.ok && res.data.data !== undefined) {
+      console.log(res.data.data.mapProvider);
+      updateData.value.username = res.data.data.username;
+      updateData.value.displayName = res.data.data.displayName;
+      updateData.value.privateProfile = res.data.data.privateProfile;
+      updateData.value.preventIndex = res.data.data.preventIndex;
+      updateData.value.privacyHideDays = res.data.data.privacyHideDays;
+      updateData.value.defaultStatusVisibility = res.data.data.defaultStatusVisibility;
+      updateData.value.mastodonVisibility = res.data.data.mastodonVisibility;
+      updateData.value.mapProvider = res.data.data.mapProvider;
+      updateData.value.friendCheckin = res.data.data.friendCheckin;
+      updateData.value.likesEnabled = res.data.data.likesEnabled;
+      updateData.value.pointsEnabled = res.data.data.pointsEnabled;
+      updateData.value.bio = res.data.data.bio;
+      updateData.value.experimental = res.data.data.experimental;
+      updateData.value.profileLinks = res.data.data.profileLinks;
+      updateData.value.email = res.data.data.email;
+      updateData.value.timezone = res.data.data.timezone;
     } else {
-      defaultUserData.value = null;
     }
   }).catch(() => {
-    defaultUserData.value = null;
   });
 }
 getDefaultUserData();
-
-console.log(Object.values(MapProvider))
 </script>
 
 <template>
@@ -34,7 +67,7 @@ console.log(Object.values(MapProvider))
       <div class="card-header">{{ trans('settings.title-profile') }}</div>
 
       <div class="card-body">
-        <form class="d-grid gap-1" enctype="multipart/form-data" method="POST">
+        <form class="d-grid gap-1" @submit.prevent>
           <div class="form-group row">
             <label for="name" class="col-md-4 col-form-label text-md-right">
               {{ trans('user.username') }}
@@ -46,7 +79,7 @@ console.log(Object.values(MapProvider))
                 <input id="username" type="text"
                        class="form-control"
                        name="username"
-                       :value="defaultUserData?.username"
+                       v-model="updateData.username"
                        required
                 />
               </div>
@@ -60,7 +93,7 @@ console.log(Object.values(MapProvider))
             <div class="col-md-6">
               <input id="name" type="text"
                      class="form-control" name="name"
-                     :value="defaultUserData?.displayName" required autocomplete="name"/>
+                     v-model="updateData.displayName" required autocomplete="name"/>
             </div>
           </div>
 
@@ -71,7 +104,8 @@ console.log(Object.values(MapProvider))
             <div class="col-md-6">
               <input id="email" type="email"
                      class="form-control" name="email"
-                     :value="defaultUserData?.email" autocomplete="email"/>
+                     v-model="updateData.email" required
+                     autocomplete="email"/>
 
             </div>
           </div>
@@ -81,11 +115,8 @@ console.log(Object.values(MapProvider))
               {{ trans('user.mapprovider') }}
             </label>
             <div class="col-md-6">
-              <select class="form-select" name="mapprovider">
-                <option v-for="provider in Object.values(MapProvider)"
-                        :key="provider.value"
-                        :selected="defaultUserData?.mapprovider === provider"
-                >
+              <select class="form-select" name="mapprovider" v-model="updateData.mapProvider">
+                <option v-for="provider in Object.values(MapProvider)" :key="provider" :value="provider">
                   {{ trans('map-providers.' + provider) }}
                 </option>
               </select>
@@ -102,7 +133,7 @@ console.log(Object.values(MapProvider))
                   list="datalistOptions"
                   id="timezone"
                   name="timezone"
-                  :value="defaultUserData?.timezone"
+                  v-model="updateData.timezone"
               >
               <datalist id="datalistOptions">
                 <option v-for="timezone in Intl.supportedValuesOf('timeZone')"
@@ -122,11 +153,11 @@ console.log(Object.values(MapProvider))
               ></i>
             </label>
             <div class="col-md-6">
-              <select class="form-select" name="experimental" id="experimental">
-                <option value="1" :selected="defaultUserData?.experimental === true">
+              <select class="form-select" name="experimental" id="experimental" v-model="updateData.experimental">
+                <option :value="true">
                   {{ trans('settings.allow') }}
                 </option>
-                <option value="0" :selected="defaultUserData?.experimental === false">
+                <option :value="false">
                   {{ trans('settings.prevent') }}
                 </option>
               </select>

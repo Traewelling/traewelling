@@ -57,7 +57,7 @@ class UserProfileSettingsResource extends JsonResource
             'friendCheckin'           => $this->friend_checkin?->value,
             'likesEnabled'            => (bool) $this->likes_enabled,
             'pointsEnabled'           => (bool) $this->points_enabled,
-            'mapProvider'             => (bool) $this->mapprovider,
+            'mapProvider'             => $this->mapprovider,
             'timezone'                => $this->timezone,
             'experimental'            => (bool) $this->hasRole('open-beta'),
             'bio'                     => $this->bio,
