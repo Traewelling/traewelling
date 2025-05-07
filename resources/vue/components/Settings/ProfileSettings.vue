@@ -13,15 +13,18 @@ import {
 import Input from "./Partials/Input.vue";
 import Select from "./Partials/Select.vue";
 import {SelectOption} from "./Partials/SelectOption";
+import DataLilst from "./Partials/DataLilst.vue";
+import {Notyf} from "notyf";
 
+const notyf = new Notyf({position: {x: "right", y: "bottom"}});
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
+const timezones = Intl.supportedValuesOf('timeZone').map((timezone) => {
+  return {value: timezone, label: timezone} as SelectOption
+});
 const providers = Object.values(MapProvider).map((provider) => {
   return {value: provider, translationKey: `map-providers.${provider}`} as SelectOption
 });
-
-
 const errors = ref({} as any);
-
 const userData = ref(
     {
       username: "",
@@ -76,26 +79,17 @@ const getDefaultUserData = () => {
 const updateProfile = () => {
   errors.value = {};
   api.settings.updateProfileSettings(userData.value).then(res => {
-    console.log(res);
     if (res.ok) {
       userData.value = mapData(res.data.data);
+      notyf.success(trans('settings.saved'));
     }
   }).catch((res) => {
-    console.error(res);
     if (res.status === 422) {
       // Handle validation errors
       errors.value = res.error.errors;
-
-      for (const field in errors.value) {
-        if (errors.value.hasOwnProperty(field)) {
-          console.error(`${field}: ${errors.value[field].join(', ')}`);
-        }
-      }
     } else {
-      // Handle other errors
-      console.error(res);
+      notyf.error(trans('generic.error'));
     }
-    console.error(res)
   });
 }
 
@@ -138,52 +132,23 @@ getDefaultUserData();
               :options="providers"
               :errors="errors.mapProvider"
           />
+          <DataLilst
+              v-model="userData.timezone"
+              :errors="errors.timezone"
+              :options="timezones"
+              :title="trans('user.timezone')"
+          />
 
-          <div class="form-group row">
-            <label for="timezone" class="col-md-4 col-form-label text-md-right">
-              {{ trans('user.timezone') }}
-            </label>
-            <div class="col-md-6">
-              <input
-                  class="form-control"
-                  :class="{ 'is-invalid': errors.timezone }"
-                  list="datalistOptions"
-                  id="timezone"
-                  name="timezone"
-                  v-model="userData.timezone"
-              >
-              <datalist id="datalistOptions">
-                <option v-for="timezone in Intl.supportedValuesOf('timeZone')"
-                        :key="timezone"
-                        :value="timezone"/>
-              </datalist>
-              <span v-if="errors.timezone" class="invalid-feedback" role="alert"><strong>{{
-                  errors.timezone.join(', ')
-                }}</strong></span>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="experimental" class="col-md-4 col-form-label text-md-right">
-              {{ trans('settings.experimental') }}
-              <i
-                  class="fas fa-info-circle"
-                  :title="trans('settings.experimental.description')"
-                  data-bs-toggle="tooltip"
-              ></i>
-            </label>
-            <div class="col-md-6">
-              <select class="form-select" name="experimental" id="experimental" v-model="userData.experimental">
-                <option :value="true">
-                  {{ trans('settings.allow') }}
-                </option>
-                <option :value="false">
-                  {{ trans('settings.prevent') }}
-                </option>
-              </select>
-            </div>
-          </div>
-
+          <Select
+              :title="trans('settings.experimental')"
+              :name="'experimental'"
+              v-model="userData.experimental"
+              :options="[
+                {value: true, translationKey: 'settings.allow'},
+                {value: false, translationKey: 'settings.prevent'}
+              ]"
+              :errors="errors.experimental"
+          />
 
           <div class="form-group row mt-3">
             <div class="col-md-6 offset-md-4">
