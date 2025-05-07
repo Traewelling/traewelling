@@ -45,8 +45,7 @@
         </div>
         <div class="card-body">
             @if ($user->bio)
-                <h5>{{ __('profile.bio') }}</h5>
-                <p>{{ $user->bio }}</p>
+                <p class="profile-bio">{{ $user->bio }}</p>
             @endif
             @if (count($user->profileLinks))
                 <h5>{{ __('welcome.footer.social') }}</h5>
