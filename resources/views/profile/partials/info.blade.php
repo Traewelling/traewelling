@@ -48,15 +48,17 @@
                 <h5>{{ __('profile.bio') }}</h5>
                 <p>{{ $user->bio }}</p>
             @endif
-            <h5>{{ __('welcome.footer.social') }}</h5>
-            @php /** @var \App\Models\ProfileLink $link */ @endphp
-            <div class="btn-broup shadow-none">
-                @foreach($user->profileLinks as $link)
-                    <a href="{{ $link->url }}" class="btn btn-sm" target="_blank">
-                        <i class="{{ $link->name->getIcon() }}"></i>
-                    </a>
-                @endforeach
-            </div>
+            @if (count($user->profileLinks))
+                <h5>{{ __('welcome.footer.social') }}</h5>
+                @php /** @var \App\Models\ProfileLink $link */ @endphp
+                <div class="btn-broup shadow-none">
+                    @foreach($user->profileLinks as $link)
+                        <a href="{{ $link->url }}" class="btn btn-sm" target="_blank">
+                            <i class="{{ $link->name->getIcon() }}"></i>
+                        </a>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </div>
 @endif
