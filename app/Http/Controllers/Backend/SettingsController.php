@@ -27,6 +27,15 @@ abstract class SettingsController extends Controller
             $user->sendEmailVerificationNotification();
         }
 
+        if (array_key_exists('experimental', $fields)) {
+            if ($fields['experimental'] && !$user->hasRole('open-beta')) {
+                auth()->user()->assignRole('open-beta');
+            } elseif (!$fields['experimental'] && $user->hasRole('open-beta')) {
+                auth()->user()->removeRole('open-beta');
+            }
+        }
+
+
         if (array_key_exists('profileLinks', $fields)) {
             self::updateProfileLinks($fields['profileLinks'], $user);
             unset($fields['profileLinks']);

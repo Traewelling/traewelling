@@ -58,6 +58,8 @@ class SettingsTest extends ApiTestCase
             data: [
                       'username'                => 'new',
                       'displayName'             => 'new',
+                      'email'                   => 'no-reply@traewelling.de',
+                      'timezone'                => 'Europe/Berlin',
                       'privateProfile'          => true,
                       'preventIndex'            => true,
                       'privacyHideDays'         => 1,

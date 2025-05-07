@@ -206,7 +206,7 @@ export interface LivePointDto {
  */
 export interface MentionDto {
   /** User model */
-  user?: User;
+  user?: UserResource;
   /**
    * position
    * @format int
@@ -264,6 +264,56 @@ export interface Station {
    * @example "RK"
    */
   rilIdentifier?: string | null;
+}
+
+/**
+ * UpdateProfileInformationRequest
+ * UpdateProfileInformationRequest
+ */
+export interface UpdateProfileInformationRequest {
+  /**
+   * @maxLength 25
+   * @example "gertrud123"
+   */
+  username?: string;
+  /**
+   * @maxLength 50
+   * @example "Gertrud"
+   */
+  displayName?: string;
+  /** @example false */
+  privateProfile?: boolean | null;
+  /** @example false */
+  preventIndex?: boolean | null;
+  /** @example 1 */
+  privacyHideDays?: number | null;
+  defaultStatusVisibility?: StatusVisibility | null;
+  mastodonVisibility?: MastodonVisibility | null;
+  mapProvider?: MapProvider | null;
+  friendCheckin?: FriendCheckinSetting | null;
+  /** @example true */
+  likesEnabled?: boolean | null;
+  /** @example true */
+  pointsEnabled?: boolean | null;
+  /**
+   * @maxLength 500
+   * @example "Hi there! I am Gertrud!"
+   */
+  bio?: string | null;
+  /**
+   * Experimental features enabled
+   * @example false
+   */
+  experimental?: boolean;
+  profileLinks?: ProfileLinkResource[] | null;
+  /** @example "Europe/Berlin" */
+  timezone?: string;
+  /**
+   * @format email
+   * @maxLength 255
+   * @example "mail@example.com"
+   */
+  email?: string;
 }
 
 export interface AlertResource {
@@ -421,6 +471,24 @@ export interface OperatorResource {
   identifier?: string;
   /** @example "DB Regio AG Nord" */
   name?: string;
+}
+
+/**
+ * ProfileLinkResource
+ * ProfileLinkResource
+ */
+export interface ProfileLinkResource {
+  /** @example "website" */
+  name?:
+    | "website"
+    | "instagram"
+    | "twitter"
+    | "facebook"
+    | "mastodon"
+    | "tiktok"
+    | "github";
+  /** @example "https://traewelling.de" */
+  url?: string;
 }
 
 /** Station */
@@ -703,36 +771,36 @@ export interface UserAuthResource {
 /** UserProfileSettings */
 export interface UserProfileSettingsResource {
   /** @example "Gertrud123" */
-  username?: string;
+  username: string;
   /** @example "Gertrud" */
-  displayName?: string;
+  displayName: string;
   /** @example "https://traewelling.de/@Gertrud123/picture" */
-  profilePicture?: string;
+  profilePicture: string;
   /** @example false */
-  privateProfile?: boolean;
+  privateProfile: boolean;
   /**
    * Did the user choose to prevent search engines from indexing their profile?
    * @example false
    */
-  preventIndex?: boolean;
+  preventIndex: boolean;
   /**
    * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
    *  *      user specify?
    */
-  defaultStatusVisibility?: StatusVisibility;
+  defaultStatusVisibility: StatusVisibility;
   /**
    * Number of days to hide the user's location history
    * @example 1
    */
-  privacyHideDays?: number;
+  privacyHideDays: number;
   /** @example true */
-  password?: boolean;
+  password: boolean;
   /** @example "gertrud@traewelling.de" */
-  email?: string;
+  email: string;
   /** @example true */
-  emailVerified?: boolean;
+  emailVerified: boolean;
   /** @example true */
-  profilePictureSet?: boolean;
+  profilePictureSet: boolean;
   /** @example "https://mastodon.social/@Gertrud123" */
   mastodon?: string;
   /**
@@ -742,9 +810,125 @@ export interface UserProfileSettingsResource {
   mastodonVisibility?: MastodonVisibility;
   friendCheckin?: FriendCheckinSetting;
   /** @example true */
-  likesEnabled?: boolean;
+  likesEnabled: boolean;
   /** @example true */
+  pointsEnabled: boolean;
+  /** What type of map provider (cargo, open-railway-map) did the user specify? */
+  mapProvider: MapProvider;
+  /** @example "Europe/Berlin" */
+  timezone: string;
+  /** @example "Hi there! I am Gertrud!" */
+  bio?: string;
+  profileLinks: ProfileLinkResource[];
+  /**
+   * Experimental features enabled
+   * @example false
+   */
+  experimental: boolean;
+}
+
+/**
+ * User
+ * User model
+ */
+export interface UserResource {
+  /**
+   * ID
+   * @example 1
+   */
+  id?: number;
+  /**
+   * Display name of the user
+   * @example "Gertrud"
+   */
+  displayName?: any;
+  /**
+   * username of user
+   * @example "Gertrud123"
+   */
+  username?: any;
+  /**
+   * URL of the profile picture of the user
+   * @example "https://traewelling.de/@Gertrud123/picture"
+   */
+  profilePicture?: any;
+  /**
+   * distance travelled by train in meters
+   * @example 12345
+   */
+  trainDistance?: number;
+  /**
+   * duration travelled by train in minutes
+   * @example 6
+   */
+  trainDuration?: number;
+  /**
+   * Current points of the last 7 days
+   * @example 300
+   */
+  points?: number;
+  /**
+   * URL to the Mastodon profile of the user
+   * @example "https://chaos.social/@traewelling"
+   */
+  mastodonUrl?: any;
+  /**
+   * is this profile set to private?
+   * @example false
+   */
+  privateProfile?: boolean;
+  /**
+   * Does this profile allow points? Only offer the UI to show points at any status if this setting is set to true. If set to false, the points will always be displayed as 0
+   * @example true
+   */
+  points_enabled?: boolean;
+  /**
+   * Does this profile allow likes? Only offer the UI to like any status if this setting is set to true. If set to false, the likes API will return 403.
+   * @example true
+   */
+  likes_enabled?: boolean;
+  /**
+   * Does this profile allow points? Only offer the UI to show points at any status if this setting is set to true. If set to false, the points will always be displayed as 0
+   * @example true
+   */
   pointsEnabled?: boolean;
+  /**
+   * Can the currently authenticated user see the statuses of this user?
+   * @example false
+   */
+  userInvisibleToMe?: boolean;
+  /**
+   * Is this user muted by the currently authenticated user?
+   * @example false
+   */
+  muted?: boolean;
+  /**
+   * Does the currently authenticated user follow this user?
+   * @example false
+   */
+  following?: boolean;
+  /**
+   * Is there a currently pending follow request?
+   * @example false
+   */
+  followPending?: boolean;
+  /**
+   * Is the user following you?
+   * @example false
+   */
+  followedBy?: boolean;
+  /**
+   * Did the user choose to prevent search engines from indexing their profile?
+   * @example false
+   */
+  preventIndex?: boolean;
+  /**
+   * Bio of the user
+   * @example "Hi there! I am Gertrud!"
+   */
+  bio?: string;
+  /** Profile links of the user */
+  profileLinks?: ProfileLinkResource[];
 }
 
 /** BearerTokenResponse */
@@ -1177,113 +1361,6 @@ export interface SuccessResponse {
    * @example "success"
    */
   status?: string;
-}
-
-/**
- * User
- * User model
- */
-export interface User {
-  /**
-   * ID
-   * ID
-   * @format int
-   * @example 1
-   */
-  id?: number;
-  /**
-   * displayName
-   * Display name of the user
-   * @example "Gertrud"
-   */
-  displayName?: any;
-  /**
-   * username
-   * username of user
-   * @example "Gertrud123"
-   */
-  username?: string;
-  /**
-   * profilePicture
-   * URL of the profile picture of the user
-   * @example "https://traewelling.de/@Gertrud123/picture"
-   */
-  profilePicture?: number;
-  /**
-   * trainDistance
-   * distance travelled by train in meters
-   * @format int
-   * @example 12345
-   */
-  trainDistance?: number;
-  /**
-   * trainDuration
-   * duration travelled by train in minutes
-   * @format int
-   * @example 6
-   */
-  trainDuration?: number;
-  /**
-   * points
-   * Current points of the last 7 days
-   * @format int
-   * @example 300
-   */
-  points?: number;
-  /**
-   * mastodonUrl
-   * URL to the Mastodon profile of the user
-   * @example "https://chaos.social/@traewelling"
-   */
-  mastodonUrl?: string | null;
-  /**
-   * privateProfile
-   * is this profile set to private?
-   * @example false
-   */
-  privateProfile?: boolean;
-  /**
-   * likes_enabled
-   * Does this profile allow likes? Only offer the UI to like any status if this setting is set to true. If set to false, the likes API will return 403.
-   * @example true
-   */
-  likes_enabled?: boolean;
-  /**
-   * userInvisibleToMe
-   * Can the currently authenticated user see the statuses of this user?
-   * @example false
-   */
-  userInvisibleToMe?: boolean;
-  /**
-   * muted
-   * Is this user muted by the currently authenticated user?
-   * @example false
-   */
-  muted?: boolean;
-  /**
-   * following
-   * Does the currently authenticated user follow this user?
-   * @example false
-   */
-  following?: boolean;
-  /**
-   * followPending
-   * Is there a currently pending follow request?
-   * @example false
-   */
-  followPending?: boolean;
-  /**
-   * followedBy
-   * Is the user following you?
-   * @example false
-   */
-  followedBy?: boolean;
-  /**
-   * preventIndex
-   * Did the user choose to prevent search engines from indexing their profile?
-   * @example false
-   */
-  preventIndex?: boolean;
 }
 
 /**
@@ -1880,7 +1957,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: User;
+          data?: UserResource;
         },
         void
       >({
@@ -1904,7 +1981,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: User;
+          data?: UserResource;
         },
         void
       >({
@@ -1927,7 +2004,7 @@ export class Api<
     getFollowers: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: User[];
+          data?: UserResource[];
           /** pagination links */
           links?: Links;
           /** Pagination meta data */
@@ -1954,7 +2031,7 @@ export class Api<
     getFollowRequests: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: User[];
+          data?: UserResource[];
           /** pagination links */
           links?: Links;
           /** Pagination meta data */
@@ -1981,7 +2058,7 @@ export class Api<
     getFollowings: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: User[];
+          data?: UserResource[];
           /** pagination links */
           links?: Links;
           /** Pagination meta data */
@@ -2215,7 +2292,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: User;
+          data?: UserResource;
         },
         void
       >({
@@ -2252,7 +2329,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: User;
+          data?: UserResource;
         },
         void
       >({
@@ -2290,7 +2367,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: User;
+          data?: UserResource;
         },
         void
       >({
@@ -2316,7 +2393,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: User;
+          data?: UserResource;
         },
         void
       >({
@@ -2340,7 +2417,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: User;
+          data?: UserResource;
         },
         void
       >({
@@ -2375,7 +2452,7 @@ export class Api<
     ) =>
       this.request<
         {
-          data?: User[];
+          data?: UserResource[];
           /** pagination links */
           links?: Links;
           /** Pagination meta data */
@@ -2404,7 +2481,7 @@ export class Api<
     getLikesForStatus: (id?: number, params: RequestParams = {}) =>
       this.request<
         {
-          data?: User[];
+          data?: UserResource[];
         },
         void
       >({
@@ -2857,32 +2934,7 @@ export class Api<
      * @secure
      */
     updateProfileSettings: (
-      data: {
-        /**
-         * @maxLength 25
-         * @example "gertrud123"
-         */
-        username?: string;
-        /**
-         * @maxLength 50
-         * @example "Gertrud"
-         */
-        displayName?: string;
-        /** @example false */
-        privateProfile?: boolean | null;
-        /** @example false */
-        preventIndex?: boolean | null;
-        /** @example 1 */
-        privacyHideDays?: number | null;
-        defaultStatusVisibility?: StatusVisibility | null;
-        mastodonVisibility?: MastodonVisibility | null;
-        mapProvider?: MapProvider | null;
-        friendCheckin?: FriendCheckinSetting | null;
-        /** @example true */
-        likesEnabled?: boolean | null;
-        /** @example true */
-        pointsEnabled?: boolean | null;
-      },
+      data: UpdateProfileInformationRequest,
       params: RequestParams = {},
     ) =>
       this.request<

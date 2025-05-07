@@ -71,6 +71,7 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  * @property-read int             train_duration
  * @property-read boolean         userInvisibleToMe
  * @property-read int             points
+ * @property-read ?string         mastodon_url
  *
  * // relationships
  * @property Collection           trainCheckins
@@ -93,6 +94,7 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  * @property Collection           trustedByUsers
  * @property Collection           oAuthClients
  * @property Collection           profileLinks
+ * @property Collection           roles
  *
  *
  * @todo rename home_id to home_station_id

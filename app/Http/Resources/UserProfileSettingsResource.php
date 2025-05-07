@@ -5,10 +5,14 @@ namespace App\Http\Resources;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(
  *      title="UserProfileSettings",
+ *      required={"username", "displayName", "profilePicture", "privateProfile", "preventIndex", "defaultStatusVisibility",
+ *      "privacyHideDays", "password", "email", "emailVerified", "profilePictureSet", "likesEnabled", "pointsEnabled",
+ *      "profileLinks", "mapProvider", "timezone", "experimental"},
  *      @OA\Property(property="username",                   type="string",  example="Gertrud123"),
  *      @OA\Property(property="displayName",                type="string",  example="Gertrud"),
  *      @OA\Property(property="profilePicture",             type="string",  example="https://traewelling.de/@Gertrud123/picture"),
@@ -25,8 +29,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      @OA\Property(property="friendCheckin",              ref="#/components/schemas/FriendCheckinSetting"),
  *      @OA\Property(property="likesEnabled",               type="boolean", example=true),
  *      @OA\Property(property="pointsEnabled",              type="boolean", example=true),
+ *      @OA\Property(property="mapProvider",                ref="#/components/schemas/MapProvider"),
+ *      @OA\Property(property="timezone",                   type="string",  example="Europe/Berlin"),
  *      @OA\Property(property="bio",                        type="string",  example="Hi there! I am Gertrud!"),
  *      @OA\Property(property="profileLinks",               type="array",  @OA\Items(ref="#/components/schemas/ProfileLinkResource")),
+ *      @OA\Property(property="experimental",               type="boolean", example=false, description="Experimental features enabled"),
  * )
  */
 class UserProfileSettingsResource extends JsonResource
@@ -50,6 +57,9 @@ class UserProfileSettingsResource extends JsonResource
             'friendCheckin'           => $this->friend_checkin?->value,
             'likesEnabled'            => (bool) $this->likes_enabled,
             'pointsEnabled'           => (bool) $this->points_enabled,
+            'mapProvider'             => $this->mapprovider,
+            'timezone'                => $this->timezone,
+            'experimental'            => (bool) $this->hasRole('open-beta'),
             'bio'                     => $this->bio,
             'profileLinks'            => ProfileLinkResource::collection($this->profileLinks)
         ];
