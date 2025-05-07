@@ -4872,6 +4872,11 @@
                         "example": "Hi there! I am Gertrud!",
                         "nullable": true
                     },
+                    "experimental": {
+                        "description": "Experimental features enabled",
+                        "type": "boolean",
+                        "example": false
+                    },
                     "profileLinks": {
                         "type": "array",
                         "items": {
@@ -5627,6 +5632,25 @@
             },
             "UserProfileSettingsResource": {
                 "title": "UserProfileSettings",
+                "required": [
+                    "username",
+                    "displayName",
+                    "profilePicture",
+                    "privateProfile",
+                    "preventIndex",
+                    "defaultStatusVisibility",
+                    "privacyHideDays",
+                    "password",
+                    "email",
+                    "emailVerified",
+                    "profilePictureSet",
+                    "likesEnabled",
+                    "pointsEnabled",
+                    "profileLinks",
+                    "mapProvider",
+                    "timezone",
+                    "experimental"
+                ],
                 "properties": {
                     "username": {
                         "type": "string",
@@ -5691,6 +5715,13 @@
                         "type": "boolean",
                         "example": true
                     },
+                    "mapProvider": {
+                        "$ref": "#/components/schemas/MapProvider"
+                    },
+                    "timezone": {
+                        "type": "string",
+                        "example": "Europe/Berlin"
+                    },
                     "bio": {
                         "type": "string",
                         "example": "Hi there! I am Gertrud!"
@@ -5700,6 +5731,11 @@
                         "items": {
                             "$ref": "#/components/schemas/ProfileLinkResource"
                         }
+                    },
+                    "experimental": {
+                        "description": "Experimental features enabled",
+                        "type": "boolean",
+                        "example": false
                     }
                 },
                 "type": "object"
