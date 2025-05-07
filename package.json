@@ -29,7 +29,7 @@
     "awesomplete": "^1.1.5",
     "axios": "^1.8.2",
     "bootstrap-cookie-alert": "^1.2.1",
-    "chart.js": "^2.9.4",
+    "chart.js": "^4.0.0",
     "croppie": "^2.6.5",
     "laravel-vue-i18n": "^2.7.1",
     "leaflet": "^1.9.4",
