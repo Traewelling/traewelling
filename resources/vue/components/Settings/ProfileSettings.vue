@@ -7,12 +7,13 @@ import {
   MapProvider,
   MastodonVisibility,
   StatusVisibility,
-  UpdateProfileInformationRequest
+  UpdateProfileInformationRequest,
+  UserProfileSettingsResource
 } from "../../../types/Api.gen";
 
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
 
-const updateData = ref(
+const userData = ref(
     {
       username: "",
       displayName: "",
@@ -33,31 +34,60 @@ const updateData = ref(
     } as UpdateProfileInformationRequest
 );
 
+const mapData = (data: UserProfileSettingsResource) => {
+  return {
+    username: data.username,
+    displayName: data.displayName,
+    privateProfile: data.privateProfile,
+    preventIndex: data.preventIndex,
+    privacyHideDays: data.privacyHideDays,
+    defaultStatusVisibility: data.defaultStatusVisibility,
+    mastodonVisibility: data.mastodonVisibility,
+    mapProvider: data.mapProvider,
+    friendCheckin: data.friendCheckin,
+    likesEnabled: data.likesEnabled,
+    pointsEnabled: data.pointsEnabled,
+    bio: data.bio,
+    experimental: data.experimental,
+    profileLinks: data.profileLinks,
+    email: data.email,
+    timezone: data.timezone
+  } as UpdateProfileInformationRequest;
+}
+
 const getDefaultUserData = () => {
   api.settings.getProfileSettings().then(res => {
     if (res.ok && res.data.data !== undefined) {
-      console.log(res.data.data.mapProvider);
-      updateData.value.username = res.data.data.username;
-      updateData.value.displayName = res.data.data.displayName;
-      updateData.value.privateProfile = res.data.data.privateProfile;
-      updateData.value.preventIndex = res.data.data.preventIndex;
-      updateData.value.privacyHideDays = res.data.data.privacyHideDays;
-      updateData.value.defaultStatusVisibility = res.data.data.defaultStatusVisibility;
-      updateData.value.mastodonVisibility = res.data.data.mastodonVisibility;
-      updateData.value.mapProvider = res.data.data.mapProvider;
-      updateData.value.friendCheckin = res.data.data.friendCheckin;
-      updateData.value.likesEnabled = res.data.data.likesEnabled;
-      updateData.value.pointsEnabled = res.data.data.pointsEnabled;
-      updateData.value.bio = res.data.data.bio;
-      updateData.value.experimental = res.data.data.experimental;
-      updateData.value.profileLinks = res.data.data.profileLinks;
-      updateData.value.email = res.data.data.email;
-      updateData.value.timezone = res.data.data.timezone;
-    } else {
+      userData.value = mapData(res.data.data);
     }
   }).catch(() => {
   });
 }
+
+const updateProfile = () => {
+  api.settings.updateProfileSettings(userData.value).then(res => {
+    console.log(res);
+    if (res.ok) {
+      userData.value = mapData(res.data.data);
+    }
+  }).catch((res) => {
+    console.error(res);
+    if (res.status === 422) {
+      // Handle validation errors
+      const errors = res.error.errors;
+      for (const field in errors) {
+        if (errors.hasOwnProperty(field)) {
+          console.error(`${field}: ${errors[field].join(', ')}`);
+        }
+      }
+    } else {
+      // Handle other errors
+      console.error(res);
+    }
+    console.error(res)
+  });
+}
+
 getDefaultUserData();
 </script>
 
@@ -67,7 +97,7 @@ getDefaultUserData();
       <div class="card-header">{{ trans('settings.title-profile') }}</div>
 
       <div class="card-body">
-        <form class="d-grid gap-1" @submit.prevent>
+        <form class="d-grid gap-1" @submit.prevent="updateProfile">
           <div class="form-group row">
             <label for="name" class="col-md-4 col-form-label text-md-right">
               {{ trans('user.username') }}
@@ -79,7 +109,7 @@ getDefaultUserData();
                 <input id="username" type="text"
                        class="form-control"
                        name="username"
-                       v-model="updateData.username"
+                       v-model="userData.username"
                        required
                 />
               </div>
@@ -93,7 +123,7 @@ getDefaultUserData();
             <div class="col-md-6">
               <input id="name" type="text"
                      class="form-control" name="name"
-                     v-model="updateData.displayName" required autocomplete="name"/>
+                     v-model="userData.displayName" required autocomplete="name"/>
             </div>
           </div>
 
@@ -104,7 +134,7 @@ getDefaultUserData();
             <div class="col-md-6">
               <input id="email" type="email"
                      class="form-control" name="email"
-                     v-model="updateData.email" required
+                     v-model="userData.email" required
                      autocomplete="email"/>
 
             </div>
@@ -115,7 +145,7 @@ getDefaultUserData();
               {{ trans('user.mapprovider') }}
             </label>
             <div class="col-md-6">
-              <select class="form-select" name="mapprovider" v-model="updateData.mapProvider">
+              <select class="form-select" name="mapprovider" v-model="userData.mapProvider">
                 <option v-for="provider in Object.values(MapProvider)" :key="provider" :value="provider">
                   {{ trans('map-providers.' + provider) }}
                 </option>
@@ -133,7 +163,7 @@ getDefaultUserData();
                   list="datalistOptions"
                   id="timezone"
                   name="timezone"
-                  v-model="updateData.timezone"
+                  v-model="userData.timezone"
               >
               <datalist id="datalistOptions">
                 <option v-for="timezone in Intl.supportedValuesOf('timeZone')"
@@ -153,7 +183,7 @@ getDefaultUserData();
               ></i>
             </label>
             <div class="col-md-6">
-              <select class="form-select" name="experimental" id="experimental" v-model="updateData.experimental">
+              <select class="form-select" name="experimental" id="experimental" v-model="userData.experimental">
                 <option :value="true">
                   {{ trans('settings.allow') }}
                 </option>

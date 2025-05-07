@@ -8,7 +8,9 @@ use App\Enum\MastodonVisibility;
 use App\Enum\ProfileLinkName;
 use App\Enum\StatusVisibility;
 use App\Enum\User\FriendCheckinSetting;
+use DateTimeZone;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use OpenApi\Annotations as OA;
 
@@ -62,7 +64,7 @@ class UpdateProfileInformationRequest extends FormRequest
             'experimental'            => ['boolean', 'nullable'],
             'profileLinks.*.name'     => ['required', 'string', new Enum(ProfileLinkName::class)],
             'profileLinks.*.url'      => ['required', 'string', 'url', 'max:255'],
-            'timezone'                => ['required', 'string'],
+            'timezone'                => ['required', 'string', Rule::in(DateTimeZone::listIdentifiers())],
             'email'                   => ['required', 'string', 'email:rfc,dns', 'max:255'],
         ];
     }
