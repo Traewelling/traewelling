@@ -16,6 +16,7 @@ import {SelectOption} from "./Partials/SelectOption";
 import DataLilst from "./Partials/DataLilst.vue";
 import {Notyf} from "notyf";
 import Textfield from "./Partials/Textfield.vue";
+import {showApiValidationErrors} from "../../helpers/NotyfHelper";
 
 const notyf = new Notyf({position: {x: "right", y: "bottom"}});
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
@@ -53,7 +54,7 @@ const mapData = (data: UserProfileSettingsResource) => {
     displayName: data.displayName,
     privateProfile: data.privateProfile,
     preventIndex: data.preventIndex,
-    privacyHideDays: data.privacyHideDays,
+    privacyHideDays: data.privacyHideDays == 0 ? null : data.privacyHideDays,
     defaultStatusVisibility: data.defaultStatusVisibility,
     mastodonVisibility: data.mastodonVisibility,
     mapProvider: data.mapProvider,
@@ -88,6 +89,8 @@ const updateProfile = () => {
     if (res.status === 422) {
       // Handle validation errors
       errors.value = res.error.errors;
+      // foreach error and show it
+      showApiValidationErrors(notyf, errors.value);
     } else {
       notyf.error(trans('generic.error'));
     }

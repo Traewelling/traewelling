@@ -38,34 +38,35 @@ use OpenApi\Annotations as OA;
  */
 class UpdateProfileInformationRequest extends FormRequest
 {
-    public function rules(): array {
+    public function rules(): array
+    {
         return [
-            'username'                => [
+            'username' => [
                 'required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'
             ],
-            'displayName'             => ['required', 'string', 'max:50'],
-            'privateProfile'          => ['boolean', 'nullable'],
-            'preventIndex'            => ['boolean', 'nullable'],
-            'privacyHideDays'         => ['integer', 'nullable', 'gte:1'],
+            'displayName' => ['required', 'string', 'max:50'],
+            'privateProfile' => ['boolean', 'nullable'],
+            'preventIndex' => ['boolean', 'nullable'],
+            'privacyHideDays' => ['integer', 'nullable', 'gte:1'],
             'defaultStatusVisibility' => [
                 'nullable',
                 new Enum(StatusVisibility::class),
             ],
-            'mastodonVisibility'      => [
+            'mastodonVisibility' => [
                 'nullable',
                 new Enum(MastodonVisibility::class),
             ],
-            'mapProvider'             => ['nullable', new Enum(MapProvider::class)],
-            'dataProvider'            => ['nullable', new Enum(DataProvider::class)],
-            'friendCheckin'           => ['nullable', new Enum(FriendCheckinSetting::class)],
-            'likesEnabled'            => ['nullable', 'boolean'],
-            'pointsEnabled'           => ['nullable', 'boolean'],
-            'bio'                     => ['nullable', 'string', 'max:500'],
-            'experimental'            => ['boolean', 'nullable'],
-            'profileLinks.*.name'     => ['required', 'string', new Enum(ProfileLinkName::class)],
-            'profileLinks.*.url'      => ['required', 'string', 'url', 'max:255'],
-            'timezone'                => ['required', 'string', Rule::in(DateTimeZone::listIdentifiers())],
-            'email'                   => ['required', 'string', 'email:rfc,dns', 'max:255'],
+            'mapProvider' => ['nullable', new Enum(MapProvider::class)],
+            'dataProvider' => ['nullable', new Enum(DataProvider::class)],
+            'friendCheckin' => ['nullable', new Enum(FriendCheckinSetting::class)],
+            'likesEnabled' => ['nullable', 'boolean'],
+            'pointsEnabled' => ['nullable', 'boolean'],
+            'bio' => ['nullable', 'string', 'max:500'],
+            'experimental' => ['boolean', 'nullable'],
+            'profileLinks.*.name' => ['required', 'string', new Enum(ProfileLinkName::class)],
+            'profileLinks.*.url' => ['required', 'string', 'url', 'max:255'],
+            'timezone' => ['string', Rule::in(DateTimeZone::listIdentifiers())],
+            'email' => ['required', 'string', 'email:rfc,dns', 'max:255'],
         ];
     }
 }
