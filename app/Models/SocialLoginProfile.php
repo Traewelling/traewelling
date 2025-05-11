@@ -7,13 +7,32 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int                 id
- * @property int                 user_id
- * @property ?int                twitter_id
- * @property ?int                mastodon_id
- * @property ?int                mastodon_server
- * @property ?MastodonVisibility mastodon_visibility
- * @property ?string             mastodon_token
+ * 
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int|null $twitter_id
+ * @property int|null $mastodon_id
+ * @property int|null $mastodon_server
+ * @property mixed|null $mastodon_token
+ * @property MastodonVisibility $mastodon_visibility
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\MastodonServer|null $mastodonServer
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereMastodonId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereMastodonServer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereMastodonToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereMastodonVisibility($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereTwitterId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereUserId($value)
+ * @mixin \Eloquent
  */
 class SocialLoginProfile extends Model
 {

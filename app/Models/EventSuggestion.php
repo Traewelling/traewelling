@@ -9,17 +9,40 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * // properties
- * @property int    $id
- * @property int    $user_id
+ *
+ * @property int $id
+ * @property int|null $user_id
  * @property string $name
- * @property string $host
- * @property string $url
- * @property int    $station_id
- * @property Carbon $begin
- * @property Carbon $end
- * @property string $hashtag
- * @property int    $admin_notification_id
- * @property bool   $processed
+ * @property string|null $host
+ * @property string|null $url
+ * @property int|null $station_id
+ * @property \Illuminate\Support\Carbon|null $begin
+ * @property \Illuminate\Support\Carbon|null $end
+ * @property string|null $hashtag
+ * @property int|null $admin_notification_id
+ * @property bool $processed
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Station|null $station
+ * @property-read \App\Models\User|null $user
+ * @method static \Database\Factories\EventSuggestionFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereAdminNotificationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereBegin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereEnd($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereHashtag($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereHost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereProcessed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereStationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|EventSuggestion whereUserId($value)
+ * @mixin \Eloquent
  */
 class EventSuggestion extends Model
 {

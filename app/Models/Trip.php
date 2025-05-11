@@ -12,29 +12,64 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * @property int                $id
- * @property string             $trip_id
- * @property HafasTravelType    $category
- * @property string             $number
- * @property string             $linename
- * @property string             $journey_number
- * @property int                $operator_id
- * @property int                $origin_id
- * @property int                $destination_id
- * @property int                $polyline_id
- * @property UTCDateTime        $departure
- * @property UTCDateTime        $arrival
- * @property UTCDateTime        $last_refreshed
- * @property TripSource         $source
- * @property ?string            $motis_source
- * @property int                $user_id
- * @property                    $stopovers
- * @property PolyLine           $polyLine
- * @property MotisSourceLicense $motisSourceLicense
+ * 
  *
  * @todo rename table only to "Trip" (without Hafas)
  * @todo rename "linename" to "line_name" (or something else, but not "linename")
  * @todo drop origin and destination, when origin_id and destination_id are added
+ * @property int $id
+ * @property string $trip_id
+ * @property HafasTravelType $category
+ * @property string $number
+ * @property string $linename
+ * @property int|null $journey_number
+ * @property int|null $operator_id
+ * @property int $origin_id
+ * @property int $destination_id
+ * @property int|null $polyline_id
+ * @property $departure
+ * @property $arrival
+ * @property TripSource $source
+ * @property string|null $motis_source
+ * @property string|null $motis_source_license_id
+ * @property int|null $user_id if not null, this trip belongs to the user (e.g. manually created trips)
+ * @property \Illuminate\Support\Carbon|null $last_refreshed
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Checkin> $checkins
+ * @property-read int|null $checkins_count
+ * @property-read \App\Models\Station $destinationStation
+ * @property-read \App\Models\MotisSourceLicense|null $motisSourceLicense
+ * @property-read \App\Models\HafasOperator|null $operator
+ * @property-read \App\Models\Station $originStation
+ * @property-read \App\Models\PolyLine|null $polyline
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stopover> $stopovers
+ * @property-read int|null $stopovers_count
+ * @property-read \App\Models\User|null $user
+ * @method static \Database\Factories\TripFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereArrival($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereCategory($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereDeparture($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereDestinationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereJourneyNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereLastRefreshed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereLinename($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereMotisSource($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereMotisSourceLicenseId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereOperatorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereOriginId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip wherePolylineId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereSource($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereTripId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereUserId($value)
+ * @mixin \Eloquent
  */
 class Trip extends Model
 {

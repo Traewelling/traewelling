@@ -10,7 +10,30 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Passport\Passport;
 
 /**
- * @mixin Builder
+ * 
+ *
+ * @property int $id
+ * @property string $oauth_client_id
+ * @property int $user_id
+ * @property string $url
+ * @property string|null $secret
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\OAuthClient $client
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WebhookEvent> $events
+ * @property-read int|null $events_count
+ * @property-read \App\Models\User $user
+ * @method static Builder<static>|Webhook newModelQuery()
+ * @method static Builder<static>|Webhook newQuery()
+ * @method static Builder<static>|Webhook query()
+ * @method static Builder<static>|Webhook whereCreatedAt($value)
+ * @method static Builder<static>|Webhook whereId($value)
+ * @method static Builder<static>|Webhook whereOauthClientId($value)
+ * @method static Builder<static>|Webhook whereSecret($value)
+ * @method static Builder<static>|Webhook whereUpdatedAt($value)
+ * @method static Builder<static>|Webhook whereUrl($value)
+ * @method static Builder<static>|Webhook whereUserId($value)
+ * @mixin \Eloquent
  */
 class Webhook extends Model {
     use HasFactory;

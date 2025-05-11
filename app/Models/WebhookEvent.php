@@ -9,7 +9,17 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * @mixin Builder
+ * 
+ *
+ * @property int $webhook_id
+ * @property WebhookEventEnum $event
+ * @property-read \App\Models\Webhook|null $webhook
+ * @method static Builder<static>|WebhookEvent newModelQuery()
+ * @method static Builder<static>|WebhookEvent newQuery()
+ * @method static Builder<static>|WebhookEvent query()
+ * @method static Builder<static>|WebhookEvent whereEvent($value)
+ * @method static Builder<static>|WebhookEvent whereWebhookId($value)
+ * @mixin \Eloquent
  */
 class WebhookEvent extends Model
 {

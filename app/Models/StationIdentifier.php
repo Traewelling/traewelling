@@ -8,14 +8,32 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property string  id
- * @property string  relevance
- * @property string  station_id
- * @property string  identifier
- * @property ?string name
- * @property string  type
- * @property string  origin
- * @property Station station
+ * 
+ *
+ * @property string $id
+ * @property int $relevance
+ * @property int $station_id
+ * @property string $type
+ * @property string|null $origin
+ * @property string $identifier
+ * @property string|null $name Name of the station provided by the data source
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Station $station
+ * @method static \Database\Factories\StationIdentifierFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereIdentifier($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereOrigin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereRelevance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereStationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class StationIdentifier extends Model
 {

@@ -9,7 +9,28 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Passport\Passport;
 
 /**
- * @mixin Builder
+ * 
+ *
+ * @property string $id
+ * @property int $user_id
+ * @property int $oauth_client_id
+ * @property bool $revoked
+ * @property \Illuminate\Support\Carbon $expires_at
+ * @property string $events
+ * @property string $url
+ * @property-read \App\Models\OAuthClient $client
+ * @property-read \App\Models\User $user
+ * @method static Builder<static>|WebhookCreationRequest newModelQuery()
+ * @method static Builder<static>|WebhookCreationRequest newQuery()
+ * @method static Builder<static>|WebhookCreationRequest query()
+ * @method static Builder<static>|WebhookCreationRequest whereEvents($value)
+ * @method static Builder<static>|WebhookCreationRequest whereExpiresAt($value)
+ * @method static Builder<static>|WebhookCreationRequest whereId($value)
+ * @method static Builder<static>|WebhookCreationRequest whereOauthClientId($value)
+ * @method static Builder<static>|WebhookCreationRequest whereRevoked($value)
+ * @method static Builder<static>|WebhookCreationRequest whereUrl($value)
+ * @method static Builder<static>|WebhookCreationRequest whereUserId($value)
+ * @mixin \Eloquent
  */
 class WebhookCreationRequest extends Model {
     public $timestamps = false;

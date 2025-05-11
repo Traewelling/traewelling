@@ -8,15 +8,28 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property string                  $id
- * @property string                  $type
- * @property string|null             $url
- * @property Carbon                  $active_from
- * @property Carbon                  $active_until
- * @property Carbon                  $created_at
- * @property Carbon                  $updated_at
+ * 
  *
- * @property-read AlertTranslation[] $translations
+ * @property string $id
+ * @property string $type
+ * @property string|null $url
+ * @property \Illuminate\Support\Carbon $active_from
+ * @property \Illuminate\Support\Carbon|null $active_until
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AlertTranslation> $translations
+ * @property-read int|null $translations_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Alert newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Alert newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Alert query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Alert whereActiveFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Alert whereActiveUntil($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Alert whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Alert whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Alert whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Alert whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Alert whereUrl($value)
+ * @mixin \Eloquent
  */
 class Alert extends Model
 {
