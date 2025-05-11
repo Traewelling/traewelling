@@ -14,7 +14,7 @@ use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
- * 
+ *
  *
  * @property int                            $id
  * @property ReportStatus                   $status Enum ReportStatus
@@ -43,6 +43,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder<static>|Report whereSubjectType($value)
  * @method static Builder<static>|Report whereUpdatedAt($value)
  * @mixin \Eloquent
+ *
  */
 class Report extends Model
 {
