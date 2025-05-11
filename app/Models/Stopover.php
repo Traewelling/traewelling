@@ -4,59 +4,61 @@ namespace App\Models;
 
 use App\Casts\UTCDateTime;
 use Carbon\Carbon;
+use Database\Factories\StopoverFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * properties
+ * 
  *
  * @todo rename table to "Stopover" (without Train - we have more than just trains)
  * @todo rename "train_station_id" to "station_id" - we have more than just trains.
  * @todo rename "cancelled" to "is_cancelled" - or split into "is_arrival_cancelled" and "is_departure_cancelled"? need
  *       to think about this.
- * @property int $id
- * @property string $trip_id
- * @property int $train_station_id
+ * @property int                             $id
+ * @property string                          $trip_id
+ * @property int                             $train_station_id
  * @property $arrival_planned
  * @property $arrival_real
- * @property string|null $arrival_platform_planned
- * @property string|null $arrival_platform_real
+ * @property string|null                     $arrival_platform_planned
+ * @property string|null                     $arrival_platform_real
  * @property $departure_planned
  * @property $departure_real
- * @property string|null $departure_platform_planned
- * @property string|null $departure_platform_real
- * @property bool $cancelled
+ * @property string|null                     $departure_platform_planned
+ * @property string|null                     $departure_platform_real
+ * @property bool                            $cancelled
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Carbon\Carbon|null $arrival
- * @property-read \Carbon\Carbon|null $departure
- * @property-read bool $is_arrival_cancelled
- * @property-read bool $is_arrival_delayed
- * @property-read bool $is_departure_cancelled
- * @property-read bool $is_departure_delayed
- * @property-read string|null $platform
- * @property-read \App\Models\Station $station
- * @property-read \App\Models\Station $trainStation
- * @property-read \App\Models\Trip $trip
- * @method static \Database\Factories\StopoverFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereArrivalPlanned($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereArrivalPlatformPlanned($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereArrivalPlatformReal($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereArrivalReal($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereCancelled($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereDeparturePlanned($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereDeparturePlatformPlanned($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereDeparturePlatformReal($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereDepartureReal($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereTrainStationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereTripId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereUpdatedAt($value)
+ * @property-read Carbon|null                $arrival
+ * @property-read Carbon|null                $departure
+ * @property-read bool                       $is_arrival_cancelled
+ * @property-read bool                       $is_arrival_delayed
+ * @property-read bool                       $is_departure_cancelled
+ * @property-read bool                       $is_departure_delayed
+ * @property-read string|null                $platform
+ * @property-read Station                    $station
+ * @property-read Station                    $trainStation
+ * @property-read Trip                       $trip
+ * @method static StopoverFactory factory($count = null, $state = [])
+ * @method static Builder<static>|Stopover newModelQuery()
+ * @method static Builder<static>|Stopover newQuery()
+ * @method static Builder<static>|Stopover query()
+ * @method static Builder<static>|Stopover whereArrivalPlanned($value)
+ * @method static Builder<static>|Stopover whereArrivalPlatformPlanned($value)
+ * @method static Builder<static>|Stopover whereArrivalPlatformReal($value)
+ * @method static Builder<static>|Stopover whereArrivalReal($value)
+ * @method static Builder<static>|Stopover whereCancelled($value)
+ * @method static Builder<static>|Stopover whereCreatedAt($value)
+ * @method static Builder<static>|Stopover whereDeparturePlanned($value)
+ * @method static Builder<static>|Stopover whereDeparturePlatformPlanned($value)
+ * @method static Builder<static>|Stopover whereDeparturePlatformReal($value)
+ * @method static Builder<static>|Stopover whereDepartureReal($value)
+ * @method static Builder<static>|Stopover whereId($value)
+ * @method static Builder<static>|Stopover whereTrainStationId($value)
+ * @method static Builder<static>|Stopover whereTripId($value)
+ * @method static Builder<static>|Stopover whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Stopover extends Model

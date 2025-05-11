@@ -11,8 +11,10 @@ use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
 use App\Jobs\SendVerificationEmail;
 use App\Services\PersonalDataSelection\UserGdprDataService;
 use Carbon\Carbon;
+use Database\Factories\UserFactory;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,112 +22,115 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Carbon as SupportCarbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Passport\HasApiTokens;
-use Mastodon;
+use Laravel\Passport\Token;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\PersonalDataExport\ExportsPersonalData;
 use Spatie\PersonalDataExport\PersonalDataSelection;
 
 /**
- * // properties
+ * 
  *
  * @todo rename home_id to home_station_id
  * @todo rename mapprovider to map_provider
- * @property int $id
- * @property string $name
- * @property string $username
- * @property string|null $avatar
- * @property string|null $bio
- * @property string|null $email
- * @property \Illuminate\Support\Carbon|null $email_verified_at
- * @property \Illuminate\Support\Carbon|null $privacy_ack_at
- * @property string|null $password
- * @property int|null $home_id
- * @property bool $private_profile
- * @property StatusVisibility $default_status_visibility
- * @property bool $prevent_index prevent search engines from indexing this profile
- * @property int|null $privacy_hide_days Set statuses private after x days
- * @property string|null $language
- * @property string $timezone
- * @property FriendCheckinSetting $friend_checkin
- * @property bool $likes_enabled
- * @property bool $points_enabled
- * @property MapProvider $mapprovider
- * @property DataProvider $data_provider
- * @property string|null $remember_token
- * @property \Illuminate\Support\Carbon|null $last_login
- * @property \Illuminate\Support\Carbon|null $recent_gdpr_export
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $blockedByUsers
- * @property-read int|null $blocked_by_users_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $blockedUsers
- * @property-read int|null $blocked_users_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OAuthClient> $clients
- * @property-read int|null $clients_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FollowRequest> $followRequests
- * @property-read int|null $follow_requests_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Follow> $followers
- * @property-read int|null $followers_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Follow> $followings
- * @property-read int|null $followings_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $follows
- * @property-read int|null $follows_count
- * @property-read bool $follow_pending
- * @property-read bool $followed_by
- * @property-read bool $following
- * @property-read bool $is_auth_user_blocked
- * @property-read bool $is_blocked_by_auth_user
- * @property-read string|null $mastodon_url
- * @property-read bool $muted
- * @property-read int $points
- * @property-read float $train_distance
- * @property-read float $train_duration
- * @property-read bool $user_invisible_to_me
- * @property-read \App\Models\Station|null $home
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\IcsToken> $icsTokens
- * @property-read int|null $ics_tokens_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Like> $likes
- * @property-read int|null $likes_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $mutedUsers
- * @property-read int|null $muted_users_count
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, DatabaseNotification> $notifications
- * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OAuthClient> $oAuthClients
- * @property-read int|null $o_auth_clients_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
- * @property-read int|null $permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProfileLink> $profileLinks
- * @property-read int|null $profile_links_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
- * @property-read int|null $roles_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Session> $sessions
- * @property-read int|null $sessions_count
- * @property-read \App\Models\SocialLoginProfile|null $socialProfile
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Status> $statuses
- * @property-read int|null $statuses_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Passport\Token> $tokens
- * @property-read int|null $tokens_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Checkin> $trainCheckins
- * @property-read int|null $train_checkins_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TrustedUser> $trustedByUsers
- * @property-read int|null $trusted_by_users_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TrustedUser> $trustedUsers
- * @property-read int|null $trusted_users_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $userFollowRequests
- * @property-read int|null $user_follow_requests_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $userFollowers
- * @property-read int|null $user_followers_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $userFollowings
- * @property-read int|null $user_followings_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Webhook> $webhooks
- * @property-read int|null $webhooks_count
- * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
+ * @property int                                                            $id
+ * @property string                                                         $name
+ * @property string                                                         $username
+ * @property string|null                                                    $avatar
+ * @property string|null                                                    $bio
+ * @property string|null                                                    $email
+ * @property SupportCarbon|null                                             $email_verified_at
+ * @property SupportCarbon|null                                             $privacy_ack_at
+ * @property string|null                                                    $password
+ * @property int|null                                                       $home_id
+ * @property bool                                                           $private_profile
+ * @property StatusVisibility                                               $default_status_visibility
+ * @property bool                                                           $prevent_index     prevent search engines from indexing this profile
+ * @property int|null                                                       $privacy_hide_days Set statuses private after x days
+ * @property string|null                                                    $language
+ * @property string                                                         $timezone
+ * @property FriendCheckinSetting                                           $friend_checkin
+ * @property bool                                                           $likes_enabled
+ * @property bool                                                           $points_enabled
+ * @property MapProvider                                                    $mapprovider
+ * @property DataProvider                                                   $data_provider
+ * @property string|null                                                    $remember_token
+ * @property SupportCarbon|null                                             $last_login
+ * @property SupportCarbon|null                                             $recent_gdpr_export
+ * @property SupportCarbon|null                                             $created_at
+ * @property SupportCarbon|null                                             $updated_at
+ * @property-read Collection<int, User>                                     $blockedByUsers
+ * @property-read int|null                                                  $blocked_by_users_count
+ * @property-read Collection<int, User>                                     $blockedUsers
+ * @property-read int|null                                                  $blocked_users_count
+ * @property-read Collection<int, OAuthClient>                              $clients
+ * @property-read int|null                                                  $clients_count
+ * @property-read Collection<int, FollowRequest>                            $followRequests
+ * @property-read int|null                                                  $follow_requests_count
+ * @property-read Collection<int, Follow>                                   $followers
+ * @property-read int|null                                                  $followers_count
+ * @property-read Collection<int, Follow>                                   $followings
+ * @property-read int|null                                                  $followings_count
+ * @property-read Collection<int, User>                                     $follows
+ * @property-read int|null                                                  $follows_count
+ * @property-read bool                                                      $follow_pending
+ * @property-read bool                                                      $followed_by
+ * @property-read bool                                                      $following
+ * @property-read bool                                                      $is_auth_user_blocked
+ * @property-read bool                                                      $is_blocked_by_auth_user
+ * @property-read string|null                                               $mastodon_url
+ * @property-read bool                                                      $muted
+ * @property-read int                                                       $points
+ * @property-read float                                                     $train_distance
+ * @property-read float                                                     $train_duration
+ * @property-read bool                                                      $user_invisible_to_me
+ * @property-read Station|null                                              $home
+ * @property-read Collection<int, IcsToken>                                 $icsTokens
+ * @property-read int|null                                                  $ics_tokens_count
+ * @property-read Collection<int, Like>                                     $likes
+ * @property-read int|null                                                  $likes_count
+ * @property-read Collection<int, User>                                     $mutedUsers
+ * @property-read int|null                                                  $muted_users_count
+ * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
+ * @property-read int|null                                                  $notifications_count
+ * @property-read Collection<int, OAuthClient>                              $oAuthClients
+ * @property-read int|null                                                  $o_auth_clients_count
+ * @property-read Collection<int, Permission>                               $permissions
+ * @property-read int|null                                                  $permissions_count
+ * @property-read Collection<int, ProfileLink>                              $profileLinks
+ * @property-read int|null                                                  $profile_links_count
+ * @property-read Collection<int, Role>                                     $roles
+ * @property-read int|null                                                  $roles_count
+ * @property-read Collection<int, Session>                                  $sessions
+ * @property-read int|null                                                  $sessions_count
+ * @property-read SocialLoginProfile|null                                   $socialProfile
+ * @property-read Collection<int, Status>                                   $statuses
+ * @property-read int|null                                                  $statuses_count
+ * @property-read Collection<int, Token>                                    $tokens
+ * @property-read int|null                                                  $tokens_count
+ * @property-read Collection<int, Checkin>                                  $trainCheckins
+ * @property-read int|null                                                  $train_checkins_count
+ * @property-read Collection<int, TrustedUser>                              $trustedByUsers
+ * @property-read int|null                                                  $trusted_by_users_count
+ * @property-read Collection<int, TrustedUser>                              $trustedUsers
+ * @property-read int|null                                                  $trusted_users_count
+ * @property-read Collection<int, User>                                     $userFollowRequests
+ * @property-read int|null                                                  $user_follow_requests_count
+ * @property-read Collection<int, User>                                     $userFollowers
+ * @property-read int|null                                                  $user_followers_count
+ * @property-read Collection<int, User>                                     $userFollowings
+ * @property-read int|null                                                  $user_followings_count
+ * @property-read Collection<int, Webhook>                                  $webhooks
+ * @property-read int|null                                                  $webhooks_count
+ * @method static UserFactory factory($count = null, $state = [])
  * @method static Builder<static>|User newModelQuery()
  * @method static Builder<static>|User newQuery()
  * @method static Builder<static>|User permission($permissions, $without = false)

@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * 
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|WikidataEntity newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|WikidataEntity newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|WikidataEntity query()
+ * @method static Builder<static>|WikidataEntity newModelQuery()
+ * @method static Builder<static>|WikidataEntity newQuery()
+ * @method static Builder<static>|WikidataEntity query()
  * @mixin \Eloquent
  */
 class WikidataEntity extends Model

@@ -2,31 +2,34 @@
 
 namespace App\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Support\Carbon;
 
 /**
  * 
  *
- * @property string $id
- * @property string $station_id
- * @property string $area_id
- * @property bool $default Whether it's the default area for the station
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Area $area
- * @property-read \App\Models\Station $station
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AreasStationsMap newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AreasStationsMap newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AreasStationsMap query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AreasStationsMap whereAreaId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AreasStationsMap whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AreasStationsMap whereDefault($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AreasStationsMap whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AreasStationsMap whereStationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AreasStationsMap whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @property string       $id
+ * @property string       $station_id
+ * @property string       $area_id
+ * @property bool         $default Whether it's the default area for the station
+ * @property Carbon|null  $created_at
+ * @property Carbon|null  $updated_at
+ * @property-read Area    $area
+ * @property-read Station $station
+ * @method static Builder<static>|AreasStationsMap newModelQuery()
+ * @method static Builder<static>|AreasStationsMap newQuery()
+ * @method static Builder<static>|AreasStationsMap query()
+ * @method static Builder<static>|AreasStationsMap whereAreaId($value)
+ * @method static Builder<static>|AreasStationsMap whereCreatedAt($value)
+ * @method static Builder<static>|AreasStationsMap whereDefault($value)
+ * @method static Builder<static>|AreasStationsMap whereId($value)
+ * @method static Builder<static>|AreasStationsMap whereStationId($value)
+ * @method static Builder<static>|AreasStationsMap whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 class AreasStationsMap extends Pivot
 {

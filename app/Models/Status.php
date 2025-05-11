@@ -4,67 +4,71 @@ namespace App\Models;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
+use Database\Factories\StatusFactory;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
- * //properties
+ * 
  *
  * @todo merge model with "Checkin" (later only "Checkin") because the difference between trip sources (HAFAS,
  *       User, and future sources) should be handled in the Trip model.
- * @property int $id
- * @property string|null $body
- * @property int $user_id
- * @property Business $business
- * @property StatusVisibility $visibility
- * @property int|null $event_id
- * @property string|null $mastodon_post_id
- * @property int|null $client_id
- * @property string|null $moderation_notes Notes from the moderation team - visible to the user
- * @property bool $lock_visibility Prevent the user from changing the visibility of the status?
- * @property bool $hide_body Hide the body of the status from other users?
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
- * @property-read int|null $activities_count
- * @property-read \App\Models\Checkin|null $checkin
- * @property-read \App\Models\OAuthClient|null $client
- * @property-read \App\Models\Event|null $event
- * @property-read string $description
- * @property-read bool|null $favorited
- * @property-read bool $status_invisible_to_me
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Like> $likes
- * @property-read int|null $likes_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mention> $mentions
- * @property-read int|null $mentions_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StatusTag> $tags
- * @property-read int|null $tags_count
- * @property-read \App\Models\Checkin|null $trainCheckin
- * @property-read \App\Models\User $user
- * @method static \Database\Factories\StatusFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereBody($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereBusiness($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereClientId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereEventId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereHideBody($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereLockVisibility($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereMastodonPostId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereModerationNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereVisibility($value)
+ * @property int                             $id
+ * @property string|null                     $body
+ * @property int                             $user_id
+ * @property Business                        $business
+ * @property StatusVisibility                $visibility
+ * @property int|null                        $event_id
+ * @property string|null                     $mastodon_post_id
+ * @property int|null                        $client_id
+ * @property string|null                     $moderation_notes Notes from the moderation team - visible to the user
+ * @property bool                            $lock_visibility  Prevent the user from changing the visibility of the status?
+ * @property bool                            $hide_body        Hide the body of the status from other users?
+ * @property Carbon|null                     $created_at
+ * @property Carbon|null                     $updated_at
+ * @property-read Collection<int, Activity>  $activities
+ * @property-read int|null                   $activities_count
+ * @property-read Checkin|null               $checkin
+ * @property-read OAuthClient|null           $client
+ * @property-read Event|null                 $event
+ * @property-read string                     $description
+ * @property-read bool|null                  $favorited
+ * @property-read bool                       $status_invisible_to_me
+ * @property-read Collection<int, Like>      $likes
+ * @property-read int|null                   $likes_count
+ * @property-read Collection<int, Mention>   $mentions
+ * @property-read int|null                   $mentions_count
+ * @property-read Collection<int, StatusTag> $tags
+ * @property-read int|null                   $tags_count
+ * @property-read Checkin|null               $trainCheckin
+ * @property-read User                       $user
+ * @method static StatusFactory factory($count = null, $state = [])
+ * @method static Builder<static>|Status newModelQuery()
+ * @method static Builder<static>|Status newQuery()
+ * @method static Builder<static>|Status query()
+ * @method static Builder<static>|Status whereBody($value)
+ * @method static Builder<static>|Status whereBusiness($value)
+ * @method static Builder<static>|Status whereClientId($value)
+ * @method static Builder<static>|Status whereCreatedAt($value)
+ * @method static Builder<static>|Status whereEventId($value)
+ * @method static Builder<static>|Status whereHideBody($value)
+ * @method static Builder<static>|Status whereId($value)
+ * @method static Builder<static>|Status whereLockVisibility($value)
+ * @method static Builder<static>|Status whereMastodonPostId($value)
+ * @method static Builder<static>|Status whereModerationNotes($value)
+ * @method static Builder<static>|Status whereUpdatedAt($value)
+ * @method static Builder<static>|Status whereUserId($value)
+ * @method static Builder<static>|Status whereVisibility($value)
  * @mixin \Eloquent
  */
 class Status extends Model

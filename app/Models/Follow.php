@@ -2,30 +2,34 @@
 
 namespace App\Models;
 
+use Database\Factories\FollowFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * 
  *
- * @property int $id
- * @property int $user_id
- * @property int $follow_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User $following
- * @property-read \App\Models\User $user
- * @method static \Database\Factories\FollowFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Follow newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Follow newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Follow query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Follow whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Follow whereFollowId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Follow whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Follow whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Follow whereUserId($value)
- * @mixin \Eloquent
+ * @property int         $id
+ * @property int         $user_id
+ * @property int         $follow_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User   $following
+ * @property-read User   $user
+ * @method static FollowFactory factory($count = null, $state = [])
+ * @method static Builder<static>|Follow newModelQuery()
+ * @method static Builder<static>|Follow newQuery()
+ * @method static Builder<static>|Follow query()
+ * @method static Builder<static>|Follow whereCreatedAt($value)
+ * @method static Builder<static>|Follow whereFollowId($value)
+ * @method static Builder<static>|Follow whereId($value)
+ * @method static Builder<static>|Follow whereUpdatedAt($value)
+ * @method static Builder<static>|Follow whereUserId($value)
+ * @mixin Eloquent
  */
 class Follow extends Model
 {

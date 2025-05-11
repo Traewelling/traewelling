@@ -2,31 +2,32 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
- * // properties
+ * 
  *
- * @property string $id
- * @property int $user_id
- * @property int $trusted_id
- * @property \Illuminate\Support\Carbon|null $expires_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User $trusted
- * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TrustedUser newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TrustedUser newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TrustedUser query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TrustedUser whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TrustedUser whereExpiresAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TrustedUser whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TrustedUser whereTrustedId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TrustedUser whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TrustedUser whereUserId($value)
+ * @property string      $id
+ * @property int         $user_id
+ * @property int         $trusted_id
+ * @property Carbon|null $expires_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User   $trusted
+ * @property-read User   $user
+ * @method static Builder<static>|TrustedUser newModelQuery()
+ * @method static Builder<static>|TrustedUser newQuery()
+ * @method static Builder<static>|TrustedUser query()
+ * @method static Builder<static>|TrustedUser whereCreatedAt($value)
+ * @method static Builder<static>|TrustedUser whereExpiresAt($value)
+ * @method static Builder<static>|TrustedUser whereId($value)
+ * @method static Builder<static>|TrustedUser whereTrustedId($value)
+ * @method static Builder<static>|TrustedUser whereUpdatedAt($value)
+ * @method static Builder<static>|TrustedUser whereUserId($value)
  * @mixin \Eloquent
  */
 class TrustedUser extends Model

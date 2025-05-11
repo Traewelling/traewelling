@@ -2,72 +2,75 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use Database\Factories\StationFactory;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Carbon;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
- * // properties
+ * 
  *
  * @todo rename table to "Station" (without Train - we have more than just trains)
- * @property int $id
- * @property int|null $ibnr
- * @property string|null $wikidata_id
- * @property string|null $ifopt_a Country
- * @property int|null $ifopt_b Administrative Area
- * @property int|null $ifopt_c Mode or Stop Place
- * @property int|null $ifopt_d Stop Place or Stop Place Component
- * @property int|null $ifopt_e Stop Place Component (or unused)
- * @property string|null $rilIdentifier
- * @property string $name
- * @property float $latitude
- * @property float $longitude
- * @property string|null $source
- * @property int $relevance
- * @property int|null $time_offset Defines the offset of the train station relative to Europe/Berlin
- * @property int|null $shift_time If false, the timezone of the hafas request will not be shifted to Europe/Berlin
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
- * @property-read int|null $activities_count
- * @property-read \App\Models\AreasStationsMap|null $pivot
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Area> $areas
- * @property-read int|null $areas_count
- * @property-read string|null $ifopt
- * @property-read string|null $localized_name
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StationName> $names
- * @property-read int|null $names_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StationIdentifier> $stationIdentifiers
- * @property-read int|null $station_identifiers_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stopover> $stopovers
- * @property-read int|null $stopovers_count
- * @method static \Database\Factories\StationFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIbnr($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptA($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptB($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptC($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptD($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptE($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereLatitude($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereLongitude($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereRelevance($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereRilIdentifier($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereShiftTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereSource($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereTimeOffset($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereWikidataId($value)
+ * @property int                                             $id
+ * @property int|null                                        $ibnr
+ * @property string|null                                     $wikidata_id
+ * @property string|null                                     $ifopt_a     Country
+ * @property int|null                                        $ifopt_b     Administrative Area
+ * @property int|null                                        $ifopt_c     Mode or Stop Place
+ * @property int|null                                        $ifopt_d     Stop Place or Stop Place Component
+ * @property int|null                                        $ifopt_e     Stop Place Component (or unused)
+ * @property string|null                                     $rilIdentifier
+ * @property string                                          $name
+ * @property float                                           $latitude
+ * @property float                                           $longitude
+ * @property string|null                                     $source
+ * @property int                                             $relevance
+ * @property int|null                                        $time_offset Defines the offset of the train station relative to Europe/Berlin
+ * @property int|null                                        $shift_time  If false, the timezone of the hafas request will not be shifted to Europe/Berlin
+ * @property Carbon|null                                     $created_at
+ * @property Carbon|null                                     $updated_at
+ * @property-read EloquentCollection<int, Activity>          $activities
+ * @property-read int|null                                   $activities_count
+ * @property-read AreasStationsMap|null                      $pivot
+ * @property-read EloquentCollection<int, Area>              $areas
+ * @property-read int|null                                   $areas_count
+ * @property-read string|null                                $ifopt
+ * @property-read string|null                                $localized_name
+ * @property-read EloquentCollection<int, StationName>       $names
+ * @property-read int|null                                   $names_count
+ * @property-read EloquentCollection<int, StationIdentifier> $stationIdentifiers
+ * @property-read int|null                                   $station_identifiers_count
+ * @property-read EloquentCollection<int, Stopover>          $stopovers
+ * @property-read int|null                                   $stopovers_count
+ * @method static StationFactory factory($count = null, $state = [])
+ * @method static Builder<static>|Station newModelQuery()
+ * @method static Builder<static>|Station newQuery()
+ * @method static Builder<static>|Station query()
+ * @method static Builder<static>|Station whereCreatedAt($value)
+ * @method static Builder<static>|Station whereIbnr($value)
+ * @method static Builder<static>|Station whereId($value)
+ * @method static Builder<static>|Station whereIfoptA($value)
+ * @method static Builder<static>|Station whereIfoptB($value)
+ * @method static Builder<static>|Station whereIfoptC($value)
+ * @method static Builder<static>|Station whereIfoptD($value)
+ * @method static Builder<static>|Station whereIfoptE($value)
+ * @method static Builder<static>|Station whereLatitude($value)
+ * @method static Builder<static>|Station whereLongitude($value)
+ * @method static Builder<static>|Station whereName($value)
+ * @method static Builder<static>|Station whereRelevance($value)
+ * @method static Builder<static>|Station whereRilIdentifier($value)
+ * @method static Builder<static>|Station whereShiftTime($value)
+ * @method static Builder<static>|Station whereSource($value)
+ * @method static Builder<static>|Station whereTimeOffset($value)
+ * @method static Builder<static>|Station whereUpdatedAt($value)
+ * @method static Builder<static>|Station whereWikidataId($value)
  * @mixin \Eloquent
  */
 class Station extends Model

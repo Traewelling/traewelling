@@ -2,35 +2,37 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * 
  *
- * @property string $id
- * @property string $alert_id
- * @property string $locale
- * @property string $title
- * @property string $content
- * @property string|null $url
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Alert|null $banner
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AlertTranslation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AlertTranslation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AlertTranslation query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AlertTranslation whereAlertId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AlertTranslation whereContent($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AlertTranslation whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AlertTranslation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AlertTranslation whereLocale($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AlertTranslation whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AlertTranslation whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AlertTranslation whereUrl($value)
- * @mixin \Eloquent
+ * @property string          $id
+ * @property string          $alert_id
+ * @property string          $locale
+ * @property string          $title
+ * @property string          $content
+ * @property string|null     $url
+ * @property Carbon|null     $created_at
+ * @property Carbon|null     $updated_at
+ * @property-read Alert|null $banner
+ * @method static Builder<static>|AlertTranslation newModelQuery()
+ * @method static Builder<static>|AlertTranslation newQuery()
+ * @method static Builder<static>|AlertTranslation query()
+ * @method static Builder<static>|AlertTranslation whereAlertId($value)
+ * @method static Builder<static>|AlertTranslation whereContent($value)
+ * @method static Builder<static>|AlertTranslation whereCreatedAt($value)
+ * @method static Builder<static>|AlertTranslation whereId($value)
+ * @method static Builder<static>|AlertTranslation whereLocale($value)
+ * @method static Builder<static>|AlertTranslation whereTitle($value)
+ * @method static Builder<static>|AlertTranslation whereUpdatedAt($value)
+ * @method static Builder<static>|AlertTranslation whereUrl($value)
+ * @mixin Eloquent
  */
 class AlertTranslation extends Model
 {

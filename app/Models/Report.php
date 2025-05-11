@@ -4,40 +4,44 @@ namespace App\Models;
 
 use App\Enum\Report\ReportReason;
 use App\Enum\Report\ReportStatus;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * 
  *
- * @property int $id
- * @property ReportStatus $status Enum ReportStatus
- * @property string $subject_type
- * @property int $subject_id
- * @property ReportReason|null $reason Enum ReportReason or null.
- * @property string|null $description
- * @property int|null $reporter_id
- * @property int|null $admin_notification_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
- * @property-read int|null $activities_count
- * @property-read \App\Models\User|null $reporter
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Report newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Report newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Report query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereAdminNotificationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereReason($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereReporterId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereSubjectId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereSubjectType($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereUpdatedAt($value)
+ * @property int                            $id
+ * @property ReportStatus                   $status Enum ReportStatus
+ * @property string                         $subject_type
+ * @property int                            $subject_id
+ * @property ReportReason|null              $reason Enum ReportReason or null.
+ * @property string|null                    $description
+ * @property int|null                       $reporter_id
+ * @property int|null                       $admin_notification_id
+ * @property Carbon|null                    $created_at
+ * @property Carbon|null                    $updated_at
+ * @property-read Collection<int, Activity> $activities
+ * @property-read int|null                  $activities_count
+ * @property-read User|null                 $reporter
+ * @method static Builder<static>|Report newModelQuery()
+ * @method static Builder<static>|Report newQuery()
+ * @method static Builder<static>|Report query()
+ * @method static Builder<static>|Report whereAdminNotificationId($value)
+ * @method static Builder<static>|Report whereCreatedAt($value)
+ * @method static Builder<static>|Report whereDescription($value)
+ * @method static Builder<static>|Report whereId($value)
+ * @method static Builder<static>|Report whereReason($value)
+ * @method static Builder<static>|Report whereReporterId($value)
+ * @method static Builder<static>|Report whereStatus($value)
+ * @method static Builder<static>|Report whereSubjectId($value)
+ * @method static Builder<static>|Report whereSubjectType($value)
+ * @method static Builder<static>|Report whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Report extends Model

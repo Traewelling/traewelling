@@ -3,34 +3,37 @@
 namespace App\Models;
 
 use App\Dto\MentionDto;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 
 /**
- * //properties
+ * 
  *
- * @property int $id
- * @property int $status_id
- * @property int $mentioned_id
- * @property int $position
- * @property int $length
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $mentioned
- * @property-read \App\Models\Status $status
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention whereLength($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention whereMentionedId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention wherePosition($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention whereStatusId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @property int            $id
+ * @property int            $status_id
+ * @property int            $mentioned_id
+ * @property int            $position
+ * @property int            $length
+ * @property Carbon|null    $created_at
+ * @property Carbon|null    $updated_at
+ * @property-read User|null $mentioned
+ * @property-read Status    $status
+ * @method static Builder<static>|Mention newModelQuery()
+ * @method static Builder<static>|Mention newQuery()
+ * @method static Builder<static>|Mention query()
+ * @method static Builder<static>|Mention whereCreatedAt($value)
+ * @method static Builder<static>|Mention whereId($value)
+ * @method static Builder<static>|Mention whereLength($value)
+ * @method static Builder<static>|Mention whereMentionedId($value)
+ * @method static Builder<static>|Mention wherePosition($value)
+ * @method static Builder<static>|Mention whereStatusId($value)
+ * @method static Builder<static>|Mention whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 class Mention extends Model
 {

@@ -3,34 +3,38 @@
 namespace App\Models;
 
 use App\Services\PolylineStorageService;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 
 /**
  * 
  *
- * @property int $id
- * @property int|null $parent_id
- * @property string $hash
- * @property string $polyline
- * @property string $source
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read PolyLine|null $parent
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Trip> $trips
- * @property-read int|null $trips_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PolyLine newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PolyLine newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PolyLine query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PolyLine whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PolyLine whereHash($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PolyLine whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PolyLine whereParentId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PolyLine wherePolyline($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PolyLine whereSource($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PolyLine whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @property int                        $id
+ * @property int|null                   $parent_id
+ * @property string                     $hash
+ * @property string                     $polyline
+ * @property string                     $source
+ * @property Carbon|null                $created_at
+ * @property Carbon|null                $updated_at
+ * @property-read PolyLine|null         $parent
+ * @property-read Collection<int, Trip> $trips
+ * @property-read int|null              $trips_count
+ * @method static Builder<static>|PolyLine newModelQuery()
+ * @method static Builder<static>|PolyLine newQuery()
+ * @method static Builder<static>|PolyLine query()
+ * @method static Builder<static>|PolyLine whereCreatedAt($value)
+ * @method static Builder<static>|PolyLine whereHash($value)
+ * @method static Builder<static>|PolyLine whereId($value)
+ * @method static Builder<static>|PolyLine whereParentId($value)
+ * @method static Builder<static>|PolyLine wherePolyline($value)
+ * @method static Builder<static>|PolyLine whereSource($value)
+ * @method static Builder<static>|PolyLine whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 class PolyLine extends Model
 {

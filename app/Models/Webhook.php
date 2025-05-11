@@ -3,26 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Laravel\Passport\Passport;
 
 /**
  * 
  *
- * @property int $id
- * @property string $oauth_client_id
- * @property int $user_id
- * @property string $url
- * @property string|null $secret
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\OAuthClient $client
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WebhookEvent> $events
- * @property-read int|null $events_count
- * @property-read \App\Models\User $user
+ * @property int                                $id
+ * @property string                             $oauth_client_id
+ * @property int                                $user_id
+ * @property string                             $url
+ * @property string|null                        $secret
+ * @property Carbon|null                        $created_at
+ * @property Carbon|null                        $updated_at
+ * @property-read OAuthClient                   $client
+ * @property-read Collection<int, WebhookEvent> $events
+ * @property-read int|null                      $events_count
+ * @property-read User                          $user
  * @method static Builder<static>|Webhook newModelQuery()
  * @method static Builder<static>|Webhook newQuery()
  * @method static Builder<static>|Webhook query()
@@ -35,7 +37,8 @@ use Laravel\Passport\Passport;
  * @method static Builder<static>|Webhook whereUserId($value)
  * @mixin \Eloquent
  */
-class Webhook extends Model {
+class Webhook extends Model
+{
     use HasFactory;
 
     protected $fillable = ['user_id', 'oauth_client_id', 'url', 'secret'];
