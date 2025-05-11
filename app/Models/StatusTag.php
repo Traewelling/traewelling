@@ -14,16 +14,16 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property int                    $id
- * @property int                    $status_id
- * @property string                 $key
- * @property string                 $value
- * @property StatusVisibility       $visibility
- * @property Carbon|null            $created_at
- * @property Carbon|null            $updated_at
- * @property-read StatusTagKey|null $key_enum
- * @property-read Status            $status
- * @method static StatusTagFactory factory($count = null, $state = [])
+ * @property int $id
+ * @property int $status_id
+ * @property string $key
+ * @property string $value
+ * @property StatusVisibility $visibility
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \App\Enum\StatusTagKey|null $key_enum
+ * @property-read \App\Models\Status $status
+ * @method static \Database\Factories\StatusTagFactory factory($count = null, $state = [])
  * @method static Builder<static>|StatusTag newModelQuery()
  * @method static Builder<static>|StatusTag newQuery()
  * @method static Builder<static>|StatusTag query()

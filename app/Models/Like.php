@@ -13,14 +13,14 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property int         $id
- * @property int         $user_id
- * @property int         $status_id
+ * @property int $id
+ * @property int $user_id
+ * @property int $status_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Status $status
- * @property-read User   $user
- * @method static LikeFactory factory($count = null, $state = [])
+ * @property-read \App\Models\Status $status
+ * @property-read \App\Models\User $user
+ * @method static \Database\Factories\LikeFactory factory($count = null, $state = [])
  * @method static Builder<static>|Like newModelQuery()
  * @method static Builder<static>|Like newQuery()
  * @method static Builder<static>|Like query()

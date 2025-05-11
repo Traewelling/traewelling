@@ -14,16 +14,16 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property int                        $id
- * @property int|null                   $parent_id
- * @property string                     $hash
- * @property string                     $polyline
- * @property string                     $source
- * @property Carbon|null                $created_at
- * @property Carbon|null                $updated_at
- * @property-read PolyLine|null         $parent
- * @property-read Collection<int, Trip> $trips
- * @property-read int|null              $trips_count
+ * @property int $id
+ * @property int|null $parent_id
+ * @property string $hash
+ * @property string $polyline
+ * @property string $source
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read PolyLine|null $parent
+ * @property-read Collection<int, \App\Models\Trip> $trips
+ * @property-read int|null $trips_count
  * @method static Builder<static>|PolyLine newModelQuery()
  * @method static Builder<static>|PolyLine newQuery()
  * @method static Builder<static>|PolyLine query()

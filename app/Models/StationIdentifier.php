@@ -13,17 +13,17 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property string       $id
- * @property int          $relevance
- * @property int          $station_id
- * @property string       $type
- * @property string|null  $origin
- * @property string       $identifier
- * @property string|null  $name Name of the station provided by the data source
- * @property Carbon|null  $created_at
- * @property Carbon|null  $updated_at
- * @property-read Station $station
- * @method static StationIdentifierFactory factory($count = null, $state = [])
+ * @property string $id
+ * @property int $relevance
+ * @property int $station_id
+ * @property string $type
+ * @property string|null $origin
+ * @property string $identifier
+ * @property string|null $name Name of the station provided by the data source
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \App\Models\Station $station
+ * @method static \Database\Factories\StationIdentifierFactory factory($count = null, $state = [])
  * @method static Builder<static>|StationIdentifier newModelQuery()
  * @method static Builder<static>|StationIdentifier newQuery()
  * @method static Builder<static>|StationIdentifier query()

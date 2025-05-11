@@ -13,15 +13,15 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property string                                 $id
- * @property string                                 $type
- * @property string|null                            $url
- * @property Carbon                                 $active_from
- * @property Carbon|null                            $active_until
- * @property Carbon|null                            $created_at
- * @property Carbon|null                            $updated_at
- * @property-read Collection<int, AlertTranslation> $translations
- * @property-read int|null                          $translations_count
+ * @property string $id
+ * @property string $type
+ * @property string|null $url
+ * @property Carbon $active_from
+ * @property Carbon|null $active_until
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, \App\Models\AlertTranslation> $translations
+ * @property-read int|null $translations_count
  * @method static Builder<static>|Alert newModelQuery()
  * @method static Builder<static>|Alert newQuery()
  * @method static Builder<static>|Alert query()

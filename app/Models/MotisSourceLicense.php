@@ -14,23 +14,23 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property string                     $id
- * @property string|null                $provider
- * @property string|null                $country
- * @property string|null                $name
- * @property string|null                $human_name
- * @property string|null                $license
- * @property string|null                $license_url
- * @property string|null                $source_url
- * @property string|null                $spdx
- * @property string|null                $license_id
- * @property int                        $active
- * @property int                        $force_active
- * @property Carbon|null                $created_at
- * @property Carbon|null                $updated_at
- * @property-read License|null          $manualLicense
- * @property-read Collection<int, Trip> $trips
- * @property-read int|null              $trips_count
+ * @property string $id
+ * @property string|null $provider
+ * @property string|null $country
+ * @property string|null $name
+ * @property string|null $human_name
+ * @property string|null $license
+ * @property string|null $license_url
+ * @property string|null $source_url
+ * @property string|null $spdx
+ * @property string|null $license_id
+ * @property int $active
+ * @property int $force_active
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \App\Models\License|null $manualLicense
+ * @property-read Collection<int, \App\Models\Trip> $trips
+ * @property-read int|null $trips_count
  * @method static Builder<static>|MotisSourceLicense newModelQuery()
  * @method static Builder<static>|MotisSourceLicense newQuery()
  * @method static Builder<static>|MotisSourceLicense query()

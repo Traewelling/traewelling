@@ -12,15 +12,15 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property string          $id
- * @property string          $alert_id
- * @property string          $locale
- * @property string          $title
- * @property string          $content
- * @property string|null     $url
- * @property Carbon|null     $created_at
- * @property Carbon|null     $updated_at
- * @property-read Alert|null $banner
+ * @property string $id
+ * @property string $alert_id
+ * @property string $locale
+ * @property string $title
+ * @property string $content
+ * @property string|null $url
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \App\Models\Alert|null $banner
  * @method static Builder<static>|AlertTranslation newModelQuery()
  * @method static Builder<static>|AlertTranslation newQuery()
  * @method static Builder<static>|AlertTranslation query()

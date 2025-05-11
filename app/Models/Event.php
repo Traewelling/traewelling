@@ -22,33 +22,33 @@ use Spatie\Activitylog\Traits\LogsActivity;
 /**
  * 
  *
- * @property int                            $id
- * @property string                         $name
- * @property string                         $slug
- * @property string|null                    $hashtag
- * @property string|null                    $host
- * @property string|null                    $url
- * @property int|null                       $station_id
- * @property SupportCarbon                  $checkin_start
- * @property SupportCarbon                  $checkin_end
- * @property SupportCarbon|null             $event_start If different from checkin_start
- * @property SupportCarbon|null             $event_end   If different from checkin_end
- * @property int|null                       $approved_by
- * @property SupportCarbon|null             $created_at
- * @property SupportCarbon|null             $updated_at
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property string|null $hashtag
+ * @property string|null $host
+ * @property string|null $url
+ * @property int|null $station_id
+ * @property SupportCarbon $checkin_start
+ * @property SupportCarbon $checkin_end
+ * @property SupportCarbon|null $event_start If different from checkin_start
+ * @property SupportCarbon|null $event_end If different from checkin_end
+ * @property int|null $approved_by
+ * @property SupportCarbon|null $created_at
+ * @property SupportCarbon|null $updated_at
  * @property-read Collection<int, Activity> $activities
- * @property-read int|null                  $activities_count
- * @property-read User|null                 $approvedBy
- * @property-read Carbon                    $end
- * @property-read bool                      $has_extended_checkin
- * @property-read bool                      $is_pride
- * @property-read Carbon                    $start
- * @property-read int                       $total_distance
- * @property-read int                       $total_duration
- * @property-read Station|null              $station
- * @property-read Collection<int, Status>   $statuses
- * @property-read int|null                  $statuses_count
- * @method static EventFactory factory($count = null, $state = [])
+ * @property-read int|null $activities_count
+ * @property-read \App\Models\User|null $approvedBy
+ * @property-read Carbon $end
+ * @property-read bool $has_extended_checkin
+ * @property-read bool $is_pride
+ * @property-read Carbon $start
+ * @property-read int $total_distance
+ * @property-read int $total_duration
+ * @property-read \App\Models\Station|null $station
+ * @property-read Collection<int, \App\Models\Status> $statuses
+ * @property-read int|null $statuses_count
+ * @method static \Database\Factories\EventFactory factory($count = null, $state = [])
  * @method static EloquentBuilder<static>|Event newModelQuery()
  * @method static EloquentBuilder<static>|Event newQuery()
  * @method static EloquentBuilder<static>|Event query()

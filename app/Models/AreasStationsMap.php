@@ -12,14 +12,14 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property string       $id
- * @property string       $station_id
- * @property string       $area_id
- * @property bool         $default Whether it's the default area for the station
- * @property Carbon|null  $created_at
- * @property Carbon|null  $updated_at
- * @property-read Area    $area
- * @property-read Station $station
+ * @property string $id
+ * @property string $station_id
+ * @property string $area_id
+ * @property bool $default Whether it's the default area for the station
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \App\Models\Area $area
+ * @property-read \App\Models\Station $station
  * @method static Builder<static>|AreasStationsMap newModelQuery()
  * @method static Builder<static>|AreasStationsMap newQuery()
  * @method static Builder<static>|AreasStationsMap query()

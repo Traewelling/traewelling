@@ -13,14 +13,14 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property int         $id
- * @property int         $user_id
- * @property int         $follow_id
+ * @property int $id
+ * @property int $user_id
+ * @property int $follow_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read User   $following
- * @property-read User   $user
- * @method static FollowFactory factory($count = null, $state = [])
+ * @property-read \App\Models\User $following
+ * @property-read \App\Models\User $user
+ * @method static \Database\Factories\FollowFactory factory($count = null, $state = [])
  * @method static Builder<static>|Follow newModelQuery()
  * @method static Builder<static>|Follow newQuery()
  * @method static Builder<static>|Follow query()

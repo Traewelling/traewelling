@@ -14,17 +14,17 @@ use Laravel\Passport\Passport;
 /**
  * 
  *
- * @property int                                $id
- * @property string                             $oauth_client_id
- * @property int                                $user_id
- * @property string                             $url
- * @property string|null                        $secret
- * @property Carbon|null                        $created_at
- * @property Carbon|null                        $updated_at
- * @property-read OAuthClient                   $client
- * @property-read Collection<int, WebhookEvent> $events
- * @property-read int|null                      $events_count
- * @property-read User                          $user
+ * @property int $id
+ * @property string $oauth_client_id
+ * @property int $user_id
+ * @property string $url
+ * @property string|null $secret
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \App\Models\OAuthClient $client
+ * @property-read Collection<int, \App\Models\WebhookEvent> $events
+ * @property-read int|null $events_count
+ * @property-read \App\Models\User $user
  * @method static Builder<static>|Webhook newModelQuery()
  * @method static Builder<static>|Webhook newQuery()
  * @method static Builder<static>|Webhook query()

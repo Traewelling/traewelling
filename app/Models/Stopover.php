@@ -17,31 +17,31 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @todo rename "train_station_id" to "station_id" - we have more than just trains.
  * @todo rename "cancelled" to "is_cancelled" - or split into "is_arrival_cancelled" and "is_departure_cancelled"? need
  *       to think about this.
- * @property int                             $id
- * @property string                          $trip_id
- * @property int                             $train_station_id
+ * @property int $id
+ * @property string $trip_id
+ * @property int $train_station_id
  * @property $arrival_planned
  * @property $arrival_real
- * @property string|null                     $arrival_platform_planned
- * @property string|null                     $arrival_platform_real
+ * @property string|null $arrival_platform_planned
+ * @property string|null $arrival_platform_real
  * @property $departure_planned
  * @property $departure_real
- * @property string|null                     $departure_platform_planned
- * @property string|null                     $departure_platform_real
- * @property bool                            $cancelled
+ * @property string|null $departure_platform_planned
+ * @property string|null $departure_platform_real
+ * @property bool $cancelled
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read Carbon|null                $arrival
- * @property-read Carbon|null                $departure
- * @property-read bool                       $is_arrival_cancelled
- * @property-read bool                       $is_arrival_delayed
- * @property-read bool                       $is_departure_cancelled
- * @property-read bool                       $is_departure_delayed
- * @property-read string|null                $platform
- * @property-read Station                    $station
- * @property-read Station                    $trainStation
- * @property-read Trip                       $trip
- * @method static StopoverFactory factory($count = null, $state = [])
+ * @property-read \Carbon\Carbon|null $arrival
+ * @property-read \Carbon\Carbon|null $departure
+ * @property-read bool $is_arrival_cancelled
+ * @property-read bool $is_arrival_delayed
+ * @property-read bool $is_departure_cancelled
+ * @property-read bool $is_departure_delayed
+ * @property-read string|null $platform
+ * @property-read \App\Models\Station $station
+ * @property-read \App\Models\Station $trainStation
+ * @property-read \App\Models\Trip $trip
+ * @method static \Database\Factories\StopoverFactory factory($count = null, $state = [])
  * @method static Builder<static>|Stopover newModelQuery()
  * @method static Builder<static>|Stopover newQuery()
  * @method static Builder<static>|Stopover query()

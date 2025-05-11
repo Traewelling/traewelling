@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * 
  *
- * @property int               $webhook_id
- * @property WebhookEventEnum  $event
- * @property-read Webhook|null $webhook
+ * @property int $webhook_id
+ * @property WebhookEventEnum $event
+ * @property-read \App\Models\Webhook|null $webhook
  * @method static Builder<static>|WebhookEvent newModelQuery()
  * @method static Builder<static>|WebhookEvent newQuery()
  * @method static Builder<static>|WebhookEvent query()

@@ -14,15 +14,15 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property int            $id
- * @property int            $status_id
- * @property int            $mentioned_id
- * @property int            $position
- * @property int            $length
- * @property Carbon|null    $created_at
- * @property Carbon|null    $updated_at
- * @property-read User|null $mentioned
- * @property-read Status    $status
+ * @property int $id
+ * @property int $status_id
+ * @property int $mentioned_id
+ * @property int $position
+ * @property int $length
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \App\Models\User|null $mentioned
+ * @property-read \App\Models\Status $status
  * @method static Builder<static>|Mention newModelQuery()
  * @method static Builder<static>|Mention newQuery()
  * @method static Builder<static>|Mention query()

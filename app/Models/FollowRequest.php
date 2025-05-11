@@ -11,13 +11,13 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property int         $id
- * @property int         $user_id
- * @property int         $follow_id
+ * @property int $id
+ * @property int $user_id
+ * @property int $follow_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read User   $requestedFollow
- * @property-read User   $user
+ * @property-read \App\Models\User $requestedFollow
+ * @property-read \App\Models\User $user
  * @method static Builder<static>|FollowRequest newModelQuery()
  * @method static Builder<static>|FollowRequest newQuery()
  * @method static Builder<static>|FollowRequest query()

@@ -12,14 +12,14 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property int         $id
- * @property int         $user_id
- * @property int         $muted_id
+ * @property int $id
+ * @property int $user_id
+ * @property int $muted_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read User   $mutedUser
- * @property-read User   $user
- * @method static UserMuteFactory factory($count = null, $state = [])
+ * @property-read \App\Models\User $mutedUser
+ * @property-read \App\Models\User $user
+ * @method static \Database\Factories\UserMuteFactory factory($count = null, $state = [])
  * @method static Builder<static>|UserMute newModelQuery()
  * @method static Builder<static>|UserMute newQuery()
  * @method static Builder<static>|UserMute query()

@@ -13,22 +13,22 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property int               $id
- * @property int|null          $user_id
- * @property string            $name
- * @property string|null       $host
- * @property string|null       $url
- * @property int|null          $station_id
- * @property Carbon|null       $begin
- * @property Carbon|null       $end
- * @property string|null       $hashtag
- * @property int|null          $admin_notification_id
- * @property bool              $processed
- * @property Carbon|null       $created_at
- * @property Carbon|null       $updated_at
- * @property-read Station|null $station
- * @property-read User|null    $user
- * @method static EventSuggestionFactory factory($count = null, $state = [])
+ * @property int $id
+ * @property int|null $user_id
+ * @property string $name
+ * @property string|null $host
+ * @property string|null $url
+ * @property int|null $station_id
+ * @property Carbon|null $begin
+ * @property Carbon|null $end
+ * @property string|null $hashtag
+ * @property int|null $admin_notification_id
+ * @property bool $processed
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \App\Models\Station|null $station
+ * @property-read \App\Models\User|null $user
+ * @method static \Database\Factories\EventSuggestionFactory factory($count = null, $state = [])
  * @method static Builder<static>|EventSuggestion newModelQuery()
  * @method static Builder<static>|EventSuggestion newQuery()
  * @method static Builder<static>|EventSuggestion query()

@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
+ * 
  *
- *
- * @property int         $id
- * @property string      $body_md_de
- * @property string      $body_md_en
- * @property Carbon      $valid_at
+ * @property int $id
+ * @property string $body_md_de
+ * @property string $body_md_en
+ * @property Carbon $valid_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @method static Builder<static>|PrivacyAgreement newModelQuery()

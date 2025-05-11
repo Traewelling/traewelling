@@ -18,38 +18,38 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * 
  *
  * @todo rename table to "Station" (without Train - we have more than just trains)
- * @property int                                             $id
- * @property int|null                                        $ibnr
- * @property string|null                                     $wikidata_id
- * @property string|null                                     $ifopt_a     Country
- * @property int|null                                        $ifopt_b     Administrative Area
- * @property int|null                                        $ifopt_c     Mode or Stop Place
- * @property int|null                                        $ifopt_d     Stop Place or Stop Place Component
- * @property int|null                                        $ifopt_e     Stop Place Component (or unused)
- * @property string|null                                     $rilIdentifier
- * @property string                                          $name
- * @property float                                           $latitude
- * @property float                                           $longitude
- * @property string|null                                     $source
- * @property int                                             $relevance
- * @property int|null                                        $time_offset Defines the offset of the train station relative to Europe/Berlin
- * @property int|null                                        $shift_time  If false, the timezone of the hafas request will not be shifted to Europe/Berlin
- * @property Carbon|null                                     $created_at
- * @property Carbon|null                                     $updated_at
- * @property-read EloquentCollection<int, Activity>          $activities
- * @property-read int|null                                   $activities_count
- * @property-read AreasStationsMap|null                      $pivot
- * @property-read EloquentCollection<int, Area>              $areas
- * @property-read int|null                                   $areas_count
- * @property-read string|null                                $ifopt
- * @property-read string|null                                $localized_name
- * @property-read EloquentCollection<int, StationName>       $names
- * @property-read int|null                                   $names_count
- * @property-read EloquentCollection<int, StationIdentifier> $stationIdentifiers
- * @property-read int|null                                   $station_identifiers_count
- * @property-read EloquentCollection<int, Stopover>          $stopovers
- * @property-read int|null                                   $stopovers_count
- * @method static StationFactory factory($count = null, $state = [])
+ * @property int $id
+ * @property int|null $ibnr
+ * @property string|null $wikidata_id
+ * @property string|null $ifopt_a Country
+ * @property int|null $ifopt_b Administrative Area
+ * @property int|null $ifopt_c Mode or Stop Place
+ * @property int|null $ifopt_d Stop Place or Stop Place Component
+ * @property int|null $ifopt_e Stop Place Component (or unused)
+ * @property string|null $rilIdentifier
+ * @property string $name
+ * @property float $latitude
+ * @property float $longitude
+ * @property string|null $source
+ * @property int $relevance
+ * @property int|null $time_offset Defines the offset of the train station relative to Europe/Berlin
+ * @property int|null $shift_time If false, the timezone of the hafas request will not be shifted to Europe/Berlin
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read EloquentCollection<int, Activity> $activities
+ * @property-read int|null $activities_count
+ * @property-read \App\Models\AreasStationsMap|null $pivot
+ * @property-read EloquentCollection<int, \App\Models\Area> $areas
+ * @property-read int|null $areas_count
+ * @property-read string|null $ifopt
+ * @property-read string|null $localized_name
+ * @property-read EloquentCollection<int, \App\Models\StationName> $names
+ * @property-read int|null $names_count
+ * @property-read EloquentCollection<int, \App\Models\StationIdentifier> $stationIdentifiers
+ * @property-read int|null $station_identifiers_count
+ * @property-read EloquentCollection<int, \App\Models\Stopover> $stopovers
+ * @property-read int|null $stopovers_count
+ * @method static \Database\Factories\StationFactory factory($count = null, $state = [])
  * @method static Builder<static>|Station newModelQuery()
  * @method static Builder<static>|Station newQuery()
  * @method static Builder<static>|Station query()

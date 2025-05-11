@@ -15,27 +15,27 @@ use Laravel\Passport\Token;
 /**
  * 
  *
- * @property int                            $id
- * @property int|null                       $user_id
- * @property string                         $name
- * @property string|null                    $secret
- * @property string|null                    $provider
- * @property string                         $redirect
- * @property int                            $webhooks_enabled
- * @property string|null                    $privacy_policy_url
- * @property string|null                    $authorized_webhook_url
- * @property bool                           $personal_access_client
- * @property bool                           $password_client
- * @property bool                           $revoked
- * @property Carbon|null                    $created_at
- * @property Carbon|null                    $updated_at
+ * @property int $id
+ * @property int|null $user_id
+ * @property string $name
+ * @property string|null $secret
+ * @property string|null $provider
+ * @property string $redirect
+ * @property int $webhooks_enabled
+ * @property string|null $privacy_policy_url
+ * @property string|null $authorized_webhook_url
+ * @property bool $personal_access_client
+ * @property bool $password_client
+ * @property bool $revoked
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read Collection<int, AuthCode> $authCodes
- * @property-read int|null                  $auth_codes_count
- * @property-read string|null               $plain_secret
- * @property-read Collection<int, Token>    $tokens
- * @property-read int|null                  $tokens_count
- * @property-read User|null                 $user
- * @method static ClientFactory factory($count = null, $state = [])
+ * @property-read int|null $auth_codes_count
+ * @property-read string|null $plain_secret
+ * @property-read Collection<int, Token> $tokens
+ * @property-read int|null $tokens_count
+ * @property-read \App\Models\User|null $user
+ * @method static \Laravel\Passport\Database\Factories\ClientFactory factory($count = null, $state = [])
  * @method static Builder<static>|OAuthClient newModelQuery()
  * @method static Builder<static>|OAuthClient newQuery()
  * @method static Builder<static>|OAuthClient query()

@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * 
  *
- * @property string         $id
- * @property int|null       $user_id
- * @property string|null    $ip_address
- * @property string|null    $user_agent
- * @property string         $payload
- * @property int            $last_activity
- * @property-read User|null $user
+ * @property string $id
+ * @property int|null $user_id
+ * @property string|null $ip_address
+ * @property string|null $user_agent
+ * @property string $payload
+ * @property int $last_activity
+ * @property-read \App\Models\User|null $user
  * @method static Builder<static>|Session newModelQuery()
  * @method static Builder<static>|Session newQuery()
  * @method static Builder<static>|Session query()

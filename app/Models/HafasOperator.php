@@ -15,17 +15,17 @@ use Illuminate\Support\Carbon;
  * 
  *
  * @todo rename table only to "Operator" (or "TransportOperator", ..., but not HAFAS)
- * @property int                        $id
- * @property string|null                $wikidata_id Wikidata ID of the operator
- * @property string|null                $hafas_id
- * @property string                     $name
- * @property string|null                $motis_id
- * @property string|null                $motis_source
- * @property Carbon|null                $created_at
- * @property Carbon|null                $updated_at
- * @property-read Collection<int, Trip> $trips
- * @property-read int|null              $trips_count
- * @method static HafasOperatorFactory factory($count = null, $state = [])
+ * @property int $id
+ * @property string|null $wikidata_id Wikidata ID of the operator
+ * @property string|null $hafas_id
+ * @property string $name
+ * @property string|null $motis_id
+ * @property string|null $motis_source
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, \App\Models\Trip> $trips
+ * @property-read int|null $trips_count
+ * @method static \Database\Factories\HafasOperatorFactory factory($count = null, $state = [])
  * @method static Builder<static>|HafasOperator newModelQuery()
  * @method static Builder<static>|HafasOperator newQuery()
  * @method static Builder<static>|HafasOperator query()

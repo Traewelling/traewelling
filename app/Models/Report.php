@@ -14,21 +14,21 @@ use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
+ * 
  *
- *
- * @property int                            $id
- * @property ReportStatus                   $status Enum ReportStatus
- * @property string                         $subject_type
- * @property int                            $subject_id
- * @property ReportReason|null              $reason Enum ReportReason or null.
- * @property string|null                    $description
- * @property int|null                       $reporter_id
- * @property int|null                       $admin_notification_id
- * @property Carbon|null                    $created_at
- * @property Carbon|null                    $updated_at
+ * @property int $id
+ * @property ReportStatus $status Enum ReportStatus
+ * @property string $subject_type
+ * @property int $subject_id
+ * @property ReportReason|null $reason Enum ReportReason or null.
+ * @property string|null $description
+ * @property int|null $reporter_id
+ * @property int|null $admin_notification_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read Collection<int, Activity> $activities
- * @property-read int|null                  $activities_count
- * @property-read User|null                 $reporter
+ * @property-read int|null $activities_count
+ * @property-read \App\Models\User|null $reporter
  * @method static Builder<static>|Report newModelQuery()
  * @method static Builder<static>|Report newQuery()
  * @method static Builder<static>|Report query()
@@ -43,7 +43,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder<static>|Report whereSubjectType($value)
  * @method static Builder<static>|Report whereUpdatedAt($value)
  * @mixin \Eloquent
- *
  */
 class Report extends Model
 {

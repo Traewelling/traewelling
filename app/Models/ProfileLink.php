@@ -13,13 +13,13 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property string          $id
- * @property int             $user_id
+ * @property string $id
+ * @property int $user_id
  * @property ProfileLinkName $name
- * @property string          $url
- * @property Carbon|null     $created_at
- * @property Carbon|null     $updated_at
- * @property-read User       $user
+ * @property string $url
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \App\Models\User $user
  * @method static Builder<static>|ProfileLink newModelQuery()
  * @method static Builder<static>|ProfileLink newQuery()
  * @method static Builder<static>|ProfileLink query()

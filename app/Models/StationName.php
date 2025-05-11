@@ -11,13 +11,13 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property string       $id
- * @property int          $station_id
- * @property string       $language
- * @property string       $name
- * @property Carbon|null  $created_at
- * @property Carbon|null  $updated_at
- * @property-read Station $station
+ * @property string $id
+ * @property int $station_id
+ * @property string $language
+ * @property string $name
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \App\Models\Station $station
  * @method static Builder<static>|StationName newModelQuery()
  * @method static Builder<static>|StationName newQuery()
  * @method static Builder<static>|StationName query()

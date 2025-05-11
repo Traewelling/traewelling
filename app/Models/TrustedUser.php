@@ -11,14 +11,14 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property string      $id
- * @property int         $user_id
- * @property int         $trusted_id
+ * @property string $id
+ * @property int $user_id
+ * @property int $trusted_id
  * @property Carbon|null $expires_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read User   $trusted
- * @property-read User   $user
+ * @property-read \App\Models\User $trusted
+ * @property-read \App\Models\User $user
  * @method static Builder<static>|TrustedUser newModelQuery()
  * @method static Builder<static>|TrustedUser newQuery()
  * @method static Builder<static>|TrustedUser query()

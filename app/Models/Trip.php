@@ -21,36 +21,36 @@ use Illuminate\Support\Carbon;
  * @todo rename table only to "Trip" (without Hafas)
  * @todo rename "linename" to "line_name" (or something else, but not "linename")
  * @todo drop origin and destination, when origin_id and destination_id are added
- * @property int                            $id
- * @property string                         $trip_id
- * @property HafasTravelType                $category
- * @property string                         $number
- * @property string                         $linename
- * @property int|null                       $journey_number
- * @property int|null                       $operator_id
- * @property int                            $origin_id
- * @property int                            $destination_id
- * @property int|null                       $polyline_id
+ * @property int $id
+ * @property string $trip_id
+ * @property HafasTravelType $category
+ * @property string $number
+ * @property string $linename
+ * @property int|null $journey_number
+ * @property int|null $operator_id
+ * @property int $origin_id
+ * @property int $destination_id
+ * @property int|null $polyline_id
  * @property $departure
  * @property $arrival
- * @property TripSource                     $source
- * @property string|null                    $motis_source
- * @property string|null                    $motis_source_license_id
- * @property int|null                       $user_id if not null, this trip belongs to the user (e.g. manually created trips)
- * @property Carbon|null                    $last_refreshed
- * @property Carbon|null                    $created_at
- * @property Carbon|null                    $updated_at
- * @property-read Collection<int, Checkin>  $checkins
- * @property-read int|null                  $checkins_count
- * @property-read Station                   $destinationStation
- * @property-read MotisSourceLicense|null   $motisSourceLicense
- * @property-read HafasOperator|null        $operator
- * @property-read Station                   $originStation
- * @property-read PolyLine|null             $polyline
- * @property-read Collection<int, Stopover> $stopovers
- * @property-read int|null                  $stopovers_count
- * @property-read User|null                 $user
- * @method static TripFactory factory($count = null, $state = [])
+ * @property TripSource $source
+ * @property string|null $motis_source
+ * @property string|null $motis_source_license_id
+ * @property int|null $user_id if not null, this trip belongs to the user (e.g. manually created trips)
+ * @property Carbon|null $last_refreshed
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, \App\Models\Checkin> $checkins
+ * @property-read int|null $checkins_count
+ * @property-read \App\Models\Station $destinationStation
+ * @property-read \App\Models\MotisSourceLicense|null $motisSourceLicense
+ * @property-read \App\Models\HafasOperator|null $operator
+ * @property-read \App\Models\Station $originStation
+ * @property-read \App\Models\PolyLine|null $polyline
+ * @property-read Collection<int, \App\Models\Stopover> $stopovers
+ * @property-read int|null $stopovers_count
+ * @property-read \App\Models\User|null $user
+ * @method static \Database\Factories\TripFactory factory($count = null, $state = [])
  * @method static Builder<static>|Trip newModelQuery()
  * @method static Builder<static>|Trip newQuery()
  * @method static Builder<static>|Trip query()

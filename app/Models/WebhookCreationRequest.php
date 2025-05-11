@@ -12,15 +12,15 @@ use Laravel\Passport\Passport;
 /**
  * 
  *
- * @property string           $id
- * @property int              $user_id
- * @property int              $oauth_client_id
- * @property bool             $revoked
- * @property SupportCarbon    $expires_at
- * @property string           $events
- * @property string           $url
- * @property-read OAuthClient $client
- * @property-read User        $user
+ * @property string $id
+ * @property int $user_id
+ * @property int $oauth_client_id
+ * @property bool $revoked
+ * @property SupportCarbon $expires_at
+ * @property string $events
+ * @property string $url
+ * @property-read \App\Models\OAuthClient $client
+ * @property-read \App\Models\User $user
  * @method static Builder<static>|WebhookCreationRequest newModelQuery()
  * @method static Builder<static>|WebhookCreationRequest newQuery()
  * @method static Builder<static>|WebhookCreationRequest query()

@@ -13,15 +13,15 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property int         $id
- * @property int         $user_id
+ * @property int $id
+ * @property int $user_id
  * @property string|null $name
- * @property string      $token
+ * @property string $token
  * @property Carbon|null $last_accessed
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read User   $user
- * @method static IcsTokenFactory factory($count = null, $state = [])
+ * @property-read \App\Models\User $user
+ * @method static \Database\Factories\IcsTokenFactory factory($count = null, $state = [])
  * @method static Builder<static>|IcsToken newModelQuery()
  * @method static Builder<static>|IcsToken newQuery()
  * @method static Builder<static>|IcsToken query()

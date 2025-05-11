@@ -13,18 +13,18 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property string                                   $id
- * @property string|null                              $name
- * @property string|null                              $human_name
- * @property string|null                              $attribution
- * @property string|null                              $license_url
- * @property string|null                              $source_url
- * @property string|null                              $spdx
- * @property int                                      $automatically_activate_source
- * @property Carbon|null                              $created_at
- * @property Carbon|null                              $updated_at
- * @property-read Collection<int, MotisSourceLicense> $motisSourceLicenses
- * @property-read int|null                            $motis_source_licenses_count
+ * @property string $id
+ * @property string|null $name
+ * @property string|null $human_name
+ * @property string|null $attribution
+ * @property string|null $license_url
+ * @property string|null $source_url
+ * @property string|null $spdx
+ * @property int $automatically_activate_source
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, \App\Models\MotisSourceLicense> $motisSourceLicenses
+ * @property-read int|null $motis_source_licenses_count
  * @method static Builder<static>|License newModelQuery()
  * @method static Builder<static>|License newQuery()
  * @method static Builder<static>|License query()

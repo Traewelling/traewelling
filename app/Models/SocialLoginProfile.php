@@ -11,17 +11,17 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property int                      $id
- * @property int                      $user_id
- * @property int|null                 $twitter_id
- * @property int|null                 $mastodon_id
- * @property int|null                 $mastodon_server
- * @property mixed|null               $mastodon_token
- * @property MastodonVisibility       $mastodon_visibility
- * @property Carbon|null              $created_at
- * @property Carbon|null              $updated_at
- * @property-read MastodonServer|null $mastodonServer
- * @property-read User                $user
+ * @property int $id
+ * @property int $user_id
+ * @property int|null $twitter_id
+ * @property int|null $mastodon_id
+ * @property int|null $mastodon_server
+ * @property mixed|null $mastodon_token
+ * @property MastodonVisibility $mastodon_visibility
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read \App\Models\MastodonServer|null $mastodonServer
+ * @property-read \App\Models\User $user
  * @method static Builder<static>|SocialLoginProfile newModelQuery()
  * @method static Builder<static>|SocialLoginProfile newQuery()
  * @method static Builder<static>|SocialLoginProfile query()

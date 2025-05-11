@@ -11,13 +11,13 @@ use Illuminate\Support\Carbon;
 /**
  * 
  *
- * @property int         $id
- * @property int         $user_id
- * @property int         $blocked_id
+ * @property int $id
+ * @property int $user_id
+ * @property int $blocked_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read User   $blockedUser
- * @property-read User   $user
+ * @property-read \App\Models\User $blockedUser
+ * @property-read \App\Models\User $user
  * @method static Builder<static>|UserBlock newModelQuery()
  * @method static Builder<static>|UserBlock newQuery()
  * @method static Builder<static>|UserBlock query()
