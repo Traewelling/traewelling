@@ -3,24 +3,10 @@
 namespace App\Models;
 
 use App\Enum\WebhookEvent as WebhookEventEnum;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-/**
- * 
- *
- * @property int $webhook_id
- * @property WebhookEventEnum $event
- * @property-read \App\Models\Webhook|null $webhook
- * @method static Builder<static>|WebhookEvent newModelQuery()
- * @method static Builder<static>|WebhookEvent newQuery()
- * @method static Builder<static>|WebhookEvent query()
- * @method static Builder<static>|WebhookEvent whereEvent($value)
- * @method static Builder<static>|WebhookEvent whereWebhookId($value)
- * @mixin \Eloquent
- */
 class WebhookEvent extends Model
 {
     use HasFactory;

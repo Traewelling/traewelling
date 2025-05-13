@@ -2,54 +2,11 @@
 
 namespace App\Models;
 
-use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 
-/**
- * 
- *
- * @property string $id
- * @property string|null $provider
- * @property string|null $country
- * @property string|null $name
- * @property string|null $human_name
- * @property string|null $license
- * @property string|null $license_url
- * @property string|null $source_url
- * @property string|null $spdx
- * @property string|null $license_id
- * @property int $active
- * @property int $force_active
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read \App\Models\License|null $manualLicense
- * @property-read Collection<int, \App\Models\Trip> $trips
- * @property-read int|null $trips_count
- * @method static Builder<static>|MotisSourceLicense newModelQuery()
- * @method static Builder<static>|MotisSourceLicense newQuery()
- * @method static Builder<static>|MotisSourceLicense query()
- * @method static Builder<static>|MotisSourceLicense whereActive($value)
- * @method static Builder<static>|MotisSourceLicense whereCountry($value)
- * @method static Builder<static>|MotisSourceLicense whereCreatedAt($value)
- * @method static Builder<static>|MotisSourceLicense whereForceActive($value)
- * @method static Builder<static>|MotisSourceLicense whereHumanName($value)
- * @method static Builder<static>|MotisSourceLicense whereId($value)
- * @method static Builder<static>|MotisSourceLicense whereLicense($value)
- * @method static Builder<static>|MotisSourceLicense whereLicenseId($value)
- * @method static Builder<static>|MotisSourceLicense whereLicenseUrl($value)
- * @method static Builder<static>|MotisSourceLicense whereName($value)
- * @method static Builder<static>|MotisSourceLicense whereProvider($value)
- * @method static Builder<static>|MotisSourceLicense whereSourceUrl($value)
- * @method static Builder<static>|MotisSourceLicense whereSpdx($value)
- * @method static Builder<static>|MotisSourceLicense whereUpdatedAt($value)
- * @mixin Eloquent
- */
 class MotisSourceLicense extends Model
 {
     use HasUuids;

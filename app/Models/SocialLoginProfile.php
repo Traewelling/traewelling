@@ -3,39 +3,9 @@
 namespace App\Models;
 
 use App\Enum\MastodonVisibility;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
-/**
- * 
- *
- * @property int $id
- * @property int $user_id
- * @property int|null $twitter_id
- * @property int|null $mastodon_id
- * @property int|null $mastodon_server
- * @property mixed|null $mastodon_token
- * @property MastodonVisibility $mastodon_visibility
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read \App\Models\MastodonServer|null $mastodonServer
- * @property-read \App\Models\User $user
- * @method static Builder<static>|SocialLoginProfile newModelQuery()
- * @method static Builder<static>|SocialLoginProfile newQuery()
- * @method static Builder<static>|SocialLoginProfile query()
- * @method static Builder<static>|SocialLoginProfile whereCreatedAt($value)
- * @method static Builder<static>|SocialLoginProfile whereId($value)
- * @method static Builder<static>|SocialLoginProfile whereMastodonId($value)
- * @method static Builder<static>|SocialLoginProfile whereMastodonServer($value)
- * @method static Builder<static>|SocialLoginProfile whereMastodonToken($value)
- * @method static Builder<static>|SocialLoginProfile whereMastodonVisibility($value)
- * @method static Builder<static>|SocialLoginProfile whereTwitterId($value)
- * @method static Builder<static>|SocialLoginProfile whereUpdatedAt($value)
- * @method static Builder<static>|SocialLoginProfile whereUserId($value)
- * @mixin \Eloquent
- */
 class SocialLoginProfile extends Model
 {
 

@@ -5,75 +5,16 @@ namespace App\Models;
 use App\Casts\UTCDateTime;
 use App\Enum\HafasTravelType;
 use App\Enum\TripSource;
-use Database\Factories\TripFactory;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Carbon;
 
 /**
- * 
- *
  * @todo rename table only to "Trip" (without Hafas)
  * @todo rename "linename" to "line_name" (or something else, but not "linename")
  * @todo drop origin and destination, when origin_id and destination_id are added
- * @property int $id
- * @property string $trip_id
- * @property HafasTravelType $category
- * @property string $number
- * @property string $linename
- * @property int|null $journey_number
- * @property int|null $operator_id
- * @property int $origin_id
- * @property int $destination_id
- * @property int|null $polyline_id
- * @property $departure
- * @property $arrival
- * @property TripSource $source
- * @property string|null $motis_source
- * @property string|null $motis_source_license_id
- * @property int|null $user_id if not null, this trip belongs to the user (e.g. manually created trips)
- * @property Carbon|null $last_refreshed
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read Collection<int, \App\Models\Checkin> $checkins
- * @property-read int|null $checkins_count
- * @property-read \App\Models\Station $destinationStation
- * @property-read \App\Models\MotisSourceLicense|null $motisSourceLicense
- * @property-read \App\Models\HafasOperator|null $operator
- * @property-read \App\Models\Station $originStation
- * @property-read \App\Models\PolyLine|null $polyline
- * @property-read Collection<int, \App\Models\Stopover> $stopovers
- * @property-read int|null $stopovers_count
- * @property-read \App\Models\User|null $user
- * @method static \Database\Factories\TripFactory factory($count = null, $state = [])
- * @method static Builder<static>|Trip newModelQuery()
- * @method static Builder<static>|Trip newQuery()
- * @method static Builder<static>|Trip query()
- * @method static Builder<static>|Trip whereArrival($value)
- * @method static Builder<static>|Trip whereCategory($value)
- * @method static Builder<static>|Trip whereCreatedAt($value)
- * @method static Builder<static>|Trip whereDeparture($value)
- * @method static Builder<static>|Trip whereDestinationId($value)
- * @method static Builder<static>|Trip whereId($value)
- * @method static Builder<static>|Trip whereJourneyNumber($value)
- * @method static Builder<static>|Trip whereLastRefreshed($value)
- * @method static Builder<static>|Trip whereLinename($value)
- * @method static Builder<static>|Trip whereMotisSource($value)
- * @method static Builder<static>|Trip whereMotisSourceLicenseId($value)
- * @method static Builder<static>|Trip whereNumber($value)
- * @method static Builder<static>|Trip whereOperatorId($value)
- * @method static Builder<static>|Trip whereOriginId($value)
- * @method static Builder<static>|Trip wherePolylineId($value)
- * @method static Builder<static>|Trip whereSource($value)
- * @method static Builder<static>|Trip whereTripId($value)
- * @method static Builder<static>|Trip whereUpdatedAt($value)
- * @method static Builder<static>|Trip whereUserId($value)
- * @mixin \Eloquent
  */
 class Trip extends Model
 {

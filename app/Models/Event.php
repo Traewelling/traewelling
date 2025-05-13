@@ -3,71 +3,16 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Database\Factories\EventFactory;
-use Eloquent;
 use Illuminate\Contracts\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Carbon as SupportCarbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-/**
- * 
- *
- * @property int $id
- * @property string $name
- * @property string $slug
- * @property string|null $hashtag
- * @property string|null $host
- * @property string|null $url
- * @property int|null $station_id
- * @property SupportCarbon $checkin_start
- * @property SupportCarbon $checkin_end
- * @property SupportCarbon|null $event_start If different from checkin_start
- * @property SupportCarbon|null $event_end If different from checkin_end
- * @property int|null $approved_by
- * @property SupportCarbon|null $created_at
- * @property SupportCarbon|null $updated_at
- * @property-read Collection<int, Activity> $activities
- * @property-read int|null $activities_count
- * @property-read \App\Models\User|null $approvedBy
- * @property-read Carbon $end
- * @property-read bool $has_extended_checkin
- * @property-read bool $is_pride
- * @property-read Carbon $start
- * @property-read int $total_distance
- * @property-read int $total_duration
- * @property-read \App\Models\Station|null $station
- * @property-read Collection<int, \App\Models\Status> $statuses
- * @property-read int|null $statuses_count
- * @method static \Database\Factories\EventFactory factory($count = null, $state = [])
- * @method static EloquentBuilder<static>|Event newModelQuery()
- * @method static EloquentBuilder<static>|Event newQuery()
- * @method static EloquentBuilder<static>|Event query()
- * @method static EloquentBuilder<static>|Event whereApprovedBy($value)
- * @method static EloquentBuilder<static>|Event whereCheckinEnd($value)
- * @method static EloquentBuilder<static>|Event whereCheckinStart($value)
- * @method static EloquentBuilder<static>|Event whereCreatedAt($value)
- * @method static EloquentBuilder<static>|Event whereEventEnd($value)
- * @method static EloquentBuilder<static>|Event whereEventStart($value)
- * @method static EloquentBuilder<static>|Event whereHashtag($value)
- * @method static EloquentBuilder<static>|Event whereHost($value)
- * @method static EloquentBuilder<static>|Event whereId($value)
- * @method static EloquentBuilder<static>|Event whereName($value)
- * @method static EloquentBuilder<static>|Event whereSlug($value)
- * @method static EloquentBuilder<static>|Event whereStationId($value)
- * @method static EloquentBuilder<static>|Event whereUpdatedAt($value)
- * @method static EloquentBuilder<static>|Event whereUrl($value)
- * @mixin Eloquent
- */
 class Event extends Model
 {
 

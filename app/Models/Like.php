@@ -2,35 +2,10 @@
 
 namespace App\Models;
 
-use Database\Factories\LikeFactory;
-use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
-/**
- * 
- *
- * @property int $id
- * @property int $user_id
- * @property int $status_id
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read \App\Models\Status $status
- * @property-read \App\Models\User $user
- * @method static \Database\Factories\LikeFactory factory($count = null, $state = [])
- * @method static Builder<static>|Like newModelQuery()
- * @method static Builder<static>|Like newQuery()
- * @method static Builder<static>|Like query()
- * @method static Builder<static>|Like whereCreatedAt($value)
- * @method static Builder<static>|Like whereId($value)
- * @method static Builder<static>|Like whereStatusId($value)
- * @method static Builder<static>|Like whereUpdatedAt($value)
- * @method static Builder<static>|Like whereUserId($value)
- * @mixin Eloquent
- */
 class Like extends Model
 {
 

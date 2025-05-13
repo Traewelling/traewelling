@@ -2,32 +2,9 @@
 
 namespace App\Models;
 
-use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
-/**
- * 
- *
- * @property int $id
- * @property int $user_id
- * @property int $follow_id
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read \App\Models\User $requestedFollow
- * @property-read \App\Models\User $user
- * @method static Builder<static>|FollowRequest newModelQuery()
- * @method static Builder<static>|FollowRequest newQuery()
- * @method static Builder<static>|FollowRequest query()
- * @method static Builder<static>|FollowRequest whereCreatedAt($value)
- * @method static Builder<static>|FollowRequest whereFollowId($value)
- * @method static Builder<static>|FollowRequest whereId($value)
- * @method static Builder<static>|FollowRequest whereUpdatedAt($value)
- * @method static Builder<static>|FollowRequest whereUserId($value)
- * @mixin Eloquent
- */
 class FollowRequest extends Model
 {
 

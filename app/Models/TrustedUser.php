@@ -2,34 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
-/**
- * 
- *
- * @property string $id
- * @property int $user_id
- * @property int $trusted_id
- * @property Carbon|null $expires_at
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read \App\Models\User $trusted
- * @property-read \App\Models\User $user
- * @method static Builder<static>|TrustedUser newModelQuery()
- * @method static Builder<static>|TrustedUser newQuery()
- * @method static Builder<static>|TrustedUser query()
- * @method static Builder<static>|TrustedUser whereCreatedAt($value)
- * @method static Builder<static>|TrustedUser whereExpiresAt($value)
- * @method static Builder<static>|TrustedUser whereId($value)
- * @method static Builder<static>|TrustedUser whereTrustedId($value)
- * @method static Builder<static>|TrustedUser whereUpdatedAt($value)
- * @method static Builder<static>|TrustedUser whereUserId($value)
- * @mixin \Eloquent
- */
 class TrustedUser extends Model
 {
     use HasUuids;

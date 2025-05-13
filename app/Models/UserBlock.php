@@ -2,32 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
-/**
- * 
- *
- * @property int $id
- * @property int $user_id
- * @property int $blocked_id
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read \App\Models\User $blockedUser
- * @property-read \App\Models\User $user
- * @method static Builder<static>|UserBlock newModelQuery()
- * @method static Builder<static>|UserBlock newQuery()
- * @method static Builder<static>|UserBlock query()
- * @method static Builder<static>|UserBlock whereBlockedId($value)
- * @method static Builder<static>|UserBlock whereCreatedAt($value)
- * @method static Builder<static>|UserBlock whereId($value)
- * @method static Builder<static>|UserBlock whereUpdatedAt($value)
- * @method static Builder<static>|UserBlock whereUserId($value)
- * @mixin \Eloquent
- */
 class UserBlock extends Model
 {
     use HasFactory;
