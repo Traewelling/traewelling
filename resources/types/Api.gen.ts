@@ -482,7 +482,7 @@ export interface ProfileLinkResource {
   name?:
     | "website"
     | "instagram"
-    | "twitter"
+    | "bluesky"
     | "facebook"
     | "mastodon"
     | "tiktok"
