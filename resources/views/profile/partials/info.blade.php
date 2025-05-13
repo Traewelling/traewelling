@@ -50,7 +50,8 @@
 
             @if($user->bio)
                 <p class="text-muted fst-italic m-0">
-                    <i class="fa fa-quote-left me-2"></i>{{ $user->bio }}
+                    <i class="fa fa-quote-left me-2"></i>
+                    <span class="profile-bio">{{ $user->bio }}</span>
                 </p>
             @endif
 
