@@ -2,25 +2,10 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * // properties
- * @property int    $id
- * @property int    $user_id
- * @property string $name
- * @property string $host
- * @property string $url
- * @property int    $station_id
- * @property Carbon $begin
- * @property Carbon $end
- * @property string $hashtag
- * @property int    $admin_notification_id
- * @property bool   $processed
- */
 class EventSuggestion extends Model
 {
     use HasFactory;

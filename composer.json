@@ -48,6 +48,7 @@
     "require-dev": {
         "ext-pdo_sqlite": "*",
         "barryvdh/laravel-debugbar": "^3.5",
+        "barryvdh/laravel-ide-helper": "^3.5",
         "beyondcode/laravel-dump-server": "dev-master",
         "brianium/paratest": "^7.0",
         "fakerphp/faker": "^1.9",

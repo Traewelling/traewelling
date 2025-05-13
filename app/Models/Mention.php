@@ -8,18 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-/**
- * //properties
- * @property int    id
- * @property int    status_id
- * @property int    mentioned_id
- * @property int    position
- * @property int    length
- *
- * //relations
- * @property Status status
- * @property User   mentioned
- */
 class Mention extends Model
 {
     use HasFactory;

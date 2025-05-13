@@ -7,16 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * @property string  id
- * @property string  relevance
- * @property string  station_id
- * @property string  identifier
- * @property ?string name
- * @property string  type
- * @property string  origin
- * @property Station station
- */
 class StationIdentifier extends Model
 {
     use HasUuids, HasFactory;

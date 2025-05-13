@@ -9,34 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
- * //properties
- * @property int                   id
- * @property int                   user_id
- * @property string                body
- * @property Business              business
- * @property StatusVisibility      visibility
- * @property int                   event_id
- * @property string                mastodon_post_id
- * @property int                   client_id
- * @property string                moderation_notes       Notes from the moderation team - visible to the user
- * @property bool                  lock_visibility        Prevent the user from changing the visibility of the status?
- * @property bool                  hide_body              Hide the body of the status from other users?
- *
- * //relations
- * @property User                  $user
- * @property Checkin               $checkin
- * @property Collection            $likes
- * @property OAuthClient           $client
- * @property Event                 $event
- * @property Collection<StatusTag> $tags
- * @property Mention[]             $mentions
- *
  * @todo merge model with "Checkin" (later only "Checkin") because the difference between trip sources (HAFAS,
  *       User, and future sources) should be handled in the Trip model.
  */

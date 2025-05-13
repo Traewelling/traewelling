@@ -7,16 +7,6 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * @property string          $id
- * @property string          $user_id
- * @property ProfileLinkName $name
- * @property string          $url
- *
- * @property-read User       $user
- * @property-read string     $created_at
- * @property-read string     $updated_at
- */
 class ProfileLink extends Model
 {
     use HasUuids;

@@ -7,22 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * @property string       $id
- * @property ?string      $provider
- * @property ?string      $country
- * @property ?string      $name
- * @property ?string      $human_name
- * @property ?string      $sources
- * @property ?string      $license_url
- * @property ?string      $source_url
- * @property ?string      $spdx
- * @property bool         $active
- * @property bool         $force_active
- *
- * --- Relations
- * @property-read License $manualLicense
- */
 class MotisSourceLicense extends Model
 {
     use HasUuids;

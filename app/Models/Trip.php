@@ -12,26 +12,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * @property int                $id
- * @property string             $trip_id
- * @property HafasTravelType    $category
- * @property string             $number
- * @property string             $linename
- * @property string             $journey_number
- * @property int                $operator_id
- * @property int                $origin_id
- * @property int                $destination_id
- * @property int                $polyline_id
- * @property UTCDateTime        $departure
- * @property UTCDateTime        $arrival
- * @property UTCDateTime        $last_refreshed
- * @property TripSource         $source
- * @property ?string            $motis_source
- * @property int                $user_id
- * @property                    $stopovers
- * @property PolyLine           $polyLine
- * @property MotisSourceLicense $motisSourceLicense
- *
  * @todo rename table only to "Trip" (without Hafas)
  * @todo rename "linename" to "line_name" (or something else, but not "linename")
  * @todo drop origin and destination, when origin_id and destination_id are added

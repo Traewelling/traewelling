@@ -15,35 +15,6 @@ use Illuminate\Support\Facades\Gate;
 use stdClass;
 
 /**
- * //properties
- * @property int                $id
- * @property int                $status_id
- * @property int                $user_id
- * @property string             $trip_id
- * @property int                $origin_stopover_id
- * @property int                $destination_stopover_id
- * @property int                $distance
- * @property int                $duration
- * @property UTCDateTime        $departure   @deprecated -> use origin_stopover instead
- * @property UTCDateTime        $manual_departure
- * @property UTCDateTime        $arrival     @deprecated -> use destination_stopover instead
- * @property UTCDateTime        $manual_arrival
- * @property int                $points
- * @property bool               $forced
- *
- * //relations
- * @property Trip               $trip
- * @property Status             $status
- * @property User               $user
- * @property Stopover           $originStopover
- * @property Stopover           $destinationStopover
- *
- * //appends
- * @property float              $speed
- * @property stdClass           $displayDeparture
- * @property stdClass           $displayArrival
- * @property Collection<Status> $alsoOnThisConnection
- *
  * @todo rename table to "Checkin" (without Train - we have more than just trains)
  * @todo merge model with "Status" because the difference between trip sources (HAFAS,
  *        User, and future sources) should be handled in the Trip model.
