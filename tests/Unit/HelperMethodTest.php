@@ -41,18 +41,18 @@ class HelperMethodTest extends UnitTestCase
 
     public function test_secondsToDuration_and_durationToSpan(): void {
         $testcases = [
-            0                  => "0<small>min</small>",
-            45                 => "0<small>min</small>",
-            60                 => "1<small>min</small>",
-            61                 => "1<small>min</small>",
-            5 * 60             => "5<small>min</small>",
-            30 * 60            => "30<small>min</small>",
-            60 * 60            => "1<small>h</small>&nbsp;0<small>min</small>",
-            66 * 60            => "1<small>h</small>&nbsp;6<small>min</small>",
-            2 * 60 * 60        => "2<small>h</small>&nbsp;0<small>min</small>",
-            24 * 60 * 60       => "1<small>d</small>&nbsp;0<small>h</small>&nbsp;0<small>min</small>",
-            25 * 60 * 60       => "1<small>d</small>&nbsp;1<small>h</small>&nbsp;0<small>min</small>",
-            365 * 24 * 60 * 60 => "1<small>y</small>&nbsp;0<small>d</small>&nbsp;0<small>h</small>&nbsp;0<small>min</small>",
+            0                  => "0<small class='text-muted'>min</small>",
+            45                 => "0<small class='text-muted'>min</small>",
+            60                 => "1<small class='text-muted'>min</small>",
+            61                 => "1<small class='text-muted'>min</small>",
+            5 * 60             => "5<small class='text-muted'>min</small>",
+            30 * 60            => "30<small class='text-muted'>min</small>",
+            60 * 60            => "1<small class='text-muted'>h</small>&nbsp;0<small class='text-muted'>min</small>",
+            66 * 60            => "1<small class='text-muted'>h</small>&nbsp;6<small class='text-muted'>min</small>",
+            2 * 60 * 60        => "2<small class='text-muted'>h</small>&nbsp;0<small class='text-muted'>min</small>",
+            24 * 60 * 60       => "1<small class='text-muted'>d</small>&nbsp;0<small class='text-muted'>h</small>&nbsp;0<small class='text-muted'>min</small>",
+            25 * 60 * 60       => "1<small class='text-muted'>d</small>&nbsp;1<small class='text-muted'>h</small>&nbsp;0<small class='text-muted'>min</small>",
+            365 * 24 * 60 * 60 => "1<small class='text-muted'>y</small>&nbsp;0<small class='text-muted'>d</small>&nbsp;0<small class='text-muted'>h</small>&nbsp;0<small class='text-muted'>min</small>",
         ];
 
         foreach ($testcases as $input => $output) {
