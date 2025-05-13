@@ -155,7 +155,6 @@ Route::middleware(['auth', 'privacy'])->group(function() {
         Route::redirect('/', 'settings/profile')->name('settings');
         Route::get('/profile', [SettingsController::class, 'renderProfile'])->name('settings.profile');
         Route::get('/privacy', [SettingsController::class, 'renderPrivacy'])->name('settings.privacy');
-        Route::post('/profile', [SettingsController::class, 'updateMainSettings']);
         Route::post('/update/privacy', [SettingsController::class, 'updatePrivacySettings'])
              ->name('settings.privacy.update');
 

@@ -4,6 +4,7 @@ import {trans} from "laravel-vue-i18n";
 import {Api, FriendCheckinSetting, LightUserResource, TrustedUserResource, User} from "../../../types/Api.gen";
 import UserSearchDropdown from "../Helpers/UserSearchDropdown.vue";
 import {Notyf} from "notyf";
+import {showApiValidationErrors} from "../../helpers/NotyfHelper";
 
 // TODO: split this component into partials
 export default defineComponent({
@@ -21,6 +22,8 @@ export default defineComponent({
       displayName: "",
       loading: false,
       trustedUsers: [] as TrustedUserResource[],
+      privacyHideDays: null as number | null,
+      email: "",
       notyf: new Notyf({position: {x: "right", y: "bottom"}, duration: 2000, dismissible: true, ripple: true}),
       FriendCheckinSetting
     }
@@ -43,6 +46,8 @@ export default defineComponent({
               this.allow = data.data.friendCheckin;
               this.username = data.data.username;
               this.displayName = data.data.displayName;
+              this.privacyHideDays = data.data.privacyHideDays == 0 ? null : data.data.privacyHideDays;
+              this.email = data.data.email;
               this.loading = false;
             });
           })
@@ -70,6 +75,8 @@ export default defineComponent({
         friendCheckin: this.allow,
         username: this.username,
         displayName: this.displayName,
+        privacyHideDays: this.privacyHideDays,
+        email: this.email
       })
           .then((data) => {
             this.loading = false;
@@ -78,6 +85,15 @@ export default defineComponent({
               return;
             }
             this.notyf.success(trans('settings.saved'));
+          })
+          .catch((res) => {
+            this.loading = false;
+            if (res.status === 422) {
+              // Handle validation errors
+              showApiValidationErrors(this.notyf, res.error.errors);
+            } else {
+              this.notyf.error(res.error);
+            }
           });
     },
     removeUser(user: TrustedUserResource) {

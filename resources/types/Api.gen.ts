@@ -300,7 +300,20 @@ export interface UpdateProfileInformationRequest {
    * @example "Hi there! I am Gertrud!"
    */
   bio?: string | null;
+  /**
+   * Experimental features enabled
+   * @example false
+   */
+  experimental?: boolean;
   profileLinks?: ProfileLinkResource[] | null;
+  /** @example "Europe/Berlin" */
+  timezone?: string;
+  /**
+   * @format email
+   * @maxLength 255
+   * @example "mail@example.com"
+   */
+  email?: string;
 }
 
 export interface AlertResource {
@@ -469,7 +482,7 @@ export interface ProfileLinkResource {
   name?:
     | "website"
     | "instagram"
-    | "bluesky"
+    | "twitter"
     | "facebook"
     | "mastodon"
     | "tiktok"
@@ -758,36 +771,36 @@ export interface UserAuthResource {
 /** UserProfileSettings */
 export interface UserProfileSettingsResource {
   /** @example "Gertrud123" */
-  username?: string;
+  username: string;
   /** @example "Gertrud" */
-  displayName?: string;
+  displayName: string;
   /** @example "https://traewelling.de/@Gertrud123/picture" */
-  profilePicture?: string;
+  profilePicture: string;
   /** @example false */
-  privateProfile?: boolean;
+  privateProfile: boolean;
   /**
    * Did the user choose to prevent search engines from indexing their profile?
    * @example false
    */
-  preventIndex?: boolean;
+  preventIndex: boolean;
   /**
    * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
    *  *      user specify?
    */
-  defaultStatusVisibility?: StatusVisibility;
+  defaultStatusVisibility: StatusVisibility;
   /**
    * Number of days to hide the user's location history
    * @example 1
    */
-  privacyHideDays?: number;
+  privacyHideDays: number;
   /** @example true */
-  password?: boolean;
+  password: boolean;
   /** @example "gertrud@traewelling.de" */
-  email?: string;
+  email: string;
   /** @example true */
-  emailVerified?: boolean;
+  emailVerified: boolean;
   /** @example true */
-  profilePictureSet?: boolean;
+  profilePictureSet: boolean;
   /** @example "https://mastodon.social/@Gertrud123" */
   mastodon?: string;
   /**
@@ -797,12 +810,21 @@ export interface UserProfileSettingsResource {
   mastodonVisibility?: MastodonVisibility;
   friendCheckin?: FriendCheckinSetting;
   /** @example true */
-  likesEnabled?: boolean;
+  likesEnabled: boolean;
   /** @example true */
-  pointsEnabled?: boolean;
+  pointsEnabled: boolean;
+  /** What type of map provider (cargo, open-railway-map) did the user specify? */
+  mapProvider: MapProvider;
+  /** @example "Europe/Berlin" */
+  timezone: string;
   /** @example "Hi there! I am Gertrud!" */
   bio?: string;
-  profileLinks?: ProfileLinkResource[];
+  profileLinks: ProfileLinkResource[];
+  /**
+   * Experimental features enabled
+   * @example false
+   */
+  experimental: boolean;
 }
 
 /**

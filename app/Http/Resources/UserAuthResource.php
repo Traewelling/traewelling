@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Http\Controllers\Backend\User\ProfilePictureController;
+use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -29,6 +30,7 @@ class UserAuthResource extends JsonResource
 {
     public function toArray($request): array {
         $pointsEnabled = $request->user()?->points_enabled ?? true;
+        /** @var User $this */
         return [
             'id'                      => (int) $this->id,
             'displayName'             => (string) $this->name,
