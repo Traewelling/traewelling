@@ -45,18 +45,18 @@ function secondsToDuration(int $seconds): array {
  * @return string
  */
 function durationToSpan(array $duration): string {
-    $return = $duration["minutes"] . "<small>min</small>";
+    $return = $duration["minutes"] . "<small class='text-muted'>min</small>";
 
     if ($duration["hours"] > 0 || $duration["days"] > 0 || $duration["years"] > 0) {
-        $return = $duration["hours"] . "<small>h</small>&nbsp;" . $return;
+        $return = $duration["hours"] . "<small class='text-muted'>h</small>&nbsp;" . $return;
     }
 
     if ($duration["days"] > 0 || $duration["years"] > 0) {
-        $return = $duration["days"] . "<small>d</small>&nbsp;" . $return;
+        $return = $duration["days"] . "<small class='text-muted'>d</small>&nbsp;" . $return;
     }
 
     if ($duration["years"] > 0) {
-        $return = $duration["years"] . "<small>y</small>&nbsp;" . $return;
+        $return = $duration["years"] . "<small class='text-muted'>y</small>&nbsp;" . $return;
     }
 
     return $return;

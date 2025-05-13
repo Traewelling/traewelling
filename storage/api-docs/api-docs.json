@@ -5188,7 +5188,7 @@
                         "enum": [
                             "website",
                             "instagram",
-                            "twitter",
+                            "bluesky",
                             "facebook",
                             "mastodon",
                             "tiktok",
