@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\Dto;
 
+use App\Dto\GeoJson\Feature;
 use JsonSerializable;
+use OpenApi\Annotations as OA;
 use stdClass;
 
 /**
@@ -38,7 +40,7 @@ readonly class Coordinate implements JsonSerializable
         $this->longitude = $longitude;
     }
 
-    public static function fromGeoJson(stdClass $point): ?self {
+    public static function fromGeoJson(stdClass|Feature $point): ?self {
         if (isset($point->geometry->coordinates) && is_array($point->geometry->coordinates) && count($point->geometry->coordinates) === 2) {
             return new self($point->geometry->coordinates[1], $point->geometry->coordinates[0]);
         }
