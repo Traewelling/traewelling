@@ -83,6 +83,10 @@ class MotisSourceLicense extends Model
             'name'        => 'Licența pentru o Guvernare Deschisă 1.0',
             'url'         => 'https://data.gov.ro/base/images/logoinst/OGL-ROU-1.0.pdf',
             'attribution' => 'Conține informații publice în baza Licenței pentru Guvernare Deschisa v1.0',
+        ],
+        'CC-BY-SA-3.0'    => [
+            'name' => 'Creative Commons Attribution Share Alike 3.0 Unported',
+            'url'  => 'https://spdx.org/licenses/CC-BY-SA-3.0.html'
         ]
     ];
 
