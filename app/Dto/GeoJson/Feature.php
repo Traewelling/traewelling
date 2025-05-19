@@ -56,13 +56,19 @@ class Feature implements \JsonSerializable
         if ($this->statusId) {
             $this->properties->addProperty('statusId', $this->statusId);
         }
+
+        $properties = $this->properties->toArray();
+        if (empty($properties)) {
+            $properties = new \stdClass();
+        }
+
         return [
             'type'       => 'Feature',
             'geometry'   => [
                 'type'        => $this->type,
                 'coordinates' => $this->coordinates
             ],
-            'properties' => $this->properties->toArray(),
+            'properties' => $properties,
         ];
     }
 
