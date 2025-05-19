@@ -27,7 +27,7 @@
         "guzzlehttp/guzzle": "^7.1",
         "intervention/image": "^3.5",
         "jenssegers/agent": "^2.6",
-        "laravel/framework": "^11.0",
+        "laravel/framework": "^12.0",
         "laravel/passport": "^12.0",
         "laravel/socialite": "^5.0",
         "laravel/tinker": "^2.0",
