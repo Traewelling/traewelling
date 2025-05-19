@@ -45,7 +45,7 @@ export default {
       const data = new URLSearchParams({
         tripId: selectedItem.tripId,
         lineName: selectedItem.line.name,
-        start: this.useInternalIdentifiers ? this.meta.station.id : this.meta.station.ibnr,
+        start: this.useInternalIdentifiers ? this.selectedTrain.stop.id : this.meta.station.ibnr,
         departure: selectedItem.when,
       });
 
