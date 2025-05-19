@@ -60,14 +60,16 @@ export default {
         }
         response.json().then((result) => {
           this.lineRun = result.data;
-          let remove = true;
+          const givenDeparture = DateTime.fromISO(this.$props.selectedTrain.plannedWhen);
           this.lineRun.stopovers = this.lineRun.stopovers.filter((item) => {
-            const identifier = this.useInternalIdentifiers ? item.id : item.evaIdentifier;
-            if (remove && Number(this.$props.selectedTrain.stop.id) === identifier) {
-              remove = false;
-              return false;
+            let departure = null;
+            if (item.arrivalPlanned) {
+              departure = DateTime.fromISO(item.arrivalPlanned);
+            } else if (item.departurePlanned) {
+              departure = DateTime.fromISO(item.departurePlanned);
             }
-            return !remove;
+
+            return !(departure && departure < givenDeparture);
           });
           if (this.$props.fastCheckinId) {
             this.fastCheckin();
@@ -117,7 +119,7 @@ export default {
   </div>
   <Spinner v-if="loading"/>
   <ul class="timeline" v-else>
-    <li v-for="item in lineRun.stopovers" :key="item" @click.prevent="handleSetDestination(item)">
+    <li v-if="lineRun" v-for="item in lineRun.stopovers" :key="item" @click.prevent="handleSetDestination(item)">
       <i class="trwl-bulletpoint" aria-hidden="true"></i>
       <span class="float-end" :class="{'text-trwl': !item.cancelled, 'cancelled-stop': item.cancelled}">
                 <small
@@ -135,7 +137,7 @@ export default {
          :class="{'text-trwl': !item.cancelled, 'cancelled-stop': item.cancelled}">{{ item.name }}</a>
     </li>
   </ul>
-  <div class="pt-5 pb-2" v-if="lineRun.dataSource?.attribution">
+  <div class="pt-5 pb-2" v-if="lineRun?.dataSource?.attribution">
     <span class="text-xs text-muted" v-html="lineRun.dataSource?.attribution"></span>
   </div>
 </template>
