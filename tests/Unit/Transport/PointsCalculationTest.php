@@ -1,6 +1,6 @@
 <?php
 
-namespace Unit\Transport;
+namespace Tests\Unit\Transport;
 
 use App\Enum\HafasTravelType;
 use App\Enum\PointReason;

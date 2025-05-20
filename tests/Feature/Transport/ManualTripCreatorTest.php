@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\Transport;
+namespace Tests\Feature\Transport;
 
 use App\Dto\Internal\CheckInRequestDto;
 use App\Enum\HafasTravelType;
