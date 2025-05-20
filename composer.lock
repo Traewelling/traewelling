@@ -5452,16 +5452,16 @@
         },
         {
             "name": "romanzipp/laravel-queue-monitor",
-            "version": "5.4.0",
+            "version": "5.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/romanzipp/Laravel-Queue-Monitor.git",
-                "reference": "1e0404fa513616a63004e8d7b3ddc20fbbdd9e41"
+                "reference": "3b0ce4eb0375364b3d3afcca9e49796939443404"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/romanzipp/Laravel-Queue-Monitor/zipball/1e0404fa513616a63004e8d7b3ddc20fbbdd9e41",
-                "reference": "1e0404fa513616a63004e8d7b3ddc20fbbdd9e41",
+                "url": "https://api.github.com/repos/romanzipp/Laravel-Queue-Monitor/zipball/3b0ce4eb0375364b3d3afcca9e49796939443404",
+                "reference": "3b0ce4eb0375364b3d3afcca9e49796939443404",
                 "shasum": ""
             },
             "require": {
@@ -5510,7 +5510,7 @@
             "description": "Queue Monitoring for Laravel Database Job Queue",
             "support": {
                 "issues": "https://github.com/romanzipp/Laravel-Queue-Monitor/issues",
-                "source": "https://github.com/romanzipp/Laravel-Queue-Monitor/tree/5.4.0"
+                "source": "https://github.com/romanzipp/Laravel-Queue-Monitor/tree/5.4.1"
             },
             "funding": [
                 {
@@ -5518,7 +5518,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-20T07:45:05+00:00"
+            "time": "2025-05-13T04:38:30+00:00"
         },
         {
             "name": "sabberworm/php-css-parser",
