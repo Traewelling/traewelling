@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\Privacy;
+namespace Tests\Feature\Privacy;
 
 use App\Enum\StatusVisibility;
 use App\Http\Controllers\Backend\User\FollowController;
@@ -35,8 +35,8 @@ class StatusTagPrivacyTest extends ApiTestCase
     }
 
     public function testFollowerViewFollowersOnlyStatusTag(): void {
-        $user      = User::factory()->create();
-        $follower  = User::factory()->create();
+        $user     = User::factory()->create();
+        $follower = User::factory()->create();
 
         $status    = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::FOLLOWERS])->create();
         $statusTag = StatusTag::factory([

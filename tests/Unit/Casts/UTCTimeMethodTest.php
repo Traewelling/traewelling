@@ -6,6 +6,7 @@ use App\Casts\UTCDateTime;
 use App\Models\Stopover;
 use Carbon\Exceptions\InvalidTimeZoneException;
 use Illuminate\Support\Carbon;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Unit\UnitTestCase;
 
 class UTCTimeMethodTest extends UnitTestCase
@@ -16,9 +17,7 @@ class UTCTimeMethodTest extends UnitTestCase
         $UTCDateTime->set(new Stopover(), 'departure', '2023-01-10T01:00', []);
     }
 
-    /**
-     * @dataProvider setUtcDateTimeDataProvider
-     */
+    #[DataProvider('setUtcDateTimeDataProvider')]
     public function testSetUtcDateTime($assert, $value): void {
         $UTCDateTime = new UTCDateTime();
         $result      = $UTCDateTime->set(new Stopover(), 'departure', $value, []);
@@ -37,9 +36,7 @@ class UTCTimeMethodTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @dataProvider getUtcDateTimeDataProvider
-     */
+    #[DataProvider('getUtcDateTimeDataProvider')]
     public function testGetUtcDateTime($assert, $value): void {
         $UTCDateTime = new UTCDateTime();
         $result      = $UTCDateTime->get(new Stopover(), 'departure', $value, []);

@@ -7,13 +7,14 @@ namespace Tests\Unit\Hydrators;
 use App\DataProviders\Hydrators\MotisHydrator;
 use App\DataProviders\Repositories\MotisLicenseRepository;
 use App\DataProviders\Repositories\StationRepository;
-use App\Enum\DataProvider;
+use App\Enum\DataProvider as DataProviderEnum;
 use App\Models\MotisSourceLicense;
 use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Services\OperatorService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Unit\UnitTestCase;
 
 class MotisHydratorTest extends UnitTestCase
@@ -59,7 +60,7 @@ class MotisHydratorTest extends UnitTestCase
             $identifier = StationIdentifier::factory()->make([
                                                                  'identifier' => $data['stationIdentifier'],
                                                                  'type'       => 'motis',
-                                                                 'origin'     => DataProvider::TRANSITOUS->value,
+                                                                 'origin'     => DataProviderEnum::TRANSITOUS->value,
                                                              ]);
             $station->setRelation(
                 'stationIdentifiers',
@@ -73,9 +74,7 @@ class MotisHydratorTest extends UnitTestCase
         return json_decode(file_get_contents(__DIR__ . '/_data/motis_departures.json'), true);
     }
 
-    /**
-     * @dataProvider filterLicenseProvider
-     */
+    #[DataProvider('filterLicenseProvider')]
     public function testMapDeparturesFilterLicense(int $expected, ?MotisSourceLicense $license): void {
         Config::set('trwl.motis.filter_licenses', true);
 
@@ -102,7 +101,7 @@ class MotisHydratorTest extends UnitTestCase
 
 
         $hydrator   = new MotisHydrator($mockRepo, $mockStationRepo, $mockOperatorRepo);
-        $departures = $hydrator->mapDepartures($this->getDepartures(), Station::factory()->makeOne(), DataProvider::TRANSITOUS);
+        $departures = $hydrator->mapDepartures($this->getDepartures(), Station::factory()->makeOne(), DataProviderEnum::TRANSITOUS);
 
         $this->assertCount($expected, $departures);
     }

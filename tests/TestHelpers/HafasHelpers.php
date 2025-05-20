@@ -13,9 +13,6 @@ class HafasHelpers
     /**
      * Get the Stopover Model from Database
      *
-     * @param int $ibnr
-     *
-     * @return Station
      * @throws HafasException
      */
     public static function getStationById(int $ibnr): Station {
@@ -26,9 +23,6 @@ class HafasHelpers
     /**
      * Fetch from HAFAS
      *
-     * @param int $ibnr
-     *
-     * @return Station
      * @throws HafasException
      */
     public static function fetchStation(int $ibnr): Station {

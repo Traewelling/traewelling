@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\APIv1;
+namespace Tests\Feature\APIv1;
 
 use App\Models\Station;
 use App\Models\User;

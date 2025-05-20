@@ -10,6 +10,7 @@ use App\Notifications\FollowRequestIssued;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\ApiTestCase;
 
 class PrivateProfileFollowerRelationsTest extends ApiTestCase
@@ -97,9 +98,7 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
         $this->assertTrue($alice->can('view', $bob));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function declining_a_follow_request_should_keep_invisibility(): void {
         // Given: Users Alice and Bob
         $alice = $this->alice;
@@ -125,9 +124,7 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
         $this->assertFalse($alice->can('view', $bob));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function removing_a_follower_should_result_in_invisibility(): void {
         // Given: Users Alice and Bob
         $alice = $this->alice;
