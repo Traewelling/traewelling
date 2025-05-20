@@ -214,6 +214,8 @@
   "messages.account.please-confirm": "Please enter <i><b>:delete</b></i> to confirm the deletion.",
   "messages.exception.already-checkedin": "There is already a check-in in this connection.",
   "messages.exception.maybe-too-fast": "Maybe you sent your request multiple times by mistake?",
+  "messages.too-many-likes": "You've liked too many posts in the last few minutes.",
+  "messages.retry-in": "You can try again in :minutes minutes.",
   "modals.delete-confirm": "Delete",
   "modals.deleteStatus-title": "Do you really want to delete this status?",
   "modals.edit-confirm": "Save",

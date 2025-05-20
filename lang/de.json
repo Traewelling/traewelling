@@ -243,6 +243,8 @@
   "messages.exception.already-checkedin": "Es existiert bereits ein Check-in in dieser Verbindung.",
   "messages.exception.maybe-too-fast": "Vielleicht hast du deine Anfrage aus Versehen mehrfach abgesendet?",
   "messages.account.please-confirm": "Bitte gib <i><b>:delete</b></i> ein um die Löschung zu bestätigen.",
+  "messages.too-many-likes": "Du hast in den letzten Minuten zu viele Posts geliked.",
+  "messages.retry-in": "Du kannst es in :minutes Minuten erneut versuchen.",
   "modals.delete-confirm": "Löschen",
   "modals.deleteStatus-title": "Möchtest Du diesen Status wirklich löschen?",
   "modals.edit-confirm": "Speichern",

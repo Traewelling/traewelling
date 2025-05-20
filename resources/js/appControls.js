@@ -1,5 +1,6 @@
 import _ from "lodash";
 import {Follow} from "./api/Follow";
+import {trans} from "laravel-vue-i18n";
 
 document.querySelectorAll('.status .like').forEach((likeButton) => {
     likeButton.addEventListener('click', (pointerEvent) => {
@@ -20,7 +21,12 @@ document.querySelectorAll('.status .like').forEach((likeButton) => {
                 .then(response => {
                     if (!response.ok) {
                         if(response.status === 429) {
-                            notyf.error('HTTP 429: Too many requests');
+                            const reset = response.headers.get('X-RateLimit-Reset');
+                            let message = trans('messages.too-many-likes');
+                            if (reset) {
+                                message = message + ' ' + trans('messages.retry-in', {'minutes':(reset / 60).toFixed(0)});
+                            }
+                            notyf.error(message);
                         }
                         return;
                     }
