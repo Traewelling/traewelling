@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\FeatureTestCase;
 
 class UserRedirectionTest extends FeatureTestCase
@@ -15,8 +16,8 @@ class UserRedirectionTest extends FeatureTestCase
 
     /**
      * If not logged in, redirect please.
-     * @test
      */
+    #[Test]
     public function should_redirect_dashboard_to_login_if_not_logged_in() {
         // Given: A new visitor, no user account
         // ---
@@ -31,8 +32,8 @@ class UserRedirectionTest extends FeatureTestCase
 
     /**
      * Check if users can delete their fresh account.
-     * @test
      */
+    #[Test]
     public function user_can_delete_account(): void {
         // Given: A new user
         $user = User::factory()->create();
@@ -54,8 +55,8 @@ class UserRedirectionTest extends FeatureTestCase
      * Test the GDPR interceptor.
      * First, new users should always redirect to the interceptor.
      * Then,
-     * @test
      */
+    #[Test]
     public function gdpr_interception() {
         // Creates user
         $user = User::factory(['privacy_ack_at' => null])->create();

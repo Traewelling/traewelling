@@ -6,6 +6,7 @@ use App\Dto\Coordinate;
 use App\Objects\LineSegment;
 use App\Services\GeoService;
 use JsonException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Unit\UnitTestCase;
 
 class CoordinateTest extends UnitTestCase
@@ -33,9 +34,9 @@ class CoordinateTest extends UnitTestCase
     }
 
     /**
-     * @dataProvider geoJsonParsingDataProvider
      * @throws JsonException
      */
+    #[DataProvider('geoJsonParsingDataProvider')]
     public function testGeoJsonParsing($assert, $value): void {
         $geoJson    = json_decode($value, false, 512, JSON_THROW_ON_ERROR);
         $coordinate = Coordinate::fromGeoJson($geoJson);

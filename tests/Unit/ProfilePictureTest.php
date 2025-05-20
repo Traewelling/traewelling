@@ -3,13 +3,12 @@
 namespace Tests\Unit;
 
 use App\Http\Controllers\Backend\User\ProfilePictureController;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class ProfilePictureTest extends TestCase
 {
-    /**
-     * @dataProvider pictureColorProvider
-     */
+    #[DataProvider('pictureColorProvider')]
     public function testPictureColor($avatar) {
         $this->assertEquals(6, strlen(ProfilePictureController::generateBackgroundHash($avatar)));
         $this->assertTrue(preg_match('^(?:[0-9a-fA-F]{3}){1,2}$^', ProfilePictureController::generateBackgroundHash($avatar)) === 1);

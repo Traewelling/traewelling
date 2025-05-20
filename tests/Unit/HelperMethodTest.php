@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon as IlluminateCarbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Mockery;
+use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
 use function secondsToDuration;
 
@@ -60,9 +61,7 @@ class HelperMethodTest extends UnitTestCase
         }
     }
 
-    /**
-     * @dataProvider userTimeDataProvider
-     */
+    #[DataProvider('userTimeDataProvider')]
     public function testUserTimeWithTimezoneOffset($time, $format, $iso): void {
         $userMockObject           = new stdClass();
         $userMockObject->timezone = 'Europe/Berlin';
@@ -72,9 +71,7 @@ class HelperMethodTest extends UnitTestCase
     }
 
 
-    /**
-     * @dataProvider userTimeDataProvider
-     */
+    #[DataProvider('userTimeDataProvider')]
     public function testUserTimeWithoutTimezoneOffset($time, $format, $iso): void {
         Auth::shouldReceive('user')->andReturn(null);
 
@@ -103,9 +100,7 @@ class HelperMethodTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @dataProvider stationBoardTimezoneOffsetProvider
-     */
+    #[DataProvider('stationBoardTimezoneOffsetProvider')]
     public function testStationBoardTimezoneOffset($expected, $departures): void {
         $user = User::factory()->make();
 

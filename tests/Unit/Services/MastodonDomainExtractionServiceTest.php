@@ -4,13 +4,12 @@ namespace Tests\Unit\Services;
 
 use App\Services\MastodonDomainExtractionService;
 use Illuminate\Support\Facades\Validator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Unit\UnitTestCase;
 
 class MastodonDomainExtractionServiceTest extends UnitTestCase
 {
-    /**
-     * @dataProvider providerTestFormatDomain
-     */
+    #[DataProvider('providerTestFormatDomain')]
     public function testFormatDomain($case, $expected): void {
         $formatted = (new MastodonDomainExtractionService())->formatDomain($case);
         $this->assertEquals($expected, $formatted);
