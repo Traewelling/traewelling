@@ -867,5 +867,7 @@
     "export.error.gdpr": "Het exportverzoek is mislukt - probeer het later opnieuw.",
     "profile.statistics": "Statistieken",
     "profile.info": "Informatie",
-    "profile.bio": "Biografie"
+    "profile.bio": "Biografie",
+    "messages.too-many-likes": "Je hebt de afgelopen paar minuten te veel berichten leuk gevonden.",
+    "messages.retry-in": "Probeer het over :minutes minuten opnieuw."
 }
