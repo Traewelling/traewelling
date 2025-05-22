@@ -31,7 +31,6 @@ abstract class DashboardController extends Controller
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
                      ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20))
-                     ->orderBy('train_checkins.departure', 'desc')
                      ->whereIn('statuses.user_id', $followingIDs)
                      ->whereNotIn('statuses.user_id', $user->mutedUsers->pluck('id'))
                      ->whereIn('statuses.visibility', [
@@ -39,7 +38,11 @@ abstract class DashboardController extends Controller
                          StatusVisibility::FOLLOWERS->value,
                          StatusVisibility::AUTHENTICATED->value
                      ])
-                     ->orWhere('statuses.user_id', $user->id)
+                     ->orWhere(function($query) use ($user) {
+                         $query->where('statuses.user_id', $user->id)
+                               ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20));
+                     })
+                     ->orderBy('train_checkins.departure', 'desc')
                      ->latest()
                      ->simplePaginate(15);
     }
