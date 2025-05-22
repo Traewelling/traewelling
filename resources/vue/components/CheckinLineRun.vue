@@ -62,6 +62,7 @@ export default {
           this.lineRun = result.data;
           const givenDeparture = DateTime.fromISO(this.$props.selectedTrain.plannedWhen);
           this.lineRun.stopovers = this.lineRun.stopovers.filter((item) => {
+            // Get the planned departure time
             let departure = null;
             if (item.arrivalPlanned) {
               departure = DateTime.fromISO(item.arrivalPlanned);
@@ -69,7 +70,19 @@ export default {
               departure = DateTime.fromISO(item.departurePlanned);
             }
 
-            return !(departure && departure < givenDeparture);
+            if (departure) {
+              if (departure < givenDeparture) {
+                return false; // Filter out past stops
+              } else if (departure > givenDeparture) {
+                return true; // Keep future stops
+              } else if (departure === givenDeparture) {
+                // Check if the stop is the selected train's stop at the given time
+                const identifier = this.useInternalIdentifiers ? item.id : item.evaIdentifier;
+                return Number(this.$props.selectedTrain.stop.id) === identifier;
+              }
+            }
+
+            return true;
           });
           if (this.$props.fastCheckinId) {
             this.fastCheckin();
