@@ -553,13 +553,14 @@ class TransportController extends Controller
     }
 
     public function checkinOtherUsers(?Collection $withUsers, CheckInRequestDto $dto, CheckinSuccessDto $checkinResponse): void {
+        $by = $dto->user;
         foreach ($withUsers ?? [] as $user) {
             $dto->setUser($user);
             $dto->setBody(null);
             $dto->setStatusVisibility($user->default_status_visibility);
             $dto->setPostOnMastodonFlag(false);
             try {
-                $checkin = TrainCheckinController::checkin($dto);
+                $checkin = TrainCheckinController::checkin($dto, $by);
             } catch (Throwable) {
                 continue;
             }
