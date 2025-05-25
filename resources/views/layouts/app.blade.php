@@ -5,7 +5,6 @@
     <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" data-bs-theme="dark">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>@yield('title') - {{ config('app.name', 'Träwelling') }}</title>
 
     @include('layouts.includes.meta')
