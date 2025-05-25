@@ -62,17 +62,17 @@ export default {
       const times = [];
 
       if (this.form.originDeparturePlanned) {
-        times.push(DateTime.fromISO(this.form.originDeparturePlanned));
+        times.push(DateTime.fromISO(this.form.originDeparturePlanned, this.originTimezone));
       }
       if (this.form.destinationArrivalPlanned) {
-        times.push(DateTime.fromISO(this.form.destinationArrivalPlanned));
+        times.push(DateTime.fromISO(this.form.destinationArrivalPlanned, this.destinationTimezone));
       }
       for (const stop of this.stopovers) {
         if (stop.arrivalPlanned) {
-          times.push(DateTime.fromISO(stop.arrivalPlanned));
+          times.push(DateTime.fromISO(stop.arrivalPlanned, this.originTimezone));
         }
         if (stop.departurePlanned) {
-          times.push(DateTime.fromISO(stop.departurePlanned));
+          times.push(DateTime.fromISO(stop.departurePlanned, this.originTimezone));
         }
       }
 
@@ -113,7 +113,7 @@ export default {
       this.form.originId = item.id;
     },
     setDeparture(time) {
-      this.form.originDeparturePlanned = DateTime.fromISO(time).setZone(this.originTimezone).toISO();
+      this.form.originDeparturePlanned = DateTime.fromISO(time, this.originTimezone).toISO();
       this.validateTimes();
     },
     setDestination(item) {
@@ -122,17 +122,17 @@ export default {
       this.form.destinationId = item.id;
     },
     setArrival(time) {
-      this.form.destinationArrivalPlanned = DateTime.fromISO(time).setZone(this.destinationTimezone).toISO();
+      this.form.destinationArrivalPlanned = DateTime.fromISO(time, this.destinationTimezone).toISO();
       this.validateTimes();
     },
     validateTimes() {
       try {
         //iterate over stopovers and destination, check if time is valid
-        let time = DateTime.fromISO(this.form.originDeparturePlanned);
+        let time = DateTime.fromISO(this.form.originDeparturePlanned, this.originTimezone);
 
         for (const stopover of this.stopovers) {
-          const arrival = DateTime.fromISO(stopover.arrivalPlanned);
-          const departure = DateTime.fromISO(stopover.departurePlanned);
+          const arrival = DateTime.fromISO(stopover.arrivalPlanned, this.originTimezone);
+          const departure = DateTime.fromISO(stopover.departurePlanned, this.originTimezone);
 
           if (arrival < time || departure < arrival) {
             this.validation.times = false;
@@ -141,7 +141,7 @@ export default {
           time = departure;
         }
 
-        if (DateTime.fromISO(this.form.destinationArrivalPlanned) < time) {
+        if (DateTime.fromISO(this.form.destinationArrivalPlanned, this.destinationTimezone) < time) {
           this.validation.times = false;
           return false;
         }
@@ -170,8 +170,8 @@ export default {
       this.form.stopovers = this.stopovers.map((stopover) => {
         return {
           stationId: stopover.station.id,
-          departure: stopover.departurePlanned,
-          arrival: stopover.arrivalPlanned,
+          departure: DateTime.fromFormat(stopover.departurePlanned, "yyyy-MM-dd'T'HH:mm", this.originTimezone).toISO(),
+          arrival: DateTime.fromFormat(stopover.arrivalPlanned, "yyyy-MM-dd'T'HH:mm", this.originTimezone).toISO(),
         };
       });
       this.form.category = this.selectedCategory.value;
@@ -211,11 +211,11 @@ export default {
       this.stopovers[key].station = item;
     },
     setStopoverDeparture(time, key) {
-      this.stopovers[key].departurePlanned = DateTime.fromISO(time).setZone(this.originTimezone).toFormat("yyyy-MM-dd'T'HH:mm");
+      this.stopovers[key].departurePlanned = DateTime.fromISO(time, this.originTimezone).toFormat("yyyy-MM-dd'T'HH:mm");
       this.validateTimes();
     },
     setStopoverArrival(time, key) {
-      this.stopovers[key].arrivalPlanned = DateTime.fromISO(time).setZone(this.destinationTimezone).toFormat("yyyy-MM-dd'T'HH:mm");
+      this.stopovers[key].arrivalPlanned = DateTime.fromISO(time, this.destinationTimezone).toFormat("yyyy-MM-dd'T'HH:mm");
       this.validateTimes();
     },
     checkDisallowed() {
