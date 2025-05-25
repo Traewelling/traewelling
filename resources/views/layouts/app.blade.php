@@ -115,7 +115,8 @@
                                        aria-label="{{ __('stationboard.submit-search') }}"
                                        required
                                 />
-                                <button class="btn btn-primary" type="submit">
+                                <button class="btn btn-primary" type="submit"
+                                        aria-label="{{ __('stationboard.submit-search') }}">
                                     <i class="fas fa-search" aria-hidden="true"></i>
                                 </button>
                             </div>
@@ -166,16 +167,12 @@
                                     <hr class="dropdown-divider"/>
                                 </li>
 
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                      style="display: none;">
+                                <form method="POST" action="{{ route('logout') }}" id="logout-form">
                                     @csrf
-                                </form>
-
-                                <li>
-                                    <button class="dropdown-item" form="logout-form" type="submit">
+                                    <button type="submit" class="dropdown-item">
                                         <i class="fas fa-sign-out-alt"></i> {{ __('menu.logout') }}
                                     </button>
-                                </li>
+                                </form>
                             </ul>
                         </li>
                     @endguest
