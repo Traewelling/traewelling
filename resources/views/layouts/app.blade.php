@@ -1,8 +1,8 @@
+<!DOCTYPE html>
 @php
     use App\Http\Controllers\Backend\VersionController;
  use App\Services\PrideService;
 @endphp
-    <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" data-bs-theme="dark">
 <head>
     <title>@yield('title') - {{ config('app.name', 'Träwelling') }}</title>
@@ -317,7 +317,6 @@
     var token = '{{ csrf_token() }}';
     var mapprovider = '{{ Auth::user()->mapprovider ?? "default" }}';
 </script>
-</body>
-
 @yield('footer')
+</body>
 </html>
