@@ -19,6 +19,14 @@ export default {
     departure: {
       type: Boolean,
       default: true
+    },
+    arrivalTime: {
+      type: String,
+      default: ''
+    },
+    departureTime: {
+      type: String,
+      default: ''
     }
   },
   emits: ['update:station', 'update:timeFieldA', 'update:timeFieldB', 'delete'],
@@ -175,7 +183,6 @@ export default {
         />
       </ul>
 
-
       <!-- Time Fields -->
       <div class="row g-3 align-items-center justify-content-between mt-2" v-if="departure && arrival">
         <div class="col-auto">
@@ -189,6 +196,7 @@ export default {
               class="form-control mobile-input-fs-16"
               type="datetime-local"
               ref="timeFieldA"
+              :value="arrivalTime"
               @input="timeFieldAChanged"
           >
         </div>
@@ -206,6 +214,7 @@ export default {
               class="form-control mobile-input-fs-16"
               type="datetime-local"
               ref="timeFieldB"
+              :value="departureTime"
               @input="timeFieldBChanged"
           >
         </div>

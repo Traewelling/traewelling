@@ -712,7 +712,7 @@
     "scopes.extra-delete": "eliminar tu cuenta de Träwelling",
     "user.timezone": "Zona horaria",
     "trip_creation.limitations.6.rules": "Reglas",
-    "trip_creation.limitations.6.link": "https://help.traewelling.de/en/features/manual-trips/#info",
+    "trip_creation.limitations.6.link": "https://help.traewelling.de/en/guidelines/#manual-journeys",
     "action.set-home": "Establece la estación de casa",
     "action.error": "No se ha podido ejecutar la acción. Prueba de nuevo más tarde.",
     "action.like": "Dar me gusta al estado",
