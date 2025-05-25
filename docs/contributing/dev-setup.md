@@ -25,7 +25,7 @@ After setting up these, you can clone the repository and install the project's d
 ```sh
 composer install
 npm install
-npm run dev
+composer run dev # start the development server, assets and queue workers
 ```
 
 Now, you can create your own environment configuration:
