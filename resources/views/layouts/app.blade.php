@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 @php
     use App\Http\Controllers\Backend\VersionController;
- use App\Services\PrideService;
+    use App\Services\PrideService;
 @endphp
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" data-bs-theme="dark">
 <head>
@@ -17,28 +17,22 @@
         }
         let darkModeSetting = localStorage.getItem("darkMode");
         if (darkModeSetting === "auto") {
-            darkModeSetting = window.matchMedia("(prefers-color-scheme: dark)")
-                .matches
-                ? "dark"
-                : "light";
+            darkModeSetting = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
         }
-        if (darkModeSetting === "dark") {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-        }
+        document.documentElement.classList.toggle("dark", darkModeSetting === "dark");
         document.documentElement.setAttribute("data-bs-theme", darkModeSetting);
     </script>
+
     <!-- Fonts -->
     <link href="{{ asset('fonts/Nunito/Nunito.css') }}" rel="stylesheet">
 
     <!-- Styles -->
     <link rel="mask-icon" href="{{ asset('images/icons/touch-icon-vector.svg') }}">
-    <link rel="shortcut favicon" href="{{ asset('images/icons/favicon.ico') }}">
-    <link rel="shortcut icon" sizes="512x512" href="{{ asset('images/icons/logo512.png') }}">
-    <link rel="shortcut icon" sizes="128x128" href="{{ asset('images/icons/logo128.png') }}">
+    <link rel="icon" href="{{ asset('images/icons/logo128.png') }}" sizes="128x128">
+    <link rel="icon" href="{{ asset('images/icons/logo512.png') }}" sizes="512x512">
+    <link rel="shortcut icon" href="{{ asset('images/icons/favicon.ico') }}">
     <link rel="author" href="/humans.txt">
-    <link rel="manifest" href="/manifest.json"/>
+    <link rel="manifest" href="/manifest.json">
 
     @vite(['resources/sass/app.scss', 'resources/sass/app-dark.scss', 'resources/js/app.js'])
 
@@ -62,23 +56,30 @@
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
+
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto">
                     @auth
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('dashboard/*') ? 'active' : '' }}"
-                               href="{{ route('dashboard') }}">{{ __('menu.dashboard') }}</a>
+                               href="{{ route('dashboard') }}">
+                                {{ __('menu.dashboard') }}
+                            </a>
                         </li>
                     @endauth
                     @if(!auth()->check() || auth()->user()->points_enabled)
                         <li class="nav-item">
                             <a class="nav-link {{ request()->is('leaderboard') ? 'active' : '' }}"
-                               href="{{ route('leaderboard') }}">{{ __('menu.leaderboard') }}</a>
+                               href="{{ route('leaderboard') }}">
+                                {{ __('menu.leaderboard') }}
+                            </a>
                         </li>
                     @endif
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('statuses/active') ? 'active' : '' }}"
-                           href="{{ route('statuses.active') }}">{{ __('menu.active') }}</a>
+                           href="{{ route('statuses.active') }}">
+                            {{ __('menu.active') }}
+                        </a>
                     </li>
                     @auth
                         <li class="nav-item">
@@ -97,19 +98,23 @@
                         @endif
                     @endauth
                 </ul>
+
                 <ul class="navbar-nav w-auto">
                     @guest
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">{{ __('menu.login') }}</a>
+                            <a class="nav-link" href="{{ route('login') }}">
+                                {{ __('menu.login') }}
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">{{ __('menu.register') }}</a>
+                            <a class="nav-link" href="{{ route('register') }}">
+                                {{ __('menu.register') }}
+                            </a>
                         </li>
                     @else
                         <form class="form-inline" action="{{ route('userSearch') }}">
                             <div class="input-group md-form form-sm form-2 ps-0 m-0">
-                                <input name="searchQuery" type="text"
-                                       value="{{request()->has('searchQuery') ? request()->searchQuery : ''}}"
+                                <input name="searchQuery" type="text" value="{{ request()->get('searchQuery', '') }}"
                                        class="border border-white rounded-left form-control my-0 py-1"
                                        placeholder="{{ __('stationboard.submit-search') }}"
                                        aria-label="{{ __('stationboard.submit-search') }}"
@@ -117,7 +122,7 @@
                                 />
                                 <button class="btn btn-primary" type="submit"
                                         aria-label="{{ __('stationboard.submit-search') }}">
-                                    <i class="fas fa-search" aria-hidden="true"></i>
+                                    <i class="fas fa-search"></i>
                                 </button>
                             </div>
                         </form>
@@ -132,7 +137,7 @@
                                 <span class="caret"></span>
                             </button>
 
-                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <li>
                                     <a class="dropdown-item"
                                        href="{{ route('profile', ['username' => auth()->user()->username]) }}">
@@ -181,9 +186,8 @@
         </div>
     </nav>
 
-    <main class="py-4">
+    <main class="py-4" role="main">
         @include('includes.message-block')
-
         @yield('content')
     </main>
 
@@ -205,7 +209,6 @@
                         </li>
                     </ul>
                 </div>
-
                 <div class="col-6 col-md-2 mb-3">
                     <ul class="nav flex-column">
                         <li class="nav-item mb-2">
@@ -220,7 +223,6 @@
                         </li>
                     </ul>
                 </div>
-
                 <div class="col-6 col-md-2 mb-3">
                     <ul class="nav flex-column">
                         <li class="nav-item mb-2">
@@ -240,15 +242,13 @@
                         </li>
                     </ul>
                 </div>
-
                 <div class="col-md-auto ms-md-auto mb-3">
                     <ul class="nav flex-column">
-                        <li class="nav item mb-2">
+                        <li class="nav-item mb-2">
                             <div class="btn-group dropup w-100">
                                 <button type="button" class="btn btn-primary btn-block dropdown-toggle"
-                                        data-bs-dropdown-animation="off"
                                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-globe-europe"></i> {{__('settings.language.set')}}
+                                    <i class="fas fa-globe-europe"></i> {{ __('settings.language.set') }}
                                 </button>
                                 <div class="dropdown-menu">
                                     @foreach(config('app.locales') as $key => $lang)
@@ -260,12 +260,12 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="nav item mb-2">
+                        <li class="nav-item mb-2">
                             <div class="btn-group dropup w-100">
                                 <button type="button" class="btn btn-primary btn-block dropdown-toggle"
-                                        data-bs-dropdown-animation="off"
                                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-circle-half-stroke"></i></i> {{__('settings.colorscheme.set')}}
+                                    <i class="fas fa-circle-half-stroke"></i>
+                                    {{__('settings.colorscheme.set')}}
                                 </button>
                                 <div class="dropdown-menu">
                                     <div class="dropdown-item" id="colorModeToggleLight">
@@ -284,12 +284,10 @@
                             </div>
                         </li>
                     </ul>
-
                 </div>
             </div>
-
             <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
-                <p class="mb-0">&copy; {{date('Y')}} Tr&auml;welling</p>
+                <p class="mb-0">&copy; {{ date('Y') }} Tr&auml;welling</p>
                 <p class="mb-0">{!! __('menu.developed') !!}</p>
                 <p class="mb-0 text-muted small">
                     Version
@@ -298,14 +296,15 @@
                     </a>
                 </p>
             </div>
+        </div>
     </footer>
 </div>
 
 <div class="alert text-center cookiealert" role="alert">
     <b>Do you like cookies?</b> &#x1F36A; {{ __('messages.cookie-notice') }}
-    <a href="{{route('legal.privacy')}}">{{ __('messages.cookie-notice-learn') }}</a>
-
-    <button type="button" class="btn btn-primary btn-sm acceptcookies" aria-label="Close">
+    <a href="{{ route('legal.privacy') }}">{{ __('messages.cookie-notice-learn') }}</a>
+    <button type="button" class="btn btn-primary btn-sm acceptcookies"
+            aria-label="{{ __('messages.cookie-notice-button') }}">
         {{ __('messages.cookie-notice-button') }}
     </button>
 </div>
