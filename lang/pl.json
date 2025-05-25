@@ -597,7 +597,7 @@
     "user.blocked": "Zablokowano użytkownika :username.",
     "user.blocked.text": "Nie możesz zobaczyć meldunków użytkownika :username, ponieważ jest on zablokowany.",
     "merry-christmas": "Życzymy Ci Wesołych Świąt!",
-    "trip_creation.limitations.6.link": "https://help.traewelling.de/en/features/manual-trips/#info",
+    "trip_creation.limitations.6.link": "https://help.traewelling.de/en/guidelines/#manual-journeys",
     "export.error.time": "Możesz wyeksportować podróże z okresu co najwyżej 365 dni.",
     "messages.exception.maybe-too-fast": "Może Twoje żądanie zostało przypadkiem wysłane wielokrotnie?",
     "export.error.amount": "Zażądano eksportu więcej, niż 2000 podróży. Spróbuj zmniejszyć okres do eksportu.",
