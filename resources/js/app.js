@@ -21,6 +21,7 @@ import piniaPluginPersistedsState from 'pinia-plugin-persistedstate'
 import FriendCheckinSettings from "../vue/components/Settings/FriendCheckinSettings.vue";
 import WebhookSettings from "../vue/components/Settings/Webhooks.vue";
 import ProfileSettings from "../vue/components/Settings/ProfileSettings.vue";
+import StatsDashboard from "../vue/components/Stats/StatsDashboard.vue";
 import Request from "../vue/components/Events/Request.vue";
 import ApiAlerts from "../vue/components/ApiAlerts.vue";
 
@@ -143,12 +144,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (document.getElementById("settings-profile")) {
-        const app8 = createApp({});
-        app8.component("ProfileSettings", ProfileSettings);
-        app8.use(i18nVue, i18nOptions);
-        app8.use(pinia);
-        app8.mount("#settings-profile");
+        const app10 = createApp({});
+        app10.component("ProfileSettings", ProfileSettings);
+        app10.use(i18nVue, i18nOptions);
+        app10.use(pinia);
+        app10.mount("#settings-profile");
+    }
 
+    if (document.getElementById("vue-stats")) {
+        const app11 = createApp({});
+        app11.component("StatsDashboard", StatsDashboard);
+        app11.use(i18nVue, i18nOptions);
+        app11.use(pinia);
+        app11.mount("#vue-stats");
     }
 });
 

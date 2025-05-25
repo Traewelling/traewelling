@@ -17,8 +17,8 @@
     "laravel-vite-plugin": "^1.2.0",
     "lodash": "^4.17.21",
     "sass": "^1.85.1",
-    "tailwindcss": "^4.1.4",
     "swagger-typescript-api": "^13.1.1",
+    "tailwindcss": "^4.1.4",
     "vite": "^6.3.4"
   },
   "dependencies": {
@@ -30,7 +30,9 @@
     "axios": "^1.8.2",
     "bootstrap-cookie-alert": "^1.2.1",
     "chart.js": "^4.0.0",
+    "chartjs-adapter-date-fns": "^3.0.0",
     "croppie": "^2.6.5",
+    "date-fns": "^4.1.0",
     "laravel-vue-i18n": "^2.7.1",
     "leaflet": "^1.9.4",
     "Leaflet-MovingMaker": "^0.0.1",
