@@ -2,27 +2,37 @@
   <div class="card">
     <div class="card-body">
       <h5>{{ trans('stats.time') }}</h5>
-      <canvas
-          ref="canvas"
-          role="img"
-          :aria-label="trans('stats.time') + ' ' + trans('time.minutes')"
-      ></canvas>
+      <div style="height: 250px">
+        <canvas
+            ref="canvas"
+            role="img"
+            :aria-label="trans('stats.time') + ' ' + trans('time.minutes')"
+        ></canvas>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { trans } from 'laravel-vue-i18n'
+import {trans} from 'laravel-vue-i18n'
 import Chart from 'chart.js/auto'
-Chart.defaults.animation = false
 import 'chartjs-adapter-date-fns'
-import { nextTick } from 'vue'
+import {nextTick} from 'vue'
+
+Chart.defaults.animation = false
 
 export default {
   name: 'ChartVolume',
-  props: { data: { type: Array, required: true } },
+  props: {
+    data: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
-    return { chart: null }
+    return {
+      chart: null
+    }
   },
   methods: {
     trans,
@@ -37,12 +47,25 @@ export default {
           type: 'line',
           data: {
             labels: this.data.map(d => new Date(d.date)),
-            datasets: [{ data: this.data.map(d => d.duration), label: this.trans('time.minutes'), fill: false }]
+            datasets: [
+              {
+                data: this.data.map(d => d.duration),
+                label: this.trans('time.minutes'),
+                fill: false
+              }
+            ]
           },
           options: {
             responsive: true,
             animation: false,
-            scales: { x: { type: 'time', time: { unit: 'day' } } }
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                type: 'time',
+                time: {unit: 'day'}
+              }
+            },
+
           }
         })
       })
@@ -51,7 +74,9 @@ export default {
   mounted() {
     this.createChart()
   },
-  watch: { data: 'createChart' },
+  watch: {
+    data: 'createChart'
+  },
   beforeUnmount() {
     if (this.chart) this.chart.destroy()
   }
