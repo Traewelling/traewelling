@@ -246,10 +246,6 @@ class StatisticsController extends Controller
         $from  = isset($validated['from']) ? Carbon::parse($validated['from']) : Carbon::now()->subWeeks(4);
         $until = isset($validated['until']) ? Carbon::parse($validated['until']) : Carbon::now();
 
-        if ($from->greaterThan($until)) {
-            return response()->json('The "from" date cannot be after the "until" date.', 400);
-        }
-
         $purposes   = StatisticsTravelPurposeResource::collection(
             StatisticBackend::getTravelPurposes(user: auth()->user(), from: $from, until: $until)
         );
