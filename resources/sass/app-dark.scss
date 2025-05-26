@@ -24,7 +24,9 @@
   }
 
   a {
-    color: $dm-trwlBlue;
+    &:not(.btn) {
+      color: $dm-trwlBlue;
+    }
   }
 
   .nav-link {
