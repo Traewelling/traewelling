@@ -122,7 +122,7 @@ export default {
         return;
       }
       this.loading = true;
-      if (!this.stationInput || this.stationInput.length < 3) {
+      if (!this.stationInput || this.stationInput.length < 2) {
         this.autocompleteList = [];
         this.loading = false;
         return;
