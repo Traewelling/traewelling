@@ -32,6 +32,7 @@ class StationController extends Controller
      * @return Collection
      */
     public static function getLatestArrivals(User $user, int $maxCount = 5): Collection {
+        $groupAndSelect = [
             'train_stations.id', 'train_stations.ibnr', 'train_stations.name',
             'train_stations.latitude', 'train_stations.longitude', 'train_stations.rilIdentifier',
         ];
