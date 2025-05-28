@@ -850,5 +850,8 @@
     "trip-info.in-this-connection": "A cette escale",
     "profile.bio": "Biographie",
     "profile.statistics": "Statistiques",
-    "profile.info": "Information"
+    "profile.info": "Information",
+    "export.error.gdpr": "La demande d'exportation du RGPD a raté. S'il vous plaît réessayez plus tard.",
+    "messages.too-many-likes": "Vous avez aimé trop de posts dans les dernières minutes.",
+    "messages.retry-in": "Vous pourrez réessayer dans :minutes minutes."
 }
