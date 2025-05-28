@@ -32,16 +32,29 @@ class StationController extends Controller
      * @return Collection
      */
     public static function getLatestArrivals(User $user, int $maxCount = 5): Collection {
+            'train_stations.id', 'train_stations.ibnr', 'train_stations.name',
+            'train_stations.latitude', 'train_stations.longitude', 'train_stations.rilIdentifier',
+        ];
+
         return DB::table('train_checkins')
                 ->join('train_stopovers', 'train_checkins.destination_stopover_id', '=', 'train_stopovers.id')
-                ->select('train_stopovers.train_station_id as station_id')
+                ->join('train_stations', 'train_stopovers.train_station_id', '=', 'train_stations.id')
                 ->where('train_checkins.user_id', $user->id)
-                ->groupBy('station_id')
+                ->groupBy($groupAndSelect)
+                ->select($groupAndSelect)
                 ->orderByDesc(DB::raw('MAX(train_checkins.arrival)'))
                 ->limit($maxCount)
-                ->pluck('station_id')
-                ->map(function (int $id) {
-                    return Station::where('id', $id)->first();
+                ->get()
+                ->map(function (object $station) {
+                    $instance = new Station([
+                        "ibnr" => $station->ibnr,
+                        "name" => $station->name,
+                        "latitude" => $station->latitude,
+                        "longitude" => $station->longitude,
+                        "rilIdentifier" => $station->rilIdentifier
+                    ]);
+                    $instance->id = $station->id;
+                    return $instance;
                 });
     }
 
