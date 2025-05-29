@@ -87,6 +87,10 @@ class MotisSourceLicense extends Model
         'CC-BY-SA-3.0'    => [
             'name' => 'Creative Commons Attribution Share Alike 3.0 Unported',
             'url'  => 'https://spdx.org/licenses/CC-BY-SA-3.0.html'
+        ],
+        'Unlicense'    => [
+            'name' => 'The Unlicense',
+            'url'  => 'https://spdx.org/licenses/Unlicense.html'
         ]
     ];
 
