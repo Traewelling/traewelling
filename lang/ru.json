@@ -1,1 +1,15 @@
-{}
+{
+    "about.feature-missing-heading": "Как сообщить о ошибках и предложений для улучшения?",
+    "about.international": "Высокоскоростные поезда",
+    "about.tram": "Трамвай, Автобус, Метро",
+    "admin.greeting": "Привет",
+    "admin.usage": "Использование",
+    "admin.usage-board": "Доска использования",
+    "about.feature-missing": "Если вы хотите предложить новую функцию или нашли баг, пожалуйста предложите это сразу в наш <a href=\"https://github.com/Traewelling/traewelling/issues/new/choose\" target=\"_blank\">GitHub репозиторий</a>.",
+    "about.regional": "Региональный поезд/Региональный экспресс",
+    "license.provided": "Данные предоставлены :provider и лицензированы :source под лицензии :license.",
+    "license.info": "Лицензия",
+    "about.express": "Междугородные поезда (InterCity/EuroCity)",
+    "about.suburban": "Пригородная железная дорога/Паром",
+    "about.block1": "Träwelling, это бесплатный сервис, который даёт возможность делится с друзьями, где вы находитесь и регистрировать поездки на общественном транспорте. Коротко, ты можешь регистрироватся в поезда и получать за это очки."
+}
