@@ -13,10 +13,10 @@ import {
 import Input from "./Partials/Input.vue";
 import Select from "./Partials/Select.vue";
 import {SelectOption} from "./Partials/SelectOption";
-import DataLilst from "./Partials/DataLilst.vue";
 import {Notyf} from "notyf";
 import Textfield from "./Partials/Textfield.vue";
 import {showApiValidationErrors} from "../../helpers/NotyfHelper";
+import TimezoneDropdown from "./Partials/TimezoneDropdown.vue";
 
 const notyf = new Notyf({position: {x: "right", y: "bottom"}});
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
@@ -136,18 +136,8 @@ getDefaultUserData();
               autocomplete="email"
               required="true"
           />
-          <Select
-              :title="trans('user.mapprovider')"
-              :name="'mapprovider'"
-              v-model="userData.mapProvider"
-              :options="providers"
-              :errors="errors.mapProvider"
-          />
-          <DataLilst
+          <TimezoneDropdown
               v-model="userData.timezone"
-              :errors="errors.timezone"
-              :options="timezones"
-              :title="trans('user.timezone')"
           />
 
           <Select
