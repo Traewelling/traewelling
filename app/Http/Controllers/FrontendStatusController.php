@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -31,7 +30,6 @@ class FrontendStatusController extends Controller
 
         return view('dashboard', [
             'statuses'         => $statuses,
-            'latest'           => StationController::getLatestArrivals(auth()->user()),
             'future'           => StatusBackend::getFutureCheckins(),
             'showGlobalButton' => auth()->user()->follows->count() === 0
         ]);

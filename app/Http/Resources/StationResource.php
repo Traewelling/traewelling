@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Controllers\Backend\Transport\dtos\StationDto;
 use App\Models\Station;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,7 +23,7 @@ class StationResource extends JsonResource
     private bool $areasSet;
 
     public function __construct($station) {
-        $this->areasSet = $station instanceof Station;
+        $this->areasSet = $station instanceof Station || $station instanceof StationDto;
 
         parent::__construct($station);
     }

@@ -52,7 +52,7 @@ class StationController extends Controller
                      $areas = Area::query()
                                   ->join('areas_stations_maps', 'areas_stations_maps.area_id', '=', 'areas.id')
                                   ->where('areas_stations_maps.station_id', $station->id)
-                                  ->get(['areas.id', 'areas.name']);
+                                  ->get(['areas.id', 'areas.name', 'areas.adminLevel', 'areas_stations_maps.default']);
 
                      return new StationDto(
                          (int) $station->id,
@@ -61,7 +61,7 @@ class StationController extends Controller
                          (float) $station->latitude,
                          (float) $station->longitude,
                          $station->rilIdentifier ?? null,
-                         $areas->toArray()
+                         $areas
                      );
                  });
     }
