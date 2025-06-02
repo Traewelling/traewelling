@@ -36,15 +36,27 @@ class StationController extends Controller
             'train_stations.id', 'train_stations.ibnr', 'train_stations.name',
             'train_stations.latitude', 'train_stations.longitude', 'train_stations.rilIdentifier',
         ];
-        return DB::table('train_checkins') //TODO: return Station objects
-                 ->join('train_stopovers', 'train_checkins.destination_stopover_id', '=', 'train_stopovers.id')
-                 ->join('train_stations', 'train_stopovers.train_station_id', '=', 'train_stations.id')
-                 ->where('train_checkins.user_id', $user->id)
-                 ->groupBy($groupAndSelect)
-                 ->select($groupAndSelect)
-                 ->orderByDesc(DB::raw('MAX(train_checkins.arrival)'))
-                 ->limit($maxCount)
-                 ->get();
+
+        return DB::table('train_checkins')
+                ->join('train_stopovers', 'train_checkins.destination_stopover_id', '=', 'train_stopovers.id')
+                ->join('train_stations', 'train_stopovers.train_station_id', '=', 'train_stations.id')
+                ->where('train_checkins.user_id', $user->id)
+                ->groupBy($groupAndSelect)
+                ->select($groupAndSelect)
+                ->orderByDesc(DB::raw('MAX(train_checkins.arrival)'))
+                ->limit($maxCount)
+                ->get()
+                ->map(function (object $station) {
+                    $instance = new Station([
+                        "ibnr" => $station->ibnr,
+                        "name" => $station->name,
+                        "latitude" => $station->latitude,
+                        "longitude" => $station->longitude,
+                        "rilIdentifier" => $station->rilIdentifier
+                    ]);
+                    $instance->id = $station->id;
+                    return $instance;
+                });
     }
 
     /**
