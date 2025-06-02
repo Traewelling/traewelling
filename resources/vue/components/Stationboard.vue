@@ -47,6 +47,7 @@ export default {
         lineName: selectedItem.line.name,
         start: this.useInternalIdentifiers ? this.selectedTrain.stop.id : this.meta.station.ibnr,
         departure: selectedItem.when,
+        category: selectedItem.line.product,
       });
 
       this.pushHistory(data);
@@ -136,7 +137,8 @@ export default {
         this.selectedTrain = {
           tripId: urlParams.get('tripId'),
           line: {
-            name: urlParams.get('lineName')
+            name: urlParams.get('lineName'),
+            product: urlParams.get('category') || null
           },
           stop: {
             id: urlParams.get('start')
