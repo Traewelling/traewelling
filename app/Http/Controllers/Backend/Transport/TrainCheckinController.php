@@ -179,7 +179,7 @@ abstract class TrainCheckinController extends Controller
 
             foreach ($alsoOnThisConnection as $otherStatus) {
                 if ($otherStatus?->user && $otherStatus->user->can('view', $status)) {
-                    if ($checkedInBy?->id === $otherStatus->user->id) {
+                    if ($checkedInBy?->id === $otherStatus->user->id || $otherStatus->user->id === $status->user_id) {
                         // don't notify the user about their own checkin
                         continue;
                     }
