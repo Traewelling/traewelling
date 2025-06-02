@@ -668,6 +668,7 @@
   "scopes.extra-write-password": "dein Passwort ändern",
   "scopes.extra-terminate-sessions": "dich aus anderen Sessions und Anwendungen abmelden",
   "scopes.extra-delete": "dein Träwelling-Konto löschen",
+  "scopes.write-support-tickets": "Support-Tickets in deinem Namen erstellen",
   "yes": "Ja",
   "no": "Nein",
   "edit": "Bearbeiten",
