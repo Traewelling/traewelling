@@ -192,7 +192,8 @@ export default {
               lineName: result.lineName,
               start: result.origin.id,
               departure: this.form.originDeparturePlanned,
-              idType: 'trwl'
+              idType: 'trwl',
+              category: result.category,
             };
 
             window.location.href = `/stationboard?${new URLSearchParams(query).toString()}`;
