@@ -4257,13 +4257,13 @@
                 ]
             }
         },
-        "/user/search/{?query}": {
+        "/user/search/{query}": {
             "get": {
                 "tags": [
                     "User"
                 ],
-                "summary": "Get paginated statuses for single user",
-                "description": "Returns paginated statuses of a single user specified by the username",
+                "summary": "Get paginated search results for combined search on username and (display)name",
+                "description": "Returns paginated search results for a user based on the given query.",
                 "operationId": "searchUsers",
                 "parameters": [
                     {
@@ -4280,16 +4280,78 @@
                         "schema": {
                             "type": "integer"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UserResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-search"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/user/search": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get paginated search results for users by either username or (display)name",
+                "description": "Returns paginated search results for users based on the given parameters.",
+                "operationId": "searchUsersByParameters",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
                     },
                     {
                         "name": "username",
                         "in": "query",
-                        "description": "Search for parts username"
+                        "description": "Search for parts username",
+                        "required": false
                     },
                     {
                         "name": "name",
                         "in": "query",
-                        "description": "Search for parts of users (display)name"
+                        "description": "Search for parts of users (display)name",
+                        "required": false
                     }
                 ],
                 "responses": {

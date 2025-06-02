@@ -2429,25 +2429,20 @@ export class Api<
       }),
 
     /**
-     * @description Returns paginated statuses of a single user specified by the username
+     * @description Returns paginated search results for a user based on the given query.
      *
      * @tags User
      * @name SearchUsers
-     * @summary Get paginated statuses for single user
-     * @request GET:/user/search/{?query}
+     * @summary Get paginated search results for combined search on username and (display)name
+     * @request GET:/user/search/{query}
      * @secure
      */
     searchUsers: (
-      queryParams: {
+      query?: any,
+      queryParams?: {
         /** Page of pagination */
         page?: number;
-        /** Search for parts username */
-        username?: any;
-        /** Search for parts of users (display)name */
-        name?: any;
-        query: string;
       },
-      query?: any,
       params: RequestParams = {},
     ) =>
       this.request<
@@ -2460,9 +2455,47 @@ export class Api<
         },
         void
       >({
-        path: `/user/search/`,
+        path: `/user/search/${query}`,
         method: "GET",
         query: queryParams,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Returns paginated search results for users based on the given parameters.
+     *
+     * @tags User
+     * @name SearchUsersByParameters
+     * @summary Get paginated search results for users by either username or (display)name
+     * @request GET:/user/search
+     * @secure
+     */
+    searchUsersByParameters: (
+      query?: {
+        /** Page of pagination */
+        page?: number;
+        /** Search for parts username */
+        username?: any;
+        /** Search for parts of users (display)name */
+        name?: any;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: UserResource[];
+          /** pagination links */
+          links?: Links;
+          /** Pagination meta data */
+          meta?: PaginationMeta;
+        },
+        void
+      >({
+        path: `/user/search`,
+        method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,
