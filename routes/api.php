@@ -120,7 +120,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 Route::post('/{userId}/mute', [UserController::class, 'createMute']);
                 Route::delete('/{userId}/mute', [UserController::class, 'destroyMute']);
             });
-            Route::get('search/{query?}', [UserController::class, 'search'])->middleware(['scope:read-search']);
+            Route::get('search/{query}', [UserController::class, 'search'])->middleware(['scope:read-search']);
+            Route::get('search', [UserController::class, 'searchByParameters'])->middleware(['scope:read-search']);
             Route::get('statuses/active', [StatusController::class, 'getActiveStatus'])
                  ->middleware(['scope:read-statuses']);
         });
