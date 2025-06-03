@@ -869,5 +869,6 @@
     "profile.info": "Informatie",
     "profile.bio": "Biografie",
     "messages.too-many-likes": "Je hebt de afgelopen paar minuten te veel berichten leuk gevonden.",
-    "messages.retry-in": "Probeer het over :minutes minuten opnieuw."
+    "messages.retry-in": "Probeer het over :minutes minuten opnieuw.",
+    "scopes.write-support-tickets": "Maak ondersteuningsverzoeken op jouw naam"
 }
