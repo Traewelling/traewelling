@@ -75,6 +75,10 @@ class MotisSourceLicense extends Model
             'name' => 'Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)',
             'url'  => 'https://spdx.org/licenses/CC-BY-NC-4.0.html'
         ],
+        'CC-BY-ND-4.0' => [
+            'name' => 'Creative Commons Attribution No Derivatives 4.0 International (CC-BY-ND-4.0)',
+            'url'  => 'https://spdx.org/licenses/CC-BY-ND-4.0.html'
+        ],
         'MIT' => [
             'name' => 'MIT License',
             'url'  => 'https://spdx.org/licenses/MIT.html'
