@@ -231,8 +231,8 @@ class LocationController
                 $coordinate = new Coordinate($stopover->station->latitude, $stopover->station->longitude);
                 $feature    = Feature::fromCoordinate($coordinate);
                 $feature->setStationId($stopover->station->id);
-                $feature->setDeparturePlanned($stopover->departure_planned->toIso8601ZuluString());
-                $feature->setArrivalPlanned($stopover->arrival_planned->toIso8601ZuluString());
+                $feature->setDeparturePlanned($stopover->departure_planned?->toIso8601ZuluString());
+                $feature->setArrivalPlanned($stopover->arrival_planned?->toIso8601ZuluString());
                 $coordinates[] = $feature;
 
 

@@ -23,7 +23,7 @@ class ManualTripCreator extends Controller
     private HafasTravelType $category;
     private string          $lineName;
     private ?int            $journeyNumber;
-    private ?HafasOperator  $operator;
+    private ?HafasOperator  $operator  = null;
     private Station         $origin;
     private Carbon          $originDeparturePlanned;
     private ?Carbon         $originDepartureReal;

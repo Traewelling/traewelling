@@ -14,7 +14,7 @@ class MotisLicenseRepository
         $name    = $matches['name'] ?? '';
         $country = $matches['country'] ?? '';
         if (empty($name) || empty($country)) {
-            Log::error('no matching license format found in ' . $gtfsSource);
+            Log::warning('no matching license format found in ' . $gtfsSource);
             return null;
         }
 

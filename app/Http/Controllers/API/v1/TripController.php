@@ -31,7 +31,6 @@ class TripController extends Controller
             $creator = new ManualTripCreator();
             $creator->setCategory(HafasTravelType::from($validated['category']))
                     ->setLine($validated['lineName'], $validated['journeyNumber'])
-                    ->setOperator(HafasOperator::find($validated['operatorId']))
                     ->setOrigin(
                         Station::findOrFail($validated['originId']),
                         Carbon::parse($validated['originDeparturePlanned']),
@@ -42,6 +41,11 @@ class TripController extends Controller
                         Carbon::parse($validated['destinationArrivalPlanned']),
                         isset($validated['destinationArrivalReal']) ? Carbon::parse($validated['destinationArrivalReal']) : null
                     );
+
+            if (isset($validated['operatorId'])) {
+                $operator = HafasOperator::findOrFail($validated['operatorId']);
+                $creator->setOperator($operator);
+            }
 
             foreach ($validated['stopovers'] ?? [] as $stopover) {
                 $creator->addStopover(
