@@ -258,6 +258,11 @@ class Motis extends Controller implements DataProviderInterface
             }
 
         } catch (Exception $exception) {
+            if (!empty($response) && str_contains(strtolower($response->body()), 'trip not found')) {
+                Log::debug('MOTIS Trip not found', ['tripId' => $tripId]);
+                return null;
+            }
+
             CacheKey::increment(HCK::TRIPS_FAILURE);
             Log::error('Unknown HAFAS Error (fetchJourney)', [
                 'status' => $response->status(),

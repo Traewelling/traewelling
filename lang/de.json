@@ -618,6 +618,7 @@
   "stats.stations.description": "Karte deiner durchfahrenen Stationen",
   "stats.stations.passed": "Durchgefahrene Station",
   "stats.stations.changed": "Einstieg / Ausstieg / Umstieg",
+  "stats.daily": "Tägliche Fahrten",
   "stats.daily.description": "Tagebuch deiner Fahrten inkl. Karte",
   "warning.insecure-performance": "Die Ladezeit dieser Seite ist ggfs. bei vielen Daten sehr langsam.",
   "year-review": "Jahresrückblick",

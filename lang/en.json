@@ -621,6 +621,7 @@
   "stats.stations.description": "Map of your passed stations",
   "stats.stations.passed": "Passed station",
   "stats.stations.changed": "Entry / Exit / Change",
+  "stats.daily": "Daily statistics",
   "stats.daily.description": "Diary of your journeys incl. map",
   "warning.insecure-performance": "The loading time of this page may be very slow if there is a lot of data.",
   "year-review": "Year in review",

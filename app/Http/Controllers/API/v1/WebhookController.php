@@ -3,13 +3,10 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\API\v1\Controller as APIController;
-use App\Http\Controllers\Backend\WebhookController as WebhookBackend;
 use App\Http\Resources\WebhookResource;
 use App\Models\Webhook;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class WebhookController extends Controller
@@ -135,7 +132,7 @@ class WebhookController extends Controller
 
         $query = Webhook::where('user_id', auth()->id());
         if ($currentClient !== null) { // null = Traewelling itself or personal access token
-            $query->where('client_id', $currentClient->id);
+            $query->where('oauth_client_id', $currentClient->id);
         }
 
         return $query->where('id', '=', $webhookId)->first();
