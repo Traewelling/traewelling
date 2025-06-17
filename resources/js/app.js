@@ -24,6 +24,7 @@ import ProfileSettings from "../vue/components/Settings/ProfileSettings.vue";
 import StatsDashboard from "../vue/components/Stats/StatsDashboard.vue";
 import Request from "../vue/components/Events/Request.vue";
 import ApiAlerts from "../vue/components/ApiAlerts.vue";
+import Dashboard from "../vue/views/Dashboard.vue";
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -157,6 +158,14 @@ document.addEventListener("DOMContentLoaded", function () {
         app11.use(i18nVue, i18nOptions);
         app11.use(pinia);
         app11.mount("#vue-stats");
+    }
+
+    if (document.getElementById("vue-dashboard")) {
+        const app12 = createApp({});
+        app12.component("VueDashboard", Dashboard);
+        app12.use(i18nVue, i18nOptions);
+        app12.use(pinia);
+        app12.mount("#vue-dashboard");
     }
 });
 

@@ -28,6 +28,7 @@ use OpenApi\Annotations as OA;
  *      @OA\Property(property="userDetails", ref="#/components/schemas/LightUserResource"),
  *      @OA\Property(property="tags", type="array", @OA\Items(ref="#/components/schemas/StatusTagResource")),
  * )
+ * @todo: add moderation_notes, lock_visibility and hide_body
  */
 class StatusResource extends JsonResource
 {

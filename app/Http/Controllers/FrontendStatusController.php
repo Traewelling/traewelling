@@ -25,6 +25,9 @@ class FrontendStatusController extends Controller
     }
 
     public function getDashboard(): Renderable|RedirectResponse {
+        if (auth()->user()?->hasRole('open-beta')) {
+            return view('vue-dashboard');
+        }
 
         $statuses = DashboardController::getPrivateDashboard(auth()->user());
 
