@@ -1,13 +1,14 @@
 <script setup lang="ts">
 
 import {computed, PropType} from "vue";
-import {StatusResource, UserAuthResource} from "../../../../types/Api.gen";
+import {Api, StatusResource, UserAuthResource} from "../../../../types/Api.gen";
 import {trans} from "laravel-vue-i18n";
 import {IconHelper} from "../../../helpers/IconHelper";
 import StatusContextMenu from "./StatusContextMenu.vue";
 import {Dtm} from "../../../helpers/DateTime";
 import {DateTime} from "luxon";
 
+const api = new Api({baseUrl: window.location.origin + '/api/v1'});
 const props = defineProps({
   status: {
     type: Object as PropType<StatusResource>,
@@ -18,9 +19,28 @@ const props = defineProps({
     default: null
   },
 });
+const emit = defineEmits(['status-liked', 'status-unliked']);
 
 function like() {
-  // todo
+  if (!props.authenticatedUser) {
+    return;
+  }
+
+  if (props.status.liked) {
+    api.status.removeLikeFromStatus(props.status.id).then(() => {
+      props.status.liked = false;
+      props.status.likes--;
+    });
+
+    emit('status-unliked', props.status.id);
+  } else {
+    api.status.addLikeToStatus(props.status.id).then(() => {
+      props.status.liked = true;
+      props.status.likes++;
+    });
+
+    emit('status-liked', props.status.id);
+  }
 }
 
 const createdAt = computed(() => {
@@ -42,7 +62,7 @@ const createdAt = computed(() => {
               href="#"
               class="like"
               :class="{'fas fa-heart': status.liked, 'far fa-heart': !status.liked, 'peach': status.userDetails.id === 18574}"
-              @click="like()"
+              @click.prevent="like()"
           >
             <span class="sr-only">{{ trans('action.like') }}</span>
           </a>
@@ -62,7 +82,7 @@ const createdAt = computed(() => {
         ></i>
       </li>
       <li class="like-text list-inline-item">
-        <StatusContextMenu/>
+        <StatusContextMenu :status :authenticatedUser/>
       </li>
     </ul>
 

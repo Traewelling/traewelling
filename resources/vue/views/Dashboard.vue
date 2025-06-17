@@ -4,18 +4,46 @@ import StationAutocomplete from "../components/StationAutocomplete/StationAutoco
 import {ref} from "vue";
 import {Api, StatusResource, UserAuthResource} from "../../types/Api.gen";
 import StatusCard from "../components/Status/StatusCard.vue";
+import {DateTime} from "luxon";
+import {getDepartureForStatus} from "../helpers/DateTimeHelper";
+import {Notyf} from "notyf";
 
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
 const statuses = ref<StatusResource[]>([]);
+const loading = ref(true);
+const currentPage = ref(1);
+const showMore = ref(false);
+const futureStatuses = ref<StatusResource[]>([]);
 const user = ref<UserAuthResource | null>(null);
+const notyf = new Notyf({position: {x: "right", y: "bottom"}});
 
-function fetchStatuses() {
-  api.dashboard.getDashboard().then((response) => {
+function fetchStatuses(page: number | undefined = undefined, append: boolean = false) {
+  loading.value = true;
+  showMore.value = false;
+  api.dashboard.getDashboard({page}).then((response) => {
     response.json().then((data) => {
-      statuses.value = data.data;
+      if (append) {
+        statuses.value.push(...data.data);
+      } else {
+        statuses.value = data.data;
+      }
+      loading.value = false;
+      showMore.value = data.links?.next.length > 0;
+      currentPage.value = data.meta?.current_page || 0;
     });
   }).catch((error) => {
-    console.error('Error fetching statuses:', error);
+    loading.value = false;
+    notyf.error('Error fetching statuses: ' + error.message);
+  });
+}
+
+function fetchFutureStatuses() {
+  api.dashboard.getFutureDashboard().then((response) => {
+    response.json().then((data) => {
+      futureStatuses.value = data.data;
+    });
+  }).catch((error) => {
+    console.error('Error fetching future statuses:', error);
   });
 }
 
@@ -30,6 +58,7 @@ function fetchUser() {
 }
 
 fetchStatuses();
+fetchFutureStatuses();
 fetchUser();
 </script>
 
@@ -42,10 +71,7 @@ fetchUser();
           <StationAutocomplete :dashboard="true" :show-gps-button="true"></StationAutocomplete>
         </div>
 
-        <!--
-        todo: Future check-ins
-        @if($future->count() >= 1)
-        <div class="accordion accordion-flush" id="accordionFutureCheckIns">
+        <div v-if="futureStatuses.length" class="accordion accordion-flush" id="accordionFutureCheckIns">
           <div class="accordion-item">
             <h2 class="accordion-header" id="flush-headingOne">
               <button class="accordion-button collapsed"
@@ -64,15 +90,17 @@ fetchUser();
                  data-bs-parent="#accordionFutureCheckIns"
             >
               <div class="accordion-body px-0">
-                @include('includes.statuses', ['statuses' => $future, 'showDates' => false])
+                <StatusCard v-for="status in futureStatuses"
+                            :key="status.id"
+                            :status="status"
+                            :authenticated-user="user"/>
               </div>
             </div>
           </div>
         </div>
-        @endif
-        -->
 
         <!--
+        todo: Year in Review
         @if(config('trwl.year_in_review.alert'))
         <div class="alert alert-info" role="region" aria-label="{{ trans('year-review') }}">
           <h4 class="alert-heading">
@@ -87,17 +115,27 @@ fetchUser();
         </div>
         @endif
         -->
-        <template v-for="status in statuses">
-          <!-- todo: date header if status.date != previous.status.date -->
+        <template v-for="(status, index) in statuses">
+          <h2 class="mb-2 fs-5"
+              v-if="index === 0 || !DateTime.fromISO(status.train.origin.departure || '').hasSame(DateTime.fromISO(statuses[index - 1].train.origin.departure || ''), 'day')">
+            {{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}
+          </h2>
           <StatusCard :status="status" :authenticated-user="user"/>
         </template>
 
-        @include('includes.statuses', ['statuses' => $statuses, 'showDates' => true])
-        <!--
-        Todo: Pagination
-        {{ $statuses->links() }}
-
-        -->
+        <div v-if="loading" class="text-center my-4">
+          <i class="fa-solid fa-spinner fa-spin fa-2x" aria-hidden="true"></i>
+        </div>
+        <div v-if="showMore" class="text-center my-4">
+          <button class="btn btn-primary" @click="fetchStatuses(currentPage + 1, true)">
+            <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div v-if="!loading && !showMore && statuses.length > 0" class="text-center my-4">
+          <p class="text-muted">
+            Final stop. All change, please!
+          </p>
+        </div>
 
         <section
             v-if="statuses.length <= 0"
