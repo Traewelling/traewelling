@@ -34,7 +34,8 @@ const duration = getArrivalForStatus(props.status).dateTime.diff(getDepartureFor
         {{ arrival.time?.toLocaleString(DateTime.TIME_SIMPLE) }}
       </span>
     </span>
-    <a href="#" class="text-trwl clearfix"><!-- todo: link to origin -->
+    <a :href="`/stationboard?stationId=${status.train.origin.id}&${status.train.origin.name}`"
+       class="text-trwl clearfix">
       {{ status.train.origin.name }}
     </a>
     <p class="train-status text-muted m-0">

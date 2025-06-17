@@ -62,6 +62,12 @@ class FrontendStatusController extends Controller
     }
 
     public function getStatus($statusId): Renderable {
+        if (\auth()->user()?->hasRole('open-beta')) {
+            return view('vue-status', [
+                'statusId' => $statusId,
+            ]);
+        }
+
         $status = StatusBackend::getStatus($statusId);
 
         try {

@@ -26,7 +26,8 @@ const arrival = getArrivalAttribute(props.status);
         {{ arrival.time?.toLocaleString(DateTime.TIME_SIMPLE) }}
       </span>
     </span>
-    <a href="#" class="text-trwl clearfix"><!-- todo: link to destination -->
+    <a :href="`/stationboard?stationId=${status.train.destination.id}&stationName=${status.train.destination.name}`"
+       class="text-trwl clearfix">
       {{ status.train.destination.name }}
     </a>
   </li>
