@@ -4,11 +4,13 @@ namespace App\Http\Resources;
 
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(
  *      title="LightUser",
  *      description="User model with just basic information",
+ *      required={"id", "displayName", "username", "profilePicture", "mastodonUrl", "preventIndex"},
  *      @OA\Property(property="id", type="integer", example=1),
  *      @OA\Property(property="displayName", type="string", example="Gertrud"),
  *      @OA\Property(property="username", type="string", example="Gertrud123"),

@@ -3,12 +3,14 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(
  *     schema="StatusTagResource",
  *     type="object",
  *     title="StatusTagResource",
+ *     required={"key", "value", "visibility"},
  *     @OA\Property(property="key", type="string", example="trwl:vehicle_number"),
  *     @OA\Property(property="value", type="string", example="94 80 0450 921 D-AVG"),
  *     @OA\Property(property="visibility", type="integer", example="1"),

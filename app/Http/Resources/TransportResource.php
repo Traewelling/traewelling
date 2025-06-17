@@ -9,6 +9,8 @@ use OpenApi\Annotations as OA;
 /**
  * @OA\Schema(
  *     title="TransportResource",
+ *     required={"trip", "hafasId", "category", "number", "lineName", "journeyNumber", "distance", "points", "duration",
+ *      "manualDeparture", "manualArrival", "origin", "destination", "operator", "dataSource"},
  *     @OA\Property(property="trip", type="integer", example="4711"),
  *     @OA\Property(property="hafasId", type="string", example="1|1234|567"),
  *     @OA\Property(property="category", ref="#/components/schemas/HafasTravelType"),

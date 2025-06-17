@@ -4,10 +4,12 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(
  *     title="Area",
+ *     required={"name", "default", "adminLevel"},
  *     @OA\Property(property="name", type="string", example="Karlsruhe"),
  *     @OA\Property(property="default", type="boolean", example="true"),
  *     @OA\Property(property="adminLevel", type="integer", example="1"),
