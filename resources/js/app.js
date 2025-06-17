@@ -113,59 +113,40 @@ document.addEventListener("DOMContentLoaded", function () {
         app5.mount("#tag-helper");
     }
 
-    if (document.getElementById("trip-creation-form")) {
-        const app6 = createApp({});
-        app6.component("TripCreationForm", TripCreationForm);
-        app6.use(i18nVue, i18nOptions);
-        app6.mount("#trip-creation-form");
-    }
-
     if (document.getElementById("settings-friend-checkin")) {
-        const app7 = createApp({});
-        app7.component("FriendCheckinSettings", FriendCheckinSettings);
-        app7.use(i18nVue, i18nOptions);
-        app7.use(pinia);
-        app7.mount("#settings-friend-checkin");
-    }
-
-    if (document.getElementById("settings-webhooks")) {
-        const app8 = createApp({});
-        app8.component("Webhooks", WebhookSettings);
-        app8.use(i18nVue, i18nOptions);
-        app8.use(pinia);
-        app8.mount("#settings-webhooks");
+        const app6 = createApp({});
+        app6.component("FriendCheckinSettings", FriendCheckinSettings);
+        app6.use(i18nVue, i18nOptions);
+        app6.use(pinia);
+        app6.mount("#settings-friend-checkin");
     }
 
     if (document.getElementById("vue-request-events")) {
-        const app9 = createApp({});
-        app9.component("Request", Request);
-        app9.use(i18nVue, i18nOptions);
-        app9.use(pinia);
-        app9.mount("#vue-request-events");
+        const app7 = createApp({});
+        app7.component("Request", Request);
+        app7.use(i18nVue, i18nOptions);
+        app7.use(pinia);
+        app7.mount("#vue-request-events");
     }
 
     if (document.getElementById("settings-profile")) {
-        const app10 = createApp({});
-        app10.component("ProfileSettings", ProfileSettings);
-        app10.use(i18nVue, i18nOptions);
-        app10.use(pinia);
-        app10.mount("#settings-profile");
+        const app8 = createApp({});
+        app8.component("ProfileSettings", ProfileSettings);
+        app8.use(i18nVue, i18nOptions);
+        app8.use(pinia);
+        app8.mount("#settings-profile");
     }
 
-    if (document.getElementById("vue-stats")) {
-        const app11 = createApp({});
-        app11.component("StatsDashboard", StatsDashboard);
-        app11.use(i18nVue, i18nOptions);
-        app11.use(pinia);
-        app11.mount("#vue-stats");
-    }
-
-    if (document.getElementById("vue-dashboard")) {
-        const app12 = createApp({});
-        app12.component("VueDashboard", Dashboard);
-        app12.use(i18nVue, i18nOptions);
-        app12.use(pinia);
-        app12.mount("#vue-dashboard");
+    // All components that fully use the blade content slot should be mounted here.
+    if (document.getElementById("vue-content")) {
+        const contentApp = createApp({});
+        contentApp.component("VueDashboard", Dashboard);
+        contentApp.component("StatsDashboard", StatsDashboard);
+        contentApp.component("Webhooks", WebhookSettings);
+        contentApp.component("TripCreationForm", TripCreationForm);
+        contentApp.use(i18nVue, i18nOptions);
+        contentApp.use(pinia);
+        contentApp.mount("#vue-content");
     }
 });
 

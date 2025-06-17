@@ -63,99 +63,97 @@ fetchUser();
 </script>
 
 <template>
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-8 col-lg-7">
-        <div id="station-board-new">
-          <Apialerts></Apialerts>
-          <StationAutocomplete :dashboard="true" :show-gps-button="true"></StationAutocomplete>
-        </div>
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+      <div id="station-board-new">
+        <Apialerts></Apialerts>
+        <StationAutocomplete :dashboard="true" :show-gps-button="true"></StationAutocomplete>
+      </div>
 
-        <div v-if="futureStatuses.length" class="accordion accordion-flush" id="accordionFutureCheckIns">
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="flush-headingOne">
-              <button class="accordion-button collapsed"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#future-check-ins"
-                      aria-expanded="false"
-                      aria-controls="future-check-ins"
-              >
-                {{ trans('dashboard.future') }}
-              </button>
-            </h2>
-            <div id="future-check-ins"
-                 class="accordion-collapse collapse"
-                 aria-labelledby="flush-headingOne"
-                 data-bs-parent="#accordionFutureCheckIns"
+      <div v-if="futureStatuses.length" class="accordion accordion-flush" id="accordionFutureCheckIns">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="flush-headingOne">
+            <button class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#future-check-ins"
+                    aria-expanded="false"
+                    aria-controls="future-check-ins"
             >
-              <div class="accordion-body px-0">
-                <StatusCard v-for="status in futureStatuses"
-                            :key="status.id"
-                            :status="status"
-                            :authenticated-user="user"/>
-              </div>
+              {{ trans('dashboard.future') }}
+            </button>
+          </h2>
+          <div id="future-check-ins"
+               class="accordion-collapse collapse"
+               aria-labelledby="flush-headingOne"
+               data-bs-parent="#accordionFutureCheckIns"
+          >
+            <div class="accordion-body px-0">
+              <StatusCard v-for="status in futureStatuses"
+                          :key="status.id"
+                          :status="status"
+                          :authenticated-user="user"/>
             </div>
           </div>
         </div>
-
-        <!--
-        todo: Year in Review
-        @if(config('trwl.year_in_review.alert'))
-        <div class="alert alert-info" role="region" aria-label="{{ trans('year-review') }}">
-          <h4 class="alert-heading">
-            <i class="fa-solid fa-champagne-glasses" aria-hidden="true"></i>
-            Träwelling {{ trans('year-review') }}
-          </h4>
-          <p>{{ trans('year-review.teaser') }}</p>
-          <a class="btn btn-outline-primary btn-block" href="/your-year/">
-            <i class="fa-solid fa-arrow-pointer text-primary" aria-hidden="true"></i>
-            {{ trans('year-review.open') }}
-          </a>
-        </div>
-        @endif
-        -->
-        <template v-for="(status, index) in statuses">
-          <h2 class="mb-2 fs-5"
-              v-if="index === 0 || !DateTime.fromISO(status.train.origin.departure || '').hasSame(DateTime.fromISO(statuses[index - 1].train.origin.departure || ''), 'day')">
-            {{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}
-          </h2>
-          <StatusCard :status="status" :authenticated-user="user"/>
-        </template>
-
-        <div v-if="loading" class="text-center my-4">
-          <i class="fa-solid fa-spinner fa-spin fa-2x" aria-hidden="true"></i>
-        </div>
-        <div v-if="showMore" class="text-center my-4">
-          <button class="btn btn-primary" @click="fetchStatuses(currentPage + 1, true)">
-            <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
-          </button>
-        </div>
-        <div v-if="!loading && !showMore && statuses.length > 0" class="text-center my-4">
-          <p class="text-muted">
-            Final stop. All change, please!
-          </p>
-        </div>
-
-        <section
-            v-if="statuses.length <= 0"
-            class="alert alert-info"
-            aria-label="{{ trans('dashboard.empty') }}"
-        >
-          <h4 class="alert-heading">
-            <i class="fa-solid fa-binoculars" aria-hidden="true"></i>
-            {{ trans('dashboard.empty') }}
-          </h4>
-          <p>{{ trans('dashboard.empty.teaser') }}</p>
-          <p>
-            {{ trans('dashboard.empty.discover1') }}
-            <a href="{{ route('statuses.active') }}">
-              {{ trans('menu.active') }}
-            </a>
-            {{ trans('dashboard.empty.discover3') }}.
-          </p>
-        </section>
       </div>
+
+      <!--
+      todo: Year in Review
+      @if(config('trwl.year_in_review.alert'))
+      <div class="alert alert-info" role="region" aria-label="{{ trans('year-review') }}">
+        <h4 class="alert-heading">
+          <i class="fa-solid fa-champagne-glasses" aria-hidden="true"></i>
+          Träwelling {{ trans('year-review') }}
+        </h4>
+        <p>{{ trans('year-review.teaser') }}</p>
+        <a class="btn btn-outline-primary btn-block" href="/your-year/">
+          <i class="fa-solid fa-arrow-pointer text-primary" aria-hidden="true"></i>
+          {{ trans('year-review.open') }}
+        </a>
+      </div>
+      @endif
+      -->
+      <template v-for="(status, index) in statuses">
+        <h2 class="mb-2 fs-5"
+            v-if="index === 0 || !DateTime.fromISO(status.train.origin.departure || '').hasSame(DateTime.fromISO(statuses[index - 1].train.origin.departure || ''), 'day')">
+          {{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}
+        </h2>
+        <StatusCard :status="status" :authenticated-user="user"/>
+      </template>
+
+      <div v-if="loading" class="text-center my-4">
+        <i class="fa-solid fa-spinner fa-spin fa-2x" aria-hidden="true"></i>
+      </div>
+      <div v-if="showMore" class="text-center my-4">
+        <button class="btn btn-primary" @click="fetchStatuses(currentPage + 1, true)">
+          <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div v-if="!loading && !showMore && statuses.length > 0" class="text-center my-4">
+        <p class="text-muted">
+          Final stop. All change, please!
+        </p>
+      </div>
+
+      <section
+          v-if="!loading && statuses.length <= 0"
+          class="alert alert-info"
+          aria-label="{{ trans('dashboard.empty') }}"
+      >
+        <h4 class="alert-heading">
+          <i class="fa-solid fa-binoculars" aria-hidden="true"></i>
+          {{ trans('dashboard.empty') }}
+        </h4>
+        <p>{{ trans('dashboard.empty.teaser') }}</p>
+        <p>
+          {{ trans('dashboard.empty.discover1') }}
+          <a href="{{ route('statuses.active') }}">
+            {{ trans('menu.active') }}
+          </a>
+          {{ trans('dashboard.empty.discover3') }}.
+        </p>
+      </section>
     </div>
   </div>
 </template>

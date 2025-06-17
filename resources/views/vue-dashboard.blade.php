@@ -3,7 +3,9 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <div id="vue-dashboard">
-        <vue-dashboard></vue-dashboard>
+    <div class="container">
+        <div id="vue-content">
+            <vue-dashboard></vue-dashboard>
+        </div>
     </div>
 @endsection
