@@ -14,7 +14,7 @@ export default {
     },
     class: {
       type: String,
-      default: "btn btn-sm btn-outline-secondary dropdown-toggle"
+      default: "btn btn-sm btn-outline-secondary"
     }
   },
   data() {
@@ -58,7 +58,7 @@ export default {
 </script>
 
 <template>
-  <button :class="class" type="button"
+  <button :class type="button" class="dropdown-toggle"
           data-bs-toggle="dropdown" aria-expanded="false" :disabled="disabled">
     <i :class="visibilityIcon" aria-hidden="true"></i>
   </button>

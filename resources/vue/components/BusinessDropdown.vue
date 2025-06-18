@@ -4,15 +4,21 @@ import {Business} from "../../types/Api.gen";
 import {IconHelper} from "../helpers/IconHelper";
 import {trans} from "laravel-vue-i18n";
 
+defineProps({
+  class: {
+    type: String,
+    default: 'btn btn-sm btn-link px-2'
+  }
+})
+
 const model = defineModel({
   type: Object as PropType<Business>,
   default: Business.Value0,
-  required: true
 });
 </script>
 
 <template>
-  <button class="btn btn-sm btn-link px-2 dropdown-toggle" type="button"
+  <button class="dropdown-toggle" :class type="button"
           id="businessDropdownButton" data-bs-dropdown-animation="off" data-bs-toggle="dropdown"
           aria-expanded="false">
     <i class="fas" :class="IconHelper.getBusinessIcon(model)"></i>

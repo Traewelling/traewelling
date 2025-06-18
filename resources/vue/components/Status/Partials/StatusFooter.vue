@@ -16,7 +16,7 @@ const props = defineProps({
     required: true
   },
 });
-const emit = defineEmits(['status-liked', 'status-unliked', 'status-deleted']);
+const emit = defineEmits(['status-liked', 'status-unliked', 'status-deleted', 'status-updated']);
 const user = useUserStore();
 const likes = ref(0);
 
@@ -91,7 +91,7 @@ likes.value = props.status.likes || 0;
         ></i>
       </li>
       <li class="like-text list-inline-item">
-        <StatusContextMenu :status @confirmDelete="deleteStatus()"/>
+        <StatusContextMenu :status @confirmDelete="deleteStatus()" @status-updated="emit('status-updated', $event)"/>
       </li>
     </ul>
 

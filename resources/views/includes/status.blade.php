@@ -240,7 +240,7 @@
                    data-bs-placement="top"></i>
             </li>
             <li class="like-text list-inline-item">
-                <div class="dropdown">
+                <div class="dropdown dropdown-flex">
                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                         &nbsp;
                         <i class="fa fa-ellipsis-vertical" aria-hidden="true"></i>

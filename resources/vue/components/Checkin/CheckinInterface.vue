@@ -198,7 +198,7 @@ export default {
       </div>
       <div class="col btn-group">
         <VisibilityDropdown v-model="visibility" :start-value="profileStore.getDefaultStatusVisibility"
-                             class="btn btn-sm btn-link px-2 dropdown-toggle"/>
+                            class="btn btn-sm btn-link px-2 dropdown-toggle"/>
       </div>
       <EventDropdown @select-event="selectEvent"/>
       <FriendDropdown v-if="userStore.hasBeta" @select-user="selectFriends"/>

@@ -6,6 +6,7 @@ import {StatusHelper} from "../../../helpers/StatusHelper";
 import {Notyf} from "notyf";
 import ConfirmModal from "../../ConfirmModal.vue";
 import {useUserStore} from "../../../stores/user";
+import UpdateModal from "../../UpdateModal/UpdateModal.vue";
 
 const props = defineProps({
   status: {
@@ -15,7 +16,7 @@ const props = defineProps({
 });
 
 const notyf = new Notyf({position: {x: "right", y: "bottom"}});
-const emit = defineEmits(['confirm-delete', 'status-deleted']);
+const emit = defineEmits(['confirm-delete', 'status-deleted', 'status-updated']);
 const user = useUserStore();
 
 function share() {
@@ -54,15 +55,15 @@ function rideAlongUrl() {
 }
 
 const delModal = useTemplateRef('delModal');
+const updateModal = useTemplateRef('updateModal');
 
 function showModal() {
-  console.log(delModal.value);
   delModal.value?.show();
 }
 </script>
 
 <template>
-  <div class="dropdown">
+  <div class="dropdown dropdown-flex">
     <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
       &nbsp;
       <i class="fa fa-ellipsis-vertical" aria-hidden="true"></i>
@@ -80,7 +81,7 @@ function showModal() {
       <template v-if="user.user">
         <template v-if="user.user.id == status.userDetails.id">
           <li>
-            <button class="dropdown-item edit" type="button" :data-trwl-status-id="status.id">
+            <button class="dropdown-item edit" type="button" @click="updateModal?.show()">
               <div class="dropdown-icon-suspense">
                 <i class="fas fa-edit" aria-hidden="true"></i>
               </div>
@@ -117,16 +118,23 @@ function showModal() {
             </a>
           </li>
         </template>
-        <li v-if="user?.isAdmin">
-          <a :href="`/admin/status/edit?statusId=${status.id}`" class="dropdown-item">
-            <div class="dropdown-icon-suspense">
-              <i class="fas fa-tools" aria-hidden="true"></i>
-            </div>
-            Admin-Interface
-          </a>
-        </li>
+        <template v-if="user?.isAdmin">
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a :href="`/admin/status/edit?statusId=${status.id}`" class="dropdown-item">
+              <div class="dropdown-icon-suspense">
+                <i class="fas fa-tools" aria-hidden="true"></i>
+              </div>
+              Admin-Interface
+            </a>
+          </li>
+        </template>
+
       </template>
     </ul>
   </div>
   <ConfirmModal ref="delModal" title="modals.deleteStatus-title" @confirm="emit('confirm-delete')"/>
+  <UpdateModal ref="updateModal" :status="status" @status-updated="emit('status-updated', $event)"/>
 </template>

@@ -30,12 +30,13 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['status-liked', 'status-unliked', 'status-deleted']);
+const emit = defineEmits(['status-liked', 'status-unliked', 'status-deleted', 'status-updated']);
+const statusObject = ref<StatusResource>(props.status);
 const progress = ref(0);
 const interval = ref<number | null>(null);
 const deleted = ref(false);
-const departure = getDepartureForStopover(props.status.train.origin).dateTime;
-const arrival = getArrivalForStopover(props.status.train.destination).dateTime;
+const departure = getDepartureForStopover(statusObject.value.train.origin).dateTime;
+const arrival = getArrivalForStopover(statusObject.value.train.destination).dateTime;
 const activeCheckin = useActiveCheckin();
 
 function updateProgress() {
@@ -53,8 +54,8 @@ function updateProgress() {
 }
 
 function calculateProgress() {
-  const start = getDepartureForStatus(props.status).toMillis();
-  const end = getArrivalForStatus(props.status).toMillis();
+  const start = getDepartureForStatus(statusObject.value).toMillis();
+  const end = getArrivalForStatus(statusObject.value).toMillis();
   const now = Date.now();
   if (start === end) {
     return now < start ? 0 : 1; // If start and end are the same, return 0 if now is before start, otherwise return 1
@@ -64,7 +65,7 @@ function calculateProgress() {
 }
 
 function deleteSelf() {
-  if (activeCheckin.status?.id === props.status.id) {
+  if (activeCheckin.status?.id === statusObject.value.id) {
     activeCheckin.$reset()
   }
   deleted.value = true;
@@ -81,7 +82,7 @@ updateProgress();
     <div v-if="showMap" class="card-img-top">
       <div id="activeJourneys" class="map statusMap embed-responsive embed-responsive-16by9">
         <ActiveJourneyMap
-            :status-id="status.id"
+            :status-id="statusObject.id"
             :departure="departure.toSeconds()"
             :arrival="arrival.toSeconds()"
         >
@@ -91,17 +92,17 @@ updateProgress();
     <div class="card-body row">
       <!-- Big profile picture -->
       <div class="col-2 image-box pe-0 d-none d-lg-flex">
-        <a :href="`/@${status.userDetails.username}`">
-          <img loading="lazy" decoding="async" :src="status.userDetails.profilePicture"
-               :alt="status.userDetails.username">
+        <a :href="`/@${statusObject.userDetails.username}`">
+          <img loading="lazy" decoding="async" :src="statusObject.userDetails.profilePicture"
+               :alt="statusObject.userDetails.username">
         </a>
       </div>
 
       <div class="col ps-0">
         <ul class="timeline">
-          <OriginRow :status="status"/>
+          <OriginRow :status="statusObject"/>
           <NextStop :stopovers="stopovers" :in-progress="progress > 0 && progress < 100"/>
-          <DestinationRow :status="status"/>
+          <DestinationRow :status="statusObject"/>
         </ul>
       </div>
     </div>
@@ -111,13 +112,13 @@ updateProgress();
       <div
           class="progress-bar"
           role="progressbar"
-          :class="{ 'progress-pride': status.event?.isPride }"
+          :class="{ 'progress-pride': statusObject.event?.isPride }"
           :style="`width: ${progress}%;`"
       ></div>
     </div>
 
     <!-- footer -->
-    <StatusFooter :status="status" @statusDeleted="deleteSelf()" @statusLiked="emit('status-liked')"
-                  @statusUnliked="emit('status-unliked')"/>
+    <StatusFooter :status="statusObject" @statusDeleted="deleteSelf()" @statusLiked="emit('status-liked')"
+                  @statusUnliked="emit('status-unliked')" @status-updated="statusObject = $event"/>
   </div>
 </template>
