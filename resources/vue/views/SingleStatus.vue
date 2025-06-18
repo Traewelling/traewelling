@@ -6,6 +6,7 @@ import {trans} from "laravel-vue-i18n";
 import {getDepartureForStatus} from "../helpers/DateTimeHelper";
 import {DateTime} from "luxon";
 import {useUserStore} from "../stores/user";
+import TagHelper from "../components/TagHelper.vue";
 
 const loading = ref(true);
 const status = ref<StatusResource | null>(null);
@@ -104,6 +105,8 @@ fetchLikes();
         <h2 class="fs-5">{{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}</h2>
         <StatusCard :status :show-map="true" :authenticated-user="user.user" @statusLiked="addSelfToLikes()"
                     @statusUnliked="removeSelfFromLikes()" :stopovers/>
+
+        <TagHelper :status-id="status.id" :editable="status.userDetails.id === user.user?.id" class="mb-3"/>
 
         <div class="card" v-show="likedBy.length">
           <div v-for="like in likedBy" class="card-footer text-muted clearfix">
