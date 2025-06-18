@@ -1,6 +1,6 @@
 <script>
 import {trans} from "laravel-vue-i18n";
-
+// todo: refactor like BusinessDropdown.vue
 export default {
   name: "VisibilityDropdown",
   props: {
@@ -11,6 +11,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    class: {
+      type: String,
+      default: "btn btn-sm btn-outline-secondary dropdown-toggle"
     }
   },
   data() {
@@ -54,7 +58,7 @@ export default {
 </script>
 
 <template>
-  <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+  <button :class="class" type="button"
           data-bs-toggle="dropdown" aria-expanded="false" :disabled="disabled">
     <i :class="visibilityIcon" aria-hidden="true"></i>
   </button>

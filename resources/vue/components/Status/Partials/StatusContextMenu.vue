@@ -1,28 +1,27 @@
 <script setup lang="ts">
-import {PropType} from "vue";
-import {StatusResource, UserAuthResource} from "../../../../types/Api.gen";
+import {PropType, useTemplateRef} from "vue";
+import {StatusResource} from "../../../../types/Api.gen";
 import {trans} from "laravel-vue-i18n";
 import {StatusHelper} from "../../../helpers/StatusHelper";
 import {Notyf} from "notyf";
-import {RoleHelper} from "../../../helpers/RoleHelper";
+import ConfirmModal from "../../ConfirmModal.vue";
+import {useUserStore} from "../../../stores/user";
 
 const props = defineProps({
   status: {
     type: Object as PropType<StatusResource>,
     required: true
   },
-  authenticatedUser: {
-    type: Object as PropType<UserAuthResource | null>,
-    default: null
-  }
 });
 
 const notyf = new Notyf({position: {x: "right", y: "bottom"}});
+const emit = defineEmits(['confirm-delete', 'status-deleted']);
+const user = useUserStore();
 
 function share() {
   let helper = new StatusHelper(props.status);
 
-  let shareText = props.status?.userDetails.id === props.authenticatedUser?.id ? helper.generateSocialText() : helper.getDescription();
+  let shareText = props.status?.userDetails.id === user.user?.id ? helper.generateSocialText() : helper.getDescription();
   let shareUrl = helper.getShareUrl();
 
   if (navigator.share) {
@@ -54,12 +53,20 @@ function rideAlongUrl() {
   return `/stationboard/?${queryParams.toString()}`;
 }
 
+const delModal = useTemplateRef('delModal');
+
+function showModal() {
+  console.log(delModal.value);
+  delModal.value?.show();
+}
 </script>
 
 <template>
   <div class="dropdown">
     <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+      &nbsp;
       <i class="fa fa-ellipsis-vertical" aria-hidden="true"></i>
+      &nbsp;
     </a>
     <ul class="dropdown-menu">
       <li>
@@ -70,8 +77,8 @@ function rideAlongUrl() {
           {{ trans('menu.share') }}
         </button>
       </li>
-      <template v-if="authenticatedUser">
-        <template v-if="authenticatedUser.id === status.userDetails.id">
+      <template v-if="user.user">
+        <template v-if="user.user.id == status.userDetails.id">
           <li>
             <button class="dropdown-item edit" type="button" :data-trwl-status-id="status.id">
               <div class="dropdown-icon-suspense">
@@ -81,10 +88,7 @@ function rideAlongUrl() {
             </button>
           </li>
           <li>
-            <button class="dropdown-item delete" type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modal-status-delete"
-                    onclick="document.querySelector('#modal-status-delete input[name=\'statusId\']').value = '{{status.id}}';">
+            <button class="dropdown-item" type="button" @click="showModal()">
               <div class="dropdown-icon-suspense">
                 <i class="fas fa-trash" aria-hidden="true"></i>
               </div>
@@ -113,7 +117,7 @@ function rideAlongUrl() {
             </a>
           </li>
         </template>
-        <li v-if="new RoleHelper(authenticatedUser).admin()">
+        <li v-if="user?.isAdmin">
           <a :href="`/admin/status/edit?statusId=${status.id}`" class="dropdown-item">
             <div class="dropdown-icon-suspense">
               <i class="fas fa-tools" aria-hidden="true"></i>
@@ -124,4 +128,5 @@ function rideAlongUrl() {
       </template>
     </ul>
   </div>
+  <ConfirmModal ref="delModal" title="modals.deleteStatus-title" @confirm="emit('confirm-delete')"/>
 </template>

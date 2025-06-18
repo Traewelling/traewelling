@@ -7,7 +7,7 @@ defineProps({
   }
 });
 
-const iconForProduct = (product) => {
+const iconForProduct = (product: string) => {
   if (['tram', 'bus', 'subway', 'suburban'].includes(product)) {
     return `/img/${product}.svg`;
   }
@@ -15,7 +15,7 @@ const iconForProduct = (product) => {
   return null;
 };
 
-const fontAwesomeIcon = (product) => {
+const fontAwesomeIcon = (product: string) => {
   switch (product) {
     case 'taxi':
       return 'fa-taxi';
@@ -30,9 +30,9 @@ const fontAwesomeIcon = (product) => {
 </script>
 
 <template>
-  <img v-if="iconForProduct(this.product)"
-       :alt="this.product"
-       :src="iconForProduct(this.product)"
+  <img v-if="iconForProduct(product)"
+       :alt="product"
+       :src="iconForProduct(product) || ''"
        class="product-icon">
-  <i v-else class="fas" :class="fontAwesomeIcon(this.product)"></i>
+  <i v-else class="fas" :class="fontAwesomeIcon(product)"></i>
 </template>

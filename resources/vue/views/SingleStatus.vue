@@ -1,29 +1,59 @@
 <script setup lang="ts">
 import {ref} from "vue";
-import {Api, StatusResource, UserAuthResource} from "../../types/Api.gen";
+import {Api, StatusResource, StopoverResource, UserAuthResource, UserResource} from "../../types/Api.gen";
 import StatusCard from "../components/Status/StatusCard.vue";
 import {trans} from "laravel-vue-i18n";
 import {getDepartureForStatus} from "../helpers/DateTimeHelper";
 import {DateTime} from "luxon";
+import {useUserStore} from "../stores/user";
 
 const loading = ref(true);
 const status = ref<StatusResource | null>(null);
-const user = ref<UserAuthResource | null>(null);
+const likedBy = ref<UserResource[]>([]);
+const statusId = parseInt(window.location.pathname.split('/').pop() || '0');
+const user = useUserStore();
 const pageError = ref<string | null>(null);
+const stopovers = ref<StopoverResource[]>([]);
 
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
 
-function fetchStatus() {
-  const statusId = window.location.pathname.split('/').pop();
+function fetchLikes() {
   if (!statusId) {
     console.error('Status ID not found in URL');
     return;
   }
 
-  api.status.getSingleStatus(parseInt(statusId)).then((response) => {
+  api.status.getLikesForStatus(statusId).then((response) => {
+    likedBy.value = response.data.data ?? [];
+  }).catch((error) => {
+    console.error('Error fetching likes:', error);
+  });
+}
+
+function fetchStopovers() {
+  if (!status.value) {
+    console.error('Status ID not found in URL');
+    return;
+  }
+
+  api.stopovers.getStopOvers(status.value!.train.trip.toString()).then((response) => {
+    stopovers.value = response.data.data?.[status.value!.train.trip] ?? [];
+  }).catch((error) => {
+    console.error('Error fetching stopovers:', error);
+  });
+}
+
+function fetchStatus() {
+  if (!statusId) {
+    console.error('Status ID not found in URL');
+    return;
+  }
+
+  api.status.getSingleStatus(statusId).then((response) => {
     response.json().then((data) => {
       loading.value = false;
       status.value = data.data;
+      fetchStopovers();
     });
   }).catch((error) => {
     loading.value = false;
@@ -36,18 +66,30 @@ function fetchStatus() {
   });
 }
 
-function fetchUser() {
-  api.auth.getAuthenticatedUser().then((response) => {
-    response.json().then((data) => {
-      user.value = data.data;
-    });
-  }).catch((error) => {
-    console.error('Error fetching user:', error);
-  });
+function addSelfToLikes() {
+  if (!status.value || !user.user) return;
+  status.value.likes++;
+  status.value.liked = true;
+  likedBy.value.push(userAuthToUserResource(user.user));
+}
+
+function removeSelfFromLikes() {
+  if (!status.value || !user.user) return;
+  status.value.likes--;
+  status.value.liked = false;
+  likedBy.value = likedBy.value.filter(like => like.id !== user.user?.id);
+}
+
+function userAuthToUserResource(user: UserAuthResource): UserResource {
+  return {
+    id: user.id,
+    username: user.username,
+    profilePicture: user.profilePicture,
+  } as UserResource;
 }
 
 fetchStatus();
-fetchUser();
+fetchLikes();
 </script>
 
 <template>
@@ -60,7 +102,29 @@ fetchUser();
       </div>
       <template v-else-if="status">
         <h2 class="fs-5">{{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}</h2>
-        <StatusCard :status :show-map="true" :authenticated-user="user"/>
+        <StatusCard :status :show-map="true" :authenticated-user="user.user" @statusLiked="addSelfToLikes()"
+                    @statusUnliked="removeSelfFromLikes()" :stopovers/>
+
+        <div class="card" v-show="likedBy.length">
+          <div v-for="like in likedBy" class="card-footer text-muted clearfix">
+            <a :href="`/@${like.username}`" class="float-start">
+              <img loading="lazy" :src="like.profilePicture" class="profile-image float-start me-2"
+                   :alt="trans('settings.picture')">
+            </a>
+            <span class="like-text pl-2 d-table-cell">
+              <a :href="`/@${like.username}`">
+                  {{ like.username }}
+              </a>
+              <span v-if="like.id === status.userDetails.id">
+                {{ trans('user.liked-own-status') }}
+                </span>
+              <span v-else>
+                {{ trans('user.liked-status') }}
+              </span>
+            </span>
+          </div>
+        </div>
+
       </template>
       <h2 v-if="pageError">{{ pageError }} :(</h2>
     </div>
@@ -68,5 +132,8 @@ fetchUser();
 </template>
 
 <style scoped lang="scss">
-
+.profile-image {
+  height: 2em;
+  border-radius: 50%;
+}
 </style>

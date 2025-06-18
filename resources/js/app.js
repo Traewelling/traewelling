@@ -26,6 +26,7 @@ import Request from "../vue/components/Events/Request.vue";
 import ApiAlerts from "../vue/components/ApiAlerts.vue";
 import Dashboard from "../vue/views/Dashboard.vue";
 import SingleStatus from "../vue/views/SingleStatus.vue";
+import ActiveJourneys from "../vue/views/ActiveJourneys.vue";
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -146,6 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
         contentApp.component("Webhooks", WebhookSettings);
         contentApp.component("TripCreationForm", TripCreationForm);
         contentApp.component("SingleStatus", SingleStatus);
+        contentApp.component("ActiveJourneys", ActiveJourneys);
         contentApp.use(i18nVue, i18nOptions);
         contentApp.use(pinia);
         contentApp.mount("#vue-content");

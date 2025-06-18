@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {PropType, ref} from "vue";
-import {StatusResource, UserAuthResource} from "../../../types/Api.gen";
+import {StatusResource, StopoverResource} from "../../../types/Api.gen";
 import {
   getArrivalForStatus,
   getArrivalForStopover,
@@ -12,24 +12,31 @@ import {now} from "lodash";
 import StatusFooter from "./Partials/StatusFooter.vue";
 import DestinationRow from "./Partials/DestinationRow.vue";
 import OriginRow from "./Partials/OriginRow.vue";
+import NextStop from "./Partials/NextStop.vue";
+import {useActiveCheckin} from "../../stores/activeCheckin";
 
 const props = defineProps({
   status: {
     type: Object as PropType<StatusResource>,
     required: true
   },
-  authenticatedUser: {
-    type: Object as PropType<UserAuthResource | null>,
-    default: null
-  },
   showMap: {
     type: Boolean,
     default: false
+  },
+  stopovers: {
+    type: Array as PropType<StopoverResource[]>,
+    default: () => []
   }
 });
 
+const emit = defineEmits(['status-liked', 'status-unliked', 'status-deleted']);
 const progress = ref(0);
 const interval = ref<number | null>(null);
+const deleted = ref(false);
+const departure = getDepartureForStopover(props.status.train.origin).dateTime;
+const arrival = getArrivalForStopover(props.status.train.destination).dateTime;
+const activeCheckin = useActiveCheckin();
 
 function updateProgress() {
   progress.value = calculateProgress();
@@ -56,18 +63,27 @@ function calculateProgress() {
   return 100 * (now - start) / (end - start);
 }
 
+function deleteSelf() {
+  if (activeCheckin.status?.id === props.status.id) {
+    activeCheckin.$reset()
+  }
+  deleted.value = true;
+  if (props.showMap) {
+    window.location.href = '/dashboard';
+  }
+}
+
 updateProgress();
 </script>
 
 <template>
-  <div class="card status mb-3">
+  <div class="card status mb-3" v-show="!deleted">
     <div v-if="showMap" class="card-img-top">
       <div id="activeJourneys" class="map statusMap embed-responsive embed-responsive-16by9">
         <ActiveJourneyMap
-            :map-provider="authenticatedUser?.mapProvider || 'default'"
             :status-id="status.id"
-            :departure="getDepartureForStopover(status.train.origin).toISO()"
-            :arrival="getArrivalForStopover(status.train.destination).toISO()"
+            :departure="departure.toSeconds()"
+            :arrival="arrival.toSeconds()"
         >
         </ActiveJourneyMap>
       </div>
@@ -84,6 +100,7 @@ updateProgress();
       <div class="col ps-0">
         <ul class="timeline">
           <OriginRow :status="status"/>
+          <NextStop :stopovers="stopovers" :in-progress="progress > 0 && progress < 100"/>
           <DestinationRow :status="status"/>
         </ul>
       </div>
@@ -100,6 +117,7 @@ updateProgress();
     </div>
 
     <!-- footer -->
-    <StatusFooter :status="status" :authenticated-user="authenticatedUser"/>
+    <StatusFooter :status="status" @statusDeleted="deleteSelf()" @statusLiked="emit('status-liked')"
+                  @statusUnliked="emit('status-unliked')"/>
   </div>
 </template>

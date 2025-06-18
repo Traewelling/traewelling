@@ -2,11 +2,13 @@
 import {trans} from "laravel-vue-i18n";
 import StationAutocomplete from "../components/StationAutocomplete/StationAutocomplete.vue";
 import {ref} from "vue";
-import {Api, StatusResource, UserAuthResource} from "../../types/Api.gen";
+import {Api, StatusResource, StopoverResource} from "../../types/Api.gen";
 import StatusCard from "../components/Status/StatusCard.vue";
 import {DateTime} from "luxon";
 import {getDepartureForStatus} from "../helpers/DateTimeHelper";
 import {Notyf} from "notyf";
+import {useUserStore} from "../stores/user";
+import ApiAlerts from "../components/ApiAlerts.vue";
 
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
 const statuses = ref<StatusResource[]>([]);
@@ -14,7 +16,8 @@ const loading = ref(true);
 const currentPage = ref(1);
 const showMore = ref(false);
 const futureStatuses = ref<StatusResource[]>([]);
-const user = ref<UserAuthResource | null>(null);
+const stopovers = ref<Record<string, StopoverResource[]>>({});
+const user = useUserStore();
 const notyf = new Notyf({position: {x: "right", y: "bottom"}});
 
 function fetchStatuses(page: number | undefined = undefined, append: boolean = false) {
@@ -27,14 +30,49 @@ function fetchStatuses(page: number | undefined = undefined, append: boolean = f
       } else {
         statuses.value = data.data;
       }
+      fetchStopovers(append);
       loading.value = false;
-      showMore.value = data.links?.next.length > 0;
+      showMore.value = data.links?.next?.length > 0;
       currentPage.value = data.meta?.current_page || 0;
     });
   }).catch((error) => {
     loading.value = false;
     notyf.error('Error fetching statuses: ' + error.message);
   });
+}
+
+function fetchStopovers(append: boolean = false) {
+  if (statuses.value.length === 0) {
+    return;
+  }
+
+  const tripIds = statuses.value.map(status => status.train.trip.toString());
+  api.stopovers.getStopOvers(tripIds.join(',')).then((response) => {
+    response.json().then((data) => {
+      if (append) {
+        for (const tripId in data.data) {
+          if (data.data.hasOwnProperty(tripId)) {
+            if (!stopovers.value[tripId]) {
+              stopovers.value[tripId] = [];
+            }
+            stopovers.value[tripId].push(...data.data[tripId]);
+          }
+        }
+      } else {
+        stopovers.value = data.data;
+      }
+
+      console.log('Stopovers fetched:', stopovers.value);
+    });
+  }).catch((error) => {
+    console.error('Error fetching stopovers:', error);
+  });
+}
+
+function getStopoverForTrip(tripId: string): StopoverResource[] | undefined {
+  console.log('Fetching stopovers for trip:', tripId);
+  console.log(stopovers.value[tripId]);
+  return stopovers.value[tripId];
 }
 
 function fetchFutureStatuses() {
@@ -47,26 +85,15 @@ function fetchFutureStatuses() {
   });
 }
 
-function fetchUser() {
-  api.auth.getAuthenticatedUser().then((response) => {
-    response.json().then((data) => {
-      user.value = data.data;
-    });
-  }).catch((error) => {
-    console.error('Error fetching user:', error);
-  });
-}
-
 fetchStatuses();
 fetchFutureStatuses();
-fetchUser();
 </script>
 
 <template>
   <div class="row justify-content-center">
     <div class="col-md-8 col-lg-7">
       <div id="station-board-new">
-        <Apialerts></Apialerts>
+        <ApiAlerts></ApiAlerts>
         <StationAutocomplete :dashboard="true" :show-gps-button="true"></StationAutocomplete>
       </div>
 
@@ -92,7 +119,7 @@ fetchUser();
               <StatusCard v-for="status in futureStatuses"
                           :key="status.id"
                           :status="status"
-                          :authenticated-user="user"/>
+                          :authenticated-user="user.user"/>
             </div>
           </div>
         </div>
@@ -119,7 +146,11 @@ fetchUser();
             v-if="index === 0 || !DateTime.fromISO(status.train.origin.departure || '').hasSame(DateTime.fromISO(statuses[index - 1].train.origin.departure || ''), 'day')">
           {{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}
         </h2>
-        <StatusCard :status="status" :authenticated-user="user"/>
+        <StatusCard
+            :status="status"
+            :authenticated-user="user.user"
+            :stopovers="getStopoverForTrip(status.train.trip.toString())"
+        />
       </template>
 
       <div v-if="loading" class="text-center my-4">

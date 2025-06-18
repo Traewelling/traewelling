@@ -39,6 +39,10 @@ class FrontendStatusController extends Controller
     }
 
     public function getActiveStatuses(): View {
+        if (auth()->user()?->hasRole('open-beta')) {
+            return view('vue-activejourneys');
+        }
+
         return view('activejourneys', [
             'currentUser' => Auth::user(),
             'statuses'    => StatusBackend::getActiveStatuses(),

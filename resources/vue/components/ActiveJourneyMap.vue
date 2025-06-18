@@ -10,6 +10,7 @@
 import 'leaflet';
 import {trans} from "laravel-vue-i18n";
 import {DtmRange} from "../helpers/DateRange";
+import {useUserStore} from "../stores/user";
 
 import('Leaflet-MovingMaker/MovingMarker');
 
@@ -20,6 +21,11 @@ const eventIcon = L.divIcon({
 });
 
 export default {
+  setup() {
+    const user = useUserStore();
+
+    return {user};
+  },
   name: 'ActiveJourneyMap',
   props: {
     mapProvider: {
@@ -46,6 +52,13 @@ export default {
     }
   },
   computed: {
+    provider() {
+      if (this.user.user) {
+        return this.user.user?.mapProvider || 'default';
+      }
+
+      return this.$props.mapProvider;
+    },
     mapStyle() {
       return this.$props.statusId ? '' : 'min-height: 600px;';
     }
@@ -75,7 +88,7 @@ export default {
         center: [50.3, 10.47],
         zoom: 5
       });
-      setTilingLayer(this.$props.mapProvider, this.map);
+      setTilingLayer(this.provider, this.map);
     },
     canShowMarkers() {
       if (this.$props.arrival && this.$props.departure) {

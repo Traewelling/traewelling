@@ -1,12 +1,13 @@
 <script setup lang="ts">
 
-import {computed, PropType} from "vue";
-import {Api, StatusResource, UserAuthResource} from "../../../../types/Api.gen";
+import {computed, PropType, ref} from "vue";
+import {Api, StatusResource} from "../../../../types/Api.gen";
 import {trans} from "laravel-vue-i18n";
 import {IconHelper} from "../../../helpers/IconHelper";
 import StatusContextMenu from "./StatusContextMenu.vue";
 import {Dtm} from "../../../helpers/DateTime";
 import {DateTime} from "luxon";
+import {useUserStore} from "../../../stores/user";
 
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
 const props = defineProps({
@@ -14,29 +15,27 @@ const props = defineProps({
     type: Object as PropType<StatusResource>,
     required: true
   },
-  authenticatedUser: {
-    type: Object as PropType<UserAuthResource | null>,
-    default: null
-  },
 });
-const emit = defineEmits(['status-liked', 'status-unliked']);
+const emit = defineEmits(['status-liked', 'status-unliked', 'status-deleted']);
+const user = useUserStore();
+const likes = ref(0);
 
 function like() {
-  if (!props.authenticatedUser) {
+  if (!user.user) {
     return;
   }
 
   if (props.status.liked) {
     api.status.removeLikeFromStatus(props.status.id).then(() => {
       props.status.liked = false;
-      props.status.likes--;
+      likes.value--;
     });
 
     emit('status-unliked', props.status.id);
   } else {
     api.status.addLikeToStatus(props.status.id).then(() => {
       props.status.liked = true;
-      props.status.likes++;
+      likes.value++;
     });
 
     emit('status-liked', props.status.id);
@@ -51,6 +50,16 @@ const createdAt = computed(() => {
     return date.toRelative();
   }
 });
+
+function deleteStatus() {
+  api.status.destroySingleStatus(props.status.id).then(() => {
+    emit('status-deleted', props.status.id);
+  }).catch((error) => {
+    console.error('Error deleting status:', error);
+  });
+}
+
+likes.value = props.status.likes || 0;
 </script>
 
 <template>
@@ -60,7 +69,7 @@ const createdAt = computed(() => {
         <li class="like-text list-inline-item me-1">
           <a
               href="#"
-              class="like"
+              class="like-heart"
               :class="{'fas fa-heart': status.liked, 'far fa-heart': !status.liked, 'peach': status.userDetails.id === 18574}"
               @click.prevent="like()"
           >
@@ -68,8 +77,8 @@ const createdAt = computed(() => {
           </a>
         </li>
         <li class="like-text list-inline-item">
-        <span class="pl-1" :class="{'d-none': status.likes === 0}">
-          {{ status.likes }}
+        <span class="pl-1" :class="{'d-none': likes <= 0}">
+          {{ likes }}
         </span>
         </li>
       </template>
@@ -82,7 +91,7 @@ const createdAt = computed(() => {
         ></i>
       </li>
       <li class="like-text list-inline-item">
-        <StatusContextMenu :status :authenticatedUser/>
+        <StatusContextMenu :status @confirmDelete="deleteStatus()"/>
       </li>
     </ul>
 
@@ -95,7 +104,7 @@ const createdAt = computed(() => {
       </li>
       <li class="list-inline-item me-1">
         <a :href="`/@${status.userDetails.username}`" class="username">
-          {{ authenticatedUser?.id !== status.userDetails.id ? status.userDetails.username : trans('user.you') }}
+          {{ user.user?.id !== status.userDetails.id ? status.userDetails.username : trans('user.you') }}
         </a>
       </li>
       <li class="list-inline-item">
@@ -105,4 +114,16 @@ const createdAt = computed(() => {
       </li>
     </ul>
   </div>
-</template>>
+</template>
+<style scoped>
+.like-heart {
+  color: #e74c3c;
+  cursor: pointer;
+}
+
+:root.dark {
+  .like-heart {
+    color: #e74c3c;
+  }
+}
+</style>
