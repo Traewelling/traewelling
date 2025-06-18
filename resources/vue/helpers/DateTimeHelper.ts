@@ -133,11 +133,11 @@ function prepareStopoverTime(
 export function timeTypeTooltip(type: StopoverTimeType): string {
     switch (type) {
         case StopoverTimeType.Manual:
-            return 'time-is-planned';
+            return 'time-is-manual';
         case StopoverTimeType.Realtime:
             return 'time-is-real'
         case StopoverTimeType.Planned:
-            return 'time-is-manual'
+            return 'time-is-planned'
         default:
             return 'time-is-unknown';
     }
@@ -153,4 +153,4 @@ export enum StopoverTimeType {
     Manual = 'manual',
     Realtime = 'realtime',
     Planned = 'planned',
-};
+}

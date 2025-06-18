@@ -7,6 +7,8 @@ import {Api, StatusResource, StatusUpdateBody, StopoverResource} from "../../../
 import VisibilityDropdown from "../VisibilityDropdown.vue";
 import {Dtm} from "../../helpers/DateTime";
 import {DateTime} from "luxon";
+import {useActiveCheckin} from "../../stores/activeCheckin";
+import {getArrivalForStopover} from "../../helpers/DateTimeHelper";
 
 const emit = defineEmits(['status-updated']);
 const props = defineProps({
@@ -18,6 +20,7 @@ const props = defineProps({
 
 const modal = ref<ModalComponent | null>(null);
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
+const activeStatus = useActiveCheckin();
 const loading = ref(false);
 
 // copy the status properties to a new object to avoid mutating the original prop
@@ -46,6 +49,9 @@ function updateData() {
 
     api.status.updateSingleStatus(updateStatus.value, props.status.id).then((status) => {
       emit('status-updated', status.data.data);
+      if (status.data.data) {
+        activeStatus.status = status.data.data;
+      }
       loading.value = false;
       modal.value?.hide();
     }).catch((error) => {
@@ -66,6 +72,10 @@ function fetchDestinations() {
     start: props.status.train.origin.id
   }).then((response) => {
     stopovers.value = response.data?.data?.stopovers || [];
+    const departurePlanned = DateTime.fromISO(props.status.train.origin.departurePlanned || '');
+    stopovers.value = stopovers.value.filter((stopover) => {
+      return getArrivalForStopover(stopover).dateTime.diff(departurePlanned).as('minutes') >= 0;
+    })
   }).catch((error) => {
     console.error('Error fetching destinations:', error);
   });
@@ -80,9 +90,7 @@ defineExpose({show});
     <template v-if="updateStatus !== null" #body>
       <div class="destination-wrapper form-floating mb-2">
         <select class="form-select" required id="form-status-destination" v-model="updateStatus.destinationId">
-          <option v-for="stopover in stopovers" :key="stopover.id"
-                  :value="stopover.id"
-          >
+          <option v-for="stopover in stopovers" :key="stopover.id" :value="stopover.id">
             {{ new Dtm(stopover.arrival || '').toLocaleString(DateTime.TIME_SIMPLE) }}: {{ stopover.name }}
           </option>
         </select>
