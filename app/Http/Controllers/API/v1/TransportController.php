@@ -222,7 +222,13 @@ class TransportController extends Controller
      *     @OA\Response(
      *          response=200,
      *          description="successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/TripResource")
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/TripResource"
+     *                  )
+     *              )
+     *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Unauthorized"),

@@ -3,8 +3,10 @@ import {PropType, ref, watch} from "vue";
 import ModalComponent from "../ModalComponent.vue";
 import {trans} from "laravel-vue-i18n";
 import BusinessDropdown from "../BusinessDropdown.vue";
-import {Api, StatusResource, StatusUpdateBody} from "../../../types/Api.gen";
+import {Api, StatusResource, StatusUpdateBody, StopoverResource} from "../../../types/Api.gen";
 import VisibilityDropdown from "../VisibilityDropdown.vue";
+import {Dtm} from "../../helpers/DateTime";
+import {DateTime} from "luxon";
 
 const emit = defineEmits(['status-updated']);
 const props = defineProps({
@@ -26,11 +28,13 @@ watch(() => props.status, (newStatus) => {
     business: newStatus.business,
     visibility: newStatus.visibility,
     manualDeparture: newStatus.train.manualDeparture,
-    manualArrival: newStatus.train.manualArrival
+    manualArrival: newStatus.train.manualArrival,
+    destinationId: newStatus.train.destination.id,
   };
 }, {immediate: true});
 
 const show = () => {
+  fetchDestinations();
   modal.value?.show();
 }
 
@@ -38,6 +42,8 @@ function updateData() {
   loading.value = true;
   // Logic to update data goes here
   if (updateStatus.value) {
+    updateStatus.value.destinationArrivalPlanned = stopovers.value.find(stopover => stopover.id === updateStatus.value!.destinationId)?.arrival || null;
+
     api.status.updateSingleStatus(updateStatus.value, props.status.id).then((status) => {
       emit('status-updated', status.data.data);
       loading.value = false;
@@ -51,6 +57,20 @@ function updateData() {
   }
 }
 
+const stopovers = ref<StopoverResource[]>([]);
+
+function fetchDestinations() {
+  api.trains.getTrainTrip({
+    hafasTripId: props.status.train.trip,
+    lineName: props.status.train.lineName,
+    start: props.status.train.origin.id
+  }).then((response) => {
+    stopovers.value = response.data?.data?.stopovers || [];
+  }).catch((error) => {
+    console.error('Error fetching destinations:', error);
+  });
+}
+
 
 defineExpose({show});
 </script>
@@ -59,7 +79,13 @@ defineExpose({show});
   <ModalComponent ref="modal" :title="trans('modals.editStatus-title')">
     <template v-if="updateStatus !== null" #body>
       <div class="destination-wrapper form-floating mb-2">
-        <select class="form-select" required id="form-status-destination"></select>
+        <select class="form-select" required id="form-status-destination" v-model="updateStatus.destinationId">
+          <option v-for="stopover in stopovers" :key="stopover.id"
+                  :value="stopover.id"
+          >
+            {{ new Dtm(stopover.arrival || '').toLocaleString(DateTime.TIME_SIMPLE) }}: {{ stopover.name }}
+          </option>
+        </select>
         <label class="form-label" for="form-status-destination">
           {{ trans('exit') }}
         </label>

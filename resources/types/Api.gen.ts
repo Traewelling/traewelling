@@ -3721,7 +3721,12 @@ export class Api<
       },
       params: RequestParams = {},
     ) =>
-      this.request<TripResource, void>({
+      this.request<
+        {
+          data?: TripResource[];
+        },
+        void
+      >({
         path: `/trains/trip`,
         method: "GET",
         query: query,

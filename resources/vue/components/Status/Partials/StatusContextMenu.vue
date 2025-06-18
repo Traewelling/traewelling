@@ -81,7 +81,7 @@ function showModal() {
       <template v-if="user.user">
         <template v-if="user.user.id == status.userDetails.id">
           <li>
-            <button class="dropdown-item edit" type="button" @click="updateModal?.show()">
+            <button class="dropdown-item" type="button" @click="updateModal?.show()">
               <div class="dropdown-icon-suspense">
                 <i class="fas fa-edit" aria-hidden="true"></i>
               </div>
