@@ -141,12 +141,10 @@
             </div>
         </div>
         <div class="col-md-5">
-            @if(auth()->user()?->hasRole('open-beta'))
-                <div id="settings-friend-checkin">
-                    <friend-checkin-settings>
-                    </friend-checkin-settings>
-                </div>
-            @endif
+            <div id="settings-friend-checkin">
+                <friend-checkin-settings>
+                </friend-checkin-settings>
+            </div>
         </div>
     </div>
 @endsection
