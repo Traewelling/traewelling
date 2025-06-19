@@ -9,7 +9,7 @@ use Illuminate\View\View;
 class VueFrontendController
 {
     public function stationboard(Request $request): View {
-        return view('vuestationboard', [
+        return view('beta.vue-stationboard', [
             'station' => Station::find((int) $request->stationId)
         ]);
     }

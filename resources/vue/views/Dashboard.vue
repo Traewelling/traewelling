@@ -62,7 +62,6 @@ function fetchStopovers(append: boolean = false) {
         stopovers.value = data.data;
       }
 
-      console.log('Stopovers fetched:', stopovers.value);
     });
   }).catch((error) => {
     console.error('Error fetching stopovers:', error);
@@ -70,8 +69,6 @@ function fetchStopovers(append: boolean = false) {
 }
 
 function getStopoverForTrip(tripId: string): StopoverResource[] | undefined {
-  console.log('Fetching stopovers for trip:', tripId);
-  console.log(stopovers.value[tripId]);
   return stopovers.value[tripId];
 }
 
@@ -81,7 +78,7 @@ function fetchFutureStatuses() {
       futureStatuses.value = data.data;
     });
   }).catch((error) => {
-    console.error('Error fetching future statuses:', error);
+    notyf.error(trans('generic.error') + ': ' + error.message);
   });
 }
 
