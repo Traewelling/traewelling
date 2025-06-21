@@ -24,6 +24,10 @@ export default {
     editable: {
       type: Boolean,
       default: false
+    },
+    class: {
+      type: String,
+      default: ""
     }
   },
   data() {
@@ -82,39 +86,40 @@ export default {
     </template>
   </FullScreenModal>
 
-  <button v-show="editable" class="btn btn-link btn-sm text-white badge bg-trwl" @click="showModal()"
-          style="text-transform: none;"
-  >
-    <i class="fa fa-plus"></i>
-    {{ trans("modals.tags.new") }}
-  </button>
+  <div :class>
 
-  <button
-      v-if="editable"
-      v-for="tag in tags"
-      :key="tag.key"
-      class="btn btn-link btn-sm text-white badge bg-trwl ms-1"
-      style="text-transform: none;"
-      @click="showModal(tag)"
-  >
-    <i v-show="getIcon(tag.key) !== 'fa-fw'" :class="[getIcon(tag.key), 'fa']"></i>
-    {{ tag.value }}
-  </button>
-  <span
-      v-else
-      v-for="tag in tags"
-      :key="tag.key"
-      class="text-white badge bg-trwl ms-1"
-      data-bs-toggle="tooltip"
-      data-bs-placement="top"
-      :title="getTitle(tag.key)"
-      :ref="tag.key"
-  >
+    <button v-show="editable" class="btn btn-link btn-sm text-white badge bg-trwl" @click="showModal()"
+            style="text-transform: none;"
+    >
+      <i class="fa fa-plus"></i>
+      {{ trans("modals.tags.new") }}
+    </button>
+
+    <button
+        v-if="editable"
+        v-for="tag in tags"
+        :key="tag.key"
+        class="btn btn-link btn-sm text-white badge bg-trwl ms-1"
+        style="text-transform: none;"
+        @click="showModal(tag)"
+    >
+      <i v-show="getIcon(tag.key) !== 'fa-fw'" :class="[getIcon(tag.key), 'fa']"></i>
+      {{ tag.value }}
+    </button>
+    <span
+        v-else
+        v-for="tag in tags"
+        :key="tag.key"
+        class="text-white badge bg-trwl ms-1"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        :title="getTitle(tag.key)"
+        :ref="tag.key"
+    >
         <i v-show="getIcon(tag.key) !== 'fa-fw'" :class="[getIcon(tag.key), 'fa']"></i>
         {{ tag.value }}
     </span>
-  &nbsp;
-  <slot/>
+  </div>
 </template>
 
 <style scoped lang="scss">

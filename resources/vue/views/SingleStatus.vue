@@ -119,9 +119,11 @@ fetchLikes();
                   {{ like.username }}
               </a>
               <span v-if="like.id === status.userDetails.id">
+                &thinsp;
                 {{ trans('user.liked-own-status') }}
-                </span>
+              </span>
               <span v-else>
+                &thinsp;
                 {{ trans('user.liked-status') }}
               </span>
             </span>
