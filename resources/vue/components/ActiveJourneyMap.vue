@@ -106,6 +106,7 @@ export default {
       this.points = [];
     },
     fetchStatusPolyline() {
+      this.clearAllElements();
       fetch('/api/v1/polyline/' + this.$props.statusId).then((response) => {
         response.json().then((results) => {
           let polyline = L.geoJSON(results.data)

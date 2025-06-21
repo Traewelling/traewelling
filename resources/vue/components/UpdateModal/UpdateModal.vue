@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import {PropType, ref, watch} from "vue";
+import {PropType, ref, useTemplateRef, watch} from "vue";
 import ModalComponent from "../ModalComponent.vue";
 import {trans} from "laravel-vue-i18n";
 import BusinessDropdown from "../BusinessDropdown.vue";
-import {Api, StatusResource, StatusUpdateBody, StopoverResource} from "../../../types/Api.gen";
+import {Api, EventResource, StatusResource, StatusUpdateBody, StopoverResource} from "../../../types/Api.gen";
 import VisibilityDropdown from "../VisibilityDropdown.vue";
 import {Dtm} from "../../helpers/DateTime";
 import {DateTime} from "luxon";
 import {useActiveCheckin} from "../../stores/activeCheckin";
-import {getArrivalForStopover} from "../../helpers/DateTimeHelper";
+import {getArrivalForStopover, getDepartureForStatus} from "../../helpers/DateTimeHelper";
+import EventDropdown from "../EventDropdown.vue";
 
 const emit = defineEmits(['status-updated']);
 const props = defineProps({
@@ -19,6 +20,8 @@ const props = defineProps({
 });
 
 const modal = ref<ModalComponent | null>(null);
+const eventsDropdown = useTemplateRef('eventsDropdown');
+const stopovers = ref<StopoverResource[]>([]);
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
 const activeStatus = useActiveCheckin();
 const loading = ref(false);
@@ -33,11 +36,13 @@ watch(() => props.status, (newStatus) => {
     manualDeparture: newStatus.train.manualDeparture,
     manualArrival: newStatus.train.manualArrival,
     destinationId: newStatus.train.destination.id,
+    eventId: newStatus.event?.id || null,
   };
 }, {immediate: true});
 
 const show = () => {
   fetchDestinations();
+  eventsDropdown.value?.fetchEvents(getDepartureForStatus(props.status).toISO());
   modal.value?.show();
 }
 
@@ -63,7 +68,6 @@ function updateData() {
   }
 }
 
-const stopovers = ref<StopoverResource[]>([]);
 
 function fetchDestinations() {
   api.trains.getTrainTrip({
@@ -79,6 +83,12 @@ function fetchDestinations() {
   }).catch((error) => {
     console.error('Error fetching destinations:', error);
   });
+}
+
+function selectEvent(event: EventResource | null) {
+  if (updateStatus.value && event) {
+    updateStatus.value.eventId = event.id;
+  }
 }
 
 
@@ -125,6 +135,9 @@ defineExpose({show});
             </label>
           </div>
         </div>
+        <p class="text-warning"><i class="fa fa-warning"></i> If you had this filled out, you need to fill it out again
+          if you want to save!
+          The experimental features reset manual departure times.</p>
       </div>
 
       <div class="form-outline">
@@ -143,7 +156,9 @@ defineExpose({show});
       <div class="py-2 px-3 border-bottom gap-2">
         <BusinessDropdown v-model="updateStatus.business" class="btn btn-outline-primary me-2"/>
         <VisibilityDropdown :start-value="updateStatus.visibility" v-model="updateStatus.visibility"
-                            class="btn btn-outline-primary"/>
+                            class="btn btn-outline-primary me-2"/>
+        <EventDropdown :prefetch-events="false" ref="eventsDropdown" :pre-selected-event="status.event"
+                       @select-event="selectEvent" class="btn btn-outline-primary"/>
       </div>
     </template>
     <template #footer>

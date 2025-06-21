@@ -53,7 +53,7 @@ const duration = getArrivalForStatus(props.status).dateTime.diff(getDepartureFor
       </span>
       <span class="ps-2">
         <i class="fa fa-route d-inline" aria-hidden="true"></i>
-        <span v-if="status.train.distance < 1000"> <small>m</small></span>
+        <span v-if="status.train.distance < 1000">{{ status.train.distance }} <small>m</small></span>
         <span v-else>{{ (status.train.distance / 1000).toFixed(0) }} <small>km</small></span>
       </span>
       <span class="ps-2">
@@ -69,6 +69,7 @@ const duration = getArrivalForStatus(props.status).dateTime.diff(getDepartureFor
         <br>
         <span class="pl-sm-2">
           <i class="fa fa-calendar-day" aria-hidden="true"></i>
+          <span class="text-trwl">&nbsp;</span>
           <a :href="`/events/${status.event.slug}`">
             {{ status.event.name }}
           </a>
@@ -78,7 +79,6 @@ const duration = getArrivalForStatus(props.status).dateTime.diff(getDepartureFor
         <i class="fas fa-quote-right" aria-hidden="true"></i>
         {{ status.body }} <!-- todo: mentions -->
       </p>
-      <!-- todo: next stop -->
     </p>
   </li>
 </template>

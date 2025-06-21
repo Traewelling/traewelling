@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {PropType, ref} from "vue";
+import {PropType, ref, useTemplateRef} from "vue";
 import {StatusResource, StopoverResource} from "../../../types/Api.gen";
 import {
   getArrivalForStatus,
@@ -35,6 +35,7 @@ const statusObject = ref<StatusResource>(props.status);
 const progress = ref(0);
 const interval = ref<number | null>(null);
 const deleted = ref(false);
+const map = useTemplateRef('map');
 const departure = getDepartureForStopover(statusObject.value.train.origin).dateTime;
 const arrival = getArrivalForStopover(statusObject.value.train.destination).dateTime;
 const activeCheckin = useActiveCheckin();
@@ -74,6 +75,13 @@ function deleteSelf() {
   }
 }
 
+function statusUpdated(status: StatusResource) {
+  statusObject.value = status;
+  if (props.showMap && map.value) {
+    map.value.fetchStatusPolyline();
+  }
+}
+
 updateProgress();
 </script>
 
@@ -82,6 +90,7 @@ updateProgress();
     <div v-if="showMap" class="card-img-top">
       <div id="activeJourneys" class="map statusMap embed-responsive embed-responsive-16by9">
         <ActiveJourneyMap
+            ref="map"
             :status-id="statusObject.id"
             :departure="departure.toSeconds()"
             :arrival="arrival.toSeconds()"
@@ -119,6 +128,6 @@ updateProgress();
 
     <!-- footer -->
     <StatusFooter :status="statusObject" @statusDeleted="deleteSelf()" @statusLiked="emit('status-liked')"
-                  @statusUnliked="emit('status-unliked')" @status-updated="statusObject = $event"/>
+                  @statusUnliked="emit('status-unliked')" @status-updated="statusUpdated"/>
   </div>
 </template>
