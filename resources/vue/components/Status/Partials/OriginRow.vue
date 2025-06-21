@@ -70,7 +70,7 @@ const duration = getArrivalForStatus(props.status).dateTime.diff(getDepartureFor
         <span class="pl-sm-2">
           <i class="fa fa-calendar-day" aria-hidden="true"></i>
           <span class="text-trwl">&nbsp;</span>
-          <a :href="`/events/${status.event.slug}`">
+          <a :href="`/event/${status.event.slug}`">
             {{ status.event.name }}
           </a>
         </span>
