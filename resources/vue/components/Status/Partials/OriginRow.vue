@@ -42,8 +42,12 @@ const duration = getArrivalForStatus(props.status).dateTime.diff(getDepartureFor
       <span>
         <ProductIcon :product="status.train.category"/>
         {{ status.train.lineName }}
+        <small v-if="status.train.manualJourneyNumber" data-bs-toggle="tooltip"
+               data-bs-placement="top" :title="trans('status.manual_journey_number')">
+          ({{ status.train.manualJourneyNumber }})
+        </small>
         <small
-            v-if="status.train.journeyNumber && !status.train.lineName.includes(status.train.journeyNumber.toString())">
+            v-else-if="status.train.journeyNumber && !status.train.lineName.includes(status.train.journeyNumber.toString())">
           ({{ status.train.journeyNumber }})
         </small>
       </span>

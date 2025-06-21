@@ -5651,6 +5651,12 @@
                         "type": "integer",
                         "example": 85639
                     },
+                    "manualJourneyNumber": {
+                        "description": "Manual journey number, if set by the user. This is intended for use cases like ICE lines in germany that have line number but are more widely known by their train number",
+                        "type": "string",
+                        "example": "ICE 4",
+                        "nullable": true
+                    },
                     "distance": {
                         "description": "Distance in meters",
                         "type": "integer",

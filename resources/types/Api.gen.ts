@@ -675,6 +675,11 @@ export interface TransportResource {
   /** @example 85639 */
   journeyNumber: number;
   /**
+   * Manual journey number, if set by the user. This is intended for use cases like ICE lines in germany that have line number but are more widely known by their train number
+   * @example "ICE 4"
+   */
+  manualJourneyNumber?: string | null;
+  /**
    * Distance in meters
    * @example 10000
    */
