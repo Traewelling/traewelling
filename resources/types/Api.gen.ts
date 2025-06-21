@@ -1503,6 +1503,7 @@ type CancelToken = Symbol | string | number;
 
 export enum ContentType {
   Json = "application/json",
+  JsonApi = "application/vnd.api+json",
   FormData = "multipart/form-data",
   UrlEncoded = "application/x-www-form-urlencoded",
   Text = "text/plain",
@@ -1566,6 +1567,10 @@ export class HttpClient<SecurityDataType = unknown> {
 
   private contentFormatters: Record<ContentType, (input: any) => any> = {
     [ContentType.Json]: (input: any) =>
+      input !== null && (typeof input === "object" || typeof input === "string")
+        ? JSON.stringify(input)
+        : input,
+    [ContentType.JsonApi]: (input: any) =>
       input !== null && (typeof input === "object" || typeof input === "string")
         ? JSON.stringify(input)
         : input,
@@ -2665,7 +2670,7 @@ export class Api<
       }),
 
     /**
-     * @description Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b> *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions *      we recommend the following tags in the trwl namespace:<br> *      <ul> *          <li>trwl:seat (i.e. 61)</li> *          <li>trwl:wagon (i.e. 25)</li> *          <li>trwl:ticket (i.e. BahnCard 100 first))</li> *          <li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li> *          <li>trwl:locomotive_class (BR424, BR450)</li> *          <li>trwl:wagon_class (i.e. Bpmz)</li> *          <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li> *          <li>trwl:vehicle_number (i.e. 425 001, Tz9001, 123, ...)</li> *          <li>trwl:passenger_rights (i.e. yes / no / ID of claim)</li> *      </ul>
+     * @description Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b> *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions *      we recommend the following tags in the trwl namespace:<br> *      <ul> *          <li>trwl:seat (i.e. 61)</li> *          <li>trwl:wagon (i.e. 25)</li> *          <li>trwl:ticket (i.e. BahnCard 100 first))</li> *          <li>trwl:price (420,69 €)</li> *          <li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li> *          <li>trwl:locomotive_class (BR424, BR450)</li> *          <li>trwl:journey_number (i.e. 1234. Used as a work-around for missing journey numbers)</li> *          <li>trwl:wagon_class (i.e. Bpmz)</li> *          <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li> *          <li>trwl:vehicle_number (i.e. 425 001, Tz9001, 123, ...)</li> *          <li>trwl:passenger_rights (i.e. yes / no / ID of claim)</li> *      </ul>
      *
      * @tags Status
      * @name CreateSingleStatusTag
