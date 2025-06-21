@@ -3,10 +3,12 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(
  *     title="Event",
+ *     required={"id", "name", "slug", "hashtag", "host", "url", "begin", "end", "station", "isPride"},
  *     @OA\Property(property="id", type="integer", example=39),
  *     @OA\Property(property="name", type="string", example="9-Euro-Ticket"),
  *     @OA\Property(property="slug", type="string", example="9_euro_ticket"),
@@ -15,13 +17,15 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     @OA\Property(property="url", type="string", example="https://9-euro-ticket.de"),
  *     @OA\Property(property="begin", type="string", format="date-time", example="2022-01-01T00:00:00+00:00"),
  *     @OA\Property(property="end", type="string", format="date-time", example="2022-01-02T00:00:00+00:00"),
- *     @OA\Property(property="station", type="string", ref="#/components/schemas/Station")
+ *     @OA\Property(property="station", type="string", ref="#/components/schemas/Station"),
+ *     @OA\Property(property="isPride", ref="#/components/schemas/StationResource"),
  * )
  */
 class EventResource extends JsonResource
 {
 
     public function toArray($request): array {
+        /** @var \App\Models\Event $this */
         return [
             "id"      => $this->id,
             "name"    => $this->name,
@@ -31,7 +35,8 @@ class EventResource extends JsonResource
             "url"     => $this->url,
             "begin"   => ($this->event_start ?? $this->checkin_start)->toIso8601String(),
             "end"     => ($this->event_end ?? $this->checkin_end)->toIso8601String(),
-            "station" => new StationResource($this->station)
+            "station" => new StationResource($this->station),
+            "isPride" => $this->isPride ? true : false,
         ];
     }
 }

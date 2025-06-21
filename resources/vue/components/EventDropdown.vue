@@ -1,54 +1,78 @@
-<script lang="ts">
-import {defineComponent} from 'vue'
-import {TrwlEvent} from "../../types/TrwlEvent";
+<script lang="ts" setup>
+import {ref, watch} from 'vue'
 import {trans} from "laravel-vue-i18n";
+import {Api, EventResource} from "../../types/Api.gen";
 
-export default defineComponent({
-  emits: ["select-event"],
-  name: "EventDropdown",
-  data() {
-    return {
-      events: [] as TrwlEvent[],
-      filteredEvents: [] as TrwlEvent[],
-      search: "" as string,
-      selectedEvent: null as TrwlEvent | null
-    }
+const emits = defineEmits(["select-event"]);
+const props = defineProps({
+  preSelectedEvent: {
+    type: Object as () => EventResource | null,
+    default: null
   },
-  mounted() {
-    this.fetchEvents();
+  prefetchEvents: {
+    type: Boolean,
+    default: true
   },
-  methods: {
-    trans,
-    fetchEvents() {
-      fetch("/api/v1/events")
-          .then(response => response.json())
-          .then(data => {
-            this.events = data.data;
-            this.filteredEvents = data.data;
-          });
-    },
-    filterEvents() {
-      this.filteredEvents = this.events.filter(event => event.name.toLowerCase().includes(this.search.toLowerCase()));
-    },
-    selectEvent(event: TrwlEvent) {
-      this.selectedEvent = event === this.selectedEvent ? null : event;
-      this.$emit("select-event", this.selectedEvent);
-    },
-    isSelected(event: TrwlEvent) {
-      return this.selectedEvent && this.selectedEvent.slug === event.slug;
-    }
-  },
-  watch: {
-    search() {
-      this.filterEvents();
-    }
-  },
-})
+  class: {
+    type: String,
+    default: "btn btn-sm btn-link px-2"
+  }
+});
+const api = new Api({baseUrl: window.location.origin + '/api/v1'});
+const events = ref<EventResource[]>([]);
+const filteredEvents = ref<EventResource[]>([]);
+const search = ref<string>("");
+const selectedEvent = ref<EventResource | null>(props.preSelectedEvent || null);
+
+function fetchEvents(timestamp: string | null = null) {
+  fetch("/api/v1/events")
+      .then(response => response.json())
+      .then(data => {
+        events.value = data.data;
+        filteredEvents.value = data.data;
+      });
+  let query = {};
+  if (timestamp) {
+    query = {timestamp: timestamp};
+  }
+
+  api.events.getEvents(query).then((response) => {
+    events.value = response.data?.data || [];
+  }).catch((error) => {
+    console.error('Error fetching events:', error);
+  });
+}
+
+defineExpose({
+  fetchEvents
+});
+
+function filterEvents() {
+  filteredEvents.value = events.value.filter(event => event.name.toLowerCase().includes(search.value.toLowerCase()));
+}
+
+function selectEvent(event: EventResource) {
+  selectedEvent.value = event === selectedEvent.value ? null : event;
+  emits("select-event", selectedEvent.value);
+}
+
+function isSelected(event: EventResource) {
+  return selectedEvent.value && selectedEvent.value.slug === event.slug;
+}
+
+watch(search, () => {
+  filterEvents();
+});
+
+// initialize
+if (props.prefetchEvents) {
+  fetchEvents();
+}
 </script>
 
 <template>
   <div class="col btn-group">
-    <button class="btn btn-sm dropdown-toggle btn-link px-2" type="button"
+    <button :class type="button" class="dropdown-toggle "
             id="eventDropdown" data-bs-dropdown-animation="off"
             data-bs-toggle="dropdown" aria-expanded="false" style="">
       <i class="fas" aria-hidden="true"

@@ -3303,7 +3303,15 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TripResource"
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TripResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -4669,6 +4677,11 @@
             "MentionDto": {
                 "title": "Mention",
                 "description": "Mentioned user and position in status body",
+                "required": [
+                    "user",
+                    "position",
+                    "length"
+                ],
                 "properties": {
                     "user": {
                         "$ref": "#/components/schemas/UserResource"
@@ -5037,6 +5050,11 @@
             },
             "AreaResource": {
                 "title": "Area",
+                "required": [
+                    "name",
+                    "default",
+                    "adminLevel"
+                ],
                 "properties": {
                     "name": {
                         "type": "string",
@@ -5074,9 +5092,13 @@
             },
             "ClientResource": {
                 "title": "Client",
+                "required": [
+                    "id",
+                    "name",
+                    "privacyPolicyUrl"
+                ],
                 "properties": {
                     "id": {
-                        "description": "Model -> OAuthClient",
                         "type": "integer",
                         "example": 1
                     },
@@ -5093,6 +5115,10 @@
             },
             "DataSourceResource": {
                 "title": "DataSourceResource",
+                "required": [
+                    "id",
+                    "attribution"
+                ],
                 "properties": {
                     "id": {
                         "type": "string",
@@ -5129,6 +5155,18 @@
             },
             "EventResource": {
                 "title": "Event",
+                "required": [
+                    "id",
+                    "name",
+                    "slug",
+                    "hashtag",
+                    "host",
+                    "url",
+                    "begin",
+                    "end",
+                    "station",
+                    "isPride"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5166,6 +5204,9 @@
                     },
                     "station": {
                         "$ref": "#/components/schemas/Station"
+                    },
+                    "isPride": {
+                        "$ref": "#/components/schemas/StationResource"
                     }
                 },
                 "type": "object"
@@ -5196,6 +5237,14 @@
             "LightUserResource": {
                 "title": "LightUser",
                 "description": "User model with just basic information",
+                "required": [
+                    "id",
+                    "displayName",
+                    "username",
+                    "profilePicture",
+                    "mastodonUrl",
+                    "preventIndex"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5225,6 +5274,11 @@
                 "type": "object"
             },
             "OperatorResource": {
+                "required": [
+                    "id",
+                    "identifier",
+                    "name"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5267,6 +5321,15 @@
             },
             "StationResource": {
                 "title": "Station",
+                "required": [
+                    "id",
+                    "name",
+                    "latitude",
+                    "longitude",
+                    "ibnr",
+                    "rilIdentifier",
+                    "areas"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5303,6 +5366,23 @@
             },
             "StatusResource": {
                 "title": "Status",
+                "required": [
+                    "id",
+                    "body",
+                    "business",
+                    "bodyMentions",
+                    "business",
+                    "visibility",
+                    "likes",
+                    "liked",
+                    "isLikable",
+                    "client",
+                    "createdAt",
+                    "train",
+                    "event",
+                    "userDetails",
+                    "tags"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5374,6 +5454,11 @@
             },
             "StatusTagResource": {
                 "title": "StatusTagResource",
+                "required": [
+                    "key",
+                    "value",
+                    "visibility"
+                ],
                 "properties": {
                     "key": {
                         "type": "string",
@@ -5392,6 +5477,26 @@
             },
             "StopoverResource": {
                 "title": "StopoverResource",
+                "required": [
+                    "id",
+                    "name",
+                    "rilIdentifier",
+                    "evaIdentifier",
+                    "arrival",
+                    "arrivalPlanned",
+                    "arrivalReal",
+                    "arrivalPlatformPlanned",
+                    "arrivalPlatformReal",
+                    "departure",
+                    "departurePlanned",
+                    "departureReal",
+                    "departurePlatformPlanned",
+                    "departurePlatformReal",
+                    "platform",
+                    "isArrivalDelayed",
+                    "isDepartureDelayed",
+                    "cancelled"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5505,6 +5610,23 @@
             },
             "TransportResource": {
                 "title": "TransportResource",
+                "required": [
+                    "trip",
+                    "hafasId",
+                    "category",
+                    "number",
+                    "lineName",
+                    "journeyNumber",
+                    "distance",
+                    "points",
+                    "duration",
+                    "manualDeparture",
+                    "manualArrival",
+                    "origin",
+                    "destination",
+                    "operator",
+                    "dataSource"
+                ],
                 "properties": {
                     "trip": {
                         "type": "integer",
@@ -5528,6 +5650,12 @@
                     "journeyNumber": {
                         "type": "integer",
                         "example": 85639
+                    },
+                    "manualJourneyNumber": {
+                        "description": "Manual journey number, if set by the user. This is intended for use cases like ICE lines in germany that have line number but are more widely known by their train number",
+                        "type": "string",
+                        "example": "ICE 4",
+                        "nullable": true
                     },
                     "distance": {
                         "description": "Distance in meters",
@@ -5631,6 +5759,24 @@
             },
             "UserAuthResource": {
                 "title": "UserAuth",
+                "required": [
+                    "id",
+                    "displayName",
+                    "username",
+                    "profilePicture",
+                    "totalDistance",
+                    "totalDuration",
+                    "points",
+                    "mastodonUrl",
+                    "privateProfile",
+                    "preventIndex",
+                    "likes_enabled",
+                    "mapProvider",
+                    "home",
+                    "language",
+                    "defaultStatusVisibility",
+                    "roles"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5676,6 +5822,10 @@
                     "likes_enabled": {
                         "type": "boolean",
                         "example": "true"
+                    },
+                    "mapProvider": {
+                        "type": "string",
+                        "example": "default"
                     },
                     "home": {
                         "$ref": "#/components/schemas/StationResource"

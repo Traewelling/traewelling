@@ -1,7 +1,8 @@
-import {DateTime, DateTimeFormatOptions} from "luxon";
-import {DateTimeOptions, LocaleOptions} from "luxon/src/datetime";
+import {DateTime, DateTimeFormatOptions, ToISOTimeOptions} from "luxon";
+import {DateTimeOptions, LocaleOptions, ToRelativeOptions} from "luxon/src/datetime";
 import {getActiveLanguage} from "laravel-vue-i18n";
 
+// todo: rewrite to extend DateTime instead of wrapping it
 export class Dtm {
     dateTime: DateTime;
 
@@ -37,5 +38,26 @@ export class Dtm {
         opts?: LocaleOptions,
     ): string {
         return this.dateTime.toLocaleString(formatOpts, opts);
+    }
+
+    toFormat(
+        format: string,
+        opts?: LocaleOptions
+    ): string {
+        return this.dateTime.toFormat(format, opts);
+    }
+
+    toISO(
+        opts?: ToISOTimeOptions
+    ): string | null {
+        return this.dateTime.toISO(opts);
+    }
+
+    toMillis(): number {
+        return this.dateTime.toMillis();
+    }
+
+    toRelative(options?: ToRelativeOptions): string | null {
+        return this.dateTime.toRelative(options);
     }
 }

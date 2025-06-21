@@ -1,0 +1,84 @@
+<script setup lang="ts">
+import {PropType} from "vue";
+import {Business, StatusResource} from "../../../../types/Api.gen";
+import {
+  getArrivalForStatus,
+  getDepartureAttribute,
+  getDepartureForStatus,
+  timeTypeTooltip
+} from "../../../helpers/DateTimeHelper";
+import {trans} from "laravel-vue-i18n";
+import {DateTime} from "luxon";
+import ProductIcon from "../../ProductIcon.vue";
+import {IconHelper} from "../../../helpers/IconHelper";
+
+const props = defineProps({
+  status: {
+    type: Object as PropType<StatusResource>,
+    required: true
+  }
+});
+
+const arrival = getDepartureAttribute(props.status);
+const duration = getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, ['hours', 'minutes']);
+</script>
+
+<template>
+  <li>
+    <i class="trwl-bulletpoint" aria-hidden="true"></i>
+    <span class="text-trwl float-end">
+      <s v-show="arrival.originalTime" class="text-muted">
+        {{ arrival.originalTime?.toLocaleString(DateTime.TIME_SIMPLE) }}
+      </s>
+      <span data-bs-toggle="tooltip" :title="trans(timeTypeTooltip(arrival.type))">
+        {{ arrival.time?.toLocaleString(DateTime.TIME_SIMPLE) }}
+      </span>
+    </span>
+    <a :href="`/stationboard?stationId=${status.train.origin.id}&${status.train.origin.name}`"
+       class="text-trwl clearfix">
+      {{ status.train.origin.name }}
+    </a>
+    <p class="train-status text-muted m-0">
+      <span>
+        <ProductIcon :product="status.train.category"/>
+        {{ status.train.lineName }}
+        <small v-if="status.train.manualJourneyNumber" data-bs-toggle="tooltip"
+               data-bs-placement="top" :title="trans('status.manual_journey_number')">
+          ({{ status.train.manualJourneyNumber }})
+        </small>
+        <small
+            v-else-if="status.train.journeyNumber && !status.train.lineName.includes(status.train.journeyNumber.toString())">
+          ({{ status.train.journeyNumber }})
+        </small>
+      </span>
+      <span class="ps-2">
+        <i class="fa fa-route d-inline" aria-hidden="true"></i>
+        <span v-if="status.train.distance < 1000">{{ status.train.distance }} <small>m</small></span>
+        <span v-else>{{ (status.train.distance / 1000).toFixed(0) }} <small>km</small></span>
+      </span>
+      <span class="ps-2">
+        <i class="fa fa-clock d-inline" aria-hidden="true"></i>
+        {{ duration.toHuman({unitDisplay: "short"}) }}
+      </span>
+      <span v-if="status.business !== Business.Value0" class="pl-sm-2">
+        <i class="fa" :class="IconHelper.getBusinessIcon(status.business)" aria-hidden="true" data-bs-toggle="tooltip"
+           data-bs-placement="top" :title="trans(IconHelper.getBusinessTitle(status.business))"></i>
+        <span class="sr-only">{{ trans(IconHelper.getBusinessTitle(status.business)) }}</span>
+      </span>
+      <template v-if="status.event">
+        <br>
+        <span class="pl-sm-2">
+          <i class="fa fa-calendar-day" aria-hidden="true"></i>
+          <span class="text-trwl">&nbsp;</span>
+          <a :href="`/events/${status.event.slug}`">
+            {{ status.event.name }}
+          </a>
+        </span>
+      </template>
+      <p v-if="status.body" class="status-body mt-2">
+        <i class="fas fa-quote-right" aria-hidden="true"></i>
+        {{ status.body }} <!-- todo: mentions -->
+      </p>
+    </p>
+  </li>
+</template>

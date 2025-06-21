@@ -23,6 +23,10 @@ export default {
     hideFooter: {
       type: Boolean,
       default: false
+    },
+    hideBody: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -57,14 +61,14 @@ export default {
           <slot name="header-extra"/>
           <button type="button" class="btn-close" aria-label="Close" @click="hide"></button>
         </div>
-        <div class="modal-body" :class="bodyClass">
+        <div class="modal-body" :class="bodyClass" v-if="!hideBody">
           <slot name="body"/>
         </div>
         <div class="modal-footer" v-if="!hideFooter">
-          <slot name="footer"></slot>
-          <button type="button" class="btn btn-secondary">
+          <button type="button" class="btn btn-secondary" @click="hide()">
             {{ trans("menu.close") }}
           </button>
+          <slot name="footer"></slot>
         </div>
       </div>
     </div>

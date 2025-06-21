@@ -480,6 +480,7 @@
   "status.visibility.4": "Nur angemeldete Nutzer",
   "status.visibility.4.detail": "Nur für angemeldete Nutzer sichtbar",
   "status.update.success": "Dein Status wurde erfolgreich aktualisiert.",
+  "status.manual_journey_number": "Fahrtennummer manuell eingeben",
   "time-format": "HH:mm",
   "time-format.with-day": "HH:mm (DD.MM.YYYY)",
   "datetime-format": "DD.MM.YYYY HH:mm",

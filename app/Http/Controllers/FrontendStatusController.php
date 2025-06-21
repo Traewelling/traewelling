@@ -25,6 +25,9 @@ class FrontendStatusController extends Controller
     }
 
     public function getDashboard(): Renderable|RedirectResponse {
+        if (auth()->user()?->hasRole('open-beta')) {
+            return view('beta.vue-dashboard');
+        }
 
         $statuses = DashboardController::getPrivateDashboard(auth()->user());
 
@@ -36,6 +39,10 @@ class FrontendStatusController extends Controller
     }
 
     public function getActiveStatuses(): View {
+        if (auth()->user()?->hasRole('open-beta')) {
+            return view('beta.vue-activejourneys');
+        }
+
         return view('activejourneys', [
             'currentUser' => Auth::user(),
             'statuses'    => StatusBackend::getActiveStatuses(),
@@ -59,6 +66,12 @@ class FrontendStatusController extends Controller
     }
 
     public function getStatus($statusId): Renderable {
+        if (\auth()->user()?->hasRole('open-beta')) {
+            return view('beta.vue-status', [
+                'statusId' => $statusId,
+            ]);
+        }
+
         $status = StatusBackend::getStatus($statusId);
 
         try {

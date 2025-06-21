@@ -206,19 +206,19 @@ export interface LivePointDto {
  */
 export interface MentionDto {
   /** User model */
-  user?: UserResource;
+  user: UserResource;
   /**
    * position
    * @format int
    * @example 0
    */
-  position?: number;
+  position: number;
   /**
    * length
    * @format integer
    * @example 4
    */
-  length?: number;
+  length: number;
 }
 
 /**
@@ -350,11 +350,11 @@ export interface AlertTranslationResource {
 /** Area */
 export interface AreaResource {
   /** @example "Karlsruhe" */
-  name?: string;
+  name: string;
   /** @example "true" */
-  default?: boolean;
+  default: boolean;
   /** @example "1" */
-  adminLevel?: number;
+  adminLevel: number;
 }
 
 /** CheckinResponse */
@@ -368,23 +368,20 @@ export interface CheckinSuccessResource {
 
 /** Client */
 export interface ClientResource {
-  /**
-   * Model -> OAuthClient
-   * @example 1
-   */
-  id?: number;
+  /** @example 1 */
+  id: number;
   /** @example "Träwelling App" */
-  name?: string;
+  name: string;
   /** @example "https://traewelling.de/privacy-policy" */
-  privacyPolicyUrl?: string;
+  privacyPolicyUrl: string;
 }
 
 /** DataSourceResource */
 export interface DataSourceResource {
   /** @example "foobar" */
-  id?: string;
+  id: string;
   /** @example "Provided by foobar under CC BY 4.0" */
-  attribution?: string;
+  attribution: string;
 }
 
 /** EventDetails */
@@ -402,29 +399,30 @@ export interface EventDetailsResource {
 /** Event */
 export interface EventResource {
   /** @example 39 */
-  id?: number;
+  id: number;
   /** @example "9-Euro-Ticket" */
-  name?: string;
+  name: string;
   /** @example "9_euro_ticket" */
-  slug?: string;
+  slug: string;
   /** @example "NeunEuroTicket" */
-  hashtag?: string;
+  hashtag: string;
   /** @example "9-Euro-Ticket GmbH" */
-  host?: string;
+  host: string;
   /** @example "https://9-euro-ticket.de" */
-  url?: string;
+  url: string;
   /**
    * @format date-time
    * @example "2022-01-01T00:00:00+00:00"
    */
-  begin?: string;
+  begin: string;
   /**
    * @format date-time
    * @example "2022-01-02T00:00:00+00:00"
    */
-  end?: string;
+  end: string;
   /** train station model */
-  station?: Station;
+  station: Station;
+  isPride: StationResource;
 }
 
 /** LeaderboardUserResource */
@@ -451,26 +449,26 @@ export interface LeaderboardUserResource {
  */
 export interface LightUserResource {
   /** @example 1 */
-  id?: number;
+  id: number;
   /** @example "Gertrud" */
-  displayName?: string;
+  displayName: string;
   /** @example "Gertrud123" */
-  username?: string;
+  username: string;
   /** @example "https://traewelling.de/@Gertrud123/picture" */
-  profilePicture?: string;
+  profilePicture: string;
   /** @example "https://traewelling.social/@Gertrud123" */
-  mastodonUrl?: string;
+  mastodonUrl: string;
   /** @example false */
-  preventIndex?: boolean;
+  preventIndex: boolean;
 }
 
 export interface OperatorResource {
   /** @example 1 */
-  id?: number;
+  id: number;
   /** @example "db-regio-ag-nord" */
-  identifier?: string;
+  identifier: string;
   /** @example "DB Regio AG Nord" */
-  name?: string;
+  name: string;
 }
 
 /**
@@ -494,214 +492,219 @@ export interface ProfileLinkResource {
 /** Station */
 export interface StationResource {
   /** @example "1" */
-  id?: number;
+  id: number;
   /** @example "Karlsruhe Hbf" */
-  name?: string;
+  name: string;
   /** @example "48.993207" */
-  latitude?: number;
+  latitude: number;
   /** @example "8.400977" */
-  longitude?: number;
+  longitude: number;
   /** @example "8000191" */
-  ibnr?: string;
+  ibnr: string;
   /** @example "RK" */
-  rilIdentifier?: string;
-  areas?: AreaResource[];
+  rilIdentifier: string;
+  areas: AreaResource[];
 }
 
 /** Status */
 export interface StatusResource {
   /** @example 12345 */
-  id?: number;
+  id: number;
   /**
    * User defined status text
    * @example "Hello world!"
    */
-  body?: any;
+  body: any;
   /** Mentions in the status body */
-  bodyMentions?: MentionDto[];
+  bodyMentions: MentionDto[];
   /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
-  business?: Business;
+  business: Business;
   /**
    * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
    *  *      user specify?
    */
-  visibility?: StatusVisibility;
+  visibility: StatusVisibility;
   /**
    * How many people have liked this status
    * @example 12
    */
-  likes?: number;
+  likes: number;
   /**
    * Did the currently authenticated user like this status? (if unauthenticated = false)
    * @example true
    */
-  liked?: boolean;
+  liked: boolean;
   /**
    * Do the author of this status and the currently authenticated user allow liking of statuses? Only show the like UI if set to true
    * @example true
    */
-  isLikable?: boolean;
-  client?: ClientResource;
+  isLikable: boolean;
+  client: ClientResource;
   /**
    * creation date of this status
    * @format datetime
    * @example "2022-07-17T13:37:00+02:00"
    */
-  createdAt?: string;
-  train?: TransportResource;
-  event?: EventResource | null;
+  createdAt: string;
+  train: TransportResource;
+  event: EventResource | null;
   /** User model with just basic information */
-  userDetails?: LightUserResource;
-  tags?: StatusTagResource[];
+  userDetails: LightUserResource;
+  tags: StatusTagResource[];
 }
 
 /** StatusTagResource */
 export interface StatusTagResource {
   /** @example "trwl:vehicle_number" */
-  key?: string;
+  key: string;
   /** @example "94 80 0450 921 D-AVG" */
-  value?: string;
+  value: string;
   /** @example "1" */
-  visibility?: number;
+  visibility: number;
 }
 
 /** StopoverResource */
 export interface StopoverResource {
   /** @example 12345 */
-  id?: number;
+  id: number;
   /**
    * name of the station
    * @example "Karlsruhe Hbf"
    */
-  name?: string;
+  name: string;
   /**
    * Identifier specified in 'Richtline 100' of the Deutsche Bahn
    * @example "RK"
    */
-  rilIdentifier?: string | null;
+  rilIdentifier: string | null;
   /**
    * IBNR identifier of Deutsche Bahn
    * @example "8000191"
    */
-  evaIdentifier?: string | null;
+  evaIdentifier: string | null;
   /**
    * currently known arrival time. Equal to arrivalReal if known. Else equal to arrivalPlanned.
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  arrival?: string | null;
+  arrival: string | null;
   /**
    * planned arrival according to timetable records
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  arrivalPlanned?: string | null;
+  arrivalPlanned: string | null;
   /**
    * real arrival according to live data
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  arrivalReal?: string | null;
+  arrivalReal: string | null;
   /**
    * planned arrival platform according to timetable records
    * @example "5"
    */
-  arrivalPlatformPlanned?: string | null;
+  arrivalPlatformPlanned: string | null;
   /**
    * real arrival platform according to live data
    * @example "5 A-F"
    */
-  arrivalPlatformReal?: string | null;
+  arrivalPlatformReal: string | null;
   /**
    * currently known departure time. Equal to departureReal if known. Else equal to departurePlanned.
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  departure?: string | null;
+  departure: string | null;
   /**
    * planned departure according to timetable records
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  departurePlanned?: string | null;
+  departurePlanned: string | null;
   /**
    * real departure according to live data
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  departureReal?: string | null;
+  departureReal: string | null;
   /**
    * planned departure platform according to timetable records
    * @example "5"
    */
-  departurePlatformPlanned?: string | null;
+  departurePlatformPlanned: string | null;
   /**
    * real departure platform according to live data
    * @example "5 A-F"
    */
-  departurePlatformReal?: string | null;
+  departurePlatformReal: string | null;
   /** @example "5 A-F" */
-  platform?: string | null;
+  platform: string | null;
   /**
    * Is there a delay in the arrival time?
    * @example false
    */
-  isArrivalDelayed?: boolean;
+  isArrivalDelayed: boolean;
   /**
    * Is there a delay in the departure time?
    * @example false
    */
-  isDepartureDelayed?: boolean;
+  isDepartureDelayed: boolean;
   /**
    * is this stopover cancelled?
    * @example false
    */
-  cancelled?: boolean;
+  cancelled: boolean;
 }
 
 /** TransportResource */
 export interface TransportResource {
   /** @example "4711" */
-  trip?: number;
+  trip: number;
   /** @example "1|1234|567" */
-  hafasId?: string;
+  hafasId: string;
   /** Category of transport.  */
-  category?: HafasTravelType;
+  category: HafasTravelType;
   /**
    * Internal number of the journey
    * @example "4-a6s8-8"
    */
-  number?: any;
+  number: any;
   /** @example "S 1" */
-  lineName?: string;
+  lineName: string;
   /** @example 85639 */
-  journeyNumber?: number;
+  journeyNumber: number;
+  /**
+   * Manual journey number, if set by the user. This is intended for use cases like ICE lines in germany that have line number but are more widely known by their train number
+   * @example "ICE 4"
+   */
+  manualJourneyNumber?: string | null;
   /**
    * Distance in meters
    * @example 10000
    */
-  distance?: number;
+  distance: number;
   /** @example 37 */
-  points?: number;
+  points: number;
   /**
    * Duration in minutes
    * @example 30
    */
-  duration?: number;
+  duration: number;
   /**
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  manualDeparture?: string | null;
+  manualDeparture: string | null;
   /**
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  manualArrival?: string | null;
-  origin?: StopoverResource;
-  destination?: StopoverResource;
-  operator?: OperatorResource;
-  dataSource?: DataSourceResource;
+  manualArrival: string | null;
+  origin: StopoverResource;
+  destination: StopoverResource;
+  operator: OperatorResource;
+  dataSource: DataSourceResource;
 }
 
 /** TripResource */
@@ -738,34 +741,36 @@ export interface TrustedUserResource {
 /** UserAuth */
 export interface UserAuthResource {
   /** @example "1" */
-  id?: number;
+  id: number;
   /** @example "Gertrud" */
-  displayName?: string;
+  displayName: string;
   /** @example "Gertrud123" */
-  username?: string;
+  username: string;
   /** @example "https://traewelling.de/@Gertrud123/picture" */
-  profilePicture?: string;
+  profilePicture: string;
   /** @example "100" */
-  totalDistance?: number;
+  totalDistance: number;
   /** @example "100" */
-  totalDuration?: number;
+  totalDuration: number;
   /** @example "100" */
-  points?: number;
+  points: number;
   /** @example "https://mastodon.social/@Gertrud123" */
-  mastodonUrl?: string | null;
+  mastodonUrl: string | null;
   /** @example "false" */
-  privateProfile?: boolean;
+  privateProfile: boolean;
   /** @example "false" */
-  preventIndex?: boolean;
+  preventIndex: boolean;
   /** @example "true" */
-  likes_enabled?: boolean;
-  home?: StationResource;
+  likes_enabled: boolean;
+  /** @example "default" */
+  mapProvider: string;
+  home: StationResource;
   /** @example "de" */
-  language?: string;
+  language: string;
   /** @example 0 */
-  defaultStatusVisibility?: number;
+  defaultStatusVisibility: number;
   /** @example ["admin","open-beta","closed-beta"] */
-  roles?: string[];
+  roles: string[];
 }
 
 /** UserProfileSettings */
@@ -3721,7 +3726,12 @@ export class Api<
       },
       params: RequestParams = {},
     ) =>
-      this.request<TripResource, void>({
+      this.request<
+        {
+          data?: TripResource[];
+        },
+        void
+      >({
         path: `/trains/trip`,
         method: "GET",
         query: query,

@@ -48,9 +48,15 @@ class StatusTest extends ApiTestCase
                                            'data' => [
                                                'id',
                                                'body',
-                                               'username',
-                                               'profilePicture',
-                                               'train' => [
+                                               'userDetails' => [
+                                                   'id',
+                                                   'displayName',
+                                                   'username',
+                                                   'profilePicture',
+                                                   'mastodonUrl',
+                                                   'preventIndex',
+                                               ],
+                                               'train'       => [
                                                    'trip',
                                                    'hafasId',
                                                    'category',
