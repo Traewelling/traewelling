@@ -81,6 +81,7 @@ abstract class IcsController extends Controller
         if ($checkin->status->body !== null) {
             $description .= $checkin->status->body . PHP_EOL . PHP_EOL;
         }
+        $description .= __('export.title.line_name', [], $user->language) . ': ' . $checkin->trip->linename . PHP_EOL;
         if ($checkin->trip->journey_number !== null) {
             $description .= __('export.title.journey_number', [], $user->language) . ': ' . $checkin->trip->journey_number . PHP_EOL;
         }

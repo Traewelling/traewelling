@@ -201,7 +201,7 @@ export default {
                             class="btn btn-sm btn-link px-2 dropdown-toggle"/>
       </div>
       <EventDropdown @select-event="selectEvent"/>
-      <FriendDropdown v-if="userStore.hasBeta" @select-user="selectFriends"/>
+      <FriendDropdown @select-user="selectFriends"/>
     </div>
     <button class="col-auto float-end ms-auto btn btn-sm btn-outline-primary" @click="checkIn">
       <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
