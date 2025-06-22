@@ -52,7 +52,7 @@
   "controller.transport.overlapping-checkin": "Du hast einen überschneidenden Check-in in Verbindung :linename.",
   "controller.transport.also-in-connection": "Auch in dieser Verbindung ist:|Auch in dieser Verbindung sind:",
   "controller.transport.social-post": "Ich bin gerade in :lineName nach :Destination! #NowTräwelling |Ich bin gerade in Linie :lineName nach :Destination! #NowTräwelling ",
-  "controller.transport.social-post-with-event": "Ich bin gerade in :lineName nach :destination für #:hashtag! #NowTräwelling | Ich bin gerade in Linie :lineName nach #destination für #:hashtag! #NowTräwelling ",
+  "controller.transport.social-post-with-event": "Ich bin gerade in :lineName nach :destination für #:hashtag! #NowTräwelling | Ich bin gerade in Linie :lineName nach :destination für #:hashtag! #NowTräwelling ",
   "controller.transport.social-post-for": "für #:hashtag",
   "controller.transport.no-station-found": "Für diese Suche wurde keine Haltestelle gefunden.",
   "controller.user.follow-404": "Dieser Follow existiert nicht.",
