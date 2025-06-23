@@ -143,6 +143,32 @@ export function timeTypeTooltip(type: StopoverTimeType): string {
     }
 }
 
+export function secondsToDuration(seconds: number): TimeDuration {
+    const duration: TimeDuration = {
+        years: null,
+        days: null,
+        hours: null,
+        minutes: null,
+        seconds: null
+    }
+
+    duration.years = Math.floor(seconds / (365 * 24 * 60 * 60));
+    duration.days = Math.floor((seconds % (365 * 24 * 60 * 60)) / (24 * 60 * 60));
+    duration.hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
+    duration.minutes = Math.floor((seconds % (60 * 60)) / 60);
+
+    console.log(duration)
+
+    return duration;
+}
+
+export interface TimeDuration {
+    years?: number;
+    days?: number;
+    hours?: number;
+    minutes?: number;
+}
+
 export interface StopoverTime {
     time: Dtm | null;
     originalTime: Dtm | null;
