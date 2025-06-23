@@ -95,7 +95,11 @@ class MotisSourceLicense extends Model
         'Unlicense'    => [
             'name' => 'The Unlicense',
             'url'  => 'https://spdx.org/licenses/Unlicense.html'
-        ]
+        ],
+        'IODL-2.0'    => [
+            'name' => 'Italian Open Data Licence',
+            'url'  => 'https://www.dati.gov.it/iodl/2.0'
+        ],
     ];
 
     public function trips(): HasMany {
