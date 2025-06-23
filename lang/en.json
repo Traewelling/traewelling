@@ -447,6 +447,7 @@
   "status.visibility.4.detail": "Only visible for logged-in users",
   "status.update.success": "Your Status has been updated successfully.",
   "status.manual_journey_number": "Journey number manually overwritten",
+  "status.show_more": "Show more",
   "transport_types.bus": "Bus",
   "transport_types.business": "Business trip",
   "transport_types.businessPlural": "Business trips",

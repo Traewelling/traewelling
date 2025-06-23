@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {PropType} from "vue";
+import {PropType, ref} from "vue";
 import {Business, StatusResource} from "../../../../types/Api.gen";
 import {
   getArrivalForStatus,
@@ -11,6 +11,7 @@ import {trans} from "laravel-vue-i18n";
 import {DateTime} from "luxon";
 import ProductIcon from "../../ProductIcon.vue";
 import {IconHelper} from "../../../helpers/IconHelper";
+import DurationSpan from "./DurationSpan.vue";
 
 const props = defineProps({
   status: {
@@ -21,6 +22,13 @@ const props = defineProps({
 
 const arrival = getDepartureAttribute(props.status);
 const duration = getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, ['hours', 'minutes']);
+const showMore = ref(false);
+
+function showMoreButton() {
+  showMore.value = props.status.body && props.status.body.split(/\r\n|\r|\n/).length > 3;
+}
+
+showMoreButton();
 </script>
 
 <template>
@@ -52,15 +60,15 @@ const duration = getArrivalForStatus(props.status).dateTime.diff(getDepartureFor
         </small>
       </span>
       <span class="ps-2">
-        <i class="fa fa-route d-inline" aria-hidden="true"></i>
+        <i class="fa fa-route d-inline" aria-hidden="true"></i>&nbsp;
         <span v-if="status.train.distance < 1000">{{ status.train.distance }} <small>m</small></span>
         <span v-else>{{ (status.train.distance / 1000).toFixed(0) }} <small>km</small></span>
       </span>
       <span class="ps-2">
-        <i class="fa fa-clock d-inline" aria-hidden="true"></i>
-        {{ duration.toHuman({unitDisplay: "short"}) }}
+        <i class="fa fa-clock d-inline" aria-hidden="true"></i>&nbsp;
+        <DurationSpan :duration="duration.as('seconds')" class="d-inline"/>
       </span>
-      <span v-if="status.business !== Business.Value0" class="pl-sm-2">
+      <span v-if="status.business !== Business.Value0" class="ps-2">
         <i class="fa" :class="IconHelper.getBusinessIcon(status.business)" aria-hidden="true" data-bs-toggle="tooltip"
            data-bs-placement="top" :title="trans(IconHelper.getBusinessTitle(status.business))"></i>
         <span class="sr-only">{{ trans(IconHelper.getBusinessTitle(status.business)) }}</span>
@@ -75,10 +83,31 @@ const duration = getArrivalForStatus(props.status).dateTime.diff(getDepartureFor
           </a>
         </span>
       </template>
-      <p v-if="status.body" class="status-body mt-2">
+      <p v-if="status.body" class="status-body mt-2" :class="{'line-clamp': showMore}">
         <i class="fas fa-quote-right" aria-hidden="true"></i>
         {{ status.body }} <!-- todo: mentions -->
       </p>
+      <button v-if="showMore" class="btn btn-link p-0" aria-expanded="false" @click="showMore = !showMore">
+        {{ trans('status.show_more') }}
+      </button>
     </p>
   </li>
 </template>
+
+<style scoped>
+.status-body {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+}
+
+.line-clamp {
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>
