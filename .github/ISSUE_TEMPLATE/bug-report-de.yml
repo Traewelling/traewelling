@@ -1,6 +1,12 @@
 name: "🇩🇪 Fehler auf Deutsch melden"
 description: "Melde einen Fehler oder ein unerwartetes Verhalten auf Deutsch"
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Vielen Dank, dass du uns hilfst, Traewelling zu verbessern! Bitte fülle das Formular so genau wie möglich aus, damit wir den Fehler schnell beheben können.
+        Bitte prüfe auch, ob dein Problem bereits in den [offenen Issues](https://github.com/Traewelling/traewelling/issues) existiert, oder ob das Verhalten unter den [experimentellen Features](https://github.com/Traewelling/traewelling/issues/3660) beschrieben ist.
+        In diesem Fall kannst du das Issue einfach kommentieren, anstatt ein neues zu erstellen.
   - type: textarea
     id: description
     attributes:
