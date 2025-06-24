@@ -11,7 +11,7 @@
     "@tailwindcss/vite": "^4.1.4",
     "@types/lodash": "^4.17.16",
     "@types/luxon": "^3.4.2",
-    "@vitejs/plugin-vue": "^5.2.1",
+    "@vitejs/plugin-vue": "^6.0.0",
     "bootstrap": "^5.3",
     "daisyui": "^5.0.27",
     "laravel-vite-plugin": "^1.2.0",
