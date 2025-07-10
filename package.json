@@ -14,7 +14,7 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "bootstrap": "^5.3",
     "daisyui": "^5.0.27",
-    "laravel-vite-plugin": "^1.2.0",
+    "laravel-vite-plugin": "^2.0.0",
     "lodash": "^4.17.21",
     "sass": "^1.85.1",
     "swagger-typescript-api": "^13.1.1",
