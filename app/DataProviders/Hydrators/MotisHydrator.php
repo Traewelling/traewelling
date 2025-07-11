@@ -9,7 +9,6 @@ use App\DataProviders\Repositories\StationRepository;
 use App\Dto\Internal\BahnTrip;
 use App\Dto\Internal\Departure;
 use App\Enum\DataProvider;
-use App\Enum\HafasTravelType;
 use App\Enum\MotisCategory;
 use App\Hydrators\DepartureHydrator;
 use App\Models\HafasOperator;
@@ -131,6 +130,18 @@ class MotisHydrator
         ];
     }
 
+    private function getCategoryFromLeg(mixed $leg): string {
+        $motisCategory = MotisCategory::tryFrom($leg['mode']);
+        if ($motisCategory === null) {
+            Log::error('Unknown Motis category', [
+                'mode' => $leg['mode'],
+            ]);
+            $motisCategory = MotisCategory::REGIONAL_RAIL;
+        }
+
+        return $motisCategory->getHTT()->value;
+    }
+
     public function getTripData(mixed $leg, string $lineName, DataProvider $source): array {
         $originStation      = $this->stationRepository->getStationsByIdentifiers($leg['from']['stopId'], $source)->first()
                               ?? $this->stationRepository->updateOrCreateByIfopt($leg['from']['stopId'], $source)
@@ -140,11 +151,10 @@ class MotisHydrator
                                  ?? $this->stationRepository->createMotisStation($leg['to'], $source);
         $departure          = isset($leg['from']['departure']) ? Carbon::parse($leg['from']['departure']) : null;
         $arrival            = isset($leg['to']['arrival']) ? Carbon::parse($leg['to']['arrival']) : null;
-        $category           = MotisCategory::tryFrom($leg['mode'])?->getHTT()->value ?? HafasTravelType::REGIONAL;
+        $category           = $this->getCategoryFromLeg($leg);
         $tripLineName       = !empty($leg['routeShortName']) ? $leg['routeShortName'] : $lineName;
         $license            = $this->motisRepository->getLicense($leg['source'], $source);
         $operator           = $this->parseOperator($leg);
-
 
         return [
             'category'                => $category,
@@ -185,8 +195,7 @@ class MotisHydrator
             $tripId              = $rawDeparture['tripId'];
             $rawDepartureStation = $rawDeparture['place'];
             $tripLineName        = $rawDeparture['routeShortName'] ?? '';
-            $category            = MotisCategory::tryFrom($rawDeparture['mode']);
-            $hafasTravelType     = $category->getHTT()->value;
+            $hafasTravelType     = $this->getCategoryFromLeg($rawDeparture);
 
             $platformPlanned = $rawDepartureStation['scheduledTrack'] ?? '';
             $platformReal    = $rawDepartureStation['track'] ?? $platformPlanned;
