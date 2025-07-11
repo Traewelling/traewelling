@@ -31,6 +31,7 @@ enum MotisCategory: string
     case NIGHT_RAIL         = 'NIGHT_RAIL';
     case REGIONAL_FAST_RAIL = 'REGIONAL_FAST_RAIL';
     case REGIONAL_RAIL      = 'REGIONAL_RAIL';
+    case CABLE_CAR          = 'CABLE_CAR';
     case OTHER              = 'OTHER';
 
 
@@ -43,7 +44,7 @@ enum MotisCategory: string
             'BUS'                                  => HafasTravelType::BUS,
             'FERRY'                                => HafasTravelType::FERRY,
             'SUBWAY'                               => HafasTravelType::SUBWAY,
-            'TRAM'                                 => HafasTravelType::TRAM,
+            'TRAM', 'CABLE_CAR'                    => HafasTravelType::TRAM,
             'COACH'                                => HafasTravelType::TAXI,
             default                                => HafasTravelType::REGIONAL,
         };
