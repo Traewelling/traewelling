@@ -2,6 +2,7 @@
 import {ref} from "vue";
 import {Api, StatusResource, StopoverResource, UserAuthResource, UserResource} from "../../types/Api.gen";
 import StatusCard from "../components/Status/StatusCard.vue";
+import CheckinSuccessHelper from "../components/CheckinSuccessHelper.vue";
 import {trans} from "laravel-vue-i18n";
 import {getDepartureForStatus} from "../helpers/DateTimeHelper";
 import {DateTime} from "luxon";
@@ -102,6 +103,7 @@ fetchLikes();
         </p>
       </div>
       <template v-else-if="status">
+        <CheckinSuccessHelper v-if="user.user && status.userDetails.id === user.user.id"/>
         <h2 class="fs-5">{{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}</h2>
         <StatusCard :status :show-map="true" :authenticated-user="user.user" @statusLiked="addSelfToLikes()"
                     @statusUnliked="removeSelfFromLikes()" :stopovers/>

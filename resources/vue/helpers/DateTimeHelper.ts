@@ -157,7 +157,6 @@ export function secondsToDuration(seconds: number): TimeDuration {
     duration.hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
     duration.minutes = Math.floor((seconds % (60 * 60)) / 60);
 
-    console.log(duration)
 
     return duration;
 }
