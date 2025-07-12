@@ -62,7 +62,7 @@
                            class="text-muted fs-4"
                            aria-label="{{ $link->name->getName() }}"
                            target="_blank"
-                           rel="noopener">
+                           rel="me">
                             <i class="{{ $link->name->getIcon() }}"></i>
                         </a>
                     @endforeach
