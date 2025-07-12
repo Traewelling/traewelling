@@ -50,7 +50,10 @@ setInterval(() => {
       </div>
     </div>
     <div class="col-md-6">
-      <div v-if="statuses.length === 0" class="alert alert-danger text-center">
+      <div v-if="loading" class="text-center my-4">
+        <i class="fa-solid fa-spinner fa-spin fa-2x" aria-hidden="true"></i>
+      </div>
+      <div v-else-if="statuses.length === 0" class="alert alert-danger text-center">
         <strong class="fs-4">{{ trans('empty-en-route') }}</strong>
       </div>
 
