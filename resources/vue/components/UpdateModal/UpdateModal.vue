@@ -10,6 +10,7 @@ import {DateTime} from "luxon";
 import {useActiveCheckin} from "../../stores/activeCheckin";
 import {getArrivalForStopover, getDepartureForStatus} from "../../helpers/DateTimeHelper";
 import EventDropdown from "../EventDropdown.vue";
+import DateTimeInput from "../Helpers/DateTimeInput.vue";
 
 const emit = defineEmits(['status-updated']);
 const props = defineProps({
@@ -27,6 +28,8 @@ const activeStatus = useActiveCheckin();
 const loading = ref(false);
 
 // copy the status properties to a new object to avoid mutating the original prop
+const manualDeparture = ref<Date | null>(null);
+const manualArrival = ref<Date | null>(null);
 const updateStatus = ref<StatusUpdateBody | null>(null);
 watch(() => props.status, (newStatus) => {
   updateStatus.value = {
@@ -38,6 +41,8 @@ watch(() => props.status, (newStatus) => {
     destinationId: newStatus.train.destination.id,
     eventId: newStatus.event?.id || null,
   };
+  manualDeparture.value = newStatus.train.manualDeparture ? new Date(newStatus.train.manualDeparture) : null;
+  manualArrival.value = newStatus.train.manualArrival ? new Date(newStatus.train.manualArrival) : null;
 }, {immediate: true});
 
 const show = () => {
@@ -51,6 +56,11 @@ function updateData() {
   // Logic to update data goes here
   if (updateStatus.value) {
     updateStatus.value.destinationArrivalPlanned = stopovers.value.find(stopover => stopover.id === updateStatus.value!.destinationId)?.arrival || null;
+    console.log(manualDeparture.value);
+    console.log(manualArrival.value);
+    updateStatus.value.manualDeparture = manualDeparture.value ? manualDeparture.value.toISOString() : null;
+    updateStatus.value.manualArrival = manualArrival.value ? manualArrival.value.toISOString() : null;
+    console.log(updateStatus.value);
 
     api.status.updateSingleStatus(updateStatus.value, props.status.id).then((status) => {
       emit('status-updated', status.data.data);
@@ -91,7 +101,6 @@ function selectEvent(event: EventResource | null) {
   }
 }
 
-
 defineExpose({show});
 </script>
 
@@ -112,11 +121,11 @@ defineExpose({show});
       <div class="row">
         <div class="col-sm-6">
           <div class="form-floating mb-2">
-            <!-- todo: fix pre filled values -->
-            <input class="form-control" id="manual_departure"
-                   type="datetime-local"
-                   v-model="updateStatus.manualDeparture"
-                   placeholder="{{trans('export.title.departure_real')}}"
+            <DateTimeInput
+                class="form-control"
+                id="manual_departure"
+                v-model="manualDeparture"
+                placeholder="{{trans('export.title.departure_real')}}"
             />
             <label for="manual_departure">
               {{ trans('export.title.departure_real') }}
@@ -125,19 +134,17 @@ defineExpose({show});
         </div>
         <div class="col-sm-6">
           <div class="form-floating mb-2">
-            <!-- todo: fix pre filled values -->
-            <input class="form-control" id="manual_arrival" v-model="updateStatus.manualArrival"
-                   type="datetime-local"
-                   placeholder="{{trans('export.title.arrival_real')}}"
+            <DateTimeInput
+                class="form-control"
+                id="manual_arrival"
+                v-model="manualArrival"
+                placeholder="{{trans('export.title.arrival_real')}}"
             />
             <label for="manual_arrival">
               {{ trans('export.title.arrival_real') }}
             </label>
           </div>
         </div>
-        <p class="text-warning"><i class="fa fa-warning"></i> If you had this filled out, you need to fill it out again
-          if you want to save!
-          The experimental features reset manual departure times.</p>
       </div>
 
       <div class="form-outline">

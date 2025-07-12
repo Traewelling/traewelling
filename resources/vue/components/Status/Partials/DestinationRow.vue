@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {PropType} from "vue";
+import {PropType, ref, watch} from "vue";
 import {StatusResource} from "../../../../types/Api.gen";
 import {getArrivalAttribute, timeTypeTooltip} from "../../../helpers/DateTimeHelper";
 import {trans} from "laravel-vue-i18n";
@@ -12,7 +12,13 @@ const props = defineProps({
   }
 });
 
-const arrival = getArrivalAttribute(props.status);
+const arrival = ref(getArrivalAttribute(props.status));
+
+watch(() => props.status, () => {
+  arrival.value = getArrivalAttribute(props.status);
+}, {
+  immediate: true
+});
 </script>
 
 <template>
