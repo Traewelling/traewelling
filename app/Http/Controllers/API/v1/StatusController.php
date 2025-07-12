@@ -18,7 +18,6 @@ use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Trip;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -394,8 +393,8 @@ class StatusController extends Controller
         $validator = Validator::make($request->all(), [
             //Just changing of metadata
             'body'                      => ['nullable', 'max:280', 'nullable'],
-            'business'                  => ['required', new Enum(Business::class)],
-            'visibility'                => ['required', new Enum(StatusVisibility::class)],
+            'business'                  => [new Enum(Business::class)],
+            'visibility'                => [new Enum(StatusVisibility::class)],
             'eventId'                   => ['nullable', 'integer', 'exists:events,id'],
 
             //Changing of Checkin-Metadata
@@ -438,16 +437,17 @@ class StatusController extends Controller
                     newDestinationStopover: $stopover,
                 );
             }
+            $updatePayload = [];
+            if (array_key_exists('body', $validated)) {
+                $updatePayload['body'] = $validated['body'] ?? null;
+            }
+            if (array_key_exists('business', $validated)) {
+                $updatePayload['business'] = Business::from($validated['business']);
+            }
 
-            $updatePayload = [
-                'body'       => $validated['body'] ?? null,
-                'business'   => Business::from($validated['business']),
-                'visibility' => StatusVisibility::from($validated['visibility']),
-            ];
-
-            if ($status->lock_visibility) {
+            if (!$status->lock_visibility && array_key_exists('visibility', $validated)) {
                 // If moderation has locked the visibility, prevent the user from changing it
-                unset($updatePayload['visibility']);
+                $updatePayload['visibility'] = StatusVisibility::from($validated['visibility']);
             }
 
             if (array_key_exists('eventId', $validated)) { // don't use isset here as it would return false if eventId is null

@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import {PropType, useTemplateRef} from "vue";
-import {StatusResource} from "../../../../types/Api.gen";
+import {computed, PropType, useTemplateRef} from "vue";
+import {Api, StatusResource, StatusUpdateBody} from "../../../../types/Api.gen";
 import {trans} from "laravel-vue-i18n";
 import {StatusHelper} from "../../../helpers/StatusHelper";
 import {Notyf} from "notyf";
 import ConfirmModal from "../../ConfirmModal.vue";
 import {useUserStore} from "../../../stores/user";
 import UpdateModal from "../../UpdateModal/UpdateModal.vue";
+import {DateTime} from "luxon";
 
 const props = defineProps({
   status: {
@@ -60,6 +61,56 @@ const updateModal = useTemplateRef('updateModal');
 function showModal() {
   delModal.value?.show();
 }
+
+const showDepartureNowButton = computed(() => {
+  if (!props.status?.train || !props.status?.train.origin || !props.status?.train.origin.departure) {
+    return false;
+  }
+
+  const departure = DateTime.fromISO(props.status?.train.origin.departure);
+  const arrival = DateTime.fromISO(props.status?.train.destination.arrival || '');
+  const now = DateTime.now();
+  if (arrival.isValid && now > arrival) {
+    return false; // If the train has already arrived, do not show the button
+  }
+  const diff = now.diff(departure, 'minutes').minutes;
+
+  return departure.isValid && (diff >= -10 && diff <= 40);
+});
+
+const showArrivalNowButton = computed(() => {
+  if (!props.status?.train || !props.status?.train.destination || !props.status?.train.destination.arrival) {
+    return false;
+  }
+
+  const arrival = DateTime.fromISO(props.status?.train.destination.arrival);
+  const now = DateTime.now();
+
+  console.log(now.diff(arrival, 'minutes').minutes);
+  const diff = Math.abs(now.diff(arrival, 'minutes').minutes)
+
+  return arrival.isValid && (diff <= 20 || diff >= 120);
+});
+
+const api = new Api({baseUrl: window.location.origin + '/api/v1'});
+
+function departureNow() {
+  api.status.updateSingleStatus({manualDeparture: DateTime.now().toISO()} as StatusUpdateBody, props.status.id).then((status) => {
+    emit('status-updated', status.data.data);
+  }).catch((error) => {
+    console.error('Error updating status:', error);
+    // Optionally, you can show an error message to the user
+  });
+}
+
+function arrivalNow() {
+  api.status.updateSingleStatus({manualArrival: DateTime.now().toISO()} as StatusUpdateBody, props.status.id).then((status) => {
+    emit('status-updated', status.data.data);
+  }).catch((error) => {
+    console.error('Error updating status:', error);
+    // Optionally, you can show an error message to the user
+  });
+}
 </script>
 
 <template>
@@ -80,6 +131,30 @@ function showModal() {
       </li>
       <template v-if="user.user">
         <template v-if="user.user.id == status.userDetails.id">
+          <template v-if="showArrivalNowButton || showDepartureNowButton">
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li v-if="showDepartureNowButton">
+              <button class="dropdown-item" type="button" @click="departureNow()">
+                <div class="dropdown-icon-suspense">
+                  <i class="fa-solid fa-plane-departure" aria-hidden="true"></i>
+                </div>
+                {{ trans('status.departure-now') }}
+              </button>
+            </li>
+            <li v-if="showArrivalNowButton">
+              <button class="dropdown-item" type="button" @click="arrivalNow()">
+                <div class="dropdown-icon-suspense">
+                  <i class="fa-solid fa-plane-arrival" aria-hidden="true"></i>
+                </div>
+                {{ trans('status.arrival-now') }}
+              </button>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+          </template>
           <li>
             <button class="dropdown-item" type="button" @click="updateModal?.show()">
               <div class="dropdown-icon-suspense">
