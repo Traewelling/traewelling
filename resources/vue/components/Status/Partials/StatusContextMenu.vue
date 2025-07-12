@@ -85,11 +85,9 @@ const showArrivalNowButton = computed(() => {
 
   const arrival = DateTime.fromISO(props.status?.train.destination.arrival);
   const now = DateTime.now();
+  const diff = now.diff(arrival, 'minutes').minutes
 
-  console.log(now.diff(arrival, 'minutes').minutes);
-  const diff = Math.abs(now.diff(arrival, 'minutes').minutes)
-
-  return arrival.isValid && (diff <= 20 || diff >= 120);
+  return arrival.isValid && (diff >= -20 && diff <= 120);
 });
 
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
