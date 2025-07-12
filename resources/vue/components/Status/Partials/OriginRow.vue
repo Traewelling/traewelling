@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {PropType, ref} from "vue";
+import {PropType, ref, watch} from "vue";
 import {Business, StatusResource} from "../../../../types/Api.gen";
 import {
   getArrivalForStatus,
@@ -20,13 +20,21 @@ const props = defineProps({
   }
 });
 
-const arrival = getDepartureAttribute(props.status);
-const duration = getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, ['hours', 'minutes']);
+const arrival = ref(getDepartureAttribute(props.status));
+const duration = ref(getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, ['hours', 'minutes']));
 const showMore = ref(false);
 
 function showMoreButton() {
   showMore.value = props.status.body && props.status.body.split(/\r\n|\r|\n/).length > 3;
 }
+
+watch(() => props.status, () => {
+  arrival.value = getDepartureAttribute(props.status);
+  duration.value = getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, ['hours', 'minutes']);
+  showMoreButton();
+}, {
+  immediate: true
+});
 
 showMoreButton();
 </script>
