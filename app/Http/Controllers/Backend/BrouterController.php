@@ -86,8 +86,8 @@ abstract class BrouterController extends Controller
         }
 
         //0. Check if brouter Polyline is already available
-        $childPolyline   = PolyLine::where('parent_id', $trip->polyline_id)->orderBy('id', 'desc')->first();
-        $currentPolyline = $trip->polyline()->first();
+        $childPolyline   = $trip->polyline_id ? PolyLine::where('parent_id', $trip->polyline_id)->orderBy('id', 'desc')->first() : null;
+        $currentPolyline = $trip->polyline_id ? $trip->polyline()->first() : null;
         if ($childPolyline?->source === 'brouter' || $currentPolyline?->source === 'brouter') {
             Log::debug('Brouter Polyline already available for Trip#' . $trip->trip_id, ['RefreshPolyline']);
 
