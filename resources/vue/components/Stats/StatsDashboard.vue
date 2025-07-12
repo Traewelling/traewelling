@@ -5,20 +5,22 @@
     <div class="row mb-3">
       <div class="col-md-3">
         <label for="fromDate" class="sr-only">{{ trans('stats.from') }}</label>
-        <DatePicker
+        <input
+            type="date"
+            class="form-control"
             id="fromDate"
-            v-model="from"
-            format="yyyy-MM-dd"
-            :input-props="{ class: 'form-control', 'aria-label': trans('stats.from') }"
+            :value="from.toISOString().split('T')[0]"
+            @change="from = new Date($event.target.value)"
         />
       </div>
       <div class="col-md-3">
         <label for="toDate" class="sr-only">{{ trans('stats.to') }}</label>
-        <DatePicker
+        <input
             id="toDate"
-            v-model="to"
-            format="yyyy-MM-dd"
-            :input-props="{ class: 'form-control', 'aria-label': trans('stats.to') }"
+            class="form-control"
+            :value="to.toISOString().split('T')[0]"
+            @change="to = new Date($event.target.value)"
+            type="date"
         />
       </div>
     </div>
@@ -70,10 +72,9 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {computed, onMounted, ref, watch} from 'vue';
 import {trans} from 'laravel-vue-i18n';
-import DatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 
 import {Notyf} from 'notyf';
@@ -84,15 +85,13 @@ import ChartCategories from './ChartCategories.vue';
 import ChartCompanies from './ChartCompanies.vue';
 import ChartVolume from './ChartVolume.vue';
 import GlobalCards from './GlobalCards.vue';
+import Chart from "chart.js/auto";
 
 const notyf = new Notyf();
 
 // Default date range: last 3 months to today (as Date objects)
-const today = new Date();
-const to = ref(today);
-const threeMonthsAgo = new Date();
-threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-const from = ref(threeMonthsAgo);
+const to = ref(new Date() as Date);
+const from = ref(new Date(new Date().setMonth(new Date().getMonth() - 3)) as Date);
 
 const fromStr = computed(() => from.value.toISOString().split('T')[0]);
 const toStr = computed(() => to.value.toISOString().split('T')[0]);
@@ -136,9 +135,27 @@ function formatDate(d) {
   return d.toLocaleDateString();
 }
 
+function getDarkMode() {
+  const dark = localStorage.getItem("darkMode");
+  if (dark && dark !== "auto") {
+    return dark === "dark";
+  }
+
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+function setColors() {
+  if (getDarkMode()) {
+    Chart.defaults.color = "rgb(185, 188, 198)";
+  } else {
+    Chart.defaults.color = "rgb(0, 0, 0)";
+  }
+}
+
 watch([from, to], reloadStats);
 
 onMounted(() => {
   reloadStats();
+  setColors();
 });
 </script>
