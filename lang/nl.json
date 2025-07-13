@@ -875,5 +875,7 @@
     "tag.title.trwl:price": "Reiskosten",
     "status.manual_journey_number": "Reisnummer handmatig overschreven",
     "tag.title.trwl:journey_number": "Reisnummer",
-    "status.show_more": "Meer tonen"
+    "status.show_more": "Meer tonen",
+    "status.arrival-now": "Arriveert nu",
+    "status.departure-now": "Vertrekt nu"
 }
