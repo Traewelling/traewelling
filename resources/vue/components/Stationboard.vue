@@ -6,7 +6,7 @@ import {DateTime} from "luxon";
 import CheckinLineRun from "./CheckinLineRun.vue";
 import CheckinInterface from "./Checkin/CheckinInterface.vue";
 import StationAutocomplete from "./StationAutocomplete/StationAutocomplete.vue";
-import {trans} from "laravel-vue-i18n";
+import {getActiveLanguage, trans, transChoice} from "laravel-vue-i18n";
 import StationBoardEntry from "./Checkin/StationBoardEntry.vue";
 import Spinner from "./Spinner.vue";
 
@@ -32,9 +32,13 @@ export default {
       pushState: null,
       fastCheckinIbnr: null,
       useInternalIdentifiers: true,
+      removedCount: 0,
+      removedLicenses: [],
     };
   },
   methods: {
+    transChoice,
+    getActiveLanguage,
     trans,
     showModal(selectedItem) {
       this.selectedDestination = null;
@@ -110,6 +114,8 @@ export default {
                 }
                 this.meta = result.meta;
                 this.stationName = result.meta.station.name;
+                this.removedCount = result.meta.removedCount;
+                this.removedLicenses = result.meta.removedLicenses;
 
                 this.firstFetchTime = DateTime.fromISO(this.meta?.times?.now);
               });
@@ -241,6 +247,40 @@ export default {
       :time="now"
       :show-filter-button="true"
   />
+  <div class="accordion mb-4" v-if="!loading && removedCount > 0">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed bg-info" type="button" data-bs-toggle="collapse"
+                data-bs-target="#removed-licenses" aria-expanded="false" aria-controls="removed-licenses">
+          <div class="row">
+            <div class="col-auto">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="col">
+              {{ transChoice('stationboard.removed-departures', removedCount) }}
+            </div>
+          </div>
+        </button>
+      </h2>
+      <div id="removed-licenses" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          <p class="mb-2">{{ trans('stationboard.removed-departures.detail') }}</p>
+          <p class="mb-2">{{ trans('stationboard.removed-departures.detail2') }}</p>
+          <ul>
+            <li v-for="(license, index) in removedLicenses" :key="index">
+              <span v-if="license?.licenseName" >{{ license.licenseName }}</span>
+              <span v-else>{{ license }}</span>
+            </li>
+          </ul>
+          <p class="mb-2">
+            {{ trans('stationboard.removed-departures.detail3') }}
+            <a v-if="getActiveLanguage().startsWith('de') " target="_blank" href="https://help.traewelling.de/features/timetable/licensing/">help.traewelling.de/features/timetable/licensing</a>
+            <a v-else target="_blank" href="https://help.traewelling.de/en/features/timetable/licensing/">help.traewelling.de/en/features/timetable/licensing</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
   <Spinner v-if="loading"/>
   <FullScreenModal ref="modal" body-class="{{ showCheckinInterface ? 'p-0' : ''}}">
     <template #header v-if="selectedTrain">

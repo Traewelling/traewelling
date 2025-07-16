@@ -6,6 +6,7 @@ use App\DataProviders\Hydrators\MotisHydrator;
 use App\DataProviders\Repositories\StationRepository;
 use App\DataProviders\Repositories\TripRepository;
 use App\Dto\Coordinate;
+use App\Dto\Internal\FilteredDepartures;
 use App\Enum\DataProvider;
 use App\Enum\MotisCategory;
 use App\Enum\TravelType;
@@ -25,6 +26,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use JsonException;
+use PHPUnit\Util\Filter;
 
 class Motis extends Controller implements DataProviderInterface
 {
@@ -110,22 +112,29 @@ class Motis extends Controller implements DataProviderInterface
     }
 
     /**
+     * @throws HafasException
+     */
+    public function getDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false): array|Collection {
+        return $this->getFilteredDepartures($station, $when, $duration, $type, $localtime)->departures;
+    }
+
+    /**
      * @param Station         $station
      * @param Carbon          $when
      * @param int             $duration
      * @param TravelType|null $type
      * @param bool            $localtime
      *
-     * @return Collection
+     * @return FilteredDepartures
      * @throws HafasException
      */
-    public function getDepartures(
+    public function getFilteredDepartures(
         Station     $station,
         Carbon      $when,
         int         $duration = 15,
         ?TravelType $type = null,
         bool        $localtime = false
-    ): Collection {
+    ): FilteredDepartures{
         $station->loadMissing('stationIdentifiers');
 
         // Increase station relevance for improved station search
@@ -157,7 +166,7 @@ class Motis extends Controller implements DataProviderInterface
         foreach ($transitousIdentifiers as $identifier) {
             $count++;
             try {
-                $departures = $this->getDeparturesFromApi($station, $identifier, $when, $type);
+                $filtered = $this->getDeparturesFromApi($station, $identifier, $when, $type);
             } catch (HafasException $exception) {
                 // If we get an exception, we can try the next identifier
                 Log::debug('MOTIS Error (getDepartures)', [
@@ -165,10 +174,10 @@ class Motis extends Controller implements DataProviderInterface
                     'body'   => $exception->getMessage()
                 ]);
                 $exceptions++;
-                $departures = collect();
+                $filtered = new FilteredDepartures(collect(), collect());
             }
 
-            if ($departures->count() === 0) {
+            if ($filtered->departures->count() === 0) {
                 $identifier->decrement('relevance');
                 $identifier->save();
                 continue;
@@ -179,7 +188,7 @@ class Motis extends Controller implements DataProviderInterface
                 $identifier->increment('relevance');
                 $identifier->save();
             }
-            return $departures;
+            return $filtered;
         }
 
         if ($exceptions > 0) {
@@ -188,7 +197,7 @@ class Motis extends Controller implements DataProviderInterface
 
         // No departures found for any identifier
         Log::debug('No departures found for station', ['station' => $station->only(['id', 'name'])]);
-        return collect();
+        return new FilteredDepartures(collect(), $filtered->removedEntries ?? collect());
     }
 
     private function getDeparturesFromApi(
@@ -196,7 +205,7 @@ class Motis extends Controller implements DataProviderInterface
         StationIdentifier $transitousIdentifier,
         Carbon            $when,
         ?TravelType       $type
-    ): Collection {
+    ): FilteredDepartures {
         try {
             $params = [
                 'stopId' => $transitousIdentifier->identifier,

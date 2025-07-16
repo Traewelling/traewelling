@@ -161,6 +161,33 @@ export interface FeatureCollection {
 }
 
 /**
+ * License DTO
+ * Data Transfer Object for licenses
+ */
+export interface LicenseDto {
+  /**
+   * Name of the license
+   * @example "CC BY 4.0"
+   */
+  licenseName: string;
+  /**
+   * Attribution string for the license
+   * @example "Provided by OpenStreetMap contributors"
+   */
+  attributionString: string | null;
+  /**
+   * URL to the license text
+   * @example "https://creativecommons.org/licenses/by/4.0/"
+   */
+  licenseUrl: string | null;
+  /**
+   * URL to the source of the data
+   * @example "https://www.openstreetmap.org/"
+   */
+  sourceUrl: string | null;
+}
+
+/**
  * LivePointDto
  * All necessary information to calculate live position
  */
@@ -3660,6 +3687,13 @@ export class Api<
                */
               next?: string;
             };
+            /** List of licenses that were filtered out */
+            removedLicenses?: (string | LicenseDto)[];
+            /**
+             * Number of removed entries due to license filtering
+             * @example 2
+             */
+            removedCount?: number;
           };
         },
         void

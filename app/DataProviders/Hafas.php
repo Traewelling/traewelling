@@ -3,6 +3,7 @@
 namespace App\DataProviders;
 
 use App\DataProviders\Repositories\StationRepository;
+use App\Dto\Internal\FilteredDepartures;
 use App\Enum\HafasTravelType as HTT;
 use App\Enum\TravelType;
 use App\Enum\TripSource;
@@ -174,6 +175,13 @@ class Hafas extends Controller implements DataProviderInterface
 
         CacheKey::increment(HCK::DEPARTURES_SUCCESS);
         return json_decode($response->body(), false, 512, JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * @throws HafasException
+     */
+    public function getFilteredDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false): FilteredDepartures {
+        return new FilteredDepartures($this->getDepartures($station, $when, $duration, $type, $localtime), collect());
     }
 
     /**

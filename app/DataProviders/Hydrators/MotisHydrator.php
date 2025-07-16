@@ -8,6 +8,7 @@ use App\DataProviders\Repositories\MotisLicenseRepository;
 use App\DataProviders\Repositories\StationRepository;
 use App\Dto\Internal\BahnTrip;
 use App\Dto\Internal\Departure;
+use App\Dto\Internal\FilteredDepartures;
 use App\Enum\DataProvider;
 use App\Enum\MotisCategory;
 use App\Hydrators\DepartureHydrator;
@@ -15,6 +16,7 @@ use App\Models\HafasOperator;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\Trip;
+use App\Services\LicenseService;
 use App\Services\OperatorService;
 use Carbon\Carbon;
 use Exception;
@@ -27,15 +29,18 @@ class MotisHydrator
     private MotisLicenseRepository $motisRepository;
     private StationRepository      $stationRepository;
     private OperatorService        $operatorService;
+    private LicenseService         $licenseService;
 
     public function __construct(
         ?MotisLicenseRepository $motisRepository = null,
         ?StationRepository      $stationRepository = null,
-        ?OperatorService        $operatorService = null
+        ?OperatorService        $operatorService = null,
+        ?LicenseService         $licenseService = null
     ) {
         $this->motisRepository   = $motisRepository ?? new MotisLicenseRepository();
         $this->stationRepository = $stationRepository ?? new StationRepository();
         $this->operatorService   = $operatorService ?? new OperatorService();
+        $this->licenseService    = $licenseService ?? new LicenseService();
     }
 
     public function parseLegToNewStopovers(mixed $leg, DataProvider $source): Collection {
@@ -153,7 +158,7 @@ class MotisHydrator
         $arrival            = isset($leg['to']['arrival']) ? Carbon::parse($leg['to']['arrival']) : null;
         $category           = $this->getCategoryFromLeg($leg);
         $tripLineName       = !empty($leg['routeShortName']) ? $leg['routeShortName'] : $lineName;
-        $license            = $this->motisRepository->getLicense($leg['source'], $source);
+        $license            = $this->motisRepository->getActiveLicense($leg['source'], $source);
         $operator           = $this->parseOperator($leg);
 
         return [
@@ -180,15 +185,32 @@ class MotisHydrator
         );
     }
 
-    public function mapDepartures(mixed $entries, Station $station, DataProvider $source): Collection {
-        $departures = collect();
+    private function checkLicenseData($rawDeparture, DataProvider $source, array &$removedEntries, int &$removedCount): bool {
+        if (config('trwl.motis.filter_licenses')) {
+            // Check if the source is licensed under an acceptable license
+            $license = $this->motisRepository->getLicense($rawDeparture['source'], $source);
+            if (empty($license) || !$license->active) {
+                [$country, $name] = $this->motisRepository->getCountryAndLicense($rawDeparture['source']);
+                $licenseIdentifier = $name;
+                $licenseName       = sprintf('%s: %s', strtoupper($country), $name);
+
+                $license                            = $license ? $this->licenseService->getLicenseDataForSource($license) : null;
+                $removedEntries[$licenseIdentifier] = $license ?? $licenseName;
+                $removedCount++;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function mapDepartures(mixed $entries, Station $station, DataProvider $source): FilteredDepartures {
+        $departures     = collect();
+        $removedEntries = [];
+        $removedCount   = 0;
+
         foreach ($entries as $rawDeparture) {
-            if (config('trwl.motis.filter_licenses')) {
-                // Check if the source is licensed under an acceptable license
-                $license = $this->motisRepository->getLicense($rawDeparture['source'], $source);
-                if (empty($license)) {
-                    continue;
-                }
+            if ($this->checkLicenseData($rawDeparture, $source, $removedEntries, $removedCount)) {
+                continue; // skip this entry if it does not have a valid license
             }
 
             //trip
@@ -232,7 +254,7 @@ class MotisHydrator
             $departures->push($departure);
         }
 
-        return DepartureHydrator::map($departures);
+        return new FilteredDepartures(DepartureHydrator::map($departures), collect(array_values($removedEntries)), $removedCount);
     }
 
 }
