@@ -2,6 +2,7 @@
 
 namespace App\DataProviders;
 
+use App\Dto\Internal\FilteredDepartures;
 use App\Enum\TravelType;
 use App\Helpers\CacheKey;
 use App\Helpers\HCK;
@@ -46,7 +47,11 @@ class CachedDataProvider implements DataProviderInterface
         );
     }
 
-    public function getDepartures(Station $station, Carbon $when, int $duration = 15, TravelType|null $type = null, bool $localtime = false): Collection {
+    public function getDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false): Collection {
+        return $this->getFilteredDepartures($station, $when, $duration, $type, $localtime)->departures;
+    }
+
+    public function getFilteredDepartures(Station $station, Carbon $when, int $duration = 15, TravelType|null $type = null, bool $localtime = false): FilteredDepartures {
         $filterWhen = clone $when;
         $when       = clone $when;
         $when->subMinutes(2);

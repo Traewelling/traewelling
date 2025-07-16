@@ -3232,6 +3232,26 @@
                                                         }
                                                     },
                                                     "type": "object"
+                                                },
+                                                "removedLicenses": {
+                                                    "description": "List of licenses that were filtered out",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "oneOf": [
+                                                            {
+                                                                "type": "string",
+                                                                "example": "FR: fr_horaires-sncf.gtfs"
+                                                            },
+                                                            {
+                                                                "$ref": "#/components/schemas/LicenseDto"
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "removedCount": {
+                                                    "description": "Number of removed entries due to license filtering",
+                                                    "type": "integer",
+                                                    "example": 2
                                                 }
                                             },
                                             "type": "object"
@@ -4628,6 +4648,42 @@
                 "xml": {
                     "name": "FeatureCollection"
                 }
+            },
+            "LicenseDto": {
+                "title": "License DTO",
+                "description": "Data Transfer Object for licenses",
+                "required": [
+                    "licenseName",
+                    "attributionString",
+                    "licenseUrl",
+                    "sourceUrl"
+                ],
+                "properties": {
+                    "licenseName": {
+                        "description": "Name of the license",
+                        "type": "string",
+                        "example": "CC BY 4.0"
+                    },
+                    "attributionString": {
+                        "description": "Attribution string for the license",
+                        "type": "string",
+                        "example": "Provided by OpenStreetMap contributors",
+                        "nullable": true
+                    },
+                    "licenseUrl": {
+                        "description": "URL to the license text",
+                        "type": "string",
+                        "example": "https://creativecommons.org/licenses/by/4.0/",
+                        "nullable": true
+                    },
+                    "sourceUrl": {
+                        "description": "URL to the source of the data",
+                        "type": "string",
+                        "example": "https://www.openstreetmap.org/",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
             },
             "LivePointDto": {
                 "title": "LivePointDto",

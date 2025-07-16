@@ -11,6 +11,7 @@ use App\Enum\DataProvider as DataProviderEnum;
 use App\Models\MotisSourceLicense;
 use App\Models\Station;
 use App\Models\StationIdentifier;
+use App\Services\LicenseService;
 use App\Services\OperatorService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
@@ -20,6 +21,9 @@ use Tests\Unit\UnitTestCase;
 class MotisHydratorTest extends UnitTestCase
 {
     public static function filterLicenseProvider(): array {
+        $license         = new MotisSourceLicense();
+        $license->active = true;
+
         return [
             'no license'   => [
                 'expected' => 0,
@@ -27,7 +31,7 @@ class MotisHydratorTest extends UnitTestCase
             ],
             'with license' => [
                 'expected' => 3,
-                'license'  => new MotisSourceLicense(),
+                'license'  => $license
             ],
         ];
     }
@@ -99,11 +103,21 @@ class MotisHydratorTest extends UnitTestCase
         $mockOperatorRepo->method('parseTransitousOperator')
                          ->willReturn(null);
 
+        $mockLicenseService = $this->getMockBuilder(LicenseService::class)
+                                   ->disableOriginalConstructor()
+                                   ->onlyMethods(['getLicenseDataForSource'])
+                                   ->getMock();
+        $mockLicenseService->method('getLicenseDataForSource')
+                           ->willReturn(null);
 
-        $hydrator   = new MotisHydrator($mockRepo, $mockStationRepo, $mockOperatorRepo);
+
+        $hydrator   = new MotisHydrator($mockRepo, $mockStationRepo, $mockOperatorRepo, $mockLicenseService);
         $departures = $hydrator->mapDepartures($this->getDepartures(), Station::factory()->makeOne(), DataProviderEnum::TRANSITOUS);
 
-        $this->assertCount($expected, $departures);
+        $this->assertCount($expected, $departures->departures);
+
+        $removedCount = count($this->getDepartures()) - $expected;
+        $this->assertEquals($removedCount, $departures->removedCount);
     }
 
 }
