@@ -6777,16 +6777,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v7.3.0",
+            "version": "v7.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "66c1440edf6f339fd82ed6c7caa76cb006211b44"
+                "reference": "9e27aecde8f506ba0fd1d9989620c04a87697101"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/66c1440edf6f339fd82ed6c7caa76cb006211b44",
-                "reference": "66c1440edf6f339fd82ed6c7caa76cb006211b44",
+                "url": "https://api.github.com/repos/symfony/console/zipball/9e27aecde8f506ba0fd1d9989620c04a87697101",
+                "reference": "9e27aecde8f506ba0fd1d9989620c04a87697101",
                 "shasum": ""
             },
             "require": {
@@ -6851,7 +6851,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v7.3.0"
+                "source": "https://github.com/symfony/console/tree/v7.3.1"
             },
             "funding": [
                 {
@@ -6867,7 +6867,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-05-24T10:34:04+00:00"
+            "time": "2025-06-27T19:55:54+00:00"
         },
         {
             "name": "symfony/css-selector",
@@ -9871,16 +9871,16 @@
         },
         {
             "name": "brianium/paratest",
-            "version": "v7.10.3",
+            "version": "v7.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paratestphp/paratest.git",
-                "reference": "cfee22cc949d170e61e7111c89ea9fc86aa02ffb"
+                "reference": "c48f73d568f09df27177e178b61f8e910683dd5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paratestphp/paratest/zipball/cfee22cc949d170e61e7111c89ea9fc86aa02ffb",
-                "reference": "cfee22cc949d170e61e7111c89ea9fc86aa02ffb",
+                "url": "https://api.github.com/repos/paratestphp/paratest/zipball/c48f73d568f09df27177e178b61f8e910683dd5d",
+                "reference": "c48f73d568f09df27177e178b61f8e910683dd5d",
                 "shasum": ""
             },
             "require": {
@@ -9894,9 +9894,9 @@
                 "phpunit/php-code-coverage": "^12.3.1",
                 "phpunit/php-file-iterator": "^6",
                 "phpunit/php-timer": "^8",
-                "phpunit/phpunit": "^12.2.3",
+                "phpunit/phpunit": "^12.2.7",
                 "sebastian/environment": "^8.0.2",
-                "symfony/console": "^6.4.20 || ^7.3.0",
+                "symfony/console": "^6.4.20 || ^7.3.1",
                 "symfony/process": "^6.4.20 || ^7.3.0"
             },
             "require-dev": {
@@ -9949,7 +9949,7 @@
             ],
             "support": {
                 "issues": "https://github.com/paratestphp/paratest/issues",
-                "source": "https://github.com/paratestphp/paratest/tree/v7.10.3"
+                "source": "https://github.com/paratestphp/paratest/tree/v7.11.0"
             },
             "funding": [
                 {
@@ -9961,7 +9961,7 @@
                     "type": "paypal"
                 }
             ],
-            "time": "2025-06-22T16:27:15+00:00"
+            "time": "2025-07-16T09:15:54+00:00"
         },
         {
             "name": "composer/class-map-generator",
