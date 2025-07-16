@@ -72,12 +72,30 @@ class WikidataImportService
         $rl100 = $wikidataEntity->getClaims('P8671')[0]['mainsnak']['datavalue']['value'] ?? null;   //P8671 = RL100
         $ifopt = $wikidataEntity->getClaims('P12393')[0]['mainsnak']['datavalue']['value'] ?? null;  //P12393 = IFOPT
         if ($ifopt !== null) {
-            $splittedIfopt = explode(':', $ifopt);
+            $splitIfopt = explode(':', $ifopt);
         }
 
-        //if ibnr is already in use, we can't import the station
+        //if ibnr is already in use, we can't import the station, but we can add the wikidata information to the existing station
         if ($ibnr !== null && Station::where('ibnr', $ibnr)->exists()) {
-            throw new \InvalidArgumentException('IBNR ' . $ibnr . ' already in use');
+            $station              = Station::where('ibnr', $ibnr)->first();
+            $station->wikidata_id = $qId;
+
+            if ($station->ifopt_a === null && isset($splitIfopt)) {
+                $station->ifopt_a = $splitIfopt[0] ?? null;
+                $station->ifopt_b = $splitIfopt[1] ?? null;
+                $station->ifopt_c = $splitIfopt[2] ?? null;
+                $station->ifopt_d = $splitIfopt[3] ?? null;
+                $station->ifopt_e = $splitIfopt[4] ?? null;
+            }
+
+            if ($station->rilIdentifier === null && $rl100 !== null) {
+                $station->rilIdentifier = $rl100;
+            }
+
+            $station->save();
+            self::saveStationNames($station, $wikidataEntity);
+
+            return $station;
         }
 
         $station = Station::create(
@@ -88,11 +106,11 @@ class WikidataImportService
                 'wikidata_id'   => $qId,
                 'rilIdentifier' => $rl100,
                 'ibnr'          => $ibnr,
-                'ifopt_a'       => $splittedIfopt[0] ?? null,
-                'ifopt_b'       => $splittedIfopt[1] ?? null,
-                'ifopt_c'       => $splittedIfopt[2] ?? null,
-                'ifopt_d'       => $splittedIfopt[3] ?? null,
-                'ifopt_e'       => $splittedIfopt[4] ?? null,
+                'ifopt_a'       => $splitIfopt[0] ?? null,
+                'ifopt_b'       => $splitIfopt[1] ?? null,
+                'ifopt_c'       => $splitIfopt[2] ?? null,
+                'ifopt_d'       => $splitIfopt[3] ?? null,
+                'ifopt_e'       => $splitIfopt[4] ?? null,
                 'source'        => 'wikidata',
             ]
         );
