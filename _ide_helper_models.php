@@ -706,7 +706,6 @@ namespace App\Models{
  *
  * @property int $id
  * @property int $user_id
- * @property int|null $twitter_id
  * @property int|null $mastodon_id
  * @property int|null $mastodon_server
  * @property mixed|null $mastodon_token
@@ -724,7 +723,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereMastodonServer($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereMastodonToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereMastodonVisibility($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereTwitterId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereUserId($value)
  */
