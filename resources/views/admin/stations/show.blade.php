@@ -20,6 +20,10 @@
                             <td>{{ $station->name }}</td>
                         </tr>
                         <tr>
+                            <th>Relevance</th>
+                            <td>{{ $station->relevance }}</td>
+                        </tr>
+                        <tr>
                             <th>Timezone offset</th>
                             <td>
                                 {{ $station->time_offset ?? 'null' }}
@@ -58,6 +62,7 @@
                                             </td>
                                             <td></td>
                                             <td></td>
+                                            <td></td>
                                         </tr>
                                     @endif
 
@@ -73,6 +78,7 @@
                                             </td>
                                             <td></td>
                                             <td></td>
+                                            <td></td>
                                         </tr>
                                     @endif
 
@@ -85,6 +91,7 @@
                                                     {{ $station->ifopt }}
                                                 </a>
                                             </td>
+                                            <td></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
@@ -102,10 +109,11 @@
                                             </td>
                                             <td></td>
                                             <td></td>
+                                            <td></td>
                                         </tr>
                                     @endif
 
-                                    @foreach($station->stationIdentifiers as $identifier)
+                                    @foreach($station->stationIdentifiers->sortByDesc('relevance') as $identifier)
                                         <tr>
                                             <td>{{ $identifier->type }}</td>
                                             <td>
@@ -116,6 +124,7 @@
                                             </td>
                                             <td>{{ $identifier->name }}</td>
                                             <td>{{ $identifier->origin }}</td>
+                                            <td>{{ $identifier->relevance }}</td>
                                         </tr>
                                     @endforeach
                                 </table>
