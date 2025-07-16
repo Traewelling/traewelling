@@ -21,13 +21,27 @@ use Illuminate\View\View;
 class StationController extends Controller
 {
 
-    public function renderList(Request $request): View {
+    public function renderList(Request $request): View|RedirectResponse {
         $this->authorize('viewAny', Station::class);
         $stations = Station::orderByDesc('created_at');
         if ($request->has('query')) {
-            $stations->where('name', 'LIKE', '%' . strip_tags($request->get('query')) . '%')
-                     ->orWhere('ibnr', 'LIKE', '%' . strip_tags($request->get('query')) . '%')
-                     ->orWhere('rilIdentifier', 'LIKE', '%' . strip_tags($request->get('query')) . '%');
+            $query = strip_tags($request->get('query'));
+
+            if (is_numeric($query)) {
+                $stations->where('id', $query);
+                if ($stations->exists()) {
+                    return redirect()->route('admin.station', ['id' => $query]);
+                }
+            }
+
+            $stations->where('name', 'LIKE', '%' . $query . '%')
+                     ->orWhere('ibnr', 'LIKE', '%' . $query . '%')
+                     ->orWhere('rilIdentifier', 'LIKE', '%' . $query . '%')
+                     ->orWhere('wikidata_id', 'LIKE', '%' . $query . '%');
+
+            if ($stations->count() === 1) {
+                return redirect()->route('admin.station', ['id' => $stations->first()->id]);
+            }
         }
         return view('admin.stations.list', [
             'stations' => $stations->paginate(20),
