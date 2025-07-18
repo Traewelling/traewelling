@@ -31,7 +31,3 @@ const split = ref<TimeDuration>(secondsToDuration(props.duration));
   {{ split.minutes }} <small class="text-muted">{{ trans('time.minutes.short') }}</small>
 </span>
 </template>
-
-<style scoped lang="scss">
-
-</style>

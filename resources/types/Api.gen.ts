@@ -533,6 +533,25 @@ export interface StationResource {
   areas: AreaResource[];
 }
 
+/** StatisticsGlobalData */
+export interface StatisticsGlobalData {
+  /**
+   * Globally travelled distance in meters
+   * @example 1000
+   */
+  distance: number;
+  /**
+   * Globally travelled duration in minutes
+   * @example 1000
+   */
+  duration: number;
+  /**
+   * Number of active users
+   * @example 1000
+   */
+  activeUsers: number;
+}
+
 /** Status */
 export interface StatusResource {
   /** @example 12345 */
@@ -3383,28 +3402,12 @@ export class Api<
     getGlobalStatistics: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: {
-            /**
-             * Globally travelled distance in meters
-             * @example 1000
-             */
-            distance?: number;
-            /**
-             * Globally travelled duration in minutes
-             * @example 1000
-             */
-            duration?: number;
-            /**
-             * Number of active users
-             * @example 1000
-             */
-            activeUsers?: number;
-            meta?: {
-              /** @example "2021-01-01T00:00:00.000000Z" */
-              from?: any;
-              /** @example "2021-02-01T00:00:00.000000Z" */
-              until?: any;
-            };
+          data?: StatisticsGlobalData;
+          meta?: {
+            /** @example "2021-01-01T00:00:00.000000Z" */
+            from?: any;
+            /** @example "2021-02-01T00:00:00.000000Z" */
+            until?: any;
           };
         },
         any

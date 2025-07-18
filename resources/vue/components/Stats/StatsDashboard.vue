@@ -1,6 +1,6 @@
 <template>
   <div class="stats-dashboard">
-    <h4>{{ trans('stats.personal', {fromDate: formatDate(from), toDate: formatDate(to)}) }}</h4>
+    <h4>{{ trans('stats.personal', {fromDate: formatDate(from), toDate: formatDate(until)}) }}</h4>
     <hr/>
     <div class="row mb-3">
       <div class="col-md-3">
@@ -14,12 +14,12 @@
         />
       </div>
       <div class="col-md-3">
-        <label for="toDate" class="sr-only">{{ trans('stats.to') }}</label>
+        <label for="untilDate" class="sr-only">{{ trans('stats.to') }}</label>
         <input
-            id="toDate"
+            id="untilDate"
             class="form-control"
-            :value="to.toISOString().split('T')[0]"
-            @change="to = new Date($event.target.value)"
+            :value="until.toISOString().split('T')[0]"
+            @change="until = new Date($event.target.value)"
             type="date"
         />
       </div>
@@ -28,7 +28,7 @@
       <div class="col-md-4 mb-4">
         <ChartPurpose
             v-if="data.purpose.length"
-            :key="'purpose-' + fromStr + '-' + toStr"
+            :key="'purpose-' + fromStr + '-' + untilStr"
             :series="data.purpose.map(p => p.duration)"
             :labels="data.purpose.map(p => p.name)"
         />
@@ -37,7 +37,7 @@
       <div class="col-md-4 mb-4">
         <ChartCategories
             v-if="data.categories.length"
-            :key="'categories-' + fromStr + '-' + toStr"
+            :key="'categories-' + fromStr + '-' + untilStr"
             :series="data.categories.map(c => c.duration)"
             :labels="data.categories.map(c => c.name)"
         />
@@ -46,7 +46,7 @@
       <div class="col-md-4 mb-4">
         <ChartCompanies
             v-if="data.operators.length"
-            :key="'companies-' + fromStr + '-' + toStr"
+            :key="'companies-' + fromStr + '-' + untilStr"
             :series="data.operators.map(o => o.duration)"
             :labels="data.operators.map(o => o.name || trans('other'))"
         />
@@ -55,7 +55,7 @@
       <div class="col-12 mb-4">
         <ChartVolume
             v-if="data.time.length"
-            :key="'volume-' + fromStr + '-' + toStr"
+            :key="'volume-' + fromStr + '-' + untilStr"
             :data="data.time"
         />
         <p v-else class="text-danger font-weight-bold mt-2">{{ trans('stats.no-data') }}</p>
@@ -65,8 +65,8 @@
       <GlobalCards
           v-if="globalStats.distance !== undefined"
           :stats="globalStats"
-          :from="fromStr"
-          :to="toStr"
+          :from="globalFrom"
+          :until="globalUntil"
       />
     </div>
   </div>
@@ -90,11 +90,39 @@ import Chart from "chart.js/auto";
 const notyf = new Notyf();
 
 // Default date range: last 3 months to today (as Date objects)
-const to = ref(new Date() as Date);
+const until = ref(new Date() as Date);
 const from = ref(new Date(new Date().setMonth(new Date().getMonth() - 3)) as Date);
 
-const fromStr = computed(() => from.value.toISOString().split('T')[0]);
-const toStr = computed(() => to.value.toISOString().split('T')[0]);
+const globalFrom = ref(null as Date|null);
+const globalUntil = ref(null as Date|null);
+
+function getQueryParameters() {
+// Get Query Parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const fromUrlString = urlParams.get('from');
+  if (fromUrlString && fromUrlString !== fromStr) {
+    const fromDate = new Date(fromUrlString);
+    if (!isNaN(fromDate.getTime())) {
+      from.value = fromDate;
+    }
+  }
+
+  const untilUrlString = urlParams.get('until');
+  if (untilUrlString && untilUrlString !== untilStr) {
+    const untilDate = new Date(untilUrlString);
+    if (!isNaN(untilDate.getTime())) {
+      until.value = untilDate;
+    }
+  }
+}
+
+getQueryParameters();
+
+const fromStr = computed(() => getDateString(from.value));
+const untilStr = computed(() => getDateString(until.value));
+function getDateString(date: Date) {
+  return date.toISOString().split('T')[0];
+}
 
 const data = ref({purpose: [], categories: [], operators: [], time: []});
 const globalStats = ref({});
@@ -102,7 +130,7 @@ const globalStats = ref({});
 async function fetchStats() {
   const url = new URL('/api/v1/statistics', window.location.origin);
   url.searchParams.set('from', fromStr.value);
-  url.searchParams.set('until', toStr.value);
+  url.searchParams.set('until', untilStr.value);
   const res = await fetch(url.toString(), {headers: {Accept: 'application/json'}});
   if (!res.ok) throw new Error('Failed to fetch statistics');
   const json = await res.json();
@@ -110,10 +138,7 @@ async function fetchStats() {
 }
 
 async function fetchGlobalStats() {
-  const url = new URL('/api/v1/statistics/global', window.location.origin);
-  url.searchParams.set('from', fromStr.value);
-  url.searchParams.set('until', toStr.value);
-  const res = await fetch(url.toString(), {headers: {Accept: 'application/json'}});
+  const res = await fetch('/api/v1/statistics/global', {headers: {Accept: 'application/json'}});
   if (!res.ok) throw new Error('Failed to fetch global statistics');
   const json = await res.json();
   globalStats.value = {
@@ -121,17 +146,25 @@ async function fetchGlobalStats() {
     duration: Number(json.data.duration),
     user_count: json.data.activeUsers
   };
+  globalFrom.value = new Date(json.meta.from);
+  globalUntil.value = new Date(json.meta.until);
 }
 
 async function reloadStats() {
+  // push the current date range to the URL
+  const url = new URL(window.location.href);
+  url.searchParams.set('from', fromStr.value);
+  url.searchParams.set('until', untilStr.value);
+  window.history.pushState({}, '', url.toString());
+
   try {
-    await Promise.all([fetchStats(), fetchGlobalStats()]);
+    await Promise.all([fetchStats()]);
   } catch (error) {
     notyf.error(error.message);
   }
 }
 
-function formatDate(d) {
+function formatDate(d: Date) {
   return d.toLocaleDateString();
 }
 
@@ -152,10 +185,14 @@ function setColors() {
   }
 }
 
-watch([from, to], reloadStats);
+watch([from, until], reloadStats);
+window.addEventListener('popstate', () => {
+  getQueryParameters();
+});
 
 onMounted(() => {
   reloadStats();
+  fetchGlobalStats();
   setColors();
 });
 </script>

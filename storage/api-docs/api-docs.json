@@ -2069,32 +2069,15 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
+                                            "$ref": "#/components/schemas/StatisticsGlobalData"
+                                        },
+                                        "meta": {
                                             "properties": {
-                                                "distance": {
-                                                    "description": "Globally travelled distance in meters",
-                                                    "type": "integer",
-                                                    "example": 1000
+                                                "from": {
+                                                    "example": "2021-01-01T00:00:00.000000Z"
                                                 },
-                                                "duration": {
-                                                    "description": "Globally travelled duration in minutes",
-                                                    "type": "integer",
-                                                    "example": 1000
-                                                },
-                                                "activeUsers": {
-                                                    "description": "Number of active users",
-                                                    "type": "integer",
-                                                    "example": 1000
-                                                },
-                                                "meta": {
-                                                    "properties": {
-                                                        "from": {
-                                                            "example": "2021-01-01T00:00:00.000000Z"
-                                                        },
-                                                        "until": {
-                                                            "example": "2021-02-01T00:00:00.000000Z"
-                                                        }
-                                                    },
-                                                    "type": "object"
+                                                "until": {
+                                                    "example": "2021-02-01T00:00:00.000000Z"
                                                 }
                                             },
                                             "type": "object"
@@ -5416,6 +5399,32 @@
                         "items": {
                             "$ref": "#/components/schemas/AreaResource"
                         }
+                    }
+                },
+                "type": "object"
+            },
+            "StatisticsGlobalData": {
+                "title": "StatisticsGlobalData",
+                "required": [
+                    "distance",
+                    "duration",
+                    "activeUsers"
+                ],
+                "properties": {
+                    "distance": {
+                        "description": "Globally travelled distance in meters",
+                        "type": "integer",
+                        "example": 1000
+                    },
+                    "duration": {
+                        "description": "Globally travelled duration in minutes",
+                        "type": "integer",
+                        "example": 1000
+                    },
+                    "activeUsers": {
+                        "description": "Number of active users",
+                        "type": "integer",
+                        "example": 1000
                     }
                 },
                 "type": "object"

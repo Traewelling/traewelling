@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Dto\GeoJson\Feature;
 use App\Dto\GeoJson\FeatureCollection;
+use App\Helpers\CacheKey;
 use App\Http\Controllers\Backend\LeaderboardController as LeaderboardBackend;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Http\Controllers\Backend\Stats\DailyStatsController;
@@ -19,6 +20,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Rule;
 
 class StatisticsController extends Controller
@@ -402,39 +404,20 @@ class StatisticsController extends Controller
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
-     *                 @OA\Property(
-     *                     property="distance",
-     *                     description="Globally travelled distance in meters",
-     *                     type="integer",
-     *                     example=1000
-     *                 ),
-     *                 @OA\Property(
-     *                     property="duration",
-     *                     description="Globally travelled duration in minutes",
-     *                     type="integer",
-     *                     example=1000
-     *                 ),
-     *                 @OA\Property(
-     *                     property="activeUsers",
-     *                     description="Number of active users",
-     *                     type="integer",
-     *                     example=1000
-     *                ),
+     *                 ref="#/components/schemas/StatisticsGlobalData"
+     *            ),
      *           @OA\Property(
      *               property="meta",
      *               type="object",
      *               @OA\Property(property="from", example="2021-01-01T00:00:00.000000Z"),
      *               @OA\Property(property="until", example="2021-02-01T00:00:00.000000Z"),
      *           ),
-     *        )
-     *      ),
+     *        ),
      *     ),
      *     security={
      *        {"passport": {"read-statistics"}}, {"token": {}}
-     *
      *     }
-     *     )
-     *
+     *   )
      *
      * @return JsonResponse
      */
@@ -442,7 +425,11 @@ class StatisticsController extends Controller
         $from  = Carbon::now()->subWeeks(4);
         $until = Carbon::now();
 
-        $data = new StatisticsGlobalData(StatisticBackend::getGlobalCheckInStats(from: $from, until: $until));
+        $globalStats = Cache::remember(
+            key: CacheKey::getGlobalStatsKey($from, $until),
+            ttl: config('trwl.cache.global-statistics-retention-seconds'), // 1 hour
+            callback: static fn() => StatisticBackend::getGlobalCheckInStats($from, $until)
+        );
 
         $additionalData = [
             'meta' => [
@@ -451,6 +438,6 @@ class StatisticsController extends Controller
             ]
         ];
 
-        return $this->sendResponse(data: $data, additional: $additionalData);
+        return $this->sendResponse(data: new StatisticsGlobalData($globalStats), additional: $additionalData);
     }
 }
