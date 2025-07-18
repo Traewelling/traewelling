@@ -5,7 +5,7 @@ namespace Database\Factories;
 use App\Enum\HafasTravelType;
 use App\Enum\TripSource;
 use App\Http\Controllers\TransportController;
-use App\Models\HafasOperator;
+use App\Models\Operator;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\Trip;
@@ -28,7 +28,7 @@ class TripFactory extends Factory
             'number'         => $this->faker->bothify('??-##'),
             'linename'       => $this->faker->bothify('?? ##'),
             'journey_number' => $this->faker->numberBetween(10000, 99999),
-            'operator_id'    => HafasOperator::factory()->create()->id,
+            'operator_id'    => Operator::factory()->create()->id,
             'origin_id'      => $origin->id,
             'destination_id' => $destination->id,
             'polyline_id'    => null, //Will be set in the configure function

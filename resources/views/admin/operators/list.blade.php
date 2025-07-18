@@ -1,3 +1,4 @@
+@php use App\Models\OperatorIdentifier; @endphp
 @extends('admin.layout')
 
 @section('title', 'Operators')
@@ -15,11 +16,12 @@
                                 <th>Trwl-ID</th>
                                 <th>WikiData</th>
                                 <th>Name</th>
-                                <th>Legacy Hafas ID</th>
-                                <th>Motis ID</th>
+                                <th>Identifiers <span class="badge bg-info">Motis</span><span class="badge bg-danger">HAFAS</span>
+                                </th>
                             </tr>
                             </thead>
                             <tbody>
+                            @php/** @var \App\Models\Operator[] $operators */ @endphp
                             @foreach($operators as $operator)
                                 <tr>
                                     <td>{{$operator->id}}</td>
@@ -30,11 +32,20 @@
                                         </a>
                                     </td>
                                     <td>{{$operator->name}}</td>
-                                    <td>{{$operator->hafas_id}}</td>
                                     <td>
-                                        <span onclick="copyMotisToClipboard('{{$operator->motis_id}}', '{{$operator->name}}')">
-                                            {{$operator->motis_id}}
-                                        </span>
+                                        @php /** @var OperatorIdentifier $identifier */ @endphp
+                                        @foreach($operator->identifiers as $identifier)
+                                            @if($identifier->type === 'motis')
+                                                <span class="badge bg-info" role="button"
+                                                      onclick="copyMotisToClipboard('{{$identifier->identifier}}', '{{$identifier->name}}')">
+                                                    {{$identifier->identifier}} {{$identifier->name ? '(' . $identifier->name . ')' : ''}}
+                                                </span>
+                                            @elseif($identifier->type === 'hafas')
+                                                <span class="badge bg-danger">
+                                                    {{$identifier->identifier}}
+                                                </span>
+                                            @endif
+                                        @endforeach
                                     </td>
                                 </tr>
                             @endforeach

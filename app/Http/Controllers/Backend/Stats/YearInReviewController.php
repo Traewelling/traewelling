@@ -30,11 +30,11 @@ abstract class YearInReviewController extends Controller
         $to                         = Carbon::create($year, 12, 31);
         $count                      = TransportStatsController::count($user, $from, $to);
         $sum                        = TransportStatsController::sum($user, $from, $to);
-        $countHafasOperators        = TransportStatsController::countHafasOperators($user, $from, $to);
-        $sumByHafasByDistance       = TransportStatsController::sumByHafasOperator($user, $from, $to, 'distance', 1);
-        $sumByHafasByDuration       = TransportStatsController::sumByHafasOperator($user, $from, $to, 'duration', 1);
-        $topOperatorLinesByDistance = TransportStatsController::sumByHafasOperatorAndLine($user, $from, $to, 'distance', 1);
-        $topOperatorLinesByDuration = TransportStatsController::sumByHafasOperatorAndLine($user, $from, $to, 'duration', 1);
+        $countOperators             = TransportStatsController::countOperators($user, $from, $to);
+        $sumByHafasByDistance       = TransportStatsController::sumByOperator($user, $from, $to, 'distance', 1);
+        $sumByHafasByDuration       = TransportStatsController::sumByOperator($user, $from, $to, 'duration', 1);
+        $topOperatorLinesByDistance = TransportStatsController::sumByOperatorAndLine($user, $from, $to, 'distance', 1);
+        $topOperatorLinesByDuration = TransportStatsController::sumByOperatorAndLine($user, $from, $to, 'duration', 1);
         $longestTripsByDistance     = TransportStatsController::getLongestTrips($user, $from, $to, 'distance', 1);
         $longestTripsByDuration     = TransportStatsController::getLongestTrips($user, $from, $to, 'duration', 1);
         $fastestTrips               = TransportStatsController::getTripsBySpeed($user, $from, $to, 'desc', 1);
@@ -62,7 +62,7 @@ abstract class YearInReviewController extends Controller
             ],
             'totalDelay'          => TransportStatsController::getTotalArrivalDelay($user, $from, $to),
             'operators'           => [
-                'count'         => $countHafasOperators,
+                'count'         => $countOperators,
                 'topByDistance' => $sumByHafasByDistance->map(static function($row) {
                     return [
                         'operator' => $row->name,

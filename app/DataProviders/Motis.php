@@ -171,10 +171,11 @@ class Motis extends Controller implements DataProviderInterface
                 $filtered = $this->getDeparturesFromApi($station, $identifier, $when, $type);
             } catch (HafasException $exception) {
                 // If we get an exception, we can try the next identifier
-                Log::debug('MOTIS Error (getDepartures)', [
+                Log::error('MOTIS Error (getDepartures)', [
                     'status' => $exception->getMessage(),
                     'body'   => $exception->getMessage()
                 ]);
+                report($exception);
                 $exceptions++;
                 $filtered = new FilteredDepartures(collect(), collect());
             } catch (TimetableLocationNotFoundException $exception) {

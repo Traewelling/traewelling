@@ -12,7 +12,7 @@ use App\Dto\Internal\FilteredDepartures;
 use App\Enum\DataProvider;
 use App\Enum\MotisCategory;
 use App\Hydrators\DepartureHydrator;
-use App\Models\HafasOperator;
+use App\Models\Operator;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\Trip;
@@ -159,7 +159,7 @@ class MotisHydrator
         $category           = $this->getCategoryFromLeg($leg);
         $tripLineName       = !empty($leg['routeShortName']) ? $leg['routeShortName'] : $lineName;
         $license            = $this->motisRepository->getActiveLicense($leg['source'], $source);
-        $operator           = $this->parseOperator($leg);
+        $operator           = $this->parseOperator($leg, $source);
 
         return [
             'category'                => $category,
@@ -178,10 +178,11 @@ class MotisHydrator
         ];
     }
 
-    private function parseOperator(array $leg): ?HafasOperator {
+    private function parseOperator(array $leg, DataProvider $source): ?Operator {
         return $this->operatorService->parseTransitousOperator(
-            agencyId:   $leg['agencyId'] ?? null,
-            agencyName: $leg['agencyName'] ?? null,
+            motisAgencyId:   $leg['agencyId'] ?? null,
+            motisAgencyName: $leg['agencyName'] ?? null,
+            source:          $source,
         );
     }
 
@@ -245,7 +246,7 @@ class MotisHydrator
                                       number:        $tripId,
                                       category:      $hafasTravelType,
                                       journeyNumber: $tripId,
-                                      operator:      $this->parseOperator($rawDeparture),
+                                      operator:      $this->parseOperator($rawDeparture, $source),
                                   ),
                 plannedPlatform:  $platformPlanned,
                 realPlatform:     $platformReal,

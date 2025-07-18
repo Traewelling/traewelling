@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\EventSuggestion;
-use App\Models\HafasOperator;
-use App\Models\Trip;
+use App\Models\Operator;
 use App\Models\Station;
+use App\Models\Trip;
 use Database\Seeders\Constants\PermissionSeeder;
 use Illuminate\Database\Seeder;
 
@@ -26,6 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CheckinSeeder::class);
         $this->call(PrivacyAgreementSeeder::class);
         EventSuggestion::factory(['user_id' => 1])->count(5)->create();
-        HafasOperator::factory()->count(300)->create();
+        Operator::factory()->count(300)->create();
     }
 }
