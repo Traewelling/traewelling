@@ -14,6 +14,10 @@ namespace App\Enum;
  */
 enum DataProvider: string
 {
-    case DEFAULT = 'default';
+    case DEFAULT    = 'default';
     case TRANSITOUS = 'transitous';
+
+    public function isMotis(): bool {
+        return $this === self::TRANSITOUS;
+    }
 }
