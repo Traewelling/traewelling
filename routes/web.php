@@ -126,7 +126,13 @@ Route::middleware(['auth', 'privacy'])->group(function() {
          ->name('provider.destroy'); //TODO: Replace with API Endpoint
 
     Route::prefix('stats')->group(static function() {
-        Route::get('/', [StatisticController::class, 'renderMainStats'])
+        Route::permanentRedirect('/', '/statistics');
+        Route::permanentRedirect('/stations', '/statistics/stations');
+        Route::permanentRedirect('/daily/{dateString}', '/statistics/daily/{dateString}');
+    });
+
+    Route::prefix('statistics')->group(static function() {
+        Route::get('/', [VueFrontendController::class, 'statsDashboard'])
              ->name('stats');
         Route::get('/stations', [StatisticController::class, 'renderStations'])
              ->name('stats.stations');
@@ -210,7 +216,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
     Route::get('/transport/train/autocomplete/{station}', [FrontendTransportController::class, 'TrainAutocomplete'])
          ->name('transport.train.autocomplete');
 
-    Route::get('/stationboard', [VueFrontendController::class, 'stationboard'])->name('stationboard');
+    Route::get('/stationboard', [VueFrontendController::class, 'stationBoard'])->name('stationboard');
 
     Route::redirect('/trains/stationboard', '/stationboard')->name('trains.stationboard');
 

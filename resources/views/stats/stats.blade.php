@@ -8,10 +8,7 @@
 
 @section('content')
     <div class="container">
-        <div id="vue-content"
-             data-from="{{ $from->toDateString() }}"
-             data-to="{{ $to->toDateString() }}">
-
+        <div id="vue-content">
             <div id="vue-stats">
                 <stats-dashboard></stats-dashboard>
             </div>

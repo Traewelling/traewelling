@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Dto\Internal\GlobalCheckinStats;
 use App\Helpers\CacheKey;
 use App\Helpers\HCK;
+use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Models\PolyLine;
 use App\Models\Trip;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
@@ -16,11 +19,81 @@ use Spatie\Prometheus\Facades\Prometheus;
 const PROM_JOB_SCRAPER_SEPARATOR = "-PROM-JOB-SCRAPER-SEPARATOR-";
 class PrometheusServiceProvider extends ServiceProvider
 {
-    public function register() {
-        /*
-         * Here you can register all the exporters that you
-         * want to export to prometheus
-         */
+    public function register(): void {
+        $this->registerGlobalStats();
+        $this->metaDataStats();
+        $this->queueMetrics();
+        $this->hafasMetrics();
+        $this->oAuthMetrics();
+
+        Prometheus::addGauge('absent_webhooks_deleted')
+                  ->helpText("How many webhooks were responded with Gone and were thus deleted from our side?")
+                  ->value(fn() => Cache::get(CacheKey::WEBHOOK_ABSENT, 0));
+
+        Prometheus::addGauge("is_maintenance_mode_active")
+                  ->helpText("Is the Laravel Maintenance Mode active right now?")
+                  ->value($this->app->maintenanceMode()->active());
+    }
+
+
+    public static function getJobsByDisplayName(string $tableName): array {
+        $counts = DB::table($tableName)
+                    ->get(["queue", "payload"])
+                    ->map(fn($row) => [
+                        'queue'       => $row->queue,
+                        'displayName' => json_decode($row->payload)->displayName])
+                    ->countBy(fn($job) => $job['displayName'] . PROM_JOB_SCRAPER_SEPARATOR . $job['queue'])
+                    ->toArray();
+
+        return array_map(
+            fn($jobProperties, $count) => [$count, explode(PROM_JOB_SCRAPER_SEPARATOR, $jobProperties)],
+            array_keys($counts),
+            array_values($counts)
+        );
+    }
+
+    private function getHafasByType(array $getFailures): array {
+        $values = [];
+        foreach ($getFailures as $key => $name) {
+            $values[$name] = Cache::get($key, 0);
+        }
+
+        return array_map(fn($value, $key) => [$value, [$key]], $values, array_keys($values));
+    }
+
+    private function getGlobalStats(): GlobalCheckinStats {
+        $from  = Carbon::now()->subWeeks(4);
+        $until = Carbon::now();
+
+        /** @var GlobalCheckinStats $globalStats */
+        return Cache::remember(
+            key: CacheKey::getGlobalStatsKey($from, $until),
+            ttl: config('trwl.cache.global-statistics-retention-seconds'), // 1 hour
+            callback: static fn() => StatisticBackend::getGlobalCheckInStats($from, $until)
+        );
+    }
+
+    private function registerGlobalStats(): void {
+        Prometheus::addGauge('Active Users count')
+                  ->helpText("How many users have checked in in the last 4 weeks?")
+                  ->value(function() {
+                      return $this->getGlobalStats()->userCount;
+                  });
+
+        Prometheus::addGauge('Global Distance')
+                  ->helpText("How many meters have been travelled in the last 4 weeks?")
+                  ->value(function() {
+                      return $this->getGlobalStats()->distance;
+                  });
+
+        Prometheus::addGauge('Global Duration')
+                  ->helpText("How many minutes have been travelled in the last 4 weeks?")
+                  ->value(function() {
+                      return $this->getGlobalStats()->duration;
+                  });
+    }
+
+    public function metaDataStats(): void {
         Prometheus::addGauge('Users count')
                   ->helpText("How many users are registered on the website?")
                   ->label("state")
@@ -30,7 +103,6 @@ class PrometheusServiceProvider extends ServiceProvider
                           [Cache::get(CacheKey::USER_DELETED, 0), ["deleted"]]
                       ];
                   });
-
 
         Prometheus::addGauge('Status count')
                   ->helpText("How many statuses are posted on the website?")
@@ -76,6 +148,24 @@ class PrometheusServiceProvider extends ServiceProvider
                                      ->toArray();
                   });
 
+        Prometheus::addGauge("profile_image_count")
+                  ->helpText("How many profile images are stored?")
+                  ->value(function() {
+                      $iter = new \FilesystemIterator(public_path("uploads/avatars"));
+                      return iterator_count($iter);
+                  });
+
+        Prometheus::addGauge("active_statuses_count")
+                  ->helpText("How many trips are en route?")
+                  ->value(function() {
+                      return Trip::where("departure", "<", now())
+                                 ->where("arrival", ">", now())
+                                 ->count();
+                  });
+
+    }
+
+    public function queueMetrics(): void {
         Prometheus::addGauge("queue_size")
                   ->helpText("How many items are currently in the job queue?")
                   ->labels(["job_name", "queue"])
@@ -94,6 +184,20 @@ class PrometheusServiceProvider extends ServiceProvider
                       return $this->getJobsByDisplayName("failed_jobs");
                   });
 
+        Prometheus::addGauge("completed_jobs_count")
+                  ->helpText("How many jobs are done? Old items from queue monitor table are deleted after 7 days.")
+                  ->labels(["job_name", "status", "queue"])
+                  ->value(function() {
+                      return DB::table("queue_monitor")
+                               ->groupBy("name", "status", "queue")
+                               ->selectRaw("count(*) AS total, name, status, queue")
+                               ->get()
+                               ->map(fn($item) => [$item->total, [$item->name, MonitorStatus::toNamedArray()[$item->status], $item->queue]])
+                               ->toArray();
+                  });
+    }
+
+    public function hafasMetrics(): void {
         Prometheus::addGauge("failed_hafas_requests_count")
                   ->helpText("How many hafas requests have failed?")
                   ->labels(["request_name"])
@@ -140,42 +244,9 @@ class PrometheusServiceProvider extends ServiceProvider
 
                       return array_map(fn($value, $key) => [$value, [$key]], $values, array_keys($values));
                   });
+    }
 
-        Prometheus::addGauge("completed_jobs_count")
-                  ->helpText("How many jobs are done? Old items from queue monitor table are deleted after 7 days.")
-                  ->labels(["job_name", "status", "queue"])
-                  ->value(function() {
-                      return DB::table("queue_monitor")
-                               ->groupBy("name", "status", "queue")
-                               ->selectRaw("count(*) AS total, name, status, queue")
-                               ->get()
-                               ->map(fn($item) => [$item->total, [$item->name, MonitorStatus::toNamedArray()[$item->status], $item->queue]])
-                               ->toArray();
-                  });
-
-        Prometheus::addGauge('absent_webhooks_deleted')
-                  ->helpText("How many webhooks were responded with Gone and were thus deleted from our side?")
-                  ->value(fn() => Cache::get(CacheKey::WEBHOOK_ABSENT, 0));
-
-        Prometheus::addGauge("profile_image_count")
-                  ->helpText("How many profile images are stored?")
-                  ->value(function() {
-                      $iter = new \FilesystemIterator(public_path("uploads/avatars"));
-                      return iterator_count($iter);
-                  });
-
-        Prometheus::addGauge("active_statuses_count")
-                  ->helpText("How many trips are en route?")
-                  ->value(function() {
-                      return Trip::where("departure", "<", now())
-                                 ->where("arrival", ">", now())
-                                 ->count();
-                  });
-
-        Prometheus::addGauge("is_maintenance_mode_active")
-                  ->helpText("Is the Laravel Maintenance Mode active right now?")
-                  ->value($this->app->maintenanceMode()->active());
-
+    public function oAuthMetrics(): void {
         Prometheus::addGauge("oauth_total_tokens")
                   ->helpText("How many total (revoked and accredited) access tokens do the clients have?")
                   ->labels(["app_name"])
@@ -222,31 +293,5 @@ class PrometheusServiceProvider extends ServiceProvider
                                ->map(fn($item) => [$item->total, [$item->name]])
                                ->toArray();
                   });
-    }
-
-
-    public static function getJobsByDisplayName(string $tableName): array {
-        $counts = DB::table($tableName)
-                    ->get(["queue", "payload"])
-                    ->map(fn($row) => [
-                        'queue'       => $row->queue,
-                        'displayName' => json_decode($row->payload)->displayName])
-                    ->countBy(fn($job) => $job['displayName'] . PROM_JOB_SCRAPER_SEPARATOR . $job['queue'])
-                    ->toArray();
-
-        return array_map(
-            fn($jobProperties, $count) => [$count, explode(PROM_JOB_SCRAPER_SEPARATOR, $jobProperties)],
-            array_keys($counts),
-            array_values($counts)
-        );
-    }
-
-    private function getHafasByType(array $getFailures): array {
-        $values = [];
-        foreach ($getFailures as $key => $name) {
-            $values[$name] = Cache::get($key, 0);
-        }
-
-        return array_map(fn($value, $key) => [$value, [$key]], $values, array_keys($values));
     }
 }

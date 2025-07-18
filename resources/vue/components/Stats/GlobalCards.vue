@@ -5,7 +5,9 @@
         <div class="card-body text-center">
           <i class="fas fa-ruler fa-4x mt-1" aria-hidden="true"></i>
           <div>
-            <span class="font-weight-bold fs-2">{{ (stats.distance / 1000).toFixed(0) }} km</span>
+            <span class="font-weight-bold fs-2">
+              {{ (stats.distance / 1000).toFixed(0) }} <small class="text-muted">km</small>
+            </span>
             <br>
             <small class="text-muted">{{ trans('stats.global.distance') }}</small>
           </div>
@@ -17,7 +19,7 @@
         <div class="card-body text-center">
           <i class="fas fa-clock fa-4x mt-1" aria-hidden="true"></i>
           <div>
-            <span v-html="formatDuration(stats.duration)"></span>
+            <DurationSpan class="font-weight-bold fs-2" :duration="stats.duration"></DurationSpan>
             <br>
             <small class="text-muted">{{ trans('stats.global.duration') }}</small>
           </div>
@@ -37,31 +39,30 @@
       </div>
     </div>
     <div class="col-12 text-center">
-      <small class="text-muted">*{{ trans('stats.global.explain', { fromDate: formatDate(from), toDate: formatDate(to) }) }}</small>
+      <small class="text-muted">*{{ trans('stats.global.explain', { fromDate: from.toLocaleDateString(), toDate: until.toLocaleDateString() }) }}</small>
     </div>
   </div>
 </template>
 
-<script>
-import { trans } from 'laravel-vue-i18n';
+<script setup lang="ts">
+import {PropType} from "vue";
+import DurationSpan from "../Status/Partials/DurationSpan.vue";
+import {StatisticsGlobalData} from "../../../types/Api.gen";
+import {trans} from "laravel-vue-i18n";
 
-export default {
-  name: 'GlobalCards',
-  props: {
-    stats: { type: Object, required: true },
-    from: { type: String, required: true },
-    to: { type: String, required: true }
+defineProps({
+  stats: {
+    type: Object as PropType<StatisticsGlobalData>,
+    required: true
   },
-  methods: {
-    trans,
-    formatDate(d) {
-      return new Date(d).toLocaleDateString();
-    },
-    formatDuration(sec) {
-      const h = Math.floor(sec / 3600);
-      const m = Math.floor((sec % 3600) / 60);
-      return `<span class=\"font-weight-bold fs-2\">${h}h ${m}m</span>`;
-    }
+  from: {
+    type: Object as PropType<Date>,
+    required: true
+  },
+  until: {
+    type: Object as PropType<Date>,
+    required: true
   }
-};
+});
+
 </script>

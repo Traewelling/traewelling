@@ -15,6 +15,8 @@
 import { trans } from 'laravel-vue-i18n'
 import Chart from 'chart.js/auto'
 
+// todo: show text for all shown companies
+
 export default {
   name: 'ChartCompanies',
   props: {

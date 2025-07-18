@@ -8,9 +8,13 @@ use Illuminate\View\View;
 
 class VueFrontendController
 {
-    public function stationboard(Request $request): View {
+    public function stationBoard(Request $request): View {
         return view('beta.vue-stationboard', [
             'station' => Station::find((int) $request->stationId)
         ]);
+    }
+
+    public function statsDashboard(): View {
+        return view('stats.stats');
     }
 }
