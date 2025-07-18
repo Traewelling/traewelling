@@ -98,7 +98,7 @@ class IcsExportService extends Controller
                     'count'   => count($stats),
                     'ttl'     => $ttl,
                 ]);
-                Cache::put($cacheKey, $stats, now()->addDays(6));
+                Cache::put($cacheKey, $stats, now()->addDays(30));
                 Cache::put($ttlKey, $ttl);
             })->afterResponse();
         }
