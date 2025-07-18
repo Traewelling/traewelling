@@ -30,6 +30,9 @@ class CacheKey
     private const string HAFAS_STATIONS_FUZZY = '_HafasStationsFuzzy';
     private const string HAFAS_CACHE_HIT      = '_HafasCacheHit_%s';
     private const string HAFAS_CACHE_SET      = '_HafasCacheSet_%s';
+    private const string ICS_USER_MONTHLY     = 'IcsUserMonthly_%s_%s';
+    private const string ICS_USER_CALCULATING = 'IcsUserMonthlyCalculating_%s_%s';
+
 
     // formatting keys
     private const string FOR                  = '%s-for-%s';
@@ -99,6 +102,18 @@ class CacheKey
 
     public static function getAccountDeletionNotificationTwoWeeksBeforeKey(User $user): string {
         return sprintf("account-deletion-notification-two-weeks-before-%s", $user->id);
+    }
+
+    public static function getIcsUserMonthlyKey(User $user, Carbon $date): string {
+        return sprintf(self::ICS_USER_MONTHLY, $user->id, $date->format('Y-m'));
+    }
+
+    public static function getIcsUserMonthlyTtlKey(User $user, Carbon $date): string {
+        return sprintf(self::ICS_USER_MONTHLY, $user->id, $date->format('Y-m') . '-ttl');
+    }
+
+    public static function getIcsUserMonthlyCalculatingKey(User $user, Carbon $date): string {
+        return sprintf(self::ICS_USER_CALCULATING, $user->id, $date);
     }
 
     public static function increment(string $key): void {

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Backend\IcsController as BackendIcsController;
+use App\Http\Controllers\Backend\IcsTokenController;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\IcsExportService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
@@ -27,27 +28,25 @@ class IcsController extends Controller
         $user = User::where('id', $validated['user_id'])->firstOrFail();
 
         try {
-            $calendar = BackendIcsController::generateIcsCalendar(
-                user:        $user,
-                token:       $validated['token'],
-                limit:       $validated['limit'] ?? 1000,
-                from:        isset($validated['from']) ? Carbon::parse($validated['from']) : null,
-                until:       isset($validated['until']) ? Carbon::parse($validated['until']) : null,
-                useEmojis:   $validated['emojis'] ?? true,
-                useRealTime: $validated['realtime'] ?? false,
+            $service  = new IcsExportService($user, $validated['emojis'] ?? true, $validated['realtime'] ?? true);
+            $calendar = $service->generateIcsCalendar(
+                token: $validated['token'],
+                limit: $validated['limit'] ?? 1000,
+                from:  isset($validated['from']) ? Carbon::parse($validated['from']) : null,
+                until: isset($validated['until']) ? Carbon::parse($validated['until']) : null,
             );
             return response($calendar->get())
                 ->header('Content-Type', 'text/calendar')
                 ->header('charset', 'utf-8');
         } catch (ModelNotFoundException) {
-            abort(404);
+            abort(403);
         }
     }
 
     public function createIcsToken(Request $request): RedirectResponse {
         $validated = $request->validate(['name' => ['required', 'max:255']]);
 
-        $icsToken = BackendIcsController::createIcsToken(user: auth()->user(), name: $validated['name']);
+        $icsToken = IcsTokenController::createIcsToken(user: auth()->user(), name: $validated['name']);
 
         return redirect()->route('settings.ics')
                          ->with('ics-success', strtr(__('settings.create-ics-token-success'), [
@@ -67,7 +66,7 @@ class IcsController extends Controller
         $validated = $request->validate(['id' => ['required', 'exists:ics_tokens,id']]);
 
         try {
-            BackendIcsController::revokeIcsToken(user: auth()->user(), tokenId: $validated['id']);
+            IcsTokenController::revokeIcsToken(user: auth()->user(), tokenId: $validated['id']);
             return back()->with('success', __('settings.revoke-ics-token-success'));
         } catch (ModelNotFoundException) {
             return back()->with('error', __('messages.exception.general'));
