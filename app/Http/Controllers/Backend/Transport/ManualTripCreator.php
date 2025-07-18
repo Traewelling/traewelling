@@ -8,7 +8,7 @@ use App\Enum\HafasTravelType;
 use App\Enum\TripSource;
 use App\Exceptions\ManualTripValidationException;
 use App\Http\Controllers\Controller;
-use App\Models\HafasOperator;
+use App\Models\Operator;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\Trip;
@@ -23,7 +23,7 @@ class ManualTripCreator extends Controller
     private HafasTravelType $category;
     private string          $lineName;
     private ?int            $journeyNumber;
-    private ?HafasOperator  $operator  = null;
+    private ?Operator       $operator  = null;
     private Station         $origin;
     private Carbon          $originDeparturePlanned;
     private ?Carbon         $originDepartureReal;
@@ -104,7 +104,7 @@ class ManualTripCreator extends Controller
         return $this;
     }
 
-    public function setOperator(?HafasOperator $operator): ManualTripCreator {
+    public function setOperator(?Operator $operator): ManualTripCreator {
         $this->operator = $operator;
         return $this;
     }

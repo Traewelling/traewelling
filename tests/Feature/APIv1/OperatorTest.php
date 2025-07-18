@@ -2,8 +2,7 @@
 
 namespace Tests\Feature\APIv1;
 
-use App\Models\HafasOperator;
-use App\Models\Station;
+use App\Models\Operator;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
@@ -17,7 +16,7 @@ class OperatorTest extends ApiTestCase
     public function testOperatorsIndex(): void {
         Passport::actingAs(User::factory()->create(), ['*']);
 
-        HafasOperator::factory()->count(3)->create();
+        Operator::factory()->count(3)->create();
 
         $response = $this->get('/api/v1/operators');
         $response->assertOk();
@@ -48,8 +47,8 @@ class OperatorTest extends ApiTestCase
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
 
-        $oldOperator = HafasOperator::factory()->create();
-        $newOperator = HafasOperator::factory()->create();
+        $oldOperator = Operator::factory()->create();
+        $newOperator = Operator::factory()->create();
 
         $response = $this->put('/api/v1/operators/' . $oldOperator->id . '/merge/' . $newOperator->id);
         $response->assertForbidden();
@@ -63,8 +62,8 @@ class OperatorTest extends ApiTestCase
         $user->assignRole('admin');
         Passport::actingAs($user, ['*']);
 
-        $oldOperator = HafasOperator::factory()->create();
-        $newOperator = HafasOperator::factory()->create();
+        $oldOperator = Operator::factory()->create();
+        $newOperator = Operator::factory()->create();
 
         $response = $this->put('/api/v1/operators/' . $oldOperator->id . '/merge/' . $newOperator->id);
         $response->assertNoContent();
@@ -74,7 +73,7 @@ class OperatorTest extends ApiTestCase
     }
 
     public function testUserCantAccessOperatorsListBackend(): void {
-        $user = User::factory()->create();
+        $user     = User::factory()->create();
         $response = $this->actingAs($user)->get('/admin/operators');
         $response->assertForbidden();
     }

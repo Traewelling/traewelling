@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-class HafasOperatorFactory extends Factory
+class OperatorFactory extends Factory
 {
     public function definition(): array {
         $companyName = $this->faker->company;

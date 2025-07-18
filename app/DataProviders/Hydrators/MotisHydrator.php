@@ -12,7 +12,7 @@ use App\Dto\Internal\FilteredDepartures;
 use App\Enum\DataProvider;
 use App\Enum\MotisCategory;
 use App\Hydrators\DepartureHydrator;
-use App\Models\HafasOperator;
+use App\Models\Operator;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\Trip;
@@ -178,7 +178,7 @@ class MotisHydrator
         ];
     }
 
-    private function parseOperator(array $leg): ?HafasOperator {
+    private function parseOperator(array $leg): ?Operator {
         return $this->operatorService->parseTransitousOperator(
             agencyId:   $leg['agencyId'] ?? null,
             agencyName: $leg['agencyName'] ?? null,

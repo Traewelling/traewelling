@@ -57,7 +57,7 @@ class Trip extends Model
     }
 
     public function operator(): BelongsTo {
-        return $this->belongsTo(HafasOperator::class, 'operator_id', 'id');
+        return $this->belongsTo(Operator::class, 'operator_id', 'id');
     }
 
     public function stopovers(): HasMany {

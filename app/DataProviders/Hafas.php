@@ -12,7 +12,7 @@ use App\Helpers\CacheKey;
 use App\Helpers\HCK;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\TransportController;
-use App\Models\HafasOperator;
+use App\Models\Operator;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\Trip;
@@ -315,11 +315,11 @@ class Hafas extends Controller implements DataProviderInterface
         $operator    = null;
 
         if (isset($tripJson->line->operator->id)) {
-            $operator = HafasOperator::updateOrCreate([
-                                                          'hafas_id' => $tripJson->line->operator->id,
-                                                      ], [
-                                                          'name' => $tripJson->line->operator->name,
-                                                      ]);
+            $operator = Operator::updateOrCreate([
+                                                     'hafas_id' => $tripJson->line->operator->id,
+                                                 ], [
+                                                     'name' => $tripJson->line->operator->name,
+                                                 ]);
         }
 
         if ($tripJson->line->name === null) {

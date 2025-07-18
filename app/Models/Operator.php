@@ -6,13 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * @todo rename table only to "Operator" (or "TransportOperator", ..., but not HAFAS)
- */
-class HafasOperator extends Model
+class Operator extends Model
 {
     use HasFactory;
 
+    protected $table    = 'hafas_operators'; // todo: rename table & foreign keys in database
     protected $fillable = ['wikidata_id', 'name', 'hafas_id', 'motis_id', 'motis_source'];
     protected $casts    = [
         'id'           => 'integer',

@@ -2,9 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\HafasOperator;
+use App\Models\Operator;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class OperatorPolicy
 {
@@ -13,11 +12,11 @@ class OperatorPolicy
         return $user->hasRole('admin');
     }
 
-    public function update(User $user, HafasOperator $hafasOperator): bool {
+    public function update(User $user, Operator $operator): bool {
         return $user->hasRole('admin');
     }
 
-    public function delete(User $user, HafasOperator $hafasOperator): bool {
+    public function delete(User $user, Operator $operator): bool {
         return $user->hasRole('admin');
     }
 }

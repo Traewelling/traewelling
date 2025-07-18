@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\HafasOperator;
+use App\Models\Operator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -18,9 +18,9 @@ class OperatorService
      * @param string|null $agencyId
      * @param string|null $agencyName
      *
-     * @return HafasOperator|null
+     * @return Operator|null
      */
-    public function parseTransitousOperator(?string $agencyId, ?string $agencyName): ?HafasOperator {
+    public function parseTransitousOperator(?string $agencyId, ?string $agencyName): ?Operator {
         if (is_null($agencyId) || is_null($agencyName)) {
             Log::debug('Agency ID or name is null', [
                 'agencyId'   => $agencyId,
@@ -59,7 +59,7 @@ class OperatorService
                 $officialNames = $this->loadOperatorOfficialNames();
                 $name          = $officialNames[$wikidataId] ?? ($foundMapping['motis_name'] ?? $agencyName);
 
-                return HafasOperator::updateOrCreate(
+                return Operator::updateOrCreate(
                     ['wikidata_id' => $wikidataId],
                     ['name' => $name]
                 );
@@ -67,7 +67,7 @@ class OperatorService
 
             // Fallback: If no mapping is found, use the agencyId.
             Log::debug('Fallback: Using agencyId for updateOrCreate', ['motis_id' => $agencyId]);
-            return HafasOperator::updateOrCreate(
+            return Operator::updateOrCreate(
                 ['motis_id' => $agencyId],
                 ['name' => $agencyName]
             );
@@ -217,14 +217,14 @@ class OperatorService
     private function refreshOperators(): void {
         $operators = $this->loadOperatorOfficialNames();
         foreach ($operators as $wikidataId => $name) {
-            HafasOperator::updateOrCreate(
+            Operator::updateOrCreate(
                 ['wikidata_id' => $wikidataId],
                 ['name' => $name]
             );
         }
     }
 
-    public function mergeOperators(HafasOperator $oldOperator, HafasOperator $newOperator): void {
+    public function mergeOperators(Operator $oldOperator, Operator $newOperator): void {
         DB::transaction(function() use ($oldOperator, $newOperator) {
             // Update all trips to point to the new operator
             $oldOperator->trips()->update(['operator_id' => $newOperator->id]);
