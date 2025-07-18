@@ -434,7 +434,7 @@
   "stationboard.events-propose": "You can propose an event here:",
   "stationboard.removed-departures": ":count departures have been removed due to licensing issues.",
   "stationboard.removed-departures.detail": "These departures have been removed because either the license has not yet been activated by us or it does not allow us to process the data here.",
-  "stationboard.removed-departures.detail2": "The remote departures are located at the following licenses:",
+  "stationboard.removed-departures.detail2": "The remote departures are located at the following licenses/data sources:",
   "stationboard.removed-departures.detail3": "If you would like to find out more about the licenses, please click here:",
   "status.ogp-title": ":name's journey with Träwelling",
   "status.join": "Ride along",

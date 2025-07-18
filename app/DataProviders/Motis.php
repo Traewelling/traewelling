@@ -183,7 +183,7 @@ class Motis extends Controller implements DataProviderInterface
                 continue;
             }
 
-            if ($filtered->departures->count() === 0) {
+            if ($filtered->departures->count() === 0 && $filtered->removedEntries->count() === 0) {
                 $identifier->decrement('relevance');
                 $identifier->save();
                 continue;

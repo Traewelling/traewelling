@@ -453,7 +453,7 @@
   "stationboard.events-propose": "Du kannst uns Veranstaltungen unter hier vorschlagen:",
   "stationboard.removed-departures": "Es wurden :count Abfahrten auf Grund von Lizenzproblemen entfernt.",
   "stationboard.removed-departures.detail": "Diese Abfahrten wurden entfernt, da die Lizenz entweder noch nicht von uns aktiviert wurde, oder sie uns nicht erlaubt, die Daten hier weiterzuverarbeiten.",
-  "stationboard.removed-departures.detail2": "Die entfernten Abfahrten liegen an folgenden Lizenzen:",
+  "stationboard.removed-departures.detail2": "Die entfernten Abfahrten liegen an folgenden Lizenzen/Datenquellen:",
   "stationboard.removed-departures.detail3": "Wenn du mehr über die Lizenzen erfahren möchtest, schau bitte hier nach:",
   "ril100": "Ril 100 Kürzel",
   "or-alternative": "oder",
