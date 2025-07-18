@@ -88,9 +88,9 @@ class IcsExportService extends Controller
             dispatch(function() use ($cacheKey, $ttlKey, $date, $limit) {
                 $stats = $this->getCheckinsForMonth($date, $limit);
 
-                // ttl for this month and every future month should be 1 hour
-                $ttl = $date->isBefore(now()->startOfMonth()) ?
-                    now()->addDays(rand(3, 6))->format('u') : now()->addHours(1)->format('u');
+                // ttl for this month and every future month should be 15 minutes
+                // ttl for past months should be 3-6 days (randomizing to avoid cache stampedes)
+                $ttl = $date->isBefore(now()->startOfMonth()) ? now()->addDays(rand(3, 6)) : now()->addMinutes(15);
 
                 Log::debug('Caching checkins for month', [
                     'user_id' => $this->user->id,
@@ -98,7 +98,7 @@ class IcsExportService extends Controller
                     'count'   => count($stats),
                     'ttl'     => $ttl,
                 ]);
-                Cache::put($cacheKey, $stats, now()->addDays(6));
+                Cache::put($cacheKey, $stats, now()->addDays(30));
                 Cache::put($ttlKey, $ttl);
             })->afterResponse();
         }
