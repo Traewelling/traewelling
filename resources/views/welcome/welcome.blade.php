@@ -1,4 +1,7 @@
-@php use App\Http\Controllers\Backend\VersionController; @endphp
+@php
+    use App\Dto\Internal\GlobalCheckinStats;use App\Http\Controllers\Backend\VersionController;
+/** @var GlobalCheckinStats $stats */
+@endphp
     <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -112,7 +115,7 @@
                                             </svg>
                                         </div>
                                         <div class="stat-value text-primary-focus">
-                                            {{ $stats->user_count }}
+                                            {{ $stats->userCount }}
                                         </div>
                                         <div class="stat-desc">{{ __('welcome.stats.registered') }}</div>
                                     </div>

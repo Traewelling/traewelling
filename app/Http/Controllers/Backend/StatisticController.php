@@ -41,7 +41,7 @@ abstract class StatisticController extends Controller
                   ->where('train_checkins.departure', '<=', $until->toIso8601String());
         }
         $query->selectRaw('SUM(train_checkins.distance) AS distance');
-        $query->selectRaw('COUNT(DISTINCT train_checkins.user_id) AS user_count');
+        $query->selectRaw('COUNT(DISTINCT train_checkins.user_id) AS userCount');
 
         if (DB::getDriverName() === 'sqlite') {
             $query->selectRaw('1337 AS duration');
@@ -54,7 +54,7 @@ abstract class StatisticController extends Controller
         return new GlobalCheckinStats(
             $result->distance ?? 0,
             $result->duration ?? 0,
-            $result->user_count ?? 0
+            $result->userCount ?? 0
         );
     }
 

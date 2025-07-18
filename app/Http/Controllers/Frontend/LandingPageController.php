@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Dto\Internal\GlobalCheckinStats;
 use App\Http\Controllers\Backend\StatisticController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
-use stdClass;
 
 class LandingPageController
 {
@@ -15,7 +15,7 @@ class LandingPageController
     private const string CACHE_KEY_STATS_TTL         = 'welcome.stats.revalidate';
     private const string CACHE_KEY_STATS_CALCULATING = 'welcome.stats.calculating';
 
-    private function getStats(): stdClass {
+    private function getStats(): GlobalCheckinStats {
         $stats       = Cache::get(self::CACHE_KEY_STATS);
         $ttl         = Cache::get(self::CACHE_KEY_STATS_TTL, 0);
         $calculating = Cache::get(self::CACHE_KEY_STATS_CALCULATING, false);
@@ -37,14 +37,7 @@ class LandingPageController
         }
 
         // Fallback: Show bogus values if really nothing is set
-        if ($stats === null) {
-            $stats             = new stdClass();
-            $stats->distance   = 0;
-            $stats->duration   = 0;
-            $stats->user_count = 0;
-        }
-
-        return $stats;
+        return $stats ?? new GlobalCheckinStats(0, 0, 0);
     }
 
     public function renderLandingPage(): View|RedirectResponse {
