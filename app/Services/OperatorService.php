@@ -282,6 +282,19 @@ class OperatorService
                         'name'       => $name,
                     ]);
 
+                    $lookupWikidataId = Operator::where('wikidata_id', $wikidataId)->first();
+
+                    if ($lookupWikidataId) {
+                        Log::warning('Wikidata ID already exists in database', [
+                            'wikidataId'      => $wikidataId,
+                            'operatorId'      => $lookupWikidataId->id,
+                            'motisAgencyId'   => $motisAgencyId,
+                            'motisAgencyName' => $motisAgencyName,
+                        ]);
+
+                        return $lookupWikidataId;
+                    }
+
                     // Update the existing operator with the new wikidata_id and name.
                     return $dbOperator->update([
                                                    'wikidata_id' => $wikidataId,
