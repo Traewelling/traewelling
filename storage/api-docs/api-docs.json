@@ -5325,7 +5325,8 @@
                     },
                     "identifier": {
                         "type": "string",
-                        "example": "db-regio-ag-nord"
+                        "example": "db-regio-ag-nord",
+                        "nullable": true
                     },
                     "name": {
                         "type": "string",
@@ -5755,10 +5756,20 @@
                         "$ref": "#/components/schemas/StopoverResource"
                     },
                     "operator": {
-                        "$ref": "#/components/schemas/OperatorResource"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/OperatorResource"
+                            }
+                        ],
+                        "nullable": true
                     },
                     "dataSource": {
-                        "$ref": "#/components/schemas/DataSourceResource"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/DataSourceResource"
+                            }
+                        ],
+                        "nullable": true
                     }
                 },
                 "type": "object"

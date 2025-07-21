@@ -493,7 +493,7 @@ export interface OperatorResource {
   /** @example 1 */
   id: number;
   /** @example "db-regio-ag-nord" */
-  identifier: string;
+  identifier: string | null;
   /** @example "DB Regio AG Nord" */
   name: string;
 }
@@ -749,8 +749,8 @@ export interface TransportResource {
   manualArrival: string | null;
   origin: StopoverResource;
   destination: StopoverResource;
-  operator: OperatorResource;
-  dataSource: DataSourceResource;
+  operator: OperatorResource | null;
+  dataSource: DataSourceResource | null;
 }
 
 /** TripResource */
