@@ -11,7 +11,7 @@ use OpenApi\Annotations as OA;
  *     schema="OperatorResource",
  *     required={"id", "identifier", "name"},
  *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="identifier", type="string", example="db-regio-ag-nord"),
+ *     @OA\Property(property="identifier", type="string", example="db-regio-ag-nord", nullable=true),
  *     @OA\Property(property="name", type="string", example="DB Regio AG Nord")
  * )
  */
