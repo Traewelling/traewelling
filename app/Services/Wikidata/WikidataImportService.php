@@ -13,7 +13,7 @@ class WikidataImportService
 {
 
     // supported types global definieren - todo: support wikidata hierarchie so we don't need to define all types separately
-    private const SUPPORTED_TYPES = [
+    private const array SUPPORTED_TYPES = [
         'Q55490', // Durchgangsbahnhof
         'Q18543139', // Hauptbahnhof
         'Q27996466', // Bahnhof (betrieblich)
@@ -46,6 +46,7 @@ class WikidataImportService
         'Q1478783', // Fährhafen
         'Q4303352', // passenger ship terminal
         'Q55678', // railway stop, Haltepunkt, Haltestelle
+        'Q494829', //bus station
     ];
 
     public static function importStation(string $qId): Station {
@@ -57,7 +58,8 @@ class WikidataImportService
 
         $name = $wikidataEntity->getClaims('P1448')[0]['mainsnak']['datavalue']['value']['text'] //P1448 = official name
                 ?? $wikidataEntity->getLabel('de') //german label
-                   ?? $wikidataEntity->getLabel(); //english label or null if also not available
+                   ?? $wikidataEntity->getLabel('mul') //multilingual label
+                      ?? $wikidataEntity->getLabel(); //english label or null if also not available
 
         if ($name === null) {
             throw new \InvalidArgumentException('No name found for entity ' . $qId);
