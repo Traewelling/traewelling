@@ -457,13 +457,13 @@ class StatusController extends Controller
 
             if (array_key_exists('manualDeparture', $validated)) {
                 $manualDeparture = isset($validated['manualDeparture'])
-                    ? Carbon::parse($validated['manualDeparture'], auth()->user()->timezone)
+                    ? Carbon::parse($validated['manualDeparture'], auth()->user()->timezone)->setSeconds(0)
                     : null;
                 $status->checkin->update(['manual_departure' => $manualDeparture]);
             }
             if (array_key_exists('manualArrival', $validated)) {
                 $manualArrival = isset($validated['manualArrival'])
-                    ? Carbon::parse($validated['manualArrival'], auth()->user()->timezone)
+                    ? Carbon::parse($validated['manualArrival'], auth()->user()->timezone)->setSeconds(0)
                     : null;
                 $status->checkin->update(['manual_arrival' => $manualArrival]);
             }
