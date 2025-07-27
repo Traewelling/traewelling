@@ -111,6 +111,7 @@ function prepareStopoverTime(
 
     if (planned) {
         plannedTime = Dtm.fromISO(planned);
+        plannedTime.dateTime = plannedTime.dateTime.set({second: 0}); // remove seconds for consistency
     }
 
     if (manual) {
@@ -123,9 +124,22 @@ function prepareStopoverTime(
         time = Dtm.fromISO(planned);
     }
 
+    if (!plannedTime && !time) {
+        return {
+            time: plannedTime,
+            originalTime: null,
+            type: StopoverTimeType.Manual // fallback to manual if no time is available
+        };
+    }
+
+    let originalTime = time;
+    if (time && plannedTime) {
+        originalTime = Math.abs(plannedTime.dateTime.toSeconds() - time.dateTime.toSeconds()) > 60 ? plannedTime : null;
+    }
+
     return {
         time: time,
-        originalTime: plannedTime?.toISO() !== time?.toISO() ? plannedTime : null,
+        originalTime: originalTime,
         type: type
     };
 }
@@ -144,13 +158,7 @@ export function timeTypeTooltip(type: StopoverTimeType): string {
 }
 
 export function secondsToDuration(seconds: number): TimeDuration {
-    const duration: TimeDuration = {
-        years: null,
-        days: null,
-        hours: null,
-        minutes: null,
-        seconds: null
-    }
+    const duration: TimeDuration = {};
 
     duration.years = Math.floor(seconds / (365 * 24 * 60 * 60));
     duration.days = Math.floor((seconds % (365 * 24 * 60 * 60)) / (24 * 60 * 60));
