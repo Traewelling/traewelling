@@ -207,6 +207,36 @@ class Motis extends Controller implements DataProviderInterface
         return new FilteredDepartures(collect(), $filtered->removedEntries ?? collect());
     }
 
+    public function fetchStationFromApi(
+        string $identifier,
+    ): Station {
+        $params   = [
+            'stopId' => $identifier,
+            'n'      => 0,
+        ];
+        $response = Http::withUserAgent(VersionController::getUserAgent())
+                        ->get(self::API_URL . '/stoptimes', $params);
+
+        if (!$response->ok()) {
+            CacheKey::increment(HCK::STATION_NOT_OK);
+            Log::error('Unknown MOTIS Error (fetchStationFromApi)', [
+                'status' => $response->status(),
+                'body'   => $response->body()
+            ]);
+            throw new HafasException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
+        }
+
+        $station = $response->json('place');
+
+        if (empty($station)) {
+            Log::debug('No station found for identifier', ['identifier' => $identifier]);
+            throw new HafasException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
+        }
+
+
+        return $this->stationRepository->createMotisStation($station, $this->source);
+    }
+
     private function getDeparturesFromApi(
         Station           $station,
         StationIdentifier $transitousIdentifier,
