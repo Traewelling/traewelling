@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\DataProviders\Motis;
+use App\Enum\DataProvider;
 use App\Http\Controllers\Backend\Transport\StationController as StationBackendController;
+use App\Http\Requests\FindStationRequest;
 use App\Http\Resources\StationResource;
 use App\Models\Checkin;
 use App\Models\Event;
@@ -11,6 +14,7 @@ use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Models\Stopover;
 use App\Models\Trip;
+use App\Repositories\StationRepository;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,6 +22,12 @@ use Illuminate\Support\Facades\DB;
 
 class StationController extends Controller
 {
+    private StationRepository $stationRepository;
+
+    public function __construct(StationRepository $stationRepository) {
+        $this->stationRepository = $stationRepository;
+    }
+
     public function store(Request $request): StationResource {
         $this->authorize('create', Station::class);
 
@@ -214,6 +224,32 @@ class StationController extends Controller
      */
     public function show(int $id): JsonResponse {
         $station = Station::findOrFail($id);
+
+        return $this->sendResponse(new StationResource($station));
+    }
+
+    public function find(FindStationRequest $request): JsonResponse {
+        $validated  = $request->validated();
+        $identifier = $validated['identifier'];
+        $provider   = $validated['identifier_provider'];
+        $station    = null;
+
+        if ($provider === 'ibnr') {
+            $station = $this->stationRepository->getStationByIbnr($identifier);
+        }
+
+        if ($provider === 'transitous') {
+            try {
+                $station = $this->stationRepository->getStationByIdentifier($identifier, $provider)
+                           ?? (new Motis(DataProvider::TRANSITOUS))->fetchStationFromApi($identifier);
+            } catch (\Exception $e) {
+                return $this->sendError('Error fetching station from Transitous: ' . $e->getMessage(), 503);
+            }
+        }
+
+        if (!$station) {
+            abort(404, 'Station not found');
+        }
 
         return $this->sendResponse(new StationResource($station));
     }
