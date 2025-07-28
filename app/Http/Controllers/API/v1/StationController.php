@@ -17,6 +17,7 @@ use App\Repositories\StationRepository;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 
 class StationController extends Controller {
@@ -205,7 +206,7 @@ class StationController extends Controller {
      *       }
      *     )
      */
-    public function index(Request $request): JsonResponse {
+    public function index(Request $request): AnonymousResourceCollection|JsonResponse {
         $validated = $request->validate([
                                             // Query = Fuzzy Search
                                             'query'               => ['required_without:identifier,identifier_provider', 'string', 'max:255'],
@@ -217,7 +218,7 @@ class StationController extends Controller {
 
         if(array_key_exists('query', $validated)) {
             $stations = (new StationBackendController())->search($validated['query']);
-            return $this->sendResponse(StationResource::collection($stations));
+            return StationResource::collection($stations);
         }
 
         $identifier = $validated['identifier'];
@@ -241,7 +242,7 @@ class StationController extends Controller {
             abort(404, 'Station not found');
         }
 
-        return $this->sendResponse(new StationResource($station));
+        return StationResource::collection([new StationResource($station)]);
     }
 
 
