@@ -1528,6 +1528,29 @@
                         "in": "query",
                         "description": "station query",
                         "example": "Karls"
+                    },
+                    {
+                        "name": "identifier_provider",
+                        "in": "query",
+                        "description": "identifier provider",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "ibnr",
+                                "transitous"
+                            ]
+                        },
+                        "example": "ibnr"
+                    },
+                    {
+                        "name": "identifier",
+                        "in": "query",
+                        "description": "station identifier",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 255
+                        },
+                        "example": "1337"
                     }
                 ],
                 "responses": {
