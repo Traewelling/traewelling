@@ -9,9 +9,9 @@ use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Models\PolyLine;
 use App\Models\Trip;
 use Carbon\Carbon;
+use Illuminate\Contracts\Queue\Factory;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
 use romanzipp\QueueMonitor\Enums\MonitorStatus;
 use Spatie\Prometheus\Facades\Prometheus;
@@ -19,6 +19,20 @@ use Spatie\Prometheus\Facades\Prometheus;
 const PROM_JOB_SCRAPER_SEPARATOR = "-PROM-JOB-SCRAPER-SEPARATOR-";
 class PrometheusServiceProvider extends ServiceProvider
 {
+    /**
+     * The queue manager instance.
+     *
+     * @var \Illuminate\Contracts\Queue\Factory
+     */
+    protected $queueFactoryManager;
+
+    /**
+     * @param \Illuminate\Contracts\Queue\Factory $queueFactoryManager
+     */
+    public function boot(Factory $queueFactoryManager): void {
+        $this->queueFactoryManager = $queueFactoryManager;
+    }
+
     public function register(): void {
         $this->registerGlobalStats();
         $this->metaDataStats();
@@ -166,16 +180,17 @@ class PrometheusServiceProvider extends ServiceProvider
     }
 
     public function queueMetrics(): void {
+
         Prometheus::addGauge("queue_size")
                   ->helpText("How many items are currently in the job queue?")
-                  ->labels(["job_name", "queue"])
-                  ->value(function() {
-                      if (config("queue.default") === "database") {
-                          return $this->getJobsByDisplayName("jobs");
-                      }
+                  ->labels(["queue"])
+            ->value(fn() =>
+                collect(["default", "webhook", "export"])->map(function($queue) {
+                    $size = $this->queueFactoryManager->connection(config("queue.default"))->size($queue);
 
-                      return [Queue::size(), ["all", "all"]];
-                  });
+                    return [$size, [$queue]];
+                })->toArray()
+            );
 
         Prometheus::addGauge("failed_jobs_count")
                   ->helpText("How many jobs have failed?")
