@@ -40,7 +40,7 @@
             enable = true;
             ensureUsers = [
               {
-                name = config.env.DB_USERNAME;
+                name = config.env.DB_USERNAME + "@%";
                 password = config.env.DB_PASSWORD;
                 ensurePermissions = {
                   "*.*" = "ALL PRIVILEGES";
