@@ -160,8 +160,8 @@ class LocationController
 
     private function getPolylineWithTimestamps(?string $polyLine = null): stdClass {
         $geoJsonObj = $this->emptyGeoJson();
-        $polyLine   = $polyLine ?? $this->trip->polyline->polyline;
-
+        $polyLine   = $polyLine ?? $this->trip->polyline?->polyline;
+        
         $cacheName      = sprintf('trip_%s_polyline_%s', $this->trip->id, sha1($polyLine));
         $cachedPolyline = Cache::get($cacheName);
         if (!empty($cachedPolyline)) {
@@ -205,10 +205,10 @@ class LocationController
 
             $mapLines = [];
             foreach ($geoJson->features as $feature) {
-                foreach ($feature->geometry->coordinates as $coordinate) {
+                if (!empty($feature->geometry->coordinates[0]) && !empty($feature->geometry->coordinates[1])) {
                     $mapLines[] = [
-                        $coordinate[$invert ? 1 : 0],
-                        $coordinate[$invert ? 0 : 1]
+                        $feature->geometry->coordinates[$invert ? 1 : 0],
+                        $feature->geometry->coordinates[$invert ? 0 : 1]
                     ];
                 }
             }
