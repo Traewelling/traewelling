@@ -165,8 +165,7 @@ class LocationController
         $cacheName      = sprintf('trip_%s_polyline_%s', $this->trip->id, sha1($polyLine));
         $cachedPolyline = Cache::get($cacheName);
         if (!empty($cachedPolyline)) {
-            // TODO: enable this again
-            // return $cachedPolyline;
+            return $cachedPolyline;
         }
 
         if (!empty($polyLine)) {
