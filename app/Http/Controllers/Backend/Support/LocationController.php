@@ -92,7 +92,7 @@ class LocationController
         try {
             $now               = Carbon::now()->timestamp;
             $percentage        = ($now - $newStopovers[0]->departure->timestamp)
-                / ($newStopovers[1]->arrival->timestamp - $newStopovers[0]->departure->timestamp);
+                                 / ($newStopovers[1]->arrival->timestamp - $newStopovers[0]->departure->timestamp);
             $this->origin      = $newStopovers[0];
             $this->destination = $newStopovers[1];
             $polyline          = $this->getPolylineBetween(false);
@@ -387,13 +387,13 @@ class LocationController
         foreach ($geoJsonObj->features as $polylineFeature) {
             if (isset($polylineFeature->properties->id)) {
                 $stopover = $stopovers->where('station.ibnr', $polylineFeature->properties->id)
-                    ->where('passed', false)
-                    ->first();
+                                      ->where('passed', false)
+                                      ->first();
             }
             if (isset($polylineFeature->properties->stationId)) {
                 $stopover = $stopovers->where('station.id', $polylineFeature->properties->stationId)
-                    ->where('passed', false)
-                    ->first();
+                                      ->where('passed', false)
+                                      ->first();
             }
 
 

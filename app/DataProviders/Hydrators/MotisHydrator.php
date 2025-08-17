@@ -60,8 +60,8 @@ class MotisHydrator
         foreach ($rawStopovers as $rawStop) {
             $station = $stopoverCacheFromDB->where('stationIdentifiers', function($query) use ($rawStop, $source) {
                 $query->where('identifier', $rawStop['stopId'])
-                    ->where('type', 'motis')
-                    ->where('origin', $source->value);
+                      ->where('type', 'motis')
+                      ->where('origin', $source->value);
             })->first();
 
             $stopover = new Stopover($this->getStopoverData($station, $rawStop, $source, $realTime));
@@ -84,8 +84,8 @@ class MotisHydrator
         foreach ($rawStopovers as $rawStop) {
             $station                 = $stopoverCacheFromDB->where('stationIdentifiers', function($query) use ($rawStop, $source) {
                 $query->where('identifier', $rawStop['stopId'])
-                    ->where('type', 'motis')
-                    ->where('origin', $source->value);
+                      ->where('type', 'motis')
+                      ->where('origin', $source->value);
             })->first();
             $stopoverData            = $this->getStopoverData($station, $rawStop, $source, $realTime);
             $stopoverData['trip_id'] = $trip->trip_id;
@@ -179,11 +179,11 @@ class MotisHydrator
 
     public function getTripData(mixed $leg, string $lineName, DataProvider $source): array {
         $originStation      = $this->stationRepository->getStationsByIdentifiers($leg['from']['stopId'], $source)->first()
-            ?? $this->stationRepository->updateOrCreateByIfopt($leg['from']['stopId'], $source)
-            ?? $this->stationRepository->createMotisStation($leg['from'], $source);
+                              ?? $this->stationRepository->updateOrCreateByIfopt($leg['from']['stopId'], $source)
+                                 ?? $this->stationRepository->createMotisStation($leg['from'], $source);
         $destinationStation = $this->stationRepository->getStationsByIdentifiers($leg['to']['stopId'], $source)->first()
-            ?? $this->stationRepository->updateOrCreateByIfopt($leg['to']['stopId'], $source)
-            ?? $this->stationRepository->createMotisStation($leg['to'], $source);
+                              ?? $this->stationRepository->updateOrCreateByIfopt($leg['to']['stopId'], $source)
+                                 ?? $this->stationRepository->createMotisStation($leg['to'], $source);
         $departure          = isset($leg['from']['departure']) ? Carbon::parse($leg['from']['departure']) : null;
         $arrival            = isset($leg['to']['arrival']) ? Carbon::parse($leg['to']['arrival']) : null;
         $category           = $this->getCategoryFromLeg($leg);
@@ -278,7 +278,7 @@ class MotisHydrator
                                       category:      $hafasTravelType,
                                       journeyNumber: $tripId,
                                       operator:      $this->parseOperator($rawDeparture, $source),
-                                    ),
+                                  ),
                 plannedPlatform:  $platformPlanned,
                 realPlatform:     $platformReal,
             );
