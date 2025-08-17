@@ -92,7 +92,7 @@ class LocationController
         try {
             $now               = Carbon::now()->timestamp;
             $percentage        = ($now - $newStopovers[0]->departure->timestamp)
-                                 / ($newStopovers[1]->arrival->timestamp - $newStopovers[0]->departure->timestamp);
+                / ($newStopovers[1]->arrival->timestamp - $newStopovers[0]->departure->timestamp);
             $this->origin      = $newStopovers[0];
             $this->destination = $newStopovers[1];
             $polyline          = $this->getPolylineBetween(false);
@@ -160,12 +160,13 @@ class LocationController
 
     private function getPolylineWithTimestamps(?string $polyLine = null): stdClass {
         $geoJsonObj = $this->emptyGeoJson();
-        $polyLine   = $polyLine ?? $this->trip->polyline;
+        $polyLine   = $polyLine ?? $this->trip->polyline->polyline;
 
         $cacheName      = sprintf('trip_%s_polyline_%s', $this->trip->id, sha1($polyLine));
         $cachedPolyline = Cache::get($cacheName);
         if (!empty($cachedPolyline)) {
-            return $cachedPolyline;
+            // TODO: enable this again
+            // return $cachedPolyline;
         }
 
         if (!empty($polyLine)) {
@@ -205,10 +206,10 @@ class LocationController
 
             $mapLines = [];
             foreach ($geoJson->features as $feature) {
-                if (!empty($feature->geometry->coordinates[0]) && !empty($feature->geometry->coordinates[1])) {
+                foreach ($feature->geometry->coordinates as $coordinate) {
                     $mapLines[] = [
-                        $feature->geometry->coordinates[$invert ? 1 : 0],
-                        $feature->geometry->coordinates[$invert ? 0 : 1]
+                        $coordinate[$invert ? 1 : 0],
+                        $coordinate[$invert ? 0 : 1]
                     ];
                 }
             }
@@ -387,13 +388,13 @@ class LocationController
         foreach ($geoJsonObj->features as $polylineFeature) {
             if (isset($polylineFeature->properties->id)) {
                 $stopover = $stopovers->where('station.ibnr', $polylineFeature->properties->id)
-                                      ->where('passed', false)
-                                      ->first();
+                    ->where('passed', false)
+                    ->first();
             }
             if (isset($polylineFeature->properties->stationId)) {
                 $stopover = $stopovers->where('station.id', $polylineFeature->properties->stationId)
-                                      ->where('passed', false)
-                                      ->first();
+                    ->where('passed', false)
+                    ->first();
             }
 
 

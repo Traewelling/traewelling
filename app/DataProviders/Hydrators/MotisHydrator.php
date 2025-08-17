@@ -11,8 +11,10 @@ use App\Dto\Internal\Departure;
 use App\Dto\Internal\FilteredDepartures;
 use App\Enum\DataProvider;
 use App\Enum\MotisCategory;
+use App\Http\Controllers\TransportController;
 use App\Hydrators\DepartureHydrator;
 use App\Models\Operator;
+use App\Models\PolyLine;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\Trip;
@@ -22,6 +24,8 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use stdClass;
+use Traewelling\GooglePolyline\PolylineTranscoder;
 
 class MotisHydrator
 {
@@ -56,8 +60,8 @@ class MotisHydrator
         foreach ($rawStopovers as $rawStop) {
             $station = $stopoverCacheFromDB->where('stationIdentifiers', function($query) use ($rawStop, $source) {
                 $query->where('identifier', $rawStop['stopId'])
-                      ->where('type', 'motis')
-                      ->where('origin', $source->value);
+                    ->where('type', 'motis')
+                    ->where('origin', $source->value);
             })->first();
 
             $stopover = new Stopover($this->getStopoverData($station, $rawStop, $source, $realTime));
@@ -80,8 +84,8 @@ class MotisHydrator
         foreach ($rawStopovers as $rawStop) {
             $station                 = $stopoverCacheFromDB->where('stationIdentifiers', function($query) use ($rawStop, $source) {
                 $query->where('identifier', $rawStop['stopId'])
-                      ->where('type', 'motis')
-                      ->where('origin', $source->value);
+                    ->where('type', 'motis')
+                    ->where('origin', $source->value);
             })->first();
             $stopoverData            = $this->getStopoverData($station, $rawStop, $source, $realTime);
             $stopoverData['trip_id'] = $trip->trip_id;
@@ -147,19 +151,46 @@ class MotisHydrator
         return $motisCategory->getHTT()->value;
     }
 
+    private function getPolylineFromLeg(mixed $leg): PolyLine {
+        $polylineModel = null;
+
+        if (!empty($leg['legGeometry']['points']) && !empty($leg['legGeometry']['precision'])) {
+            $precision = $leg['legGeometry']['precision'];
+            $transcoder = new PolylineTranscoder();
+            $coordinates = $transcoder->decodePolyline($leg['legGeometry']['points'], $precision);
+
+            $geoJson = [
+                'type' => 'FeatureCollection',
+                'features' => [[
+                    'type' => 'Feature',
+                    'geometry' => [
+                        'type' => 'LineString',
+                        'coordinates' => array_map(fn($loc) => [$loc->getLongitude(), $loc->getLatitude()], $coordinates),
+                    ],
+                    'properties' => new stdClass(),
+                ]],
+            ];
+
+            $polylineModel = TransportController::getPolylineHash(json_encode($geoJson));
+        }
+
+        return $polylineModel;
+    }
+
     public function getTripData(mixed $leg, string $lineName, DataProvider $source): array {
         $originStation      = $this->stationRepository->getStationsByIdentifiers($leg['from']['stopId'], $source)->first()
-                              ?? $this->stationRepository->updateOrCreateByIfopt($leg['from']['stopId'], $source)
-                                 ?? $this->stationRepository->createMotisStation($leg['from'], $source);
+            ?? $this->stationRepository->updateOrCreateByIfopt($leg['from']['stopId'], $source)
+            ?? $this->stationRepository->createMotisStation($leg['from'], $source);
         $destinationStation = $this->stationRepository->getStationsByIdentifiers($leg['to']['stopId'], $source)->first()
-                              ?? $this->stationRepository->updateOrCreateByIfopt($leg['to']['stopId'], $source)
-                                 ?? $this->stationRepository->createMotisStation($leg['to'], $source);
+            ?? $this->stationRepository->updateOrCreateByIfopt($leg['to']['stopId'], $source)
+            ?? $this->stationRepository->createMotisStation($leg['to'], $source);
         $departure          = isset($leg['from']['departure']) ? Carbon::parse($leg['from']['departure']) : null;
         $arrival            = isset($leg['to']['arrival']) ? Carbon::parse($leg['to']['arrival']) : null;
         $category           = $this->getCategoryFromLeg($leg);
         $tripLineName       = !empty($leg['routeShortName']) ? $leg['routeShortName'] : $lineName;
         $license            = $this->motisRepository->getActiveLicense($leg['source'], $source);
         $operator           = $this->parseOperator($leg, $source);
+        $polyline           = $this->getPolylineFromLeg($leg);
 
         return [
             'category'                => $category,
@@ -169,7 +200,7 @@ class MotisHydrator
             'operator_id'             => $operator?->id,
             'origin_id'               => $originStation->id,
             'destination_id'          => $destinationStation->id,
-            'polyline_id'             => null, //TODO
+            'polyline_id'             => $polyline?->id,
             'departure'               => $departure,
             'arrival'                 => $arrival,
             'source'                  => $source->value,
@@ -247,7 +278,7 @@ class MotisHydrator
                                       category:      $hafasTravelType,
                                       journeyNumber: $tripId,
                                       operator:      $this->parseOperator($rawDeparture, $source),
-                                  ),
+                                    ),
                 plannedPlatform:  $platformPlanned,
                 realPlatform:     $platformReal,
             );
