@@ -20,6 +20,10 @@ class StatusObserver
 
     public function updated(Status $status): void {
         MentionHelper::createMentions($status);
+        WebhookController::sendStatusWebhook(
+            status: $status,
+            event:  WebhookEvent::CHECKIN_UPDATE
+        );
     }
 
     public function deleted(Status $status): void {
