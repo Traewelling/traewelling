@@ -55,7 +55,7 @@ function updateData() {
   loading.value = true;
   // Logic to update data goes here
   if (updateStatus.value) {
-    updateStatus.value.destinationArrivalPlanned = stopovers.value.find(stopover => stopover.id === updateStatus.value!.destinationId)?.arrival || null;
+    updateStatus.value.destinationArrivalPlanned = stopovers.value.find(stopover => stopover.id === updateStatus.value!.destinationId)?.arrivalPlanned || null;
     console.log(manualDeparture.value);
     console.log(manualArrival.value);
     updateStatus.value.manualDeparture = manualDeparture.value ? manualDeparture.value.toISOString() : null;
