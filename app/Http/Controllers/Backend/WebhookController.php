@@ -13,10 +13,11 @@ use App\Models\Webhook;
 use App\Models\WebhookCreationRequest;
 use App\Models\WebhookEvent;
 use Carbon\Carbon;
-use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Spatie\WebhookServer\WebhookCall;
 
@@ -93,7 +94,7 @@ abstract class WebhookController extends Controller
                                      ])
                        ->payload([
                                      'event' => $event->value,
-                                     ...$data
+                                     ...self::freezeJsonObjects($data)
                                  ])
                        ->useSecret($webhook->secret)
                        ->dispatch();
@@ -124,5 +125,37 @@ abstract class WebhookController extends Controller
         string $oauthCode
     ): WebhookCreationRequest|null {
         return WebhookCreationRequest::where('id', hash('sha256', $oauthCode))->first();
+    }
+
+    /**
+     * Calls custom serializers of all objects in this array, to avoid dynamic values to change
+     * when serializing again.
+     *
+     * @param array $data the object to freeze
+     *
+     * @return array|null the new object
+     * @throws BindingResolutionException if not called from a request
+     */
+    private static function freezeJsonObjects(?array $data): ?array {
+        return array_map(function($value) {
+            $request = Container::getInstance()->make('request');
+
+            if (is_null($value)) {
+                return null;
+            } elseif (is_array($value)) {
+                return self::freezeJsonObjects($value);
+            } elseif ($value instanceof JsonResource) {
+                if (is_null($value->resource)) {
+                    return null;
+                }
+                $result = $value->toArray($request);
+                if (is_null($result)) {
+                    return null;
+                }
+
+                return self::freezeJsonObjects($result);
+            }
+            return $value;
+        }, $data);
     }
 }
