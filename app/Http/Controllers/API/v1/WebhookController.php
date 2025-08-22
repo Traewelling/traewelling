@@ -40,7 +40,7 @@ class WebhookController extends Controller
 
         $query = Webhook::where('user_id', auth()->id());
         if ($currentClient !== null) { // null = Traewelling itself or personal access token
-            $query->where('client_id', $currentClient->id);
+            $query->where('oauth_client_id', '=', $currentClient->id);
         }
 
         return WebhookResource::collection($query->get());

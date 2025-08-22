@@ -16,7 +16,7 @@ class Webhook extends Model
     protected $hidden   = ['oauth_client_id', 'secret', 'created_at', 'updated_at'];
     protected $casts    = [
         'id'              => 'integer',
-        'oauth_client_id' => 'string',
+        'oauth_client_id' => 'integer',
         'url'             => 'string',
         'secret'          => 'string',
         'user_id'         => 'integer',
