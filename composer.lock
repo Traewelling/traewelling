@@ -6289,16 +6289,16 @@
         },
         {
             "name": "spatie/laravel-sitemap",
-            "version": "7.3.6",
+            "version": "7.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-sitemap.git",
-                "reference": "506b2acdd350c7ff868a7711b4f30e486b20e9b0"
+                "reference": "077b36c64bc4f373f4d95a1ac6ee1c0624acfdd3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-sitemap/zipball/506b2acdd350c7ff868a7711b4f30e486b20e9b0",
-                "reference": "506b2acdd350c7ff868a7711b4f30e486b20e9b0",
+                "url": "https://api.github.com/repos/spatie/laravel-sitemap/zipball/077b36c64bc4f373f4d95a1ac6ee1c0624acfdd3",
+                "reference": "077b36c64bc4f373f4d95a1ac6ee1c0624acfdd3",
                 "shasum": ""
             },
             "require": {
@@ -6350,7 +6350,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/laravel-sitemap/tree/7.3.6"
+                "source": "https://github.com/spatie/laravel-sitemap/tree/7.3.7"
             },
             "funding": [
                 {
@@ -6358,7 +6358,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-04-10T12:13:41+00:00"
+            "time": "2025-08-25T08:07:09+00:00"
         },
         {
             "name": "spatie/laravel-validation-rules",
