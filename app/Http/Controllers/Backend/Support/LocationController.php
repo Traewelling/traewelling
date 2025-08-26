@@ -364,21 +364,42 @@ class LocationController
         try {
             $geoJson      = $this->getPolylineBetween();
             $lastStopover = null;
-            foreach ($geoJson->features as $stopover) {
-                if ($lastStopover === null || !isset($stopover->geometry->coordinates[0]) || !isset($stopover->geometry->coordinates[1])) {
-                    $lastStopover = $stopover;
-                    continue;
+            $lastCoordinate = null;
+
+            if (count($geoJson->features) === 1) {
+                foreach ($geoJson->features[0]->geometry->coordinates as $coordinate) {
+                    if ($lastCoordinate === null || !isset($coordinate[0]) || !isset($coordinate[1])) {
+                        $lastCoordinate = $coordinate;
+                        continue;
+                    }
+
+                    $distance += $this->geoService->getDistance(
+                        new Coordinate(
+                            $lastCoordinate[1],
+                            $lastCoordinate[0]
+                        ),
+                        new Coordinate($coordinate[1], $coordinate[0])
+                    );
+
+                    $lastCoordinate = $coordinate;
                 }
-
-                $distance += $this->geoService->getDistance(
-                    new Coordinate(
-                        $lastStopover->geometry->coordinates[1],
-                        $lastStopover->geometry->coordinates[0]
-                    ),
-                    new Coordinate($stopover->geometry->coordinates[1], $stopover->geometry->coordinates[0])
-                );
-
-                $lastStopover = $stopover;
+            } else {
+                foreach ($geoJson->features as $stopover) {
+                    if ($lastStopover === null || !isset($stopover->geometry->coordinates[0]) || !isset($stopover->geometry->coordinates[1])) {
+                        $lastStopover = $stopover;
+                        continue;
+                    }
+        
+                    $distance += $this->geoService->getDistance(
+                        new Coordinate(
+                            $lastStopover->geometry->coordinates[1],
+                            $lastStopover->geometry->coordinates[0]
+                        ),
+                        new Coordinate($stopover->geometry->coordinates[1], $stopover->geometry->coordinates[0])
+                    );
+    
+                    $lastStopover = $stopover;
+                }
             }
         } catch (JsonException $e) {
             report($e);

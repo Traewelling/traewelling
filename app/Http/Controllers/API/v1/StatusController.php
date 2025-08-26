@@ -692,15 +692,17 @@ class StatusController extends Controller
 
             // Validate that a file is uploaded
             $request->validate([
-                'file' => ['required', 'file', 'mimes:geojson,json']
+                'file' => ['required', 'file']
             ]);
 
-            // Read and parse GeoJSON
-            $geojsonContent = file_get_contents($request->file('file')->getRealPath());
-            $geojson = json_decode($geojsonContent, true);
+            $geojson = json_decode(file_get_contents($request->file('file')->getRealPath()), true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return $this->sendError('Uploaded file is not valid JSON', 422);
+            }
 
             if (!isset($geojson['features']) || !is_array($geojson['features'])) {
-                return $this->sendError('Invalid GeoJSON file', 400);
+                return $this->sendError('Invalid GeoJSON file, does not contain features', 422);
             }
 
             $trip = $status->checkin->trip;
@@ -708,7 +710,7 @@ class StatusController extends Controller
             $newPolylineData = [
                 'hash' => Str::uuid(),
                 'polyline' => json_encode($geojson),
-                'source' => 'brouter', // TODO: allow upload source
+                'source' => 'upload',
             ];
 
             if ($trip->polyline) {
@@ -720,6 +722,8 @@ class StatusController extends Controller
             $newPolyline = PolyLine::create($newPolylineData);
 
             $trip->update(['polyline_id' => $newPolyline->id]);
+
+            TrainCheckinController::refreshDistanceAndPoints($status);
 
             return $this->sendResponse([
                 'message' => 'Polyline updated successfully',
