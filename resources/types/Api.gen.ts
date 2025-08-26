@@ -1629,8 +1629,12 @@ export class HttpClient<SecurityDataType = unknown> {
       input !== null && typeof input !== "string"
         ? JSON.stringify(input)
         : input,
-    [ContentType.FormData]: (input: any) =>
-      Object.keys(input || {}).reduce((formData, key) => {
+    [ContentType.FormData]: (input: any) => {
+      if (input instanceof FormData) {
+        return input;
+      }
+
+      return Object.keys(input || {}).reduce((formData, key) => {
         const property = input[key];
         formData.append(
           key,
@@ -1641,7 +1645,8 @@ export class HttpClient<SecurityDataType = unknown> {
               : `${property}`,
         );
         return formData;
-      }, new FormData()),
+      }, new FormData());
+    },
     [ContentType.UrlEncoded]: (input: any) => this.toQueryString(input),
   };
 
@@ -2698,6 +2703,62 @@ export class Api<
       }),
 
     /**
+     * @description Downloads the polyline of a single status as a .geojson file
+     *
+     * @tags Status
+     * @name DownloadPolyline
+     * @summary [Auth optional] Download polyline as GeoJSON
+     * @request GET:/status/{id}/polyline/download
+     * @secure
+     */
+    downloadPolyline: (id?: number, params: RequestParams = {}) =>
+      this.request<string, void>({
+        path: `/status/${id}/polyline/download`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Uploads a new GeoJSON file to replace the polyline of the status's trip.
+     *
+     * @tags Status
+     * @name UpdatePolyline
+     * @summary Replace polyline of a status by uploading a GeoJSON file
+     * @request POST:/status/{id}/polyline
+     * @secure
+     */
+    updatePolyline: (
+      id: number,
+      data: {
+        /**
+         * GeoJSON file containing a LineString to replace the existing polyline
+         * @format binary
+         */
+        file?: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** @example "Polyline updated successfully" */
+          message?: string;
+          /** The updated polyline object */
+          polyline?: object;
+        },
+        void
+      >({
+        path: `/status/${id}/polyline`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.FormData,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Returns a collection of all visible tags for the given status, if user is authorized
      *
      * @tags Status
@@ -3120,6 +3181,17 @@ export class Api<
          * @example "Karls"
          */
         query?: any;
+        /**
+         * identifier provider
+         * @example "ibnr"
+         */
+        identifier_provider?: "ibnr" | "transitous";
+        /**
+         * station identifier
+         * @maxLength 255
+         * @example "1337"
+         */
+        identifier?: string;
       },
       params: RequestParams = {},
     ) =>
