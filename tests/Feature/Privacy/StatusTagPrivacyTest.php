@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\User\FollowController;
 use App\Models\Follow;
 use App\Models\Status;
 use App\Models\StatusTag;
+use App\Models\TrustedUser;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\ApiTestCase;
@@ -60,5 +61,29 @@ class StatusTagPrivacyTest extends ApiTestCase
     public function testOwnerCanViewPrivateStatusTag(): void {
         $statusTag = StatusTag::factory(['visibility' => StatusVisibility::PRIVATE])->create();
         $this->assertTrue($statusTag->status->user->can('view', $statusTag));
+    }
+
+    public function testTrustedUserCanViewTrustedStatusTag(): void {
+        $user        = User::factory()->create();
+        $trustedUser = User::factory()->create();
+        
+        $status    = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::TRUSTED])->create();
+        $statusTag = StatusTag::factory([
+                                            'status_id'  => $status->id,
+                                            'visibility' => StatusVisibility::TRUSTED,
+                                        ])->create();
+
+        TrustedUser::create([
+            'user_id' => $user->id,
+            'trusted_id' => $trustedUser->id,
+        ]);
+
+        $this->assertTrue($trustedUser->can('view', $statusTag));
+    }
+
+    public function testNonTrustedUserCantViewTrustedStatusTag(): void {
+        $statusTag  = StatusTag::factory(['visibility' => StatusVisibility::TRUSTED])->create();
+        $randomUser = User::factory()->create();
+        $this->assertFalse($randomUser->can('view', $statusTag));
     }
 }
