@@ -43,25 +43,20 @@ class ReportController extends Controller
      */
     public function store(Request $request): Response {
         $validated = $request->validate([
-                                            'subject_type' => [new Enum(ReportableSubject::class)], // Todo: Remove after 2023-08-17
-                                            'subjectType'  => ['required_without:subject_type', new Enum(ReportableSubject::class)],
-                                            'subjectId'    => ['required_without:subject_id', 'integer', 'min:1'],
-                                            'subject_id'   => ['integer', 'min:1'], // Todo: Remove after 2023-08-17
-                                            'reason'       => ['required', new Enum(ReportReason::class)],
-                                            'description'  => ['nullable', 'string'],
+                                            'subjectType' => ['required_without:subject_type', new Enum(ReportableSubject::class)],
+                                            'subjectId'   => ['required_without:subject_id', 'integer', 'min:1'],
+                                            'reason'      => ['required', new Enum(ReportReason::class)],
+                                            'description' => ['nullable', 'string', 'min:10'],
                                         ]);
 
-        $subjectType = $validated['subjectType'] ?? $validated['subject_type']; // Todo: Remove after 2023-08-17
-        $subjectId   = $validated['subjectId'] ?? $validated['subject_id'];     // Todo: Remove after 2023-08-17
-
         (new ReportRepository())->createReport(
-            subjectType: ReportableSubject::from($subjectType),
-            subjectId:   $subjectId,
+            subjectType: ReportableSubject::from($validated['subjectType']),
+            subjectId:   $validated['subjectId'],
             reason:      ReportReason::from($validated['reason']),
             description: $validated['description'],
             reporter:    auth()->user()
         );
-        
+
         return response()->noContent(201, ['Content-Type' => 'application/json']);
     }
 
