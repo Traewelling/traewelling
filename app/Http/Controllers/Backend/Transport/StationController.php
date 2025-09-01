@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Backend\Transport;
 
 use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
+use App\Http\Controllers\Backend\Transport\dtos\StationDto;
 use App\Http\Controllers\Controller;
+use App\Models\Area;
 use App\Models\Checkin;
 use App\Models\Station;
 use App\Models\Stopover;
@@ -36,7 +38,8 @@ class StationController extends Controller
             'train_stations.id', 'train_stations.ibnr', 'train_stations.name',
             'train_stations.latitude', 'train_stations.longitude', 'train_stations.rilIdentifier',
         ];
-        return DB::table('train_checkins') //TODO: return Station objects
+
+        return DB::table('train_checkins')
                  ->join('train_stopovers', 'train_checkins.destination_stopover_id', '=', 'train_stopovers.id')
                  ->join('train_stations', 'train_stopovers.train_station_id', '=', 'train_stations.id')
                  ->where('train_checkins.user_id', $user->id)
@@ -44,7 +47,23 @@ class StationController extends Controller
                  ->select($groupAndSelect)
                  ->orderByDesc(DB::raw('MAX(train_checkins.arrival)'))
                  ->limit($maxCount)
-                 ->get();
+                 ->get()
+                 ->map(function(object $station) {
+                     $areas = Area::query()
+                                  ->join('areas_stations_maps', 'areas_stations_maps.area_id', '=', 'areas.id')
+                                  ->where('areas_stations_maps.station_id', $station->id)
+                                  ->get(['areas.id', 'areas.name', 'areas.adminLevel', 'areas_stations_maps.default']);
+
+                     return new StationDto(
+                         (int) $station->id,
+                         $station->ibnr,
+                         $station->name,
+                         (float) $station->latitude,
+                         (float) $station->longitude,
+                         $station->rilIdentifier ?? null,
+                         $areas
+                     );
+                 });
     }
 
     /**

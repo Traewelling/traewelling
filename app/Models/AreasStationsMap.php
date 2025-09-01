@@ -6,15 +6,6 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-/**
- * @property string       $id
- * @property string       $station_id
- * @property string       $area_id
- * @property bool         $default
- *
- * @property-read Area    $area
- * @property-read Station $station
- */
 class AreasStationsMap extends Pivot
 {
     use HasUuids;

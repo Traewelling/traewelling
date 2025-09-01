@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <form method="GET">
                         <input type="text" class="form-control" name="query"
-                               placeholder="Search for stations by name, rilIdentifier or IBNR"
+                               placeholder="ID, name, rilIdentifier, IBNR or Wikidata ID"
                                value="{{request()->get('query')}}"
                         />
                     </form>
@@ -27,40 +27,50 @@
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
                                 <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>WikiData</th>
-                                        <th>RilIdentifier</th>
-                                        <th>Name</th>
-                                        <th></th>
-                                    </tr>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>WikiData</th>
+                                    <th>RilIdentifier</th>
+                                    <th>Name</th>
+                                    <th>Relevance</th>
+                                    <th></th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($stations as $station)
-                                        <tr>
-                                            <td>{{$station->id}}</td>
-                                            <td>
-                                                <a href="https://www.wikidata.org/wiki/{{$station->wikidata_id}}"
-                                                   target="{{$station->wikidata_id}}">
-                                                    {{$station->wikidata_id}}
+                                @foreach($stations as $station)
+                                    <tr>
+                                        <td>{{$station->id}}</td>
+                                        <td>
+                                            <a href="https://www.wikidata.org/wiki/{{$station->wikidata_id}}"
+                                               target="{{$station->wikidata_id}}">
+                                                {{$station->wikidata_id}}
+                                            </a>
+                                        </td>
+                                        <td>{{$station->rilIdentifier}}</td>
+                                        <td>
+                                            <a href="{{route('admin.station', $station->id)}}">
+                                                {{$station->name}}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            @if($station->relevance > 0)
+                                                <span class="badge bg-success">{{ $station->relevance }}</span>
+                                            @elseif($station->relevance === 0)
+                                                <span class="badge bg-info">{{ $station->relevance }}</span>
+                                            @else
+                                                <span class="badge bg-warning">{{ $station->relevance }}</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div class="btn-group float-end">
+                                                <a class="btn btn-sm btn-danger"
+                                                   href="javascript:deleteStation({{$station->id}})">
+                                                    <i class="fa-solid fa-trash"></i>
                                                 </a>
-                                            </td>
-                                            <td>{{$station->rilIdentifier}}</td>
-                                            <td>
-                                                <a href="{{route('admin.station', $station->id)}}">
-                                                    {{$station->name}}
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <div class="btn-group float-end">
-                                                    <a class="btn btn-sm btn-danger"
-                                                       href="javascript:deleteStation({{$station->id}})">
-                                                        <i class="fa-solid fa-trash"></i>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -131,11 +141,11 @@
                         document.getElementById('create-station-form').addEventListener('submit', function (event) {
                             event.preventDefault();
 
-                            const name          = document.getElementById('create-station-name').value;
-                            const ibnr          = document.getElementById('create-station-ibnr').value;
+                            const name = document.getElementById('create-station-name').value;
+                            const ibnr = document.getElementById('create-station-ibnr').value;
                             const rilIdentifier = document.getElementById('create-station-rilIdentifier').value;
-                            const latitude      = document.getElementById('create-station-lat').value;
-                            const longitude     = document.getElementById('create-station-lon').value;
+                            const latitude = document.getElementById('create-station-lat').value;
+                            const longitude = document.getElementById('create-station-lon').value;
 
                             fetch('/api/v1/station', {
                                 method: 'POST',

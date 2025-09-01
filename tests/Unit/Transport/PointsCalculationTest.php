@@ -1,12 +1,13 @@
 <?php
 
-namespace Unit\Transport;
+namespace Tests\Unit\Transport;
 
 use App\Enum\HafasTravelType;
 use App\Enum\PointReason;
 use App\Enum\TripSource;
 use App\Http\Controllers\Backend\Transport\PointsCalculationController;
 use Carbon\Carbon;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Unit\UnitTestCase;
 
 class PointsCalculationTest extends UnitTestCase
@@ -24,9 +25,7 @@ class PointsCalculationTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @dataProvider reasonDataProvider
-     */
+    #[DataProvider('reasonDataProvider')]
     public function testReason(
         Carbon      $departure,
         Carbon      $arrival,
@@ -55,9 +54,7 @@ class PointsCalculationTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @dataProvider factorDataProvider
-     */
+    #[DataProvider('factorDataProvider')]
     public function testFactor(PointReason $reason, float $expectedFactor): void {
         $this->assertEquals($expectedFactor, PointsCalculationController::getFactorByReason($reason));
     }
@@ -98,9 +95,7 @@ class PointsCalculationTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @dataProvider calculatePointsDataProvider
-     */
+    #[DataProvider('calculatePointsDataProvider')]
     public function testCalculateTrainPoints(int $expectedPoints, HafasTravelType $hafasTravelType, Carbon $departure, Carbon $arrival, TripSource $tripSource): void {
         $this->assertEquals($expectedPoints, PointsCalculationController::calculatePoints(
             distanceInMeter: 50000,

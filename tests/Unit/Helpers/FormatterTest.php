@@ -4,6 +4,7 @@ namespace Tests\Unit\Helpers;
 
 
 use App\Helpers\Formatter;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Unit\UnitTestCase;
 
 class FormatterTest extends UnitTestCase
@@ -29,9 +30,7 @@ class FormatterTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @dataProvider stationNameProvider
-     */
+    #[DataProvider('stationNameProvider')]
     public function testSimplifyStationName($stationName, $city, $expected) {
         $this->assertEquals($expected, Formatter::simplifyStationName($stationName, $city));
     }
@@ -48,9 +47,7 @@ class FormatterTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @dataProvider stationMatchingProvider
-     */
+    #[DataProvider('stationMatchingProvider')]
     public function testMapping($dbStation, $motisStation, $city, $match) {
         $dbSimplified    = Formatter::simplifyStationName($dbStation, $city);
         $motisSimplified = Formatter::simplifyStationName($motisStation, $city);
@@ -73,9 +70,7 @@ class FormatterTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @dataProvider appendStationProvider
-     */
+    #[DataProvider('appendStationProvider')]
     public function testAppendStation($stationName, $city, $expected) {
         $this->assertEquals($expected, Formatter::cityStationName($stationName, $city));
     }

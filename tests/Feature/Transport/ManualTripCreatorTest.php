@@ -1,13 +1,13 @@
 <?php
 
-namespace Feature\Transport;
+namespace Tests\Feature\Transport;
 
 use App\Dto\Internal\CheckInRequestDto;
 use App\Enum\HafasTravelType;
 use App\Enum\TripSource;
 use App\Http\Controllers\Backend\Transport\ManualTripCreator;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
-use App\Models\HafasOperator;
+use App\Models\Operator;
 use App\Models\Station;
 use App\Models\User;
 use Carbon\Carbon;
@@ -31,7 +31,7 @@ class ManualTripCreatorTest extends FeatureTestCase
 
         $creator->setCategory(HafasTravelType::REGIONAL)
                 ->setLine('S1', 85001)
-                ->setOperator(HafasOperator::factory()->create())
+                ->setOperator(Operator::factory()->create())
                 ->addStopover(
                     station:          $stopoverStation,
                     plannedDeparture: $stopoverArrivalDeparture,

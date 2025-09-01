@@ -16,6 +16,8 @@ enum StatusTagKey: string implements IconEnumInterface
     case ROLE             = 'trwl:role';
     case VEHICLE_NUMBER   = 'trwl:vehicle_number';
     case PASSENGER_RIGHTS = 'trwl:passenger_rights';
+    case JOURNEY_NUMBER   = 'trwl:journey_number';
+    case PRICE            = 'trwl:price';
 
     public function faIcon(): ?string {
         return match ($this) {
@@ -23,6 +25,8 @@ enum StatusTagKey: string implements IconEnumInterface
             self::ROLE             => 'fa-briefcase',
             self::TICKET           => 'fa-qrcode',
             self::PASSENGER_RIGHTS => 'fa-user-shield',
+            self::JOURNEY_NUMBER   => 'fa-hashtag',
+            self::PRICE            => 'fa-money-bill-wave',
             default                => null,
         };
     }

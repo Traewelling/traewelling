@@ -3,14 +3,13 @@
 namespace Tests\Unit;
 
 use App\Http\Controllers\Backend\Support\MentionHelper;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class MentionTest extends TestCase
 {
 
-    /**
-     * @dataProvider provideStringMatchesMentionDto
-     */
+    #[DataProvider('provideStringMatchesMentionDto')]
     public function testStringMatchesMentionDto($string, $result): void {
         $this->assertSame($result, MentionHelper::findMentionsInString($string));
     }

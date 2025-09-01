@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Dto\Internal\GlobalCheckinStats;
 use App\Http\Controllers\Controller;
 use App\Models\Station;
 use App\Models\User;
@@ -9,7 +10,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
-use stdClass;
 
 abstract class StatisticController extends Controller
 {
@@ -18,10 +18,10 @@ abstract class StatisticController extends Controller
      * @param Carbon $from
      * @param Carbon $until
      *
-     * @return stdClass
+     * @return GlobalCheckinStats
      * @api v1
      */
-    public static function getGlobalCheckInStats(Carbon $from, Carbon $until): stdClass {
+    public static function getGlobalCheckInStats(Carbon $from, Carbon $until): GlobalCheckinStats {
         if ($from->isAfter($until)) {
             throw new InvalidArgumentException('since cannot be after until');
         }
@@ -29,11 +29,11 @@ abstract class StatisticController extends Controller
         return self::globalCheckinQuery($from, $until);
     }
 
-    public static function getGlobalCheckInStatsAllTime(): stdClass {
+    public static function getGlobalCheckInStatsAllTime(): GlobalCheckinStats {
         return self::globalCheckinQuery();
     }
 
-    private static function globalCheckinQuery(?Carbon $from = null, ?Carbon $until = null): stdClass {
+    private static function globalCheckinQuery(?Carbon $from = null, ?Carbon $until = null): GlobalCheckinStats {
         $query = DB::table('train_checkins');
 
         if ($from !== null && $until !== null) {
@@ -41,7 +41,7 @@ abstract class StatisticController extends Controller
                   ->where('train_checkins.departure', '<=', $until->toIso8601String());
         }
         $query->selectRaw('SUM(train_checkins.distance) AS distance');
-        $query->selectRaw('COUNT(DISTINCT train_checkins.user_id) AS user_count');
+        $query->selectRaw('COUNT(DISTINCT train_checkins.user_id) AS userCount');
 
         if (DB::getDriverName() === 'sqlite') {
             $query->selectRaw('1337 AS duration');
@@ -49,7 +49,13 @@ abstract class StatisticController extends Controller
             $query->selectRaw('SUM(TIMESTAMPDIFF(SECOND, train_checkins.departure, train_checkins.arrival)) AS duration');
         }
 
-        return $query->first();
+        $result = $query->first();
+
+        return new GlobalCheckinStats(
+            $result->distance ?? 0,
+            $result->duration ?? 0,
+            $result->userCount ?? 0
+        );
     }
 
     /**

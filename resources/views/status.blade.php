@@ -34,7 +34,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
-                @if(auth()->check() && auth()->user()->hasRole('open-beta'))
+                @if(auth()->check())
                     <div id="checkin-success-helper">
                         <checkin-success-helper></checkin-success-helper>
                     </div>

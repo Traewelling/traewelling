@@ -3,6 +3,7 @@
 namespace App\DataProviders;
 
 use App\DataProviders\Repositories\StationRepository;
+use App\Dto\Internal\FilteredDepartures;
 use App\Enum\HafasTravelType as HTT;
 use App\Enum\TravelType;
 use App\Enum\TripSource;
@@ -11,7 +12,7 @@ use App\Helpers\CacheKey;
 use App\Helpers\HCK;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\TransportController;
-use App\Models\HafasOperator;
+use App\Models\Operator;
 use App\Models\Station;
 use App\Models\Stopover;
 use App\Models\Trip;
@@ -177,6 +178,13 @@ class Hafas extends Controller implements DataProviderInterface
     }
 
     /**
+     * @throws HafasException
+     */
+    public function getFilteredDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false): FilteredDepartures {
+        return new FilteredDepartures($this->getDepartures($station, $when, $duration, $type, $localtime), collect());
+    }
+
+    /**
      * @param Station         $station
      * @param Carbon          $when
      * @param int             $duration
@@ -307,11 +315,11 @@ class Hafas extends Controller implements DataProviderInterface
         $operator    = null;
 
         if (isset($tripJson->line->operator->id)) {
-            $operator = HafasOperator::updateOrCreate([
-                                                          'hafas_id' => $tripJson->line->operator->id,
-                                                      ], [
-                                                          'name' => $tripJson->line->operator->name,
-                                                      ]);
+            $operator = Operator::updateOrCreate([
+                                                     'hafas_id' => $tripJson->line->operator->id,
+                                                 ], [
+                                                     'name' => $tripJson->line->operator->name,
+                                                 ]);
         }
 
         if ($tripJson->line->name === null) {
@@ -322,7 +330,7 @@ class Hafas extends Controller implements DataProviderInterface
             $tripJson->line->id = '';
         }
 
-        $polyline = TransportController::getPolylineHash(json_encode($tripJson->polyline));
+        $polyline = TransportController::getPolylineHash(json_encode($tripJson->polyline), 'hafas');
 
         $trip = Trip::updateOrCreate([
                                          'trip_id' => $tripID

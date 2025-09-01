@@ -9,16 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-/**
- * @property int          $id         @todo change to uuid (currently not used so easy without break something)
- * @property ReportStatus $status
- * @property string       $subject_type
- * @property int          $subject_id @todo make it a string to support uuid
- * @property ReportReason $reason
- * @property string       $description
- * @property int          $reporter_id
- * @property int          $admin_notification_id
- */
 class Report extends Model
 {
     use LogsActivity;

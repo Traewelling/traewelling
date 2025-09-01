@@ -34,6 +34,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
+use OpenApi\Annotations as OA;
 use Throwable;
 
 class TransportController extends Controller
@@ -137,7 +138,28 @@ class TransportController extends Controller
      *                              format="date-time",
      *                              example="2020-01-01T12:15:00.000Z"
      *                          )
-     *                  )
+     *                  ),
+     *
+     *                  @OA\Property(
+     *                      description="List of licenses that were filtered out",
+     *                      property="removedLicenses",
+     *                      type="array",
+     *                      @OA\Items(
+     *                          oneOf={
+     *                              @OA\Schema(
+     *                                  type="string",
+     *                                  example="FR: fr_horaires-sncf.gtfs",
+     *                              ),
+     *                              @OA\Schema(ref="#/components/schemas/LicenseDto"),
+     *                          }
+     *                      ),
+     *                  ),
+     *                  @OA\Property(
+     *                      description="Number of removed entries due to license filtering",
+     *                      property="removedCount",
+     *                      type="integer",
+     *                      example=2,
+     *                   )
      *              )
      *          )
      *      ),
@@ -158,14 +180,14 @@ class TransportController extends Controller
         $station   = Station::findOrFail($stationId);
 
         try {
-            $departures = $this->dataProvider->getDepartures(
+            $filtered = $this->dataProvider->getFilteredDepartures(
                 station:   $station,
                 when:      $timestamp,
                 type:      TravelType::tryFrom($validated['travelType'] ?? null),
                 localtime: isset($validated['when']) && !preg_match('(\+|Z)', $validated['when'])
             );
 
-            $departures = $departures->sortBy(function($departure) {
+            $departures = $filtered->departures->sortBy(function($departure) {
                 return $departure->when ?? $departure->plannedWhen;
             });
 
@@ -179,6 +201,8 @@ class TransportController extends Controller
                                         'prev' => $timestamp->clone()->subMinutes(15),
                                         'next' => $timestamp->clone()->addMinutes(15)
                                     ],
+                                    'removedLicenses' => $filtered->removedEntries,
+                                    'removedCount' => $filtered->removedCount
                                 ]
                             ]
             );
@@ -222,7 +246,13 @@ class TransportController extends Controller
      *     @OA\Response(
      *          response=200,
      *          description="successful operation",
-     *          @OA\JsonContent(ref="#/components/schemas/TripResource")
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/TripResource"
+     *                  )
+     *              )
+     *          )
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Unauthorized"),
@@ -553,13 +583,14 @@ class TransportController extends Controller
     }
 
     public function checkinOtherUsers(?Collection $withUsers, CheckInRequestDto $dto, CheckinSuccessDto $checkinResponse): void {
+        $by = $dto->user;
         foreach ($withUsers ?? [] as $user) {
             $dto->setUser($user);
             $dto->setBody(null);
             $dto->setStatusVisibility($user->default_status_visibility);
             $dto->setPostOnMastodonFlag(false);
             try {
-                $checkin = TrainCheckinController::checkin($dto);
+                $checkin = TrainCheckinController::checkin($dto, $by);
             } catch (Throwable) {
                 continue;
             }

@@ -1,0 +1,213 @@
+<script setup lang="ts">
+import {computed, PropType, useTemplateRef} from "vue";
+import {Api, StatusResource, StatusUpdateBody} from "../../../../types/Api.gen";
+import {trans} from "laravel-vue-i18n";
+import {StatusHelper} from "../../../helpers/StatusHelper";
+import {Notyf} from "notyf";
+import ConfirmModal from "../../ConfirmModal.vue";
+import {useUserStore} from "../../../stores/user";
+import UpdateModal from "../../UpdateModal/UpdateModal.vue";
+import {DateTime} from "luxon";
+
+const props = defineProps({
+  status: {
+    type: Object as PropType<StatusResource>,
+    required: true
+  },
+});
+
+const notyf = new Notyf({position: {x: "right", y: "bottom"}});
+const emit = defineEmits(['confirm-delete', 'status-deleted', 'status-updated']);
+const user = useUserStore();
+
+function share() {
+  let helper = new StatusHelper(props.status);
+
+  let shareText = props.status?.userDetails.id === user.user?.id ? helper.generateSocialText() : helper.getDescription();
+  let shareUrl = helper.getShareUrl();
+
+  if (navigator.share) {
+    navigator.share({
+      title: "Träwelling",
+      text: shareText,
+      url: shareUrl
+    }).catch((error) => {
+      console.error('Error sharing:', error);
+    });
+  } else {
+    navigator.clipboard.writeText(shareText + ' ' + shareUrl).then(() => {
+      notyf.success('Copied to clipboard');
+    });
+  }
+}
+
+function rideAlongUrl() {
+  let queryParams = new URLSearchParams({
+    tripId: props.status?.train.trip.toString(),
+    lineName: props.status?.train.lineName,
+    start: props.status?.train.origin.id.toString(),
+    destination: props.status?.train.destination.id.toString(),
+    departure: props.status?.train.origin.departurePlanned ? props.status?.train.origin.departurePlanned.toString() : '',
+    idType: 'trwl',
+    category: props.status?.train.category,
+  });
+
+  return `/stationboard/?${queryParams.toString()}`;
+}
+
+const delModal = useTemplateRef('delModal');
+const updateModal = useTemplateRef('updateModal');
+
+function showModal() {
+  delModal.value?.show();
+}
+
+const showDepartureNowButton = computed(() => {
+  if (!props.status?.train || !props.status?.train.origin || !props.status?.train.origin.departure) {
+    return false;
+  }
+
+  const departure = DateTime.fromISO(props.status?.train.origin.departure);
+  const arrival = DateTime.fromISO(props.status?.train.destination.arrival || '');
+  const now = DateTime.now();
+  if (arrival.isValid && now > arrival) {
+    return false; // If the train has already arrived, do not show the button
+  }
+  const diff = now.diff(departure, 'minutes').minutes;
+
+  return departure.isValid && (diff >= -10 && diff <= 40);
+});
+
+const showArrivalNowButton = computed(() => {
+  if (!props.status?.train || !props.status?.train.destination || !props.status?.train.destination.arrival) {
+    return false;
+  }
+
+  const arrival = DateTime.fromISO(props.status?.train.destination.arrival);
+  const now = DateTime.now();
+  const diff = now.diff(arrival, 'minutes').minutes
+
+  return arrival.isValid && (diff >= -20 && diff <= 120);
+});
+
+const api = new Api({baseUrl: window.location.origin + '/api/v1'});
+
+function departureNow() {
+  api.status.updateSingleStatus({manualDeparture: DateTime.now().toISO()} as StatusUpdateBody, props.status.id).then((status) => {
+    emit('status-updated', status.data.data);
+  }).catch((error) => {
+    console.error('Error updating status:', error);
+    // Optionally, you can show an error message to the user
+  });
+}
+
+function arrivalNow() {
+  api.status.updateSingleStatus({manualArrival: DateTime.now().toISO()} as StatusUpdateBody, props.status.id).then((status) => {
+    emit('status-updated', status.data.data);
+  }).catch((error) => {
+    console.error('Error updating status:', error);
+    // Optionally, you can show an error message to the user
+  });
+}
+</script>
+
+<template>
+  <div class="dropdown dropdown-flex">
+    <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+      &nbsp;
+      <i class="fa fa-ellipsis-vertical" aria-hidden="true"></i>
+      &nbsp;
+    </a>
+    <ul class="dropdown-menu">
+      <li>
+        <button class="dropdown-item" type="button" @click="share">
+          <div class="dropdown-icon-suspense">
+            <i class="fas fa-share" aria-hidden="true"></i>
+          </div>
+          {{ trans('menu.share') }}
+        </button>
+      </li>
+      <template v-if="user.user">
+        <template v-if="user.user.id == status.userDetails.id">
+          <template v-if="showArrivalNowButton || showDepartureNowButton">
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li v-if="showDepartureNowButton">
+              <button class="dropdown-item" type="button" @click="departureNow()">
+                <div class="dropdown-icon-suspense">
+                  <i class="fa-solid fa-plane-departure" aria-hidden="true"></i>
+                </div>
+                {{ trans('status.departure-now') }}
+              </button>
+            </li>
+            <li v-if="showArrivalNowButton">
+              <button class="dropdown-item" type="button" @click="arrivalNow()">
+                <div class="dropdown-icon-suspense">
+                  <i class="fa-solid fa-plane-arrival" aria-hidden="true"></i>
+                </div>
+                {{ trans('status.arrival-now') }}
+              </button>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+          </template>
+          <li>
+            <button class="dropdown-item" type="button" @click="updateModal?.show()">
+              <div class="dropdown-icon-suspense">
+                <i class="fas fa-edit" aria-hidden="true"></i>
+              </div>
+              {{ trans('edit') }}
+            </button>
+          </li>
+          <li>
+            <button class="dropdown-item" type="button" @click="showModal()">
+              <div class="dropdown-icon-suspense">
+                <i class="fas fa-trash" aria-hidden="true"></i>
+              </div>
+              {{ trans('delete') }}
+            </button>
+          </li>
+        </template>
+        <template v-else>
+          <li>
+            <a :href="rideAlongUrl()" class="dropdown-item">
+              <div class="dropdown-icon-suspense">
+                <i class="fas fa-user-plus" aria-hidden="true"></i>
+              </div>
+              {{ trans('status.join') }}
+            </a>
+          </li>
+          <!-- todo:mute-button -->
+          <!-- todo:block-button -->
+          <li>
+            <a :href="`/report?subjectType=Status&subjectId=${status.id}`"
+               class="dropdown-item">
+              <div class="dropdown-icon-suspense">
+                <i class="fas fa-flag" aria-hidden="true"></i>
+              </div>
+              {{ trans('status.report') }}
+            </a>
+          </li>
+        </template>
+        <template v-if="user?.isAdmin">
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a :href="`/admin/status/edit?statusId=${status.id}`" class="dropdown-item">
+              <div class="dropdown-icon-suspense">
+                <i class="fas fa-tools" aria-hidden="true"></i>
+              </div>
+              Admin-Interface
+            </a>
+          </li>
+        </template>
+
+      </template>
+    </ul>
+  </div>
+  <ConfirmModal ref="delModal" title="modals.deleteStatus-title" @confirm="emit('confirm-delete')"/>
+  <UpdateModal ref="updateModal" :status="status" @status-updated="emit('status-updated', $event)"/>
+</template>

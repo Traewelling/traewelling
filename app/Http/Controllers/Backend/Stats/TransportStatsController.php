@@ -66,9 +66,9 @@ abstract class TransportStatsController extends Controller
      * @param string   $orderByDesc Column to order by, descending. Must be 'distance' or 'duration'
      * @param int|null $limit       Limit the number of results
      *
-     * @return Collection with stdClass objects with properties hafasOperator (string), distance (int), duration (int)
+     * @return Collection with stdClass objects with properties operator (string), distance (int), duration (int)
      */
-    public static function sumByHafasOperator(User $user, Carbon $from, Carbon $to, string $orderByDesc = 'distance', int $limit = null): Collection {
+    public static function sumByOperator(User $user, Carbon $from, Carbon $to, string $orderByDesc = 'distance', int $limit = null): Collection {
         if ($orderByDesc !== 'distance' && $orderByDesc !== 'duration') {
             throw new InvalidArgumentException('orderByDesc must be either "distance" or "duration"');
         }
@@ -95,8 +95,8 @@ abstract class TransportStatsController extends Controller
      *
      * @return int      Number of different hafas operators
      */
-    public static function countHafasOperators(User $user, Carbon $from, Carbon $to): int {
-        return self::sumByHafasOperator($user, $from, $to)->count();
+    public static function countOperators(User $user, Carbon $from, Carbon $to): int {
+        return self::sumByOperator($user, $from, $to)->count();
     }
 
     /**
@@ -108,10 +108,10 @@ abstract class TransportStatsController extends Controller
      * @param string   $orderByDesc Column to order by, descending. Must be 'distance' or 'duration'
      * @param int|null $limit       Limit the number of results
      *
-     * @return Collection with stdClass objects with properties hafasOperator (string), hafasLine (string), distance
+     * @return Collection with stdClass objects with properties Operator (string), hafasLine (string), distance
      *                    (int), duration (int)
      */
-    public static function sumByHafasOperatorAndLine(User $user, Carbon $from, Carbon $to, string $orderByDesc = 'distance', int $limit = null): Collection {
+    public static function sumByOperatorAndLine(User $user, Carbon $from, Carbon $to, string $orderByDesc = 'distance', int $limit = null): Collection {
         if ($orderByDesc !== 'distance' && $orderByDesc !== 'duration') {
             throw new InvalidArgumentException('orderByDesc must be either "distance" or "duration"');
         }
@@ -140,7 +140,7 @@ abstract class TransportStatsController extends Controller
      * @param string $orderByDesc Column to order by, descending. Must be 'distance' or 'duration'
      * @param int    $limit       Limit the number of results
      *
-     * @return Collection   with stdClass objects with properties hafasOperator (string), hafasLine (string),
+     * @return Collection   with stdClass objects with properties Operator (string), hafasLine (string),
      *                      train_checkin (raw!)
      */
     public static function getLongestTrips(User $user, Carbon $from, Carbon $to, string $orderByDesc = 'distance', int $limit = 10): Collection {

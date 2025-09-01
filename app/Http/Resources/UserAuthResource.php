@@ -3,11 +3,16 @@
 namespace App\Http\Resources;
 
 use App\Http\Controllers\Backend\User\ProfilePictureController;
+use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(
  *      title="UserAuth",
+ *      required={"id", "displayName", "username", "profilePicture", "totalDistance", "totalDuration", "points",
+ *      "mastodonUrl", "privateProfile", "preventIndex", "likes_enabled", "mapProvider", "home", "language",
+ *      "defaultStatusVisibility", "roles"},
  *      @OA\Property(property="id", type="integer", example="1"),
  *      @OA\Property(property="displayName", type="string", example="Gertrud"),
  *      @OA\Property(property="username", type="string", example="Gertrud123"),
@@ -19,6 +24,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      @OA\Property(property="privateProfile", type="boolean", example="false"),
  *      @OA\Property(property="preventIndex", type="boolean", example="false"),
  *      @OA\Property(property="likes_enabled", type="boolean", example="true"),
+ *      @OA\Property(property="mapProvider", type="string", example="default"),
  *      @OA\Property(property="home", type="object", ref="#/components/schemas/StationResource"),
  *      @OA\Property(property="language", type="string", example="de"),
  *      @OA\Property(property="defaultStatusVisibility", type="integer", example=0),
@@ -29,6 +35,7 @@ class UserAuthResource extends JsonResource
 {
     public function toArray($request): array {
         $pointsEnabled = $request->user()?->points_enabled ?? true;
+        /** @var User $this */
         return [
             'id'                      => (int) $this->id,
             'displayName'             => (string) $this->name,
@@ -43,6 +50,7 @@ class UserAuthResource extends JsonResource
             'privateProfile'          => (bool) $this->private_profile,
             'preventIndex'            => $this->prevent_index,
             'likes_enabled'           => $this->likes_enabled,
+            'mapProvider'             => $this->mapprovider ?? 'default',
             'home'                    => new StationResource($this->home),
             'language'                => $this->language,
             'defaultStatusVisibility' => $this->default_status_visibility,

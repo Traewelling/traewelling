@@ -9,7 +9,7 @@ use App\Exceptions\ManualTripValidationException;
 use App\Http\Controllers\Backend\Transport\ManualTripCreator;
 use App\Http\Requests\ManualTripCreationRequest;
 use App\Http\Resources\TripResource;
-use App\Models\HafasOperator;
+use App\Models\Operator;
 use App\Models\Station;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -31,7 +31,6 @@ class TripController extends Controller
             $creator = new ManualTripCreator();
             $creator->setCategory(HafasTravelType::from($validated['category']))
                     ->setLine($validated['lineName'], $validated['journeyNumber'])
-                    ->setOperator(HafasOperator::find($validated['operatorId']))
                     ->setOrigin(
                         Station::findOrFail($validated['originId']),
                         Carbon::parse($validated['originDeparturePlanned']),
@@ -42,6 +41,11 @@ class TripController extends Controller
                         Carbon::parse($validated['destinationArrivalPlanned']),
                         isset($validated['destinationArrivalReal']) ? Carbon::parse($validated['destinationArrivalReal']) : null
                     );
+
+            if (isset($validated['operatorId'])) {
+                $operator = Operator::findOrFail($validated['operatorId']);
+                $creator->setOperator($operator);
+            }
 
             foreach ($validated['stopovers'] ?? [] as $stopover) {
                 $creator->addStopover(

@@ -3,9 +3,6 @@
 namespace App\Providers;
 
 use App\Http\Controllers\Backend\Auth\AuthorizationController;
-use App\Models\HafasOperator;
-use App\Policies\OperatorPolicy;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Pagination\Paginator;
@@ -56,7 +53,5 @@ class AppServiceProvider extends ServiceProvider
         Blade::if("admin", static function(): bool {
             return auth()->user()?->hasRole('admin');
         });
-
-        Gate::policy(HafasOperator::class, OperatorPolicy::class); // TODO: remove after HafasOperator Model is renamed to Operator (then no need for this manual policy registration)
     }
 }

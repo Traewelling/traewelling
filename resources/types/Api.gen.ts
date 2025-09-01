@@ -39,7 +39,7 @@ export enum TravelType {
 
 /**
  * visibility
- * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
+ * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
  *  *      user specify?
  * @example 0
  */
@@ -49,6 +49,7 @@ export enum StatusVisibility {
   Value2 = 2,
   Value3 = 3,
   Value4 = 4,
+  Value5 = 5,
 }
 
 /**
@@ -161,6 +162,33 @@ export interface FeatureCollection {
 }
 
 /**
+ * License DTO
+ * Data Transfer Object for licenses
+ */
+export interface LicenseDto {
+  /**
+   * Name of the license
+   * @example "CC BY 4.0"
+   */
+  licenseName: string;
+  /**
+   * Attribution string for the license
+   * @example "Provided by OpenStreetMap contributors"
+   */
+  attributionString: string | null;
+  /**
+   * URL to the license text
+   * @example "https://creativecommons.org/licenses/by/4.0/"
+   */
+  licenseUrl: string | null;
+  /**
+   * URL to the source of the data
+   * @example "https://www.openstreetmap.org/"
+   */
+  sourceUrl: string | null;
+}
+
+/**
  * LivePointDto
  * All necessary information to calculate live position
  */
@@ -206,19 +234,19 @@ export interface LivePointDto {
  */
 export interface MentionDto {
   /** User model */
-  user?: User;
+  user: UserResource;
   /**
    * position
    * @format int
    * @example 0
    */
-  position?: number;
+  position: number;
   /**
    * length
    * @format integer
    * @example 4
    */
-  length?: number;
+  length: number;
 }
 
 /**
@@ -266,6 +294,56 @@ export interface Station {
   rilIdentifier?: string | null;
 }
 
+/**
+ * UpdateProfileInformationRequest
+ * UpdateProfileInformationRequest
+ */
+export interface UpdateProfileInformationRequest {
+  /**
+   * @maxLength 25
+   * @example "gertrud123"
+   */
+  username?: string;
+  /**
+   * @maxLength 50
+   * @example "Gertrud"
+   */
+  displayName?: string;
+  /** @example false */
+  privateProfile?: boolean | null;
+  /** @example false */
+  preventIndex?: boolean | null;
+  /** @example 1 */
+  privacyHideDays?: number | null;
+  defaultStatusVisibility?: StatusVisibility | null;
+  mastodonVisibility?: MastodonVisibility | null;
+  mapProvider?: MapProvider | null;
+  friendCheckin?: FriendCheckinSetting | null;
+  /** @example true */
+  likesEnabled?: boolean | null;
+  /** @example true */
+  pointsEnabled?: boolean | null;
+  /**
+   * @maxLength 500
+   * @example "Hi there! I am Gertrud!"
+   */
+  bio?: string | null;
+  /**
+   * Experimental features enabled
+   * @example false
+   */
+  experimental?: boolean;
+  profileLinks?: ProfileLinkResource[] | null;
+  /** @example "Europe/Berlin" */
+  timezone?: string;
+  /**
+   * @format email
+   * @maxLength 255
+   * @example "mail@example.com"
+   */
+  email?: string;
+}
+
 export interface AlertResource {
   /** @example "123e4567-e89b-12d3-a456-426614174000" */
   id: string;
@@ -300,11 +378,11 @@ export interface AlertTranslationResource {
 /** Area */
 export interface AreaResource {
   /** @example "Karlsruhe" */
-  name?: string;
+  name: string;
   /** @example "true" */
-  default?: boolean;
+  default: boolean;
   /** @example "1" */
-  adminLevel?: number;
+  adminLevel: number;
 }
 
 /** CheckinResponse */
@@ -318,23 +396,20 @@ export interface CheckinSuccessResource {
 
 /** Client */
 export interface ClientResource {
-  /**
-   * Model -> OAuthClient
-   * @example 1
-   */
-  id?: number;
+  /** @example 1 */
+  id: number;
   /** @example "Träwelling App" */
-  name?: string;
+  name: string;
   /** @example "https://traewelling.de/privacy-policy" */
-  privacyPolicyUrl?: string;
+  privacyPolicyUrl: string;
 }
 
 /** DataSourceResource */
 export interface DataSourceResource {
   /** @example "foobar" */
-  id?: string;
+  id: string;
   /** @example "Provided by foobar under CC BY 4.0" */
-  attribution?: string;
+  attribution: string;
 }
 
 /** EventDetails */
@@ -352,29 +427,30 @@ export interface EventDetailsResource {
 /** Event */
 export interface EventResource {
   /** @example 39 */
-  id?: number;
+  id: number;
   /** @example "9-Euro-Ticket" */
-  name?: string;
+  name: string;
   /** @example "9_euro_ticket" */
-  slug?: string;
+  slug: string;
   /** @example "NeunEuroTicket" */
-  hashtag?: string;
+  hashtag: string;
   /** @example "9-Euro-Ticket GmbH" */
-  host?: string;
+  host: string;
   /** @example "https://9-euro-ticket.de" */
-  url?: string;
+  url: string;
   /**
    * @format date-time
    * @example "2022-01-01T00:00:00+00:00"
    */
-  begin?: string;
+  begin: string;
   /**
    * @format date-time
    * @example "2022-01-02T00:00:00+00:00"
    */
-  end?: string;
+  end: string;
   /** train station model */
-  station?: Station;
+  station: Station;
+  isPride: StationResource;
 }
 
 /** LeaderboardUserResource */
@@ -401,239 +477,281 @@ export interface LeaderboardUserResource {
  */
 export interface LightUserResource {
   /** @example 1 */
-  id?: number;
+  id: number;
   /** @example "Gertrud" */
-  displayName?: string;
+  displayName: string;
   /** @example "Gertrud123" */
-  username?: string;
+  username: string;
   /** @example "https://traewelling.de/@Gertrud123/picture" */
-  profilePicture?: string;
+  profilePicture: string;
   /** @example "https://traewelling.social/@Gertrud123" */
-  mastodonUrl?: string;
+  mastodonUrl: string;
   /** @example false */
-  preventIndex?: boolean;
+  preventIndex: boolean;
 }
 
 export interface OperatorResource {
   /** @example 1 */
-  id?: number;
+  id: number;
   /** @example "db-regio-ag-nord" */
-  identifier?: string;
+  identifier: string | null;
   /** @example "DB Regio AG Nord" */
-  name?: string;
+  name: string;
+}
+
+/**
+ * ProfileLinkResource
+ * ProfileLinkResource
+ */
+export interface ProfileLinkResource {
+  /** @example "website" */
+  name?:
+    | "website"
+    | "instagram"
+    | "bluesky"
+    | "facebook"
+    | "mastodon"
+    | "tiktok"
+    | "github";
+  /** @example "https://traewelling.de" */
+  url?: string;
 }
 
 /** Station */
 export interface StationResource {
   /** @example "1" */
-  id?: number;
+  id: number;
   /** @example "Karlsruhe Hbf" */
-  name?: string;
+  name: string;
   /** @example "48.993207" */
-  latitude?: number;
+  latitude: number;
   /** @example "8.400977" */
-  longitude?: number;
+  longitude: number;
   /** @example "8000191" */
-  ibnr?: string;
+  ibnr: string;
   /** @example "RK" */
-  rilIdentifier?: string;
-  areas?: AreaResource[];
+  rilIdentifier: string;
+  areas: AreaResource[];
+}
+
+/** StatisticsGlobalData */
+export interface StatisticsGlobalData {
+  /**
+   * Globally travelled distance in meters
+   * @example 1000
+   */
+  distance: number;
+  /**
+   * Globally travelled duration in minutes
+   * @example 1000
+   */
+  duration: number;
+  /**
+   * Number of active users
+   * @example 1000
+   */
+  activeUsers: number;
 }
 
 /** Status */
 export interface StatusResource {
   /** @example 12345 */
-  id?: number;
+  id: number;
   /**
    * User defined status text
    * @example "Hello world!"
    */
-  body?: any;
+  body: any;
   /** Mentions in the status body */
-  bodyMentions?: MentionDto[];
+  bodyMentions: MentionDto[];
   /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
-  business?: Business;
+  business: Business;
   /**
    * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
    *  *      user specify?
    */
-  visibility?: StatusVisibility;
+  visibility: StatusVisibility;
   /**
    * How many people have liked this status
    * @example 12
    */
-  likes?: number;
+  likes: number;
   /**
    * Did the currently authenticated user like this status? (if unauthenticated = false)
    * @example true
    */
-  liked?: boolean;
+  liked: boolean;
   /**
    * Do the author of this status and the currently authenticated user allow liking of statuses? Only show the like UI if set to true
    * @example true
    */
-  isLikable?: boolean;
-  client?: ClientResource;
+  isLikable: boolean;
+  client: ClientResource;
   /**
    * creation date of this status
    * @format datetime
    * @example "2022-07-17T13:37:00+02:00"
    */
-  createdAt?: string;
-  train?: TransportResource;
-  event?: EventResource | null;
+  createdAt: string;
+  train: TransportResource;
+  event: EventResource | null;
   /** User model with just basic information */
-  userDetails?: LightUserResource;
-  tags?: StatusTagResource[];
+  userDetails: LightUserResource;
+  tags: StatusTagResource[];
 }
 
 /** StatusTagResource */
 export interface StatusTagResource {
   /** @example "trwl:vehicle_number" */
-  key?: string;
+  key: string;
   /** @example "94 80 0450 921 D-AVG" */
-  value?: string;
+  value: string;
   /** @example "1" */
-  visibility?: number;
+  visibility: number;
 }
 
 /** StopoverResource */
 export interface StopoverResource {
   /** @example 12345 */
-  id?: number;
+  id: number;
   /**
    * name of the station
    * @example "Karlsruhe Hbf"
    */
-  name?: string;
+  name: string;
   /**
    * Identifier specified in 'Richtline 100' of the Deutsche Bahn
    * @example "RK"
    */
-  rilIdentifier?: string | null;
+  rilIdentifier: string | null;
   /**
    * IBNR identifier of Deutsche Bahn
    * @example "8000191"
    */
-  evaIdentifier?: string | null;
+  evaIdentifier: string | null;
   /**
    * currently known arrival time. Equal to arrivalReal if known. Else equal to arrivalPlanned.
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  arrival?: string | null;
+  arrival: string | null;
   /**
    * planned arrival according to timetable records
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  arrivalPlanned?: string | null;
+  arrivalPlanned: string | null;
   /**
    * real arrival according to live data
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  arrivalReal?: string | null;
+  arrivalReal: string | null;
   /**
    * planned arrival platform according to timetable records
    * @example "5"
    */
-  arrivalPlatformPlanned?: string | null;
+  arrivalPlatformPlanned: string | null;
   /**
    * real arrival platform according to live data
    * @example "5 A-F"
    */
-  arrivalPlatformReal?: string | null;
+  arrivalPlatformReal: string | null;
   /**
    * currently known departure time. Equal to departureReal if known. Else equal to departurePlanned.
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  departure?: string | null;
+  departure: string | null;
   /**
    * planned departure according to timetable records
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  departurePlanned?: string | null;
+  departurePlanned: string | null;
   /**
    * real departure according to live data
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  departureReal?: string | null;
+  departureReal: string | null;
   /**
    * planned departure platform according to timetable records
    * @example "5"
    */
-  departurePlatformPlanned?: string | null;
+  departurePlatformPlanned: string | null;
   /**
    * real departure platform according to live data
    * @example "5 A-F"
    */
-  departurePlatformReal?: string | null;
+  departurePlatformReal: string | null;
   /** @example "5 A-F" */
-  platform?: string | null;
+  platform: string | null;
   /**
    * Is there a delay in the arrival time?
    * @example false
    */
-  isArrivalDelayed?: boolean;
+  isArrivalDelayed: boolean;
   /**
    * Is there a delay in the departure time?
    * @example false
    */
-  isDepartureDelayed?: boolean;
+  isDepartureDelayed: boolean;
   /**
    * is this stopover cancelled?
    * @example false
    */
-  cancelled?: boolean;
+  cancelled: boolean;
 }
 
 /** TransportResource */
 export interface TransportResource {
   /** @example "4711" */
-  trip?: number;
+  trip: number;
   /** @example "1|1234|567" */
-  hafasId?: string;
+  hafasId: string;
   /** Category of transport.  */
-  category?: HafasTravelType;
+  category: HafasTravelType;
   /**
    * Internal number of the journey
    * @example "4-a6s8-8"
    */
-  number?: any;
+  number: any;
   /** @example "S 1" */
-  lineName?: string;
+  lineName: string;
   /** @example 85639 */
-  journeyNumber?: number;
+  journeyNumber: number;
+  /**
+   * Manual journey number, if set by the user. This is intended for use cases like ICE lines in germany that have line number but are more widely known by their train number
+   * @example "ICE 4"
+   */
+  manualJourneyNumber?: string | null;
   /**
    * Distance in meters
    * @example 10000
    */
-  distance?: number;
+  distance: number;
   /** @example 37 */
-  points?: number;
+  points: number;
   /**
    * Duration in minutes
    * @example 30
    */
-  duration?: number;
+  duration: number;
   /**
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  manualDeparture?: string | null;
+  manualDeparture: string | null;
   /**
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"
    */
-  manualArrival?: string | null;
-  origin?: StopoverResource;
-  destination?: StopoverResource;
-  operator?: OperatorResource;
-  dataSource?: DataSourceResource;
+  manualArrival: string | null;
+  origin: StopoverResource;
+  destination: StopoverResource;
+  operator: OperatorResource | null;
+  dataSource: DataSourceResource | null;
 }
 
 /** TripResource */
@@ -670,69 +788,71 @@ export interface TrustedUserResource {
 /** UserAuth */
 export interface UserAuthResource {
   /** @example "1" */
-  id?: number;
+  id: number;
   /** @example "Gertrud" */
-  displayName?: string;
+  displayName: string;
   /** @example "Gertrud123" */
-  username?: string;
+  username: string;
   /** @example "https://traewelling.de/@Gertrud123/picture" */
-  profilePicture?: string;
+  profilePicture: string;
   /** @example "100" */
-  totalDistance?: number;
+  totalDistance: number;
   /** @example "100" */
-  totalDuration?: number;
+  totalDuration: number;
   /** @example "100" */
-  points?: number;
+  points: number;
   /** @example "https://mastodon.social/@Gertrud123" */
-  mastodonUrl?: string | null;
+  mastodonUrl: string | null;
   /** @example "false" */
-  privateProfile?: boolean;
+  privateProfile: boolean;
   /** @example "false" */
-  preventIndex?: boolean;
+  preventIndex: boolean;
   /** @example "true" */
-  likes_enabled?: boolean;
-  home?: StationResource;
+  likes_enabled: boolean;
+  /** @example "default" */
+  mapProvider: string;
+  home: StationResource;
   /** @example "de" */
-  language?: string;
+  language: string;
   /** @example 0 */
-  defaultStatusVisibility?: number;
+  defaultStatusVisibility: number;
   /** @example ["admin","open-beta","closed-beta"] */
-  roles?: string[];
+  roles: string[];
 }
 
 /** UserProfileSettings */
 export interface UserProfileSettingsResource {
   /** @example "Gertrud123" */
-  username?: string;
+  username: string;
   /** @example "Gertrud" */
-  displayName?: string;
+  displayName: string;
   /** @example "https://traewelling.de/@Gertrud123/picture" */
-  profilePicture?: string;
+  profilePicture: string;
   /** @example false */
-  privateProfile?: boolean;
+  privateProfile: boolean;
   /**
    * Did the user choose to prevent search engines from indexing their profile?
    * @example false
    */
-  preventIndex?: boolean;
+  preventIndex: boolean;
   /**
    * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
    *  *      user specify?
    */
-  defaultStatusVisibility?: StatusVisibility;
+  defaultStatusVisibility: StatusVisibility;
   /**
    * Number of days to hide the user's location history
    * @example 1
    */
-  privacyHideDays?: number;
+  privacyHideDays: number;
   /** @example true */
-  password?: boolean;
+  password: boolean;
   /** @example "gertrud@traewelling.de" */
-  email?: string;
+  email: string;
   /** @example true */
-  emailVerified?: boolean;
+  emailVerified: boolean;
   /** @example true */
-  profilePictureSet?: boolean;
+  profilePictureSet: boolean;
   /** @example "https://mastodon.social/@Gertrud123" */
   mastodon?: string;
   /**
@@ -742,9 +862,125 @@ export interface UserProfileSettingsResource {
   mastodonVisibility?: MastodonVisibility;
   friendCheckin?: FriendCheckinSetting;
   /** @example true */
-  likesEnabled?: boolean;
+  likesEnabled: boolean;
   /** @example true */
+  pointsEnabled: boolean;
+  /** What type of map provider (cargo, open-railway-map) did the user specify? */
+  mapProvider: MapProvider;
+  /** @example "Europe/Berlin" */
+  timezone: string;
+  /** @example "Hi there! I am Gertrud!" */
+  bio?: string;
+  profileLinks: ProfileLinkResource[];
+  /**
+   * Experimental features enabled
+   * @example false
+   */
+  experimental: boolean;
+}
+
+/**
+ * User
+ * User model
+ */
+export interface UserResource {
+  /**
+   * ID
+   * @example 1
+   */
+  id?: number;
+  /**
+   * Display name of the user
+   * @example "Gertrud"
+   */
+  displayName?: any;
+  /**
+   * username of user
+   * @example "Gertrud123"
+   */
+  username?: any;
+  /**
+   * URL of the profile picture of the user
+   * @example "https://traewelling.de/@Gertrud123/picture"
+   */
+  profilePicture?: any;
+  /**
+   * distance travelled by train in meters
+   * @example 12345
+   */
+  trainDistance?: number;
+  /**
+   * duration travelled by train in minutes
+   * @example 6
+   */
+  trainDuration?: number;
+  /**
+   * Current points of the last 7 days
+   * @example 300
+   */
+  points?: number;
+  /**
+   * URL to the Mastodon profile of the user
+   * @example "https://chaos.social/@traewelling"
+   */
+  mastodonUrl?: any;
+  /**
+   * is this profile set to private?
+   * @example false
+   */
+  privateProfile?: boolean;
+  /**
+   * Does this profile allow points? Only offer the UI to show points at any status if this setting is set to true. If set to false, the points will always be displayed as 0
+   * @example true
+   */
+  points_enabled?: boolean;
+  /**
+   * Does this profile allow likes? Only offer the UI to like any status if this setting is set to true. If set to false, the likes API will return 403.
+   * @example true
+   */
+  likes_enabled?: boolean;
+  /**
+   * Does this profile allow points? Only offer the UI to show points at any status if this setting is set to true. If set to false, the points will always be displayed as 0
+   * @example true
+   */
   pointsEnabled?: boolean;
+  /**
+   * Can the currently authenticated user see the statuses of this user?
+   * @example false
+   */
+  userInvisibleToMe?: boolean;
+  /**
+   * Is this user muted by the currently authenticated user?
+   * @example false
+   */
+  muted?: boolean;
+  /**
+   * Does the currently authenticated user follow this user?
+   * @example false
+   */
+  following?: boolean;
+  /**
+   * Is there a currently pending follow request?
+   * @example false
+   */
+  followPending?: boolean;
+  /**
+   * Is the user following you?
+   * @example false
+   */
+  followedBy?: boolean;
+  /**
+   * Did the user choose to prevent search engines from indexing their profile?
+   * @example false
+   */
+  preventIndex?: boolean;
+  /**
+   * Bio of the user
+   * @example "Hi there! I am Gertrud!"
+   */
+  bio?: string;
+  /** Profile links of the user */
+  profileLinks?: ProfileLinkResource[];
 }
 
 /** BearerTokenResponse */
@@ -1180,113 +1416,6 @@ export interface SuccessResponse {
 }
 
 /**
- * User
- * User model
- */
-export interface User {
-  /**
-   * ID
-   * ID
-   * @format int
-   * @example 1
-   */
-  id?: number;
-  /**
-   * displayName
-   * Display name of the user
-   * @example "Gertrud"
-   */
-  displayName?: any;
-  /**
-   * username
-   * username of user
-   * @example "Gertrud123"
-   */
-  username?: string;
-  /**
-   * profilePicture
-   * URL of the profile picture of the user
-   * @example "https://traewelling.de/@Gertrud123/picture"
-   */
-  profilePicture?: number;
-  /**
-   * trainDistance
-   * distance travelled by train in meters
-   * @format int
-   * @example 12345
-   */
-  trainDistance?: number;
-  /**
-   * trainDuration
-   * duration travelled by train in minutes
-   * @format int
-   * @example 6
-   */
-  trainDuration?: number;
-  /**
-   * points
-   * Current points of the last 7 days
-   * @format int
-   * @example 300
-   */
-  points?: number;
-  /**
-   * mastodonUrl
-   * URL to the Mastodon profile of the user
-   * @example "https://chaos.social/@traewelling"
-   */
-  mastodonUrl?: string | null;
-  /**
-   * privateProfile
-   * is this profile set to private?
-   * @example false
-   */
-  privateProfile?: boolean;
-  /**
-   * likes_enabled
-   * Does this profile allow likes? Only offer the UI to like any status if this setting is set to true. If set to false, the likes API will return 403.
-   * @example true
-   */
-  likes_enabled?: boolean;
-  /**
-   * userInvisibleToMe
-   * Can the currently authenticated user see the statuses of this user?
-   * @example false
-   */
-  userInvisibleToMe?: boolean;
-  /**
-   * muted
-   * Is this user muted by the currently authenticated user?
-   * @example false
-   */
-  muted?: boolean;
-  /**
-   * following
-   * Does the currently authenticated user follow this user?
-   * @example false
-   */
-  following?: boolean;
-  /**
-   * followPending
-   * Is there a currently pending follow request?
-   * @example false
-   */
-  followPending?: boolean;
-  /**
-   * followedBy
-   * Is the user following you?
-   * @example false
-   */
-  followedBy?: boolean;
-  /**
-   * preventIndex
-   * Did the user choose to prevent search engines from indexing their profile?
-   * @example false
-   */
-  preventIndex?: boolean;
-}
-
-/**
  * Webhook
  * Webhook model
  */
@@ -1426,6 +1555,7 @@ type CancelToken = Symbol | string | number;
 
 export enum ContentType {
   Json = "application/json",
+  JsonApi = "application/vnd.api+json",
   FormData = "multipart/form-data",
   UrlEncoded = "application/x-www-form-urlencoded",
   Text = "text/plain",
@@ -1489,6 +1619,10 @@ export class HttpClient<SecurityDataType = unknown> {
 
   private contentFormatters: Record<ContentType, (input: any) => any> = {
     [ContentType.Json]: (input: any) =>
+      input !== null && (typeof input === "object" || typeof input === "string")
+        ? JSON.stringify(input)
+        : input,
+    [ContentType.JsonApi]: (input: any) =>
       input !== null && (typeof input === "object" || typeof input === "string")
         ? JSON.stringify(input)
         : input,
@@ -1880,7 +2014,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: User;
+          data?: UserResource;
         },
         void
       >({
@@ -1904,7 +2038,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: User;
+          data?: UserResource;
         },
         void
       >({
@@ -1927,7 +2061,7 @@ export class Api<
     getFollowers: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: User[];
+          data?: UserResource[];
           /** pagination links */
           links?: Links;
           /** Pagination meta data */
@@ -1954,7 +2088,7 @@ export class Api<
     getFollowRequests: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: User[];
+          data?: UserResource[];
           /** pagination links */
           links?: Links;
           /** Pagination meta data */
@@ -1981,7 +2115,7 @@ export class Api<
     getFollowings: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: User[];
+          data?: UserResource[];
           /** pagination links */
           links?: Links;
           /** Pagination meta data */
@@ -2215,7 +2349,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: User;
+          data?: UserResource;
         },
         void
       >({
@@ -2252,7 +2386,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: User;
+          data?: UserResource;
         },
         void
       >({
@@ -2290,7 +2424,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: User;
+          data?: UserResource;
         },
         void
       >({
@@ -2316,7 +2450,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: User;
+          data?: UserResource;
         },
         void
       >({
@@ -2340,7 +2474,7 @@ export class Api<
       this.request<
         {
           /** User model */
-          data?: User;
+          data?: UserResource;
         },
         void
       >({
@@ -2352,30 +2486,25 @@ export class Api<
       }),
 
     /**
-     * @description Returns paginated statuses of a single user specified by the username
+     * @description Returns paginated search results for a user based on the given query.
      *
      * @tags User
      * @name SearchUsers
-     * @summary Get paginated statuses for single user
-     * @request GET:/user/search/{?query}
+     * @summary Get paginated search results for combined search on username and (display)name
+     * @request GET:/user/search/{query}
      * @secure
      */
     searchUsers: (
-      queryParams: {
+      query?: any,
+      queryParams?: {
         /** Page of pagination */
         page?: number;
-        /** Search for parts username */
-        username?: any;
-        /** Search for parts of users (display)name */
-        name?: any;
-        query: string;
       },
-      query?: any,
       params: RequestParams = {},
     ) =>
       this.request<
         {
-          data?: User[];
+          data?: UserResource[];
           /** pagination links */
           links?: Links;
           /** Pagination meta data */
@@ -2383,9 +2512,47 @@ export class Api<
         },
         void
       >({
-        path: `/user/search/`,
+        path: `/user/search/${query}`,
         method: "GET",
         query: queryParams,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Returns paginated search results for users based on the given parameters.
+     *
+     * @tags User
+     * @name SearchUsersByParameters
+     * @summary Get paginated search results for users by either username or (display)name
+     * @request GET:/user/search
+     * @secure
+     */
+    searchUsersByParameters: (
+      query?: {
+        /** Page of pagination */
+        page?: number;
+        /** Search for parts username */
+        username?: any;
+        /** Search for parts of users (display)name */
+        name?: any;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: UserResource[];
+          /** pagination links */
+          links?: Links;
+          /** Pagination meta data */
+          meta?: PaginationMeta;
+        },
+        void
+      >({
+        path: `/user/search`,
+        method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,
@@ -2404,7 +2571,7 @@ export class Api<
     getLikesForStatus: (id?: number, params: RequestParams = {}) =>
       this.request<
         {
-          data?: User[];
+          data?: UserResource[];
         },
         void
       >({
@@ -2555,7 +2722,7 @@ export class Api<
       }),
 
     /**
-     * @description Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b> *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions *      we recommend the following tags in the trwl namespace:<br> *      <ul> *          <li>trwl:seat (i.e. 61)</li> *          <li>trwl:wagon (i.e. 25)</li> *          <li>trwl:ticket (i.e. BahnCard 100 first))</li> *          <li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li> *          <li>trwl:locomotive_class (BR424, BR450)</li> *          <li>trwl:wagon_class (i.e. Bpmz)</li> *          <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li> *          <li>trwl:vehicle_number (i.e. 425 001, Tz9001, 123, ...)</li> *          <li>trwl:passenger_rights (i.e. yes / no / ID of claim)</li> *      </ul>
+     * @description Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b> *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions *      we recommend the following tags in the trwl namespace:<br> *      <ul> *          <li>trwl:seat (i.e. 61)</li> *          <li>trwl:wagon (i.e. 25)</li> *          <li>trwl:ticket (i.e. BahnCard 100 first))</li> *          <li>trwl:price (420,69 €)</li> *          <li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li> *          <li>trwl:locomotive_class (BR424, BR450)</li> *          <li>trwl:journey_number (i.e. 1234. Used as a work-around for missing journey numbers)</li> *          <li>trwl:wagon_class (i.e. Bpmz)</li> *          <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li> *          <li>trwl:vehicle_number (i.e. 425 001, Tz9001, 123, ...)</li> *          <li>trwl:passenger_rights (i.e. yes / no / ID of claim)</li> *      </ul>
      *
      * @tags Status
      * @name CreateSingleStatusTag
@@ -2857,32 +3024,7 @@ export class Api<
      * @secure
      */
     updateProfileSettings: (
-      data: {
-        /**
-         * @maxLength 25
-         * @example "gertrud123"
-         */
-        username?: string;
-        /**
-         * @maxLength 50
-         * @example "Gertrud"
-         */
-        displayName?: string;
-        /** @example false */
-        privateProfile?: boolean | null;
-        /** @example false */
-        preventIndex?: boolean | null;
-        /** @example 1 */
-        privacyHideDays?: number | null;
-        defaultStatusVisibility?: StatusVisibility | null;
-        mastodonVisibility?: MastodonVisibility | null;
-        mapProvider?: MapProvider | null;
-        friendCheckin?: FriendCheckinSetting | null;
-        /** @example true */
-        likesEnabled?: boolean | null;
-        /** @example true */
-        pointsEnabled?: boolean | null;
-      },
+      data: UpdateProfileInformationRequest,
       params: RequestParams = {},
     ) =>
       this.request<
@@ -3261,28 +3403,12 @@ export class Api<
     getGlobalStatistics: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: {
-            /**
-             * Globally travelled distance in meters
-             * @example 1000
-             */
-            distance?: number;
-            /**
-             * Globally travelled duration in minutes
-             * @example 1000
-             */
-            duration?: number;
-            /**
-             * Number of active users
-             * @example 1000
-             */
-            activeUsers?: number;
-            meta?: {
-              /** @example "2021-01-01T00:00:00.000000Z" */
-              from?: any;
-              /** @example "2021-02-01T00:00:00.000000Z" */
-              until?: any;
-            };
+          data?: StatisticsGlobalData;
+          meta?: {
+            /** @example "2021-01-01T00:00:00.000000Z" */
+            from?: any;
+            /** @example "2021-02-01T00:00:00.000000Z" */
+            until?: any;
           };
         },
         any
@@ -3565,6 +3691,13 @@ export class Api<
                */
               next?: string;
             };
+            /** List of licenses that were filtered out */
+            removedLicenses?: (string | LicenseDto)[];
+            /**
+             * Number of removed entries due to license filtering
+             * @example 2
+             */
+            removedCount?: number;
           };
         },
         void
@@ -3631,7 +3764,12 @@ export class Api<
       },
       params: RequestParams = {},
     ) =>
-      this.request<TripResource, void>({
+      this.request<
+        {
+          data?: TripResource[];
+        },
+        void
+      >({
         path: `/trains/trip`,
         method: "GET",
         query: query,

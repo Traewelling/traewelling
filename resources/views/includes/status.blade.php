@@ -240,7 +240,7 @@
                    data-bs-placement="top"></i>
             </li>
             <li class="like-text list-inline-item">
-                <div class="dropdown">
+                <div class="dropdown dropdown-flex">
                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                         &nbsp;
                         <i class="fa fa-ellipsis-vertical" aria-hidden="true"></i>
@@ -293,7 +293,8 @@
                                             'start' => $status->checkin->originStopover->station->id,
                                             'destination' => $status->checkin->destinationStopover->station->id,
                                             'departure' => $status->checkin->originStopover->departure_planned->toIso8601String(),
-                                            'idType' => 'trwl'
+                                            'idType' => 'trwl',
+                                            'category' => $status->checkin->trip->category->value,
                                         ]) }}" class="dropdown-item">
                                         <div class="dropdown-icon-suspense">
                                             <i class="fas fa-user-plus" aria-hidden="true"></i>

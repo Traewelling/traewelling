@@ -2,12 +2,15 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Controllers\Backend\Transport\dtos\StationDto;
 use App\Models\Station;
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(
  *     title="Station",
+ *     required={"id", "name", "latitude", "longitude", "ibnr", "rilIdentifier", "areas"},
  *     @OA\Property(property="id", type="integer", example="1"),
  *     @OA\Property(property="name", type="string", example="Karlsruhe Hbf"),
  *     @OA\Property(property="latitude", type="number", example="48.993207"),
@@ -22,7 +25,7 @@ class StationResource extends JsonResource
     private bool $areasSet;
 
     public function __construct($station) {
-        $this->areasSet = $station instanceof Station;
+        $this->areasSet = $station instanceof Station || $station instanceof StationDto;
 
         parent::__construct($station);
     }

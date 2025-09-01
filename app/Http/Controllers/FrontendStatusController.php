@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\User\DashboardController;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
@@ -26,18 +25,24 @@ class FrontendStatusController extends Controller
     }
 
     public function getDashboard(): Renderable|RedirectResponse {
+        if (auth()->user()?->hasRole('open-beta')) {
+            return view('beta.vue-dashboard');
+        }
 
         $statuses = DashboardController::getPrivateDashboard(auth()->user());
 
         return view('dashboard', [
             'statuses'         => $statuses,
-            'latest'           => StationController::getLatestArrivals(auth()->user()),
             'future'           => StatusBackend::getFutureCheckins(),
             'showGlobalButton' => auth()->user()->follows->count() === 0
         ]);
     }
 
     public function getActiveStatuses(): View {
+        if (auth()->user()?->hasRole('open-beta')) {
+            return view('beta.vue-activejourneys');
+        }
+
         return view('activejourneys', [
             'currentUser' => Auth::user(),
             'statuses'    => StatusBackend::getActiveStatuses(),
@@ -61,6 +66,12 @@ class FrontendStatusController extends Controller
     }
 
     public function getStatus($statusId): Renderable {
+        if (\auth()->user()?->hasRole('open-beta')) {
+            return view('beta.vue-status', [
+                'statusId' => $statusId,
+            ]);
+        }
+
         $status = StatusBackend::getStatus($statusId);
 
         try {

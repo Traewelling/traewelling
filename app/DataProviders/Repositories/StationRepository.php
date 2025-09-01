@@ -71,6 +71,9 @@ class StationRepository
                       ->values();
     }
 
+    /**
+     * @return Collection|Station[]
+     */
     public function getStationsByIdentifiers(string|array $stationIds, DataProvider $source, string $type = 'motis'): Collection {
         if (is_string($stationIds)) {
             $stationIds = [$stationIds];
@@ -200,5 +203,10 @@ class StationRepository
             $this->updateStationIdentifier($station, $stationId, $source);
         }
         return $station;
+    }
+
+    public function resetRelevance(StationIdentifier $identifier): void {
+        $identifier->relevance = 0;
+        $identifier->save();
     }
 }

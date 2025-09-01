@@ -7,22 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * @property string       $id
- * @property ?string      $provider
- * @property ?string      $country
- * @property ?string      $name
- * @property ?string      $human_name
- * @property ?string      $sources
- * @property ?string      $license_url
- * @property ?string      $source_url
- * @property ?string      $spdx
- * @property bool         $active
- * @property bool         $force_active
- *
- * --- Relations
- * @property-read License $manualLicense
- */
 class MotisSourceLicense extends Model
 {
     use HasUuids;
@@ -90,7 +74,32 @@ class MotisSourceLicense extends Model
         'CC-BY-NC-4.0' => [
             'name' => 'Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)',
             'url'  => 'https://spdx.org/licenses/CC-BY-NC-4.0.html'
-        ]
+        ],
+        'CC-BY-ND-4.0' => [
+            'name' => 'Creative Commons Attribution No Derivatives 4.0 International (CC-BY-ND-4.0)',
+            'url'  => 'https://spdx.org/licenses/CC-BY-ND-4.0.html'
+        ],
+        'MIT' => [
+            'name' => 'MIT License',
+            'url'  => 'https://spdx.org/licenses/MIT.html'
+        ],
+        'OGL-ROU-1.0'   => [
+            'name'        => 'Licența pentru o Guvernare Deschisă 1.0',
+            'url'         => 'https://data.gov.ro/base/images/logoinst/OGL-ROU-1.0.pdf',
+            'attribution' => 'Conține informații publice în baza Licenței pentru Guvernare Deschisa v1.0',
+        ],
+        'CC-BY-SA-3.0'    => [
+            'name' => 'Creative Commons Attribution Share Alike 3.0 Unported',
+            'url'  => 'https://spdx.org/licenses/CC-BY-SA-3.0.html'
+        ],
+        'Unlicense'    => [
+            'name' => 'The Unlicense',
+            'url'  => 'https://spdx.org/licenses/Unlicense.html'
+        ],
+        'IODL-2.0'    => [
+            'name' => 'Italian Open Data Licence',
+            'url'  => 'https://www.dati.gov.it/iodl/2.0'
+        ],
     ];
 
     public function trips(): HasMany {

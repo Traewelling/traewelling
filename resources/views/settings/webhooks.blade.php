@@ -2,7 +2,7 @@
 @section('title', __('settings.title-webhooks'))
 
 @section('content')
-    <div id="settings-webhooks">
+    <div id="vue-content">
         <Webhooks></Webhooks>
     </div>
 @endsection

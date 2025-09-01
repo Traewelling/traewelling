@@ -49,6 +49,9 @@ export const useUserStore = defineStore("user", {
         },
         hasBeta(): boolean {
             return this.user?.roles?.includes("open-beta") ?? false;
+        },
+        isAdmin(): boolean {
+            return this.user?.roles?.includes("admin") ?? false;
         }
     },
     actions: {

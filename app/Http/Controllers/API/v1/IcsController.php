@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\Backend\IcsController as BackendIcsController;
+use App\Http\Controllers\Backend\IcsTokenController as BackendIcsController;
 use App\Http\Resources\IcsEntryResource;
 use App\Models\IcsToken;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

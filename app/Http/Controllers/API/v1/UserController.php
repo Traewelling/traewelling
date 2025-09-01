@@ -434,11 +434,11 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *      path="/user/search/{?query}",
+     *      path="/user/search/{query}",
      *      operationId="searchUsers",
      *      tags={"User"},
-     *      summary="Get paginated statuses for single user",
-     *      description="Returns paginated statuses of a single user specified by the username",
+     *      summary="Get paginated search results for combined search on username and (display)name",
+     *      description="Returns paginated search results for a user based on the given query.",
      *      @OA\Parameter (
      *           name="query",
      *           in="path",
@@ -452,14 +452,58 @@ class UserController extends Controller
      *          in="query",
      *          @OA\Schema(type="integer")
      *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      ref="#/components/schemas/UserResource"
+     *                  )
+     *              ),
+     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
+     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
+     *          )
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       security={
+     *           {"passport": {"read-search"}}, {"token": {}}
+     *       }
+     *     )
+     *
+     */
+    public function search(string $query): AnonymousResourceCollection|JsonResponse {
+        try {
+            return UserResource::collection(BackendUserBackend::searchUser($query));
+        } catch (InvalidArgumentException) {
+            return $this->sendError(['message' => __('messages.exception.general')], 400);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/user/search",
+     *      operationId="searchUsersByParameters",
+     *      tags={"User"},
+     *      summary="Get paginated search results for users by either username or (display)name",
+     *      description="Returns paginated search results for users based on the given parameters.",
+     *      @OA\Parameter (
+     *          name="page",
+     *          description="Page of pagination",
+     *          required=false,
+     *          in="query",
+     *          @OA\Schema(type="integer")
+     *      ),
      *      @OA\Parameter (
      *          name="username",
      *          in="query",
+     *          required=false,
      *          description="Search for parts username",
      *      ),
      *      @OA\Parameter (
      *          name="name",
      *          in="query",
+     *          required=false,
      *          description="Search for parts of users (display)name",
      *      ),
      *      @OA\Response(
@@ -482,17 +526,12 @@ class UserController extends Controller
      *     )
      *
      */
-    public function search(Request $request, ?string $query = null): AnonymousResourceCollection|JsonResponse {
+    public function searchByParameters(Request $request): AnonymousResourceCollection|JsonResponse {
         try {
             $validated = $request->validate([
                                                 'username' => ['nullable', 'string', 'max:255'],
                                                 'name'     => ['nullable', 'string', 'max:255'],
                                             ]);
-            if (empty($validated) && isset($query)) {
-                // if no specific search criteria is given, search for the query in username and display_name
-                return UserResource::collection(BackendUserBackend::searchUser($query));
-            }
-
             if (empty($validated)) {
                 return response()->json(null, 400);
             }

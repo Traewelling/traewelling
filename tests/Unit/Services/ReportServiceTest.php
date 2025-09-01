@@ -6,14 +6,13 @@ use App\Enum\Report\ReportableSubject;
 use App\Enum\Report\ReportReason;
 use App\Repositories\ReportRepository;
 use App\Services\ReportService;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Unit\UnitTestCase;
 
 class ReportServiceTest extends UnitTestCase
 {
 
-    /**
-     * @dataProvider checkStringProvider
-     */
+    #[DataProvider('checkStringProvider')]
     public function testCheckString(array $expected, string $haystack): void {
         $reportService = new ReportService();
         $result        = $reportService->checkString($haystack);
@@ -25,9 +24,7 @@ class ReportServiceTest extends UnitTestCase
     }
 
 
-    /**
-     * @dataProvider checkStringProvider
-     */
+    #[DataProvider('checkStringProvider')]
     public function testCheckAndReport(array $expected, string $haystack): void {
         $repository = $this->mock(ReportRepository::class);
         if ($expected === []) {

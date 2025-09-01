@@ -1,6 +1,12 @@
 name: "🇬🇧 Report an Issue in English"
 description: "Report a bug or unexpected behavior in English"
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping us improve Traewelling! Please fill out the form as accurately as possible so we can quickly address the issue.
+        Also, please check if your problem already exists in the [open issues](https://github.com/Traewelling/traewelling/issues) or if the behavior is described under the [experimental features](https://github.com/Traewelling/traewelling/issues/3660) tracker.
+        In that case, you can simply comment on the issue instead of creating a new one.
   - type: textarea
     id: description
     attributes:

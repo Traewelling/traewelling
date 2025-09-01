@@ -4,10 +4,12 @@ namespace App\Dto;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(
  *     title="Mention",
+ *     required={"user", "position", "length"},
  *     description="Mentioned user and position in status body",
  *     @OA\Xml(
  *         name="Mention"

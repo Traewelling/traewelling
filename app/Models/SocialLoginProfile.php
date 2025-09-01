@@ -6,15 +6,6 @@ use App\Enum\MastodonVisibility;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * @property int                 id
- * @property int                 user_id
- * @property ?int                twitter_id
- * @property ?int                mastodon_id
- * @property ?int                mastodon_server
- * @property ?MastodonVisibility mastodon_visibility
- * @property ?string             mastodon_token
- */
 class SocialLoginProfile extends Model
 {
 

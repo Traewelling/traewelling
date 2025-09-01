@@ -4,6 +4,7 @@ namespace Tests\Unit\Services;
 
 use App\Dto\Coordinate;
 use App\Services\GeoService;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Unit\UnitTestCase;
 
 class GeoServiceTest extends UnitTestCase
@@ -32,9 +33,7 @@ class GeoServiceTest extends UnitTestCase
         $this->geoService = new GeoService();
     }
 
-    /**
-     * @dataProvider distanceProvider
-     */
+    #[DataProvider('distanceProvider')]
     public function testDistance($startLat, $startLon, $endLat, $endLon, $expected): void {
         $result = $this->geoService->getDistance(
             new Coordinate($startLat, $startLon),
@@ -43,9 +42,7 @@ class GeoServiceTest extends UnitTestCase
         $this->assertEquals($expected, $result);
     }
 
-    /**
-     * @dataProvider boundingBoxProvider
-     */
+    #[DataProvider('boundingBoxProvider')]
     public function testBoundingBox($lat, $lon, $radius, $topLeftLat, $topLeftLon, $bottomRightLat, $bottomRightLon): void {
         $center      = new Coordinate($lat, $lon);
         $boundingBox = $this->geoService->getBoundingBox($center, $radius);

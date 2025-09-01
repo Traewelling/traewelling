@@ -5,6 +5,7 @@ namespace Tests\Feature\Status;
 use App\Enum\TimeType;
 use App\Models\Checkin;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\FeatureTestCase;
 
 class TimeTypeTest extends FeatureTestCase
@@ -20,9 +21,7 @@ class TimeTypeTest extends FeatureTestCase
         ];
     }
 
-    /**
-     * @dataProvider getTimeTypeFindPreference
-     */
+    #[DataProvider('getTimeTypeFindPreference')]
     public function testTimeTypeFindPreference(bool $manual, bool $delay, TimeType $expected): void {
         // GIVEN
         $checkin = Checkin::factory()->create();

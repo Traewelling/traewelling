@@ -2,24 +2,10 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * // properties
- * @property string      id
- * @property integer     user_id
- * @property integer     trusted_id
- * @property Carbon|null expires_at
- * @property Carbon      created_at
- * @property Carbon      updated_at
- *
- * // relationships
- * @property User        user
- * @property User        trusted
- */
 class TrustedUser extends Model
 {
     use HasUuids;

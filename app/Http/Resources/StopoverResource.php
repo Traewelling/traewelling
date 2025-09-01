@@ -9,6 +9,10 @@ use OpenApi\Annotations as OA;
 /**
  * @OA\Schema(
  *     title="StopoverResource",
+ *     required={"id", "name", "rilIdentifier", "evaIdentifier", "arrival", "arrivalPlanned", "arrivalReal",
+ *     "arrivalPlatformPlanned", "arrivalPlatformReal", "departure", "departurePlanned", "departureReal",
+ *     "departurePlatformPlanned", "departurePlatformReal", "platform", "isArrivalDelayed", "isDepartureDelayed",
+ *     "cancelled"},
  *     @OA\Property(property="id", type="integer", example=12345),
  *     @OA\Property(property="name", type="string", example="Karlsruhe Hbf", description="name of the station"),
  *     @OA\Property(property="rilIdentifier", type="string", example="RK", nullable=true, description="Identifier specified in 'Richtline 100' of the Deutsche Bahn"),

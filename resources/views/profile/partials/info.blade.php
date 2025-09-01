@@ -1,62 +1,75 @@
 @php /** @var \App\Models\User $user */ @endphp
-<div class="card mb-4">
-    <div class="card-header">
-        {{ __('profile.statistics') }}
+<div class="card mb-3 shadow-sm rounded">
+    <div class="card-body">
+        <div class="row text-center gx-2 gy-3">
+            <div class="col">
+                <i class="fa fa-route fa-2x text-trwl"></i>
+                <div class="h5 mb-0">
+                    {{ number($user->train_distance / 1000, 1) }}
+                    <small class="text-muted">km</small>
+                </div>
+            </div>
+            <div class="col">
+                <i class="fa fa-stopwatch fa-2x text-trwl"></i>
+                <div class="h5 mb-0">
+                    {!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}
+                </div>
+            </div>
+            @if($user->points_enabled || (auth()->check() && auth()->user()->points_enabled))
+                <div class="col">
+                    <i class="fa fa-dice-d20 fa-2x text-trwl"></i>
+                    <div class="h5 mb-0">{{ $user->points }}
+                        <small class="text-muted">{{ __('profile.points-abbr') }}</small>
+                    </div>
+                </div>
+            @endif
+        </div>
     </div>
-
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-            <span class="font-weight-bold">
-                <i class="fa fa-route d-inline"></i>&nbsp;{{ number($user->train_distance / 1000) }}
-            </span>
-            <span class="small font-weight-lighter">km</span>
-        </li>
-        <li class="list-group-item">
-            <span class="font-weight-bold">
-                <i class="fa fa-stopwatch d-inline"></i>&nbsp;{!! durationToSpan(secondsToDuration($user->train_duration * 60)) !!}
-            </span>
-        </li>
-        @if($user->points_enabled || auth()->check() && auth()->user()->points_enabled)
-            <li class="list-group-item">
-                <span class="font-weight-bold">
-                    <i class="fa fa-dice-d20 d-inline"></i>&nbsp;{{ $user->points }}
-                </span>
-                <span class="small font-weight-lighter">
-                    {{__('profile.points-abbr')}}
-                </span>
-            </li>
-        @endif
-        @if($user->mastodonUrl)
-            <li class="list-group-item">
-                <span class="font-weight-bold ps-sm-2">
-                    <a href="{{ $user->mastodonUrl }}" rel="me" class="text-white" target="_blank">
-                        <i class="fab fa-mastodon d-inline"></i>
-                    </a>
-                </span>
-            </li>
-        @endif
-    </ul>
 </div>
 
-@if (!empty($user->bio) || !$user->profileLinks->isEmpty())
-    <div class="card mb-4">
-        <div class="card-header">
-            {{ __('profile.info') }}
-        </div>
+@php
+    use App\Enum\ProfileLinkName;
+    use App\Models\ProfileLink;
+
+    // workaround because of duplicate mastodon handling (TODO: Remove when mastodon is included in profileLinks)
+    $links = $user->profileLinks->toBase();
+
+    if ($user->mastodonUrl
+        && ! $links->contains('name', ProfileLinkName::MASTODON)
+    ) {
+        $links->push(new ProfileLink([
+            'user_id' => $user->id,
+            'name'    => ProfileLinkName::MASTODON,
+            'url'     => $user->mastodonUrl,
+        ]));
+    }
+@endphp
+@if($user->bio || $links->isNotEmpty())
+    <div class="card mb-3 shadow-sm rounded">
         <div class="card-body">
-            @if ($user->bio)
-                <h5>{{ __('profile.bio') }}</h5>
-                <p>{{ $user->bio }}</p>
+
+            @if($user->bio)
+                <p class="text-muted fst-italic m-0">
+                    <i class="fa fa-quote-left me-2"></i>
+                    <span class="profile-bio">{{ $user->bio }}</span>
+                </p>
             @endif
-            <h5>{{ __('welcome.footer.social') }}</h5>
-            @php /** @var \App\Models\ProfileLink $link */ @endphp
-            <div class="btn-broup shadow-none">
-                @foreach($user->profileLinks as $link)
-                    <a href="{{ $link->url }}" class="btn btn-sm" target="_blank">
-                        <i class="{{ $link->name->getIcon() }}"></i>
-                    </a>
-                @endforeach
-            </div>
+
+            @if($links->isNotEmpty())
+                <div class="d-flex justify-content-center flex-wrap gap-3 mt-4">
+                    @foreach($links as $link)
+                        <a href="{{ $link->url }}"
+                           class="text-muted fs-4"
+                           aria-label="{{ $link->name->getName() }}"
+                           target="_blank"
+                           rel="me">
+                            <i class="{{ $link->name->getIcon() }}"></i>
+                        </a>
+                    @endforeach
+                </div>
+            @endif
+
         </div>
     </div>
 @endif
+

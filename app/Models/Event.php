@@ -13,28 +13,6 @@ use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-/**
- * // properties
- * @property int     id
- * @property string  name
- * @property ?string hashtag
- * @property int     station_id
- * @property string  slug
- * @property string  host
- * @property string  url
- * @property Carbon  checkin_start Timestamp from when checkins are allowed
- * @property Carbon  checkin_end   Timestamp until when checkins are allowed
- * @property Carbon  event_start   Timestamp when the event starts (if different from checkin_start)
- * @property Carbon  event_end     Timestamp when the event ends (if different from checkin_end)
- *
- * // appends
- * @property int     totalDistance
- * @property int     totalDuration
- * @property bool    isPride
- * @property Carbon  start         Timestamp of event starts (returns event_start or checkin_start)
- * @property Carbon  end           Timestamp of event ends (returns event_end or checkin_end)
- * @property bool    hasExtendedCheckin
- */
 class Event extends Model
 {
 
@@ -93,7 +71,7 @@ class Event extends Model
 
     public function getHasExtendedCheckinAttribute(): bool {
         return ($this->event_start && $this->event_start != $this->checkin_start)
-            || ($this->event_end && $this->event_end != $this->checkin_end);
+               || ($this->event_end && $this->event_end != $this->checkin_end);
     }
 
     public function approvedBy(): HasOne {

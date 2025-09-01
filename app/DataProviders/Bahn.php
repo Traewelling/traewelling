@@ -7,6 +7,7 @@ use App\DataProviders\Repositories\TripRepository;
 use App\Dto\Coordinate;
 use App\Dto\Internal\BahnTrip;
 use App\Dto\Internal\Departure;
+use App\Dto\Internal\FilteredDepartures;
 use App\Enum\HafasTravelType;
 use App\Enum\ReiseloesungCategory;
 use App\Enum\TravelType;
@@ -128,6 +129,12 @@ class Bahn extends Controller implements DataProviderInterface
                                        ]);
     }
 
+    /**
+     * @throws HafasException
+     */
+    public function getFilteredDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false): FilteredDepartures {
+        return new FilteredDepartures($this->getDepartures($station, $when, $duration, $type, $localtime), collect());
+    }
 
     /**
      * @param Station         $station

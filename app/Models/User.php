@@ -12,7 +12,6 @@ use App\Jobs\SendVerificationEmail;
 use App\Services\PersonalDataSelection\UserGdprDataService;
 use Carbon\Carbon;
 use Illuminate\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,83 +20,17 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Passport\HasApiTokens;
-use Mastodon;
 use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\PersonalDataExport\ExportsPersonalData;
 use Spatie\PersonalDataExport\PersonalDataSelection;
 
 /**
- * // properties
- * @property int                  id
- * @property string               username
- * @property string               name
- * @property string|null          bio
- * @property string               avatar
- * @property string               email
- * @property Carbon               email_verified_at
- * @property string               password
- * @property int                  home_id
- * @property Carbon               privacy_ack_at
- * @property StatusVisibility     default_status_visibility
- * @property boolean              private_profile
- * @property boolean              prevent_index
- * @property boolean              likes_enabled
- * @property boolean              points_enabled
- * @property MapProvider          mapprovider
- * @property string               data_provider
- * @property string               timezone
- * @property FriendCheckinSetting friend_checkin
- * @property int                  privacy_hide_days
- * @property string               language
- * @property Carbon               last_login
- * @property string               mastodonUrl
- * @property ?Carbon              recent_gdpr_export
- * @property Carbon               created_at
- * @property Carbon               updated_at
- *
- * // appends
- * @property-read boolean         following
- * @property-read boolean         followPending
- * @property-read boolean         muted
- * @property-read boolean         isAuthUserBlocked
- * @property-read boolean         isBlockedByAuthUser
- * @property-read bool            followedBy
- * @property-read int             train_distance
- * @property-read int             train_duration
- * @property-read boolean         userInvisibleToMe
- * @property-read int             points
- *
- * // relationships
- * @property Collection           trainCheckins
- * @property SocialLoginProfile   socialProfile
- * @property Station              home
- * @property Collection           likes
- * @property Collection           follows
- * @property Collection           blockedUsers
- * @property Collection           blockedByUsers
- * @property Collection           mutedUsers
- * @property Collection           followRequests
- * @property Collection           userFollowers
- * @property Collection           userFollowings
- * @property Collection           sessions
- * @property Collection           icsTokens
- * @property Collection           webhooks
- * @property Collection           notifications
- * @property Collection           statuses
- * @property Collection           trustedUsers
- * @property Collection           trustedByUsers
- * @property Collection           oAuthClients
- * @property Collection           profileLinks
- *
- *
  * @todo rename home_id to home_station_id
  * @todo rename mapprovider to map_provider
- * @mixin Builder
  */
 class User extends Authenticatable implements ExportsPersonalData
 {

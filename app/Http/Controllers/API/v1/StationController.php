@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\DataProviders\Motis;
+use App\Enum\DataProvider;
 use App\Http\Controllers\Backend\Transport\StationController as StationBackendController;
 use App\Http\Resources\StationResource;
 use App\Models\Checkin;
@@ -11,13 +13,20 @@ use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Models\Stopover;
 use App\Models\Trip;
+use App\Repositories\StationRepository;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 
-class StationController extends Controller
-{
+class StationController extends Controller {
+    private StationRepository $stationRepository;
+
+    public function __construct(StationRepository $stationRepository) {
+        $this->stationRepository = $stationRepository;
+    }
+
     public function store(Request $request): StationResource {
         $this->authorize('create', Station::class);
 
@@ -36,7 +45,7 @@ class StationController extends Controller
         $station = Station::findOrFail($id);
         $this->authorize('delete', $station);
 
-        if (
+        if(
             Stopover::where('train_station_id', $station->id)->exists()
             || Event::where('station_id', $station->id)->exists()
             || EventSuggestion::where('station_id', $station->id)->exists()
@@ -74,7 +83,7 @@ class StationController extends Controller
             // Before the update: remove duplicates in stopovers
             $potentialDuplicates = Stopover::where('train_station_id', $oldStation->id)->get();
 
-            foreach ($potentialDuplicates as $oldStopover) {
+            foreach($potentialDuplicates as $oldStopover) {
                 // check if the dates are the same (then it can be safely removed)
                 $duplicate = Stopover::where('train_station_id', $newStation->id)
                                      ->where('trip_id', $oldStopover->trip_id)
@@ -82,7 +91,7 @@ class StationController extends Controller
                                      ->where('arrival_planned', $oldStopover->arrival_planned)
                                      ->first();
 
-                if ($duplicate) {
+                if($duplicate) {
                     // if there is a duplicate: move stopovers and then delete the old one
                     Checkin::where('origin_stopover_id', $oldStopover->id)->update(['origin_stopover_id' => $duplicate->id]);
                     Checkin::where('destination_stopover_id', $oldStopover->id)->update(['destination_stopover_id' => $duplicate->id]);
@@ -98,8 +107,8 @@ class StationController extends Controller
 
             // merge columns from old->new if they are null
             $columns = ['ibnr', 'wikidata_id', 'rilIdentifier', 'ifopt_a', 'ifopt_b', 'ifopt_c', 'ifopt_d', 'ifopt_e'];
-            foreach ($columns as $column) {
-                if ($newStation->{$column} === null && $oldStation->{$column} !== null) {
+            foreach($columns as $column) {
+                if($newStation->{$column} === null && $oldStation->{$column} !== null) {
                     $newStation->{$column} = $oldStation->{$column};
                 }
             }
@@ -107,7 +116,7 @@ class StationController extends Controller
             $oldStation->delete();
 
             // save AFTER deletion to avoid foreign key constraint errors
-            if ($newStation->isDirty()) {
+            if($newStation->isDirty()) {
                 $newStation->save();
             }
         });
@@ -136,7 +145,7 @@ class StationController extends Controller
                                             'time_offset'   => ['nullable', 'numeric'],
                                         ]);
 
-        if (array_key_exists('time_offset', $request->json()->all()) && $request->json('time_offset') === null) {
+        if(array_key_exists('time_offset', $request->json()->all()) && $request->json('time_offset') === null) {
             $validated['time_offset'] = null;
         }
 
@@ -158,6 +167,26 @@ class StationController extends Controller
      *          description="station query",
      *          example="Karls"
      *     ),
+     * @OA\Parameter(
+     *     name="identifier_provider",
+     *     in="query",
+     *     description="identifier provider",
+     *     example="ibnr",
+     *     @OA\Schema(
+     *     type="string",
+     *     enum={"ibnr", "transitous"}
+     *     )
+     *    ),
+     * @OA\Parameter(
+     *     name="identifier",
+     *     in="query",
+     *     description="station identifier",
+     *     example="1337",
+     *     @OA\Schema(
+     *     type="string",
+     *     maxLength=255
+     *     )
+     *   ),
      * @OA\Response(
      *          response=200,
      *          description="successful operation",
@@ -177,11 +206,43 @@ class StationController extends Controller
      *       }
      *     )
      */
-    public function index(Request $request): JsonResponse {
-        $validated = $request->validate(['query' => 'string']);
+    public function index(Request $request): AnonymousResourceCollection|JsonResponse {
+        $validated = $request->validate([
+                                            // Query = Fuzzy Search
+                                            'query'               => ['required_without:identifier,identifier_provider', 'string', 'max:255'],
 
-        $stations = (new StationBackendController())->search($validated['query']);
-        return $this->sendResponse(StationResource::collection($stations));
+                                            // If query is not given, we search by identifier (exact match)
+                                            'identifier_provider' => ['required_without:query', 'string', 'in:ibnr,transitous'],
+                                            'identifier'          => ['required_without:query', 'string', 'max:255'],
+                                        ]);
+
+        if(array_key_exists('query', $validated)) {
+            $stations = (new StationBackendController())->search($validated['query']);
+            return StationResource::collection($stations);
+        }
+
+        $identifier = $validated['identifier'];
+        $provider   = $validated['identifier_provider'];
+        $station    = null;
+
+        if($provider === 'ibnr') {
+            $station = $this->stationRepository->getStationByIbnr($identifier);
+        }
+
+        if($provider === 'transitous') {
+            try {
+                $station = $this->stationRepository->getStationByIdentifier($identifier, $provider)
+                           ?? (new Motis(DataProvider::TRANSITOUS))->fetchStationFromApi($identifier);
+            } catch(\Exception $e) {
+                return $this->sendError('Error fetching station from Transitous: ' . $e->getMessage(), 503);
+            }
+        }
+
+        if(!$station) {
+            abort(404, 'Station not found');
+        }
+
+        return StationResource::collection([new StationResource($station)]);
     }
 
 

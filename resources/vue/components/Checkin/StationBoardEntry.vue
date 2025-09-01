@@ -1,58 +1,56 @@
-<script lang="ts">
-import {defineComponent} from 'vue'
+<script setup lang="ts">
 import ProductIcon from "../ProductIcon.vue";
 import LineIndicator from "../LineIndicator.vue";
 import {DateTime} from "luxon";
 import {trans} from "laravel-vue-i18n";
 import {departureEntry} from "../../../types/Departure";
+import {computed} from "vue";
 
-export default defineComponent({
-    name: "StationBoardEntry",
-    components: {LineIndicator, ProductIcon},
-    props: {
-        item: {
-            type: Object() as departureEntry,
-            required: true
-        },
-        station: {
-            type: Object,
-            required: true
-        }
+const props = defineProps({
+    item: {
+        type: Object as () => departureEntry,
+        required: true
     },
-    methods: {
-        trans,
-        formatTime(time: any) {
-            return DateTime.fromISO(time).toFormat("HH:mm");
-        },
-    },
-    computed: {
-        isPast(): boolean {
-            const when = this.item.when || this.item.plannedWhen;
-            if (!when) {
-                return false;
-            }
-            return DateTime.fromISO(when).plus({minutes: 1}) < DateTime.now();
-        },
-        cancelled(): boolean {
-            return this.item.cancelled || false;
-        },
-        delayClass(): string {
-            if (this.item.delay === null) {
-                return '';
-            }
+    station: {
+        type: Object,
+        required: true
+    }
+});
 
-            let color = 'text-success';
+function formatTime(time: string | null): string {
+    if (!time) {
+        return '';
+    }
+    return DateTime.fromISO(time).toFormat("HH:mm");
+}
 
-            if (this.item.delay > 300) {
-                color = 'text-danger';
-            } else if (this.item.delay >= 60) {
-                color = 'text-warning';
-            }
+const isPast = computed((): boolean => {
+    const when = props.item.when || props.item.plannedWhen;
+    if (!when) {
+        return false;
+    }
+    return DateTime.fromISO(when).plus({minutes: 1}) < DateTime.now();
+});
 
-            return color;
-        }
-    },
-})
+const cancelled = computed((): boolean => {
+    return props.item.cancelled || false;
+});
+
+const delayClass = computed((): string => {
+    if (props.item.delay === null) {
+        return '';
+    }
+
+    let color = 'text-success';
+
+    if (props.item.delay > 300) {
+        color = 'text-danger';
+    } else if (props.item.delay >= 60) {
+        color = 'text-warning';
+    }
+
+    return color;
+});
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script>
 import {trans} from "laravel-vue-i18n";
-
+// todo: refactor like BusinessDropdown.vue
 export default {
   name: "VisibilityDropdown",
   props: {
@@ -11,6 +11,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    class: {
+      type: String,
+      default: "btn btn-sm btn-outline-secondary"
     }
   },
   data() {
@@ -38,6 +42,8 @@ export default {
           return "fa fa-lock";
         case 4:
           return "fa fa-user-check";
+        case 5:
+          return "fa fa-user-shield";
       }
     }
   },
@@ -54,7 +60,7 @@ export default {
 </script>
 
 <template>
-  <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+  <button :class type="button" class="dropdown-toggle"
           data-bs-toggle="dropdown" aria-expanded="false" :disabled="disabled">
     <i :class="visibilityIcon" aria-hidden="true"></i>
   </button>
@@ -84,6 +90,11 @@ export default {
       <i class="fa fa-user-check" aria-hidden="true"></i> {{ trans("status.visibility.4") }}
       <br>
       <span class="text-muted"> {{ trans("status.visibility.4.detail") }}</span>
+    </li>
+    <li class="dropdown-item" @click="setVisibility(5)">
+      <i class="fa fa-user-shield" aria-hidden="true"></i> {{ trans("status.visibility.5") }}
+      <br>
+      <span class="text-muted"> {{ trans("status.visibility.5.detail") }}</span>
     </li>
   </ul>
 </template>

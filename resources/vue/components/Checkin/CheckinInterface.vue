@@ -9,9 +9,11 @@ import TagList from "../TagList.vue";
 import {useActiveCheckin} from "../../stores/activeCheckin";
 import {checkinSuccessStore} from "../../stores/checkinSuccess";
 import {useUserStore} from "../../stores/user";
+import BusinessDropdown from "../BusinessDropdown.vue";
+import VisibilityDropdown from "../VisibilityDropdown.vue";
 
 export default {
-  components: {TagList, EventDropdown, FriendDropdown},
+  components: {VisibilityDropdown, BusinessDropdown, TagList, EventDropdown, FriendDropdown},
   setup() {
     const userStore = useUserStore();
     userStore.fetchSettings();
@@ -192,64 +194,14 @@ export default {
         </label>
       </div>
       <div class="col-auto btn-group">
-        <button class="btn btn-sm btn-link px-2 dropdown-toggle" type="button"
-                id="businessDropdownButton" data-bs-dropdown-animation="off" data-bs-toggle="dropdown"
-                aria-expanded="false">
-          <i :class="businessIcon"></i>
-        </button>
-        <ul id="businessDropdown" class="dropdown-menu" aria-labelledby="businessDropdownButton">
-          <li class="dropdown-item" @click="business = 0">
-            <i class="fa fa-user"></i> {{ trans("stationboard.business.private") }}
-          </li>
-          <li class="dropdown-item" @click="business = 1">
-            <i class="fa fa-briefcase"></i> {{ trans("stationboard.business.business") }}
-            <br>
-            <span class="text-muted"> {{ trans("stationboard.business.business.detail") }}</span>
-          </li>
-          <li class="dropdown-item" @click="business = 2">
-            <i class="fa fa-building"></i> {{ trans("stationboard.business.commute") }}
-            <br>
-            <span class="text-muted"> {{ trans("stationboard.business.commute.detail") }}</span>
-          </li>
-        </ul>
+        <BusinessDropdown v-model="business"/>
       </div>
       <div class="col btn-group">
-        <button class="btn btn-sm btn-link px-2 dropdown-toggle" type="button"
-                id="visibilityDropdownButton" data-bs-dropdown-animation="off"
-                data-bs-toggle="dropdown" aria-expanded="false">
-          <i :class="visibilityIcon" aria-hidden="true"></i>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="visibilityDropdownButton">
-          <li class="dropdown-item" @click="visibility = 0">
-            <i class="fa fa-globe-americas" aria-hidden="true"></i> {{ trans("status.visibility.0") }}
-            <br>
-            <span
-                class="text-muted"> {{ trans("status.visibility.0.detail") }}</span>
-          </li>
-          <li class="dropdown-item" @click="visibility = 1">
-            <i class="fa fa-lock-open" aria-hidden="true"></i> {{ trans("status.visibility.1") }}
-            <br>
-            <span class="text-muted"> {{ trans("status.visibility.1.detail") }}</span>
-          </li>
-          <li class="dropdown-item" @click="visibility = 2">
-            <i class="fa fa-user-friends" aria-hidden="true"></i> {{ trans("status.visibility.2") }}
-            <br>
-            <span class="text-muted"> {{ trans("status.visibility.2.detail") }}</span>
-          </li>
-          <li class="dropdown-item" @click="visibility = 3">
-            <i class="fa fa-lock" aria-hidden="true"></i> {{ trans("status.visibility.3") }}
-            <br>
-            <span class="text-muted"> {{ trans("status.visibility.3.detail") }}</span>
-          </li>
-          <li class="dropdown-item" @click="visibility = 4">
-            <i class="fa fa-user-check" aria-hidden="true"></i> {{ trans("status.visibility.4") }}
-            <br>
-            <span class="text-muted"> {{ trans("status.visibility.4.detail") }}</span>
-          </li>
-        </ul>
+        <VisibilityDropdown v-model="visibility" :start-value="profileStore.getDefaultStatusVisibility"
+                            class="btn btn-sm btn-link px-2 dropdown-toggle"/>
       </div>
       <EventDropdown @select-event="selectEvent"/>
-      <FriendDropdown v-if="userStore.hasBeta" @select-user="selectFriends"/>
+      <FriendDropdown @select-user="selectFriends"/>
     </div>
     <button class="col-auto float-end ms-auto btn btn-sm btn-outline-primary" @click="checkIn">
       <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>

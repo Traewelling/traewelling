@@ -38,7 +38,27 @@ class FetchTransitousLicenses extends Command
         $licenses = $this->getLicenseJson();
 
         foreach ($licenses as $license) {
-            $country    = $license['region_code'];
+            $country     = $license['country_code'] ?? null;
+            $subdivision = $license['subdivision_code'] ?? null;
+            if (empty($country)) {
+                $this->error('No country code found for license: ' . json_encode($license));
+                continue;
+            }
+
+            if (!empty($subdivision)) {
+                if (!str_starts_with($subdivision, $country . '-')) {
+                    $this->warn(
+                        sprintf(
+                            'Subdivision code "%s" does not start with country code "%s-". Adjusting...',
+                            $subdivision,
+                            $country
+                        )
+                    );
+                    $country = $country . '-' . $subdivision;
+                }
+                $country = $subdivision;
+            }
+
             $spdx       = $license['spdx_license_identifier'] ?? $license['rt_spdx_license_identifier'] ?? '';
             $licenseUrl = $license['license_url'] ?? '';
             $name       = $license['filename'];

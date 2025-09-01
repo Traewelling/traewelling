@@ -4,15 +4,14 @@ namespace Tests\Feature\Status;
 
 use App\Models\Checkin;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\FeatureTestCase;
 
 class StatusBodyTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @dataProvider statusBodyProvider
-     */
+    #[DataProvider('statusBodyProvider')]
     public function testStatusBodySanitizesHtml($body, $htmlSanitized) {
         $status       = Checkin::factory()->create()->status;
         $status->body = $body;

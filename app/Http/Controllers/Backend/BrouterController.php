@@ -52,9 +52,9 @@ abstract class BrouterController extends Controller
                             ':coords'  => $coordinateString,
                             ':profile' => $profile->value,
                         ]));
-        Log::debug('[RefreshPolyline] Brouter URL is ' . $response->effectiveUri());
+        Log::debug('Brouter URL is ' . $response->effectiveUri(), ['RefreshPolyline']);
         if (!$response->ok()) {
-            Log::debug('[RefreshPolyline] Brouter response was not okay.', ['body' => $response->body()]);
+            Log::debug('Brouter response was not okay.', ['body' => $response->body(), 'RefreshPolyline']);
             throw new InvalidArgumentException('Brouter response was not okay.');
         }
 
@@ -81,14 +81,15 @@ abstract class BrouterController extends Controller
      */
     public static function reroutePolyline(Trip $trip): void {
         if (App::runningUnitTests() || !config('trwl.brouter')) {
+            Log::info('Brouter Polyline rerouting is disabled or running in tests for Trip#' . $trip->trip_id, ['RefreshPolyline']);
             return;
         }
 
         //0. Check if brouter Polyline is already available
-        $childPolyline   = PolyLine::where('parent_id', $trip->polyline_id)->orderBy('id', 'desc')->first();
-        $currentPolyline = $trip->polyline()->first();
+        $childPolyline   = $trip->polyline_id ? PolyLine::where('parent_id', $trip->polyline_id)->orderBy('id', 'desc')->first() : null;
+        $currentPolyline = $trip->polyline_id ? $trip->polyline()->first() : null;
         if ($childPolyline?->source === 'brouter' || $currentPolyline?->source === 'brouter') {
-            Log::debug('[RefreshPolyline] Brouter Polyline already available for Trip#' . $trip->trip_id);
+            Log::debug('Brouter Polyline already available for Trip#' . $trip->trip_id, ['RefreshPolyline']);
 
             if ($currentPolyline?->source !== 'brouter') {
                 //If the current Polyline is not from Brouter, we need to recalculate the distance and points
@@ -107,10 +108,10 @@ abstract class BrouterController extends Controller
             //2. Request route at brouter
             $brouterGeoJSON = self::getGeoJSONForRoute($coordinates);
         } catch (InvalidArgumentException) {
-            Log::warning('[RefreshPolyline] Error while getting Polyline for Trip#' . $trip->trip_id . ' (Required data is missing in Brouter response)');
+            Log::error('Error while getting Polyline for Trip#' . $trip->trip_id . ' (Required data is missing in Brouter response)', ['RefreshPolyline']);
             return;
         } catch (ConnectionException) {
-            Log::info('[RefreshPolyline] Getting Polyline for Trip#' . $trip->trip_id . ' timed out.');
+            Log::warning('Getting Polyline for Trip#' . $trip->trip_id . ' timed out.', ['RefreshPolyline']);
             return;
         }
         //3. Create "new" GeoJSON split by stations (as features)
@@ -179,9 +180,9 @@ abstract class BrouterController extends Controller
     private static function recalculateDistanceAndPoints(Trip $trip, $polyline): void {
         DB::beginTransaction();
         $oldPolyLine = self::getOldPolyline($trip);
-        Log::debug('[RefreshPolyline] Recalculating distance and points for Trip#' . $trip->trip_id);
-        Log::debug('[RefreshPolyline] New Polyline ID: ' . $trip->polyline_id);
-        Log::debug('[RefreshPolyline] Old Polyline ID: ' . $oldPolyLine);
+        Log::info('Recalculating distance and points for Trip#' . $trip->trip_id, ['RefreshPolyline']);
+        Log::debug('New Polyline ID: ' . $trip->polyline_id, ['RefreshPolyline']);
+        Log::debug('Old Polyline ID: ' . $oldPolyLine, ['RefreshPolyline']);
         $trip->update(['polyline_id' => $polyline->id]);
 
         //Refresh distance and points of trips
@@ -193,7 +194,7 @@ abstract class BrouterController extends Controller
             DB::commit();
         } catch (DistanceDeviationException) {
             $trip->update(['polyline_id' => $oldPolyLine]);
-            Log::debug('[RefreshPolyline] Distance Deviation detected. Reverting changes.');
+            Log::info('Distance Deviation detected. Reverting changes.', ['RefreshPolyline', 'Trip#' . $trip->trip_id]);
             DB::rollBack();
         }
     }
@@ -207,21 +208,22 @@ abstract class BrouterController extends Controller
      */
     public static function checkPolyline(Trip $trip): void {
         if (!$trip->category?->onRails()) {
+            Log::info('Trip#' . $trip->trip_id . ' is not on rails. No need to check polyline.', ['RefreshPolyline']);
             return;
         }
 
         if (!self::checkIfPolylineHasMissingParts($trip)) {
-            Log::debug('no parts missing');
+            Log::info('no parts missing', ['RefreshPolyline']);
             //Nothing to do here.
             return;
         }
-        Log::debug('parts missing: dispatch');
+        Log::info('parts missing: dispatch', ['RefreshPolyline']);
         RefreshPolyline::dispatch($trip);
     }
 
     private static function checkIfPolylineHasMissingParts(Trip $trip): bool {
         if (is_null($trip->polyline)) {
-            Log::debug('Missing route found. No polyline available.');
+            Log::debug('Missing route found. No polyline available.', ['RefreshPolyline']);
             return true;
         }
         $geoJson      = json_decode($trip->polyline->polyline);
@@ -232,7 +234,7 @@ abstract class BrouterController extends Controller
                 $lastStopOver = null;
             } else {
                 if (!is_null($lastStopOver) && $trip->category?->onRails()) { // A real route is missing -> request route via Brouter
-                    Log::debug('Missing route found between ' . ($lastStopOver->properties->name ?? 'unknown') . ' and ' . ($data->properties->name ?? 'unknown'));
+                    Log::debug('Missing route found between ' . ($lastStopOver->properties->name ?? 'unknown') . ' and ' . ($data->properties->name ?? 'unknown'), ['RefreshPolyline']);
                     return true;
                 }
 

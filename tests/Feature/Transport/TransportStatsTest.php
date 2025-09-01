@@ -1,6 +1,6 @@
 <?php
 
-namespace Feature\Transport;
+namespace Tests\Feature\Transport;
 
 use App\Http\Controllers\Backend\Stats\TransportStatsController;
 use App\Http\Controllers\StatusController as StatusBackend;

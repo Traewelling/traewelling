@@ -1528,6 +1528,29 @@
                         "in": "query",
                         "description": "station query",
                         "example": "Karls"
+                    },
+                    {
+                        "name": "identifier_provider",
+                        "in": "query",
+                        "description": "identifier provider",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "ibnr",
+                                "transitous"
+                            ]
+                        },
+                        "example": "ibnr"
+                    },
+                    {
+                        "name": "identifier",
+                        "in": "query",
+                        "description": "station identifier",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 255
+                        },
+                        "example": "1337"
                     }
                 ],
                 "responses": {
@@ -2069,32 +2092,15 @@
                                 "schema": {
                                     "properties": {
                                         "data": {
+                                            "$ref": "#/components/schemas/StatisticsGlobalData"
+                                        },
+                                        "meta": {
                                             "properties": {
-                                                "distance": {
-                                                    "description": "Globally travelled distance in meters",
-                                                    "type": "integer",
-                                                    "example": 1000
+                                                "from": {
+                                                    "example": "2021-01-01T00:00:00.000000Z"
                                                 },
-                                                "duration": {
-                                                    "description": "Globally travelled duration in minutes",
-                                                    "type": "integer",
-                                                    "example": 1000
-                                                },
-                                                "activeUsers": {
-                                                    "description": "Number of active users",
-                                                    "type": "integer",
-                                                    "example": 1000
-                                                },
-                                                "meta": {
-                                                    "properties": {
-                                                        "from": {
-                                                            "example": "2021-01-01T00:00:00.000000Z"
-                                                        },
-                                                        "until": {
-                                                            "example": "2021-02-01T00:00:00.000000Z"
-                                                        }
-                                                    },
-                                                    "type": "object"
+                                                "until": {
+                                                    "example": "2021-02-01T00:00:00.000000Z"
                                                 }
                                             },
                                             "type": "object"
@@ -2798,7 +2804,7 @@
                     "Status"
                 ],
                 "summary": "Create a StatusTag",
-                "description": "Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free\n     *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b>\n     *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions\n     *      we recommend the following tags in the trwl namespace:<br>\n     *      <ul>\n     *          <li>trwl:seat (i.e. 61)</li>\n     *          <li>trwl:wagon (i.e. 25)</li>\n     *          <li>trwl:ticket (i.e. BahnCard 100 first))</li>\n     *          <li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li>\n     *          <li>trwl:locomotive_class (BR424, BR450)</li>\n     *          <li>trwl:wagon_class (i.e. Bpmz)</li>\n     *          <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li>\n     *          <li>trwl:vehicle_number (i.e. 425 001, Tz9001, 123, ...)</li>\n     *          <li>trwl:passenger_rights (i.e. yes / no / ID of claim)</li>\n     *      </ul>",
+                "description": "Creates a single StatusTag Object, if user is authorized to. <br><br>The key of a tag is free\n     *      text. You can choose it as you need it. However, <b>please use a namespace for tags</b>\n     *      (<i>namespace:xxx</i>) that only affect your own application.<br><br>For tags related to standard actions\n     *      we recommend the following tags in the trwl namespace:<br>\n     *      <ul>\n     *          <li>trwl:seat (i.e. 61)</li>\n     *          <li>trwl:wagon (i.e. 25)</li>\n     *          <li>trwl:ticket (i.e. BahnCard 100 first))</li>\n     *          <li>trwl:price (420,69 €)</li>\n     *          <li>trwl:travel_class (i.e. 1, 2, business, economy, ...)</li>\n     *          <li>trwl:locomotive_class (BR424, BR450)</li>\n     *          <li>trwl:journey_number (i.e. 1234. Used as a work-around for missing journey numbers)</li>\n     *          <li>trwl:wagon_class (i.e. Bpmz)</li>\n     *          <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li>\n     *          <li>trwl:vehicle_number (i.e. 425 001, Tz9001, 123, ...)</li>\n     *          <li>trwl:passenger_rights (i.e. yes / no / ID of claim)</li>\n     *      </ul>",
                 "operationId": "createSingleStatusTag",
                 "parameters": [
                     {
@@ -3232,6 +3238,26 @@
                                                         }
                                                     },
                                                     "type": "object"
+                                                },
+                                                "removedLicenses": {
+                                                    "description": "List of licenses that were filtered out",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "oneOf": [
+                                                            {
+                                                                "type": "string",
+                                                                "example": "FR: fr_horaires-sncf.gtfs"
+                                                            },
+                                                            {
+                                                                "$ref": "#/components/schemas/LicenseDto"
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "removedCount": {
+                                                    "description": "Number of removed entries due to license filtering",
+                                                    "type": "integer",
+                                                    "example": 2
                                                 }
                                             },
                                             "type": "object"
@@ -3303,7 +3329,15 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TripResource"
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TripResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -4257,13 +4291,13 @@
                 ]
             }
         },
-        "/user/search/{?query}": {
+        "/user/search/{query}": {
             "get": {
                 "tags": [
                     "User"
                 ],
-                "summary": "Get paginated statuses for single user",
-                "description": "Returns paginated statuses of a single user specified by the username",
+                "summary": "Get paginated search results for combined search on username and (display)name",
+                "description": "Returns paginated search results for a user based on the given query.",
                 "operationId": "searchUsers",
                 "parameters": [
                     {
@@ -4280,16 +4314,78 @@
                         "schema": {
                             "type": "integer"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UserResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "$ref": "#/components/schemas/Links"
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationMeta"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-search"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/user/search": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get paginated search results for users by either username or (display)name",
+                "description": "Returns paginated search results for users based on the given parameters.",
+                "operationId": "searchUsersByParameters",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page of pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
                     },
                     {
                         "name": "username",
                         "in": "query",
-                        "description": "Search for parts username"
+                        "description": "Search for parts username",
+                        "required": false
                     },
                     {
                         "name": "name",
                         "in": "query",
-                        "description": "Search for parts of users (display)name"
+                        "description": "Search for parts of users (display)name",
+                        "required": false
                     }
                 ],
                 "responses": {
@@ -4559,6 +4655,42 @@
                     "name": "FeatureCollection"
                 }
             },
+            "LicenseDto": {
+                "title": "License DTO",
+                "description": "Data Transfer Object for licenses",
+                "required": [
+                    "licenseName",
+                    "attributionString",
+                    "licenseUrl",
+                    "sourceUrl"
+                ],
+                "properties": {
+                    "licenseName": {
+                        "description": "Name of the license",
+                        "type": "string",
+                        "example": "CC BY 4.0"
+                    },
+                    "attributionString": {
+                        "description": "Attribution string for the license",
+                        "type": "string",
+                        "example": "Provided by OpenStreetMap contributors",
+                        "nullable": true
+                    },
+                    "licenseUrl": {
+                        "description": "URL to the license text",
+                        "type": "string",
+                        "example": "https://creativecommons.org/licenses/by/4.0/",
+                        "nullable": true
+                    },
+                    "sourceUrl": {
+                        "description": "URL to the source of the data",
+                        "type": "string",
+                        "example": "https://www.openstreetmap.org/",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "LivePointDto": {
                 "title": "LivePointDto",
                 "description": "All necessary information to calculate live position",
@@ -4607,6 +4739,11 @@
             "MentionDto": {
                 "title": "Mention",
                 "description": "Mentioned user and position in status body",
+                "required": [
+                    "user",
+                    "position",
+                    "length"
+                ],
                 "properties": {
                     "user": {
                         "$ref": "#/components/schemas/UserResource"
@@ -4872,12 +5009,27 @@
                         "example": "Hi there! I am Gertrud!",
                         "nullable": true
                     },
+                    "experimental": {
+                        "description": "Experimental features enabled",
+                        "type": "boolean",
+                        "example": false
+                    },
                     "profileLinks": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/ProfileLinkResource"
                         },
                         "nullable": true
+                    },
+                    "timezone": {
+                        "type": "string",
+                        "example": "Europe/Berlin"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 255,
+                        "example": "mail@example.com"
                     }
                 },
                 "type": "object"
@@ -4960,6 +5112,11 @@
             },
             "AreaResource": {
                 "title": "Area",
+                "required": [
+                    "name",
+                    "default",
+                    "adminLevel"
+                ],
                 "properties": {
                     "name": {
                         "type": "string",
@@ -4997,9 +5154,13 @@
             },
             "ClientResource": {
                 "title": "Client",
+                "required": [
+                    "id",
+                    "name",
+                    "privacyPolicyUrl"
+                ],
                 "properties": {
                     "id": {
-                        "description": "Model -> OAuthClient",
                         "type": "integer",
                         "example": 1
                     },
@@ -5016,6 +5177,10 @@
             },
             "DataSourceResource": {
                 "title": "DataSourceResource",
+                "required": [
+                    "id",
+                    "attribution"
+                ],
                 "properties": {
                     "id": {
                         "type": "string",
@@ -5052,6 +5217,18 @@
             },
             "EventResource": {
                 "title": "Event",
+                "required": [
+                    "id",
+                    "name",
+                    "slug",
+                    "hashtag",
+                    "host",
+                    "url",
+                    "begin",
+                    "end",
+                    "station",
+                    "isPride"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5089,6 +5266,9 @@
                     },
                     "station": {
                         "$ref": "#/components/schemas/Station"
+                    },
+                    "isPride": {
+                        "$ref": "#/components/schemas/StationResource"
                     }
                 },
                 "type": "object"
@@ -5119,6 +5299,14 @@
             "LightUserResource": {
                 "title": "LightUser",
                 "description": "User model with just basic information",
+                "required": [
+                    "id",
+                    "displayName",
+                    "username",
+                    "profilePicture",
+                    "mastodonUrl",
+                    "preventIndex"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5148,6 +5336,11 @@
                 "type": "object"
             },
             "OperatorResource": {
+                "required": [
+                    "id",
+                    "identifier",
+                    "name"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5155,7 +5348,8 @@
                     },
                     "identifier": {
                         "type": "string",
-                        "example": "db-regio-ag-nord"
+                        "example": "db-regio-ag-nord",
+                        "nullable": true
                     },
                     "name": {
                         "type": "string",
@@ -5173,7 +5367,7 @@
                         "enum": [
                             "website",
                             "instagram",
-                            "twitter",
+                            "bluesky",
                             "facebook",
                             "mastodon",
                             "tiktok",
@@ -5190,6 +5384,15 @@
             },
             "StationResource": {
                 "title": "Station",
+                "required": [
+                    "id",
+                    "name",
+                    "latitude",
+                    "longitude",
+                    "ibnr",
+                    "rilIdentifier",
+                    "areas"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5224,8 +5427,51 @@
                 },
                 "type": "object"
             },
+            "StatisticsGlobalData": {
+                "title": "StatisticsGlobalData",
+                "required": [
+                    "distance",
+                    "duration",
+                    "activeUsers"
+                ],
+                "properties": {
+                    "distance": {
+                        "description": "Globally travelled distance in meters",
+                        "type": "integer",
+                        "example": 1000
+                    },
+                    "duration": {
+                        "description": "Globally travelled duration in minutes",
+                        "type": "integer",
+                        "example": 1000
+                    },
+                    "activeUsers": {
+                        "description": "Number of active users",
+                        "type": "integer",
+                        "example": 1000
+                    }
+                },
+                "type": "object"
+            },
             "StatusResource": {
                 "title": "Status",
+                "required": [
+                    "id",
+                    "body",
+                    "business",
+                    "bodyMentions",
+                    "business",
+                    "visibility",
+                    "likes",
+                    "liked",
+                    "isLikable",
+                    "client",
+                    "createdAt",
+                    "train",
+                    "event",
+                    "userDetails",
+                    "tags"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5297,6 +5543,11 @@
             },
             "StatusTagResource": {
                 "title": "StatusTagResource",
+                "required": [
+                    "key",
+                    "value",
+                    "visibility"
+                ],
                 "properties": {
                     "key": {
                         "type": "string",
@@ -5315,6 +5566,26 @@
             },
             "StopoverResource": {
                 "title": "StopoverResource",
+                "required": [
+                    "id",
+                    "name",
+                    "rilIdentifier",
+                    "evaIdentifier",
+                    "arrival",
+                    "arrivalPlanned",
+                    "arrivalReal",
+                    "arrivalPlatformPlanned",
+                    "arrivalPlatformReal",
+                    "departure",
+                    "departurePlanned",
+                    "departureReal",
+                    "departurePlatformPlanned",
+                    "departurePlatformReal",
+                    "platform",
+                    "isArrivalDelayed",
+                    "isDepartureDelayed",
+                    "cancelled"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5428,6 +5699,23 @@
             },
             "TransportResource": {
                 "title": "TransportResource",
+                "required": [
+                    "trip",
+                    "hafasId",
+                    "category",
+                    "number",
+                    "lineName",
+                    "journeyNumber",
+                    "distance",
+                    "points",
+                    "duration",
+                    "manualDeparture",
+                    "manualArrival",
+                    "origin",
+                    "destination",
+                    "operator",
+                    "dataSource"
+                ],
                 "properties": {
                     "trip": {
                         "type": "integer",
@@ -5451,6 +5739,12 @@
                     "journeyNumber": {
                         "type": "integer",
                         "example": 85639
+                    },
+                    "manualJourneyNumber": {
+                        "description": "Manual journey number, if set by the user. This is intended for use cases like ICE lines in germany that have line number but are more widely known by their train number",
+                        "type": "string",
+                        "example": "ICE 4",
+                        "nullable": true
                     },
                     "distance": {
                         "description": "Distance in meters",
@@ -5485,10 +5779,20 @@
                         "$ref": "#/components/schemas/StopoverResource"
                     },
                     "operator": {
-                        "$ref": "#/components/schemas/OperatorResource"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/OperatorResource"
+                            }
+                        ],
+                        "nullable": true
                     },
                     "dataSource": {
-                        "$ref": "#/components/schemas/DataSourceResource"
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/DataSourceResource"
+                            }
+                        ],
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -5554,6 +5858,24 @@
             },
             "UserAuthResource": {
                 "title": "UserAuth",
+                "required": [
+                    "id",
+                    "displayName",
+                    "username",
+                    "profilePicture",
+                    "totalDistance",
+                    "totalDuration",
+                    "points",
+                    "mastodonUrl",
+                    "privateProfile",
+                    "preventIndex",
+                    "likes_enabled",
+                    "mapProvider",
+                    "home",
+                    "language",
+                    "defaultStatusVisibility",
+                    "roles"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5600,6 +5922,10 @@
                         "type": "boolean",
                         "example": "true"
                     },
+                    "mapProvider": {
+                        "type": "string",
+                        "example": "default"
+                    },
                     "home": {
                         "$ref": "#/components/schemas/StationResource"
                     },
@@ -5627,6 +5953,25 @@
             },
             "UserProfileSettingsResource": {
                 "title": "UserProfileSettings",
+                "required": [
+                    "username",
+                    "displayName",
+                    "profilePicture",
+                    "privateProfile",
+                    "preventIndex",
+                    "defaultStatusVisibility",
+                    "privacyHideDays",
+                    "password",
+                    "email",
+                    "emailVerified",
+                    "profilePictureSet",
+                    "likesEnabled",
+                    "pointsEnabled",
+                    "profileLinks",
+                    "mapProvider",
+                    "timezone",
+                    "experimental"
+                ],
                 "properties": {
                     "username": {
                         "type": "string",
@@ -5691,6 +6036,13 @@
                         "type": "boolean",
                         "example": true
                     },
+                    "mapProvider": {
+                        "$ref": "#/components/schemas/MapProvider"
+                    },
+                    "timezone": {
+                        "type": "string",
+                        "example": "Europe/Berlin"
+                    },
                     "bio": {
                         "type": "string",
                         "example": "Hi there! I am Gertrud!"
@@ -5700,6 +6052,11 @@
                         "items": {
                             "$ref": "#/components/schemas/ProfileLinkResource"
                         }
+                    },
+                    "experimental": {
+                        "description": "Experimental features enabled",
+                        "type": "boolean",
+                        "example": false
                     }
                 },
                 "type": "object"

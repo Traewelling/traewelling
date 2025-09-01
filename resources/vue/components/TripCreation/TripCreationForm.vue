@@ -59,13 +59,37 @@ export default {
   methods: {
     trans,
     addStopover() {
+      const times = [];
+
+      if (this.form.originDeparturePlanned) {
+        times.push(DateTime.fromISO(this.form.originDeparturePlanned, this.originTimezone));
+      }
+      if (this.form.destinationArrivalPlanned) {
+        times.push(DateTime.fromISO(this.form.destinationArrivalPlanned, this.destinationTimezone));
+      }
+      for (const stop of this.stopovers) {
+        if (stop.arrivalPlanned) {
+          times.push(DateTime.fromISO(stop.arrivalPlanned, this.originTimezone));
+        }
+        if (stop.departurePlanned) {
+          times.push(DateTime.fromISO(stop.departurePlanned, this.originTimezone));
+        }
+      }
+
+      let baseDate;
+      if (times.length > 0) {
+        baseDate = times.sort((a, b) => b.toMillis() - a.toMillis())[0];
+      } else {
+        baseDate = DateTime.now().setZone(this.originTimezone);
+      }
+
       const dummyStopover = {
         station: {
           name: "",
           id: "",
         },
-        departurePlanned: "",
-        arrivalPlanned: "",
+        departurePlanned: baseDate.toFormat("yyyy-MM-dd'T'HH:mm"),
+        arrivalPlanned: baseDate.toFormat("yyyy-MM-dd'T'HH:mm"),
       };
       this.stopovers.push(dummyStopover);
     },
@@ -81,7 +105,7 @@ export default {
         this.$refs.map.removeMarker(index);
       }
       this.stopovers.splice(index, 1);
-      this.validateTimes(); // Optional: Zeiten erneut validieren
+      this.validateTimes();
     },
     setOrigin(item) {
       this.$refs.map.addMarker(item, "origin", this.stopovers.length);
@@ -89,7 +113,7 @@ export default {
       this.form.originId = item.id;
     },
     setDeparture(time) {
-      this.form.originDeparturePlanned = DateTime.fromISO(time).setZone(this.originTimezone);
+      this.form.originDeparturePlanned = DateTime.fromISO(time, this.originTimezone).toISO();
       this.validateTimes();
     },
     setDestination(item) {
@@ -98,29 +122,43 @@ export default {
       this.form.destinationId = item.id;
     },
     setArrival(time) {
-      this.form.destinationArrivalPlanned = DateTime.fromISO(time).setZone(this.destinationTimezone);
+      this.form.destinationArrivalPlanned = DateTime.fromISO(time, this.destinationTimezone).toISO();
       this.validateTimes();
     },
     validateTimes() {
-      //iterate over stopovers and destination, check if time is valid
-      let time = DateTime.fromISO(this.form.originDeparturePlanned);
+      try {
+        //iterate over stopovers and destination, check if time is valid
+        let time = DateTime.fromISO(this.form.originDeparturePlanned, this.originTimezone);
 
-      this.stopovers.forEach((stopover) => {
-        if (time > DateTime.fromISO(stopover.departurePlanned)) {
+        for (const stopover of this.stopovers) {
+          const arrival = DateTime.fromISO(stopover.arrivalPlanned, this.originTimezone);
+          const departure = DateTime.fromISO(stopover.departurePlanned, this.originTimezone);
+
+          if (arrival < time || departure < arrival) {
+            this.validation.times = false;
+            return false;
+          }
+          time = departure;
+        }
+
+        if (DateTime.fromISO(this.form.destinationArrivalPlanned, this.destinationTimezone) < time) {
           this.validation.times = false;
           return false;
         }
-        time = DateTime.fromISO(stopover.arrivalPlanned);
-      });
 
-      if (time > DateTime.fromISO(this.form.destinationArrivalPlanned)) {
+        this.validation.times = true;
+        return true;
+      } catch (e) {
         this.validation.times = false;
         return false;
       }
-      this.validation.times = true;
-      return true;
     },
     sendForm() {
+      if (this.showDisallowed) {
+        notyf.error(trans("trip_creation.limitations.6"));
+        return;
+      }
+
       if (!this.validateTimes()) {
         notyf.error(trans("trip_creation.no-valid-times"));
         return;
@@ -132,8 +170,8 @@ export default {
       this.form.stopovers = this.stopovers.map((stopover) => {
         return {
           stationId: stopover.station.id,
-          departure: stopover.departurePlanned,
-          arrival: stopover.arrivalPlanned,
+          departure: DateTime.fromFormat(stopover.departurePlanned, "yyyy-MM-dd'T'HH:mm", this.originTimezone).toISO(),
+          arrival: DateTime.fromFormat(stopover.arrivalPlanned, "yyyy-MM-dd'T'HH:mm", this.originTimezone).toISO(),
         };
       });
       this.form.category = this.selectedCategory.value;
@@ -154,7 +192,8 @@ export default {
               lineName: result.lineName,
               start: result.origin.id,
               departure: this.form.originDeparturePlanned,
-              idType: 'trwl'
+              idType: 'trwl',
+              category: result.category,
             };
 
             window.location.href = `/stationboard?${new URLSearchParams(query).toString()}`;
@@ -173,11 +212,11 @@ export default {
       this.stopovers[key].station = item;
     },
     setStopoverDeparture(time, key) {
-      this.stopovers[key].departurePlanned = DateTime.fromISO(time).setZone(this.originTimezone);
+      this.stopovers[key].departurePlanned = DateTime.fromISO(time, this.originTimezone).toFormat("yyyy-MM-dd'T'HH:mm");
       this.validateTimes();
     },
     setStopoverArrival(time, key) {
-      this.stopovers[key].arrivalPlanned = DateTime.fromISO(time).setZone(this.destinationTimezone);
+      this.stopovers[key].arrivalPlanned = DateTime.fromISO(time, this.destinationTimezone).toFormat("yyyy-MM-dd'T'HH:mm");
       this.validateTimes();
     },
     checkDisallowed() {
@@ -215,7 +254,7 @@ export default {
       }
     },
     onLineInput() {
-      this.checkDisallowed()
+      this.checkDisallowed();
       this.guessModeOfTransport();
     },
     loadOperators(cursor = null) {
@@ -380,6 +419,8 @@ export default {
             <div class="flex-grow-1 d-flex">
               <StationInput
                   :placeholder="trans('trip_creation.form.stopover')"
+                  :arrival-time="stopover.arrivalPlanned"
+                  :departure-time="stopover.departurePlanned"
                   v-on:update:station="setStopoverStation($event, key)"
                   v-on:update:timeFieldB="setStopoverDeparture($event, key)"
                   v-on:update:timeFieldA="setStopoverArrival($event, key)"

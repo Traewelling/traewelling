@@ -1,43 +1,38 @@
-<script>
-export default {
-    name: "ProductIcon",
-    props: {
-        product: {
-            type: String,
-            required: true
-        }
-    },
-    data() {
-        return {
-            iconPaths: {
-                tram: "/img/tram.svg",
-                bus: "/img/bus.svg",
-                subway: "/img/subway.svg",
-                suburban: "/img/suburban.svg",
-            }
-        };
-    },
-    computed: {
-        productExists() {
-            return this.iconPaths.hasOwnProperty(this.$props.product);
-        },
-        fontAwesomeIcon() {
-            if (this.$props.product === 'taxi') {
-                return 'fa-taxi';
-            }
-            if (this.$props.product === 'ferry') {
-                return 'fa-ship';
-            }
-            return 'fa-train';
-        }
-    }
-}
+<script lang="ts" setup>
+defineProps({
+  product: {
+    type: String,
+    default: '',
+    required: true
+  }
+});
+
+const iconForProduct = (product: string) => {
+  if (['tram', 'bus', 'subway', 'suburban'].includes(product)) {
+    return `/img/${product}.svg`;
+  }
+
+  return null;
+};
+
+const fontAwesomeIcon = (product: string) => {
+  switch (product) {
+    case 'taxi':
+      return 'fa-taxi';
+    case 'plane':
+      return 'fa-plane';
+    case 'ferry':
+      return 'fa-ship';
+    default:
+      return 'fa-train';
+  }
+};
 </script>
 
 <template>
-    <img v-if="productExists"
-         :alt="this.$props.product"
-         :src="this.iconPaths[this.$props.product]"
-         class="product-icon">
-    <i v-else class="fas" :class="fontAwesomeIcon"></i>
+  <img v-if="iconForProduct(product)"
+       :alt="product"
+       :src="iconForProduct(product) || ''"
+       class="product-icon">
+  <i v-else class="fas" :class="fontAwesomeIcon(product)"></i>
 </template>

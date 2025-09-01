@@ -24,6 +24,7 @@ use App\Models\Station;
 use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Trip;
+use App\Models\User;
 use App\Notifications\UserJoinedConnection;
 use App\Objects\LineSegment;
 use App\Repositories\CheckinHydratorRepository;
@@ -44,7 +45,7 @@ abstract class TrainCheckinController extends Controller
      * @throws AlreadyCheckedInException
      * @throws CheckinException
      */
-    public static function checkin(CheckInRequestDto $dto): CheckinSuccessDto {
+    public static function checkin(CheckInRequestDto $dto, ?User $checkedInBy = null): CheckinSuccessDto {
         if ($dto->departure->isAfter($dto->arrival)) {
             throw new CheckinException('Departure time must be before arrival time');
         }
@@ -67,6 +68,7 @@ abstract class TrainCheckinController extends Controller
                 departure:   $dto->departure,
                 arrival:     $dto->arrival,
                 force:       $dto->forceFlag,
+                checkedInBy: $checkedInBy
             );
 
             UserCheckedIn::dispatch(
@@ -103,6 +105,7 @@ abstract class TrainCheckinController extends Controller
         Carbon  $departure,
         Carbon  $arrival,
         bool    $force = false,
+        ?User   $checkedInBy = null
     ): CheckinSuccessDto {
         $trip->load('stopovers');
 
@@ -176,6 +179,11 @@ abstract class TrainCheckinController extends Controller
 
             foreach ($alsoOnThisConnection as $otherStatus) {
                 if ($otherStatus?->user && $otherStatus->user->can('view', $status)) {
+                    if ($checkedInBy?->id === $otherStatus->user->id || $otherStatus->user->id === $status->user_id) {
+                        // don't notify the user about their own checkin
+                        continue;
+                    }
+
                     $otherStatus->user->notify(new UserJoinedConnection($status));
                 }
             }

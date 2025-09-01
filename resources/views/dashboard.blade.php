@@ -6,68 +6,11 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
-                @if(session()->has('checkin-collision'))
-                    <div class="alert alert-danger" id="checkin-collision-alert">
-                        <h2 class="fs-4">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
-                            {{__('overlapping-checkin')}}
-                        </h2>
-
-                        {{__('overlapping-checkin.description', ['lineName' => session()->get('checkin-collision')['lineName']])}}
-                        {{__('overlapping-checkin.description2')}}
-                        {{__('no-points-warning')}}
-
-                        <hr/>
-
-                        <form method="POST" action="{{route('trains.checkin')}}">
-                            @csrf
-                            <input type="hidden" name="force" value="true"/>
-                            <input type="hidden" name="tripID"
-                                   value="{{session()->get('checkin-collision')['validated']['tripID']}}"/>
-                            <input type="hidden" name="start"
-                                   value="{{session()->get('checkin-collision')['validated']['start']}}"/>
-                            <input type="hidden" name="departure"
-                                   value="{{session()->get('checkin-collision')['validated']['departure']}}"/>
-                            <input type="hidden" name="destination"
-                                   value="{{session()->get('checkin-collision')['validated']['destination']}}"/>
-                            <input type="hidden" name="arrival"
-                                   value="{{session()->get('checkin-collision')['validated']['arrival']}}"/>
-                            <input type="hidden" name="body"
-                                   value="{{session()->get('checkin-collision')['validated']['body'] ?? ''}}"/>
-                            <input type="hidden" name="business_check"
-                                   value="{{session()->get('checkin-collision')['validated']['business_check']}}"/>
-                            <input type="hidden" name="checkinVisibility"
-                                   value="{{session()->get('checkin-collision')['validated']['checkinVisibility']}}"/>
-                            @isset(session()->get('validated')['tweet_check'])
-                                <input type="hidden" name="tweet_check"
-                                       value="{{session()->get('checkin-collision')['validated']['tweet_check']}}"/>
-                            @endif
-                            @isset(session()->get('validated')['toot_check'])
-                                <input type="hidden" name="toot_check"
-                                       value="{{session()->get('checkin-collision')['validated']['toot_check']}}"/>
-                            @endif
-                            <input type="hidden" name="event"
-                                   value="{{session()->get('checkin-collision')['validated']['event'] ?? ''}}"/>
-
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-success" type="submit">
-                                    <i class="fa-solid fa-check"></i>
-                                    {{__('overlapping-checkin.force-yes')}}
-                                </button>
-                                <button class="btn btn-secondary" type="button"
-                                        onclick="$('#checkin-collision-alert').remove()">
-                                    <i class="fa-solid fa-xmark"></i>
-                                    {{__('overlapping-checkin.force-no')}}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                @endif
-
                 <div id="station-board-new">
                     <Apialerts></Apialerts>
                     <Stationautocomplete :dashboard="true" :show-gps-button="true"></Stationautocomplete>
                 </div>
+
                 @if($future->count() >= 1)
                     <div class="accordion accordion-flush" id="accordionFutureCheckIns">
                         <div class="accordion-item">
@@ -96,15 +39,15 @@
                 @endif
 
                 @if(config('trwl.year_in_review.alert'))
-                    <div class="alert alert-info">
+                    <div class="alert alert-info" role="region" aria-label="{{ __('year-review') }}">
                         <h4 class="alert-heading">
-                            <i class="fa-solid fa-champagne-glasses"></i>
-                            Träwelling {{__('year-review')}}
+                            <i class="fa-solid fa-champagne-glasses" aria-hidden="true"></i>
+                            Träwelling {{ __('year-review') }}
                         </h4>
-                        <p>{{__('year-review.teaser')}}</p>
+                        <p>{{ __('year-review.teaser') }}</p>
                         <a class="btn btn-outline-primary btn-block" href="/your-year/">
-                            <i class="fa-solid fa-arrow-pointer text-primary"></i>
-                            {{__('year-review.open')}}
+                            <i class="fa-solid fa-arrow-pointer text-primary" aria-hidden="true"></i>
+                            {{ __('year-review.open') }}
                         </a>
                     </div>
                 @endif
@@ -113,14 +56,15 @@
                 {{ $statuses->links() }}
 
                 @if($showGlobalButton)
-                    <div class="alert alert-info">
+                    <div class="alert alert-info" role="region" aria-label="{{ __('dashboard.empty') }}">
                         <h4 class="alert-heading">
-                            <i class="fa-solid fa-binoculars"></i>
+                            <i class="fa-solid fa-binoculars" aria-hidden="true"></i>
                             {{ __('dashboard.empty') }}
                         </h4>
                         <p>{{ __('dashboard.empty.teaser') }}</p>
-                        <p>{{ __('dashboard.empty.discover1') }}
-                            <a href="{{route('statuses.active')}}">
+                        <p>
+                            {{ __('dashboard.empty.discover1') }}
+                            <a href="{{ route('statuses.active') }}">
                                 {{ __('menu.active') }}
                             </a>
                             {{ __('dashboard.empty.discover3') }}.
