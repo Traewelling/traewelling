@@ -23,11 +23,14 @@ return [
         'timeout'       => env('MASTODON_TIMEOUT_SECONDS', 2),
     ],
 
-    'telegram' => [
+    'telegram'   => [
         'admin' => [
             'active'  => env('TELEGRAM_ADMIN_ACTIVE', false),
             'chat_id' => env('TELEGRAM_ADMIN_CHAT_ID'),
             'token'   => env('TELEGRAM_ADMIN_TOKEN'),
-        ]
-    ]
+        ],
+    ],
+
+    // default user agent for HTTP requests to external services
+    'user_agent' => env('USER_AGENT', 'traewelling (https://github.com/Traewelling/traewelling)'),
 ];
