@@ -6,13 +6,13 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
     >
-        <i class="fa fa-{{['globe-americas', 'lock-open', 'user-friends', 'lock', 'user-check'][auth()->user()?->default_status_visibility->value ?? 0]}}"
+        <i class="fa fa-{{['globe-americas', 'lock-open', 'user-friends', 'lock', 'user-check', 'user-shield'][auth()->user()?->default_status_visibility->value ?? 0]}}"
            aria-hidden="true"></i>
     </button>
     <ul class="dropdown-menu" aria-labelledby="visibilityDropdownButton">
         @foreach(\App\Enum\StatusVisibility::cases() as $visibility)
             <li class="dropdown-item trwl-visibility-item" data-trwl-visibility="{{$visibility->value}}">
-                <i class="fa fa-{{['globe-americas', 'lock-open', 'user-friends', 'lock', 'user-check'][$visibility->value]}}"
+                <i class="fa fa-{{['globe-americas', 'lock-open', 'user-friends', 'lock', 'user-check', 'user-shield'][$visibility->value]}}"
                    aria-hidden="true"></i> {{ __('status.visibility.' . $visibility->value) }}
                 <br/>
                 <span class="text-muted"> {{ __('status.visibility.' . $visibility->value . '.detail') }}</span>

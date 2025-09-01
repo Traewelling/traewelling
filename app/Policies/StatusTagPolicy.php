@@ -39,7 +39,12 @@ class StatusTagPolicy
             return $user->follows->contains('id', $statusTag->status->user_id);
         }
 
-        // Case 6: StatusTag is for authenticated users only
+        // Case 6: StatusTag is trusted users only
+        if ($statusTag->visibility === StatusVisibility::TRUSTED && $user !== null) {
+            return $statusTag->status->user->trustedUsers->contains('trusted_id', $user->id);
+        }
+
+        // Case 7: StatusTag is for authenticated users only
         if ($user !== null && $statusTag->visibility === StatusVisibility::AUTHENTICATED) {
             return Response::allow('StatusTag is for authenticated users');
         }

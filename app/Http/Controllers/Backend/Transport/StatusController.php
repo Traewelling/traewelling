@@ -11,6 +11,7 @@ use App\Models\Stopover;
 use App\Models\User;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 abstract class StatusController extends Controller
 {
@@ -66,13 +67,29 @@ abstract class StatusController extends Controller
                 //Option 2: Status is from oneself
                 $query->orWhere('users.id', $viewingUser->id);
 
-                //Option 3: Status is from a followed BUT not unlisted or private
+                //Option 3: Status is from a followed BUT not unlisted or private or trusted users only
                 $query->orWhere(function(Builder $query) use ($viewingUser) {
                     $query->whereIn('users.id', $viewingUser->follows()->select('follow_id'))
                           ->whereNotIn('statuses.visibility', [
                               StatusVisibility::UNLISTED->value,
                               StatusVisibility::PRIVATE->value,
+                              StatusVisibility::TRUSTED->value,
                           ]);
+                });
+
+                //Option 4: Status is from a user who trusts the viewing user
+                $query->orWhere(function(Builder $query) use ($viewingUser) {
+                    $query->where('statuses.visibility', StatusVisibility::TRUSTED->value)
+                          ->whereExists(function($subQuery) use ($viewingUser) {
+                              $subQuery->select(\DB::raw(1))
+                                      ->from('trusted_users')
+                                      ->whereColumn('trusted_users.user_id', 'statuses.user_id')
+                                      ->where('trusted_users.trusted_id', $viewingUser->id)
+                                      ->where(function($expireQuery) {
+                                          $expireQuery->whereNull('trusted_users.expires_at')
+                                                     ->orWhere('trusted_users.expires_at', '>', now());
+                                      });
+                          });
                 });
             }
         };
