@@ -485,6 +485,8 @@
   "status.visibility.3.detail": "Nur für dich sichtbar",
   "status.visibility.4": "Nur angemeldete Nutzer",
   "status.visibility.4.detail": "Nur für angemeldete Nutzer sichtbar",
+  "status.visibility.5": "Vertraute Nutzer",
+  "status.visibility.5.detail": "Nur für von dir vertrauten Nutzern sichtbar",
   "status.update.success": "Dein Status wurde erfolgreich aktualisiert.",
   "status.manual_journey_number": "Fahrtennummer manuell eingeben",
   "status.show_more": "Mehr anzeigen",

@@ -6,6 +6,7 @@ const visibilityIcons = {
     2: 'fa-user-friends',
     3: 'fa-lock',
     4: 'fa-user-check',
+    5: 'fa-user-shield',
 }
 
 const businessIcons = {
@@ -34,6 +35,8 @@ export class IconHelper {
                 return 'Private';
             case 4:
                 return 'Restricted';
+            case 5:
+                return 'Trusted Users';
             default:
                 return 'Unknown Visibility';
         }
