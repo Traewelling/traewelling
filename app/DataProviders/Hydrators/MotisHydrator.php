@@ -24,7 +24,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use stdClass;
 use Traewelling\GooglePolyline\PolylineTranscoder;
 
 class MotisHydrator
@@ -152,19 +151,19 @@ class MotisHydrator
     }
 
     private function getPolylineFromLeg(mixed $leg): PolyLine {
-        $polylineModel = null;   
+        $polylineModel = null;
 
-        if (!empty($leg['legGeometry']['points']) && !empty($leg['legGeometry']['precision'])) {
-            $precision = $leg['legGeometry']['precision'];
-            $transcoder = new PolylineTranscoder();
+        if(!empty($leg['legGeometry']['points']) && !empty($leg['legGeometry']['precision'])) {
+            $precision   = $leg['legGeometry']['precision'];
+            $transcoder  = new PolylineTranscoder();
             $coordinates = $transcoder->decodePolyline($leg['legGeometry']['points'], $precision);
 
             $features = [];
-            foreach ($coordinates as $coord) {
+            foreach($coordinates as $coord) {
                 $features[] = [
-                    'type' => 'Feature',
-                    'geometry' => [
-                        'type' => 'Point',
+                    'type'       => 'Feature',
+                    'geometry'   => [
+                        'type'        => 'Point',
                         'coordinates' => [$coord->getLongitude(), $coord->getLatitude()],
                     ],
                     'properties' => new \stdClass(),
@@ -173,47 +172,47 @@ class MotisHydrator
 
             // map stopovers to the closest point feature
             $allStops = array_merge([$leg['from']], $leg['intermediateStops'], [$leg['to']]);
-            $stopIds = array_column($allStops, 'stopId');
+            $stopIds  = array_column($allStops, 'stopId');
             $stations = $this->stationRepository->getStationsByIdentifiers($stopIds, DataProvider::TRANSITOUS)->keyBy('motis_id');
 
-            foreach ($allStops as $stop) {
-                if (!isset($stop['lon']) || !isset($stop['lat']) || !isset($stop['stopId'])) continue;
+            foreach($allStops as $stop) {
+                if(!isset($stop['lon']) || !isset($stop['lat']) || !isset($stop['stopId'])) continue;
 
                 // Find the internal station
                 $station = $stations->get($stop['stopId'])
-                    ?? $this->stationRepository->updateOrCreateByIfopt($stop['stopId'], DataProvider::TRANSITOUS)
-                    ?? $this->stationRepository->createMotisStation($stop, DataProvider::TRANSITOUS);
+                           ?? $this->stationRepository->updateOrCreateByIfopt($stop['stopId'], DataProvider::TRANSITOUS)
+                              ?? $this->stationRepository->createMotisStation($stop, DataProvider::TRANSITOUS);
 
-                if (!$station) continue;
+                if(!$station) continue;
 
                 // Find closest polyline point
-                $minDist = null;
+                $minDist    = null;
                 $closestKey = null;
-                foreach ($features as $key => $feature) {
+                foreach($features as $key => $feature) {
                     $dist = pow($feature['geometry']['coordinates'][0] - $stop['lon'], 2)
-                        + pow($feature['geometry']['coordinates'][1] - $stop['lat'], 2);
-                    if ($minDist === null || $dist < $minDist) {
-                        $minDist = $dist;
+                            + pow($feature['geometry']['coordinates'][1] - $stop['lat'], 2);
+                    if($minDist === null || $dist < $minDist) {
+                        $minDist    = $dist;
                         $closestKey = $key;
                     }
                 }
-                if ($closestKey !== null) {
+                if($closestKey !== null) {
                     $features[$closestKey]['properties'] = [
-                        'stationId' => $station->id,
-                        'id' => $station->ibnr ?? null,
-                        'name'   => $station->name ?? $stop['name'] ?? null,
-                        'arrival_planned' => $stop['scheduledArrival'] ?? null,
+                        'stationId'         => $station->id,
+                        'id'                => $station->ibnr ?? null,
+                        'name'              => $station->name ?? $stop['name'] ?? null,
+                        'arrival_planned'   => $stop['scheduledArrival'] ?? null,
                         'departure_planned' => $stop['scheduledDeparture'] ?? null,
                     ];
                 }
             }
 
             $geoJson = [
-                'type' => 'FeatureCollection',
+                'type'     => 'FeatureCollection',
                 'features' => $features,
             ];
 
-            $polylineModel = TransportController::getPolylineHash(json_encode($geoJson));
+            $polylineModel = TransportController::getPolylineHash(json_encode($geoJson), 'motis');
         }
 
         return $polylineModel;

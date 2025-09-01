@@ -13,7 +13,7 @@ class PolyLine extends Model
     protected                      $fillable = ['hash', 'polyline', 'source', 'parent_id'];
     protected                      $casts    = [
         'id'     => 'integer',
-        'source' => 'string', //enum['hafas', 'brouter'] in database
+        'source' => 'string',
     ];
 
     public function __construct(array $attributes = []) {

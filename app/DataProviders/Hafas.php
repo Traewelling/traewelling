@@ -330,7 +330,7 @@ class Hafas extends Controller implements DataProviderInterface
             $tripJson->line->id = '';
         }
 
-        $polyline = TransportController::getPolylineHash(json_encode($tripJson->polyline));
+        $polyline = TransportController::getPolylineHash(json_encode($tripJson->polyline), 'hafas');
 
         $trip = Trip::updateOrCreate([
                                          'trip_id' => $tripID
