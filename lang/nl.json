@@ -689,7 +689,7 @@
     "export.title.operator": "Vervoerder",
     "export.title.distance": "Afstand",
     "export.json.description2": "De json-structuur is gelijk aan die van de api.",
-    "export.title.line_name": "Regel",
+    "export.title.line_name": "Lijn",
     "human-readable-headings": "Menselijk leesbare koppen",
     "export.generate": "Genereren",
     "export.title.duration": "Reistijd",
