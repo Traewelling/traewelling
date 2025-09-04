@@ -30,8 +30,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 /**
  * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
  */
-class StatusController extends Controller
-{
+class StatusController extends Controller {
     /**
      * Authorization in Frontend required! $this->authorize('view', $status);
      *
@@ -55,7 +54,7 @@ class StatusController extends Controller
                                 'checkin.originStopover.station.names',
                                 'checkin.destinationStopover.station.names',
                                 'checkin.trip.stopovers.station.names',
-                                'checkin.trip.motisSourceLicense'
+                                'checkin.trip.motisSourceLicense',
                             ])
                      ->firstOrFail();
     }
@@ -99,9 +98,9 @@ class StatusController extends Controller
         $statuses = self::getActiveStatuses();
 
         $result = [];
-        foreach ($statuses as $status) {
+        foreach($statuses as $status) {
             $position = LocationController::forStatus($status)->calculateLivePosition();
-            if ($position) {
+            if($position) {
                 $result[] = $position;
             }
         }
@@ -128,9 +127,9 @@ class StatusController extends Controller
                           ->values();
 
         $result = [];
-        foreach ($statuses as $status) {
+        foreach($statuses as $status) {
             $position = LocationController::forStatus($status)->calculateLivePosition();
-            if ($position) {
+            if($position) {
                 $result[] = $position;
             }
         }
@@ -168,7 +167,7 @@ class StatusController extends Controller
         self::likeRateLimiter($user, $status->user);
         Gate::forUser($user)->authorize('like', $status);
 
-        if ($status->likes->contains('user_id', $user->id)) {
+        if($status->likes->contains('user_id', $user->id)) {
             throw new StatusAlreadyLikedException($user, $status);
         }
 
@@ -177,7 +176,7 @@ class StatusController extends Controller
                                          'status_id' => $status->id,
                                      ]);
 
-        if (!$status->user->mutedUsers->contains('id', $user->id)) {
+        if(!$status->user->mutedUsers->contains('id', $user->id)) {
             $status->user->notify(new StatusLiked($like));
         }
 
@@ -195,7 +194,7 @@ class StatusController extends Controller
      */
     public static function destroyLike(User $user, int $statusId): void {
         $like = $user->likes()->where('status_id', $statusId)->first();
-        if ($like == null) {
+        if($like == null) {
             throw new InvalidArgumentException(__('controller.status.like-not-found'));
         }
         $like->delete();
@@ -215,22 +214,28 @@ class StatusController extends Controller
      * @return array
      */
     public static function getStatusesByEvent(Event $event): array {
+        $viewer = auth()->user();
+
         $statuses = $event->statuses()
                           ->with([
-                                     'user.blockedUsers', 'checkin.originStopover.station.names',
-                                     'checkin.destinationStopover.station.names', 'checkin.trip.stopovers', 'event', 'likes', 'tags',
+                                     'user.blockedUsers',
+                                     'checkin.originStopover.station.names',
+                                     'checkin.destinationStopover.station.names',
+                                     'checkin.trip.stopovers',
+                                     'event',
+                                     'likes',
+                                     'tags',
                                  ])
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
                           ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
-                          ->where(Backend\Transport\StatusController::filterStatusVisibility(auth()->user()))
-                          ->orderBy('train_checkins.departure', 'desc');
+                          ->where(Backend\Transport\StatusController::filterStatusVisibility($viewer));
 
-        if (auth()->check()) {
-            $statuses->whereNotIn('statuses.user_id', auth()->user()?->mutedUsers()->select('muted_id'))
-                     ->whereNotIn('statuses.user_id', auth()->user()?->blockedUsers()->select('blocked_id'))
-                     ->whereNotIn('statuses.user_id', auth()->user()?->blockedByUsers()->select('user_id'));
+        if($viewer) {
+            $statuses->where(Backend\Transport\StatusController::filterAudienceRestrictions($viewer));
         }
+
+        $statuses->orderBy('train_checkins.departure', 'desc');
 
         return [
             'event'    => $event,
@@ -258,7 +263,7 @@ class StatusController extends Controller
         ?string              $body = null,
         ?Event               $event = null
     ): Status {
-        if ($event !== null && !Carbon::now()->isBetween($event->checkin_start, $event->checkin_end)) {
+        if($event !== null && !Carbon::now()->isBetween($event->checkin_start, $event->checkin_end)) {
             Log::info('Event checkin was prevented because the event is not active anymore', [
                 'event' => $event->only(['id', 'name', 'checkin_start', 'checkin_end']),
                 'user'  => $user->only(['id', 'username']),
@@ -290,12 +295,12 @@ class StatusController extends Controller
                                  })
                                  ->count() > 0;
 
-        if ($followEachOther) {
+        if($followEachOther) {
             return;
         }
 
         $rateLimiterKey = "create-like:{$user->id}";
-        if (RateLimiter::tooManyAttempts($rateLimiterKey, config('rate_limits.status_like.max_attempts'))) {
+        if(RateLimiter::tooManyAttempts($rateLimiterKey, config('rate_limits.status_like.max_attempts'))) {
             throw new RateLimitExceededException(
                 limit: config('rate_limits.status_like.max_attempts'),
                 reset: RateLimiter::availableIn($rateLimiterKey),
