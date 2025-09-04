@@ -62,29 +62,4 @@ abstract class DashboardController extends Controller
                      ->latest()
                      ->simplePaginate(15);
     }
-
-    public static function getGlobalDashboard(User $user): Paginator {
-        return Status::with([
-                                'event',
-                                'likes',
-                                'user.blockedByUsers',
-                                'user.blockedUsers',
-                                'checkin',
-                                'mentions.mentioned',
-                                'tags',
-                                'checkin.originStopover.station.names',
-                                'checkin.destinationStopover.station.names',
-                                'checkin.trip.stopovers.station.names'
-                            ])
-                     ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-                     ->join('users', 'statuses.user_id', '=', 'users.id')
-                     ->where(StatusController::filterStatusVisibility($user))
-                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20))
-                     ->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
-                     ->whereNotIn('statuses.user_id', $user->blockedUsers()->select('blocked_id'))
-                     ->whereNotIn('statuses.user_id', $user->blockedByUsers()->select('user_id'))
-                     ->select('statuses.*')
-                     ->orderByDesc('train_checkins.departure')
-                     ->simplePaginate(15);
-    }
 }
