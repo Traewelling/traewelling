@@ -42,8 +42,6 @@ export default {
           return "fa fa-lock";
         case 4:
           return "fa fa-user-check";
-        case 5:
-          return "fa fa-user-shield";
       }
     }
   },
@@ -90,11 +88,6 @@ export default {
       <i class="fa fa-user-check" aria-hidden="true"></i> {{ trans("status.visibility.4") }}
       <br>
       <span class="text-muted"> {{ trans("status.visibility.4.detail") }}</span>
-    </li>
-    <li class="dropdown-item" @click="setVisibility(5)">
-      <i class="fa fa-user-shield" aria-hidden="true"></i> {{ trans("status.visibility.5") }}
-      <br>
-      <span class="text-muted"> {{ trans("status.visibility.5.detail") }}</span>
     </li>
   </ul>
 </template>

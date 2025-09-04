@@ -57,19 +57,14 @@ class StatusPolicy
             return $user->follows->contains('id', $status->user_id);
         }
 
-        // Case 6: Status is trusted users only
-        if ($status->visibility === StatusVisibility::TRUSTED) {
-            return $status->user->trustedUsers->contains('trusted_id', $user->id);
-        }
-
-        // Case 7: Status is unlisted
+        // Case 6: Status is unlisted
         if ($status->visibility === StatusVisibility::UNLISTED) {
             //This isn't checked here. This is done in the query from the (global/private) dashboard.
             //But in general, unlisted statuses are visible to everyone.
             return Response::allow();
         }
 
-        // Case 8: Status is public or authenticated
+        // Case 7: Status is public or authenticated
         if ($status->visibility === StatusVisibility::PUBLIC || $status->visibility === StatusVisibility::AUTHENTICATED) {
             return Response::allow(); //TODO: How to handle with private profile?
         }
