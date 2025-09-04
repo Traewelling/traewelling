@@ -39,7 +39,7 @@ export enum TravelType {
 
 /**
  * visibility
- * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
+ * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
  *  *      user specify?
  * @example 0
  */
@@ -49,6 +49,7 @@ export enum StatusVisibility {
   Value2 = 2,
   Value3 = 3,
   Value4 = 4,
+  Value5 = 5,
 }
 
 /**

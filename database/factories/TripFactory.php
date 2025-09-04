@@ -122,7 +122,7 @@ class TripFactory extends Factory
                                     'features' => $features,
                                 ],
                                 JSON_THROW_ON_ERROR);
-        $polyline = TransportController::getPolylineHash($polyline);
+        $polyline = TransportController::getPolylineHash($polyline, 'TraewellingTripFactory');
 
         $trip->update(['polyline_id' => $polyline->id]);
     }

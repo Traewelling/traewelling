@@ -2,19 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\DataProviders\DataProviderBuilder;
-use App\DataProviders\DataProviderInterface;
-use App\Http\Controllers\API\v1\ExperimentalController;
-use App\Http\Resources\StationResource;
 use App\Models\Checkin;
 use App\Models\PolyLine;
-use App\Models\Station;
 use App\Models\User;
-use App\Repositories\StationRepository;
-use App\Services\Wikidata\WikidataImportService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 /**
  * @deprecated Content will be moved to the backend/frontend/API packages soon, please don't add new functions here!
@@ -72,11 +64,12 @@ class TransportController extends Controller
      *
      * @return PolyLine
      */
-    public static function getPolylineHash(string $polyline): PolyLine {
+    public static function getPolylineHash(string $polyline, string $source = null): PolyLine {
         return PolyLine::updateOrCreate([
-                                            'hash' => md5($polyline)
+                                            'hash' => md5($polyline),
                                         ], [
-                                            'polyline' => $polyline
+                                            'polyline' => $polyline,
+                                            'source'   => $source,
                                         ]);
     }
 }

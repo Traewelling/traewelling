@@ -25,8 +25,10 @@ readonly class WikidataEntity
         $instance      = new self();
         $instance->qId = $qId;
 
-        $json = Http::get('https://www.wikidata.org/wiki/Special:EntityData/' . $qId . '.json')->json();
-        if (!isset($json['entities'][$qId])) {
+        $json = Http::withUserAgent(config('services.user_agent'))
+                    ->get('https://www.wikidata.org/wiki/Special:EntityData/' . $qId . '.json')
+                    ->json();
+        if(!isset($json['entities'][$qId])) {
             throw new ModelNotFoundException('Entity not found');
         }
 
