@@ -23,8 +23,7 @@ use InvalidArgumentException;
 use JsonException;
 use stdClass;
 
-abstract class BrouterController extends Controller
-{
+abstract class BrouterController extends Controller {
     private static function getHttpClient(): PendingRequest {
         return Http::baseUrl(config('trwl.brouter_url'))
                    ->timeout(config('trwl.brouter_timeout'));
@@ -42,7 +41,7 @@ abstract class BrouterController extends Controller
         BrouterProfile $profile = BrouterProfile::RAIL //Maybe extend this for other travel types later
     ): stdClass {
         $lonlats = [];
-        foreach ($coordinates as $coord) {
+        foreach($coordinates as $coord) {
             $lonlats[] = $coord->longitude . ',' . $coord->latitude; //brouter needs order lon,lat
         }
         $coordinateString = implode('|', $lonlats);
@@ -53,7 +52,7 @@ abstract class BrouterController extends Controller
                             ':profile' => $profile->value,
                         ]));
         Log::debug('Brouter URL is ' . $response->effectiveUri(), ['RefreshPolyline']);
-        if (!$response->ok()) {
+        if(!$response->ok()) {
             Log::debug('Brouter response was not okay.', ['body' => $response->body(), 'RefreshPolyline']);
             throw new InvalidArgumentException('Brouter response was not okay.');
         }
@@ -62,7 +61,7 @@ abstract class BrouterController extends Controller
         //remove unnecessary data
         unset($geoJson->features[0]->properties->messages, $geoJson->features[0]->properties->times);
 
-        if (!isset($geoJson->features[0]->geometry->coordinates)) {
+        if(!isset($geoJson->features[0]->geometry->coordinates)) {
             throw new InvalidArgumentException('required data is missing');
         }
 
@@ -80,7 +79,7 @@ abstract class BrouterController extends Controller
      * @throws JsonException
      */
     public static function reroutePolyline(Trip $trip): void {
-        if (App::runningUnitTests() || !config('trwl.brouter')) {
+        if(App::runningUnitTests() || !config('trwl.brouter')) {
             Log::info('Brouter Polyline rerouting is disabled or running in tests for Trip#' . $trip->trip_id, ['RefreshPolyline']);
             return;
         }
@@ -88,10 +87,10 @@ abstract class BrouterController extends Controller
         //0. Check if brouter Polyline is already available
         $childPolyline   = $trip->polyline_id ? PolyLine::where('parent_id', $trip->polyline_id)->orderBy('id', 'desc')->first() : null;
         $currentPolyline = $trip->polyline_id ? $trip->polyline()->first() : null;
-        if ($childPolyline?->source === 'brouter' || $currentPolyline?->source === 'brouter') {
+        if($childPolyline?->source === 'brouter' || $currentPolyline?->source === 'brouter') {
             Log::debug('Brouter Polyline already available for Trip#' . $trip->trip_id, ['RefreshPolyline']);
 
-            if ($currentPolyline?->source !== 'brouter') {
+            if($currentPolyline?->source !== 'brouter') {
                 //If the current Polyline is not from Brouter, we need to recalculate the distance and points
                 self::recalculateDistanceAndPoints($trip, $childPolyline);
             }
@@ -100,24 +99,24 @@ abstract class BrouterController extends Controller
 
         //1. Prepare coordinates from stations
         $coordinates = [];
-        foreach ($trip->stopovers as $stopover) {
+        foreach($trip->stopovers as $stopover) {
             $coordinates[] = new Coordinate($stopover->station->latitude, $stopover->station->longitude);
         }
 
         try {
             //2. Request route at brouter
             $brouterGeoJSON = self::getGeoJSONForRoute($coordinates);
-        } catch (InvalidArgumentException) {
+        } catch(InvalidArgumentException) {
             Log::error('Error while getting Polyline for Trip#' . $trip->trip_id . ' (Required data is missing in Brouter response)', ['RefreshPolyline']);
             return;
-        } catch (ConnectionException) {
+        } catch(ConnectionException) {
             Log::warning('Getting Polyline for Trip#' . $trip->trip_id . ' timed out.', ['RefreshPolyline']);
             return;
         }
         //3. Create "new" GeoJSON split by stations (as features)
         $geoJson = ['type' => 'FeatureCollection', 'features' => []];
 
-        foreach ($brouterGeoJSON?->features[0]?->geometry?->coordinates ?? [] as $coordinate) {
+        foreach($brouterGeoJSON?->features[0]?->geometry?->coordinates ?? [] as $coordinate) {
             $geoJson['features'][] = [
                 'type'       => 'Feature',
                 'properties' => new stdClass(),
@@ -126,14 +125,14 @@ abstract class BrouterController extends Controller
                     'coordinates' => [
                         $coordinate[0],
                         $coordinate[1],
-                    ]
-                ]
+                    ],
+                ],
             ];
         }
 
         //4. Try to map stations to GeoJSON
         $highestMappedKey = null;
-        foreach ($trip->stopovers as $stopover) {
+        foreach($trip->stopovers as $stopover) {
             $properties = [
                 'id'   => $stopover->station->ibnr,
                 'name' => $stopover->station->name,
@@ -142,8 +141,8 @@ abstract class BrouterController extends Controller
             //Get feature with the lowest distance to station
             $minDistance       = null;
             $closestFeatureKey = null;
-            foreach ($geoJson['features'] as $key => $feature) {
-                if (($highestMappedKey !== null && $key <= $highestMappedKey) || !isset($feature['geometry']['coordinates'])) {
+            foreach($geoJson['features'] as $key => $feature) {
+                if(($highestMappedKey !== null && $key <= $highestMappedKey) || !isset($feature['geometry']['coordinates'])) {
                     //Don't look again at the same stations.
                     //This is required and very important to prevent bugs for ring lines!
                     continue;
@@ -153,7 +152,7 @@ abstract class BrouterController extends Controller
                     new Coordinate($stopover->station->latitude, $stopover->station->longitude)
                 ))->calculateDistance();
 
-                if ($minDistance === null || $distance < $minDistance) {
+                if($minDistance === null || $distance < $minDistance) {
                     $minDistance       = $distance;
                     $closestFeatureKey = $key;
                 }
@@ -166,7 +165,7 @@ abstract class BrouterController extends Controller
                                               'hash'      => Str::uuid(), //In this case a non required unique key
                                               'polyline'  => json_encode($geoJson),
                                               'source'    => 'brouter',
-                                              'parent_id' => $trip->polyline_id
+                                              'parent_id' => $trip->polyline_id,
                                           ]);
         self::recalculateDistanceAndPoints($trip, $childPolyline);
     }
@@ -188,11 +187,11 @@ abstract class BrouterController extends Controller
         //Refresh distance and points of trips
         $checkinsToRecalc = Checkin::with(['status'])->where('trip_id', $trip->trip_id)->get();
         try {
-            foreach ($checkinsToRecalc as $checkin) {
+            foreach($checkinsToRecalc as $checkin) {
                 TrainCheckinController::refreshDistanceAndPoints($checkin->status);
             }
             DB::commit();
-        } catch (DistanceDeviationException) {
+        } catch(DistanceDeviationException) {
             $trip->update(['polyline_id' => $oldPolyLine]);
             Log::info('Distance Deviation detected. Reverting changes.', ['RefreshPolyline', 'Trip#' . $trip->trip_id]);
             DB::rollBack();
@@ -207,33 +206,34 @@ abstract class BrouterController extends Controller
      * @return void
      */
     public static function checkPolyline(Trip $trip): void {
-        if (!$trip->category?->onRails()) {
+        if(!$trip->category?->onRails()) {
             Log::info('Trip#' . $trip->trip_id . ' is not on rails. No need to check polyline.', ['RefreshPolyline']);
             return;
         }
 
-        if (!self::checkIfPolylineHasMissingParts($trip)) {
+        if(!self::checkIfPolylineHasMissingParts($trip)) {
             Log::info('no parts missing', ['RefreshPolyline']);
             //Nothing to do here.
             return;
         }
+        return; // temporary disable dispatching Brouter jobs as of performance issues (~Sept 2025, kris)
         Log::info('parts missing: dispatch', ['RefreshPolyline']);
         RefreshPolyline::dispatch($trip);
     }
 
     private static function checkIfPolylineHasMissingParts(Trip $trip): bool {
-        if (is_null($trip->polyline)) {
+        if(is_null($trip->polyline)) {
             Log::debug('Missing route found. No polyline available.', ['RefreshPolyline']);
             return true;
         }
         $geoJson      = json_decode($trip->polyline->polyline);
         $features     = $geoJson->features;
         $lastStopOver = null; // To detect whether as the crow flies or real routing
-        foreach ($features as $data) {
-            if (!isset($data->properties->id)) {
+        foreach($features as $data) {
+            if(!isset($data->properties->id)) {
                 $lastStopOver = null;
             } else {
-                if (!is_null($lastStopOver) && $trip->category?->onRails()) { // A real route is missing -> request route via Brouter
+                if(!is_null($lastStopOver) && $trip->category?->onRails()) { // A real route is missing -> request route via Brouter
                     Log::debug('Missing route found between ' . ($lastStopOver->properties->name ?? 'unknown') . ' and ' . ($data->properties->name ?? 'unknown'), ['RefreshPolyline']);
                     return true;
                 }
@@ -247,9 +247,9 @@ abstract class BrouterController extends Controller
     private static function getOldPolyline(Trip $trip): ?int {
         $oldPolyLine = PolyLine::where('parent_id', $trip->polyline_id)->orderBy('id', 'desc')->first();
         $limit       = 20;
-        while ($oldPolyLine?->source === 'brouter' && $limit-- > 0) {
+        while($oldPolyLine?->source === 'brouter' && $limit-- > 0) {
             $next = PolyLine::where('parent_id', $oldPolyLine->id)->orderBy('id', 'desc')->first();
-            if ($next) {
+            if($next) {
                 $oldPolyLine = $next;
             } else {
                 break;
