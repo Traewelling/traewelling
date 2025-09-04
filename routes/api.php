@@ -59,7 +59,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
              ->middleware(['scope:read-statistics']);
         Route::group(['middleware' => ['scope:read-statuses']], static function() {
             Route::get('dashboard', [StatusController::class, 'getDashboard']);
-            Route::get('dashboard/global', [StatusController::class, 'getGlobalDashboard']);
             Route::get('dashboard/future', [StatusController::class, 'getFutureCheckins']);
         });
         Route::group(['middleware' => ['scope:write-statuses']], static function() {

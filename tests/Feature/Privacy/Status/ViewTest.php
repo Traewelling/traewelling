@@ -161,11 +161,6 @@ class ViewTest extends ApiTestCase
         $checkin = Checkin::factory(['user_id' => $bob->id])->create();
         $checkin->status->update(['visibility' => StatusVisibility::UNLISTED]);
 
-        //alice should not see the status on her global dashboard
-        $response = $this->get("/api/v1/dashboard/global");
-        $response->assertOk();
-        $response->assertJsonCount(0, 'data');
-
         //alice follows bob
         FollowBackend::createOrRequestFollow($alice, $bob);
 

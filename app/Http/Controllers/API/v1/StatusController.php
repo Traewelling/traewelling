@@ -73,13 +73,6 @@ class StatusController extends Controller
     }
 
     /**
-     * @deprecated
-     */
-    public static function getGlobalDashboard(): AnonymousResourceCollection {
-        return StatusResource::collection(DashboardController::getGlobalDashboard(Auth::user()));
-    }
-
-    /**
      * @OA\Get(
      *      path="/dashboard/future",
      *      operationId="getFutureDashboard",
