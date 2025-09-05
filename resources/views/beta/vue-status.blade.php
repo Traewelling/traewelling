@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('status.ogp-title', ['name' => '']))
+@section('title', $title)
 
 @section('content')
     <div class="container">
