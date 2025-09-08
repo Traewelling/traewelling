@@ -25,7 +25,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->when(AuthorizationController::class)
                   ->needs(StatefulGuard::class)
                   ->give(fn() => Auth::guard(config('passport.guard', null)));
+
         Passport::ignoreCsrfToken();
+        Passport::tokensExpireIn(CarbonInterval::minutes(30));
+        Passport::refreshTokensExpireIn(CarbonInterval::days(30));
+        Passport::personalAccessTokensExpireIn(CarbonInterval::days(90));
     }
 
     /**
