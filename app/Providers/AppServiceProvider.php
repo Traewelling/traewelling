@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Http\Controllers\Backend\Auth\AuthorizationController;
+use Carbon\CarbonInterval;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Pagination\Paginator;
