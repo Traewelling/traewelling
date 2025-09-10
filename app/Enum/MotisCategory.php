@@ -41,11 +41,10 @@ enum MotisCategory: string
             'HIGHSPEED_RAIL', 'REGIONAL_FAST_RAIL' => HafasTravelType::NATIONAL_EXPRESS,
             'LONG_DISTANCE'                        => HafasTravelType::REGIONAL_EXP,
             'METRO'                                => HafasTravelType::SUBURBAN,
-            'BUS'                                  => HafasTravelType::BUS,
+            'BUS', 'COACH'                         => HafasTravelType::BUS,
             'FERRY'                                => HafasTravelType::FERRY,
             'SUBWAY'                               => HafasTravelType::SUBWAY,
             'TRAM', 'CABLE_CAR'                    => HafasTravelType::TRAM,
-            'COACH'                                => HafasTravelType::TAXI,
             default                                => HafasTravelType::REGIONAL,
         };
     }
