@@ -77,19 +77,10 @@ abstract class StatusController extends Controller
                           ]);
                 });
 
-                //Option 4: Status is from a user who trusts the viewing user
-                $query->orWhere(function(Builder $query) use ($viewingUser) {
-                    $query->where('statuses.visibility', StatusVisibility::TRUSTED->value)
-                          ->whereExists(function($subQuery) use ($viewingUser) {
-                              $subQuery->select(\DB::raw(1))
-                                      ->from('trusted_users')
-                                      ->whereColumn('trusted_users.user_id', 'statuses.user_id')
-                                      ->where('trusted_users.trusted_id', $viewingUser->id)
-                                      ->where(function($expireQuery) {
-                                          $expireQuery->whereNull('trusted_users.expires_at')
-                                                     ->orWhere('trusted_users.expires_at', '>', now());
-                                      });
-                          });
+                //Option 4: Status is from a trusted user who trusts the viewing user
+                $query->orWhere(function(Builder $subQuery) use ($viewingUser) {
+                    $subQuery->where('statuses.visibility', StatusVisibility::TRUSTED->value)
+                                         ->whereNotNull('trusted_users.user_id'); // JOIN condition met
                 });
             }
         };

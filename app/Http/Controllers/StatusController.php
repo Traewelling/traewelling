@@ -222,9 +222,21 @@ class StatusController extends Controller
                                  ])
                           ->select('statuses.*')
                           ->join('users', 'statuses.user_id', '=', 'users.id')
-                          ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
-                          ->where(Backend\Transport\StatusController::filterStatusVisibility(auth()->user()))
-                          ->orderBy('train_checkins.departure', 'desc');
+                          ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id');
+
+        if (auth()->user() !== null) {
+          $statuses->leftJoin('trusted_users', function($join) {
+              $join->on('trusted_users.user_id', '=', 'statuses.user_id')
+                  ->where('trusted_users.trusted_id', '=', auth()->user()->id)
+                  ->where(function($expireQuery) {
+                      $expireQuery->whereNull('trusted_users.expires_at')
+                      ->orWhere('trusted_users.expires_at', '>', now());
+              });
+          });
+        }
+
+        $statuses->where(Backend\Transport\StatusController::filterStatusVisibility(auth()->user()))
+            ->orderBy('train_checkins.departure', 'desc');
 
         if (auth()->check()) {
             $statuses->whereNotIn('statuses.user_id', auth()->user()?->mutedUsers()->select('muted_id'))

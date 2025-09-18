@@ -230,8 +230,20 @@ class StatusController extends Controller
         }
 
         $query->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-              ->join('users', 'statuses.user_id', '=', 'users.id')
-              ->where(\App\Http\Controllers\Backend\Transport\StatusController::filterStatusVisibility($user))
+              ->join('users', 'statuses.user_id', '=', 'users.id');
+
+        if ($user !== null) {
+          $query->leftJoin('trusted_users', function($join) use ($user) {
+              $join->on('trusted_users.user_id', '=', 'statuses.user_id')
+                  ->where('trusted_users.trusted_id', '=', $user->id)
+                  ->where(function($expireQuery) {
+                      $expireQuery->whereNull('trusted_users.expires_at')
+                      ->orWhere('trusted_users.expires_at', '>', now());
+              });
+          });
+        }
+        
+        $query->where(\App\Http\Controllers\Backend\Transport\StatusController::filterStatusVisibility($user))
               ->where('train_checkins.departure', '<', now()->addMinutes(20))
               ->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
               ->whereNotIn('statuses.user_id', $user->blockedUsers()->select('blocked_id'))

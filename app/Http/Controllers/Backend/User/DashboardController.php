@@ -30,28 +30,27 @@ abstract class DashboardController extends Controller
                                 'checkin.trip.stopovers.station.names'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
+                     ->leftJoin('trusted_users', function($join) use ($user) {
+                         $join->on('trusted_users.user_id', '=', 'statuses.user_id')
+                              ->where('trusted_users.trusted_id', '=', $user->id)
+                              ->where(function($expireQuery) {
+                                  $expireQuery->whereNull('trusted_users.expires_at')
+                                             ->orWhere('trusted_users.expires_at', '>', now());
+                              });
+                     })
                      ->select('statuses.*')
                      ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20))
                      ->whereIn('statuses.user_id', $followingIDs)
                      ->whereNotIn('statuses.user_id', $user->mutedUsers->pluck('id'))
-                     ->where(function($query) use ($user) {
+                     ->where(function($query) {
                          $query->whereIn('statuses.visibility', [
                              StatusVisibility::PUBLIC->value,
                              StatusVisibility::FOLLOWERS->value,
                              StatusVisibility::AUTHENTICATED->value
                          ])
-                         ->orWhere(function($trustedQuery) use ($user) {
+                         ->orWhere(function($trustedQuery) {
                              $trustedQuery->where('statuses.visibility', StatusVisibility::TRUSTED->value)
-                                         ->whereExists(function($subQuery) use ($user) {
-                                             $subQuery->select(\DB::raw(1))
-                                                     ->from('trusted_users')
-                                                     ->whereColumn('trusted_users.user_id', 'statuses.user_id')
-                                                     ->where('trusted_users.trusted_id', $user->id)
-                                                     ->where(function($expireQuery) {
-                                                         $expireQuery->whereNull('trusted_users.expires_at')
-                                                                    ->orWhere('trusted_users.expires_at', '>', now());
-                                                     });
-                                         });
+                                         ->whereNotNull('trusted_users.user_id'); // JOIN condition met
                          });
                      })
                      ->orWhere(function($query) use ($user) {
