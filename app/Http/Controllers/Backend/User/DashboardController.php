@@ -41,17 +41,11 @@ abstract class DashboardController extends Controller
                              StatusVisibility::AUTHENTICATED->value
                          ])
                          ->orWhere(function($trustedQuery) use ($user) {
-                             $trustedQuery->where('statuses.visibility', StatusVisibility::TRUSTED->value)
-                                         ->whereExists(function($subQuery) use ($user) {
-                                             $subQuery->select(\DB::raw(1))
-                                                     ->from('trusted_users')
-                                                     ->whereColumn('trusted_users.user_id', 'statuses.user_id')
-                                                     ->where('trusted_users.trusted_id', $user->id)
-                                                     ->where(function($expireQuery) {
-                                                         $expireQuery->whereNull('trusted_users.expires_at')
-                                                                    ->orWhere('trusted_users.expires_at', '>', now());
-                                                     });
-                                         });
+                             $trustedUserIds = self::getTrustedUserIds($user->id);
+                             if (!empty($trustedUserIds)) {
+                                 $trustedQuery->where('statuses.visibility', StatusVisibility::TRUSTED->value)
+                                             ->whereIn('statuses.user_id', $trustedUserIds);
+                             }
                          });
                      })
                      ->orWhere(function($query) use ($user) {
@@ -61,5 +55,24 @@ abstract class DashboardController extends Controller
                      ->orderBy('train_checkins.departure', 'desc')
                      ->latest()
                      ->simplePaginate(15);
+    }
+
+    /**
+     * Get user IDs who trust the given user (cached for performance)
+     *
+     * @param int $viewingUserId
+     * @return array
+     */
+    private static function getTrustedUserIds(int $viewingUserId): array {
+        return \Cache::remember("trusted_users_{$viewingUserId}", now()->addMinutes(5), function() use ($viewingUserId) {
+            return DB::table('trusted_users')
+                ->where('trusted_id', $viewingUserId)
+                ->where(function($query) {
+                    $query->whereNull('expires_at')
+                          ->orWhere('expires_at', '>', now());
+                })
+                ->pluck('user_id')
+                ->toArray();
+        });
     }
 }

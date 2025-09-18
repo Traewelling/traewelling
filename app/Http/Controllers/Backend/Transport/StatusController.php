@@ -78,20 +78,33 @@ abstract class StatusController extends Controller
                 });
 
                 //Option 4: Status is from a user who trusts the viewing user
-                $query->orWhere(function(Builder $query) use ($viewingUser) {
-                    $query->where('statuses.visibility', StatusVisibility::TRUSTED->value)
-                          ->whereExists(function($subQuery) use ($viewingUser) {
-                              $subQuery->select(\DB::raw(1))
-                                      ->from('trusted_users')
-                                      ->whereColumn('trusted_users.user_id', 'statuses.user_id')
-                                      ->where('trusted_users.trusted_id', $viewingUser->id)
-                                      ->where(function($expireQuery) {
-                                          $expireQuery->whereNull('trusted_users.expires_at')
-                                                     ->orWhere('trusted_users.expires_at', '>', now());
-                                      });
-                          });
-                });
+                $trustedUserIds = self::getTrustedUserIds($viewingUser->id);
+                if (!empty($trustedUserIds)) {
+                    $query->orWhere(function(Builder $query) use ($trustedUserIds) {
+                        $query->where('statuses.visibility', StatusVisibility::TRUSTED->value)
+                              ->whereIn('statuses.user_id', $trustedUserIds);
+                    });
+                }
             }
         };
+    }
+
+    /**
+     * Get user IDs who trust the given user (cached for performance)
+     *
+     * @param int $viewingUserId
+     * @return array
+     */
+    private static function getTrustedUserIds(int $viewingUserId): array {
+        return \Cache::remember("trusted_users_{$viewingUserId}", now()->addMinutes(5), function() use ($viewingUserId) {
+            return DB::table('trusted_users')
+                ->where('trusted_id', $viewingUserId)
+                ->where(function($query) {
+                    $query->whereNull('expires_at')
+                          ->orWhere('expires_at', '>', now());
+                })
+                ->pluck('user_id')
+                ->toArray();
+        });
     }
 }

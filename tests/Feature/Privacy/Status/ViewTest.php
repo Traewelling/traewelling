@@ -13,6 +13,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
+use Illuminate\Support\Facades\Cache;
 
 class ViewTest extends ApiTestCase
 {
@@ -303,6 +304,8 @@ class ViewTest extends ApiTestCase
             'user_id' => $foreignUser->id,
             'trusted_id' => $user->id,
         ]);
+        
+        Cache::forget("trusted_users_{$user->id}");
 
         // Trusted user should see trusted status on their dashboard
         $response = $this->get("/api/v1/dashboard");
