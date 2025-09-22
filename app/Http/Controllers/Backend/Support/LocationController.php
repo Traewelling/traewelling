@@ -162,11 +162,12 @@ class LocationController
         $geoJsonObj = $this->emptyGeoJson();
         $polyLine   = $polyLine ?? $this->trip->polyline?->polyline;
 
-        $cacheName      = sprintf('trip_%s_polyline_%s', $this->trip->id, sha1($polyLine));
-        $cachedPolyline = Cache::get($cacheName);
-        if (!empty($cachedPolyline)) {
-            return $cachedPolyline;
-        }
+        // Cache currently commented out, so it doesn't cause RAM-overflow.
+        // $cacheName      = sprintf('trip_%s_polyline_%s', $this->trip->id, sha1($polyLine));
+        // $cachedPolyline = Cache::get($cacheName);
+        // if (!empty($cachedPolyline)) {
+        //    return $cachedPolyline;
+        // }
 
         if (!empty($polyLine)) {
             // decode GeoJSON object from polyline
@@ -190,8 +191,9 @@ class LocationController
 
         $this->mapStopoversToPolyline($geoJsonObj, $stopovers);
 
-        Cache::forget($cacheName);
-        Cache::put($cacheName, $geoJsonObj, 60 * 60 * 24);
+        // Cache currently commented out, so it doesn't cause RAM-overflow.
+        // Cache::forget($cacheName);
+        // Cache::put($cacheName, $geoJsonObj, 60 * 60 * 24);
 
         return $geoJsonObj;
     }
