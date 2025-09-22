@@ -66,14 +66,14 @@ class FrontendStatusController extends Controller
     }
 
     public function getStatus($statusId): Renderable {
+        $status = StatusBackend::getStatus($statusId);
+
         if (\auth()->user()?->hasRole('open-beta')) {
             return view('beta.vue-status', [
                 'statusId' => $statusId,
                 'title'    => __('status.ogp-title', ['name' => $status->user->username]),
             ]);
         }
-
-        $status = StatusBackend::getStatus($statusId);
 
         try {
             $this->authorize('view', $status);
