@@ -320,7 +320,7 @@ class MotisHydrator
                                       tripId:        $tripId,
                                       direction:     $rawDeparture['headsign'],
                                       lineName:      $tripLineName,
-                                      number:        $tripId,
+                                      number:        $tripShortName,
                                       category:      $hafasTravelType,
                                       journeyNumber: $tripShortName,
                                       operator:      $this->parseOperator($rawDeparture, $source),
