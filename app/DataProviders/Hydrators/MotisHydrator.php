@@ -232,12 +232,16 @@ class MotisHydrator
         $license            = $this->motisRepository->getActiveLicense($leg['source'], $source);
         $operator           = $this->parseOperator($leg, $source);
         $polyline           = $this->getPolylineFromLeg($leg);
+        $shortTripName      = !empty($leg['tripShortName']) ? $leg['tripShortName'] : null;
+        $shortTripName      = $shortTripName !== null ? preg_replace('/\D/', '', $shortTripName) : null;
+
+        echo $shortTripName;
 
         return [
             'category'                => $category,
             'number'                  => $tripLineName,
             'linename'                => $tripLineName,
-            'journey_number'          => null,
+            'journey_number'          => $shortTripName,
             'operator_id'             => $operator?->id,
             'origin_id'               => $originStation->id,
             'destination_id'          => $destinationStation->id,
@@ -288,6 +292,7 @@ class MotisHydrator
 
             //trip
             $tripId              = $rawDeparture['tripId'];
+            $tripShortName       = $rawDeparture['tripShortName'] ?? '';
             $rawDepartureStation = $rawDeparture['place'];
             $tripLineName        = $rawDeparture['routeShortName'] ?? '';
             $hafasTravelType     = $this->getCategoryFromLeg($rawDeparture);
@@ -317,7 +322,7 @@ class MotisHydrator
                                       lineName:      $tripLineName,
                                       number:        $tripId,
                                       category:      $hafasTravelType,
-                                      journeyNumber: $tripId,
+                                      journeyNumber: $tripShortName,
                                       operator:      $this->parseOperator($rawDeparture, $source),
                                   ),
                 plannedPlatform:  $platformPlanned,

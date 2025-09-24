@@ -51,7 +51,7 @@ class DepartureHydrator
             "line"                => [
                 "type"        => "line",
                 "id"          => $request->trip->lineName,
-                "fahrtNr"     => $request->trip->number,
+                "fahrtNr"     => $request->trip->journeyNumber,
                 "name"        => $request->trip->lineName,
                 "public"      => true,
                 "adminCode"   => "80____",
