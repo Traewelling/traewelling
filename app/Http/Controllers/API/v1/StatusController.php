@@ -230,9 +230,8 @@ class StatusController extends Controller
         }
 
         $query->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
-              ->join('users', 'statuses.user_id', '=', 'users.id');
-
-        $query->where(\App\Http\Controllers\Backend\Transport\StatusController::filterStatusVisibility($user))
+              ->join('users', 'statuses.user_id', '=', 'users.id')
+              ->where(\App\Http\Controllers\Backend\Transport\StatusController::filterStatusVisibility($user))
               ->where('train_checkins.departure', '<', now()->addMinutes(20))
               ->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
               ->whereNotIn('statuses.user_id', $user->blockedUsers()->select('blocked_id'))
