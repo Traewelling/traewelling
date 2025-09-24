@@ -18,6 +18,7 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 /**
@@ -62,6 +63,20 @@ class UserController extends Controller
                                   if (Auth::check()) {
                                       $query->orWhere(function($query) {
                                           $query->where('statuses.visibility', StatusVisibility::AUTHENTICATED->value);
+                                      })
+                                      ->orWhere(function($query) {
+                                          $currentUserId = auth()->user()->id;
+                                          $query->where('statuses.visibility', StatusVisibility::TRUSTED->value)
+                                                ->whereExists(function($subQuery) use ($currentUserId) {
+                                                    $subQuery->select(\DB::raw(1))
+                                                            ->from('trusted_users')
+                                                            ->whereColumn('trusted_users.user_id', 'statuses.user_id')
+                                                            ->where('trusted_users.trusted_id', $currentUserId)
+                                                            ->where(function($expireQuery) {
+                                                                $expireQuery->whereNull('trusted_users.expires_at')
+                                                                           ->orWhere('trusted_users.expires_at', '>', now());
+                                                            });
+                                                });
                                       });
                                   }
                               });

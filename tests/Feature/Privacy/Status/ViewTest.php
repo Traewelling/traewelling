@@ -8,6 +8,7 @@ use App\Models\Checkin;
 use App\Models\Event;
 use App\Models\Follow;
 use App\Models\Status;
+use App\Models\TrustedUser;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
@@ -201,5 +202,111 @@ class ViewTest extends ApiTestCase
 
         //check if status is not displayed
         $response->assertDontSee('/status/' . $checkin->status->id);
+    }
+
+    public function testUnauthenticatedViewTrustedStatus(): void {
+        $user   = User::factory()->create();
+        $status = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::TRUSTED])
+                        ->has(Checkin::factory())
+                        ->create();
+
+        $this->assertGuest();
+        $statusRequest = $this->get(route('status', ['id' => $status->id]));
+        $statusRequest->assertStatus(403);
+    }
+
+    public function testViewForeignTrustedStatusAndNotTrusted(): void {
+        $user        = User::factory()->create();
+        $foreignUser = User::factory()->create();
+        $status      = Status::factory([
+                                           'user_id'    => $foreignUser->id,
+                                           'visibility' => StatusVisibility::TRUSTED,
+                                       ])->create();
+        $this->assertFalse($user->can('view', $status));
+    }
+
+    public function testViewForeignTrustedStatusAndIsTrusted(): void {
+        $user        = User::factory()->create();
+        $foreignUser = User::factory()->create();
+        
+        TrustedUser::create([
+            'user_id' => $foreignUser->id,
+            'trusted_id' => $user->id,
+        ]);
+        
+        $status = Status::factory([
+                                      'user_id'    => $foreignUser->id,
+                                      'visibility' => StatusVisibility::TRUSTED,
+                                  ])->create();
+        $this->assertTrue($user->can('view', $status));
+    }
+
+    // Nötig?
+    public function testViewForeignTrustedStatusWithExpiredTrust(): void {
+        $user        = User::factory()->create();
+        $foreignUser = User::factory()->create();
+        
+        TrustedUser::create([
+            'user_id' => $foreignUser->id,
+            'trusted_id' => $user->id,
+            'expires_at' => now()->subDay(),
+        ]);
+        
+        $status = Status::factory([
+                                      'user_id'    => $foreignUser->id,
+                                      'visibility' => StatusVisibility::TRUSTED,
+                                  ])->create();
+        $this->assertFalse($user->can('view', $status));
+    }
+
+    public function testTrustedStatusProfileVisibility(): void {
+        $user        = User::factory()->create();
+        $foreignUser = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        $checkin = Checkin::factory(['user_id' => $foreignUser->id])->create();
+        $checkin->status->update(['visibility' => StatusVisibility::TRUSTED]);
+
+        // Non-trusted user should not see trusted status on foreign user's profile
+        $response = $this->get("/api/v1/user/{$foreignUser->username}/statuses");
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+
+        TrustedUser::create([
+            'user_id' => $foreignUser->id,
+            'trusted_id' => $user->id,
+        ]);
+
+        $response = $this->get("/api/v1/user/{$foreignUser->username}/statuses");
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+    }
+
+    public function testTrustedStatusDashboardVisibility(): void {
+        $user        = User::factory()->create();
+        $foreignUser = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        // Make foreignUser follow user so the status appears on their dashboard
+        FollowBackend::createOrRequestFollow($user, $foreignUser);
+        $user->refresh();
+        
+        $checkin = Checkin::factory(['user_id' => $foreignUser->id])->create();
+        $checkin->status->update(['visibility' => StatusVisibility::TRUSTED]);
+ 
+        // Non-trusted user should not see trusted status on their dashboard
+        $response = $this->get("/api/v1/dashboard");
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
+        
+        TrustedUser::create([
+            'user_id' => $foreignUser->id,
+            'trusted_id' => $user->id,
+        ]);
+
+        // Trusted user should see trusted status on their dashboard
+        $response = $this->get("/api/v1/dashboard");
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
     }
 }
