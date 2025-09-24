@@ -235,8 +235,6 @@ class MotisHydrator
         $shortTripName      = !empty($leg['tripShortName']) ? $leg['tripShortName'] : null;
         $shortTripName      = $shortTripName !== null ? preg_replace('/\D/', '', $shortTripName) : null;
 
-        echo $shortTripName;
-
         return [
             'category'                => $category,
             'number'                  => $tripLineName,
