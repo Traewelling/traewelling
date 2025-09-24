@@ -78,7 +78,7 @@ abstract class StatusController extends Controller
                           ]);
                 });
 
-                //Option 4: Status is from a trusted user who trusts the viewing user
+                //Option 4: Status is from a user who trusts the viewing user
                 $query->orWhere(function(EloquentBuilder $query) use ($viewingUser) {
                     $query->where('statuses.visibility', StatusVisibility::TRUSTED->value)
                           ->whereExists(function(QueryBuilder $subQuery) use ($viewingUser) {
