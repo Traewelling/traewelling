@@ -82,20 +82,36 @@ export default {
 
       <template v-if="alsoOnThisConnection.length > 0">
         <h5 class="mt-5">
-          {{
-            transChoice("controller.transport.also-in-connection", alsoOnThisConnection.length)
-          }}
+          {{ transChoice("controller.transport.also-in-connection", alsoOnThisConnection.length) }}
         </h5>
         <div class="list-group">
-          <a :href="`/status/${status.id}`" v-for="status in alsoOnThisConnection"
-             class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-            <div class="d-flex gap-2 w-100 justify-content-between">
-              <div>
-                <h6 class="mb-0 fw-bold opacity-75">{{ status.username }}</h6>
-                <p class="mb-0">
-                  {{ status?.train?.origin?.name }} ➜ {{ status?.train?.destination?.name }}
-                </p>
-              </div>
+          <a
+              :href="`/status/${status.id}`"
+              v-for="status in alsoOnThisConnection"
+              :key="status.id"
+              class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3"
+              aria-current="true"
+          >
+            <img
+                :src="status.userDetails.profilePicture"
+                alt="Profilbild"
+                class="rounded-circle flex-shrink-0"
+                style="width: 40px; height: 40px; object-fit: cover;"
+            />
+
+            <div class="d-flex flex-column flex-grow-1">
+              <h6 class="mb-1 fw-bold opacity-75 text-truncate">
+                {{ status.userDetails.displayName }}
+                <span
+                    v-if="status.userDetails.displayName !== status.userDetails.username"
+                    class="text-muted"
+                >
+            (@{{ status.userDetails.username }})
+          </span>
+              </h6>
+              <p class="mb-0 text-truncate">
+                {{ status?.train?.origin?.name }} ➜ {{ status?.train?.destination?.name }}
+              </p>
             </div>
           </a>
         </div>
