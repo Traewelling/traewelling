@@ -82,8 +82,9 @@ function show() {
   fetchDestinations().then(() => {
     eventsDropdown.value?.fetchEvents(getDepartureForStatus(props.status).toISO());
     const currentDestStationId = props.status.train.destination.id;
+    const currentDestArrivalPlanned = props.status.train.destination.arrivalPlanned;
     const found = stopovers.value.find(so => {
-      return (so.id === currentDestStationId);
+      return (so.id === currentDestStationId && so.arrivalPlanned === currentDestArrivalPlanned);
     });
 
     if (found?.arrivalPlanned) {
