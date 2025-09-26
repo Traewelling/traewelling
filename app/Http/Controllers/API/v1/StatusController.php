@@ -414,8 +414,13 @@ class StatusController extends Controller
             }
 
             DB::beginTransaction();
-            if (isset($validated['destinationId'], $validated['destinationArrivalPlanned'])
-                && ((int) $validated['destinationId']) !== $status->checkin->destinationStopover->station->id) {
+            if (
+                isset($validated['destinationId'], $validated['destinationArrivalPlanned'])
+                && (
+                    ((int) $validated['destinationId']) !== $status->checkin->destinationStopover->station->id
+                    || (Carbon::parse($validated['destinationArrivalPlanned'])->ne($status->checkin->destinationStopover->arrival_planned))
+                )
+            ) {
                 $arrival  = Carbon::parse($validated['destinationArrivalPlanned'])->timezone(config('app.timezone'));
                 $stopover = Stopover::where('train_station_id', $validated['destinationId'])
                                     ->where('arrival_planned', $arrival)
