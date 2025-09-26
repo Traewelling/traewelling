@@ -1,4 +1,5 @@
 import {Business, StatusVisibility} from "../../types/Api.gen";
+import {trans} from "laravel-vue-i18n";
 
 const visibilityIcons = {
     0: 'fa-globe-americas',
@@ -24,22 +25,7 @@ export class IconHelper {
     }
 
     static getVisibilityTooltip(visibility: StatusVisibility): string {
-        switch (visibility) {
-            case 0:
-                return 'Public';
-            case 1:
-                return 'Unlisted';
-            case 2:
-                return 'Friends';
-            case 3:
-                return 'Private';
-            case 4:
-                return 'Restricted';
-            case 5:
-                return 'Trusted Users';
-            default:
-                return 'Unknown Visibility';
-        }
+        return trans('status.visibility.' + visibility);
     }
 
     static getBusinessIcon(business: Business): string {
