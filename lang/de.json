@@ -867,5 +867,6 @@
   "requested-timestamp": "Abfragezeitpunkt",
   "status.locked-visibility": "Du kannst die Sichtbarkeit dieses Status nicht ändern.",
   "status.hidden-body": "Der Statustext ist für andere User nicht sichtbar.",
-  "successfully-deleted": "Erfolgreich gelöscht"
+  "successfully-deleted": "Erfolgreich gelöscht",
+  "dashboard-end-seven-days": "Das Dashboard zeigt nur Check-ins der letzten 7 Tage an."
 }
