@@ -31,7 +31,8 @@ abstract class DashboardController extends Controller
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
-                     ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20))
+                     ->where('train_checkins.departure', '<', now()->addMinutes(20))
+                     ->where('statuses.created_at', '>=', now()->subDays(7))
                      ->whereIn('statuses.user_id', $followingIDs)
                      ->whereNotIn('statuses.user_id', $user->mutedUsers->pluck('id'))
                      ->where(function(EloquentBuilder $query) use ($user) {

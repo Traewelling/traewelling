@@ -161,6 +161,8 @@ fetchFutureStatuses();
       <div v-if="!loading && !showMore && statuses.length > 0" class="text-center my-4">
         <p class="text-muted">
           Final stop. All change, please!
+          <br/>
+          <small>{{trans('dashboard-end-seven-days')}}</small>
         </p>
       </div>
 
