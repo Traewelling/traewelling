@@ -169,6 +169,7 @@ class Motis extends Controller implements DataProviderInterface
             $count++;
             try {
                 $filtered = $this->getDeparturesFromApi($station, $identifier, $when, $type);
+                $filtered = $this->dedupeDeparturesByStation($filtered, $station->id); // remove duplicates by tripId, keep the one that stops at the requested station (if any)
             } catch (HafasException $exception) {
                 // If we get an exception, we can try the next identifier
                 Log::error('MOTIS Error (getDepartures)', [
@@ -207,6 +208,29 @@ class Motis extends Controller implements DataProviderInterface
         return new FilteredDepartures(collect(), $filtered->removedEntries ?? collect());
     }
 
+    /**
+     * Keep only ONE element per tripId.
+     * If the stop you are looking for is in the group, take EXACTLY this entry.
+     * Otherwise, take the first one in chronological order. removedEntries remain unchanged.
+     */
+    private function dedupeDeparturesByStation(FilteredDepartures $filtered, int $requestedStationId): FilteredDepartures {
+        $groups = $filtered->departures->groupBy(fn($it) => $it->tripId ?? null);
+
+        $kept = $groups->map(function($group) use ($requestedStationId) {
+            $exact = $group->first(fn($it) => data_get($it, 'stop.id') === $requestedStationId);
+            if ($exact) {
+                return $exact;
+            }
+            return $group
+                ->sortBy(fn($it) => data_get($it, 'plannedWhen') ?? data_get($it, 'when'))
+                ->first();
+        })
+                       ->sortBy(fn($it) => data_get($it, 'plannedWhen') ?? data_get($it, 'when'))
+                       ->values();
+
+        return new FilteredDepartures($kept, $filtered->removedEntries);
+    }
+
     public function fetchStationFromApi(
         string $identifier,
     ): Station {
@@ -218,7 +242,7 @@ class Motis extends Controller implements DataProviderInterface
                         ->get(self::API_URL . '/stoptimes', $params);
 
         if (!$response->ok()) {
-            CacheKey::increment(HCK::STATION_NOT_OK);
+            CacheKey::increment(HCK::STATIONS_NOT_OK);
             Log::error('Unknown MOTIS Error (fetchStationFromApi)', [
                 'status' => $response->status(),
                 'body'   => $response->body()
