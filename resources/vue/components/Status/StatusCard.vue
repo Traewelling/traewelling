@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import {PropType, ref, useTemplateRef} from "vue";
+import {onBeforeUnmount, onMounted, PropType, ref, useTemplateRef} from "vue";
+import {Tooltip} from "bootstrap";
 import {StatusResource, StopoverResource} from "../../../types/Api.gen";
 import {
   getArrivalForStatus,
@@ -39,6 +40,22 @@ const map = useTemplateRef('map');
 const departure = getDepartureForStopover(statusObject.value.train.origin).dateTime;
 const arrival = getArrivalForStopover(statusObject.value.train.destination).dateTime;
 const activeCheckin = useActiveCheckin();
+const rootEl = ref<HTMLElement | null>(null)
+let delegatedTip: Tooltip | null = null
+
+onMounted(() => {
+  if (!rootEl.value) return
+  delegatedTip = new Tooltip(rootEl.value, {
+    selector: '[data-bs-toggle="tooltip"]',
+    trigger: 'hover focus',
+    container: 'body'
+  })
+})
+
+onBeforeUnmount(() => {
+  delegatedTip?.dispose()
+  delegatedTip = null
+})
 
 function updateProgress() {
   progress.value = calculateProgress();
@@ -86,7 +103,7 @@ updateProgress();
 </script>
 
 <template>
-  <div class="card status mb-3" v-show="!deleted">
+  <div class="card status mb-3" v-show="!deleted" ref="rootEl">
     <div v-if="showMap" class="card-img-top">
       <div id="activeJourneys" class="map statusMap embed-responsive embed-responsive-16by9">
         <ActiveJourneyMap
