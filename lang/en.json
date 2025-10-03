@@ -868,5 +868,13 @@
   "status.locked-visibility": "You cannot change the visibility of this status.",
   "status.hidden-body": "The status text is not visible to other users.",
   "successfully-deleted": "Successfully deleted",
-  "dashboard-end-seven-days": "Dashboard only shows check-ins from the last 7 days."
+  "dashboard-end-seven-days": "Dashboard only shows check-ins from the last 7 days.",
+  "maintenance.more-info": "More information",
+  "maintenance.release-notes": "Release notes / Changelog",
+  "maintenance.release-notes.desc": "See what changed recently",
+  "maintenance.follow": "Follow us on Mastodon",
+  "maintenance.follow.desc": "Updates and announcements",
+  "maintenance.help-center": "Help & documentation",
+  "maintenance.auto-refresh": "This page will refresh automatically once maintenance is over.",
+  "maintenance.refresh-now": "Refresh now"
 }
