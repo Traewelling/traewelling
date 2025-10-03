@@ -191,6 +191,10 @@ class TransportController extends Controller
                 return $departure->when ?? $departure->plannedWhen;
             });
 
+            $times = $departures->map(fn($d) => $d->when ?? $d->plannedWhen)->filter()->sort();
+            $prev  = $timestamp->clone()->subMinutes(15);
+            $next  = $times->isNotEmpty() ? Carbon::parse($times->last())->addMinute() : $timestamp->clone()->addMinutes(15);
+
             return $this->sendResponse(
                 data:       $departures->values(),
                 additional: [
@@ -198,8 +202,8 @@ class TransportController extends Controller
                                     'station'         => StationDto::fromModel($station),
                                     'times'           => [
                                         'now'  => $timestamp,
-                                        'prev' => $timestamp->clone()->subMinutes(15),
-                                        'next' => $timestamp->clone()->addMinutes(15)
+                                        'prev' => $prev,
+                                        'next' => $next
                                     ],
                                     'removedLicenses' => $filtered->removedEntries,
                                     'removedCount'    => $filtered->removedCount
