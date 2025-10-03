@@ -3314,13 +3314,6 @@
                         "description": "line name for that train",
                         "required": true,
                         "example": "S 4"
-                    },
-                    {
-                        "name": "start",
-                        "in": "query",
-                        "description": "start point from where the stopovers should be desplayed",
-                        "required": true,
-                        "example": 4711
                     }
                 ],
                 "responses": {
@@ -4674,19 +4667,19 @@
                         "description": "Attribution string for the license",
                         "type": "string",
                         "example": "Provided by OpenStreetMap contributors",
-                        "nullable": true
+                        "nullable": "true"
                     },
                     "licenseUrl": {
                         "description": "URL to the license text",
                         "type": "string",
                         "example": "https://creativecommons.org/licenses/by/4.0/",
-                        "nullable": true
+                        "nullable": "true"
                     },
                     "sourceUrl": {
                         "description": "URL to the source of the data",
                         "type": "string",
                         "example": "https://www.openstreetmap.org/",
-                        "nullable": true
+                        "nullable": "true"
                     }
                 },
                 "type": "object"
@@ -4808,7 +4801,7 @@
                         "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
                         "type": "string",
                         "example": "RK",
-                        "nullable": true
+                        "nullable": "true"
                     }
                 },
                 "type": "object",
@@ -4894,14 +4887,15 @@
             },
             "StatusVisibility": {
                 "title": "visibility",
-                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the\n *      user specify?",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the\n *      user specify?",
                 "type": "integer",
                 "enum": [
                     0,
                     1,
                     2,
                     3,
-                    4
+                    4,
+                    5
                 ],
                 "example": 0
             },
