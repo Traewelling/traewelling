@@ -29,10 +29,6 @@
                         </a>
                     </div>
                 @endcannot
-
-                @if(isset($station) && auth()->user()?->hasRole('open-beta'))
-                    @include('includes.station-infos')
-                @endif
             </div>
         </div>
     </div>
