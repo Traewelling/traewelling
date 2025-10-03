@@ -209,27 +209,56 @@ class Motis extends Controller implements DataProviderInterface
     }
 
     /**
-     * Keep only ONE element per tripId.
-     * If the stop you are looking for is in the group, take EXACTLY this entry.
-     * Otherwise, take the first one in chronological order. removedEntries remain unchanged.
+     * Remove duplicate trips on nearby stations.
+     * If a trip has multiple departures at a station (different platforms/times) keep it.
      */
     private function dedupeDeparturesByStation(FilteredDepartures $filtered, int $requestedStationId): FilteredDepartures {
-        $groups = $filtered->departures->groupBy(fn($it) => $it->tripId ?? null);
+        $trackKey = static function($it): string {
+            $scheduled = (string) (data_get($it, 'place.scheduledTrack')
+                                   ?? data_get($it, 'plannedPlatform')
+                                      ?? '');
+            $live      = (string) (data_get($it, 'place.track')
+                                   ?? data_get($it, 'platform')
+                                      ?? '');
 
-        $kept = $groups->map(function($group) use ($requestedStationId) {
-            $exact = $group->first(fn($it) => data_get($it, 'stop.id') === $requestedStationId);
-            if ($exact) {
-                return $exact;
+            $scheduled = strtoupper(trim($scheduled));
+            $live      = strtoupper(trim($live));
+            return $scheduled . '|' . $live;
+        };
+
+        $timeKey = static function($it): string {
+            return (string) (data_get($it, 'plannedWhen') ?? '');
+        };
+
+        $groups = $filtered->departures->groupBy(fn($it) => data_get($it, 'tripId'));
+
+        $kept = $groups->flatMap(function($group) use ($requestedStationId, $trackKey, $timeKey) {
+            $sameStation = $group->filter(function($it) use ($requestedStationId) {
+                $stationId = data_get($it, 'station.id');
+                $stopId    = data_get($it, 'stop.id');
+                return ((int) $stationId === $requestedStationId) || ((int) $stopId === $requestedStationId);
+            });
+
+            if ($sameStation->isNotEmpty()) {
+                // 1a) If there are several different tracks, keep exactly one (the first in time) for each track combination.
+                $byTrack        = $sameStation->groupBy($trackKey);
+                $pickedPerTrack = $byTrack->map(function($items) use ($timeKey) {
+                    return $items->sortBy($timeKey)->first();
+                })->values();
+
+                // 1b) if there are no track infos at all, there should be just one...
+                return $pickedPerTrack;
             }
-            return $group
-                ->sortBy(fn($it) => data_get($it, 'plannedWhen') ?? data_get($it, 'when'))
-                ->first();
+
+            // 2) No departure on searched station -> use the first departure in time
+            return collect([$group->sortBy($timeKey)->first()]);
         })
-                       ->sortBy(fn($it) => data_get($it, 'plannedWhen') ?? data_get($it, 'when'))
+                       ->sortBy($timeKey)
                        ->values();
 
         return new FilteredDepartures($kept, $filtered->removedEntries);
     }
+
 
     public function fetchStationFromApi(
         string $identifier,
