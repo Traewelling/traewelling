@@ -13,6 +13,9 @@ import ActiveStatusCard from "../ActiveStatusCard.vue";
 import FriendDropdown from "../Helpers/FriendDropdown.vue";
 import axios from "axios";
 
+const LS_RECENT_KEY = 'trwl:station:recent';
+const MAX_RECENT = 12;
+
 export default {
   setup() {
     const userStore = useUserStore();
@@ -94,18 +97,75 @@ export default {
     },
     setHome() {
       if (!this.isHome) {
-        this.userStore.setHome(this.station).catch((error) => {
+        this.userStore.setHome(this.station).catch(() => {
           window.notyf.error(trans('action.error') + " (" + trans('action.set-home') + ")");
         })
       }
     },
-    getRecent() {
-      fetch(`/api/v1/trains/station/history`).then((response) => {
-        response.json().then((result) => {
-          this.recent = result.data;
-        });
-      });
+
+    /* === Local cache helpers === */
+    loadRecentFromCache() {
+      try {
+        const raw = localStorage.getItem(LS_RECENT_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            this.recent = parsed;
+          }
+        }
+      } catch (_) {
+        /* ignore cache errors */
+      }
     },
+    saveRecentToCache(list) {
+      try {
+        localStorage.setItem(LS_RECENT_KEY, JSON.stringify(list.slice(0, MAX_RECENT)));
+      } catch (_) {
+        /* ignore quota errors */
+      }
+    },
+    pushStationToRecent(stationObj) {
+      if (!stationObj || !stationObj.id) return;
+      const existing = this.recent.filter(s => s && s.id !== stationObj.id);
+      const updated = [stationObj, ...existing].slice(0, MAX_RECENT);
+      this.recent = updated;
+      this.saveRecentToCache(updated);
+    },
+
+    /* === Remote "recent" (server history) === */
+    getRecent() {
+      // show cached immediately
+      this.loadRecentFromCache();
+
+      // try to refresh from API (best effort)
+      fetch(`/api/v1/trains/station/history`)
+          .then((response) => response.ok ? response.json() : Promise.reject())
+          .then((result) => {
+            if (result && result.data) {
+              // merge with local
+              const byId = new Map();
+              const merged = [];
+              result.data.forEach(item => {
+                if (!byId.has(item.id)) {
+                  byId.set(item.id, true);
+                  merged.push(item);
+                }
+              });
+              this.recent.forEach(item => {
+                if (item && !byId.has(item.id)) {
+                  byId.set(item.id, true);
+                  merged.push(item);
+                }
+              });
+              this.recent = merged.slice(0, MAX_RECENT);
+              this.saveRecentToCache(this.recent);
+            }
+          })
+          .catch(() => {
+            // keep cache if network fails
+          });
+    },
+
     autocomplete() {
       this.loading = true;
       if (!this.stationInput || this.stationInput.length < 2) {
@@ -113,25 +173,24 @@ export default {
         this.loading = false;
         return;
       }
-
-      this.fetchAutocomplete()
-          .then((result) => {
-            this.autocompleteList = result.data;
-            this.loading = false;
-          });
+      this.fetchAutocomplete().then((result) => {
+        this.autocompleteList = result?.data ?? [];
+        this.loading = false;
+      });
     },
     async fetchAutocomplete() {
       this.loading = true;
       this.lastError = null;
-      let query = this.stationInput.replace(/%2F/, " ").replace(/\//, " ");
-      return await axios.get(`/api/v1/trains/station/autocomplete/${query}`)
+      let query = (this.stationInput || "").replace(/%2F/, " ").replace(/\//, " ");
+      return await axios.get(`/api/v1/trains/station/autocomplete/${encodeURIComponent(query)}`)
           .then((response) => {
             this.autocompleteList = response.data;
             return response.data;
           })
           .catch((error) => {
-            this.lastError = error.message;
-            notyf.error(error.message);
+            this.lastError = error?.message || 'Error';
+            notyf.error(this.lastError);
+            return null;
           })
           .finally(() => {
             this.loading = false;
@@ -147,19 +206,25 @@ export default {
       this.fetchingTextInput = true;
       this.fetchAutocomplete()
           .then((result) => {
-            this.fetchingTextInput = false;
-            this.setStation(result.data.shift());
+            const first = result?.data?.[0] || result?.[0];
+            if (first) {
+              this.setStation(first);
+            } else {
+              notyf.error(trans('action.error'));
+            }
           })
-          .catch(() => {
+          .finally(() => {
             this.fetchingTextInput = false;
           });
     },
     setStation(item) {
+      if (!item) return;
       this.stationInput = item.name;
       this.selectedStation = item;
       this.$emit("update:station", item);
+      this.pushStationToRecent(item);
       this.$refs.modal.hide();
-      const url = `/stationboard?stationId=${item.id}&stationName=${item.name}`;
+      const url = `/stationboard?stationId=${item.id}&stationName=${encodeURIComponent(item.name)}`;
       if (this.$props.dashboard) {
         window.location = url;
       }
@@ -175,7 +240,6 @@ export default {
         notyf.error(trans("stationboard.position-unavailable"));
         return;
       }
-
       navigator.geolocation.getCurrentPosition(
           (position) => {
             fetch(`/api/v1/trains/station/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`)
@@ -183,6 +247,7 @@ export default {
                   if (!data.ok) {
                     notyf.error(trans("stationboard.position-unavailable"));
                     this.fetchingGps = false;
+                    return;
                   }
                   data.json().then((result) => {
                     this.setStation(result.data);
@@ -198,7 +263,7 @@ export default {
     },
     clearInput() {
       this.stationInput = "";
-      this.$refs.stationInput.focus();
+      this.$refs.stationInput?.focus();
     }
   },
   watch: {
@@ -236,28 +301,33 @@ export default {
   <FullScreenModal ref="modal">
     <template #header>
       <div class="input-group mx-2">
-        <input type="search" name="station" class="form-control mobile-input-fs-16"
-               :placeholder="placeholder"
-               v-model="stationInput"
-               :disabled="fetchingTextInput"
-               @keyup.enter="setStationFromText"
-               ref="stationInput"
+        <input
+            type="search"
+            name="station"
+            class="form-control mobile-input-fs-16"
+            :placeholder="placeholder"
+            v-model="stationInput"
+            :disabled="fetchingTextInput"
+            @keyup.enter="setStationFromText"
+            ref="stationInput"
         />
         <button class="btn btn-light" @click="clearInput">
           <i class="fa-solid fa-delete-left"></i>
         </button>
       </div>
     </template>
-    <template #body>
-      <Spinner v-if="fetchingTextInput || loading"/>
 
-      <div v-else-if="lastError">
-        <div class="alert alert-danger" role="alert">
-          {{ lastError }}
-        </div>
+    <template #body>
+      <div class="position-relative">
+        <Spinner v-if="fetchingTextInput || loading"/>
       </div>
 
-      <ul class="list-group list-group-light list-group-small" v-else>
+      <div v-if="lastError" class="alert alert-danger my-2" role="alert">
+        {{ lastError }}
+      </div>
+
+      <ul class="list-group list-group-light list-group-small">
+        <!-- Quick actions -->
         <AutocompleteListEntry
             v-show="autocompleteList.length === 0"
             :text="trans('stationboard.search-by-location')"
@@ -270,35 +340,46 @@ export default {
             prefix="fas fa-house"
             @click="setStation(userStore.getHome)"
         />
+
+        <!-- Locally cached / recent: always visible as fallback -->
         <AutocompleteListEntry
             v-for="item in recent"
+            :key="'recent-' + item.id"
             v-show="autocompleteList.length === 0"
             :station="item"
+            prefix="fas fa-clock-rotate-left"
             @click="setStation(item)"
         />
+
+        <!-- Autocomplete results -->
         <AutocompleteListEntry
             v-for="item in autocompleteList"
+            :key="'ac-' + item.id"
             :station="item"
             @click="setStation(item)"
         />
       </ul>
     </template>
   </FullScreenModal>
+
   <div class="card mb-4">
     <div class="card-header">
       {{ trans("stationboard.where-are-you") }}
       <a v-if="!dashboard && station" href="#" class="float-end" @click.prevent="setHome">
-        <i @click="setHome" :class="{'fas': isHome, 'far': !isHome}" class="fa-star"></i>
+        <i :class="{'fas': isHome, 'far': !isHome}" class="fa-star"></i>
       </a>
     </div>
     <div class="card-body">
       <div id="station-autocomplete-container" style="z-index: 3;">
         <div class="input-group mb-2 mr-sm-2">
-          <input type="text" name="station" class="form-control mobile-input-fs-16"
-                 :placeholder="placeholder"
-                 v-model="stationInput"
-                 @focusin="showModal"
-                 @keyup.enter="setStationFromText"
+          <input
+              type="text"
+              name="station"
+              class="form-control mobile-input-fs-16"
+              :placeholder="placeholder"
+              v-model="stationInput"
+              @focusin="showModal"
+              @keyup.enter="setStationFromText"
           />
           <button v-if="showFilterButton" type="button" class="btn btn-outline-dark stationSearchButton"
                   @click="showFilter = !showFilter">
@@ -321,6 +402,7 @@ export default {
             <div class="flex-wrap" role="group" v-show="showFilter">
               <button
                   v-for="travelType in travelTypes"
+                  :key="travelType.value"
                   type="button"
                   class="btn btn-primary btn-sm btn-rounded text-center me-1"
                   :class="{'active': selectedType === travelType.value, 'better-contrast': travelType.contrast ?? false}"
@@ -334,6 +416,7 @@ export default {
             </div>
           </Transition>
         </div>
+
         <VueDatePicker
             v-model="date"
             ref="picker"
@@ -361,61 +444,27 @@ export default {
   transition: all 0.3s ease-out;
   overflow: hidden;
 }
-
 .slide-fade-enter-from,
 .slide-fade-leave-to {
   transform: translateY(-20px);
   opacity: 0;
 }
-
 .product-icon {
   width: 1rem;
   height: 1rem;
   vertical-align: middle;
   display: inline;
 }
-
-.better-contrast {
-  color: #4F4F4F;
-}
-
-.better-contrast:hover {
-  color: #212529;
-}
-
+.better-contrast { color: #4F4F4F; }
+.better-contrast:hover { color: #212529; }
 :root.dark {
-  .better-contrast {
-    color: #FFF;
-  }
-
-  .better-contrast:hover {
-    color: #FFF;
-  }
+  .better-contrast { color: #FFF; }
+  .better-contrast:hover { color: #FFF; }
 }
-
-span.deleteicon {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-}
-
+span.deleteicon { position: relative; display: inline-flex; align-items: center; }
 span.deleteicon span {
-  position: absolute;
-  display: block;
-  right: 3px;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  color: #fff;
-  background-color: #ccc;
-  font: 13px monospace;
-  text-align: center;
-  line-height: 1em;
-  cursor: pointer;
+  position: absolute; right: 3px; width: 15px; height: 15px; border-radius: 50%;
+  color: #fff; background-color: #ccc; font: 13px monospace; text-align: center; line-height: 1em; cursor: pointer;
 }
-
-span.deleteicon input {
-  padding-right: 18px;
-  box-sizing: border-box;
-}
+span.deleteicon input { padding-right: 18px; box-sizing: border-box; }
 </style>
