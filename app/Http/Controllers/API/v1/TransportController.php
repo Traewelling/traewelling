@@ -24,6 +24,7 @@ use App\Models\Station;
 use App\Models\Status;
 use App\Models\User;
 use App\Notifications\YouHaveBeenCheckedIn;
+use App\Repositories\CheckinHydratorRepository;
 use App\Services\GeoService;
 use Carbon\Carbon;
 use Exception;
@@ -34,7 +35,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
-use OpenApi\Annotations as OA;
 use Throwable;
 
 class TransportController extends Controller
@@ -195,14 +195,14 @@ class TransportController extends Controller
                 data:       $departures->values(),
                 additional: [
                                 'meta' => [
-                                    'station' => StationDto::fromModel($station),
-                                    'times'   => [
+                                    'station'         => StationDto::fromModel($station),
+                                    'times'           => [
                                         'now'  => $timestamp,
                                         'prev' => $timestamp->clone()->subMinutes(15),
                                         'next' => $timestamp->clone()->addMinutes(15)
                                     ],
                                     'removedLicenses' => $filtered->removedEntries,
-                                    'removedCount' => $filtered->removedCount
+                                    'removedCount'    => $filtered->removedCount
                                 ]
                             ]
             );
@@ -236,13 +236,6 @@ class TransportController extends Controller
      *          example="S 4",
      *          required=true
      *     ),
-     *     @OA\Parameter(
-     *          name="start",
-     *          in="query",
-     *          description="start point from where the stopovers should be desplayed",
-     *          example=4711,
-     *          required=true
-     *     ),
      *     @OA\Response(
      *          response=200,
      *          description="successful operation",
@@ -267,18 +260,16 @@ class TransportController extends Controller
         $validated = $request->validate([
                                             'hafasTripId' => ['required', 'string'],
                                             'lineName'    => ['required', 'string'],
-                                            'start'       => ['required', 'numeric', 'gt:0'],
                                         ]);
 
         try {
-            $trip = TrainCheckinController::getHafasTrip(
-                $validated['hafasTripId'],
-                $validated['lineName'],
-                (int) $validated['start']
-            );
+            $trip = app(CheckinHydratorRepository::class)
+                ->getHafasTrip(
+                    tripID:   $validated['hafasTripId'],
+                    lineName: $validated['lineName']
+                )
+                ->loadMissing(['stopovers', 'originStation', 'destinationStation']);
             return $this->sendResponse(data: new TripResource($trip));
-        } catch (StationNotOnTripException) {
-            return $this->sendError(__('controller.transport.not-in-stopovers', [], 'en'), 400);
         } catch (HafasException $exception) {
             report($exception);
             return $this->sendError(__('messages.exception.hafas.502', [], 'en'), 503);
