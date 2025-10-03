@@ -40,8 +40,9 @@ export default defineComponent({
   <li class="list-group-item autocomplete-item">
     <a href="#" class="text-trwl">
       <i v-show="prefix" :class="prefix"></i>
-      {{ station?.name || text }} <span v-if="station?.rilIdentifier">({{ station.rilIdentifier }})</span>
-      <span class="text-sm text-muted overflow-hidden">{{ getArea() }}</span>
+      {{ station?.name || text }}
+      <span v-if="station?.rilIdentifier">({{ station.rilIdentifier }})</span>
+      <span class="text-sm text-muted overflow-hidden ms-1">{{ getArea() }}</span>
     </a>
   </li>
 </template>
