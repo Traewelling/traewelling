@@ -71,14 +71,14 @@ export default {
             }
 
             if (departure) {
-              if (departure < givenDeparture) {
+              if (departure.toMillis() < givenDeparture.toMillis()) {
                 return false; // Filter out past stops
-              } else if (departure > givenDeparture) {
+              } else if (departure.toMillis() > givenDeparture.toMillis()) {
                 return true; // Keep future stops
-              } else if (departure === givenDeparture) {
+              } else if (departure.equals(givenDeparture)) {
                 // Check if the stop is the selected train's stop at the given time
-                const identifier = this.useInternalIdentifiers ? item.id : item.evaIdentifier;
-                return Number(this.$props.selectedTrain.stop.id) === identifier;
+                const identifier = this.useInternalIdentifiers ? Number(item.id) : Number(item.evaIdentifier);
+                return Number(this.$props.selectedTrain.stop.id) !== identifier;
               }
             }
 
