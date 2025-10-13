@@ -41,6 +41,8 @@ class LocationController
     }
 
     public static function forStatus(Status $status, ?GeoService $geoService = null): LocationController {
+        $status->checkin->loadMissing(['originStopover', 'destinationStopover']);
+
         return new self(
             $status->checkin->trip,
             $status->checkin->originStopover,
