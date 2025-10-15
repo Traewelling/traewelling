@@ -112,6 +112,7 @@ updateProgress();
             :status-id="statusObject.id"
             :departure="departure.toSeconds()"
             :arrival="arrival.toSeconds()"
+            :line-color="statusObject.train.routeColor"
         >
         </ActiveJourneyMap>
       </div>
