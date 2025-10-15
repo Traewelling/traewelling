@@ -23,14 +23,53 @@ const props = defineProps({
 const arrival = ref(getDepartureAttribute(props.status));
 const duration = ref(getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, ['hours', 'minutes']));
 const showMore = ref(false);
+const enrichedBody = ref<string>("");
 
 function showMoreButton() {
-  showMore.value = props.status.body && props.status.body.split(/\r\n|\r|\n/).length > 3;
+  showMore.value = !!(props.status.body && props.status.body.split(/\r\n|\r|\n/).length > 3);
+}
+
+function escapeHtml(s: string): string {
+  return s.replaceAll(/&/g, "&amp;")
+      .replaceAll(/</g, "&lt;")
+      .replaceAll(/>/g, "&gt;")
+      .replaceAll(/"/g, "&quot;")
+      .replaceAll(/'/g, "&#039;");
+}
+
+function buildBodyWithMentions(): string {
+  const body = props.status.body ?? "";
+  const mentions = (props.status as any).bodyMentions ?? [];
+  if (!body || !Array.isArray(mentions) || mentions.length === 0) {
+    return escapeHtml(body);
+  }
+
+  const sorted = [...mentions].sort((a, b) => a.position - b.position);
+  let result = "";
+  let cursor = 0;
+
+  for (const m of sorted) {
+    const start = Number(m.position) || 0;
+    const len = Number(m.length) || 0;
+    const end = start + len;
+
+    result += escapeHtml(body.slice(cursor, start));
+    const mentionText = body.slice(start, end);
+    const username = m?.user?.username ?? mentionText.replace(/^@/, "");
+    const url = `/user/${encodeURIComponent(username)}`;
+
+    result += `<a href="${url}" class="mention">${escapeHtml(mentionText)}</a>`;
+    cursor = end;
+  }
+
+  result += escapeHtml(body.slice(cursor));
+  return result;
 }
 
 watch(() => props.status, () => {
   arrival.value = getDepartureAttribute(props.status);
   duration.value = getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, ['hours', 'minutes']);
+  enrichedBody.value = buildBodyWithMentions();
   showMoreButton();
 }, {
   immediate: true
@@ -91,10 +130,10 @@ showMoreButton();
           </a>
         </span>
       </template>
-      <p v-if="status.body" class="status-body mt-2" :class="{'line-clamp': showMore}">
-        <i class="fas fa-quote-right" aria-hidden="true"></i>
-        {{ status.body }} <!-- todo: mentions -->
-      </p>
+      <span v-if="status.body" class="status-body mt-2" :class="{'line-clamp': showMore}">
+        <i class="fas fa-quote-right me-1" aria-hidden="true"></i>
+        <span v-html="enrichedBody"></span>
+      </span>
       <button v-if="showMore" class="btn btn-link p-0" aria-expanded="false" @click="showMore = !showMore">
         {{ trans('status.show_more') }}
       </button>
