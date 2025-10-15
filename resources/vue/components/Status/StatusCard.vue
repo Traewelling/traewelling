@@ -15,6 +15,7 @@ import DestinationRow from "./Partials/DestinationRow.vue";
 import OriginRow from "./Partials/OriginRow.vue";
 import NextStop from "./Partials/NextStop.vue";
 import {useActiveCheckin} from "../../stores/activeCheckin";
+import StatusBody from "./Partials/StatusBody.vue";
 
 const props = defineProps({
   status: {
@@ -127,6 +128,7 @@ updateProgress();
       <div class="col ps-0">
         <ul class="timeline">
           <OriginRow :status="statusObject"/>
+          <StatusBody v-if="statusObject.body" :status="statusObject" class="mt-1"/>
           <NextStop :stopovers="stopovers" :in-progress="progress > 0 && progress < 100"/>
           <DestinationRow :status="statusObject"/>
         </ul>
