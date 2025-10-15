@@ -95,10 +95,14 @@ const showArrivalNowButton = computed(() => {
 
 const api = new Api({baseUrl: window.location.origin + "/api/v1"});
 
+function getNowWithoutSeconds(): string {
+  return DateTime.now().set({second: 0, millisecond: 0}).toISO({suppressSeconds: true, suppressMilliseconds: true});
+}
+
 function departureNow() {
   api.status
       .updateSingleStatus(
-          {manualDeparture: DateTime.now().toISO()} as StatusUpdateBody,
+          {manualDeparture: getNowWithoutSeconds()} as StatusUpdateBody,
           props.status.id
       )
       .then((status) => {
@@ -112,7 +116,7 @@ function departureNow() {
 function arrivalNow() {
   api.status
       .updateSingleStatus(
-          {manualArrival: DateTime.now().toISO()} as StatusUpdateBody,
+          {manualArrival: getNowWithoutSeconds()} as StatusUpdateBody,
           props.status.id
       )
       .then((status) => {
