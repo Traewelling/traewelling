@@ -5730,6 +5730,12 @@
                         "type": "string",
                         "example": "S 1"
                     },
+                    "routeColor": {
+                        "description": "Hex color code of the route, if available",
+                        "type": "string",
+                        "example": "FFEE00",
+                        "nullable": true
+                    },
                     "journeyNumber": {
                         "type": "integer",
                         "example": 85639

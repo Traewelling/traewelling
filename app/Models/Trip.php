@@ -23,15 +23,17 @@ class Trip extends Model
 
     protected $table    = 'hafas_trips';
     protected $fillable = [
-        'trip_id', 'category', 'number', 'linename', 'journey_number', 'operator_id', 'origin_id', 'destination_id',
+        'trip_id', 'category', 'number', 'linename', 'route_color', 'journey_number', 'operator_id', 'origin_id', 'destination_id',
         'polyline_id', 'departure', 'arrival', 'source', 'motis_source', 'user_id', 'last_refreshed', 'motis_source_license_id'
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $casts    = [
         'id'             => 'integer',
         'trip_id'        => 'string',
-        'number'         => 'string',
         'category'       => HafasTravelType::class,
+        'number'         => 'string',
+        'linename'       => 'string',
+        'route_color'    => 'string',
         'journey_number' => 'integer',
         'operator_id'    => 'integer',
         'origin_id'      => 'integer',

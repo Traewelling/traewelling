@@ -40,6 +40,7 @@ class TripResource extends JsonResource
             'category'      => $this->category->value,
             'number'        => $this->number,
             'lineName'      => $this->linename,
+            'routeColor'    => $this->route_color,
             'journeyNumber' => $this->journey_number,
             'origin'        => new StationResource($this->originStation),
             'destination'   => new StationResource($this->destinationStation),
