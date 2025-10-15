@@ -29,6 +29,23 @@ watch(() => props.status, () => {
 }, {
   immediate: true
 });
+
+function routeColorCss(hex?: string | null): string | null {
+  if (!hex) return null;
+  const clean = String(hex).replace(/[^0-9a-fA-F]/g, "");
+  if (clean.length !== 6) return null;
+  return `#${clean}`;
+}
+
+function contrastTextColor(hex?: string | null): string {
+  const c = routeColorCss(hex);
+  if (!c) return "inherit";
+  const r = parseInt(c.slice(1, 3), 16);
+  const g = parseInt(c.slice(3, 5), 16);
+  const b = parseInt(c.slice(5, 7), 16);
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+  return yiq >= 180 ? "#000" : "#fff";
+}
 </script>
 
 <template>
@@ -49,9 +66,24 @@ watch(() => props.status, () => {
     </a>
 
     <p class="train-status text-muted m-0">
-      <span>
+      <span class="align-middle">
         <ProductIcon :product="status.train.category"/>
-        {{ status.train.lineName }}
+
+        <template v-if="routeColorCss(status.train.routeColor)">
+          <span
+              class="line-badge align-middle"
+              :style="{
+              backgroundColor: routeColorCss(status.train.routeColor) as string,
+              color: contrastTextColor(status.train.routeColor)
+            }"
+          >
+            {{ status.train.lineName }}
+          </span>
+        </template>
+        <template v-else>
+          <span class="ms-1">{{ status.train.lineName }}</span>
+        </template>
+
         <small v-if="status.train.manualJourneyNumber" data-bs-toggle="tooltip"
                data-bs-placement="top" :title="trans('status.manual_journey_number')">
           ({{ status.train.manualJourneyNumber }})
@@ -93,3 +125,17 @@ watch(() => props.status, () => {
     </p>
   </li>
 </template>
+
+<style scoped>
+.line-badge {
+  display: inline-block;
+  padding: 0.05rem 0.35rem;
+  margin: 0 0.25rem 0 0.35rem;
+  border-radius: 0.35rem;
+  line-height: 1.1;
+  font-weight: 600;
+  font-size: 0.95em;
+  vertical-align: baseline;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06) inset;
+}
+</style>
