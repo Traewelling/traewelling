@@ -22,60 +22,13 @@ const props = defineProps({
 
 const arrival = ref(getDepartureAttribute(props.status));
 const duration = ref(getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, ['hours', 'minutes']));
-const showMore = ref(false);
-const enrichedBody = ref<string>("");
-
-function showMoreButton() {
-  showMore.value = !!(props.status.body && props.status.body.split(/\r\n|\r|\n/).length > 3);
-}
-
-function escapeHtml(s: string): string {
-  return s.replaceAll(/&/g, "&amp;")
-      .replaceAll(/</g, "&lt;")
-      .replaceAll(/>/g, "&gt;")
-      .replaceAll(/"/g, "&quot;")
-      .replaceAll(/'/g, "&#039;");
-}
-
-function buildBodyWithMentions(): string {
-  const body = props.status.body ?? "";
-  const mentions = (props.status as any).bodyMentions ?? [];
-  if (!body || !Array.isArray(mentions) || mentions.length === 0) {
-    return escapeHtml(body);
-  }
-
-  const sorted = [...mentions].sort((a, b) => a.position - b.position);
-  let result = "";
-  let cursor = 0;
-
-  for (const m of sorted) {
-    const start = Number(m.position) || 0;
-    const len = Number(m.length) || 0;
-    const end = start + len;
-
-    result += escapeHtml(body.slice(cursor, start));
-    const mentionText = body.slice(start, end);
-    const username = m?.user?.username ?? mentionText.replace(/^@/, "");
-    const url = `/user/${encodeURIComponent(username)}`;
-
-    result += `<a href="${url}" class="mention">${escapeHtml(mentionText)}</a>`;
-    cursor = end;
-  }
-
-  result += escapeHtml(body.slice(cursor));
-  return result;
-}
 
 watch(() => props.status, () => {
   arrival.value = getDepartureAttribute(props.status);
   duration.value = getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, ['hours', 'minutes']);
-  enrichedBody.value = buildBodyWithMentions();
-  showMoreButton();
 }, {
   immediate: true
 });
-
-showMoreButton();
 </script>
 
 <template>
@@ -89,10 +42,12 @@ showMoreButton();
         {{ arrival.time?.toLocaleString(DateTime.TIME_SIMPLE) }}
       </span>
     </span>
+
     <a :href="`/stationboard?stationId=${status.train.origin.id}&${status.train.origin.name}`"
        class="text-trwl clearfix">
       {{ status.train.origin.name }}
     </a>
+
     <p class="train-status text-muted m-0">
       <span>
         <ProductIcon :product="status.train.category"/>
@@ -106,20 +61,24 @@ showMoreButton();
           ({{ status.train.journeyNumber }})
         </small>
       </span>
+
       <span class="ps-2">
         <i class="fa fa-route d-inline" aria-hidden="true"></i>&nbsp;
         <span v-if="status.train.distance < 1000">{{ status.train.distance }} <small>m</small></span>
         <span v-else>{{ (status.train.distance / 1000).toFixed(0) }} <small>km</small></span>
       </span>
+
       <span class="ps-2">
         <i class="fa fa-clock d-inline" aria-hidden="true"></i>&nbsp;
         <DurationSpan :duration="duration.as('seconds')" class="d-inline"/>
       </span>
+
       <span v-if="status.business !== Business.Value0" class="ps-2">
         <i class="fa" :class="IconHelper.getBusinessIcon(status.business)" aria-hidden="true" data-bs-toggle="tooltip"
            data-bs-placement="top" :title="trans(IconHelper.getBusinessTitle(status.business))"></i>
         <span class="sr-only">{{ trans(IconHelper.getBusinessTitle(status.business)) }}</span>
       </span>
+
       <template v-if="status.event">
         <br>
         <span class="pl-sm-2">
@@ -130,31 +89,7 @@ showMoreButton();
           </a>
         </span>
       </template>
-      <span v-if="status.body" class="status-body mt-2" :class="{'line-clamp': showMore}">
-        <i class="fas fa-quote-right me-1" aria-hidden="true"></i>
-        <span v-html="enrichedBody"></span>
-      </span>
-      <button v-if="showMore" class="btn btn-link p-0" aria-expanded="false" @click="showMore = !showMore">
-        {{ trans('status.show_more') }}
-      </button>
+
     </p>
   </li>
 </template>
-
-<style scoped>
-.status-body {
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
-  -webkit-box-orient: vertical;
-  display: -webkit-box;
-}
-
-.line-clamp {
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-</style>
