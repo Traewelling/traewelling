@@ -153,13 +153,13 @@ class MotisHydrator
     private function getPolylineFromLeg(mixed $leg): PolyLine {
         $polylineModel = null;
 
-        if(!empty($leg['legGeometry']['points']) && !empty($leg['legGeometry']['precision'])) {
+        if (!empty($leg['legGeometry']['points']) && !empty($leg['legGeometry']['precision'])) {
             $precision   = $leg['legGeometry']['precision'];
             $transcoder  = new PolylineTranscoder();
             $coordinates = $transcoder->decodePolyline($leg['legGeometry']['points'], $precision);
 
             $features = [];
-            foreach($coordinates as $coord) {
+            foreach ($coordinates as $coord) {
                 $features[] = [
                     'type'       => 'Feature',
                     'geometry'   => [
@@ -175,28 +175,28 @@ class MotisHydrator
             $stopIds  = array_column($allStops, 'stopId');
             $stations = $this->stationRepository->getStationsByIdentifiers($stopIds, DataProvider::TRANSITOUS)->keyBy('motis_id');
 
-            foreach($allStops as $stop) {
-                if(!isset($stop['lon']) || !isset($stop['lat']) || !isset($stop['stopId'])) continue;
+            foreach ($allStops as $stop) {
+                if (!isset($stop['lon']) || !isset($stop['lat']) || !isset($stop['stopId'])) continue;
 
                 // Find the internal station
                 $station = $stations->get($stop['stopId'])
                            ?? $this->stationRepository->updateOrCreateByIfopt($stop['stopId'], DataProvider::TRANSITOUS)
                               ?? $this->stationRepository->createMotisStation($stop, DataProvider::TRANSITOUS);
 
-                if(!$station) continue;
+                if (!$station) continue;
 
                 // Find closest polyline point
                 $minDist    = null;
                 $closestKey = null;
-                foreach($features as $key => $feature) {
+                foreach ($features as $key => $feature) {
                     $dist = pow($feature['geometry']['coordinates'][0] - $stop['lon'], 2)
                             + pow($feature['geometry']['coordinates'][1] - $stop['lat'], 2);
-                    if($minDist === null || $dist < $minDist) {
+                    if ($minDist === null || $dist < $minDist) {
                         $minDist    = $dist;
                         $closestKey = $key;
                     }
                 }
-                if($closestKey !== null) {
+                if ($closestKey !== null) {
                     $features[$closestKey]['properties'] = [
                         'stationId'         => $station->id,
                         'id'                => $station->ibnr ?? null,
@@ -239,6 +239,7 @@ class MotisHydrator
             'category'                => $category,
             'number'                  => $tripLineName,
             'linename'                => $tripLineName,
+            'route_color'             => $leg['routeColor'] ?? null,
             'journey_number'          => $shortTripName,
             'operator_id'             => $operator?->id,
             'origin_id'               => $originStation->id,
@@ -322,6 +323,7 @@ class MotisHydrator
                                       category:      $hafasTravelType,
                                       journeyNumber: $tripShortName,
                                       operator:      $this->parseOperator($rawDeparture, $source),
+                                      routeColor:    $rawDeparture['routeColor'] ?? null,
                                   ),
                 plannedPlatform:  $platformPlanned,
                 realPlatform:     $platformReal,
