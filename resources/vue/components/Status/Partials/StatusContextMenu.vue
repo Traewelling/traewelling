@@ -62,39 +62,35 @@ function showModal() {
 }
 
 const showDepartureNowButton = computed(() => {
-  if (
-      !props.status?.train ||
-      !props.status?.train.origin ||
-      !props.status?.train.origin.departure
-  ) {
-    return false;
-  }
+  const train = props.status?.train;
+  if (!train || !train.origin || !train.destination) return false;
 
-  const departure = DateTime.fromISO(props.status?.train.origin.departure);
-  const arrival = DateTime.fromISO(props.status?.train.destination.arrival || '');
+  const plannedDeparture = DateTime.fromISO(
+      train.origin.departurePlanned || train.origin.departure || ""
+  );
+  const plannedArrival = DateTime.fromISO(
+      train.destination.arrivalPlanned || train.destination.arrival || ""
+  );
+  if (!plannedDeparture.isValid || !plannedArrival.isValid) return false;
+
   const now = DateTime.now();
-  if (arrival.isValid && now > arrival) {
-    return false; // If the train has already arrived, do not show the button
-  }
-  const diff = now.diff(departure, "minutes").minutes;
-
-  return departure.isValid && diff >= -10 && diff <= 40;
+  return now >= plannedDeparture.minus({minutes: 60}) && now <= plannedArrival.plus({days: 1});
 });
 
 const showArrivalNowButton = computed(() => {
-  if (
-      !props.status?.train ||
-      !props.status?.train.destination ||
-      !props.status?.train.destination.arrival
-  ) {
-    return false;
-  }
+  const train = props.status?.train;
+  if (!train || !train.origin || !train.destination) return false;
 
-  const arrival = DateTime.fromISO(props.status?.train.destination.arrival);
+  const plannedDeparture = DateTime.fromISO(
+      train.origin.departurePlanned || train.origin.departure || ""
+  );
+  const plannedArrival = DateTime.fromISO(
+      train.destination.arrivalPlanned || train.destination.arrival || ""
+  );
+  if (!plannedDeparture.isValid || !plannedArrival.isValid) return false;
+
   const now = DateTime.now();
-  const diff = now.diff(arrival, "minutes").minutes;
-
-  return arrival.isValid && diff >= -20 && diff <= 120;
+  return now >= plannedDeparture && now <= plannedArrival.plus({days: 1});
 });
 
 const api = new Api({baseUrl: window.location.origin + "/api/v1"});
@@ -249,10 +245,7 @@ async function handleBlock() {
 
           <li v-if="canModerateTarget">
             <button
-                class="dropdown-item"
-                type="button"
-                :disabled="busyMute"
-                @click="handleMute"
+                class="dropdown-item" type="button" :disabled="busyMute" @click="handleMute"
             >
               <div class="dropdown-icon-suspense">
                 <i class="fas fa-volume-mute" aria-hidden="true"></i>
@@ -263,10 +256,7 @@ async function handleBlock() {
 
           <li v-if="canModerateTarget">
             <button
-                class="dropdown-item text-danger"
-                type="button"
-                :disabled="busyBlock"
-                @click="handleBlock"
+                class="dropdown-item text-danger" type="button" :disabled="busyBlock" @click="handleBlock"
             >
               <div class="dropdown-icon-suspense">
                 <i class="fas fa-ban" aria-hidden="true"></i>
