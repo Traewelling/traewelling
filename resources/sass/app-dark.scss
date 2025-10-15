@@ -442,10 +442,6 @@
     background: opacify($color: $dm-base, $amount: 0.8);
   }
 
-  .leaflet-interactive {
-    stroke: $dm-trwlRot-shape;
-  }
-
   .shadow-sm {
     box-shadow: $box-shadow-sm !important;
   }

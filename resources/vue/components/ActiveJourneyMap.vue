@@ -23,7 +23,6 @@ const eventIcon = L.divIcon({
 export default {
   setup() {
     const user = useUserStore();
-
     return {user};
   },
   name: 'ActiveJourneyMap',
@@ -44,6 +43,10 @@ export default {
       type: Number,
       default: null
     },
+    lineColor: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -56,11 +59,18 @@ export default {
       if (this.user.user) {
         return this.user.user?.mapProvider || 'default';
       }
-
       return this.$props.mapProvider;
     },
     mapStyle() {
       return this.$props.statusId ? '' : 'min-height: 600px;';
+    },
+    parsedLineColor() {
+      const hex = this.$props.lineColor;
+      if (!hex) return null;
+      const clean = String(hex).replace(/[^0-9a-fA-F]/g, "");
+      if (clean.length === 6) return `#${clean}`;
+      if (/^#[0-9a-fA-F]{6}$/.test(String(hex))) return hex;
+      return null;
     }
   },
   mounted() {
@@ -94,7 +104,6 @@ export default {
       if (this.$props.arrival && this.$props.departure) {
         return this.$props.departure * 1000 <= Date.now() && this.$props.arrival * 1000 >= Date.now();
       }
-
       return true;
     },
     clearAllElements() {
@@ -109,8 +118,9 @@ export default {
       this.clearAllElements();
       fetch('/api/v1/polyline/' + this.$props.statusId).then((response) => {
         response.json().then((results) => {
+          const strokeColor = this.parsedLineColor || "rgb(192, 57, 43)";
           let polyline = L.geoJSON(results.data)
-              .setStyle({color: "rgb(192, 57, 43)", weight: 5})
+              .setStyle({color: strokeColor, weight: 5})
               .addTo(this.map);
           this.map.fitBounds(polyline.getBounds());
         });
@@ -217,7 +227,7 @@ export default {
     refreshMarkers() {
       let refreshIds = [];
       this.points.forEach((point) => {
-        if (point.departure * 1000 <= Date.now()) {
+        if (point && point.departure * 1000 <= Date.now()) {
           refreshIds.push(point.statusId);
         }
       })
@@ -243,6 +253,7 @@ export default {
             })
 
             this.points = this.points.map((entry) => {
+              if (!entry) return entry;
               if (refreshIds.indexOf(entry.statusId) > -1) {
                 entry.marker.remove();
                 return false;
