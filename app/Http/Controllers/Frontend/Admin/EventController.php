@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Frontend\Admin;
 
 use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
-use App\DataProviders\Hafas;
 use App\Enum\EventRejectionReason;
 use App\Exceptions\HafasException;
 use App\Http\Controllers\Backend\Admin\EventController as AdminEventBackend;
@@ -24,9 +23,8 @@ class EventController extends Controller
 {
     private DataProviderInterface $dataProvider;
 
-    public function __construct(?string $dataProvider = null) {
-        $dataProvider       ??= Hafas::class;
-        $this->dataProvider = (new DataProviderBuilder())->build($dataProvider);
+    public function __construct() {
+        $this->dataProvider = (new DataProviderBuilder())->build();
     }
 
     private const VALIDATOR_RULES = [
