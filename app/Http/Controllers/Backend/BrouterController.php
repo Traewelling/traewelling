@@ -207,17 +207,17 @@ abstract class BrouterController extends Controller {
      */
     public static function checkPolyline(Trip $trip): void {
         if(!$trip->category?->onRails()) {
-            Log::info('Trip#' . $trip->trip_id . ' is not on rails. No need to check polyline.', ['RefreshPolyline']);
+            Log::debug('Trip#' . $trip->trip_id . ' is not on rails. No need to check polyline.', ['RefreshPolyline']);
             return;
         }
 
         if(!self::checkIfPolylineHasMissingParts($trip)) {
-            Log::info('no parts missing', ['RefreshPolyline']);
+            Log::debug('no parts missing', ['RefreshPolyline']);
             //Nothing to do here.
             return;
         }
         return; // temporary disable dispatching Brouter jobs as of performance issues (~Sept 2025, kris)
-        Log::info('parts missing: dispatch', ['RefreshPolyline']);
+        Log::debug('Trip#' . $trip->trip_id . ' is missing polyline party. Dispatching RefreshPolyline.', ['RefreshPolyline']);
         RefreshPolyline::dispatch($trip);
     }
 
