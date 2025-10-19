@@ -2,14 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\StatusController as StatusBackend;
+use App\Models\Checkin;
 use App\Models\Like;
 use App\Models\Status;
-use App\Models\Checkin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Auth;
 use Tests\FeatureTestCase;
 
 class UserBlockTest extends FeatureTestCase
@@ -36,59 +34,62 @@ class UserBlockTest extends FeatureTestCase
 
     public function testStatusesAreBlocked(): void {
         $this->actingAs($this->bob)
-             ->get('/status/' . $this->checkin->status_id)
+             ->getJson('/api/v1/status/' . $this->checkin->status_id)
              ->assertSee($this->alice->name);
 
         $this->aliceBlocksBob();
 
         $this->actingAs($this->bob)
-             ->get('/status/' . $this->checkin->status_id)
+             ->getJson('/api/v1/status/' . $this->checkin->status_id)
              ->assertForbidden();
     }
 
     public function testAlicesStatusIsHiddenFromBobsActiveJourneys(): void {
         $this->actingAs($this->bob)
-             ->get(route('statuses.active'))
+             ->getJson('/api/v1/statuses/')
              ->assertOk()
-             ->assertSee($this->checkin->destinationStopover->station->name);
+             ->assertJsonFragment([
+                                      'id' => $this->checkin->status_id,
+                                  ]);
+
 
         $this->aliceBlocksBob();
 
         $this->actingAs($this->bob)
-             ->get(route('statuses.active'))
+             ->getJson('/api/v1/statuses/')
              ->assertOk()
-             ->assertDontSee($this->checkin->destinationStopover->station->name);
+             ->assertJsonMissing([
+                                     'id' => $this->checkin->status_id,
+                                 ]);
     }
 
     public function testBobsStatusIsHiddenFromAlicesActiveJourneys(): void {
         Checkin::factory(['user_id' => $this->bob->id])->create();
 
         $this->actingAs($this->alice)
-             ->get(route('statuses.active'))
+             ->getJson('/api/v1/statuses/')
              ->assertOk()
-             ->assertSee(ProfilePictureController::getUrl($this->bob))
-             ->assertSee(ProfilePictureController::getUrl($this->alice));
+             ->assertJsonFragment(['username' => $this->bob->username])
+             ->assertJsonFragment(['username' => $this->alice->username]);
 
         $this->aliceBlocksBob();
 
         $this->actingAs($this->alice)
-             ->get(route('statuses.active'))
+             ->getJson('/api/v1/statuses/')
              ->assertOk()
-             ->assertDontSee(ProfilePictureController::getUrl($this->bob))
-             ->assertSee(ProfilePictureController::getUrl($this->alice));
+             ->assertJsonMissing(['username' => $this->bob->username])
+             ->assertJsonFragment(['username' => $this->alice->username]);
     }
 
     public function testProfileShowsLimitedInfo(): void {
         $this->actingAs($this->bob)
              ->get(route('profile', ['username' => $this->alice->username]))
-             ->assertSee('fa-route') // Profile statistics, i.e. showing the distance icon
              ->assertDontSee(__('profile.youre-blocked-text'));
 
         $this->aliceBlocksBob();
 
         $this->actingAs($this->bob)
              ->get(route('profile', ['username' => $this->alice->username]))
-             ->assertDontSee('fa-route') // Profile statistics, i.e. showing the distance icon
              ->assertSee(__('profile.youre-blocked-text'));
     }
 

@@ -48,7 +48,5 @@
     </div>
     <div class="container">
         @include('profile.partials.body')
-        @include('includes.edit-modal')
-        @include('includes.delete-modal')
     </div>
 @endsection

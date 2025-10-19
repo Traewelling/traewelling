@@ -53,39 +53,10 @@
 
                 </script>
             </div>
-            <div class="col-md-6">
-                @if($statuses->count() === 0)
-                    <div class="alert alert-warning text-center fs-4">
-                        {{__('no-journeys-day')}}
-                    </div>
-                @else
-                    <div class="row text-center fs-5" id="daily-stats-statsbar">
-                        <div class="col-6 mb-3 col-lg-3">
-                            <i class="fa-solid fa-train"></i>
-                            {{ trans_choice('stats.trips', $statuses->count()) }}
-                        </div>
-                        <div class="col-6 mb-3 col-lg-3">
-                            <i class="fa-solid fa-route"></i>
-                            {{round($statuses->sum('checkin.distance') / 1000)}} km
-                        </div>
-                        <div class="col-6 mb-3 col-lg-3">
-                            <i class="fa-regular fa-clock"></i>
-                            {!! durationToSpan(secondsToDuration($statuses->sum('checkin.duration') * 60)) !!}
-                        </div>
-                        <div class="col-6 mb-3 col-lg-3">
-                            <i class="fa fa-dice-d20"></i>
-                            {{$statuses->sum('checkin.points')}} {{__('profile.points-abbr')}}
-                        </div>
-                    </div>
 
-                    @foreach($statuses as $status)
-                        @include('includes.status')
-                    @endforeach
-                @endif
+            <div id="vue-stats-daily" class="col-md-6">
+                <stats-daily :date="'{{ $date->format('Y-m-d') }}'"></stats-daily>
             </div>
         </div>
     </div>
-
-    @include('includes.edit-modal')
-    @include('includes.delete-modal')
 @endsection
