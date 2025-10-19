@@ -189,6 +189,9 @@ class ManualTripCreator extends Controller
         return $this;
     }
 
+    /**
+     * @throws ManualTripValidationException
+     */
     private function checkIfStopoverAreValid(): void {
         // check if there are duplicate stopovers (same station and same planned arrival and departure)
         $seen = [];
