@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Log;
 use romanzipp\QueueMonitor\Traits\IsMonitored;
 
 /**
@@ -42,5 +43,7 @@ class SendVerificationEmail implements ShouldQueue
                          ]);
 
         $this->user->notify(new VerifyEmail);
+
+        Log::info('Verification email sent.', ['user_id' => $this->user->id, 'username' => $this->user->username]);
     }
 }
