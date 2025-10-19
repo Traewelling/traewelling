@@ -41,6 +41,17 @@ class ManualTripCreator extends Controller
     }
 
     private function createTrip(): void {
+        \Log::debug('Create manual trip', [
+            'user_id'        => auth()->user()?->id ?? null,
+            'category'       => $this->category,
+            'lineName'       => $this->lineName,
+            'journeyNumber'  => $this->journeyNumber,
+            'operator_id'    => $this->operator->id ?? null,
+            'origin_id'      => $this->origin->id,
+            'destination_id' => $this->destination->id,
+            'departure'      => $this->originDeparturePlanned,
+            'arrival'        => $this->destinationArrivalPlanned,
+        ]);
         $this->trip = Trip::create([
                                        'trip_id'        => $this->generateUniqueTripId(),
                                        'category'       => $this->category,
@@ -61,6 +72,15 @@ class ManualTripCreator extends Controller
         if ($this->trip === null) {
             throw new InvalidArgumentException('Cannot create stopover without trip');
         }
+        \Log::debug('Create origin stopover for manual trip', [
+            'user_id'           => auth()->user()?->id ?? null,
+            'trip_id'           => $this->trip->trip_id,
+            'train_station_id'  => $this->origin->id,
+            'arrival_planned'   => $this->originDeparturePlanned,
+            'departure_planned' => $this->originDeparturePlanned,
+            'arrival_real'      => $this->originDepartureReal,
+            'departure_real'    => $this->originDepartureReal,
+        ]);
         Stopover::create([
                              'trip_id'           => $this->trip->trip_id,
                              'train_station_id'  => $this->origin->id,
@@ -75,6 +95,15 @@ class ManualTripCreator extends Controller
         if ($this->trip === null) {
             throw new InvalidArgumentException('Cannot create stopover without trip');
         }
+        \Log::debug('Create destination stopover for manual trip', [
+            'user_id'           => auth()->user()?->id ?? null,
+            'trip_id'           => $this->trip->trip_id,
+            'train_station_id'  => $this->origin->id,
+            'arrival_planned'   => $this->originDeparturePlanned,
+            'departure_planned' => $this->originDeparturePlanned,
+            'arrival_real'      => $this->originDepartureReal,
+            'departure_real'    => $this->originDepartureReal,
+        ]);
         Stopover::create([
                              'trip_id'           => $this->trip->trip_id,
                              'train_station_id'  => $this->destination->id,
@@ -158,6 +187,15 @@ class ManualTripCreator extends Controller
             throw new InvalidArgumentException('Cannot add stopover without trip');
         }
         foreach ($this->stopovers as $stopover) {
+            \Log::debug('Create stopover for manual trip', [
+                'user_id'           => auth()->user()?->id ?? null,
+                'trip_id'           => $this->trip->trip_id,
+                'train_station_id'  => $stopover['station']->id,
+                'arrival_planned'   => $stopover['arrival'],
+                'departure_planned' => $stopover['departure'],
+                'arrival_real'      => $stopover['arrival_real'],
+                'departure_real'    => $stopover['departure_real'],
+            ]);
             Stopover::create([
                                  'trip_id'           => $this->trip->trip_id,
                                  'train_station_id'  => $stopover['station']->id,
