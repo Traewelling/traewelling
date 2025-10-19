@@ -32,7 +32,14 @@ class ManualTripCreator extends Controller
     private ?Carbon         $destinationArrivalReal;
     private array           $stopovers = [];
 
+    /**
+     * @throws ManualTripValidationException
+     */
     public function createFullTrip(): Trip {
+        // checks first
+        $this->checkIfStopoverAreValid();
+
+        // creation
         $this->createTrip();
         $this->createOriginStopover();
         $this->createDestinationStopover();
@@ -180,6 +187,22 @@ class ManualTripCreator extends Controller
             'arrival_real'   => $realArrival
         ];
         return $this;
+    }
+
+    /**
+     * @throws ManualTripValidationException
+     */
+    private function checkIfStopoverAreValid(): void {
+        // check if there are duplicate stopovers (same station and same planned arrival and departure)
+        $seen = [];
+
+        foreach ($this->stopovers as $stopover) {
+            $key = $stopover['station']->id . '|' . $stopover['arrival']->toIso8601String() . '|' . $stopover['departure']->toIso8601String();
+            if (isset($seen[$key])) {
+                throw new ManualTripValidationException('Duplicate stopover for station ' . $stopover['station']->name);
+            }
+            $seen[$key] = true;
+        }
     }
 
     private function processStopovers(): void {
