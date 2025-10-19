@@ -285,7 +285,7 @@ class OperatorService
                     $lookupWikidataId = Operator::where('wikidata_id', $wikidataId)->first();
 
                     if ($lookupWikidataId) {
-                        Log::warning('Wikidata ID already exists in database', [
+                        Log::debug('Wikidata ID already exists in database', [
                             'wikidataId'      => $wikidataId,
                             'operatorId'      => $lookupWikidataId->id,
                             'motisAgencyId'   => $motisAgencyId,
