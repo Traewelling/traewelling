@@ -10,7 +10,6 @@ class DataProviderBuilder
     public function build(?bool $cache = null): DataProviderInterface {
         $dp = match (config('trwl.data_provider')) {
             'hafas'      => new Hafas(),
-            'bahn'       => new Bahn(),
             'transitous' => new Motis(DataProvider::TRANSITOUS),
             default      => throw new UnknownDataProvider('No valid data provider configured'),
         };
