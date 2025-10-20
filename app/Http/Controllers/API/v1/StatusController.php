@@ -277,14 +277,14 @@ class StatusController extends Controller
      *
      * @param int $id
      *
-     * @return StatusResource
+     * @return StatusResource|JsonResponse
      */
-    public function show(int $id): StatusResource {
+    public function show(int $id): StatusResource|JsonResponse {
         $status = StatusBackend::getStatus($id);
         try {
             $this->authorize('view', $status);
         } catch (AuthorizationException) {
-            abort(403, 'Status invisible to you.');
+            return response()->json(['message' => 'Status invisible to you.'], 403);
         }
         return new StatusResource($status);
     }
@@ -303,21 +303,14 @@ class StatusController extends Controller
      *          example=1337,
      *          @OA\Schema(type="integer")
      *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @OA\JsonContent(
-     *                      ref="#/components/schemas/SuccessResponse"
-     *          )
-     *       ),
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No status found for this id"),
-     *       @OA\Response(response=403, description="User not authorized to manipulate this status"),
-     *       security={
-     *           {"passport": {"write-statuses"}}, {"token": {}}
-     *
-     *       }
-     *     )
+     *      @OA\Response(response=204, description="Status deleted."),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=404, description="No status found for this id"),
+     *      @OA\Response(response=403, description="User not authorized to manipulate this status"),
+     *      security={
+     *          {"passport": {"write-statuses"}}, {"token": {}}
+     *      }
+     * )
      *
      * @param int $statusId
      *
@@ -326,12 +319,7 @@ class StatusController extends Controller
     public function destroy(int $statusId): JsonResponse {
         try {
             StatusBackend::DeleteStatus(Auth::user(), $statusId);
-            // ToDo: Remove message once the frontend doesn't use the message for anything
-            return $this->sendResponse(
-                ['message' => __('controller.status.delete-ok')],
-                200,
-                ['status' => 'success']
-            );
+            return response()->json(null, 204);
         } catch (AuthorizationException) {
             return $this->sendError('You are not allowed to delete this status.', 403);
         } catch (ModelNotFoundException) {

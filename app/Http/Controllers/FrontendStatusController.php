@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\StatusController as StatusBackend;
 use App\Models\Event;
+use App\Models\Status;
 use App\Services\LicenseService;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 /**
@@ -33,12 +33,12 @@ class FrontendStatusController extends Controller
         ]);
     }
 
-    public function getStatus($statusId): View {
-        $status = StatusBackend::getStatus($statusId);
-
-        return view('beta.vue-status', [
+    public function getStatus(int $statusId): View {
+        $status        = Status::find($statusId);
+        $allowedToView = Gate::allows('view', $status);
+        return view('single-status', [
             'statusId' => $statusId,
-            'title'    => __('status.ogp-title', ['name' => $status->user->username]),
+            'username' => $allowedToView ? $status?->user->username : null,
         ]);
     }
 }
