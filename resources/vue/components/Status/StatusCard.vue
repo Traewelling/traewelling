@@ -9,7 +9,6 @@ import {
   getDepartureForStopover
 } from "../../helpers/DateTimeHelper";
 import ActiveJourneyMap from "../ActiveJourneyMap.vue";
-import {now} from "lodash";
 import StatusFooter from "./Partials/StatusFooter.vue";
 import DestinationRow from "./Partials/DestinationRow.vue";
 import OriginRow from "./Partials/OriginRow.vue";
@@ -51,36 +50,63 @@ onMounted(() => {
     trigger: 'hover focus',
     container: 'body'
   })
+  updateProgress();
 })
 
 onBeforeUnmount(() => {
   delegatedTip?.dispose()
   delegatedTip = null
-})
-
-function updateProgress() {
-  progress.value = calculateProgress();
-
-  if (progress.value >= 100 && interval.value !== null) {
+  if (interval.value !== null) {
     clearInterval(interval.value);
     interval.value = null;
-  } else if (progress.value < 0 && interval.value === null) {
-    setTimeout(() => {
-      updateProgress();
-      interval.value = setInterval(updateProgress, 1000); // Update every second
-    }, now() % 1000); // Wait until the next second to start updating
+  }
+})
+
+function clamp(val: number, min = 0, max = 100) {
+  return Math.min(max, Math.max(min, val));
+}
+
+function calculateProgress(): number {
+  const startMillis = Number(getDepartureForStatus(statusObject.value).toMillis());
+  const endMillis = Number(getArrivalForStatus(statusObject.value).toMillis());
+  const nowMs = Date.now();
+
+  if (!Number.isFinite(startMillis) || !Number.isFinite(endMillis)) {
+    return 0;
+  }
+
+  const duration = endMillis - startMillis;
+
+  if (duration <= 0) {
+    if (nowMs < startMillis) return 0;
+    return 100;
+  }
+
+  if (nowMs <= startMillis) return 0;
+  if (nowMs >= endMillis) return 100;
+
+  const pct = ((nowMs - startMillis) / duration) * 100;
+  return clamp(pct);
+}
+
+function ensureInterval() {
+  if (progress.value > 0 && progress.value < 100) {
+    if (interval.value === null) {
+      interval.value = window.setInterval(() => {
+        updateProgress();
+      }, 1000);
+    }
+  } else {
+    if (interval.value !== null) {
+      clearInterval(interval.value);
+      interval.value = null;
+    }
   }
 }
 
-function calculateProgress() {
-  const start = getDepartureForStatus(statusObject.value).toMillis();
-  const end = getArrivalForStatus(statusObject.value).toMillis();
-  const now = Date.now();
-  if (start === end) {
-    return now < start ? 0 : 1; // If start and end are the same, return 0 if now is before start, otherwise return 1
-  }
-
-  return 100 * (now - start) / (end - start);
+function updateProgress() {
+  progress.value = calculateProgress();
+  ensureInterval();
 }
 
 function deleteSelf() {
@@ -95,12 +121,11 @@ function deleteSelf() {
 
 function statusUpdated(status: StatusResource) {
   statusObject.value = status;
+  updateProgress();
   if (props.showMap && map.value) {
     map.value.fetchStatusPolyline();
   }
 }
-
-updateProgress();
 </script>
 
 <template>
