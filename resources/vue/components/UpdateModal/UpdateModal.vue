@@ -229,7 +229,7 @@ defineExpose({show});
         <span>{{ (updateStatus.body || '').length }}</span>/280
       </small>
 
-      <div class="py-2 px-3 border-bottom gap-2">
+      <div class="py-2 gap-2">
         <BusinessDropdown v-model="updateStatus.business" class="btn btn-outline-primary me-2"/>
         <VisibilityDropdown :start-value="updateStatus.visibility" v-model="updateStatus.visibility"
                             class="btn btn-outline-primary me-2"/>
