@@ -860,10 +860,6 @@
     "status.manual_journey_number": "Número de viaje sobrescrito manualmente",
     "status.departure-now": "Salir ahora",
     "status.arrival-now": "Llega ahora",
-    "stationboard.removed-departures": "Se han quitado :count salidas debido a problemas de licencias.",
-    "stationboard.removed-departures.detail": "Las salidas se han borrado porque la licencia no ha sido activada por nuestra parte o no se nos permite procesar los datos.",
-    "stationboard.removed-departures.detail3": "Si quieres saber más sobre estas licencias, haz clic aquí:",
-    "stationboard.removed-departures.detail2": "Las salidas eliminadas vienen e la siguientes fuentes de datos:",
     "status.show_more": "Ver más",
     "report.min-length": "La descripción debe contener al menos 10 carácteres."
 }

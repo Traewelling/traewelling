@@ -878,10 +878,6 @@
     "status.show_more": "Meer tonen",
     "status.arrival-now": "Arriveert nu",
     "status.departure-now": "Vertrekt nu",
-    "stationboard.removed-departures.detail2": "De externe vertreklicenties/gegevensbronnen zijn hier in te zien:",
-    "stationboard.removed-departures.detail3": "Klik hier voor meer informatie omtrent de licenties:",
-    "stationboard.removed-departures": "Er zijn :count vertrekken verwijderd vanwege licentieproblemen.",
-    "stationboard.removed-departures.detail": "Deze vertrekken zijn verwijderd, omdat de licentie niet door ons is geactiveerd of omdat de gegevens niet door ons mogen worden verwerkt.",
     "status.visibility.5": "Vertrouwde gebruikers",
     "status.visibility.5.detail": "Alleen zichtbaar voor je vertrouwde gebruikers",
     "report.min-length": "De beschrijving dient minimaal 10 tekens te bevatten."

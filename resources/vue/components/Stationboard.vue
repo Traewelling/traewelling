@@ -32,7 +32,6 @@ export default {
       pushState: null,
       fastCheckinIbnr: null,
       useInternalIdentifiers: true,
-      removedCount: 0,
       removedLicenses: [],
     };
   },
@@ -131,8 +130,7 @@ export default {
                 }
                 this.meta = result.meta;
                 this.stationName = result.meta.station.name;
-                this.removedCount = result.meta.removedCount;
-                this.removedLicenses = result.meta.removedLicenses;
+                this.removedLicenses = Array.isArray(result.meta.removedLicenses) ? result.meta.removedLicenses : [];
 
                 this.firstFetchTime = DateTime.fromISO(this.meta?.times?.now);
               });
@@ -176,9 +174,7 @@ export default {
         }
         this.show = true;
         this.$refs?.modal?.show();
-        return new Promise((resolve) => {
-          resolve();
-        });
+        return new Promise((resolve) => resolve());
       }
 
       if (!urlParams.has('stationId')) {
@@ -192,9 +188,7 @@ export default {
       this.trwlStationId = urlParams.get('stationId');
       this.show = false;
       this.$refs.modal.hide();
-      return new Promise((resolve) => {
-        resolve();
-      });
+      return new Promise((resolve) => resolve());
     },
     popstateListener() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -258,6 +252,12 @@ export default {
       if (!this.selectedLineBackground) return null;
       const raw = this.selectedTrain?.trip?.color ?? this.selectedTrain?.line?.color ?? null;
       return this.contrastTextColor(raw);
+    },
+    removedLicensesCount() {
+      return Array.isArray(this.removedLicenses) ? this.removedLicenses.length : 0;
+    },
+    showHiddenSection() {
+      return !this.loading && this.removedLicensesCount > 0;
     }
   }
 }
@@ -273,34 +273,36 @@ export default {
       :time="now"
       :show-filter-button="true"
   />
-  <div class="accordion mb-4" v-if="!loading && removedCount > 0">
+
+  <div class="accordion mb-4" v-if="showHiddenSection">
     <div class="accordion-item">
       <h2 class="accordion-header">
         <button class="accordion-button collapsed bg-info" type="button" data-bs-toggle="collapse"
-                data-bs-target="#removed-licenses" aria-expanded="false" aria-controls="removed-licenses">
+                data-bs-target="#hidden-licenses" aria-expanded="false" aria-controls="hidden-licenses">
           <div class="row">
             <div class="col-auto">
               <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <div class="col">
-              {{ transChoice('stationboard.removed-departures', removedCount) }}
+              {{ transChoice('stationboard.hidden-departures', removedLicensesCount) }}
             </div>
           </div>
         </button>
       </h2>
-      <div id="removed-licenses" class="accordion-collapse collapse">
+      <div id="hidden-licenses" class="accordion-collapse collapse">
         <div class="accordion-body">
-          <p class="mb-2">{{ trans('stationboard.removed-departures.detail') }}</p>
-          <p class="mb-2">{{ trans('stationboard.removed-departures.detail2') }}</p>
+          <p class="mb-2">{{ trans('stationboard.hidden-departures.detail') }}</p>
+          <p class="mb-2">{{ trans('stationboard.hidden-departures.detail2') }}</p>
           <ul>
             <li v-for="(license, index) in removedLicenses" :key="index">
-              <span v-if="license?.licenseName" >{{ license.licenseName }}</span>
+              <span v-if="license?.licenseName">{{ license.licenseName }}</span>
               <span v-else>{{ license }}</span>
             </li>
           </ul>
           <p class="mb-2">
-            {{ trans('stationboard.removed-departures.detail3') }}
-            <a v-if="getActiveLanguage().startsWith('de') " target="_blank" href="https://help.traewelling.de/features/timetable/licensing/">help.traewelling.de/features/timetable/licensing</a>
+            {{ trans('stationboard.hidden-departures.detail3') }}
+            <a v-if="getActiveLanguage().startsWith('de')" target="_blank"
+               href="https://help.traewelling.de/features/timetable/licensing/">help.traewelling.de/features/timetable/licensing</a>
             <a v-else target="_blank" href="https://help.traewelling.de/en/features/timetable/licensing/">help.traewelling.de/en/features/timetable/licensing</a>
           </p>
         </div>
@@ -356,7 +358,7 @@ export default {
     </button>
   </div>
 
-  <LoadingSkeletonRows v-if="loading" :rows="5" :columns="1" />
+  <LoadingSkeletonRows v-if="loading" :rows="5" :columns="1"/>
 
   <template v-if="!loading && data.length === 0">
     <div class="card mb-1 dep-card mt-3 mb-3">
