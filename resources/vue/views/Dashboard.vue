@@ -9,6 +9,7 @@ import {getDepartureForStatus} from "../helpers/DateTimeHelper";
 import {Notyf} from "notyf";
 import {useUserStore} from "../stores/user";
 import ApiAlerts from "../components/ApiAlerts.vue";
+import LoadingSkeletonRows from "../components/Loader/LoadingSkeletonRows.vue";
 
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
 const statuses = ref<StatusResource[]>([]);
@@ -150,9 +151,8 @@ fetchFutureStatuses();
         />
       </template>
 
-      <div v-if="loading" class="text-center my-4">
-        <i class="fa-solid fa-spinner fa-spin fa-2x" aria-hidden="true"></i>
-      </div>
+      <LoadingSkeletonRows v-if="loading" class="text-center my-4" :rowHeight="120"/>
+
       <div v-if="showMore" class="text-center my-4">
         <button class="btn btn-primary" @click="fetchStatuses(currentPage + 1, true)">
           <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
@@ -162,7 +162,7 @@ fetchFutureStatuses();
         <p class="text-muted">
           Final stop. All change, please!
           <br/>
-          <small>{{trans('dashboard-end-seven-days')}}</small>
+          <small>{{ trans('dashboard-end-seven-days') }}</small>
         </p>
       </div>
 
