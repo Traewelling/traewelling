@@ -3,6 +3,7 @@ import {computed, onMounted, ref, watch} from "vue";
 import {trans, transChoice as trans_choice} from "laravel-vue-i18n";
 import StatusCard from "../../components/Status/StatusCard.vue";
 import type {StatusResource} from "../../../types/Api.gen";
+import LoadingSkeletonRows from "../../components/Loader/LoadingSkeletonRows.vue";
 
 const props = defineProps<{
   date: string;
@@ -74,8 +75,9 @@ const durationParts = computed(() => {
       {{ errorMsg }}
     </div>
 
-    <div v-if="loading" class="text-center my-4">
-      <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+    <div v-if="loading">
+      <LoadingSkeletonRows :rowHeight="30" :columns="4" :rows="1"/>
+      <LoadingSkeletonRows :rowHeight="120"/>
     </div>
 
     <div v-else-if="!statuses.length" class="alert alert-warning text-center fs-4">

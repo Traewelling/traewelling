@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { trans } from "laravel-vue-i18n";
-import { ref, computed } from "vue";
-import { Api, StatusResource, StopoverResource } from "../../types/Api.gen";
+import {trans} from "laravel-vue-i18n";
+import {computed, ref} from "vue";
+import {Api, StatusResource, StopoverResource} from "../../types/Api.gen";
 import StatusCard from "../components/Status/StatusCard.vue";
-import { DateTime, Duration } from "luxon";
-import { getDepartureForStatus } from "../helpers/DateTimeHelper";
-import { Notyf } from "notyf";
-import { useUserStore } from "../stores/user";
+import {DateTime, Duration} from "luxon";
+import {getDepartureForStatus} from "../helpers/DateTimeHelper";
+import {Notyf} from "notyf";
+import {useUserStore} from "../stores/user";
+import LoadingSkeletonRows from "../components/Loader/LoadingSkeletonRows.vue";
 
 const props = defineProps<{ username: string }>();
 
-const api = new Api({ baseUrl: window.location.origin + "/api/v1" });
-const notyf = new Notyf({ position: { x: "right", y: "bottom" } });
+const api = new Api({baseUrl: window.location.origin + "/api/v1"});
+const notyf = new Notyf({position: {x: "right", y: "bottom"}});
 
 // -------------------------
 // State
@@ -19,7 +20,9 @@ const notyf = new Notyf({ position: { x: "right", y: "bottom" } });
 const userData = ref<any>(null);
 const statuses = ref<StatusResource[]>([]);
 const stopovers = ref<Record<string, StopoverResource[]>>({});
-const loading = ref(true);
+const loadingUser = ref(true);
+const loadingStatuses = ref(true);
+
 const showMore = ref(false);
 const currentPage = ref(1);
 const lastPage = ref<number | null>(null);
@@ -27,26 +30,29 @@ const lastPage = ref<number | null>(null);
 const authUser = useUserStore();
 
 async function fetchUser() {
+  loadingUser.value = true;
   try {
     const res = await fetch(`/api/v1/user/${encodeURIComponent(props.username)}`, {
-      headers: { Accept: "application/json" },
+      headers: {Accept: "application/json"},
       credentials: "same-origin",
     });
     const json = await res.json();
     userData.value = json.data;
   } catch (err: any) {
     notyf.error("Error fetching user: " + err.message);
+  } finally {
+    loadingUser.value = false;
   }
 }
 
 async function fetchStatuses(append = false) {
-  loading.value = true;
+  loadingStatuses.value = true;
 
   const nextPage = append ? currentPage.value + 1 : 1;
   const url = `/api/v1/user/${encodeURIComponent(props.username)}/statuses?page=${nextPage}`;
 
   try {
-    const res = await fetch(url, { headers: { Accept: "application/json" }, credentials: "same-origin" });
+    const res = await fetch(url, {headers: {Accept: "application/json"}, credentials: "same-origin"});
     const json = await res.json();
 
     const list: StatusResource[] = json.data ?? [];
@@ -63,11 +69,11 @@ async function fetchStatuses(append = false) {
       showMore.value = currentPage.value < lastPage.value;
     }
 
-    await fetchStopovers();
+    fetchStopovers();
   } catch (err: any) {
     notyf.error("Error fetching statuses: " + err.message);
   } finally {
-    loading.value = false;
+    loadingStatuses.value = false;
   }
 }
 
@@ -109,12 +115,12 @@ function statsDailyHref(s: StatusResource): string {
 const kmDisplay = computed(() => {
   const meters = (userData.value?.trainDistance ?? 0);
   const km = meters / 1000;
-  return km.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  return km.toLocaleString(undefined, {minimumFractionDigits: 1, maximumFractionDigits: 1});
 });
 const durationParts = computed(() => {
   const minutes = userData.value?.trainDuration ?? 0;
-  const dur = Duration.fromObject({ minutes }).shiftTo("days", "hours", "minutes");
-  return { d: dur.days ?? 0, h: dur.hours ?? 0, m: Math.round(dur.minutes ?? 0) };
+  const dur = Duration.fromObject({minutes}).shiftTo("days", "hours", "minutes");
+  return {d: dur.days ?? 0, h: dur.hours ?? 0, m: Math.round(dur.minutes ?? 0)};
 });
 const showPoints = computed(() =>
     !!(userData.value?.pointsEnabled || authUser.user?.pointsEnabled)
@@ -124,7 +130,7 @@ const mergedLinks = computed(() => {
   const links = [...(userData.value?.profileLinks ?? [])];
   const hasMastodon = links.some((l) => (l.name || "").toUpperCase() === "MASTODON");
   if (userData.value?.mastodonUrl && !hasMastodon) {
-    links.push({ name: "Mastodon", url: userData.value.mastodonUrl, icon: "fa-brands fa-mastodon" });
+    links.push({name: "Mastodon", url: userData.value.mastodonUrl, icon: "fa-brands fa-mastodon"});
   }
   return links;
 });
@@ -141,7 +147,8 @@ fetchStatuses(false);
         <!-- Stats card -->
         <div class="card mb-3 shadow-sm rounded">
           <div class="card-body">
-            <div class="row text-center gx-2 gy-3">
+            <LoadingSkeletonRows v-if="loadingUser" :columns="3" :rows="1"/>
+            <div v-else class="row text-center gx-2 gy-3">
               <div class="col">
                 <i class="fa fa-route fa-2x text-trwl"></i>
                 <div class="h5 mb-0">
@@ -218,12 +225,10 @@ fetchStatuses(false);
           />
         </template>
 
-        <div v-if="loading" class="text-center my-4">
-          <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
-        </div>
+        <LoadingSkeletonRows v-if="loadingStatuses" class="text-center my-4" :rowHeight="120" :columns="1" :rows="3"/>
 
-        <div v-if="!loading && showMore" class="text-center my-4">
-          <button class="btn btn-primary" @click="fetchStatuses(true)" :disabled="loading">
+        <div v-if="!loadingStatuses && showMore" class="text-center my-4">
+          <button class="btn btn-primary" @click="fetchStatuses(true)" :disabled="loadingStatuses">
             <i class="fa-solid fa-arrow-down"></i>
           </button>
           <div class="small text-muted mt-2" v-if="lastPage !== null">
@@ -232,7 +237,7 @@ fetchStatuses(false);
         </div>
 
         <div
-            v-if="!loading && !showMore && statuses.length"
+            v-if="!loadingStatuses && !showMore && statuses.length"
             class="text-center my-4"
         >
           <p class="text-muted">
@@ -241,15 +246,15 @@ fetchStatuses(false);
         </div>
 
         <div
-            v-if="!loading && !statuses.length"
+            v-if="!loadingStatuses && !statuses.length"
             class="text-center my-4"
         >
           <span class="text-danger fs-3">
             <template v-if="(userData?.trainDistance ?? 0) > 0">
-              {{ trans('profile.no-visible-statuses', { username: userData?.displayName }) }}
+              {{ trans('profile.no-visible-statuses', {username: userData?.displayName}) }}
             </template>
             <template v-else>
-              {{ trans('profile.no-statuses', { username: userData?.displayName }) }}
+              {{ trans('profile.no-statuses', {username: userData?.displayName}) }}
             </template>
           </span>
         </div>
@@ -257,4 +262,3 @@ fetchStatuses(false);
     </div>
   </div>
 </template>
-

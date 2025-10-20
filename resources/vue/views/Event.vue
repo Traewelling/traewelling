@@ -7,6 +7,7 @@ import {computed, onMounted, ref} from "vue";
 import StatusCard from "../components/Status/StatusCard.vue";
 import type {StatusResource} from "../../types/Api.gen";
 import {trans} from "laravel-vue-i18n";
+import LoadingSkeletonRows from "../components/Loader/LoadingSkeletonRows.vue";
 
 const props = defineProps<{
   eventSlug: string;
@@ -80,9 +81,7 @@ onMounted(() => {
           <StatusCard :status="s"/>
         </template>
 
-        <div v-if="loading" class="text-center my-4">
-          <i class="fa-solid fa-spinner fa-spin"></i>
-        </div>
+        <LoadingSkeletonRows v-if="loading" :rowHeight="120"/>
 
         <div v-if="!loading && canLoadMore" class="text-center my-4">
           <button class="btn btn-primary" @click="loadMore">
