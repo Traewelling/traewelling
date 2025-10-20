@@ -8,6 +8,7 @@ import {getDepartureForStatus} from "../helpers/DateTimeHelper";
 import {DateTime} from "luxon";
 import {useUserStore} from "../stores/user";
 import TagHelper from "../components/TagHelper.vue";
+import LoadingSkeletonRows from "../components/Loader/LoadingSkeletonRows.vue";
 
 const loading = ref(true);
 const status = ref<StatusResource | null>(null);
@@ -97,11 +98,8 @@ fetchLikes();
 <template>
   <div class="row justify-content-center">
     <div class="col-md-8 col-lg-7">
-      <div v-if="loading">
-        <p class="text-center mt-5">
-          <i class="fas fa-spinner fa-spin"></i> Loading status...
-        </p>
-      </div>
+      <LoadingSkeletonRows v-if="loading" :rowHeight="200" :rows="1"/>
+
       <template v-else-if="status">
         <CheckinSuccessHelper v-if="user.user && status.userDetails.id === user.user.id"/>
         <h2 class="fs-5">{{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}</h2>

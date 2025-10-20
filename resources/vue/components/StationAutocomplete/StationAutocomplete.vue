@@ -34,36 +34,12 @@ export default {
     FriendDropdown
   },
   props: {
-    station: {
-      type: Object,
-      required: false,
-      default: null,
-    },
-    stationName: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    dashboard: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    time: {
-      type: DateTime,
-      required: false,
-      default: null
-    },
-    showFilterButton: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    showGpsButton: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
+    station: {type: Object, required: false, default: null},
+    stationName: {type: String, required: false, default: null},
+    dashboard: {type: Boolean, required: false, default: false},
+    time: {type: DateTime, required: false, default: null},
+    showFilterButton: {type: Boolean, required: false, default: false},
+    showGpsButton: {type: Boolean, required: false, default: false}
   },
   data() {
     return {
@@ -308,20 +284,25 @@ export default {
             :placeholder="placeholder"
             v-model="stationInput"
             :disabled="fetchingTextInput"
+            :aria-busy="loading || fetchingTextInput ? 'true' : 'false'"
             @keyup.enter="setStationFromText"
             ref="stationInput"
         />
-        <button class="btn btn-light" @click="clearInput">
+        <span
+            v-if="loading || fetchingTextInput"
+            class="input-group-text bg-transparent border-0"
+            aria-live="polite"
+        >
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span class="visually-hidden">Loading</span>
+        </span>
+        <button class="btn btn-light" @click="clearInput" :disabled="fetchingTextInput">
           <i class="fa-solid fa-delete-left"></i>
         </button>
       </div>
     </template>
 
     <template #body>
-      <div class="position-relative">
-        <Spinner v-if="fetchingTextInput || loading"/>
-      </div>
-
       <div v-if="lastError" class="alert alert-danger my-2" role="alert">
         {{ lastError }}
       </div>
@@ -444,27 +425,60 @@ export default {
   transition: all 0.3s ease-out;
   overflow: hidden;
 }
+
 .slide-fade-enter-from,
 .slide-fade-leave-to {
   transform: translateY(-20px);
   opacity: 0;
 }
+
 .product-icon {
   width: 1rem;
   height: 1rem;
   vertical-align: middle;
   display: inline;
 }
-.better-contrast { color: #4F4F4F; }
-.better-contrast:hover { color: #212529; }
+
+.better-contrast {
+  color: #4F4F4F;
+}
+
+.better-contrast:hover {
+  color: #212529;
+}
+
 :root.dark {
-  .better-contrast { color: #FFF; }
-  .better-contrast:hover { color: #FFF; }
+  .better-contrast {
+    color: #FFF;
+  }
+
+  .better-contrast:hover {
+    color: #FFF;
+  }
 }
-span.deleteicon { position: relative; display: inline-flex; align-items: center; }
+
+span.deleteicon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 span.deleteicon span {
-  position: absolute; right: 3px; width: 15px; height: 15px; border-radius: 50%;
-  color: #fff; background-color: #ccc; font: 13px monospace; text-align: center; line-height: 1em; cursor: pointer;
+  position: absolute;
+  right: 3px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  color: #fff;
+  background-color: #ccc;
+  font: 13px monospace;
+  text-align: center;
+  line-height: 1em;
+  cursor: pointer;
 }
-span.deleteicon input { padding-right: 18px; box-sizing: border-box; }
+
+span.deleteicon input {
+  padding-right: 18px;
+  box-sizing: border-box;
+}
 </style>
