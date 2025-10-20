@@ -65,7 +65,7 @@ Route::get('/leaderboard', [LeaderboardController::class, 'renderLeaderboard'])
 Route::get('/leaderboard/{date}', [LeaderboardController::class, 'renderMonthlyLeaderboard'])
      ->name('leaderboard.month');
 
-Route::get('/statuses/active', [FrontendStatusController::class, 'getActiveStatuses'])
+Route::view('/statuses/active', 'active-journeys')
      ->name('statuses.active');
 
 Route::get('/event/{slug}', [FrontendStatusController::class, 'statusesByEvent'])
@@ -196,7 +196,7 @@ Route::middleware(['auth', 'privacy'])->group(function() {
              ->name('deltoken'); //TODO: Replace with API Endpoint
     });
 
-    Route::get('/dashboard', [FrontendStatusController::class, 'getDashboard'])
+    Route::view('/dashboard', 'dashboard')
          ->name('dashboard');
 
     Route::post('/status/update', [StatusController::class, 'updateStatus'])

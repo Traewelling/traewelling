@@ -38,11 +38,8 @@
         </div>
     </div>
 @else
-    <div class="row mt-4">
-        <div class="col">
-            @include('profile.partials.info')
-        </div>
-        @include('profile.partials.statuses')
+    <div id="vue-user-profile">
+        <profile username="{{$user->username}}"/>
     </div>
 @endif
 

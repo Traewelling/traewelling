@@ -641,7 +641,7 @@ class StatusController extends Controller
      *     )
      */
     public function getActiveStatus(): StatusResource|JsonResponse {
-        $latestStatuses = UserBackend::statusesForUser(user: Auth::user());
+        $latestStatuses = UserBackend::statusesForUser(Auth::user());
         if ($latestStatuses->count() > 0) {
             foreach ($latestStatuses as $status) {
                 if ($status->checkin->originStopover->departure->isPast()
