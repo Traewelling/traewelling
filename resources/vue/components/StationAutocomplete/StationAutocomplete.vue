@@ -7,7 +7,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import {DateTime} from "luxon";
 import {useUserStore} from "../../stores/user";
 import AutocompleteListEntry from "../Checkin/AutocompleteListEntry.vue";
-import Spinner from "../Spinner.vue";
+import Spinner from "../Loader/Spinner.vue";
 import LineIndicator from "../LineIndicator.vue";
 import ActiveStatusCard from "../ActiveStatusCard.vue";
 import FriendDropdown from "../Helpers/FriendDropdown.vue";

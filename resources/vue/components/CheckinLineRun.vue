@@ -1,7 +1,7 @@
 <script>
 import {DateTime} from "luxon";
 import {trans} from "laravel-vue-i18n";
-import Spinner from "./Spinner.vue";
+import Spinner from "./Loader/Spinner.vue";
 
 export default {
   name: "CheckinLineRun",
