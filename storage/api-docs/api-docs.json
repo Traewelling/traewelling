@@ -2530,15 +2530,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/SuccessResponse"
-                                }
-                            }
-                        }
+                    "204": {
+                        "description": "Status deleted."
                     },
                     "400": {
                         "description": "Bad request"
