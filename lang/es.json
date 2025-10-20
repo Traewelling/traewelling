@@ -13,8 +13,6 @@
     "admin.select-range": "Seleccionar rango",
     "admin.checkins": "Check-ins",
     "admin.registered-users": "Usuarios registrados",
-    "admin.hafas-entries-by-type": "Entradas HAFAS por tipo de transporte",
-    "admin.hafas-entries-by-polylines": "Entradas HAFAS y cantidad de polilíneas correspondientes",
     "admin.new-users": "nuevos usuarios",
     "admin.statuses": "estados",
     "auth.failed": "Estas credenciales no coinciden con nuestros registros.",

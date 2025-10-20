@@ -15,8 +15,6 @@
   "admin.select-range": "Bereich auswählen",
   "admin.checkins": "Check-ins",
   "admin.registered-users": "Registrierte Nutzer",
-  "admin.hafas-entries-by-type": "HAFAS-Einträge nach Transport-Typ",
-  "admin.hafas-entries-by-polylines": "HAFAS-Einträge und Anzahl dazugehöriger Polylines",
   "admin.new-users": "neue Nutzer",
   "admin.statuses": "Status",
   "auth.failed": "Dieses Konto existiert nicht oder die Daten wurden falsch eingegeben.",

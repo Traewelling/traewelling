@@ -15,8 +15,6 @@
   "admin.select-range": "Select range",
   "admin.checkins": "Check-ins",
   "admin.registered-users": "Registered users",
-  "admin.hafas-entries-by-type": "HAFAS-entries by transport type",
-  "admin.hafas-entries-by-polylines": "HAFAS-entries and quantity of corresponding polylines",
   "admin.new-users": "new users",
   "admin.statuses": "statuses",
   "auth.failed": "These credentials do not match our records.",

@@ -11,8 +11,6 @@
   "admin.select-range": "Bereich auswähla",
   "admin.checkins": "Check-ins",
   "admin.registered-users": "Registrierte Nutzer",
-  "admin.hafas-entries-by-type": "HAFAS-Oiträg nach Transprt-Typ",
-  "admin.hafas-entries-by-polylines": "HAFAS-Oiträg und Anzahl dazugherigr Polylines",
   "admin.new-users": "nuie Nutzer",
   "admin.statuses": "Status",
   "auth.failed": "Des Konto existiert id oder die Data wurded foisch oigeaba.",

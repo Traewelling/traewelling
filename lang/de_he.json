@@ -13,8 +13,6 @@
   "admin.select-range": "Bereisch auswähle",
   "admin.checkins": "Scheck-ins",
   "admin.registered-users": "Registrierte Nutzer",
-  "admin.hafas-entries-by-type": "HAFAS-Einträge noach Transport-Typ",
-  "admin.hafas-entries-by-polylines": "HAFAS-Einträge unn Anzahl dazugehörischer Polylines",
   "admin.new-users": "naie Nutzer",
   "admin.statuses": "Status",
   "auth.failed": "Dess Konto existiert nedd orrer die Date wurdn falsch oigegewwe.",
