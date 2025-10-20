@@ -8,11 +8,11 @@ import CheckinInterface from "./Checkin/CheckinInterface.vue";
 import StationAutocomplete from "./StationAutocomplete/StationAutocomplete.vue";
 import {getActiveLanguage, trans, transChoice} from "laravel-vue-i18n";
 import StationBoardEntry from "./Checkin/StationBoardEntry.vue";
-import Spinner from "./Spinner.vue";
+import LoadingSkeletonRows from "./Loader/LoadingSkeletonRows.vue";
 
 export default {
   components: {
-    Spinner,
+    LoadingSkeletonRows,
     StationBoardEntry,
     StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal
   },
@@ -307,7 +307,7 @@ export default {
       </div>
     </div>
   </div>
-  <Spinner v-if="loading"/>
+
   <FullScreenModal ref="modal" body-class="{{ showCheckinInterface ? 'p-0' : ''}}">
     <template #header v-if="selectedTrain">
       <div class="col-1 align-items-center d-flex">
@@ -350,9 +350,14 @@ export default {
     </template>
   </FullScreenModal>
 
-  <div class="text-center mb-2" v-if="!loading" @click="fetchPrevious">
-    <button type="button" class="btn btn-primary"><i class="fa-solid fa-angle-up"></i></button>
+  <div class="text-center mb-2">
+    <button type="button" class="btn btn-primary" :disabled="loading" @click="fetchPrevious">
+      <i class="fa-solid fa-angle-up"></i>
+    </button>
   </div>
+
+  <LoadingSkeletonRows v-if="loading" :rows="5" :columns="1" />
+
   <template v-if="!loading && data.length === 0">
     <div class="card mb-1 dep-card mt-3 mb-3">
       <div class="text-center my-auto py-3">
@@ -364,6 +369,7 @@ export default {
       </div>
     </div>
   </template>
+
   <StationBoardEntry
       v-show="!loading"
       v-for="item in data"
@@ -372,8 +378,11 @@ export default {
       :item="item"
       :station="meta.station"
   />
-  <div class="text-center mt-2" v-if="!loading" @click="fetchNext">
-    <button type="button" class="btn btn-primary"><i class="fa-solid fa-angle-down"></i></button>
+
+  <div class="text-center mt-2">
+    <button type="button" class="btn btn-primary" :disabled="loading" @click="fetchNext">
+      <i class="fa-solid fa-angle-down"></i>
+    </button>
   </div>
 </template>
 
