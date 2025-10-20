@@ -13,14 +13,14 @@ use Carbon\Carbon;
 abstract class EventController extends Controller
 {
     public static function suggestEvent(
-        User    $user,
-        string  $name,
-        Carbon  $begin,
-        Carbon  $end,
-        Station $station = null,
-        string  $url = null,
-        string  $host = null,
-        string  $hashtag = null,
+        User     $user,
+        string   $name,
+        Carbon   $begin,
+        Carbon   $end,
+        ?Station $station = null,
+        ?string  $url = null,
+        ?string  $host = null,
+        ?string  $hashtag = null,
     ): EventSuggestion {
 
         if ($hashtag != null && str_starts_with($hashtag, '#')) {

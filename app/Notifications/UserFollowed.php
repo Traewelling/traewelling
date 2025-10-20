@@ -10,9 +10,9 @@ class UserFollowed extends Notification implements BaseNotification
 {
     use Queueable;
 
-    public Follow $follow;
+    public ?Follow $follow;
 
-    public function __construct(Follow $follow = null) {
+    public function __construct(?Follow $follow = null) {
         $this->follow = $follow;
     }
 

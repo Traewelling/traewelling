@@ -10,9 +10,9 @@ class FollowRequestIssued extends Notification implements BaseNotification
 {
     use Queueable;
 
-    public FollowRequest $followRequest;
+    public ?FollowRequest $followRequest;
 
-    public function __construct(FollowRequest $followRequest = null) {
+    public function __construct(?FollowRequest $followRequest = null) {
         $this->followRequest = $followRequest;
     }
 
