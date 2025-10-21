@@ -871,5 +871,12 @@
     "maintenance.follow.desc": "Mises à jour et annonces",
     "maintenance.help-center": "Aide & Documentation",
     "maintenance.auto-refresh": "Cette page s'actualisera automatiquement une fois la maintenance terminée.",
-    "maintenance.refresh-now": "Actualiser la page maintenant"
+    "maintenance.refresh-now": "Actualiser la page maintenant",
+    "stationboard.hidden-departures": ":count départs ont été masqués pour des raisons relatives aux licences.",
+    "stationboard.hidden-departures.detail": "Ces départs ont été masqués soit parce que la licence n'a pas encore été activée par nos soins, soit parce qu'elle ne nous autorise pas à traiter les données ici.",
+    "stationboard.hidden-departures.detail2": "Les départs cachés sont associés aux licences/sources de données suivantes :",
+    "stationboard.hidden-departures.detail3": "Si tu souhaites en savoir plus sur les licences, clique ici :",
+    "errors.403.lead": "Mayday, mayday, mayday, tu n'as pas l'autorisation d'accéder à ce contenu.",
+    "errors.404.lead": "Ce train ne circule plus ici, le contenu semble avoir été supprimé de la fiche horaire.",
+    "errors.actions.home": "Retour à l'accueil"
 }
