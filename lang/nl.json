@@ -1,7 +1,7 @@
 {
     "about.express": "InterCity, EuroCity",
     "about.block1": "Träwelling is een gratis incheckdienst waarmee je je vrienden kunt laten weten waar je momenteel bent en gebruikmaakt van openbaar vervoer. Ook kun je dit alles bijhouden in een logboek. Kortom: check in in treinen en verdien punten.",
-    "about.feature-missing": "Als je een idee voor een functie of een bug gevonden hebt, meld deze dan op onze <a href=\"https://github.com/Traewelling/traewelling/issues/new/choose\" target=\"_blank\">GitHub-repo</a>.",
+    "about.feature-missing": "Als je een idee voor een functie hebt of een bug gevonden hebt, meld deze dan op onze <a href=\"https://github.com/Traewelling/traewelling/issues/new/choose\" target=\"_blank\">GitHub-repo</a>.",
     "about.feature-missing-heading": "Hoe meld ik fouten of deel ik ideeën?",
     "about.international": "InterCityExpress, TGV, RailJet",
     "about.tram": "Tram, lightrail, bus, metro",
@@ -855,7 +855,7 @@
     "notifications.personalDataExported.lead": "De export staat klaar!",
     "notifications.personalDataExported.notice": "Je kunt de export downloaden tot en met :date.",
     "license.info": "Licentie",
-    "license.provided": "De gegevens zijn afkomstig van :provider en uitgebracht door :sourge onder de :license.",
+    "license.provided": "De gegevens zijn afkomstig van :provider en uitgebracht door :source onder de :license.",
     "events.notice.helppage": "hulppagina",
     "events.request.warn.duration": "Evenementen langer dan drie dagen worden mogelijk afgewezen.",
     "events.request.warn.url": "Evenementen zonder url/bron hebben een grotere kans om afgewezen te worden.",
