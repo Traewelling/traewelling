@@ -668,6 +668,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Station $fromStation
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stopover> $stopOvers
+ * @property-read int|null $stop_overs_count
  * @property-read \App\Models\Station $toStation
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment newQuery()
@@ -955,6 +957,7 @@ namespace App\Models{
  * @property-read bool $is_departure_cancelled
  * @property-read bool $is_departure_delayed
  * @property-read string|null $platform
+ * @property-read \App\Models\RouteSegment|null $routeSegment
  * @property-read \App\Models\Station $station
  * @property-read \App\Models\Station $trainStation
  * @property-read \App\Models\Trip $trip

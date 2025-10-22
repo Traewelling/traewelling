@@ -204,7 +204,7 @@ class LocationController
         try {
             $geoJson = $this->getPolylineBetween();
             if ($geoJson instanceof FeatureCollection) {
-                return $geoJson->features[0]->getCoordinates($invert);
+                return $geoJson->features->first()->getCoordinates($invert);
             }
 
             $mapLines = [];
@@ -224,6 +224,44 @@ class LocationController
                 [$this->destination->station->longitude, $this->destination->station->latitude]
             ];
         }
+    }
+
+    private function getPolylineFromRouteSegments(): ?FeatureCollection {
+        $coordinates   = [];
+        $routeSegments = 0;
+        $firstStopHit = false;
+        $lastStopHit = false;
+        foreach ($this->trip->stopovers as $stopover) {
+            if ($lastStopHit) {
+                break;
+            }
+            if (!$firstStopHit) {
+                if ($stopover->is($this->origin)) {
+                    $firstStopHit = true;
+                } else {
+                    continue;
+                }
+            }
+            if ($stopover->is($this->destination)) {
+                $lastStopHit = true;
+            }
+            if ($stopover->routeSegment === null) {
+                $coordinates[] = new Coordinate(
+                    $stopover->station->latitude,
+                    $stopover->station->longitude
+                );
+                $routeSegments++;
+                continue;
+            }
+            $coordinates = array_merge($coordinates, $stopover->routeSegment->getCoordinates());
+        }
+
+        if (empty($coordinates) || $routeSegments < 1) {
+            return null;
+        }
+
+        $features = collect([new Feature($coordinates)]);
+        return new FeatureCollection($features);
     }
 
     private function createPolylineFromStopovers(): FeatureCollection {
@@ -290,7 +328,14 @@ class LocationController
 
     private function getPolylineBetween(bool $preserveKeys = true): stdClass|FeatureCollection {
         $this->trip->loadMissing(['stopovers.station']);
-        $geoJson = $this->getPolylineWithTimestamps();
+        $lineString = $this->getPolylineFromRouteSegments();
+        if ($lineString) {
+            return $lineString;
+        }
+
+        // lineString will be null if no route segments are available
+        // if null is given to getPolylineWithTimestamps, it will fallback to the trip's polyline
+        $geoJson = $this->getPolylineWithTimestamps($lineString);
         if (count((array) $geoJson->features) === 0) {
             $stopoversPolyline = $this->createPolylineFromStopovers();
             $geoJson           = $this->getPolylineWithTimestamps(json_encode($stopoversPolyline));

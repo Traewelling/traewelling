@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @todo rename table to "Stopover" (without Train - we have more than just trains)
@@ -53,6 +54,10 @@ class Stopover extends Model
 
     public function station(): BelongsTo {
         return $this->belongsTo(Station::class, 'train_station_id', 'id');
+    }
+
+    public function routeSegment(): HasOne {
+        return $this->hasOne(RouteSegment::class, 'id', 'route_segment_id');
     }
 
     /**
