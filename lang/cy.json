@@ -26,5 +26,6 @@
     "user.you": "Chi",
     "user.private-profile": "Proffil preifat",
     "user.username": "Enw defnyddiwr",
-    "user.profile-picture": "Llun proffil o @:username"
+    "user.profile-picture": "Llun proffil o @:username",
+    "license.info": "Trwydded"
 }
