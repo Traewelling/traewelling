@@ -567,7 +567,7 @@ export interface StatusResource {
   /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
   business: Business;
   /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
+   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
    *  *      user specify?
    */
   visibility: StatusVisibility;
@@ -719,6 +719,11 @@ export interface TransportResource {
   number: any;
   /** @example "S 1" */
   lineName: string;
+  /**
+   * Hex color code of the route, if available
+   * @example "FFEE00"
+   */
+  routeColor?: string | null;
   /** @example 85639 */
   journeyNumber: number;
   /**
@@ -836,7 +841,7 @@ export interface UserProfileSettingsResource {
    */
   preventIndex: boolean;
   /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
+   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
    *  *      user specify?
    */
   defaultStatusVisibility: StatusVisibility;
@@ -1012,7 +1017,7 @@ export interface CheckinRequestBody {
   /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
   business?: Business;
   /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
+   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
    *  *      user specify?
    */
   visibility?: StatusVisibility;
@@ -1360,7 +1365,7 @@ export interface Polyline {
   type?: string;
   geometry?: {
     /** @example "LineString" */
-    type?: object;
+    type?: any;
     coordinates?: any[];
   };
   properties?: {
@@ -1396,7 +1401,7 @@ export interface StatusTag {
    */
   value?: string;
   /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
+   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
    *  *      user specify?
    */
   visibility?: StatusVisibility;
@@ -1475,7 +1480,7 @@ export interface StatusUpdateBody {
   /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
   business?: Business;
   /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
+   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
    *  *      user specify?
    */
   visibility?: StatusVisibility;
@@ -1630,8 +1635,12 @@ export class HttpClient<SecurityDataType = unknown> {
       input !== null && typeof input !== "string"
         ? JSON.stringify(input)
         : input,
-    [ContentType.FormData]: (input: any) =>
-      Object.keys(input || {}).reduce((formData, key) => {
+    [ContentType.FormData]: (input: any) => {
+      if (input instanceof FormData) {
+        return input;
+      }
+
+      return Object.keys(input || {}).reduce((formData, key) => {
         const property = input[key];
         formData.append(
           key,
@@ -1642,7 +1651,8 @@ export class HttpClient<SecurityDataType = unknown> {
               : `${property}`,
         );
         return formData;
-      }, new FormData()),
+      }, new FormData());
+    },
     [ContentType.UrlEncoded]: (input: any) => this.toQueryString(input),
   };
 
@@ -1728,13 +1738,14 @@ export class HttpClient<SecurityDataType = unknown> {
             : payloadFormatter(body),
       },
     ).then(async (response) => {
-      const r = response.clone() as HttpResponse<T, E>;
+      const r = response as HttpResponse<T, E>;
       r.data = null as unknown as T;
       r.error = null as unknown as E;
 
+      const responseToParse = responseFormat ? response.clone() : response;
       const data = !responseFormat
         ? r
-        : await response[responseFormat]()
+        : await responseToParse[responseFormat]()
             .then((data) => {
               if (r.ok) {
                 r.data = data;
@@ -2690,11 +2701,10 @@ export class Api<
      * @secure
      */
     destroySingleStatus: (id?: number, params: RequestParams = {}) =>
-      this.request<SuccessResponse, void>({
+      this.request<void, void>({
         path: `/status/${id}`,
         method: "DELETE",
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -3121,6 +3131,17 @@ export class Api<
          * @example "Karls"
          */
         query?: any;
+        /**
+         * identifier provider
+         * @example "ibnr"
+         */
+        identifier_provider?: "ibnr" | "transitous";
+        /**
+         * station identifier
+         * @maxLength 255
+         * @example "1337"
+         */
+        identifier?: string;
       },
       params: RequestParams = {},
     ) =>
@@ -3756,11 +3777,6 @@ export class Api<
          * @example "S 4"
          */
         lineName: any;
-        /**
-         * start point from where the stopovers should be desplayed
-         * @example 4711
-         */
-        start: any;
       },
       params: RequestParams = {},
     ) =>
