@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Dto\Coordinate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -38,10 +39,14 @@ class Station extends Model
         'latitude'      => 'float',
         'longitude'     => 'float',
     ];
-    protected $appends  = ['ifopt', 'localized_name'];
+    protected $appends  = ['ifopt', 'localized_name', 'location'];
 
     public function names(): HasMany {
         return $this->hasMany(StationName::class, 'station_id', 'id');
+    }
+
+    public function getLocationAttribute(): Coordinate {
+        return new Coordinate($this->latitude, $this->longitude);
     }
 
     public function getIfoptAttribute(): ?string {

@@ -198,52 +198,6 @@ abstract class BrouterController extends Controller {
         }
     }
 
-    /**
-     * Check if Polyline has missing parts. If yes: Automatically schedule a job to get a real route via brouter
-     *
-     * @param Trip $trip
-     *
-     * @return void
-     */
-    public static function checkPolyline(Trip $trip): void {
-        if(!$trip->category?->onRails()) {
-            Log::debug('Trip#' . $trip->trip_id . ' is not on rails. No need to check polyline.', ['RefreshPolyline']);
-            return;
-        }
-
-        if(!self::checkIfPolylineHasMissingParts($trip)) {
-            Log::debug('no parts missing', ['RefreshPolyline']);
-            //Nothing to do here.
-            return;
-        }
-        return; // temporary disable dispatching Brouter jobs as of performance issues (~Sept 2025, kris)
-        Log::debug('Trip#' . $trip->trip_id . ' is missing polyline party. Dispatching RefreshPolyline.', ['RefreshPolyline']);
-        RefreshPolyline::dispatch($trip);
-    }
-
-    private static function checkIfPolylineHasMissingParts(Trip $trip): bool {
-        if(is_null($trip->polyline)) {
-            Log::debug('Missing route found. No polyline available.', ['RefreshPolyline']);
-            return true;
-        }
-        $geoJson      = json_decode($trip->polyline->polyline);
-        $features     = $geoJson->features;
-        $lastStopOver = null; // To detect whether as the crow flies or real routing
-        foreach($features as $data) {
-            if(!isset($data->properties->id)) {
-                $lastStopOver = null;
-            } else {
-                if(!is_null($lastStopOver) && $trip->category?->onRails()) { // A real route is missing -> request route via Brouter
-                    Log::debug('Missing route found between ' . ($lastStopOver->properties->name ?? 'unknown') . ' and ' . ($data->properties->name ?? 'unknown'), ['RefreshPolyline']);
-                    return true;
-                }
-
-                $lastStopOver = $data;
-            }
-        }
-        return false;
-    }
-
     private static function getOldPolyline(Trip $trip): ?int {
         $oldPolyLine = PolyLine::where('parent_id', $trip->polyline_id)->orderBy('id', 'desc')->first();
         $limit       = 20;
