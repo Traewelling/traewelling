@@ -13,7 +13,7 @@ return new class extends Migration
     }
 
     public function down(): void {
-        Schema::table('trips', function(Blueprint $table) {
+        Schema::table('hafas_trips', function(Blueprint $table) {
             $table->unsignedInteger('journey_number')->nullable()->change();
         });
     }
