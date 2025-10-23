@@ -220,5 +220,15 @@
     "modals.editStatus-label": "Upravit stav",
     "modals.editStatus-title": "Upravit stav",
     "modals.deleteEvent-title": "Smazat událost",
-    "modals.deleteEvent-body": "Jste si jisti, že chcete smazat událost <em>:name</em>? Odbavení na cestě budou aktualizována na <code>NULL</code>."
+    "modals.deleteEvent-body": "Jste si jisti, že chcete smazat událost <em>:name</em>? Odbavení na cestě budou aktualizována na <code>NULL</code>.",
+    "modals.setHome-title": "Nastavení domovské stanice",
+    "modals.setHome-body": "Chcete nastavit <em>:stationName</em> jako svou domovskou stanici?",
+    "modals.tags.new": "Nový tag",
+    "notifications.empty": "Zatím jste neobdrželi žádná oznámení.",
+    "notifications.eventSuggestionProcessed.lead": "Váš návrh události <b>:name</b> byl zkontrolován.",
+    "notifications.eventSuggestionProcessed.denied": "Váš návrh byl zamítnut.",
+    "notifications.eventSuggestionProcessed.too-late": "Váš návrh byl bohužel podán příliš pozdě.",
+    "notifications.eventSuggestionProcessed.duplicate": "Váš návrh již existoval.",
+    "notifications.eventSuggestionProcessed.not-applicable": "Váš návrh bohužel pro komunitu nemá žádnou přidanou hodnotu.",
+    "notifications.eventSuggestionProcessed.missing-information": "Tuto událost nemůžeme schválit z důvodu chybějících informací. Prosím, uveďte konkrétní zdroj/webovou stránku o této události."
 }
