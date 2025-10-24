@@ -13,8 +13,6 @@
 
 namespace App\Models{
 /**
- * 
- *
  * @property string $id
  * @property string $type
  * @property string|null $url
@@ -40,8 +38,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property string $id
  * @property string $alert_id
  * @property string $locale
@@ -68,8 +64,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property string $id
  * @property string $name
  * @property int $adminLevel
@@ -92,8 +86,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property string $id
  * @property string $station_id
  * @property string $area_id
@@ -117,8 +109,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @todo rename table to "Checkin" (without Train - we have more than just trains)
  * @todo merge model with "Status" because the difference between trip sources (HAFAS,
  *        User, and future sources) should be handled in the Trip model.
@@ -175,8 +165,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property string $name
  * @property string $slug
@@ -227,8 +215,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property int|null $user_id
  * @property string $name
@@ -267,8 +253,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property int $user_id
  * @property int $follow_id
@@ -291,8 +275,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property int $user_id
  * @property int $follow_id
@@ -314,8 +296,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property int $user_id
  * @property string|null $name
@@ -341,8 +321,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property string $id
  * @property string|null $name
  * @property string|null $human_name
@@ -374,8 +352,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property int $user_id
  * @property int $status_id
@@ -398,8 +374,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property string $domain
  * @property string $client_id
@@ -423,8 +397,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property int $status_id
  * @property int $mentioned_id
@@ -450,8 +422,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property string $id
  * @property string|null $provider
  * @property string|null $country
@@ -492,8 +462,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property int|null $user_id
  * @property string $name
@@ -538,8 +506,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property string|null $wikidata_id Wikidata ID of the operator
  * @property string $name
@@ -564,8 +530,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property string $id
  * @property int $operator_id
  * @property string $type e.g. hafas, motis
@@ -592,13 +556,11 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property int|null $parent_id
  * @property string $hash
  * @property string $polyline
- * @property string $source
+ * @property string|null $source
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read PolyLine|null $parent
@@ -620,8 +582,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property string $body_md_de
  * @property string $body_md_en
@@ -643,8 +603,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property string $id
  * @property int $user_id
  * @property \App\Enum\ProfileLinkName $name
@@ -667,8 +625,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property \App\Enum\Report\ReportStatus $status Enum ReportStatus
  * @property string $subject_type
@@ -701,8 +657,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property string $id
  * @property int|null $user_id
  * @property string|null $ip_address
@@ -725,13 +679,11 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property int $user_id
  * @property int|null $mastodon_id
  * @property int|null $mastodon_server
- * @property mixed|null $mastodon_token
+ * @property string|null $mastodon_token
  * @property \App\Enum\MastodonVisibility $mastodon_visibility
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -754,8 +706,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @todo rename table to "Station" (without Train - we have more than just trains)
  * @property int $id
  * @property int|null $ibnr
@@ -816,8 +766,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property string $id
  * @property int $relevance
  * @property int $station_id
@@ -847,8 +795,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property string $id
  * @property int $station_id
  * @property string $language
@@ -871,8 +817,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @todo merge model with "Checkin" (later only "Checkin") because the difference between trip sources (HAFAS,
  *       User, and future sources) should be handled in the Trip model.
  * @property int $id
@@ -927,8 +871,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property int $status_id
  * @property string $key
@@ -955,8 +897,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @todo rename table to "Stopover" (without Train - we have more than just trains)
  * @todo rename "train_station_id" to "station_id" - we have more than just trains.
  * @todo rename "cancelled" to "is_cancelled" - or split into "is_arrival_cancelled" and "is_departure_cancelled"? need
@@ -975,6 +915,7 @@ namespace App\Models{
  * @property bool $cancelled
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $route_segment_id
  * @property-read \Carbon\Carbon|null $arrival
  * @property-read \Carbon\Carbon|null $departure
  * @property-read bool $is_arrival_cancelled
@@ -1000,6 +941,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereDeparturePlatformReal($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereDepartureReal($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereRouteSegmentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereTrainStationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereTripId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereUpdatedAt($value)
@@ -1009,8 +951,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @todo rename table only to "Trip" (without Hafas)
  * @todo rename "linename" to "line_name" (or something else, but not "linename")
  * @todo drop origin and destination, when origin_id and destination_id are added
@@ -1019,6 +959,7 @@ namespace App\Models{
  * @property \App\Enum\HafasTravelType $category
  * @property string $number
  * @property string $linename
+ * @property string|null $route_color Hex color code of the route, without #
  * @property int|null $journey_number
  * @property int|null $operator_id
  * @property int $origin_id
@@ -1062,6 +1003,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereOperatorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereOriginId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip wherePolylineId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereRouteColor($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereSource($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereTripId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereUpdatedAt($value)
@@ -1072,8 +1014,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property string $id
  * @property int $user_id
  * @property int $trusted_id
@@ -1097,8 +1037,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @todo rename home_id to home_station_id
  * @todo rename mapprovider to map_provider
  * @property int $id
@@ -1230,8 +1168,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property int $user_id
  * @property int $blocked_id
@@ -1253,8 +1189,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property int $user_id
  * @property int $muted_id
@@ -1277,10 +1211,8 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
- * @property string $oauth_client_id
+ * @property int $oauth_client_id
  * @property int $user_id
  * @property string $url
  * @property string|null $secret
@@ -1306,8 +1238,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property string $id
  * @property int $user_id
  * @property int $oauth_client_id
@@ -1333,8 +1263,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $webhook_id
  * @property \App\Enum\WebhookEvent $event
  * @property-read \App\Models\Webhook|null $webhook
@@ -1349,8 +1277,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WikidataEntity newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WikidataEntity newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WikidataEntity query()
