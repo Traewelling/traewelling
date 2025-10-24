@@ -21,5 +21,16 @@
     "user.email.new": "Nýtt netfang",
     "user.email.change": "Breyta um netfang",
     "user.email-verify": "Staðfestu netfangið þitt",
-    "user.forgot-password": "Týnt lykilorð?"
+    "user.forgot-password": "Týnt lykilorð?",
+    "about.regional": "Svæðislest/Hraðasvæðislest",
+    "admin.statuses": "Stöður",
+    "auth.throttle": "Of margar innskráningartilraunir. Reyndu aftur eftir :seconds sekúndur.",
+    "user.header-reset-pw": "Endursetja lykilorð",
+    "user.login": "Innskráning",
+    "user.login.or": "eða",
+    "user.login-credentials": "Netfang eða notandanafn",
+    "user.not-received-before": "Ef að þú fékkst ekki tölvupóstinn, ",
+    "user.not-received-link": "smelltu hér til að biðja um annan",
+    "user.no-account": "Ertu ekki með notendareikning?",
+    "user.password": "Lykilorð"
 }
