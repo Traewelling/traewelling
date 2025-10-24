@@ -229,20 +229,13 @@ class LocationController
         $coordinates   = [];
         $routeSegments = 0;
         $firstStopHit = false;
-        $lastStopHit = false;
         foreach ($this->trip->stopovers as $stopover) {
-            if ($lastStopHit) {
-                break;
-            }
             if (!$firstStopHit) {
                 if ($stopover->is($this->origin)) {
                     $firstStopHit = true;
                 } else {
                     continue;
                 }
-            }
-            if ($stopover->is($this->destination)) {
-                $lastStopHit = true;
             }
             if ($stopover->routeSegment === null) {
                 $coordinates[] = new Coordinate(
@@ -252,7 +245,11 @@ class LocationController
                 $routeSegments++;
                 continue;
             }
+            if ($stopover->is($this->destination)) {
+                break;
+            }
             $coordinates = array_merge($coordinates, $stopover->routeSegment->getCoordinates());
+            $routeSegments++;
         }
 
         if (empty($coordinates) || $routeSegments < 1) {
