@@ -121,7 +121,7 @@ export default {
           L.geoJSON(results.data, {
             pane: 'routes',
             style: {
-              color: "#cecece",
+              color: "#181818",
               weight: 7,
               opacity: 0.9,
               lineCap: 'round',
