@@ -10,5 +10,16 @@
     "admin.greeting": "Hæ",
     "admin.usage": "Notkun",
     "admin.checkins": "Skráningar",
-    "admin.registered-users": "Skráðir notendur"
+    "admin.registered-users": "Skráðir notendur",
+    "license.info": "Leyfi",
+    "license.provided": ":provider veitir aðgang að gögnum en þau hafa verið gert aðgengileg af :source samkvæmt :license leyfinu.",
+    "admin.new-users": "nýir notendur",
+    "auth.failed": "Notandanafn og lykilorðið passa ekki saman – eða notandi ekki virkur.",
+    "user.complete-registration": "Ljúka skráningu",
+    "user.displayname": "Birt nafn",
+    "user.email": "Netfang",
+    "user.email.new": "Nýtt netfang",
+    "user.email.change": "Breyta um netfang",
+    "user.email-verify": "Staðfestu netfangið þitt",
+    "user.forgot-password": "Týnt lykilorð?"
 }
