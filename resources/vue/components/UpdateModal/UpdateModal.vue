@@ -8,7 +8,7 @@ import VisibilityDropdown from "../VisibilityDropdown.vue";
 import {Dtm} from "../../helpers/DateTime";
 import {DateTime} from "luxon";
 import {useActiveCheckin} from "../../stores/activeCheckin";
-import {getArrivalForStopover, getDepartureForStatus} from "../../helpers/DateTimeHelper";
+import {getDepartureForStatus} from "../../helpers/DateTimeHelper";
 import EventDropdown from "../EventDropdown.vue";
 import DateTimeInput from "../Helpers/DateTimeInput.vue";
 
@@ -109,7 +109,8 @@ async function fetchDestinations() {
     const all = response.data?.data?.stopovers || [];
     const departurePlanned = DateTime.fromISO(props.status.train.origin.departurePlanned || '');
     stopovers.value = all.filter((stopover: StopoverResource) => {
-      return getArrivalForStopover(stopover).dateTime.diff(departurePlanned).as('minutes') >= 0;
+      const arrival = DateTime.fromISO(stopover.arrivalPlanned || stopover.arrival || stopover.departurePlanned || stopover.departure);
+      return arrival.diff(departurePlanned).as('minutes') >= 0;
     });
   } catch (e) {
     console.error('Error fetching destinations:', e);
