@@ -178,7 +178,7 @@ fetchFutureStatuses();
         <p>{{ trans('dashboard.empty.teaser') }}</p>
         <p>
           {{ trans('dashboard.empty.discover1') }}
-          <a href="{{ route('statuses.active') }}">
+          <a href="/statuses/active">
             {{ trans('menu.active') }}
           </a>
           {{ trans('dashboard.empty.discover3') }}.
