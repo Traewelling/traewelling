@@ -80,14 +80,14 @@ export default {
     }
     this.initializeMap();
     this.fetchEvents();
-    let temp = this;
-    setInterval(function () {
-      temp.refreshMarkers();
+
+    setInterval(() => {
+      this.refreshMarkers();
     }, 20000);
 
     if (!this.$props.statusId) {
-      setInterval(function () {
-        temp.initializeMap();
+      setInterval(() => {
+        this.initializeMap();
       }, 30000);
     }
   },
