@@ -89,7 +89,7 @@ namespace App\Models{
  * @property string $id
  * @property string $station_id
  * @property string $area_id
- * @property bool $default
+ * @property bool $default Whether it's the default area for the station
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Area $area
@@ -116,27 +116,27 @@ namespace App\Models{
  * @todo drop the `departure` and `arrival` columns and use the stopover instead
  * @property int $id
  * @property int $status_id
+ * @property int|null $user_id workaround for unique key
  * @property string $trip_id
- * @property int|null $distance
- * @property $departure
- * @property $arrival
- * @property int|null $points
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $user_id
- * @property bool $forced
- * @property $manual_departure
- * @property $manual_arrival
- * @property int $duration
  * @property int|null $origin_stopover_id
  * @property int|null $destination_stopover_id
+ * @property int|null $distance meters
+ * @property int $duration Duration in minutes. Cached value with real time and manual data. Null if not yet calculated.
+ * @property $departure
+ * @property $manual_departure User-defined override of the departure
+ * @property $arrival
+ * @property $manual_arrival User-defined override of the arrival
+ * @property int|null $points
+ * @property bool $forced
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Stopover|null $destinationStopover
  * @property-read \Illuminate\Support\Collection<Status> $also_on_this_connection
  * @property-read \stdClass $display_arrival
  * @property-read \stdClass $display_departure
  * @property-read float $speed
  * @property-read \App\Models\Stopover|null $originStopover
- * @property-read \App\Models\Status|null $status
+ * @property-read \App\Models\Status $status
  * @property-read \App\Models\Trip|null $trip
  * @property-read \App\Models\User|null $user
  * @method static \Database\Factories\CheckinFactory factory($count = null, $state = [])
@@ -166,19 +166,19 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property int|null $station_id
  * @property string $name
  * @property string $slug
  * @property string|null $hashtag
  * @property string|null $host
  * @property string|null $url
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $event_start
- * @property \Illuminate\Support\Carbon|null $event_end
- * @property int|null $approved_by
+ * @property int|null $station_id
  * @property \Illuminate\Support\Carbon $checkin_start
  * @property \Illuminate\Support\Carbon $checkin_end
+ * @property \Illuminate\Support\Carbon|null $event_start If different from checkin_start
+ * @property \Illuminate\Support\Carbon|null $event_end If different from checkin_end
+ * @property int|null $approved_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
  * @property-read \App\Models\User|null $approvedBy
@@ -217,17 +217,17 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int|null $user_id
- * @property int|null $station_id
  * @property string $name
  * @property string|null $host
  * @property string|null $url
+ * @property int|null $station_id
  * @property \Illuminate\Support\Carbon|null $begin
  * @property \Illuminate\Support\Carbon|null $end
+ * @property string|null $hashtag
+ * @property int|null $admin_notification_id
  * @property bool $processed
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $hashtag
- * @property int|null $admin_notification_id
  * @property-read \App\Models\Station|null $station
  * @property-read \App\Models\User|null $user
  * @method static \Database\Factories\EventSuggestionFactory factory($count = null, $state = [])
@@ -258,8 +258,8 @@ namespace App\Models{
  * @property int $follow_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $following
- * @property-read \App\Models\User|null $user
+ * @property-read \App\Models\User $following
+ * @property-read \App\Models\User $user
  * @method static \Database\Factories\FollowFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Follow newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Follow newQuery()
@@ -298,11 +298,11 @@ namespace App\Models{
 /**
  * @property int $id
  * @property int $user_id
+ * @property string|null $name
  * @property string $token
+ * @property \Illuminate\Support\Carbon|null $last_accessed
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $name
- * @property \Illuminate\Support\Carbon|null $last_accessed
  * @property-read \App\Models\User $user
  * @method static \Database\Factories\IcsTokenFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IcsToken newModelQuery()
@@ -357,8 +357,8 @@ namespace App\Models{
  * @property int $status_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Status|null $status
- * @property-read \App\Models\User|null $user
+ * @property-read \App\Models\Status $status
+ * @property-read \App\Models\User $user
  * @method static \Database\Factories\LikeFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Like newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Like newQuery()
@@ -426,16 +426,16 @@ namespace App\Models{
  * @property string|null $provider
  * @property string|null $country
  * @property string|null $name
+ * @property string|null $human_name
  * @property string|null $license
  * @property string|null $license_url
  * @property string|null $source_url
  * @property string|null $spdx
+ * @property string|null $license_id
  * @property int $active
+ * @property int $force_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $human_name
- * @property string|null $license_id
- * @property int $force_active
  * @property-read \App\Models\License|null $manualLicense
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Trip> $trips
  * @property-read int|null $trips_count
@@ -463,19 +463,19 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property string|null $user_id
+ * @property int|null $user_id
  * @property string $name
  * @property string|null $secret
  * @property string|null $provider
  * @property string $redirect
+ * @property int $webhooks_enabled
+ * @property string|null $privacy_policy_url
+ * @property string|null $authorized_webhook_url
  * @property bool $personal_access_client
  * @property bool $password_client
  * @property bool $revoked
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $authorized_webhook_url
- * @property string|null $privacy_policy_url
- * @property bool $webhooks_enabled
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Passport\AuthCode> $authCodes
  * @property-read int|null $auth_codes_count
  * @property-read string|null $plain_secret
@@ -507,10 +507,10 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property string|null $wikidata_id Wikidata ID of the operator
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $wikidata_id
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OperatorIdentifier> $identifiers
  * @property-read int|null $identifiers_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Trip> $trips
@@ -532,9 +532,9 @@ namespace App\Models{
 /**
  * @property string $id
  * @property int $operator_id
- * @property string $type
+ * @property string $type e.g. hafas, motis
  * @property string $identifier
- * @property string|null $source
+ * @property string|null $source Source of the identifier, e.g. motis_source
  * @property string|null $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -557,12 +557,12 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property int|null $parent_id
  * @property string $hash
  * @property string $polyline
+ * @property string|null $source
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $source
- * @property int|null $parent_id
  * @property-read PolyLine|null $parent
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Trip> $trips
  * @property-read int|null $trips_count
@@ -626,15 +626,15 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property \App\Enum\Report\ReportStatus $status
+ * @property \App\Enum\Report\ReportStatus $status Enum ReportStatus
  * @property string $subject_type
  * @property int $subject_id
- * @property \App\Enum\Report\ReportReason|null $reason
+ * @property \App\Enum\Report\ReportReason|null $reason Enum ReportReason or null.
  * @property string|null $description
  * @property int|null $reporter_id
+ * @property int|null $admin_notification_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $admin_notification_id
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
  * @property-read \App\Models\User|null $reporter
@@ -660,9 +660,9 @@ namespace App\Models{
  * @property string $id
  * @property int $from_station_id
  * @property int $to_station_id
- * @property int $distance
- * @property int $duration
- * @property string|null $path_type
+ * @property int $distance Distance in meters
+ * @property int $duration Duration in seconds
+ * @property string|null $path_type Type of routing path, e.g., rail, road, trail
  * @property string $polyline
  * @property int $polyline_precision
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -717,11 +717,11 @@ namespace App\Models{
  * @property int|null $mastodon_id
  * @property int|null $mastodon_server
  * @property string|null $mastodon_token
+ * @property \App\Enum\MastodonVisibility $mastodon_visibility
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Enum\MastodonVisibility $mastodon_visibility
  * @property-read \App\Models\MastodonServer|null $mastodonServer
- * @property-read \App\Models\User|null $user
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile query()
@@ -742,22 +742,22 @@ namespace App\Models{
  * @todo rename table to "Station" (without Train - we have more than just trains)
  * @property int $id
  * @property int|null $ibnr
+ * @property string|null $wikidata_id
+ * @property string|null $ifopt_a Country
+ * @property int|null $ifopt_b Administrative Area
+ * @property int|null $ifopt_c Mode or Stop Place
+ * @property int|null $ifopt_d Stop Place or Stop Place Component
+ * @property int|null $ifopt_e Stop Place Component (or unused)
+ * @property string|null $rilIdentifier
  * @property string $name
  * @property float $latitude
  * @property float $longitude
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $rilIdentifier
- * @property int|null $time_offset
- * @property bool|null $shift_time
- * @property string|null $wikidata_id
- * @property int|null $ifopt_e
- * @property int|null $ifopt_d
- * @property int|null $ifopt_c
- * @property int|null $ifopt_b
- * @property string|null $ifopt_a
  * @property string|null $source
  * @property int $relevance
+ * @property int|null $time_offset Defines the offset of the train station relative to Europe/Berlin
+ * @property int|null $shift_time If false, the timezone of the hafas request will not be shifted to Europe/Berlin
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
  * @property-read \App\Models\AreasStationsMap|null $pivot
@@ -801,14 +801,14 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property string $id
+ * @property int $relevance
  * @property int $station_id
  * @property string $type
  * @property string|null $origin
  * @property string $identifier
- * @property string|null $name
+ * @property string|null $name Name of the station provided by the data source
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int $relevance
  * @property-read \App\Models\Station $station
  * @method static \Database\Factories\StationIdentifierFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier newModelQuery()
@@ -856,16 +856,16 @@ namespace App\Models{
  * @property int $id
  * @property string|null $body
  * @property int $user_id
- * @property \App\Enum\Business|null $business
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $event_id
+ * @property \App\Enum\Business $business
  * @property \App\Enum\StatusVisibility $visibility
+ * @property int|null $event_id
  * @property string|null $mastodon_post_id
  * @property int|null $client_id
- * @property string|null $moderation_notes
- * @property bool $lock_visibility
- * @property bool $hide_body
+ * @property string|null $moderation_notes Notes from the moderation team - visible to the user
+ * @property bool $lock_visibility Prevent the user from changing the visibility of the status?
+ * @property bool $hide_body Hide the body of the status from other users?
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
  * @property-read \App\Models\Checkin|null $checkin
@@ -881,7 +881,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StatusTag> $tags
  * @property-read int|null $tags_count
  * @property-read \App\Models\Checkin|null $trainCheckin
- * @property-read \App\Models\User|null $user
+ * @property-read \App\Models\User $user
  * @method static \Database\Factories\StatusFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Status newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Status newQuery()
@@ -946,9 +946,9 @@ namespace App\Models{
  * @property $departure_real
  * @property string|null $departure_platform_planned
  * @property string|null $departure_platform_real
+ * @property bool $cancelled
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property bool $cancelled
  * @property string|null $route_segment_id
  * @property-read \Carbon\Carbon|null $arrival
  * @property-read \Carbon\Carbon|null $departure
@@ -994,27 +994,27 @@ namespace App\Models{
  * @property \App\Enum\HafasTravelType $category
  * @property string $number
  * @property string $linename
+ * @property string|null $route_color Hex color code of the route, without #
+ * @property int|null $journey_number
+ * @property int|null $operator_id
+ * @property int $origin_id
+ * @property int $destination_id
  * @property int|null $polyline_id
  * @property $departure
  * @property $arrival
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int|null $operator_id
- * @property \Illuminate\Support\Carbon|null $last_refreshed
- * @property int|null $journey_number
  * @property \App\Enum\TripSource $source
- * @property int|null $user_id
- * @property int $origin_id
- * @property int $destination_id
  * @property string|null $motis_source
  * @property string|null $motis_source_license_id
- * @property string|null $route_color
+ * @property int|null $user_id if not null, this trip belongs to the user (e.g. manually created trips)
+ * @property \Illuminate\Support\Carbon|null $last_refreshed
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Checkin> $checkins
  * @property-read int|null $checkins_count
- * @property-read \App\Models\Station|null $destinationStation
+ * @property-read \App\Models\Station $destinationStation
  * @property-read \App\Models\MotisSourceLicense|null $motisSourceLicense
  * @property-read \App\Models\Operator|null $operator
- * @property-read \App\Models\Station|null $originStation
+ * @property-read \App\Models\Station $originStation
  * @property-read \App\Models\PolyLine|null $polyline
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stopover> $stopovers
  * @property-read int|null $stopovers_count
@@ -1078,28 +1078,28 @@ namespace App\Models{
  * @property string $name
  * @property string $username
  * @property string|null $avatar
+ * @property string|null $bio
  * @property string|null $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property \Illuminate\Support\Carbon|null $privacy_ack_at
  * @property string|null $password
  * @property int|null $home_id
- * @property string|null $remember_token
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @property bool $private_profile
- * @property bool $prevent_index
- * @property string|null $language
- * @property \Illuminate\Support\Carbon|null $last_login
  * @property \App\Enum\StatusVisibility $default_status_visibility
- * @property int|null $privacy_hide_days
- * @property bool $likes_enabled
- * @property \App\Enum\MapProvider $mapprovider
+ * @property bool $prevent_index prevent search engines from indexing this profile
+ * @property int|null $privacy_hide_days Set statuses private after x days
+ * @property string|null $language
  * @property string $timezone
  * @property \App\Enum\User\FriendCheckinSetting $friend_checkin
+ * @property bool $likes_enabled
  * @property bool $points_enabled
- * @property \Illuminate\Support\Carbon|null $recent_gdpr_export
+ * @property \App\Enum\MapProvider $mapprovider
  * @property \App\Enum\DataProvider $data_provider
- * @property string|null $bio
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $last_login
+ * @property \Illuminate\Support\Carbon|null $recent_gdpr_export
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $blockedByUsers
  * @property-read int|null $blocked_by_users_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $blockedUsers

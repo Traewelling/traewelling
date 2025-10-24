@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\OpenRailRoutingResponseFailed;
+use App\Jobs\RecalculateStatusesDistanceForTrip;
 use App\Models\Stopover;
 use App\Models\Trip;
 use App\OpenRailRoutingProfile;
@@ -15,20 +16,23 @@ use Traewelling\GooglePolyline\PolylineTranscoder;
 
 class ReRoutingController extends Controller
 {
-    private TripRepository $tripRepository;
+    private TripRepository         $tripRepository;
     private OpenRailRoutingService $openRailRoutingService;
+    private int                    $stopovers       = 1;
+    private int                    $queryExceptions = 0;
 
     public function __construct(
-        TripRepository $tripRepository,
+        TripRepository         $tripRepository,
         OpenRailRoutingService $openRailRoutingService
     ) {
-        $this->tripRepository = $tripRepository;
+        $this->tripRepository         = $tripRepository;
         $this->openRailRoutingService = $openRailRoutingService;
     }
 
-    public function rerouteStops(Trip $tripDto): void {
+    public function rerouteStops(Trip $trip): int {
         /** @var Collection<int, Stopover> $stops */
-        $stops = $tripDto->stopovers()->get();
+        $stops           = $trip->stopovers()->get();
+        $this->stopovers = $stops->count();
 
         $count = 0;
         foreach ($stops as $key => $stop) {
@@ -36,9 +40,15 @@ class ReRoutingController extends Controller
             if (!$previousStop) {
                 continue;
             }
+            if ($stop->routeSegment !== null) {
+                Log::debug('RerouteStops: At least one stop already has route segment, skipping whole process', ['stop_id' => $stop->id]);
+                $this->stopovers--;
+
+                continue;
+            }
             $count++;
 
-            $mode = $tripDto->category;
+            $mode = $trip->category;
 
             $pathType = $mode->getORRProfile();
             if (!$pathType) {
@@ -51,16 +61,27 @@ class ReRoutingController extends Controller
         }
 
         if ($count === 0) {
-            Log::error('RerouteStops: No stopovers found for trip', ['trip_id' => $tripDto->id]);
+            Log::error('RerouteStops: No stopovers found for trip', ['trip_id' => $trip->id]);
         }
+
+        if ($this->stopovers < 1) {
+            $percentage = $this->queryExceptions;
+        } else {
+            $percentage = $this->queryExceptions / ($this->stopovers) * 100;
+        }
+
+        if ($percentage < 10) {
+            RecalculateStatusesDistanceForTrip::dispatch($trip->id);
+        }
+
+        return $percentage;
     }
 
-    private function rerouteBetween(Stopover $start, Stopover $end, OpenRailRoutingProfile $pathType): void
-    {
+    private function rerouteBetween(Stopover $start, Stopover $end, OpenRailRoutingProfile $pathType): void {
         Log::debug('RerouteStops', [$start, $end, $pathType]);
 
         $startTime = $start->departure ?? $start->arrival;
-        $endTime = $end->arrival ?? $end->departure;
+        $endTime   = $end->arrival ?? $end->departure;
 
         $duration = -1;
         if ($startTime?->isValid() && $endTime?->isValid()) {
@@ -78,49 +99,49 @@ class ReRoutingController extends Controller
         try {
             Log::debug('Getting new route from OpenRailwayRouting', [
                 'from' => $start->station,
-                'to' => $end->station,
+                'to'   => $end->station,
                 'type' => $pathType,
             ]);
             $route = $this->openRailRoutingService->getRoute([$start->station->location, $end->station->location], $pathType);
-        } catch (OpenRailRoutingResponseFailed|GuzzleException $e) {
-            report($e);
-            $route = null;
-        }
 
-        try {
-            $encodedPolyline = (new PolylineTranscoder)->encodePolyline($route->feature->getCoordinateArray());
+            try {
+                $encodedPolyline = (new PolylineTranscoder)->encodePolyline($route->feature->getCoordinateArray());
 
-            // if speed is > 300 km/h, we assume the route is invalid
-            if ($duration > 0) {
-                $speed = ($route->distanceInMeters / $duration) * 3.6; // m/s to km/h
-                if ($speed > 300) {
-                    Log::warning('RerouteStops: Calculated speed is too high, skipping route segment', [
-                        'speed_kmh' => $speed,
-                        'from' => $start->station->name,
-                        'to' => $end->station->name,
+                // if speed is > 300 km/h, we assume the route is invalid
+                if ($duration > 0) {
+                    $speed = ($route->distanceInMeters / $duration) * 3.6; // m/s to km/h
+                    if ($speed > 300) {
+                        Log::warning('RerouteStops: Calculated speed is too high, skipping route segment', [
+                            'speed_kmh' => $speed,
+                            'from'      => $start->station->name,
+                            'to'        => $end->station->name,
+                        ]);
+                        return;
+                    }
+                } elseif ($route->distanceInMeters > 1000) {
+                    Log::warning('RerouteStops: No duration available and distance is too high, skipping route segment', [
+                        'distance_m' => $route->distanceInMeters,
+                        'from'       => $start->station->name,
+                        'to'         => $end->station->name,
                     ]);
                     return;
                 }
-            } elseif ($route->distanceInMeters > 1000) {
-                Log::warning('RerouteStops: No duration available and distance is too high, skipping route segment', [
-                    'distance_m' => $route->distanceInMeters,
-                    'from' => $start->station->name,
-                    'to' => $end->station->name,
-                ]);
-                return;
-            }
 
-            $segment = $this->tripRepository->createRouteSegment(
-                fromStation:      $start->station,
-                toStation:        $end->station,
-                encodedPolyline:  $encodedPolyline,
-                duration:         $duration,
-                pathType:         $pathType,
-                distanceInMeters: $route->distanceInMeters
-            );
-            $this->tripRepository->setRouteSegmentForStop($start, $segment);
-        } catch (\Exception $e) {
-            Log::error('RerouteStops: Failed to create route segment', ['error' => $e->getMessage()]);
+                $segment = $this->tripRepository->createRouteSegment(
+                    fromStation:      $start->station,
+                    toStation:        $end->station,
+                    encodedPolyline:  $encodedPolyline,
+                    duration:         $duration,
+                    pathType:         $pathType,
+                    distanceInMeters: $route->distanceInMeters
+                );
+                $this->tripRepository->setRouteSegmentForStop($start, $segment);
+            } catch (\Exception $e) {
+                Log::error('RerouteStops: Failed to create route segment', ['error' => $e->getMessage()]);
+                report($e);
+            }
+        } catch (OpenRailRoutingResponseFailed|GuzzleException $e) {
+            $this->queryExceptions++;
             report($e);
         }
     }

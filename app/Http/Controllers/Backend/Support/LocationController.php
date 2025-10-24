@@ -10,7 +10,6 @@ use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Trip;
 use App\Services\GeoService;
-use Cache;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -420,6 +419,11 @@ class LocationController
         $lastStopover = null;
         foreach ($stopovers as $stopover) {
             if ($lastStopover === null) {
+                $lastStopover = $stopover;
+                continue;
+            }
+            if ($stopover->route_segment_id) {
+                $distance += $stopover->routeSegment->distance;
                 $lastStopover = $stopover;
                 continue;
             }

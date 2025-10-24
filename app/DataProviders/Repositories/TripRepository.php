@@ -34,6 +34,7 @@ class TripRepository
                         'arrival_utc'   => (clone $stopover->arrival_planned)->tz('UTC'),
                     ]
                 );
+                report($e);
             }
         }
     }
