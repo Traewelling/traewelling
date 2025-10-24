@@ -95,6 +95,10 @@ function getStopoverForTrip(tripId: string) {
   return stopovers.value[tripId];
 }
 
+const isOwnProfile = computed(() => {
+  return authUser && (authUser.getId === userData.value?.id);
+});
+
 function isNewDay(index: number): boolean {
   if (index === 0) return true;
   const prevDt = getDepartureForStatus(statuses.value[index - 1]).dateTime;
@@ -212,7 +216,9 @@ fetchStatuses(false);
       <template v-for="(s, i) in statuses" :key="s.id">
         <h2 class="mb-2 fs-5" v-if="isNewDay(i)">
           {{ dateTitleFor(s) }}
-          <a :href="statsDailyHref(s)" class="text-trwl" aria-label="Tägliche Fahrten">
+          <a :href="statsDailyHref(s)" class="text-trwl" aria-label="Tägliche Fahrten"
+             v-if="isOwnProfile"
+          >
             <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
           </a>
         </h2>
