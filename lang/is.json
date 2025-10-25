@@ -16,7 +16,7 @@
     "admin.new-users": "nýir notendur",
     "auth.failed": "Notandanafn og lykilorðið passa ekki saman – eða notandi ekki virkur.",
     "user.complete-registration": "Ljúka skráningu",
-    "user.displayname": "Birt nafn",
+    "user.displayname": "Birtingarnafn",
     "user.email": "Netfang",
     "user.email.new": "Nýtt netfang",
     "user.email.change": "Breyta um netfang",
@@ -54,5 +54,15 @@
     "controller.transport.checkin-heading": "Innritað",
     "controller.transport.checkin-ok": "Þú ert innskráð(ur) í :lineName!|Þú ert innskráð(ur) í leiðina :lineName!",
     "controller.transport.no-name-given": "Þú verður að slá inn nafn stoppistöðvar!",
-    "controller.transport.not-in-stopovers": "Start-ID finnst ekki í listi stoppistöðvanna."
+    "controller.transport.not-in-stopovers": "Start-ID finnst ekki í listi stoppistöðvanna.",
+    "user.likes-enabled": "Sýna læk",
+    "controller.transport.overlapping-checkin": "Þú ert þegar innritaður/innrituð í :linename.",
+    "controller.transport.also-in-connection": "Líka á þessari leið er:|Líka á þessari leið eru:",
+    "controller.transport.social-post": "Ég er á leiðinni til :Destination! #NowTräwelling |Ég er í leið :lineName á leið til :Destination #NowTräwelling ",
+    "controller.transport.social-post-with-event": "Ég er á leiðinni til #:hasthag í gegnum :Destination! #NowTräwelling |Ég er í leið :lineName á leið til #:hashtag í gegnum :Destination! #NowTräwelling ",
+    "controller.transport.no-station-found": "Engin stoppistöð fannst við þessari leit.",
+    "controller.status.status-not-found": "Staðan fannst ekki",
+    "controller.status.create-success": "Staðan er búin til.",
+    "controller.status.delete-ok": "Stöðunni var eytt.",
+    "controller.status.email-resend-mail": "Senda aftur hlekk til staðfestingar"
 }
