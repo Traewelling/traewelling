@@ -37,7 +37,7 @@ class Motis extends Controller implements DataProviderInterface
     private DataProvider      $source;
     private MotisHydrator     $hydrator;
 
-    private const string API_URL = 'https://api.transitous.org/api/v1';
+    private const string API_URL = 'https://api.transitous.org/api';
 
     public function __construct(
         DataProvider       $source,
@@ -62,7 +62,7 @@ class Motis extends Controller implements DataProviderInterface
      */
     public function getStations(string $query, int $results = 10): Collection {
         try {
-            $url      = sprintf(self::API_URL . "/geocode?text=%s&limit=%d&type=STOP", urlencode($query), $results);
+            $url      = sprintf(self::API_URL . "/v1/geocode?text=%s&limit=%d&type=STOP", urlencode($query), $results);
             $response = Http::withUserAgent(VersionController::getUserAgent())->get($url);
 
             if (!$response->ok()) {
@@ -87,7 +87,7 @@ class Motis extends Controller implements DataProviderInterface
         $center = new Coordinate($latitude, $longitude);
         $bbox   = $this->geoService->getBoundingBox($center, config('trwl.motis.nearby_radius'));
 
-        $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . '/map/stops', [
+        $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . '/v1/map/stops', [
             'min' => (string) $bbox->lowerRight,
             'max' => (string) $bbox->upperLeft,
         ]);
@@ -268,7 +268,7 @@ class Motis extends Controller implements DataProviderInterface
             'n'      => 0,
         ];
         $response = Http::withUserAgent(VersionController::getUserAgent())
-                        ->get(self::API_URL . '/stoptimes', $params);
+                        ->get(self::API_URL . '/v5/stoptimes', $params);
 
         if (!$response->ok()) {
             CacheKey::increment(HCK::STATIONS_NOT_OK);
@@ -314,7 +314,7 @@ class Motis extends Controller implements DataProviderInterface
             }
 
             $response = Http::withUserAgent(VersionController::getUserAgent())
-                            ->get(self::API_URL . '/stoptimes', $params);
+                            ->get(self::API_URL . '/v5/stoptimes', $params);
 
             if (!$response->ok()) {
                 CacheKey::increment(HCK::DEPARTURES_NOT_OK);
@@ -356,7 +356,7 @@ class Motis extends Controller implements DataProviderInterface
      */
     private function fetchJourney(string $tripId): array|null {
         try {
-            $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . "/trip", ['tripId' => $tripId,]);
+            $response = Http::withUserAgent(VersionController::getUserAgent())->get(self::API_URL . "/v5/trip", ['tripId' => $tripId,]);
 
             if ($response->ok()) {
                 CacheKey::increment(HCK::TRIPS_SUCCESS);
