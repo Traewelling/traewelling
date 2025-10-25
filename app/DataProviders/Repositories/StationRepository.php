@@ -101,14 +101,14 @@ class StationRepository
                                                                      ])->first();
     }
 
-    public function updateStationIdentifier(?Station $station, string $identifier, DataProvider $source, string $type = 'motis'): void {
+    public function updateStationIdentifier(?Station $station, string $identifier, ?DataProvider $source = null, StationIdentifierType $type = StationIdentifierType::MOTIS): void {
         if (!$station) {
             return;
         }
         StationIdentifier::updateOrCreate(
             [
                 'type'       => $type,
-                'origin'     => $source->value,
+                'origin'     => $source?->value ?? null,
                 'identifier' => $identifier,
             ],
             [

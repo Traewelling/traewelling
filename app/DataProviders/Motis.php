@@ -20,6 +20,7 @@ use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Models\Trip;
 use App\Services\GeoService;
+use App\StationIdentifierType;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Client\Response;
@@ -143,7 +144,7 @@ class Motis extends Controller implements DataProviderInterface
         // Try to get a MOTIS-compatible identifier for the station from the current source
         /** @var StationIdentifier[]|Collection $transitousIdentifiers */
         $transitousIdentifiers = StationIdentifier::where('station_id', $station->id)
-                                                  ->where('type', 'motis')
+                                                  ->where('type', StationIdentifierType::MOTIS)
                                                   ->where('origin', $this->source->value)
                                                   ->where('relevance', '>', -9000)
                                                   ->orderBy('relevance', 'desc')

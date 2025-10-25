@@ -6,8 +6,8 @@ namespace App\Repositories;
 
 use App\Http\Controllers\API\v1\ExperimentalController;
 use App\Models\Station;
-use App\Models\StationIdentifier;
 use App\Services\Wikidata\WikidataImportService;
+use App\StationIdentifierType;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -75,12 +75,15 @@ class StationRepository
         return $stations;
     }
 
-    public function getStationByIdentifier(string $identifier, string $provider, string $type = 'motis'): ?Station {
-        return StationIdentifier::with('station')
-                                ->whereIdentifier($identifier)
-                                ->whereOrigin($provider)
-                                ->whereType($type)
-                                ->first()?->station;
+    public function getStationByIdentifier(string $identifier, StationIdentifierType $type = StationIdentifierType::MOTIS, ?string $provider = null): ?Station {
+        $query = StationIdentifier::with('station')
+                                  ->whereIdentifier($identifier)
+                                  ->whereType($type);
+        if ($provider !== null) {
+            $query->whereProvider($provider);
+        }
+
+        return $query->first()?->station;
     }
 
     public function getStationByIbnr(string $ibnr): ?Station {
