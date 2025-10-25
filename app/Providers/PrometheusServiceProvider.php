@@ -7,6 +7,8 @@ use App\Helpers\CacheKey;
 use App\Helpers\HCK;
 use App\Http\Controllers\Backend\StatisticController as StatisticBackend;
 use App\Models\PolyLine;
+use App\Models\Station;
+use App\Models\StationIdentifier;
 use App\Models\Trip;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\Factory;
@@ -108,6 +110,24 @@ class PrometheusServiceProvider extends ServiceProvider
     }
 
     public function metaDataStats(): void {
+        Prometheus::addGauge('Stations count')
+            ->helpText('How many stations exist in the database?')
+            ->value(function() {
+                return Station::all()->count();
+            });
+
+        Prometheus::addGauge('Migrated stations count')
+            ->helpText("How many stations have been migrated to the station identifiers?")
+            ->value(function() {
+                return Station::where('identifiers_migrated')->count();
+            });
+
+        Prometheus::addGauge('Station identifiers count')
+            ->helpText("How many station identifiers exist in the database?")
+            ->value(function() {
+                return StationIdentifier::all()->count();
+            });
+
         Prometheus::addGauge('Users count')
                   ->helpText("How many users are registered on the website?")
                   ->label("state")
