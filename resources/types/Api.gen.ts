@@ -1365,7 +1365,7 @@ export interface Polyline {
   type?: string;
   geometry?: {
     /** @example "LineString" */
-    type?: any;
+    type?: object;
     coordinates?: any[];
   };
   properties?: {
