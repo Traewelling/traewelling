@@ -5894,16 +5894,16 @@
         },
         {
             "name": "spatie/icalendar-generator",
-            "version": "3.0.0",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/icalendar-generator.git",
-                "reference": "32797f6e5afa3142d073f38d5f22ab377f4d8f90"
+                "reference": "a6ed5500450c4a353eabd768423a5ab367126c3c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/icalendar-generator/zipball/32797f6e5afa3142d073f38d5f22ab377f4d8f90",
-                "reference": "32797f6e5afa3142d073f38d5f22ab377f4d8f90",
+                "url": "https://api.github.com/repos/spatie/icalendar-generator/zipball/a6ed5500450c4a353eabd768423a5ab367126c3c",
+                "reference": "a6ed5500450c4a353eabd768423a5ab367126c3c",
                 "shasum": ""
             },
             "require": {
@@ -5947,9 +5947,9 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/icalendar-generator/issues",
-                "source": "https://github.com/spatie/icalendar-generator/tree/3.0.0"
+                "source": "https://github.com/spatie/icalendar-generator/tree/3.1.0"
             },
-            "time": "2025-04-17T14:50:03+00:00"
+            "time": "2025-10-24T11:33:29+00:00"
         },
         {
             "name": "spatie/laravel-activitylog",
