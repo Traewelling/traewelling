@@ -7,22 +7,24 @@ enum MotisCategory: string
 {
     /**
      * Default: "TRANSIT"
-     * Items Enum: "WALK" "BIKE" "RENTAL" "CAR" "CAR_PARKING" "ODM" "TRANSIT" "TRAM" "SUBWAY" "FERRY" "AIRPLANE"
-     * "METRO" "BUS" "COACH" "RAIL" "HIGHSPEED_RAIL" "LONG_DISTANCE" "NIGHT_RAIL" "REGIONAL_FAST_RAIL" "REGIONAL_RAIL"
-     * "OTHER"
+     * Items Enum: "WALK" "BIKE" "RENTAL" "CAR" "CAR_PARKING" "CAR_DROPOFF" "ODM" "FLEX" "TRANSIT" "TRAM" "SUBWAY"
+     * "FERRY" "AIRPLANE" "SUBURBAN" "BUS" "COACH" "RAIL" "HIGHSPEED_RAIL" "LONG_DISTANCE" "NIGHT_RAIL"
+     * "REGIONAL_FAST_RAIL" "REGIONAL_RAIL" "CABLE_CAR" "FUNICULAR" "AERIAL_LIFT" "OTHER" "AREAL_LIFT" "METRO"
      */
-    case TRANSIT            = 'TRANSIT';
     case WALK               = 'WALK';
     case BIKE               = 'BIKE';
     case RENTAL             = 'RENTAL';
     case CAR                = 'CAR';
     case CAR_PARKING        = 'CAR_PARKING';
+    case CAR_DROPOFF        = 'CAR_DROPOFF';
     case ODM                = 'ODM';
+    case FLEX               = 'FLEX';
+    case TRANSIT            = 'TRANSIT';
     case TRAM               = 'TRAM';
     case SUBWAY             = 'SUBWAY';
     case FERRY              = 'FERRY';
     case AIRPLANE           = 'AIRPLANE';
-    case METRO              = 'METRO';
+    case SUBURBAN           = 'SUBURBAN';
     case BUS                = 'BUS';
     case COACH              = 'COACH';
     case RAIL               = 'RAIL';
@@ -32,20 +34,24 @@ enum MotisCategory: string
     case REGIONAL_FAST_RAIL = 'REGIONAL_FAST_RAIL';
     case REGIONAL_RAIL      = 'REGIONAL_RAIL';
     case CABLE_CAR          = 'CABLE_CAR';
+    case FUNICULAR          = 'FUNICULAR';
+    case AERIAL_LIFT        = 'AERIAL_LIFT';
     case OTHER              = 'OTHER';
+    case AERAL_LIFT         = 'AERAL_LIFT';
+    case METRO              = 'METRO';
 
 
     // todo: this needs to be better
     public function getHTT(): HafasTravelType {
-        return match ($this->name) {
-            'HIGHSPEED_RAIL', 'REGIONAL_FAST_RAIL' => HafasTravelType::NATIONAL_EXPRESS,
-            'LONG_DISTANCE'                        => HafasTravelType::REGIONAL_EXP,
-            'METRO'                                => HafasTravelType::SUBURBAN,
-            'BUS', 'COACH'                         => HafasTravelType::BUS,
-            'FERRY'                                => HafasTravelType::FERRY,
-            'SUBWAY'                               => HafasTravelType::SUBWAY,
-            'TRAM', 'CABLE_CAR'                    => HafasTravelType::TRAM,
-            default                                => HafasTravelType::REGIONAL,
+        return match ($this) {
+            self::HIGHSPEED_RAIL, self::REGIONAL_FAST_RAIL                                    => HafasTravelType::NATIONAL_EXPRESS,
+            self::LONG_DISTANCE                                                               => HafasTravelType::REGIONAL_EXP,
+            self::METRO, self::SUBURBAN                                                       => HafasTravelType::SUBURBAN,
+            self::BUS, self::COACH                                                            => HafasTravelType::BUS,
+            self::FERRY                                                                       => HafasTravelType::FERRY,
+            self::SUBWAY                                                                      => HafasTravelType::SUBWAY,
+            self::TRAM, self::CABLE_CAR, self::FUNICULAR, self::AERIAL_LIFT, self::AERAL_LIFT => HafasTravelType::TRAM,
+            default                                                                           => HafasTravelType::REGIONAL,
         };
     }
 
