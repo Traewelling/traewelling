@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\DataProviders\DataProviderBuilder;
-use App\Exceptions\HafasException;
+use App\Exceptions\DataProviderException;
 use App\Models\Event;
 use App\Models\Station;
 use App\Models\Stopover;
@@ -22,7 +22,7 @@ class CheckinHydratorRepository
     }
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      * @throws JsonException
      */
     public function getHafasTrip(string $tripID, string $lineName): Trip {

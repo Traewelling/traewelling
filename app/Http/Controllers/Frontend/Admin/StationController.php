@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Frontend\Admin;
 
 use App\Dto\Coordinate;
-use App\Exceptions\HafasException;
+use App\Exceptions\DataProviderException;
 use App\Exceptions\Wikidata\FetchException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StationResource;
@@ -122,7 +122,7 @@ class StationController extends Controller
             $provider                  = new \App\Http\Controllers\Backend\Transport\StationController();
             $trainAutocompleteResponse = $provider->search($station);
             return response()->json(StationResource::collection($trainAutocompleteResponse));
-        } catch (HafasException $e) {
+        } catch (DataProviderException $e) {
             abort(503, $e->getMessage());
         }
     }

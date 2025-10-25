@@ -10,7 +10,7 @@ use App\Dto\Internal\FilteredDepartures;
 use App\Enum\DataProvider;
 use App\Enum\MotisCategory;
 use App\Enum\TravelType;
-use App\Exceptions\HafasException;
+use App\Exceptions\DataProviderException;
 use App\Exceptions\TimetableLocationNotFoundException;
 use App\Helpers\CacheKey;
 use App\Helpers\HCK;
@@ -59,7 +59,7 @@ class Motis extends Controller implements DataProviderInterface
     }
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      */
     public function getStations(string $query, int $results = 10): Collection {
         try {
@@ -76,13 +76,13 @@ class Motis extends Controller implements DataProviderInterface
             return $stations;
         } catch (Exception $exception) {
             CacheKey::increment(HCK::LOCATIONS_FAILURE);
-            throw new HafasException($exception->getMessage()); //TODO: Throw a more specific exception instead of HAFAS
+            throw new DataProviderException($exception->getMessage()); //TODO: Throw a more specific exception instead of HAFAS
         }
     }
 
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      */
     public function getNearbyStations(float $latitude, float $longitude, int $results = 8): Collection {
         $center = new Coordinate($latitude, $longitude);
@@ -95,11 +95,11 @@ class Motis extends Controller implements DataProviderInterface
 
         if (!$response->ok()) {
             CacheKey::increment(HCK::LOCATIONS_NOT_OK);
-            Log::error('Unknown HAFAS Error (fetchNearbyStations)', [
+            Log::error('Unknown MOTIS Error (fetchNearbyStations)', [
                 'status' => $response->status(),
                 'body'   => $response->body()
             ]);
-            throw new HafasException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
+            throw new DataProviderException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
         }
 
         $stations = $this->filterStopsFromResults($response, 'stopId');
@@ -113,7 +113,7 @@ class Motis extends Controller implements DataProviderInterface
     }
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      */
     public function getDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false): array|Collection {
         return $this->getFilteredDepartures($station, $when, $duration, $type, $localtime)->departures;
@@ -127,7 +127,7 @@ class Motis extends Controller implements DataProviderInterface
      * @param bool            $localtime
      *
      * @return FilteredDepartures
-     * @throws HafasException
+     * @throws DataProviderException
      */
     public function getFilteredDepartures(
         Station     $station,
@@ -161,7 +161,7 @@ class Motis extends Controller implements DataProviderInterface
         // Still no identifier found...? We can't continue here.
         if (!$transitousIdentifiers || $transitousIdentifiers->count() === 0) {
             Log::debug('No MOTIS identifier found for station', ['station' => $station->only(['id', 'name'])]);
-            throw new HafasException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
+            throw new DataProviderException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
         }
 
         $count      = 0;
@@ -171,13 +171,16 @@ class Motis extends Controller implements DataProviderInterface
             try {
                 $filtered = $this->getDeparturesFromApi($station, $identifier, $when, $type);
                 $filtered = $this->dedupeDeparturesByStation($filtered, $station->id); // remove duplicates by tripId, keep the one that stops at the requested station (if any)
-            } catch (HafasException $exception) {
+            } catch (DataProviderException $exception) {
                 // If we get an exception, we can try the next identifier
                 Log::error('MOTIS Error (getDepartures)', [
-                    'status' => $exception->getMessage(),
-                    'body'   => $exception->getMessage()
+                    'status'     => $exception->getMessage(),
+                    'body'       => $exception->getMessage(),
+                    'identifier' => $identifier,
+                    'when'       => $when,
+                    'type'       => $type,
+                    'station_id' => $station->id,
                 ]);
-                report($exception);
                 $exceptions++;
                 $filtered = new FilteredDepartures(collect(), collect());
             } catch (TimetableLocationNotFoundException $exception) {
@@ -201,7 +204,7 @@ class Motis extends Controller implements DataProviderInterface
         }
 
         if ($exceptions > 0) {
-            throw new HafasException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
+            throw new DataProviderException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
         }
 
         // No departures found for any identifier
@@ -277,14 +280,14 @@ class Motis extends Controller implements DataProviderInterface
                 'status' => $response->status(),
                 'body'   => $response->body()
             ]);
-            throw new HafasException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
+            throw new DataProviderException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
         }
 
         $station = $response->json('place');
 
         if (empty($station)) {
             Log::debug('No station found for identifier', ['identifier' => $identifier]);
-            throw new HafasException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
+            throw new DataProviderException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
         }
 
 
@@ -328,7 +331,7 @@ class Motis extends Controller implements DataProviderInterface
                     throw new TimetableLocationNotFoundException();
                 }
 
-                throw new HafasException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
+                throw new DataProviderException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
             }
 
             $entries = $response->json('stopTimes');
@@ -339,7 +342,7 @@ class Motis extends Controller implements DataProviderInterface
                 'status' => $response->status(),
                 'body'   => $response->body()
             ]);
-            throw new HafasException($exception->getMessage()); //TODO: Throw a more specific exception instead of HAFAS
+            throw new DataProviderException($exception->getMessage()); //TODO: Throw a more specific exception instead of HAFAS
         } catch (TimetableLocationNotFoundException $exception) {
             throw $exception; // This exception is handled separately
         } catch (Exception $exception) {
@@ -348,12 +351,12 @@ class Motis extends Controller implements DataProviderInterface
                 'status' => $response->status(),
                 'body'   => $response->body()
             ]);
-            throw new HafasException($exception->getMessage()); //TODO: Throw a more specific exception instead of HAFAS
+            throw new DataProviderException($exception->getMessage()); //TODO: Throw a more specific exception instead of HAFAS
         }
     }
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      */
     private function fetchJourney(string $tripId): array|null {
         try {
@@ -365,30 +368,30 @@ class Motis extends Controller implements DataProviderInterface
             }
 
         } catch (Exception $exception) {
-            if (!empty($response) && str_contains(strtolower($response->body()), 'trip not found')) {
+            if (!empty($response) && $exception->getCode() === 404) {
                 Log::debug('MOTIS Trip not found', ['tripId' => $tripId]);
                 return null;
             }
 
             CacheKey::increment(HCK::TRIPS_FAILURE);
-            Log::error('Unknown HAFAS Error (fetchJourney)', [
+            Log::warning('Unknown MOTIS Error (fetchJourney)', [
                 'status' => $response->status(),
                 'body'   => $response->body()
             ]);
             report($exception);
-            throw new HafasException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
+            throw new DataProviderException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
         }
 
         CacheKey::increment(HCK::TRIPS_NOT_OK);
-        Log::error('Unknown HAFAS Error (fetchRawHafasTrip)', [
+        Log::error('Unknown MOTIS Error (fetchRawHafasTrip)', [
             'status' => $response->status(),
             'body'   => $response->body()
         ]);
-        throw new HafasException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
+        throw new DataProviderException(__('messages.exception.generalHafas')); //TODO: Throw a more specific exception instead of HAFAS
     }
 
     /**
-     * @throws HafasException|JsonException
+     * @throws DataProviderException|JsonException
      */
     public function fetchRawHafasTrip(string $tripId, string $lineName): ?array {
         return $this->fetchJourney($tripId, true);
@@ -399,13 +402,13 @@ class Motis extends Controller implements DataProviderInterface
      * @param string $lineName
      *
      * @return Trip
-     * @throws HafasException|JsonException
+     * @throws DataProviderException|JsonException
      */
     public function fetchHafasTrip(string $tripID, string $lineName): Trip {
         $rawJourney = $this->fetchJourney($tripID);
         if ($rawJourney === null) {
             //TODO: Throw a more specific exception instead of HAFAS
-            throw new HafasException(__('messages.exception.generalHafas'));
+            throw new DataProviderException(__('messages.exception.generalHafas'));
         }
         // get cached data from departure board
         $leg = $rawJourney['legs'][0];
