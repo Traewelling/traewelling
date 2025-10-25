@@ -12,7 +12,7 @@ use App\Enum\TravelType;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\CheckinException;
-use App\Exceptions\HafasException;
+use App\Exceptions\DataProviderException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
@@ -210,7 +210,7 @@ class TransportController extends Controller
                                 ]
                             ]
             );
-        } catch (HafasException) {
+        } catch (DataProviderException) {
             return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 502);
         } catch (ModelNotFoundException) {
             return $this->sendError(__('controller.transport.no-station-found', [], 'en'));
@@ -274,7 +274,7 @@ class TransportController extends Controller
                 )
                 ->loadMissing(['stopovers', 'originStation', 'destinationStation']);
             return $this->sendResponse(data: new TripResource($trip));
-        } catch (HafasException $exception) {
+        } catch (DataProviderException $exception) {
             report($exception);
             return $this->sendError(__('messages.exception.hafas.502', [], 'en'), 503);
         }
@@ -334,7 +334,7 @@ class TransportController extends Controller
                 longitude: $validated['longitude'],
                 results:   1
             )->first();
-        } catch (HafasException) {
+        } catch (DataProviderException) {
             $bbox = (new GeoService())->getBoundingBox(new Coordinate($validated['latitude'], $validated['longitude']), 100, 6);
 
             $nearestStation = Station::whereBetween('latitude', [$bbox->lowerRight->latitude, $bbox->upperLeft->latitude])
@@ -438,7 +438,7 @@ class TransportController extends Controller
 
         } catch (StationNotOnTripException) {
             return $this->sendError('Given stations are not on the trip/have wrong departure/arrival.', 400);
-        } catch (HafasException|CheckinException $exception) {
+        } catch (DataProviderException|CheckinException $exception) {
             return $this->sendError($exception->getMessage(), 400);
         } catch (AlreadyCheckedInException) {
             return $this->sendError(__('messages.exception.already-checkedin', [], 'en'), 400);
@@ -536,7 +536,7 @@ class TransportController extends Controller
         try {
             $trainAutocompleteResponse = (new StationController())->search($query);
             return $this->sendResponse(StationResource::collection($trainAutocompleteResponse));
-        } catch (HafasException $e) {
+        } catch (DataProviderException $e) {
             // check if app is in debug mode
             return $this->sendError(
                 "There has been an error with our data provider",

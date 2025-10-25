@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Exceptions\CheckInCollisionException;
-use App\Exceptions\HafasException;
+use App\Exceptions\DataProviderException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Models\Station;
@@ -101,7 +101,7 @@ class CheckinTest extends FeatureTestCase
 
         try {
             TrainCheckinController::checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($baseTrip));
-        } catch (HafasException $e) {
+        } catch (DataProviderException $e) {
             $this->markTestSkipped($e->getMessage());
         }
 
@@ -112,7 +112,7 @@ class CheckinTest extends FeatureTestCase
                 $this->fail("Expected exception for Collision Case $caseCount not thrown");
             } catch (CheckInCollisionException $exception) {
                 $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);
-            } catch (HafasException $e) {
+            } catch (DataProviderException $e) {
                 $this->markTestSkipped($e->getMessage());
             }
             $caseCount++;
@@ -126,7 +126,7 @@ class CheckinTest extends FeatureTestCase
             } catch (CheckInCollisionException $exception) {
                 $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);
                 $this->fail("Exception for Case $caseCount thrown even though checkin should happen.");
-            } catch (HafasException $e) {
+            } catch (DataProviderException $e) {
                 $this->markTestSkipped($e->getMessage());
             }
             $caseCount++;

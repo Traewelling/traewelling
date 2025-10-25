@@ -6,7 +6,7 @@ namespace Tests\Unit\Hydrators;
 
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
-use App\Exceptions\HafasException;
+use App\Exceptions\DataProviderException;
 use App\Hydrators\CheckinRequestHydrator;
 use App\Models\Event;
 use App\Models\Station;
@@ -30,7 +30,7 @@ class CheckinRequestHydratorTest extends UnitTestCase
     }
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      * @throws Exception
      * @throws \JsonException
      */
@@ -82,7 +82,7 @@ class CheckinRequestHydratorTest extends UnitTestCase
     }
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      * @throws Exception
      */
     public function testHydrateFromApiWithFullArray() {
@@ -132,7 +132,7 @@ class CheckinRequestHydratorTest extends UnitTestCase
 
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      * @throws Exception
      */
     public function testHydrateFromApiWithNullableFields() {
@@ -178,7 +178,7 @@ class CheckinRequestHydratorTest extends UnitTestCase
 
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      * @throws Exception
      */
     public function testHydrateFromApiWithEventAndForceId() {
