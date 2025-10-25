@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
         //every five minutes
         $schedule->command(CacheLeaderboard::class)->withoutOverlapping()->everyFiveMinutes();
         $schedule->job(MigrationStationIdentifiers::class)->withoutOverlapping()->everyFiveMinutes();
-        $schedule->job(MigrationStationIdentifiers::class)->withoutOverlapping()->between('01:00', '03:0')->everyMinute();
+        $schedule->job(MigrationStationIdentifiers::class)->withoutOverlapping()->between('00:00', '02:00')->everyThirtySeconds();
 
         //hourly tasks
         $schedule->command(HideStatus::class)->hourly();
