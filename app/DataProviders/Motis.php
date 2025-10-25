@@ -438,6 +438,7 @@ class Motis extends Controller implements DataProviderInterface
             /** @var StationIdentifier $stationIdentifier */
             $stationIdentifier = $stationIdentifiers->where('identifier', $rawStation[$identifier])->first();
             $station           = $stationCache->where('id', $stationIdentifier?->station_id)->first();
+            $areas             = $rawStation['areas'] ?? [];
 
             if ($station === null) {
                 $rawStation['stopId'] = $rawStation[$identifier];
@@ -446,8 +447,8 @@ class Motis extends Controller implements DataProviderInterface
                 $station = $this->stationRepository->updateOrCreateByIfopt($stationId, $this->source);
                 $station = $station ?? $this->stationRepository->createMotisStationIdentifier($rawStation, $this->source);
             } else {
-                if (!empty($rawStation['areas'])) {
-                    $this->stationRepository->updateStationAreas($station, $rawStation['areas']);
+                if (!empty($areas)) {
+                    $this->stationRepository->updateStationAreas($station, $areas);
                 }
                 if ($stationIdentifier->relevance <= -9000) {
                     $this->stationRepository->resetRelevance($stationIdentifier);

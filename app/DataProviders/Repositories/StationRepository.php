@@ -119,9 +119,10 @@ class StationRepository
     }
 
     public function createMotisStationIdentifier(mixed $rawStation, DataProvider $source): Station {
+        $areas = $rawStation['areas'] ?? [];
         $coordinates = new Coordinate($rawStation['lat'], $rawStation['lon']);
 
-        $stations = $this->getStationsByNameBias($coordinates, $rawStation['name'], $rawStation['areas']);
+        $stations = $this->getStationsByNameBias($coordinates, $rawStation['name'], $areas);
 
         if ($stations->isEmpty()) {
             $station = new Station([
@@ -134,8 +135,8 @@ class StationRepository
             $station = $stations->first();
         }
 
-        if (!empty($rawStation['areas'])) {
-            $this->updateStationAreas($station, $rawStation['areas']);
+        if (!empty($areas ?? null)) {
+            $this->updateStationAreas($station, $areas);
         }
 
         StationIdentifier::updateOrCreate(
