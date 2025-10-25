@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\StationIdentifierType;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +21,9 @@ class StationIdentifier extends Model
         // Relations
         'station',
         'relevance',
+    ];
+    protected $casts = [
+        'type' => StationIdentifierType::class,
     ];
 
     public function station(): BelongsTo {

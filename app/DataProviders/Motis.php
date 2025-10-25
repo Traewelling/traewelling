@@ -20,6 +20,7 @@ use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Models\Trip;
 use App\Services\GeoService;
+use App\StationIdentifierType;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Client\Response;
@@ -143,7 +144,7 @@ class Motis extends Controller implements DataProviderInterface
         // Try to get a MOTIS-compatible identifier for the station from the current source
         /** @var StationIdentifier[]|Collection $transitousIdentifiers */
         $transitousIdentifiers = StationIdentifier::where('station_id', $station->id)
-                                                  ->where('type', 'motis')
+                                                  ->where('type', StationIdentifierType::MOTIS)
                                                   ->where('origin', $this->source->value)
                                                   ->where('relevance', '>', -9000)
                                                   ->orderBy('relevance', 'desc')
@@ -287,7 +288,7 @@ class Motis extends Controller implements DataProviderInterface
         }
 
 
-        return $this->stationRepository->createMotisStation($station, $this->source);
+        return $this->stationRepository->createMotisStationIdentifier($station, $this->source);
     }
 
     private function getDeparturesFromApi(
@@ -443,7 +444,7 @@ class Motis extends Controller implements DataProviderInterface
                 $stationId            = $rawStation[$identifier];
 
                 $station = $this->stationRepository->updateOrCreateByIfopt($stationId, $this->source);
-                $station = $station ?? $this->stationRepository->createMotisStation($rawStation, $this->source);
+                $station = $station ?? $this->stationRepository->createMotisStationIdentifier($rawStation, $this->source);
             } else {
                 if (!empty($rawStation['areas'])) {
                     $this->stationRepository->updateStationAreas($station, $rawStation['areas']);

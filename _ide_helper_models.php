@@ -725,6 +725,7 @@ namespace App\Models{
  * @property int|null $shift_time If false, the timezone of the hafas request will not be shifted to Europe/Berlin
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $identifiers_migrated
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
  * @property-read \App\Models\AreasStationsMap|null $pivot
@@ -745,6 +746,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIbnr($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIdentifiersMigrated($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptA($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptB($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptC($value)
@@ -769,7 +771,7 @@ namespace App\Models{
  * @property string $id
  * @property int $relevance
  * @property int $station_id
- * @property string $type
+ * @property \App\StationIdentifierType $type
  * @property string|null $origin
  * @property string $identifier
  * @property string|null $name Name of the station provided by the data source
