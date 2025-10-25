@@ -15,6 +15,7 @@ import OriginRow from "./Partials/OriginRow.vue";
 import NextStop from "./Partials/NextStop.vue";
 import {useActiveCheckin} from "../../stores/activeCheckin";
 import StatusBody from "./Partials/StatusBody.vue";
+import {Transition} from "vue";
 
 const props = defineProps({
   status: {
@@ -129,50 +130,63 @@ function statusUpdated(status: StatusResource) {
 </script>
 
 <template>
-  <div class="card status mb-3" v-show="!deleted" ref="rootEl">
-    <div v-if="showMap" class="card-img-top">
-      <div id="activeJourneys" class="map statusMap embed-responsive embed-responsive-16by9">
-        <ActiveJourneyMap
-            ref="map"
-            :status-id="statusObject.id"
-            :departure="departure.toSeconds()"
-            :arrival="arrival.toSeconds()"
-            :line-color="statusObject.train.routeColor"
-        >
-        </ActiveJourneyMap>
+  <Transition>
+    <div class="card status mb-3" v-show="!deleted" ref="rootEl">
+      <div v-if="showMap" class="card-img-top">
+        <div id="activeJourneys" class="map statusMap embed-responsive embed-responsive-16by9">
+          <ActiveJourneyMap
+              ref="map"
+              :status-id="statusObject.id"
+              :departure="departure.toSeconds()"
+              :arrival="arrival.toSeconds()"
+              :line-color="statusObject.train.routeColor"
+          >
+          </ActiveJourneyMap>
+        </div>
       </div>
-    </div>
-    <div class="card-body row">
-      <!-- Big profile picture -->
-      <div class="col-2 image-box pe-0 d-none d-lg-flex">
-        <a :href="`/@${statusObject.userDetails.username}`">
-          <img loading="lazy" decoding="async" :src="statusObject.userDetails.profilePicture"
-               :alt="statusObject.userDetails.username">
-        </a>
+      <div class="card-body row">
+        <!-- Big profile picture -->
+        <div class="col-2 image-box pe-0 d-none d-lg-flex">
+          <a :href="`/@${statusObject.userDetails.username}`">
+            <img loading="lazy" decoding="async" :src="statusObject.userDetails.profilePicture"
+                 :alt="statusObject.userDetails.username">
+          </a>
+        </div>
+
+        <div class="col ps-0">
+          <ul class="timeline">
+            <OriginRow :status="statusObject"/>
+            <StatusBody v-if="statusObject.body" :status="statusObject" class="mt-1"/>
+            <NextStop :stopovers="stopovers" :in-progress="progress > 0 && progress < 100"/>
+            <DestinationRow :status="statusObject"/>
+          </ul>
+        </div>
+      </div>
+      <!-- /card-body -->
+      <!-- progress bar -->
+      <div class="progress">
+        <div
+            class="progress-bar"
+            role="progressbar"
+            :class="{ 'progress-pride': statusObject.event?.isPride }"
+            :style="`width: ${progress}%;`"
+        ></div>
       </div>
 
-      <div class="col ps-0">
-        <ul class="timeline">
-          <OriginRow :status="statusObject"/>
-          <StatusBody v-if="statusObject.body" :status="statusObject" class="mt-1"/>
-          <NextStop :stopovers="stopovers" :in-progress="progress > 0 && progress < 100"/>
-          <DestinationRow :status="statusObject"/>
-        </ul>
-      </div>
+      <!-- footer -->
+      <StatusFooter :status="statusObject" @statusDeleted="deleteSelf()" @statusLiked="emit('status-liked')"
+                    @statusUnliked="emit('status-unliked')" @status-updated="statusUpdated"/>
     </div>
-    <!-- /card-body -->
-    <!-- progress bar -->
-    <div class="progress">
-      <div
-          class="progress-bar"
-          role="progressbar"
-          :class="{ 'progress-pride': statusObject.event?.isPride }"
-          :style="`width: ${progress}%;`"
-      ></div>
-    </div>
-
-    <!-- footer -->
-    <StatusFooter :status="statusObject" @statusDeleted="deleteSelf()" @statusLiked="emit('status-liked')"
-                  @statusUnliked="emit('status-unliked')" @status-updated="statusUpdated"/>
-  </div>
+  </Transition>
 </template>
+
+<style lang="scss" scoped>
+/* we will explain what these classes do next! */
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-leave-to {
+  opacity: 0;
+}
+</style>
