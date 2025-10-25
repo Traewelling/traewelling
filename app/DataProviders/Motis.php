@@ -287,7 +287,7 @@ class Motis extends Controller implements DataProviderInterface
         }
 
 
-        return $this->stationRepository->createMotisStation($station, $this->source);
+        return $this->stationRepository->createMotisStationIdentifier($station, $this->source);
     }
 
     private function getDeparturesFromApi(
@@ -443,7 +443,7 @@ class Motis extends Controller implements DataProviderInterface
                 $stationId            = $rawStation[$identifier];
 
                 $station = $this->stationRepository->updateOrCreateByIfopt($stationId, $this->source);
-                $station = $station ?? $this->stationRepository->createMotisStation($rawStation, $this->source);
+                $station = $station ?? $this->stationRepository->createMotisStationIdentifier($rawStation, $this->source);
             } else {
                 if (!empty($rawStation['areas'])) {
                     $this->stationRepository->updateStationAreas($station, $rawStation['areas']);
