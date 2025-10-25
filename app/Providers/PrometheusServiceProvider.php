@@ -113,19 +113,19 @@ class PrometheusServiceProvider extends ServiceProvider
         Prometheus::addGauge('Stations count')
             ->helpText('How many stations exist in the database?')
             ->value(function() {
-                return Station::all()->count();
+                return Station::count();
             });
 
         Prometheus::addGauge('Migrated stations count')
             ->helpText("How many stations have been migrated to the station identifiers?")
             ->value(function() {
-                return Station::where('identifiers_migrated')->count();
+                return Station::where('identifiers_migrated', 1)->count();
             });
 
         Prometheus::addGauge('Station identifiers count')
             ->helpText("How many station identifiers exist in the database?")
             ->value(function() {
-                return StationIdentifier::all()->count();
+                return StationIdentifier::count();
             });
 
         Prometheus::addGauge('Users count')
