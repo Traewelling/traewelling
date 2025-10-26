@@ -252,5 +252,11 @@
     "notifications.personalDataExported.notice": "Þú getur sótt gögnin þín til :date.",
     "pagination.next": "Næsta &raquo;",
     "pagination.previous": "&laquo; Fyrri síða",
-    "pagination.back": "&laquo; Til baka"
+    "pagination.back": "&laquo; Til baka",
+    "notifications.socialNotShared.mastodon.0": "Óþekk villa kom upp er við reyndum að flauta.",
+    "notifications.socialNotShared.mastodon.401": "Netþjónninn þinn sendi <code>401 Unauthorized</code> villu er við reyndum að flauta. Kannski getur þú lagað þessu við að endurtengja Mastodon og Träwelling?",
+    "notifications.socialNotShared.mastodon.429": "Það lítur út eins og við séum rate-limited hjá netþjóninum þínum (<code>429 Too Many Requests</code>)",
+    "notifications.socialNotShared.mastodon.504": "Við náðum ekki í Mastodon netþjóninn þinn þegar við reyndum að flauta (<code>504 Bad Gateway</code>)",
+    "notifications.mastodon-server.lead": "Villa kom upp varðandi Mastodon netþjóninn þinn.",
+    "notifications.mastodon-server.exception": "Það var ekki hægt að tengjast Mastodon netþjóninum þínum :domain. Vinsamlegast yfirfarðu stillingarnar eða endurtengdu þjóninn. Ef að villan er ennþá til staðar, hafðu samband við okkur."
 }
