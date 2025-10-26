@@ -38,7 +38,7 @@
       "agencyUrl": "https://www.acme.com",
       "agencyId": "trwl-demo-agency",
       "tripId": "20250501:trwl-demo-trip:trip:1",
-      "routeShortName": "P",
+      "displayName": "P",
       "source": "trwl-demo.gtfs.zip/stop_times.txt:270360:270365",
       "intermediateStops": [
         {
