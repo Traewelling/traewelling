@@ -230,7 +230,11 @@ fetchStatuses(false);
         />
       </template>
 
-      <LoadingSkeletonRows v-if="loadingStatuses" class="text-center my-4" :rowHeight="120" :columns="1" :rows="3"/>
+      <template v-if="loadingStatuses">
+        <LoadingSkeletonRows class="text-center" :rowHeight="30" :columns="1" :rows="1"/>
+        <LoadingSkeletonRows class="text-center" :rowHeight="15" :columns="1" :rows="1"/>
+        <LoadingSkeletonRows class="text-center mb-4" :rowHeight="206" :columns="1" :rows="5"/>
+      </template>
 
       <div v-if="!loadingStatuses && showMore" class="text-center my-4">
         <button class="btn btn-primary" @click="fetchStatuses(true)" :disabled="loadingStatuses">

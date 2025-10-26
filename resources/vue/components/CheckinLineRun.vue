@@ -132,7 +132,7 @@ export default {
     <p>{{ this.errorMessage }}</p>
   </div>
 
-  <LoadingSkeletonRows v-if="loading" :rowHeight="30" :rows="8"/>
+  <LoadingSkeletonRows v-if="loading" :rowHeight="30" class="mt-4" :rows="10"/>
 
   <ul class="timeline" v-else>
     <li v-if="lineRun" v-for="item in lineRun.stopovers" :key="item" @click.prevent="handleSetDestination(item)">

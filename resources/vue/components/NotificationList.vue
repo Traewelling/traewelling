@@ -23,7 +23,7 @@ export default {
   <div>
     <LoadingSkeletonRows
         v-if="store.loading"
-        :rows="3"
+        :rows="10"
         :columns="1"
         :rowHeight="100"
         :gutter="12"

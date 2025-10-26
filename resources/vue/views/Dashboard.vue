@@ -151,7 +151,10 @@ fetchFutureStatuses();
         />
       </template>
 
-      <LoadingSkeletonRows v-if="loading" class="text-center my-4" :rowHeight="120"/>
+      <template v-if="loading">
+        <LoadingSkeletonRows class="text-center" :rowHeight="20" :columns="1" :rows="1"/>
+        <LoadingSkeletonRows class="text-center mb-4" :rowHeight="206" />
+      </template>
 
       <div v-if="showMore" class="text-center my-4">
         <button class="btn btn-primary" @click="fetchStatuses(currentPage + 1, true)">

@@ -100,7 +100,10 @@ fetchLikes();
 <template>
   <div class="row justify-content-center">
     <div class="col-md-8 col-lg-7">
-      <LoadingSkeletonRows v-if="loading" :rowHeight="200" :rows="1"/>
+      <template v-if="loading">
+        <LoadingSkeletonRows :rowHeight="30" :rows="1"/>
+        <LoadingSkeletonRows :rowHeight="600" :rows="1"/>
+      </template>
 
       <template v-else>
         <template v-if="status">
