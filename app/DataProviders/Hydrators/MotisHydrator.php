@@ -228,7 +228,7 @@ class MotisHydrator
         $departure          = isset($leg['from']['departure']) ? Carbon::parse($leg['from']['departure']) : null;
         $arrival            = isset($leg['to']['arrival']) ? Carbon::parse($leg['to']['arrival']) : null;
         $category           = $this->getCategoryFromLeg($leg);
-        $tripLineName       = !empty($leg['routeShortName']) ? $leg['routeShortName'] : $lineName;
+        $tripLineName       = !empty($leg['displayName']) ? $leg['displayName'] : $lineName;
         $license            = $this->motisRepository->getActiveLicense($leg['source'], $source);
         $operator           = $this->parseOperator($leg, $source);
         $polyline           = $this->getPolylineFromLeg($leg);
@@ -293,7 +293,7 @@ class MotisHydrator
             $tripId              = $rawDeparture['tripId'];
             $tripShortName       = $rawDeparture['tripShortName'] ?? '';
             $rawDepartureStation = $rawDeparture['place'];
-            $tripLineName        = $rawDeparture['routeShortName'] ?? '';
+            $tripLineName        = $rawDeparture['displayName'] ?? '';
             $hafasTravelType     = $this->getCategoryFromLeg($rawDeparture);
 
             $platformPlanned = $rawDepartureStation['scheduledTrack'] ?? '';
