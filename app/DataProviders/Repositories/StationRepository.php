@@ -9,6 +9,8 @@ use App\Models\Area;
 use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Services\GeoService;
+use App\StationIdentifierType;
+use Illuminate\Database\Eloquent\Collection as DbCollection;
 use Illuminate\Support\Collection;
 use PDOException;
 use stdClass;
@@ -99,7 +101,7 @@ class StationRepository
                                                                      ])->first();
     }
 
-    public function updateStationIdentifier(?Station $station, string $identifier, DataProvider $source, string $type = 'motis', ?float $latitude = null, ?float $longitude = null): void {
+    public function updateStationIdentifier(?Station $station, string $identifier, ?DataProvider $source = null, StationIdentifierType $type = StationIdentifierType::MOTIS, ?float $latitude = null, ?float $longitude = null): void {
         if (!$station) {
             return;
         }
@@ -117,39 +119,18 @@ class StationRepository
         StationIdentifier::updateOrCreate(
             [
                 'type'       => $type,
-                'origin'     => $source->value,
+                'origin'     => $source?->value ?? null,
                 'identifier' => $identifier,
             ],
             $payload
         );
     }
 
-    public function createMotisStation(mixed $rawStation, DataProvider $source): Station {
+    public function createMotisStationIdentifier(mixed $rawStation, DataProvider $source): Station {
+        $areas = $rawStation['areas'] ?? [];
         $coordinates = new Coordinate($rawStation['lat'], $rawStation['lon']);
-        $bbox        = $this->geoService->getBoundingBox($coordinates, config('trwl.motis.nearby_radius'));
 
-        $stations = Station::whereBetween('latitude', [$bbox->lowerRight->latitude, $bbox->upperLeft->latitude])
-                           ->whereBetween('longitude', [$bbox->lowerRight->longitude, $bbox->upperLeft->longitude])
-                           ->get();
-
-        $city                     = Formatter::getCityFromAreas($rawStation['areas'] ?? []);
-        $simplifiedRawStationName = Formatter::simplifyStationName($rawStation['name'], $city);
-        $stations                 = $stations->map(function($station) use ($simplifiedRawStationName, $city) {
-            $stationName = Formatter::simplifyStationName($station->name, $city);
-
-            similar_text($stationName, $simplifiedRawStationName, $percent);
-            $station->motisRepositoryTempPercent = $percent;
-            return $station;
-        });
-
-        $stations = $stations->filter(function($station) {
-            return $station->motisRepositoryTempPercent > 90;
-        });
-        $stations = $stations->sortBy([
-                                          ['ibnr', 'desc'],
-                                          ['relevance', 'desc'],
-                                          ['motisRepositoryTempPercent', 'desc']
-                                      ]);
+        $stations = $this->getStationsByNameBias($coordinates, $rawStation['name'], $areas);
 
         if ($stations->isEmpty()) {
             $station = new Station([
@@ -162,13 +143,13 @@ class StationRepository
             $station = $stations->first();
         }
 
-        if (!empty($rawStation['areas'])) {
-            $this->updateStationAreas($station, $rawStation['areas']);
+        if (!empty($areas ?? null)) {
+            $this->updateStationAreas($station, $areas);
         }
 
         StationIdentifier::updateOrCreate(
             [
-                'type'       => 'motis',
+                'type'       => StationIdentifierType::MOTIS,
                 'origin'     => $source->value,
                 'identifier' => $rawStation['stopId'],
             ],
@@ -227,7 +208,7 @@ class StationRepository
         if (str_starts_with($stationId, 'de-DELFI_')) {
             $ifopt   = str_replace('de-DELFI_', '', $stationId);
             $station = $this->getStationByIfopt($ifopt);
-            $this->updateStationIdentifier($station, $stationId, $source, 'motis', $latitude, $longitude);
+            $this->updateStationIdentifier($station, $stationId, $source, StationIdentifierType::MOTIS, $latitude, $longitude);
         }
         return $station;
     }
@@ -235,5 +216,36 @@ class StationRepository
     public function resetRelevance(StationIdentifier $identifier): void {
         $identifier->relevance = 0;
         $identifier->save();
+    }
+
+    /**
+     *
+     * @return DbCollection<Station>|Collection<int,Station>
+     */
+    public function getStationsByNameBias(Coordinate $coordinates, string $requestStationName, array $motisAreas = []): Collection|DbCollection {
+        $bbox        = $this->geoService->getBoundingBox($coordinates, config('trwl.motis.nearby_radius'));
+
+        $stations = Station::whereBetween('latitude', [$bbox->lowerRight->latitude, $bbox->upperLeft->latitude])
+                           ->whereBetween('longitude', [$bbox->lowerRight->longitude, $bbox->upperLeft->longitude])
+                           ->get();
+
+        $city                     = Formatter::getCityFromAreas($motisAreas);
+        $simplifiedRequestStationName = Formatter::simplifyStationName($requestStationName, $city);
+        $stations                 = $stations->map(function($station) use ($simplifiedRequestStationName, $city) {
+            $stationName = Formatter::simplifyStationName($station->name, $city);
+
+            similar_text($stationName, $simplifiedRequestStationName, $percent);
+            $station->tempNameSimilarityPercent = $percent;
+            return $station;
+        });
+
+        $stations = $stations->filter(function($station) {
+            return $station->tempNameSimilarityPercent > 90;
+        });
+        return $stations->sortBy([
+                                          ['ibnr', 'desc'],
+                                          ['relevance', 'desc'],
+                                          ['tempNameSimilarityPercent', 'desc']
+                                      ]);
     }
 }

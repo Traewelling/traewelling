@@ -859,5 +859,6 @@
     "status.departure-now": "Salir ahora",
     "status.arrival-now": "Llega ahora",
     "status.show_more": "Ver más",
-    "report.min-length": "La descripción debe contener al menos 10 carácteres."
+    "report.min-length": "La descripción debe contener al menos 10 carácteres.",
+    "maintenance.follow": "Síguenos en Mastodon"
 }

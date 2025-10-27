@@ -805,10 +805,12 @@ namespace App\Models{
  * @property string $id
  * @property int $relevance
  * @property int $station_id
- * @property string $type
+ * @property \App\StationIdentifierType $type
  * @property string|null $origin
  * @property string $identifier
  * @property string|null $name Name of the station provided by the data source
+ * @property float|null $latitude
+ * @property float|null $longitude
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \phpGPX\Models\Point $location
@@ -820,6 +822,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereIdentifier($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereLatitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereLongitude($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereOrigin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereRelevance($value)
@@ -953,6 +957,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $route_segment_id
+ * @property string|null $station_identifier_id
  * @property-read \Carbon\Carbon|null $arrival
  * @property-read \Carbon\Carbon|null $departure
  * @property-read bool $is_arrival_cancelled
@@ -981,6 +986,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereDepartureReal($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereRouteSegmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereStationIdentifierId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereTrainStationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereTripId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereUpdatedAt($value)

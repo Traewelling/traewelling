@@ -115,7 +115,7 @@ class MotisHydrator
 
     private function getStopoverData($station, mixed $rawStop, DataProvider $source, bool $realTime = false): array {
         $station    = $station ?? $this->stationRepository->updateOrCreateByIfopt($rawStop['stopId'], $source, $rawStop['lat'], $rawStop['lon']);
-        $station    = $station ?? $this->stationRepository->createMotisStation($rawStop, $source);
+        $station    = $station ?? $this->stationRepository->createMotisStationIdentifier($rawStop, $source);
         $identifier = $this->stationRepository->getStationIdentifierByIdentifier($rawStop['stopId'], $source);
 
         $departurePlanned = isset($rawStop['scheduledDeparture']) ? Carbon::parse($rawStop['scheduledDeparture']) : null;
@@ -183,7 +183,7 @@ class MotisHydrator
                 // Find the internal station
                 $station = $stations->get($stop['stopId'])
                            ?? $this->stationRepository->updateOrCreateByIfopt($stop['stopId'], DataProvider::TRANSITOUS)
-                              ?? $this->stationRepository->createMotisStation($stop, DataProvider::TRANSITOUS);
+                              ?? $this->stationRepository->createMotisStationIdentifier($stop, DataProvider::TRANSITOUS);
 
                 if (!$station) continue;
 
@@ -223,14 +223,14 @@ class MotisHydrator
     public function getTripData(mixed $leg, string $lineName, DataProvider $source): array {
         $originStation      = $this->stationRepository->getStationsByIdentifiers($leg['from']['stopId'], $source)->first()
                               ?? $this->stationRepository->updateOrCreateByIfopt($leg['from']['stopId'], $source)
-                                 ?? $this->stationRepository->createMotisStation($leg['from'], $source);
+                                 ?? $this->stationRepository->createMotisStationIdentifier($leg['from'], $source);
         $destinationStation = $this->stationRepository->getStationsByIdentifiers($leg['to']['stopId'], $source)->first()
                               ?? $this->stationRepository->updateOrCreateByIfopt($leg['to']['stopId'], $source)
-                                 ?? $this->stationRepository->createMotisStation($leg['to'], $source);
+                                 ?? $this->stationRepository->createMotisStationIdentifier($leg['to'], $source);
         $departure          = isset($leg['from']['departure']) ? Carbon::parse($leg['from']['departure']) : null;
         $arrival            = isset($leg['to']['arrival']) ? Carbon::parse($leg['to']['arrival']) : null;
         $category           = $this->getCategoryFromLeg($leg);
-        $tripLineName       = !empty($leg['routeShortName']) ? $leg['routeShortName'] : $lineName;
+        $tripLineName       = !empty($leg['displayName']) ? $leg['displayName'] : $lineName;
         $license            = $this->motisRepository->getActiveLicense($leg['source'], $source);
         $operator           = $this->parseOperator($leg, $source);
         $polyline           = $this->getPolylineFromLeg($leg);
@@ -295,7 +295,7 @@ class MotisHydrator
             $tripId              = $rawDeparture['tripId'];
             $tripShortName       = $rawDeparture['tripShortName'] ?? '';
             $rawDepartureStation = $rawDeparture['place'];
-            $tripLineName        = $rawDeparture['routeShortName'] ?? '';
+            $tripLineName        = $rawDeparture['displayName'] ?? '';
             $hafasTravelType     = $this->getCategoryFromLeg($rawDeparture);
 
             $platformPlanned = $rawDepartureStation['scheduledTrack'] ?? '';
@@ -306,7 +306,7 @@ class MotisHydrator
                     $stationId        = $rawDepartureStation['stopId'];
                     $departureStation = $this->stationRepository->updateOrCreateByIfopt($stationId, $source, $rawDepartureStation['lat'], $rawDepartureStation['lon']);
                     // if station does not exist, request it from API
-                    $departureStation = $departureStation ?? $this->stationRepository->createMotisStation($rawDepartureStation, $source);
+                    $departureStation = $departureStation ?? $this->stationRepository->createMotisStationIdentifier($rawDepartureStation, $source);
                 }
             } catch (Exception $exception) {
                 Log::error($exception->getMessage());

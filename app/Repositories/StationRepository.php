@@ -8,6 +8,8 @@ use App\Http\Controllers\API\v1\ExperimentalController;
 use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Services\Wikidata\WikidataImportService;
+use App\StationIdentifierType;
+use Deprecated;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -34,12 +36,13 @@ class StationRepository
                       ->get();
     }
 
-    public function getStationsByFuzzyRilIdentifier(string $rilIdentifier): Collection {
+    #[Deprecated]
+    public function getStationsByFuzzyRilIdentifierDeprecated(string $rilIdentifier): Collection {
         $stations = Station::where('rilIdentifier', 'LIKE', "$rilIdentifier%")
                            ->orderBy('rilIdentifier')
                            ->get();
         if ($stations->count() === 0) {
-            $station = $this->getStationByRilIdentifier(rilIdentifier: $rilIdentifier);
+            $station = $this->getStationByRilIdentifierDeprecated(rilIdentifier: $rilIdentifier);
             if ($station !== null) {
                 $stations->push($station);
             }
@@ -47,7 +50,7 @@ class StationRepository
         return $stations;
     }
 
-    private function getStationByRilIdentifier(string $rilIdentifier): ?Station {
+    private function getStationByRilIdentifierDeprecated(string $rilIdentifier): ?Station {
         $station = Station::where('rilIdentifier', $rilIdentifier)->first();
         if ($station !== null) {
             return $station;
@@ -55,6 +58,32 @@ class StationRepository
         return null;
     }
 
+    public function getStationsByFuzzyRilIdentifier(string $rilIdentifier): Collection {
+        $identifiers = StationIdentifier::with('station')
+                                        ->where('type', StationIdentifierType::DE_DB_RIL100)
+                                        ->where('identifier', $rilIdentifier)
+                                        ->get();
+        if ($identifiers->count() === 0) {
+            $station = $this->getStationByRilIdentifierDeprecated(rilIdentifier: $rilIdentifier);
+            return collect($station);
+        }
+
+        return $identifiers->map(function($identifier) {
+            /** @var StationIdentifier $identifier */
+            return $identifier->station;
+        });
+    }
+
+    private function getStationByRilIdentifier(string $rilIdentifier): Station {
+        $station = StationIdentifier::with('station')
+                                    ->where('type', StationIdentifierType::DE_DB_RIL100)
+                                    ->where('identifier', $rilIdentifier)
+                                    ->first()->station;
+    }
+
+    /**
+     * @deprecated Needs to be replaced with StationIdentifier-Search
+     */
     public function getStationsByWikidataId(string $wikidataId): Collection {
         $stations = Station::where('wikidata_id', $wikidataId)->get();
 
@@ -75,12 +104,15 @@ class StationRepository
         return $stations;
     }
 
-    public function getStationByIdentifier(string $identifier, string $provider, string $type = 'motis'): ?Station {
-        return StationIdentifier::with('station')
-                                ->whereIdentifier($identifier)
-                                ->whereOrigin($provider)
-                                ->whereType($type)
-                                ->first()?->station;
+    public function getStationByIdentifier(string $identifier, StationIdentifierType $type = StationIdentifierType::MOTIS, ?string $provider = null): ?Station {
+        $query = StationIdentifier::with('station')
+                                  ->whereIdentifier($identifier)
+                                  ->whereType($type);
+        if ($provider !== null) {
+            $query->whereProvider($provider);
+        }
+
+        return $query->first()?->station;
     }
 
     public function getStationByIbnr(string $ibnr): ?Station {

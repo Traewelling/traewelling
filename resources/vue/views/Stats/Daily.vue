@@ -77,7 +77,7 @@ const durationParts = computed(() => {
 
     <div v-if="loading">
       <LoadingSkeletonRows :rowHeight="30" :columns="4" :rows="1"/>
-      <LoadingSkeletonRows :rowHeight="120"/>
+      <LoadingSkeletonRows :rowHeight="220"/>
     </div>
 
     <div v-else-if="!statuses.length" class="alert alert-warning text-center fs-4">

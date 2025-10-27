@@ -81,7 +81,7 @@ onMounted(() => {
           <StatusCard :status="s"/>
         </template>
 
-        <LoadingSkeletonRows v-if="loading" :rowHeight="120"/>
+        <LoadingSkeletonRows v-if="loading" :rowHeight="220"/>
 
         <div v-if="!loading && canLoadMore" class="text-center my-4">
           <button class="btn btn-primary" @click="loadMore">

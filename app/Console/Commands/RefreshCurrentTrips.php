@@ -9,7 +9,7 @@ use App\DataProviders\Motis;
 use App\DataProviders\Repositories\TripRepository;
 use App\Enum\DataProvider;
 use App\Enum\TripSource;
-use App\Exceptions\HafasException;
+use App\Exceptions\DataProviderException;
 use App\Models\Checkin;
 use Illuminate\Console\Command;
 use PDOException;
@@ -73,8 +73,8 @@ class RefreshCurrentTrips extends Command
                 } else {
                     report($exception);
                 }
-            } catch (HafasException) {
-                $this->error('-> Skipping, due to HafasException');
+            } catch (DataProviderException) {
+                $this->error('-> Skipping, due to DataProviderException');
             } catch (\Exception $exception) {
                 report($exception);
             }

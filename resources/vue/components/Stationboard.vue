@@ -358,7 +358,7 @@ export default {
     </button>
   </div>
 
-  <LoadingSkeletonRows v-if="loading" :rows="5" :columns="1"/>
+  <LoadingSkeletonRows v-if="loading" :rows="10" :columns="1"/>
 
   <template v-if="!loading && data.length === 0">
     <div class="card mb-1 dep-card mt-3 mb-3">

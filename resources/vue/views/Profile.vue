@@ -95,6 +95,10 @@ function getStopoverForTrip(tripId: string) {
   return stopovers.value[tripId];
 }
 
+const isOwnProfile = computed(() => {
+  return authUser && (authUser.getId === userData.value?.id);
+});
+
 function isNewDay(index: number): boolean {
   if (index === 0) return true;
   const prevDt = getDepartureForStatus(statuses.value[index - 1]).dateTime;
@@ -140,115 +144,120 @@ fetchStatuses(false);
 </script>
 
 <template>
-  <div class="container">
-    <div class="row mt-4">
-      <!-- LEFT COLUMN -->
-      <div class="col">
-        <!-- Stats card -->
-        <div class="card mb-3 shadow-sm rounded">
-          <div class="card-body">
-            <LoadingSkeletonRows v-if="loadingUser" :columns="3" :rows="1"/>
-            <div v-else class="row text-center gx-2 gy-3">
-              <div class="col">
-                <i class="fa fa-route fa-2x text-trwl"></i>
-                <div class="h5 mb-0">
-                  {{ kmDisplay }}
-                  <small class="text-muted">km</small>
-                </div>
-              </div>
-              <div class="col">
-                <i class="fa fa-stopwatch fa-2x text-trwl"></i>
-                <div class="h5 mb-0">
-                  {{ durationParts.d }}<small class="text-muted">d</small>&nbsp;
-                  {{ durationParts.h }}<small class="text-muted">h</small>&nbsp;
-                  {{ durationParts.m }}<small class="text-muted">min</small>
-                </div>
-              </div>
-              <div class="col" v-if="showPoints">
-                <i class="fa fa-dice-d20 fa-2x text-trwl"></i>
-                <div class="h5 mb-0">
-                  {{ userData?.points ?? 0 }}
-                  <small class="text-muted">{{ trans('profile.points-abbr') }}</small>
-                </div>
+  <div class="row mt-4">
+    <!-- LEFT COLUMN -->
+    <div class="col">
+      <!-- Stats card -->
+      <div class="card mb-3 shadow-sm rounded">
+        <div class="card-body">
+          <LoadingSkeletonRows v-if="loadingUser" :columns="3" :rows="1"/>
+          <div v-else class="row text-center gx-2 gy-3">
+            <div class="col">
+              <i class="fa fa-route fa-2x text-trwl"></i>
+              <div class="h5 mb-0">
+                {{ kmDisplay }}
+                <small class="text-muted">km</small>
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Bio & links -->
-        <div
-            v-if="userData?.bio || mergedLinks.length"
-            class="card mb-3 shadow-sm rounded"
-        >
-          <div class="card-body">
-            <p v-if="userData?.bio" class="text-muted fst-italic m-0">
-              <i class="fa fa-quote-left me-2"></i>
-              <span class="profile-bio" v-html="userData.bio"></span>
-            </p>
-            <div
-                v-if="mergedLinks.length"
-                class="d-flex justify-content-center flex-wrap gap-3 mt-4"
-            >
-              <a
-                  v-for="(l, i) in mergedLinks"
-                  :key="i"
-                  :href="l.url"
-                  class="text-muted fs-4"
-                  :aria-label="l.name"
-                  target="_blank"
-                  rel="me"
-              >
-                <i :class="l.icon || 'fa-solid fa-link'"></i>
-              </a>
+            <div class="col">
+              <i class="fa fa-stopwatch fa-2x text-trwl"></i>
+              <div class="h5 mb-0">
+                {{ durationParts.d }}<small class="text-muted">d</small>&nbsp;
+                {{ durationParts.h }}<small class="text-muted">h</small>&nbsp;
+                {{ durationParts.m }}<small class="text-muted">min</small>
+              </div>
+            </div>
+            <div class="col" v-if="showPoints">
+              <i class="fa fa-dice-d20 fa-2x text-trwl"></i>
+              <div class="h5 mb-0">
+                {{ userData?.points ?? 0 }}
+                <small class="text-muted">{{ trans('profile.points-abbr') }}</small>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="col-md-8 col-lg-7">
-        <h1 class="fs-3" v-if="statuses.length">
-          {{ trans('profile.last-journeys-of') }} {{ userData?.displayName || props.username }}:
-        </h1>
-
-        <template v-for="(s, i) in statuses" :key="s.id">
-          <h2 class="mb-2 fs-5" v-if="isNewDay(i)">
-            {{ dateTitleFor(s) }}
-            <a :href="statsDailyHref(s)" class="text-trwl" aria-label="Tägliche Fahrten">
-              <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+      <!-- Bio & links -->
+      <div
+          v-if="userData?.bio || mergedLinks.length"
+          class="card mb-3 shadow-sm rounded"
+      >
+        <div class="card-body">
+          <p v-if="userData?.bio" class="text-muted fst-italic m-0">
+            <i class="fa fa-quote-left me-2"></i>
+            <span class="profile-bio" v-html="userData.bio"></span>
+          </p>
+          <div
+              v-if="mergedLinks.length"
+              class="d-flex justify-content-center flex-wrap gap-3 mt-4"
+          >
+            <a
+                v-for="(l, i) in mergedLinks"
+                :key="i"
+                :href="l.url"
+                class="text-muted fs-4"
+                :aria-label="l.name"
+                target="_blank"
+                rel="me"
+            >
+              <i :class="l.icon || 'fa-solid fa-link'"></i>
             </a>
-          </h2>
-
-          <StatusCard
-              :status="s"
-              :authenticated-user="authUser.user"
-              :stopovers="getStopoverForTrip(s.train.trip.toString())"
-          />
-        </template>
-
-        <LoadingSkeletonRows v-if="loadingStatuses" class="text-center my-4" :rowHeight="120" :columns="1" :rows="3"/>
-
-        <div v-if="!loadingStatuses && showMore" class="text-center my-4">
-          <button class="btn btn-primary" @click="fetchStatuses(true)" :disabled="loadingStatuses">
-            <i class="fa-solid fa-arrow-down"></i>
-          </button>
-          <div class="small text-muted mt-2" v-if="lastPage !== null">
-            {{ currentPage }} / {{ lastPage }}
           </div>
         </div>
+      </div>
+    </div>
 
-        <div
-            v-if="!loadingStatuses && !showMore && statuses.length"
-            class="text-center my-4"
-        >
-          <p class="text-muted">
-            Final stop. All change, please!
-          </p>
+    <div class="col-md-8 col-lg-7">
+      <h1 class="fs-3" v-if="statuses.length">
+        {{ trans('profile.last-journeys-of') }} {{ userData?.displayName || props.username }}:
+      </h1>
+
+      <template v-for="(s, i) in statuses" :key="s.id">
+        <h2 class="mb-2 fs-5" v-if="isNewDay(i)">
+          {{ dateTitleFor(s) }}
+          <a :href="statsDailyHref(s)" class="text-trwl" aria-label="Tägliche Fahrten"
+             v-if="isOwnProfile"
+          >
+            <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+          </a>
+        </h2>
+
+        <StatusCard
+            :status="s"
+            :authenticated-user="authUser.user"
+            :stopovers="getStopoverForTrip(s.train.trip.toString())"
+        />
+      </template>
+
+      <template v-if="loadingStatuses">
+        <LoadingSkeletonRows class="text-center" :rowHeight="30" :columns="1" :rows="1"/>
+        <LoadingSkeletonRows class="text-center" :rowHeight="15" :columns="1" :rows="1"/>
+        <LoadingSkeletonRows class="text-center mb-4" :rowHeight="206" :columns="1" :rows="5"/>
+      </template>
+
+      <div v-if="!loadingStatuses && showMore" class="text-center my-4">
+        <button class="btn btn-primary" @click="fetchStatuses(true)" :disabled="loadingStatuses">
+          <i class="fa-solid fa-arrow-down"></i>
+        </button>
+        <div class="small text-muted mt-2" v-if="lastPage !== null">
+          {{ currentPage }} / {{ lastPage }}
         </div>
+      </div>
 
-        <div
-            v-if="!loadingStatuses && !statuses.length"
-            class="text-center my-4"
-        >
+      <div
+          v-if="!loadingStatuses && !showMore && statuses.length"
+          class="text-center my-4"
+      >
+        <p class="text-muted">
+          Final stop. All change, please!
+        </p>
+      </div>
+
+      <div
+          v-if="!loadingStatuses && !statuses.length"
+          class="text-center my-4"
+      >
           <span class="text-danger fs-3">
             <template v-if="(userData?.trainDistance ?? 0) > 0">
               {{ trans('profile.no-visible-statuses', {username: userData?.displayName}) }}
@@ -257,7 +266,6 @@ fetchStatuses(false);
               {{ trans('profile.no-statuses', {username: userData?.displayName}) }}
             </template>
           </span>
-        </div>
       </div>
     </div>
   </div>

@@ -17,7 +17,7 @@
     "agencyName": "MiWuLa",
     "agencyUrl": "http://www.miniaturwunderland.de",
     "tripId": "20250501_21:17_de-TRWL_12345",
-    "routeShortName": "RE 123",
+    "displayName": "RE 123",
     "source": "de_ALLOWED.gtfs.zip/stop_times.txt:1221005:1221019"
   },
   {
@@ -38,7 +38,7 @@
     "agencyName": "Firma XYZ",
     "agencyUrl": "https://www.exaple.com/",
     "tripId": "20250501_22:12_de-DB_1234567890",
-    "routeShortName": "IC 1337",
+    "displayName": "IC 1337",
     "source": "ch_ALlOWED.gtfs.zip/stop_times.txt:141916:141923"
   },
   {
@@ -59,7 +59,7 @@
     "agencyName": "Firma ABC",
     "agencyUrl": "http://www.exmple.de",
     "tripId": "20250501_23:25_de-VBN_416428221",
-    "routeShortName": "RE 345",
+    "displayName": "RE 345",
     "source": "de_DISALLOWED.gtfs.zip/stop_times.txt:1243896:1243906"
   }
 ]

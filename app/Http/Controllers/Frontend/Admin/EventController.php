@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Frontend\Admin;
 use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
 use App\Enum\EventRejectionReason;
-use App\Exceptions\HafasException;
+use App\Exceptions\DataProviderException;
 use App\Http\Controllers\Backend\Admin\EventController as AdminEventBackend;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
@@ -139,7 +139,7 @@ class EventController extends Controller
     }
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      */
     public function acceptSuggestion(Request $request): RedirectResponse {
         $validated = $request->validate([
@@ -196,7 +196,7 @@ class EventController extends Controller
     }
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      */
     public function create(Request $request): RedirectResponse {
         $validated = $request->validate(self::VALIDATOR_RULES);

@@ -5,7 +5,7 @@ export default {
   props: {
     rows: {type: Number, default: 3},
     columns: {type: Number, default: 1},
-    rowHeight: {type: Number, default: 56},
+    rowHeight: {type: Number, default: 66},
     gutter: {type: Number, default: 12},
     ariaLabel: {type: String, default: null},
     borderRadius: {type: String, default: ".5rem"}

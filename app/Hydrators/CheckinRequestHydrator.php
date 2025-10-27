@@ -7,8 +7,7 @@ namespace App\Hydrators;
 use App\Dto\Internal\CheckInRequestDto;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
-use App\Exceptions\HafasException;
-use App\Models\Event;
+use App\Exceptions\DataProviderException;
 use App\Repositories\CheckinHydratorRepository;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -36,7 +35,7 @@ class CheckinRequestHydrator
     }
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      */
     public function hydrateFromApi(): CheckInRequestDto {
         $this->parseApiFields();
@@ -45,7 +44,7 @@ class CheckinRequestHydrator
     }
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      * @throws JsonException
      */
     public function hydrateFromAdmin(): CheckInRequestDto {
@@ -55,7 +54,7 @@ class CheckinRequestHydrator
     }
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      * @throws JsonException
      */
     private function parseAdminFields(): void {
@@ -67,7 +66,7 @@ class CheckinRequestHydrator
     }
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      * @throws JsonException
      */
     private function parseApiFields(): void {
@@ -81,7 +80,7 @@ class CheckinRequestHydrator
     }
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      * @throws JsonException
      */
     private function parseDefaultFields(): void {
