@@ -282,5 +282,7 @@
     "status.report": "Stav hlášení",
     "report-subject.Trip": "Cesta",
     "report-subject.Status": "Stav",
-    "report-subject.User": "Uživatel"
+    "report-subject.User": "Uživatel",
+    "notifications.youHaveBeenCheckedIn.lead": "Byli jste zaregistrováni uživatelem <b>@:username</b>",
+    "notifications.youHaveBeenCheckedIn.notice": "Cesta v :line z :origin do :destination"
 }
