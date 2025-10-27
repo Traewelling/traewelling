@@ -46,7 +46,7 @@ function buildBodyWithMentions(): string {
     result += escapeHtml(body.slice(cursor, start));
     const mentionText = body.slice(start, end);
     const username = m?.user?.username ?? mentionText.replace(/^@/, "");
-    const url = `/user/${encodeURIComponent(username)}`;
+    const url = `/@${encodeURIComponent(username)}`;
 
     result += `<a href="${url}" class="mention">${escapeHtml(mentionText)}</a>`;
     cursor = end;
