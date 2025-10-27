@@ -3,10 +3,8 @@
 return [
     'post_social'               => env('POST_SOCIAL', false),
 
-    # Brouter
-    'brouter'                   => env('BROUTER', true),
-    'brouter_url'               => env('BROUTER_URL', 'https://brouter.de/'),
-    'brouter_timeout'           => env('BROUTER_TIMEOUT', 10),
+    # ReRouting
+    'distance_deviation_threshold_percent' => env('DISTANCE_DEVIATION_THRESHOLD_PERCENT', 15),
 
     # Polyline
     'polyline_storage_path'     => env('POLYLINE_STORAGE_PATH', 'polylines'),

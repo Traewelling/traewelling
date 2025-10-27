@@ -12,6 +12,7 @@ use App\Services\OpenRailRoutingService;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
+use phpGPX\Helpers\DistanceCalculator;
 use Traewelling\GooglePolyline\PolylineTranscoder;
 
 class ReRoutingController extends Controller
@@ -65,23 +66,34 @@ class ReRoutingController extends Controller
         }
 
         if ($this->stopovers < 1) {
-            $percentage = $this->queryExceptions;
+            $errorPercentage = $this->queryExceptions;
         } else {
-            $percentage = $this->queryExceptions / ($this->stopovers) * 100;
+            $errorPercentage = $this->queryExceptions / ($this->stopovers) * 100;
         }
 
-        if ($percentage < 10) {
+        if ($errorPercentage < 10) {
             RecalculateStatusesDistanceForTrip::dispatch($trip->id);
         }
 
-        return $percentage;
+        return $errorPercentage;
     }
 
     private function rerouteBetween(Stopover $start, Stopover $end, OpenRailRoutingProfile $pathType): void {
         Log::debug('RerouteStops', [$start, $end, $pathType]);
 
-        $startTime = $start->departure ?? $start->arrival;
-        $endTime   = $end->arrival ?? $end->departure;
+        $startTime     = $start->departure ?? $start->arrival;
+        $endTime       = $end->arrival ?? $end->departure;
+        $startLocation = $start->stationIdentifier?->location ?? $start->station?->location;
+        $endLocation   = $end->stationIdentifier?->location ?? $end->station?->location;
+        if (!$startLocation || !$endLocation) {
+            Log::warning('RerouteStops: Missing station location, cannot reroute', [
+                'from_station_id' => $start->station?->id,
+                'to_station_id'   => $end->station?->id,
+            ]);
+            return;
+        }
+
+        $oldDistance = (new DistanceCalculator([$startLocation, $endLocation]))->getRealDistance();
 
         $duration = -1;
         if ($startTime?->isValid() && $endTime?->isValid()) {
@@ -97,15 +109,6 @@ class ReRoutingController extends Controller
             return; // already rerouted
         }
         try {
-            $startLocation = $start->stationIdentifier?->location ?? $start->station?->location;
-            $endLocation   = $end->stationIdentifier?->location ?? $end->station?->location;
-            if (!$startLocation || !$endLocation) {
-                Log::warning('RerouteStops: Missing station location, cannot reroute', [
-                    'from_station_id' => $start->station?->id,
-                    'to_station_id'   => $end->station?->id,
-                ]);
-                return;
-            }
             Log::debug('Getting new route from OpenRailwayRouting', [
                 'from' => $start->station,
                 'to'   => $end->station,
@@ -113,13 +116,13 @@ class ReRoutingController extends Controller
             ]);
 
             try {
-                $route = $this->openRailRoutingService->getRoute([$startLocation, $endLocation], $pathType);
+                $route           = $this->openRailRoutingService->getRoute([$startLocation, $endLocation], $pathType);
                 $encodedPolyline = (new PolylineTranscoder)->encodePolyline($route->feature->getCoordinateArray());
 
                 // if speed is > 300 km/h, we assume the route is invalid
                 if ($duration > 0) {
                     $speed = ($route->distanceInMeters / $duration) * 3.6; // m/s to km/h
-                    if ($speed > 300) {
+                    if ($speed > 300) { //TODO: make configurable per transport mode
                         Log::warning('RerouteStops: Calculated speed is too high, skipping route segment', [
                             'speed_kmh' => $speed,
                             'from'      => $start->station->name,
@@ -133,6 +136,26 @@ class ReRoutingController extends Controller
                         'from'       => $start->station->name,
                         'to'         => $end->station->name,
                     ]);
+                    return;
+                }
+
+                $percentage = config('trwl.distance_deviation_threshold_percent', 15) / 100;
+                $upperLimit = $oldDistance * (1 + $percentage);
+                $lowerLimit = $oldDistance * (1 - $percentage);
+                $distance   = $route->distanceInMeters;
+
+                if ($distance === 0 || ($oldDistance !== 0 && ($distance > $upperLimit || $distance < $lowerLimit))) {
+                    Log::warning(
+                        sprintf('Distance deviation is greater than %d percent.', $percentage * 100),
+                        [
+                            'from'           => $start->station->name,
+                            'to'             => $end->station->name,
+                            'old_distance_m' => $oldDistance,
+                            'new_distance_m' => $distance,
+                            'upper_limit_m'  => $upperLimit,
+                            'lower_limit_m'  => $lowerLimit,
+                        ]
+                    );
                     return;
                 }
 
