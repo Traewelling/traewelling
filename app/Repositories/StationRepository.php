@@ -104,12 +104,12 @@ class StationRepository
         return $stations;
     }
 
-    public function getStationByIdentifier(string $identifier, StationIdentifierType $type = StationIdentifierType::MOTIS, ?string $provider = null): ?Station {
+    public function getStationByIdentifier(string $identifier, StationIdentifierType $type = StationIdentifierType::MOTIS, ?string $origin = null): ?Station {
         $query = StationIdentifier::with('station')
                                   ->whereIdentifier($identifier)
                                   ->whereType($type);
-        if ($provider !== null) {
-            $query->whereProvider($provider);
+        if ($origin !== null) {
+            $query->whereOrigin($origin);
         }
 
         return $query->first()?->station;
