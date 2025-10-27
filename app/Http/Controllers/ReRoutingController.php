@@ -97,14 +97,23 @@ class ReRoutingController extends Controller
             return; // already rerouted
         }
         try {
+            $startLocation = $start->stationIdentifier?->location ?? $start->station?->location;
+            $endLocation   = $end->stationIdentifier?->location ?? $end->station?->location;
+            if (!$startLocation || !$endLocation) {
+                Log::warning('RerouteStops: Missing station location, cannot reroute', [
+                    'from_station_id' => $start->station?->id,
+                    'to_station_id'   => $end->station?->id,
+                ]);
+                return;
+            }
             Log::debug('Getting new route from OpenRailwayRouting', [
                 'from' => $start->station,
                 'to'   => $end->station,
                 'type' => $pathType,
             ]);
-            $route = $this->openRailRoutingService->getRoute([$start->station->location, $end->station->location], $pathType);
 
             try {
+                $route = $this->openRailRoutingService->getRoute([$startLocation, $endLocation], $pathType);
                 $encodedPolyline = (new PolylineTranscoder)->encodePolyline($route->feature->getCoordinateArray());
 
                 // if speed is > 300 km/h, we assume the route is invalid

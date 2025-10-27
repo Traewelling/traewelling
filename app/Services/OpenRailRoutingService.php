@@ -12,6 +12,10 @@ use App\Http\Controllers\Backend\VersionController;
 use App\OpenRailRoutingProfile;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use phpGPX\Models\GpxFile;
+use phpGPX\Models\Point;
+use phpGPX\Models\Segment;
+use phpGPX\Models\Track;
 use Traewelling\GooglePolyline\PolylineTranscoder;
 
 class OpenRailRoutingService
@@ -40,32 +44,28 @@ class OpenRailRoutingService
     }
 
     /**
-     * @param Coordinate[] $coordinates
-     */
-    private function getCoordinatesUrlPart(array $coordinates): string {
-        $points = [];
-        foreach ($coordinates as $coordinate) {
-            $points[] = sprintf('point=%F,%F', $coordinate->latitude, $coordinate->longitude);
-        }
-        return implode('&', $points);
-    }
-
-
-    /**
-     * @param Coordinate[] $coordinates
+     * @param Point[] $coordinates
      *
      * @throws GuzzleException
      * @throws OpenRailRoutingResponseFailed
      */
     public function getRoute(array $coordinates, OpenRailRoutingProfile $profile = OpenRailRoutingProfile::ALL_TRACKS): RouteDto {
+        $gpxFile = new GpxFile();
+        $track = new Track();
+        $segment = new Segment();
+        $segment->points = $coordinates;
+        $track->segments[] = $segment;
+        $gpxFile->tracks[] = $track;
 
         $url      = sprintf(
-            '%s/route?%s&type=json&key=&elevation=false&profile=%s',
+            '%s/match?type=json&key=&elevation=false&instructions=false&profile=%s',
             self::API_URL,
-            $this->getCoordinatesUrlPart($coordinates),
             $profile->value,
         );
-        $response = $this->getClient()->get($url);
+        $response = $this->getClient()->post($url, [
+            'headers' => ['Content-Type' => 'application/gpx+xml'],
+            'body' => $gpxFile->toXML()->saveXML()
+        ]);
 
         if ($response->getStatusCode() !== 200) {
             throw new OpenRailRoutingResponseFailed('Failed to get route from BRouter: ' . $response->getBody());

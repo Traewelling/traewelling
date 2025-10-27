@@ -26,7 +26,7 @@ class Stopover extends Model
         'arrival_platform_planned', 'arrival_platform_real',
         'departure_planned', 'departure_real',
         'departure_platform_planned', 'departure_platform_real',
-        'cancelled'
+        'cancelled', 'station_identifier_id', 'route_segment_id',
     ];
     protected $appends  = [
         'arrival', 'departure', 'platform', 'isArrivalDelayed', 'isDepartureDelayed',
@@ -66,6 +66,10 @@ class Stopover extends Model
      */
     public function trainStation(): BelongsTo {
         return $this->station();
+    }
+
+    public function stationIdentifier(): HasOne {
+        return $this->hasOne(StationIdentifier::class, 'id', 'station_identifier_id');
     }
 
     // These two methods are a ticking time bomb and I hope we'll never see it explode. 💣

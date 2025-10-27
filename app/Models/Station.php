@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use phpGPX\Models\Point;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -45,8 +46,12 @@ class Station extends Model
         return $this->hasMany(StationName::class, 'station_id', 'id');
     }
 
-    public function getLocationAttribute(): Coordinate {
-        return new Coordinate($this->latitude, $this->longitude);
+    public function getLocationAttribute(): Point {
+        $point = new Point(Point::TRACKPOINT);
+        $point->latitude = $this->latitude;
+        $point->longitude = $this->longitude;
+
+        return $point;
     }
 
     public function getIfoptAttribute(): ?string {

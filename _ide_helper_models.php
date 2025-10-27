@@ -758,6 +758,7 @@ namespace App\Models{
  * @property int|null $shift_time If false, the timezone of the hafas request will not be shifted to Europe/Berlin
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $identifiers_migrated
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
  * @property-read \App\Models\AreasStationsMap|null $pivot
@@ -765,7 +766,7 @@ namespace App\Models{
  * @property-read int|null $areas_count
  * @property-read string|null $ifopt
  * @property-read string|null $localized_name
- * @property-read \App\Dto\Coordinate $location
+ * @property-read \phpGPX\Models\Point $location
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StationName> $names
  * @property-read int|null $names_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StationIdentifier> $stationIdentifiers
@@ -779,6 +780,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIbnr($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIdentifiersMigrated($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptA($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptB($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Station whereIfoptC($value)
@@ -809,6 +811,7 @@ namespace App\Models{
  * @property string|null $name Name of the station provided by the data source
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \phpGPX\Models\Point $location
  * @property-read \App\Models\Station $station
  * @method static \Database\Factories\StationIdentifierFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier newModelQuery()
@@ -959,6 +962,7 @@ namespace App\Models{
  * @property-read string|null $platform
  * @property-read \App\Models\RouteSegment|null $routeSegment
  * @property-read \App\Models\Station $station
+ * @property-read \App\Models\StationIdentifier|null $stationIdentifier
  * @property-read \App\Models\Station $trainStation
  * @property-read \App\Models\Trip $trip
  * @method static \Database\Factories\StopoverFactory factory($count = null, $state = [])
