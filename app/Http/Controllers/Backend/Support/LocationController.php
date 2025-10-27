@@ -365,8 +365,22 @@ class LocationController
         return $geoJson;
     }
 
+    private function hasEnoughRouteSegments(): bool {
+        $stopovers                = $this->trip->stopovers->sortBy('departure');
+
+        $routeSegments = 0;
+        foreach ($stopovers as $stopover) {
+            if ($stopover->route_segment_id) {
+                $routeSegments++;
+            }
+        }
+
+        return ($routeSegments / $stopovers->count()) >= 0.5;
+    }
+
     public function calculateDistance(): int {
         if (
+            $this->hasEnoughRouteSegments() ||
             $this->trip->polyline === null ||
             $this->trip->polyline?->polyline === null ||
             strlen($this->trip->polyline?->polyline) < 10
@@ -396,6 +410,10 @@ class LocationController
             }
         } catch (JsonException $e) {
             report($e);
+        }
+
+        if ($distance === 0) {
+            $distance = $this->calculateDistanceByStopovers();
         }
 
         return $distance;
