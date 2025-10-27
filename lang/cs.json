@@ -539,5 +539,18 @@
     "dashboard.empty.discover3": " . ",
     "user.block-tooltip": "Blokovat uživatele",
     "user.blocked": "Zablokovali jste uživatele :username.",
-    "user.already-blocked": "Uživatel :username je již zablokován."
+    "user.already-blocked": "Uživatel :username je již zablokován.",
+    "user.blocked.text": "Nevidíte zadané cesty od uživatele :username, protože jste tohoto uživatele zablokovali.",
+    "user.unblocked": "Odblokovali jste uživatele :username.",
+    "user.blocked.heading": "Uživatel zablokován",
+    "user.blocked.heading2": "Blokovaní uživatelé",
+    "user.already-unblocked": "Uživatel :username není blokován.",
+    "user.unblock-tooltip": "Odblokovat uživatele",
+    "user.mute-tooltip": "Ztlumit uživatele",
+    "user.muted": "Ztlumili jste uživatele :username.",
+    "user.already-muted": "Uživatel :username je již ztlumený.",
+    "user.muted.text": "Nevidíte zadané cesty od uživatele :username, protože jste tohoto uživatele ztlumili.",
+    "user.unmuted": "Zrušili jste ignorování uživatele :username.",
+    "user.muted.heading": "Uživatel ztlumen",
+    "user.muted.heading2": "Ztlumení uživatelé"
 }
