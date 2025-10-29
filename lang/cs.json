@@ -817,5 +817,8 @@
     "errors.403.lead": "Mayday, Mayday, Mayday, nemáte oprávnění k přístupu k tomuto obsahu.",
     "errors.403.alt_text": "Vlakové nádraží v husté mlze. V dálce je vidět několik červených semaforů.",
     "errors.404.lead": "Tento vlak tu už nejezdí, pravděpodobně došlo ke zřejmě z jízdního řádu.",
-    "action.like": "To se mi líbí"
+    "action.like": "Líbí se",
+    "action.dislike": "Nelíbí se",
+    "action.set-home": "Nastavit domovskou zastávku",
+    "settings.friend_checkin": "Jízdy přátel"
 }
