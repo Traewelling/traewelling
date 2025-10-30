@@ -57,6 +57,11 @@ class RefreshCurrentTrips extends Command
                 $trip->update(['last_refreshed' => now()]);
 
                 $rawJourney = $this->getDataProvider()->fetchRawHafasTrip($trip->trip_id, $trip->linename);
+                if (!$rawJourney || !$rawJourney['legs'][0]['realTime']) {
+                    $this->warn('-> Skipping, no real-time data available');
+                    continue;
+                }
+
                 $stopovers  = $this->motisHydrator->parseLegToUpdateStopovers(
                     $rawJourney['legs'][0],
                     $trip,
