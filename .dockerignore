@@ -8,7 +8,7 @@ vendor/
 docs/traewelling.jpg
 phpunit.xml
 phpcs.xml
-Dockerfile
+docs/hosting/docker/Dockerfile
 codesize.xml
 api-swagger-v0.yml
 .styleci.yml
@@ -18,6 +18,5 @@ public/js/
 database/docker-container-state/
 avatars/
 database-data/
-Dockerfile
 .devenv
 .direnv

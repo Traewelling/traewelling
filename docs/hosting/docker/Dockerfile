@@ -1,5 +1,5 @@
 FROM node:24-alpine as NodeBuildContainer
-COPY . /usr/src/trwl
+COPY ../../.. /usr/src/trwl
 WORKDIR /usr/src/trwl
 RUN npm install && npm run build && rm -rf node_modules
 

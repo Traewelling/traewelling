@@ -2,14 +2,14 @@ version: "3.9"
 
 services:
   app:
-    build: .
+    build: ../../..
     restart: 'always'
     ports:
       - "8081:80"
     networks:
       - internal
     env_file:
-      - .env.docker
+      - ../../../.env.docker
     environment:
       CONTAINER_ROLE: app
       # SEED_DB: true
@@ -33,12 +33,12 @@ services:
       #- ./public:/var/www/html/public
 
   scheduler:
-    build: .
+    build: ../../..
     restart: 'always'
     networks:
       - internal
     env_file:
-      - .env.docker
+      - ../../../.env.docker
     environment:
       CONTAINER_ROLE: scheduler
     volumes:
@@ -51,12 +51,12 @@ services:
       - ./avatars:/var/www/html/public/uploads/avatars
 
   queue:
-    build: .
+    build: ../../..
     restart: 'always'
     networks:
       - internal
     env_file:
-      - .env.docker
+      - ../../../.env.docker
     environment:
       CONTAINER_ROLE: queue
     volumes:
@@ -80,7 +80,7 @@ services:
     environment:
       - TZ=Europe/Berlin
     env_file:
-      - .env.docker
+      - ../../../.env.docker
 
   redis:
     image: redis
