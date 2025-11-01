@@ -30,6 +30,10 @@ class RefreshPolyline implements ShouldQueue
     }
 
     public function handle(): void {
+        if (app()->environment('testing')) {
+            Log::debug('RefreshPolyline Job skipped: Testing environment', ['trip_id' => $this->trip->id]);
+            return;
+        }
         if (Cache::has(self::REFRESH_POLYLINE_COOLDOWN_CACHE_KEY)) {
             Log::debug('RefreshPolyline Job skipped: Cooldown active', ['trip_id' => $this->trip->id]);
             throw new \Exception('Pausing RefreshPolyline Job due to cooldown');

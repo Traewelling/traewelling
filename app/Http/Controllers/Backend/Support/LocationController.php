@@ -243,6 +243,9 @@ class LocationController
                     $stopover->station->longitude
                 );
                 $routeSegments++;
+                if ($stopover->is($this->destination)) {
+                    break;
+                }
                 continue;
             }
             if ($stopover->is($this->destination)) {
