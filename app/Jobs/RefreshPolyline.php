@@ -31,7 +31,7 @@ class RefreshPolyline implements ShouldQueue
 
     public function handle(): void {
         if (app()->environment('testing')) {
-            Log::debug('RefreshPolyline Job skipped: Testing environment', ['trip_id' => $this->trip->id]);
+            Log::info('RefreshPolyline Job skipped: Testing environment', ['trip_id' => $this->trip->id]);
             return;
         }
         if (Cache::has(self::REFRESH_POLYLINE_COOLDOWN_CACHE_KEY)) {
@@ -40,13 +40,18 @@ class RefreshPolyline implements ShouldQueue
         }
 
         if (!$this->trip->category->onRails()) {
-            Log::debug('RefreshPolyline Job skipped: Trip is not on rails', ['trip_id' => $this->trip->id, 'category' => $this->trip->category]);
+            Log::info('RefreshPolyline Job skipped: Trip is not on rails', ['trip_id' => $this->trip->id, 'category' => $this->trip->category]);
             return;
         }
         Log::debug('RefreshPolyline Job started', ['trip_id' => $this->trip->id]);
         $percentage = $this->reRoutingController->rerouteStops($this->trip);
 
         if ($percentage > config('trwl.distance_deviation.cooldown_error_percent')) {
+            Log::warning('Too many route segments failed to refresh, activating cooldown', [
+                'trip_id'                => $this->trip->id,
+                'failed_percentage'      => $percentage,
+                'cooldown_error_percent' => config('trwl.distance_deviation.cooldown_error_percent'),
+            ]);
             Cache::set(self::REFRESH_POLYLINE_COOLDOWN_CACHE_KEY, true, now()->addSeconds(config('trwl.distance_deviation.cooldown_seconds')));
             throw new \Exception('Pausing RefreshPolyline Job due to cooldown');
         }

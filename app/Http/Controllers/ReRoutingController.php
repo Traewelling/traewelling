@@ -32,6 +32,7 @@ class ReRoutingController extends Controller
     }
 
     public function rerouteStops(Trip $trip): int {
+        Log::info('RerouteStops: Starting rerouting process for trip', ['trip_id' => $trip->id]);
         /** @var Collection<int, Stopover> $stops */
         $stops           = $trip->stopovers()->get();
         $this->stopovers = $stops->count();
@@ -195,8 +196,9 @@ class ReRoutingController extends Controller
                     'response' => $e->getResponse()?->getBody()->getContents(),
                     'request'  => $e->getRequest()?->getBody()->getContents(),
                 ]);
+                return;
             }
-            $this->queryExceptions++;// don't report  cURL error 28
+            $this->queryExceptions++;
             if (str_contains($e->getMessage(), 'cURL error 28')) {
                 return;
             }
