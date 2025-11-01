@@ -9,6 +9,7 @@ use App\Models\Trip;
 use App\OpenRailRoutingProfile;
 use App\Repositories\TripRepository;
 use App\Services\OpenRailRoutingService;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
@@ -169,6 +170,12 @@ class ReRoutingController extends Controller
             $this->tripRepository->setRouteSegmentForStop($start, $segment);
         } catch (OpenRailRoutingResponseFailed|GuzzleException $e) {
             Log::error('RerouteStops: Failed to create route segment', ['error' => $e->getMessage()]);
+            if ($e instanceof ClientException) {
+                Log::warning('RerouteStops: ClientException details', [
+                    'response' => $e->getResponse()?->getBody()->getContents(),
+                    'request'  => $e->getRequest()?->getBody()->getContents(),
+                ]);
+            }
             $this->queryExceptions++;// don't report  cURL error 28
             if (str_contains($e->getMessage(), 'cURL error 28')) {
                 return;
