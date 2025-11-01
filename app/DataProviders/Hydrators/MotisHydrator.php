@@ -237,12 +237,11 @@ class MotisHydrator
         $shortTripName      = !empty($leg['tripShortName']) ? $leg['tripShortName'] : null;
         $shortTripName      = $shortTripName !== null ? preg_replace('/\D/', '', $shortTripName) : null;
 
-        return [
+        $payload = [
             'category'                => $category,
             'number'                  => $tripLineName,
             'linename'                => $tripLineName,
             'route_color'             => $leg['routeColor'] ?? null,
-            'journey_number'          => $shortTripName,
             'operator_id'             => $operator?->id,
             'origin_id'               => $originStation->id,
             'destination_id'          => $destinationStation->id,
@@ -253,6 +252,12 @@ class MotisHydrator
             'motis_source'            => $source->value . '/' . $leg['source'],
             'motis_source_license_id' => $license?->id ?? null,
         ];
+
+        if (is_int($shortTripName)) {
+            $payload['journey_number'] = $shortTripName;
+        }
+
+        return $payload;
     }
 
     private function parseOperator(array $leg, DataProvider $source): ?Operator {
