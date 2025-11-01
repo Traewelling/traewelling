@@ -671,6 +671,8 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stopover> $stopOvers
  * @property-read int|null $stop_overs_count
  * @property-read \App\Models\Station $toStation
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Trip> $trips
+ * @property-read int|null $trips_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment query()
