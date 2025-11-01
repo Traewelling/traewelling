@@ -108,72 +108,74 @@ class ReRoutingController extends Controller
 
             return; // already rerouted
         }
+        Log::debug('Getting new route from OpenRailwayRouting', [
+            'from' => $start->station,
+            'to'   => $end->station,
+            'type' => $pathType,
+        ]);
+
         try {
-            Log::debug('Getting new route from OpenRailwayRouting', [
-                'from' => $start->station,
-                'to'   => $end->station,
-                'type' => $pathType,
-            ]);
+            $route           = $this->openRailRoutingService->getRoute([$startLocation, $endLocation], $pathType);
+            $encodedPolyline = (new PolylineTranscoder)->encodePolyline($route->feature->getCoordinateArray());
 
-            try {
-                $route           = $this->openRailRoutingService->getRoute([$startLocation, $endLocation], $pathType);
-                $encodedPolyline = (new PolylineTranscoder)->encodePolyline($route->feature->getCoordinateArray());
-
-                // if speed is > 300 km/h, we assume the route is invalid
-                if ($duration > 0) {
-                    $speed = ($route->distanceInMeters / $duration) * 3.6; // m/s to km/h
-                    if ($speed > 300) { //TODO: make configurable per transport mode
-                        Log::warning('RerouteStops: Calculated speed is too high, skipping route segment', [
-                            'speed_kmh' => $speed,
-                            'from'      => $start->station->name,
-                            'to'        => $end->station->name,
-                        ]);
-                        return;
-                    }
-                } elseif ($route->distanceInMeters > 1000) {
-                    Log::warning('RerouteStops: No duration available and distance is too high, skipping route segment', [
-                        'distance_m' => $route->distanceInMeters,
-                        'from'       => $start->station->name,
-                        'to'         => $end->station->name,
+            // if speed is > 300 km/h, we assume the route is invalid
+            if ($duration > 0) {
+                $speed = ($route->distanceInMeters / $duration) * 3.6; // m/s to km/h
+                if ($speed > 300) { //TODO: make configurable per transport mode
+                    Log::warning('RerouteStops: Calculated speed is too high, skipping route segment', [
+                        'speed_kmh' => $speed,
+                        'from'      => $start->station->name,
+                        'to'        => $end->station->name,
                     ]);
                     return;
                 }
+            } elseif ($route->distanceInMeters > 1000) {
+                Log::warning('RerouteStops: No duration available and distance is too high, skipping route segment', [
+                    'distance_m' => $route->distanceInMeters,
+                    'from'       => $start->station->name,
+                    'to'         => $end->station->name,
+                ]);
+                return;
+            }
 
                 $percentage = config('trwl.distance_deviation_threshold_percent', 15) / 100;
                 $upperLimit = $oldDistance * (1 + $percentage);
                 $lowerLimit = $oldDistance * (1 - $percentage);
                 $distance   = $route->distanceInMeters;
 
-                if ($distance === 0 || ($oldDistance !== 0 && ($distance > $upperLimit || $distance < $lowerLimit))) {
-                    Log::warning(
-                        sprintf('Distance deviation is greater than %d percent.', $percentage * 100),
-                        [
-                            'from'           => $start->station->name,
-                            'to'             => $end->station->name,
-                            'old_distance_m' => $oldDistance,
-                            'new_distance_m' => $distance,
-                            'upper_limit_m'  => $upperLimit,
-                            'lower_limit_m'  => $lowerLimit,
-                        ]
-                    );
-                    return;
-                }
-
-                $segment = $this->tripRepository->createRouteSegment(
-                    fromStation:      $start->station,
-                    toStation:        $end->station,
-                    encodedPolyline:  $encodedPolyline,
-                    duration:         $duration,
-                    pathType:         $pathType,
-                    distanceInMeters: $route->distanceInMeters
+            if ($distance === 0 || ($oldDistance !== 0 && ($distance > $upperLimit || $distance < $lowerLimit))) {
+                Log::warning(
+                    sprintf('Distance deviation is greater than %d percent.', $percentage * 100),
+                    [
+                        'from'           => $start->station->name,
+                        'to'             => $end->station->name,
+                        'old_distance_m' => $oldDistance,
+                        'new_distance_m' => $distance,
+                        'upper_limit_m'  => $upperLimit,
+                        'lower_limit_m'  => $lowerLimit,
+                    ]
                 );
-                $this->tripRepository->setRouteSegmentForStop($start, $segment);
-            } catch (\Exception $e) {
-                Log::error('RerouteStops: Failed to create route segment', ['error' => $e->getMessage()]);
-                report($e);
+                return;
             }
+
+            $segment = $this->tripRepository->createRouteSegment(
+                fromStation:      $start->station,
+                toStation:        $end->station,
+                encodedPolyline:  $encodedPolyline,
+                duration:         $duration,
+                pathType:         $pathType,
+                distanceInMeters: $route->distanceInMeters
+            );
+            $this->tripRepository->setRouteSegmentForStop($start, $segment);
         } catch (OpenRailRoutingResponseFailed|GuzzleException $e) {
-            $this->queryExceptions++;
+            Log::error('RerouteStops: Failed to create route segment', ['error' => $e->getMessage()]);
+            $this->queryExceptions++;// don't report  cURL error 28
+            if (str_contains($e->getMessage(), 'cURL error 28')) {
+                return;
+            }
+            report($e);
+        } catch (\Exception $e) {
+            Log::error('RerouteStops: Failed to create route segment', ['error' => $e->getMessage()]);
             report($e);
         }
     }
