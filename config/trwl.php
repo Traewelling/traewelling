@@ -4,7 +4,15 @@ return [
     'post_social'               => env('POST_SOCIAL', false),
 
     # ReRouting
-    'distance_deviation_threshold_percent' => env('DISTANCE_DEVIATION_THRESHOLD_PERCENT', 15),
+    'distance_deviation' => [
+        'threshold_percent' => (float) env('DISTANCE_DEVIATION_THRESHOLD_PERCENT', 20),
+        'threshold_percent_medium' => (float) env('DISTANCE_DEVIATION_THRESHOLD_PERCENT_MEDIUM', 25),
+        'threshold_percent_short' => (float) env('DISTANCE_DEVIATION_THRESHOLD_PERCENT_SHORT', 30),
+        'threshold_percent_shortest' => (float) env('DISTANCE_DEVIATION_THRESHOLD_PERCENT_SHORTEST', 40),
+        'shortest_distance' => (int) env('DISTANCE_DEVIATION_SHORTEST_DISTANCE', 400),
+        'short_distance' => (int) env('DISTANCE_DEVIATION_SHORT_DISTANCE', 2000),
+        'medium_distance' => (int) env('DISTANCE_DEVIATION_MEDIUM_DISTANCE', 15000),
+    ],
 
     # Polyline
     'polyline_storage_path'     => env('POLYLINE_STORAGE_PATH', 'polylines'),

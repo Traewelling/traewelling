@@ -79,6 +79,27 @@ class ReRoutingController extends Controller
         return $errorPercentage;
     }
 
+    private function getDeviationThreshold(int $oldDistance): array {
+        $percentage = config('trwl.distance_deviation.threshold_percent') / 100;
+        if ($oldDistance === 0) {
+            return [0, PHP_INT_MAX, 1.0];
+        } elseif ($oldDistance < config('trwl.distance_deviation.shortest_distance')) {
+            // for distances < 400 m, allow the highest deviation
+            $percentage = config('trwl.distance_deviation.threshold_percent_shortest') / 100;
+        } elseif ($oldDistance < config('trwl.distance_deviation.short_distance')) {
+            // for distances < 1 km, allow a higher deviation
+            $percentage = config('trwl.distance_deviation.threshold_percent_short') / 100;
+        } elseif ($oldDistance < config('trwl.distance_deviation.medium_distance')) {
+            // for distances < 10 km, allow a medium deviation
+            $percentage = config('trwl.distance_deviation.threshold_percent_medium') / 100;
+        }
+
+        $upperLimit = $oldDistance * (1 + $percentage);
+        $lowerLimit = $oldDistance * (1 - $percentage);
+
+        return [$lowerLimit, $upperLimit, $percentage];
+    }
+
     private function rerouteBetween(Stopover $start, Stopover $end, OpenRailRoutingProfile $pathType): void {
         Log::debug('RerouteStops', [$start, $end, $pathType]);
 
@@ -139,10 +160,9 @@ class ReRoutingController extends Controller
                 return;
             }
 
-                $percentage = config('trwl.distance_deviation_threshold_percent', 15) / 100;
-                $upperLimit = $oldDistance * (1 + $percentage);
-                $lowerLimit = $oldDistance * (1 - $percentage);
-                $distance   = $route->distanceInMeters;
+            $distance = $route->distanceInMeters;
+            [$lowerLimit, $upperLimit, $percentage] = $this->getDeviationThreshold($oldDistance);
+
 
             if ($distance === 0 || ($oldDistance !== 0 && ($distance > $upperLimit || $distance < $lowerLimit))) {
                 Log::warning(
@@ -185,5 +205,6 @@ class ReRoutingController extends Controller
             Log::error('RerouteStops: Failed to create route segment', ['error' => $e->getMessage()]);
             report($e);
         }
+
     }
 }
