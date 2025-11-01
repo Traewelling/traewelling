@@ -21,6 +21,7 @@ use Traewelling\GooglePolyline\PolylineTranscoder;
 class OpenRailRoutingService
 {
     private const string API_URL = 'https://routing.openrailrouting.org';
+    private const int TIMEOUT = 30;
 
 
     private Client $client;
@@ -28,6 +29,7 @@ class OpenRailRoutingService
     private function initClient(): void {
         $this->client = new Client([
                                        'base_uri' => self::API_URL,
+                                       'timeout'  => self::TIMEOUT,
                                        'cookies'  => true,
                                        'headers'  => [
                                            'User-Agent' => VersionController::getUserAgent(),
