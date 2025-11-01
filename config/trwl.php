@@ -5,6 +5,8 @@ return [
 
     # ReRouting
     'distance_deviation' => [
+        'cooldown_error_percent' => (float) env('DISTANCE_DEVIATION_COOLDOWN_ERROR_PERCENT', 10),
+        'cooldown_seconds' => (int) env('DISTANCE_DEVIATION_COOLDOWN_SECONDS', 60),
         'threshold_percent' => (float) env('DISTANCE_DEVIATION_THRESHOLD_PERCENT', 20),
         'threshold_percent_medium' => (float) env('DISTANCE_DEVIATION_THRESHOLD_PERCENT_MEDIUM', 25),
         'threshold_percent_short' => (float) env('DISTANCE_DEVIATION_THRESHOLD_PERCENT_SHORT', 30),
