@@ -33,7 +33,7 @@ class RouteSegment extends Model
     }
 
     public function stopOvers(): HasMany {
-        return $this->hasMany(StopOver::class, 'route_segment_id');
+        return $this->hasMany(Stopover::class, 'route_segment_id');
     }
 
     public function trips(): HasManyThrough {
