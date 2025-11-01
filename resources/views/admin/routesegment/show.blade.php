@@ -20,7 +20,7 @@
                 <h5 class="card-title">Trips using this Segment</h5>
                 <div class="flex flex-wrap">
                     @foreach($segment->trips as $trip)
-                        <a class="btn btn-primary btn-sm" href="{{ route('admin.trip.show', $trip) }}">Trip #{{ $trip->id }}</a>
+                        <a class="btn btn-primary btn-sm" href="{{ route('admin.trips.show', $trip) }}">Trip #{{ $trip->id }}</a>
                     @endforeach
                 </div>
             </div>

@@ -1,8 +1,26 @@
 <script setup lang="ts">
 import {trans} from "laravel-vue-i18n";
+import {useUserStore} from "../../stores/user";
+
+const user = useUserStore();
+
+const props = defineProps({
+  statusId: {
+    type: Number,
+    required: false,
+    default: null
+  },
+
+})
 
 function goHome() {
   window.location.href = "/";
+}
+
+function adminPanel() {
+  if (props.statusId) {
+    window.location.href = `/admin/statuses/${props.statusId || ''}/edit`;
+  }
 }
 </script>
 
@@ -26,6 +44,9 @@ function goHome() {
 
       <button type="button" class="btn btn-primary" @click="goHome">
         {{ trans("errors.actions.home") }}
+      </button>
+      <button v-if="user?.isAdmin && statusId" type="button" class="btn btn-secondary ms-2" @click="adminPanel">
+        {{ trans("menu.admin") }}
       </button>
     </div>
   </div>

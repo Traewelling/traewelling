@@ -32,11 +32,16 @@ class CacheKey
     private const string HAFAS_CACHE_SET      = '_HafasCacheSet_%s';
     private const string ICS_USER_MONTHLY     = 'IcsUserMonthly_%s_%s';
     private const string ICS_USER_CALCULATING = 'IcsUserMonthlyCalculating_%s_%s';
+    private const string REROUTE_POLYLINE_JOB = 'ReroutePolylineJob_%s';
 
 
     // formatting keys
     private const string FOR                  = '%s-for-%s';
     private const string FROM_TO              = '%s-from-%s-to-%s';
+
+    public static function getReroutePolylineJobKey(int $tripId): string {
+        return sprintf(self::REROUTE_POLYLINE_JOB, $tripId);
+    }
 
     public static function getHafasCacheHitKey(string $key): string {
         $key = str_replace('monitoring-counter-', '', $key);

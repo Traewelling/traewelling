@@ -6,7 +6,7 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="fs-5 card-title mb-4">Edit status</h2>
-                    <form method="GET" action="{{route('admin.status.edit')}}">
+                    <form method="GET" action="{{route('admin.statuses.find')}}">
                         <div class="row g-3 align-items-center">
                             <div class="col-auto">
                                 <label class="form-label" for="form-statusId">Status ID?</label>
@@ -56,12 +56,12 @@
                                 @foreach($lastStatuses as $status)
                                     <tr>
                                         <td>
-                                            <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}">
+                                            <a href="{{route('admin.statuses.edit', ['statusId' => $status->id])}}">
                                                 {{$status->id}}
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="{{route('admin.users.user', ['id' => $status->user->id])}}">
+                                            <a href="{{route('admin.users.show', ['id' => $status->user->id])}}">
                                                 {{'@'.$status->user->username}}
                                             </a>
                                             <br/>

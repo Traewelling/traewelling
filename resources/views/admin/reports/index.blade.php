@@ -42,7 +42,7 @@
                                 <td>#{{ $report->id }}</td>
                                 <td>
                                     @isset($report->reporter)
-                                        <a href="{{ route('admin.users.user', $report->reporter->id) }}">
+                                        <a href="{{ route('admin.users.show', $report->reporter->id) }}">
                                             {{ $report->reporter->name}}<br/>
                                             <small>{{ '@' . $report->reporter->username }}</small>
                                         </a>

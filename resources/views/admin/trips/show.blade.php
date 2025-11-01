@@ -1,4 +1,4 @@
-@php use App\Http\Controllers\Backend\User\ProfilePictureController; @endphp
+@php use App\Helpers\CacheKey;use App\Http\Controllers\Backend\User\ProfilePictureController; @endphp
 @extends('admin.layout')
 
 @section('title', 'Trip ' . $trip->id)
@@ -42,7 +42,7 @@
                             <td>
                                 {{ $trip->source?->name }}
                                 @isset($trip->user)
-                                    <a href="{{route('admin.users.user', ['id' => $trip->user_id])}}">
+                                    <a href="{{route('admin.users.show', ['id' => $trip->user_id])}}">
                                         <small>({{'@'.$trip->user->username}})</small>
                                     </a>
                                 @endisset
@@ -64,6 +64,22 @@
                                 @endisset
                             </td>
                         </tr>
+                        <tr>
+                            <th></th>
+                            <td>
+                                @if(Cache::has(CacheKey::getReroutePolylineJobKey($trip->id)))
+                                    <span class="text-warning fw-bold">
+                                        Reroute job is queued or running.
+                                    </span>
+                                @else
+                                    <a class="btn btn-primary btn-sm"
+                                       href="{{ route('admin.trips.reroute', ['id' => $trip->id]) }}"
+                                    >
+                                        Dispatch Reroute Job
+                                    </a>
+                                @endif
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -81,9 +97,9 @@
                                         <td>
                                             {{$checkin->user->name}}
                                             <small><a
-                                                    href="{{route('admin.users.user', ['id' => $checkin->user->id])}}">{{'@'.$checkin->user->username}}</a></small>
+                                                    href="{{route('admin.users.show', ['id' => $checkin->user->id])}}">{{'@'.$checkin->user->username}}</a></small>
                                             <br/>
-                                            <a href="{{route('admin.status.edit', ['statusId' => $checkin->status->id])}}">
+                                            <a href="{{route('admin.statuses.edit', ['statusId' => $checkin->status->id])}}">
                                                 #{{ $checkin->status->id }}
                                             </a>
                                         </td>
@@ -170,9 +186,10 @@
                                     </td>
                                     <td>
                                         @if ($stopover->route_segment_id)
-                                        <a class="btn btn-primary btn-sm" href="{{route('admin.routesegment.show', ['id' => $stopover->route_segment_id])}}">
-                                            ✅
-                                        </a>
+                                            <a class="btn btn-primary btn-sm"
+                                               href="{{route('admin.routesegment.show', ['id' => $stopover->route_segment_id])}}">
+                                                ✅
+                                            </a>
                                         @else
                                             <button class="btn btn-outline-grey btn-sm" disabled>
                                                 ❌

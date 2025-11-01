@@ -15,7 +15,7 @@ import Error404 from "../components/Errors/404.vue";
 const loading = ref(true);
 const status = ref<StatusResource | null>(null);
 const likedBy = ref<UserResource[]>([]);
-const statusId = parseInt(window.location.pathname.split('/').pop() || '0');
+const statusId = parseInt(window.location.pathname.split('/').pop() || 0);
 const user = useUserStore();
 const pageError = ref<"403" | "404" | null>(null);
 const stopovers = ref<StopoverResource[]>([]);
@@ -135,7 +135,7 @@ fetchLikes();
         </template>
 
         <template v-else-if="pageError === '403'">
-          <Error403/>
+          <Error403 :statusId="statusId"/>
         </template>
         <template v-else-if="pageError === '404'">
           <Error404/>

@@ -18,7 +18,7 @@ use Illuminate\View\View;
 
 class StatusEditController extends Controller
 {
-    public function renderMain(Request $request): View {
+    public function index(Request $request): View {
         $validated    = $request->validate([
                                                'userQuery' => ['nullable', 'max:255'],
                                            ]);
@@ -33,24 +33,27 @@ class StatusEditController extends Controller
             );
         }
 
-        return view('admin.status.main', [
+        return view('admin.statuses.index', [
             'lastStatuses' => $lastStatuses->paginate(10),
         ]);
     }
 
-    public function renderEdit(Request $request): View {
+    public function find(Request $request): RedirectResponse {
         $validated = $request->validate([
-                                            'statusId' => ['required', 'exists:statuses,id'],
+                                            'statusId' => ['required', 'integer', 'exists:statuses,id'],
                                         ]);
 
-        return view('admin.status.edit', [
-            'status' => Status::find($validated['statusId'])
+        return redirect()->route('admin.statuses.edit', ['statusId' => $validated['statusId']]);
+    }
+
+    public function renderEdit(int $statusId, Request $request): View {
+        return view('admin.statuses.edit', [
+            'status' => Status::findOrFail($statusId)
         ]);
     }
 
-    public function edit(Request $request): RedirectResponse {
+    public function edit(int $statusId, Request $request): RedirectResponse {
         $validated = $request->validate([
-                                            'statusId'         => ['required', 'exists:statuses,id'],
                                             'origin'           => ['required', 'exists:train_stations,id'],
                                             'destination'      => ['required', 'exists:train_stations,id'],
                                             'body'             => ['nullable', 'string'],
@@ -62,7 +65,7 @@ class StatusEditController extends Controller
                                             'hide_body'        => ['nullable', 'boolean'],
                                         ]);
 
-        $status = Status::find($validated['statusId']);
+        $status = Status::findOrFail($statusId);
 
         $originStation      = Station::find($validated['origin']);
         $destinationStation = Station::find($validated['destination']);
@@ -126,7 +129,7 @@ class StatusEditController extends Controller
 
         $status->update($payload);
 
-        return redirect()->route('admin.status.edit', ['statusId' => $status->id])
+        return redirect()->route('admin.statuses.edit', ['statusId' => $status->id])
                          ->with('alert-success', 'Status successfully updated');
     }
 

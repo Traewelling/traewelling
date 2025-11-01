@@ -36,7 +36,7 @@
                             <tr>
                                 @foreach($users as $user)
                                     <td>
-                                        <a href="{{ route('admin.users.user', ['id' => $user->id]) }}">
+                                        <a href="{{ route('admin.users.show', ['id' => $user->id]) }}">
                                             {{ '@'.$user->username }}
                                         </a>
                                         <code>({{ $user->id }})</code>

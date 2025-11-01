@@ -2,12 +2,14 @@
 
 namespace App\Jobs;
 
+use App\Helpers\CacheKey;
 use App\Http\Controllers\ReRoutingController;
 use App\Models\Trip;
 use Cache;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Foundation\Bus\PendingDispatch;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
@@ -18,15 +20,20 @@ class RefreshPolyline implements ShouldQueue
     use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
     private const string REFRESH_POLYLINE_COOLDOWN_CACHE_KEY = 'refresh_polyline_cooldown';
-    private Trip $trip;
+    private Trip                $trip;
     private ReRoutingController $reRoutingController;
 
     public int $tries   = 3;
     public int $backoff = 60;
 
     public function __construct(Trip $trip, ?ReRoutingController $reRoutingController = null) {
-        $this->trip = $trip;
+        $this->trip                = $trip;
         $this->reRoutingController = $reRoutingController ?? app(ReRoutingController::class);
+    }
+
+    public static function dispatch(Trip $trip, ?ReRoutingController $reRoutingController = null): PendingDispatch {
+        Cache::set(CacheKey::getReroutePolylineJobKey($trip->id), true, now()->addMinutes(5));
+        return static::newPendingDispatch(new static($trip, $reRoutingController));
     }
 
     public function handle(): void {
@@ -55,5 +62,7 @@ class RefreshPolyline implements ShouldQueue
             Cache::set(self::REFRESH_POLYLINE_COOLDOWN_CACHE_KEY, true, now()->addSeconds(config('trwl.distance_deviation.cooldown_seconds')));
             throw new \Exception('Pausing RefreshPolyline Job due to cooldown');
         }
+
+        Cache::forget(CacheKey::getReroutePolylineJobKey($this->trip->id));
     }
 }
