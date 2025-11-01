@@ -8,6 +8,7 @@ use App\Http\Controllers\Frontend\Admin\LicensesController;
 use App\Http\Controllers\Frontend\Admin\MotisSourceController;
 use App\Http\Controllers\Frontend\Admin\OperatorController;
 use App\Http\Controllers\Frontend\Admin\ReportController;
+use App\Http\Controllers\Frontend\Admin\RouteSegmentController;
 use App\Http\Controllers\Frontend\Admin\StationController;
 use App\Http\Controllers\Frontend\Admin\StatusEditController;
 use App\Http\Controllers\Frontend\Admin\TripController;
@@ -74,6 +75,11 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
             Route::get('/{id}', [TripController::class, 'renderTrip'])
                  ->whereNumber('id')
                  ->name('admin.trip.show');
+        });
+
+        Route::prefix('routesegment')->group(function() {
+            Route::get('/{id}', [RouteSegmentController::class, 'renderSegment'])
+                 ->name('admin.routesegment.show');
         });
 
         Route::prefix('stations')->group(function() {

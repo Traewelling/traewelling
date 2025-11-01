@@ -4,7 +4,6 @@
 @section('title', 'Trip ' . $trip->id)
 
 @section('content')
-
     <div class="row">
         <div class="col-md-4">
             <div class="card mb-3">
@@ -127,6 +126,7 @@
                                 <th scope="col">RL100</th>
                                 <th scope="col">Ankunft soll / ist</th>
                                 <th scope="col">Abfahrt soll / ist</th>
+                                <th scope="col">Map</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -167,6 +167,17 @@
                                             style="color: #{{ ProfilePictureController::generateBackgroundHash($stopover->departure_real?->format('ddmm') ?? '') }};">
                                         {{userTime($stopover->departure_real)}}
                                         </span>
+                                    </td>
+                                    <td>
+                                        @if ($stopover->route_segment_id)
+                                        <a class="btn btn-primary btn-sm" href="{{route('admin.routesegment.show', ['id' => $stopover->route_segment_id])}}">
+                                            ✅
+                                        </a>
+                                        @else
+                                            <button class="btn btn-outline-grey btn-sm" disabled>
+                                                ❌
+                                            </button>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
