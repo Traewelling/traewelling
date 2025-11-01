@@ -6600,7 +6600,6 @@
                     "geometry": {
                         "properties": {
                             "type": {
-                                "type": "object",
                                 "example": "LineString"
                             },
                             "coordinates": {
