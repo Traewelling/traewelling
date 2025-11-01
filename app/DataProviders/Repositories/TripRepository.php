@@ -20,7 +20,23 @@ class TripRepository
     public function tryToSaveStopovers(Trip $trip, Collection $stopovers): void {
         foreach ($stopovers as $stopover) {
             try {
-                $trip->stopovers()->save($stopover);
+                $trip->stopovers()->updateOrCreate(
+                    [
+                        'trip_id'           => $trip->trip_id,
+                        'train_station_id'  => $stopover->station->id,
+                        'arrival_planned'   => $stopover->arrival_planned,
+                        'departure_planned' => $stopover->departure_planned,
+                    ],
+                    [
+                        'arrival_real'               => $stopover->arrival_real,
+                        'departure_real'             => $stopover->departure_real,
+                        'arrival_platform_planned'   => $stopover->arrival_platform_planned,
+                        'departure_platform_planned' => $stopover->departure_platform_planned,
+                        'arrival_platform_real'      => $stopover->arrival_platform_real,
+                        'departure_platform_real'    => $stopover->departure_platform_real,
+                        'station_identifier_id'      => $stopover->station_identifier_id,
+                    ]
+                );
             } catch (Throwable $e) {
                 Log::critical(
                     'Failed creating Stopover: ' . $e->getMessage(),
