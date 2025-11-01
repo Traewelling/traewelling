@@ -46,8 +46,8 @@ class RefreshPolyline implements ShouldQueue
         Log::debug('RefreshPolyline Job started', ['trip_id' => $this->trip->id]);
         $percentage = $this->reRoutingController->rerouteStops($this->trip);
 
-        if ($percentage > 10) {
-            Cache::set(self::REFRESH_POLYLINE_COOLDOWN_CACHE_KEY, true, now()->addMinutes());
+        if ($percentage > config('trwl.distance_deviation.cooldown_error_percent')) {
+            Cache::set(self::REFRESH_POLYLINE_COOLDOWN_CACHE_KEY, true, now()->addSeconds(config('trwl.distance_deviation.cooldown_seconds')));
             throw new \Exception('Pausing RefreshPolyline Job due to cooldown');
         }
     }
