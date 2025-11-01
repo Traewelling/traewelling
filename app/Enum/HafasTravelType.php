@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
+use App\OpenRailRoutingProfile;
+
 /**
  * @OA\Schema(
  *     title="category",
@@ -45,8 +47,17 @@ enum HafasTravelType: string
 
     public function onRails(): bool {
         return match ($this) {
-            static::BUS, static::FERRY, static::TAXI => false,
-            default                                  => true,
+            HafasTravelType::BUS, HafasTravelType::FERRY, HafasTravelType::TAXI => false,
+            default                                                             => true,
+        };
+    }
+
+    public function getORRProfile(): ?OpenRailRoutingProfile {
+        return match ($this) {
+            HafasTravelType::NATIONAL_EXPRESS, HafasTravelType::NATIONAL                        => OpenRailRoutingProfile::TGV_ALL,
+            HafasTravelType::TRAM, HafasTravelType::SUBWAY                                      => OpenRailRoutingProfile::TRAM_TRAIN,
+            HafasTravelType::REGIONAL_EXP, HafasTravelType::REGIONAL, HafasTravelType::SUBURBAN => OpenRailRoutingProfile::ALL_TRACKS,
+            default                                                                             => null,
         };
     }
 }

@@ -658,6 +658,39 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property string $id
+ * @property int $from_station_id
+ * @property int $to_station_id
+ * @property int $distance Distance in meters
+ * @property int $duration Duration in seconds
+ * @property string|null $path_type Type of routing path, e.g., rail, road, trail
+ * @property string $polyline
+ * @property int $polyline_precision
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Station $fromStation
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stopover> $stopOvers
+ * @property-read int|null $stop_overs_count
+ * @property-read \App\Models\Station $toStation
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereDistance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereDuration($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereFromStationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment wherePathType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment wherePolyline($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment wherePolylinePrecision($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereToStationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereUpdatedAt($value)
+ */
+	class RouteSegment extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property string $id
  * @property int|null $user_id
  * @property string|null $ip_address
  * @property string|null $user_agent
@@ -733,6 +766,7 @@ namespace App\Models{
  * @property-read int|null $areas_count
  * @property-read string|null $ifopt
  * @property-read string|null $localized_name
+ * @property-read \phpGPX\Models\Point $location
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StationName> $names
  * @property-read int|null $names_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StationIdentifier> $stationIdentifiers
@@ -779,6 +813,7 @@ namespace App\Models{
  * @property float|null $longitude
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \phpGPX\Models\Point $location
  * @property-read \App\Models\Station $station
  * @method static \Database\Factories\StationIdentifierFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier newModelQuery()
@@ -930,7 +965,9 @@ namespace App\Models{
  * @property-read bool $is_departure_cancelled
  * @property-read bool $is_departure_delayed
  * @property-read string|null $platform
+ * @property-read \App\Models\RouteSegment|null $routeSegment
  * @property-read \App\Models\Station $station
+ * @property-read \App\Models\StationIdentifier|null $stationIdentifier
  * @property-read \App\Models\Station $trainStation
  * @property-read \App\Models\Trip $trip
  * @method static \Database\Factories\StopoverFactory factory($count = null, $state = [])

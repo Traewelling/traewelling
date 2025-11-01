@@ -35,6 +35,7 @@
     "predis/predis": "^3.0",
     "revolution/laravel-mastodon-api": "^3.0",
     "romanzipp/laravel-queue-monitor": "^5.0",
+    "sibyx/phpgpx": "1.3.0",
     "spatie/icalendar-generator": "^3.0",
     "spatie/laravel-activitylog": "^4.7",
     "spatie/laravel-permission": "^6.1",

@@ -101,20 +101,28 @@ class StationRepository
                                                                      ])->first();
     }
 
-    public function updateStationIdentifier(?Station $station, string $identifier, ?DataProvider $source = null, StationIdentifierType $type = StationIdentifierType::MOTIS): void {
+    public function updateStationIdentifier(?Station $station, string $identifier, ?DataProvider $source = null, StationIdentifierType $type = StationIdentifierType::MOTIS, ?float $latitude = null, ?float $longitude = null): void {
         if (!$station) {
             return;
         }
+
+        $payload = [
+            'station_id' => $station->id,
+            'name'       => $station->name,
+        ];
+
+        if ($latitude !== null && $longitude !== null) {
+            $payload['latitude']  = $latitude;
+            $payload['longitude'] = $longitude;
+        }
+
         StationIdentifier::updateOrCreate(
             [
                 'type'       => $type,
                 'origin'     => $source?->value ?? null,
                 'identifier' => $identifier,
             ],
-            [
-                'station_id' => $station->id,
-                'name'       => $station->name
-            ]
+            $payload
         );
     }
 
@@ -147,7 +155,9 @@ class StationRepository
             ],
             [
                 'station_id' => $station->id,
-                'name'       => $rawStation['name']
+                'name'       => $rawStation['name'],
+                'latitude'   => $coordinates->latitude,
+                'longitude'  => $coordinates->longitude,
             ]
         );
         return $station;
@@ -175,13 +185,30 @@ class StationRepository
         $station->areas()->sync($newAreas);
     }
 
-    public function updateOrCreateByIfopt(mixed $stationId, DataProvider $source): ?Station {
+    public function getStationIdentifierByIdentifier(
+        string $identifier,
+        DataProvider $source,
+        string $type = 'motis'
+    ): ?StationIdentifier {
+        return StationIdentifier::where([
+                                            'identifier' => $identifier,
+                                            'origin'     => $source->value,
+                                            'type'       => $type,
+                                        ])->first();
+    }
+
+    public function updateOrCreateByIfopt(
+        mixed $stationId,
+        DataProvider $source,
+        ?float $latitude = null,
+        ?float $longitude = null
+    ): ?Station {
         $station = null;
         // currently we can only handle DELFI, because other providers don't seem to use (real) ifopt ids
         if (str_starts_with($stationId, 'de-DELFI_')) {
             $ifopt   = str_replace('de-DELFI_', '', $stationId);
             $station = $this->getStationByIfopt($ifopt);
-            $this->updateStationIdentifier($station, $stationId, $source);
+            $this->updateStationIdentifier($station, $stationId, $source, StationIdentifierType::MOTIS, $latitude, $longitude);
         }
         return $station;
     }

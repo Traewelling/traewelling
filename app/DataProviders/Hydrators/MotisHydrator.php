@@ -114,8 +114,9 @@ class MotisHydrator
     }
 
     private function getStopoverData($station, mixed $rawStop, DataProvider $source, bool $realTime = false): array {
-        $station = $station ?? $this->stationRepository->updateOrCreateByIfopt($rawStop['stopId'], $source);
-        $station = $station ?? $this->stationRepository->createMotisStationIdentifier($rawStop, $source);
+        $station    = $station ?? $this->stationRepository->updateOrCreateByIfopt($rawStop['stopId'], $source, $rawStop['lat'], $rawStop['lon']);
+        $station    = $station ?? $this->stationRepository->createMotisStationIdentifier($rawStop, $source);
+        $identifier = $this->stationRepository->getStationIdentifierByIdentifier($rawStop['stopId'], $source);
 
         $departurePlanned = isset($rawStop['scheduledDeparture']) ? Carbon::parse($rawStop['scheduledDeparture']) : null;
         $departureReal    = isset($rawStop['departure']) ? Carbon::parse($rawStop['departure']) : null;
@@ -135,6 +136,7 @@ class MotisHydrator
             'departure_platform_planned' => $platformPlanned,
             'arrival_platform_real'      => $realTime ? $platformReal : null,
             'departure_platform_real'    => $realTime ? $platformReal : null,
+            'station_identifier_id'      => $identifier?->id ?? null,
         ];
     }
 
@@ -302,7 +304,7 @@ class MotisHydrator
                 $departureStation = $this->stationRepository->getStationsByIdentifiers([$rawDepartureStation['stopId']], $source)->first();
                 if ($departureStation === null) {
                     $stationId        = $rawDepartureStation['stopId'];
-                    $departureStation = $this->stationRepository->updateOrCreateByIfopt($stationId, $source, $this);
+                    $departureStation = $this->stationRepository->updateOrCreateByIfopt($stationId, $source, $rawDepartureStation['lat'], $rawDepartureStation['lon']);
                     // if station does not exist, request it from API
                     $departureStation = $departureStation ?? $this->stationRepository->createMotisStationIdentifier($rawDepartureStation, $source);
                 }

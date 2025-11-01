@@ -245,10 +245,15 @@ abstract class TrainCheckinController extends Controller
         $oldPoints   = $checkin->points;
         $oldDistance = $checkin->distance;
 
-        if ($distance === 0 || ($oldDistance !== 0 && $distance / $oldDistance >= 1.15)) {
+        $percentage = config('trwl.distance_deviation_threshold_percent', 15) / 100;
+        $upperLimit = $oldDistance * (1 + $percentage);
+        $lowerLimit = $oldDistance * (1 - $percentage);
+
+        if ($distance === 0 || ($oldDistance !== 0 && ($distance > $upperLimit || $distance < $lowerLimit))) {
             Log::debug(sprintf(
-                           'Distance deviation for status #%d is greater than 15 percent. Original: %d, new: %d',
+                           'Distance deviation for status #%d is greater than %d percent. Original: %d, new: %d',
                            $status->id,
+                            $percentage * 100,
                            $oldDistance,
                            $distance
                        ));

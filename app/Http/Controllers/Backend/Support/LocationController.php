@@ -10,7 +10,6 @@ use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Trip;
 use App\Services\GeoService;
-use Cache;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
@@ -204,7 +203,7 @@ class LocationController
         try {
             $geoJson = $this->getPolylineBetween();
             if ($geoJson instanceof FeatureCollection) {
-                return $geoJson->features[0]->getCoordinates($invert);
+                return $geoJson->features->first()->getCoordinates($invert);
             }
 
             $mapLines = [];
@@ -224,6 +223,41 @@ class LocationController
                 [$this->destination->station->longitude, $this->destination->station->latitude]
             ];
         }
+    }
+
+    private function getPolylineFromRouteSegments(): ?FeatureCollection {
+        $coordinates   = [];
+        $routeSegments = 0;
+        $firstStopHit = false;
+        foreach ($this->trip->stopovers as $stopover) {
+            if (!$firstStopHit) {
+                if ($stopover->is($this->origin)) {
+                    $firstStopHit = true;
+                } else {
+                    continue;
+                }
+            }
+            if ($stopover->routeSegment === null) {
+                $coordinates[] = new Coordinate(
+                    $stopover->station->latitude,
+                    $stopover->station->longitude
+                );
+                $routeSegments++;
+                continue;
+            }
+            if ($stopover->is($this->destination)) {
+                break;
+            }
+            $coordinates = array_merge($coordinates, $stopover->routeSegment->getCoordinates());
+            $routeSegments++;
+        }
+
+        if (empty($coordinates) || $routeSegments < 1) {
+            return null;
+        }
+
+        $features = collect([new Feature($coordinates)]);
+        return new FeatureCollection($features);
     }
 
     private function createPolylineFromStopovers(): FeatureCollection {
@@ -290,7 +324,14 @@ class LocationController
 
     private function getPolylineBetween(bool $preserveKeys = true): stdClass|FeatureCollection {
         $this->trip->loadMissing(['stopovers.station']);
-        $geoJson = $this->getPolylineWithTimestamps();
+        $lineString = $this->getPolylineFromRouteSegments();
+        if ($lineString) {
+            return $lineString;
+        }
+
+        // lineString will be null if no route segments are available
+        // if null is given to getPolylineWithTimestamps, it will fallback to the trip's polyline
+        $geoJson = $this->getPolylineWithTimestamps($lineString);
         if (count((array) $geoJson->features) === 0) {
             $stopoversPolyline = $this->createPolylineFromStopovers();
             $geoJson           = $this->getPolylineWithTimestamps(json_encode($stopoversPolyline));
@@ -324,8 +365,22 @@ class LocationController
         return $geoJson;
     }
 
+    private function hasEnoughRouteSegments(): bool {
+        $stopovers                = $this->trip->stopovers->sortBy('departure');
+
+        $routeSegments = 0;
+        foreach ($stopovers as $stopover) {
+            if ($stopover->route_segment_id) {
+                $routeSegments++;
+            }
+        }
+
+        return ($routeSegments / $stopovers->count()) >= 0.5;
+    }
+
     public function calculateDistance(): int {
         if (
+            $this->hasEnoughRouteSegments() ||
             $this->trip->polyline === null ||
             $this->trip->polyline?->polyline === null ||
             strlen($this->trip->polyline?->polyline) < 10
@@ -357,6 +412,10 @@ class LocationController
             report($e);
         }
 
+        if ($distance === 0) {
+            $distance = $this->calculateDistanceByStopovers();
+        }
+
         return $distance;
     }
 
@@ -375,6 +434,11 @@ class LocationController
         $lastStopover = null;
         foreach ($stopovers as $stopover) {
             if ($lastStopover === null) {
+                $lastStopover = $stopover;
+                continue;
+            }
+            if ($stopover->route_segment_id) {
+                $distance += $stopover->routeSegment->distance;
                 $lastStopover = $stopover;
                 continue;
             }
