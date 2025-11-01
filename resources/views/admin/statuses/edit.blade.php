@@ -24,7 +24,7 @@
                         <div class="col-8">
                             {{$status->user->name}}
                             <small>
-                                <a href="{{route('admin.users.user', ['id' => $status->user->id])}}">
+                                <a href="{{route('admin.users.show', ['id' => $status->user->id])}}">
                                     {{'@'.$status->user->username}}
                                 </a>
                             </small>
@@ -92,7 +92,7 @@
                                 <small>(Operator: {{$status->checkin->trip->operator?->name}})</small>
                             @endisset
                             <br/>
-                            <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip->id])}}">
+                            <a href="{{route('admin.trips.show', ['id' => $status->checkin->trip->id])}}">
                                 {{ $status->checkin->id }} ({{ $status->checkin->trip->source }})
                             </a>
                         </div>
@@ -115,9 +115,8 @@
             <div class="card mb-2">
                 <div class="card-header">Moderation</div>
                 <div class="card-body">
-                    <form method="POST" action="{{route('admin.status.edit')}}">
+                    <form method="POST" action="{{route('admin.statuses.edit', ['statusId' => $status->id])}}">
                         @csrf
-                        <input type="hidden" name="statusId" value="{{$status->id}}"/>
 
                         <div class="row mb-2">
                             <div class="col">

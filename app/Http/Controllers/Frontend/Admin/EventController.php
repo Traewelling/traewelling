@@ -39,13 +39,13 @@ class EventController extends Controller
         'event_end'            => ['nullable', 'date', 'before_or_equal:checkin_end'],
     ];
 
-    public function renderList(Request $request): View {
+    public function index(Request $request): View {
         $queryBase = Event::query();
         if ($request->has('query')) {
             $queryBase->where('name', 'LIKE', '%' . strip_tags($request->get('query')) . '%');
         }
 
-        return view('admin.events.list', [
+        return view('admin.events.index', [
             'events_future'  => $queryBase->clone()
                                           ->orderBy('checkin_start')
                                           ->whereDate('checkin_start', '>', DB::raw('now()'))

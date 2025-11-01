@@ -37,7 +37,7 @@ class RouteSegment extends Model
     }
 
     public function trips(): HasManyThrough {
-        return $this->hasManyThrough(Trip::class, StopOver::class, 'route_segment_id', 'trip_id', 'id', 'trip_id');
+        return $this->hasManyThrough(Trip::class, Stopover::class, 'route_segment_id', 'trip_id', 'id', 'trip_id');
     }
 
     /**

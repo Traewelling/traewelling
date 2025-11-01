@@ -9,9 +9,9 @@ use Illuminate\View\View;
 class ReportController extends Controller
 {
 
-    public function renderReports(): View {
+    public function index(): View {
         $this->authorize('viewAny', Report::class);
-        return view('admin.reports.list', [
+        return view('admin.reports.index', [
             'reports' => Report::orderByDesc('status')->orderByDesc('created_at')->paginate(15),
         ]);
     }

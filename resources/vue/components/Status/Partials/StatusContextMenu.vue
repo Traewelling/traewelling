@@ -274,7 +274,7 @@ async function handleBlock() {
             <hr class="dropdown-divider"/>
           </li>
           <li>
-            <a :href="`/admin/status/edit?statusId=${status.id}`" class="dropdown-item">
+            <a :href="`/admin/statuses/${status.id}/edit`" class="dropdown-item">
               <div class="dropdown-icon-suspense">
                 <i class="fas fa-tools" aria-hidden="true"></i>
               </div>

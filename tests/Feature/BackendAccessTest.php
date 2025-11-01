@@ -14,7 +14,7 @@ class BackendAccessTest extends FeatureTestCase
     public function testDefaultUserCantAccessBackend(): void {
         $user = User::factory()->create();
         $this->actingAs($user)
-             ->get(route('admin.dashboard'))
+             ->get(route('admin.welcome'))
              ->assertForbidden();
     }
 
@@ -29,7 +29,7 @@ class BackendAccessTest extends FeatureTestCase
         $user = User::factory()->create();
         $user->assignRole('admin');
         $this->actingAs($user)
-             ->get(route('admin.dashboard'))
+             ->get(route('admin.welcome'))
              ->assertStatus(200);
     }
 
@@ -37,14 +37,14 @@ class BackendAccessTest extends FeatureTestCase
         $user = User::factory()->create();
         $user->assignRole('event-moderator');
         $this->actingAs($user)
-             ->get(route('admin.dashboard'))
+             ->get(route('admin.welcome'))
              ->assertStatus(200);
     }
 
     public function testDefaultUserCantAccessUserDetailPage(): void {
         $user = User::factory()->create();
         $this->actingAs($user)
-             ->get(route('admin.users.user', ['id' => $user->id]))
+             ->get(route('admin.users.show', ['id' => $user->id]))
              ->assertForbidden();
     }
 
@@ -52,7 +52,7 @@ class BackendAccessTest extends FeatureTestCase
         $user = User::factory()->create();
         $user->assignRole('admin');
         $this->actingAs($user)
-             ->get(route('admin.users.user', ['id' => $user->id]))
+             ->get(route('admin.users.show', ['id' => $user->id]))
              ->assertStatus(200);
     }
 
@@ -60,7 +60,7 @@ class BackendAccessTest extends FeatureTestCase
         $user = User::factory()->create();
         $user->assignRole('event-moderator');
         $this->actingAs($user)
-             ->get(route('admin.users.user', ['id' => $user->id]))
+             ->get(route('admin.users.show', ['id' => $user->id]))
              ->assertForbidden();
     }
 

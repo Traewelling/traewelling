@@ -21,7 +21,7 @@ use Illuminate\View\View;
 class StationController extends Controller
 {
 
-    public function renderList(Request $request): View|RedirectResponse {
+    public function index(Request $request): View|RedirectResponse {
         $this->authorize('viewAny', Station::class);
         $stations = Station::orderByDesc('created_at');
         if ($request->has('query')) {
@@ -43,12 +43,12 @@ class StationController extends Controller
                 return redirect()->route('admin.station', ['id' => $stations->first()->id]);
             }
         }
-        return view('admin.stations.list', [
+        return view('admin.stations.index', [
             'stations' => $stations->paginate(20),
         ]);
     }
 
-    public function renderStation(int $id): View {
+    public function show(int $id): View {
         $this->authorize('viewAny', Station::class);
 
         $station = Station::findOrFail($id);
