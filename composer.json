@@ -44,7 +44,7 @@
     "spatie/laravel-sitemap": "^7.2.1",
     "spatie/laravel-validation-rules": "^3.2",
     "spatie/laravel-webhook-server": "^3.4",
-    "traewelling/google-polyline": "^0.1.0",
+    "traewelling/google-polyline": "^0.3.0",
     "trwl/socialite-mastodon": "^1.2"
   },
   "require-dev": {
