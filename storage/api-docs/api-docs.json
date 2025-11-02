@@ -2623,6 +2623,139 @@
                 ]
             }
         },
+        "/status/{id}/polyline/download": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "[Auth optional] Download polyline as GeoJSON",
+                "description": "Downloads the polyline of a single status as a .geojson file",
+                "operationId": "downloadPolyline",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation - file download",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Binary file response"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "User not authorized to access this status"
+                    },
+                    "404": {
+                        "description": "No status found for this id"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "read-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
+        "/status/{id}/polyline": {
+            "post": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Replace polyline of a status by uploading a GeoJSON file",
+                "description": "Uploads a new GeoJSON file to replace the polyline of the status's trip.",
+                "operationId": "updatePolyline",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Status ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1337
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "file": {
+                                        "description": "GeoJSON file containing a LineString to replace the existing polyline",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Polyline updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Polyline updated successfully"
+                                        },
+                                        "polyline": {
+                                            "description": "The updated polyline object",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid GeoJSON file or coordinates"
+                    },
+                    "403": {
+                        "description": "User not authorized"
+                    },
+                    "404": {
+                        "description": "Status or polyline not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write-statuses"
+                        ]
+                    },
+                    {
+                        "token": []
+                    }
+                ]
+            }
+        },
         "/stopovers/{ids}": {
             "get": {
                 "tags": [

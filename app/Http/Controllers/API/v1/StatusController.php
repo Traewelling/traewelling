@@ -14,6 +14,7 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
+use App\Models\PolyLine;
 use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Trip;
@@ -30,6 +31,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
+use Str;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StatusController extends Controller
 {
@@ -556,6 +559,172 @@ class StatusController extends Controller
                                  });
         $geoJson         = new FeatureCollection($geoJsonFeatures);
         return $ids ? new JsonResource($geoJson) : $this->sendError("");
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/status/{id}/polyline/download",
+     *      operationId="downloadPolyline",
+     *      tags={"Status"},
+     *      summary="[Auth optional] Download polyline as GeoJSON",
+     *      description="Downloads the polyline of a single status as a .geojson file",
+     *      @OA\Parameter (
+     *          name="id",
+     *          in="path",
+     *          description="Status ID",
+     *          example=1337,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation - file download",
+     *          @OA\JsonContent(type="string", example="Binary file response")
+     *       ),
+     *       @OA\Response(response=403, description="User not authorized to access this status"),
+     *       @OA\Response(response=404, description="No status found for this id"),
+     *       security={
+     *           {"passport": {"read-statuses"}}, {"token": {}}
+     *       }
+     *     )
+     *
+     * @param int $id
+     *
+     * @return StreamedResponse
+     */
+    public function downloadPolyline(int $id): StreamedResponse
+    {
+        try {
+            $status = Status::with('checkin.Trip.polyline')->findOrFail($id);
+            $this->authorize('view', $status);
+
+            $feature = new Feature(
+                LocationController::forStatus($status)->getMapLines(),
+                'LineString',
+                $status->id
+            );
+
+            $geoJson = new FeatureCollection(collect([$feature]));
+
+            return response()->streamDownload(
+                function () use ($geoJson) {
+                    echo json_encode($geoJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+                },
+                "status-{$id}.geojson",
+                [
+                    'Content-Type' => 'application/geo+json',
+                    'Content-Disposition' => "attachment; filename=status-$id.geojson",
+                ]
+            );
+        } catch (ModelNotFoundException) {
+            abort(404, 'No status found for this id');
+        } catch (AuthorizationException) {
+            abort(403, 'User not authorized to access this status');
+        }
+    }
+
+    /**
+     * @OA\Post(
+     *      path="/status/{id}/polyline",
+     *      operationId="updatePolyline",
+     *      tags={"Status"},
+     *      summary="Replace polyline of a status by uploading a GeoJSON file",
+     *      description="Uploads a new GeoJSON file to replace the polyline of the status's trip.",
+     *      @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          description="Status ID",
+     *          required=true,
+     *          example=1337,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  type="object",
+     *                  @OA\Property(
+     *                      property="file",
+     *                      description="GeoJSON file containing a LineString to replace the existing polyline",
+     *                      type="string",
+     *                      format="binary"
+     *                  )
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Polyline updated successfully",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="message", type="string", example="Polyline updated successfully"),
+     *              @OA\Property(property="polyline", type="object", description="The updated polyline object")
+     *          )
+     *      ),
+     *      @OA\Response(response=400, description="Invalid GeoJSON file or coordinates"),
+     *      @OA\Response(response=403, description="User not authorized"),
+     *      @OA\Response(response=404, description="Status or polyline not found"),
+     *      @OA\Response(response=422, description="Validation error"),
+     *      security={
+     *          {"passport": {"write-statuses"}}, {"token": {}}
+     *      }
+     * )
+     */
+    public function updatePolyline(Request $request, int $id): JsonResponse
+    {
+        try {
+            $status = Status::with('checkin.trip.polyline')->findOrFail($id);
+            $this->authorize('update', $status);
+
+            // Validate that a file is uploaded
+            $request->validate([
+                'file' => ['required', 'file']
+            ]);
+
+            $geojson = json_decode(file_get_contents($request->file('file')->getRealPath()), true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return $this->sendError('Uploaded file is not valid JSON', 422);
+            }
+
+            if (!isset($geojson['features']) || !is_array($geojson['features'])) {
+                return $this->sendError('Invalid GeoJSON file, does not contain features', 422);
+            }
+
+            $trip = $status->checkin->trip;
+
+            $newPolylineData = [
+                'hash' => Str::uuid(),
+                'polyline' => json_encode($geojson),
+                'source' => 'upload',
+            ];
+
+            if ($trip->polyline) {
+                $parentPolylineId = $trip->polyline_id;
+
+                $newPolylineData['parent_id'] = $parentPolylineId;
+            }
+
+            $newPolyline = PolyLine::create($newPolylineData);
+
+            $trip->update(['polyline_id' => $newPolyline->id]);
+
+            TrainCheckinController::refreshDistanceAndPoints($status);
+
+            return $this->sendResponse([
+                'message' => 'Polyline updated successfully',
+                'polyline' => $newPolyline
+            ]);
+
+        } catch (ValidationException $e) {
+            return $this->sendError($e->errors(), 422);
+        } catch (ModelNotFoundException $e) {
+            return $this->sendError('Status not found', 404);
+        } catch (AuthorizationException $e) {
+            return $this->sendError('Not authorized to update this status', 403);
+        } catch (\Exception $e) {
+            return $this->sendError('Unexpected error: ' . $e->getMessage(), 500);
+        }
     }
 
     /**

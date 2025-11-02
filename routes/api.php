@@ -67,6 +67,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::post('status/{statusId}/tags', [StatusTagController::class, 'store']);
             Route::put('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'update']);
             Route::delete('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'destroy']);
+            Route::post('status/{id}/polyline', [StatusController::class, 'updatePolyline']);
         });
         Route::group(['middleware' => ['scope:write-likes']], static function() {
             Route::post('status/{id}/like', [LikesController::class, 'create']);
@@ -201,6 +202,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::get('status/{id}', [StatusController::class, 'show']);
             Route::get('status/{id}/likes', [LikesController::class, 'show']);
             Route::get('status/{statusId}/tags', [StatusTagController::class, 'index']);
+            Route::get('status/{id}/polyline/download', [StatusController::class, 'downloadPolyline']);
             Route::get('statuses/{statusIds}/tags', [StatusTagController::class, 'indexForMultiple']);
             Route::get('stopovers/{parameters}', [StatusController::class, 'getStopovers']);
             Route::get('polyline/{parameters}', [StatusController::class, 'getPolyline']);

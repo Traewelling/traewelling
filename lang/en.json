@@ -182,6 +182,8 @@
   "menu.developed": "Developed with <i class=\"fas fa-heart fa-sm\" style=\"color: Tomato;\"></i> in the European Union. <a href=\"https://github.com/traewelling/traewelling\">Source code</a> licensed under <a href=\"https://www.gnu.org/licenses/agpl-3.0.html\">AGPLv3</a>.",
   "menu.discard": "Discard",
   "menu.export": "Export",
+  "menu.export-geojson": "Export GeoJSON",
+  "menu.upload-geojson": "Upload GeoJSON",
   "menu.globaldashboard": "Global Dashboard",
   "menu.gohome": "Go Home",
   "menu.legal-notice": "Legal notice",

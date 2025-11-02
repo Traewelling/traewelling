@@ -40,6 +40,31 @@ function share() {
   }
 }
 
+const fileInput = ref(null);
+
+function triggerFileSelect() {
+  fileInput.value.click();
+}
+
+async function onFileChange(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) return;
+
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    await api.status.updatePolyline(props.status.id, formData);
+
+    console.log('Uploaded new polyline successfully');
+  } catch (error) {
+    console.error('Error uploading polyline:', error);
+  } finally {
+    input.value = '';
+  }
+}
+
 function rideAlongUrl() {
   let queryParams = new URLSearchParams({
     tripId: props.status?.train.trip.toString(),
@@ -177,8 +202,32 @@ async function handleBlock() {
           <div class="dropdown-icon-suspense">
             <i class="fas fa-share" aria-hidden="true"></i>
           </div>
-          {{ trans('menu.share') }}
+          {{ trans("menu.share") }}
         </button>
+      </li>
+      <li>
+        <input
+          ref="fileInput"
+          type="file"
+          accept=".geojson,application/geo+json"
+          style="display: none"
+          aria-hidden="true"
+          @change="onFileChange"
+        />
+        <button class="dropdown-item" type="button" @click="triggerFileSelect">
+          <div class="dropdown-icon-suspense">
+            <i class="fas fa-file-upload" aria-hidden="true"></i>
+          </div>
+          {{ trans("menu.upload-geojson") }}
+        </button>
+      </li>
+       <li>
+        <a class="dropdown-item" :href="`/api/v1/status/${status.id}/polyline/download`" download>
+          <div class="dropdown-icon-suspense">
+            <i class="fas fa-share" aria-hidden="true"></i>
+          </div>
+          {{ trans("menu.export-geojson") }}
+        </a>
       </li>
       <template v-if="user.user">
         <template v-if="user.user.id == status.userDetails.id">
