@@ -34,7 +34,7 @@ class FeatureCollection implements \JsonSerializable
      *         ref="#/components/schemas/Coordinate"
      *     )
      * )
-     * @var Collection|Feature[]
+     * @var Collection<Feature>
      */
     public Collection $features;
 

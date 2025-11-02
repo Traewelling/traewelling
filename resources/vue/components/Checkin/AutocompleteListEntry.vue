@@ -6,7 +6,7 @@ export default defineComponent({
   name: "AutocompleteListEntry",
   props: {
     station: {
-      type: Object() as ShortStation,
+      type: Object as () => ShortStation,
       required: false
     },
     text: {
@@ -21,8 +21,8 @@ export default defineComponent({
   methods: {
     getArea(): string {
       if (this.$props.station?.areas) {
-        let defaultArea: null | Area = this.$props.station.areas.find((area: Area) => area.default);
-        let country: null | Area = this.$props.station.areas.find((area: Area) => area.adminLevel === 2);
+        const defaultArea: null | Area = this.$props.station.areas.find((area: Area) => area.default) || null;
+        const country: null | Area = this.$props.station.areas.find((area: Area) => area.adminLevel === 2) || null;
         if (defaultArea) {
           return country ? `${defaultArea.name}, ${country.name}` : defaultArea.name;
         }
@@ -38,10 +38,19 @@ export default defineComponent({
 
 <template>
   <li class="list-group-item autocomplete-item">
-    <a href="#" class="text-trwl">
-      <i v-show="prefix" :class="prefix"></i>
-      {{ station?.name || text }} <span v-if="station?.rilIdentifier">({{ station.rilIdentifier }})</span>
-      <span class="text-sm text-muted overflow-hidden">{{ getArea() }}</span>
+    <a href="#" class="text-trwl d-flex align-items-start gap-2">
+      <i v-show="prefix" :class="prefix" class="opacity-75 mt-1"></i>
+      <div class="flex-grow-1 overflow-hidden">
+        <div class="text-truncate">
+          {{ station?.name || text }}
+          <span v-if="station?.rilIdentifier" class="badge rounded-pill bg-light text-muted ms-1">
+            {{ station.rilIdentifier }}
+          </span>
+        </div>
+        <div v-if="getArea()" class="text-sm text-muted text-truncate">
+          {{ getArea() }}
+        </div>
+      </div>
     </a>
   </li>
 </template>
@@ -52,8 +61,6 @@ export default defineComponent({
   border: none;
   border-bottom: 1px solid var(--bs-light);
 }
-
-.autocomplete-item:last-child {
-  border-bottom: none;
-}
+.autocomplete-item:last-child { border-bottom: none; }
+.badge { vertical-align: middle; }
 </style>

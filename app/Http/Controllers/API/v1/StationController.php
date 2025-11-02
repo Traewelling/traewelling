@@ -14,11 +14,13 @@ use App\Models\StationIdentifier;
 use App\Models\Stopover;
 use App\Models\Trip;
 use App\Repositories\StationRepository;
+use App\StationIdentifierType;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
+use Log;
 
 class StationController extends Controller {
     private StationRepository $stationRepository;
@@ -231,10 +233,12 @@ class StationController extends Controller {
 
         if($provider === 'transitous') {
             try {
-                $station = $this->stationRepository->getStationByIdentifier($identifier, $provider)
+                $station = $this->stationRepository->getStationByIdentifier($identifier, StationIdentifierType::MOTIS, $provider)
                            ?? (new Motis(DataProvider::TRANSITOUS))->fetchStationFromApi($identifier);
             } catch(\Exception $e) {
-                return $this->sendError('Error fetching station from Transitous: ' . $e->getMessage(), 503);
+                report($e);
+                Log::error('Error fetching station from Transitous: ' . $e->getMessage());
+                return $this->sendError('Error fetching station from Transitous', 503);
             }
         }
 

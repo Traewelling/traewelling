@@ -1,11 +1,12 @@
 <script>
 import {DateTime} from "luxon";
 import {trans} from "laravel-vue-i18n";
-import Spinner from "./Spinner.vue";
+import Spinner from "./Loader/Spinner.vue";
+import LoadingSkeletonRows from "./Loader/LoadingSkeletonRows.vue";
 
 export default {
   name: "CheckinLineRun",
-  components: {Spinner},
+  components: {LoadingSkeletonRows, Spinner},
   props: {
     selectedTrain: {
       type: Object,
@@ -71,14 +72,14 @@ export default {
             }
 
             if (departure) {
-              if (departure < givenDeparture) {
+              if (departure.toMillis() < givenDeparture.toMillis()) {
                 return false; // Filter out past stops
-              } else if (departure > givenDeparture) {
+              } else if (departure.toMillis() > givenDeparture.toMillis()) {
                 return true; // Keep future stops
-              } else if (departure === givenDeparture) {
+              } else if (departure.equals(givenDeparture)) {
                 // Check if the stop is the selected train's stop at the given time
-                const identifier = this.useInternalIdentifiers ? item.id : item.evaIdentifier;
-                return Number(this.$props.selectedTrain.stop.id) === identifier;
+                const identifier = this.useInternalIdentifiers ? Number(item.id) : Number(item.evaIdentifier);
+                return Number(this.$props.selectedTrain.stop.id) !== identifier;
               }
             }
 
@@ -130,7 +131,9 @@ export default {
   <div v-if="error" class="text-trwl mx-auto p-2">
     <p>{{ this.errorMessage }}</p>
   </div>
-  <Spinner v-if="loading"/>
+
+  <LoadingSkeletonRows v-if="loading" :rowHeight="30" class="mt-4" :rows="10"/>
+
   <ul class="timeline" v-else>
     <li v-if="lineRun" v-for="item in lineRun.stopovers" :key="item" @click.prevent="handleSetDestination(item)">
       <i class="trwl-bulletpoint" aria-hidden="true"></i>

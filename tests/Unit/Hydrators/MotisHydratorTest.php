@@ -13,6 +13,7 @@ use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Services\LicenseService;
 use App\Services\OperatorService;
+use App\StationIdentifierType;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -63,7 +64,7 @@ class MotisHydratorTest extends UnitTestCase
             $station->setAttribute('id', $data['id']);
             $identifier = StationIdentifier::factory()->make([
                                                                  'identifier' => $data['stationIdentifier'],
-                                                                 'type'       => 'motis',
+                                                                 'type'       => StationIdentifierType::MOTIS,
                                                                  'origin'     => DataProviderEnum::TRANSITOUS->value,
                                                              ]);
             $station->setRelation(

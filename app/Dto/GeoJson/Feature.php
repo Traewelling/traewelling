@@ -14,11 +14,11 @@ class Feature implements \JsonSerializable
     private ?int       $statusId;
     private Properties $properties;
 
-    public function __construct(array $coordinates, string $type = 'LineString', ?int $statusId = null) {
+    public function __construct(array $coordinates, string $type = 'LineString', ?int $statusId = null, array $properties = []) {
         $this->coordinates = $coordinates;
         $this->type        = $type;
         $this->statusId    = $statusId;
-        $this->properties  = new Properties([]);
+        $this->properties  = new Properties($properties);
     }
 
     public function setStationId(int $stationId): void {
@@ -47,9 +47,25 @@ class Feature implements \JsonSerializable
         if (!$invert) {
             return $this->coordinates;
         }
-        return array_map(static function($coordinate) {
-            return [$coordinate->latitude, $coordinate->longitude];
-        }, $this->coordinates);
+        return $this->getCoordinateArray(true);
+    }
+
+    public function getCoordinateArray(bool $invert = false): array {
+        if ($invert) {
+            return array_map(
+                function($coordinate) {
+                    return [$coordinate->latitude, $coordinate->longitude];
+                },
+                $this->coordinates
+            );
+        }
+
+        return array_map(
+            function($coordinate) {
+                return [$coordinate->longitude, $coordinate->latitude];
+            },
+            $this->coordinates
+        );
     }
 
     public function toArray(): array {

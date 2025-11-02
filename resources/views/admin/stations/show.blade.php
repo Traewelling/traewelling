@@ -259,7 +259,7 @@
                         @foreach($latestCheckins as $checkin)
                             <tr>
                                 <td>
-                                    <a href="{{ route('admin.status.edit', ['statusId' => $checkin->status_id]) }}">
+                                    <a href="{{ route('admin.statuses.edit', ['statusId' => $checkin->status_id]) }}">
                                         {{ $checkin->id }}
                                     </a>
                                 </td>

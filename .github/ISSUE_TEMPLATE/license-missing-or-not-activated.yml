@@ -1,0 +1,99 @@
+name: "🔐 Lizenz fehlt / nicht aktiviert - License missing / not activated"
+description: "Melde eine fehlende oder in Träwelling nicht aktivierte Datenlizenz - Report a missing or not yet activated data license"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Worum geht's? | What's this about?**  
+        Dieses Formular ist nur für **Lizenzen von Datenquellen** gedacht - z. B. wenn eine Lizenz **fehlt**, **unklar ist** oder **in der Software Träwelling** fälschlicherweise **noch nicht aktiviert** wurde.  
+        This form is only for **data source licenses** — e.g., if a license is **missing**, **unclear**, or **not yet activated** in the **Traewelling software**.
+
+        **Nicht das Richtige? | Not the right place?**  
+        - 🧭 **Falscher Betreiber / Wrong operator:** https://github.com/Traewelling/transitous-wikidata-operator-matching/issues  
+        - 🗺️ **Fehlerhafte/fehlende Fahrplandaten / Wrong or missing schedule data (GTFS):** https://github.com/mfdz/GTFS-Issues/issues  
+        - 🔁 **Doppelte Fahrten / Duplicate trips:** https://github.com/public-transport/transitous/issues  
+        - 🐞 **Softwarefehler in Träwelling / Software bug in Traewelling:** Nutze bitte das Bug-Template im Repo. | Please use the bug template in this repo.
+
+  - type: checkboxes
+    id: confirm_scope
+    attributes:
+      label: Bestätigung - Confirmation
+      description: Bitte bestätige den Zweck dieses Tickets. - Please confirm the purpose of this ticket.
+      options:
+        - label: Es geht um eine Datenlizenz (fehlt/unklar/nicht aktiviert) - kein Bug, kein Datenfehler. - This is about a data license (missing/unclear/not activated) - not a bug, not a data error.
+          required: true
+
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: Typ - Type
+      description: Wähle die passendste Kategorie. - Choose the most fitting category.
+      options:
+        - "Lizenzangabe fehlt oder ist unklar - License statement missing or unclear"
+        - "Lizenz vorhanden, aber nicht in Träwelling aktiviert - License exists but not activated in Traewelling"
+        - "Lizenz vorhanden, aber (noch) nicht in Transitous gemappt - License exists but not (yet) mapped in Transitous"
+    validations:
+      required: true
+
+  - type: input
+    id: country
+    attributes:
+      label: Land - Country
+      description: Ländercode + Name (ISO-3166, z. B. DE - Germany). - Country code + name (ISO-3166, e.g., FR - France).
+      placeholder: "DE - Germany / FR - France"
+    validations:
+      required: true
+
+  - type: input
+    id: provider
+    attributes:
+      label: Anbieter (offizieller Name) - Provider (official name)
+      description: Offizieller Name der herausgebenden Stelle. - Official name of the publishing authority/agency.
+      placeholder: "z. B. Verkehrsverbund Musterstadt / Example Transit Agency"
+    validations:
+      required: true
+
+  - type: input
+    id: dataset_url
+    attributes:
+      label: Datensatz/Feed-URL (falls vorhanden) - Dataset/Feed URL (if available)
+      description: Link zum GTFS/Datensatz oder zur Veröffentlichungsseite. - Link to GTFS/dataset or publisher page.
+      placeholder: "https://..."
+    validations:
+      required: false
+
+  - type: input
+    id: license_name
+    attributes:
+      label: Lizenzname - License name
+      description: Kurzbezeichnung, z. B. „CC BY 4.0“, „DL-DE Zero 2.0“. - Short name, e.g., “CC BY 4.0”, “DL-DE Zero 2.0”.
+      placeholder: "z. B. CC BY 4.0 / DL-DE Zero 2.0"
+    validations:
+      required: false
+
+  - type: input
+    id: license_url
+    attributes:
+      label: Lizenzlink - License URL
+      description: Direktlink zum Lizenztext oder zur Lizenzseite. - Direct link to the license text or license page.
+      placeholder: "https://..."
+    validations:
+      required: true
+
+  - type: input
+    id: transitous_license_id
+    attributes:
+      label: Transitous-Lizenz-ID (falls bekannt) - Transitous license ID (if known)
+      description: Interner/öffentlicher Bezeichner im Transitous-Lizenz-Mapping. - Internal/public identifier in Transitous license mapping.
+      placeholder: "z. B. cc-by-4.0 / dl-de-zero-2.0"
+    validations:
+      required: false
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Details / Kontext - Details / context
+      description: Beschreibe kurz den Hintergrund, z. B. warum Aktivierung nötig ist (Attribution, rechtliche Freigabe, neue Quelle). - Briefly explain why activation is needed (attribution, legal clearance, new source).
+      placeholder: "Kurzbeschreibung / short explanation ..."
+    validations:
+      required: true

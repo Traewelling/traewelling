@@ -60,11 +60,12 @@ class TransportController extends Controller
     /**
      * Get the PolyLine Model from Database
      *
-     * @param string $polyline The Polyline as a json string given by hafas
+     * @param string      $polyline The Polyline as a json string given by hafas
+     * @param string|null $source
      *
      * @return PolyLine
      */
-    public static function getPolylineHash(string $polyline, string $source = null): PolyLine {
+    public static function getPolylineHash(string $polyline, ?string $source = null): PolyLine {
         return PolyLine::updateOrCreate([
                                             'hash' => md5($polyline),
                                         ], [

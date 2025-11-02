@@ -1,59 +1,81 @@
-name: "🇩🇪 Fehler auf Deutsch melden"
-description: "Melde einen Fehler oder ein unerwartetes Verhalten auf Deutsch"
+name: "🇩🇪 Softwarefehler auf Deutsch melden"
+description: "Melde einen Fehler oder ein unerwartetes Verhalten in der Software Träwelling (Software-Bug)"
 body:
   - type: markdown
     attributes:
       value: |
-        Vielen Dank, dass du uns hilfst, Traewelling zu verbessern! Bitte fülle das Formular so genau wie möglich aus, damit wir den Fehler schnell beheben können.
-        Bitte prüfe auch, ob dein Problem bereits in den [offenen Issues](https://github.com/Traewelling/traewelling/issues) existiert, oder ob das Verhalten unter den [experimentellen Features](https://github.com/Traewelling/traewelling/issues/3660) beschrieben ist.
-        In diesem Fall kannst du das Issue einfach kommentieren, anstatt ein neues zu erstellen.
+        **Stopp - Bitte zuerst prüfen, ob dein Anliegen ein Datenproblem ist:**
+        - 🧭 **Falscher Betreiber (Operator):** https://github.com/Traewelling/transitous-wikidata-operator-matching/issues
+        - 🗺️ **Fehlerhafte/fehlende Fahrplandaten (GTFS):** https://github.com/mfdz/GTFS-Issues/issues
+        - 🔁 **Doppelte Fahrten:** https://github.com/public-transport/transitous/issues
+
+        Wenn es **kein** Datenproblem ist, sondern die **Software Träwelling** sich falsch verhält, fülle bitte dieses Formular aus.
+
+        Bitte prüfe außerdem die [offenen Issues](https://github.com/Traewelling/traewelling/issues) **und** die [experimentellen Features](https://github.com/Traewelling/traewelling/issues/3660), um Duplikate zu vermeiden.  
+        **Hinweis:** Falls experimentelle Features aktiviert sind, kannst du sie bei Bedarf in deinen Einstellungen deaktivieren: https://traewelling.de/settings/profile
+
+  - type: checkboxes
+    id: not_data_issue
+    attributes:
+      label: Handelt es sich sicher nicht um ein Datenproblem?
+      description: Ich bestätige, dass dies **kein** Operator-/GTFS-/Duplikat-Problem ist, sondern ein **Softwarefehler** in der Software Träwelling.
+      options:
+        - label: Ja, es ist ein Träwelling-Softwarefehler (kein Datenproblem).
+          required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Betroffene URL (falls vorhanden)
+      description: Seite/Ansicht, auf der der Fehler auftritt.
+      placeholder: "https://traewelling.de/..."
+
   - type: textarea
     id: description
     attributes:
       label: Beschreibe das Problem
-      description: Bitte schildere uns verständlich, was nicht funktioniert hat. Füge gerne Screenshots hinzu und achte dabei auf die Anonymisierung persönlicher Daten.
+      description: Was funktioniert nicht? Gern Screenshots hinzufügen (bitte persönliche Daten schwärzen).
       placeholder: |
-        Beispiel: 
-        "Wenn ich auf 'Login' klicke, erscheint eine Fehlermeldung ... 
-         Ich kann mich nicht anmelden ... 
-         Hier ist ein Screenshot (Daten geschwärzt) ..."
+        Beispiel:
+        - "Beim Klick auf 'Login' erscheint eine Fehlermeldung ..."
+        - "Ich kann mich nicht anmelden ..."
     validations:
       required: true
 
   - type: textarea
     id: steps_to_reproduce
     attributes:
-      label: Was hast du Schritt für Schritt gemacht, bevor der Fehler auftrat?
-      description: Je genauer die Beschreibung, desto schneller können wir den Fehler nachstellen und beheben.
+      label: Schritte zum Reproduzieren
+      description: Je genauer, desto schneller können wir den Fehler nachstellen.
       placeholder: |
-        1. Webseite geöffnet ...
-        2. Auf 'Login' geklickt ...
-        3. ...
+        1) Seite öffnen ...
+        2) Auf 'Login' klicken ...
+        3) ...
     validations:
       required: true
 
   - type: textarea
     id: expected_behavior
     attributes:
-      label: Was hast du erwartet?
-      description: Wie hätte das System deiner Meinung nach eigentlich reagieren sollen?
-      placeholder: |
-        Ich dachte, ich würde nach dem Login zu einer Bestätigungsseite weitergeleitet werden ...
-    validations:
-      required: false
+      label: Erwartetes Verhalten
+      placeholder: "Nach dem Login sollte ich zur Startseite weitergeleitet werden ..."
+
+  - type: textarea
+    id: env
+    attributes:
+      label: Umgebung
+      description: Gerät, Betriebssystem, Browser + Version (z. B. "Android 14, Chrome 126", "Windows 11, Firefox 129").
+      placeholder: "z. B. iPhone 15, iOS 18.0, Safari"
 
   - type: textarea
     id: browser_logs
     attributes:
-      label: Browser-Konsole oder Fehlermeldungen (optional)
-      description: Falls du weißt, wie du die Browser-Konsole öffnest, kopiere hier bitte relevante Logs. Andernfalls kannst du dieses Feld leer lassen.
+      label: Browser-Konsole / Fehlermeldungen (optional)
+      description: Falls bekannt, bitte relevante Ausgaben einfügen.
       render: bash
 
   - type: textarea
     id: additional_info
     attributes:
-      label: Weitere Hinweise oder Informationen? (optional)
-      description: Falls du schon versucht hast, den Fehler selbst zu beheben (z.B. Browser-Cache leeren), oder andere Anmerkungen hast, schreib sie hier rein.
-      placeholder: "Ich habe schon versucht, mich ab- und wieder anzumelden ..."
-    validations:
-      required: false
+      label: Weitere Hinweise (optional)
+      description: Alles, was hilfreich sein könnte (Zeitpunkt, Accountname/ID **ohne** sensible Daten, Workarounds, etc.).

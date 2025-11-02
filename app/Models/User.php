@@ -247,18 +247,14 @@ class User extends Authenticatable implements ExportsPersonalData
      * @throws RateLimitExceededException
      */
     public function sendEmailVerificationNotification(): void {
-        Log::info(sprintf("Attempting to send verification email for user#%s w/ mail %s", $this->id, $this->email));
+        Log::info('Attempting to send verification email.', ['user_id' => $this->id, 'email' => $this->email]);
 
         $executed = RateLimiter::attempt(
             key:          'verification-mail-sent-' . $this->email,
             maxAttempts:  1,
             callback: function() {
                 SendVerificationEmail::dispatch($this);
-                Log::info(sprintf(
-                              "Sent the verification email for user#%s w/ mail %s successfully.",
-                              $this->id,
-                              $this->email
-                          ));
+                Log::info('Dispatched SendVerificationEmail job.', ['user_id' => $this->id, 'email' => $this->email]);
             },
             decaySeconds: 5 * 60,
         );

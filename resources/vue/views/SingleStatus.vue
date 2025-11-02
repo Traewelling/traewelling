@@ -8,13 +8,16 @@ import {getDepartureForStatus} from "../helpers/DateTimeHelper";
 import {DateTime} from "luxon";
 import {useUserStore} from "../stores/user";
 import TagHelper from "../components/TagHelper.vue";
+import LoadingSkeletonRows from "../components/Loader/LoadingSkeletonRows.vue";
+import Error403 from "../components/Errors/403.vue";
+import Error404 from "../components/Errors/404.vue";
 
 const loading = ref(true);
 const status = ref<StatusResource | null>(null);
 const likedBy = ref<UserResource[]>([]);
-const statusId = parseInt(window.location.pathname.split('/').pop() || '0');
+const statusId = parseInt(window.location.pathname.split('/').pop() || 0);
 const user = useUserStore();
-const pageError = ref<string | null>(null);
+const pageError = ref<"403" | "404" | null>(null);
 const stopovers = ref<StopoverResource[]>([]);
 
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
@@ -24,7 +27,6 @@ function fetchLikes() {
     console.error('Status ID not found in URL');
     return;
   }
-
   api.status.getLikesForStatus(statusId).then((response) => {
     likedBy.value = response.data.data ?? [];
   }).catch((error) => {
@@ -34,10 +36,9 @@ function fetchLikes() {
 
 function fetchStopovers() {
   if (!status.value) {
-    console.error('Status ID not found in URL');
+    console.error('Status not loaded yet');
     return;
   }
-
   api.stopovers.getStopOvers(status.value!.train.trip.toString()).then((response) => {
     stopovers.value = response.data.data?.[status.value!.train.trip] ?? [];
   }).catch((error) => {
@@ -48,6 +49,8 @@ function fetchStopovers() {
 function fetchStatus() {
   if (!statusId) {
     console.error('Status ID not found in URL');
+    loading.value = false;
+    pageError.value = "404";
     return;
   }
 
@@ -60,9 +63,9 @@ function fetchStatus() {
   }).catch((error) => {
     loading.value = false;
     if (error.status === 404) {
-      pageError.value = trans('error.404');
+      pageError.value = "404";
     } else if (error.status === 403) {
-      pageError.value = trans('error.403');
+      pageError.value = "403";
     }
     console.error('Error fetching status:', error);
   });
@@ -97,43 +100,47 @@ fetchLikes();
 <template>
   <div class="row justify-content-center">
     <div class="col-md-8 col-lg-7">
-      <div v-if="loading">
-        <p class="text-center mt-5">
-          <i class="fas fa-spinner fa-spin"></i> Loading status...
-        </p>
-      </div>
-      <template v-else-if="status">
-        <CheckinSuccessHelper v-if="user.user && status.userDetails.id === user.user.id"/>
-        <h2 class="fs-5">{{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}</h2>
-        <StatusCard :status :show-map="true" :authenticated-user="user.user" @statusLiked="addSelfToLikes()"
-                    @statusUnliked="removeSelfFromLikes()" :stopovers/>
-
-        <TagHelper :status-id="status.id" :editable="status.userDetails.id === user.user?.id" class="mb-3"/>
-
-        <div class="card" v-show="likedBy.length">
-          <div v-for="like in likedBy" class="card-footer text-muted clearfix">
-            <a :href="`/@${like.username}`" class="float-start">
-              <img loading="lazy" :src="like.profilePicture" class="profile-image float-start me-2"
-                   :alt="trans('settings.picture')">
-            </a>
-            <span class="like-text pl-2 d-table-cell">
-              <a :href="`/@${like.username}`">
-                  {{ like.username }}
-              </a>
-              <span v-if="like.id === status.userDetails.id">
-                &thinsp;
-                {{ trans('user.liked-own-status') }}
-              </span>
-              <span v-else>
-                &thinsp;
-                {{ trans('user.liked-status') }}
-              </span>
-            </span>
-          </div>
-        </div>
-
+      <template v-if="loading">
+        <LoadingSkeletonRows :rowHeight="30" :rows="1"/>
+        <LoadingSkeletonRows :rowHeight="600" :rows="1"/>
       </template>
-      <h2 v-if="pageError">{{ pageError }} :(</h2>
+
+      <template v-else>
+        <template v-if="status">
+          <CheckinSuccessHelper v-if="user.user && status.userDetails.id === user.user.id"/>
+          <h2 class="fs-5">{{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}</h2>
+          <StatusCard :status :show-map="true" :authenticated-user="user.user"
+                      @statusLiked="addSelfToLikes()" @statusUnliked="removeSelfFromLikes()" :stopovers/>
+          <TagHelper :status-id="status.id" :editable="status.userDetails.id === user.user?.id" class="mb-3"/>
+
+          <div class="card" v-show="likedBy.length">
+            <div v-for="like in likedBy" :key="like.id" class="card-footer text-muted clearfix">
+              <a :href="`/@${like.username}`" class="float-start">
+                <img loading="lazy" :src="like.profilePicture" class="profile-image float-start me-2"
+                     :alt="trans('settings.picture')">
+              </a>
+              <span class="like-text pl-2 d-table-cell">
+                <a :href="`/@${like.username}`">
+                  {{ like.username }}
+                </a>
+                <span v-if="like.id === status.userDetails.id">
+                  &thinsp;{{ trans('user.liked-own-status') }}
+                </span>
+                <span v-else>
+                  &thinsp;{{ trans('user.liked-status') }}
+                </span>
+              </span>
+            </div>
+          </div>
+        </template>
+
+        <template v-else-if="pageError === '403'">
+          <Error403 :statusId="statusId"/>
+        </template>
+        <template v-else-if="pageError === '404'">
+          <Error404/>
+        </template>
+      </template>
     </div>
   </div>
 </template>

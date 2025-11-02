@@ -13,8 +13,6 @@
     "admin.select-range": "Seleccionar rango",
     "admin.checkins": "Check-ins",
     "admin.registered-users": "Usuarios registrados",
-    "admin.hafas-entries-by-type": "Entradas HAFAS por tipo de transporte",
-    "admin.hafas-entries-by-polylines": "Entradas HAFAS y cantidad de polilíneas correspondientes",
     "admin.new-users": "nuevos usuarios",
     "admin.statuses": "estados",
     "auth.failed": "Estas credenciales no coinciden con nuestros registros.",
@@ -850,5 +848,17 @@
     "export.error.gdpr": "Ha ocurrido un error al solicitar la exportación GDPR. Por favor, inténtalo más tarde.",
     "profile.statistics": "Estadísticas",
     "profile.info": "Información",
-    "profile.bio": "Biografía"
+    "profile.bio": "Biografía",
+    "scopes.write-support-tickets": "crear tickets de soporte en tu nombre",
+    "messages.too-many-likes": "Has dado me gusta a muchas publicaciones en los últimos minutos.",
+    "messages.retry-in": "Puedes volver a probar en :minutes minutos.",
+    "stats.daily": "Estadísticas diarias",
+    "tag.title.trwl:price": "Precio",
+    "tag.title.trwl:journey_number": "Número de viaje",
+    "status.manual_journey_number": "Número de viaje sobrescrito manualmente",
+    "status.departure-now": "Salir ahora",
+    "status.arrival-now": "Llega ahora",
+    "status.show_more": "Ver más",
+    "report.min-length": "La descripción debe contener al menos 10 carácteres.",
+    "maintenance.follow": "Síguenos en Mastodon"
 }

@@ -9,6 +9,7 @@ import {getDepartureForStatus} from "../helpers/DateTimeHelper";
 import {Notyf} from "notyf";
 import {useUserStore} from "../stores/user";
 import ApiAlerts from "../components/ApiAlerts.vue";
+import LoadingSkeletonRows from "../components/Loader/LoadingSkeletonRows.vue";
 
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
 const statuses = ref<StatusResource[]>([]);
@@ -150,9 +151,11 @@ fetchFutureStatuses();
         />
       </template>
 
-      <div v-if="loading" class="text-center my-4">
-        <i class="fa-solid fa-spinner fa-spin fa-2x" aria-hidden="true"></i>
-      </div>
+      <template v-if="loading">
+        <LoadingSkeletonRows class="text-center" :rowHeight="20" :columns="1" :rows="1"/>
+        <LoadingSkeletonRows class="text-center mb-4" :rowHeight="206" />
+      </template>
+
       <div v-if="showMore" class="text-center my-4">
         <button class="btn btn-primary" @click="fetchStatuses(currentPage + 1, true)">
           <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
@@ -161,6 +164,8 @@ fetchFutureStatuses();
       <div v-if="!loading && !showMore && statuses.length > 0" class="text-center my-4">
         <p class="text-muted">
           Final stop. All change, please!
+          <br/>
+          <small>{{ trans('dashboard-end-seven-days') }}</small>
         </p>
       </div>
 
@@ -176,7 +181,7 @@ fetchFutureStatuses();
         <p>{{ trans('dashboard.empty.teaser') }}</p>
         <p>
           {{ trans('dashboard.empty.discover1') }}
-          <a href="{{ route('statuses.active') }}">
+          <a href="/statuses/active">
             {{ trans('menu.active') }}
           </a>
           {{ trans('dashboard.empty.discover3') }}.

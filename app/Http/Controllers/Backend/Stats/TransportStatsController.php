@@ -68,7 +68,7 @@ abstract class TransportStatsController extends Controller
      *
      * @return Collection with stdClass objects with properties operator (string), distance (int), duration (int)
      */
-    public static function sumByOperator(User $user, Carbon $from, Carbon $to, string $orderByDesc = 'distance', int $limit = null): Collection {
+    public static function sumByOperator(User $user, Carbon $from, Carbon $to, string $orderByDesc = 'distance', ?int $limit = null): Collection {
         if ($orderByDesc !== 'distance' && $orderByDesc !== 'duration') {
             throw new InvalidArgumentException('orderByDesc must be either "distance" or "duration"');
         }
@@ -111,7 +111,7 @@ abstract class TransportStatsController extends Controller
      * @return Collection with stdClass objects with properties Operator (string), hafasLine (string), distance
      *                    (int), duration (int)
      */
-    public static function sumByOperatorAndLine(User $user, Carbon $from, Carbon $to, string $orderByDesc = 'distance', int $limit = null): Collection {
+    public static function sumByOperatorAndLine(User $user, Carbon $from, Carbon $to, string $orderByDesc = 'distance', ?int $limit = null): Collection {
         if ($orderByDesc !== 'distance' && $orderByDesc !== 'duration') {
             throw new InvalidArgumentException('orderByDesc must be either "distance" or "duration"');
         }
@@ -227,7 +227,7 @@ abstract class TransportStatsController extends Controller
                    ->first()?->delay ?? 0;
     }
 
-    public static function getTopDestinations(User $user, Carbon $from, Carbon $to, int $limit = null): Collection {
+    public static function getTopDestinations(User $user, Carbon $from, Carbon $to, ?int $limit = null): Collection {
         $data     = self::getTrainCheckinsBetween($user, $from, $to)
                         ->join('train_stopovers', 'train_checkins.destination_stopover_id', '=', 'train_stopovers.id')
                         ->join('train_stations', 'train_stopovers.train_station_id', '=', 'train_stations.id')

@@ -21,12 +21,15 @@ import piniaPluginPersistedsState from 'pinia-plugin-persistedstate'
 import FriendCheckinSettings from "../vue/components/Settings/FriendCheckinSettings.vue";
 import WebhookSettings from "../vue/components/Settings/Webhooks.vue";
 import ProfileSettings from "../vue/components/Settings/ProfileSettings.vue";
+import Profile from "../vue/views/Profile.vue";
 import StatsDashboard from "../vue/components/Stats/StatsDashboard.vue";
 import Request from "../vue/components/Events/Request.vue";
 import ApiAlerts from "../vue/components/ApiAlerts.vue";
 import Dashboard from "../vue/views/Dashboard.vue";
 import SingleStatus from "../vue/views/SingleStatus.vue";
 import ActiveJourneys from "../vue/views/ActiveJourneys.vue";
+import EventPage from "../vue/views/Event.vue";
+import StatsDaily from "../vue/views/Stats/Daily.vue";
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -137,6 +140,30 @@ document.addEventListener("DOMContentLoaded", function () {
         app8.use(i18nVue, i18nOptions);
         app8.use(pinia);
         app8.mount("#settings-profile");
+    }
+
+    if (document.getElementById("vue-user-profile")) {
+        const app9 = createApp({});
+        app9.component("Profile", Profile);
+        app9.use(i18nVue, i18nOptions);
+        app9.use(pinia);
+        app9.mount("#vue-user-profile");
+    }
+
+    if (document.getElementById("vue-event")) {
+        const app10 = createApp({});
+        app10.component("Event", EventPage);
+        app10.use(i18nVue, i18nOptions);
+        app10.use(pinia);
+        app10.mount("#vue-event");
+    }
+
+    if (document.getElementById("vue-stats-daily")) {
+        const app11 = createApp({});
+        app11.component("StatsDaily", StatsDaily);
+        app11.use(i18nVue, i18nOptions);
+        app11.use(pinia);
+        app11.mount("#vue-stats-daily");
     }
 
     // All components that fully use the blade content slot should be mounted here.

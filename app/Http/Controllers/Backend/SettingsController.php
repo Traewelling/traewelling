@@ -16,7 +16,7 @@ abstract class SettingsController extends Controller
     /**
      * @throws RateLimitExceededException if the user has exceeded the rate limit for sending verification emails
      */
-    public static function updateSettings(array $fields, User $user = null): Authenticatable|null|User {
+    public static function updateSettings(array $fields, ?User $user = null): Authenticatable|null|User {
         if ($user === null) {
             $user = auth()->user();
         }

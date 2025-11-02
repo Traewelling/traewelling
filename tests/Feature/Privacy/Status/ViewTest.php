@@ -26,8 +26,8 @@ class ViewTest extends ApiTestCase
                         ->create();
 
         $this->assertGuest();
-        $statusRequest = $this->get(route('status', ['id' => $status->id]));
-        $statusRequest->assertStatus(200);
+        $statusRequest = $this->getJson('/api/v1/status/' . $status->id);
+        $statusRequest->assertOk();
     }
 
     public function testUnauthenticatedViewPrivateStatus(): void {
@@ -37,8 +37,8 @@ class ViewTest extends ApiTestCase
                         ->create();
 
         $this->assertGuest();
-        $statusRequest = $this->get(route('status', ['id' => $status->id]));
-        $statusRequest->assertStatus(403);
+        $statusRequest = $this->getJson('/api/v1/status/' . $status->id);
+        $statusRequest->assertForbidden();
     }
 
     public function testUnauthenticatedViewUnlistedStatus(): void {
@@ -48,8 +48,8 @@ class ViewTest extends ApiTestCase
                         ->create();
 
         $this->assertGuest();
-        $statusRequest = $this->get(route('status', ['id' => $status->id]));
-        $statusRequest->assertStatus(200);
+        $statusRequest = $this->getJson('/api/v1/status/' . $status->id);
+        $statusRequest->assertOk();
     }
 
     public function testUnauthenticatedViewFollowersOnlyStatus(): void {
@@ -59,8 +59,8 @@ class ViewTest extends ApiTestCase
                         ->create();
 
         $this->assertGuest();
-        $statusRequest = $this->get(route('status', ['id' => $status->id]));
-        $statusRequest->assertStatus(403);
+        $statusRequest = $this->getJson('/api/v1/status/' . $status->id);
+        $statusRequest->assertForbidden();
     }
 
     public function testUnauthenticatedViewOnlyAuthenticatedUsersStatus(): void {
@@ -70,8 +70,8 @@ class ViewTest extends ApiTestCase
                         ->create();
 
         $this->assertGuest();
-        $statusRequest = $this->get(route('status', ['id' => $status->id]));
-        $statusRequest->assertStatus(403);
+        $statusRequest = $this->getJson('/api/v1/status/' . $status->id);
+        $statusRequest->assertForbidden();
     }
 
     public function testViewOwnStatus(): void {
@@ -162,11 +162,6 @@ class ViewTest extends ApiTestCase
         $checkin = Checkin::factory(['user_id' => $bob->id])->create();
         $checkin->status->update(['visibility' => StatusVisibility::UNLISTED]);
 
-        //alice should not see the status on her global dashboard
-        $response = $this->get("/api/v1/dashboard/global");
-        $response->assertOk();
-        $response->assertJsonCount(0, 'data');
-
         //alice follows bob
         FollowBackend::createOrRequestFollow($alice, $bob);
 
@@ -216,8 +211,8 @@ class ViewTest extends ApiTestCase
                         ->create();
 
         $this->assertGuest();
-        $statusRequest = $this->get(route('status', ['id' => $status->id]));
-        $statusRequest->assertStatus(403);
+        $statusRequest = $this->getJson('/api/v1/status/' . $status->id);
+        $statusRequest->assertForbidden();
     }
 
     public function testViewForeignTrustedStatusAndNotTrusted(): void {

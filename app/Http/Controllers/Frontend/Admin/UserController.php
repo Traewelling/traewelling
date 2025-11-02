@@ -38,7 +38,7 @@ class UserController
         }
 
         if ($users->count() === 1) {
-            return redirect()->route('admin.users.user', ['id' => $users->first()->id]);
+            return redirect()->route('admin.users.show', ['id' => $users->first()->id]);
         }
 
         return view('admin.users.index', [
@@ -71,7 +71,7 @@ class UserController
         if ($user->password === null) {
             $this->sendResetLinkEmail($request);
         }
-        return redirect()->route('admin.users.user', ['id' => $validated['id']]);
+        return redirect()->route('admin.users.show', ['id' => $validated['id']]);
     }
 
     public function updateRoles(Request $request): RedirectResponse {
@@ -93,6 +93,6 @@ class UserController
             $roles[] = 'admin';
         }
         $user->syncRoles($roles);
-        return redirect()->route('admin.users.user', ['id' => $validated['id']]);
+        return redirect()->route('admin.users.show', ['id' => $validated['id']]);
     }
 }

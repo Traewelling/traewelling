@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Backend\Transport;
 
-use App\Dto\Coordinate;
 use App\Dto\Internal\CheckInRequestDto;
 use App\Dto\Internal\CheckinSuccessDto;
 use App\Enum\PointReason;
@@ -12,13 +11,11 @@ use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\CheckinException;
 use App\Exceptions\DistanceDeviationException;
-use App\Exceptions\HafasException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\TransportController;
-use App\Jobs\RefreshStopover;
 use App\Models\Checkin;
 use App\Models\Station;
 use App\Models\Status;
@@ -26,8 +23,6 @@ use App\Models\Stopover;
 use App\Models\Trip;
 use App\Models\User;
 use App\Notifications\UserJoinedConnection;
-use App\Objects\LineSegment;
-use App\Repositories\CheckinHydratorRepository;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -233,58 +228,6 @@ abstract class TrainCheckinController extends Controller
     }
 
     /**
-     * @param string $tripId
-     * @param string $lineName
-     * @param int    $startId
-     *
-     * @return Trip
-     * @throws HafasException
-     * @throws StationNotOnTripException
-     * @throws \JsonException
-     * @api v1
-     */
-    public static function getHafasTrip(string $tripId, string $lineName, int $startId): Trip {
-        $hafasTrip = (new CheckinHydratorRepository())->getHafasTrip($tripId, $lineName);
-        $hafasTrip->loadMissing(['stopovers', 'originStation', 'destinationStation']);
-
-        if ($hafasTrip->source->identifiableById()) {
-            $originStopover = $hafasTrip->stopovers->filter(function(Stopover $stopover) use ($startId) {
-                return $stopover->train_station_id === $startId || $stopover->station->ibnr === $startId;
-            })->first();
-        } else {
-            $start = Station::find($startId);
-
-            $originStopover = $hafasTrip->stopovers->filter(function(Stopover $stopover) use ($start) {
-                if ($start->id === $stopover->train_station_id) {
-                    return true;
-                }
-
-                // are stations less than 50m apart?
-                $distance = (new LineSegment(
-                    new Coordinate($start->latitude, $start->longitude),
-                    new Coordinate($stopover->station->latitude, $stopover->station->longitude)
-                ))->calculateDistance();
-
-                return $distance < 50;
-            })->first();
-        }
-
-
-        if ($originStopover === null) {
-            throw new StationNotOnTripException();
-        }
-
-        //try to refresh the departure time of the origin station
-        if ($originStopover && $hafasTrip->source->refreshable()) {
-            RefreshStopover::dispatchAfterResponse(
-                $originStopover
-            );
-        }
-
-        return $hafasTrip;
-    }
-
-    /**
      * @throws DistanceDeviationException
      */
     public static function refreshDistanceAndPoints(Status $status, bool $resetPolyline = false): void {
@@ -302,10 +245,15 @@ abstract class TrainCheckinController extends Controller
         $oldPoints   = $checkin->points;
         $oldDistance = $checkin->distance;
 
-        if ($distance === 0 || ($oldDistance !== 0 && $distance / $oldDistance >= 1.15)) {
+        $percentage = config('trwl.distance_deviation_threshold_percent', 15) / 100;
+        $upperLimit = $oldDistance * (1 + $percentage);
+        $lowerLimit = $oldDistance * (1 - $percentage);
+
+        if ($distance === 0 || ($oldDistance !== 0 && ($distance > $upperLimit || $distance < $lowerLimit))) {
             Log::debug(sprintf(
-                           'Distance deviation for status #%d is greater than 15 percent. Original: %d, new: %d',
+                           'Distance deviation for status #%d is greater than %d percent. Original: %d, new: %d',
                            $status->id,
+                            $percentage * 100,
                            $oldDistance,
                            $distance
                        ));

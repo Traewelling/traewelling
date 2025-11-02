@@ -46,7 +46,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:60,1',
+            'throttle:500,5', // 500 requests per 5 minutes
             JsonMiddleware::class,
             'bindings',
             \App\Http\Middleware\Language::class,

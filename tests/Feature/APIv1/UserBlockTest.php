@@ -80,7 +80,7 @@ class UserBlockTest extends ApiTestCase
 
         // alice should see both checkins
         $response = $this->actingAs($alice)
-                         ->get(route('event', $event->slug));
+                         ->getJson('/api/v1/event/' . $event->slug . '/statuses');
         $response->assertOk();
         $response->assertSee($alice->username);
         $response->assertSee($bob->username);
@@ -90,7 +90,7 @@ class UserBlockTest extends ApiTestCase
 
         // alice should NOT see both checkins
         $response = $this->actingAs($alice)
-                         ->get(route('event', $event->slug));
+                         ->getJson('/api/v1/event/' . $event->slug . '/statuses');
         $response->assertOk();
         $response->assertSee($alice->username);
         $response->assertDontSee($bob->username);

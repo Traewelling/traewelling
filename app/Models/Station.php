@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Dto\Coordinate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use phpGPX\Models\Point;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -38,10 +40,18 @@ class Station extends Model
         'latitude'      => 'float',
         'longitude'     => 'float',
     ];
-    protected $appends  = ['ifopt', 'localized_name'];
+    protected $appends  = ['ifopt', 'localized_name', 'location'];
 
     public function names(): HasMany {
         return $this->hasMany(StationName::class, 'station_id', 'id');
+    }
+
+    public function getLocationAttribute(): Point {
+        $point = new Point(Point::TRACKPOINT);
+        $point->latitude = $this->latitude;
+        $point->longitude = $this->longitude;
+
+        return $point;
     }
 
     public function getIfoptAttribute(): ?string {

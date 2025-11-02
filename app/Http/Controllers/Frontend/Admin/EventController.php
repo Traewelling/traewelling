@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Frontend\Admin;
 
 use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
-use App\DataProviders\Hafas;
 use App\Enum\EventRejectionReason;
-use App\Exceptions\HafasException;
+use App\Exceptions\DataProviderException;
 use App\Http\Controllers\Backend\Admin\EventController as AdminEventBackend;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
@@ -24,9 +23,8 @@ class EventController extends Controller
 {
     private DataProviderInterface $dataProvider;
 
-    public function __construct(?string $dataProvider = null) {
-        $dataProvider       ??= Hafas::class;
-        $this->dataProvider = (new DataProviderBuilder())->build($dataProvider);
+    public function __construct() {
+        $this->dataProvider = (new DataProviderBuilder())->build();
     }
 
     private const VALIDATOR_RULES = [
@@ -41,13 +39,13 @@ class EventController extends Controller
         'event_end'            => ['nullable', 'date', 'before_or_equal:checkin_end'],
     ];
 
-    public function renderList(Request $request): View {
+    public function index(Request $request): View {
         $queryBase = Event::query();
         if ($request->has('query')) {
             $queryBase->where('name', 'LIKE', '%' . strip_tags($request->get('query')) . '%');
         }
 
-        return view('admin.events.list', [
+        return view('admin.events.index', [
             'events_future'  => $queryBase->clone()
                                           ->orderBy('checkin_start')
                                           ->whereDate('checkin_start', '>', DB::raw('now()'))
@@ -141,7 +139,7 @@ class EventController extends Controller
     }
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      */
     public function acceptSuggestion(Request $request): RedirectResponse {
         $validated = $request->validate([
@@ -198,7 +196,7 @@ class EventController extends Controller
     }
 
     /**
-     * @throws HafasException
+     * @throws DataProviderException
      */
     public function create(Request $request): RedirectResponse {
         $validated = $request->validate(self::VALIDATOR_RULES);

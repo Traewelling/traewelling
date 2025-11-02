@@ -9,7 +9,7 @@ use App\DataProviders\Motis;
 use App\DataProviders\Repositories\TripRepository;
 use App\Enum\DataProvider;
 use App\Enum\TripSource;
-use App\Exceptions\HafasException;
+use App\Exceptions\DataProviderException;
 use App\Models\Checkin;
 use Illuminate\Console\Command;
 use PDOException;
@@ -57,6 +57,11 @@ class RefreshCurrentTrips extends Command
                 $trip->update(['last_refreshed' => now()]);
 
                 $rawJourney = $this->getDataProvider()->fetchRawHafasTrip($trip->trip_id, $trip->linename);
+                if (!$rawJourney || !$rawJourney['legs'][0]['realTime']) {
+                    $this->warn('-> Skipping, no real-time data available');
+                    continue;
+                }
+
                 $stopovers  = $this->motisHydrator->parseLegToUpdateStopovers(
                     $rawJourney['legs'][0],
                     $trip,
@@ -73,8 +78,8 @@ class RefreshCurrentTrips extends Command
                 } else {
                     report($exception);
                 }
-            } catch (HafasException) {
-                $this->error('-> Skipping, due to HafasException');
+            } catch (DataProviderException) {
+                $this->error('-> Skipping, due to DataProviderException');
             } catch (\Exception $exception) {
                 report($exception);
             }

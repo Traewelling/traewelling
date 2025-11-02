@@ -25,7 +25,7 @@ watch(() => props.status, () => {
   <li>
     <i class="trwl-bulletpoint" aria-hidden="true"></i>
     <span class="text-trwl float-end">
-      <s v-show="arrival.originalTime" class="text-muted">
+      <s v-show="arrival.originalTime" class="text-muted me-1">
         {{ arrival.originalTime?.toLocaleString(DateTime.TIME_SIMPLE) }}
       </s>
       <span data-bs-toggle="tooltip" :title="trans(timeTypeTooltip(arrival.type))">

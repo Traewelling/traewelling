@@ -11,6 +11,9 @@ export const useUserStore = defineStore("user", {
         refreshed: "2021-08-01T12:00:00Z"
     }),
     getters: {
+        getId(): number | null {
+            return this.user?.id ?? null;
+        },
         getDisplayName(): string {
             return this.user?.displayName ?? "";
         },

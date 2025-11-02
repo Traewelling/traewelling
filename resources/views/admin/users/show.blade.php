@@ -197,12 +197,12 @@
                                 @foreach($user->statuses()->orderByDesc('created_at')->limit(15)->get() as $status)
                                     <tr>
                                         <td>
-                                            <a href="{{route('admin.status.edit', ['statusId' => $status->id])}}">
+                                            <a href="{{route('admin.statuses.edit', ['statusId' => $status->id])}}">
                                                 {{ $status->id }}
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="{{route('admin.trip.show', ['id' => $status->checkin->trip->id])}}">
+                                            <a href="{{route('admin.trips.show', ['id' => $status->checkin->trip->id])}}">
                                                 {{ $status->checkin->id }} ({{ $status->checkin->trip->source }})
                                             </a>
                                             <br/>

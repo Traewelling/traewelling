@@ -23,32 +23,21 @@ const eventIcon = L.divIcon({
 export default {
   setup() {
     const user = useUserStore();
-
     return {user};
   },
   name: 'ActiveJourneyMap',
   props: {
-    mapProvider: {
-      type: String,
-      default: 'default'
-    },
-    statusId: {
-      type: Number,
-      default: null
-    },
-    departure: {
-      type: Number,
-      default: null
-    },
-    arrival: {
-      type: Number,
-      default: null
-    },
+    mapProvider: {type: String, default: 'default'},
+    statusId: {type: Number, default: null},
+    departure: {type: Number, default: null},
+    arrival: {type: Number, default: null},
+    lineColor: {type: String, default: null}
   },
   data() {
     return {
       map: null,
       points: [],
+      routeLayer: null,
     }
   },
   computed: {
@@ -56,11 +45,18 @@ export default {
       if (this.user.user) {
         return this.user.user?.mapProvider || 'default';
       }
-
       return this.$props.mapProvider;
     },
     mapStyle() {
       return this.$props.statusId ? '' : 'min-height: 600px;';
+    },
+    parsedLineColor() {
+      const hex = this.$props.lineColor;
+      if (!hex) return null;
+      const clean = String(hex).replace(/[^0-9a-fA-F]/g, "");
+      if (clean.length === 6) return `#${clean}`;
+      if (/^#[0-9a-fA-F]{6}$/.test(String(hex))) return hex;
+      return null;
     }
   },
   mounted() {
@@ -70,14 +66,14 @@ export default {
     }
     this.initializeMap();
     this.fetchEvents();
-    let temp = this;
-    setInterval(function () {
-      temp.refreshMarkers();
+
+    setInterval(() => {
+      this.refreshMarkers();
     }, 20000);
 
     if (!this.$props.statusId) {
-      setInterval(function () {
-        temp.initializeMap();
+      setInterval(() => {
+        this.initializeMap();
       }, 30000);
     }
   },
@@ -89,67 +85,101 @@ export default {
         zoom: 5
       });
       setTilingLayer(this.provider, this.map);
+
+      this.map.createPane('routes');
+      this.map.getPane('routes').style.zIndex = 450;
+
+      // LayerGroup for routes and border
+      this.routeLayer = L.layerGroup([], {pane: 'routes'}).addTo(this.map);
     },
     canShowMarkers() {
       if (this.$props.arrival && this.$props.departure) {
         return this.$props.departure * 1000 <= Date.now() && this.$props.arrival * 1000 >= Date.now();
       }
-
       return true;
     },
-    clearAllElements() {
+    clearMarkersOnly() {
       this.points.forEach(point => {
-        if (point.marker) {
-          point.marker.remove()
+        if (point && point.marker) {
+          point.marker.remove();
         }
       });
       this.points = [];
     },
+    clearRoute() {
+      if (this.routeLayer) this.routeLayer.clearLayers();
+    },
+
     fetchStatusPolyline() {
-      this.clearAllElements();
+      this.clearRoute();
+
       fetch('/api/v1/polyline/' + this.$props.statusId).then((response) => {
         response.json().then((results) => {
-          let polyline = L.geoJSON(results.data)
-              .setStyle({color: "rgb(192, 57, 43)", weight: 5})
-              .addTo(this.map);
-          this.map.fitBounds(polyline.getBounds());
+          const strokeColor = this.parsedLineColor || "#C0392B";
+
+          // casing in grey (for better visibility)
+          L.geoJSON(results.data, {
+            pane: 'routes',
+            style: {
+              color: "#181818",
+              weight: 7,
+              opacity: 0.9,
+              lineCap: 'round',
+              lineJoin: 'round'
+            }
+          }).addTo(this.routeLayer);
+
+          // main route
+          const main = L.geoJSON(results.data, {
+            pane: 'routes',
+            style: {
+              color: strokeColor,
+              weight: 5,
+              opacity: 1,
+              lineCap: 'round',
+              lineJoin: 'round'
+            }
+          }).addTo(this.routeLayer);
+
+          this.map.fitBounds(main.getBounds());
         });
       });
     },
+
     initializeMap() {
       let url = '/api/v1/positions';
-      if (this.$props.statusId) {
-        url = url + '/' + this.$props.statusId;
-      }
+      if (this.$props.statusId) url = url + '/' + this.$props.statusId;
+
       fetch(url)
           .then((response) => response.json())
           .then((results) => {
-            this.clearAllElements();
+            this.clearMarkersOnly();
 
             results.data.forEach((result) => {
-              let marker = null;
+              let entry = null;
+
               if (result.point) {
                 const icon = this.getIconForStatus(result);
-
-                // If we can't show markers (yet), we just create the point object, so we can refresh it later
-                marker = this.canShowMarkers() ? this.createPointObject(
-                    result,
-                    L.geoJSON(result.point, {
+                const markerLayer = this.canShowMarkers()
+                    ? L.geoJSON(result.point, {
                       pointToLayer: function (point, latlng) {
-                        return L.marker(latlng, {icon: icon});
+                        return L.marker(latlng, {icon});
                       }
                     }).addTo(this.map)
-                ) : this.createPointObject(result);
+                    : null;
+
+                entry = this.createPointObject(result, markerLayer);
+                this.points.push(entry);
               }
 
               if (result.polyline) {
-                marker = this.addMarker(result);
+                const m = this.addMarker(result);
+                this.points.push(m);
               }
-
-              this.points.push(marker);
             });
           });
     },
+
     fetchEvents() {
       fetch('/api/v1/events')
           .then((response) => response.json())
@@ -158,9 +188,8 @@ export default {
           });
     },
     addEventMarker(event) {
-      if (!event.station) {
-        return;
-      }
+      if (!event.station) return;
+
       let marker = L.marker([event.station.latitude, event.station.longitude], {
         title: event.name,
         icon: eventIcon
@@ -169,12 +198,13 @@ export default {
       const range = DtmRange.fromISO(event.begin, event.end);
 
       marker.bindPopup(`
-                <strong><a href="${event.url}">${event.name}</a></strong><br />
-                <i class="fa fa-user-clock"></i> ${event.host}<br />
-                <i class="fa fa-calendar-day"></i> ${range.toLocaleDateString()}<br />
-                <a href="/event/${event.slug}">${trans('events.show-all-for-event')}</a>`
-      );
+        <strong><a href="${event.url}">${event.name}</a></strong><br />
+        <i class="fa fa-user-clock"></i> ${event.host}<br />
+        <i class="fa fa-calendar-day"></i> ${range.toLocaleDateString()}<br />
+        <a href="/event/${event.slug}">${trans('events.show-all-for-event')}</a>
+      `);
     },
+
     getIconForStatus(response) {
       return L.divIcon({
         className: 'custom-div-icon',
@@ -183,20 +213,17 @@ export default {
         iconAnchor: [9, 18]
       });
     },
-    addMarker(data, oldMarker = null) {
-      if (oldMarker) {
-        oldMarker.remove();
-      }
-      if (!this.canShowMarkers()) {
-        return this.createPointObject(data);
-      }
 
-      let line = [];
+    addMarker(data, oldMarker = null) {
+      if (oldMarker) oldMarker.remove();
+      if (!this.canShowMarkers()) return this.createPointObject(data);
+
+      const line = [];
       data.polyline.features.forEach(point => {
         line.push([point.geometry.coordinates[1], point.geometry.coordinates[0]]);
       });
 
-      let marker = L.Marker.movingMarker(
+      const marker = L.Marker.movingMarker(
           line,
           data.arrival * 1000 - Date.now(),
           {icon: this.getIconForStatus(data), autostart: true}
@@ -205,6 +232,7 @@ export default {
 
       return this.createPointObject(data, marker);
     },
+
     createPointObject(point, marker = null) {
       return {
         statusId: point.statusId,
@@ -214,37 +242,39 @@ export default {
         marker: marker ?? null,
       }
     },
+
     refreshMarkers() {
       let refreshIds = [];
       this.points.forEach((point) => {
-        if (point.departure * 1000 <= Date.now()) {
+        if (point && point.departure * 1000 <= Date.now()) {
           refreshIds.push(point.statusId);
         }
-      })
+      });
 
-      if (refreshIds.length) {
-        this.fetchPositions(refreshIds);
-      }
+      if (refreshIds.length) this.fetchPositions(refreshIds);
     },
+
     fetchPositions(refreshIds) {
       fetch('/api/v1/positions/' + refreshIds.join(','))
           .then((response) => response.json())
           .then((result) => {
             let tmpResult = [];
             let updatedIds = [];
+
             result.data.forEach((stop) => {
               tmpResult.push(stop);
-
               let removeIdx = refreshIds.indexOf(stop.statusId);
               if (removeIdx > -1) {
                 refreshIds.splice(removeIdx, 1);
                 updatedIds.push(stop.statusId);
               }
-            })
+            });
 
             this.points = this.points.map((entry) => {
+              if (!entry) return entry;
+
               if (refreshIds.indexOf(entry.statusId) > -1) {
-                entry.marker.remove();
+                if (entry.marker) entry.marker.remove();
                 return false;
               }
               if (updatedIds.indexOf(entry.statusId) > -1) {
@@ -252,10 +282,10 @@ export default {
                   if (result.polyline && result.statusId === entry.statusId) {
                     entry = this.addMarker(result, entry.marker);
                   }
-                })
+                });
               }
               return entry;
-            });
+            }).filter(Boolean);
           });
     }
   }

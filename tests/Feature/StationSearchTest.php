@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
-use App\Exceptions\HafasException;
+use App\Exceptions\DataProviderException;
 use App\Http\Controllers\Frontend\Admin\CheckinController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -28,6 +28,6 @@ class StationSearchTest extends FeatureTestCase
             $this->dataProvider->getNearbyStations(
                 self::HANNOVER_HBF['location']['latitude'],
                 self::HANNOVER_HBF['location']['longitude']);
-        }, HafasException::class);
+        }, DataProviderException::class);
     }
 }

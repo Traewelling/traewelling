@@ -49,7 +49,6 @@
     "user.no-user": "Nenhum utilizador encontrado.",
     "controller.transport.no-name-given": "Precisas de dar o nome de uma estação!",
     "controller.transport.social-post": "Estou em :lineName com destino a :Destination! #NowTräwelling |Estou em :lineName com destino a :Destination! #NowTräwelling ",
-    "admin.hafas-entries-by-type": "HAFAS-entradas por tipo de transporte",
     "controller.transport.checkin-ok": "Registaste-te com sucesso em :lineName!|Registaste-te com sucesso em :lineName!",
     "controller.transport.no-station-found": "Nenhuma estação foi encontrada para esta pesquisa.",
     "controller.status.email-resend-mail": "Reenviar ligação",

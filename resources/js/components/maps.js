@@ -2,23 +2,25 @@
  * Set the tiling layers for the current map.
  */
 
-window.setTilingLayer = (mapprovider, map) => {
+window.setTilingLayer = (mapprovider, map, opacity=1) => {
     switch (mapprovider) {
         case "open-railway-map":
             // Base map without labels
             L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png", {
                     attribution: '&copy; <a href="https://carto.com/attributions" target="carto">CARTO</a>',
                     subdomains: "abcd",
-                    maxZoom: 19
+                    maxZoom: 19,
+                    opacity
                 }
             ).addTo(map);
 
             // Semi-transparent Open Railway Map overlay. There are additional filters on the tiles in css.
-            new L.TileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
+            new L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://www.openrailwaymap.org/" target="orm">OpenRailwayMap</a>',
                 minZoom: 2,
                 maxZoom: 19,
-                tileSize: 256
+                tileSize: 256,
+                opacity: opacity / 2
             }).addTo(map);
 
             //add additional copyright notice to map

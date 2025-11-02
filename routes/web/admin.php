@@ -8,6 +8,7 @@ use App\Http\Controllers\Frontend\Admin\LicensesController;
 use App\Http\Controllers\Frontend\Admin\MotisSourceController;
 use App\Http\Controllers\Frontend\Admin\OperatorController;
 use App\Http\Controllers\Frontend\Admin\ReportController;
+use App\Http\Controllers\Frontend\Admin\RouteSegmentController;
 use App\Http\Controllers\Frontend\Admin\StationController;
 use App\Http\Controllers\Frontend\Admin\StatusEditController;
 use App\Http\Controllers\Frontend\Admin\TripController;
@@ -15,8 +16,8 @@ use App\Http\Controllers\Frontend\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'permission:view-backend'])->group(function() {
-    Route::view('/', 'admin.dashboard') //attention: route accessible for admins and event-moderators!
-         ->name('admin.dashboard');
+    Route::view('/', 'admin.welcome') //attention: route accessible for admins and event-moderators!
+         ->name('admin.welcome');
 
     Route::middleware('role:admin')->group(function() {
         // these routes are only accessible for admins
@@ -45,7 +46,7 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
              ->only(['create', 'store', 'index']);
 
         Route::prefix('reports')->group(function() {
-            Route::get('/', [ReportController::class, 'renderReports'])
+            Route::get('/', [ReportController::class, 'index'])
                  ->name('admin.reports');
             Route::get('/{id}', [ReportController::class, 'showReport'])
                  ->name('admin.reports.show');
@@ -55,32 +56,45 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
             Route::get('/', [UserController::class, 'renderIndex'])
                  ->name('admin.users');
             Route::get('/{id}', [UserController::class, 'renderUser'])
-                 ->name('admin.users.user');
+                 ->name('admin.users.show');
             Route::post('/', [UserController::class, 'updateRoles'])
                  ->name('admin.users.update-roles');
             Route::post('/update-mail', [UserController::class, 'updateMail'])
                  ->name('admin.users.update-mail');
         });
 
-        Route::prefix('status')->group(function() {
-            Route::get('/', [StatusEditController::class, 'renderMain'])
-                 ->name('admin.status');
-            Route::get('/edit', [StatusEditController::class, 'renderEdit'])
-                 ->name('admin.status.edit');
-            Route::post('/edit', [StatusEditController::class, 'edit']);
+        Route::prefix('statuses')->group(function() {
+            Route::get('/', [StatusEditController::class, 'index'])
+                 ->name('admin.statuses');
+            Route::get('/find', [StatusEditController::class, 'find'])
+                 ->name('admin.statuses.find');
+            Route::get('/{statusId}/edit', [StatusEditController::class, 'renderEdit'])
+                 ->name('admin.statuses.edit');
+            Route::post('/{statusId}/edit', [StatusEditController::class, 'edit']);
+
         });
 
-        Route::prefix('trip')->group(function() {
+        Route::prefix('trips')->group(function() {
+            Route::get('/', [TripController::class, 'index'])
+                 ->name('admin.trips');
             Route::get('/{id}', [TripController::class, 'renderTrip'])
                  ->whereNumber('id')
-                 ->name('admin.trip.show');
+                 ->name('admin.trips.show');
+            Route::get('/{id}/reroute', [TripController::class, 'rerouteTrip'])
+                 ->whereNumber('id')
+                 ->name('admin.trips.reroute');
+        });
+
+        Route::prefix('routesegment')->group(function() {
+            Route::get('/{id}', [RouteSegmentController::class, 'renderSegment'])
+                 ->name('admin.routesegment.show');
         });
 
         Route::prefix('stations')->group(function() {
-            Route::get('/', [StationController::class, 'renderList'])
+            Route::get('/', [StationController::class, 'index'])
                  ->name('admin.stations');
 
-            Route::get('/{id}', [StationController::class, 'renderStation'])
+            Route::get('/{id}', [StationController::class, 'show'])
                  ->name('admin.station');
 
             Route::post('/wikidata/import', [StationController::class, 'importWikidata'])->name('backend.status.import.wikidata'); //TODO: Make this an API endpoint when it is accessible for users too
@@ -88,7 +102,7 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
         });
 
         Route::prefix('operators')->group(function() {
-            Route::get('/', [OperatorController::class, 'renderList'])
+            Route::get('/', [OperatorController::class, 'index'])
                  ->name('admin.operators');
         });
 
@@ -101,7 +115,7 @@ Route::middleware(['auth', 'permission:view-backend'])->group(function() {
          ->group(function() {
              // these routes are also accessible for event-moderators - attention here - don't expose too much!
 
-             Route::get('/', [AdminEventController::class, 'renderList'])
+             Route::get('/', [AdminEventController::class, 'index'])
                   ->name('admin.events');
              Route::post('/delete', [AdminEventController::class, 'deleteEvent'])
                   ->middleware('permission:delete-events')

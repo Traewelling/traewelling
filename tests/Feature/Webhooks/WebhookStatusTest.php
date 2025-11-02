@@ -11,6 +11,7 @@ use App\Http\Controllers\StatusController;
 use App\Http\Resources\StatusResource;
 use App\Jobs\MonitoredCallWebhookJob;
 use App\Models\User;
+use App\Repositories\CheckinHydratorRepository;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
@@ -36,7 +37,7 @@ class WebhookStatusTest extends FeatureTestCase
         Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals([
                              'event' => WebhookEvent::CHECKIN_CREATE->value,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      'status' => new StatusResource($status),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'status' => new StatusResource($status),
                          ], $job->payload);
             return true;
         });
@@ -103,10 +104,9 @@ class WebhookStatusTest extends FeatureTestCase
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status  = $this->createStatus($user);
         $checkin = $status->checkin()->first();
-        $trip    = TrainCheckinController::getHafasTrip(
-            tripId:   self::TRIP_ID,
-            lineName: self::ICE802['line']['name'],
-            startId:  self::FRANKFURT_HBF['id']
+        $trip    = app(CheckinHydratorRepository::class)->getHafasTrip(
+            tripID:   self::TRIP_ID,
+            lineName: self::ICE802['line']['name']
         );
         $aachen  = $trip->stopovers->where('station.ibnr', self::AACHEN_HBF['id'])->first();
         TrainCheckinController::changeDestination($checkin, $aachen);
@@ -207,10 +207,9 @@ class WebhookStatusTest extends FeatureTestCase
                        '/trips/' . urlencode(self::TRIP_ID) . '*' => Http::response(self::TRIP_INFO),
                    ]);
 
-        $trip = TrainCheckinController::getHafasTrip(
-            tripId:   self::TRIP_ID,
-            lineName: self::ICE802['line']['name'],
-            startId:  self::FRANKFURT_HBF['id']
+        $trip = app(CheckinHydratorRepository::class)->getHafasTrip(
+            tripID:   self::TRIP_ID,
+            lineName: self::ICE802['line']['name']
         );
 
         $origin      = HafasHelpers::getStationById(self::FRANKFURT_HBF['id']);

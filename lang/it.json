@@ -35,8 +35,6 @@
     "controller.status.like-ok": "Like effettuato!",
     "controller.status.not-permitted": "Non ti è permesso di fare questo.",
     "about.block1": "Träwelling è un servizio gratuito di check-in che ti permette di dire ai tuoi amici dove stai viaggiando con i trasporti pubblici e di tenere un diario dei tuoi viaggi. In breve, puoi effettuare check-in sui treni e raccogliere punti per averlo fatto.",
-    "admin.hafas-entries-by-type": "Voci HAFAS secondo il tipo di trasporto",
-    "admin.hafas-entries-by-polylines": "Voci HAFAS e numero di polylines associate",
     "auth.throttle": "Troppi tentativi di accesso. Riprova tra :seconds secondi.",
     "controller.social.delete-set-email": "Prima di eliminare un provider SSO, devi impostare un indirizzo e-mail in modo da non essere escluso.",
     "controller.social.delete-set-password": "Prima di eliminare un provider SSO, devi impostare una password in modo da non essere escluso.",

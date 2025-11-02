@@ -22,7 +22,6 @@ const user = useUserStore();
 
 function share() {
   let helper = new StatusHelper(props.status);
-
   let shareText = props.status?.userDetails.id === user.user?.id ? helper.generateSocialText() : helper.getDescription();
   let shareUrl = helper.getShareUrl();
 
@@ -88,51 +87,105 @@ function showModal() {
 }
 
 const showDepartureNowButton = computed(() => {
-  if (!props.status?.train || !props.status?.train.origin || !props.status?.train.origin.departure) {
-    return false;
-  }
+  const train = props.status?.train;
+  if (!train || !train.origin || !train.destination) return false;
 
-  const departure = DateTime.fromISO(props.status?.train.origin.departure);
-  const arrival = DateTime.fromISO(props.status?.train.destination.arrival || '');
+  const plannedDeparture = DateTime.fromISO(
+      train.origin.departurePlanned || train.origin.departure || ""
+  );
+  const plannedArrival = DateTime.fromISO(
+      train.destination.arrivalPlanned || train.destination.arrival || ""
+  );
+  if (!plannedDeparture.isValid || !plannedArrival.isValid) return false;
+
   const now = DateTime.now();
-  if (arrival.isValid && now > arrival) {
-    return false; // If the train has already arrived, do not show the button
-  }
-  const diff = now.diff(departure, 'minutes').minutes;
-
-  return departure.isValid && (diff >= -10 && diff <= 40);
+  return now >= plannedDeparture.minus({minutes: 60}) && now <= plannedArrival.plus({days: 1});
 });
 
 const showArrivalNowButton = computed(() => {
-  if (!props.status?.train || !props.status?.train.destination || !props.status?.train.destination.arrival) {
-    return false;
-  }
+  const train = props.status?.train;
+  if (!train || !train.origin || !train.destination) return false;
 
-  const arrival = DateTime.fromISO(props.status?.train.destination.arrival);
+  const plannedDeparture = DateTime.fromISO(
+      train.origin.departurePlanned || train.origin.departure || ""
+  );
+  const plannedArrival = DateTime.fromISO(
+      train.destination.arrivalPlanned || train.destination.arrival || ""
+  );
+  if (!plannedDeparture.isValid || !plannedArrival.isValid) return false;
+
   const now = DateTime.now();
-  const diff = now.diff(arrival, 'minutes').minutes
-
-  return arrival.isValid && (diff >= -20 && diff <= 120);
+  return now >= plannedDeparture && now <= plannedArrival.plus({days: 1});
 });
 
-const api = new Api({baseUrl: window.location.origin + '/api/v1'});
+const api = new Api({baseUrl: window.location.origin + "/api/v1"});
+
+function getNowWithoutSeconds(): string {
+  return DateTime.now().set({second: 0, millisecond: 0}).toISO({suppressSeconds: true, suppressMilliseconds: true});
+}
 
 function departureNow() {
-  api.status.updateSingleStatus({manualDeparture: DateTime.now().toISO()} as StatusUpdateBody, props.status.id).then((status) => {
-    emit('status-updated', status.data.data);
-  }).catch((error) => {
-    console.error('Error updating status:', error);
-    // Optionally, you can show an error message to the user
-  });
+  api.status
+      .updateSingleStatus(
+          {manualDeparture: getNowWithoutSeconds()} as StatusUpdateBody,
+          props.status.id
+      )
+      .then((status) => {
+        emit("status-updated", status.data.data);
+      })
+      .catch((error) => {
+        console.error("Error updating status:", error);
+      });
 }
 
 function arrivalNow() {
-  api.status.updateSingleStatus({manualArrival: DateTime.now().toISO()} as StatusUpdateBody, props.status.id).then((status) => {
-    emit('status-updated', status.data.data);
-  }).catch((error) => {
-    console.error('Error updating status:', error);
-    // Optionally, you can show an error message to the user
-  });
+  api.status
+      .updateSingleStatus(
+          {manualArrival: getNowWithoutSeconds()} as StatusUpdateBody,
+          props.status.id
+      )
+      .then((status) => {
+        emit("status-updated", status.data.data);
+      })
+      .catch((error) => {
+        console.error("Error updating status:", error);
+      });
+}
+
+const canModerateTarget = computed(
+    () => !!user.user && user.user.id !== props.status.userDetails.id
+);
+
+const busyMute = ref(false);
+const busyBlock = ref(false);
+
+async function handleMute() {
+  if (!canModerateTarget.value) return;
+  busyMute.value = true;
+  try {
+    await api.user.createMute(props.status.userDetails.id as unknown as number);
+    notyf.success(trans("user.muted", {username: props.status.userDetails.username}));
+  } catch (e) {
+    console.error("Mute failed:", e);
+    notyf.error(trans("generic.error"));
+  } finally {
+    busyMute.value = false;
+  }
+}
+
+async function handleBlock() {
+  if (!canModerateTarget.value) return;
+  busyBlock.value = true;
+  try {
+    const targetId = props.status.userDetails.id;
+    await api.user.createBlock(String(targetId), {userId: targetId});
+    notyf.success(trans("user.blocked", {username: props.status.userDetails.username}));
+  } catch (e) {
+    console.error("Block failed:", e);
+    notyf.error(trans("generic.error"));
+  } finally {
+    busyBlock.value = false;
+  }
 }
 </script>
 
@@ -180,7 +233,7 @@ function arrivalNow() {
         <template v-if="user.user.id == status.userDetails.id">
           <template v-if="showArrivalNowButton || showDepartureNowButton">
             <li>
-              <hr class="dropdown-divider">
+              <hr class="dropdown-divider"/>
             </li>
             <li v-if="showDepartureNowButton">
               <button class="dropdown-item" type="button" @click="departureNow()">
@@ -199,7 +252,7 @@ function arrivalNow() {
               </button>
             </li>
             <li>
-              <hr class="dropdown-divider">
+              <hr class="dropdown-divider"/>
             </li>
           </template>
           <li>
@@ -228,24 +281,49 @@ function arrivalNow() {
               {{ trans('status.join') }}
             </a>
           </li>
-          <!-- todo:mute-button -->
-          <!-- todo:block-button -->
           <li>
-            <a :href="`/report?subjectType=Status&subjectId=${status.id}`"
-               class="dropdown-item">
+            <hr class="dropdown-divider"/>
+          </li>
+          <li>
+            <a
+                :href="`/report?subjectType=Status&subjectId=${status.id}`"
+                class="dropdown-item"
+            >
               <div class="dropdown-icon-suspense">
                 <i class="fas fa-flag" aria-hidden="true"></i>
               </div>
               {{ trans('status.report') }}
             </a>
           </li>
+
+          <li v-if="canModerateTarget">
+            <button
+                class="dropdown-item" type="button" :disabled="busyMute" @click="handleMute"
+            >
+              <div class="dropdown-icon-suspense">
+                <i class="fas fa-volume-mute" aria-hidden="true"></i>
+              </div>
+              {{ trans('user.mute-tooltip') }}
+            </button>
+          </li>
+
+          <li v-if="canModerateTarget">
+            <button
+                class="dropdown-item text-danger" type="button" :disabled="busyBlock" @click="handleBlock"
+            >
+              <div class="dropdown-icon-suspense">
+                <i class="fas fa-ban" aria-hidden="true"></i>
+              </div>
+              {{ trans('user.block-tooltip') }}
+            </button>
+          </li>
         </template>
         <template v-if="user?.isAdmin">
           <li>
-            <hr class="dropdown-divider">
+            <hr class="dropdown-divider"/>
           </li>
           <li>
-            <a :href="`/admin/status/edit?statusId=${status.id}`" class="dropdown-item">
+            <a :href="`/admin/statuses/${status.id}/edit`" class="dropdown-item">
               <div class="dropdown-icon-suspense">
                 <i class="fas fa-tools" aria-hidden="true"></i>
               </div>
@@ -253,7 +331,6 @@ function arrivalNow() {
             </a>
           </li>
         </template>
- 
       </template>
     </ul>
   </div>

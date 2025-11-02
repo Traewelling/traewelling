@@ -3,6 +3,7 @@
 namespace Tests\Feature\APIv1;
 
 use App\Models\Checkin;
+use App\Models\Station;
 use App\Models\User;
 use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -39,8 +40,13 @@ class TrainStationTest extends ApiTestCase
             ]
         ]]);
         $response->assertJsonCount(1, 'data');
-        $this->assertNotNull($response->json('data.0.rilIdentifier'));
-        $this->assertNotEquals(0, $response->json('data.0.latitude'));
-        $this->assertNotEquals(0, $response->json('data.0.longitude'));
+
+        $station = Station::where('id', $response->json('data.0.id'))->first();;
+        $this->assertNotNull($station);
+        $this->assertEquals($station->name, $response->json('data.0.name'));
+        $this->assertEquals($station->ibnr, $response->json('data.0.ibnr'));
+        $this->assertEquals($station->rilIdentifier, $response->json('data.0.rilIdentifier'));
+        $this->assertEquals($station->latitude, $response->json('data.0.latitude'));
+        $this->assertEquals($station->longitude, $response->json('data.0.longitude'));
     }
 }

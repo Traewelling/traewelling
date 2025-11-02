@@ -39,7 +39,7 @@
                         <td>{{$event->station?->name}}</td>
                         <td>
                             @if($event->approved_by)
-                                <a href="{{ route('admin.users.user', ['id' => $event->approved_by]) }}">
+                                <a href="{{ route('admin.users.show', ['id' => $event->approved_by]) }}">
                                     {{ '@'.$event->approvedBy?->username }}
                                 </a>
                             @endif
