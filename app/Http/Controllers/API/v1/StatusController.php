@@ -14,10 +14,14 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
-use App\Models\PolyLine;
 use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Trip;
+use Clickbar\Magellan\Data\Geometries\GeometryFactory;
+use Clickbar\Magellan\Data\Geometries\LineString;
+use Clickbar\Magellan\Data\Geometries\Point;
+use Clickbar\Magellan\IO\Generator\Geojson\GeojsonGenerator;
+use Clickbar\Magellan\IO\Parser\Geojson\GeojsonParser;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -31,8 +35,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
-use Str;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Traewelling\GooglePolyline\MagellanPolylineTranscoder;
 
 class StatusController extends Controller
 {
@@ -551,6 +554,15 @@ class StatusController extends Controller
                                      return true;
                                  })
                                  ->map(function($status) {
+                                     /** @var Status $status */
+                                     if ($status->checkin->encoded_polyline) {
+                                         $points = [];
+                                         foreach ($status->checkin->getCoordinates() as $coordinate) {
+                                             $points[] = Point::makeGeodetic($coordinate->latitude, $coordinate->longitude);
+                                         }
+                                         // todo: somehow broken
+                                         return (new GeojsonGenerator())->generateLineString(LineString::make($points));
+                                     }
                                      return new Feature(
                                          LocationController::forStatus($status)->getMapLines(),
                                          'LineString',
@@ -559,67 +571,6 @@ class StatusController extends Controller
                                  });
         $geoJson         = new FeatureCollection($geoJsonFeatures);
         return $ids ? new JsonResource($geoJson) : $this->sendError("");
-    }
-
-    /**
-     * @OA\Get(
-     *      path="/status/{id}/polyline/download",
-     *      operationId="downloadPolyline",
-     *      tags={"Status"},
-     *      summary="[Auth optional] Download polyline as GeoJSON",
-     *      description="Downloads the polyline of a single status as a .geojson file",
-     *      @OA\Parameter (
-     *          name="id",
-     *          in="path",
-     *          description="Status ID",
-     *          example=1337,
-     *          @OA\Schema(type="integer")
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation - file download",
-     *          @OA\JsonContent(type="string", example="Binary file response")
-     *       ),
-     *       @OA\Response(response=403, description="User not authorized to access this status"),
-     *       @OA\Response(response=404, description="No status found for this id"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     *
-     * @param int $id
-     *
-     * @return StreamedResponse
-     */
-    public function downloadPolyline(int $id): StreamedResponse
-    {
-        try {
-            $status = Status::with('checkin.Trip.polyline')->findOrFail($id);
-            $this->authorize('view', $status);
-
-            $feature = new Feature(
-                LocationController::forStatus($status)->getMapLines(),
-                'LineString',
-                $status->id
-            );
-
-            $geoJson = new FeatureCollection(collect([$feature]));
-
-            return response()->streamDownload(
-                function () use ($geoJson) {
-                    echo json_encode($geoJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-                },
-                "status-{$id}.geojson",
-                [
-                    'Content-Type' => 'application/geo+json',
-                    'Content-Disposition' => "attachment; filename=status-$id.geojson",
-                ]
-            );
-        } catch (ModelNotFoundException) {
-            abort(404, 'No status found for this id');
-        } catch (AuthorizationException) {
-            abort(403, 'User not authorized to access this status');
-        }
     }
 
     /**
@@ -687,33 +638,37 @@ class StatusController extends Controller
                 return $this->sendError('Uploaded file is not valid JSON', 422);
             }
 
-            if (!isset($geojson['features']) || !is_array($geojson['features'])) {
-                return $this->sendError('Invalid GeoJSON file, does not contain features', 422);
+            if ($geojson['type'] === 'FeatureCollection') {
+                if (count($geojson['features']) === 0) {
+                    return $this->sendError('GeoJSON FeatureCollection contains no features', 422);
+                }
+                $route = $geojson['features'][0];
+            } elseif ($geojson['type'] === 'Feature') {
+                $route = $geojson;
+            } else {
+                return $this->sendError('GeoJSON must be a Feature or FeatureCollection', 422);
             }
 
-            $trip = $status->checkin->trip;
-
-            $newPolylineData = [
-                'hash' => Str::uuid(),
-                'polyline' => json_encode($geojson),
-                'source' => 'upload',
-            ];
-
-            if ($trip->polyline) {
-                $parentPolylineId = $trip->polyline_id;
-
-                $newPolylineData['parent_id'] = $parentPolylineId;
+            try {
+                $route = (new GeojsonParser(new GeometryFactory()))->parse($route);
+            } catch (\RuntimeException $e) {
+                return $this->sendError('Error parsing GeoJSON: ' . $e->getMessage(), 422);
             }
 
-            $newPolyline = PolyLine::create($newPolylineData);
+            /** @var Point $points */
+            $points = [];
+            if ($route instanceof LineString) {
+                $points = $route->getPoints();
+            }
 
-            $trip->update(['polyline_id' => $newPolyline->id]);
-
+            $encodedPolyline = (new MagellanPolylineTranscoder())->encodePolyline($points);
+            $status->trainCheckin->encoded_polyline = $encodedPolyline;
+            $status->trainCheckin->save();
             TrainCheckinController::refreshDistanceAndPoints($status);
 
             return $this->sendResponse([
                 'message' => 'Polyline updated successfully',
-                'polyline' => $newPolyline
+                'polyline' => (new GeojsonGenerator())->generate(LineString::make($points))
             ]);
 
         } catch (ValidationException $e) {

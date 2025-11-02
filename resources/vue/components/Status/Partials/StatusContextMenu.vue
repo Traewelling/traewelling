@@ -124,6 +124,24 @@ function getNowWithoutSeconds(): string {
   return DateTime.now().set({second: 0, millisecond: 0}).toISO({suppressSeconds: true, suppressMilliseconds: true});
 }
 
+function downloadPolyline() {
+  api.polyline.getPolylines(props.status.id.toString())
+      .then((response) => {
+        const blob = new Blob([JSON.stringify(response.data.data)], {type: 'application/geo+json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `status-${props.status.id}-polyline.geojson`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error('Error downloading polyline:', error);
+      });
+}
+
 function departureNow() {
   api.status
       .updateSingleStatus(
@@ -222,7 +240,7 @@ async function handleBlock() {
         </button>
       </li>
        <li>
-        <a class="dropdown-item" :href="`/api/v1/status/${status.id}/polyline/download`" download>
+        <a class="dropdown-item" @click="downloadPolyline()" download>
           <div class="dropdown-icon-suspense">
             <i class="fas fa-share" aria-hidden="true"></i>
           </div>

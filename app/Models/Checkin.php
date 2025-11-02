@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\UTCDateTime;
+use App\Dto\Coordinate;
 use App\Enum\TimeType;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +14,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use stdClass;
+use Traewelling\GooglePolyline\PolylineTranscoder;
 
 /**
  * @todo rename table to "Checkin" (without Train - we have more than just trains)
@@ -29,7 +31,7 @@ class Checkin extends Model
     protected $table    = 'train_checkins';
     protected $fillable = [
         'status_id', 'user_id', 'trip_id', 'origin_stopover_id', 'destination_stopover_id',
-        'distance', 'duration', 'manual_departure', 'manual_arrival', 'points', 'forced',
+        'distance', 'duration', 'manual_departure', 'manual_arrival', 'points', 'forced', 'encoded_polyline',
 
         'departure', 'arrival' //TODO: -> use {origin/destination}_stopover->{arrival/departure} instead
     ];
@@ -149,5 +151,24 @@ class Checkin extends Model
                    ->filter(function($status) {
                        return $status !== null && Gate::forUser(Auth::user())->allows('view', $status);
                    });
+    }
+
+
+    /**
+     * @return null|Coordinate[]
+     */
+    public function getCoordinates(): ?array {
+        if (!$this->encoded_polyline) {
+            return null;
+        }
+        $locations = (new PolylineTranscoder)->decodePolyline($this->encoded_polyline);
+
+        $coordinates = [];
+        foreach ($locations as $key => $location) {
+            $coordinates[] = new Coordinate($location->getLatitude(), $location->getLongitude());
+            unset($locations[$key]);
+        }
+
+        return $coordinates;
     }
 }

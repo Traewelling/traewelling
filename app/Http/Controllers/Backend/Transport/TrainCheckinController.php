@@ -23,6 +23,7 @@ use App\Models\Stopover;
 use App\Models\Trip;
 use App\Models\User;
 use App\Notifications\UserJoinedConnection;
+use App\Services\GeoService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -231,34 +232,48 @@ abstract class TrainCheckinController extends Controller
      * @throws DistanceDeviationException
      */
     public static function refreshDistanceAndPoints(Status $status, bool $resetPolyline = false): void {
-        $checkin = $status->checkin;
-        if ($resetPolyline) {
-            $checkin->trip->update(['polyline_id' => null]);
+        $checkin           = $status->checkin;
+        $statusCoordinates = $checkin->getCoordinates();
+        $firstStop         = $checkin->originStopover;
+        $lastStop          = $checkin->destinationStopover;
+        $oldPoints         = $checkin->points;
+        $oldDistance       = $checkin->distance;
+        $distance          = 0;
+        if ($statusCoordinates) {
+            $geoService = new GeoService();
+            for ($i = 1; $i < count($statusCoordinates); $i++) {
+                $distance += $geoService->getDistance(
+                    $statusCoordinates[$i - 1],
+                    $statusCoordinates[$i]
+                );
+            }
         }
-        $firstStop   = $checkin->originStopover;
-        $lastStop    = $checkin->destinationStopover;
-        $distance    = (new LocationController(
-            trip:        $checkin->trip,
-            origin:      $firstStop,
-            destination: $lastStop
-        ))->calculateDistance();
-        $oldPoints   = $checkin->points;
-        $oldDistance = $checkin->distance;
-
-        $percentage = config('trwl.distance_deviation_threshold_percent', 15) / 100;
-        $upperLimit = $oldDistance * (1 + $percentage);
-        $lowerLimit = $oldDistance * (1 - $percentage);
-
-        if ($distance === 0 || ($oldDistance !== 0 && ($distance > $upperLimit || $distance < $lowerLimit))) {
-            Log::debug(sprintf(
-                           'Distance deviation for status #%d is greater than %d percent. Original: %d, new: %d',
-                           $status->id,
-                            $percentage * 100,
-                           $oldDistance,
-                           $distance
-                       ));
-            throw new DistanceDeviationException();
+        if ($distance === 0) {
+            if ($resetPolyline) {
+                $checkin->trip->update(['polyline_id' => null]);
+            }
+            $distance = (new LocationController(
+                trip:        $checkin->trip,
+                origin:      $firstStop,
+                destination: $lastStop
+            ))->calculateDistance();
         }
+        /*
+
+                $percentage = config('trwl.distance_deviation_threshold_percent', 15) / 100;
+                $upperLimit = $oldDistance * (1 + $percentage);
+                $lowerLimit = $oldDistance * (1 - $percentage);
+
+                if ($distance === 0 || ($oldDistance !== 0 && ($distance > $upperLimit || $distance < $lowerLimit))) {
+                    Log::debug(sprintf(
+                                   'Distance deviation for status #%d is greater than %d percent. Original: %d, new: %d',
+                                   $status->id,
+                                    $percentage * 100,
+                                   $oldDistance,
+                                   $distance
+                               ));
+                    throw new DistanceDeviationException();
+                }**/
 
         $pointsResource = PointsCalculationController::calculatePoints(
             distanceInMeter: $distance,
