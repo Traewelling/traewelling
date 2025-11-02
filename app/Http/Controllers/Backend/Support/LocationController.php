@@ -234,7 +234,6 @@ class LocationController
         $coordinates   = [];
         $routeSegments = 0;
         $firstStopHit = false;
-        $previousHadRouteSegment = false;
         foreach ($this->trip->stopovers as $stopover) {
             // Skip stopovers until we reach the origin
             if (!$firstStopHit) {
@@ -244,9 +243,9 @@ class LocationController
                     continue;
                 }
             }
-
             // If no route segment is available, add the station coordinate directly
-            if ($stopover->routeSegment === null) {
+            // Also add the station coordinate if we've reached the destination
+            if ($stopover->routeSegment === null || $stopover->is($this->destination)) {
                 $coordinates[] = new Coordinate(
                     $stopover->station->latitude,
                     $stopover->station->longitude
@@ -255,23 +254,14 @@ class LocationController
                 if ($stopover->is($this->destination)) {
                     break;
                 }
-                // Store that the previous stopover had no route segment
-                $previousHadRouteSegment = false;
                 continue;
             }
-            // If we reach the destination and the previous stopover had a route segment, we can stop here
-            // If not, we still need to add the route segment of this stopover
-            if ($stopover->is($this->destination) && $previousHadRouteSegment) {
-                break;
-            }
-            $previousHadRouteSegment = true;
-            $coordinates = array_merge($coordinates, $stopover->routeSegment->getCoordinates());
-            $routeSegments++;
-
-            // If we reached the destination, break the loop
+            // If we've reached the destination, break the loop
             if ($stopover->is($this->destination)) {
                 break;
             }
+            $coordinates = array_merge($coordinates, $stopover->routeSegment->getCoordinates());
+            $routeSegments++;
         }
 
         if (empty($coordinates) || $routeSegments < 1) {
