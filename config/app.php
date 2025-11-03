@@ -94,6 +94,7 @@ return [
         'de_by'  => 'Deutsch (Bayerisch)',
         'en'     => 'English',
         'es'     => 'Spanish',
+        'is'     => 'Íslenska',
         'it'     => 'Italiano',
         'fr'     => 'Français',
         'nb_NO'  => 'Norwegian Bokmål',
