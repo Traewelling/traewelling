@@ -101,6 +101,7 @@ return [
         'nl'     => 'Nederlands',
         'sv'     => 'Svenska',
         'pl'     => 'Polski',
+        'pt'     => 'Português',
     ],
 
     /*
