@@ -253,7 +253,7 @@ class MotisHydrator
             'motis_source_license_id' => $license?->id ?? null,
         ];
 
-        if (is_int($shortTripName)) {
+        if (is_numeric($shortTripName)) {
             $payload['journey_number'] = $shortTripName;
         }
 
