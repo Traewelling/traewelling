@@ -95,6 +95,7 @@ return [
         'es'     => 'Spanish',
         'it'     => 'Italiano',
         'fr'     => 'Français',
+        'nb_NO'  => 'Norwegian Bokmål',
         'nl'     => 'Nederlands',
         'sv'     => 'Svenska',
         'pl'     => 'Polski',
