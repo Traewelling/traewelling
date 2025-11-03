@@ -102,6 +102,7 @@ return [
         'sv'     => 'Svenska',
         'pl'     => 'Polski',
         'pt'     => 'Português',
+        'tr'     => 'Türkçe',
     ],
 
     /*
