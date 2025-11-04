@@ -1,8 +1,185 @@
+<script setup lang="ts">
+import {onBeforeUnmount, onMounted, ref, type Ref} from 'vue'
+import {
+  MglFullscreenControl,
+  MglGeolocateControl,
+  MglMap,
+  MglMarker,
+  MglNavigationControl,
+  MglPopup,
+  MglRasterLayer,
+  MglRasterSource,
+} from '@indoorequal/vue-maplibre-gl';
+import {LngLat, LngLatBoundsLike, StyleSpecification} from 'maplibre-gl';
+import {Api, AreaResource, StationResource} from "../../../types/Api.gen";
+
+const api = new Api({baseUrl: window.location.origin + '/api/v1'});
+
+const style: StyleSpecification = {
+  version: 8,
+  projection: {type: 'globe'},
+  sources: {},
+  layers: [],
+};
+const center = ref(new LngLat(8.403, 49));
+const osmTiles = ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'];
+const osmAttribution =
+    'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
+const zoom = ref(13);
+
+interface Props {
+  apiUrl?: string;
+  limit?: number;
+  initialCenter?: [number, number];
+  initialZoom?: number;
+  minZoomForData?: number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  apiUrl: '/api/v1/stations',
+  limit: 250,
+  initialCenter: () => [48.993316, 8.401525],
+  initialZoom: 15,
+  minZoomForData: 11,
+})
+
+const bounds = ref<LngLatBoundsLike | undefined>(undefined)
+const mapComponent: Ref<InstanceType<typeof MglMap> | null> = ref(null)
+
+const loading = ref<boolean>(false)
+const error = ref<string>('')
+const stations = ref<StationResource[]>([])
+
+let debounceTimer: ReturnType<typeof setTimeout> | null = null
+const DEBOUNCE_MS = 350
+
+function getAreaName(station: StationResource): string {
+  if (!Array.isArray(station.areas)) return ''
+  const areaPrimary = station.areas.find((a: AreaResource) => a?.default)
+  const areaFallback = station.areas.length ? station.areas[0] : null
+  return areaPrimary?.name || areaFallback?.name || ''
+}
+
+function onMapLoad(): void {
+  if (zoom.value > props.minZoomForData) {
+    fetchStationsForCurrentView()
+  }
+}
+
+function onMapMoveEnd(event: any): void {
+  if (debounceTimer !== null) {
+    clearTimeout(debounceTimer)
+  }
+
+  if (zoom.value < props.minZoomForData) {
+    return
+  }
+
+  debounceTimer = setTimeout(fetchStationsForCurrentView, DEBOUNCE_MS)
+}
+
+function fetchStationsForCurrentView(): void {
+  if (!center.value && !zoom.value) return
+
+  // Calculate map bounds from center and zoom
+  const centerLng = center.value.lng
+  const centerLat = center.value.lat
+  const mapWidthInDegrees = 360 / Math.pow(2, zoom.value) * 10 // Approximation
+  const mapHeightInDegrees = 180 / Math.pow(2, zoom.value) * 10 // Approximation
+  const min_lon = centerLng - mapWidthInDegrees / 2
+  const max_lon = centerLng + mapWidthInDegrees / 2
+  const min_lat = centerLat - mapHeightInDegrees / 2
+  const max_lat = centerLat + mapHeightInDegrees / 2
+
+  loading.value = true
+  error.value = ''
+
+  const url = new URL(props.apiUrl, window.location.origin)
+  url.searchParams.set('limit', Math.min(Math.max(props.limit, 1), 100).toString())
+
+  api.stations.indexStation({
+    min_lat: min_lat,
+    max_lat: max_lat,
+    min_lon: min_lon,
+    max_lon: max_lon,
+    limit: Math.min(Math.max(props.limit, 1), 250),
+  })
+      .then((res) => {
+        for (const s of res.data.data || []) {
+          if (!Number.isFinite(s?.latitude) || !Number.isFinite(s?.longitude)) continue
+          if (stations.value.some((st) => st.id === s.id)) continue
+          stations.value.push(s)
+        }
+        loading.value = false
+      })
+      .catch((e: unknown) => {
+        console.error(e)
+        error.value = e instanceof Error ? e.message : 'Error'
+        loading.value = false
+      })
+}
+
+onMounted(() => {
+  fetchStationsForCurrentView();
+})
+
+onBeforeUnmount(() => {
+  if (debounceTimer !== null) {
+    clearTimeout(debounceTimer)
+  }
+})
+</script>
 <template>
   <div class="station-map-wrapper">
-    <div ref="mapEl" class="leaflet-map"/>
+    <mgl-map
+        ref="mapComponent"
+        :map-style="style"
+        v-model:center="center"
+        v-model:zoom="zoom"
+        :max-zoom="18"
+        :bounds="bounds"
+        height="60vh"
+        @map:boxzoomend="onMapMoveEnd"
+        @map:moveend="onMapMoveEnd"
+        @load="onMapLoad"
+    >
+      <mgl-fullscreen-control/>
+      <mgl-navigation-control
+          position="top-right"
+          :show-zoom="true"
+          :show-compass="true"
+      />
+      <mgl-geolocate-control/>
+      <mgl-raster-source
+          source-id="raster-source"
+          :tiles="osmTiles"
+          :tile-size="256"
+          :maxzoom="18"
+          :attribution="osmAttribution"
+      >
+        <mgl-raster-layer layer-id="raster-layer"/>
+      </mgl-raster-source>
 
-    <div v-if="zoomTooFar" class="alert alert-warning mt-2">
+      <mgl-marker
+          v-for="station in stations"
+          :key="station.id"
+          :coordinates="[station.longitude, station.latitude]"
+      >
+        <mgl-popup>
+          <div style="min-width: 220px">
+            <div style="font-weight:600; margin-bottom: 2px">{{ station.name ?? '???' }}</div>
+            <div style="font-size: 12px; color:#555">
+              <div><b>ID:</b> {{ String(station.id ?? '–') }}</div>
+              <div><b>IBNR:</b> {{ station.ibnr ?? '–' }} &nbsp; <b>RIL:</b> {{ station.rilIdentifier ?? '–' }}</div>
+              <div v-show="station.areas"><b>Gebiet:</b> {{ (getAreaName(station)) }}</div>
+              <div><b>Lat/Lon:</b> {{ Number(station.latitude).toFixed(5) }}, {{ Number(station.longitude).toFixed(5) }}
+              </div>
+            </div>
+          </div>
+        </mgl-popup>
+      </mgl-marker>
+    </mgl-map>
+    <div v-if="zoom < (minZoomForData || 11)" class="alert alert-warning mt-2">
       Zoom in to load stations (min zoom: {{ minZoomForData }}).
     </div>
 
@@ -14,172 +191,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
-import L from 'leaflet'
-
-delete L.Icon.Default.prototype._getIconUrl
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: new URL('leaflet/dist/images/marker-icon-2x.png', import.meta.url).toString(),
-  iconUrl: new URL('leaflet/dist/images/marker-icon.png', import.meta.url).toString(),
-  shadowUrl: new URL('leaflet/dist/images/marker-shadow.png', import.meta.url).toString()
-})
-
-const props = defineProps({
-  apiUrl: { type: String, default: '/api/v1/stations' },
-  limit: { type: Number, default: 250 },
-  initialCenter: {
-    type: Array,
-    default: () => [48.993316, 8.401525] // Karlsruhe Hbf
-  },
-  initialZoom: { type: Number, default: 15 },
-  minZoomForData: { type: Number, default: 14 }
-})
-
-const mapEl = ref(null)
-let map
-let markersLayer
-
-const loading = ref(false)
-const error = ref('')
-const zoomTooFar = ref(true)
-
-let debounceTimer = null
-const DEBOUNCE_MS = 350
-
-function updateZoomState() {
-  if (!map) return
-  zoomTooFar.value = map.getZoom() < props.minZoomForData
-}
-
-function fetchStationsForCurrentView() {
-  if (!map) return
-
-  updateZoomState()
-
-  const b = map.getBounds()
-  const min_lat = b.getSouth()
-  const max_lat = b.getNorth()
-  const min_lon = b.getWest()
-  const max_lon = b.getEast()
-
-  loading.value = true
-  error.value = ''
-
-  const url = new URL(props.apiUrl, window.location.origin)
-  url.searchParams.set('min_lat', min_lat.toFixed(6))
-  url.searchParams.set('max_lat', max_lat.toFixed(6))
-  url.searchParams.set('min_lon', min_lon.toFixed(6))
-  url.searchParams.set('max_lon', max_lon.toFixed(6))
-  url.searchParams.set('limit', Math.min(Math.max(props.limit, 1), 100).toString())
-
-  fetch(url.toString(), { headers: { 'Accept': 'application/json' } })
-      .then(async (res) => {
-        if (!res.ok) {
-          const text = await res.text().catch(() => '')
-          throw new Error(`API ${res.status}: ${text || res.statusText}`)
-        }
-        return res.json()
-      })
-      .then(json => {
-        const items = Array.isArray(json?.data) ? json.data : []
-
-        const uniq = new Map()
-        for (const s of items) {
-          if (!Number.isFinite(s?.latitude) || !Number.isFinite(s?.longitude)) continue
-          const key = `${s.id ?? 'noid'}@${s.latitude},${s.longitude}`
-          if (!uniq.has(key)) uniq.set(key, s)
-        }
-        renderMarkers([...uniq.values()])
-      })
-      .catch((e) => {
-        console.error(e)
-        error.value = e?.message ?? 'Error'
-      })
-      .finally(() => {
-        loading.value = false
-      })
-}
-
-function renderMarkers(stations) {
-  if (!markersLayer) return
-  markersLayer.clearLayers()
-
-  stations.forEach(s => {
-    const m = L.marker([s.latitude, s.longitude])
-    const areaPrimary = Array.isArray(s.areas) ? s.areas.find(a => a?.default) : null
-    const areaFallback = Array.isArray(s.areas) && s.areas.length ? s.areas[0] : null
-    const areaText = (areaPrimary?.name || areaFallback?.name || '').toString()
-
-    const popupHtml = `
-      <div style="min-width: 220px">
-        <div style="font-weight:600; margin-bottom: 2px">${escapeHtml(s.name ?? '???')}</div>
-        <div style="font-size: 12px; color:#555">
-          <div><b>ID:</b> ${escapeHtml(String(s.id ?? '–'))}</div>
-          <div><b>IBNR:</b> ${s.ibnr ?? '–'} &nbsp; <b>RIL:</b> ${escapeHtml(s.rilIdentifier ?? '–')}</div>
-          ${areaText ? `<div><b>Gebiet:</b> ${escapeHtml(areaText)}</div>` : ''}
-          <div><b>Lat/Lon:</b> ${Number(s.latitude).toFixed(5)}, ${Number(s.longitude).toFixed(5)}</div>
-        </div>
-      </div>
-    `
-    m.bindPopup(popupHtml, { maxWidth: 320 })
-    markersLayer.addLayer(m)
-  })
-}
-
-function escapeHtml(str) {
-  return String(str)
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;')
-}
-
-onMounted(() => {
-  map = L.map(mapEl.value, {
-    zoomControl: true,
-    attributionControl: true
-  }).setView(props.initialCenter, props.initialZoom)
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> contributors'
-  }).addTo(map)
-
-  markersLayer = L.layerGroup().addTo(map)
-
-  updateZoomState()
-  if (!zoomTooFar.value) {
-    fetchStationsForCurrentView()
-  }
-
-  map.on('moveend', () => {
-    window.clearTimeout(debounceTimer)
-    updateZoomState()
-    if (zoomTooFar.value) {
-      if (markersLayer) markersLayer.clearLayers()
-      return
-    }
-    debounceTimer = window.setTimeout(fetchStationsForCurrentView, DEBOUNCE_MS)
-  })
-})
-
-onBeforeUnmount(() => {
-  if (map) map.remove()
-})
-</script>
-
-<style scoped>
-.leaflet-map {
-  width: 100%;
-  height: 60vh;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.station-map-wrapper {
-  position: relative;
-}
-</style>
