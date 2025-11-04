@@ -81,7 +81,7 @@ class StationRepository
             $stationIds = [$stationIds];
         }
 
-        return Station::with('areas')
+        return Station::with(['areas', 'stationIdentifiers'])
                       ->whereRelation('stationIdentifiers', function($query) use ($stationIds, $source, $type) {
                           $query->whereIn('identifier', $stationIds)
                                 ->where('type', $type)

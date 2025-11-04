@@ -5427,6 +5427,20 @@
                 },
                 "type": "object"
             },
+            "StationIdentifierResource": {
+                "title": "StationIdentifier",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "de_db_ril100"
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "example": "RK"
+                    }
+                },
+                "type": "object"
+            },
             "StationResource": {
                 "title": "Station",
                 "required": [
@@ -5455,18 +5469,16 @@
                         "type": "number",
                         "example": "8.400977"
                     },
-                    "ibnr": {
-                        "type": "string",
-                        "example": "8000191"
-                    },
-                    "rilIdentifier": {
-                        "type": "string",
-                        "example": "RK"
-                    },
                     "areas": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/AreaResource"
+                        }
+                    },
+                    "identifiers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StationIdentifierResource"
                         }
                     }
                 },

@@ -9,7 +9,6 @@ use App\Models\Station;
 use App\Models\StationIdentifier;
 use App\Services\Wikidata\WikidataImportService;
 use App\StationIdentifierType;
-use Deprecated;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -18,7 +17,7 @@ class StationRepository
     public function getStationByName(string $name, string $lang, bool $invertLanguage = false, int $limit = 20): Collection {
         $invertLanguage = $invertLanguage ? '!=' : '=';
 
-        return Station::with('areas')
+        return Station::with(['areas', 'stationIdentifiers'])
                       ->leftJoin('station_names', 'station_names.station_id', '=', 'train_stations.id')
                       ->where('station_names.name', 'LIKE', "$name")
                       ->where('station_names.language', $invertLanguage, $lang)
@@ -31,61 +30,24 @@ class StationRepository
                       ->select('train_stations.*')
                       ->distinct()
                       ->limit($limit)
-                      ->orderBy('relevance', 'desc')
-                      ->orderBy('train_stations.name', 'asc')
+                      ->orderByDesc('relevance')
+                      ->orderBy('train_stations.name')
                       ->get();
     }
 
-    #[Deprecated]
-    public function getStationsByFuzzyRilIdentifierDeprecated(string $rilIdentifier): Collection {
-        $stations = Station::where('rilIdentifier', 'LIKE', "$rilIdentifier%")
-                           ->orderBy('rilIdentifier')
-                           ->get();
-        if ($stations->count() === 0) {
-            $station = $this->getStationByRilIdentifierDeprecated(rilIdentifier: $rilIdentifier);
-            if ($station !== null) {
-                $stations->push($station);
-            }
-        }
-        return $stations;
-    }
-
-    private function getStationByRilIdentifierDeprecated(string $rilIdentifier): ?Station {
-        $station = Station::where('rilIdentifier', $rilIdentifier)->first();
-        if ($station !== null) {
-            return $station;
-        }
-        return null;
-    }
-
     public function getStationsByFuzzyRilIdentifier(string $rilIdentifier): Collection {
-        $identifiers = StationIdentifier::with('station')
+        $identifiers = StationIdentifier::with(['station.stationIdentifiers'])
                                         ->where('type', StationIdentifierType::DE_DB_RIL100)
                                         ->where('identifier', $rilIdentifier)
                                         ->get();
-        if ($identifiers->count() === 0) {
-            $station = $this->getStationByRilIdentifierDeprecated(rilIdentifier: $rilIdentifier);
-            return collect($station);
-        }
 
-        return $identifiers->map(function($identifier) {
-            /** @var StationIdentifier $identifier */
+        return $identifiers->map(function(StationIdentifier $identifier) {
             return $identifier->station;
         });
     }
 
-    private function getStationByRilIdentifier(string $rilIdentifier): Station {
-        $station = StationIdentifier::with('station')
-                                    ->where('type', StationIdentifierType::DE_DB_RIL100)
-                                    ->where('identifier', $rilIdentifier)
-                                    ->first()->station;
-    }
-
-    /**
-     * @deprecated Needs to be replaced with StationIdentifier-Search
-     */
     public function getStationsByWikidataId(string $wikidataId): Collection {
-        $stations = Station::where('wikidata_id', $wikidataId)->get();
+        $stations = $this->getStationsByIdentifier($wikidataId, StationIdentifierType::WIKIDATA_ID);
 
         if ($stations->isEmpty() && ExperimentalController::checkGeneralRateLimit() && ExperimentalController::checkWikidataIdRateLimit($wikidataId)) {
             try {
@@ -104,18 +66,26 @@ class StationRepository
         return $stations;
     }
 
-    public function getStationByIdentifier(string $identifier, StationIdentifierType $type = StationIdentifierType::MOTIS, ?string $origin = null): ?Station {
-        $query = StationIdentifier::with('station')
+    public function getStationsByIdentifier(string $identifier, StationIdentifierType $type = StationIdentifierType::MOTIS, ?string $origin = null): Collection {
+        $query = StationIdentifier::with(['station.stationIdentifiers'])
                                   ->whereIdentifier($identifier)
                                   ->whereType($type);
         if ($origin !== null) {
             $query->whereOrigin($origin);
         }
 
-        return $query->first()?->station;
+        return $query->get()
+                     ->map(function(StationIdentifier $identifier) {
+                         return $identifier->station;
+                     });
+    }
+
+    public function getStationByIdentifier(string $identifier, StationIdentifierType $type = StationIdentifierType::MOTIS, ?string $origin = null): ?Station {
+        $stations = $this->getStationsByIdentifier($identifier, $type, $origin);
+        return $stations->isNotEmpty() ? $stations->first() : null;
     }
 
     public function getStationByIbnr(string $ibnr): ?Station {
-        return Station::where('ibnr', $ibnr)->first();
+        return $this->getStationByIdentifier($ibnr, StationIdentifierType::DE_DB_IBNR);
     }
 }

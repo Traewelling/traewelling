@@ -94,11 +94,9 @@ class StationController extends Controller
             if ($stations->isNotEmpty()) {
                 return $stations;
             }
-            $stations = $this->stationRepository->getStationsByFuzzyRilIdentifierDeprecated($search);
-            if ($stations->isNotEmpty()) {
-                return $stations;
-            }
-        } elseif (preg_match('/^Q\d+$/', $search)) {
+        }
+
+        if (preg_match('/^Q\d+$/', $search)) {
             return $this->stationRepository->getStationsByWikidataId($search);
         }
 
