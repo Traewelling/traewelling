@@ -323,5 +323,13 @@
     "settings.picture": "Prófílmynd",
     "settings.service": "Þjónusta",
     "settings.title-loginservices": "Tengdar þjónustur",
-    "settings.title-password": "Lykilorð"
+    "settings.title-password": "Lykilorð",
+    "notifications.userMentioned.notice": "@:username var að merkja þig í færslu sinni.",
+    "settings.delete-all-tokens": "Afturkalla öll tákn",
+    "settings.disconnect": "Aftengjast",
+    "settings.ip": "vistfang",
+    "settings.title-change-password": "Breytta lykilorði",
+    "settings.title-privacy": "Persónuvernd",
+    "settings.title-profile": "Prófílstillingar",
+    "settings.title-tokens": "API-tákn"
 }
