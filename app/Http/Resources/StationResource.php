@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Controllers\Backend\Transport\dtos\StationDto;
 use App\Models\Station;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,13 +19,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class StationResource extends JsonResource
 {
-    private bool $areasSet;
-
-    public function __construct($station) {
-        $this->areasSet = $station instanceof Station || $station instanceof StationDto;
-
-        parent::__construct($station);
-    }
 
     public function toArray($request): array {
         /** @var Station $this */
@@ -37,7 +29,7 @@ class StationResource extends JsonResource
             "longitude"     => $this->longitude,
             "ibnr"          => $this->ibnr, // @deprecated - see identifiers
             "rilIdentifier" => $this->rilIdentifier, // @deprecated - see identifiers
-            "areas"         => $this->areasSet ? AreaResource::collection($this->whenLoaded('areas')) : null,
+            "areas"         => AreaResource::collection($this->whenLoaded('areas')),
             'identifiers'   => StationIdentifierResource::collection($this->whenLoaded('stationIdentifiers')),
         ];
     }

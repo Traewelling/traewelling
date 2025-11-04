@@ -25,6 +25,7 @@ use App\Models\Status;
 use App\Models\User;
 use App\Notifications\YouHaveBeenCheckedIn;
 use App\Repositories\CheckinHydratorRepository;
+use App\Repositories\StationRepository;
 use App\Services\GeoService;
 use Carbon\Carbon;
 use Exception;
@@ -39,6 +40,13 @@ use Throwable;
 
 class TransportController extends Controller
 {
+
+    private StationRepository $stationRepository;
+
+    public function __construct(StationRepository $stationRepository) {
+        $this->stationRepository = $stationRepository;
+    }
+
     /**
      * @param Request $request
      * @param int     $stationId
@@ -569,12 +577,12 @@ class TransportController extends Controller
      *       @OA\Response(response=401, description="Unauthorized"),
      *       security={
      *          {"passport": {"create-statuses"}}, {"token": {}}
-     *
      *       }
      *     )
      */
     public function getTrainStationHistory(): AnonymousResourceCollection {
-        return StationResource::collection(StationController::getLatestArrivals(auth()->user()));
+        $latestArrivals = $this->stationRepository->getLatestArrivalsForUser(\auth()->user(), 10);
+        return StationResource::collection($latestArrivals);
     }
 
     public function checkinOtherUsers(?Collection $withUsers, CheckInRequestDto $dto, CheckinSuccessDto $checkinResponse): void {

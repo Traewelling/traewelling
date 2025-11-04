@@ -7,9 +7,11 @@ namespace App\Repositories;
 use App\Http\Controllers\API\v1\ExperimentalController;
 use App\Models\Station;
 use App\Models\StationIdentifier;
+use App\Models\User;
 use App\Services\Wikidata\WikidataImportService;
 use App\StationIdentifierType;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class StationRepository
@@ -87,5 +89,32 @@ class StationRepository
 
     public function getStationByIbnr(string $ibnr): ?Station {
         return $this->getStationByIdentifier($ibnr, StationIdentifierType::DE_DB_IBNR);
+    }
+
+    /**
+     * Get the latest Stations the user is arrived.
+     *
+     * @param User $user
+     * @param int  $maxCount
+     *
+     * @return Collection
+     */
+    public function getLatestArrivalsForUser(User $user, int $maxCount = 5): Collection {
+        $latestStations = DB::table('train_checkins')
+                            ->join('train_stopovers', 'train_checkins.destination_stopover_id', '=', 'train_stopovers.id')
+                            ->join('train_stations', 'train_stopovers.train_station_id', '=', 'train_stations.id')
+                            ->where('train_checkins.user_id', $user->id)
+                            ->groupBy('train_stations.id')
+                            ->select(['train_stations.id', DB::raw('MAX(train_checkins.arrival) as last_arrival')])
+                            ->orderByDesc(DB::raw('MAX(train_checkins.arrival)'))
+                            ->limit($maxCount)
+                            ->get();
+
+        return Station::with(['areas', 'stationIdentifiers'])
+                      ->whereIn('id', $latestStations->pluck('id'))
+                      ->get()
+                      ->sortBy(function(Station $station) use ($latestStations) {
+                          return $latestStations->firstWhere('id', $station->id)->last_arrival;
+                      }, SORT_REGULAR, true);
     }
 }
