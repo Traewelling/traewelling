@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import {onBeforeUnmount, onMounted, ref, type Ref} from 'vue'
+import {computed, onBeforeUnmount, onMounted, type Ref, ref} from 'vue'
 import {
   MglFullscreenControl,
+  MglGeoJsonSource,
   MglGeolocateControl,
+  MglHeatmapLayer,
   MglMap,
   MglMarker,
   MglNavigationControl,
@@ -12,6 +14,7 @@ import {
 } from '@indoorequal/vue-maplibre-gl';
 import {LngLat, LngLatBoundsLike, StyleSpecification} from 'maplibre-gl';
 import {Api, AreaResource, StationResource} from "../../../types/Api.gen";
+import type {FeatureCollection, Point} from 'geojson';
 
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
 
@@ -33,6 +36,7 @@ interface Props {
   initialCenter?: [number, number];
   initialZoom?: number;
   minZoomForData?: number;
+  heatmapMaxZoom?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -41,6 +45,7 @@ const props = withDefaults(defineProps<Props>(), {
   initialCenter: () => [48.993316, 8.401525],
   initialZoom: 15,
   minZoomForData: 11,
+  heatmapMaxZoom: 11,
 })
 
 const bounds = ref<LngLatBoundsLike | undefined>(undefined)
@@ -52,6 +57,23 @@ const stations = ref<StationResource[]>([])
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 const DEBOUNCE_MS = 350
+
+const showHeatmap = computed(() => zoom.value <= props.heatmapMaxZoom)
+
+const stationsGeoJson = computed<FeatureCollection<Point>>(() => ({
+  type: 'FeatureCollection',
+  features: stations.value.map(station => ({
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [station.longitude, station.latitude]
+    },
+    properties: {
+      id: station.id,
+      name: station.name
+    }
+  }))
+}))
 
 function getAreaName(station: StationResource): string {
   if (!Array.isArray(station.areas)) return ''
@@ -81,11 +103,10 @@ function onMapMoveEnd(event: any): void {
 function fetchStationsForCurrentView(): void {
   if (!center.value && !zoom.value) return
 
-  // Calculate map bounds from center and zoom
   const centerLng = center.value.lng
   const centerLat = center.value.lat
-  const mapWidthInDegrees = 360 / Math.pow(2, zoom.value) * 10 // Approximation
-  const mapHeightInDegrees = 180 / Math.pow(2, zoom.value) * 10 // Approximation
+  const mapWidthInDegrees = 360 / Math.pow(2, zoom.value) * 10
+  const mapHeightInDegrees = 180 / Math.pow(2, zoom.value) * 10
   const min_lon = centerLng - mapWidthInDegrees / 2
   const max_lon = centerLng + mapWidthInDegrees / 2
   const min_lat = centerLat - mapHeightInDegrees / 2
@@ -160,7 +181,41 @@ onBeforeUnmount(() => {
         <mgl-raster-layer layer-id="raster-layer"/>
       </mgl-raster-source>
 
+      <mgl-geo-json-source
+          v-if="showHeatmap"
+          source-id="stations-heat"
+          :data="stationsGeoJson"
+      >
+        <mgl-heatmap-layer
+            layer-id="stations-heatmap"
+            :paint="{
+              'heatmap-weight': 1,
+              'heatmap-intensity': 1,
+              'heatmap-color': [
+                'interpolate',
+                ['linear'],
+                ['heatmap-density'],
+                0, 'rgba(33,102,172,0)',
+                0.2, 'rgb(103,169,207)',
+                0.4, 'rgb(209,229,240)',
+                0.6, 'rgb(253,219,199)',
+                0.8, 'rgb(239,138,98)',
+                1, 'rgb(178,24,43)'
+              ],
+              'heatmap-radius': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                0, 2,
+                9, 20
+              ],
+              'heatmap-opacity': 0.8
+            }"
+        />
+      </mgl-geo-json-source>
+
       <mgl-marker
+          v-if="!showHeatmap"
           v-for="station in stations"
           :key="station.id"
           :coordinates="[station.longitude, station.latitude]"
@@ -188,6 +243,7 @@ onBeforeUnmount(() => {
       You may zoom very far in to see all stations, as we only load a limited number of stations per request.
       As you move the map, new stations will be loaded automatically.
       Expect a lagging experience when too many stations are in the view.
+      <span v-if="showHeatmap"><br><b>Heatmap mode active:</b> Zoom in past level {{ heatmapMaxZoom }} to see individual markers.</span>
     </div>
   </div>
 </template>
