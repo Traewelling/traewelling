@@ -40,6 +40,13 @@ use Throwable;
 
 class TransportController extends Controller
 {
+
+    private StationRepository $stationRepository;
+
+    public function __construct(StationRepository $stationRepository) {
+        $this->stationRepository = $stationRepository;
+    }
+
     /**
      * @param Request $request
      * @param int     $stationId
@@ -574,7 +581,7 @@ class TransportController extends Controller
      *     )
      */
     public function getTrainStationHistory(): AnonymousResourceCollection {
-        $latestArrivals = app(StationRepository::class)->getLatestArrivalsForUser(\auth()->user(), 10);
+        $latestArrivals = $this->stationRepository->getLatestArrivalsForUser(\auth()->user(), 10);
         return StationResource::collection($latestArrivals);
     }
 
