@@ -44,6 +44,7 @@ class TransportController extends Controller
     private StationRepository $stationRepository;
 
     public function __construct(StationRepository $stationRepository) {
+        parent::__construct();
         $this->stationRepository = $stationRepository;
     }
 
