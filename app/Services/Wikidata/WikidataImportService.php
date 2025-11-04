@@ -7,6 +7,7 @@ use App\Dto\Wikidata\WikidataEntity;
 use App\Exceptions\Wikidata\FetchException;
 use App\Models\Station;
 use App\Models\StationName;
+use App\StationIdentifierType;
 use Illuminate\Support\Facades\Log;
 
 class WikidataImportService
@@ -102,20 +103,37 @@ class WikidataImportService
 
         $station = Station::create(
             [
-                'name'          => $name,
-                'latitude'      => $coordinates->latitude,
-                'longitude'     => $coordinates->longitude,
-                'wikidata_id'   => $qId,
-                'rilIdentifier' => $rl100,
-                'ibnr'          => $ibnr,
-                'ifopt_a'       => $splitIfopt[0] ?? null,
-                'ifopt_b'       => $splitIfopt[1] ?? null,
-                'ifopt_c'       => $splitIfopt[2] ?? null,
-                'ifopt_d'       => $splitIfopt[3] ?? null,
-                'ifopt_e'       => $splitIfopt[4] ?? null,
-                'source'        => 'wikidata',
+                'name'      => $name,
+                'latitude'  => $coordinates->latitude,
+                'longitude' => $coordinates->longitude,
+                'ifopt_a'   => $splitIfopt[0] ?? null, // @deprecated: save in station_identifiers later
+                'ifopt_b'   => $splitIfopt[1] ?? null, // @deprecated: save in station_identifiers later
+                'ifopt_c'   => $splitIfopt[2] ?? null, // @deprecated: save in station_identifiers later
+                'ifopt_d'   => $splitIfopt[3] ?? null, // @deprecated: save in station_identifiers later
+                'ifopt_e'   => $splitIfopt[4] ?? null, // @deprecated: save in station_identifiers later
+                'source'    => 'wikidata',
             ]
         );
+
+        $station->stationIdentifiers()->create([
+                                                   'type'       => StationIdentifierType::WIKIDATA_ID,
+                                                   'identifier' => $qId,
+                                               ]);
+
+        if ($rl100) {
+            $station->stationIdentifiers()->create([
+                                                       'type'       => StationIdentifierType::DE_DB_RIL100,
+                                                       'identifier' => $rl100,
+                                                   ]);
+        }
+
+        if ($ibnr) {
+            $station->stationIdentifiers()->create([
+                                                       'type'       => StationIdentifierType::DE_DB_IBNR,
+                                                       'identifier' => (string) $ibnr,
+                                                   ]);
+        }
+
         self::saveStationNames($station, $wikidataEntity);
         return $station;
     }
