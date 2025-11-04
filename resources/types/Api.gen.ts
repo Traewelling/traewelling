@@ -517,6 +517,14 @@ export interface ProfileLinkResource {
   url?: string;
 }
 
+/** StationIdentifier */
+export interface StationIdentifierResource {
+  /** @example "de_db_ril100" */
+  type?: string;
+  /** @example "RK" */
+  identifier?: string;
+}
+
 /** Station */
 export interface StationResource {
   /** @example "1" */
@@ -527,11 +535,8 @@ export interface StationResource {
   latitude: number;
   /** @example "8.400977" */
   longitude: number;
-  /** @example "8000191" */
-  ibnr: string;
-  /** @example "RK" */
-  rilIdentifier: string;
   areas: AreaResource[];
+  identifiers?: StationIdentifierResource[];
 }
 
 /** StatisticsGlobalData */
@@ -3116,7 +3121,7 @@ export class Api<
   };
   stations = {
     /**
-     * @description UNSTABLE: This request returns an array of max. 20 station objects matching the query. **CAUTION:** All *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)
+     * @description UNSTABLE: Returns stations by fuzzy text, exact identifier, or within a bounding box (BBOX). **CAUTION:** Slashes in {query} must be replaced (e.g. with %20).
      *
      * @tags Checkin
      * @name IndexStation
@@ -3127,21 +3132,53 @@ export class Api<
     indexStation: (
       query?: {
         /**
-         * station query
-         * @example "Karls"
+         * Fuzzy station search
+         * @maxLength 255
+         * @example "Karlsruhe Hbf"
          */
-        query?: any;
+        query?: string;
         /**
-         * identifier provider
+         * Identifier provider for exact lookup
          * @example "ibnr"
          */
         identifier_provider?: "ibnr" | "transitous";
         /**
-         * station identifier
+         * Station identifier for exact lookup
          * @maxLength 255
-         * @example "1337"
+         * @example "8000191"
          */
         identifier?: string;
+        /**
+         * Minimum latitude of BBOX (WGS84, -90..90)
+         * @format float
+         * @example 48.9
+         */
+        min_lat?: number;
+        /**
+         * Maximum latitude of BBOX (WGS84, -90..90)
+         * @format float
+         * @example 49.1
+         */
+        max_lat?: number;
+        /**
+         * Minimum longitude of BBOX (WGS84, -180..180)
+         * @format float
+         * @example 8.2
+         */
+        min_lon?: number;
+        /**
+         * Maximum longitude of BBOX (WGS84, -180..180)
+         * @format float
+         * @example 8.6
+         */
+        max_lon?: number;
+        /**
+         * Maximum number of results (capped at 100).
+         * @min 1
+         * @max 100
+         * @example 50
+         */
+        limit?: number;
       },
       params: RequestParams = {},
     ) =>

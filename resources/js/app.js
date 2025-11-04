@@ -31,6 +31,7 @@ import ActiveJourneys from "../vue/views/ActiveJourneys.vue";
 import EventPage from "../vue/views/Event.vue";
 import StatsDaily from "../vue/views/Stats/Daily.vue";
 import StationMap from "../vue/views/Debug/StationMap.vue";
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 window.notyf = new Notyf({
     duration: 5000,

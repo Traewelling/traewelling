@@ -130,6 +130,7 @@ namespace App\Models{
  * @property bool $forced
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $encoded_polyline
  * @property-read \App\Models\Stopover|null $destinationStopover
  * @property-read \Illuminate\Support\Collection<Status> $also_on_this_connection
  * @property-read \stdClass $display_arrival
@@ -149,6 +150,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereDestinationStopoverId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereDistance($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereDuration($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereEncodedPolyline($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereForced($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereManualArrival($value)
