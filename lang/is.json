@@ -331,5 +331,8 @@
     "settings.title-change-password": "Breytta lykilorði",
     "settings.title-privacy": "Persónuvernd",
     "settings.title-profile": "Prófílstillingar",
-    "settings.title-tokens": "API-tákn"
+    "settings.title-tokens": "API-tákn",
+    "notifications.userMentioned.lead": "Einhver er búin(n) að tagga þig í færslu.",
+    "settings.tab.profile": "Reikningur og Persónuvernd",
+    "settings.notconnected": "Er ekki tengt"
 }
