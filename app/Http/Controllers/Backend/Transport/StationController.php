@@ -26,47 +26,6 @@ class StationController extends Controller
     }
 
     /**
-     * Get the latest Stations the user is arrived.
-     *
-     * @param User $user
-     * @param int  $maxCount
-     *
-     * @return Collection
-     */
-    public static function getLatestArrivals(User $user, int $maxCount = 5): Collection {
-        $groupAndSelect = [
-            'train_stations.id', 'train_stations.ibnr', 'train_stations.name',
-            'train_stations.latitude', 'train_stations.longitude', 'train_stations.rilIdentifier',
-        ];
-
-        return DB::table('train_checkins')
-                 ->join('train_stopovers', 'train_checkins.destination_stopover_id', '=', 'train_stopovers.id')
-                 ->join('train_stations', 'train_stopovers.train_station_id', '=', 'train_stations.id')
-                 ->where('train_checkins.user_id', $user->id)
-                 ->groupBy($groupAndSelect)
-                 ->select($groupAndSelect)
-                 ->orderByDesc(DB::raw('MAX(train_checkins.arrival)'))
-                 ->limit($maxCount)
-                 ->get()
-                 ->map(function(object $station) {
-                     $areas = Area::query()
-                                  ->join('areas_stations_maps', 'areas_stations_maps.area_id', '=', 'areas.id')
-                                  ->where('areas_stations_maps.station_id', $station->id)
-                                  ->get(['areas.id', 'areas.name', 'areas.adminLevel', 'areas_stations_maps.default']);
-
-                     return new StationDto(
-                         (int) $station->id,
-                         $station->ibnr,
-                         $station->name,
-                         (float) $station->latitude,
-                         (float) $station->longitude,
-                         $station->rilIdentifier ?? null,
-                         $areas
-                     );
-                 });
-    }
-
-    /**
      * @deprecated
      */
     public static function getAlternativeDestinationsForCheckin(Checkin $checkin): Collection {
