@@ -4,16 +4,12 @@ namespace App\Http\Controllers\Backend\Transport;
 
 use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
-use App\Http\Controllers\Backend\Transport\dtos\StationDto;
 use App\Http\Controllers\Controller;
-use App\Models\Area;
 use App\Models\Checkin;
 use App\Models\Station;
 use App\Models\Stopover;
-use App\Models\User;
 use App\Repositories\StationRepository;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class StationController extends Controller
 {
