@@ -1520,19 +1520,23 @@
                     "Checkin"
                 ],
                 "summary": "Search for stations",
-                "description": "UNSTABLE: This request returns an array of max. 20 station objects matching the query. **CAUTION:** All\n     *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
+                "description": "UNSTABLE: Returns stations by fuzzy text, exact identifier, or within a bounding box (BBOX). **CAUTION:** Slashes in {query} must be replaced (e.g. with %20).",
                 "operationId": "indexStation",
                 "parameters": [
                     {
                         "name": "query",
                         "in": "query",
-                        "description": "station query",
-                        "example": "Karls"
+                        "description": "Fuzzy station search",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 255
+                        },
+                        "example": "Karlsruhe Hbf"
                     },
                     {
                         "name": "identifier_provider",
                         "in": "query",
-                        "description": "identifier provider",
+                        "description": "Identifier provider for exact lookup",
                         "schema": {
                             "type": "string",
                             "enum": [
@@ -1545,12 +1549,63 @@
                     {
                         "name": "identifier",
                         "in": "query",
-                        "description": "station identifier",
+                        "description": "Station identifier for exact lookup",
                         "schema": {
                             "type": "string",
                             "maxLength": 255
                         },
-                        "example": "1337"
+                        "example": "8000191"
+                    },
+                    {
+                        "name": "min_lat",
+                        "in": "query",
+                        "description": "Minimum latitude of BBOX (WGS84, -90..90)",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        },
+                        "example": 48.9
+                    },
+                    {
+                        "name": "max_lat",
+                        "in": "query",
+                        "description": "Maximum latitude of BBOX (WGS84, -90..90)",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        },
+                        "example": 49.1
+                    },
+                    {
+                        "name": "min_lon",
+                        "in": "query",
+                        "description": "Minimum longitude of BBOX (WGS84, -180..180)",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        },
+                        "example": 8.2
+                    },
+                    {
+                        "name": "max_lon",
+                        "in": "query",
+                        "description": "Maximum longitude of BBOX (WGS84, -180..180)",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        },
+                        "example": 8.6
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Maximum number of results (capped at 100).",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1
+                        },
+                        "example": 50
                     }
                 ],
                 "responses": {
@@ -1574,6 +1629,9 @@
                     },
                     "401": {
                         "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Station not found"
                     },
                     "503": {
                         "description": "There has been an error with our data provider"

@@ -30,6 +30,7 @@ import SingleStatus from "../vue/views/SingleStatus.vue";
 import ActiveJourneys from "../vue/views/ActiveJourneys.vue";
 import EventPage from "../vue/views/Event.vue";
 import StatsDaily from "../vue/views/Stats/Daily.vue";
+import StationMap from "../vue/views/Debug/StationMap.vue";
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -175,6 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
         contentApp.component("TripCreationForm", TripCreationForm);
         contentApp.component("SingleStatus", SingleStatus);
         contentApp.component("ActiveJourneys", ActiveJourneys);
+        contentApp.component("StationMap", StationMap);
         contentApp.use(i18nVue, i18nOptions);
         contentApp.use(pinia);
         contentApp.mount("#vue-content");
