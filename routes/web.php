@@ -239,4 +239,5 @@ Route::get('/.well-known/webfinger', [WebFingerController::class, 'endpoint']);
 Route::prefix('debug')->group(function() {
     // routes for debugging purposes and to show users which data is used by current instance
     Route::get('/motis-sources', [DebugController::class, 'showMotisSources']);
+    Route::get('/stations', [DebugController::class, 'showStationMap']);
 });
