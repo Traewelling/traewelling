@@ -92,6 +92,15 @@ export default {
         arrivalPlanned: baseDate.toFormat("yyyy-MM-dd'T'HH:mm"),
       };
       this.stopovers.push(dummyStopover);
+
+      this.$nextTick(() => {
+        const refs = this.$refs.stopoverInputs;
+        // catch one vs. many stopovers:
+        const last = Array.isArray(refs) ? refs[refs.length - 1] : refs;
+        if (last) {
+          last.showModal();
+        }
+      });
     },
     showData() {
       this.tripDataActive = true;
@@ -418,6 +427,7 @@ export default {
           <div class="d-flex align-items-center w-100">
             <div class="flex-grow-1 d-flex">
               <StationInput
+                  ref="stopoverInputs"
                   :placeholder="trans('trip_creation.form.stopover')"
                   :arrival-time="stopover.arrivalPlanned"
                   :departure-time="stopover.departurePlanned"
