@@ -2,7 +2,7 @@
   "license.info": "License",
   "license.provided": "The data is provided by :provider and is licensed by :source under the :license.",
   "about.block1": "Träwelling is a free check-in service that lets you tell your friends where you are and where you can log your public transit journeys. In short, you can check into trains and get points for it.",
-  "about.express": "ICE, InterCity, EuroCity",
+  "about.express": "InterCity, EuroCity",
   "about.feature-missing": "If you would like to suggest a feature or have found a bug, please report it directly to our <a href=\"https://github.com/Traewelling/traewelling/issues/new/choose\" target=\"_blank\">GitHub repository</a>.",
   "about.feature-missing-heading": "How do I report errors or suggestions for improvement?",
   "about.international": "InterCityExpress, TGV, RailJet",
