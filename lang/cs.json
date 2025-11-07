@@ -735,7 +735,7 @@
     "map-providers.open-railway-map": "Open Railway Map",
     "data-providers.default": "Výchozí",
     "data-providers.transitous": "transitous.org",
-    "active-journeys": "aktivní cesta|aktivní cesty",
+    "active-journeys": "aktivních cestovatelů|aktivní cesty",
     "page-only-available-in-language": "Tato stránka je k dispozici pouze v jazyce :language.",
     "language.en": "Angličtina",
     "changelog": "Log změn",
