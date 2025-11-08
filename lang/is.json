@@ -334,5 +334,12 @@
     "settings.title-tokens": "API-tákn",
     "notifications.userMentioned.lead": "Einhver er búin(n) að tagga þig í færslu.",
     "settings.tab.profile": "Reikningur og Persónuvernd",
-    "settings.notconnected": "Er ekki tengt"
+    "settings.notconnected": "Er ekki tengt",
+    "stats": "Tölfræði",
+    "settings.title-appdevelopment": "Appþróun",
+    "settings.back-to-traewelling": "Til baka til Träwelling",
+    "settings.title-security": "Öryggi",
+    "settings.client-name": "Þjónusta",
+    "stats.range.days": "Síðustu :days dagar",
+    "stats.range.picker": "Veldu tímabil"
 }
