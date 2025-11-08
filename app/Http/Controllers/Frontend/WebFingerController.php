@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Http\Controllers\Backend\WebFingerController as WebFingerBackend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Backend\WebFingerController as WebFingerBackend;
+use InvalidArgumentException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WebFingerController extends Controller
 {
@@ -16,6 +18,12 @@ class WebFingerController extends Controller
         }
         $validated = $request->validate(['resource' => 'required']);
         $webFinger = new WebFingerBackend($validated['resource']);
-        return $webFinger->renderResponse();
+        try {
+            return $webFinger->renderResponse();
+        } catch (InvalidArgumentException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], 400);
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(['message' => $e->getMessage()], 404);
+        }
     }
 }
