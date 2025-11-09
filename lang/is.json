@@ -381,5 +381,9 @@
     "maintenance.follow": "Fylgjast með okkur á Mastodon",
     "maintenance.follow.desc": "Fréttir og tilkynningar",
     "maintenance.help-center": "Hjálp & Leiðbeiningar",
-    "maintenance.auto-refresh": "Þessi síða mun uppfærast sjálfkrafa þegar viðhaldi er lokið."
+    "maintenance.auto-refresh": "Þessi síða mun uppfærast sjálfkrafa þegar viðhaldi er lokið.",
+    "settings.deletetokenfor": "Ómerkja tákn fyrir:",
+    "support.privacy.description2": "Gögnunum mun vera eytt eftir ár óháð Träwelling reikningnum þínum.",
+    "settings.delete-webhook.success": "Webhook eytt",
+    "settings.webhook_event.checkin_delete": "Eyðing innritunar"
 }
