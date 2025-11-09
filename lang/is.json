@@ -346,7 +346,7 @@
     "settings.lastactivity": "Síðustu uppfærslur",
     "settings.hide-search-engines": "Flokkun leitarvéla",
     "settings.prevent-indexing": "Koma í veg fyrir leitarvélaflokkun",
-    "settings.search-engines.description": "Við erum búin að setja noindex tag í prófílinn þinn til að segja leitarvélum frá því að prófíllinn þinn eigi ekki að vera skráður í leitarvélaflokkun. Við höfum enga bein áhrif á hvort leitarvélar taki tillit til þess.",
+    "settings.search-engines.description": "Við erum búin að setja noindex tag í prófílinn þinn til að segja leitarvélum frá því að prófíllinn þinn eigi ekki að vera skráður í leitarvélaflokkun. Við höfum engin bein áhrif á hvort leitarvélar taki tillit til þess.",
     "stationboard.submit-search": "Leita",
     "stationboard.search-by-location": "Leita eftir staðsetningu",
     "warning-alternative-station": "Þú ert að innrita þig fyrir brottför frá stöðinni <b>:newStation</b> sem var sýnd vegna þess að hún er nálægt <b>:searchedStation</b>.",
