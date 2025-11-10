@@ -878,5 +878,7 @@
     "stationboard.hidden-departures.detail3": "Si tu souhaites en savoir plus sur les licences, clique ici :",
     "errors.403.lead": "Mayday, mayday, mayday, tu n'as pas l'autorisation d'accéder à ce contenu.",
     "errors.404.lead": "Ce train ne circule plus ici, le contenu semble avoir été supprimé de la fiche horaire.",
-    "errors.actions.home": "Retour à l'accueil"
+    "errors.actions.home": "Retour à l'accueil",
+    "errors.403.alt_text": "Une gare dans un épais brouillard. Au loin, on aperçoit plusieurs signaux fermés.",
+    "errors.404.alt_text": "Image d'une ancienne voie ferrée dans une forêt verdoyante. Il y a de la mousse sur les traverses et des buissons poussent sur les rails."
 }
