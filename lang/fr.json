@@ -722,7 +722,6 @@
     "trip_creation.form.departure": "Départ",
     "trip_creation.form.arrival": "Arrivée",
     "trip_creation.limitations.2": "Les itinéraires sur la carte sont générés directement à partir des points d'arrêt donnés",
-    "trip_creation.limitations.5": "Il n'y a pas de message d'erreur visible pour ce formulaire. Donc, si rien ne se passe lors de la soumission, c'est qu'il y a une erreur.",
     "notifications.userMentioned.lead": "Tu as été mentionné·e dans un statut.",
     "notifications.userMentioned.notice": "Tu as été mentionné·e dans un statut par @:username.",
     "stationboard.event-filter": "Saisis quelque chose afin de filtrer les évènements",

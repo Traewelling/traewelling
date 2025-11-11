@@ -307,7 +307,6 @@
     "trip_creation.limitations": "Aktuální omezení",
     "trip_creation.limitations.2": "Trasy na mapě jsou generovány přímo z daných stanic",
     "trip_creation.limitations.3": "Cesta je veřejná – takže pokud se k cestě přihlásíte, mohou se k ní přihlásit i všichni, kteří vidí váš stav.",
-    "trip_creation.limitations.5": "Pro tento formulář nejsou žádné viditelné chybové zprávy. Takže pokud se při odeslání nic nestane... omlouváme se. Došlo k chybě.",
     "trip_creation.limitations.6": "Povoleny jsou pouze volitelné typy vozidel (tj. cesty autem, na kole, pěšky atd. nejsou povoleny a mohou být smazány). Viz také:",
     "trip_creation.limitations.6.rules": "Pravidla",
     "trip_creation.limitations.6.link": "https://help.traewelling.de/cz/guidelines/#manual-journeys",

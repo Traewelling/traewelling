@@ -752,7 +752,6 @@
     "trip_creation.form.add_stopover": "Añadir parada",
     "trip_creation.form.stopover": "Parada",
     "trip_creation.form.departure": "Salida",
-    "trip_creation.limitations.5": "No hay errores visibles en este formulario. Si nada pasa cuando le das a enviar... Es que hay un error.",
     "trip_creation.limitations.3": "El viaje será público - si haces check-in en el viaje, todo el mundo que pueda ver tu estado también podrá hacer check-in.",
     "trip_creation.limitations.2": "Las rutas del mapa son en línea recta desde las estaciones proporcionadas",
     "settings.friend_checkin.friends": "Amigos",
