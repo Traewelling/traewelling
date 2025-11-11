@@ -3,10 +3,11 @@ import {DateTime} from "luxon";
 import {trans} from "laravel-vue-i18n";
 import StationInput from "./StationInput.vue";
 import TripCreationMap from "./TripCreationMap.vue";
+import StopoversCsvImporter from "./StopoversCsvImporter.vue";
 
 export default {
   name: "TripCreationForm",
-  components: {TripCreationMap, StationInput},
+  components: {TripCreationMap, StationInput, StopoversCsvImporter},
   mounted() {
     this.initForm();
     this.loadOperators();
@@ -31,6 +32,8 @@ export default {
       stopovers: [],
       origin: {},
       destination: {},
+      originDepartureLocal: "",
+      destinationArrivalLocal: "",
       journeyNumberInput: "",
       trainTypeInput: "",
       selectedCategory: {},
@@ -58,6 +61,58 @@ export default {
   },
   methods: {
     trans,
+    onCsvImported(imported) {
+      if (!Array.isArray(imported) || imported.length < 2) {
+        window?.notyf?.error?.(trans("trip_creation.csv_import.errors.min_two_rows"));
+        return;
+      }
+
+      const oldLen = this.stopovers.length;
+      for (let i = 0; i < oldLen; i++) {
+        try {
+          if (this.stopovers[i]?.station?.id) this.$refs.map.removeMarker(i);
+        } catch (_) {
+        }
+      }
+
+      const first = imported[0]; //origin
+      const last = imported[imported.length - 1]; //destination
+      const middle = imported.slice(1, imported.length - 1); //stopovers
+
+      if (first?.station?.id) {
+        this.$refs.originInput?.setStation(first.station);
+      }
+      if (first?.departurePlanned) {
+        this.setDeparture(first.departurePlanned);
+      }
+
+      if (last?.station?.id) {
+        this.$refs.destinationInput?.setStation(last.station);
+      }
+      if (last?.arrivalPlanned) {
+        this.setArrival(last.arrivalPlanned);
+      }
+
+      this.stopovers = middle.map(s => ({
+        station: {id: "", name: ""},
+        arrivalPlanned: s.arrivalPlanned,
+        departurePlanned: s.departurePlanned,
+      }));
+
+      this.$nextTick(() => {
+        const refs = this.$refs.stopoverInputs;
+        const children = Array.isArray(refs) ? refs : (refs ? [refs] : []);
+        middle.forEach((s, idx) => {
+          const child = children[idx];
+          if (child?.setStation && s.station?.id) {
+            child.setStation(s.station);
+          } else if (s.station?.id) {
+            this.setStopoverStation(s.station, idx);
+          }
+        });
+        this.validateTimes();
+      });
+    },
     addStopover() {
       const times = [];
 
@@ -122,6 +177,7 @@ export default {
       this.form.originId = item.id;
     },
     setDeparture(time) {
+      this.originDepartureLocal = DateTime.fromISO(time, this.originTimezone).toFormat("yyyy-MM-dd'T'HH:mm");
       this.form.originDeparturePlanned = DateTime.fromISO(time, this.originTimezone).toISO();
       this.validateTimes();
     },
@@ -131,6 +187,7 @@ export default {
       this.form.destinationId = item.id;
     },
     setArrival(time) {
+      this.destinationArrivalLocal = DateTime.fromISO(time, this.destinationTimezone).toFormat("yyyy-MM-dd'T'HH:mm");
       this.form.destinationArrivalPlanned = DateTime.fromISO(time, this.destinationTimezone).toISO();
       this.validateTimes();
     },
@@ -419,9 +476,10 @@ export default {
             ref="originInput"
             :placeholder="trans('trip_creation.form.origin')"
             :arrival="false"
+            :departure-time="originDepartureLocal"
             v-on:update:station="setOrigin"
             v-on:update:timeFieldB="setDeparture"
-        ></StationInput>
+        />
 
         <div class="row g-3 mt-1" v-for="(stopover, key) in stopovers" :key="key">
           <div class="d-flex align-items-center w-100">
@@ -440,21 +498,35 @@ export default {
           </div>
         </div>
 
-        <div class="mb-2 px-3">
-          <a href="#" @click="addStopover">{{ trans("trip_creation.form.add_stopover") }}
+        <div class="mb-2 px-3 d-flex align-items-center">
+          <a href="#" @click="addStopover">
+            {{ trans("trip_creation.form.add_stopover") }}
             <i class="fa fa-plus" aria-hidden="true"></i>
           </a>
         </div>
 
         <StationInput
+            ref="destinationInput"
             :placeholder="trans('trip_creation.form.destination')"
             :arrival="true"
             :departure="false"
+            :departure-time="destinationArrivalLocal"
             v-on:update:station="setDestination"
             v-on:update:timeFieldB="setArrival"
-        ></StationInput>
+        />
 
-        <div class="mt-4 border-top pt-4 d-flex justify-content-end">
+        <div class="mt-4 border-top pt-4 d-flex justify-content-between align-items-center">
+          <a
+              href="#"
+              class="small link-secondary text-decoration-none"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#stopoversCsvImporterOffcanvas"
+              :title="trans('trip_creation.csv_import.button')"
+          >
+            <i class="fa-solid fa-file-csv me-1" aria-hidden="true"></i>
+            <span class="d-none d-sm-inline">{{ trans("trip_creation.csv_import.button") }}</span>
+          </a>
+
           <button type="submit" class="btn btn-primary">
             {{ trans("trip_creation.form.save") }}
           </button>
@@ -475,7 +547,6 @@ export default {
                        target="_blank">{{ trans("messages.cookie-notice-learn") }}</a>)</small>
           </li>
           <li>{{ trans("trip_creation.limitations.3") }}</li>
-          <li>{{ trans("trip_creation.limitations.5") }}</li>
         </ul>
 
         <p class="fw-bold text-danger">
@@ -491,6 +562,11 @@ export default {
       <TripCreationMap ref="map"></TripCreationMap>
     </div>
   </div>
+  <StopoversCsvImporter
+      offcanvas-id="stopoversCsvImporterOffcanvas"
+      :max-items="50"
+      @imported="onCsvImported"
+  />
 </template>
 
 <style scoped>

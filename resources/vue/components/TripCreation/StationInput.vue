@@ -142,11 +142,21 @@ export default {
     // There is a plugin for this, but it's not worth it with only one component
     this.id = Math.random().toString().substring(2);
     this.getRecent();
+
+    // important for import
+    this.timeFieldA = this.formatTime(this.arrivalTime);
+    this.timeFieldB = this.formatTime(this.departureTime);
   },
   watch: {
     stationInput: _.debounce(function () {
       this.autocomplete();
     }, 500),
+    arrivalTime(newVal) {
+      this.timeFieldA = this.formatTime(newVal);
+    },
+    departureTime(newVal) {
+      this.timeFieldB = this.formatTime(newVal);
+    },
   },
 };
 </script>
@@ -239,19 +249,3 @@ export default {
     </button>
   </div>
 </template>
-
-<style>
-.autocomplete-item {
-  background-color: var(--bs-modal-bg) !important;
-  border: none;
-  border-bottom: 1px solid var(--bs-light);
-}
-
-.autocomplete-item:last-child {
-  border-bottom: none;
-}
-
-.input-group-button {
-  height: calc(2.08rem + 2px);
-}
-</style>

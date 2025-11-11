@@ -41,6 +41,7 @@
     "luxon": "^3.4.4",
     "maplibre-gl": "^5.11.0",
     "notyf": "^3.10.0",
+    "papaparse": "^5.5.3",
     "pinia": "^3.0.1",
     "pinia-plugin-persistedstate": "^4.1.3",
     "vue": "^3.3.4"
