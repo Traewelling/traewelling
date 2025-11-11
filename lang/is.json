@@ -385,5 +385,13 @@
     "settings.deletetokenfor": "Ómerkja tákn fyrir:",
     "support.privacy.description2": "Gögnunum mun vera eytt eftir ár óháð Träwelling reikningnum þínum.",
     "settings.delete-webhook.success": "Webhook eytt",
-    "settings.webhook_event.checkin_delete": "Eyðing innritunar"
+    "settings.webhook_event.checkin_delete": "Eyðing innritunar",
+    "settings.ics.name-placeholder": "Heiti táknsins – t.d. Google Calendar, Outlook, …",
+    "settings.ics.descriptor": "Hér getur þú skoðað ICS tengingarnar þínar þannig að þú getur skoðað ferðir þínar í dagatali sem kann á ICS.",
+    "settings.ics.modal": "Útgefin ICS tákn",
+    "settings.token": "Tákn",
+    "ics.description": "Mínar ferðir með traewelling.de",
+    "settings.revoke-token": "Draga aðgangsheimildina til baka",
+    "settings.revoke-token.success": "Aðgangsheimildin er dregin til baka",
+    "settings.create-ics-token": "Búa til nýtt tákn"
 }
