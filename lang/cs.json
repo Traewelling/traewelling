@@ -36,7 +36,7 @@
     "user.home-set": "Nastavili jsme Vaši domovskou stanici na :Station.",
     "user.private-profile": "Soukromý profil",
     "user.likes-enabled": "Zobrazit lajky",
-    "user.liked-status": "líbí se mu tento status.",
+    "user.liked-status": "líbí se mu Vaše jízda.",
     "user.liked-own-status": "má rád svůj vlastní status.",
     "user.invalid-mastodon": ":domain nevypadá jako Mastodon instance.",
     "user.no-user": "Žádný uživatel nenalezen.",
