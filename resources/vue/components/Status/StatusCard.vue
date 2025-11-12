@@ -16,6 +16,11 @@ import NextStop from "./Partials/NextStop.vue";
 import {useActiveCheckin} from "../../stores/activeCheckin";
 import StatusBody from "./Partials/StatusBody.vue";
 import {Transition} from "vue";
+import Map from "../Map/Map.vue";
+import {useUserStore} from "../../stores/user";
+
+const userStore = useUserStore();
+userStore.fetchSettings()
 
 const props = defineProps({
   status: {
@@ -134,7 +139,12 @@ function statusUpdated(status: StatusResource) {
     <div class="card status mb-3" v-show="!deleted" ref="rootEl">
       <div v-if="showMap" class="card-img-top">
         <div id="activeJourneys" class="map statusMap embed-responsive embed-responsive-16by9">
+          <Map
+              v-if="userStore?.hasBeta"
+              :statuses="[statusObject]"
+          />
           <ActiveJourneyMap
+              v-else
               ref="map"
               :status-id="statusObject.id"
               :departure="departure.toSeconds()"
