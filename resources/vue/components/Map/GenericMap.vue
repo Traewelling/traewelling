@@ -121,6 +121,7 @@ const osmAttribution =
                 }"
       />
     </mgl-geo-json-source>
+    <slot/>
     <LiveMapPoint :point="point" v-for="point in livePositions" :key="point.statusId"/>
   </mgl-map>
 </template>

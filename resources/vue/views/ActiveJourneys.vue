@@ -1,14 +1,22 @@
 <script setup lang="ts">
 import {trans, transChoice} from "laravel-vue-i18n";
 import {ref} from "vue";
-import {Api, StatusResource} from "../../types/Api.gen";
+import {Api, EventResource, LivePointDto, StatusResource} from "../../types/Api.gen";
 import StatusCard from "../components/Status/StatusCard.vue";
 import ActiveJourneyMap from "../components/ActiveJourneyMap.vue";
 import {Notyf} from "notyf";
 import {useUserStore} from "../stores/user";
+import GenericMap from "../components/Map/GenericMap.vue";
+import {LngLat, LngLatBounds} from "maplibre-gl";
+import {MglMarker, MglPopup} from '@indoorequal/vue-maplibre-gl';
+import {DtmRange} from "../helpers/DateRange";
+
 
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
 const statuses = ref<StatusResource[]>([]);
+const livePositions = ref([] as LivePointDto[]);
+const bounds = ref(LngLatBounds.fromLngLat(new LngLat(9.902056, 49.843), 1000000) as LngLatBounds);
+const events = ref([] as EventResource[]);
 const loading = ref(true);
 const user = useUserStore();
 const notyf = new Notyf({position: {x: "right", y: "bottom"}});
@@ -26,7 +34,48 @@ function fetchStatuses() {
   });
 }
 
+function fetchStatusPositions(initialize: boolean = true) {
+  if (!user.hasBeta) return;
+
+  api.positions
+      .getLivePositionsForActiveStatuses()
+      .then((response) => {
+        livePositions.value = response.data.data || [];
+        const newBounds = LngLatBounds.fromLngLat(new LngLat(9.902056, 49.843), 1000000);
+        for (const position of livePositions.value) {
+          position.polyline?.features?.forEach((feature) => {
+            const coord = feature.geometry?.coordinates
+            if (coord && coord[0] && coord[1]) {
+              newBounds.extend([coord[0], coord[1]]);
+            }
+          });
+        }
+        if (initialize) {
+          bounds.value = newBounds;
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching live positions: ' + error.message);
+      });
+}
+
+function fetchEvents() {
+  if (!user.hasBeta) return;
+  api.events
+      .getEvents()
+      .then((response) => {
+        events.value = response.data.data || [];
+      })
+}
+
 fetchStatuses();
+fetchEvents();
+fetchStatusPositions();
+fetchStatusPositions();
+
+setInterval(() => {
+  fetchStatusPositions(false);
+}, 20000); // Refresh live positions every 20 seconds
 
 setInterval(() => {
   fetchStatuses();
@@ -39,7 +88,23 @@ setInterval(() => {
       <h1 class="fs-4">{{ trans('menu.active') }}</h1>
     </div>
     <div class="col-md-6 mb-4" id="activeJourneys">
-      <ActiveJourneyMap :map-provider="user.user?.mapProvider || 'default'" ref="map"/>
+      <GenericMap v-if="user.hasBeta" :live-positions="livePositions" :bounds="bounds">
+        <template v-for="trwlEvent in events">
+          <mgl-marker
+              :key="trwlEvent.id"
+              v-if="trwlEvent.station.latitude && trwlEvent.station.longitude"
+              :coordinates="[trwlEvent.station.longitude, trwlEvent.station.latitude]"
+          >
+            <mgl-popup>
+              <strong><a target="_blank" :href="trwlEvent.url">{{trwlEvent.name}}</a></strong><br />
+              <i class="fa fa-user-clock"></i> {{trwlEvent.host}}<br />
+              <i class="fa fa-calendar-day"></i>{{DtmRange.fromISO(trwlEvent.begin, trwlEvent.end).toLocaleDateString()}}<br />
+              <a :href="`/event/${trwlEvent.slug}`">{{trans('events.show-all-for-event')}}</a>
+            </mgl-popup>
+          </mgl-marker>
+        </template>
+      </GenericMap>
+      <ActiveJourneyMap v-else :map-provider="user.user?.mapProvider || 'default'" ref="map"/>
 
       <div class="row text-center fs-5 mt-3">
         <div class="col mb-3">

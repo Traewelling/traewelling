@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {PropType, ref, onMounted, onUnmounted} from "vue";
+import {onMounted, onUnmounted, PropType, ref} from "vue";
 import {LivePointDto} from "../../../types/Api.gen";
 import {MglMarker, MglPopup} from "@indoorequal/vue-maplibre-gl";
 
@@ -15,7 +15,7 @@ const startTime = Date.now();
 const arrivalTime = props.point.arrival ? new Date(props.point.arrival * 1000).getTime() : Date.now();
 let animationFrameId: number | null = null;
 
-function getLivePointData(percentage: number = 1) {
+function getLivePointData(percentage: number = 1): boolean {
   const features = props.point?.polyline?.features;
   const featuresCopy = features ? [...features] : [];
   const featureA = featuresCopy?.pop();
@@ -24,12 +24,13 @@ function getLivePointData(percentage: number = 1) {
   const coordsA = featureB?.geometry?.coordinates;
   if (!coordsA || !coordsB || coordsA.length === 0 || coordsB.length === 0) {
     console.error('No coordinates found for the provided features.');
-    return;
+    return false;
   }
   // interpolate between featureA and featureB based on percentage
   const latitude = coordsA[1] + (coordsB[1] - coordsA[1]) * percentage;
   const longitude = coordsA[0] + (coordsB[0] - coordsA[0]) * percentage;
   currentMarkerCoordinates.value = [longitude, latitude];
+  return true;
 }
 
 function animateMarker() {
@@ -37,7 +38,9 @@ function animateMarker() {
   const totalDuration = arrivalTime - startTime;
   const elapsed = now - startTime;
   const percentage = Math.min(elapsed / totalDuration, 1);
-  getLivePointData(percentage);
+  if (!getLivePointData(percentage)) {
+    return;
+  }
   if (percentage < 1) {
     animationFrameId = requestAnimationFrame(animateMarker);
   }

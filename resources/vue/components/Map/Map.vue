@@ -1,5 +1,6 @@
 <template>
   <GenericMap
+      v-if="polylines.length || livePositions.length"
       :bounds="bounds"
       :poly-lines="polylines"
       :line-color="lineColor"
