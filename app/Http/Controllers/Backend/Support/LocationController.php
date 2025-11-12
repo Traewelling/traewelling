@@ -482,6 +482,13 @@ class LocationController
             }
 
             $stopover->passed                               = true;
+
+            // fix for old polyline formats where properties is an array
+            if (is_array($polylineFeature->properties)) {
+                $polylineFeature->properties['departure_planned'] = $stopover->departure_planned?->clone();
+                $polylineFeature->properties['arrival_planned']   = $stopover->arrival_planned?->clone();
+                continue;
+            }
             $polylineFeature->properties->departure_planned = $stopover->departure_planned?->clone();
             $polylineFeature->properties->arrival_planned   = $stopover->arrival_planned?->clone();
         }
