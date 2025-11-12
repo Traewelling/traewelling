@@ -92,7 +92,7 @@ setInterval(() => {
         <template v-for="trwlEvent in events">
           <mgl-marker
               :key="trwlEvent.id"
-              v-if="trwlEvent.station.latitude && trwlEvent.station.longitude"
+              v-if="trwlEvent.station?.latitude && trwlEvent.station?.longitude"
               :coordinates="[trwlEvent.station.longitude, trwlEvent.station.latitude]"
           >
             <mgl-popup>
