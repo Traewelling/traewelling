@@ -17,7 +17,8 @@ import {Notyf} from "notyf";
 import Textfield from "./Partials/Textfield.vue";
 import {showApiValidationErrors} from "../../helpers/NotyfHelper";
 import TimezoneDropdown from "./Partials/TimezoneDropdown.vue";
-
+import {useUserStore} from "../../stores/user";
+const userStore = useUserStore();
 const notyf = new Notyf({position: {x: "right", y: "bottom"}});
 const api = new Api({baseUrl: window.location.origin + '/api/v1'});
 const timezones = Intl.supportedValuesOf('timeZone').map((timezone) => {
@@ -83,6 +84,7 @@ const updateProfile = () => {
   api.settings.updateProfileSettings(userData.value).then(res => {
     if (res.ok) {
       userData.value = mapData(res.data.data);
+      userStore.fetchSettings(true);
       notyf.success(trans('settings.saved'));
     }
   }).catch((res) => {

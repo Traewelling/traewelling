@@ -82,12 +82,12 @@ export const useUserStore = defineStore("user", {
                     return error;
                 })
         },
-        async fetchSettings(): Promise<void> {
+        async fetchSettings(force: boolean = false): Promise<void> {
             // Fetch Data every 15 Minutes
             // ToDo: reduce interval
             // ToDo: refresh with settings update
             // ToDo: invalidate when logging out
-            if (this.refreshed && (new Date().getTime() - new Date(this.refreshed).getTime()) < 60 * 15 * 1000) {
+            if (!force && this.refreshed && (new Date().getTime() - new Date(this.refreshed).getTime()) < 60 * 15 * 1000) {
                 return;
             }
             this.loading = true;
