@@ -6,7 +6,6 @@ use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -34,7 +33,11 @@ class WebFingerController extends Controller
     }
 
     public function renderResponse(): JsonResponse {
-        [$username, $host] = $this->parseDetails($this->resource);
+        try {
+            [$username, $host] = $this->parseDetails($this->resource);
+        } catch (\Exception $e) {
+            throw new InvalidArgumentException('Invalid resource format.');
+        }
 
         if ($host != $this->serverName) {
             throw new InvalidArgumentException('Only users from ' . $this->serverName . ' are accepted.');

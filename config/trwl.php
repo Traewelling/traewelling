@@ -73,7 +73,7 @@ return [
         'scheduler' => env('YEAR_IN_REVIEW_SCHEDULER', false),
     ],
     'webhooks_active'   => env('WEBHOOKS_ACTIVE', false),
-    'webfinger_active'  => env('WEBFINGER_ACTIVE', false),
+    'webfinger_active'  => env('WEBFINGER_ACTIVE', true),
     'max_journey_hours' => (int) env('MAX_JOURNEY_HOURS', 48),
     'max_delay_hours'   => (int) env('MAX_DELAY_HOURS', 24),
 
