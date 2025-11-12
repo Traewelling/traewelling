@@ -393,5 +393,12 @@
     "ics.description": "Mínar ferðir með traewelling.de",
     "settings.revoke-token": "Draga aðgangsheimildina til baka",
     "settings.revoke-token.success": "Aðgangsheimildin er dregin til baka",
-    "settings.create-ics-token": "Búa til nýtt tákn"
+    "settings.create-ics-token": "Búa til nýtt tákn",
+    "active-journeys": "ferð í gangi|ferðir í gangi",
+    "mail.account_deletion_notification_two_weeks_before.body1": "Träwelling reikningurinn þinn virðist hafa verið óvirkur í langan tíma.",
+    "welcome.hero.map.title": "Gagnvirkt kort og innritanir",
+    "events.notice.help": "Ef að þú ert ekki viss hvort viðburðurinn þinn er viðeigandi, vinsamlegast skoðaðu hjálparsíðurnar okkar:",
+    "events.notice.helppage": "Hjálparsíða",
+    "how-can-we-help": "Hvernig getum við aðstoðað?",
+    "help": "Hjálp"
 }
