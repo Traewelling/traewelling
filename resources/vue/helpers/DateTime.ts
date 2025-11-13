@@ -37,6 +37,15 @@ export class Dtm {
         formatOpts?: DateTimeFormatOptions,
         opts?: LocaleOptions,
     ): string {
+        let locale = this.dateTime.locale || this.getLocale();
+        // If TIME_SIMPLE and English, force 24h
+        if (
+            formatOpts === DateTime.TIME_SIMPLE &&
+            (locale === 'en' || locale.startsWith('en'))
+        ) {
+            // Use 24h format for English
+            return this.dateTime.toLocaleString({ hour: '2-digit', minute: '2-digit', hour12: false }, opts);
+        }
         return this.dateTime.toLocaleString(formatOpts, opts);
     }
 
