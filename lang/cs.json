@@ -611,7 +611,7 @@
     "checkin.points.could-have": "Mohli jste získat více bodů, kdybyste zapsali jízdu blíže ke skutečnému času odjezdu!",
     "checkin.points.full": "Mohl jste získat :points bodů.",
     "checkin.points.forced": "Za tyto zapsanou jízdu jste nezískali žádné body, protože jste si ji vynutili.",
-    "checkin.success.body": "Úspěšně jste se zapsali jízdu a jedete!",
+    "checkin.success.body": "Úspěšně jste si zapsali jízdu a jedete!",
     "checkin.success.body2": "Cestujete :distance km v :lineName z :origin do :destination.",
     "checkin.success.title": "Úspěšně jste zapsali jízdu!",
     "checkin.conflict": "Již existuje souběžná zapsaná jízda.",
