@@ -22,7 +22,6 @@ const props = defineProps({
     required: false,
     default: () => [],
   },
-
 })
 
 const center = ref(new LngLat(9.902056, 49.843));
@@ -32,7 +31,8 @@ const polylines = ref<GeoJSONFeature[]>([]);
 const livePositions = ref<LivePointDto[]>([]);
 
 if (props.statuses.length === 1) {
-  api.polyline.getPolylines(props.statuses.map(s => s.id.toString()))
+  lineColor.value = props.statuses[0].train.routeColor ? '#' + props.statuses[0].train.routeColor : '#c72730';
+  api.polyline.getPolylines(props.statuses.map(s => s.id.toString()).join(','))
       .then(response => {
         let newBounds = new LngLatBounds();
 
