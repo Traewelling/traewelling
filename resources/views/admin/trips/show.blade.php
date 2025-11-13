@@ -22,6 +22,10 @@
                             <td>{{ $trip->category }}</td>
                         </tr>
                         <tr>
+                            <th>Mode</th>
+                            <td>{{ $trip->mode }}</td>
+                        </tr>
+                        <tr>
                             <th>Internal Number</th>
                             <td>{{ $trip->number }}</td>
                         </tr>

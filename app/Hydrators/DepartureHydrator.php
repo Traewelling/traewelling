@@ -57,8 +57,8 @@ class DepartureHydrator
                 "public"      => true,
                 "adminCode"   => "80____",
                 "productName" => $request->trip->lineName, //TODO
-                "mode"        => "train", //TODO
-                "product"     => $request->trip->category,
+                "mode"        => $request->trip->mode?->value ?? null, // MOTIS
+                "product"     => $request->trip->category, // deprecated
                 "operator"    => null,/*[ //TODO
                     "type" => "operator",
                     "id"   => "db-fernverkehr-ag",

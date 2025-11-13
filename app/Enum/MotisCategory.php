@@ -3,12 +3,27 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
+use OpenApi\Annotations as OA;
+
+/**
+ * @OA\Schema(
+ *     title="mode",
+ *     description="Mode of transport",
+ *     type="string",
+ *     enum={
+ *         "WALK", "BIKE", "RENTAL", "CAR", "CAR_PARKING", "CAR_DROPOFF", "ODM", "RIDE_SHARING", "FLEX", "TRANSIT",
+ *  "TRAM", "SUBWAY", "FERRY", "AIRPLANE", "SUBURBAN", "BUS", "COACH", "RAIL", "HIGHSPEED_RAIL", "LONG_DISTANCE", "NIGHT_RAIL",
+ *  "REGIONAL_FAST_RAIL", "REGIONAL_RAIL", "CABLE_CAR", "FUNICULAR", "AERIAL_LIFT", "OTHER", "AREAL_LIFT", "METRO"
+ *     },
+ *     example="suburban"
+ * )
+ */
 enum MotisCategory: string
 {
     /**
      * Default: "TRANSIT"
-     * Items Enum: "WALK" "BIKE" "RENTAL" "CAR" "CAR_PARKING" "CAR_DROPOFF" "ODM" "FLEX" "TRANSIT" "TRAM" "SUBWAY"
-     * "FERRY" "AIRPLANE" "SUBURBAN" "BUS" "COACH" "RAIL" "HIGHSPEED_RAIL" "LONG_DISTANCE" "NIGHT_RAIL"
+     * Items Enum: "WALK" "BIKE" "RENTAL" "CAR" "CAR_PARKING" "CAR_DROPOFF" "ODM" "RIDE_SHARING" "FLEX" "TRANSIT"
+     * "TRAM" "SUBWAY" "FERRY" "AIRPLANE" "SUBURBAN" "BUS" "COACH" "RAIL" "HIGHSPEED_RAIL" "LONG_DISTANCE" "NIGHT_RAIL"
      * "REGIONAL_FAST_RAIL" "REGIONAL_RAIL" "CABLE_CAR" "FUNICULAR" "AERIAL_LIFT" "OTHER" "AREAL_LIFT" "METRO"
      */
     case WALK               = 'WALK';
@@ -18,6 +33,7 @@ enum MotisCategory: string
     case CAR_PARKING        = 'CAR_PARKING';
     case CAR_DROPOFF        = 'CAR_DROPOFF';
     case ODM                = 'ODM';
+    case RIDE_SHARING       = 'RIDE_SHARING';
     case FLEX               = 'FLEX';
     case TRANSIT            = 'TRANSIT';
     case TRAM               = 'TRAM';
@@ -40,6 +56,35 @@ enum MotisCategory: string
     case AERAL_LIFT         = 'AERAL_LIFT';
     case METRO              = 'METRO';
 
+    public const array ALLOWED_CATEGORIES = [
+        self::ODM,
+        self::FLEX,
+        self::TRANSIT,
+        self::TRAM,
+        self::SUBWAY,
+        self::FERRY,
+        self::AIRPLANE,
+        self::SUBURBAN,
+        self::BUS,
+        self::COACH,
+        self::RAIL,
+        self::HIGHSPEED_RAIL,
+        self::LONG_DISTANCE,
+        self::NIGHT_RAIL,
+        self::REGIONAL_FAST_RAIL,
+        self::REGIONAL_RAIL,
+        self::CABLE_CAR,
+        self::FUNICULAR,
+        self::AERIAL_LIFT,
+        self::OTHER,
+        self::AERAL_LIFT,
+        self::METRO,
+    ];
+
+    public function isAllowed(): bool {
+        return in_array($this, self::ALLOWED_CATEGORIES, true);
+    }
+
 
     // todo: this needs to be better
     public function getHTT(): HafasTravelType {
@@ -61,7 +106,7 @@ enum MotisCategory: string
             TravelType::EXPRESS  => [MotisCategory::HIGHSPEED_RAIL, MotisCategory::LONG_DISTANCE, MotisCategory::NIGHT_RAIL, MotisCategory::REGIONAL_FAST_RAIL],
             TravelType::REGIONAL => [MotisCategory::REGIONAL_FAST_RAIL, MotisCategory::REGIONAL_RAIL],
             TravelType::SUBURBAN => [MotisCategory::METRO],
-            TravelType::BUS      => [MotisCategory::BUS],
+            TravelType::BUS      => [MotisCategory::BUS, MotisCategory::COACH, MotisCategory::ODM, MotisCategory::FLEX],
             TravelType::FERRY    => [MotisCategory::FERRY],
             TravelType::SUBWAY   => [MotisCategory::SUBWAY],
             TravelType::TRAM     => [MotisCategory::TRAM],
