@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onBeforeUnmount, onMounted, PropType, ref, useTemplateRef} from "vue";
+import {onBeforeUnmount, onMounted, PropType, ref, Transition, useTemplateRef} from "vue";
 import {Tooltip} from "bootstrap";
 import {StatusResource, StopoverResource} from "../../../types/Api.gen";
 import {
@@ -15,7 +15,6 @@ import OriginRow from "./Partials/OriginRow.vue";
 import NextStop from "./Partials/NextStop.vue";
 import {useActiveCheckin} from "../../stores/activeCheckin";
 import StatusBody from "./Partials/StatusBody.vue";
-import {Transition} from "vue";
 import Map from "../Map/Map.vue";
 import {useUserStore} from "../../stores/user";
 
@@ -138,7 +137,7 @@ function statusUpdated(status: StatusResource) {
   <Transition>
     <div class="card status mb-3" v-show="!deleted" ref="rootEl">
       <div v-if="showMap" class="card-img-top">
-        <div id="activeJourneys" class="map statusMap embed-responsive embed-responsive-16by9">
+        <div id="activeJourneys" class="statusMap embed-responsive" :class="{'map embed-responsive-16by9': !userStore?.hasBeta }">
           <Map
               v-if="userStore?.hasBeta"
               :statuses="[statusObject]"

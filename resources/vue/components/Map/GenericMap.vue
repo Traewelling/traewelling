@@ -73,7 +73,7 @@ const osmAttribution =
       :map-style="style"
       :max-zoom="18"
       :bounds="bounds"
-      height="60vh"
+      height="45vh"
   >
     <mgl-fullscreen-control/>
     <mgl-navigation-control
