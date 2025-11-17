@@ -134,7 +134,7 @@ function prepareStopoverTime(
 
     let originalTime = time;
     if (time && plannedTime) {
-        originalTime = Math.abs(plannedTime.dateTime.toSeconds() - time.dateTime.toSeconds()) > 60 ? plannedTime : null;
+        originalTime = Math.abs(plannedTime.dateTime.toSeconds() - time.dateTime.toSeconds()) >= 60 ? plannedTime : null;
     }
 
     return {
