@@ -506,9 +506,9 @@
     "stats.stations.changed": "Stacja początkowa / końcowa / przesiadkowa",
     "year-review": "Rok w przeglądzie",
     "year-review.open": "Pokaż mój rok w przeglądzie",
-    "settings.webhook_event.checkin_create": "Tworzenie zameldowania",
-    "settings.webhook_event.checkin_update": "Edycja zameldowania",
-    "settings.webhook_event.checkin_delete": "Usuwanie zameldowania",
+    "settings.webhook_event.checkin_create": "Tworzenie meldunku",
+    "settings.webhook_event.checkin_update": "Edycja meldunku",
+    "settings.webhook_event.checkin_delete": "Usuwanie meldunku",
     "settings.webhook_event.notification": "Otrzymywanie powiadomień",
     "menu.oauth_authorize.title": "Autoryzacja",
     "menu.oauth_authorize.authorize": "Autoryzuj",
@@ -722,5 +722,10 @@
     "status.locked-visibility": "Nie możesz zmienić widoczności tego statusu.",
     "license.info": "Licencja",
     "export.gdpr.recent": "Eksport twoich danych został zlecony :date. Otrzymasz email kiedy będzie gotowy do pobrania. Możesz wyeksportować swoje dane raz na 30 dni.",
-    "export.gdpr.description": "Tutaj możesz wyeksportować wszystkie swoje dane. Przygotowanie eksportu może zając do 48 godzin."
+    "export.gdpr.description": "Tutaj możesz wyeksportować wszystkie swoje dane. Przygotowanie eksportu może zając do 48 godzin.",
+    "checkin.points.earned": "Zyskałeś :points punkt|Zyskałeś :points punktów!",
+    "checkin.points.could-have": "Mogłeś zebrać więcej punktów, jeśli zameldowałbyś się bliżej faktycznego czasu odjazdu!",
+    "overlapping-checkin": "Nachodzący meldunek",
+    "active-tokens-count": ":count aktywny token|:count aktywne tokeny",
+    "mail.hello": "Witaj :username"
 }
