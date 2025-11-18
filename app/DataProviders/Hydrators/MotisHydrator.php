@@ -140,7 +140,7 @@ class MotisHydrator
         ];
     }
 
-    private function getCategoryFromLeg(mixed $leg): string {
+    private function getCategoryFromLeg(mixed $leg): MotisCategory {
         $motisCategory = MotisCategory::tryFrom($leg['mode']);
         if ($motisCategory === null) {
             Log::error('Unknown Motis category', [
@@ -149,7 +149,7 @@ class MotisHydrator
             $motisCategory = MotisCategory::REGIONAL_RAIL;
         }
 
-        return $motisCategory->getHTT()->value;
+        return $motisCategory;
     }
 
     private function getPolylineFromLeg(mixed $leg): PolyLine {
@@ -229,7 +229,8 @@ class MotisHydrator
                                  ?? $this->stationRepository->createMotisStationIdentifier($leg['to'], $source);
         $departure          = isset($leg['from']['departure']) ? Carbon::parse($leg['from']['departure']) : null;
         $arrival            = isset($leg['to']['arrival']) ? Carbon::parse($leg['to']['arrival']) : null;
-        $category           = $this->getCategoryFromLeg($leg);
+        $mode               = $this->getCategoryFromLeg($leg);
+        $category           = $mode->getHTT()->value;
         $tripLineName       = !empty($leg['displayName']) ? $leg['displayName'] : $lineName;
         $license            = $this->motisRepository->getActiveLicense($leg['source'], $source);
         $operator           = $this->parseOperator($leg, $source);
@@ -239,6 +240,7 @@ class MotisHydrator
 
         $payload = [
             'category'                => $category,
+            'mode'                    => $mode,
             'number'                  => $tripLineName,
             'linename'                => $tripLineName,
             'route_color'             => $leg['routeColor'] ?? null,
@@ -301,7 +303,8 @@ class MotisHydrator
             $tripShortName       = $rawDeparture['tripShortName'] ?? '';
             $rawDepartureStation = $rawDeparture['place'];
             $tripLineName        = $rawDeparture['displayName'] ?? '';
-            $hafasTravelType     = $this->getCategoryFromLeg($rawDeparture);
+            $mode                = $this->getCategoryFromLeg($rawDeparture);
+            $hafasTravelType     = $mode->getHTT()->value;
 
             $platformPlanned = $rawDepartureStation['scheduledTrack'] ?? '';
             $platformReal    = $rawDepartureStation['track'] ?? $platformPlanned;
@@ -331,6 +334,7 @@ class MotisHydrator
                                       journeyNumber: $tripShortName,
                                       operator:      $this->parseOperator($rawDeparture, $source),
                                       routeColor:    $rawDeparture['routeColor'] ?? null,
+                                      mode:          $mode
                                   ),
                 plannedPlatform:  $platformPlanned,
                 realPlatform:     $platformReal,

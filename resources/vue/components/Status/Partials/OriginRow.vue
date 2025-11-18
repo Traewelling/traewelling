@@ -12,6 +12,7 @@ import {DateTime} from "luxon";
 import ProductIcon from "../../ProductIcon.vue";
 import {IconHelper} from "../../../helpers/IconHelper";
 import DurationSpan from "./DurationSpan.vue";
+import LineIndicator from "../../LineIndicator.vue";
 
 const props = defineProps({
   status: {
@@ -67,22 +68,15 @@ function contrastTextColor(hex?: string | null): string {
 
     <p class="train-status text-muted m-0">
       <span class="align-middle">
-        <ProductIcon :product="status.train.category"/>
+        <ProductIcon :mode="status.train.mode" :product="status.train.category"/>
 
-        <template v-if="routeColorCss(status.train.routeColor)">
-          <span
-              class="line-badge align-middle"
-              :style="{
-              backgroundColor: routeColorCss(status.train.routeColor) as string,
-              color: contrastTextColor(status.train.routeColor)
-            }"
-          >
-            {{ status.train.lineName }}
-          </span>
-        </template>
-        <template v-else>
-          <span class="ms-1">{{ status.train.lineName }}</span>
-        </template>
+        <LineIndicator
+            class-name="line-badge align-middle line-indicator"
+            :product-name="status.train.category"
+                       :number="status.train.lineName"
+                       :mode="status.train.mode"
+                       :color="contrastTextColor(status.train.routeColor)"
+                       :background-color="status.train.routeColor"/>
 
         <small v-if="status.train.manualJourneyNumber" data-bs-toggle="tooltip"
                data-bs-placement="top" :title="trans('status.manual_journey_number')">

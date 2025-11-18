@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Casts\UTCDateTime;
 use App\Enum\HafasTravelType;
+use App\Enum\MotisCategory;
 use App\Enum\TripSource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,7 +25,8 @@ class Trip extends Model
     protected $table    = 'hafas_trips';
     protected $fillable = [
         'trip_id', 'category', 'number', 'linename', 'route_color', 'journey_number', 'operator_id', 'origin_id', 'destination_id',
-        'polyline_id', 'departure', 'arrival', 'source', 'motis_source', 'user_id', 'last_refreshed', 'motis_source_license_id'
+        'polyline_id', 'departure', 'arrival', 'source', 'motis_source', 'user_id', 'last_refreshed', 'motis_source_license_id',
+        'mode',
     ];
     protected $hidden   = ['created_at', 'updated_at'];
     protected $casts    = [
@@ -44,6 +46,7 @@ class Trip extends Model
         'last_refreshed' => 'datetime',
         'source'         => TripSource::class,
         'user_id'        => 'integer',
+        'mode'           => MotisCategory::class,
     ];
 
     public function polyline(): HasOne {

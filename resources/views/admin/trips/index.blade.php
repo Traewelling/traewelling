@@ -18,6 +18,7 @@
                                 <th>From</th>
                                 <th>To</th>
                                 <th>Category</th>
+                                <th>Mode</th>
                                 <th>Number</th>
                                 <th>Line</th>
                                 <th>Journey Number</th>
@@ -55,6 +56,7 @@
                                         </a>
                                     </td>
                                     <td>{{$trip->category}}</td>
+                                    <td>{{$trip->mode}}</td>
                                     <td>{{$trip->number}}</td>
                                     <td>
                                         <div class="badge text-bg-dark" style="background-color: #{{$trip->route_color}}!important">

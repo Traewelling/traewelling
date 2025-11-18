@@ -1023,6 +1023,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $last_refreshed
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \App\Enum\MotisCategory $mode
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Checkin> $checkins
  * @property-read int|null $checkins_count
  * @property-read \App\Models\Station $destinationStation

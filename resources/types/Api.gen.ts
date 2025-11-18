@@ -67,6 +67,43 @@ export enum PointReason {
 }
 
 /**
+ * mode
+ * Mode of transport
+ * @example "suburban"
+ */
+export enum MotisCategory {
+  WALK = "WALK",
+  BIKE = "BIKE",
+  RENTAL = "RENTAL",
+  CAR = "CAR",
+  CAR_PARKING = "CAR_PARKING",
+  CAR_DROPOFF = "CAR_DROPOFF",
+  ODM = "ODM",
+  RIDE_SHARING = "RIDE_SHARING",
+  FLEX = "FLEX",
+  TRANSIT = "TRANSIT",
+  TRAM = "TRAM",
+  SUBWAY = "SUBWAY",
+  FERRY = "FERRY",
+  AIRPLANE = "AIRPLANE",
+  SUBURBAN = "SUBURBAN",
+  BUS = "BUS",
+  COACH = "COACH",
+  RAIL = "RAIL",
+  HIGHSPEED_RAIL = "HIGHSPEED_RAIL",
+  LONG_DISTANCE = "LONG_DISTANCE",
+  NIGHT_RAIL = "NIGHT_RAIL",
+  REGIONAL_FAST_RAIL = "REGIONAL_FAST_RAIL",
+  REGIONAL_RAIL = "REGIONAL_RAIL",
+  CABLE_CAR = "CABLE_CAR",
+  FUNICULAR = "FUNICULAR",
+  AERIAL_LIFT = "AERIAL_LIFT",
+  OTHER = "OTHER",
+  AERAL_LIFT = "AERAL_LIFT",
+  METRO = "METRO",
+}
+
+/**
  * visibility
  * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for
  *  *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.
@@ -717,6 +754,7 @@ export interface TransportResource {
   hafasId: string;
   /** Category of transport.  */
   category: HafasTravelType;
+  mode: MotisCategory | null;
   /**
    * Internal number of the journey
    * @example "4-a6s8-8"
@@ -770,6 +808,7 @@ export interface TripResource {
   id?: number;
   /** Category of transport.  */
   category?: HafasTravelType;
+  mode?: MotisCategory | null;
   /** @example "4-a6s4-4" */
   number?: string;
   /** @example "S 4" */

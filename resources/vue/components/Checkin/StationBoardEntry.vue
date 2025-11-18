@@ -76,20 +76,27 @@ const textColor = computed<string | null>(() => {
   const c = contrastTextColor(rawApiHex.value);
   return c === "inherit" ? null : c;
 });
+
+function normalizeLineName(name: string | null): string {
+  if (!name) return '';
+  // remove numbers in brackets
+  return name.replaceAll(/\(.*?\)/g, '').trim();
+}
 </script>
 
 <template>
   <div class="card mb-1 dep-card" :class="{'past-card': isPast, 'cancelled-card': cancelled}">
     <div class="card-body d-flex py-0">
       <div class="col-1 align-items-center d-flex justify-content-center">
-        <ProductIcon :product="item.line.product"/>
+        <ProductIcon :product="item.line.product" :mode="item.line.mode"/>
       </div>
 
       <div class="col-2 align-items-center d-flex me-3 justify-content-center">
         <span class="sr-only" v-if="cancelled">{{ trans("stationboard.stop-cancelled") }}</span>
         <LineIndicator
+            :mode="item.line.mode"
             :productName="item.line.product"
-            :number="item.line.name !== null ? item.line.name : item.line.fahrtNr"
+            :number="item.line.name !== null ? normalizeLineName(item.line.name) : item.line.fahrtNr"
             :background-color="backgroundColor"
             :color="textColor"
         />

@@ -4922,6 +4922,43 @@
                 ],
                 "example": 1
             },
+            "MotisCategory": {
+                "title": "mode",
+                "description": "Mode of transport",
+                "type": "string",
+                "enum": [
+                    "WALK",
+                    "BIKE",
+                    "RENTAL",
+                    "CAR",
+                    "CAR_PARKING",
+                    "CAR_DROPOFF",
+                    "ODM",
+                    "RIDE_SHARING",
+                    "FLEX",
+                    "TRANSIT",
+                    "TRAM",
+                    "SUBWAY",
+                    "FERRY",
+                    "AIRPLANE",
+                    "SUBURBAN",
+                    "BUS",
+                    "COACH",
+                    "RAIL",
+                    "HIGHSPEED_RAIL",
+                    "LONG_DISTANCE",
+                    "NIGHT_RAIL",
+                    "REGIONAL_FAST_RAIL",
+                    "REGIONAL_RAIL",
+                    "CABLE_CAR",
+                    "FUNICULAR",
+                    "AERIAL_LIFT",
+                    "OTHER",
+                    "AERAL_LIFT",
+                    "METRO"
+                ],
+                "example": "suburban"
+            },
             "PointReason": {
                 "title": "PointsReason",
                 "description": "What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points, 4=manual trip => no points, 5=points disabled)",
@@ -5771,7 +5808,8 @@
                     "origin",
                     "destination",
                     "operator",
-                    "dataSource"
+                    "dataSource",
+                    "mode"
                 ],
                 "properties": {
                     "trip": {
@@ -5784,6 +5822,14 @@
                     },
                     "category": {
                         "$ref": "#/components/schemas/HafasTravelType"
+                    },
+                    "mode": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/MotisCategory"
+                            }
+                        ],
+                        "nullable": true
                     },
                     "number": {
                         "description": "Internal number of the journey",
@@ -5869,6 +5915,14 @@
                     },
                     "category": {
                         "$ref": "#/components/schemas/HafasTravelType"
+                    },
+                    "mode": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/MotisCategory"
+                            }
+                        ],
+                        "nullable": true
                     },
                     "number": {
                         "type": "string",
