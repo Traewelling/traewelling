@@ -130,7 +130,6 @@ namespace App\Models{
  * @property bool $forced
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $encoded_polyline
  * @property-read \App\Models\Stopover|null $destinationStopover
  * @property-read \Illuminate\Support\Collection<Status> $also_on_this_connection
  * @property-read \stdClass $display_arrival
@@ -150,7 +149,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereDestinationStopoverId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereDistance($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereDuration($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereEncodedPolyline($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereForced($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereManualArrival($value)
@@ -568,6 +566,7 @@ namespace App\Models{
  * @property-read PolyLine|null $parent
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Trip> $trips
  * @property-read int|null $trips_count
+ * @method static \Database\Factories\PolyLineFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PolyLine newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PolyLine newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PolyLine query()
@@ -675,6 +674,7 @@ namespace App\Models{
  * @property-read \App\Models\Station $toStation
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Trip> $trips
  * @property-read int|null $trips_count
+ * @method static \Database\Factories\RouteSegmentFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment query()
