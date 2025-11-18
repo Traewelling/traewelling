@@ -6026,16 +6026,16 @@
         },
         {
             "name": "spatie/icalendar-generator",
-            "version": "3.1.0",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/icalendar-generator.git",
-                "reference": "a6ed5500450c4a353eabd768423a5ab367126c3c"
+                "reference": "1da14ea9d86327f20f303de0ba2804c3e4aa72d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/icalendar-generator/zipball/a6ed5500450c4a353eabd768423a5ab367126c3c",
-                "reference": "a6ed5500450c4a353eabd768423a5ab367126c3c",
+                "url": "https://api.github.com/repos/spatie/icalendar-generator/zipball/1da14ea9d86327f20f303de0ba2804c3e4aa72d3",
+                "reference": "1da14ea9d86327f20f303de0ba2804c3e4aa72d3",
                 "shasum": ""
             },
             "require": {
@@ -6046,7 +6046,7 @@
                 "ext-json": "*",
                 "larapack/dd": "^1.1",
                 "nesbot/carbon": "^3.5",
-                "pestphp/pest": "^2.34",
+                "pestphp/pest": "^2.34 || ^3.0 || ^4.0",
                 "phpstan/phpstan": "^2.0",
                 "spatie/pest-plugin-snapshots": "^2.1"
             },
@@ -6079,9 +6079,9 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/icalendar-generator/issues",
-                "source": "https://github.com/spatie/icalendar-generator/tree/3.1.0"
+                "source": "https://github.com/spatie/icalendar-generator/tree/3.1.1"
             },
-            "time": "2025-10-24T11:33:29+00:00"
+            "time": "2025-11-18T10:19:32+00:00"
         },
         {
             "name": "spatie/laravel-activitylog",
