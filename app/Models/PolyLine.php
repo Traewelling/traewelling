@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use App\Services\PolylineStorageService;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class PolyLine extends Model
 {
+    use HasFactory;
+
     private PolylineStorageService $polylineStorageService;
     protected                      $fillable = ['hash', 'polyline', 'source', 'parent_id'];
     protected                      $casts    = [

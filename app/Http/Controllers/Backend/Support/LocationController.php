@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use JsonException;
 use stdClass;
 
@@ -233,7 +234,7 @@ class LocationController
     private function getPolylineFromRouteSegments(): ?FeatureCollection {
         $coordinates   = [];
         $routeSegments = 0;
-        $firstStopHit = false;
+        $firstStopHit  = false;
         foreach ($this->trip->stopovers as $stopover) {
             // Skip stopovers until we reach the origin
             if (!$firstStopHit) {
@@ -378,7 +379,7 @@ class LocationController
     }
 
     private function hasEnoughRouteSegments(): bool {
-        $stopovers                = $this->trip->stopovers->sortBy('departure');
+        $stopovers = $this->trip->stopovers->sortBy('departure');
 
         $routeSegments = 0;
         foreach ($stopovers as $stopover) {
@@ -432,7 +433,9 @@ class LocationController
     }
 
     private function calculateDistanceByStopovers(): int {
-        $stopovers                = $this->trip->stopovers->sortBy('departure');
+        $stopovers                = $this->trip->stopovers->sortBy(function($stopover) {
+            return $stopover->departure_planned?->timestamp ?? $stopover->arrival_planned?->timestamp;
+        });
         $originStopoverIndex      = $stopovers->search(function($item) {
             return $item->is($this->origin);
         });
@@ -444,20 +447,28 @@ class LocationController
 
         $distance     = 0;
         $lastStopover = null;
-        foreach ($stopovers as $stopover) {
-            if ($lastStopover === null) {
-                $lastStopover = $stopover;
-                continue;
-            }
-            if ($stopover->route_segment_id) {
+        foreach ($stopovers as $key => $stopover) {
+            if ($stopover->routeSegment !== null && $stopover->routeSegment->distance > 0 && $key !== $destinationStopoverIndex) {
                 $distance += $stopover->routeSegment->distance;
-                $lastStopover = $stopover;
-                continue;
+                Log::debug(sprintf(
+                               'Adding distance %f meters from station %s to station %s',
+                               $stopover->routeSegment->distance,
+                               $stopover->routeSegment->fromStation->name,
+                               $stopover->routeSegment->toStation->name
+                           ));
             }
-            $distance     += $this->geoService->getDistance(
-                new Coordinate($lastStopover->station->latitude, $lastStopover->station->longitude),
-                new Coordinate($stopover->station->latitude, $stopover->station->longitude)
-            );
+            if ($lastStopover !== null && empty($lastStopover->routeSegment?->distance)) {
+                Log::debug(sprintf(
+                               'Calculating distance between station %s and station %s',
+                               $lastStopover->station->name,
+                               $stopover->station->name
+                           ));
+                $distance += $this->geoService->getDistance(
+                    new Coordinate($lastStopover->station->latitude, $lastStopover->station->longitude),
+                    new Coordinate($stopover->station->latitude, $stopover->station->longitude)
+                );
+            }
+
             $lastStopover = $stopover;
         }
         return $distance;
@@ -481,7 +492,7 @@ class LocationController
                 continue;
             }
 
-            $stopover->passed                               = true;
+            $stopover->passed = true;
 
             // fix for old polyline formats where properties is an array
             if (is_array($polylineFeature->properties)) {

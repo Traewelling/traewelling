@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Trip;
 use App\Models\Station;
+use App\Models\Trip;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class StopoverFactory extends Factory
@@ -20,6 +20,7 @@ class StopoverFactory extends Factory
             'departure_real'             => null,
             'departure_platform_planned' => $this->faker->numberBetween(1, 99),
             'departure_platform_real'    => $this->faker->numberBetween(1, 99),
+            'route_segment_id'           => null
         ];
     }
 }
