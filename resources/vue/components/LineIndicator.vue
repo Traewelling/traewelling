@@ -44,7 +44,7 @@ const products = {
   bus: {
     color: "#9d0278",
     text: "#fff",
-    shape: "circle",
+    shape: "rounded",
   },
   bus_pill: {
     color: "#9d0278",
@@ -159,13 +159,6 @@ const cssVars = computed((): string => {
 .line-indicator.rounded {
   min-width: 1.75rem;
   border-radius: 99rem !important;
-}
-
-.line-indicator.circle {
-  border-radius: 50%;
-  overflow-x: visible;
-  height: 1.5rem;
-  width: 1.5rem;
 }
 
 .line-indicator {
