@@ -15,7 +15,14 @@ if [ "$role" = "launch-all-at-once" ]; then
     fg %1
 else
 
-    wait-for-it "$DB_HOST:${DB_PORT:=3306}"
+    if [ -z "$DB_HOST" ]; then
+        echo "Error: DB_HOST environment variable is not set"
+        exit 1
+    fi
+
+    echo "Waiting for database at $DB_HOST:${DB_PORT:=3306}..."
+    wait-for-it "$DB_HOST:${DB_PORT}" --timeout=60 --strict
+
     cd /var/www/html
     runuser -u www-data -- php artisan optimize
 
@@ -31,13 +38,13 @@ else
             runuser -u www-data -- php artisan migrate --force
         fi
 
-        runuser -u www-data -- php artisan storage:link
-        apache2-foreground
+        runuser -u www-data -- php artisan storage:link || true
+        exec apache2-foreground
 
     elif [ "$role" = "queue" ]; then
 
         echo "Running the queue..."
-        runuser -u www-data -- php artisan queue:work --queue=default,webhook
+        exec runuser -u www-data -- php artisan queue:work --queue=default,webhook,export
 
     elif [ "$role" = "scheduler" ]; then
 
