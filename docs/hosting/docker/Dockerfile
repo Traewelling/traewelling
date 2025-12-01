@@ -8,7 +8,7 @@ COPY --from=node-build /usr/src/trwl /usr/src/trwl
 WORKDIR /usr/src/trwl
 RUN composer install --ignore-platform-reqs --no-interaction --no-progress --optimize-autoloader
 
-FROM php:8.4-apache
+FROM php:8.5-apache
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 RUN apt update && \
