@@ -1,15 +1,15 @@
-version: "3.9"
-
 services:
   app:
-    build: ../../..
-    restart: 'always'
+    build:
+      context: .
+      dockerfile: docs/hosting/docker/Dockerfile
+    restart: always
     ports:
-      - "8081:80"
+      - 8081:80
     networks:
       - internal
     env_file:
-      - ../../../.env.docker
+      - .env.docker
     environment:
       CONTAINER_ROLE: app
       # SEED_DB: true
@@ -20,7 +20,7 @@ services:
       - ./routes:/var/www/html/routes
       - ./storage:/var/www/html/storage
       - ./tests:/var/www/html/tests
-      - ./avatars:/var/www/html/public/uploads/avatars
+      - avatars:/var/www/html/public/uploads/avatars
 
       ## Un-comment the following line if you need to deal with frontend code.
       ## The built assets will be overwritten by whatever is in your host
@@ -31,14 +31,19 @@ services:
       ## Please don't commit the un-commenting to keep the dependencies
       ## on the host computer as small as possible.
       #- ./public:/var/www/html/public
+    depends_on:
+      - database
+      - redis
 
   scheduler:
-    build: ../../..
-    restart: 'always'
+    build:
+      context: .
+      dockerfile: docs/hosting/docker/Dockerfile
+    restart: always
     networks:
       - internal
     env_file:
-      - ../../../.env.docker
+      - .env.docker
     environment:
       CONTAINER_ROLE: scheduler
     volumes:
@@ -48,15 +53,20 @@ services:
       - ./routes:/var/www/html/routes
       - ./storage:/var/www/html/storage
       - ./tests:/var/www/html/tests
-      - ./avatars:/var/www/html/public/uploads/avatars
+      - avatars:/var/www/html/public/uploads/avatars
+    depends_on:
+      - database
+      - redis
 
   queue:
-    build: ../../..
-    restart: 'always'
+    build:
+      context: .
+      dockerfile: docs/hosting/docker/Dockerfile
+    restart: always
     networks:
       - internal
     env_file:
-      - ../../../.env.docker
+      - .env.docker
     environment:
       CONTAINER_ROLE: queue
     volumes:
@@ -66,21 +76,24 @@ services:
       - ./routes:/var/www/html/routes
       - ./storage:/var/www/html/storage
       - ./tests:/var/www/html/tests
-      - ./avatars:/var/www/html/public/uploads/avatars
+      - avatars:/var/www/html/public/uploads/avatars
+    depends_on:
+      - database
+      - redis
 
   database:
     image: mariadb:12
-    restart: 'always'
+    restart: always
     ports:
-      - "3306:3306"
+      - 3306:3306
     volumes:
-      - ./database/docker-container-state:/var/lib/mysql
+      - database-data:/var/lib/mysql
     networks:
       - internal
     environment:
       - TZ=Europe/Berlin
     env_file:
-      - ../../../.env.docker
+      - .env.docker
 
   redis:
     image: redis
@@ -91,3 +104,7 @@ services:
 networks:
   internal:
     external: false
+
+volumes:
+  database-data:
+  avatars:
