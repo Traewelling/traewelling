@@ -44,7 +44,7 @@ class ExportTripsTest extends ApiTestCase
                   ],
         );
         $response->assertSuccessful();
-        $response->assertHeader('Content-Type', 'text/json; charset=UTF-8');
+        $response->assertHeader('Content-Type', 'text/json; charset=utf-8');
     }
 
     public function test_csv_export(): void {
@@ -61,6 +61,6 @@ class ExportTripsTest extends ApiTestCase
                   ],
         );
         $response->assertSuccessful();
-        $response->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
+        $response->assertHeader('Content-Type', 'text/csv; charset=utf-8');
     }
 }
