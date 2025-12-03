@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Http\Requests\StoreAlertRequest;
 use App\Http\Resources\AlertResource;
 use App\Models\Alert;
+use App\Models\AlertTranslation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
@@ -32,9 +33,27 @@ class AlertController extends Controller
                            $query->where('active_until', '>=', $now)
                                  ->orWhereNull('active_until');
                        })
-                       ->orderBy('active_from', 'desc')
-                       ->orderBy('active_until', 'desc')
+                       ->orderByDesc('active_from')
+                       ->orderByDesc('active_until')
                        ->get();
+
+        // if year in review is active, inject the special alert
+        if (config('trwl.year_in_review.alert')) {
+            $alert               = new Alert();
+            $alert->id           = 'year-in-review-' . date('Y');
+            $alert->type         = 'info';
+            $alert->active_from  = now()->startOfYear();
+            $alert->active_until = now()->endOfYear();
+
+            $translation          = new AlertTranslation();
+            $translation->locale  = app()->getLocale();
+            $translation->title   = __('year-review');
+            $translation->content = __('year-review.teaser');
+            $translation->url     = url('/year-in-review');
+            $alert->setRelation('translations', collect([$translation]));
+
+            $alerts->prepend($alert);
+        }
 
         return AlertResource::collection($alerts);
     }

@@ -34,6 +34,7 @@
     "chartjs-adapter-date-fns": "^3.0.0",
     "croppie": "^2.6.5",
     "date-fns": "^4.1.0",
+    "gsap": "^3.13.0",
     "laravel-vue-i18n": "^2.7.1",
     "leaflet": "^1.9.4",
     "Leaflet-MovingMaker": "^0.0.1",
