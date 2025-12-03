@@ -111,6 +111,10 @@ Route::get('/ics', [IcsController::class, 'renderIcs'])
  */
 Route::middleware(['auth', 'privacy'])->group(function() {
 
+    Route::get('/year-in-review', function () {
+        return view('layouts.year-in-review');
+    });
+
     Route::view('/trip/create', 'beta.trip-creation')
          ->name('trip.create');
 

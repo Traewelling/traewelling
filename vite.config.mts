@@ -15,6 +15,7 @@ export default defineConfig({
                 "resources/js/admin.js",
                 "resources/sass/admin.scss",
                 "resources/css/welcome.css",
+                'resources/js/year-in-review.js',
             ],
             refresh: true,
         }),
