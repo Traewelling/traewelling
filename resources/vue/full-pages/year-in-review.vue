@@ -262,10 +262,17 @@
 
       <!-- Most Delayed Trip -->
       <section v-if="mostDelayedTrip" class="section section-delayed">
-        <div class="trip-card">
+        <div class="trip-card delayed-card">
+
           <div class="trip-badge">{{ t('delayed.badge') }}</div>
+
+          <div class="delay-highlight">
+            <span class="delay-value">+{{ mostDelayedTrip.computedDelay }}</span>
+          </div>
+
           <p class="trip-date">{{ formatDate(mostDelayedTrip.origin?.departure) }}</p>
           <h2 class="trip-line">{{ mostDelayedTrip.lineName }}</h2>
+
           <div class="trip-route">
             <span class="trip-origin">{{ mostDelayedTrip.origin?.name }}</span>
             <span class="trip-arrow">→</span>
@@ -273,6 +280,7 @@
           </div>
         </div>
       </section>
+
 
       <!-- Most Visited Station -->
       <section v-if="data.topDestinations?.length" class="section section-top-station">
@@ -591,7 +599,14 @@ const slowestTrip = computed(() => {
 })
 
 const mostDelayedTrip = computed(() => {
-  return data.value.mostDelayedArrivals?.train || null
+  const trip = data.value.mostDelayedArrivals?.train
+  console.log(trip);
+  if (!trip) return null
+  console.log(calculateDelay(trip))
+  return {
+    ...trip,
+    computedDelay: calculateDelay(trip)
+  }
 })
 
 // Helper Functions
@@ -773,6 +788,29 @@ const fetchData = async () => {
     loading.value = false
   }
 }
+
+const calculateDelay = (trip) => {
+  if (!trip?.destination) return 0
+
+  const stop = trip.destination
+
+  const bestArrival =
+      trip?.manualArrival ||
+      stop?.arrivalReal ||
+      stop?.arrivalPlanned ||
+      null
+
+  const plannedArrival = stop?.arrivalPlanned
+
+  if (!bestArrival || !plannedArrival) return 0
+
+  const a = new Date(bestArrival)
+  const p = new Date(plannedArrival)
+
+  const diff = Math.round((a - p) / 60000)
+  return diff > 0 ? diff : 0
+}
+
 
 // Lifecycle
 onMounted(() => {
@@ -1598,4 +1636,30 @@ onUnmounted(() => {
   font-size: 0.9rem;
   margin-top: 1rem;
 }
+
+.delayed-card {
+  position: relative;
+}
+
+.delay-highlight {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.delay-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(4rem, 12vw, 7rem);
+  font-weight: 700;
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6),
+  0 0 20px rgba(255, 215, 0, 0.8),
+  0 0 30px rgba(255, 215, 0, 1);
+  display: block;
+  letter-spacing: -1px;
+}
+
+.section-delayed {
+  background: linear-gradient(180deg, #b91c1c 0%, #7f1d1d 100%);
+}
+
 </style>
