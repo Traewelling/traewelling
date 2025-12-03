@@ -90,7 +90,7 @@
                         </li>
                         @if(config('trwl.year_in_review.alert'))
                             <li class="nav-item">
-                                <a class="nav-link" href="/your-year/">
+                                <a class="nav-link" href="/year-in-review">
                                     <i class="fa-solid fa-champagne-glasses"></i>
                                     {{__('year-review')}}
                                 </a>
