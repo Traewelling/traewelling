@@ -49,7 +49,7 @@ class AlertController extends Controller
             $translation->locale  = app()->getLocale();
             $translation->title   = __('year-review');
             $translation->content = __('year-review.teaser');
-            $translation->url     = url('/your-year/');
+            $translation->url     = url('/year-in-review');
             $alert->setRelation('translations', collect([$translation]));
 
             $alerts->prepend($alert);
