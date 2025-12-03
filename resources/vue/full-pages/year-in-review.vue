@@ -131,7 +131,10 @@
       <!-- Vatican Railway Section -->
       <section class="section section-vatican">
         <div class="vatican-visual">
-          <div class="vatican-icon">🇻🇦</div>
+          <div class="vatican-icon">
+            <span class="vatican-flag">🇻🇦</span>
+            <span class="vatican-train">🚂</span>
+          </div>
           <div class="stat-content">
             <p class="stat-intro">{{ t('seven.one') }}</p>
             <h1 class="stat-highlight">{{ vaticanMultiplier }}x</h1>
@@ -782,7 +785,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Sora:wght@300;400;500;600;700;800&display=swap');
+@import url('../../../public/fonts/Nunito/Nunito.css');
 
 * {
   box-sizing: border-box;
@@ -1523,5 +1526,76 @@ onUnmounted(() => {
     width: 2px;
     height: 50px;
   }
+}
+
+/* Vatican Section */
+.section-vatican {
+  background: linear-gradient(180deg, #1e3a5f 0%, #0f1f33 100%);
+}
+
+.vatican-visual {
+  text-align: center;
+}
+
+.vatican-icon {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.vatican-flag {
+  font-size: 8rem;
+  filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.5));
+  animation: glow 3s ease-in-out infinite;
+}
+
+.vatican-train {
+  position: absolute;
+  font-size: 2.5rem;
+  bottom: 10px;
+  animation: train-move 4s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 50px rgba(255, 215, 0, 0.8));
+  }
+}
+
+@keyframes train-move {
+  0%, 100% {
+    transform: translateX(-30px);
+  }
+  50% {
+    transform: translateX(30px);
+  }
+}
+
+.section-vatican .stat-highlight {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(4rem, 12vw, 8rem);
+  font-weight: 700;
+  color: #fbbf24;
+  text-shadow: 0 0 40px rgba(251, 191, 36, 0.5);
+}
+
+.section-vatican .stat-intro,
+.section-vatican .stat-outro {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.section-vatican .stat-small {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  margin-top: 1rem;
 }
 </style>
