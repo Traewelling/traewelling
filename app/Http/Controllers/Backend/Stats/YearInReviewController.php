@@ -15,6 +15,8 @@ abstract class YearInReviewController extends Controller
 {
 
     public static function get(User $user, int $year): array {
+        return self::generate($user, $year);
+        
         return Cache::remember(CacheKey::getYearInReviewKey($user, $year), Carbon::now()->addWeek(), static function() use ($user, $year) {
             return self::generate($user, $year);
         });
