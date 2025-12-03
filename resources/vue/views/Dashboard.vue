@@ -123,22 +123,6 @@ fetchFutureStatuses();
         </div>
       </div>
 
-      <!--
-      todo: Year in Review
-      @if(config('trwl.year_in_review.alert'))
-      <div class="alert alert-info" role="region" aria-label="{{ trans('year-review') }}">
-        <h4 class="alert-heading">
-          <i class="fa-solid fa-champagne-glasses" aria-hidden="true"></i>
-          Träwelling {{ trans('year-review') }}
-        </h4>
-        <p>{{ trans('year-review.teaser') }}</p>
-        <a class="btn btn-outline-primary btn-block" href="/your-year/">
-          <i class="fa-solid fa-arrow-pointer text-primary" aria-hidden="true"></i>
-          {{ trans('year-review.open') }}
-        </a>
-      </div>
-      @endif
-      -->
       <template v-for="(status, index) in statuses">
         <h2 class="mb-2 fs-5"
             v-if="index === 0 || !DateTime.fromISO(status.train.origin.departure || '').hasSame(DateTime.fromISO(statuses[index - 1].train.origin.departure || ''), 'day')">
