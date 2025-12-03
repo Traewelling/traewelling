@@ -313,10 +313,10 @@
         <div class="liked-card">
           <h1 class="liked-title">{{ t('liked.title') }}</h1>
           <div class="liked-list">
-            <div v-for="status in data.mostLikedStatuses.slice(0, 3)" :key="status.id" class="liked-item">
-              <span class="liked-line">{{ status.train?.lineName }}</span>
-              <span class="liked-route">{{ status.train?.origin?.name }} → {{ status.train?.destination?.name }}</span>
-              <span class="liked-count">❤️ {{ status.likes }}</span>
+            <div v-for="statusObj in data.mostLikedStatuses.slice(0, 3)" :key="statusObj.status.id" class="liked-item">
+              <span class="liked-count">{{ statusObj.status.likes }}x ❤️&nbsp;</span>
+              <span class="liked-line">{{ statusObj.status.train?.lineName }}&nbsp;</span>
+              <span class="liked-route">{{ statusObj.status.train?.origin?.name }} → {{ statusObj.status.train?.destination?.name }}</span>
             </div>
           </div>
         </div>
