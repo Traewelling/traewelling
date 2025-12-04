@@ -66,7 +66,7 @@
         <div class="stats-preview">
           <div class="stat-pill">
             <span class="stat-value">{{ data.count }}</span>
-            <span class="stat-label">Fahrten</span>
+            <span class="stat-label">Journeys</span>
           </div>
           <div class="stat-pill">
             <span class="stat-value">{{ formatKm(data.distance?.total) }}</span>
@@ -74,11 +74,11 @@
           </div>
           <div class="stat-pill">
             <span class="stat-value">{{ formatHours(data.duration?.total) }}</span>
-            <span class="stat-label">Stunden</span>
+            <span class="stat-label">hours</span>
           </div>
           <div class="stat-pill" v-if="data.totalDelay">
             <span class="stat-value">{{ data.totalDelay }}</span>
-            <span class="stat-label">Min. Verspätung</span>
+            <span class="stat-label">minutes delay</span>
           </div>
         </div>
       </section>
@@ -453,7 +453,7 @@ const translations = {
       two: "minutes",
       three: "in which you always had something going on."
     },
-    two: "In these 365 days, you were on the rails with us a lot!",
+    two: "In these 365 days, you were on the go with us a lot!",
     yourYear: "This is your year with us in numbers, dates and facts:",
     three: {
       one: "You travelled a total of",
@@ -480,10 +480,10 @@ const translations = {
     },
     eight: {
       one: "In total, you were traveling with",
-      two: "Railroad companies."
+      two: "operators."
     },
     nine: {
-      one: "Your favorite among them was"
+      one: "Your favourite among them was"
     },
     ten: {
       one: "Most time spent with"
@@ -494,7 +494,7 @@ const translations = {
       three: "and"
     },
     thirteen: {
-      badge: "Longest trip"
+      badge: "Longest trip (distance)"
     },
     thirteen_duration: {
       badge: "Longest trip (time)"
@@ -506,7 +506,7 @@ const translations = {
       badge: "Slowest trip"
     },
     delayed: {
-      badge: "Most delayed"
+      badge: "Most delayed trip"
     },
     sixteen: {
       one: "Most often you were in"
@@ -623,7 +623,7 @@ const formatHours = (minutes) => {
 const formatDate = (dateString) => {
   if (!dateString) return ''
   const date = new Date(dateString)
-  return date.toLocaleDateString(locale.value === 'de' ? 'de-DE' : 'en-US', {
+  return date.toLocaleDateString(locale.value === 'de' ? 'de-DE' : 'en-GB', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
