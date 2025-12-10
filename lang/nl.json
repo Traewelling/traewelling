@@ -878,7 +878,7 @@
     "status.visibility.5": "Vertrouwde gebruikers",
     "status.visibility.5.detail": "Alleen zichtbaar voor je vertrouwde gebruikers",
     "report.min-length": "De beschrijving dient minimaal 10 tekens te bevatten.",
-    "stationboard.hidden-departures": ":getal vertrekken zijn verwinderd door problemen met licentie.",
+    "stationboard.hidden-departures": ":count vertrekken zijn verwijderd door problemen met licentie.",
     "stationboard.hidden-departures.detail": "Deze vertrekken zijn verwijderd omdat de licentie nog niet door ons is geactiveerd of omdat het ons niet toestemt om deze data te gebruiken.",
     "stationboard.hidden-departures.detail2": "De verwijderde vertrekken zijn geassocieerd met de volgende licentie-/databronnen:",
     "stationboard.hidden-departures.detail3": "Als je meer wilt weten over de licenties, klik hier:",
