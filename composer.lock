@@ -10097,16 +10097,16 @@
         },
         {
             "name": "barryvdh/laravel-ide-helper",
-            "version": "v3.6.0",
+            "version": "v3.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-ide-helper.git",
-                "reference": "8d00250cba25728373e92c1d8dcebcbf64623d29"
+                "reference": "b106f7ee85f263c4f103eca49e7bf3862c2e5e75"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-ide-helper/zipball/8d00250cba25728373e92c1d8dcebcbf64623d29",
-                "reference": "8d00250cba25728373e92c1d8dcebcbf64623d29",
+                "url": "https://api.github.com/repos/barryvdh/laravel-ide-helper/zipball/b106f7ee85f263c4f103eca49e7bf3862c2e5e75",
+                "reference": "b106f7ee85f263c4f103eca49e7bf3862c2e5e75",
                 "shasum": ""
             },
             "require": {
@@ -10175,7 +10175,7 @@
             ],
             "support": {
                 "issues": "https://github.com/barryvdh/laravel-ide-helper/issues",
-                "source": "https://github.com/barryvdh/laravel-ide-helper/tree/v3.6.0"
+                "source": "https://github.com/barryvdh/laravel-ide-helper/tree/v3.6.1"
             },
             "funding": [
                 {
@@ -10187,7 +10187,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-07-17T20:11:57+00:00"
+            "time": "2025-12-10T09:11:07+00:00"
         },
         {
             "name": "barryvdh/reflection-docblock",
