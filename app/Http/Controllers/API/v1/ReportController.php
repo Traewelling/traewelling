@@ -49,7 +49,7 @@ class ReportController extends Controller
                                             'description' => ['nullable', 'string', 'min:10'],
                                         ]);
 
-        (new ReportRepository())->createReport(
+        new ReportRepository()->createReport(
             subjectType: ReportableSubject::from($validated['subjectType']),
             subjectId:   $validated['subjectId'],
             reason:      ReportReason::from($validated['reason']),
