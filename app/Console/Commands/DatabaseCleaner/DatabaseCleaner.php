@@ -22,6 +22,7 @@ class DatabaseCleaner extends Command
         $this->call(CleanUpActivity::class);
         $this->call(CleanUpEventSuggestions::class);
         $this->call(CleanUpTokens::class);
+        $this->call(YearInReview::class);
 
         $this->call('queue-monitor:purge', ['--beforeDays' => 7]);
         $this->call('activitylog:clean');
