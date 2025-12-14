@@ -2,27 +2,44 @@
 
 namespace App\Http\Controllers\Backend\Stats;
 
-use App\Helpers\CacheKey;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StationResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Checkin;
 use App\Models\User;
+use App\Models\YearInReviewCache;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
 
 abstract class YearInReviewController extends Controller
 {
 
     public static function get(User $user, int $year): array {
-        return Cache::remember(CacheKey::getYearInReviewKey($user, $year), Carbon::now()->addWeek(), static function() use ($user, $year) {
-            return self::generate($user, $year);
-        });
+        $cached = YearInReviewCache::where('user_id', $user->id)
+                                   ->where('year', $year)
+                                   ->where('updated_at', '>', Carbon::now()->subWeek())
+                                   ->first();
+
+        if ($cached) {
+            return $cached->data;
+        }
+
+        return self::renew($user, $year);
     }
 
     public static function renew(User $user, int $year): array {
-        Cache::forget(CacheKey::getYearInReviewKey($user, $year));
-        return self::get($user, $year);
+        $data = self::generate($user, $year);
+
+        YearInReviewCache::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'year'    => $year
+            ],
+            [
+                'data' => $data,
+            ]
+        );
+
+        return $data;
     }
 
     public static function generate(User $user, int $year): array {
