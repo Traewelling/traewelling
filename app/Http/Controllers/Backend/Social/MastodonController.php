@@ -95,6 +95,10 @@ abstract class MastodonController extends Controller
     }
 
     private static function createUser(SocialiteUser $socialiteUser, MastodonServer $server): User {
+        if (!config('app.registration.enabled')) {
+            abort(403, 'Registrations are currently closed.');
+        }
+        
         $user = User::create([
                                  'name'     => SocialController::getDisplayName($socialiteUser),
                                  'username' => SocialController::getUniqueUsername($socialiteUser->getNickname()),
