@@ -17,6 +17,7 @@
     "admin.registered-users": "Registered users",
     "admin.new-users": "new users",
     "admin.statuses": "statuses",
+    "user.registration-disabled": "Registration for new accounts is currently disabled.",
     "auth.failed": "These credentials do not match our records.",
     "auth.throttle": "Too many login attempts. Try again in :seconds seconds.",
     "user.complete-registration": "Complete registration",

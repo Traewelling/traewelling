@@ -5,129 +5,141 @@
 
 @section('content')
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7">
-                <div class="card">
-                    <div class="card-header">{{ __('user.register') }}</div>
 
-                    <div class="card-body">
-                        <form method="POST" action="{{ route('register') }}">
-                            @csrf
+        @if(config('app.registration.enabled'))
 
-                            <div class="form-group row mb-3">
-                                <label for="username"
-                                       class="col-md-4 col-form-label text-md-right">{{ __('user.username') }}</label>
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-7">
+                    <div class="card">
+                        <div class="card-header">{{ __('user.register') }}</div>
 
-                                <div class="col-md-6">
+                        <div class="card-body">
+                            <form method="POST" action="{{ route('register') }}">
+                                @csrf
 
-                                    <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon1">@</span>
+                                <div class="form-group row mb-3">
+                                    <label for="username"
+                                           class="col-md-4 col-form-label text-md-right">{{ __('user.username') }}</label>
 
-                                        <input id="username" type="text"
-                                               class="form-control @error('username') is-invalid @enderror"
-                                               name="username" value="{{ old('username') }}" required autofocus>
+                                    <div class="col-md-6">
+
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="basic-addon1">@</span>
+
+                                            <input id="username" type="text"
+                                                   class="form-control @error('username') is-invalid @enderror"
+                                                   name="username" value="{{ old('username') }}" required autofocus>
+                                        </div>
+
+                                        @error('username')
+                                        <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                        @enderror
                                     </div>
+                                </div>
 
-                                    @error('username')
-                                    <span class="invalid-feedback" role="alert">
+                                <div class="form-group row mb-3">
+                                    <label for="name"
+                                           class="col-md-4 col-form-label text-md-right">{{ __('user.displayname') }}</label>
+
+                                    <div class="col-md-6">
+                                        <input id="name" type="text"
+                                               class="form-control @error('name') is-invalid @enderror" name="name"
+                                               value="{{ old('name') }}" required autocomplete="name" required>
+
+                                        @error('name')
+                                        <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                    @enderror
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group row mb-3">
-                                <label for="name"
-                                       class="col-md-4 col-form-label text-md-right">{{ __('user.displayname') }}</label>
+                                <div class="form-group row mb-3">
+                                    <label for="email"
+                                           class="col-md-4 col-form-label text-md-right">{{ __('user.email') }}</label>
 
-                                <div class="col-md-6">
-                                    <input id="name" type="text"
-                                           class="form-control @error('name') is-invalid @enderror" name="name"
-                                           value="{{ old('name') }}" required autocomplete="name" required>
+                                    <div class="col-md-6">
+                                        <input id="email" type="email"
+                                               class="form-control @error('email') is-invalid @enderror" name="email"
+                                               value="{{ old('email') }}" required autocomplete="email">
 
-                                    @error('name')
-                                    <span class="invalid-feedback" role="alert">
+                                        @error('email')
+                                        <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                    @enderror
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group row mb-3">
-                                <label for="email"
-                                       class="col-md-4 col-form-label text-md-right">{{ __('user.email') }}</label>
+                                <div class="form-group row mb-3">
+                                    <label for="password"
+                                           class="col-md-4 col-form-label text-md-right">{{ __('user.password') }}</label>
 
-                                <div class="col-md-6">
-                                    <input id="email" type="email"
-                                           class="form-control @error('email') is-invalid @enderror" name="email"
-                                           value="{{ old('email') }}" required autocomplete="email">
+                                    <div class="col-md-6">
+                                        <input id="password" type="password"
+                                               class="form-control @error('password') is-invalid @enderror"
+                                               name="password"
+                                               required autocomplete="new-password" minlength="8">
 
-                                    @error('email')
-                                    <span class="invalid-feedback" role="alert">
+                                        @error('password')
+                                        <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                    @enderror
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group row mb-3">
-                                <label for="password"
-                                       class="col-md-4 col-form-label text-md-right">{{ __('user.password') }}</label>
+                                <div class="form-group row mb-3">
+                                    <label for="password-confirm"
+                                           class="col-md-4 col-form-label text-md-right">{{ __('settings.confirm-password') }}</label>
 
-                                <div class="col-md-6">
-                                    <input id="password" type="password"
-                                           class="form-control @error('password') is-invalid @enderror" name="password"
-                                           required autocomplete="new-password" minlength="8">
-
-                                    @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
+                                    <div class="col-md-6">
+                                        <input id="password-confirm" type="password" class="form-control"
+                                               name="password_confirmation" required autocomplete="new-password"
+                                               minlength="8">
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group row mb-3">
-                                <label for="password-confirm"
-                                       class="col-md-4 col-form-label text-md-right">{{ __('settings.confirm-password') }}</label>
-
-                                <div class="col-md-6">
-                                    <input id="password-confirm" type="password" class="form-control"
-                                           name="password_confirmation" required autocomplete="new-password"
-                                           minlength="8">
+                                <div class="form-group row mb-0">
+                                    <div class="col-md-6 offset-md-4">
+                                        <button type="submit" class="btn btn-primary">
+                                            {{ __('user.register') }}
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="form-group row mb-0">
-                                <div class="col-md-6 offset-md-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        {{ __('user.register') }}
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                        <hr>
-                        <div class="row justify-content-center">
-                            <div class="col-md-8 col-lg-7">
-                                <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
-                                    <div class="row">
-                                        <div class="form-group col-md-6">
-                                            <div class="md-form input-group mt-2">
-                                                <input type="url" name="domain" class="form-control"
-                                                       placeholder="{{__('user.mastodon-instance-url')}}"
-                                                       aria-describedby="button-addon4" required>
-                                                <button class="btn btn-md btn-primary m-0 px-3" type="submit"><i
-                                                        class="fab fa-mastodon"></i> Mastodon
-                                                </button>
+                            </form>
+                            <hr>
+                            <div class="row justify-content-center">
+                                <div class="col-md-8 col-lg-7">
+                                    <form method="GET" action="{{ url('/auth/redirect/mastodon') }}">
+                                        <div class="row">
+                                            <div class="form-group col-md-6">
+                                                <div class="md-form input-group mt-2">
+                                                    <input type="url" name="domain" class="form-control"
+                                                           placeholder="{{__('user.mastodon-instance-url')}}"
+                                                           aria-describedby="button-addon4" required>
+                                                    <button class="btn btn-md btn-primary m-0 px-3" type="submit"><i
+                                                            class="fab fa-mastodon"></i> Mastodon
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+        @else
+
+            <div class="alert alert-info text-center" role="alert">
+                {{ __('user.registration-disabled') }}
+            </div>
+
+        @endif
     </div>
 @endsection

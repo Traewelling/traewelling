@@ -2,10 +2,12 @@
     @csrf
     <h1 class="text-3xl font-bold self-center">{{ __('user.login') }}</h1>
 
-    <span class="self-center">
-        {{ __('user.no-account') }}
-        <a class="link link-accent" href="{{ route('register') }}">{{ __('user.register') }}</a>
-    </span>
+    @if(config('app.registration.enabled'))
+        <span class="self-center">
+            {{ __('user.no-account') }}
+            <a class="link link-accent" href="{{ route('register') }}">{{ __('user.register') }}</a>
+        </span>
+    @endif
 
     <button class="btn btn-neutral" onclick="mastodon_modal.showModal()" type="button">
         <i class="fa-brands fa-mastodon text-primary"></i>

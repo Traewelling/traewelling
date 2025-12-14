@@ -64,6 +64,10 @@ class RegisterController extends Controller
      * @return User
      */
     protected function create(array $data): User {
+        if (!config('app.registration.enabled')) {
+            abort(403, 'Registrations are currently closed.');
+        }
+
         return User::create([
                                 'username'   => $data['username'],
                                 'name'       => $data['name'],

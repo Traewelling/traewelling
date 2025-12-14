@@ -277,5 +277,9 @@ return [
         ]
     ],
 
+    'registration' => [
+        'enabled' => (bool) env('REGISTRATION_ENABLED', true),
+    ],
+
     'wikidata_fetcher_enabled' => env('WIKIDATA_FETCHER_ENABLED', false),
 ];
