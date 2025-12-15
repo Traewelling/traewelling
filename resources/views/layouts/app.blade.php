@@ -106,11 +106,13 @@
                                 {{ __('menu.login') }}
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">
-                                {{ __('menu.register') }}
-                            </a>
-                        </li>
+                        @if(config('app.registration.enabled'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('register') }}">
+                                    {{ __('menu.register') }}
+                                </a>
+                            </li>
+                        @endif
                     @else
                         <form class="form-inline" action="{{ route('userSearch') }}">
                             <div class="input-group md-form form-sm form-2 ps-0 m-0">
