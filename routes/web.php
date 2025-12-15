@@ -77,7 +77,7 @@ Route::get('/events', [EventController::class, 'renderEventOverview'])
 Route::get('/changelog', [ChangelogController::class, 'renderChangelog'])
      ->name('changelog');
 
-Auth::routes(['verify' => true]);
+Auth::routes(['verify' => true, 'register' => config('app.registration.enabled')]);
 
 Route::get('/auth/redirect/mastodon', [MastodonController::class, 'redirect']);
 Route::get('/callback/mastodon', [MastodonController::class, 'callback']);
