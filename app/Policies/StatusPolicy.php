@@ -47,6 +47,11 @@ class StatusPolicy
             return Response::deny(__('profile.youre-blocked-text'));
         }
 
+        // Case 3½: User is explicitly hidden from this status
+        if ($status->hiddenUsers()->where('user_id', $user->id)->exists()) {
+            return Response::deny(__('status.hidden-from-you'));
+        }
+
         // Case 4: Status is private and the status doesn't belong to the user
         if ($status->visibility === StatusVisibility::PRIVATE) {
             return Response::deny('Status is private');
