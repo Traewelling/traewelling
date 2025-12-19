@@ -425,7 +425,7 @@ const translations = {
     },
     seventeen: {
       one: "Du bist ein absoluter Weltenbummler!",
-      two: "Es gibt Orte, dort war niemand außer du!",
+      two: "Es gibt Orte, dort war niemand außer dir!",
       disclaimer: "Aufgrund von Datenfehlern ist diese Statistik mit Vorsicht zu genießen, da das ID-Matching nicht immer korrekt ist."
     },
     eighteen: {
