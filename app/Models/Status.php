@@ -78,6 +78,13 @@ class Status extends Model
         return $this->hasMany(Mention::class, 'status_id', 'id');
     }
 
+    /**
+     * Users that must not see this specific status.
+     */
+    public function hiddenUsers(): HasMany {
+        return $this->hasMany(StatusHiddenUser::class, 'status_id', 'id');
+    }
+
     public function getFavoritedAttribute(): ?bool {
         if (!Auth::check()) {
             return null;
