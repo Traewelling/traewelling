@@ -28,6 +28,7 @@ use App\Http\Controllers\API\v1\SettingsController;
 use App\Http\Controllers\API\v1\StationController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
+use App\Http\Controllers\API\v1\StatusHiddenUserController;
 use App\Http\Controllers\API\v1\StatusTagController;
 use App\Http\Controllers\API\v1\TokenController;
 use App\Http\Controllers\API\v1\TransportController;
@@ -67,6 +68,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             Route::post('status/{statusId}/tags', [StatusTagController::class, 'store']);
             Route::put('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'update']);
             Route::delete('status/{statusId}/tags/{tagKey}', [StatusTagController::class, 'destroy']);
+
+            // Hidden users for specific statuses
+            Route::get('status/{statusId}/hidden-users', [StatusHiddenUserController::class, 'index']);
+            Route::post('status/{statusId}/hidden-users', [StatusHiddenUserController::class, 'store']);
+            Route::delete('status/{statusId}/hidden-users/{userId}', [StatusHiddenUserController::class, 'destroy']);
         });
         Route::group(['middleware' => ['scope:write-likes']], static function() {
             Route::post('status/{id}/like', [LikesController::class, 'create']);
