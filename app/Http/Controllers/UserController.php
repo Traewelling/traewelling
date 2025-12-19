@@ -81,6 +81,14 @@ class UserController extends Controller
                                   }
                               });
                     })
+                        ->when(Auth::check(), function($query) {
+                            $query->whereNotExists(function($subQuery) {
+                                $subQuery->select(DB::raw(1))
+                                         ->from('status_hidden_users')
+                                         ->whereColumn('status_hidden_users.status_id', 'statuses.id')
+                                         ->where('status_hidden_users.user_id', auth()->id());
+                            });
+                        })
                     ->select('statuses.*')
                     ->orderByDesc('train_checkins.departure')
                     ->simplePaginate($limit !== null && $limit <= 15 ? $limit : 15);
