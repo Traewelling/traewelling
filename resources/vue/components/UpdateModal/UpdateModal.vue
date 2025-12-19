@@ -11,6 +11,7 @@ import {useActiveCheckin} from "../../stores/activeCheckin";
 import {getDepartureForStatus} from "../../helpers/DateTimeHelper";
 import EventDropdown from "../EventDropdown.vue";
 import DateTimeInput from "../Helpers/DateTimeInput.vue";
+import HiddenUsersSelector from "../HiddenUsersSelector.vue";
 
 const emit = defineEmits<{
   (e: "status-updated", status: StatusResource): void
@@ -242,6 +243,9 @@ defineExpose({show});
             class="btn btn-outline-primary"
         />
       </div>
+
+      <!-- Hidden Users Section -->
+      <HiddenUsersSelector :status-id="status.id" />
     </template>
 
     <template #footer>
