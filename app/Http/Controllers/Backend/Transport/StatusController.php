@@ -56,42 +56,52 @@ abstract class StatusController extends Controller
      */
     public static function filterStatusVisibility(?User $viewingUser = null): Closure {
         return function(EloquentBuilder $query) use ($viewingUser) {
-            //Visibility checks: One of the following options must be true
-
-            //Option 1: User is public AND status is public
-            $query->where(function(EloquentBuilder $query) use ($viewingUser) {
-                $query->where('users.private_profile', 0)
-                      ->whereIn('visibility', [StatusVisibility::PUBLIC->value] + ($viewingUser !== null ? [StatusVisibility::AUTHENTICATED->value] : []));
-            });
-
             if ($viewingUser !== null) {
-                //Option 2: Status is from oneself
-                $query->orWhere('users.id', $viewingUser->id);
-
-                //Option 3: Status is from a followed BUT not unlisted or private or trusted users only
-                $query->orWhere(function(EloquentBuilder $query) use ($viewingUser) {
-                    $query->whereIn('users.id', $viewingUser->follows()->select('follow_id'))
-                          ->whereNotIn('statuses.visibility', [
-                              StatusVisibility::UNLISTED->value,
-                              StatusVisibility::PRIVATE->value,
-                              StatusVisibility::TRUSTED->value,
-                          ]);
-                });
-
-                //Option 4: Status is from a user who trusts the viewing user
-                $query->orWhere(function(EloquentBuilder $query) use ($viewingUser) {
-                    $query->where('statuses.visibility', StatusVisibility::TRUSTED->value)
-                          ->whereExists(function(QueryBuilder $subQuery) use ($viewingUser) {
-                              $subQuery->from('trusted_users')
-                                       ->whereColumn('trusted_users.user_id', 'statuses.user_id')
-                                       ->where('trusted_users.trusted_id', $viewingUser->id)
-                                       ->where(function(QueryBuilder $expireQuery) {
-                                           $expireQuery->whereNull('trusted_users.expires_at')
-                                                       ->orWhere('trusted_users.expires_at', '>', now());
-                                       });
-                          });
+                $query->whereNotExists(function(QueryBuilder $subQuery) use ($viewingUser) {
+                    $subQuery->select(DB::raw(1))
+                             ->from('status_hidden_users')
+                             ->whereColumn('status_hidden_users.status_id', 'statuses.id')
+                             ->where('status_hidden_users.user_id', $viewingUser->id);
                 });
             }
+
+            //Visibility checks: One of the following options must be true
+            $query->where(function(EloquentBuilder $visibility) use ($viewingUser) {
+                //Option 1: User is public AND status is public
+                $visibility->where(function(EloquentBuilder $query) use ($viewingUser) {
+                    $query->where('users.private_profile', 0)
+                          ->whereIn('visibility', [StatusVisibility::PUBLIC->value] + ($viewingUser !== null ? [StatusVisibility::AUTHENTICATED->value] : []));
+                });
+
+                if ($viewingUser !== null) {
+                    //Option 2: Status is from oneself
+                    $visibility->orWhere('users.id', $viewingUser->id);
+
+                    //Option 3: Status is from a followed BUT not unlisted or private or trusted users only
+                    $visibility->orWhere(function(EloquentBuilder $query) use ($viewingUser) {
+                        $query->whereIn('users.id', $viewingUser->follows()->select('follow_id'))
+                              ->whereNotIn('statuses.visibility', [
+                                  StatusVisibility::UNLISTED->value,
+                                  StatusVisibility::PRIVATE->value,
+                                  StatusVisibility::TRUSTED->value,
+                              ]);
+                    });
+
+                    //Option 4: Status is from a user who trusts the viewing user
+                    $visibility->orWhere(function(EloquentBuilder $query) use ($viewingUser) {
+                        $query->where('statuses.visibility', StatusVisibility::TRUSTED->value)
+                              ->whereExists(function(QueryBuilder $subQuery) use ($viewingUser) {
+                                  $subQuery->from('trusted_users')
+                                           ->whereColumn('trusted_users.user_id', 'statuses.user_id')
+                                           ->where('trusted_users.trusted_id', $viewingUser->id)
+                                           ->where(function(QueryBuilder $expireQuery) {
+                                               $expireQuery->whereNull('trusted_users.expires_at')
+                                                           ->orWhere('trusted_users.expires_at', '>', now());
+                                           });
+                              });
+                    });
+                }
+            });
         };
     }
 }
