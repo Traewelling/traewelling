@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up(): void {
+        if (Schema::connection(null)->getConnection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         foreach (Operator::all() as $operator) {
             // Migrate existing identifiers to the new OperatorIdentifier model
             if ($operator->hafas_id) {
