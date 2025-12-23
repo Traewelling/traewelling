@@ -83,7 +83,8 @@ class StatusHiddenUserController extends Controller
      *          required=true,
      *          @OA\JsonContent(
      *              required={"userId"},
-     *              @OA\Property(property="userId", type="integer", example=42, description="ID of user to hide this status from")
+     *              @OA\Property(property="userId", type="integer", example=42,
+     *                  description="ID of user to hide this status from")
      *          )
      *      ),
      *      @OA\Response(
