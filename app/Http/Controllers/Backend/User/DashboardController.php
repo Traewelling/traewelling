@@ -18,7 +18,7 @@ abstract class DashboardController extends Controller
     public static function getPrivateDashboard(User $user): Paginator {
         $followingIDs   = $user->follows->pluck('id');
         $followingIDs[] = $user->id;
-        $hiddenFilter = static function(EloquentBuilder $query) use ($user) {
+          $hiddenFilter = static function(EloquentBuilder $query) use ($user) {
             $query->whereNotExists(function(QueryBuilder $sub) use ($user) {
                 $sub->select(DB::raw(1))
                     ->from('status_hidden_users')
@@ -55,19 +55,24 @@ abstract class DashboardController extends Controller
                                                  StatusVisibility::AUTHENTICATED->value
                                              ])
                                                         ->orWhere(function(EloquentBuilder $trustedQuery) use ($user) {
-                                                            $trustedQuery->where('statuses.visibility', StatusVisibility::TRUSTED->value)
-                                                                         ->whereExists(function(QueryBuilder $sub) use ($user) {
+                                                            $trustedQuery->where('statuses.visibility', 
+                                                            StatusVisibility::TRUSTED->value)
+                                                                         ->whereExists(
+                                                                             function(QueryBuilder $sub) use ($user) {
                                                                              $sub->from('trusted_users')
-                                                                                 ->whereColumn('trusted_users.user_id', 'statuses.user_id')
-                                                                                 ->where('trusted_users.trusted_id', $user->id)
+                                                                                 ->whereColumn('trusted_users.user_id',
+                                                                                 'statuses.user_id')
+                                                                                 ->where('trusted_users.trusted_id',
+                                                                                 $user->id)
                                                                                  ->where(function($expireQuery) {
-                                                                                     $expireQuery->whereNull('trusted_users.expires_at')
+                                                                                     $expireQuery->whereNull(
+                                                                                         'trusted_users.expires_at')
                                                                                                  ->orWhere('trusted_users.expires_at', '>', now());
                                                                                  });
                                                                          });
                                                         });
                                          });
-                               })
+                         })
                                ->orWhere(function(EloquentBuilder $query) use ($user, $hiddenFilter) {
                                    $query->where('statuses.user_id', $user->id)
                                          ->where('train_checkins.departure', '<', Carbon::now()->addMinutes(20))
