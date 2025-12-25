@@ -24,14 +24,11 @@ function routeColorCss(hex?: string | null): string | null {
   return `#${clean}`;
 }
 
-function contrastTextColor(hex?: string | null): string {
-  const c = routeColorCss(hex);
-  if (!c) return "inherit";
-  const r = parseInt(c.slice(1, 3), 16);
-  const g = parseInt(c.slice(3, 5), 16);
-  const b = parseInt(c.slice(5, 7), 16);
-  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-  return yiq >= 180 ? "#000" : "#fff";
+function routeTextColorCss(hex?: string | null): string | null {
+  if (!hex) return null;
+  const clean = String(hex).replace(/[^0-9a-fA-F]/g, "");
+  if (clean.length !== 6) return null;
+  return `#${clean}`;
 }
 
 function formatTime(time: string | null): string {
@@ -73,7 +70,7 @@ const backgroundColor = computed<string | null>(() => {
 const textColor = computed<string | null>(() => {
   // Nur setzen, wenn tatsächlich ein valider Background vorliegt
   if (!backgroundColor.value) return null;
-  const c = contrastTextColor(rawApiHex.value);
+  const c = routeTextColorCss(rawApiHex.value);
   return c === "inherit" ? null : c;
 });
 
