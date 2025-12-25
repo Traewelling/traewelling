@@ -23,6 +23,11 @@ const props = defineProps({
     required: false,
     default: null
   },
+  textColor: {
+    type: String,
+    required: false,
+    default: null
+  },
   color: {
     type: String,
     required: false,
