@@ -54,6 +54,7 @@ class DepartureHydrator
                 "fahrtNr"     => $request->trip->number,
                 "name"        => $request->trip->lineName,
                 "color"       => $request->trip?->routeColor ?? null,
+                "textColor"   => $request->trip?->routeTextColor ?? null,
                 "public"      => true,
                 "adminCode"   => "80____",
                 "productName" => $request->trip->lineName, //TODO
