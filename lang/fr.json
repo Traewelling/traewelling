@@ -879,5 +879,22 @@
     "errors.404.lead": "Ce train ne circule plus ici, le contenu semble avoir été supprimé de la fiche horaire.",
     "errors.actions.home": "Retour à l'accueil",
     "errors.403.alt_text": "Une gare dans un épais brouillard. Au loin, on aperçoit plusieurs signaux fermés.",
-    "errors.404.alt_text": "Image d'une ancienne voie ferrée dans une forêt verdoyante. Il y a de la mousse sur les traverses et des buissons poussent sur les rails."
+    "errors.404.alt_text": "Image d'une ancienne voie ferrée dans une forêt verdoyante. Il y a de la mousse sur les traverses et des buissons poussent sur les rails.",
+    "user.registration-disabled": "La création de nouveaux comptes est actuellement désactivée.",
+    "trip_creation.csv_import.title": "Importation CSV des points d'arrêt",
+    "trip_creation.csv_import.subtitle": "Importation de l'origine, des points d'arrêt intermédiaires et de la destination. La première ligne correspond à l'origine, la dernière ligne à la destination.",
+    "trip_creation.csv_import.button": "Importation CSV",
+    "trip_creation.csv_import.help.example_title": "Exemple (sans en-tête) :",
+    "trip_creation.csv_import.help.columns": "Colonnes : ID du point d'arrêt TRWL, arrivée, départ.",
+    "trip_creation.csv_import.help.missing_time_rule": "Chaque ligne doit comporter au moins l'arrivée ou le départ. Si l'un des deux manque, l'autre est utilisé.",
+    "trip_creation.csv_import.help.duplicates_ok": "Les doublons sont autorisés (avec des horaires différents).",
+    "trip_creation.csv_import.help.overwrites_all": "Avertissement : remplace les origines, points d'arrêt et destinations existants.",
+    "trip_creation.csv_import.help.limit": "Maximum :max points d'arrêt.",
+    "trip_creation.csv_import.action.import": "Importation",
+    "trip_creation.csv_import.action.cancel": "Annuler",
+    "trip_creation.csv_import.done": "Importation réussie.",
+    "trip_creation.csv_import.errors.min_two_rows": "Au moins deux lignes sont requises (origine et destination).",
+    "trip_creation.csv_import.errors.too_many_rows": "Trop de lignes. Maximum : max autorisées.",
+    "trip_creation.csv_import.errors.bad_row": "rows: :rows invalides",
+    "trip_creation.csv_import.errors.station_not_found": "Aucune station n'a pu être identifiée."
 }
