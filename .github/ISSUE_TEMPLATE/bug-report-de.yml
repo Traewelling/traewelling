@@ -1,5 +1,6 @@
 name: "🇩🇪 Softwarefehler auf Deutsch melden"
 description: "Melde einen Fehler oder ein unerwartetes Verhalten in der Software Träwelling (Software-Bug)"
+type: "Bug"
 body:
   - type: markdown
     attributes:
