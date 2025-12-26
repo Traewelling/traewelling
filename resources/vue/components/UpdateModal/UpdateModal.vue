@@ -240,12 +240,11 @@ defineExpose({show});
             ref="eventsDropdown"
             :pre-selected-event="status.event"
             @select-event="selectEvent"
-            class="btn btn-outline-primary"
+            class="btn btn-outline-primary me-2"
         />
+        <!-- Hidden Users Section -->
+        <HiddenUsersSelector :status-id="status.id" class="d-inline-block" />
       </div>
-
-      <!-- Hidden Users Section -->
-      <HiddenUsersSelector :status-id="status.id" />
     </template>
 
     <template #footer>
