@@ -55,6 +55,16 @@ abstract class TrainCheckinController extends Controller
                 event:      $dto->event
             );
 
+            // Add hidden users if specified
+            if (!empty($dto->hiddenUserIds)) {
+                foreach ($dto->hiddenUserIds as $userId) {
+                    \App\Models\StatusHiddenUser::create([
+                        'status_id' => $status->id,
+                        'user_id'   => $userId,
+                    ]);
+                }
+            }
+
             $checkinResponse = self::createCheckin(
                 status:      $status,
                 trip:        $dto->trip,
