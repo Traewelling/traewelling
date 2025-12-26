@@ -18,7 +18,8 @@ class CheckinTest extends ApiTestCase
     public function testOauthClientIdIsSavedOnApiCheckins(): void {
         $user  = User::factory()->create();
         $token = $user->createToken('token', array_keys(AuthServiceProvider::$scopes));
-        $trip  = Trip::factory()->create();
+        $client = \App\Models\Client::factory()->create(['id' => 1]);
+        $trip   = Trip::factory()->create(['client_id' => $client->id]);
 
         $response = $this->postJson(
             uri:     '/api/v1/trains/checkin',
