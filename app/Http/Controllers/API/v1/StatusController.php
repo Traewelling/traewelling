@@ -213,13 +213,73 @@ class StatusController extends Controller
     }
 
     /**
-     * Experimental - do not add to docs now.
+     * @OA\Get(
+     *      path="/status",
+     *      operationId="listStatuses",
+     *      tags={"Status"},
+     *      summary="[Auth optional] List and filter statuses",
+     *      description="Returns paginated list of statuses, filtered by given parameters",
+     *      @OA\Parameter(
+     *          name="body",
+     *          in="query",
+     *          description="Filter by text in status body",
+     *          example="Having a great trip!",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Parameter(
+     *          name="user_id",
+     *          in="query",
+     *          description="Filter by user ID",
+     *          example=42,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Parameter(
+     *          name="origin_text",
+     *          in="query",
+     *          description="Filter by origin station name",
+     *          example="Central Station",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Parameter(
+     *          name="origin_id",
+     *          in="query",
+     *          description="Filter by origin station ID",
+     *          example=5,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *      @OA\Parameter(
+     *          name="destination_text",
+     *          in="query",
+     *          description="Filter by destination station name",
+     *          example="Main Square",
+     *          @OA\Schema(type="string")
+     *      ),
+     *      @OA\Parameter(
+     *          name="destination_id",
+     *          in="query",
+     *          description="Filter by destination station ID",
+     *          example=10,
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *     )
+     *  )
      *
-     * Used in Lokbuch for testing.
+     *
      */
     public function list(Request $request): AnonymousResourceCollection {
         $validated = $request->validate([
-                                            'body' => ['nullable', 'string', 'max:32'],
+                                            // generic filters
+                                            'body'             => ['nullable', 'string', 'max:32'],
+                                            'user_id'          => ['nullable', 'integer', 'exists:users,id'],
+
+                                            // Filters for origin/destination
+                                            'origin_text'      => ['nullable', 'string', 'max:64'],
+                                            'origin_id'        => ['nullable', 'integer', 'exists:train_stations,id'],
+                                            'destination_text' => ['nullable', 'string', 'max:64'],
+                                            'destination_id'   => ['nullable', 'integer', 'exists:train_stations,id'],
                                         ]);
 
         $user  = auth()->user();
@@ -231,6 +291,25 @@ class StatusController extends Controller
 
         $query->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
               ->join('users', 'statuses.user_id', '=', 'users.id')
+              ->join('train_stopovers as origin_stopover', 'train_checkins.origin_stopover_id', '=', 'origin_stopover.id')
+              ->join('train_stations as origin_station', 'origin_stopover.train_station_id', '=', 'origin_station.id')
+              ->join('train_stopovers as destination_stopover', 'train_checkins.destination_stopover_id', '=', 'destination_stopover.id')
+              ->join('train_stations as destination_station', 'destination_stopover.train_station_id', '=', 'destination_station.id')
+              ->when(isset($validated['origin_text']), function($q) use ($validated) {
+                  $q->where('origin_station.name', 'like', '%' . $validated['origin_text'] . '%');
+              })
+              ->when(isset($validated['origin_id']), function($q) use ($validated) {
+                  $q->where('origin_station.id', $validated['origin_id']);
+              })
+              ->when(isset($validated['destination_text']), function($q) use ($validated) {
+                  $q->where('destination_station.name', 'like', '%' . $validated['destination_text'] . '%');
+              })
+              ->when(isset($validated['destination_id']), function($q) use ($validated) {
+                  $q->where('destination_station.id', $validated['destination_id']);
+              })
+              ->when(isset($validated['user_id']), function($q) use ($validated) {
+                  $q->where('users.id', $validated['user_id']);
+              })
               ->where(\App\Http\Controllers\Backend\Transport\StatusController::filterStatusVisibility($user))
               ->where('train_checkins.departure', '<', now()->addMinutes(20))
               ->whereNotIn('statuses.user_id', $user->mutedUsers()->select('muted_id'))
