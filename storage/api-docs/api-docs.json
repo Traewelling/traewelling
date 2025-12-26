@@ -5845,6 +5845,12 @@
                         "example": "FFEE00",
                         "nullable": true
                     },
+                    "routeTextColor": {
+                        "description": "Hex color code of the route text, if available",
+                        "type": "string",
+                        "example": "FFFFFF",
+                        "nullable": true
+                    },
                     "journeyNumber": {
                         "type": "integer",
                         "example": 85639

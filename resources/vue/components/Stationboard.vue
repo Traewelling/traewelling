@@ -46,14 +46,11 @@ export default {
       if (clean.length !== 6) return null;
       return `#${clean}`;
     },
-    contrastTextColor(hex) {
-      const c = this.routeColorCss(hex);
-      if (!c) return null;
-      const r = parseInt(c.slice(1, 3), 16);
-      const g = parseInt(c.slice(3, 5), 16);
-      const b = parseInt(c.slice(5, 7), 16);
-      const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-      return yiq >= 180 ? "#000" : "#fff";
+    routeTextColorCss(hex) {
+      if (!hex) return null;
+      const clean = String(hex).replace(/[^0-9a-fA-F]/g, "");
+      if (clean.length !== 6) return null;
+      return `#${clean}`;
     },
 
     showModal(selectedItem) {
@@ -251,7 +248,7 @@ export default {
     selectedLineText() {
       if (!this.selectedLineBackground) return null;
       const raw = this.selectedTrain?.trip?.color ?? this.selectedTrain?.line?.color ?? null;
-      return this.contrastTextColor(raw);
+      return this.routeTextColorCss(raw);
     },
     removedLicensesCount() {
       return Array.isArray(this.removedLicenses) ? this.removedLicenses.length : 0;

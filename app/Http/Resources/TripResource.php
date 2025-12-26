@@ -37,17 +37,18 @@ class TripResource extends JsonResource
     public function toArray($request): array {
         /** @var Trip $this */
         return [
-            'id'            => $this->id,
-            'category'      => $this->category->value,
-            'mode'          => $this->mode ? $this->mode->value : null,
-            'number'        => $this->number,
-            'lineName'      => $this->linename,
-            'routeColor'    => $this->route_color,
-            'journeyNumber' => $this->journey_number,
-            'origin'        => new StationResource($this->originStation),
-            'destination'   => new StationResource($this->destinationStation),
-            'stopovers'     => StopoverResource::collection($this->stopovers),
-            'dataSource'    => $this->motisSourceLicense ? new DataSourceResource($this->motisSourceLicense) : null
+            'id'                => $this->id,
+            'category'          => $this->category->value,
+            'mode'              => $this->mode ? $this->mode->value : null,
+            'number'            => $this->number,
+            'lineName'          => $this->linename,
+            'routeColor'        => $this->route_color,
+            'routeTextColor'    => $this->route_text_color,
+            'journeyNumber'     => $this->journey_number,
+            'origin'            => new StationResource($this->originStation),
+            'destination'       => new StationResource($this->destinationStation),
+            'stopovers'         => StopoverResource::collection($this->stopovers),
+            'dataSource'        => $this->motisSourceLicense ? new DataSourceResource($this->motisSourceLicense) : null
         ];
     }
 }
