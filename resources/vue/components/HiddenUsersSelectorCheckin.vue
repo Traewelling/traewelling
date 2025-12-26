@@ -1,43 +1,18 @@
 <script setup lang="ts">
-import {ref, onMounted, onUnmounted, PropType} from "vue";
+import {ref, onMounted, onUnmounted} from "vue";
 import {trans} from "laravel-vue-i18n";
-import {Api, UserResource} from "../../types/Api.gen";
-
-const props = defineProps({
-  statusId: {
-    type: Number,
-    required: true
-  }
-});
+import {UserResource} from "../../types/Api.gen";
 
 const emit = defineEmits<{
-  (e: "updated"): void
+  (e: "update-hidden-users", userIds: number[]): void
 }>();
 
-const api = new Api({baseUrl: window.location.origin + '/api/v1'});
 const hiddenUsers = ref<UserResource[]>([]);
 const searchQuery = ref('');
 const searchResults = ref<UserResource[]>([]);
-const loading = ref(false);
 const searching = ref(false);
 const expanded = ref(false);
 const sectionRef = ref<HTMLElement | null>(null);
-
-async function fetchHiddenUsers() {
-  loading.value = true;
-  try {
-    const response = await fetch(`/api/v1/status/${props.statusId}/hidden-users`, {
-      credentials: 'same-origin',
-      headers: {'Accept': 'application/json'}
-    });
-    const data = await response.json();
-    hiddenUsers.value = data.data || [];
-  } catch (error) {
-    console.error('Error fetching hidden users:', error);
-  } finally {
-    loading.value = false;
-  }
-}
 
 async function searchUsers() {
   if (searchQuery.value.length < 2) {
@@ -63,44 +38,26 @@ async function searchUsers() {
   }
 }
 
-async function addHiddenUser(user: UserResource) {
-  try {
-    const response = await fetch(`/api/v1/status/${props.statusId}/hidden-users`, {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({userId: user.id})
-    });
-
-    if (response.ok) {
-      hiddenUsers.value.push(user);
-      searchResults.value = searchResults.value.filter(u => u.id !== user.id);
-      searchQuery.value = '';
-      emit('updated');
-    }
-  } catch (error) {
-    console.error('Error adding hidden user:', error);
+function addHiddenUser(user: UserResource, event?: MouseEvent) {
+  if (event) {
+    event.stopPropagation();
   }
+  hiddenUsers.value.push(user);
+  searchResults.value = searchResults.value.filter(u => u.id !== user.id);
+  searchQuery.value = '';
+  emitUpdate();
 }
 
-async function removeHiddenUser(user: UserResource) {
-  try {
-    const response = await fetch(`/api/v1/status/${props.statusId}/hidden-users/${user.id}`, {
-      method: 'DELETE',
-      credentials: 'same-origin',
-      headers: {'Accept': 'application/json'}
-    });
-
-    if (response.ok) {
-      hiddenUsers.value = hiddenUsers.value.filter(u => u.id !== user.id);
-      emit('updated');
-    }
-  } catch (error) {
-    console.error('Error removing hidden user:', error);
+function removeHiddenUser(user: UserResource, event?: MouseEvent) {
+  if (event) {
+    event.stopPropagation();
   }
+  hiddenUsers.value = hiddenUsers.value.filter(u => u.id !== user.id);
+  emitUpdate();
+}
+
+function emitUpdate() {
+  emit('update-hidden-users', hiddenUsers.value.map(u => u.id!).filter((id): id is number => id !== undefined));
 }
 
 function toggleExpanded(event: MouseEvent) {
@@ -109,13 +66,12 @@ function toggleExpanded(event: MouseEvent) {
   // Close all other Bootstrap dropdowns
   const openDropdowns = document.querySelectorAll('.dropdown-menu.show');
   openDropdowns.forEach(dropdown => {
-    dropdown.classList.remove('show');
+    if (!sectionRef.value?.contains(dropdown)) {
+      dropdown.classList.remove('show');
+    }
   });
   
   expanded.value = !expanded.value;
-  if (expanded.value && hiddenUsers.value.length === 0) {
-    fetchHiddenUsers();
-  }
 }
 
 // Close dropdown when clicking outside
@@ -134,10 +90,6 @@ function onSearchInput() {
 }
 
 onMounted(() => {
-  // Fetch hidden users on mount to show the badge count immediately
-  fetchHiddenUsers();
-  
-  // Add event listener after a small delay to prevent immediate closing
   setTimeout(() => {
     document.addEventListener('click', handleClickOutside, false);
   }, 0);
@@ -152,17 +104,16 @@ onUnmounted(() => {
   <div ref="sectionRef" class="hidden-users-section col btn-group">
     <button
         type="button"
-        class="btn btn-outline-primary dropdown-toggle"
+        class="btn btn-sm btn-link px-2 dropdown-toggle"
         @click="toggleExpanded"
-        :class="{ 'active': hiddenUsers.length > 0 }"
-        style="padding-left: 0.57rem; padding-right: 0.57rem;"
+        :class="{ 'active': hiddenUsers.length > 0, 'show': expanded }"
     >
       <i class="fas fa-eye-slash"></i>
       <span v-if="hiddenUsers.length > 0" class="badge bg-secondary ms-1 position-absolute top-0 start-100 translate-middle" style="font-size: 0.6rem;">{{ hiddenUsers.length }}</span>
     </button>
 
-    <div v-if="expanded" class="dropdown-menu show mt-2 p-2 position-absolute start-0"
-         style="z-index: 1000; min-width: 350px; max-width: 400px;">
+    <div v-if="expanded" class="dropdown-menu show p-2 position-absolute start-0"
+         style="z-index: 1000; min-width: 350px; max-width: 400px; top: calc(100% + 2px);">
       <small class="text-muted d-block mb-2">
         {{ trans('status.hidden-users.description') }}
       </small>
@@ -203,7 +154,7 @@ onUnmounted(() => {
           <button
               type="button"
               class="btn btn-sm btn-outline-danger"
-              @click="addHiddenUser(user)"
+              @click="addHiddenUser(user, $event)"
               :title="trans('status.hidden-users.add')"
           >
             <i class="fa fa-user-slash"></i>
@@ -211,13 +162,8 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- Loading State -->
-      <div v-if="loading" class="text-center py-2">
-        <i class="fa fa-spinner fa-spin text-body"></i>
-      </div>
-
       <!-- Hidden Users List -->
-      <div v-else-if="hiddenUsers.length > 0" class="hidden-users-list">
+      <div v-if="hiddenUsers.length > 0" class="hidden-users-list">
         <div
             v-for="user in hiddenUsers"
             :key="user.id"
@@ -237,7 +183,7 @@ onUnmounted(() => {
           <button
               type="button"
               class="btn btn-sm btn-outline-secondary"
-              @click="removeHiddenUser(user)"
+              @click="removeHiddenUser(user, $event)"
               :title="trans('status.hidden-users.remove')"
           >
             <i class="fa fa-times"></i>
@@ -246,7 +192,7 @@ onUnmounted(() => {
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="!loading && searchQuery.length < 2" class="text-muted text-center py-2">
+      <div v-else-if="searchQuery.length < 2" class="text-muted text-center py-2">
         <small>{{ trans('status.hidden-users.empty') }}</small>
       </div>
     </div>
@@ -260,6 +206,11 @@ onUnmounted(() => {
 
 .hidden-users-section button {
   position: relative;
+}
+
+.hidden-users-section button.show:hover {
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .dropdown-menu {
