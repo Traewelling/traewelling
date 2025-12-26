@@ -27,6 +27,7 @@ class CheckInRequestDto
     public bool             $forceFlag;
     public bool             $postOnMastodonFlag;
     public bool             $chainFlag;
+    public array            $hiddenUserIds;
 
     public function __construct() {
         $this->travelReason       = Business::PRIVATE;
@@ -36,6 +37,7 @@ class CheckInRequestDto
         $this->forceFlag          = false;
         $this->postOnMastodonFlag = false;
         $this->chainFlag          = false;
+        $this->hiddenUserIds      = [];
     }
 
     public function setUser(Authenticatable $user): CheckInRequestDto {
@@ -100,6 +102,11 @@ class CheckInRequestDto
 
     public function setChainFlag(bool $chainFlag): CheckInRequestDto {
         $this->chainFlag = $chainFlag;
+        return $this;
+    }
+
+    public function setHiddenUserIds(array $hiddenUserIds): CheckInRequestDto {
+        $this->hiddenUserIds = $hiddenUserIds;
         return $this;
     }
 }
