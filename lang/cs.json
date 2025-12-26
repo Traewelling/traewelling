@@ -896,5 +896,6 @@
     "trip_creation.csv_import.errors.bad_row": "Neplatné řádky: :rows",
     "trip_creation.csv_import.errors.station_not_found": "Žádnou stanici/zastávku nebylo možné vyřešit.",
     "trip_creation.csv_import.errors.some_stations_failed": ":count stanici(e) se nepodařilo rozpoznat.",
-    "trip_creation.csv_import.help.station_list_link": "Zobrazit mapu se stanicemi a jejich ID"
+    "trip_creation.csv_import.help.station_list_link": "Zobrazit mapu se stanicemi a jejich ID",
+    "user.registration-disabled": "Registrace nových účtů je momentálně zakázána."
 }
