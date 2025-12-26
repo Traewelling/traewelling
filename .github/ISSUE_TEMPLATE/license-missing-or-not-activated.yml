@@ -1,5 +1,7 @@
 name: "🔐 Lizenz fehlt / nicht aktiviert - License missing / not activated"
 description: "Melde eine fehlende oder in Träwelling nicht aktivierte Datenlizenz - Report a missing or not yet activated data license"
+labels: ["📜 license"]
+type: "Task"
 body:
   - type: markdown
     attributes:
