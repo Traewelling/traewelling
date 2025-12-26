@@ -1,5 +1,6 @@
 name: "🇬🇧 Report an Software-Issue in English"
 description: "Report a bug or unexpected behavior in the Traewelling software (software bug)"
+type: "Bug"
 body:
   - type: markdown
     attributes:

@@ -11,6 +11,7 @@ readonly class BahnTrip
     public string         $direction;
     public string         $lineName;
     public ?string        $routeColor;
+    public ?string        $routeTextColor;
     public string         $number;
     public string         $category;
     public ?MotisCategory $mode;
@@ -26,16 +27,18 @@ readonly class BahnTrip
         string         $journeyNumber,
         ?Operator      $operator = null,
         ?string        $routeColor = null,
+        ?string        $routeTextColor = null,
         ?MotisCategory $mode = null
     ) {
-        $this->tripId        = $tripId;
-        $this->direction     = $direction;
-        $this->lineName      = $lineName;
-        $this->number        = $number;
-        $this->category      = $category;
-        $this->journeyNumber = $journeyNumber;
-        $this->operator      = $operator;
-        $this->routeColor    = $routeColor;
-        $this->mode          = $mode;
+        $this->tripId            = $tripId;
+        $this->direction         = $direction;
+        $this->lineName          = $lineName;
+        $this->number            = $number;
+        $this->category          = $category;
+        $this->journeyNumber     = $journeyNumber;
+        $this->operator          = $operator;
+        $this->routeColor        = $routeColor;
+        $this->routeTextColor    = $routeTextColor;
+        $this->mode              = $mode;
     }
 }

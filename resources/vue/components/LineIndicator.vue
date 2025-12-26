@@ -23,6 +23,11 @@ const props = defineProps({
     required: false,
     default: null
   },
+  textColor: {
+    type: String,
+    required: false,
+    default: null
+  },
   color: {
     type: String,
     required: false,
@@ -163,7 +168,7 @@ const cssVars = computed((): string => {
 
 .line-indicator {
   background-color: var(--accent);
-  color: var(--contrast);
+  textColor: var(--contrast);
   font-size: .75rem;
   min-width: 1.5rem;
 }
