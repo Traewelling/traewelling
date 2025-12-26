@@ -393,22 +393,30 @@ class TransportController extends Controller
 
         $withUsers = null;
         $validated = $request->validate([
-                                            'body'        => ['nullable', 'max:280'],
-                                            'business'    => ['nullable', new Enum(Business::class)],
-                                            'visibility'  => ['nullable', new Enum(StatusVisibility::class)],
-                                            'eventId'     => ['nullable', 'integer', 'exists:events,id'],
-                                            'toot'        => ['nullable', 'boolean'],
-                                            'chainPost'   => ['nullable', 'boolean'],
-                                            'ibnr'        => ['nullable', 'boolean'],
-                                            'tripId'      => ['required'],
-                                            'lineName'    => ['required'],
-                                            'start'       => ['required', 'numeric'],
-                                            'destination' => ['required', 'numeric'],
-                                            'departure'   => ['required', 'date'],
-                                            'arrival'     => ['required', 'date'],
-                                            'force'       => ['nullable', 'boolean'],
-                                            'with'        => ['nullable', 'array', 'max:10'],
+                                            'body'          => ['nullable', 'max:280'],
+                                            'business'      => ['nullable', new Enum(Business::class)],
+                                            'visibility'    => ['nullable', new Enum(StatusVisibility::class)],
+                                            'eventId'       => ['nullable', 'integer', 'exists:events,id'],
+                                            'toot'          => ['nullable', 'boolean'],
+                                            'chainPost'     => ['nullable', 'boolean'],
+                                            'ibnr'          => ['nullable', 'boolean'],
+                                            'tripId'        => ['required'],
+                                            'lineName'      => ['required'],
+                                            'start'         => ['required', 'numeric'],
+                                            'destination'   => ['required', 'numeric'],
+                                            'departure'     => ['required', 'date'],
+                                            'arrival'       => ['required', 'date'],
+                                            'force'         => ['nullable', 'boolean'],
+                                            'with'          => ['nullable', 'array', 'max:10'],
+                                            'hiddenUserIds' => ['nullable', 'array'],
+                                            'hiddenUserIds.*' => ['integer', 'exists:users,id'],
                                         ]);
+
+        // Validate that user is not trying to hide themselves
+        if (isset($validated['hiddenUserIds']) && in_array(Auth::id(), $validated['hiddenUserIds'])) {
+            return $this->sendError('You cannot hide yourself from your own status.', 400);
+        }
+
         if (isset($validated['with'])) {
             $withUsers      = User::whereIn('id', $validated['with'])->get();
             $forbiddenUsers = collect();
