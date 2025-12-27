@@ -2448,6 +2448,92 @@
                 ]
             }
         },
+        "/status": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "[Auth optional] List and filter statuses",
+                "description": "Returns paginated list of statuses, filtered by given parameters",
+                "operationId": "listStatuses",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "query",
+                        "description": "Filter by text in status body",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Having a great trip!"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "Filter by user ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 42
+                    },
+                    {
+                        "name": "origin_text",
+                        "in": "query",
+                        "description": "Filter by origin station name",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Central Station"
+                    },
+                    {
+                        "name": "origin_id",
+                        "in": "query",
+                        "description": "Filter by origin station ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    },
+                    {
+                        "name": "destination_text",
+                        "in": "query",
+                        "description": "Filter by destination station name",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Main Square"
+                    },
+                    {
+                        "name": "destination_id",
+                        "in": "query",
+                        "description": "Filter by destination station ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 10
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "list of matching statuses",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/StatusResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/status/{id}": {
             "get": {
                 "tags": [
