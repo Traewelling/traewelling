@@ -11,9 +11,10 @@ import {checkinSuccessStore} from "../../stores/checkinSuccess";
 import {useUserStore} from "../../stores/user";
 import BusinessDropdown from "../BusinessDropdown.vue";
 import VisibilityDropdown from "../VisibilityDropdown.vue";
+import HiddenUsersSelectorCheckin from "../HiddenUsersSelectorCheckin.vue";
 
 export default {
-  components: {VisibilityDropdown, BusinessDropdown, TagList, EventDropdown, FriendDropdown},
+  components: {VisibilityDropdown, BusinessDropdown, TagList, EventDropdown, FriendDropdown, HiddenUsersSelectorCheckin},
   setup() {
     const userStore = useUserStore();
     userStore.fetchSettings();
@@ -52,7 +53,8 @@ export default {
       notyf: new Notyf({position: {x: "right", y: "bottom"}}),
       collision: false,
       selectedEvent: null,
-      selectedFriends: []
+      selectedFriends: [],
+      hiddenUserIds: []
     };
   },
   methods: {
@@ -74,7 +76,8 @@ export default {
         arrival: DateTime.fromISO(this.selectedDestination.arrivalPlanned).setZone("UTC").toISO(),
         force: this.collision,
         eventId: this.selectedEvent ? this.selectedEvent.id : null,
-        with: this.selectedFriends.map((friend) => friend.user.id)
+        with: this.selectedFriends.map((friend) => friend.user.id),
+        hiddenUserIds: this.hiddenUserIds
       };
       fetch("/api/v1/trains/checkin", {
         method: "POST",
@@ -121,6 +124,9 @@ export default {
     },
     selectFriends(friends) {
       this.selectedFriends = friends;
+    },
+    updateHiddenUsers(userIds) {
+      this.hiddenUserIds = userIds;
     }
   },
   computed: {
@@ -202,6 +208,7 @@ export default {
       </div>
       <EventDropdown @select-event="selectEvent"/>
       <FriendDropdown @select-user="selectFriends"/>
+      <HiddenUsersSelectorCheckin @update-hidden-users="updateHiddenUsers"/>
     </div>
     <button class="col-auto float-end ms-auto btn btn-sm btn-outline-primary" @click="checkIn">
       <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
