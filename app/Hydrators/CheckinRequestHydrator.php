@@ -102,6 +102,7 @@ class CheckinRequestHydrator
                   ->setEvent($event)
                   ->setForceFlag(!empty($this->validated['force']))
                   ->setPostOnMastodonFlag(!empty($this->validated['toot']))
-                  ->setChainFlag(!empty($this->validated['chainPost']));
+                  ->setChainFlag(!empty($this->validated['chainPost']))
+                  ->setHiddenUserIds($this->validated['hiddenUserIds'] ?? []);
     }
 }
