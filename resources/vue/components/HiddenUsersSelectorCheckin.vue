@@ -106,7 +106,7 @@ onUnmounted(() => {
         type="button"
         class="btn btn-sm btn-link px-2 dropdown-toggle"
         @click="toggleExpanded"
-        :class="{ 'active': hiddenUsers.length > 0, 'show': expanded }"
+        :class="{ 'show': expanded }"
     >
       <i class="fas fa-eye-slash"></i>
       <span v-if="hiddenUsers.length > 0" class="badge bg-secondary ms-1 position-absolute top-0 start-100 translate-middle" style="font-size: 0.6rem;">{{ hiddenUsers.length }}</span>
@@ -204,8 +204,9 @@ onUnmounted(() => {
   position: relative;
 }
 
-.hidden-users-section button {
+.hidden-users-section > button.dropdown-toggle {
   position: relative;
+  border-radius: 0;
 }
 
 .hidden-users-section button.show:hover {
