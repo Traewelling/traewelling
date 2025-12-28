@@ -2,8 +2,6 @@
 
 namespace App\Virtual\Models;
 
-use DateTime;
-
 /**
  * @OA\Schema(
  *     title="Points",
@@ -42,16 +40,15 @@ class Points
      * @OA\Property(
      *     title="additional",
      *     description="extra points that can be given",
+     *     type="array",
      *     @OA\Items(
-     *
-     *     example={"identifier": "extrapoints", "points": 4, "divisibile": false}
+     *          example={"identifier": "extrapoints", "points": 4, "divisibile": false}
      *     )
      * )
      *
      * @var array
      **/
     private $additional;
-
 
 
 }
