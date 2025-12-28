@@ -58,11 +58,14 @@ abstract class DashboardController extends Controller
                                                             $trustedQuery->where('statuses.visibility', 
                                                             StatusVisibility::TRUSTED->value)
                                                                          ->whereExists(
-                                                                                function(QueryBuilder $sub) use ($user) {
+                                                                                function(
+                                                                                        QueryBuilder $sub) use ($user) {
                                                                                     $sub->from('trusted_users')
-                                                                                    ->whereColumn('trusted_users.user_id',
+                                                                                    ->whereColumn(
+                                                                                        'trusted_users.user_id',
                                                                                     'statuses.user_id')
-                                                                                      ->where('trusted_users.trusted_id',
+                                                                                      ->where(
+                                                                                        'trusted_users.trusted_id',
                                                                                        $user->id)
                                                                                        ->where(function($expireQuery) {
                                                                                         $expireQuery->whereNull(
