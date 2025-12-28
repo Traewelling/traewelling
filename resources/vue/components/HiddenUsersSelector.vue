@@ -2,6 +2,9 @@
 import {ref, onMounted, onUnmounted, PropType} from "vue";
 import {trans} from "laravel-vue-i18n";
 import {Api, UserResource} from "../../types/Api.gen";
+import {useUserStore} from "../stores/user";
+
+const userStore = useUserStore();
 
 const props = defineProps({
   statusId: {
@@ -52,9 +55,12 @@ async function searchUsers() {
       headers: {'Accept': 'application/json'}
     });
     const data = await response.json();
-    // Filter out already hidden users
+    // Filter out already hidden users and the current user
     const hiddenIds = hiddenUsers.value.map(u => u.id);
-    searchResults.value = (data.data || []).filter((u: UserResource) => !hiddenIds.includes(u.id));
+    const currentUserId = userStore.user?.id;
+    searchResults.value = (data.data || []).filter((u: UserResource) => 
+      !hiddenIds.includes(u.id) && u.id !== currentUserId
+    );
   } catch (error) {
     console.error('Error searching users:', error);
     searchResults.value = [];
