@@ -27,7 +27,7 @@ class CheckInRequestDto
     public bool             $forceFlag;
     public bool             $postOnMastodonFlag;
     public bool             $chainFlag;
-    public array            $hiddenUserIds;
+    public array $hiddenUserIds;
 
     public function __construct() {
         $this->travelReason       = Business::PRIVATE;
