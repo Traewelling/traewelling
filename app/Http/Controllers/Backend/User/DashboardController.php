@@ -72,7 +72,7 @@ abstract class DashboardController extends Controller
                                                                                          'trusted_users.expires_at')
                                                                                                  ->orWhere('trusted_users.expires_at', '>', now());
                                                                                        });
-                                                                         });
+                                                                                });
                                                         });
                                          });
                          })
