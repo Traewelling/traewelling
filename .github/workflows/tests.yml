@@ -52,6 +52,9 @@ jobs:
           mkdir -p database
           touch database/database.sqlite
 
+      - name: Backup committed API docs for comparison
+        run: cp storage/api-docs/api-docs.json storage/api-docs/api-docs.json.backup
+
       - name: Generate API documentation
         env:
           DB_CONNECTION: sqlite
@@ -116,6 +119,3 @@ jobs:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
         run: php artisan test --parallel --coverage
-
-      - name: Backup current API docs to compare later
-        run: cp storage/api-docs/api-docs.json storage/api-docs/api-docs.json.backup
