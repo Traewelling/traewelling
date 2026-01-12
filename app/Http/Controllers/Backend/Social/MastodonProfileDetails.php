@@ -41,6 +41,7 @@ class MastodonProfileDetails
         $cacheKey = CacheKey::getMastodonProfileInformationKey($this->user);
 
         if (Cache::has($cacheKey)) {
+            Cache::forget(CacheKey::getMastodonProfileErrorKey($this->user));
             return Cache::get($cacheKey);
         }
         $data = $this->fetchProfileInformation();
@@ -113,7 +114,18 @@ class MastodonProfileDetails
                 )
             );
             $this->lastErrorWasTemporary = false;
-            $this->removeMastodonInformation();
+            Cache::increment(CacheKey::getMastodonProfileErrorKey($this->user));
+
+            $errorCount = Cache::get(CacheKey::getMastodonProfileErrorKey($this->user), 0);
+            if ($errorCount >= 48) { // e.g., 48 permanent errors ~ 2 days if checked every hour
+                Log::info(sprintf(
+                              "Mastodon error count for user#%d reached %d - removing mastodon information",
+                              $this->user->id,
+                              $errorCount
+                          ));
+
+                $this->removeMastodonInformation();
+            }
         } elseif (in_array($code, self::TEMPORARY_ERROR_CODES)) {
             // Temporary errors: timeouts, rate limits, server errors
             Log::info(

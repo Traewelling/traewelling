@@ -101,6 +101,10 @@ class CacheKey
         return sprintf("mastodon_%s", $user->id);
     }
 
+    public static function getMastodonProfileErrorKey(User $user): string {
+        return sprintf("mastodon_error_%s", $user->id);
+    }
+
     public static function getYearInReviewKey(User $user, int $year): string {
         return sprintf("year-in-review-%s-%s", $user->id, $year);
     }
