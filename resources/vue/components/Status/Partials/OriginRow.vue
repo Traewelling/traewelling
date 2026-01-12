@@ -104,15 +104,4 @@ watch(() => props.status, () => {
 </template>
 
 <style scoped>
-.line-badge {
-  display: inline-block;
-  padding: 0.05rem 0.35rem;
-  margin: 0 0.25rem 0 0.35rem;
-  border-radius: 0.35rem;
-  line-height: 1.1;
-  font-weight: 600;
-  font-size: 0.95em;
-  vertical-align: baseline;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06) inset;
-}
 </style>

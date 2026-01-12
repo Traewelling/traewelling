@@ -130,7 +130,7 @@ function normalizeHexColor(hex?: string | string): string | null {
 }
 
 const effectiveBackground = computed((): string => {
-  return normalizeHexColor(props.backgroundColor) ? normalizeHexColor(props.backgroundColor)! :  product.value.color;
+  return normalizeHexColor(props.backgroundColor) ? normalizeHexColor(props.backgroundColor)! : product.value.color;
 });
 const effectiveText = computed((): string => {
   return normalizeHexColor(props.color) && normalizeHexColor(props.backgroundColor) ? normalizeHexColor(props.color)! : product.value.text;
@@ -178,5 +178,19 @@ const cssVars = computed((): string => {
   justify-content: center;
   padding: 0 .375rem;
   height: 1.25rem;
+}
+
+.line-indicator.line-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.05rem 0.35rem;
+  margin: 0 0.25rem 0 0.35rem;
+  border-radius: 0.35rem;
+  line-height: 1.1;
+  font-weight: 600;
+  font-size: 0.95em;
+  vertical-align: baseline;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06) inset;
 }
 </style>
