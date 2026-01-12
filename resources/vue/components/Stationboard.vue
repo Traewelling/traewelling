@@ -41,12 +41,6 @@ export default {
     transChoice,
     getActiveLanguage,
     trans,
-    routeColorCss(hex) {
-      if (!hex) return null;
-      const clean = String(hex).replace(/[^0-9a-fA-F]/g, "");
-      if (clean.length !== 6) return null;
-      return `#${clean}`;
-    },
     showModal(selectedItem) {
       this.selectedDestination = null;
       this.selectedTrain = selectedItem;
@@ -224,10 +218,10 @@ export default {
     },
     selectedTrain(value) {
       if (value !== null) {
-        this.selectedTrainBackgroundColor = this.routeColorCss(this.selectedTrain?.line?.color || null);
+        this.selectedTrainBackgroundColor = this.selectedTrain?.line?.color || null;
 
         if (this.selectedTrainBackgroundColor) {
-          this.selectedTrainTextColor = this.routeColorCss(this.selectedTrain?.line?.textColor || null);
+          this.selectedTrainTextColor = this.selectedTrain?.line?.textColor || null;
         }
       }
     }
