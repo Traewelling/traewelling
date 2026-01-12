@@ -1,4 +1,4 @@
-name: PHPUnit
+name: Laravel Tests and API Documentation Validation
 
 on: [ push, pull_request ]
 
