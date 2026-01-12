@@ -34,6 +34,7 @@ class Stopover extends Model
     ];
     protected $casts    = [
         'id'                         => 'integer',
+        'trip_id'                    => 'string',
         'train_station_id'           => 'integer',
         'arrival_planned'            => UTCDateTime::class,
         'arrival_real'               => UTCDateTime::class,
@@ -43,9 +44,9 @@ class Stopover extends Model
         'departure_real'             => UTCDateTime::class,
         'departure_platform_planned' => 'string',
         'departure_platform_real'    => 'string',
-        'isArrivalDelayed'           => 'boolean',
-        'isDepartureDelayed'         => 'boolean',
         'cancelled'                  => 'boolean',
+        'route_segment_id'           => 'string',
+        'station_identifier_id'      => 'string',
     ];
 
     public function trip(): BelongsTo {

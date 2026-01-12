@@ -39,6 +39,7 @@ class Checkin extends Model
         'id'                      => 'integer',
         'status_id'               => 'integer',
         'user_id'                 => 'integer',
+        'trip_id'                 => 'string',
         'origin_stopover_id'      => 'integer',
         'destination_stopover_id' => 'integer',
         'distance'                => 'integer',

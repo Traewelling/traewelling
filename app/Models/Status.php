@@ -30,6 +30,7 @@ class Status extends Model
     protected              $appends      = ['favorited', 'statusInvisibleToMe', 'description'];
     protected              $casts        = [
         'id'               => 'integer',
+        'body'             => 'string',
         'user_id'          => 'integer',
         'business'         => Business::class,
         'visibility'       => StatusVisibility::class,
