@@ -62,15 +62,18 @@ class FollowTest extends ApiTestCase
     }
 
     public function testDestroyFollow(): void {
-        $user1      = User::factory()->create();
-        // ToDo: I wasn't able to move this to Passport::actingAs() -- the first response is always 409
-        $user1token = $user1->createToken('token', array_keys(AuthServiceProvider::$scopes))->accessToken;
-        $user2      = User::factory()->create();
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
         FollowController::createOrRequestFollow($user1, $user2);
 
-        $response = $this->delete(
-            uri:     strtr('/api/v1/user/:userId/follow', [':userId' => $user2->id]),
-            headers: ['Authorization' => 'Bearer ' . $user1token]
+        // Without this, $user1->follows won't contain the newly created follow...
+        $user1->load('follows');
+
+        // Authenticate with Passport
+        Passport::actingAs($user1, ['*']);
+
+        $response = $this->deleteJson(
+            uri: strtr('/api/v1/user/:userId/follow', [':userId' => $user2->id])
         );
         $response->assertOk();
 
@@ -79,9 +82,8 @@ class FollowTest extends ApiTestCase
             'follow_id' => $user2->id,
         ]);
 
-        $response = $this->delete(
-            uri:     strtr('/api/v1/user/:userId/follow', [':userId' => $user2->id]),
-            headers: ['Authorization' => 'Bearer ' . $user1token]
+        $response = $this->deleteJson(
+            uri: strtr('/api/v1/user/:userId/follow', [':userId' => $user2->id])
         );
         $response->assertStatus(409);
     }
