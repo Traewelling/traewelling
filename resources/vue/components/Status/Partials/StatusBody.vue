@@ -27,6 +27,26 @@ function escapeHtml(s: string): string {
       .replaceAll(/'/g, "&#039;");
 }
 
+/**
+ * Convert byte offset to character offset in a UTF-8 string.
+ * PHP stores mention positions as byte offsets (from preg_match_all),
+ * but JavaScript string operations work with character offsets.
+ */
+function byteOffsetToCharOffset(str: string, byteOffset: number): number {
+  const encoder = new TextEncoder();
+  let charIndex = 0;
+  let byteCount = 0;
+
+  while (charIndex < str.length && byteCount < byteOffset) {
+    const char = str[charIndex];
+    const encoded = encoder.encode(char);
+    byteCount += encoded.length;
+    charIndex++;
+  }
+
+  return charIndex;
+}
+
 function buildBodyWithMentions(): string {
   const body = props.status.body ?? "";
   const mentions = (props.status as any).bodyMentions ?? [];
@@ -39,17 +59,21 @@ function buildBodyWithMentions(): string {
   let cursor = 0;
 
   for (const m of sorted) {
-    const start = Number(m.position) || 0;
-    const len = Number(m.length) || 0;
-    const end = start + len;
+    // Convert byte offsets (from PHP) to character offsets (for JavaScript)
+    const byteStart = Number(m.position) || 0;
+    const byteLength = Number(m.length) || 0;
+    const byteEnd = byteStart + byteLength;
 
-    result += escapeHtml(body.slice(cursor, start));
-    const mentionText = body.slice(start, end);
+    const charStart = byteOffsetToCharOffset(body, byteStart);
+    const charEnd = byteOffsetToCharOffset(body, byteEnd);
+
+    result += escapeHtml(body.slice(cursor, charStart));
+    const mentionText = body.slice(charStart, charEnd);
     const username = m?.user?.username ?? mentionText.replace(/^@/, "");
     const url = `/@${encodeURIComponent(username)}`;
 
     result += `<a href="${url}" class="mention">${escapeHtml(mentionText)}</a>`;
-    cursor = end;
+    cursor = charEnd;
   }
 
   result += escapeHtml(body.slice(cursor));
