@@ -265,7 +265,7 @@ class LocationController
             $routeSegments++;
         }
 
-        if (empty($coordinates) || $routeSegments < 1) {
+        if (empty($coordinates)) {
             return null;
         }
 
