@@ -201,6 +201,159 @@ class WebhookStatusTest extends FeatureTestCase
         });
     }
 
+    public function testWebhookSendingOnStatusUpdateViaAPI() {
+        Bus::fake();
+
+        $user   = User::factory()->create();
+        $client = $this->createWebhookClient($user);
+        $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
+        $status = $this->createStatus($user);
+
+        $this->actAsApiUserWithAllScopes($user)
+             ->putJson("/api/v1/status/{$status->id}", [
+                 'body'       => 'Updated via API',
+                 'business'   => Business::BUSINESS->value,
+                 'visibility' => StatusVisibility::PRIVATE->value,
+             ])
+             ->assertSuccessful();
+
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
+            assertEquals(
+                WebhookEvent::CHECKIN_UPDATE->value,
+                $job->payload['event']
+            );
+            assertEquals($status->id, $job->payload['status']->id);
+            assertEquals('Updated via API', $job->payload['status']->body);
+            assertEquals(Business::BUSINESS, $job->payload['status']->business);
+            assertEquals(StatusVisibility::PRIVATE, $job->payload['status']->visibility);
+            return true;
+        });
+    }
+
+    public function testWebhookSendingOnTagCreation() {
+        Bus::fake();
+
+        $user   = User::factory()->create();
+        $client = $this->createWebhookClient($user);
+        $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
+        $status = $this->createStatus($user);
+
+        $this->actAsApiUserWithAllScopes($user)
+             ->postJson("/api/v1/status/{$status->id}/tags", [
+                 'key'        => 'trwl:seat',
+                 'value'      => '42',
+                 'visibility' => StatusVisibility::PUBLIC->value,
+             ])
+             ->assertSuccessful();
+
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
+            assertEquals(
+                WebhookEvent::CHECKIN_UPDATE->value,
+                $job->payload['event']
+            );
+            assertEquals($status->id, $job->payload['status']->id);
+            return true;
+        });
+    }
+
+    public function testWebhookSendingOnTagUpdate() {
+        Bus::fake();
+
+        $user   = User::factory()->create();
+        $client = $this->createWebhookClient($user);
+        $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
+        $status = $this->createStatus($user);
+
+        // Create a tag first
+        $this->actAsApiUserWithAllScopes($user)
+             ->postJson("/api/v1/status/{$status->id}/tags", [
+                 'key'        => 'trwl:seat',
+                 'value'      => '42',
+                 'visibility' => StatusVisibility::PUBLIC->value,
+             ])
+             ->assertSuccessful();
+
+        Bus::fake(); // Reset to only check the update
+
+        // Update the tag
+        $this->actAsApiUserWithAllScopes($user)
+             ->putJson("/api/v1/status/{$status->id}/tags/trwl:seat", [
+                 'value'      => '43',
+                 'visibility' => StatusVisibility::PRIVATE->value,
+             ])
+             ->assertSuccessful();
+
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
+            assertEquals(
+                WebhookEvent::CHECKIN_UPDATE->value,
+                $job->payload['event']
+            );
+            assertEquals($status->id, $job->payload['status']->id);
+            return true;
+        });
+    }
+
+    public function testWebhookSendingOnTagDeletion() {
+        Bus::fake();
+
+        $user   = User::factory()->create();
+        $client = $this->createWebhookClient($user);
+        $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
+        $status = $this->createStatus($user);
+
+        // Create a tag first
+        $this->actAsApiUserWithAllScopes($user)
+             ->postJson("/api/v1/status/{$status->id}/tags", [
+                 'key'        => 'trwl:seat',
+                 'value'      => '42',
+                 'visibility' => StatusVisibility::PUBLIC->value,
+             ])
+             ->assertSuccessful();
+
+        Bus::fake(); // Reset to only check the deletion
+
+        // Delete the tag
+        $this->actAsApiUserWithAllScopes($user)
+             ->deleteJson("/api/v1/status/{$status->id}/tags/trwl:seat")
+             ->assertSuccessful();
+
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
+            assertEquals(
+                WebhookEvent::CHECKIN_UPDATE->value,
+                $job->payload['event']
+            );
+            assertEquals($status->id, $job->payload['status']->id);
+            return true;
+        });
+    }
+
+    public function testWebhookSendingOnLikeRemoval() {
+        Bus::fake();
+
+        $user   = User::factory()->create();
+        $client = $this->createWebhookClient($user);
+        $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
+        $status = $this->createStatus($user);
+
+        // Create a like first
+        StatusController::createLike($user, $status);
+
+        Bus::fake(); // Reset to only check the unlike
+
+        // Remove the like
+        StatusController::destroyLike($user, $status->id);
+
+        Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
+            assertEquals(
+                WebhookEvent::CHECKIN_UPDATE->value,
+                $job->payload['event']
+            );
+            assertEquals($status->id, $job->payload['status']->id);
+            assertEquals(0, count($job->payload['status']->likes));
+            return true;
+        });
+    }
+
     protected function createStatus(User $user) {
         Http::fake([
                        '/locations*'                              => Http::response([self::FRANKFURT_HBF]),

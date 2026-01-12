@@ -200,7 +200,7 @@ class StatusController extends Controller
         }
         $like->delete();
 
-        StatusUpdateEvent::dispatch(Status::find($statusId)->first());
+        StatusUpdateEvent::dispatch(Status::find($statusId));
     }
 
     public static function usageByDay(Carbon $date): int {
