@@ -53,7 +53,6 @@ class StatusTest extends ApiTestCase
                                                    'displayName',
                                                    'username',
                                                    'profilePicture',
-                                                   'mastodonUrl',
                                                    'preventIndex',
                                                ],
                                                'train'       => [

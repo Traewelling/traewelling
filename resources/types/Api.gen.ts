@@ -521,8 +521,6 @@ export interface LightUserResource {
   username: string;
   /** @example "https://traewelling.de/@Gertrud123/picture" */
   profilePicture: string;
-  /** @example "https://traewelling.social/@Gertrud123" */
-  mastodonUrl: string;
   /** @example false */
   preventIndex: boolean;
 }
@@ -767,6 +765,11 @@ export interface TransportResource {
    * @example "FFEE00"
    */
   routeColor?: string | null;
+  /**
+   * Hex color code of the route text, if available
+   * @example "FFFFFF"
+   */
+  routeTextColor?: string | null;
   /** @example 85639 */
   journeyNumber: number;
   /**
@@ -2679,6 +2682,62 @@ export class Api<
         path: `/status/${id}/like`,
         method: "DELETE",
         secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Returns paginated list of statuses, filtered by given parameters
+     *
+     * @tags Status
+     * @name ListStatuses
+     * @summary [Auth optional] List and filter statuses
+     * @request GET:/status
+     */
+    listStatuses: (
+      query?: {
+        /**
+         * Filter by text in status body
+         * @example "Having a great trip!"
+         */
+        body?: string;
+        /**
+         * Filter by user ID
+         * @example 42
+         */
+        user_id?: number;
+        /**
+         * Filter by origin station name
+         * @example "Central Station"
+         */
+        origin_text?: string;
+        /**
+         * Filter by origin station ID
+         * @example 5
+         */
+        origin_id?: number;
+        /**
+         * Filter by destination station name
+         * @example "Main Square"
+         */
+        destination_text?: string;
+        /**
+         * Filter by destination station ID
+         * @example 10
+         */
+        destination_id?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: StatusResource[];
+        },
+        any
+      >({
+        path: `/status`,
+        method: "GET",
+        query: query,
         format: "json",
         ...params,
       }),
