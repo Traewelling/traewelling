@@ -4,7 +4,6 @@ import {useActiveCheckin} from "../stores/activeCheckin";
 import {NextStation} from "../helpers/NextStation";
 import {StopoverResource} from "../../types/Api.gen";
 import {DateTime} from "luxon";
-import LineIndicator from "./LineIndicator.vue";
 
 export default defineComponent({
   name: "ActiveStatusCard",
@@ -13,7 +12,6 @@ export default defineComponent({
 
     return {state};
   },
-  components: {LineIndicator},
   data() {
     return {
       progress: 0,

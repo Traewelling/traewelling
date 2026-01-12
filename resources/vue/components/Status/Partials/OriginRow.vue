@@ -38,12 +38,6 @@ function routeColorCss(hex?: string | null): string | null {
   return `#${clean}`;
 }
 
-function routeTextColorCss(hex?: string | null): string | null {
-  if (!hex) return null;
-  const clean = String(hex).replace(/[^0-9a-fA-F]/g, "");
-  if (clean.length !== 6) return null;
-  return `#${clean}`;
-}
 </script>
 
 <template>
@@ -72,8 +66,8 @@ function routeTextColorCss(hex?: string | null): string | null {
             :product-name="status.train.category"
                        :number="status.train.lineName"
                        :mode="status.train.mode"
-                       :color="routeTextColorCss(status.train.routeColor)"
-                       :background-color="status.train.routeColor"/>
+                       :color="routeColorCss(status.train.routeTextColor)"
+                       :background-color="routeColorCss(status.train.routeColor)"/>
 
         <small v-if="status.train.manualJourneyNumber" data-bs-toggle="tooltip"
                data-bs-placement="top" :title="trans('status.manual_journey_number')">

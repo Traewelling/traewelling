@@ -24,13 +24,6 @@ function routeColorCss(hex?: string | null): string | null {
   return `#${clean}`;
 }
 
-function routeTextColorCss(hex?: string | null): string | null {
-  if (!hex) return null;
-  const clean = String(hex).replace(/[^0-9a-fA-F]/g, "");
-  if (clean.length !== 6) return null;
-  return `#${clean}`;
-}
-
 function formatTime(time: string | null): string {
   if (!time) return '';
   return DateTime.fromISO(time).toFormat("HH:mm");
@@ -60,7 +53,11 @@ const delayClass = computed((): string => {
 });
 
 const rawApiHex = computed<string | null>(() => {
-  return (props.item as any)?.trip?.color ?? (props.item as any)?.line?.color ?? null;
+  return (props.item as any)?.line?.color || null;
+});
+
+const rawApiTextHex = computed<string | null>(() => {
+  return (props.item as any)?.line?.textColor || null;
 });
 
 const backgroundColor = computed<string | null>(() => {
@@ -70,7 +67,7 @@ const backgroundColor = computed<string | null>(() => {
 const textColor = computed<string | null>(() => {
   // Nur setzen, wenn tatsächlich ein valider Background vorliegt
   if (!backgroundColor.value) return null;
-  const c = routeTextColorCss(rawApiHex.value);
+  const c = routeColorCss(rawApiTextHex.value);
   return c === "inherit" ? null : c;
 });
 
