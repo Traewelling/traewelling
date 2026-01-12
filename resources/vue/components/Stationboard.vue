@@ -24,6 +24,8 @@ export default {
       fetchTime: null,
       show: false,
       selectedTrain: null,
+      selectedTrainBackgroundColor: null,
+      selectedTrainTextColor: null,
       selectedDestination: null,
       loading: false,
       stationName: null,
@@ -39,20 +41,6 @@ export default {
     transChoice,
     getActiveLanguage,
     trans,
-
-    routeColorCss(hex) {
-      if (!hex) return null;
-      const clean = String(hex).replace(/[^0-9a-fA-F]/g, "");
-      if (clean.length !== 6) return null;
-      return `#${clean}`;
-    },
-    routeTextColorCss(hex) {
-      if (!hex) return null;
-      const clean = String(hex).replace(/[^0-9a-fA-F]/g, "");
-      if (clean.length !== 6) return null;
-      return `#${clean}`;
-    },
-
     showModal(selectedItem) {
       this.selectedDestination = null;
       this.selectedTrain = selectedItem;
@@ -227,6 +215,15 @@ export default {
         params.set('destination', destination)
         this.pushHistory(params);
       }
+    },
+    selectedTrain(value) {
+      if (value !== null) {
+        this.selectedTrainBackgroundColor = this.selectedTrain?.line?.color || null;
+
+        if (this.selectedTrainBackgroundColor) {
+          this.selectedTrainTextColor = this.selectedTrain?.line?.textColor || null;
+        }
+      }
     }
   },
   computed: {
@@ -240,15 +237,6 @@ export default {
     },
     showCheckinInterface() {
       return !!this.selectedDestination;
-    },
-    selectedLineBackground() {
-      const raw = this.selectedTrain?.trip?.color ?? this.selectedTrain?.line?.color ?? null;
-      return this.routeColorCss(raw);
-    },
-    selectedLineText() {
-      if (!this.selectedLineBackground) return null;
-      const raw = this.selectedTrain?.trip?.color ?? this.selectedTrain?.line?.color ?? null;
-      return this.routeTextColorCss(raw);
     },
     removedLicensesCount() {
       return Array.isArray(this.removedLicenses) ? this.removedLicenses.length : 0;
@@ -316,8 +304,8 @@ export default {
         <LineIndicator
             :product-name="selectedTrain.line.product"
             :number="selectedTrain.line.name !== null ? selectedTrain.line.name : selectedTrain.line.fahrtNr"
-            :background-color="selectedLineBackground"
-            :color="selectedLineText"
+            :background-color="selectedTrainBackgroundColor"
+            :color="selectedTrainTextColor"
         />
       </div>
       <template v-if="selectedDestination">

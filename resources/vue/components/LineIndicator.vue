@@ -23,11 +23,6 @@ const props = defineProps({
     required: false,
     default: null
   },
-  textColor: {
-    type: String,
-    required: false,
-    default: null
-  },
   color: {
     type: String,
     required: false,
@@ -127,15 +122,18 @@ const product = computed(() => {
       : products.default;
 });
 
-function normalizeHexColor(hex: string): string {
-  return hex.replace(/^#/, '');
+function normalizeHexColor(hex?: string | string): string | null {
+  if (!hex) return null;
+  const clean = String(hex).replace(/[^0-9a-fA-F]/g, "");
+  if (clean.length !== 6) return null;
+  return `#${clean}`;
 }
 
 const effectiveBackground = computed((): string => {
-  return props.backgroundColor && props.color ? '#' + normalizeHexColor(props.backgroundColor) :  product.value.color;
+  return normalizeHexColor(props.backgroundColor) ? normalizeHexColor(props.backgroundColor)! :  product.value.color;
 });
 const effectiveText = computed((): string => {
-  return props.color && props.backgroundColor ? props.color : product.value.text;
+  return normalizeHexColor(props.color) && normalizeHexColor(props.backgroundColor) ? normalizeHexColor(props.color)! : product.value.text;
 });
 const cssVars = computed((): string => {
   return `--accent: ${effectiveBackground.value}; --contrast: ${effectiveText.value};`;
@@ -168,7 +166,7 @@ const cssVars = computed((): string => {
 
 .line-indicator {
   background-color: var(--accent);
-  textColor: var(--contrast);
+  color: var(--contrast);
   font-size: .75rem;
   min-width: 1.5rem;
 }

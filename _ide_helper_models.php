@@ -769,10 +769,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Area> $areas
  * @property-read int|null $areas_count
  * @property-read string|null $ifopt
- * @property-read string|null $localized_name
  * @property-read \phpGPX\Models\Point $location
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StationName> $names
- * @property-read int|null $names_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StationIdentifier> $stationIdentifiers
  * @property-read int|null $station_identifiers_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stopover> $stopovers
@@ -836,28 +833,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StationIdentifier whereUpdatedAt($value)
  */
 	class StationIdentifier extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * @property string $id
- * @property int $station_id
- * @property string $language
- * @property string $name
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Station $station
- * @method static \Illuminate\Database\Eloquent\Builder<static>|StationName newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|StationName newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|StationName query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|StationName whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|StationName whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|StationName whereLanguage($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|StationName whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|StationName whereStationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|StationName whereUpdatedAt($value)
- */
-	class StationName extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -1009,6 +984,7 @@ namespace App\Models{
  * @property string $number
  * @property string $linename
  * @property string|null $route_color Hex color code of the route, without #
+ * @property string|null $route_text_color Hex text color code of the route, without #
  * @property int|null $journey_number
  * @property int|null $operator_id
  * @property int $origin_id
@@ -1023,7 +999,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $last_refreshed
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Enum\MotisCategory $mode
+ * @property \App\Enum\MotisCategory|null $mode MotisCategory enum value
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Checkin> $checkins
  * @property-read int|null $checkins_count
  * @property-read \App\Models\Station $destinationStation
@@ -1047,6 +1023,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereJourneyNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereLastRefreshed($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereLinename($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereMode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereMotisSource($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereMotisSourceLicenseId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereNumber($value)
@@ -1054,6 +1031,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereOriginId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip wherePolylineId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereRouteColor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereRouteTextColor($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereSource($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereTripId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Trip whereUpdatedAt($value)
@@ -1332,5 +1310,27 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WikidataEntity query()
  */
 	class WikidataEntity extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property string $id
+ * @property int $user_id
+ * @property int $year
+ * @property array<array-key, mixed> $data
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|YearInReviewCache newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|YearInReviewCache newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|YearInReviewCache query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|YearInReviewCache whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|YearInReviewCache whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|YearInReviewCache whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|YearInReviewCache whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|YearInReviewCache whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|YearInReviewCache whereYear($value)
+ */
+	class YearInReviewCache extends \Eloquent {}
 }
 

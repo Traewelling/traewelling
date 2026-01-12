@@ -8,7 +8,6 @@ import {DateTime} from "luxon";
 import {useUserStore} from "../../stores/user";
 import AutocompleteListEntry from "../Checkin/AutocompleteListEntry.vue";
 import Spinner from "../Loader/Spinner.vue";
-import LineIndicator from "../LineIndicator.vue";
 import ActiveStatusCard from "../ActiveStatusCard.vue";
 import FriendDropdown from "../Helpers/FriendDropdown.vue";
 import axios from "axios";
@@ -26,7 +25,6 @@ export default {
   emits: ["update:station", "update:time", "update:travelType"],
   components: {
     ActiveStatusCard,
-    LineIndicator,
     Spinner,
     AutocompleteListEntry,
     FullScreenModal,

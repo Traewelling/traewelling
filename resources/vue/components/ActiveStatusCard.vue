@@ -13,7 +13,9 @@ export default defineComponent({
 
     return {state};
   },
-  components: {LineIndicator},
+  components: {
+    LineIndicator,
+  },
   data() {
     return {
       progress: 0,
@@ -48,18 +50,6 @@ export default defineComponent({
         window.location = "/status/" + this.state.status.id;
       }
     },
-    routeColorCss(hex?: string | null): string | null {
-      if (!hex) return null;
-      const clean = String(hex).replace(/[^0-9a-fA-F]/g, "");
-      if (clean.length !== 6) return null;
-      return `#${clean}`;
-    },
-    routeTextColorCss(hex?: string | null): string | null {
-      if (!hex) return null;
-      const clean = String(hex).replace(/[^0-9a-fA-F]/g, "");
-      if (clean.length !== 6) return null;
-      return `#${clean}`;
-    }
   },
   computed: {
     departure() {
@@ -101,7 +91,7 @@ export default defineComponent({
         <p class="ms-2 col-auto align-items-center d-flex my-0" v-show="state.status?.train?.lineName">
           <LineIndicator :product-name="state.status?.train?.category"
                          :number="state.status?.train?.lineName ?? ''"
-                         :color="routeTextColorCss(state.status?.train?.routeColor)"
+                         :color="state.status?.train?.routeTextColor"
                          :background-color="state.status?.train?.routeColor"/>
           <span class="ms-1" v-show="nextStation">next: {{ nextStation?.name }}</span>
         </p>
