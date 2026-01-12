@@ -16,11 +16,10 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
-use Tests\FeatureTestCase;
-use Tests\TestHelpers\HafasHelpers;
+use Tests\ApiTestCase;
 use function PHPUnit\Framework\assertEquals;
 
-class WebhookStatusTest extends FeatureTestCase
+class WebhookStatusTest extends ApiTestCase
 {
     use RefreshDatabase;
 
@@ -37,7 +36,7 @@ class WebhookStatusTest extends FeatureTestCase
         Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
             assertEquals([
                              'event' => WebhookEvent::CHECKIN_CREATE->value,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'status' => new StatusResource($status),
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               'status' => new StatusResource($status),
                          ], $job->payload);
             return true;
         });
@@ -89,7 +88,7 @@ class WebhookStatusTest extends FeatureTestCase
                 $job->payload['event']
             );
             assertEquals($status->id, $job->payload['status']['id']);
-            assertEquals(1, count($job->payload['status']['likes']));
+            assertEquals(1, $job->payload['status']['likes']);
             return true;
         });
     }
@@ -209,12 +208,12 @@ class WebhookStatusTest extends FeatureTestCase
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status = $this->createStatus($user);
 
-        $this->actAsApiUserWithAllScopes($user)
-             ->putJson("/api/v1/status/{$status->id}", [
-                 'body'       => 'Updated via API',
-                 'business'   => Business::BUSINESS->value,
-                 'visibility' => StatusVisibility::PRIVATE->value,
-             ])
+        $this->actAsApiUserWithAllScopes($user);
+        $this->putJson("/api/v1/status/{$status->id}", [
+            'body'       => 'Updated via API',
+            'business'   => Business::BUSINESS->value,
+            'visibility' => StatusVisibility::PRIVATE->value,
+        ])
              ->assertSuccessful();
 
         Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
@@ -222,10 +221,10 @@ class WebhookStatusTest extends FeatureTestCase
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
             );
-            assertEquals($status->id, $job->payload['status']->id);
-            assertEquals('Updated via API', $job->payload['status']->body);
-            assertEquals(Business::BUSINESS, $job->payload['status']->business);
-            assertEquals(StatusVisibility::PRIVATE, $job->payload['status']->visibility);
+            assertEquals($status->id, $job->payload['status']['id']);
+            assertEquals('Updated via API', $job->payload['status']['body']);
+            assertEquals(Business::BUSINESS->value, $job->payload['status']['business']);
+            assertEquals(StatusVisibility::PRIVATE->value, $job->payload['status']['visibility']);
             return true;
         });
     }
@@ -238,12 +237,12 @@ class WebhookStatusTest extends FeatureTestCase
         $this->createWebhook($user, $client, [WebhookEvent::CHECKIN_UPDATE]);
         $status = $this->createStatus($user);
 
-        $this->actAsApiUserWithAllScopes($user)
-             ->postJson("/api/v1/status/{$status->id}/tags", [
-                 'key'        => 'trwl:seat',
-                 'value'      => '42',
-                 'visibility' => StatusVisibility::PUBLIC->value,
-             ])
+        $this->actAsApiUserWithAllScopes($user);
+        $this->postJson("/api/v1/status/{$status->id}/tags", [
+            'key'        => 'trwl:seat',
+            'value'      => '42',
+            'visibility' => StatusVisibility::PUBLIC->value,
+        ])
              ->assertSuccessful();
 
         Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
@@ -251,7 +250,7 @@ class WebhookStatusTest extends FeatureTestCase
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
             );
-            assertEquals($status->id, $job->payload['status']->id);
+            assertEquals($status->id, $job->payload['status']['id']);
             return true;
         });
     }
@@ -265,22 +264,22 @@ class WebhookStatusTest extends FeatureTestCase
         $status = $this->createStatus($user);
 
         // Create a tag first
-        $this->actAsApiUserWithAllScopes($user)
-             ->postJson("/api/v1/status/{$status->id}/tags", [
-                 'key'        => 'trwl:seat',
-                 'value'      => '42',
-                 'visibility' => StatusVisibility::PUBLIC->value,
-             ])
+        $this->actAsApiUserWithAllScopes($user);
+        $this->postJson("/api/v1/status/{$status->id}/tags", [
+            'key'        => 'trwl:seat',
+            'value'      => '42',
+            'visibility' => StatusVisibility::PUBLIC->value,
+        ])
              ->assertSuccessful();
 
         Bus::fake(); // Reset to only check the update
 
         // Update the tag
-        $this->actAsApiUserWithAllScopes($user)
-             ->putJson("/api/v1/status/{$status->id}/tags/trwl:seat", [
-                 'value'      => '43',
-                 'visibility' => StatusVisibility::PRIVATE->value,
-             ])
+        $this->actAsApiUserWithAllScopes($user);
+        $this->putJson("/api/v1/status/{$status->id}/tags/trwl:seat", [
+            'value'      => '43',
+            'visibility' => StatusVisibility::PRIVATE->value,
+        ])
              ->assertSuccessful();
 
         Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
@@ -288,7 +287,7 @@ class WebhookStatusTest extends FeatureTestCase
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
             );
-            assertEquals($status->id, $job->payload['status']->id);
+            assertEquals($status->id, $job->payload['status']['id']);
             return true;
         });
     }
@@ -302,19 +301,19 @@ class WebhookStatusTest extends FeatureTestCase
         $status = $this->createStatus($user);
 
         // Create a tag first
-        $this->actAsApiUserWithAllScopes($user)
-             ->postJson("/api/v1/status/{$status->id}/tags", [
-                 'key'        => 'trwl:seat',
-                 'value'      => '42',
-                 'visibility' => StatusVisibility::PUBLIC->value,
-             ])
+        $this->actAsApiUserWithAllScopes($user);
+        $this->postJson("/api/v1/status/{$status->id}/tags", [
+            'key'        => 'trwl:seat',
+            'value'      => '42',
+            'visibility' => StatusVisibility::PUBLIC->value,
+        ])
              ->assertSuccessful();
 
         Bus::fake(); // Reset to only check the deletion
 
         // Delete the tag
-        $this->actAsApiUserWithAllScopes($user)
-             ->deleteJson("/api/v1/status/{$status->id}/tags/trwl:seat")
+        $this->actAsApiUserWithAllScopes($user);
+        $this->deleteJson("/api/v1/status/{$status->id}/tags/trwl:seat")
              ->assertSuccessful();
 
         Bus::assertDispatched(function(MonitoredCallWebhookJob $job) use ($status) {
@@ -322,7 +321,7 @@ class WebhookStatusTest extends FeatureTestCase
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
             );
-            assertEquals($status->id, $job->payload['status']->id);
+            assertEquals($status->id, $job->payload['status']['id']);
             return true;
         });
     }
@@ -348,14 +347,31 @@ class WebhookStatusTest extends FeatureTestCase
                 WebhookEvent::CHECKIN_UPDATE->value,
                 $job->payload['event']
             );
-            assertEquals($status->id, $job->payload['status']->id);
-            assertEquals(0, count($job->payload['status']->likes));
+            assertEquals($status->id, $job->payload['status']['id']);
+            // 'likes' is an integer count in the API response, not an array
+            assertEquals(0, $job->payload['status']['likes']);
             return true;
         });
     }
 
     protected function createStatus(User $user) {
+        // Create stations in database to avoid API calls
+        $origin = \App\Models\Station::factory()->create([
+                                                             'ibnr'      => self::FRANKFURT_HBF['id'],
+                                                             'name'      => self::FRANKFURT_HBF['name'],
+                                                             'latitude'  => self::FRANKFURT_HBF['location']['latitude'],
+                                                             'longitude' => self::FRANKFURT_HBF['location']['longitude'],
+                                                         ]);
+
+        $destination = \App\Models\Station::factory()->create([
+                                                                  'ibnr'      => self::HANNOVER_HBF['id'],
+                                                                  'name'      => self::HANNOVER_HBF['name'],
+                                                                  'latitude'  => self::HANNOVER_HBF['location']['latitude'],
+                                                                  'longitude' => self::HANNOVER_HBF['location']['longitude'],
+                                                              ]);
+
         Http::fake([
+                       'api.transitous.org/api/v5/trip*'          => Http::response(self::MOTIS_TRIP_RESPONSE),
                        '/locations*'                              => Http::response([self::FRANKFURT_HBF]),
                        '/trips/' . urlencode(self::TRIP_ID) . '*' => Http::response(self::TRIP_INFO),
                    ]);
@@ -364,9 +380,6 @@ class WebhookStatusTest extends FeatureTestCase
             tripID:   self::TRIP_ID,
             lineName: self::ICE802['line']['name']
         );
-
-        $origin      = HafasHelpers::getStationById(self::FRANKFURT_HBF['id']);
-        $destination = HafasHelpers::getStationById(self::HANNOVER_HBF['id']);
 
         $dto = new CheckInRequestDto();
         $dto->setUser($user)
