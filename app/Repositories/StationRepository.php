@@ -16,24 +16,13 @@ use Illuminate\Support\Facades\Log;
 
 class StationRepository
 {
-    public function getStationByName(string $name, string $lang, bool $invertLanguage = false, int $limit = 20): Collection {
-        $invertLanguage = $invertLanguage ? '!=' : '=';
-
+    public function getStationByName(string $name, int $limit = 20): Collection {
         return Station::with(['areas', 'stationIdentifiers'])
-                      ->leftJoin('station_names', 'station_names.station_id', '=', 'train_stations.id')
-                      ->where('station_names.name', 'LIKE', "$name")
-                      ->where('station_names.language', $invertLanguage, $lang)
-                      ->orWhere('train_stations.name', 'LIKE', "$name")
-                      ->orWhere(function($query) use ($name, $invertLanguage, $lang) {
-                          $query->where('station_names.name', 'LIKE', "%$name%")
-                                ->where('station_names.language', $invertLanguage, $lang)
-                                ->orWhere('train_stations.name', 'LIKE', "%$name%");
-                      })
-                      ->select('train_stations.*')
-                      ->distinct()
+                      ->where('name', 'LIKE', "$name")
+                      ->orWhere('name', 'LIKE', "%$name%")
                       ->limit($limit)
                       ->orderByDesc('relevance')
-                      ->orderBy('train_stations.name')
+                      ->orderBy('name')
                       ->get();
     }
 

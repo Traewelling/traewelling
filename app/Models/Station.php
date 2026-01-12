@@ -40,11 +40,7 @@ class Station extends Model
         'latitude'      => 'float',
         'longitude'     => 'float',
     ];
-    protected $appends  = ['ifopt', 'localized_name', 'location'];
-
-    public function names(): HasMany {
-        return $this->hasMany(StationName::class, 'station_id', 'id');
-    }
+    protected $appends  = ['ifopt', 'location'];
 
     public function getLocationAttribute(): Point {
         $point = new Point(Point::TRACKPOINT);
@@ -65,10 +61,6 @@ class Station extends Model
             }
         }
         return $ifopt;
-    }
-
-    public function getLocalizedNameAttribute(): ?string {
-        return $this->names->where('language', app()->getLocale())->first()?->name ?? $this->name;
     }
 
     public function getActivitylogOptions(): LogOptions {
