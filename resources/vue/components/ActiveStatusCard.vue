@@ -4,6 +4,7 @@ import {useActiveCheckin} from "../stores/activeCheckin";
 import {NextStation} from "../helpers/NextStation";
 import {StopoverResource} from "../../types/Api.gen";
 import {DateTime} from "luxon";
+import LineIndicator from "./LineIndicator.vue";
 
 export default defineComponent({
   name: "ActiveStatusCard",
@@ -11,6 +12,9 @@ export default defineComponent({
     const state = useActiveCheckin();
 
     return {state};
+  },
+  components: {
+    LineIndicator,
   },
   data() {
     return {
@@ -87,7 +91,7 @@ export default defineComponent({
         <p class="ms-2 col-auto align-items-center d-flex my-0" v-show="state.status?.train?.lineName">
           <LineIndicator :product-name="state.status?.train?.category"
                          :number="state.status?.train?.lineName ?? ''"
-                         :color="state.status?.train?.routeColor"
+                         :color="state.status?.train?.routeTextColor"
                          :background-color="state.status?.train?.routeColor"/>
           <span class="ms-1" v-show="nextStation">next: {{ nextStation?.name }}</span>
         </p>
