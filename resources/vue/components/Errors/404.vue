@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {trans} from "laravel-vue-i18n";
+import abandonedImage from "../../../images/covers/abandoned.jpg?url";
 
 function goHome() {
   window.location.href = "/";
@@ -10,7 +11,7 @@ function goHome() {
   <div class="card border-0 shadow-sm">
     <div class="ratio ratio-16x9">
       <img
-          src="/images/covers/abandoned.jpg"
+          :src="abandonedImage"
           class="card-img-top object-fit-cover"
           :alt="trans('errors.404.alt_text')"
       >

@@ -16,10 +16,10 @@
 
                 <div id="map" style="min-height: 700px;"></div>
                 <hr/>
-                <img src="{{asset('/img/marker/dot-primary.svg')}}" style="height: 14px;"/>
+                <img src="{{ \Illuminate\Support\Facades\Vite::asset('resources/images/marker/dot-primary.svg') }}" style="height: 14px;"/>
                 {{__('stats.stations.changed')}}
                 <br/>
-                <img src="{{asset('/img/marker/dot-secondary.svg')}}" style="height: 14px;"/>
+                <img src="{{ \Illuminate\Support\Facades\Vite::asset('resources/images/marker/dot-secondary.svg') }}" style="height: 14px;"/>
                 {{__('stats.stations.passed')}}
             </div>
         </div>
@@ -32,11 +32,11 @@
             setTilingLayer(mapprovider, map);
 
             let primaryDot   = L.icon({
-                iconUrl: '/img/marker/dot-primary.svg',
+                iconUrl: '{{ \Illuminate\Support\Facades\Vite::asset('resources/images/marker/dot-primary.svg') }}',
                 iconSize: [10, 10],
             });
             let secondaryDot = L.icon({
-                iconUrl: '/img/marker/dot-secondary.svg',
+                iconUrl: '{{ \Illuminate\Support\Facades\Vite::asset('resources/images/marker/dot-secondary.svg') }}',
                 iconSize: [10, 10],
             });
 

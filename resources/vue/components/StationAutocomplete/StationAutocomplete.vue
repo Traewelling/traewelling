@@ -11,6 +11,10 @@ import Spinner from "../Loader/Spinner.vue";
 import ActiveStatusCard from "../ActiveStatusCard.vue";
 import FriendDropdown from "../Helpers/FriendDropdown.vue";
 import axios from "axios";
+import busIcon from "../../../images/transport/bus.svg";
+import tramIcon from "../../../images/transport/tram.svg";
+import subwayIcon from "../../../images/transport/subway.svg";
+import suburbanIcon from "../../../images/transport/suburban.svg";
 
 const LS_RECENT_KEY = 'trwl:station:recent';
 const MAX_RECENT = 12;
@@ -55,10 +59,10 @@ export default {
       travelTypes: [
         {value: "express", color: "rgba(197,199,196,0.5)", icon: "fa-train", contrast: true},
         {value: "regional", color: "rgba(193,18,28,0.5)", icon: "fa-train"},
-        {value: "suburban", color: "rgba(0,111,53,0.5)", icon: "fa-train", image: "/img/suburban.svg"},
-        {value: "subway", color: "rgba(21,106,184,0.5)", icon: "fa-subway", image: "/img/subway.svg"},
-        {value: "tram", color: "rgba(217,34,42,0.5)", icon: "fa-tram", image: "/img/tram.svg"},
-        {value: "bus", color: "rgba(163,0,124,0.5)", icon: "fa-bus", image: "/img/bus.svg"},
+        {value: "suburban", color: "rgba(0,111,53,0.5)", icon: "fa-train", image: suburbanIcon},
+        {value: "subway", color: "rgba(21,106,184,0.5)", icon: "fa-subway", image: subwayIcon},
+        {value: "tram", color: "rgba(217,34,42,0.5)", icon: "fa-tram", image: tramIcon},
+        {value: "bus", color: "rgba(163,0,124,0.5)", icon: "fa-bus", image: busIcon},
         {value: "ferry", color: "rgba(21,106,184,0.5)", icon: "fa-ship"},
         {value: "taxi", color: "rgb(255,237,74,0.5)", icon: "fa-taxi", contrast: true},
       ]

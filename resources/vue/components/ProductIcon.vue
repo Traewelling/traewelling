@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 import {MotisCategory} from "../../types/Api.gen";
+import busIcon from "../../images/transport/bus.svg";
+import tramIcon from "../../images/transport/tram.svg";
+import subwayIcon from "../../images/transport/subway.svg";
+import suburbanIcon from "../../images/transport/suburban.svg";
 
 defineProps({
   product: {
@@ -13,12 +17,15 @@ defineProps({
   }
 });
 
-const iconForProduct = (product: string) => {
-  if (['tram', 'bus', 'subway', 'suburban'].includes(product)) {
-    return `/img/${product}.svg`;
-  }
+const transportIcons: Record<string, string> = {
+  bus: busIcon,
+  tram: tramIcon,
+  subway: subwayIcon,
+  suburban: suburbanIcon
+};
 
-  return null;
+const iconForProduct = (product: string) => {
+  return transportIcons[product] || null;
 };
 
 const fontAwesomeIcon = (product: string) => {
@@ -38,13 +45,13 @@ const iconForMode = (mode: MotisCategory | null) => {
   if (!mode) return null;
   switch (mode) {
     case MotisCategory.BUS:
-      return '/img/bus.svg';
+      return busIcon;
     case MotisCategory.SUBWAY:
-      return '/img/subway.svg';
+      return subwayIcon;
     case MotisCategory.TRAM:
-      return '/img/tram.svg';
+      return tramIcon;
     case MotisCategory.SUBURBAN:
-      return '/img/suburban.svg';
+      return suburbanIcon;
     default:
       return null;
   }

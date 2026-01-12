@@ -142,7 +142,7 @@
                                 <div class="hero-content flex-col lg:flex-row xl:gap-10">
                                     <img alt="hero"
                                          loading="lazy"
-                                         src="{{ asset('images/welcome/map.png') }}"
+                                         src="{{ \Illuminate\Support\Facades\Vite::asset('resources/images/welcome/map.png') }}"
                                          class="h-80 w-full object-cover rounded-lg shadow-lg">
                                     <div class="w-full">
                                         <h1 class="text-3xl font-bold">{{ __('welcome.hero.map.title') }}</h1>
@@ -156,7 +156,7 @@
                                 <div class="hero-content flex-col lg:flex-row-reverse xl:gap-10">
                                     <img alt="hero"
                                          loading="lazy"
-                                         src="{{ asset('images/welcome/stats.png') }}"
+                                         src="{{ \Illuminate\Support\Facades\Vite::asset('resources/images/welcome/stats.png') }}"
                                          class="h-80 w-full object-cover rounded-lg shadow-lg">
                                     <div class="w-full">
                                         <h1 class="text-3xl font-bold">{{ __('welcome.hero.stats.title') }}</h1>
@@ -170,7 +170,7 @@
                                 <div class="hero-content flex-col lg:flex-row xl:gap-10">
                                     <img alt="hero"
                                          loading="lazy"
-                                         src="{{ asset('images/welcome/mobile-mockup.png') }}"
+                                         src="{{ \Illuminate\Support\Facades\Vite::asset('resources/images/welcome/mobile-mockup.png') }}"
                                          class="h-80 w-full object-cover rounded-lg shadow-lg">
                                     <div class="w-full">
                                         <h1 class="text-3xl font-bold">{{ __('welcome.hero.mobile.title') }}</h1>

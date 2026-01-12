@@ -5,7 +5,7 @@ if (!$exception instanceof \App\Exceptions\Referencable) {
 }
 @endphp
 
-@section('image', asset('images/covers/derailment.jpg'))
+@section('image', \Illuminate\Support\Facades\Vite::asset('resources/images/covers/derailment.jpg'))
 @section('title', __('error.500'))
 @section('code', '500')
 @section('message', __('error.500'))
