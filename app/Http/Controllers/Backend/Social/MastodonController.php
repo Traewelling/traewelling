@@ -57,7 +57,7 @@ abstract class MastodonController extends Controller
     public static function getMastodonServer(string $domain): ?MastodonServer {
         $domain = (new MastodonDomainExtractionService())->formatDomain($domain);
 
-        $mastodonServer = MastodonServer::where('domain', $domain)->first();
+        $mastodonServer = MastodonServer::findByDomainCached($domain);
 
         //If we ever run into a reset of Mastodon AppKeys (#), then this recreates the keys.
         //Keys have to be set to 0 in the database, since the fields are covered by NOT NULL constraint
@@ -143,7 +143,7 @@ abstract class MastodonController extends Controller
         try {
             $statusText     = StatusHelper::getSocialText($status, true);
             $statusText     .= ' ' . url("/status/{$status->id}");
-            $mastodonDomain = MastodonServer::find($status->user->socialProfile->mastodon_server)->domain;
+            $mastodonDomain = MastodonServer::findCached($status->user->socialProfile->mastodon_server)->domain;
             Mastodon::domain($mastodonDomain)->token($status->user->socialProfile->mastodon_token);
 
             $postResponse = Mastodon::createStatus($statusText, [
@@ -214,7 +214,7 @@ abstract class MastodonController extends Controller
     }
 
     private static function getClient(User $user) {
-        $mastodonDomain = MastodonServer::find($user->socialProfile->mastodon_server)->domain;
+        $mastodonDomain = MastodonServer::findCached($user->socialProfile->mastodon_server)->domain;
         return Mastodon::domain($mastodonDomain)->token($user->socialProfile->mastodon_token);
     }
 
