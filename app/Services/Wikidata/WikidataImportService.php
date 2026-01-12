@@ -6,7 +6,6 @@ use App\Dto\Coordinate;
 use App\Dto\Wikidata\WikidataEntity;
 use App\Exceptions\Wikidata\FetchException;
 use App\Models\Station;
-use App\Models\StationName;
 use App\StationIdentifierType;
 use Illuminate\Support\Facades\Log;
 
@@ -96,7 +95,6 @@ class WikidataImportService
             }
 
             $station->save();
-            self::saveStationNames($station, $wikidataEntity);
 
             return $station;
         }
@@ -134,7 +132,6 @@ class WikidataImportService
                                                    ]);
         }
 
-        self::saveStationNames($station, $wikidataEntity);
         return $station;
     }
 
@@ -176,29 +173,6 @@ class WikidataImportService
         $rl100 = $object->getClaims('P8671')[0]['mainsnak']['datavalue']['value'] ?? null;
         if ($station->rilIdentifier === null && $rl100 !== null) {
             $station->update(['rilIdentifier' => $rl100]);
-        }
-
-        self::saveStationNames($station, $object);
-    }
-
-    private static function saveStationNames(Station $station, WikidataEntity $wikidataEntity): void {
-        self::saveNameClaims($station, $wikidataEntity->getClaims('P2561')); //P2561 = name
-        self::saveNameClaims($station, $wikidataEntity->getClaims('P1448')); //P1448 = official name
-    }
-
-    private static function saveNameClaims(Station $station, array $claims): void {
-        foreach ($claims as $name) {
-            $text     = $name['mainsnak']['datavalue']['value']['text'];
-            $language = $name['mainsnak']['datavalue']['value']['language'];
-            StationName::updateOrCreate(
-                [
-                    'station_id' => $station->id,
-                    'language'   => $language,
-                ],
-                [
-                    'name' => $text,
-                ]
-            );
         }
     }
 

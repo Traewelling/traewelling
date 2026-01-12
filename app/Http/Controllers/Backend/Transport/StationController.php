@@ -58,7 +58,7 @@ class StationController extends Controller
         $stations = $this->dataProvider->getStations($search);
         if ($stations->count() < 10) {
             $remaining  = 10 - $stations->count();
-            $dbStations = $this->stationRepository->getStationByName($search, 'de', true);
+            $dbStations = $this->stationRepository->getStationByName($search);
             // remove duplicates
             $dbStations = $dbStations->filter(function(Station $station) use ($stations) {
                 return !$stations->contains('id', $station->id);

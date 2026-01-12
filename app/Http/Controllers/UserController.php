@@ -46,9 +46,9 @@ class UserController extends Controller
                                'user.blockedUsers',
                                'checkin',
                                'tags',
-                               'checkin.originStopover.station.names',
-                               'checkin.destinationStopover.station.names',
-                               'checkin.trip.stopovers.station.names',
+                               'checkin.originStopover.station',
+                               'checkin.destinationStopover.station',
+                               'checkin.trip.stopovers.station',
                            ])
                     ->where(function($query) {
                         $query->whereIn('statuses.visibility', [

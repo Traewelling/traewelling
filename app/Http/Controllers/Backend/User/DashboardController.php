@@ -25,9 +25,9 @@ abstract class DashboardController extends Controller
                                 'checkin',
                                 'tags',
                                 'mentions.mentioned',
-                                'checkin.originStopover.station.names',
-                                'checkin.destinationStopover.station.names',
-                                'checkin.trip.stopovers.station.names'
+                                'checkin.originStopover.station',
+                                'checkin.destinationStopover.station',
+                                'checkin.trip.stopovers.station'
                             ])
                      ->join('train_checkins', 'train_checkins.status_id', '=', 'statuses.id')
                      ->select('statuses.*')
