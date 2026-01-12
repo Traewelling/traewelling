@@ -16,10 +16,10 @@ class MastodonProfileDetails
     private User $user;
     private bool $lastErrorWasTemporary = false;
     private const CACHE_TTL_SUCCESS         = 3600;      // 1 hour for successful fetches
-    private const CACHE_TTL_TEMPORARY_ERROR = 300;       // 5 minutes for temporary errors
+    private const CACHE_TTL_TEMPORARY_ERROR = 900;       // 15 minutes for temporary errors
     private const CACHE_TTL_PERMANENT_ERROR = 3600;      // 1 hour for permanent errors
     private const PERMANENT_ERROR_CODES     = [401, 404, 410];
-    private const TEMPORARY_ERROR_CODES     = [0, 408, 429, 500, 502, 503, 504];
+    private const TEMPORARY_ERROR_CODES     = [408, 429, 500, 502, 503, 504];
 
     public function __construct(User $user) {
         $this->user = $user;
@@ -139,9 +139,9 @@ class MastodonProfileDetails
             $this->lastErrorWasTemporary = true;
         } else {
             // Unknown error codes: treat as temporary and report for investigation
-            Log::warning(
+            Log::error(
                 sprintf(
-                    "Unknown Mastodon error (HTTP %d) for user#%d on server '%s': %s",
+                    "Unknown Mastodon error (HTTP/Status %d) for user#%d on server '%s': %s",
                     $code,
                     $this->user->id,
                     $mastodonServer?->domain ?? "unknown",
