@@ -7,6 +7,7 @@ use App\Dto\GeoJson\Feature;
 use App\Dto\GeoJson\FeatureCollection;
 use App\Enum\Business;
 use App\Enum\StatusVisibility;
+use App\Events\StatusUpdateEvent;
 use App\Http\Controllers\Backend\Support\LocationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
 use App\Http\Controllers\Backend\User\DashboardController;
@@ -559,7 +560,9 @@ class StatusController extends Controller
             }
 
             DB::commit();
-            return $this->sendResponse(new StatusResource($status->fresh()));
+            $status = $status->fresh();
+            StatusUpdateEvent::dispatch($status);
+            return $this->sendResponse(new StatusResource($status));
         } catch (ModelNotFoundException) {
             DB::rollBack();
             return $this->sendError('Status not found');

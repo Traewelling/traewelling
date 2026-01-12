@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Enum\StatusVisibility;
+use App\Events\StatusUpdateEvent;
 use App\Http\Controllers\Backend\Transport\StatusTagController as StatusTagBackend;
 use App\Http\Resources\StatusTagResource;
 use App\Models\Status;
@@ -214,6 +215,7 @@ class StatusTagController extends Controller
                 $validated['visibility'] = StatusVisibility::from($validated['visibility']);
             }
             $statusTag->update($validated);
+            StatusUpdateEvent::dispatch($status->fresh());
             return $this->sendResponse(data: new StatusTagResource($statusTag));
         } catch (AuthorizationException) {
             return $this->sendError(
@@ -317,6 +319,7 @@ class StatusTagController extends Controller
             $validated['status_id']  = $status->id;
             $validated['visibility'] = StatusVisibility::from($validated['visibility']);
             $statusTag               = StatusTag::create($validated);
+            StatusUpdateEvent::dispatch($status->fresh());
             return $this->sendResponse(data: new StatusTagResource($statusTag));
         } catch (AuthorizationException) {
             return $this->sendError(
@@ -381,6 +384,7 @@ class StatusTagController extends Controller
             }
             $this->authorize('destroy', $statusTag);
             $statusTag->delete();
+            StatusUpdateEvent::dispatch($status->fresh());
             return $this->sendResponse();
         } catch (AuthorizationException) {
             return $this->sendError(

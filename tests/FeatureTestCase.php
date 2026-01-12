@@ -20,7 +20,7 @@ abstract class FeatureTestCase extends BaseTestCase
         "name"     => "Aachen Hbf",
         "location" => [
             "type"      => "location",
-            "id"        => "8000105",
+            "id"        => "8000001",
             "latitude"  => 50.767641,
             "longitude" => 6.09119,
         ]
@@ -34,6 +34,17 @@ abstract class FeatureTestCase extends BaseTestCase
             "id"        => "8000105",
             "latitude"  => 50.106817,
             "longitude" => 8.663003,
+        ]
+    ];
+    const GOETTINGEN_HBF = [
+        "type"     => "stop",
+        "id"       => "8000128",
+        "name"     => "Göttingen",
+        "location" => [
+            "type"      => "location",
+            "id"        => "8000128",
+            "latitude"  => 51.536722,
+            "longitude" => 9.926111
         ]
     ];
     const HANNOVER_HBF  = [
@@ -129,6 +140,125 @@ abstract class FeatureTestCase extends BaseTestCase
                 'plannedDeparturePlatform' => null,
                 'stop'                     => self::HANNOVER_HBF
             ],
+        ]
+    ];
+
+    // Motis-compatible trip response structure for modern tests
+    // Based on realistic ICE data format from MOTIS/Transitous API
+    const MOTIS_TRIP_RESPONSE = [
+        "duration" => 9420, // ~2.6 hours in seconds
+        "startTime" => self::DEPARTURE_TIME,
+        "endTime" => self::ARRIVAL_TIME,
+        "transfers" => 0,
+        "legs" => [
+            [
+                "mode" => "HIGHSPEED_RAIL",
+                "from" => [
+                    "name" => "Frankfurt (Main) Hauptbahnhof",
+                    "stopId" => "de-DELFI_de:06412:10:13:7",
+                    "parentId" => "de-DELFI_de:06412:10",
+                    "importance" => 0.061706192791461945,
+                    "lat" => self::FRANKFURT_HBF['location']['latitude'],
+                    "lon" => self::FRANKFURT_HBF['location']['longitude'],
+                    "level" => 0,
+                    "tz" => "Europe/Berlin",
+                    "departure" => self::DEPARTURE_TIME,
+                    "scheduledDeparture" => self::DEPARTURE_TIME,
+                    "scheduledTrack" => "7",
+                    "track" => "7",
+                    "description" => "Gleis 7",
+                    "vertexType" => "TRANSIT",
+                    "pickupType" => "NORMAL",
+                    "dropoffType" => "NORMAL",
+                    "cancelled" => false,
+                ],
+                "to" => [
+                    "name" => self::HANNOVER_HBF['name'],
+                    "stopId" => "de-DELFI_de:03241:10950::8",
+                    "parentId" => "de-DELFI_de:03241:10950",
+                    "importance" => 0.035,
+                    "lat" => self::HANNOVER_HBF['location']['latitude'],
+                    "lon" => self::HANNOVER_HBF['location']['longitude'],
+                    "level" => 0,
+                    "tz" => "Europe/Berlin",
+                    "arrival" => self::ARRIVAL_TIME,
+                    "scheduledArrival" => self::ARRIVAL_TIME,
+                    "scheduledTrack" => "8",
+                    "track" => "8",
+                    "description" => "Gleis 8",
+                    "vertexType" => "TRANSIT",
+                    "pickupType" => "NORMAL",
+                    "dropoffType" => "NORMAL",
+                    "cancelled" => false,
+                ],
+                "duration" => 9420,
+                "startTime" => self::DEPARTURE_TIME,
+                "endTime" => self::ARRIVAL_TIME,
+                "scheduledStartTime" => self::DEPARTURE_TIME,
+                "scheduledEndTime" => self::ARRIVAL_TIME,
+                "realTime" => true,
+                "scheduled" => true,
+                "interlineWithPreviousLeg" => false,
+                "headsign" => self::HANNOVER_HBF['name'],
+                "tripTo" => [
+                    "name" => self::HANNOVER_HBF['name'],
+                    "stopId" => "de-DELFI_de:03241:10950::8",
+                    "parentId" => "de-DELFI_de:03241:10950",
+                    "importance" => 0.035,
+                    "lat" => self::HANNOVER_HBF['location']['latitude'],
+                    "lon" => self::HANNOVER_HBF['location']['longitude'],
+                    "level" => 0,
+                    "tz" => "Europe/Berlin",
+                    "arrival" => self::ARRIVAL_TIME,
+                    "scheduledArrival" => self::ARRIVAL_TIME,
+                    "vertexType" => "TRANSIT",
+                    "pickupType" => "NORMAL",
+                    "dropoffType" => "NORMAL",
+                    "cancelled" => false,
+                ],
+                "routeId" => "162308_101",
+                "directionId" => "0",
+                "routeType" => 101,
+                "agencyName" => "DB Fernverkehr AG",
+                "agencyUrl" => "",
+                "agencyId" => "12681",
+                "tripId" => "20230112_09:09_de-DELFI_3072232642",
+                "routeShortName" => "42",
+                "routeLongName" => "",
+                "tripShortName" => "ICE 822",
+                "displayName" => "ICE 822",
+                "cancelled" => false,
+                "source" => "de_DELFI.gtfs.zip/stop_times.txt:27872600:27872615",
+                "intermediateStops" => [
+                    [
+                        "name" => self::GOETTINGEN_HBF['name'],
+                        "stopId" => "de-DELFI_de:03159:8128::4",
+                        "parentId" => "de-DELFI_de:03159:8128",
+                        "importance" => 0.015,
+                        "lat" => self::GOETTINGEN_HBF['location']['latitude'],
+                        "lon" => self::GOETTINGEN_HBF['location']['longitude'],
+                        "level" => 0,
+                        "tz" => "Europe/Berlin",
+                        "arrival" => self::STOPOVER_TIME,
+                        "departure" => self::STOPOVER_TIME,
+                        "scheduledArrival" => self::STOPOVER_TIME,
+                        "scheduledDeparture" => self::STOPOVER_TIME,
+                        "scheduledTrack" => "4",
+                        "track" => "4",
+                        "description" => "Gleis 4",
+                        "vertexType" => "TRANSIT",
+                        "pickupType" => "NORMAL",
+                        "dropoffType" => "NORMAL",
+                        "cancelled" => false,
+                    ]
+                ],
+                "legGeometry" => [
+                    // Realistic polyline format from MOTIS API
+                    "points" => "gffq~AsqwoOjK}Fgy}M~yr`A{hbDbleJufuGp}sI}vmHz_cGwc{KlimGi{{Orb`Iw{dQuwqg@",
+                    "precision" => 6,
+                    "length" => 15,
+                ]
+            ]
         ]
     ];
 
