@@ -20,7 +20,7 @@ return [
         'client_id'     => env('MASTODON_ID'),
         'client_secret' => env('MASTODON_SECRET'),
         'redirect'      => env('MASTODON_REDIRECT', 'http://localhost:8000/callback/mastodon'),
-        'timeout'       => env('MASTODON_TIMEOUT_SECONDS', 2),
+        'timeout'       => env('MASTODON_TIMEOUT_SECONDS', 30),
     ],
 
     'telegram'   => [
