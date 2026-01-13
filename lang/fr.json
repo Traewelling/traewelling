@@ -212,7 +212,7 @@
     "events.website": "Site internet",
     "settings.follower.delete": "Supprimer l’abonné·e",
     "admin.checkins": "Enregistrements",
-    "controller.transport.social-post": "Je suis actuellement à bord de la ligne :lineName à destination de :Destination ! #NowTräwelling |Je suis actuellement à bord de la ligne :lineName pour :Destination ! #NowTräwelling ",
+    "controller.transport.social-post": "Je suis actuellement à bord de la ligne :lineName vers :Destination ! #NowTräwelling |Je suis actuellement à bord de la ligne :lineName vers :Destination ! #NowTräwelling",
     "export.page": "Page",
     "profile.follow_req": "Demander",
     "user.login": "Se connecter",
@@ -287,7 +287,7 @@
     "stationboard.stopover": "Arrêt",
     "admin.select-range": "Sélectionner un domaine",
     "dates.April": "avril",
-    "user.please-check": "Vérifie tes e-mails et clique sur le lien de vérification avant de continuer.",
+    "user.please-check": "Vérifier vos e-mails et cliquer sur le lien de vérification avant de continuer.",
     "status.ogp-title": "Trajet de :name en utilisant Träwelling",
     "settings.follower.delete-success": "Tu as supprimé l’abonné·e avec succès.",
     "dates.March": "mars",
@@ -896,5 +896,7 @@
     "trip_creation.csv_import.errors.min_two_rows": "Au moins deux lignes sont requises (origine et destination).",
     "trip_creation.csv_import.errors.too_many_rows": "Trop de lignes. Maximum : max autorisées.",
     "trip_creation.csv_import.errors.bad_row": "rows: :rows invalides",
-    "trip_creation.csv_import.errors.station_not_found": "Aucune station n'a pu être identifiée."
+    "trip_creation.csv_import.errors.station_not_found": "Aucune station n'a pu être identifiée.",
+    "trip_creation.csv_import.errors.some_stations_failed": ":count station(s) n'ont pas pu être trouvées.",
+    "trip_creation.csv_import.help.station_list_link": "Afficher la carte avec les stations et leurs identifiants"
 }
