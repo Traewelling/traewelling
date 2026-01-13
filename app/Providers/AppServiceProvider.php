@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use App\Http\Controllers\Backend\Auth\AuthorizationController;
+use App\Http\Controllers\Backend\VersionController;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
@@ -53,5 +55,7 @@ class AppServiceProvider extends ServiceProvider
         Blade::if("admin", static function(): bool {
             return auth()->user()?->hasRole('admin');
         });
+
+        Http::globalRequestMiddleware(fn ($request) => $request->withHeader('User-Agent', VersionController::getUserAgent()));
     }
 }
