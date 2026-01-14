@@ -40,6 +40,13 @@ jobs:
       - name: Install npm Dependencies
         run: npm ci
 
+      - name: Upload node_modules
+        uses: actions/upload-artifact@v4
+        with:
+          name: node_modules
+          path: node_modules
+          retention-days: 1
+
       - name: Create Vite Production build
         run: npm run build
 
@@ -87,6 +94,29 @@ jobs:
           name: vendor
           path: vendor
           retention-days: 1
+
+  lint:
+    name: ESLint Code Quality Check
+    runs-on: ubuntu-latest
+    needs: install-node-dependencies
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 25
+
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: node_modules
+          path: node_modules
+
+      - name: Run ESLint
+        run: npm run lint
 
   migration-test-sqlite:
     name: Migration Test (SQLite)
