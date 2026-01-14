@@ -14,7 +14,7 @@ class CleanUpProfilePictures extends Command
 
     public function handle(): void
     {
-        $usedPictures = User::select('avatar')->distinct()->get()->pluck('avatar')->filter()->toArray();
+        $usedPictures = User::select('avatar')->distinct()->pluck('avatar')->filter()->toArray();
 
         $profilePictures = new \FilesystemIterator(public_path('uploads/avatars'));
         foreach ($profilePictures as $profilePicture) {
