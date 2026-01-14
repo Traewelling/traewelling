@@ -1,0 +1,359 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+
+jobs:
+  node-audit:
+    name: Node.js Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 25
+
+      - name: Check for vulnerabilities (without installing)
+        run: npm audit --package-lock-only
+
+  install-node-dependencies:
+    name: Install Node Dependencies & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 25
+          cache: npm
+
+      - name: Install npm Dependencies
+        run: npm ci
+
+      - name: Create Vite Production build
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: vite-build
+          path: public/build
+          retention-days: 1
+
+  install-composer-dependencies:
+    name: Install & Validate Composer Dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.5
+          extensions: mbstring, ctype, fileinfo, json, openssl, pdo, tokenizer, xml
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --prefer-dist
+
+      - name: Upload vendor directory
+        uses: actions/upload-artifact@v4
+        with:
+          name: vendor
+          path: vendor
+          retention-days: 1
+
+  migration-test-sqlite:
+    name: Migration Test (SQLite)
+    runs-on: ubuntu-latest
+    needs: install-composer-dependencies
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.5
+          extensions: mbstring, ctype, fileinfo, json, openssl, pdo, simplexml, sodium, tokenizer, xml
+
+      - name: Download vendor directory
+        uses: actions/download-artifact@v4
+        with:
+          name: vendor
+          path: vendor
+
+      - name: Copy .env
+        run: cp .env.example .env
+
+      - name: Generate key
+        run: php artisan key:generate
+
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+
+      - name: Create SQLite database file
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+
+      - name: Run migrations with seed
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan migrate --seed --force
+
+      - name: Test rollback
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan migrate:rollback --step=1 --force
+
+      - name: Test re-migration
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan migrate --force
+
+  migration-test-mariadb:
+    name: Migration Test (MariaDB)
+    runs-on: ubuntu-latest
+    needs: install-composer-dependencies
+
+    services:
+      mariadb:
+        image: mariadb:12
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: traewelling_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.5
+          extensions: mbstring, ctype, fileinfo, json, openssl, pdo, pdo_mysql, simplexml, sodium, tokenizer, xml
+
+      - name: Download vendor directory
+        uses: actions/download-artifact@v4
+        with:
+          name: vendor
+          path: vendor
+
+      - name: Copy .env
+        run: cp .env.example .env
+
+      - name: Generate key
+        run: php artisan key:generate
+
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+
+      - name: Run migrations with seed
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: traewelling_test
+          DB_USERNAME: root
+          DB_PASSWORD: password
+        run: php artisan migrate --seed --force
+
+      - name: Test rollback
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: traewelling_test
+          DB_USERNAME: root
+          DB_PASSWORD: password
+        run: php artisan migrate:rollback --step=1 --force
+
+      - name: Test re-migration
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: traewelling_test
+          DB_USERNAME: root
+          DB_PASSWORD: password
+        run: php artisan migrate --force
+
+  api-docs:
+    name: API Documentation Check
+    runs-on: ubuntu-latest
+    needs: install-composer-dependencies
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.5
+          extensions: mbstring, ctype, fileinfo, json, openssl, pdo, simplexml, sodium, tokenizer, xml
+
+      - name: Download vendor directory
+        uses: actions/download-artifact@v4
+        with:
+          name: vendor
+          path: vendor
+
+      - name: Copy .env
+        run: cp .env.example .env
+
+      - name: Generate key
+        run: php artisan key:generate
+
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+
+      - name: Create Database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+
+      - name: Backup committed API docs for comparison
+        run: cp storage/api-docs/api-docs.json storage/api-docs/api-docs.json.backup
+
+      - name: Generate API documentation
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: |
+          echo "Generating API documentation..."
+          php artisan l5-swagger:generate
+
+          if [ $? -ne 0 ]; then
+            echo "::error::Failed to generate API documentation"
+            echo "There are errors in your Swagger/OpenAPI annotations."
+            echo "Please fix the annotations and try again."
+            exit 1
+          fi
+
+          echo "✓ API documentation generated successfully"
+
+      - name: Check if API docs are up to date
+        run: |
+          if ! diff -q storage/api-docs/api-docs.json storage/api-docs/api-docs.json.backup > /dev/null 2>&1; then
+            echo "::error::API documentation is out of sync!"
+            echo ""
+            echo "❌ The generated API documentation does not match the committed version."
+            echo ""
+            echo "This means you made changes to API endpoints, request/response structures,"
+            echo "or Swagger annotations without regenerating the documentation."
+            echo ""
+            echo "To fix this issue, run the following commands locally:"
+            echo ""
+            echo "  php artisan l5-swagger:generate"
+            echo "  git add storage/api-docs/api-docs.json"
+            echo "  git commit -m '📝 Update API documentation'"
+            echo ""
+            echo "Then push your changes to update this PR."
+            echo ""
+            echo "Showing first 50 lines of differences:"
+            diff -u storage/api-docs/api-docs.json.backup storage/api-docs/api-docs.json | head -50 || true
+            echo ""
+            exit 1
+          fi
+          echo "✓ API documentation is up to date"
+
+      - name: Verify API docs file exists and is valid JSON
+        run: |
+          if [ ! -f storage/api-docs/api-docs.json ]; then
+            echo "::error::API documentation file not found at storage/api-docs/api-docs.json"
+            exit 1
+          fi
+
+          if ! jq empty storage/api-docs/api-docs.json 2>/dev/null; then
+            echo "::error::API documentation is not valid JSON"
+            exit 1
+          fi
+
+          echo "✓ API documentation file exists and is valid JSON"
+
+  test:
+    name: Unit & Feature Tests with Coverage
+    runs-on: ubuntu-latest
+    needs: [install-node-dependencies, install-composer-dependencies]
+
+    strategy:
+      matrix:
+        php: [8.5]
+        dependency-version: [prefer-stable]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, ctype, exif, fileinfo, gd, json, openssl, pdo, simplexml, sodium, tokenizer, xml
+          coverage: xdebug
+
+      - name: Download vendor directory
+        uses: actions/download-artifact@v4
+        with:
+          name: vendor
+          path: vendor
+
+      - name: Download Vite build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: vite-build
+          path: public/build
+
+      - name: Copy .env
+        run: cp .env.example .env
+
+      - name: Generate key
+        run: php artisan key:generate
+
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+
+      - name: Create Database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
+
+      - name: Execute tests (Unit and Feature tests) via Laravel internal test management and PHPUnit
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan test --parallel --coverage
