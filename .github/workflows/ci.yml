@@ -130,7 +130,7 @@ jobs:
           path: vendor
 
       - name: Run Laravel Pint
-        run: ./vendor/bin/pint --test
+        run: php vendor/bin/pint --test
 
   migration-test-sqlite:
     name: Migration Test (SQLite)
