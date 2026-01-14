@@ -1,12 +1,13 @@
 {
   "name": "traewelling",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "api": "npx swagger-typescript-api generate --path storage/api-docs/api-docs.json --custom-config {} --output resources/types --name='Api.gen.ts'",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint . --fix"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",

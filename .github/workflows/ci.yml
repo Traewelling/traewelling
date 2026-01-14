@@ -116,7 +116,7 @@ jobs:
           path: node_modules
 
       - name: Run ESLint
-        run: npm run lint
+        run: npx eslint .
 
   migration-test-sqlite:
     name: Migration Test (SQLite)

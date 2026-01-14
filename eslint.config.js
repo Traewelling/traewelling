@@ -15,11 +15,15 @@ export default [
             'vendor/**',
             'public/build/**',
             'public/hot',
+            'public/**/*.min.js',
             'storage/**',
             'bootstrap/cache/**',
             '.phpstorm.meta.php',
             '_ide_helper.php',
             '_ide_helper_models.php',
+            '**/*.min.js',
+            '**/*.bundle.js',
+            'resources/types/Api.gen.ts', // Auto-generated from Swagger
         ],
     },
 
@@ -37,6 +41,14 @@ export default [
                 // Laravel globals
                 route: 'readonly',
                 axios: 'readonly',
+                // External libraries
+                L: 'readonly',           // Leaflet
+                notyf: 'readonly',       // Notyf notifications
+                Awesomplete: 'readonly', // Awesomplete autocomplete
+                Status: 'readonly',      // Laravel blade injected
+                Settings: 'readonly',    // Laravel blade injected
+                urlDisconnect: 'readonly', // Laravel blade injected
+                setTilingLayer: 'readonly', // Maps helper
             },
         },
         rules: {
@@ -49,6 +61,9 @@ export default [
                 varsIgnorePattern: '^_',
             }],
             '@typescript-eslint/no-explicit-any': 'warn',
+            'no-constant-binary-expression': 'warn',
+            'no-unsafe-optional-chaining': 'warn',
+            'no-undef': 'error',
 
             // Vue specific
             'vue/multi-word-component-names': 'off',
@@ -97,13 +112,13 @@ export default [
             'vue/component-tags-order': ['error', {
                 order: ['script', 'template', 'style'],
             }],
-            'vue/block-lang': ['error', {
-                script: { lang: 'ts' },
-            }],
-            'vue/component-api-style': ['error', ['script-setup']],
+            // Warn instead of error for gradual migration to TypeScript and Composition API
+            'vue/block-lang': 'warn',
+            'vue/component-api-style': 'off', // Allow both Options and Composition API for now
             'vue/define-macros-order': ['error', {
                 order: ['defineProps', 'defineEmits', 'defineSlots'],
             }],
+            'vue/one-component-per-file': 'off', // Allow multiple components in app.js for now
         },
     },
 
