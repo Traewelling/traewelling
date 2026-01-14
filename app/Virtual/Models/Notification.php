@@ -6,12 +6,14 @@ namespace App\Virtual\Models;
  * @OA\Schema(
  *     title="Notification",
  *     description="Notification model",
+ *
  *     @OA\Xml(
  *         name="Notification"
  *     )
  * )
  */
-class Notification {
+class Notification
+{
     /**
      * @OA\Property(
      *     title="ID",
@@ -100,6 +102,7 @@ class Notification {
      *     title="data",
      *     description="the data of the notification",
      *     type="array",
+     *
      *     @OA\Items(
      *          example={"notice": "every notification type has different data attributes, just try it out"}
      *     )

@@ -11,6 +11,7 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(
  *     title="User",
  *     description="User model",
+ *
  *     @OA\Property(property="id",description="ID",type="integer",example=1),
  *     @OA\Property(property="displayName",description="Display name of the user",example="Gertrud"),
  *     @OA\Property(property="username",description="username of user",example="Gertrud123"),
@@ -39,26 +40,27 @@ class UserResource extends JsonResource
     {
         /** @var User $this */
         $pointsEnabled = $request->user()?->points_enabled ?? true;
+
         return [
-            'id' => (int)$this->id,
-            'displayName' => (string)$this->name,
-            'username' => (string)$this->username,
+            'id' => (int) $this->id,
+            'displayName' => (string) $this->name,
+            'username' => (string) $this->username,
             'profilePicture' => ProfilePictureController::getUrlForUserId($this->id),
-            'trainDistance' => (float)$this->train_distance, // @deprecated: remove after 2024-08
-            'totalDistance' => (float)$this->train_distance,
-            'trainDuration' => (int)$this->train_duration, // @deprecated: remove after 2024-08
-            'totalDuration' => (int)$this->train_duration,
-            'points' => (int)$pointsEnabled ? $this->points : 0,
+            'trainDistance' => (float) $this->train_distance, // @deprecated: remove after 2024-08
+            'totalDistance' => (float) $this->train_distance,
+            'trainDuration' => (int) $this->train_duration, // @deprecated: remove after 2024-08
+            'totalDuration' => (int) $this->train_duration,
+            'points' => (int) $pointsEnabled ? $this->points : 0,
             'mastodonUrl' => $this->mastodonUrl ?? null,
-            'privateProfile' => (bool)$this->private_profile,
+            'privateProfile' => (bool) $this->private_profile,
             'preventIndex' => $this->prevent_index,
             'likes_enabled' => $this->likes_enabled,
             'pointsEnabled' => $this->points_enabled,
-            'userInvisibleToMe' => (bool)$request->user()?->cannot('view', User::find($this->id)),
-            'muted' => (bool)$this->muted,
-            'following' => (bool)$this->following,
-            'followPending' => (bool)$this->followPending,
-            'followedBy' => (bool)$this->followedBy,
+            'userInvisibleToMe' => (bool) $request->user()?->cannot('view', User::find($this->id)),
+            'muted' => (bool) $this->muted,
+            'following' => (bool) $this->following,
+            'followPending' => (bool) $this->followPending,
+            'followedBy' => (bool) $this->followedBy,
             'bio' => $this->bio,
             'profileLinks' => ProfileLinkResource::collection($this->profileLinks),
         ];

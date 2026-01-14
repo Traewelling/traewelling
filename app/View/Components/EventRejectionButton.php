@@ -9,7 +9,8 @@ use Illuminate\View\Component;
 
 class EventRejectionButton extends Component
 {
-    public function render(): View|Factory|Application {
+    public function render(): View|Factory|Application
+    {
         return view('components.event-rejection-button');
     }
 }

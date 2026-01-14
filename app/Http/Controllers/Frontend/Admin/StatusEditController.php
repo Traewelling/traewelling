@@ -18,10 +18,11 @@ use Illuminate\View\View;
 
 class StatusEditController extends Controller
 {
-    public function index(Request $request): View {
-        $validated    = $request->validate([
-                                               'userQuery' => ['nullable', 'max:255'],
-                                           ]);
+    public function index(Request $request): View
+    {
+        $validated = $request->validate([
+            'userQuery' => ['nullable', 'max:255'],
+        ]);
         $lastStatuses = Status::orderBy('created_at', 'desc');
 
         if (isset($validated['userQuery'])) {
@@ -38,79 +39,82 @@ class StatusEditController extends Controller
         ]);
     }
 
-    public function find(Request $request): RedirectResponse {
+    public function find(Request $request): RedirectResponse
+    {
         $validated = $request->validate([
-                                            'statusId' => ['required', 'integer', 'exists:statuses,id'],
-                                        ]);
+            'statusId' => ['required', 'integer', 'exists:statuses,id'],
+        ]);
 
         return redirect()->route('admin.statuses.edit', ['statusId' => $validated['statusId']]);
     }
 
-    public function renderEdit(int $statusId, Request $request): View {
+    public function renderEdit(int $statusId, Request $request): View
+    {
         return view('admin.statuses.edit', [
-            'status' => Status::findOrFail($statusId)
+            'status' => Status::findOrFail($statusId),
         ]);
     }
 
-    public function edit(int $statusId, Request $request): RedirectResponse {
+    public function edit(int $statusId, Request $request): RedirectResponse
+    {
         $validated = $request->validate([
-                                            'origin'           => ['required', 'exists:train_stations,id'],
-                                            'destination'      => ['required', 'exists:train_stations,id'],
-                                            'body'             => ['nullable', 'string'],
-                                            'visibility'       => ['required', new Enum(StatusVisibility::class)],
-                                            'event_id'         => ['nullable', 'integer', 'exists:events,id'],
-                                            'points'           => ['nullable', 'integer', 'gte:0'], //if null, points will be recalculated
-                                            'moderation_notes' => ['nullable', 'string', 'max:255'],
-                                            'lock_visibility'  => ['nullable', 'boolean'],
-                                            'hide_body'        => ['nullable', 'boolean'],
-                                        ]);
+            'origin' => ['required', 'exists:train_stations,id'],
+            'destination' => ['required', 'exists:train_stations,id'],
+            'body' => ['nullable', 'string'],
+            'visibility' => ['required', new Enum(StatusVisibility::class)],
+            'event_id' => ['nullable', 'integer', 'exists:events,id'],
+            'points' => ['nullable', 'integer', 'gte:0'], // if null, points will be recalculated
+            'moderation_notes' => ['nullable', 'string', 'max:255'],
+            'lock_visibility' => ['nullable', 'boolean'],
+            'hide_body' => ['nullable', 'boolean'],
+        ]);
 
         $status = Status::findOrFail($statusId);
 
-        $originStation      = Station::find($validated['origin']);
+        $originStation = Station::find($validated['origin']);
         $destinationStation = Station::find($validated['destination']);
 
-        $newOrigin      = $status->checkin->trip->stopovers->where('train_station_id', $originStation->id)->first();
+        $newOrigin = $status->checkin->trip->stopovers->where('train_station_id', $originStation->id)->first();
         $newDestination = $status->checkin->trip->stopovers->where('train_station_id', $destinationStation->id)->first();
 
         $newDeparture = $newOrigin->departure_planned ?? $newOrigin->arrival_planned;
-        $newArrival   = $newDestination->arrival_planned ?? $newDestination->departure_planned;
+        $newArrival = $newDestination->arrival_planned ?? $newDestination->departure_planned;
 
         $distanceInMeters = (new LocationController(
-            trip:        $status->checkin->trip,
-            origin:      $newOrigin,
+            trip: $status->checkin->trip,
+            origin: $newOrigin,
             destination: $newDestination
         ))->calculateDistance();
 
         $pointCalculation = PointsCalculationController::calculatePoints(
             distanceInMeter: $distanceInMeters,
             hafasTravelType: $status->checkin->trip->category,
-            departure:       $newDeparture,
-            arrival:         $newArrival,
-            tripSource:      $status->checkin->trip->source,
+            departure: $newDeparture,
+            arrival: $newArrival,
+            tripSource: $status->checkin->trip->source,
             timestampOfView: $newDeparture,
         );
 
         $status->checkin->update([
-                                     'origin'                  => $originStation->ibnr,
-                                     'origin_stopover_id'      => $newOrigin->id,
-                                     'destination'             => $destinationStation->ibnr,
-                                     'destination_stopover_id' => $newDestination->id,
-                                     'departure'               => $newDeparture,
-                                     'arrival'                 => $newArrival,
-                                     'distance'                => $distanceInMeters,
-                                     'points'                  => $validated['points'] ?? $pointCalculation->points,
-                                     'duration'                => TrainCheckinController::calculateCheckinDuration(
-                                         $status->checkin,
-                                         false
-                                     ),
-                                 ]);
+            'origin' => $originStation->ibnr,
+            'origin_stopover_id' => $newOrigin->id,
+            'destination' => $destinationStation->ibnr,
+            'destination_stopover_id' => $newDestination->id,
+            'departure' => $newDeparture,
+            'arrival' => $newArrival,
+            'distance' => $distanceInMeters,
+            'points' => $validated['points'] ?? $pointCalculation->points,
+            'duration' => TrainCheckinController::calculateCheckinDuration(
+                $status->checkin,
+                false
+            ),
+        ]);
 
         StatusUpdateEvent::dispatch($status->refresh());
 
         $payload = [
-            'visibility'       => $validated['visibility'],
-            'event_id'         => $validated['event_id'],
+            'visibility' => $validated['visibility'],
+            'event_id' => $validated['event_id'],
             'moderation_notes' => null,
         ];
 
@@ -130,7 +134,6 @@ class StatusEditController extends Controller
         $status->update($payload);
 
         return redirect()->route('admin.statuses.edit', ['statusId' => $status->id])
-                         ->with('alert-success', 'Status successfully updated');
+            ->with('alert-success', 'Status successfully updated');
     }
-
 }

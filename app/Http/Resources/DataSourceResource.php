@@ -12,16 +12,19 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(
  *     title="DataSourceResource",
  *     required={"id", "attribution"},
+ *
  *     @OA\Property(property="id", type="string", example="foobar"),
  *     @OA\Property(property="attribution", type="string", example="Provided by foobar under CC BY 4.0")
  * )
  */
 class DataSourceResource extends JsonResource
 {
-    private LicenseService      $licenseService;
+    private LicenseService $licenseService;
+
     private ?MotisSourceLicense $source = null;
 
-    public function __construct($resource) {
+    public function __construct($resource)
+    {
         if ($resource instanceof MotisSourceLicense) {
             $this->source = $resource;
         }
@@ -29,7 +32,8 @@ class DataSourceResource extends JsonResource
         $this->licenseService = app(LicenseService::class);
     }
 
-    public function toArray(Request $request): array {
+    public function toArray(Request $request): array
+    {
         $dto = null;
         if ($this->source) {
             $dto = $this->licenseService->getLicenseDataForSource($this->source);
@@ -37,7 +41,7 @@ class DataSourceResource extends JsonResource
 
         /** @var MotisSourceLicense $this */
         return [
-            'id'          => $this->id,
+            'id' => $this->id,
             'attribution' => $dto?->attributionString,
         ];
     }

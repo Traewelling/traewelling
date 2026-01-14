@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\RateLimiter;
  */
 class ExperimentalController extends Controller
 {
-
-    public function fetchWikidata(int $stationId): JsonResponse {
+    public function fetchWikidata(int $stationId): JsonResponse
+    {
         if (!self::checkGeneralRateLimit()) {
             return response()->json(['error' => 'You are requesting too fast. Please try again later.'], 429);
         }
@@ -32,22 +32,26 @@ class ExperimentalController extends Controller
 
         try {
             WikidataImportService::searchStation($station);
+
             return response()->json(['message' => 'Wikidata information fetched successfully']);
         } catch (FetchException $exception) {
             return response()->json(['error' => $exception->getMessage()], 422);
         }
     }
 
-    public static function checkGeneralRateLimit(): bool {
-        $key = "fetch-wikidata-user:" . auth()->id();
+    public static function checkGeneralRateLimit(): bool
+    {
+        $key = 'fetch-wikidata-user:' . auth()->id();
         if (RateLimiter::tooManyAttempts($key, 20)) {
             return false;
         }
         RateLimiter::increment($key);
+
         return true;
     }
 
-    private static function checkStationRateLimit(int $stationId): bool {
+    private static function checkStationRateLimit(int $stationId): bool
+    {
         // request a station 1 time per 5 minutes
 
         $key = "fetch-wikidata-station:$stationId";
@@ -55,10 +59,12 @@ class ExperimentalController extends Controller
             return false;
         }
         RateLimiter::increment($key, 5 * 60);
+
         return true;
     }
 
-    public static function checkWikidataIdRateLimit(string $qId) {
+    public static function checkWikidataIdRateLimit(string $qId)
+    {
         // request a wikidata id 1 time per 5 minutes
 
         $key = "fetch-wikidata-qid:$qId";
@@ -66,7 +72,7 @@ class ExperimentalController extends Controller
             return false;
         }
         RateLimiter::increment($key, 5 * 60);
+
         return true;
     }
-
 }

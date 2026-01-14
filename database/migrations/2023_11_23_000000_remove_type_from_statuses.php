@@ -10,14 +10,16 @@ use Illuminate\Support\Facades\Schema;
  * It's now planned to merge the status and train_checkins models into one model and create manual trags directly to
  * the trips (currently "hafas_trips") table.
  */
-return new class extends Migration
+return new class() extends Migration
 {
-    public function up(): void {
+    public function up(): void
+    {
         Schema::dropColumns('statuses', ['type']);
     }
 
-    public function down(): void {
-        Schema::table('statuses', static function(Blueprint $table) {
+    public function down(): void
+    {
+        Schema::table('statuses', static function (Blueprint $table) {
             $table->string('type')->default('hafas')->after('visibility');
         });
     }

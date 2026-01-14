@@ -31,27 +31,31 @@ class StatisticsController extends Controller
      *      operationId="getLeaderboard",
      *      tags={"Leaderboard"},
      *      summary="[Auth optional] Get array of 20 best users",
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", type="array",
+     *
      *                  @OA\Items(
      *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
      *           {"passport": {"read-statistics"}}, {"token": {}}
      *       }
      *     )
-     *
-     * @return AnonymousResourceCollection
      */
-    public function leaderboard(): AnonymousResourceCollection {
+    public function leaderboard(): AnonymousResourceCollection
+    {
         return LeaderboardUserResource::collection(LeaderboardBackend::getLeaderboard());
     }
 
@@ -61,17 +65,22 @@ class StatisticsController extends Controller
      *      operationId="getLeaderboardByDistance",
      *      tags={"Leaderboard"},
      *      summary="[Auth optional] Get leaderboard array sorted by distance",
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", type="array",
+     *
      *                  @OA\Items(
      *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
@@ -79,13 +88,11 @@ class StatisticsController extends Controller
      *
      *       }
      *     )
-     *
-     * @return AnonymousResourceCollection
      */
-    public function leaderboardByDistance(): AnonymousResourceCollection {
+    public function leaderboardByDistance(): AnonymousResourceCollection
+    {
         return LeaderboardUserResource::collection(LeaderboardBackend::getLeaderboard(orderBy: 'distance'));
     }
-
 
     /**
      * @OA\Get(
@@ -93,17 +100,22 @@ class StatisticsController extends Controller
      *      operationId="getLeaderboardByFriends",
      *      tags={"Leaderboard"},
      *      summary="Get friends-leaderboard array sorted",
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", type="array",
+     *
      *                  @OA\Items(
      *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
@@ -111,10 +123,9 @@ class StatisticsController extends Controller
      *
      *       }
      *     )
-     *
-     * @return AnonymousResourceCollection
      */
-    public function leaderboardFriends(): AnonymousResourceCollection {
+    public function leaderboardFriends(): AnonymousResourceCollection
+    {
         return LeaderboardUserResource::collection(LeaderboardBackend::getLeaderboard(onlyFollowings: true));
     }
 
@@ -124,24 +135,31 @@ class StatisticsController extends Controller
      *      operationId="getMonthlyLeaderboard",
      *      tags={"Leaderboard"},
      *      summary="[Auth optional] Get leaderboard array for a specific month",
+     *
      *      @OA\Parameter(
      *          name="month",
      *          in="path",
      *          description="Month for the complete leaderboard in Format `YYYY-MM`",
      *          example="2022-04",
+     *
      *          @OA\Schema(type="string")
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", type="array",
+     *
      *                  @OA\Items(
      *                      ref="#/components/schemas/LeaderboardUserResource"
      *                  )
      *              ),
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No Event found for this id"),
      *       security={
@@ -149,13 +167,11 @@ class StatisticsController extends Controller
      *
      *       }
      *     )
-     *
-     * @param string $date
-     *
-     * @return AnonymousResourceCollection
      */
-    public function leaderboardForMonth(string $date): AnonymousResourceCollection {
+    public function leaderboardForMonth(string $date): AnonymousResourceCollection
+    {
         $date = Carbon::parse($date);
+
         return LeaderboardUserResource::collection(LeaderboardBackend::getMonthlyLeaderboard(date: $date));
     }
 
@@ -165,6 +181,7 @@ class StatisticsController extends Controller
      *     operationId="getStatistics",
      *     tags={"Statistics"},
      *     summary="Get personal statistics",
+     *
      *     @OA\Parameter(
      *         name="from",
      *         in="query",
@@ -177,10 +194,13 @@ class StatisticsController extends Controller
      *         description="End date for the statistics",
      *         example="2021-02-01T00:00:00.000Z"
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="successful operation",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -188,7 +208,9 @@ class StatisticsController extends Controller
      *                      property="purpose",
      *                      description="The purpose of travel",
      *                      type="array",
+     *
      *                      @OA\Items(
+     *
      *                          @OA\Property(property="name", ref="#/components/schemas/Business"),
      *                          @OA\Property(property="count", type="integer", example=11),
      *                          @OA\Property(property="duration", type="integer", example=425, description="Duration in
@@ -199,7 +221,9 @@ class StatisticsController extends Controller
      *                    property="categories",
      *                    description="The categories of the travel",
      *                    type="array",
+     *
      *                    @OA\Items(
+     *
      *                        @OA\Property(property="name", ref="#/components/schemas/HafasTravelType"),
      *                        @OA\Property(property="count", type="integer", example=11),
      *                        @OA\Property(property="duration", type="integer", example=425, description="Duration in minutes"),
@@ -209,7 +233,9 @@ class StatisticsController extends Controller
      *                    property="operators",
      *                    description="The operators of the means of transport",
      *                    type="array",
+     *
      *                    @OA\Items(
+     *
      *                        @OA\Property(property="name", example="Gertruds Verkehrsgesellschaft mbH"),
      *                        @OA\Property(property="count", type="integer", example=10),
      *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in minutes"),
@@ -219,7 +245,9 @@ class StatisticsController extends Controller
      *                    property="time",
      *                    description="Shows the daily travel volume",
      *                    type="array",
+     *
      *                    @OA\Items(
+     *
      *                        @OA\Property(property="date", type="string", example="2021-01-01T00:00:00.000Z"),
      *                        @OA\Property(property="count", type="integer", example=10),
      *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in minutes"),
@@ -228,6 +256,7 @@ class StatisticsController extends Controller
      *            )
      *        )
      *    ),
+     *
      *     @OA\Response(response=400, description="Bad request"),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     security={
@@ -235,44 +264,42 @@ class StatisticsController extends Controller
      *
      *     }
      * )
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
-    public function getPersonalStatistics(Request $request): JsonResponse {
+    public function getPersonalStatistics(Request $request): JsonResponse
+    {
         $validated = $request->validate([
-                                            'from'  => ['nullable', 'date'],
-                                            'until' => ['nullable', 'date', 'after_or_equal:from']
-                                        ]);
+            'from' => ['nullable', 'date'],
+            'until' => ['nullable', 'date', 'after_or_equal:from'],
+        ]);
 
-        $from  = isset($validated['from']) ? Carbon::parse($validated['from']) : Carbon::now()->subWeeks(4);
+        $from = isset($validated['from']) ? Carbon::parse($validated['from']) : Carbon::now()->subWeeks(4);
         $until = isset($validated['until']) ? Carbon::parse($validated['until']) : Carbon::now();
 
-        $purposes   = StatisticsTravelPurposeResource::collection(
+        $purposes = StatisticsTravelPurposeResource::collection(
             StatisticBackend::getTravelPurposes(user: auth()->user(), from: $from, until: $until)
         );
         $categories = StatisticBackend::getTopTravelCategoryByUser(user: auth()->user(), from: $from, until: $until);
-        $operators  = StatisticBackend::getTopTripOperatorByUser(user: auth()->user(), from: $from, until: $until);
+        $operators = StatisticBackend::getTopTripOperatorByUser(user: auth()->user(), from: $from, until: $until);
         $travelTime = StatisticBackend::getDailyTravelTimeByUser(user: auth()->user(), from: $from, until: $until);
 
         $returnData = [
-            'purpose'    => $purposes,
+            'purpose' => $purposes,
             'categories' => $categories,
-            'operators'  => $operators,
-            'time'       => $travelTime->map(function(Collection $row) {
+            'operators' => $operators,
+            'time' => $travelTime->map(function (Collection $row) {
                 return [
-                    'date'     => $row->date->toDateString(),
-                    'count'    => $row->count,
+                    'date' => $row->date->toDateString(),
+                    'count' => $row->count,
                     'duration' => $row->duration,
                 ];
-            })
+            }),
         ];
 
         $additionalData = [
             'meta' => [
-                'from'  => $from,
-                'until' => $until
-            ]
+                'from' => $from,
+                'until' => $until,
+            ],
         ];
 
         return $this->sendResponse(data: $returnData, additional: $additionalData);
@@ -285,47 +312,60 @@ class StatisticsController extends Controller
      *      tags={"Statistics"},
      *      summary="Get statistics and statuses of one day",
      *      description="Returns all statuses and statistics for the requested day",
+     *
      *      @OA\Parameter(
      *          name="date",
      *          in="path",
      *          description="Date for the statistics in Format `YYYY-MM-DD`",
      *          example="2024-04-09",
      *          required=true,
+     *
      *          @OA\Schema(type="string")
      *       ),
+     *
      *      @OA\Parameter (
      *          name="timezone",
      *          in="query",
      *          description="Timezone for the date. If not set, the user's timezone will be used.",
      *          example="Europe/Berlin",
+     *
      *          @OA\Schema(type="string")
      *      ),
+     *
      *      @OA\Parameter (
      *          name="withPolylines",
      *          in="query",
      *          description="If this parameter is set, the polylines will be returned as well. Otherwise attribute is
      *          null.",
+     *
      *          @OA\Schema(type="boolean")
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property (
      *                  property="data",
      *                  type="object",
      *                  @OA\Property (
      *                      property="statuses", type="array",
+     *
      *                      @OA\Items (
      *                          ref="#/components/schemas/StatusResource"
      *                      ),
      *                  ),
+     *
      *                  @OA\Property (
      *                      property="polylines", type="array",
+     *
      *                      @OA\Items (
      *                          ref="#/components/schemas/FeatureCollection"
      *                      ),
      *                  ),
+     *
      *                  @OA\Property(
      *                      property="totalDistance",
      *                      example="74026",
@@ -344,6 +384,7 @@ class StatisticsController extends Controller
      *              )
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Unauthorized"),
      *       @OA\Response(response=403, description="User not authorized to access this"),
@@ -351,24 +392,18 @@ class StatisticsController extends Controller
      *           {"passport": {"read-statistics"}}, {"token": {}}
      *       }
      *     )
-     *
-     *
-     *
-     * @param Request $request
-     * @param string  $dateString
-     *
-     * @return JsonResponse
      */
-    public function getPersonalDailyStatistics(Request $request, string $dateString): JsonResponse {
+    public function getPersonalDailyStatistics(Request $request, string $dateString): JsonResponse
+    {
         $validated = $request->validate([
-                                            'withPolylines' => ['nullable', Rule::in(['true', 'false'])],
-                                            'timezone'      => [
-                                                'nullable',
-                                                'string',
-                                                Rule::in(DateTimeZone::listIdentifiers())
-                                            ]
-                                        ]);
-        $statuses  = DailyStatsController::getStatusesOnDate(
+            'withPolylines' => ['nullable', Rule::in(['true', 'false'])],
+            'timezone' => [
+                'nullable',
+                'string',
+                Rule::in(DateTimeZone::listIdentifiers()),
+            ],
+        ]);
+        $statuses = DailyStatsController::getStatusesOnDate(
             auth()->user(),
             Carbon::parse($dateString, $validated['timezone'] ?? auth()->user()->timezone)
         );
@@ -376,19 +411,19 @@ class StatisticsController extends Controller
         $polylines = null;
         if (!empty($validated['withPolylines']) && $validated['withPolylines'] !== 'false') {
             $polylines = collect();
-            $statuses->each(function(Status $status) use (&$polylines) {
+            $statuses->each(function (Status $status) use (&$polylines) {
                 $polylines->add(new Feature(LocationController::forStatus($status)->getMapLines()));
             });
             $featureCollection = new FeatureCollection($polylines);
         }
 
         return $this->sendResponse([
-                                       'statuses'      => StatusResource::collection($statuses),
-                                       'polylines'     => $polylines && count($polylines) ? $featureCollection : null,
-                                       'totalDistance' => $statuses->sum('checkin.distance'),
-                                       'totalDuration' => $statuses->sum('checkin.duration'),
-                                       'totalPoints'   => $statuses->sum('checkin.points')
-                                   ]);
+            'statuses' => StatusResource::collection($statuses),
+            'polylines' => $polylines && count($polylines) ? $featureCollection : null,
+            'totalDistance' => $statuses->sum('checkin.distance'),
+            'totalDuration' => $statuses->sum('checkin.duration'),
+            'totalPoints' => $statuses->sum('checkin.points'),
+        ]);
     }
 
     /**
@@ -397,10 +432,13 @@ class StatisticsController extends Controller
      *     operationId="getGlobalStatistics",
      *     tags={"Statistics"},
      *     summary="Get global statistics of the last 4 weeks",
+     *
      *     @OA\Response(
      *         response=200,
      *         description="successful operation",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -418,24 +456,23 @@ class StatisticsController extends Controller
      *        {"passport": {"read-statistics"}}, {"token": {}}
      *     }
      *   )
-     *
-     * @return JsonResponse
      */
-    public function getGlobalStatistics(): JsonResponse {
-        $from  = Carbon::now()->subWeeks(4);
+    public function getGlobalStatistics(): JsonResponse
+    {
+        $from = Carbon::now()->subWeeks(4);
         $until = Carbon::now();
 
         $globalStats = Cache::remember(
             key: CacheKey::getGlobalStatsKey($from, $until),
             ttl: config('trwl.cache.global-statistics-retention-seconds'), // 1 hour
-            callback: static fn() => StatisticBackend::getGlobalCheckInStats($from, $until)
+            callback: static fn () => StatisticBackend::getGlobalCheckInStats($from, $until)
         );
 
         $additionalData = [
             'meta' => [
-                'from'  => $from,
-                'until' => $until
-            ]
+                'from' => $from,
+                'until' => $until,
+            ],
         ];
 
         return $this->sendResponse(data: new StatisticsGlobalData($globalStats), additional: $additionalData);

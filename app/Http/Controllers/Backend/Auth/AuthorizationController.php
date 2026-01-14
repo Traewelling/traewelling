@@ -7,7 +7,6 @@ use App\Models\OAuthClient;
 use App\Models\Webhook;
 use App\Repositories\OAuthClientRepository;
 use App\Rules\AuthorizedWebhookURL;
-use App\Rules\StringifiedWebhookEvents;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
@@ -28,30 +27,25 @@ class AuthorizationController extends PassportAuthorizationController
     /**
      * Authorize a client to access the user's account.
      *
-     * @param ServerRequestInterface $psrRequest
-     * @param Request                $request
-     * @param ClientRepository       $_
-     * @param TokenRepository        $tokens
      *
-     * @return Response
      * @throws AuthenticationException
      * @throws \Laravel\Passport\Exceptions\OAuthServerException
      */
     public function authorize(
         ServerRequestInterface $psrRequest,
-        Request                $request,
-        ClientRepository       $_,
-        TokenRepository        $tokens
+        Request $request,
+        ClientRepository $_,
+        TokenRepository $tokens
     ): Response {
         $clients = new OAuthClientRepository();
 
-        $authRequest = $this->withErrorHandling(function() use ($psrRequest) {
+        $authRequest = $this->withErrorHandling(function () use ($psrRequest) {
             return $this->server->validateAuthorizationRequest($psrRequest);
         });
 
         $client = $clients->find($authRequest->getClient()->getIdentifier());
 
-        $webhook = $this->withErrorHandling(function() use ($request, $client) {
+        $webhook = $this->withErrorHandling(function () use ($request, $client) {
             return $this->parseWebhookExtensions($request, $client);
         });
 
@@ -75,7 +69,7 @@ class AuthorizationController extends PassportAuthorizationController
         $request->session()->forget('promptedForLogin');
 
         $scopes = $this->parseScopes($authRequest);
-        $user   = $request->user();
+        $user = $request->user();
 
         if (
             $webhook === null &&
@@ -94,36 +88,37 @@ class AuthorizationController extends PassportAuthorizationController
         $request->session()->put('webhook', $webhook);
 
         $userCount = $client->tokens()
-                            ->selectRaw('count(distinct user_id) as count')
-                            ->where('revoked', 0)
-                            ->union(
-                                Webhook::select('user_id')
-                                       ->where('oauth_client_id', $client->id)
-                            )->value('count');
+            ->selectRaw('count(distinct user_id) as count')
+            ->where('revoked', 0)
+            ->union(
+                Webhook::select('user_id')
+                    ->where('oauth_client_id', $client->id)
+            )->value('count');
 
         return response()->view('auth.authorize', [
-            'client'    => $client,
-            'user'      => $user,
-            'scopes'    => $scopes,
-            'request'   => $request,
+            'client' => $client,
+            'user' => $user,
+            'scopes' => $scopes,
+            'request' => $request,
             'authToken' => $authToken,
-            'webhook'   => $webhook,
+            'webhook' => $webhook,
             'userCount' => $userCount,
-            'author'    => $client->user->username,
+            'author' => $client->user->username,
         ]);
     }
 
     /**
      * @throws OAuthServerException
      */
-    public function parseWebhookExtensions(Request $request, OAuthClient $client): ?array {
+    public function parseWebhookExtensions(Request $request, OAuthClient $client): ?array
+    {
         if (!$request->has('trwl_webhook_url') && !$request->has('trwl_webhook_events')) {
             return null;
         }
 
         if (!$client->webhooks_enabled) {
             throw new OAuthServerException(
-                "Webhooks are not enabled. Please enable them in the application dashboard if you wish to use them.",
+                'Webhooks are not enabled. Please enable them in the application dashboard if you wish to use them.',
                 3,
                 'invalid_request',
                 400,
@@ -134,19 +129,20 @@ class AuthorizationController extends PassportAuthorizationController
 
         $validator = Validator::make($request->all(), [
             'trwl_webhook_events' => ['required', new Delimited(new Enum(WebhookEvent::class))],
-            'trwl_webhook_url'    => ['required', 'string', new AuthorizedWebhookURL($client)]
+            'trwl_webhook_url' => ['required', 'string', new AuthorizedWebhookURL($client)],
         ]);
 
         if ($validator->fails()) {
             $error = $validator->errors();
             throw new OAuthServerException($error, 3, 'invalid_request', 400, null, null);
         }
-        $data   = $validator->valid();
+        $data = $validator->valid();
         $events = explode(',', $data['trwl_webhook_events']);
+
         return [
-            'user'   => $request->user(),
+            'user' => $request->user(),
             'client' => $client,
-            'url'    => $data['trwl_webhook_url'],
+            'url' => $data['trwl_webhook_url'],
             'events' => $events,
         ];
     }

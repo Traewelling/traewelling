@@ -10,38 +10,42 @@ use JetBrains\PhpStorm\ArrayShape;
 
 class MotisLicenseRepository
 {
-    public function getActiveLicense(string $gtfsSource, DataProvider $source): ?MotisSourceLicense {
+    public function getActiveLicense(string $gtfsSource, DataProvider $source): ?MotisSourceLicense
+    {
         $query = $this->licenseQuery($gtfsSource, $source);
 
         return $query?->where('active', true)->first();
     }
 
-
-    private function licenseQuery(string $gtfsSource, DataProvider $source): ?Builder {
+    private function licenseQuery(string $gtfsSource, DataProvider $source): ?Builder
+    {
         [$country, $name] = $this->getCountryAndLicense($gtfsSource);
         if (empty($name) || empty($country)) {
             Log::warning('no matching license format found in ' . $gtfsSource);
+
             return null;
         }
 
         return MotisSourceLicense::where([
-                                             'provider' => $source->value,
-                                             'country'  => strtoupper($country),
-                                             'name'     => $name . '.zip'
-                                         ]);
+            'provider' => $source->value,
+            'country' => strtoupper($country),
+            'name' => $name . '.zip',
+        ]);
     }
 
-    public function getLicense(string $gtfsSource, DataProvider $source): ?MotisSourceLicense {
+    public function getLicense(string $gtfsSource, DataProvider $source): ?MotisSourceLicense
+    {
         $query = $this->licenseQuery($gtfsSource, $source);
 
         return $query?->first();
     }
 
     #[ArrayShape(['country' => 'string', 'name' => 'string'])]
-    public function getCountryAndLicense(string $gtfsSource): array {
+    public function getCountryAndLicense(string $gtfsSource): array
+    {
         $matches = [];
         preg_match('/(?<name>(?<country>.*)_.*\.gtfs)/', $gtfsSource, $matches);
-        $name    = $matches['name'] ?? '';
+        $name = $matches['name'] ?? '';
         $country = $matches['country'] ?? '';
 
         return [$country, $name];

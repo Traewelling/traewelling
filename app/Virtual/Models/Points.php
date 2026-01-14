@@ -6,6 +6,7 @@ namespace App\Virtual\Models;
  * @OA\Schema(
  *     title="Points",
  *     description="Points model",
+ *
  *     @OA\Xml(
  *         name="Points"
  *     )
@@ -21,7 +22,7 @@ class Points
      *     example=1
      * )
      *
-     * @var integer
+     * @var int
      **/
     private $points;
 
@@ -41,6 +42,7 @@ class Points
      *     title="additional",
      *     description="extra points that can be given",
      *     type="array",
+     *
      *     @OA\Items(
      *          example={"identifier": "extrapoints", "points": 4, "divisibile": false}
      *     )
@@ -49,6 +51,4 @@ class Points
      * @var array
      **/
     private $additional;
-
-
 }

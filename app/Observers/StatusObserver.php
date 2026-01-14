@@ -13,31 +13,34 @@ use Illuminate\Notifications\DatabaseNotification;
 
 class StatusObserver
 {
-    public function created(Status $status): void {
+    public function created(Status $status): void
+    {
         CacheKey::increment(CacheKey::STATUS_CREATED);
         MentionHelper::createMentions($status);
     }
 
-    public function updated(Status $status): void {
+    public function updated(Status $status): void
+    {
         MentionHelper::createMentions($status);
     }
 
-    public function deleted(Status $status): void {
+    public function deleted(Status $status): void
+    {
         CacheKey::increment(CacheKey::STATUS_DELETED);
 
         WebhookController::sendStatusWebhook(
             status: $status,
-            event:  WebhookEvent::CHECKIN_DELETE
+            event: WebhookEvent::CHECKIN_DELETE
         );
 
         // Delete all UserJoinedConnection-Notifications for this Status
         DatabaseNotification::where('type', UserJoinedConnection::class)
-                            ->where('data->status->id', $status->id)
-                            ->delete();
+            ->where('data->status->id', $status->id)
+            ->delete();
 
         // Delete all StatusLiked-Notifications for this Status
         DatabaseNotification::where('type', StatusLiked::class)
-                            ->where('data->status->id', $status->id)
-                            ->delete();
+            ->where('data->status->id', $status->id)
+            ->delete();
     }
 }

@@ -11,7 +11,8 @@ use App\Models\Status;
 
 class LicenseService
 {
-    public function getLicenseDataForStatus(Status $status): ?LicenseDto {
+    public function getLicenseDataForStatus(Status $status): ?LicenseDto
+    {
         $status->load('checkin.trip.motisSourceLicense.manualLicense');
         $manual = $status?->checkin->trip?->motisSourceLicense?->manualLicense;
         $source = $status?->checkin->trip?->motisSourceLicense;
@@ -19,17 +20,19 @@ class LicenseService
         return $this->getLicenseData($manual, $source);
     }
 
-    public function getLicenseDataForSource(MotisSourceLicense $source): ?LicenseDto {
+    public function getLicenseDataForSource(MotisSourceLicense $source): ?LicenseDto
+    {
         $source->load('manualLicense');
         $manual = $source->manualLicense;
 
         return $this->getLicenseData($manual, $source);
     }
 
-    private function getManualLicenseData(License $license, MotisSourceLicense $source): LicenseDto {
+    private function getManualLicenseData(License $license, MotisSourceLicense $source): LicenseDto
+    {
         $licenseName = $license->name;
-        $dataOrigin  = $license->human_name ?? $license->name;
-        $provider    = $source->provider;
+        $dataOrigin = $license->human_name ?? $license->name;
+        $provider = $source->provider;
 
         $attributionString =
             __('license.provided', ['provider' => $provider, 'source' => $dataOrigin, 'license' => $licenseName]);
@@ -42,10 +45,11 @@ class LicenseService
         );
     }
 
-    private function getDefaultLicenseData(MotisSourceLicense $license, ?string $spdxIdentifier = null): LicenseDto {
-        $spdx        = $spdxIdentifier ? MotisSourceLicense::SPDX[$spdxIdentifier] : MotisSourceLicense::SPDX[$license->spdx];
-        $dataOrigin  = $license->human_name ?? $license->name;
-        $provider    = $license->provider;
+    private function getDefaultLicenseData(MotisSourceLicense $license, ?string $spdxIdentifier = null): LicenseDto
+    {
+        $spdx = $spdxIdentifier ? MotisSourceLicense::SPDX[$spdxIdentifier] : MotisSourceLicense::SPDX[$license->spdx];
+        $dataOrigin = $license->human_name ?? $license->name;
+        $provider = $license->provider;
         $attribution = __('license.provided', ['provider' => $provider, 'source' => $dataOrigin, 'license' => $spdx['name']]);
 
         if ($spdx['attribution'] ?? false) {
@@ -57,7 +61,6 @@ class LicenseService
             );
         }
 
-
         return new LicenseDto(
             $spdx['name'],
             $attribution,
@@ -66,7 +69,8 @@ class LicenseService
         );
     }
 
-    private function getLicenseData(?License $manual, ?MotisSourceLicense $source): ?LicenseDto {
+    private function getLicenseData(?License $manual, ?MotisSourceLicense $source): ?LicenseDto
+    {
         $license = null;
         if ($manual) {
             if (in_array($manual?->spdx, MotisSourceLicense::SPDX)) {

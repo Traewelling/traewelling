@@ -9,14 +9,14 @@ use Spatie\Activitylog\Models\Activity;
 
 class ActivityController extends Controller
 {
-
-    public function render(Request $request): View {
+    public function render(Request $request): View
+    {
         $this->authorize('view activity');
 
         $validated = $request->validate([
-                                            'subject_type' => ['nullable', 'string'],
-                                            'subject_id'   => ['nullable', 'integer'],
-                                        ]);
+            'subject_type' => ['nullable', 'string'],
+            'subject_id' => ['nullable', 'integer'],
+        ]);
 
         $activities = Activity::orderByDesc('created_at');
         $activities->where('subject_id', '<>', '1000001');

@@ -18,6 +18,7 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(
  *    title="UpdateProfileInformationRequest",
  *    description="UpdateProfileInformationRequest",
+ *
  *    @OA\Property(property="username",                   type="string",  example="gertrud123", maxLength=25),
  *    @OA\Property(property="displayName",                type="string",  example="Gertrud", maxLength=50),
  *    @OA\Property(property="privateProfile",             type="boolean", example=false, nullable=true),
@@ -42,7 +43,7 @@ class UpdateProfileInformationRequest extends FormRequest
     {
         return [
             'username' => [
-                'required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/'
+                'required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/',
             ],
             'displayName' => ['required', 'string', 'max:50'],
             'privateProfile' => ['boolean', 'nullable'],

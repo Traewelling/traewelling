@@ -2,7 +2,4 @@
 
 namespace App\Exceptions;
 
-class ManualTripValidationException extends \Exception
-{
-
-}
+class ManualTripValidationException extends \Exception {}

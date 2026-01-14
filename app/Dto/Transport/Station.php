@@ -6,6 +6,7 @@ namespace App\Dto\Transport;
  * @OA\Schema (
  *     title="Station",
  *     description="train station model",
+ *
  *     @OA\Xml(
  *        name="Station"
  *     )
@@ -19,8 +20,6 @@ class Station
      *     description="id",
      *     example="4711"
      * )
-     *
-     * @var integer
      */
     public readonly int $id;
 
@@ -30,8 +29,6 @@ class Station
      *     description="name of the station",
      *     example="Karlsruhe Hbf"
      * )
-     *
-     * @var string
      */
     public readonly string $name;
 
@@ -41,8 +38,6 @@ class Station
      *     description="latitude of the station",
      *     example="48.991591"
      * )
-     *
-     * @var float
      */
     public readonly float $latitude;
 
@@ -52,8 +47,6 @@ class Station
      *     description="longitude of the station",
      *     example="8.400538"
      * )
-     *
-     * @var float
      */
     public readonly float $longitude;
 
@@ -64,8 +57,6 @@ class Station
      *     example="8000191",
      *     nullable=true
      * )
-     *
-     * @var ?int
      */
     public readonly ?int $ibnr;
 
@@ -76,42 +67,53 @@ class Station
      *     nullable="true",
      *     example="RK"
      * )
-     *
-     * @var ?string
      */
     public readonly ?string $rilIdentifier;
 
-    public function setId(int $id): self {
+    public function setId(int $id): self
+    {
         $this->id = $id;
+
         return $this;
     }
 
-    public function setName(string $name): self {
+    public function setName(string $name): self
+    {
         $this->name = $name;
+
         return $this;
     }
 
-    public function setLatitude(float $latitude): self {
+    public function setLatitude(float $latitude): self
+    {
         $this->latitude = $latitude;
+
         return $this;
     }
 
-    public function setLongitude(float $longitude): self {
+    public function setLongitude(float $longitude): self
+    {
         $this->longitude = $longitude;
+
         return $this;
     }
 
-    public function setIbnr(?int $ibnr): self {
+    public function setIbnr(?int $ibnr): self
+    {
         $this->ibnr = $ibnr;
+
         return $this;
     }
 
-    public function setRilIdentifier(?string $rilIdentifier): self {
+    public function setRilIdentifier(?string $rilIdentifier): self
+    {
         $this->rilIdentifier = $rilIdentifier;
+
         return $this;
     }
 
-    public static function fromModel(\App\Models\Station $station): self {
+    public static function fromModel(\App\Models\Station $station): self
+    {
         $dto = new self();
         $dto->setId($station->id)
             ->setName($station->name)
@@ -119,6 +121,7 @@ class Station
             ->setLatitude($station->latitude)
             ->setLongitude($station->longitude)
             ->setRilIdentifier($station->rilIdentifier);
+
         return $dto;
     }
 }

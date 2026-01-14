@@ -10,10 +10,10 @@ use Tests\ApiTestCase;
 
 class OperatorTest extends ApiTestCase
 {
-
     use RefreshDatabase;
 
-    public function testOperatorsIndex(): void {
+    public function test_operators_index(): void
+    {
         Passport::actingAs(User::factory()->create(), ['*']);
 
         Operator::factory()->count(3)->create();
@@ -22,28 +22,29 @@ class OperatorTest extends ApiTestCase
         $response->assertOk();
         $response->assertJsonCount(3, 'data');
         $response->assertJsonStructure([
-                                           'data'  => [
-                                               '*' => [
-                                                   'id',
-                                                   'name',
-                                               ]
-                                           ],
-                                           'links' => [
-                                               'first',
-                                               'last',
-                                               'prev',
-                                               'next',
-                                           ],
-                                           'meta'  => [
-                                               'path',
-                                               'per_page',
-                                               'next_cursor',
-                                               'prev_cursor',
-                                           ],
-                                       ]);
+            'data' => [
+                '*' => [
+                    'id',
+                    'name',
+                ],
+            ],
+            'links' => [
+                'first',
+                'last',
+                'prev',
+                'next',
+            ],
+            'meta' => [
+                'path',
+                'per_page',
+                'next_cursor',
+                'prev_cursor',
+            ],
+        ]);
     }
 
-    public function testUserCannotMergeOperators(): void {
+    public function test_user_cannot_merge_operators(): void
+    {
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
 
@@ -57,7 +58,8 @@ class OperatorTest extends ApiTestCase
         ]);
     }
 
-    public function testAdminCanMergeStation(): void {
+    public function test_admin_can_merge_station(): void
+    {
         $user = User::factory()->create();
         $user->assignRole('admin');
         Passport::actingAs($user, ['*']);
@@ -72,13 +74,15 @@ class OperatorTest extends ApiTestCase
         ]);
     }
 
-    public function testUserCantAccessOperatorsListBackend(): void {
-        $user     = User::factory()->create();
+    public function test_user_cant_access_operators_list_backend(): void
+    {
+        $user = User::factory()->create();
         $response = $this->actingAs($user)->get('/admin/operators');
         $response->assertForbidden();
     }
 
-    public function testAdminCanAccessOperatorsListBackend(): void {
+    public function test_admin_can_access_operators_list_backend(): void
+    {
         $user = User::factory()->create();
         $user->assignRole('admin');
         $response = $this->actingAs($user)->get('/admin/operators');

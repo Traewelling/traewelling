@@ -11,8 +11,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WebFingerController extends Controller
 {
-
-    public function endpoint(Request $request): JsonResponse {
+    public function endpoint(Request $request): JsonResponse
+    {
         if (!config('trwl.webfinger_active')) {
             return new JsonResponse(['message' => 'WebFinger is disabled. Contact the server administrator if you believe this is an error.'], 403);
         }

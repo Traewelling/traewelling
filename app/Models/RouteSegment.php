@@ -13,7 +13,7 @@ use Traewelling\GooglePolyline\PolylineTranscoder;
 
 class RouteSegment extends Model
 {
-    use HasUuids, HasFactory;
+    use HasFactory, HasUuids;
 
     protected $fillable = [
         'from_station',
@@ -25,28 +25,33 @@ class RouteSegment extends Model
         'path_type',
     ];
 
-    public function fromStation(): BelongsTo {
+    public function fromStation(): BelongsTo
+    {
         return $this->belongsTo(Station::class, 'from_station_id');
     }
 
-    public function toStation(): BelongsTo {
+    public function toStation(): BelongsTo
+    {
         return $this->belongsTo(Station::class, 'to_station_id');
     }
 
-    public function stopOvers(): HasMany {
+    public function stopOvers(): HasMany
+    {
         return $this->hasMany(Stopover::class, 'route_segment_id');
     }
 
-    public function trips(): HasManyThrough {
+    public function trips(): HasManyThrough
+    {
         return $this->hasManyThrough(Trip::class, Stopover::class, 'route_segment_id', 'trip_id', 'id', 'trip_id');
     }
 
     /**
      * @return Coordinate[]
      */
-    public function getCoordinates(): array {
+    public function getCoordinates(): array
+    {
         $precision = $this->polyline_precision ?? 5;
-        $locations = (new PolylineTranscoder)->decodePolyline($this->polyline, $precision);
+        $locations = (new PolylineTranscoder())->decodePolyline($this->polyline, $precision);
 
         $coordinates = [];
         foreach ($locations as $key => $location) {

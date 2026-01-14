@@ -11,10 +11,13 @@ class MutesExporter extends AbstractExporter
 {
     use DatabaseExportable;
 
-    protected string $fileName    = 'mutes.json';
-    protected string $tableName   = 'user_mutes';
-    protected array  $columns     = [
-        'id', 'user_id', 'muted_id', 'created_at', 'updated_at'
+    protected string $fileName = 'mutes.json';
+
+    protected string $tableName = 'user_mutes';
+
+    protected array $columns = [
+        'id', 'user_id', 'muted_id', 'created_at', 'updated_at',
     ];
+
     protected string $whereColumn = 'user_id';
 }

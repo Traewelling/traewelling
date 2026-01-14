@@ -14,15 +14,16 @@ class Alert extends Model
         'id',
         'type',
         'active_from',
-        'active_until'
+        'active_until',
     ];
 
     protected $casts = [
-        'active_from'  => 'datetime',
+        'active_from' => 'datetime',
         'active_until' => 'datetime',
     ];
 
-    public function translations(): HasMany {
+    public function translations(): HasMany
+    {
         return $this->hasMany(AlertTranslation::class, 'alert_id', 'id');
     }
 }

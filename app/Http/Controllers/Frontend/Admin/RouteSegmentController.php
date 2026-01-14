@@ -7,11 +7,12 @@ use Illuminate\View\View;
 
 class RouteSegmentController
 {
-
-    public function renderSegment(string $id): View {
+    public function renderSegment(string $id): View
+    {
         $segment = RouteSegment::findOrFail($id);
+
         return view('admin.routesegment.show', [
-            'segment' => $segment
+            'segment' => $segment,
         ]);
     }
 }

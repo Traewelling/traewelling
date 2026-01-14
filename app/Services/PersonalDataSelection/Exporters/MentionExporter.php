@@ -15,7 +15,9 @@ class MentionExporter extends AbstractExporter
 {
     use ModelExportable;
 
-    protected string $fileName    = 'mentions.json';
-    protected string $model       = Mention::class;
+    protected string $fileName = 'mentions.json';
+
+    protected string $model = Mention::class;
+
     protected string $whereColumn = 'mentioned_id';
 }

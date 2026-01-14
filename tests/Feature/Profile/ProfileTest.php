@@ -10,7 +10,8 @@ class ProfileTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    public function testUnauthenticatedProfileView(): void {
+    public function test_unauthenticated_profile_view(): void
+    {
         $userToView = User::factory(['private_profile' => false])->create();
 
         $this->assertGuest();
@@ -19,7 +20,8 @@ class ProfileTest extends FeatureTestCase
         $response->assertDontSee(__('profile.private-profile-text'));
     }
 
-    public function testUnauthenticatedPrivateProfileView(): void {
+    public function test_unauthenticated_private_profile_view(): void
+    {
         $userToView = User::factory(['private_profile' => true])->create();
 
         $this->assertGuest();

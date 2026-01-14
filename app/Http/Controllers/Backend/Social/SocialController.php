@@ -9,25 +9,28 @@ use Laravel\Socialite\Contracts\User as SocialiteUser;
 
 abstract class SocialController extends Controller
 {
-
-    public static function getDisplayName(SocialiteUser $socialiteUser): string {
+    public static function getDisplayName(SocialiteUser $socialiteUser): string
+    {
         if (trim($socialiteUser->getName()) === '') {
             return $socialiteUser->getNickname();
         }
+
         return $socialiteUser->getName();
     }
 
     /**
      * @throws Exception
      */
-    public static function getUniqueUsername(string $username): string {
+    public static function getUniqueUsername(string $username): string
+    {
         $existingUser = User::where('username', $username)->first();
-        $errorCount   = 0;
+        $errorCount = 0;
         while ($errorCount < 10 && $existingUser !== null) {
-            $username     .= random_int(1, 10);
+            $username .= random_int(1, 10);
             $existingUser = User::where('username', $username)->first();
             $errorCount++;
         }
+
         return $username;
     }
 }

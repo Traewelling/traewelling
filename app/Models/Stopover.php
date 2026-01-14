@@ -19,7 +19,8 @@ class Stopover extends Model
 {
     use HasFactory;
 
-    protected $table    = 'train_stopovers';
+    protected $table = 'train_stopovers';
+
     protected $fillable = [
         'trip_id', 'train_station_id',
         'arrival_planned', 'arrival_real',
@@ -28,84 +29,99 @@ class Stopover extends Model
         'departure_platform_planned', 'departure_platform_real',
         'cancelled', 'station_identifier_id', 'route_segment_id',
     ];
-    protected $appends  = [
+
+    protected $appends = [
         'arrival', 'departure', 'platform', 'isArrivalDelayed', 'isDepartureDelayed',
-        'isArrivalCancelled', 'isDepartureCancelled'
-    ];
-    protected $casts    = [
-        'id'                         => 'integer',
-        'trip_id'                    => 'string',
-        'train_station_id'           => 'integer',
-        'arrival_planned'            => UTCDateTime::class,
-        'arrival_real'               => UTCDateTime::class,
-        'arrival_platform_planned'   => 'string',
-        'arrival_platform_real'      => 'string',
-        'departure_planned'          => UTCDateTime::class,
-        'departure_real'             => UTCDateTime::class,
-        'departure_platform_planned' => 'string',
-        'departure_platform_real'    => 'string',
-        'cancelled'                  => 'boolean',
-        'route_segment_id'           => 'string',
-        'station_identifier_id'      => 'string',
+        'isArrivalCancelled', 'isDepartureCancelled',
     ];
 
-    public function trip(): BelongsTo {
+    protected $casts = [
+        'id' => 'integer',
+        'trip_id' => 'string',
+        'train_station_id' => 'integer',
+        'arrival_planned' => UTCDateTime::class,
+        'arrival_real' => UTCDateTime::class,
+        'arrival_platform_planned' => 'string',
+        'arrival_platform_real' => 'string',
+        'departure_planned' => UTCDateTime::class,
+        'departure_real' => UTCDateTime::class,
+        'departure_platform_planned' => 'string',
+        'departure_platform_real' => 'string',
+        'cancelled' => 'boolean',
+        'route_segment_id' => 'string',
+        'station_identifier_id' => 'string',
+    ];
+
+    public function trip(): BelongsTo
+    {
         return $this->belongsTo(Trip::class, 'trip_id', 'trip_id');
     }
 
-    public function station(): BelongsTo {
+    public function station(): BelongsTo
+    {
         return $this->belongsTo(Station::class, 'train_station_id', 'id');
     }
 
-    public function routeSegment(): HasOne {
+    public function routeSegment(): HasOne
+    {
         return $this->hasOne(RouteSegment::class, 'id', 'route_segment_id');
     }
 
     /**
-     * @return BelongsTo
      * @deprecated use station() instead
      */
-    public function trainStation(): BelongsTo {
+    public function trainStation(): BelongsTo
+    {
         return $this->station();
     }
 
-    public function stationIdentifier(): HasOne {
+    public function stationIdentifier(): HasOne
+    {
         return $this->hasOne(StationIdentifier::class, 'id', 'station_identifier_id');
     }
 
     // These two methods are a ticking time bomb and I hope we'll never see it explode. 💣
-    public function getArrivalAttribute(): ?Carbon {
+    public function getArrivalAttribute(): ?Carbon
+    {
         return ($this->arrival_real ?? $this->arrival_planned) ?? $this?->departure;
     }
 
-    public function getDepartureAttribute(): ?Carbon {
+    public function getDepartureAttribute(): ?Carbon
+    {
         return ($this->departure_real ?? $this->departure_planned) ?? $this?->arrival;
     }
 
-    public function getPlatformAttribute(): ?string {
+    public function getPlatformAttribute(): ?string
+    {
         return ($this->departure_platform_real ?? $this->arrival_platform_planned) ??
                ($this->arrival_platform_real ?? $this->departure_platform_planned);
     }
 
-    public function getIsArrivalDelayedAttribute(): bool {
+    public function getIsArrivalDelayedAttribute(): bool
+    {
         if ($this->arrival_real == null || $this->arrival_planned == null) {
             return false;
         }
+
         return $this->arrival_real->isAfter($this->arrival_planned);
     }
 
-    public function getIsDepartureDelayedAttribute(): bool {
+    public function getIsDepartureDelayedAttribute(): bool
+    {
         if ($this->departure_real == null || $this->departure_planned == null) {
             return false;
         }
+
         return $this->departure_real->isAfter($this->departure_planned);
     }
 
-    public function getIsArrivalCancelledAttribute(): bool {
+    public function getIsArrivalCancelledAttribute(): bool
+    {
         return $this->cancelled && is_null($this->arrival_platform_planned);
     }
 
-    public function getIsDepartureCancelledAttribute(): bool {
+    public function getIsDepartureCancelledAttribute(): bool
+    {
         return $this->cancelled && is_null($this->departure_platform_planned);
     }
 }

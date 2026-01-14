@@ -15,10 +15,13 @@ class PrivacyPolicyController extends Controller
      *     tags={"Settings"},
      *     summary="Get the current privacy policy",
      *     description="Get the current privacy policy",
+     *
      *     @OA\Response(
      *          response=200,
      *          description="Success",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(
      *                  property="data",
      *                  type="object",
@@ -29,10 +32,9 @@ class PrivacyPolicyController extends Controller
      *         )
      *     )
      * )
-     *
-     * @return PrivacyPolicyResource
      */
-    public function getPrivacyPolicy(): PrivacyPolicyResource {
+    public function getPrivacyPolicy(): PrivacyPolicyResource
+    {
         return new PrivacyPolicyResource(PrivacyPolicyService::getCurrentPrivacyPolicy());
     }
 
@@ -43,6 +45,7 @@ class PrivacyPolicyController extends Controller
      *     tags={"Settings"},
      *     summary="Accept the current privacy policy",
      *     description="Accept the current privacy policy",
+     *
      *     @OA\Response(response=204, description="Success"),
      *     @OA\Response(response=400, description="Already accepted"),
      *     @OA\Response(response=401, description="Unauthorized"),
@@ -51,16 +54,17 @@ class PrivacyPolicyController extends Controller
      *
      *     }
      * )
-     * @return JsonResponse
      */
-    public function acceptPrivacyPolicy(): JsonResponse {
+    public function acceptPrivacyPolicy(): JsonResponse
+    {
         try {
             PrivacyPolicyService::acceptPrivacyPolicy(user: auth()->user());
         } catch (AlreadyAcceptedException $exception) {
-            $error = strtr("User already accepted privacy policy (valid from ptime) at utime", [
+            $error = strtr('User already accepted privacy policy (valid from ptime) at utime', [
                 'ptime' => $exception->getPrivacyValidity(),
-                'utime' => $exception->getUserAccepted()
+                'utime' => $exception->getUserAccepted(),
             ]);
+
             return $this->sendError(error: $error, code: 409);
         }
 

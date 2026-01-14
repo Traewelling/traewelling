@@ -29,13 +29,11 @@ class UserPolicy
      * |       1 |             1 |         1 | 0      |
      * +---------+---------------+-----------+--------+
      *
-     * @param User|null $user
-     * @param User      $model
      *
-     * @return Response
      * @test check table above and test
      */
-    public function view(?User $user, User $model): Response {
+    public function view(?User $user, User $model): Response
+    {
         if ($user === null) {
             return $model->private_profile ? Response::deny(__('profile.private-profile-text')) : Response::allow();
         }
@@ -54,42 +52,31 @@ class UserPolicy
         if (BlockController::isBlocked($user, $model)) {
             return Response::deny(__('user.blocked.heading'));
         }
+
         return Response::allow();
     }
 
     /**
      * Determine whether the user can update the model.
-     *
-     * @param User $user
-     * @param User $model
-     *
-     * @return bool
      */
-    public function update(User $user, User $model): bool {
+    public function update(User $user, User $model): bool
+    {
         return $user->id === $model->id || $user->hasRole('admin');
     }
 
     /**
      * Determine whether the user can delete the model.
-     *
-     * @param User $user
-     * @param User $model
-     *
-     * @return bool
      */
-    public function delete(User $user, User $model): bool {
+    public function delete(User $user, User $model): bool
+    {
         return $user->id === $model->id;
     }
 
     /**
      * Check if user can check in another user
-     *
-     * @param User $user
-     * @param User $userToCheckin
-     *
-     * @return bool
      */
-    public function checkin(User $user, User $userToCheckin): bool {
+    public function checkin(User $user, User $userToCheckin): bool
+    {
         if ($user->is($userToCheckin)) {
             return true;
         }
@@ -102,6 +89,7 @@ class UserPolicy
         if ($userToCheckin->friend_checkin === FriendCheckinSetting::LIST) {
             return $userToCheckin->trustedUsers->contains('trusted_id', $user->id);
         }
+
         return false;
     }
 }

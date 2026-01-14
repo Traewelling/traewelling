@@ -11,21 +11,24 @@ use Tests\Unit\UnitTestCase;
 
 class UTCTimeMethodTest extends UnitTestCase
 {
-    public function testInvalidUtcTimestamp(): void {
+    public function test_invalid_utc_timestamp(): void
+    {
         $UTCDateTime = new UTCDateTime();
         $this->expectException(InvalidTimeZoneException::class);
         $UTCDateTime->set(new Stopover(), 'departure', '2023-01-10T01:00', []);
     }
 
     #[DataProvider('setUtcDateTimeDataProvider')]
-    public function testSetUtcDateTime($assert, $value): void {
+    public function test_set_utc_date_time($assert, $value): void
+    {
         $UTCDateTime = new UTCDateTime();
-        $result      = $UTCDateTime->set(new Stopover(), 'departure', $value, []);
+        $result = $UTCDateTime->set(new Stopover(), 'departure', $value, []);
 
         $this->assertEquals($assert, $result->toIso8601String());
     }
 
-    public static function setUtcDateTimeDataProvider(): array {
+    public static function setUtcDateTimeDataProvider(): array
+    {
         return [
             ['2023-01-01T00:00:00+00:00', '2023-01-01T01:00:00+01:00'],
             ['2023-01-01T00:00:00+00:00', '2023-01-01T01:00:00+01:00'],
@@ -37,14 +40,16 @@ class UTCTimeMethodTest extends UnitTestCase
     }
 
     #[DataProvider('getUtcDateTimeDataProvider')]
-    public function testGetUtcDateTime($assert, $value): void {
+    public function test_get_utc_date_time($assert, $value): void
+    {
         $UTCDateTime = new UTCDateTime();
-        $result      = $UTCDateTime->get(new Stopover(), 'departure', $value, []);
+        $result = $UTCDateTime->get(new Stopover(), 'departure', $value, []);
 
         $this->assertEquals($assert, $result?->toIso8601String());
     }
 
-    public static function getUtcDateTimeDataProvider(): array {
+    public static function getUtcDateTimeDataProvider(): array
+    {
         return [
             [null, null],
             ['2023-01-01T00:00:00+00:00', '2023-01-01T00:00:00'],

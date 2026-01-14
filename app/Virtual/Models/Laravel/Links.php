@@ -6,6 +6,7 @@ namespace App\Virtual\Models\Laravel;
  * @OA\Schema(
  *     title="Links",
  *     description="pagination links",
+ *
  *     @OA\Xml(
  *         name="Links"
  *     )
@@ -22,9 +23,11 @@ class Links
      *     example="https://traewelling.de/api/v1/ENDPOINT?page=1",
      *     nullable=true
      * )
+     *
      * @var string;
      */
     private $first;
+
     /**
      * @OA\Property (
      *     title="last",
@@ -34,9 +37,11 @@ class Links
      *     example=null,
      *     nullable=true
      * )
+     *
      * @var string;
      */
     private $last;
+
     /**
      * @OA\Property (
      *     title="prev",
@@ -46,9 +51,11 @@ class Links
      *     example="https://traewelling.de/api/v1/ENDPOINT?page=1",
      *     nullable=true
      * )
+     *
      * @var string;
      */
     private $prev;
+
     /**
      * @OA\Property (
      *     title="next",
@@ -58,8 +65,8 @@ class Links
      *     example="https://traewelling.de/api/v1/ENDPOINT?page=2",
      *     nullable=true
      * )
+     *
      * @var string;
      */
     private $next;
-
 }

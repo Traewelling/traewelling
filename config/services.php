@@ -15,19 +15,19 @@ return [
     */
 
     'mastodon' => [
-        'domain'        => env('MASTODON_DOMAIN'),
-        'client_name'   => env('MASTODON_APPNAME'), // TODO: check if this is a required value...? I don't think, we need this. ~@kris
-        'client_id'     => env('MASTODON_ID'),
+        'domain' => env('MASTODON_DOMAIN'),
+        'client_name' => env('MASTODON_APPNAME'), // TODO: check if this is a required value...? I don't think, we need this. ~@kris
+        'client_id' => env('MASTODON_ID'),
         'client_secret' => env('MASTODON_SECRET'),
-        'redirect'      => env('MASTODON_REDIRECT', 'http://localhost:8000/callback/mastodon'),
-        'timeout'       => env('MASTODON_TIMEOUT_SECONDS', 2),
+        'redirect' => env('MASTODON_REDIRECT', 'http://localhost:8000/callback/mastodon'),
+        'timeout' => env('MASTODON_TIMEOUT_SECONDS', 2),
     ],
 
-    'telegram'   => [
+    'telegram' => [
         'admin' => [
-            'active'  => env('TELEGRAM_ADMIN_ACTIVE', false),
+            'active' => env('TELEGRAM_ADMIN_ACTIVE', false),
             'chat_id' => env('TELEGRAM_ADMIN_CHAT_ID'),
-            'token'   => env('TELEGRAM_ADMIN_TOKEN'),
+            'token' => env('TELEGRAM_ADMIN_TOKEN'),
         ],
     ],
 

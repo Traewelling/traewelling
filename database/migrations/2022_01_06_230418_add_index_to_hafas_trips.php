@@ -9,14 +9,16 @@ use Illuminate\Support\Facades\Schema;
  */
 class AddIndexToHafasTrips extends Migration
 {
-    public function up(): void {
-        Schema::table('hafas_trips', static function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::table('hafas_trips', static function (Blueprint $table) {
             $table->index(['created_at', 'trip_id']);
         });
     }
 
-    public function down(): void {
-        Schema::table('hafas_trips', static function(Blueprint $table) {
+    public function down(): void
+    {
+        Schema::table('hafas_trips', static function (Blueprint $table) {
             $table->dropIndex(['created_at', 'trip_id']);
         });
     }

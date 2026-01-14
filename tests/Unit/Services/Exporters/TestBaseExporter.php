@@ -11,19 +11,21 @@ class TestBaseExporter extends AbstractExporter
 {
     public bool $failValidation = false;
 
-    public function __construct(User $user, ?string $filename = null) {
+    public function __construct(User $user, ?string $filename = null)
+    {
         if ($filename !== null) {
             $this->fileName = $filename;
         }
         parent::__construct($user);
     }
 
-
-    protected function exportData(): array|string {
-        return "success";
+    protected function exportData(): array|string
+    {
+        return 'success';
     }
 
-    protected function onExportValidation(): bool {
+    protected function onExportValidation(): bool
+    {
         return !$this->failValidation;
     }
 }

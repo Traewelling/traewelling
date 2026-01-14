@@ -19,71 +19,81 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class Trip extends Model
 {
-
     use HasFactory;
 
-    protected $table    = 'hafas_trips';
+    protected $table = 'hafas_trips';
+
     protected $fillable = [
-        'trip_id', 'category', 'number', 'linename', 'route_color', 'route_text_color', 'journey_number', 'operator_id', 'origin_id', 
-        'destination_id', 'polyline_id', 'departure', 'arrival', 'source', 'motis_source', 'user_id', 'last_refreshed', 
+        'trip_id', 'category', 'number', 'linename', 'route_color', 'route_text_color', 'journey_number', 'operator_id', 'origin_id',
+        'destination_id', 'polyline_id', 'departure', 'arrival', 'source', 'motis_source', 'user_id', 'last_refreshed',
         'motis_source_license_id', 'mode',
     ];
-    protected $hidden   = ['created_at', 'updated_at'];
-    protected $casts    = [
-        'id'                 => 'integer',
-        'trip_id'            => 'string',
-        'category'           => HafasTravelType::class,
-        'number'             => 'string',
-        'linename'           => 'string',
-        'route_color'        => 'string',
-        'route_text_color'   => 'string',
-        'journey_number'     => 'integer',
-        'operator_id'        => 'integer',
-        'origin_id'          => 'integer',
-        'destination_id'     => 'integer',
-        'polyline_id'        => 'integer',
-        'departure'          => UTCDateTime::class,
-        'arrival'            => UTCDateTime::class,
-        'last_refreshed'     => 'datetime',
-        'source'             => TripSource::class,
-        'user_id'            => 'integer',
-        'mode'               => MotisCategory::class,
+
+    protected $hidden = ['created_at', 'updated_at'];
+
+    protected $casts = [
+        'id' => 'integer',
+        'trip_id' => 'string',
+        'category' => HafasTravelType::class,
+        'number' => 'string',
+        'linename' => 'string',
+        'route_color' => 'string',
+        'route_text_color' => 'string',
+        'journey_number' => 'integer',
+        'operator_id' => 'integer',
+        'origin_id' => 'integer',
+        'destination_id' => 'integer',
+        'polyline_id' => 'integer',
+        'departure' => UTCDateTime::class,
+        'arrival' => UTCDateTime::class,
+        'last_refreshed' => 'datetime',
+        'source' => TripSource::class,
+        'user_id' => 'integer',
+        'mode' => MotisCategory::class,
     ];
 
-    public function polyline(): HasOne {
+    public function polyline(): HasOne
+    {
         return $this->hasOne(PolyLine::class, 'id', 'polyline_id');
     }
 
-    public function originStation(): BelongsTo {
+    public function originStation(): BelongsTo
+    {
         return $this->belongsTo(Station::class, 'origin_id', 'id');
     }
 
-    public function destinationStation(): BelongsTo {
+    public function destinationStation(): BelongsTo
+    {
         return $this->belongsTo(Station::class, 'destination_id', 'id');
     }
 
-    public function operator(): BelongsTo {
+    public function operator(): BelongsTo
+    {
         return $this->belongsTo(Operator::class, 'operator_id', 'id');
     }
 
-    public function stopovers(): HasMany {
+    public function stopovers(): HasMany
+    {
         return $this->hasMany(Stopover::class, 'trip_id', 'trip_id')
-                    ->orderBy('arrival_planned')
-                    ->orderBy('departure_planned');
+            ->orderBy('arrival_planned')
+            ->orderBy('departure_planned');
     }
 
-    public function checkins(): HasMany {
+    public function checkins(): HasMany
+    {
         return $this->hasMany(Checkin::class, 'trip_id', 'trip_id');
     }
 
     /**
      * If this trip was created by a user, this model belongs to the user, so they can edit and delete it.
      */
-    public function user(): BelongsTo {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function motisSourceLicense(): BelongsTo {
+    public function motisSourceLicense(): BelongsTo
+    {
         return $this->belongsTo(MotisSourceLicense::class, 'motis_source_license_id', 'id');
     }
 }

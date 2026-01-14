@@ -35,67 +35,70 @@ class StatusController extends Controller
     /**
      * Authorization in Frontend required! $this->authorize('view', $status);
      *
-     * @param int $statusId
      *
-     * @return Status
      * @throws HttpException
      * @throws ModelNotFoundException
+     *
      * @api v1
+     *
      * @frontend
      */
-    public static function getStatus(int $statusId): Status {
+    public static function getStatus(int $statusId): Status
+    {
         return Status::where('id', $statusId)
-                     ->with([
-                                'event',
-                                'likes',
-                                'user.blockedByUsers',
-                                'user.blockedUsers',
-                                'checkin',
-                                'tags',
-                                'checkin.originStopover.station',
-                                'checkin.destinationStopover.station',
-                                'checkin.trip.stopovers.station',
-                                'checkin.trip.motisSourceLicense'
-                            ])
-                     ->firstOrFail();
+            ->with([
+                'event',
+                'likes',
+                'user.blockedByUsers',
+                'user.blockedUsers',
+                'checkin',
+                'tags',
+                'checkin.originStopover.station',
+                'checkin.destinationStopover.station',
+                'checkin.trip.stopovers.station',
+                'checkin.trip.motisSourceLicense',
+            ])
+            ->firstOrFail();
     }
 
     /**
      * This method returns the current active statuses for all users where the viewer is allowed to see.
      *
-     * @return Collection|null
      * @api v1
+     *
      * @frontend
      */
-    public static function getActiveStatuses(): ?Collection {
+    public static function getActiveStatuses(): ?Collection
+    {
         return Status::with([
-                                'event',
-                                'likes',
-                                'user.blockedByUsers',
-                                'user.blockedUsers',
-                                'user.followers',
-                                'checkin.originStopover.station',
-                                'checkin.destinationStopover.station',
-                                'checkin.trip.stopovers.station',
-                                'checkin.trip.polyline',
-                                'tags',
-                            ])
-                     ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
-                     ->where('train_checkins.departure', '>', now()->subHours(config('trwl.max_journey_hours'))) // to reduce the amount of data the database has to process
-                     ->where('train_checkins.departure', '<', now())
-                     ->where('train_checkins.arrival', '>', now())
-                     ->select('statuses.*')
-                     ->get()
-                     ->filter(function(Status $status) {
-                         return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
-                     })
-                     ->reject(fn(Status $status) => $status->checkin === null)
-                     ->sortByDesc(function(Status $status) {
-                         return $status->checkin->departure;
-                     })->values();
+            'event',
+            'likes',
+            'user.blockedByUsers',
+            'user.blockedUsers',
+            'user.followers',
+            'checkin.originStopover.station',
+            'checkin.destinationStopover.station',
+            'checkin.trip.stopovers.station',
+            'checkin.trip.polyline',
+            'tags',
+        ])
+            ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
+            ->where('train_checkins.departure', '>', now()->subHours(config('trwl.max_journey_hours'))) // to reduce the amount of data the database has to process
+            ->where('train_checkins.departure', '<', now())
+            ->where('train_checkins.arrival', '>', now())
+            ->select('statuses.*')
+            ->get()
+            ->filter(function (Status $status) {
+                return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
+            })
+            ->reject(fn (Status $status) => $status->checkin === null)
+            ->sortByDesc(function (Status $status) {
+                return $status->checkin->departure;
+            })->values();
     }
 
-    public static function getLivePositions(): array {
+    public static function getLivePositions(): array
+    {
         $statuses = self::getActiveStatuses();
 
         $result = [];
@@ -105,27 +108,29 @@ class StatusController extends Controller
                 $result[] = $position;
             }
         }
+
         return $result;
     }
 
-    public static function getLivePositionForStatus(string $ids): array {
+    public static function getLivePositionForStatus(string $ids): array
+    {
         $ids = explode(',', $ids);
 
         $statuses = Status::with([
-                                     'user.blockedByUsers',
-                                     'user.blockedUsers',
-                                     'user.followers',
-                                     'checkin.originStopover.station',
-                                     'checkin.destinationStopover.station',
-                                     'checkin.trip.stopovers.station',
-                                     'checkin.trip.polyline',
-                                 ])
-                          ->whereIn('id', $ids)
-                          ->get()
-                          ->filter(function(Status $status) {
-                              return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
-                          })
-                          ->values();
+            'user.blockedByUsers',
+            'user.blockedUsers',
+            'user.followers',
+            'checkin.originStopover.station',
+            'checkin.destinationStopover.station',
+            'checkin.trip.stopovers.station',
+            'checkin.trip.polyline',
+        ])
+            ->whereIn('id', $ids)
+            ->get()
+            ->filter(function (Status $status) {
+                return Gate::allows('view', $status) && $status->visibility !== StatusVisibility::UNLISTED;
+            })
+            ->values();
 
         $result = [];
         foreach ($statuses as $status) {
@@ -139,32 +144,28 @@ class StatusController extends Controller
     }
 
     /**
-     * @param User $user
-     * @param int  $statusId
-     *
-     * @return bool|null
      * @throws ModelNotFoundException
      * @throws AuthorizationException User is not allowed to delete this status
      */
-    public static function DeleteStatus(User $user, int $statusId): ?bool {
+    public static function DeleteStatus(User $user, int $statusId): ?bool
+    {
         $status = Status::findOrFail($statusId); // throws ModelNotFoundException
         Gate::forUser($user)->authorize('delete', $status);
         $status->delete();
+
         return true;
     }
 
     /**
      * Create a StatusLike for a given User
      *
-     * @param User   $user
-     * @param Status $status
      *
-     * @return Like
      * @throws StatusAlreadyLikedException
      * @throws AuthorizationException User is not allowed to like this status
      * @throws RateLimitExceededException
      */
-    public static function createLike(User $user, Status $status): Like {
+    public static function createLike(User $user, Status $status): Like
+    {
         self::likeRateLimiter($user, $status->user);
         Gate::forUser($user)->authorize('like', $status);
 
@@ -173,9 +174,9 @@ class StatusController extends Controller
         }
 
         $like = Like::updateOrCreate([
-                                         'user_id'   => $user->id,
-                                         'status_id' => $status->id,
-                                     ]);
+            'user_id' => $user->id,
+            'status_id' => $status->id,
+        ]);
 
         if (!$status->user->mutedUsers->contains('id', $user->id)) {
             $status->user->notify(new StatusLiked($like));
@@ -187,13 +188,10 @@ class StatusController extends Controller
     }
 
     /**
-     * @param User $user
-     * @param int  $statusId
-     *
-     * @return void
      * @throws InvalidArgumentException
      */
-    public static function destroyLike(User $user, int $statusId): void {
+    public static function destroyLike(User $user, int $statusId): void
+    {
         $like = $user->likes()->where('status_id', $statusId)->first();
         if ($like == null) {
             throw new InvalidArgumentException(__('controller.status.like-not-found'));
@@ -203,92 +201,91 @@ class StatusController extends Controller
         StatusUpdateEvent::dispatch(Status::find($statusId));
     }
 
-    public static function usageByDay(Carbon $date): int {
-        return Status::where("created_at", ">=", $date->copy()->startOfDay())
-                     ->where("created_at", "<=", $date->copy()->endOfDay())
-                     ->count();
+    public static function usageByDay(Carbon $date): int
+    {
+        return Status::where('created_at', '>=', $date->copy()->startOfDay())
+            ->where('created_at', '<=', $date->copy()->endOfDay())
+            ->count();
     }
 
-    /**
-     * @param Event $event
-     *
-     * @return array
-     */
-    public static function getStatusesByEvent(Event $event): array {
+    public static function getStatusesByEvent(Event $event): array
+    {
         $statuses = $event->statuses()
-                          ->with([
-                                     'user.blockedUsers', 'checkin.originStopover.station',
-                                     'checkin.destinationStopover.station', 'checkin.trip.stopovers', 'event', 'likes', 'tags',
-                                 ])
-                          ->select('statuses.*')
-                          ->join('users', 'statuses.user_id', '=', 'users.id')
-                          ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
-                          ->where(Backend\Transport\StatusController::filterStatusVisibility(auth()->user()))
-                          ->orderBy('train_checkins.departure', 'desc');
+            ->with([
+                'user.blockedUsers', 'checkin.originStopover.station',
+                'checkin.destinationStopover.station', 'checkin.trip.stopovers', 'event', 'likes', 'tags',
+            ])
+            ->select('statuses.*')
+            ->join('users', 'statuses.user_id', '=', 'users.id')
+            ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
+            ->where(Backend\Transport\StatusController::filterStatusVisibility(auth()->user()))
+            ->orderBy('train_checkins.departure', 'desc');
 
         if (auth()->check()) {
             $statuses->whereNotIn('statuses.user_id', auth()->user()?->mutedUsers()->select('muted_id'))
-                     ->whereNotIn('statuses.user_id', auth()->user()?->blockedUsers()->select('blocked_id'))
-                     ->whereNotIn('statuses.user_id', auth()->user()?->blockedByUsers()->select('user_id'));
+                ->whereNotIn('statuses.user_id', auth()->user()?->blockedUsers()->select('blocked_id'))
+                ->whereNotIn('statuses.user_id', auth()->user()?->blockedByUsers()->select('user_id'));
         }
 
         return [
-            'event'    => $event,
+            'event' => $event,
             'statuses' => $statuses,
         ];
     }
 
-    public static function getFutureCheckins(): Paginator {
+    public static function getFutureCheckins(): Paginator
+    {
         return auth()->user()->statuses()
-                     ->with([
-                                'user', 'checkin.originStopover.station', 'checkin.destinationStopover.station',
-                                'checkin.trip', 'event', 'tags',
-                            ])
-                     ->orderByDesc('created_at')
-                     ->whereHas('checkin', function($query) {
-                         $query->where('departure', '>=', date('Y-m-d H:i:s', strtotime("+20min")));
-                     })
-                     ->simplePaginate(15);
+            ->with([
+                'user', 'checkin.originStopover.station', 'checkin.destinationStopover.station',
+                'checkin.trip', 'event', 'tags',
+            ])
+            ->orderByDesc('created_at')
+            ->whereHas('checkin', function ($query) {
+                $query->where('departure', '>=', date('Y-m-d H:i:s', strtotime('+20min')));
+            })
+            ->simplePaginate(15);
     }
 
     public static function createStatus(
         User|Authenticatable $user,
-        Business             $business,
-        StatusVisibility     $visibility,
-        ?string              $body = null,
-        ?Event               $event = null
+        Business $business,
+        StatusVisibility $visibility,
+        ?string $body = null,
+        ?Event $event = null
     ): Status {
         if ($event !== null && !Carbon::now()->isBetween($event->checkin_start, $event->checkin_end)) {
             Log::info('Event checkin was prevented because the event is not active anymore', [
                 'event' => $event->only(['id', 'name', 'checkin_start', 'checkin_end']),
-                'user'  => $user->only(['id', 'username']),
+                'user' => $user->only(['id', 'username']),
             ]);
             $event = null;
         }
 
         return Status::create([
-                                  'user_id'    => $user->id,
-                                  'body'       => $body,
-                                  'business'   => $business,
-                                  'visibility' => $visibility,
-                                  'event_id'   => $event?->id,
-                                  'client_id'  => APIController::getCurrentOAuthClient()?->id,
-                              ]);
+            'user_id' => $user->id,
+            'body' => $body,
+            'business' => $business,
+            'visibility' => $visibility,
+            'event_id' => $event?->id,
+            'client_id' => APIController::getCurrentOAuthClient()?->id,
+        ]);
     }
 
     /**
      * @throws RateLimitExceededException
-     * The rate limiter only hits if the users don't follow each other.
+     *                                    The rate limiter only hits if the users don't follow each other.
      */
-    public static function likeRateLimiter(User $user, User $user2): void {
+    public static function likeRateLimiter(User $user, User $user2): void
+    {
 
         $followEachOther = Follow::where('follows.user_id', $user->id)
-                                 ->where('follows.follow_id', $user2->id)
-                                 ->join('follows as f2', function($join) use ($user2) {
-                                     $join->on('follows.user_id', '=', 'f2.follow_id')
-                                          ->where('f2.user_id', $user2->id);
-                                 })
-                                 ->count() > 0;
+            ->where('follows.follow_id', $user2->id)
+            ->join('follows as f2', function ($join) use ($user2) {
+                $join->on('follows.user_id', '=', 'f2.follow_id')
+                    ->where('f2.user_id', $user2->id);
+            })
+            ->count() > 0;
 
         if ($followEachOther) {
             return;

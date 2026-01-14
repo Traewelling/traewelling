@@ -18,11 +18,11 @@ use Throwable;
 
 class TripController extends Controller
 {
-
     /**
      * @todo add docs when endpoint is stable
      */
-    public function createTrip(ManualTripCreationRequest $request): TripResource|JsonResponse {
+    public function createTrip(ManualTripCreationRequest $request): TripResource|JsonResponse
+    {
         $validated = $request->validated();
 
         DB::beginTransaction();
@@ -30,17 +30,17 @@ class TripController extends Controller
         try {
             $creator = new ManualTripCreator();
             $creator->setCategory(HafasTravelType::from($validated['category']))
-                    ->setLine($validated['lineName'], $validated['journeyNumber'])
-                    ->setOrigin(
-                        Station::findOrFail($validated['originId']),
-                        Carbon::parse($validated['originDeparturePlanned']),
-                        isset($validated['originDepartureReal']) ? Carbon::parse($validated['originDepartureReal']) : null
-                    )
-                    ->setDestination(
-                        Station::findOrFail($validated['destinationId']),
-                        Carbon::parse($validated['destinationArrivalPlanned']),
-                        isset($validated['destinationArrivalReal']) ? Carbon::parse($validated['destinationArrivalReal']) : null
-                    );
+                ->setLine($validated['lineName'], $validated['journeyNumber'])
+                ->setOrigin(
+                    Station::findOrFail($validated['originId']),
+                    Carbon::parse($validated['originDeparturePlanned']),
+                    isset($validated['originDepartureReal']) ? Carbon::parse($validated['originDepartureReal']) : null
+                )
+                ->setDestination(
+                    Station::findOrFail($validated['destinationId']),
+                    Carbon::parse($validated['destinationArrivalPlanned']),
+                    isset($validated['destinationArrivalReal']) ? Carbon::parse($validated['destinationArrivalReal']) : null
+                );
 
             if (isset($validated['operatorId'])) {
                 $operator = Operator::findOrFail($validated['operatorId']);
@@ -57,7 +57,7 @@ class TripController extends Controller
                 );
             }
 
-            $trip            = $creator->createFullTrip();
+            $trip = $creator->createFullTrip();
             $durationInHours = $trip->departure->diffInHours($trip->arrival);
             if ($durationInHours > config('trwl.max_journey_hours')) {
                 throw new ManualTripValidationException(sprintf('Trip duration exceeds maximum allowed duration of %d hours', config('trwl.max_journey_hours')));
@@ -65,10 +65,12 @@ class TripController extends Controller
 
         } catch (ManualTripValidationException $e) {
             DB::rollBack();
+
             return response()->json(['message' => $e->getMessage()], 400);
         } catch (Throwable $e) {
             DB::rollBack();
             report($e);
+
             return response()->json(['message' => 'An error occurred while creating the trip'], 500);
         }
 

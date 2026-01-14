@@ -13,15 +13,19 @@ use Illuminate\Contracts\Auth\Authenticatable;
 class CheckinRequestTestHydrator
 {
     private CheckInRequestDto $dto;
-    private string            $searchKey;
-    private Authenticatable   $user;
 
-    public function __construct(Authenticatable $user) {
-        $this->dto  = new CheckInRequestDto();
+    private string $searchKey;
+
+    private Authenticatable $user;
+
+    public function __construct(Authenticatable $user)
+    {
+        $this->dto = new CheckInRequestDto();
         $this->user = $user;
     }
 
-    public function hydrateFromCheckin(Checkin $checkin): CheckInRequestDto {
+    public function hydrateFromCheckin(Checkin $checkin): CheckInRequestDto
+    {
         $this->dto
             ->setUser($this->user)
             ->setTrip($checkin->trip)
@@ -33,7 +37,8 @@ class CheckinRequestTestHydrator
         return $this->dto;
     }
 
-    public function hydrateFromTrip(Trip $trip): CheckInRequestDto {
+    public function hydrateFromTrip(Trip $trip): CheckInRequestDto
+    {
         $this->dto
             ->setUser($this->user)
             ->setTrip($trip)
@@ -46,21 +51,21 @@ class CheckinRequestTestHydrator
     }
 
     public function hydrateFromStopovers(
-        Trip      $trip,
+        Trip $trip,
         ?Stopover $originStopover,
         ?Stopover $destinationStopover
     ): CheckInRequestDto {
         $this->dto->setUser($this->user)
-                  ->setTrip($trip);
+            ->setTrip($trip);
 
         if ($originStopover !== null) {
             $this->dto->setOrigin($originStopover->trainStation)
-                      ->setDeparture($originStopover->departure_planned);
+                ->setDeparture($originStopover->departure_planned);
         }
 
         if ($destinationStopover !== null) {
             $this->dto->setDestination($destinationStopover->trainStation)
-                      ->setArrival($destinationStopover->arrival_planned);
+                ->setArrival($destinationStopover->arrival_planned);
         }
 
         return $this->dto;

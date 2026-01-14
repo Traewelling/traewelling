@@ -41,46 +41,45 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        Registered::class             => [],
-        UserCheckedIn::class          => [
+        Registered::class => [],
+        UserCheckedIn::class => [
             StatusCreateWebhookListener::class,
             StatusCreateCheckPolylineListener::class,
         ],
-        StatusUpdateEvent::class      => [
-            StatusUpdateWebhookListener::class
+        StatusUpdateEvent::class => [
+            StatusUpdateWebhookListener::class,
         ],
-        NotificationSent::class       => [
-            NotificationSentWebhookListener::class
+        NotificationSent::class => [
+            NotificationSentWebhookListener::class,
         ],
         WebhookCallFailedEvent::class => [
-            RemoveAbsentWebhooksListener::class
+            RemoveAbsentWebhooksListener::class,
         ],
-        CacheMissed::class            => [
-            CacheMissedListener::class
+        CacheMissed::class => [
+            CacheMissedListener::class,
         ],
     ];
 
     protected $observers = [
         Checkin::class => [CheckinObserver::class],
-        Follow::class  => [FollowObserver::class],
-        Like::class    => [LikeObserver::class],
-        Report::class  => [ReportObserver::class],
-        Status::class  => [StatusObserver::class],
-        Trip::class    => [TripObserver::class],
-        User::class    => [UserObserver::class],
+        Follow::class => [FollowObserver::class],
+        Like::class => [LikeObserver::class],
+        Report::class => [ReportObserver::class],
+        Status::class => [StatusObserver::class],
+        Trip::class => [TripObserver::class],
+        User::class => [UserObserver::class],
     ];
 
     /**
      * Register any events for your application.
-     *
-     * @return void
      */
-    public function boot(): void {
+    public function boot(): void
+    {
         parent::boot();
 
         // Dispatch Jobs from Events
-        Event::listen(fn(UserCheckedIn $event) => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status, $event->shouldChain));
-        Event::listen(function(WebhookCallFailedEvent $event) {
+        Event::listen(fn (UserCheckedIn $event) => PostStatusOnMastodon::dispatchIf($event->shouldPostOnMastodon, $event->status, $event->shouldChain));
+        Event::listen(function (WebhookCallFailedEvent $event) {
             // remove payload from log message to avoid logging useless data
             if (!app()->hasDebugModeEnabled()) {
                 // payload could be json so try to decode it
@@ -91,13 +90,13 @@ class EventServiceProvider extends ServiceProvider
                     }
                 }
 
-                $payload        = is_array($event->payload) ? $payload['payload'] ?? null : $event->payload;
+                $payload = is_array($event->payload) ? $payload['payload'] ?? null : $event->payload;
                 $event->payload = [
-                    'event' => $payload
+                    'event' => $payload,
                 ];
             }
 
-            Log::warning("Webhook call failed", ['event' => $event]);
+            Log::warning('Webhook call failed', ['event' => $event]);
         });
     }
 }

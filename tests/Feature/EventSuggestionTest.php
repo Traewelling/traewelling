@@ -12,18 +12,22 @@ class EventSuggestionTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    private User            $user;
-    private User            $admin;
+    private User $user;
+
+    private User $admin;
+
     private EventSuggestion $eventSuggestion;
 
-    public function setUp(): void {
+    protected function setUp(): void
+    {
         parent::setUp();
-        $this->user            = User::factory()->create();
-        $this->admin           = User::factory()->create()->assignRole('admin');
+        $this->user = User::factory()->create();
+        $this->admin = User::factory()->create()->assignRole('admin');
         $this->eventSuggestion = EventSuggestion::factory(['user_id' => $this->user->id])->create();
     }
 
-    public function testSuggestionDeny(): void {
+    public function test_suggestion_deny(): void
+    {
         $this->actingAs($this->admin);
 
         // Check if admin sees the suggestion
@@ -32,10 +36,10 @@ class EventSuggestionTest extends FeatureTestCase
 
         // Admin denies the event suggestion
         $res = $this->followingRedirects()
-                    ->post('/admin/events/suggestions/deny', [
-                        'id'              => $this->eventSuggestion->id,
-                        'rejectionReason' => 'denied'
-                    ]);
+            ->post('/admin/events/suggestions/deny', [
+                'id' => $this->eventSuggestion->id,
+                'rejectionReason' => 'denied',
+            ]);
         $res->assertSee('alert-success');
 
         // List is empty after declining
@@ -48,7 +52,8 @@ class EventSuggestionTest extends FeatureTestCase
         $this->assertFalse($notification->data['accepted']);
     }
 
-    public function testSuggestionAccept(): void {
+    public function test_suggestion_accept(): void
+    {
         $this->actingAs($this->admin);
 
         // Check if admin sees the suggestion
@@ -64,18 +69,18 @@ class EventSuggestionTest extends FeatureTestCase
 
         // Admin accepts the event
         $res = $this->followingRedirects()
-                    ->post('/admin/events/suggestions/accept', [
-                        'suggestionId'         => $this->eventSuggestion->id,
-                        'name'                 => $this->eventSuggestion->name,
-                        'hashtag'              => 'somehashtag',
-                        'host'                 => $this->eventSuggestion->host,
-                        'url'                  => 'https://traewelling.de/events',
-                        'nearest_station_name' => 'Hannover Hbf',
-                        'begin'                => $this->eventSuggestion->begin,
-                        'event_start'          => $this->eventSuggestion->begin,
-                        'end'                  => $this->eventSuggestion->end,
-                        'event_end'            => $this->eventSuggestion->end,
-                    ]);
+            ->post('/admin/events/suggestions/accept', [
+                'suggestionId' => $this->eventSuggestion->id,
+                'name' => $this->eventSuggestion->name,
+                'hashtag' => 'somehashtag',
+                'host' => $this->eventSuggestion->host,
+                'url' => 'https://traewelling.de/events',
+                'nearest_station_name' => 'Hannover Hbf',
+                'begin' => $this->eventSuggestion->begin,
+                'event_start' => $this->eventSuggestion->begin,
+                'end' => $this->eventSuggestion->end,
+                'event_end' => $this->eventSuggestion->end,
+            ]);
         $res->assertSee('alert-success');
 
         // User gets notification

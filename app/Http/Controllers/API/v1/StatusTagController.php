@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\API\v1;
 
 use App\Enum\StatusVisibility;
@@ -9,6 +8,9 @@ use App\Http\Controllers\Backend\Transport\StatusTagController as StatusTagBacke
 use App\Http\Resources\StatusTagResource;
 use App\Models\Status;
 use App\Models\StatusTag;
+
+use function auth;
+
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -16,11 +18,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
-use function auth;
 
 class StatusTagController extends Controller
 {
-
     /**
      * @OA\Get(
      *      path="/status/{statusId}/tags",
@@ -28,24 +28,31 @@ class StatusTagController extends Controller
      *      tags={"Status"},
      *      summary="Show all tags for a status which are visible for the current user",
      *      description="Returns a collection of all visible tags for the given status, if user is authorized",
+     *
      *      @OA\Parameter (
      *          name="statusId",
      *          in="path",
      *          description="Status-ID",
      *          example=1337,
+     *
      *          @OA\Schema(type="integer")
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property (
      *                  property="data",
      *                  type="array",
+     *
      *                  @OA\Items(ref="#/components/schemas/StatusTag")
      *              )
      *          )
      *      ),
+     *
      *      @OA\Response(response=400, description="Bad request"),
      *      @OA\Response(response=401, description="Unauthorized"),
      *      @OA\Response(response=404, description="No status found for this id"),
@@ -56,14 +63,12 @@ class StatusTagController extends Controller
      *  )
      *
      * Show all tags for a status which are visible for the current user
-     *
-     * @param int $statusId
-     *
-     * @return JsonResponse
      */
-    public function index(int $statusId): JsonResponse {
+    public function index(int $statusId): JsonResponse
+    {
         try {
             $status = Status::findOrFail($statusId);
+
             return $this->sendResponse(
                 data: StatusTagResource::collection(StatusTagBackend::getVisibleTagsForUser($status, auth()->user())),
             );
@@ -81,33 +86,42 @@ class StatusTagController extends Controller
      *      tags={"Status"},
      *      summary="Show all tags for multiple statuses which are visible for the current user",
      *      description="Returns a collection of all visible tags for the given statuses, if user is authorized",
+     *
      *      @OA\Parameter (
      *          name="statusIds",
      *          in="path",
      *          description="Status-ID",
      *          example="1337,4711",
+     *
      *          @OA\Schema(type="string")
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property (
      *                  property="data",
      *                  type="object",
      *                  @OA\Property(
      *                      property="1337",
      *                      type="array",
+     *
      *                      @OA\Items(ref="#/components/schemas/StatusTag")
      *                  ),
+     *
      *                  @OA\Property(
      *                      property="4711",
      *                      type="array",
+     *
      *                      @OA\Items(ref="#/components/schemas/StatusTag")
      *                  )
      *              )
      *          )
      *      ),
+     *
      *      @OA\Response(response=400, description="Bad request"),
      *      @OA\Response(response=401, description="Unauthorized"),
      *      @OA\Response(response=403, description="User not authorized to access this"),
@@ -118,7 +132,8 @@ class StatusTagController extends Controller
      *
      * Show all tags for a status which are visible for the current user
      */
-    public function indexForMultiple(string $statusIds): JsonResponse {
+    public function indexForMultiple(string $statusIds): JsonResponse
+    {
         $statusIds = explode(',', $statusIds);
 
         foreach ($statusIds as $statusId) {
@@ -128,13 +143,14 @@ class StatusTagController extends Controller
         }
 
         if (count($statusIds) >= 1) {
-            $tags     = [];
+            $tags = [];
             $statuses = Status::whereIn('id', $statusIds)->get();
             foreach ($statuses as $status) {
                 $tags[$status->id] = StatusTagResource::collection(
                     StatusTagBackend::getVisibleTagsForUser($status, auth()->user())
                 );
             }
+
             return $this->sendResponse($tags);
         }
 
@@ -148,32 +164,42 @@ class StatusTagController extends Controller
      *      tags={"Status"},
      *      summary="Update a StatusTag",
      *      description="Updates a single StatusTag Object, if user is authorized to",
+     *
      *      @OA\Parameter (
      *          name="statusId",
      *          in="path",
      *          description="Status-ID",
      *          example=1337,
+     *
      *          @OA\Schema(type="integer")
      *      ),
+     *
      *      @OA\Parameter (
      *          name="tagKey",
      *          in="path",
      *          description="Key of StatusTag",
      *          example="seat",
+     *
      *          @OA\Schema(type="string")
      *      ),
+     *
      *      @OA\RequestBody(
+     *
      *          @OA\MediaType(
      *              mediaType="application/json",
+     *
      *              @OA\Schema(
      *                  ref="#/components/schemas/StatusTag"
      *              ),
      *          ),
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property (
      *                  property="data",
      *                  type="object",
@@ -181,6 +207,7 @@ class StatusTagController extends Controller
      *              )
      *          )
      *      ),
+     *
      *      @OA\Response(response=400, description="Bad request"),
      *      @OA\Response(response=401, description="Unauthorized"),
      *      @OA\Response(response=404, description="No status found for this id"),
@@ -190,22 +217,18 @@ class StatusTagController extends Controller
      *      }
      *     )
      *
-     * @param Request $request
-     * @param int     $statusId
-     * @param string  $tagKey
-     *
-     * @return JsonResponse
      * @throws ValidationException
      */
-    public function update(Request $request, int $statusId, string $tagKey): JsonResponse {
+    public function update(Request $request, int $statusId, string $tagKey): JsonResponse
+    {
         $validated = $request->validate([
-                                            'key'        => ['nullable', 'string', 'max:255'],
-                                            'value'      => ['required', 'string', 'max:255'],
-                                            'visibility' => ['nullable', new Enum(StatusVisibility::class)],
-                                        ]);
+            'key' => ['nullable', 'string', 'max:255'],
+            'value' => ['required', 'string', 'max:255'],
+            'visibility' => ['nullable', new Enum(StatusVisibility::class)],
+        ]);
 
         try {
-            $status    = Status::findOrFail($statusId);
+            $status = Status::findOrFail($statusId);
             $statusTag = $status->tags->where('key', $tagKey)->first();
             if ($statusTag === null) {
                 throw new ModelNotFoundException();
@@ -216,11 +239,12 @@ class StatusTagController extends Controller
             }
             $statusTag->update($validated);
             StatusUpdateEvent::dispatch($status->fresh());
+
             return $this->sendResponse(data: new StatusTagResource($statusTag));
         } catch (AuthorizationException) {
             return $this->sendError(
                 error: 'User not authorized to manipulate this StatusTag',
-                code:  403,
+                code: 403,
             );
         } catch (ModelNotFoundException) {
             return $this->sendError(
@@ -228,7 +252,6 @@ class StatusTagController extends Controller
             );
         }
     }
-
 
     /**
      * @OA\Post(
@@ -253,25 +276,33 @@ class StatusTagController extends Controller
      *          <li>trwl:vehicle_number (i.e. 425 001, Tz9001, 123, ...)</li>
      *          <li>trwl:passenger_rights (i.e. yes / no / ID of claim)</li>
      *      </ul>",
+     *
      * @OA\Parameter (
      *          name="statusId",
      *          in="path",
      *          description="Status-ID",
      *          example=1337,
+     *
      *          @OA\Schema(type="integer")
      *      ),
+     *
      * @OA\RequestBody(
+     *
      *          @OA\MediaType(
      *              mediaType="application/json",
+     *
      *              @OA\Schema(
      *                  ref="#/components/schemas/StatusTag"
      *              ),
      *          ),
      *      ),
+     *
      * @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property (
      *                  property="data",
      *                  type="object",
@@ -279,6 +310,7 @@ class StatusTagController extends Controller
      *              )
      *          )
      *      ),
+     *
      * @OA\Response(response=400, description="Bad request"),
      * @OA\Response(response=401, description="Unauthorized"),
      * @OA\Response(response=404, description="No status found for this id"),
@@ -288,16 +320,13 @@ class StatusTagController extends Controller
      *      }
      *  )
      *
-     * @param Request $request
-     * @param int     $statusId
-     *
-     * @return JsonResponse
      * @throws ValidationException
      */
-    public function store(Request $request, int $statusId): JsonResponse {
+    public function store(Request $request, int $statusId): JsonResponse
+    {
         $validator = Validator::make($request->all(), [
-            'key'        => ['required', 'string', 'max:255'],
-            'value'      => ['required', 'string', 'max:255'],
+            'key' => ['required', 'string', 'max:255'],
+            'value' => ['required', 'string', 'max:255'],
             'visibility' => ['required', new Enum(StatusVisibility::class)],
         ]);
 
@@ -312,19 +341,20 @@ class StatusTagController extends Controller
             if ($status->tags->where('key', $validated['key'])->count() > 0) {
                 return $this->sendError(
                     error: 'StatusTag with this key already exists',
-                    code:  400,
+                    code: 400,
                 );
             }
             $this->authorize('update', $status);
-            $validated['status_id']  = $status->id;
+            $validated['status_id'] = $status->id;
             $validated['visibility'] = StatusVisibility::from($validated['visibility']);
-            $statusTag               = StatusTag::create($validated);
+            $statusTag = StatusTag::create($validated);
             StatusUpdateEvent::dispatch($status->fresh());
+
             return $this->sendResponse(data: new StatusTagResource($statusTag));
         } catch (AuthorizationException) {
             return $this->sendError(
                 error: 'User not authorized to manipulate this Status',
-                code:  403,
+                code: 403,
             );
         } catch (ModelNotFoundException) {
             return $this->sendError(
@@ -340,27 +370,34 @@ class StatusTagController extends Controller
      *      tags={"Status"},
      *      summary="Destroy a StatusTag",
      *      description="Deletes a single StatusTag Object, if user is authorized to",
+     *
      *      @OA\Parameter (
      *          name="statusId",
      *          in="path",
      *          description="Status-ID",
      *          example=1337,
+     *
      *          @OA\Schema(type="integer")
      *      ),
+     *
      *      @OA\Parameter (
      *          name="tagKey",
      *          in="path",
      *          description="Key of StatusTag",
      *          example="trwl:seat",
+     *
      *          @OA\Schema(type="string")
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
      *              ref="#/components/schemas/SuccessResponse"
      *          )
      *      ),
+     *
      *      @OA\Response(response=400, description="Bad request"),
      *      @OA\Response(response=401, description="Unauthorized"),
      *      @OA\Response(response=404, description="No status found for this id and statusId"),
@@ -369,15 +406,11 @@ class StatusTagController extends Controller
      *          {"passport": {"write-statuses"}}, {"token": {}}
      *      }
      *  )
-     *
-     * @param int    $statusId
-     * @param string $tagKey
-     *
-     * @return JsonResponse
      */
-    public function destroy(int $statusId, string $tagKey): JsonResponse {
+    public function destroy(int $statusId, string $tagKey): JsonResponse
+    {
         try {
-            $status    = Status::findOrFail($statusId);
+            $status = Status::findOrFail($statusId);
             $statusTag = $status->tags->where('key', $tagKey)->first();
             if ($statusTag === null) {
                 throw new ModelNotFoundException();
@@ -385,11 +418,12 @@ class StatusTagController extends Controller
             $this->authorize('destroy', $statusTag);
             $statusTag->delete();
             StatusUpdateEvent::dispatch($status->fresh());
+
             return $this->sendResponse();
         } catch (AuthorizationException) {
             return $this->sendError(
                 error: 'User not authorized to manipulate this StatusTag',
-                code:  403,
+                code: 403,
             );
         } catch (ModelNotFoundException) {
             return $this->sendError(

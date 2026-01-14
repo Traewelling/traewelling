@@ -16,26 +16,32 @@ use PDOException;
 
 class RefreshCurrentTrips extends Command
 {
-    protected $signature   = 'trwl:refreshTrips';
+    protected $signature = 'trwl:refreshTrips';
+
     protected $description = 'Refresh delay data from current active trips';
 
     private TripRepository $tripRepository;
-    private MotisHydrator  $motisHydrator;
 
-    public function __construct(?TripRepository $tripRepository = null, ?MotisHydrator $motisHydrator = null) {
+    private MotisHydrator $motisHydrator;
+
+    public function __construct(?TripRepository $tripRepository = null, ?MotisHydrator $motisHydrator = null)
+    {
         parent::__construct();
         $this->tripRepository = $tripRepository ?? new TripRepository();
-        $this->motisHydrator  = $motisHydrator ?? new MotisHydrator();
+        $this->motisHydrator = $motisHydrator ?? new MotisHydrator();
     }
 
-    private function getDataProvider(): DataProviderInterface {
+    private function getDataProvider(): DataProviderInterface
+    {
         // Probably only HafasController is needed here, because this Command is very Hafas specific
-        return (new DataProviderBuilder)->build();
+        return (new DataProviderBuilder())->build();
     }
 
-    public function handle(): int {
+    public function handle(): int
+    {
         if ($this->getDataProvider() instanceof Motis === false) {
             $this->error('Currently only Motis is supported for this command.');
+
             return 1;
         }
 
@@ -45,6 +51,7 @@ class RefreshCurrentTrips extends Command
 
         if ($trips->isEmpty()) {
             $this->info('No trips to be refreshed');
+
             return 0;
         }
 
@@ -59,10 +66,11 @@ class RefreshCurrentTrips extends Command
                 $rawJourney = $this->getDataProvider()->fetchRawHafasTrip($trip->trip_id, $trip->linename);
                 if (!$rawJourney || !$rawJourney['legs'][0]['realTime']) {
                     $this->warn('-> Skipping, no real-time data available');
+
                     continue;
                 }
 
-                $stopovers  = $this->motisHydrator->parseLegToUpdateStopovers(
+                $stopovers = $this->motisHydrator->parseLegToUpdateStopovers(
                     $rawJourney['legs'][0],
                     $trip,
                     DataProvider::TRANSITOUS
@@ -70,7 +78,7 @@ class RefreshCurrentTrips extends Command
 
                 $this->info(sprintf('Updated stopovers: %d', $stopovers->count()));
 
-                //set duration for refreshed trips to null, so it will be recalculated
+                // set duration for refreshed trips to null, so it will be recalculated
                 Checkin::where('trip_id', $trip->trip_id)->update(['duration' => null]);
             } catch (PDOException $exception) {
                 if ($exception->getCode() === '23000') {
@@ -86,9 +94,11 @@ class RefreshCurrentTrips extends Command
 
             if ($loop++ >= config('trwl.refresh.max_trips_per_minute')) {
                 $this->warn('Max number of trips reached. Waiting for next minute...');
+
                 return 0;
             }
         }
+
         return 0;
     }
 }

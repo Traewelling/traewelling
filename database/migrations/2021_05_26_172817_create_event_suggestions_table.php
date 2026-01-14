@@ -6,8 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateEventSuggestionsTable extends Migration
 {
-    public function up(): void {
-        Schema::create('event_suggestions', function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::create('event_suggestions', function (Blueprint $table) {
             $table->id();
 
             $table->unsignedBigInteger('user_id')->nullable();
@@ -24,17 +25,18 @@ class CreateEventSuggestionsTable extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->cascadeOnUpdate()
-                  ->nullOnDelete();
+                ->references('id')
+                ->on('users')
+                ->cascadeOnUpdate()
+                ->nullOnDelete();
             $table->foreign('train_station_id')
-                  ->references('id')
-                  ->on('train_stations');
+                ->references('id')
+                ->on('train_stations');
         });
     }
 
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropIfExists('event_suggestions');
     }
 }

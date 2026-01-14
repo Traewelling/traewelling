@@ -9,10 +9,12 @@ use InvalidArgumentException;
 
 abstract class AbstractExporter
 {
-    protected User   $user;
+    protected User $user;
+
     protected string $fileName;
 
-    public function __construct(User $user) {
+    public function __construct(User $user)
+    {
         $this->user = $user;
 
         if (!isset($this->fileName)) {
@@ -20,11 +22,13 @@ abstract class AbstractExporter
         }
     }
 
-    public function getFileName(): string {
+    public function getFileName(): string
+    {
         return $this->fileName;
     }
 
-    public function getData(): array|string {
+    public function getData(): array|string
+    {
         if (!$this->onExportValidation()) {
             throw new InvalidArgumentException('Export validation failed in ' . static::class);
         }

@@ -47,7 +47,6 @@ class MigrationStationIdentifiers implements ShouldQueue
                 );
             }
 
-
             $station->identifiers_migrated = true;
             $station->save();
         }

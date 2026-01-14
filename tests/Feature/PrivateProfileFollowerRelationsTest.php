@@ -5,9 +5,7 @@ namespace Tests\Feature;
 use App\Http\Controllers\Backend\User\FollowController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
-use App\Notifications\FollowRequestApproved;
 use App\Notifications\FollowRequestIssued;
-use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 use PHPUnit\Framework\Attributes\Test;
@@ -18,69 +16,74 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected User $alice;
 
-    public function setUp(): void {
+    protected function setUp(): void
+    {
         parent::setUp();
         $this->user = User::factory()->create();
-        $this->user->update(["private_profile" => true]);
+        $this->user->update(['private_profile' => true]);
         $this->alice = User::factory()->create();
     }
 
-    public function testRequestPrivateFollowShouldCreateARequestNotification(): void {
-        //create a user with a private profile
+    public function test_request_private_follow_should_create_a_request_notification(): void
+    {
+        // create a user with a private profile
         $alice = User::factory()->create();
-        $bob   = User::factory(['private_profile' => true])->create();
+        $bob = User::factory(['private_profile' => true])->create();
 
-        //check that there are no notifications
+        // check that there are no notifications
         $this->assertDatabaseCount('notifications', 0);
 
-        //alice requests to follow bob
+        // alice requests to follow bob
         FollowController::createOrRequestFollow($alice, $bob);
 
-        //check if bob has a notification
+        // check if bob has a notification
         $this->assertDatabaseHas('notifications', [
             'notifiable_id' => $bob->id,
-            'type'          => FollowRequestIssued::class,
+            'type' => FollowRequestIssued::class,
         ]);
     }
 
-    public function testAcceptingAFollowRequestShouldSpawnANotificationForInitiator(): void {
-        //create a user with a private profile
-        $alice      = User::factory()->create();
-        $bob        = User::factory(['private_profile' => true])->create();
+    public function test_accepting_a_follow_request_should_spawn_a_notification_for_initiator(): void
+    {
+        // create a user with a private profile
+        $alice = User::factory()->create();
+        $bob = User::factory(['private_profile' => true])->create();
 
-        //check that there are no notifications
+        // check that there are no notifications
         $this->assertDatabaseCount('notifications', 0);
 
-        //alice requests to follow bob
+        // alice requests to follow bob
         FollowController::createOrRequestFollow($alice, $bob);
 
         Passport::actingAs($bob, ['*']);
-        //bob should have a notification
+        // bob should have a notification
         $response = $this->get('/api/v1/notifications');
         $response->assertOk();
         $response->assertJsonCount(1, 'data'); // one notification
         $response->assertJsonFragment(['type' => 'FollowRequestIssued']);
 
-        //bob accepts the request
+        // bob accepts the request
         FollowController::approveFollower($bob->id, $alice->id);
 
         Passport::actingAs($alice, ['*']);
-        //alice should have a notification
+        // alice should have a notification
         $response = $this->get('/api/v1/notifications');
         $response->assertOk();
         $response->assertJsonCount(1, 'data'); // one notification
     }
 
-    public function testAcceptingAFollowRequestShouldMakeAProfileVisible(): void {
+    public function test_accepting_a_follow_request_should_make_a_profile_visible(): void
+    {
         // Given: Users Alice and Bob
         $alice = $this->alice;
-        $bob   = $this->user;
+        $bob = $this->user;
 
         // Alice cannot see Bob
         $this->assertFalse($alice->can('view', $bob));
-        $guest = $this->actingAs($alice)->get(route('profile', ["username" => $bob->username]));
+        $guest = $this->actingAs($alice)->get(route('profile', ['username' => $bob->username]));
         $guest->assertSee(__('profile.private-profile-text'));
 
         // When: Alice follows Bob
@@ -93,20 +96,21 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
         $this->assertContains($alice->id, $bob->followers->pluck('user_id'));
 
         // Alice can see Bob
-        $guest = $this->actingAs($alice)->get(route('profile', ["username" => $bob->username]));
+        $guest = $this->actingAs($alice)->get(route('profile', ['username' => $bob->username]));
         $guest->assertDontSee(__('profile.private-profile-text'));
         $this->assertTrue($alice->can('view', $bob));
     }
 
     #[Test]
-    public function declining_a_follow_request_should_keep_invisibility(): void {
+    public function declining_a_follow_request_should_keep_invisibility(): void
+    {
         // Given: Users Alice and Bob
         $alice = $this->alice;
-        $bob   = $this->user;
+        $bob = $this->user;
 
         // Alice cannot see Bob
         $this->assertFalse($alice->can('view', $bob));
-        $guest = $this->actingAs($alice)->get(route('profile', ["username" => $bob->username]));
+        $guest = $this->actingAs($alice)->get(route('profile', ['username' => $bob->username]));
         $guest->assertSee(__('profile.private-profile-text'));
 
         // When: Alice follows Bob
@@ -119,22 +123,23 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
         $bob->refresh();
 
         // Alice cannot see Bob
-        $guest = $this->actingAs($alice)->get(route('profile', ["username" => $bob->username]));
+        $guest = $this->actingAs($alice)->get(route('profile', ['username' => $bob->username]));
         $guest->assertSee(__('profile.private-profile-text'));
         $this->assertFalse($alice->can('view', $bob));
     }
 
     #[Test]
-    public function removing_a_follower_should_result_in_invisibility(): void {
+    public function removing_a_follower_should_result_in_invisibility(): void
+    {
         // Given: Users Alice and Bob
         $alice = $this->alice;
-        $bob   = $this->user;
+        $bob = $this->user;
         UserController::createFollow($alice, $bob);
         $alice->refresh();
 
         // Alice cannot see Bob
         // ToDo: This technically checks if Alice CANNOT see Bob. But.. she should here?
-        $guest = $this->actingAs($alice)->get(route('profile', ["username" => $bob->username]));
+        $guest = $this->actingAs($alice)->get(route('profile', ['username' => $bob->username]));
         $guest->assertSee(__('profile.private-profile-text'));
         $invisible = $this->actingAs($alice)->user->getUserInvisibleToMeAttribute();
         $this->assertTrue($invisible);
@@ -147,7 +152,7 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
         $alice->refresh();
         $invisible = $this->actingAs($alice)->user->getUserInvisibleToMeAttribute();
         $this->assertTrue($invisible);
-        $guest = $this->actingAs($alice)->get(route('profile', ["username" => $bob->username]));
+        $guest = $this->actingAs($alice)->get(route('profile', ['username' => $bob->username]));
         $guest->assertSee(__('profile.private-profile-text'));
     }
 }

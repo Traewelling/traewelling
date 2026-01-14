@@ -108,6 +108,30 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
+  pint:
+    name: Laravel Pint Code Style Check
+    runs-on: ubuntu-latest
+    needs: install-composer-dependencies
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.5
+          extensions: mbstring, ctype, fileinfo, json, openssl, pdo, tokenizer, xml
+
+      - name: Download vendor directory
+        uses: actions/download-artifact@v4
+        with:
+          name: vendor
+          path: vendor
+
+      - name: Run Laravel Pint
+        run: php vendor/bin/pint --test
+
   migration-test-sqlite:
     name: Migration Test (SQLite)
     runs-on: ubuntu-latest

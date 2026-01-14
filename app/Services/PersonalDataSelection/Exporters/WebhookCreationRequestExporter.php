@@ -12,7 +12,9 @@ class WebhookCreationRequestExporter extends AbstractExporter
 {
     use ModelExportable;
 
-    protected string $fileName    = 'webhook_creation_requests.json';
-    protected string $model       = WebhookCreationRequest::class;
+    protected string $fileName = 'webhook_creation_requests.json';
+
+    protected string $model = WebhookCreationRequest::class;
+
     protected string $whereColumn = 'user_id';
 }

@@ -12,16 +12,17 @@ class PolylinesBrouter extends Command
 {
     protected $signature = 'app:clean-db:polylines:brouter {--limit=10}';
 
-    public function handle(): void {
-        $limit          = (int) $this->option('limit');
+    public function handle(): void
+    {
+        $limit = (int) $this->option('limit');
         $polylineGroups = $this->fetchPolylineGroups($limit);
-        $i              = 1;
+        $i = 1;
         $cnt = count($polylineGroups);
         $this->info("Found $cnt polyline groups.");
 
         foreach ($polylineGroups as $group) {
             $parent_id = $group->parent_id;
-            $total     = $group->total;
+            $total = $group->total;
             $this->comment("[$i/$limit] Processing polyline with parent_id $parent_id. Total entries: $total");
 
             $polyline = $this->fetchAndUpdatePolyline($parent_id);
@@ -31,16 +32,18 @@ class PolylinesBrouter extends Command
         }
     }
 
-    private function updateTrips(string $ids, Polyline $polyline): void {
+    private function updateTrips(string $ids, Polyline $polyline): void
+    {
         Trip::whereIn('polyline_id', explode(',', $ids))
             ->orderBy('id', 'desc')
             ->get()
-            ->each(fn($trip) => $trip->update(['polyline_id' => $polyline->id]));
+            ->each(fn ($trip) => $trip->update(['polyline_id' => $polyline->id]));
     }
 
-    private function fetchAndUpdatePolyline(int $parent_id): Polyline {
+    private function fetchAndUpdatePolyline(int $parent_id): Polyline
+    {
         $polyline = Polyline::where('parent_id', $parent_id)->orderBy('id', 'desc')->first();
-        $geoJson  = json_decode($polyline->polyline, true);
+        $geoJson = json_decode($polyline->polyline, true);
         foreach ($geoJson['features'] as $key => $feature) {
             if (empty($feature['properties'])) {
                 continue;
@@ -58,18 +61,18 @@ class PolylinesBrouter extends Command
         return $polyline;
     }
 
-    private function fetchPolylineGroups(int $limit = 10): Collection {
+    private function fetchPolylineGroups(int $limit = 10): Collection
+    {
         return DB::table('poly_lines')
-                 ->select(
-                     'parent_id',
-                     DB::raw('count(*) as total'),
-                     DB::raw('group_concat(id) as ids')
-                 )
-                 ->where('parent_id', '!=', null)
-                 ->groupBy('parent_id')
-                 ->limit($limit)
-                 ->having('total', '>', 1)
-                 ->get();
+            ->select(
+                'parent_id',
+                DB::raw('count(*) as total'),
+                DB::raw('group_concat(id) as ids')
+            )
+            ->where('parent_id', '!=', null)
+            ->groupBy('parent_id')
+            ->limit($limit)
+            ->having('total', '>', 1)
+            ->get();
     }
-
 }

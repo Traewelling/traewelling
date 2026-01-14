@@ -21,11 +21,11 @@ use Tests\ApiTestCase;
  */
 class EventTest extends ApiTestCase
 {
-
     use RefreshDatabase;
 
-    public function testEventSelection(): void {
-        $pastEvent   = Event::factory(['checkin_start' => now()->subWeeks(2), 'checkin_end' => now()->subWeek()])->create();
+    public function test_event_selection(): void
+    {
+        $pastEvent = Event::factory(['checkin_start' => now()->subWeeks(2), 'checkin_end' => now()->subWeek()])->create();
         $activeEvent = Event::factory(['checkin_start' => now()->subDay(), 'checkin_end' => now()->addDay()])->create();
         $futureEvent = Event::factory(['checkin_start' => now()->addWeek(), 'checkin_end' => now()->addWeeks(2)])->create();
 
@@ -51,7 +51,7 @@ class EventTest extends ApiTestCase
         $response = $this->get('/api/v1/events?timestamp=' . now()->subDays(9) . '&upcoming=true');
         $response->assertOk();
         $response->assertJsonCount(3, 'data');
-        //check correct order (ascending by begin date)
+        // check correct order (ascending by begin date)
         $this->assertEquals($pastEvent->slug, $response->json('data.0.slug'));
         $this->assertEquals($activeEvent->slug, $response->json('data.1.slug'));
         $this->assertEquals($futureEvent->slug, $response->json('data.2.slug'));
@@ -67,7 +67,8 @@ class EventTest extends ApiTestCase
         $response->assertJsonCount(0, 'data');
     }
 
-    public function testEventDetails(): void {
+    public function test_event_details(): void
+    {
         $event = Event::factory()->create();
 
         $response = $this->get('/api/v1/event/' . $event->slug);
@@ -80,18 +81,19 @@ class EventTest extends ApiTestCase
 
         $response = $this->get('/api/v1/event/' . $event->slug . '/statuses');
         $response->assertOk();
-        //TODO: Test content for status endpoint
+        // TODO: Test content for status endpoint
     }
 
-    public function testEventSuggestion(): void {
+    public function test_event_suggestion(): void
+    {
         $this->actAsApiUserWithAllScopes();
         $response = $this->postJson('/api/v1/event');
         $response->assertUnprocessable();
 
         $response = $this->postJson('/api/v1/event', [
-            'name'  => 'Testevent',
+            'name' => 'Testevent',
             'begin' => Carbon::tomorrow()->toDateString(),
-            'end'   => Carbon::tomorrow()->addWeek()->toDateString(),
+            'end' => Carbon::tomorrow()->addWeek()->toDateString(),
         ]);
         $response->assertCreated();
     }

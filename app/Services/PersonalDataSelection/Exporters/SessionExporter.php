@@ -12,6 +12,8 @@ class SessionExporter extends AbstractExporter
     use RelationExportable;
 
     protected string $fileName = 'sessions.json';
+
     protected string $relation = 'sessions';
-    protected array  $columns  = ['user_id', 'ip_address', 'user_agent', 'last_activity'];
+
+    protected array $columns = ['user_id', 'ip_address', 'user_agent', 'last_activity'];
 }

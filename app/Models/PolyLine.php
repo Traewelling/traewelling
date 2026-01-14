@@ -13,26 +13,32 @@ class PolyLine extends Model
     use HasFactory;
 
     private PolylineStorageService $polylineStorageService;
-    protected                      $fillable = ['hash', 'polyline', 'source', 'parent_id'];
-    protected                      $casts    = [
-        'id'     => 'integer',
+
+    protected $fillable = ['hash', 'polyline', 'source', 'parent_id'];
+
+    protected $casts = [
+        'id' => 'integer',
         'source' => 'string',
     ];
 
-    public function __construct(array $attributes = []) {
+    public function __construct(array $attributes = [])
+    {
         parent::__construct($attributes);
         $this->polylineStorageService = new PolylineStorageService();
     }
 
-    public function trips(): HasMany {
+    public function trips(): HasMany
+    {
         return $this->hasMany(Trip::class, 'polyline_id', 'id');
     }
 
-    public function parent(): HasOne {
+    public function parent(): HasOne
+    {
         return $this->hasOne(PolyLine::class, 'parent_id', 'id');
     }
 
-    public function __get($key) {
+    public function __get($key)
+    {
         // check if the polyline is empty
         if ($key === 'polyline') {
             return $this->polylineStorageService->getOrCreate($this);
@@ -41,8 +47,10 @@ class PolyLine extends Model
         return parent::__get($key);
     }
 
-    public function delete(): ?bool {
+    public function delete(): ?bool
+    {
         $this->polylineStorageService->delete($this->hash);
+
         return parent::delete();
     }
 }

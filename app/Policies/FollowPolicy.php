@@ -10,11 +10,13 @@ class FollowPolicy
 {
     use HandlesAuthorization;
 
-    public function create(User $user): bool {
+    public function create(User $user): bool
+    {
         return $user->cannot('disallow-social-interaction');
     }
 
-    public function delete(User $user, Follow $follow): bool {
+    public function delete(User $user, Follow $follow): bool
+    {
         return $user->id == $follow->follow_id;
     }
 }

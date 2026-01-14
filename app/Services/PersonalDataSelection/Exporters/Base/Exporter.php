@@ -11,14 +11,15 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
 class Exporter
 {
     private PersonalDataSelection $personalDataSelection;
+
     private array $exporters = [];
+
     private User $user;
 
     public function __construct(
         PersonalDataSelection $personalDataSelection,
-        User                  $user
-    )
-    {
+        User $user
+    ) {
         $this->personalDataSelection = $personalDataSelection;
         $this->user = $user;
     }
@@ -38,7 +39,6 @@ class Exporter
             $this->personalDataSelection->add($exporter->getFileName(), $exporter->getData());
         }
     }
-
 
     private function checkClasses(): void
     {
