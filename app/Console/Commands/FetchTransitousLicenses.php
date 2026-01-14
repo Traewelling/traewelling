@@ -24,7 +24,7 @@ class FetchTransitousLicenses extends Command
     {
         $this->info('Downloading licenses...');
         $response = Http::get(self::LICENSE_URL);
-        if (empty($response) || $response->status() !== 200) {
+        if (!$response->successful()) {
             $this->error('Failed to download licenses');
 
             return [];

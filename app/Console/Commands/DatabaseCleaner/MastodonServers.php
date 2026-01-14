@@ -90,7 +90,7 @@ class MastodonServers extends Command
                 }
                 if ($status !== 200) {
                     $this->info(self::SMALL_DIVIDER);
-                    $this->alertServerNotOk($status, $server, $response->getBody()->getContents() ?? '');
+                    $this->alertServerNotOk($status, $server, $response->getBody()->getContents());
 
                     continue;
                 }
