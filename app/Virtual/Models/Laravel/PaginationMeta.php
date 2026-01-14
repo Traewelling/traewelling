@@ -6,6 +6,7 @@ namespace App\Virtual\Models\Laravel;
  * @OA\Schema(
  *     title="Meta",
  *     description="Pagination meta data",
+ *
  *     @OA\Xml(
  *         name="PaginationMeta"
  *     )
@@ -20,9 +21,11 @@ class PaginationMeta
      *     type="integer",
      *     example=2,
      * )
+     *
      * @var int;
      */
     private $current_page;
+
     /**
      * @OA\Property (
      *     title="from",
@@ -30,9 +33,11 @@ class PaginationMeta
      *     type="integer",
      *     example=16,
      * )
+     *
      * @var int;
      */
     private $from;
+
     /**
      * @OA\Property (
      *     title="path",
@@ -41,9 +46,11 @@ class PaginationMeta
      *     format="url",
      *     example="https://traewelling.de/api/v1/ENDPOINT"
      * )
+     *
      * @var string;
      */
     private $path;
+
     /**
      * @OA\Property (
      *     title="per_page",
@@ -51,9 +58,11 @@ class PaginationMeta
      *     type="integer",
      *     example=15,
      * )
+     *
      * @var int;
      */
     private $per_page;
+
     /**
      * @OA\Property (
      *     title="to",
@@ -61,6 +70,7 @@ class PaginationMeta
      *     type="integer",
      *     example=30,
      * )
+     *
      * @var int;
      */
     private $to;

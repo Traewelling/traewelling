@@ -8,8 +8,9 @@ use Jenssegers\Agent\Agent;
 
 abstract class SessionController extends Controller
 {
-    public static function index(User $user): object {
-        return $user->sessions->map(function($session) {
+    public static function index(User $user): object
+    {
+        return $user->sessions->map(function ($session) {
             $result = new Agent();
             $result->setUserAgent($session->user_agent);
             $session->platform = $result->platform();
@@ -21,11 +22,13 @@ abstract class SessionController extends Controller
             } else {
                 $session->device_icon = 'desktop';
             }
+
             return $session;
         });
     }
 
-    public static function deleteAllSessionsFor(User $user): void {
+    public static function deleteAllSessionsFor(User $user): void
+    {
         $user->sessions()->delete();
     }
 }

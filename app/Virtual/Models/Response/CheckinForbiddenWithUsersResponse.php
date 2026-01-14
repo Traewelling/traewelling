@@ -5,6 +5,7 @@ namespace App\Virtual\Models\Response;
 /**
  * @OA\Schema(
  *      title="CheckinForbiddenWithUsersResponse",
+ *
  *      @OA\Property (
  *          property="message",
  *          example="You are not allowed to check in the following users: 1"
@@ -15,6 +16,7 @@ namespace App\Virtual\Models\Response;
  *          @OA\Property (
  *              property="invalidUsers",
  *              type="array",
+ *
  *              @OA\Items(
  *                  type="integer",
  *                  example="1"
@@ -23,6 +25,4 @@ namespace App\Virtual\Models\Response;
  *     )
  * )
  */
-class CheckinForbiddenWithUsersResponse
-{
-}
+class CheckinForbiddenWithUsersResponse {}

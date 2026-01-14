@@ -1,48 +1,50 @@
 <script>
-import NotificationEntry from "./NotificationEntry.vue";
-import {useNotificationsStore} from "../stores/notifications";
-import LoadingSkeletonRows from "../components/Loader/LoadingSkeletonRows.vue";
+import NotificationEntry from './NotificationEntry.vue';
+import { useNotificationsStore } from '../stores/notifications';
+import LoadingSkeletonRows from '../components/Loader/LoadingSkeletonRows.vue';
 
 export default {
-  components: {NotificationEntry, LoadingSkeletonRows},
-  setup() {
-    const store = useNotificationsStore();
-    return {store};
-  },
-  methods: {
-    toggleAllRead() {
-      this.store.toggleAllRead().then(() => {
-        notyf.success(this.$t("notifications.readAll.success"));
-      });
-    }
-  }
+    components: { NotificationEntry, LoadingSkeletonRows },
+    setup() {
+        const store = useNotificationsStore();
+        return { store };
+    },
+    methods: {
+        toggleAllRead() {
+            this.store.toggleAllRead().then(() => {
+                notyf.success(this.$t('notifications.readAll.success'));
+            });
+        },
+    },
 };
 </script>
 
 <template>
-  <div>
-    <LoadingSkeletonRows
-        v-if="store.loading"
-        :rows="10"
-        :columns="1"
-        :rowHeight="100"
-        :gutter="12"
-        :border-radius="'0em'"
-    />
+    <div>
+        <LoadingSkeletonRows
+            v-if="store.loading"
+            :rows="10"
+            :columns="1"
+            :row-height="100"
+            :gutter="12"
+            :border-radius="'0em'"
+        />
 
-    <NotificationEntry
-        v-else-if="store.notifications.length"
-        v-for="(item, index) in store.notifications"
-        v-bind="item"
-        :key="item.id"
-        @toggleRead="store.toggleRead(item, index)"
-    />
+        <NotificationEntry
+            v-for="(item, index) in store.notifications"
+            v-else-if="store.notifications.length"
+            v-bind="item"
+            :key="item.id"
+            @toggle-read="store.toggleRead(item, index)"
+        />
 
-    <div class="text-center text-muted notifications-empty" v-else>
-      <i class="fa-solid fa-envelope fs-1"></i>
-      <p class="fs-5">{{ $t("notifications.empty") }}</p>
+        <div v-else class="text-center text-muted notifications-empty">
+            <i class="fa-solid fa-envelope fs-1" />
+            <p class="fs-5">
+                {{ $t("notifications.empty") }}
+            </p>
+        </div>
     </div>
-  </div>
 </template>
 
 <style scoped lang="scss">

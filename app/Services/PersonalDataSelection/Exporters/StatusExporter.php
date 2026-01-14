@@ -12,7 +12,9 @@ class StatusExporter extends AbstractExporter
     use RelationExportable;
 
     protected string $fileName = 'statuses.json';
+
     protected string $relation = 'statuses';
-    protected string $with     = 'tags';
+
+    protected string $with = 'tags';
     // todo: columns
 }

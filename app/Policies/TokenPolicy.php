@@ -7,9 +7,8 @@ use Laravel\Passport\Token;
 
 class TokenPolicy
 {
-
-    public function delete(User $user, Token $token): bool {
+    public function delete(User $user, Token $token): bool
+    {
         return $token->user->id === $user->id;
     }
-
 }

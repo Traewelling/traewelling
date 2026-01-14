@@ -1,14 +1,14 @@
 // Event Listener
-document.getElementById("export-nominal")?.addEventListener("click", function () {
+document.getElementById('export-nominal')?.addEventListener('click', function () {
     resetFields();
     selectNominal();
-})
+});
 
-document.getElementById("export-all")?.addEventListener("click", function () {
+document.getElementById('export-all')?.addEventListener('click', function () {
     selectAll();
-})
+});
 
-document.getElementById("export-tags")?.addEventListener("click", function () {
+document.getElementById('export-tags')?.addEventListener('click', function () {
     resetFields();
     selectNominalAndTags();
 });
@@ -34,7 +34,7 @@ function showWarning(show = true) {
 
 // Select functions
 function selectAll() {
-    let select = document.getElementById("export-select");
+    let select = document.getElementById('export-select');
 
     for (const element of select?.options) {
         element.selected = true;
@@ -42,21 +42,21 @@ function selectAll() {
 }
 
 function selectNominal() {
-    const nominal = ["status_id", "line_name", "origin_name", "departure_planned", "destination_name", "arrival_planned", "distance", "points", "body"];
+    const nominal = ['status_id', 'line_name', 'origin_name', 'departure_planned', 'destination_name', 'arrival_planned', 'distance', 'points', 'body'];
     showWarning(false);
 
     selectFromArray(nominal);
 }
 
 function selectNominalAndTags() {
-    selectNominal()
-    selectFromArray(["status_tags"]);
+    selectNominal();
+    selectFromArray(['status_tags']);
     showWarning();
 }
 
 // Helper functions
 function resetFields() {
-    let select = document.getElementById("export-select");
+    let select = document.getElementById('export-select');
 
     for (const element of select.options) {
         element.selected = false;
@@ -66,7 +66,7 @@ function resetFields() {
 
 function selectFromArray(array) {
     for (const element of array) {
-        let select = document.getElementById("export-select");
+        let select = document.getElementById('export-select');
         let option = select.querySelector(`option[value="${element}"]`);
         if (option === null) {
             continue;

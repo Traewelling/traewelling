@@ -48,7 +48,6 @@ return [
 
     'encrypt' => false,
 
-
     /*
     |--------------------------------------------------------------------------
     | Session File Location
@@ -195,6 +194,6 @@ return [
     |
     */
 
-    'same_site' => "lax",
+    'same_site' => 'lax',
 
 ];

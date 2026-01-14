@@ -7,8 +7,8 @@ use Tests\Unit\UnitTestCase;
 
 class PrideServiceTest extends UnitTestCase
 {
-
-    public function testPrideMonthDetection(): void {
+    public function test_pride_month_detection(): void
+    {
         $this->travelTo('2024-01-01 12:00:00');
         $this->assertFalse(PrideService::isPrideMonth());
 
@@ -16,7 +16,8 @@ class PrideServiceTest extends UnitTestCase
         $this->assertTrue(PrideService::isPrideMonth());
     }
 
-    public function testCssClasses(): void {
+    public function test_css_classes(): void
+    {
         $this->travelTo('2024-01-01 12:00:00');
         $this->assertNull(PrideService::getCssClassesForPrideFlag());
 

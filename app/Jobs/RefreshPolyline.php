@@ -20,25 +20,33 @@ class RefreshPolyline implements ShouldQueue
     use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
     private const string REFRESH_POLYLINE_COOLDOWN_CACHE_KEY = 'refresh_polyline_cooldown';
-    private Trip                $trip;
+
+    private Trip $trip;
+
     private ReRoutingController $reRoutingController;
 
-    public int $tries   = 3;
+    public int $tries = 3;
+
     public int $backoff = 60;
 
-    public function __construct(Trip $trip, ?ReRoutingController $reRoutingController = null) {
-        $this->trip                = $trip;
+    public function __construct(Trip $trip, ?ReRoutingController $reRoutingController = null)
+    {
+        $this->trip = $trip;
         $this->reRoutingController = $reRoutingController ?? app(ReRoutingController::class);
     }
 
-    public static function dispatch(Trip $trip, ?ReRoutingController $reRoutingController = null): PendingDispatch {
+    public static function dispatch(Trip $trip, ?ReRoutingController $reRoutingController = null): PendingDispatch
+    {
         Cache::set(CacheKey::getReroutePolylineJobKey($trip->id), true, now()->addMinutes(5));
+
         return static::newPendingDispatch(new static($trip, $reRoutingController));
     }
 
-    public function handle(): void {
+    public function handle(): void
+    {
         if (app()->environment('testing')) {
             Log::info('RefreshPolyline Job skipped: Testing environment', ['trip_id' => $this->trip->id]);
+
             return;
         }
         if (Cache::has(self::REFRESH_POLYLINE_COOLDOWN_CACHE_KEY)) {
@@ -48,6 +56,7 @@ class RefreshPolyline implements ShouldQueue
 
         if (!$this->trip->category->onRails()) {
             Log::info('RefreshPolyline Job skipped: Trip is not on rails', ['trip_id' => $this->trip->id, 'category' => $this->trip->category]);
+
             return;
         }
         Log::debug('RefreshPolyline Job started', ['trip_id' => $this->trip->id]);
@@ -55,8 +64,8 @@ class RefreshPolyline implements ShouldQueue
 
         if ($percentage > config('trwl.distance_deviation.cooldown_error_percent')) {
             Log::warning('Too many route segments failed to refresh, activating cooldown', [
-                'trip_id'                => $this->trip->id,
-                'failed_percentage'      => $percentage,
+                'trip_id' => $this->trip->id,
+                'failed_percentage' => $percentage,
                 'cooldown_error_percent' => config('trwl.distance_deviation.cooldown_error_percent'),
             ]);
             Cache::set(self::REFRESH_POLYLINE_COOLDOWN_CACHE_KEY, true, now()->addSeconds(config('trwl.distance_deviation.cooldown_seconds')));

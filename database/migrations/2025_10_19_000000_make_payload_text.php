@@ -9,16 +9,18 @@ use Illuminate\Support\Facades\Schema;
  * so this is a migration to change the payload column to longText to prevent 500 errors,
  * when we flash large data into the session.
  */
-return new class extends Migration
+return new class() extends Migration
 {
-    public function up(): void {
-        Schema::table('sessions', function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::table('sessions', function (Blueprint $table) {
             $table->longText('payload')->change();
         });
     }
 
-    public function down(): void {
-        Schema::table('sessions', function(Blueprint $table) {
+    public function down(): void
+    {
+        Schema::table('sessions', function (Blueprint $table) {
             $table->text('payload')->change();
         });
     }

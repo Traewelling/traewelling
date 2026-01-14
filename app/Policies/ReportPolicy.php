@@ -7,15 +7,18 @@ use App\Models\User;
 
 class ReportPolicy
 {
-    public function viewAny(User $user): bool {
+    public function viewAny(User $user): bool
+    {
         return $user->hasRole('admin');
     }
 
-    public function view(User $user, Report $report): bool {
+    public function view(User $user, Report $report): bool
+    {
         return $user->hasRole('admin');
     }
 
-    public function update(User $user, Report $report): bool {
+    public function update(User $user, Report $report): bool
+    {
         return $user->hasRole('admin');
     }
 }

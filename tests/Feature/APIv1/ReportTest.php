@@ -9,10 +9,10 @@ use Tests\ApiTestCase;
 
 class ReportTest extends ApiTestCase
 {
-
     use RefreshDatabase;
 
-    public function testReportStatus(): void {
+    public function test_report_status(): void
+    {
         $user = User::factory()->create();
         $this->actAsApiUserWithAllScopes($user);
 
@@ -20,8 +20,8 @@ class ReportTest extends ApiTestCase
 
         $response = $this->actingAs($user)->postJson('/api/v1/report', [
             'subjectType' => 'Status',
-            'subjectId'   => $status->id,
-            'reason'      => 'inappropriate',
+            'subjectId' => $status->id,
+            'reason' => 'inappropriate',
             'description' => 'The status is inappropriate because it contains offensive language.',
         ]);
         $response->assertStatus(201);

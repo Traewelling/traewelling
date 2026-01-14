@@ -15,11 +15,12 @@ class MigrateEncryptables extends Migration
      * 6. deactivate maintenance mode
      * 7. test Twitter/Mastodon posting
      */
-    public function up(): void {
+    public function up(): void
+    {
         $slProfiles = SocialLoginProfile::whereNotNull('twitter_token')
-                                        ->orWhereNotNull('twitter_tokenSecret')
-                                        ->orWhereNotNull('mastodon_token')
-                                        ->get();
+            ->orWhereNotNull('twitter_tokenSecret')
+            ->orWhereNotNull('mastodon_token')
+            ->get();
 
         foreach ($slProfiles as $slProfile) {
             $payload = [];

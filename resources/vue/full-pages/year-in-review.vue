@@ -1,826 +1,966 @@
-<template>
-  <div class="year-in-review" ref="container">
-    <!-- Loading State -->
-    <section v-if="loading" class="section section-loading">
-      <div class="loader">
-        <div class="train-icon">🚂</div>
-        <p class="loading-text">{{ t('loading') }}</p>
-      </div>
-    </section>
-
-    <!-- Error State -->
-    <section v-else-if="error" class="section section-error">
-      <div class="error-content">
-        <div class="error-icon">⚠️</div>
-        <h1>{{ t('error') }}</h1>
-        <a href="/login" class="btn-login">Login</a>
-      </div>
-    </section>
-
-    <!-- Main Content -->
-    <template v-else>
-      <!-- Hero Section -->
-      <section class="section section-hero">
-        <div class="hero-content">
-          <div class="logo-badge">
-            <span class="year-badge">{{ data.year }}</span>
-          </div>
-          <h1 class="hero-title">{{ t('welcome') }}</h1>
-          <p class="hero-subtitle">{{ t('your_review') }}</p>
-          <button class="btn-start" @click="scrollToNext">
-            <span>{{ t('goto_yir') }}</span>
-            <span class="arrow-down">↓</span>
-          </button>
-        </div>
-        <div class="hero-bg-pattern"></div>
-      </section>
-
-      <!-- Welcome Section -->
-      <section class="section section-welcome" ref="sectionWelcome">
-        <h1 class="welcome-title" ref="welcomeTitle">
-          {{ t('hello') }} <span class="highlight">{{ data.user?.name }}</span>!
-        </h1>
-        <h2 class="welcome-subtitle" ref="welcomeSubtitle">{{ data.year }} {{ t('longyear') }}</h2>
-      </section>
-
-      <!-- Minutes Section -->
-      <section class="section section-minutes" ref="sectionMinutes">
-        <div class="stat-container">
-          <p class="stat-label" ref="minutesLabel1">{{ t('one.one') }}</p>
-          <h1 class="stat-number" ref="minutesNumber">
-            {{ animatedMinutes.toFixed(0) }}
-          </h1>
-          <p class="stat-unit" ref="minutesLabel2">{{ t('one.two') }}</p>
-          <p class="stat-desc" ref="minutesLabel3">{{ t('one.three') }}</p>
-        </div>
-      </section>
-
-      <!-- Intro Stats Section -->
-      <section class="section section-intro-stats">
-        <h1 class="intro-text">{{ t('two') }}</h1>
-      </section>
-
-      <!-- Your Year Section -->
-      <section class="section section-your-year">
-        <h1 class="your-year-title">{{ t('yourYear') }}</h1>
-        <div class="stats-preview">
-          <div class="stat-pill">
-            <span class="stat-value">{{ data.count }}</span>
-            <span class="stat-label">Fahrten</span>
-          </div>
-          <div class="stat-pill">
-            <span class="stat-value">{{ formatKm(data.distance?.total) }}</span>
-            <span class="stat-label">km</span>
-          </div>
-          <div class="stat-pill">
-            <span class="stat-value">{{ formatHours(data.duration?.total) }}</span>
-            <span class="stat-label">Stunden</span>
-          </div>
-          <div class="stat-pill" v-if="data.totalDelay">
-            <span class="stat-value">{{ data.totalDelay }}</span>
-            <span class="stat-label">Min. Verspätung</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Trip Count Section -->
-      <section class="section section-trips" ref="sectionTrips">
-        <div class="stat-card">
-          <p class="stat-intro">{{ t('three.one') }}</p>
-          <h1 class="stat-big-number" ref="tripCount">{{ animatedTrips.toFixed(0) }}</h1>
-          <p class="stat-outro">{{ t('three.two') }}</p>
-        </div>
-      </section>
-
-      <!-- Distance Section -->
-      <section class="section section-distance" ref="sectionDistance">
-        <div class="stat-card">
-          <p class="stat-intro">{{ t('four.one') }}</p>
-          <h1 class="stat-big-number">
-            <span ref="distanceNumber">{{ animatedDistance.toFixed(0) }}</span>
-            <span class="unit">km</span>
-          </h1>
-          <p class="stat-outro">{{ t('four.two') }}</p>
-        </div>
-      </section>
-
-      <!-- Earth Circumference Section -->
-      <section class="section section-earth">
-        <div class="earth-visual">
-          <div class="earth-icon">🌍</div>
-          <div class="stat-content">
-            <p class="stat-intro">{{ t('five.one') }}</p>
-            <h1 class="stat-highlight">{{ earthCircumference }}x</h1>
-            <p class="stat-outro">{{ t('five.two') }}</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Duration Section -->
-      <section class="section section-duration" ref="sectionDuration">
-        <div class="stat-card">
-          <p class="stat-intro">{{ t('six.one') }}</p>
-          <h1 class="stat-big-number">
-            <span ref="durationNumber">{{ animatedDuration.toFixed(0) }}</span>
-            <span class="unit">{{ t('six.two') }}</span>
-          </h1>
-          <p class="stat-outro">{{ t('six.three') }}</p>
-        </div>
-      </section>
-
-      <!-- Vatican Railway Section -->
-      <section class="section section-vatican">
-        <div class="vatican-visual">
-          <div class="vatican-icon">
-            <span class="vatican-flag">🇻🇦</span>
-            <span class="vatican-train">🚂</span>
-          </div>
-          <div class="stat-content">
-            <p class="stat-intro">{{ t('seven.one') }}</p>
-            <h1 class="stat-highlight">{{ vaticanMultiplier }}x</h1>
-            <p class="stat-outro">{{ t('seven.two') }}</p>
-            <p class="stat-small">{{ t('seven.three') }}</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Operators Section -->
-      <section v-if="data.operators?.count" class="section section-operators">
-        <div class="stat-card">
-          <p class="stat-intro">{{ t('eight.one') }}</p>
-          <h1 class="stat-big-number">{{ data.operators.count }}</h1>
-          <p class="stat-outro">{{ t('eight.two') }}</p>
-        </div>
-      </section>
-
-      <!-- Favorite Operator by Distance -->
-      <section v-if="data.operators?.topByDistance" class="section section-fav-operator">
-        <div class="operator-card">
-          <p class="stat-intro">{{ t('nine.one') }}</p>
-          <h1 class="operator-name">{{ data.operators.topByDistance.operator }}</h1>
-          <p class="operator-stat">
-            {{ formatKm(data.operators.topByDistance.distance) }} km
-          </p>
-        </div>
-      </section>
-
-      <!-- Favorite Operator by Duration -->
-      <section
-          v-if="data.operators?.topByDuration && data.operators.topByDuration.operator !== data.operators.topByDistance?.operator"
-          class="section section-fav-operator-time">
-        <div class="operator-card">
-          <p class="stat-intro">{{ t('ten.one') }}</p>
-          <h1 class="operator-name">{{ data.operators.topByDuration.operator }}</h1>
-          <p class="operator-stat">
-            {{ formatHours(data.operators.topByDuration.duration) }} {{ t('hours') }}
-          </p>
-        </div>
-      </section>
-
-      <!-- Top Lines Section -->
-      <section v-if="data.lines?.topByDistance || data.lines?.topByDuration" class="section section-lines">
-        <div class="lines-card">
-          <h1 class="lines-title">{{ t('eleven.one') }}</h1>
-          <p class="lines-subtitle">{{ t('eleven.two') }}</p>
-          <div class="lines-list">
-            <div v-if="data.lines?.topByDistance" class="line-item">
-              <span class="line-name">{{ data.lines.topByDistance.line }}</span>
-              <span class="line-stat">{{ formatKm(data.lines.topByDistance.distance) }} km</span>
-            </div>
-            <template
-                v-if="data.lines?.topByDuration && data.lines.topByDuration.line !== data.lines.topByDistance?.line">
-              <p class="lines-and">{{ t('eleven.three') }}</p>
-              <div class="line-item">
-                <span class="line-name">{{ data.lines.topByDuration.line }}</span>
-                <span class="line-stat">{{ formatHours(data.lines.topByDuration.duration) }} {{ t('hours') }}</span>
-              </div>
-            </template>
-          </div>
-        </div>
-      </section>
-
-      <!-- Longest Trip -->
-      <section v-if="longestTrip" class="section section-longest">
-        <div class="trip-card">
-          <div class="trip-badge">{{ t('thirteen.badge') }}</div>
-          <p class="trip-date">{{ formatDate(longestTrip.origin?.departure) }}</p>
-          <h2 class="trip-line">{{ longestTrip.lineName }}</h2>
-          <div class="trip-route">
-            <span class="trip-origin">{{ longestTrip.origin?.name }}</span>
-            <span class="trip-arrow">→</span>
-            <span class="trip-dest">{{ longestTrip.destination?.name }}</span>
-          </div>
-          <p class="trip-stat">{{ formatKm(longestTrip.distance) }} km</p>
-        </div>
-      </section>
-
-      <!-- Longest Duration Trip -->
-      <section v-if="longestDurationTrip && longestDurationTrip.trip !== longestTrip?.trip"
-               class="section section-longest-duration">
-        <div class="trip-card">
-          <div class="trip-badge">{{ t('thirteen_duration.badge') }}</div>
-          <p class="trip-date">{{ formatDate(longestDurationTrip.origin?.departure) }}</p>
-          <h2 class="trip-line">{{ longestDurationTrip.lineName }}</h2>
-          <div class="trip-route">
-            <span class="trip-origin">{{ longestDurationTrip.origin?.name }}</span>
-            <span class="trip-arrow">→</span>
-            <span class="trip-dest">{{ longestDurationTrip.destination?.name }}</span>
-          </div>
-          <p class="trip-stat">{{ longestDurationTrip.duration }} {{ t('one.two') }}</p>
-        </div>
-      </section>
-
-      <!-- Fastest Trip -->
-      <section v-if="fastestTrip" class="section section-fastest">
-        <div class="trip-card">
-          <div class="trip-badge">{{ t('fourteen.badge') }}</div>
-          <p class="trip-date">{{ formatDate(fastestTrip.origin?.departure) }}</p>
-          <h2 class="trip-line">{{ fastestTrip.lineName }}</h2>
-          <div class="trip-route">
-            <span class="trip-origin">{{ fastestTrip.origin?.name }}</span>
-            <span class="trip-arrow">→</span>
-            <span class="trip-dest">{{ fastestTrip.destination?.name }}</span>
-          </div>
-          <p class="trip-stat">Ø {{ calculateSpeed(fastestTrip) }} km/h</p>
-        </div>
-      </section>
-
-      <!-- Slowest Trip -->
-      <section v-if="slowestTrip" class="section section-slowest">
-        <div class="trip-card">
-          <div class="trip-badge">{{ t('fifteen.badge') }}</div>
-          <p class="trip-date">{{ formatDate(slowestTrip.origin?.departure) }}</p>
-          <h2 class="trip-line">{{ slowestTrip.lineName }}</h2>
-          <div class="trip-route">
-            <span class="trip-origin">{{ slowestTrip.origin?.name }}</span>
-            <span class="trip-arrow">→</span>
-            <span class="trip-dest">{{ slowestTrip.destination?.name }}</span>
-          </div>
-          <p class="trip-stat">Ø {{ calculateSpeed(slowestTrip) }} km/h</p>
-        </div>
-      </section>
-
-      <!-- Most Delayed Trip -->
-      <section v-if="mostDelayedTrip" class="section section-delayed">
-        <div class="trip-card delayed-card">
-
-          <div class="trip-badge">{{ t('delayed.badge') }}</div>
-
-          <div class="delay-highlight">
-            <span class="delay-value">+{{ mostDelayedTrip.computedDelay }}</span>
-          </div>
-
-          <p class="trip-date">{{ formatDate(mostDelayedTrip.origin?.departure) }}</p>
-          <h2 class="trip-line">{{ mostDelayedTrip.lineName }}</h2>
-
-          <div class="trip-route">
-            <span class="trip-origin">{{ mostDelayedTrip.origin?.name }}</span>
-            <span class="trip-arrow">→</span>
-            <span class="trip-dest">{{ mostDelayedTrip.destination?.name }}</span>
-          </div>
-        </div>
-      </section>
-
-
-      <!-- Most Visited Station -->
-      <section v-if="data.topDestinations?.length" class="section section-top-station">
-        <div class="station-card">
-          <div class="station-icon">📍</div>
-          <p class="stat-intro">{{ t('sixteen.one') }}</p>
-          <h1 class="station-name">{{ data.topDestinations[0].station?.name }}</h1>
-          <p class="station-count">{{ data.topDestinations[0].count }}x</p>
-        </div>
-      </section>
-
-      <!-- Lonely Stations (Combined) -->
-      <section v-if="data.lonelyStations?.length" class="section section-lonely">
-        <div class="lonely-card">
-          <h1 class="lonely-title">{{ t('seventeen.one') }}</h1>
-          <p class="lonely-subtitle">{{ t('seventeen.two') }}</p>
-          <p class="lonely-count">{{ data.lonelyStations.length }} {{ t('eighteen.one') }}</p>
-          <div class="lonely-list">
-            <template v-if="data.lonelyStations.length > 5">
-              <span v-for="station in data.lonelyStations.slice(0, 5)" :key="station.station?.id"
-                    class="lonely-station">
-                {{ station.station?.name }}
-              </span>
-              <span class="lonely-more">{{ t('eighteen.two') }}</span>
-            </template>
-            <template v-else>
-              <span v-for="station in data.lonelyStations" :key="station.station?.id" class="lonely-station">
-                {{ station.station?.name }}
-              </span>
-            </template>
-          </div>
-          <p class="lonely-disclaimer">* {{ t('seventeen.disclaimer') }}</p>
-        </div>
-      </section>
-
-      <!-- Most Liked Statuses -->
-      <section v-if="data.mostLikedStatuses?.length" class="section section-liked">
-        <div class="liked-card">
-          <h1 class="liked-title">{{ t('liked.title') }}</h1>
-          <div class="liked-list">
-            <div v-for="statusObj in data.mostLikedStatuses.slice(0, 3)" :key="statusObj.status.id" class="liked-item">
-              <span class="liked-count">{{ statusObj.status.likes }}x ❤️&nbsp;</span>
-              <span class="liked-line">{{ statusObj.status.train?.lineName }}&nbsp;</span>
-              <span class="liked-route">{{ statusObj.status.train?.origin?.name }} → {{ statusObj.status.train?.destination?.name }}</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Thank You Section -->
-      <section class="section section-thanks">
-        <div class="thanks-content">
-          <h1 class="thanks-title">{{ t('twenty.one') }}</h1>
-          <p class="thanks-subtitle">{{ t('twenty.two') }}</p>
-          <div class="thanks-heart">❤️</div>
-          <div class="thanks-logo">Träwelling</div>
-        </div>
-      </section>
-    </template>
-  </div>
-</template>
-
 <script setup>
-import {computed, onMounted, onUnmounted, ref} from 'vue'
-import gsap from 'gsap'
-import {ScrollTrigger} from 'gsap/ScrollTrigger'
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger);
 
 // Translations
 const translations = {
-  de: {
-    loading: "Lädt deine Reisen...",
-    error: "Es scheint einen Fehler gegeben zu haben. Bist du sicher, dass du angemeldet bist?",
-    welcome: "Träwelling Jahresrückblick",
-    your_review: "Dein persönlicher Jahresrückblick",
-    goto_yir: "Zu meinem Jahresüberblick",
-    hello: "Hallo",
-    longyear: "war ein langes Jahr.",
-    one: {
-      one: "Das waren",
-      two: "Minuten",
-      three: "in denen du immer etwas erlebt hast."
+    de: {
+        loading: 'Lädt deine Reisen...',
+        error: 'Es scheint einen Fehler gegeben zu haben. Bist du sicher, dass du angemeldet bist?',
+        welcome: 'Träwelling Jahresrückblick',
+        your_review: 'Dein persönlicher Jahresrückblick',
+        goto_yir: 'Zu meinem Jahresüberblick',
+        hello: 'Hallo',
+        longyear: 'war ein langes Jahr.',
+        one: {
+            one: 'Das waren',
+            two: 'Minuten',
+            three: 'in denen du immer etwas erlebt hast.',
+        },
+        two: 'In diesen 365 Tagen warst du viel unterwegs mit uns!',
+        yourYear: 'Das war dein Jahr bei uns in Zahlen, Daten und Fakten:',
+        three: {
+            one: 'Du warst mit uns ganze',
+            two: 'Fahrten unterwegs!',
+        },
+        four: {
+            one: 'Du bist dieses Jahr in Summe',
+            two: 'gefahren!',
+        },
+        five: {
+            one: 'Das entspricht etwa',
+            two: 'dem Erdumfang!',
+        },
+        hours: 'Stunden',
+        six: {
+            one: 'Du warst',
+            two: 'Stunden',
+            three: 'in unterschiedlichsten Verkehrsmitteln unterwegs',
+        },
+        seven: {
+            one: 'Das entspricht',
+            two: 'dem Schienennetz des Vatikan!',
+            three: '(Streckenlänge: 400m)',
+        },
+        eight: {
+            one: 'In Summe warst du mit',
+            two: 'Eisenbahn-Unternehmen unterwegs.',
+        },
+        nine: {
+            one: 'Dein liebstes darunter war',
+        },
+        ten: {
+            one: 'Am meisten Zeit verbracht mit',
+        },
+        eleven: {
+            one: 'Du Pendler!',
+            two: 'Deine meistgenutzten Linien dieses Jahr waren:',
+            three: 'und',
+        },
+        thirteen: {
+            badge: 'Längste Fahrt',
+        },
+        thirteen_duration: {
+            badge: 'Längste Fahrt (Zeit)',
+        },
+        fourteen: {
+            badge: 'Schnellste Fahrt',
+        },
+        fifteen: {
+            badge: 'Langsamste Fahrt',
+        },
+        delayed: {
+            badge: 'Meiste Verspätung',
+        },
+        sixteen: {
+            one: 'Am häufigsten warst du in',
+        },
+        seventeen: {
+            one: 'Du bist ein absoluter Weltenbummler!',
+            two: 'Es gibt Orte, dort war niemand außer dir!',
+            disclaimer: 'Aufgrund von Datenfehlern ist diese Statistik mit Vorsicht zu genießen, da das ID-Matching nicht immer korrekt ist.',
+        },
+        eighteen: {
+            one: 'Orte!',
+            two: 'Nur um ein paar zu nennen...',
+        },
+        liked: {
+            title: 'Deine beliebtesten Check-ins',
+        },
+        twenty: {
+            one: 'Danke, dass du Träwelling nutzt!',
+            two: 'Ohne euch würde das alles nur halb so viel Spaß machen!',
+        },
     },
-    two: "In diesen 365 Tagen warst du viel unterwegs mit uns!",
-    yourYear: "Das war dein Jahr bei uns in Zahlen, Daten und Fakten:",
-    three: {
-      one: "Du warst mit uns ganze",
-      two: "Fahrten unterwegs!"
+    en: {
+        loading: 'Loading your travels...',
+        error: "There seems to be an error. Are you sure you're logged in?",
+        welcome: 'Träwelling Year in Review',
+        your_review: 'Your personal year in review',
+        goto_yir: 'To my year in review',
+        hello: 'Hello',
+        longyear: 'was a long year.',
+        one: {
+            one: 'Those were',
+            two: 'minutes',
+            three: 'in which you always had something going on.',
+        },
+        two: 'In these 365 days, you were on the rails with us a lot!',
+        yourYear: 'This is your year with us in numbers, dates and facts:',
+        three: {
+            one: 'You travelled a total of',
+            two: 'trips with us!',
+        },
+        four: {
+            one: 'In total you travelled',
+            two: 'this year!',
+        },
+        five: {
+            one: "That's about the same as",
+            two: 'the circumference of the earth!',
+        },
+        hours: 'hours',
+        six: {
+            one: 'You were travelling',
+            two: 'hours',
+            three: 'in different means of transportation',
+        },
+        seven: {
+            one: "That's",
+            two: "the Vatican's railway network!",
+            three: '(Track length: 400m)',
+        },
+        eight: {
+            one: 'In total, you were traveling with',
+            two: 'Railroad companies.',
+        },
+        nine: {
+            one: 'Your favorite among them was',
+        },
+        ten: {
+            one: 'Most time spent with',
+        },
+        eleven: {
+            one: 'You commuter!',
+            two: 'Your most used lines this year were:',
+            three: 'and',
+        },
+        thirteen: {
+            badge: 'Longest trip',
+        },
+        thirteen_duration: {
+            badge: 'Longest trip (time)',
+        },
+        fourteen: {
+            badge: 'Fastest trip',
+        },
+        fifteen: {
+            badge: 'Slowest trip',
+        },
+        delayed: {
+            badge: 'Most delayed',
+        },
+        sixteen: {
+            one: 'Most often you were in',
+        },
+        seventeen: {
+            one: "You're an absolute globetrotter!",
+            two: 'There are places where no one has been but you!',
+            disclaimer: 'Due to data inconsistencies, this statistic should be taken with caution as ID matching is not always accurate.',
+        },
+        eighteen: {
+            one: 'places!',
+            two: 'Just to name a few...',
+        },
+        liked: {
+            title: 'Your most liked check-ins',
+        },
+        twenty: {
+            one: 'Thank you for using Träwelling!',
+            two: 'Without you all this would only be half as much fun!',
+        },
     },
-    four: {
-      one: "Du bist dieses Jahr in Summe",
-      two: "gefahren!"
-    },
-    five: {
-      one: "Das entspricht etwa",
-      two: "dem Erdumfang!"
-    },
-    hours: "Stunden",
-    six: {
-      one: "Du warst",
-      two: "Stunden",
-      three: "in unterschiedlichsten Verkehrsmitteln unterwegs"
-    },
-    seven: {
-      one: "Das entspricht",
-      two: "dem Schienennetz des Vatikan!",
-      three: "(Streckenlänge: 400m)"
-    },
-    eight: {
-      one: "In Summe warst du mit",
-      two: "Eisenbahn-Unternehmen unterwegs."
-    },
-    nine: {
-      one: "Dein liebstes darunter war"
-    },
-    ten: {
-      one: "Am meisten Zeit verbracht mit"
-    },
-    eleven: {
-      one: "Du Pendler!",
-      two: "Deine meistgenutzten Linien dieses Jahr waren:",
-      three: "und"
-    },
-    thirteen: {
-      badge: "Längste Fahrt"
-    },
-    thirteen_duration: {
-      badge: "Längste Fahrt (Zeit)"
-    },
-    fourteen: {
-      badge: "Schnellste Fahrt"
-    },
-    fifteen: {
-      badge: "Langsamste Fahrt"
-    },
-    delayed: {
-      badge: "Meiste Verspätung"
-    },
-    sixteen: {
-      one: "Am häufigsten warst du in"
-    },
-    seventeen: {
-      one: "Du bist ein absoluter Weltenbummler!",
-      two: "Es gibt Orte, dort war niemand außer dir!",
-      disclaimer: "Aufgrund von Datenfehlern ist diese Statistik mit Vorsicht zu genießen, da das ID-Matching nicht immer korrekt ist."
-    },
-    eighteen: {
-      one: "Orte!",
-      two: "Nur um ein paar zu nennen..."
-    },
-    liked: {
-      title: "Deine beliebtesten Check-ins"
-    },
-    twenty: {
-      one: "Danke, dass du Träwelling nutzt!",
-      two: "Ohne euch würde das alles nur halb so viel Spaß machen!"
-    }
-  },
-  en: {
-    loading: "Loading your travels...",
-    error: "There seems to be an error. Are you sure you're logged in?",
-    welcome: "Träwelling Year in Review",
-    your_review: "Your personal year in review",
-    goto_yir: "To my year in review",
-    hello: "Hello",
-    longyear: "was a long year.",
-    one: {
-      one: "Those were",
-      two: "minutes",
-      three: "in which you always had something going on."
-    },
-    two: "In these 365 days, you were on the rails with us a lot!",
-    yourYear: "This is your year with us in numbers, dates and facts:",
-    three: {
-      one: "You travelled a total of",
-      two: "trips with us!"
-    },
-    four: {
-      one: "In total you travelled",
-      two: "this year!"
-    },
-    five: {
-      one: "That's about the same as",
-      two: "the circumference of the earth!"
-    },
-    hours: "hours",
-    six: {
-      one: "You were travelling",
-      two: "hours",
-      three: "in different means of transportation"
-    },
-    seven: {
-      one: "That's",
-      two: "the Vatican's railway network!",
-      three: "(Track length: 400m)"
-    },
-    eight: {
-      one: "In total, you were traveling with",
-      two: "Railroad companies."
-    },
-    nine: {
-      one: "Your favorite among them was"
-    },
-    ten: {
-      one: "Most time spent with"
-    },
-    eleven: {
-      one: "You commuter!",
-      two: "Your most used lines this year were:",
-      three: "and"
-    },
-    thirteen: {
-      badge: "Longest trip"
-    },
-    thirteen_duration: {
-      badge: "Longest trip (time)"
-    },
-    fourteen: {
-      badge: "Fastest trip"
-    },
-    fifteen: {
-      badge: "Slowest trip"
-    },
-    delayed: {
-      badge: "Most delayed"
-    },
-    sixteen: {
-      one: "Most often you were in"
-    },
-    seventeen: {
-      one: "You're an absolute globetrotter!",
-      two: "There are places where no one has been but you!",
-      disclaimer: "Due to data inconsistencies, this statistic should be taken with caution as ID matching is not always accurate."
-    },
-    eighteen: {
-      one: "places!",
-      two: "Just to name a few..."
-    },
-    liked: {
-      title: "Your most liked check-ins"
-    },
-    twenty: {
-      one: "Thank you for using Träwelling!",
-      two: "Without you all this would only be half as much fun!"
-    }
-  }
-}
+};
 
 // Reactive State
-const loading = ref(true)
-const error = ref(false)
-const container = ref(null)
-const locale = ref(navigator.language?.startsWith('de') ? 'de' : 'en')
+const loading = ref(true);
+const error = ref(false);
+const container = ref(null);
+const locale = ref(navigator.language?.startsWith('de') ? 'de' : 'en');
 
 // Animated values
-const animatedMinutes = ref(0)
-const animatedTrips = ref(0)
-const animatedDistance = ref(0)
-const animatedDuration = ref(0)
+const animatedMinutes = ref(0);
+const animatedTrips = ref(0);
+const animatedDistance = ref(0);
+const animatedDuration = ref(0);
 
 // Data
 const data = ref({
-  year: new Date().getFullYear(),
-  user: {name: ''},
-  count: 0,
-  distance: {total: 0, averagePerDay: 0},
-  duration: {total: 0, averagePerDay: 0},
-  totalDelay: 0,
-  operators: {count: 0, topByDistance: null, topByDuration: null},
-  lines: {topByDistance: null, topByDuration: null},
-  longestTrips: null,
-  fastestTrips: null,
-  slowestTrips: null,
-  mostDelayedArrivals: null,
-  topDestinations: [],
-  lonelyStations: [],
-  mostLikedStatuses: []
-})
+    year: new Date().getFullYear(),
+    user: { name: '' },
+    count: 0,
+    distance: { total: 0, averagePerDay: 0 },
+    duration: { total: 0, averagePerDay: 0 },
+    totalDelay: 0,
+    operators: { count: 0, topByDistance: null, topByDuration: null },
+    lines: { topByDistance: null, topByDuration: null },
+    longestTrips: null,
+    fastestTrips: null,
+    slowestTrips: null,
+    mostDelayedArrivals: null,
+    topDestinations: [],
+    lonelyStations: [],
+    mostLikedStatuses: [],
+});
 
 // Translation function
 const t = (key) => {
-  const keys = key.split('.')
-  let result = translations[locale.value]
-  for (const k of keys) {
-    result = result?.[k]
-  }
-  return result || key
-}
+    const keys = key.split('.');
+    let result = translations[locale.value];
+    for (const k of keys) {
+        result = result?.[k];
+    }
+    return result || key;
+};
 
 // Computed Properties
 const earthCircumference = computed(() => {
-  const km = (data.value.distance?.total || 0) / 1000
-  return (km / 40074).toFixed(2)
-})
+    const km = (data.value.distance?.total || 0) / 1000;
+    return (km / 40074).toFixed(2);
+});
 
 const vaticanMultiplier = computed(() => {
-  const km = (data.value.distance?.total || 0) / 1000
-  return (km / 0.4).toFixed(0) // Vatican railway is 400m = 0.4km
-})
+    const km = (data.value.distance?.total || 0) / 1000;
+    return (km / 0.4).toFixed(0); // Vatican railway is 400m = 0.4km
+});
 
 const longestTrip = computed(() => {
-  return data.value.longestTrips?.distance?.train || null
-})
+    return data.value.longestTrips?.distance?.train || null;
+});
 
 const longestDurationTrip = computed(() => {
-  return data.value.longestTrips?.duration?.train || null
-})
+    return data.value.longestTrips?.duration?.train || null;
+});
 
 const fastestTrip = computed(() => {
-  return data.value.fastestTrips?.train || null
-})
+    return data.value.fastestTrips?.train || null;
+});
 
 const slowestTrip = computed(() => {
-  return data.value.slowestTrips?.train || null
-})
+    return data.value.slowestTrips?.train || null;
+});
 
 const mostDelayedTrip = computed(() => {
-  const trip = data.value.mostDelayedArrivals?.train
-  console.log(trip);
-  if (!trip) return null
-  console.log(calculateDelay(trip))
-  return {
-    ...trip,
-    computedDelay: calculateDelay(trip)
-  }
-})
+    const trip = data.value.mostDelayedArrivals?.train;
+    console.log(trip);
+    if (!trip) return null;
+    console.log(calculateDelay(trip));
+    return {
+        ...trip,
+        computedDelay: calculateDelay(trip),
+    };
+});
 
 // Helper Functions
 const formatKm = (meters) => {
-  if (!meters) return '0'
-  return Math.round(meters / 1000).toLocaleString('de-DE')
-}
+    if (!meters) return '0';
+    return Math.round(meters / 1000).toLocaleString('de-DE');
+};
 
 const formatHours = (minutes) => {
-  if (!minutes) return '0'
-  return Math.round(minutes / 60).toLocaleString('de-DE')
-}
+    if (!minutes) return '0';
+    return Math.round(minutes / 60).toLocaleString('de-DE');
+};
 
 const formatDate = (dateString) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return date.toLocaleDateString(locale.value === 'de' ? 'de-DE' : 'en-US', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  })
-}
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString(locale.value === 'de' ? 'de-DE' : 'en-US', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+    });
+};
 
 const calculateSpeed = (trip) => {
-  if (!trip?.distance || !trip?.duration) return 0
-  const km = trip.distance / 1000
-  const hours = trip.duration / 60
-  if (hours === 0) return 0
-  return Math.round(km / hours)
-}
+    if (!trip?.distance || !trip?.duration) return 0;
+    const km = trip.distance / 1000;
+    const hours = trip.duration / 60;
+    if (hours === 0) return 0;
+    return Math.round(km / hours);
+};
 
 const scrollToNext = () => {
-  const sections = container.value?.querySelectorAll('.section')
-  if (sections?.length > 1) {
-    sections[1].scrollIntoView({behavior: 'smooth'})
-  }
-}
+    const sections = container.value?.querySelectorAll('.section');
+    if (sections?.length > 1) {
+        sections[1].scrollIntoView({ behavior: 'smooth' });
+    }
+};
 
 // GSAP Animations
 const setupAnimations = () => {
-  ScrollTrigger.defaults({
-    scroller: container.value,
-    toggleActions: 'play none none reverse'
-  })
+    ScrollTrigger.defaults({
+        scroller: container.value,
+        toggleActions: 'play none none reverse',
+    });
 
-  // Welcome section animation
-  gsap.from('.welcome-title', {
-    scrollTrigger: {
-      trigger: '.section-welcome',
-      start: 'top center',
-    },
-    opacity: 0,
-    y: 50,
-    duration: 1
-  })
-
-  gsap.from('.welcome-subtitle', {
-    scrollTrigger: {
-      trigger: '.section-welcome',
-      start: 'top center',
-    },
-    opacity: 0,
-    y: 30,
-    duration: 1,
-    delay: 0.5
-  })
-
-  // Minutes counter animation
-  ScrollTrigger.create({
-    trigger: '.section-minutes',
-    start: 'top center',
-    onEnter: () => {
-      gsap.to(animatedMinutes, {
-        value: data.value.duration.total,
-        duration: 2,
-        ease: 'power2.out'
-      })
-    }
-  })
-
-  // Trips counter animation
-  ScrollTrigger.create({
-    trigger: '.section-trips',
-    start: 'top center',
-    onEnter: () => {
-      gsap.to(animatedTrips, {
-        value: data.value.count,
-        duration: 1.5,
-        ease: 'power2.out'
-      })
-    }
-  })
-
-  // Distance counter animation
-  ScrollTrigger.create({
-    trigger: '.section-distance',
-    start: 'top center',
-    onEnter: () => {
-      gsap.to(animatedDistance, {
-        value: (data.value.distance?.total || 0) / 1000,
-        duration: 2,
-        ease: 'power2.out'
-      })
-    }
-  })
-
-  // Duration counter animation
-  ScrollTrigger.create({
-    trigger: '.section-duration',
-    start: 'top center',
-    onEnter: () => {
-      gsap.to(animatedDuration, {
-        value: (data.value.duration?.total || 0) / 60,
-        duration: 2,
-        ease: 'power2.out'
-      })
-    }
-  })
-
-  // Fade in animations for various sections
-  const fadeInSections = [
-    '.section-earth',
-    '.section-vatican',
-    '.section-operators',
-    '.section-fav-operator',
-    '.section-fav-operator-time',
-    '.section-lines',
-    '.section-longest',
-    '.section-longest-duration',
-    '.section-fastest',
-    '.section-slowest',
-    '.section-delayed',
-    '.section-top-station',
-    '.section-lonely',
-    '.section-liked',
-    '.section-thanks'
-  ]
-
-  fadeInSections.forEach(selector => {
-    const element = document.querySelector(selector)
-    if (element) {
-      gsap.from(selector, {
+    // Welcome section animation
+    gsap.from('.welcome-title', {
         scrollTrigger: {
-          trigger: selector,
-          start: 'top 80%',
+            trigger: '.section-welcome',
+            start: 'top center',
         },
         opacity: 0,
-        y: 40,
-        duration: 0.8
-      })
-    }
-  })
-}
+        y: 50,
+        duration: 1,
+    });
+
+    gsap.from('.welcome-subtitle', {
+        scrollTrigger: {
+            trigger: '.section-welcome',
+            start: 'top center',
+        },
+        opacity: 0,
+        y: 30,
+        duration: 1,
+        delay: 0.5,
+    });
+
+    // Minutes counter animation
+    ScrollTrigger.create({
+        trigger: '.section-minutes',
+        start: 'top center',
+        onEnter: () => {
+            gsap.to(animatedMinutes, {
+                value: data.value.duration.total,
+                duration: 2,
+                ease: 'power2.out',
+            });
+        },
+    });
+
+    // Trips counter animation
+    ScrollTrigger.create({
+        trigger: '.section-trips',
+        start: 'top center',
+        onEnter: () => {
+            gsap.to(animatedTrips, {
+                value: data.value.count,
+                duration: 1.5,
+                ease: 'power2.out',
+            });
+        },
+    });
+
+    // Distance counter animation
+    ScrollTrigger.create({
+        trigger: '.section-distance',
+        start: 'top center',
+        onEnter: () => {
+            gsap.to(animatedDistance, {
+                value: (data.value.distance?.total || 0) / 1000,
+                duration: 2,
+                ease: 'power2.out',
+            });
+        },
+    });
+
+    // Duration counter animation
+    ScrollTrigger.create({
+        trigger: '.section-duration',
+        start: 'top center',
+        onEnter: () => {
+            gsap.to(animatedDuration, {
+                value: (data.value.duration?.total || 0) / 60,
+                duration: 2,
+                ease: 'power2.out',
+            });
+        },
+    });
+
+    // Fade in animations for various sections
+    const fadeInSections = [
+        '.section-earth',
+        '.section-vatican',
+        '.section-operators',
+        '.section-fav-operator',
+        '.section-fav-operator-time',
+        '.section-lines',
+        '.section-longest',
+        '.section-longest-duration',
+        '.section-fastest',
+        '.section-slowest',
+        '.section-delayed',
+        '.section-top-station',
+        '.section-lonely',
+        '.section-liked',
+        '.section-thanks',
+    ];
+
+    fadeInSections.forEach(selector => {
+        const element = document.querySelector(selector);
+        if (element) {
+            gsap.from(selector, {
+                scrollTrigger: {
+                    trigger: selector,
+                    start: 'top 80%',
+                },
+                opacity: 0,
+                y: 40,
+                duration: 0.8,
+            });
+        }
+    });
+};
 
 // Fetch Data
 const fetchData = async () => {
-  try {
-    const response = await fetch('/api/v1/year-in-review', {
-      headers: {
-        Accept: 'application/json'
-      }
-    })
+    try {
+        const response = await fetch('/api/v1/year-in-review', {
+            headers: {
+                Accept: 'application/json',
+            },
+        });
 
-    if (response.redirected || !response.ok) {
-      throw new Error('Fetch failed')
+        if (response.redirected || !response.ok) {
+            throw new Error('Fetch failed');
+        }
+
+        const json = await response.json();
+        data.value = json;
+        loading.value = false;
+
+        // Setup animations after data is loaded
+        setTimeout(() => {
+            setupAnimations();
+        }, 100);
+    } catch (err) {
+        console.error('Error fetching data:', err);
+        error.value = true;
+        loading.value = false;
     }
-
-    const json = await response.json()
-    data.value = json
-    loading.value = false
-
-    // Setup animations after data is loaded
-    setTimeout(() => {
-      setupAnimations()
-    }, 100)
-  } catch (err) {
-    console.error('Error fetching data:', err)
-    error.value = true
-    loading.value = false
-  }
-}
+};
 
 const calculateDelay = (trip) => {
-  if (!trip?.destination) return 0
+    if (!trip?.destination) return 0;
 
-  const stop = trip.destination
+    const stop = trip.destination;
 
-  const bestArrival =
+    const bestArrival =
       trip?.manualArrival ||
       stop?.arrivalReal ||
       stop?.arrivalPlanned ||
-      null
+      null;
 
-  const plannedArrival = stop?.arrivalPlanned
+    const plannedArrival = stop?.arrivalPlanned;
 
-  if (!bestArrival || !plannedArrival) return 0
+    if (!bestArrival || !plannedArrival) return 0;
 
-  const a = new Date(bestArrival)
-  const p = new Date(plannedArrival)
+    const a = new Date(bestArrival);
+    const p = new Date(plannedArrival);
 
-  const diff = Math.round((a - p) / 60000)
-  return diff > 0 ? diff : 0
-}
-
+    const diff = Math.round((a - p) / 60000);
+    return diff > 0 ? diff : 0;
+};
 
 // Lifecycle
 onMounted(() => {
-  fetchData()
-})
+    fetchData();
+});
 
 onUnmounted(() => {
-  ScrollTrigger.getAll().forEach(trigger => trigger.kill())
-})
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+});
 </script>
+
+<template>
+    <div ref="container" class="year-in-review">
+        <!-- Loading State -->
+        <section v-if="loading" class="section section-loading">
+            <div class="loader">
+                <div class="train-icon">
+                    🚂
+                </div>
+                <p class="loading-text">
+                    {{ t('loading') }}
+                </p>
+            </div>
+        </section>
+
+        <!-- Error State -->
+        <section v-else-if="error" class="section section-error">
+            <div class="error-content">
+                <div class="error-icon">
+                    ⚠️
+                </div>
+                <h1>{{ t('error') }}</h1>
+                <a href="/login" class="btn-login">Login</a>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <template v-else>
+            <!-- Hero Section -->
+            <section class="section section-hero">
+                <div class="hero-content">
+                    <div class="logo-badge">
+                        <span class="year-badge">{{ data.year }}</span>
+                    </div>
+                    <h1 class="hero-title">
+                        {{ t('welcome') }}
+                    </h1>
+                    <p class="hero-subtitle">
+                        {{ t('your_review') }}
+                    </p>
+                    <button class="btn-start" @click="scrollToNext">
+                        <span>{{ t('goto_yir') }}</span>
+                        <span class="arrow-down">↓</span>
+                    </button>
+                </div>
+                <div class="hero-bg-pattern" />
+            </section>
+
+            <!-- Welcome Section -->
+            <section ref="sectionWelcome" class="section section-welcome">
+                <h1 ref="welcomeTitle" class="welcome-title">
+                    {{ t('hello') }} <span class="highlight">{{ data.user?.name }}</span>!
+                </h1>
+                <h2 ref="welcomeSubtitle" class="welcome-subtitle">
+                    {{ data.year }} {{ t('longyear') }}
+                </h2>
+            </section>
+
+            <!-- Minutes Section -->
+            <section ref="sectionMinutes" class="section section-minutes">
+                <div class="stat-container">
+                    <p ref="minutesLabel1" class="stat-label">
+                        {{ t('one.one') }}
+                    </p>
+                    <h1 ref="minutesNumber" class="stat-number">
+                        {{ animatedMinutes.toFixed(0) }}
+                    </h1>
+                    <p ref="minutesLabel2" class="stat-unit">
+                        {{ t('one.two') }}
+                    </p>
+                    <p ref="minutesLabel3" class="stat-desc">
+                        {{ t('one.three') }}
+                    </p>
+                </div>
+            </section>
+
+            <!-- Intro Stats Section -->
+            <section class="section section-intro-stats">
+                <h1 class="intro-text">
+                    {{ t('two') }}
+                </h1>
+            </section>
+
+            <!-- Your Year Section -->
+            <section class="section section-your-year">
+                <h1 class="your-year-title">
+                    {{ t('yourYear') }}
+                </h1>
+                <div class="stats-preview">
+                    <div class="stat-pill">
+                        <span class="stat-value">{{ data.count }}</span>
+                        <span class="stat-label">Fahrten</span>
+                    </div>
+                    <div class="stat-pill">
+                        <span class="stat-value">{{ formatKm(data.distance?.total) }}</span>
+                        <span class="stat-label">km</span>
+                    </div>
+                    <div class="stat-pill">
+                        <span class="stat-value">{{ formatHours(data.duration?.total) }}</span>
+                        <span class="stat-label">Stunden</span>
+                    </div>
+                    <div v-if="data.totalDelay" class="stat-pill">
+                        <span class="stat-value">{{ data.totalDelay }}</span>
+                        <span class="stat-label">Min. Verspätung</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Trip Count Section -->
+            <section ref="sectionTrips" class="section section-trips">
+                <div class="stat-card">
+                    <p class="stat-intro">
+                        {{ t('three.one') }}
+                    </p>
+                    <h1 ref="tripCount" class="stat-big-number">
+                        {{ animatedTrips.toFixed(0) }}
+                    </h1>
+                    <p class="stat-outro">
+                        {{ t('three.two') }}
+                    </p>
+                </div>
+            </section>
+
+            <!-- Distance Section -->
+            <section ref="sectionDistance" class="section section-distance">
+                <div class="stat-card">
+                    <p class="stat-intro">
+                        {{ t('four.one') }}
+                    </p>
+                    <h1 class="stat-big-number">
+                        <span ref="distanceNumber">{{ animatedDistance.toFixed(0) }}</span>
+                        <span class="unit">km</span>
+                    </h1>
+                    <p class="stat-outro">
+                        {{ t('four.two') }}
+                    </p>
+                </div>
+            </section>
+
+            <!-- Earth Circumference Section -->
+            <section class="section section-earth">
+                <div class="earth-visual">
+                    <div class="earth-icon">
+                        🌍
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-intro">
+                            {{ t('five.one') }}
+                        </p>
+                        <h1 class="stat-highlight">
+                            {{ earthCircumference }}x
+                        </h1>
+                        <p class="stat-outro">
+                            {{ t('five.two') }}
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Duration Section -->
+            <section ref="sectionDuration" class="section section-duration">
+                <div class="stat-card">
+                    <p class="stat-intro">
+                        {{ t('six.one') }}
+                    </p>
+                    <h1 class="stat-big-number">
+                        <span ref="durationNumber">{{ animatedDuration.toFixed(0) }}</span>
+                        <span class="unit">{{ t('six.two') }}</span>
+                    </h1>
+                    <p class="stat-outro">
+                        {{ t('six.three') }}
+                    </p>
+                </div>
+            </section>
+
+            <!-- Vatican Railway Section -->
+            <section class="section section-vatican">
+                <div class="vatican-visual">
+                    <div class="vatican-icon">
+                        <span class="vatican-flag">🇻🇦</span>
+                        <span class="vatican-train">🚂</span>
+                    </div>
+                    <div class="stat-content">
+                        <p class="stat-intro">
+                            {{ t('seven.one') }}
+                        </p>
+                        <h1 class="stat-highlight">
+                            {{ vaticanMultiplier }}x
+                        </h1>
+                        <p class="stat-outro">
+                            {{ t('seven.two') }}
+                        </p>
+                        <p class="stat-small">
+                            {{ t('seven.three') }}
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Operators Section -->
+            <section v-if="data.operators?.count" class="section section-operators">
+                <div class="stat-card">
+                    <p class="stat-intro">
+                        {{ t('eight.one') }}
+                    </p>
+                    <h1 class="stat-big-number">
+                        {{ data.operators.count }}
+                    </h1>
+                    <p class="stat-outro">
+                        {{ t('eight.two') }}
+                    </p>
+                </div>
+            </section>
+
+            <!-- Favorite Operator by Distance -->
+            <section v-if="data.operators?.topByDistance" class="section section-fav-operator">
+                <div class="operator-card">
+                    <p class="stat-intro">
+                        {{ t('nine.one') }}
+                    </p>
+                    <h1 class="operator-name">
+                        {{ data.operators.topByDistance.operator }}
+                    </h1>
+                    <p class="operator-stat">
+                        {{ formatKm(data.operators.topByDistance.distance) }} km
+                    </p>
+                </div>
+            </section>
+
+            <!-- Favorite Operator by Duration -->
+            <section
+                v-if="data.operators?.topByDuration && data.operators.topByDuration.operator !== data.operators.topByDistance?.operator"
+                class="section section-fav-operator-time"
+            >
+                <div class="operator-card">
+                    <p class="stat-intro">
+                        {{ t('ten.one') }}
+                    </p>
+                    <h1 class="operator-name">
+                        {{ data.operators.topByDuration.operator }}
+                    </h1>
+                    <p class="operator-stat">
+                        {{ formatHours(data.operators.topByDuration.duration) }} {{ t('hours') }}
+                    </p>
+                </div>
+            </section>
+
+            <!-- Top Lines Section -->
+            <section v-if="data.lines?.topByDistance || data.lines?.topByDuration" class="section section-lines">
+                <div class="lines-card">
+                    <h1 class="lines-title">
+                        {{ t('eleven.one') }}
+                    </h1>
+                    <p class="lines-subtitle">
+                        {{ t('eleven.two') }}
+                    </p>
+                    <div class="lines-list">
+                        <div v-if="data.lines?.topByDistance" class="line-item">
+                            <span class="line-name">{{ data.lines.topByDistance.line }}</span>
+                            <span class="line-stat">{{ formatKm(data.lines.topByDistance.distance) }} km</span>
+                        </div>
+                        <template
+                            v-if="data.lines?.topByDuration && data.lines.topByDuration.line !== data.lines.topByDistance?.line"
+                        >
+                            <p class="lines-and">
+                                {{ t('eleven.three') }}
+                            </p>
+                            <div class="line-item">
+                                <span class="line-name">{{ data.lines.topByDuration.line }}</span>
+                                <span class="line-stat">{{ formatHours(data.lines.topByDuration.duration) }} {{ t('hours') }}</span>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Longest Trip -->
+            <section v-if="longestTrip" class="section section-longest">
+                <div class="trip-card">
+                    <div class="trip-badge">
+                        {{ t('thirteen.badge') }}
+                    </div>
+                    <p class="trip-date">
+                        {{ formatDate(longestTrip.origin?.departure) }}
+                    </p>
+                    <h2 class="trip-line">
+                        {{ longestTrip.lineName }}
+                    </h2>
+                    <div class="trip-route">
+                        <span class="trip-origin">{{ longestTrip.origin?.name }}</span>
+                        <span class="trip-arrow">→</span>
+                        <span class="trip-dest">{{ longestTrip.destination?.name }}</span>
+                    </div>
+                    <p class="trip-stat">
+                        {{ formatKm(longestTrip.distance) }} km
+                    </p>
+                </div>
+            </section>
+
+            <!-- Longest Duration Trip -->
+            <section
+                v-if="longestDurationTrip && longestDurationTrip.trip !== longestTrip?.trip"
+                class="section section-longest-duration"
+            >
+                <div class="trip-card">
+                    <div class="trip-badge">
+                        {{ t('thirteen_duration.badge') }}
+                    </div>
+                    <p class="trip-date">
+                        {{ formatDate(longestDurationTrip.origin?.departure) }}
+                    </p>
+                    <h2 class="trip-line">
+                        {{ longestDurationTrip.lineName }}
+                    </h2>
+                    <div class="trip-route">
+                        <span class="trip-origin">{{ longestDurationTrip.origin?.name }}</span>
+                        <span class="trip-arrow">→</span>
+                        <span class="trip-dest">{{ longestDurationTrip.destination?.name }}</span>
+                    </div>
+                    <p class="trip-stat">
+                        {{ longestDurationTrip.duration }} {{ t('one.two') }}
+                    </p>
+                </div>
+            </section>
+
+            <!-- Fastest Trip -->
+            <section v-if="fastestTrip" class="section section-fastest">
+                <div class="trip-card">
+                    <div class="trip-badge">
+                        {{ t('fourteen.badge') }}
+                    </div>
+                    <p class="trip-date">
+                        {{ formatDate(fastestTrip.origin?.departure) }}
+                    </p>
+                    <h2 class="trip-line">
+                        {{ fastestTrip.lineName }}
+                    </h2>
+                    <div class="trip-route">
+                        <span class="trip-origin">{{ fastestTrip.origin?.name }}</span>
+                        <span class="trip-arrow">→</span>
+                        <span class="trip-dest">{{ fastestTrip.destination?.name }}</span>
+                    </div>
+                    <p class="trip-stat">
+                        Ø {{ calculateSpeed(fastestTrip) }} km/h
+                    </p>
+                </div>
+            </section>
+
+            <!-- Slowest Trip -->
+            <section v-if="slowestTrip" class="section section-slowest">
+                <div class="trip-card">
+                    <div class="trip-badge">
+                        {{ t('fifteen.badge') }}
+                    </div>
+                    <p class="trip-date">
+                        {{ formatDate(slowestTrip.origin?.departure) }}
+                    </p>
+                    <h2 class="trip-line">
+                        {{ slowestTrip.lineName }}
+                    </h2>
+                    <div class="trip-route">
+                        <span class="trip-origin">{{ slowestTrip.origin?.name }}</span>
+                        <span class="trip-arrow">→</span>
+                        <span class="trip-dest">{{ slowestTrip.destination?.name }}</span>
+                    </div>
+                    <p class="trip-stat">
+                        Ø {{ calculateSpeed(slowestTrip) }} km/h
+                    </p>
+                </div>
+            </section>
+
+            <!-- Most Delayed Trip -->
+            <section v-if="mostDelayedTrip" class="section section-delayed">
+                <div class="trip-card delayed-card">
+                    <div class="trip-badge">
+                        {{ t('delayed.badge') }}
+                    </div>
+
+                    <div class="delay-highlight">
+                        <span class="delay-value">+{{ mostDelayedTrip.computedDelay }}</span>
+                    </div>
+
+                    <p class="trip-date">
+                        {{ formatDate(mostDelayedTrip.origin?.departure) }}
+                    </p>
+                    <h2 class="trip-line">
+                        {{ mostDelayedTrip.lineName }}
+                    </h2>
+
+                    <div class="trip-route">
+                        <span class="trip-origin">{{ mostDelayedTrip.origin?.name }}</span>
+                        <span class="trip-arrow">→</span>
+                        <span class="trip-dest">{{ mostDelayedTrip.destination?.name }}</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Most Visited Station -->
+            <section v-if="data.topDestinations?.length" class="section section-top-station">
+                <div class="station-card">
+                    <div class="station-icon">
+                        📍
+                    </div>
+                    <p class="stat-intro">
+                        {{ t('sixteen.one') }}
+                    </p>
+                    <h1 class="station-name">
+                        {{ data.topDestinations[0].station?.name }}
+                    </h1>
+                    <p class="station-count">
+                        {{ data.topDestinations[0].count }}x
+                    </p>
+                </div>
+            </section>
+
+            <!-- Lonely Stations (Combined) -->
+            <section v-if="data.lonelyStations?.length" class="section section-lonely">
+                <div class="lonely-card">
+                    <h1 class="lonely-title">
+                        {{ t('seventeen.one') }}
+                    </h1>
+                    <p class="lonely-subtitle">
+                        {{ t('seventeen.two') }}
+                    </p>
+                    <p class="lonely-count">
+                        {{ data.lonelyStations.length }} {{ t('eighteen.one') }}
+                    </p>
+                    <div class="lonely-list">
+                        <template v-if="data.lonelyStations.length > 5">
+                            <span
+                                v-for="station in data.lonelyStations.slice(0, 5)"
+                                :key="station.station?.id"
+                                class="lonely-station"
+                            >
+                                {{ station.station?.name }}
+                            </span>
+                            <span class="lonely-more">{{ t('eighteen.two') }}</span>
+                        </template>
+                        <template v-else>
+                            <span v-for="station in data.lonelyStations" :key="station.station?.id" class="lonely-station">
+                                {{ station.station?.name }}
+                            </span>
+                        </template>
+                    </div>
+                    <p class="lonely-disclaimer">
+                        * {{ t('seventeen.disclaimer') }}
+                    </p>
+                </div>
+            </section>
+
+            <!-- Most Liked Statuses -->
+            <section v-if="data.mostLikedStatuses?.length" class="section section-liked">
+                <div class="liked-card">
+                    <h1 class="liked-title">
+                        {{ t('liked.title') }}
+                    </h1>
+                    <div class="liked-list">
+                        <div v-for="statusObj in data.mostLikedStatuses.slice(0, 3)" :key="statusObj.status.id" class="liked-item">
+                            <span class="liked-count">{{ statusObj.status.likes }}x ❤️&nbsp;</span>
+                            <span class="liked-line">{{ statusObj.status.train?.lineName }}&nbsp;</span>
+                            <span class="liked-route">{{ statusObj.status.train?.origin?.name }} → {{ statusObj.status.train?.destination?.name }}</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Thank You Section -->
+            <section class="section section-thanks">
+                <div class="thanks-content">
+                    <h1 class="thanks-title">
+                        {{ t('twenty.one') }}
+                    </h1>
+                    <p class="thanks-subtitle">
+                        {{ t('twenty.two') }}
+                    </p>
+                    <div class="thanks-heart">
+                        ❤️
+                    </div>
+                    <div class="thanks-logo">
+                        Träwelling
+                    </div>
+                </div>
+            </section>
+        </template>
+    </div>
+</template>
 
 <style scoped>
 @import url('../../../public/fonts/Nunito/Nunito.css');

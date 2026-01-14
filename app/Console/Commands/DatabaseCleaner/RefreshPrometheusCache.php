@@ -8,10 +8,12 @@ use Illuminate\Support\Facades\Cache;
 
 class RefreshPrometheusCache extends Command
 {
-    protected $signature   = 'app:clean-db:prometheus';
+    protected $signature = 'app:clean-db:prometheus';
+
     protected $description = 'Delete prometheus cache to properly recalculate the metrics';
 
-    public function handle(): int {
+    public function handle(): int
+    {
         $this->info('Deleting prometheus cache...');
         Cache::forget(CacheKey::STATUS_CREATED);
         Cache::forget(CacheKey::STATUS_DELETED);

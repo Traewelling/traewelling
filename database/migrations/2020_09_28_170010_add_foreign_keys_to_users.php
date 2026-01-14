@@ -11,17 +11,18 @@ class AddForeignKeysToUsers extends Migration
      *
      * @return void
      */
-    public function up() {
-        Schema::table('users', function(Blueprint $table) {
+    public function up()
+    {
+        Schema::table('users', function (Blueprint $table) {
             $table->bigInteger('home_id')->unsigned()->nullable()->default(null)->change();
         });
         DB::table('users')->where('home_id', '0')->update(['home_id' => null]);
-        Schema::table('users', function(Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->foreign('home_id')
-                  ->references('id')
-                  ->on('train_stations')
-                  ->onDelete('set null')
-                  ->onUpdate('restrict');
+                ->references('id')
+                ->on('train_stations')
+                ->onDelete('set null')
+                ->onUpdate('restrict');
         });
     }
 
@@ -30,11 +31,12 @@ class AddForeignKeysToUsers extends Migration
      *
      * @return void
      */
-    public function down() {
-        Schema::table('users', function(Blueprint $table) {
-            $table->dropForeign("users_home_id_foreign");
+    public function down()
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign('users_home_id_foreign');
         });
-        Schema::table('users', function(Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->integer('home_id')->unsigned()->default(0)->change();
         });
     }

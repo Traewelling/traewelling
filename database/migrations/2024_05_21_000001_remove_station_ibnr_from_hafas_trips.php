@@ -4,10 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class() extends Migration
 {
-    public function up(): void {
-        Schema::table('hafas_trips', static function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::table('hafas_trips', static function (Blueprint $table) {
             $table->dropForeign(['origin']);
             $table->dropForeign(['destination']);
 
@@ -16,8 +17,9 @@ return new class extends Migration
         });
     }
 
-    public function down(): void {
-        Schema::table('hafas_trips', static function(Blueprint $table) {
+    public function down(): void
+    {
+        Schema::table('hafas_trips', static function (Blueprint $table) {
             $table->unsignedBigInteger('origin')->nullable()->after('origin_id');
             $table->unsignedBigInteger('destination')->nullable()->after('destination_id');
 

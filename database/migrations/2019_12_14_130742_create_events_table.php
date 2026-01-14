@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateEventsTable extends Migration
 {
-
-    public function up(): void {
-        Schema::create('events', static function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::create('events', static function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('slug');
@@ -24,7 +24,8 @@ class CreateEventsTable extends Migration
         });
     }
 
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropIfExists('events');
     }
 }

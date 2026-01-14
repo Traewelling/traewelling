@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Backend\Support;
 
@@ -11,19 +13,22 @@ use App\Notifications\UserMentioned;
 
 class MentionHelper
 {
-
     private ?string $body;
-    private Status  $status;
-    private bool    $isCreating;
 
-    public function __construct(Status $status, ?string $body = null) {
+    private Status $status;
+
+    private bool $isCreating;
+
+    public function __construct(Status $status, ?string $body = null)
+    {
         $this->status = $status;
         $status->load('mentions', 'mentions.mentioned');
-        $this->body       = $body ?? $status->body;
+        $this->body = $body ?? $status->body;
         $this->isCreating = $body === null;
     }
 
-    public static function findMentionsInString(string $string): array {
+    public static function findMentionsInString(string $string): array
+    {
         preg_match_all('/@\w+/', $string, $matches, PREG_OFFSET_CAPTURE);
 
         return $matches[0];
@@ -32,8 +37,9 @@ class MentionHelper
     /**
      * @return MentionDto[]
      */
-    public function findUsersInString(): array {
-        $users   = [];
+    public function findUsersInString(): array
+    {
+        $users = [];
         $matches = self::findMentionsInString($this->body ?? '');
         foreach ($matches as $match) {
             $user = User::where('username', substr($match[0], 1))->first();
@@ -46,17 +52,20 @@ class MentionHelper
         return $users;
     }
 
-    public static function createMentions(Status $status, ?string $string = null): void {
+    public static function createMentions(Status $status, ?string $string = null): void
+    {
         $self = new self($status, $string);
         $self->parseAndCreate();
     }
 
-    private function parseAndCreate(): void {
+    private function parseAndCreate(): void
+    {
         if ($this->body === $this->status->body && !$this->isCreating) {
             return;
         }
         if (empty($this->body)) {
             $this->status->mentions()->delete();
+
             return;
         }
         $newMentions = $this->findUsersInString();
@@ -90,7 +99,8 @@ class MentionHelper
 
     }
 
-    private function sendNotification(Mention $mention): void {
+    private function sendNotification(Mention $mention): void
+    {
         if ($mention->mentioned->id === $this->status->user_id) {
             return;
         }
@@ -110,9 +120,9 @@ class MentionHelper
         }
     }
 
-
-    public static function getBodyWithMentionLinks(Status $status): string {
-        $body     = htmlspecialchars($status->body);
+    public static function getBodyWithMentionLinks(Status $status): string
+    {
+        $body = htmlspecialchars($status->body);
         $replaced = [];
         $mentions = $status->mentions;
         foreach ($mentions as $mention) {
@@ -120,16 +130,17 @@ class MentionHelper
             if (in_array($user->username, $replaced)) {
                 continue;
             }
-            $body       = strtr($body, [
-                "@$user->username" =>
-                    '<a href="' . route('profile', $user->username) . '">@' . $user->username . '</a>'
+            $body = strtr($body, [
+                "@$user->username" => '<a href="' . route('profile', $user->username) . '">@' . $user->username . '</a>',
             ]);
             $replaced[] = $user->username;
         }
+
         return $body;
     }
 
-    public static function getMastodonStatus(Status $status): string {
+    public static function getMastodonStatus(Status $status): string
+    {
         $body = $status->body;
         if (empty($body)) {
             return '';
@@ -144,11 +155,12 @@ class MentionHelper
             }
 
             $mastodonHelper = new MastodonProfileDetails($user);
-            $username       = '@' . $mastodonHelper->getUserName() . '@' . $mastodonHelper->getProfileHost();
+            $username = '@' . $mastodonHelper->getUserName() . '@' . $mastodonHelper->getProfileHost();
 
-            $body       = strtr($body, ["@$user->username" => $username]);
+            $body = strtr($body, ["@$user->username" => $username]);
             $replaced[] = $user->username;
         }
+
         return $body;
     }
 }

@@ -1,12 +1,12 @@
-import {Modal} from "bootstrap";
+import { Modal } from 'bootstrap';
 
-let businessInput       = document.getElementsByClassName("trwl-business-input");
-let businessButton      = document.getElementsByClassName("trwl-business-button");
-let visibilityFormInput = document.getElementsByClassName("trwl-visibility-input");
-let visibilityButton    = document.getElementsByClassName("trwl-visibility-button");
+let businessInput       = document.getElementsByClassName('trwl-business-input');
+let businessButton      = document.getElementsByClassName('trwl-business-button');
+let visibilityFormInput = document.getElementsByClassName('trwl-visibility-input');
+let visibilityButton    = document.getElementsByClassName('trwl-visibility-button');
 
-const businessIcons   = ["fa-user", "fa-briefcase", "fa-building"];
-const visibilityIcons = ["fa-globe-americas", "fa-lock-open", "fa-user-friends", "fa-lock", "fa-user-check"];
+const businessIcons   = ['fa-user', 'fa-briefcase', 'fa-building'];
+const visibilityIcons = ['fa-globe-americas', 'fa-lock-open', 'fa-user-friends', 'fa-lock', 'fa-user-check'];
 
 function setIconForDropdown(value, buttons, inputFields, icons) {
     let number = parseInt(value, 10);
@@ -28,7 +28,7 @@ function editModal(event) {
     event.preventDefault();
 
     let statusId = event.currentTarget.dataset.trwlStatusId;
-    let dataset  = document.getElementById("status-" + statusId).dataset;
+    let dataset  = document.getElementById('status-' + statusId).dataset;
 
     document.querySelector("#status-update input[name='statusId']").value        = statusId;
     document.querySelector("#status-update textarea[name='body']").value         = dataset.trwlStatusBody;
@@ -43,7 +43,7 @@ function editModal(event) {
     setIconForDropdown(statusVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
 
     //Clear list
-    document.querySelector("#status-update select[name='destinationStopoverId']").innerHTML = "";
+    document.querySelector("#status-update select[name='destinationStopoverId']").innerHTML = '';
 
     let alternativeDestinations = JSON.parse(dataset.trwlAlternativeDestinations);
     if (alternativeDestinations) {
@@ -54,7 +54,7 @@ function editModal(event) {
             let stopoverName    = dest.name;
             let stopoverArrival = dest.arrival_planned;
 
-            let stopoverOption   = document.createElement("option");
+            let stopoverOption   = document.createElement('option');
             stopoverOption.value = stopoverId;
             stopoverOption.text  = stopoverArrival + ': ' + stopoverName;
             document.querySelector("#status-update select[name='destinationStopoverId']").appendChild(stopoverOption);
@@ -64,24 +64,24 @@ function editModal(event) {
         document.querySelector('.destination-wrapper').classList.add('d-none');
     }
 
-    const modal = new Modal(document.querySelector("#edit-modal"));
+    const modal = new Modal(document.querySelector('#edit-modal'));
     modal.show();
     document.querySelector('#body-length').innerText = document.querySelector('#status-body').value.length;
 }
 
 // Event listeners
-document.querySelectorAll(".trwl-business-item").forEach((item) => {
-    item.addEventListener("click", function (event) {
+document.querySelectorAll('.trwl-business-item').forEach((item) => {
+    item.addEventListener('click', function (event) {
         setIconForDropdown(event.currentTarget.dataset.trwlBusiness, businessButton, businessInput, businessIcons);
     });
 });
 
-document.querySelectorAll(".trwl-visibility-item").forEach((item) => {
-    item.addEventListener("click", function (event) {
+document.querySelectorAll('.trwl-visibility-item').forEach((item) => {
+    item.addEventListener('click', function (event) {
         setIconForDropdown(event.currentTarget.dataset.trwlVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
     });
 });
 
-document.querySelectorAll(".edit").forEach((item) => {
-    item.addEventListener("click", editModal);
+document.querySelectorAll('.edit').forEach((item) => {
+    item.addEventListener('click', editModal);
 });

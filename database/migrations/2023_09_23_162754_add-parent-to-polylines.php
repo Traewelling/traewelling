@@ -5,9 +5,10 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
-return new class extends Migration
+return new class() extends Migration
 {
-    public function up(): void {
+    public function up(): void
+    {
         if (!Schema::hasColumn('poly_lines', 'parent_id')) {
             Schema::table('poly_lines', function (Blueprint $table) {
                 $table->unsignedBigInteger('parent_id')->nullable()->after('id');
@@ -19,7 +20,8 @@ return new class extends Migration
         }
     }
 
-    public function down(): void {
+    public function down(): void
+    {
         try {
             Schema::table('poly_lines', function (Blueprint $table) {
                 $table->dropForeign(['parent_id']);

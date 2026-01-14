@@ -12,8 +12,10 @@ class TokenExporter extends AbstractExporter
     use RelationExportable;
 
     protected string $fileName = 'tokens.json';
+
     protected string $relation = 'tokens';
-    protected array  $columns  = [
+
+    protected array $columns = [
         'user_id',
         'client_id',
         'name',

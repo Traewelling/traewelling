@@ -26,21 +26,25 @@ class StationFaker extends Base
      * ORDER BY DESC (?patronage)
      * LIMIT 200
      */
-    private function initStations(): void {
+    private function initStations(): void
+    {
         if (!empty($this->stations)) {
             return;
         }
-        $json           = file_get_contents(__DIR__ . '/stations.json');
-        $data           = json_decode($json, true);
+        $json = file_get_contents(__DIR__ . '/stations.json');
+        $data = json_decode($json, true);
         $this->stations = $data;
     }
 
-    private function getStations(): array {
+    private function getStations(): array
+    {
         $this->initStations();
+
         return $this->stations;
     }
 
-    public function station(): array {
+    public function station(): array
+    {
         return static::randomElement($this->getStations());
     }
 }

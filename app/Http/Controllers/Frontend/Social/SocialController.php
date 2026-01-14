@@ -12,11 +12,11 @@ use Illuminate\Validation\Rule;
 
 class SocialController extends Controller
 {
-
-    public function destroyProvider(Request $request): Response|Application|ResponseFactory {
+    public function destroyProvider(Request $request): Response|Application|ResponseFactory
+    {
         $validated = $request->validate([
-                                            'provider' => ['required', Rule::in(['mastodon'])]
-                                        ]);
+            'provider' => ['required', Rule::in(['mastodon'])],
+        ]);
 
         $user = auth()->user();
         if ($user->password === null && $user->socialProfile->mastodon_id === null) {
@@ -32,14 +32,15 @@ class SocialController extends Controller
 
         if ($validated['provider'] === 'mastodon') {
             $user->socialProfile->update([
-                                             'mastodon_id'     => null,
-                                             'mastodon_server' => null,
-                                             'mastodon_token'  => null
-                                         ]);
+                'mastodon_id' => null,
+                'mastodon_server' => null,
+                'mastodon_token' => null,
+            ]);
 
             $mastodonProfileDetails = new MastodonProfileDetails($user);
             $mastodonProfileDetails->forgetData();
         }
+
         return response(__('controller.social.deleted'), 200);
     }
 }

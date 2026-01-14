@@ -5,6 +5,7 @@ namespace App\Virtual\Models;
 /**
  * @OA\Schema(
  *     title="LikeResponse",
+ *
  *     @OA\Xml(
  *         name="LikeResponse"
  *     )

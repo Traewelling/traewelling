@@ -21,20 +21,20 @@ use Illuminate\Validation\Rules\Enum;
 
 class StatusController extends Controller
 {
-
     /**
      * @deprecated Use API endpoint instead
      */
-    public function updateStatus(Request $request): JsonResponse|RedirectResponse {
+    public function updateStatus(Request $request): JsonResponse|RedirectResponse
+    {
         $validated = $request->validate([
-                                            'statusId'              => ['required', 'exists:statuses,id'],
-                                            'body'                  => ['nullable', 'max:280'],
-                                            'manualDeparture'       => ['nullable', 'date'],
-                                            'manualArrival'         => ['nullable', 'date'],
-                                            'business_check'        => ['required', new Enum(Business::class)], //TODO: Why is this not CamelCase?
-                                            'checkinVisibility'     => ['required', new Enum(StatusVisibility::class)],
-                                            'destinationStopoverId' => ['nullable', 'exists:train_stopovers,id'],
-                                        ]);
+            'statusId' => ['required', 'exists:statuses,id'],
+            'body' => ['nullable', 'max:280'],
+            'manualDeparture' => ['nullable', 'date'],
+            'manualArrival' => ['nullable', 'date'],
+            'business_check' => ['required', new Enum(Business::class)], // TODO: Why is this not CamelCase?
+            'checkinVisibility' => ['required', new Enum(StatusVisibility::class)],
+            'destinationStopoverId' => ['nullable', 'exists:train_stopovers,id'],
+        ]);
 
         try {
             $status = Status::findOrFail($validated['statusId']);
@@ -42,23 +42,23 @@ class StatusController extends Controller
 
             $newVisibility = StatusVisibility::from($validated['checkinVisibility']);
 
-            //Check for disallowed status visibility changes
+            // Check for disallowed status visibility changes
             if (auth()->user()->can('disallow-status-visibility-change') && $newVisibility != StatusVisibility::PRIVATE) {
                 return back()->with('error', 'You are not allowed to update non-private statuses. Please set the status to private.');
             }
 
             // check duration of manual arrival and departure
-            $arrivalDelay   = 0;
+            $arrivalDelay = 0;
             $departureDelay = 0;
             if (isset($validated['manualDeparture'])) {
                 $manualDeparture = Carbon::parse($validated['manualDeparture'], auth()->user()->timezone);
-                $departureDelay  = abs($manualDeparture->diffInHours($status->checkin->departure));
+                $departureDelay = abs($manualDeparture->diffInHours($status->checkin->departure));
 
             }
 
             if (isset($validated['manualArrival'])) {
                 $manualArrival = Carbon::parse($validated['manualArrival'], auth()->user()->timezone);
-                $arrivalDelay  = abs($manualArrival->diffInHours($status->checkin->arrival));
+                $arrivalDelay = abs($manualArrival->diffInHours($status->checkin->arrival));
             }
 
             if ($departureDelay > config('trwl.max_delay_hours') || $arrivalDelay > config('trwl.max_delay_hours')) {
@@ -66,8 +66,8 @@ class StatusController extends Controller
             }
 
             $statusPayload = [
-                'body'       => $validated['body'] ?? null,
-                'business'   => Business::from($validated['business_check']),
+                'body' => $validated['body'] ?? null,
+                'business' => Business::from($validated['business_check']),
                 'visibility' => $newVisibility,
             ];
 
@@ -79,44 +79,44 @@ class StatusController extends Controller
             $status->update($statusPayload);
 
             $status->checkin->update([
-                                         'manual_departure' => isset($validated['manualDeparture']) ?
-                                             Carbon::parse($validated['manualDeparture'], auth()->user()->timezone) :
-                                             null,
-                                         'manual_arrival'   => isset($validated['manualArrival']) ?
-                                             Carbon::parse($validated['manualArrival'], auth()->user()->timezone) :
-                                             null,
-                                     ]);
+                'manual_departure' => isset($validated['manualDeparture']) ?
+                    Carbon::parse($validated['manualDeparture'], auth()->user()->timezone) :
+                    null,
+                'manual_arrival' => isset($validated['manualArrival']) ?
+                    Carbon::parse($validated['manualArrival'], auth()->user()->timezone) :
+                    null,
+            ]);
 
             StatusUpdateEvent::dispatch($status->refresh());
 
             if (isset($validated['destinationStopoverId'])
                 && $validated['destinationStopoverId'] != $status->checkin->destinationStopover->id) {
                 $pointReason = TrainCheckinController::changeDestination(
-                    checkin:                $status->checkin,
+                    checkin: $status->checkin,
                     newDestinationStopover: Stopover::findOrFail($validated['destinationStopoverId']),
                 );
                 $status->fresh();
 
                 $checkinSuccess = new CheckinSuccess(
-                    id:                   $status->id,
-                    distance:             $status->checkin->distance,
-                    duration:             $status->checkin->duration,
-                    points:               $status->checkin->points,
-                    pointReason:          $pointReason,
-                    lineName:             $status->checkin->trip->linename,
-                    socialText:           StatusHelper::getSocialText($status),
+                    id: $status->id,
+                    distance: $status->checkin->distance,
+                    duration: $status->checkin->duration,
+                    points: $status->checkin->points,
+                    pointReason: $pointReason,
+                    lineName: $status->checkin->trip->linename,
+                    socialText: StatusHelper::getSocialText($status),
                     alsoOnThisConnection: $status->checkin->alsoOnThisConnection,
-                    event:                $status->checkin->event,
-                    forced:               false,
-                    reason:               'status-updated'
+                    event: $status->checkin->event,
+                    forced: false,
+                    reason: 'status-updated'
                 );
 
                 return redirect()->route('status', ['id' => $status->id])
-                                 ->with('checkin-success', (clone $checkinSuccess));
+                    ->with('checkin-success', (clone $checkinSuccess));
             }
 
             return redirect()->route('status', ['id' => $status->id])
-                             ->with('success', __('status.update.success'));
+                ->with('success', __('status.update.success'));
         } catch (ModelNotFoundException) {
             return redirect()->back()->with('alert-danger', __('messages.exception.general'));
         } catch (AuthorizationException) {

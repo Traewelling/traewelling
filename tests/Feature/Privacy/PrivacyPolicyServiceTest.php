@@ -10,10 +10,10 @@ use Tests\ApiTestCase;
 
 class PrivacyPolicyServiceTest extends ApiTestCase
 {
-
     use RefreshDatabase;
 
-    public function testAcceptPrivacyPolicy(): void {
+    public function test_accept_privacy_policy(): void
+    {
         $user = User::factory(['privacy_ack_at' => null])->create();
         $this->assertNull($user->privacy_ack_at);
 

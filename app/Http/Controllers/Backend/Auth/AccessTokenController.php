@@ -15,23 +15,25 @@ class AccessTokenController extends PassportAccessTokenController
     /**
      * @throws OAuthServerException
      */
-    public function issueToken(ServerRequestInterface $requestInterface) {
-        return $this->withErrorHandling(function() use ($requestInterface) {
+    public function issueToken(ServerRequestInterface $requestInterface)
+    {
+        return $this->withErrorHandling(function () use ($requestInterface) {
             return $this->extendResponseWithWebhookData(
                 $requestInterface,
-                $this->server->respondToAccessTokenRequest($requestInterface, new Psr7Response)
+                $this->server->respondToAccessTokenRequest($requestInterface, new Psr7Response())
             );
         });
     }
 
-    protected function extendResponseWithWebhookData(ServerRequestInterface $requestInterface, Psr7Response $response): Psr7Response {
+    protected function extendResponseWithWebhookData(ServerRequestInterface $requestInterface, Psr7Response $response): Psr7Response
+    {
         // Skip webhook stuff on error
         if ($response->getStatusCode() > 299 || $response->getStatusCode() < 200) {
             return $response;
         }
         $body = $requestInterface->getParsedBody();
         // Only create webhook on authorization code grant type.
-        if ($body['grant_type'] != 'authorization_code' ) {
+        if ($body['grant_type'] != 'authorization_code') {
             return $response;
         }
 
@@ -46,14 +48,15 @@ class AccessTokenController extends PassportAccessTokenController
             throw new BadRequestException('Webhook creation request has been revoked.', 419);
         }
 
-        $webhook         = WebhookController::createWebhook($request);
-        $body            = $response->getBody();
-        $data            = json_decode($body, true);
+        $webhook = WebhookController::createWebhook($request);
+        $body = $response->getBody();
+        $data = json_decode($body, true);
         $data['webhook'] = [
-            'id'     => $webhook->id,
+            'id' => $webhook->id,
             'secret' => $webhook->secret,
-            'url'    => $webhook->url,
+            'url' => $webhook->url,
         ];
+
         return $response->withBody(Stream::create(json_encode($data)));
     }
 }

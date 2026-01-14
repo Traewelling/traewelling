@@ -27,8 +27,6 @@ class LoginController extends Controller
 
     /**
      * Where to redirect users after login.
-     *
-     * @var string
      */
     protected string $redirectTo = '/dashboard';
 
@@ -37,15 +35,17 @@ class LoginController extends Controller
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('guest')->except('logout');
     }
 
-    public function login(Request $request): Response {
+    public function login(Request $request): Response
+    {
         $validator = Validator::make($request->all(), [
-            'login'    => ['required', 'max:255'],
+            'login' => ['required', 'max:255'],
             'password' => ['required', 'min:8'],
-            'remember' => ['nullable',],
+            'remember' => ['nullable'],
         ]);
 
         if ($validator->fails()) {
@@ -58,6 +58,7 @@ class LoginController extends Controller
 
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
+
             return $this->sendLockoutResponse($request);
         }
 
@@ -68,13 +69,14 @@ class LoginController extends Controller
         $this->incrementLoginAttempts($request);
 
         return redirect()->route('login')
-                         ->withInput()
-                         ->withErrors([
-                                          'login_error' => __('error.login'),
-                                      ]);
+            ->withInput()
+            ->withErrors([
+                'login_error' => __('error.login'),
+            ]);
     }
 
-    public function username(): string {
+    public function username(): string
+    {
         return 'login';
     }
 }

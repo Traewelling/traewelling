@@ -21,33 +21,38 @@ class SettingsController extends Controller
      *     tags={"Settings"},
      *     summary="Get the current user's profile settings",
      *     description="Get the current user's profile settings",
+     *
      *     @OA\Response(
      *          response=200,
      *          description="Success",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", type="object", ref="#/components/schemas/UserProfileSettingsResource")
      *          )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     security={{"passport": {"read-settings"}}, {"token": {}}}
      * )
-     *
      */
-    public function getProfileSettings(): UserProfileSettingsResource {
+    public function getProfileSettings(): UserProfileSettingsResource
+    {
         return new UserProfileSettingsResource(auth()->user());
     }
 
     /**
      * @throws ValidationException
      */
-    public function updateMail(Request $request): UserProfileSettingsResource|JsonResponse {
-        $validated = $request->validate(['email'    => ['required',
-                                                        'string',
-                                                        'email:rfc,dns',
-                                                        'max:255',
-                                                        'unique:users'],
-                                         'password' => ['required', 'string']
-                                        ]);
+    public function updateMail(Request $request): UserProfileSettingsResource|JsonResponse
+    {
+        $validated = $request->validate(['email' => ['required',
+            'string',
+            'email:rfc,dns',
+            'max:255',
+            'unique:users'],
+            'password' => ['required', 'string'],
+        ]);
         if (!Hash::check($validated['password'], auth()->user()->password)) {
             throw ValidationException::withMessages([__('auth.password')]);
         }
@@ -67,17 +72,23 @@ class SettingsController extends Controller
      *     tags={"Settings"},
      *     summary="Update the current user's profile settings",
      *     description="Update the current user's profile settings",
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(ref="#/components/schemas/UpdateProfileInformationRequest")
      *    ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Success",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="data", type="object", ref="#/components/schemas/UserProfileSettingsResource")
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=422, description="Unprocessable Entity"),
      *     @OA\Response(response=400, description="Bad Request"),
@@ -86,7 +97,8 @@ class SettingsController extends Controller
      *     }
      *     )
      */
-    public function updateSettings(UpdateProfileInformationRequest $request): UserProfileSettingsResource|JsonResponse {
+    public function updateSettings(UpdateProfileInformationRequest $request): UserProfileSettingsResource|JsonResponse
+    {
         try {
             return new UserProfileSettingsResource(BackendSettingsController::updateSettings($request->validated()));
         } catch (RateLimitExceededException) {
@@ -94,7 +106,8 @@ class SettingsController extends Controller
         }
     }
 
-    public function resendMail(): void {
+    public function resendMail(): void
+    {
         try {
             auth()->user()->sendEmailVerificationNotification();
             $this->sendResponse('', 204);
@@ -106,13 +119,14 @@ class SettingsController extends Controller
     /**
      * @throws ValidationException
      */
-    public function updatePassword(Request $request): UserProfileSettingsResource|JsonResponse {
+    public function updatePassword(Request $request): UserProfileSettingsResource|JsonResponse
+    {
         $userHasPassword = auth()->user()->password !== null;
 
         $validated = $request->validate([
-                                            'currentPassword' => [Rule::requiredIf($userHasPassword)],
-                                            'password'        => ['required', 'string', 'min:8', 'confirmed']
-                                        ]);
+            'currentPassword' => [Rule::requiredIf($userHasPassword)],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
 
         if ($userHasPassword && !Hash::check($validated['currentPassword'], auth()->user()->password)) {
             throw ValidationException::withMessages([__('controller.user.password-wrong')]);
@@ -129,10 +143,9 @@ class SettingsController extends Controller
 
     /**
      * Undocumented and unofficial API Endpoint
-     *
-     * @return JsonResponse
      */
-    public function deleteProfilePicture(): JsonResponse {
+    public function deleteProfilePicture(): JsonResponse
+    {
         if (BackendSettingsController::deleteProfilePicture(user: auth()->user())) {
             return $this->sendResponse(['message' => __('settings.profilePicture.deleted')]);
         }
@@ -142,18 +155,16 @@ class SettingsController extends Controller
 
     /**
      * Undocumented and unofficial API Endpoint
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
-    public function uploadProfilePicture(Request $request): JsonResponse {
+    public function uploadProfilePicture(Request $request): JsonResponse
+    {
         if (auth()->user()->can('disallow-social-interaction')) {
             return response()->json(null, 403);
         }
         if (BackendSettingsController::updateProfilePicture($request->input('image'))) {
             return $this->sendResponse(['message' => __('settings.saved')]);
         }
+
         return $this->sendError('', 400);
     }
 }

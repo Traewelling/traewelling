@@ -12,7 +12,8 @@ class WebFingerTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    public function testWebFingerFullUrl(): void {
+    public function test_web_finger_full_url(): void
+    {
         $serverName = WebFingerController::getServerName(config('app.url'));
 
         $user = User::factory()->create();
@@ -43,7 +44,8 @@ class WebFingerTest extends FeatureTestCase
         ]);
     }
 
-    public function testWebFingerShortUri(): void {
+    public function test_web_finger_short_uri(): void
+    {
         $serverName = WebFingerController::getServerName(config('app.url'));
 
         $user = User::factory()->create();

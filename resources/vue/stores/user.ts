@@ -1,27 +1,27 @@
-import {defineStore} from "pinia";
-import {ShortStation} from "../../types/Station";
-import {StationResource, UserAuthResource} from "../../types/Api.gen";
+import { defineStore } from 'pinia';
+import { ShortStation } from '../../types/Station';
+import { StationResource, UserAuthResource } from '../../types/Api.gen';
 
-export const useUserStore = defineStore("user", {
+export const useUserStore = defineStore('user', {
     persist: true,
     state: () => ({
         user: null as UserAuthResource | null,
         loading: false,
         error: null as unknown | null,
-        refreshed: "2021-08-01T12:00:00Z"
+        refreshed: '2021-08-01T12:00:00Z',
     }),
     getters: {
         getId(): number | null {
             return this.user?.id ?? null;
         },
         getDisplayName(): string {
-            return this.user?.displayName ?? "";
+            return this.user?.displayName ?? '';
         },
         getUsername(): string {
-            return this.user?.username ?? "";
+            return this.user?.username ?? '';
         },
         getProfilePicture(): string {
-            return this.user?.profilePicture ?? "";
+            return this.user?.profilePicture ?? '';
         },
         getTotalDistance(): number {
             return this.user?.totalDistance ?? 0;
@@ -48,14 +48,14 @@ export const useUserStore = defineStore("user", {
             return this.user?.home ?? null;
         },
         getLanguage(): string {
-            return this.user?.language ?? "";
+            return this.user?.language ?? '';
         },
         hasBeta(): boolean {
-            return this.user?.roles?.includes("open-beta") ?? false;
+            return this.user?.roles?.includes('open-beta') ?? false;
         },
         isAdmin(): boolean {
-            return this.user?.roles?.includes("admin") ?? false;
-        }
+            return this.user?.roles?.includes('admin') ?? false;
+        },
     },
     actions: {
         async setHome(home: ShortStation | any): Promise<void> {
@@ -65,7 +65,7 @@ export const useUserStore = defineStore("user", {
             }
 
             fetch(`/api/v1/station/${home.id}/home`, {
-                method: "PUT"
+                method: 'PUT',
             })
                 .then(response => response.json())
                 .then((data) => {
@@ -80,7 +80,7 @@ export const useUserStore = defineStore("user", {
                     }
 
                     return error;
-                })
+                });
         },
         async fetchSettings(force: boolean = false): Promise<void> {
             // Fetch Data every 15 Minutes
@@ -92,7 +92,7 @@ export const useUserStore = defineStore("user", {
             }
             this.loading = true;
             try {
-                this.user = await fetch("/api/v1/auth/user")
+                this.user = await fetch('/api/v1/auth/user')
                     .then((response: { json: () => any; }) => response.json())
                     .then((data: { data: any; }) => data.data);
                 this.refreshed = new Date().toString();
@@ -101,6 +101,6 @@ export const useUserStore = defineStore("user", {
             } finally {
                 this.loading = false;
             }
-        }
-    }
+        },
+    },
 });

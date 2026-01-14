@@ -9,11 +9,13 @@ use Illuminate\Console\Command;
 
 class RecalculateStatusDistance extends Command
 {
-    protected $signature   = 'trwl:recalculateStatusDistance {id*}';
+    protected $signature = 'trwl:recalculateStatusDistance {id*}';
+
     protected $description = 'Recalculate distance for status id';
 
-    public function handle(): void {
-        $ids      = $this->arguments()['id'];
+    public function handle(): void
+    {
+        $ids = $this->arguments()['id'];
         $statuses = Status::whereIn('id', $ids)->get();
         $this->info(sprintf('Found %d of %d statuses', count($ids), count($statuses)));
         $this->newLine(3);

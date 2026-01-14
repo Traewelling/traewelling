@@ -11,10 +11,10 @@ use Tests\FeatureTestCase;
 
 class AccountDeletionTest extends FeatureTestCase
 {
-
     use RefreshDatabase;
 
-    public function testAccountSelectors(): void {
+    public function test_account_selectors(): void
+    {
         // user logged in now
         $user = User::factory(['last_login' => now()])->create();
         $this->assertCount(0, AccountDeletionController::getInactiveUsers());
@@ -44,7 +44,8 @@ class AccountDeletionTest extends FeatureTestCase
         $this->assertCount(0, AccountDeletionController::getInactiveUsersWithTwoWeeksLeft());
     }
 
-    public function testAccountDeletionNotificationTwoWeeksBefore(): void {
+    public function test_account_deletion_notification_two_weeks_before(): void
+    {
         Mail::fake();
 
         Mail::assertSentCount(0);
@@ -69,23 +70,24 @@ class AccountDeletionTest extends FeatureTestCase
         Mail::assertSentCount(2);
     }
 
-    public function testAccountDeletion(): void {
+    public function test_account_deletion(): void
+    {
         Mail::fake();
 
         $user = User::factory(['last_login' => now()->subWeeks(53)])->create();
         $this->assertCount(1, AccountDeletionController::getInactiveUsers());
         $this->assertFalse(AccountDeletionController::wasNotifiedAboutAccountDeletion($user));
 
-        //Account should not be deleted because the user was not notified
+        // Account should not be deleted because the user was not notified
         AccountDeletionController::deleteInactiveUsers();
         $this->assertCount(1, AccountDeletionController::getInactiveUsers());
         $this->assertFalse(AccountDeletionController::wasNotifiedAboutAccountDeletion($user));
 
-        //now notify the user
+        // now notify the user
         AccountDeletionController::sendAccountDeletionNotificationTwoWeeksBefore();
         $this->assertTrue(AccountDeletionController::wasNotifiedAboutAccountDeletion($user));
 
-        //travel two weeks into the future and delete the user - he should be deleted now
+        // travel two weeks into the future and delete the user - he should be deleted now
         $this->travel(2)->weeks();
         AccountDeletionController::deleteInactiveUsers();
         $this->assertCount(0, AccountDeletionController::getInactiveUsers());

@@ -16,29 +16,34 @@ class OperatorController extends Controller
      *      path="/operators",
      *      summary="Get a list of all operators.",
      *      tags={"Checkin"},
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(
      *                  property="data",
      *                  type="array",
+     *
      *                  @OA\Items(ref="#/components/schemas/OperatorResource")
      *              )
      *          )
      *      ),
+     *
      *     @OA\Response(response=401, description="Unauthenticated"),
      *     @OA\Response(response=403, description="Unauthorized"),
      *     @OA\Response(response=500, description="Internal Server Error")
      * )
-     *
-     * @return AnonymousResourceCollection
      */
-    public function index(): AnonymousResourceCollection {
+    public function index(): AnonymousResourceCollection
+    {
         return OperatorResource::collection(Operator::orderBy('name')->cursorPaginate(250));
     }
 
-    public function merge(int $oldOperatorId, int $newOperatorId): JsonResponse {
+    public function merge(int $oldOperatorId, int $newOperatorId): JsonResponse
+    {
         $oldOperator = Operator::findOrFail($oldOperatorId);
         $newOperator = Operator::findOrFail($newOperatorId);
 
@@ -49,9 +54,11 @@ class OperatorController extends Controller
         try {
             $operatorService = new OperatorService();
             $operatorService->mergeOperators($oldOperator, $newOperator);
+
             return response()->json(null, 204);
         } catch (Exception $exception) {
             report($exception);
+
             return response()->json(['error' => 'Failed to merge operators'], 500);
         }
     }

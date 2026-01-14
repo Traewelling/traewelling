@@ -3,9 +3,10 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class() extends Migration
 {
-    public function up(): void {
+    public function up(): void
+    {
         Schema::dropColumns('social_login_profiles', [
             'twitter_token',
             'twitter_tokenSecret',

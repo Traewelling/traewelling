@@ -14,34 +14,46 @@ use TypeError;
 class MastodonProfileDetails
 {
     private User $user;
-    private bool $lastErrorWasTemporary = false;
-    private const CACHE_TTL_SUCCESS         = 3600;      // 1 hour for successful fetches
-    private const CACHE_TTL_TEMPORARY_ERROR = 900;       // 15 minutes for temporary errors
-    private const CACHE_TTL_PERMANENT_ERROR = 3600;      // 1 hour for permanent errors
-    private const PERMANENT_ERROR_CODES     = [401, 404, 410];
-    private const TEMPORARY_ERROR_CODES     = [408, 429, 500, 502, 503, 504];
 
-    public function __construct(User $user) {
+    private bool $lastErrorWasTemporary = false;
+
+    private const CACHE_TTL_SUCCESS = 3600;      // 1 hour for successful fetches
+
+    private const CACHE_TTL_TEMPORARY_ERROR = 900;       // 15 minutes for temporary errors
+
+    private const CACHE_TTL_PERMANENT_ERROR = 3600;      // 1 hour for permanent errors
+
+    private const PERMANENT_ERROR_CODES = [401, 404, 410];
+
+    private const TEMPORARY_ERROR_CODES = [408, 429, 500, 502, 503, 504];
+
+    public function __construct(User $user)
+    {
         $this->user = $user;
     }
 
-    public function getProfileUrl(): ?string {
-        return $this->getData()["url"] ?? null;
+    public function getProfileUrl(): ?string
+    {
+        return $this->getData()['url'] ?? null;
     }
 
-    public function getProfileHost(): ?string {
+    public function getProfileHost(): ?string
+    {
         return parse_url($this->getProfileUrl(), PHP_URL_HOST) ?? null;
     }
 
-    public function getUserName(): ?string {
-        return $this->getData()["username"] ?? null;
+    public function getUserName(): ?string
+    {
+        return $this->getData()['username'] ?? null;
     }
 
-    private function getData(): ?array {
+    private function getData(): ?array
+    {
         $cacheKey = CacheKey::getMastodonProfileInformationKey($this->user);
 
         if (Cache::has($cacheKey)) {
             Cache::forget(CacheKey::getMastodonProfileErrorKey($this->user));
+
             return Cache::get($cacheKey);
         }
         $data = $this->fetchProfileInformation();
@@ -55,7 +67,8 @@ class MastodonProfileDetails
     /**
      * Determine cache TTL based on fetch result
      */
-    private function determineCacheTtl(?array $data): int {
+    private function determineCacheTtl(?array $data): int
+    {
         if ($data !== null) {
             // Success: cache for longer period
             return self::CACHE_TTL_SUCCESS;
@@ -70,22 +83,24 @@ class MastodonProfileDetails
         return self::CACHE_TTL_PERMANENT_ERROR;
     }
 
-    public function forgetData(): void {
+    public function forgetData(): void
+    {
         Cache::forget(CacheKey::getMastodonProfileInformationKey($this->user));
     }
 
-    private function fetchProfileInformation(): ?array {
+    private function fetchProfileInformation(): ?array
+    {
         if ($this->user?->socialProfile?->mastodon_token && $this->user->socialProfile?->mastodon_id) {
             try {
                 $mastodonServer = MastodonServer::findCached($this->user->socialProfile->mastodon_server);
                 if ($mastodonServer) {
                     return Mastodon::domain($mastodonServer->domain)
-                                   ->token($this->user->socialProfile->mastodon_token)
-                                   ->call(
-                                       method:  "GET",
-                                       api:     "/accounts/" . $this->user->socialProfile->mastodon_id,
-                                       options: MastodonController::getRequestOptions()
-                                   );
+                        ->token($this->user->socialProfile->mastodon_token)
+                        ->call(
+                            method: 'GET',
+                            api: '/accounts/' . $this->user->socialProfile->mastodon_id,
+                            options: MastodonController::getRequestOptions()
+                        );
                 }
             } catch (Exception|TypeError $exception) {
                 $this->handleFetchError($exception);
@@ -98,8 +113,9 @@ class MastodonProfileDetails
     /**
      * Handle errors from Mastodon API with proper classification
      */
-    private function handleFetchError(Exception|TypeError $exception): void {
-        $code           = $exception->getCode();
+    private function handleFetchError(Exception|TypeError $exception): void
+    {
+        $code = $exception->getCode();
         $mastodonServer = MastodonServer::findCached($this->user->socialProfile->mastodon_server);
 
         if (in_array($code, self::PERMANENT_ERROR_CODES)) {
@@ -109,7 +125,7 @@ class MastodonProfileDetails
                     "Permanent Mastodon error (HTTP %d) for user#%d on server '%s' with mastodon_id#%d",
                     $code,
                     $this->user->id,
-                    $mastodonServer?->domain ?? "unknown",
+                    $mastodonServer?->domain ?? 'unknown',
                     $this->user->socialProfile->mastodon_id
                 )
             );
@@ -119,10 +135,10 @@ class MastodonProfileDetails
             $errorCount = Cache::get(CacheKey::getMastodonProfileErrorKey($this->user), 0);
             if ($errorCount >= 48) { // e.g., 48 permanent errors ~ 2 days if checked every hour
                 Log::info(sprintf(
-                              "Mastodon error count for user#%d reached %d - removing mastodon information",
-                              $this->user->id,
-                              $errorCount
-                          ));
+                    'Mastodon error count for user#%d reached %d - removing mastodon information',
+                    $this->user->id,
+                    $errorCount
+                ));
 
                 $this->removeMastodonInformation();
             }
@@ -133,7 +149,7 @@ class MastodonProfileDetails
                     "Temporary Mastodon error (HTTP %d) for user#%d on server '%s' - will retry later",
                     $code,
                     $this->user->id,
-                    $mastodonServer?->domain ?? "unknown"
+                    $mastodonServer?->domain ?? 'unknown'
                 )
             );
             $this->lastErrorWasTemporary = true;
@@ -144,7 +160,7 @@ class MastodonProfileDetails
                     "Unknown Mastodon error (HTTP/Status %d) for user#%d on server '%s': %s",
                     $code,
                     $this->user->id,
-                    $mastodonServer?->domain ?? "unknown",
+                    $mastodonServer?->domain ?? 'unknown',
                     $exception->getMessage()
                 )
             );
@@ -156,18 +172,20 @@ class MastodonProfileDetails
         }
     }
 
-    private function removeMastodonInformation(): void {
+    private function removeMastodonInformation(): void
+    {
         if ($this->user->email_verified_at === null) {
             Log::info("User#{$this->user->id} has not verified his email address yet."
-                      . " Not removing mastodon information.");
+                      . ' Not removing mastodon information.');
+
             return;
         }
         Log::info("Removing mastodon information for user#{$this->user->id}");
         $this->user->socialProfile->update([
-                                               'mastodon_id'         => null,
-                                               'mastodon_token'      => null,
-                                               'mastodon_server'     => null,
-                                               'mastodon_visibility' => 1,
-                                           ]);
+            'mastodon_id' => null,
+            'mastodon_token' => null,
+            'mastodon_server' => null,
+            'mastodon_visibility' => 1,
+        ]);
     }
 }

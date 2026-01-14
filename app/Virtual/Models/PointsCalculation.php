@@ -5,6 +5,7 @@ namespace App\Virtual\Models;
 /**
  * @OA\Schema(
  *     title="PointsCalculation",
+ *
  *     @OA\Xml(
  *         name="PointsCalculation"
  *     )
@@ -50,9 +51,6 @@ class PointsCalculation
      *     example=1,
      *     ref="#/components/schemas/PointReason"
      * )
-     *
      */
     public $reason;
-
-
 }

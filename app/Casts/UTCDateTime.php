@@ -18,36 +18,36 @@ use Illuminate\Support\Carbon;
 class UTCDateTime implements CastsAttributes
 {
     /**
+     * @param  Model  $model
+     * @param  mixed  $value
      *
-     * @param Model  $model
-     * @param string $key
-     * @param mixed  $value
-     * @param array  $attributes
-     *
-     * @return Carbon|null
      * @throws InvalidTimeZoneException
      */
-    public function set($model, string $key, $value, array $attributes): Carbon|null {
+    public function set($model, string $key, $value, array $attributes): ?Carbon
+    {
         if ($value === null) {
             return null;
         }
         if (!$value instanceof Carbon) {
-            //check if string contains +, - or Z
+            // check if string contains +, - or Z
             if (is_string($value) && preg_match('/(([+\-])([0-1]?\d|2[0-3]):|Z)/', $value) === 0) {
                 throw new InvalidTimeZoneException("Given timestamp has no valid timezone in it -> $value");
             }
             $value = Carbon::parse($value);
         }
+
         return $value->tz(config('app.timezone'));
     }
 
-    public function get($model, string $key, $value, array $attributes) {
+    public function get($model, string $key, $value, array $attributes)
+    {
         if ($value === null) {
             return null;
         }
         if (!$value instanceof Carbon) {
             $value = Carbon::parse($value, config('app.timezone'));
         }
+
         return $value;
     }
 }

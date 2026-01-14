@@ -11,8 +11,9 @@ class CreateTrainStationsTable extends Migration
      *
      * @return void
      */
-    public function up() {
-        Schema::create('train_stations', function(Blueprint $table) {
+    public function up()
+    {
+        Schema::create('train_stations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('ibnr')->unique();
             $table->string('name');
@@ -27,7 +28,8 @@ class CreateTrainStationsTable extends Migration
      *
      * @return void
      */
-    public function down() {
+    public function down()
+    {
         Schema::dropIfExists('train_stations');
     }
 }

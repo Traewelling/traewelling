@@ -7,25 +7,27 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-
     protected $namespace = 'App\Http\Controllers';
 
-    public function map(): void {
+    public function map(): void
+    {
         $this->mapApiRoutes();
 
         $this->mapWebRoutes();
     }
 
-    protected function mapWebRoutes(): void {
+    protected function mapWebRoutes(): void
+    {
         Route::middleware('web')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/web.php'));
+            ->namespace($this->namespace)
+            ->group(base_path('routes/web.php'));
     }
 
-    protected function mapApiRoutes(): void {
+    protected function mapApiRoutes(): void
+    {
         Route::prefix('api')
-             ->middleware('api')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/api.php'));
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/api.php'));
     }
 }

@@ -12,11 +12,13 @@ use Illuminate\Http\JsonResponse;
  */
 class FrontendTransportController extends Controller
 {
-    public function TrainAutocomplete(string $station): JsonResponse {
+    public function TrainAutocomplete(string $station): JsonResponse
+    {
         try {
-            //todo: adapt data provider to users preferences
-            $provider                  = new StationController();
+            // todo: adapt data provider to users preferences
+            $provider = new StationController();
             $trainAutocompleteResponse = $provider->search($station, 'de');
+
             return response()->json(StationResource::collection($trainAutocompleteResponse));
         } catch (Exception $e) {
             abort(503, $e->getMessage());

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Feature\Frontend\Auth;
 
@@ -12,69 +14,72 @@ class EmailVerificationTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    public function testEmailVerificationNotification(): void {
+    public function test_email_verification_notification(): void
+    {
         Notification::fake();
 
-        $user     = User::factory(['email_verified_at' => null])->create();
+        $user = User::factory(['email_verified_at' => null])->create();
         $response = $this->actingAs($user)
-                         ->followingRedirects()
-                         ->post(route('verification.resend'));
+            ->followingRedirects()
+            ->post(route('verification.resend'));
         $response->assertOk();
 
         Notification::assertSentTo($user, VerifyEmail::class);
     }
 
-    public function testEmailVerificationJSONNotification(): void {
+    public function test_email_verification_json_notification(): void
+    {
         Notification::fake();
 
-        $user     = User::factory(['email_verified_at' => null])->create();
+        $user = User::factory(['email_verified_at' => null])->create();
         $response = $this->actingAs($user)
-                         ->followingRedirects()
-                         ->post(route('verification.resend'), [], [
-                             'Accept' => 'application/json',
-                         ]);
+            ->followingRedirects()
+            ->post(route('verification.resend'), [], [
+                'Accept' => 'application/json',
+            ]);
         $response->assertAccepted();
 
         Notification::assertSentTo($user, VerifyEmail::class);
     }
 
-    public function testEmailVerificationNotificationWithVerifiedEmail(): void {
+    public function test_email_verification_notification_with_verified_email(): void
+    {
         Notification::fake();
 
-        $user     = User::factory(['email_verified_at' => today()])->create();
+        $user = User::factory(['email_verified_at' => today()])->create();
         $response = $this->actingAs($user)
-                         ->followingRedirects()
-                         ->post(route('verification.resend'));
+            ->followingRedirects()
+            ->post(route('verification.resend'));
         $response->assertOk();
 
         // test json response (should be 204 with already verified email)
         $response = $this->actingAs($user)
-                         ->followingRedirects()
-                         ->post(route('verification.resend'), [], [
-                             'Accept' => 'application/json',
-                         ]);
+            ->followingRedirects()
+            ->post(route('verification.resend'), [], [
+                'Accept' => 'application/json',
+            ]);
         $response->assertNoContent();
 
         Notification::assertNothingSent();
     }
 
-    public function testEmailVerificationNotificationWithTooManyRequests(): void {
+    public function test_email_verification_notification_with_too_many_requests(): void
+    {
         Notification::fake();
 
         $user = User::factory(['email_verified_at' => null])->create();
         for ($i = 0; $i < 6; $i++) {
             $response = $this->actingAs($user)
-                             ->followingRedirects()
-                             ->post(route('verification.resend'));
+                ->followingRedirects()
+                ->post(route('verification.resend'));
             $response->assertOk();
         }
 
         $response = $this->actingAs($user)
-                         ->post(route('verification.resend'));
+            ->post(route('verification.resend'));
         $response->assertTooManyRequests();
 
         // but should still send the email once
         Notification::assertSentTo($user, VerifyEmail::class, 1);
     }
-
 }

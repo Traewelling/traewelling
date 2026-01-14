@@ -12,32 +12,38 @@ class FollowRequestIssued extends Notification implements BaseNotification
 
     public ?FollowRequest $followRequest;
 
-    public function __construct(?FollowRequest $followRequest = null) {
+    public function __construct(?FollowRequest $followRequest = null)
+    {
         $this->followRequest = $followRequest;
     }
 
-    public function via(): array {
+    public function via(): array
+    {
         return ['database'];
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
             'followRequest' => $this->followRequest->only(['id']),
-            'user'          => $this->followRequest->user->only(['id', 'username', 'name']),
+            'user' => $this->followRequest->user->only(['id', 'username', 'name']),
         ];
     }
 
-    public static function getLead(array $data): string {
+    public static function getLead(array $data): string
+    {
         return __('notifications.userRequestedFollow.lead', [
             'followerRequestUsername' => $data['user']['username'],
         ]);
     }
 
-    public static function getNotice(array $data): ?string {
+    public static function getNotice(array $data): ?string
+    {
         return __('notifications.userRequestedFollow.notice');
     }
 
-    public static function getLink(array $data): ?string {
+    public static function getLink(array $data): ?string
+    {
         return route('settings.follower');
     }
 }

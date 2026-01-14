@@ -34,161 +34,187 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  */
 class User extends Authenticatable implements ExportsPersonalData
 {
-
-    use Notifiable, HasApiTokens, HasFactory, HasRoles, HasPermissions, MustVerifyEmail;
+    use HasApiTokens, HasFactory, HasPermissions, HasRoles, MustVerifyEmail, Notifiable;
 
     protected $fillable = [
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
         'default_status_visibility', 'likes_enabled', 'points_enabled', 'private_profile', 'prevent_index',
         'privacy_hide_days', 'language', 'last_login', 'mapprovider', 'timezone', 'friend_checkin', 'data_provider', 'recent_gdpr_export',
-        'bio'
+        'bio',
     ];
-    protected $hidden   = [
+
+    protected $hidden = [
         'password', 'remember_token', 'email', 'email_verified_at', 'privacy_ack_at',
-        'home_id', 'avatar', 'social_profile', 'created_at', 'updated_at', 'userInvisibleToMe'
+        'home_id', 'avatar', 'social_profile', 'created_at', 'updated_at', 'userInvisibleToMe',
     ];
-    protected $appends  = [
+
+    protected $appends = [
         'points', 'userInvisibleToMe', 'mastodonUrl', 'train_distance', 'train_duration',
         'following', 'followPending', 'muted', 'isAuthUserBlocked', 'isBlockedByAuthUser',
     ];
-    protected $casts    = [
-        'id'                        => 'integer',
-        'email_verified_at'         => 'datetime',
-        'privacy_ack_at'            => 'datetime',
-        'home_id'                   => 'integer',
-        'private_profile'           => 'boolean',
-        'likes_enabled'             => 'boolean',
-        'points_enabled'            => 'boolean',
+
+    protected $casts = [
+        'id' => 'integer',
+        'email_verified_at' => 'datetime',
+        'privacy_ack_at' => 'datetime',
+        'home_id' => 'integer',
+        'private_profile' => 'boolean',
+        'likes_enabled' => 'boolean',
+        'points_enabled' => 'boolean',
         'default_status_visibility' => StatusVisibility::class,
-        'prevent_index'             => 'boolean',
-        'privacy_hide_days'         => 'integer',
-        'last_login'                => 'datetime',
-        'mapprovider'               => MapProvider::class,
-        'data_provider'             => DataProvider::class,
-        'timezone'                  => 'string',
-        'friend_checkin'            => FriendCheckinSetting::class,
-        'recent_gdpr_export'        => 'datetime',
+        'prevent_index' => 'boolean',
+        'privacy_hide_days' => 'integer',
+        'last_login' => 'datetime',
+        'mapprovider' => MapProvider::class,
+        'data_provider' => DataProvider::class,
+        'timezone' => 'string',
+        'friend_checkin' => FriendCheckinSetting::class,
+        'recent_gdpr_export' => 'datetime',
     ];
 
-    public function getTrainDistanceAttribute(): float {
+    public function getTrainDistanceAttribute(): float
+    {
         return Checkin::where('user_id', $this->id)->sum('distance');
     }
 
-    public function trainCheckins(): HasMany {
+    public function trainCheckins(): HasMany
+    {
         return $this->hasMany(Checkin::class, 'user_id', 'id');
     }
 
     /**
      * Since duration is a cached and calculated value, it can happen that some checkins are not included in the sum.
-     * @return float
      */
-    public function getTrainDurationAttribute(): float {
+    public function getTrainDurationAttribute(): float
+    {
         return Checkin::where('user_id', $this->id)->sum('duration');
     }
 
-    public function socialProfile(): HasOne {
+    public function socialProfile(): HasOne
+    {
         if ($this->hasOne(SocialLoginProfile::class)->count() == 0) {
             SocialLoginProfile::create(['user_id' => $this->id]);
         }
+
         return $this->hasOne(SocialLoginProfile::class);
     }
 
-    public function home(): HasOne {
+    public function home(): HasOne
+    {
         return $this->hasOne(Station::class, 'id', 'home_id');
     }
 
-    public function likes(): HasMany {
+    public function likes(): HasMany
+    {
         return $this->hasMany(Like::class);
     }
 
-    public function follows(): BelongsToMany {
+    public function follows(): BelongsToMany
+    {
         return $this->belongsToMany(__CLASS__, 'follows', 'user_id', 'follow_id');
     }
 
-    public function blockedUsers(): BelongsToMany {
+    public function blockedUsers(): BelongsToMany
+    {
         return $this->belongsToMany(__CLASS__, 'user_blocks', 'user_id', 'blocked_id');
     }
 
-    public function blockedByUsers(): BelongsToMany {
+    public function blockedByUsers(): BelongsToMany
+    {
         return $this->belongsToMany(__CLASS__, 'user_blocks', 'blocked_id', 'user_id');
     }
 
-    public function mutedUsers(): BelongsToMany {
+    public function mutedUsers(): BelongsToMany
+    {
         return $this->belongsToMany(__CLASS__, 'user_mutes', 'user_id', 'muted_id');
     }
 
-    public function followRequests(): HasMany {
+    public function followRequests(): HasMany
+    {
         return $this->hasMany(FollowRequest::class, 'follow_id', 'id');
     }
 
     /**
      * @deprecated use ->userFollowers instead to get the users directly
      */
-    public function followers(): HasMany {
+    public function followers(): HasMany
+    {
         return $this->hasMany(Follow::class, 'follow_id', 'id');
     }
 
     /**
      * @deprecated use ->userFollowing instead to get the users directly
      */
-    public function followings(): HasMany {
+    public function followings(): HasMany
+    {
         return $this->hasMany(Follow::class, 'user_id', 'id');
     }
 
-    public function sessions(): HasMany {
+    public function sessions(): HasMany
+    {
         return $this->hasMany(Session::class);
     }
 
-    public function icsTokens(): HasMany {
+    public function icsTokens(): HasMany
+    {
         return $this->hasMany(IcsToken::class, 'user_id', 'id');
     }
 
-    public function webhooks(): HasMany {
+    public function webhooks(): HasMany
+    {
         return $this->hasMany(Webhook::class);
     }
 
-    public function getPointsAttribute(): int {
+    public function getPointsAttribute(): int
+    {
         return Checkin::whereIn('status_id', $this->statuses()->select('id'))
-                      ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
-                      ->select('points')
-                      ->sum('points');
+            ->where('departure', '>=', Carbon::now()->subDays(7)->toIso8601String())
+            ->select('points')
+            ->sum('points');
     }
 
-    public function statuses(): HasMany {
+    public function statuses(): HasMany
+    {
         return $this->hasMany(Status::class);
     }
 
-    public function trustedUsers(): HasMany {
+    public function trustedUsers(): HasMany
+    {
         return $this->hasMany(TrustedUser::class, 'user_id', 'id')
-                    ->with(['trusted'])
-                    ->where(function($query) {
-                        $query->whereNull('expires_at')
-                              ->orWhere('expires_at', '>', now());
-                    });
+            ->with(['trusted'])
+            ->where(function ($query) {
+                $query->whereNull('expires_at')
+                    ->orWhere('expires_at', '>', now());
+            });
     }
 
-    public function trustedByUsers(): HasMany {
+    public function trustedByUsers(): HasMany
+    {
         return $this->hasMany(TrustedUser::class, 'trusted_id', 'id')
-                    ->with(['user'])
-                    ->where(function($query) {
-                        $query->whereNull('expires_at')
-                              ->orWhere('expires_at', '>', now());
-                    });
+            ->with(['user'])
+            ->where(function ($query) {
+                $query->whereNull('expires_at')
+                    ->orWhere('expires_at', '>', now());
+            });
     }
 
-    public function userFollowings(): BelongsToMany {
+    public function userFollowings(): BelongsToMany
+    {
         return $this->belongsToMany(__CLASS__, 'follows', 'user_id', 'follow_id');
     }
 
-    public function userFollowers(): BelongsToMany {
+    public function userFollowers(): BelongsToMany
+    {
         return $this->belongsToMany(__CLASS__, 'follows', 'follow_id', 'user_id');
     }
 
     /**
      * @untested
+     *
      * @todo test
      */
-    public function userFollowRequests(): BelongsToMany {
+    public function userFollowRequests(): BelongsToMany
+    {
         return $this->belongsToMany(__CLASS__, 'follow_requests', 'follow_id', 'user_id');
     }
 
@@ -196,63 +222,71 @@ class User extends Authenticatable implements ExportsPersonalData
      * @deprecated -> replaced by $user->can(...) / $user->cannot(...) / request()->user()->can(...) /
      *             request()->user()->cannot(...)
      */
-    public function getUserInvisibleToMeAttribute(): bool {
+    public function getUserInvisibleToMeAttribute(): bool
+    {
         return !request()?->user()?->can('view', $this);
     }
 
-    public function getFollowingAttribute(): bool {
-        return (auth()->check() && $this->followers->contains('user_id', auth()->user()->id));
+    public function getFollowingAttribute(): bool
+    {
+        return auth()->check() && $this->followers->contains('user_id', auth()->user()->id);
     }
 
-    public function getFollowPendingAttribute(): bool {
-        return (auth()->check() && $this->followRequests->contains('user_id', auth()->user()->id));
+    public function getFollowPendingAttribute(): bool
+    {
+        return auth()->check() && $this->followRequests->contains('user_id', auth()->user()->id);
     }
 
-    public function getMutedAttribute(): bool {
+    public function getMutedAttribute(): bool
+    {
         return auth()->check() && auth()->user()->mutedUsers->contains('id', $this->id);
     }
 
-    public function getFollowedByAttribute(): bool {
-        return (auth()->check() && $this->followings->contains('follow_id', auth()->user()->id));
+    public function getFollowedByAttribute(): bool
+    {
+        return auth()->check() && $this->followings->contains('follow_id', auth()->user()->id);
     }
 
     /**
      * The auth-user is blocked by $this user. auth-user can not see $this's statuses.
      */
-    public function getIsAuthUserBlockedAttribute(): bool {
+    public function getIsAuthUserBlockedAttribute(): bool
+    {
         return auth()->check() && $this->blockedUsers->contains('id', auth()->user()->id);
     }
 
     /**
      * The auth-user has blocked $this user. $this can not see auth-user's statuses.
      */
-    public function getIsBlockedByAuthUserAttribute(): bool {
+    public function getIsBlockedByAuthUserAttribute(): bool
+    {
         return auth()->check() && $this->blockedByUsers->contains('id', auth()->user()->id);
     }
 
-    public function getMastodonUrlAttribute(): ?string {
+    public function getMastodonUrlAttribute(): ?string
+    {
         return (new MastodonProfileDetails($this))->getProfileUrl();
     }
 
     /**
      * Get the entity's notifications.
-     *
-     * @return MorphMany
      */
-    public function notifications(): MorphMany {
+    public function notifications(): MorphMany
+    {
         return $this->morphMany(DatabaseNotification::class, 'notifiable')->orderBy('created_at', 'desc');
     }
 
     /**
      * @throws RateLimitExceededException
      */
-    public function sendEmailVerificationNotification(): void {
+    public function sendEmailVerificationNotification(): void
+    {
         Log::info('Attempting to send verification email.', ['user_id' => $this->id, 'email' => $this->email]);
 
         $executed = RateLimiter::attempt(
-            key:          'verification-mail-sent-' . $this->email,
-            maxAttempts:  1,
-            callback: function() {
+            key: 'verification-mail-sent-' . $this->email,
+            maxAttempts: 1,
+            callback: function () {
                 SendVerificationEmail::dispatch($this);
                 Log::info('Dispatched SendVerificationEmail job.', ['user_id' => $this->id, 'email' => $this->email]);
             },
@@ -261,39 +295,44 @@ class User extends Authenticatable implements ExportsPersonalData
 
         if (!$executed) {
             Log::info(sprintf(
-                          "Sending the verification email for user#%s w/mail %s was rate-limited.",
-                          $this->id,
-                          $this->email
-                      ));
+                'Sending the verification email for user#%s w/mail %s was rate-limited.',
+                $this->id,
+                $this->email
+            ));
             throw new RateLimitExceededException();
         }
     }
 
     /**
      * Laravel default function (e.g. for notifications)
-     * @return string
      */
-    public function preferredLocale(): string {
+    public function preferredLocale(): string
+    {
         return $this->language;
     }
 
-    protected function getDefaultGuardName(): string {
+    protected function getDefaultGuardName(): string
+    {
         return 'web';
     }
 
-    public function oAuthClients(): HasMany {
+    public function oAuthClients(): HasMany
+    {
         return $this->hasMany(OAuthClient::class, 'user_id', 'id');
     }
 
-    public function selectPersonalData(PersonalDataSelection $personalDataSelection): void {
+    public function selectPersonalData(PersonalDataSelection $personalDataSelection): void
+    {
         (new UserGdprDataService())->addUserPersonalData($personalDataSelection, $this);
     }
 
-    public function personalDataExportName(): string {
+    public function personalDataExportName(): string
+    {
         return $this->username;
     }
 
-    public function profileLinks(): HasMany {
+    public function profileLinks(): HasMany
+    {
         return $this->hasMany(ProfileLink::class, 'user_id', 'id');
     }
 }

@@ -2,14 +2,14 @@
 
 namespace Tests\Unit\Helpers;
 
-
 use App\Helpers\Formatter;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Unit\UnitTestCase;
 
 class FormatterTest extends UnitTestCase
 {
-    public static function stationNameProvider(): array {
+    public static function stationNameProvider(): array
+    {
         return [
             ['Halle (Saale) Central Station (FlixTrain)', null, 'HALLESAALEHBF'],
             ['Bad Hersfeld (FlixTrain)', null, 'BADHERSFELD'],
@@ -31,11 +31,13 @@ class FormatterTest extends UnitTestCase
     }
 
     #[DataProvider('stationNameProvider')]
-    public function testSimplifyStationName($stationName, $city, $expected) {
+    public function test_simplify_station_name($stationName, $city, $expected)
+    {
         $this->assertEquals($expected, Formatter::simplifyStationName($stationName, $city));
     }
 
-    public static function stationMatchingProvider(): array {
+    public static function stationMatchingProvider(): array
+    {
         return [
             ['Karlsruhe Hbf', 'Karlsruhe Hbf', 'Karlsruhe', true],
             ['Karlsruhe Hbf', 'Karlsruhe Hbf', 'Karlsruhe', true],
@@ -48,15 +50,17 @@ class FormatterTest extends UnitTestCase
     }
 
     #[DataProvider('stationMatchingProvider')]
-    public function testMapping($dbStation, $motisStation, $city, $match) {
-        $dbSimplified    = Formatter::simplifyStationName($dbStation, $city);
+    public function test_mapping($dbStation, $motisStation, $city, $match)
+    {
+        $dbSimplified = Formatter::simplifyStationName($dbStation, $city);
         $motisSimplified = Formatter::simplifyStationName($motisStation, $city);
 
         similar_text($dbSimplified, $motisSimplified, $percent);
         $this->assertEquals($match, $percent > 90);
     }
 
-    public static function appendStationProvider(): array {
+    public static function appendStationProvider(): array
+    {
         return [
             ['Karlsruhe Hbf', 'Karlsruhe', 'Karlsruhe Hbf'],
             ['Tullastraße', 'Karlsruhe', 'Tullastraße, Karlsruhe'],
@@ -71,7 +75,8 @@ class FormatterTest extends UnitTestCase
     }
 
     #[DataProvider('appendStationProvider')]
-    public function testAppendStation($stationName, $city, $expected) {
+    public function test_append_station($stationName, $city, $expected)
+    {
         $this->assertEquals($expected, Formatter::cityStationName($stationName, $city));
     }
 }

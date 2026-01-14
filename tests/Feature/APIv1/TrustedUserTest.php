@@ -11,76 +11,79 @@ use Tests\ApiTestCase;
 
 class TrustedUserTest extends ApiTestCase
 {
-
     use RefreshDatabase;
 
-    public function testList(): void {
-        $user        = User::factory()->create();
+    public function test_list(): void
+    {
+        $user = User::factory()->create();
         $trustedUser = User::factory()->count(12)->create();
         $this->actAsApiUserWithAllScopes($user);
 
         foreach ($trustedUser as $userToTrust) {
-            $response = $this->postJson("/api/v1/user/self/trusted", ['userId' => $userToTrust->id]);
+            $response = $this->postJson('/api/v1/user/self/trusted', ['userId' => $userToTrust->id]);
             $response->assertCreated();
         }
 
         // list trusted users
-        $response = $this->getJson("/api/v1/user/self/trusted");
+        $response = $this->getJson('/api/v1/user/self/trusted');
         $response->assertOk();
         $response->assertJsonCount(12, 'data');
         $response->assertJsonStructure([
-                                           'data',
-                                       ]);
+            'data',
+        ]);
     }
 
-    public function testShowOnlyMyOwnTrustedUsers(): void {
-        $user  = User::factory()->create();
+    public function test_show_only_my_own_trusted_users(): void
+    {
+        $user = User::factory()->create();
         $user2 = User::factory()->create();
         $user3 = User::factory()->create();
 
         $this->actAsApiUserWithAllScopes($user2);
-        $response = $this->postJson("/api/v1/user/self/trusted", ['userId' => $user->id, 'expiresAt' => now()->addDay()->toIso8601String()]);
+        $response = $this->postJson('/api/v1/user/self/trusted', ['userId' => $user->id, 'expiresAt' => now()->addDay()->toIso8601String()]);
         $response->assertCreated();
-        $response = $this->postJson("/api/v1/user/self/trusted", ['userId' => $user3->id]);
+        $response = $this->postJson('/api/v1/user/self/trusted', ['userId' => $user3->id]);
         $response->assertCreated();
 
         $this->actAsApiUserWithAllScopes($user);
-        $response = $this->postJson("/api/v1/user/self/trusted", ['userId' => $user3->id, 'expiresAt' => now()->addDay()->toIso8601String()]);
+        $response = $this->postJson('/api/v1/user/self/trusted', ['userId' => $user3->id, 'expiresAt' => now()->addDay()->toIso8601String()]);
         $response->assertCreated();
 
         // list trusted users
-        $response = $this->getJson("/api/v1/user/self/trusted");
-        $data     = $response->json();
+        $response = $this->getJson('/api/v1/user/self/trusted');
+        $data = $response->json();
         $this->assertCount(1, $data['data']);
         $this->assertEquals($user3->id, $data['data'][0]['user']['id']);
     }
 
-    public function testShowOnlyMyOwnTrustedByUsers(): void {
-        $user                 = User::factory()->create();
+    public function test_show_only_my_own_trusted_by_users(): void
+    {
+        $user = User::factory()->create();
         $user->friend_checkin = FriendCheckinSetting::LIST;
         $user->save();
-        $user2                 = User::factory()->create();
+        $user2 = User::factory()->create();
         $user2->friend_checkin = FriendCheckinSetting::LIST;
         $user2->save();
-        $user3                 = User::factory()->create();
+        $user3 = User::factory()->create();
         $user3->friend_checkin = FriendCheckinSetting::LIST;
         $user3->save();
 
         $this->actAsApiUserWithAllScopes($user);
-        $response = $this->postJson("/api/v1/user/self/trusted", ['userId' => $user3->id, 'expiresAt' => now()->addDay()->toIso8601String()]);
+        $response = $this->postJson('/api/v1/user/self/trusted', ['userId' => $user3->id, 'expiresAt' => now()->addDay()->toIso8601String()]);
         $response->assertCreated();
         $this->actAsApiUserWithAllScopes($user2);
-        $response = $this->postJson("/api/v1/user/self/trusted", ['userId' => $user->id]);
+        $response = $this->postJson('/api/v1/user/self/trusted', ['userId' => $user->id]);
         $response->assertCreated();
 
         $this->actAsApiUserWithAllScopes($user);
-        $response = $this->getJson("/api/v1/user/self/trusted-by");
-        $data     = $response->json();
+        $response = $this->getJson('/api/v1/user/self/trusted-by');
+        $data = $response->json();
         $this->assertCount(1, $data['data']);
         $this->assertEquals($user2->id, $data['data'][0]['user']['id']);
     }
 
-    public function testIndexTrustedByUsers(): void {
+    public function test_index_trusted_by_users(): void
+    {
         $user = User::factory()->create();
         $this->actAsApiUserWithAllScopes($user);
 
@@ -102,7 +105,7 @@ class TrustedUserTest extends ApiTestCase
         TrustedUser::create(['user_id' => $fakeTruster->id, 'trusted_id' => $user->id]);
 
         // when requesting the list of trusted by users, both users should be listed
-        $response = $this->getJson("/api/v1/user/self/trusted-by");
+        $response = $this->getJson('/api/v1/user/self/trusted-by');
         $response->assertOk();
         $response->assertJsonCount(3, 'data');
         $response->assertJsonFragment(['id' => $friend->id]);
@@ -111,14 +114,15 @@ class TrustedUserTest extends ApiTestCase
         $response->assertJsonMissing(['id' => $fakeTruster->id]);
     }
 
-    public function testStoreAndDeleteTrustedUserForYourself(): void {
-        $user        = User::factory()->create();
+    public function test_store_and_delete_trusted_user_for_yourself(): void
+    {
+        $user = User::factory()->create();
         $trustedUser = User::factory()->create();
         $this->actAsApiUserWithAllScopes($user);
 
         // trust user
         $response = $this->postJson("/api/v1/user/{$user->id}/trusted", [
-            'userId'    => $trustedUser->id,
+            'userId' => $trustedUser->id,
             'expiresAt' => now()->addDay()->toIso8601String(),
         ]);
         $response->assertCreated();
@@ -149,9 +153,10 @@ class TrustedUserTest extends ApiTestCase
         $this->assertDatabaseCount('trusted_users', 0);
     }
 
-    public function testStoreAndDeleteTrustedUserForOtherUsersAsNonAdmin(): void {
-        $user        = User::factory()->create();
-        $truster     = User::factory()->create();
+    public function test_store_and_delete_trusted_user_for_other_users_as_non_admin(): void
+    {
+        $user = User::factory()->create();
+        $truster = User::factory()->create();
         $trustedUser = User::factory()->create();
         $this->actAsApiUserWithAllScopes($user);
 
@@ -168,9 +173,10 @@ class TrustedUserTest extends ApiTestCase
         $response->assertForbidden();
     }
 
-    public function testStoreAndDeleteTrustedUserForOtherUsersAsAdmin(): void {
-        $user        = User::factory()->create()->assignRole('admin');
-        $truster     = User::factory()->create();
+    public function test_store_and_delete_trusted_user_for_other_users_as_admin(): void
+    {
+        $user = User::factory()->create()->assignRole('admin');
+        $truster = User::factory()->create();
         $trustedUser = User::factory()->create();
         $this->actAsApiUserWithAllScopes($user);
 

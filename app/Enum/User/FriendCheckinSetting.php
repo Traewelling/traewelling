@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Enum\User;
@@ -14,6 +15,6 @@ namespace App\Enum\User;
 enum FriendCheckinSetting: string
 {
     case FORBIDDEN = 'forbidden'; // default
-    case FRIENDS   = 'friends';   // user who are following each other
-    case LIST      = 'list';      // specific list of users
+    case FRIENDS = 'friends';   // user who are following each other
+    case LIST = 'list';      // specific list of users
 }

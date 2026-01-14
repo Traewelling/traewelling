@@ -12,7 +12,8 @@ class MentionTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    public function testCreateMentions(): void {
+    public function test_create_mentions(): void
+    {
         User::factory()->create(['username' => 'alice']);
         User::factory()->create(['username' => 'bob']);
         $body = 'I\'m on my way with @alice and @bob';
@@ -22,10 +23,10 @@ class MentionTest extends FeatureTestCase
         $this->assertSame(2, $status->mentions->count());
 
         // test MentionHelper
-        $helper   = new MentionHelper($status, $body);
+        $helper = new MentionHelper($status, $body);
         $mentions = $helper->findUsersInString();
         $this->assertCount(2, $mentions);
-        $mentionDto     = $mentions[0];
+        $mentionDto = $mentions[0];
         $jsonSerialized = $mentionDto->jsonSerialize();
         $this->assertIsArray($jsonSerialized);
         $this->assertArrayHasKey('user', $jsonSerialized);
@@ -33,7 +34,8 @@ class MentionTest extends FeatureTestCase
         $this->assertArrayHasKey('length', $jsonSerialized);
     }
 
-    public function testDeleteMentions(): void {
+    public function test_delete_mentions(): void
+    {
         User::factory()->create(['username' => 'alice']);
         User::factory()->create(['username' => 'bob']);
         $body = 'I\'m on my way with @alice and @bob';
@@ -61,7 +63,8 @@ class MentionTest extends FeatureTestCase
         $this->assertSame(0, $status->mentions->count());
     }
 
-    public function testUpdateMentions(): void {
+    public function test_update_mentions(): void
+    {
         User::factory()->create(['username' => 'alice']);
         User::factory()->create(['username' => 'bob']);
         User::factory()->create(['username' => 'charlie']);
@@ -74,17 +77,20 @@ class MentionTest extends FeatureTestCase
         $this->assertSame(3, $status->mentions->count());
     }
 
-    public function testWithoutMentions(): void {
+    public function test_without_mentions(): void
+    {
         $status = Status::factory()->create(['body' => 'hi there!']);
         $this->assertSame(0, $status->mentions->count());
     }
 
-    public function testWithWrongMentions(): void {
+    public function test_with_wrong_mentions(): void
+    {
         $status = Status::factory()->create(['body' => 'omw w/@ alice']);
         $this->assertSame(0, $status->mentions->count());
     }
 
-    public function testHtmlBody(): void {
+    public function test_html_body(): void
+    {
         User::factory()->create(['username' => 'alice']);
         User::factory()->create(['username' => 'bob']);
 
@@ -104,9 +110,10 @@ class MentionTest extends FeatureTestCase
         );
     }
 
-    public function testMentionNotification(): void {
+    public function test_mention_notification(): void
+    {
         $alice = User::factory()->create(['username' => 'alice']);
-        $bob   = User::factory()->create(['username' => 'bob']);
+        $bob = User::factory()->create(['username' => 'bob']);
 
         $status = Status::factory()->create(['body' => 'I\'m on my way with @alice and @bob']);
         $status->refresh();
@@ -115,7 +122,8 @@ class MentionTest extends FeatureTestCase
         $this->assertSame(1, $bob->notifications->count());
     }
 
-    public function testNoMentionNotificationOnUpdate(): void {
+    public function test_no_mention_notification_on_update(): void
+    {
         $alice = User::factory()->create(['username' => 'alice']);
 
         $status = Status::factory()->create(['body' => 'I\'m on my way with @alice']);

@@ -12,7 +12,7 @@ class PolyLineFactory extends Factory
     public function definition(): array
     {
         return [
-            'hash'   => $this->faker->sha1,
+            'hash' => $this->faker->sha1,
             'source' => 'hafas',
         ];
     }

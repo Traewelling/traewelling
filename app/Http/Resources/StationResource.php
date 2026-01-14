@@ -9,6 +9,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @OA\Schema(
  *     title="Station",
  *     required={"id", "name", "latitude", "longitude", "ibnr", "rilIdentifier", "areas"},
+ *
  *     @OA\Property(property="id", type="integer", example="1"),
  *     @OA\Property(property="name", type="string", example="Karlsruhe Hbf"),
  *     @OA\Property(property="latitude", type="number", example="48.993207"),
@@ -19,18 +20,18 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class StationResource extends JsonResource
 {
-
-    public function toArray($request): array {
+    public function toArray($request): array
+    {
         /** @var Station $this */
         return [
-            "id"            => $this->id,
-            "name"          => $this->name,
-            "latitude"      => $this->latitude,
-            "longitude"     => $this->longitude,
-            "ibnr"          => $this->ibnr, // @deprecated - see identifiers
-            "rilIdentifier" => $this->rilIdentifier, // @deprecated - see identifiers
-            "areas"         => AreaResource::collection($this->whenLoaded('areas')),
-            'identifiers'   => StationIdentifierResource::collection($this->whenLoaded('stationIdentifiers')),
+            'id' => $this->id,
+            'name' => $this->name,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+            'ibnr' => $this->ibnr, // @deprecated - see identifiers
+            'rilIdentifier' => $this->rilIdentifier, // @deprecated - see identifiers
+            'areas' => AreaResource::collection($this->whenLoaded('areas')),
+            'identifiers' => StationIdentifierResource::collection($this->whenLoaded('stationIdentifiers')),
         ];
     }
 }

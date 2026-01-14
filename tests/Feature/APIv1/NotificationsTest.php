@@ -26,197 +26,204 @@ class NotificationsTest extends ApiTestCase
 {
     use RefreshDatabase;
 
-    public function testUnreadCountEndpoint(): void {
-        //create users
+    public function test_unread_count_endpoint(): void
+    {
+        // create users
         $alice = User::factory()->create();
-        $bob   = User::factory()->create();
+        $bob = User::factory()->create();
         Passport::actingAs($alice, ['*']);
 
-        //check if there are no notifications in the database
+        // check if there are no notifications in the database
         $this->assertDatabaseCount('notifications', 0);
 
-        //bob follows alice - this should spawn a notification
+        // bob follows alice - this should spawn a notification
         FollowBackend::createOrRequestFollow($bob, $alice);
 
-        //check if there is one notification in the database
+        // check if there is one notification in the database
         $this->assertDatabaseCount('notifications', 1);
 
-        //check if api returns one unread notification
+        // check if api returns one unread notification
         $response = $this->get(uri: '/api/v1/notifications/unread/count');
         $response->assertOk();
         $response->assertJsonFragment(['data' => 1]);
     }
 
-    public function testApiEndpointCanMarkNotificationAsReadAndUnread(): void {
-        //create users
+    public function test_api_endpoint_can_mark_notification_as_read_and_unread(): void
+    {
+        // create users
         $alice = User::factory()->create();
-        $bob   = User::factory()->create();
+        $bob = User::factory()->create();
         Passport::actingAs($alice, ['*']);
 
-        //check if there are no notifications in the database
+        // check if there are no notifications in the database
         $this->assertDatabaseCount('notifications', 0);
 
-        //bob follows alice - this should spawn a notification
+        // bob follows alice - this should spawn a notification
         FollowBackend::createOrRequestFollow($bob, $alice);
 
-        //check if notification is unread
+        // check if notification is unread
         $notification = $alice->notifications()->first();
         $this->assertNull($notification->read_at);
 
-        //try to mark non-existing notification as read -> should fail
-        $response = $this->put("/api/v1/notifications/read/non-existing-id");
+        // try to mark non-existing notification as read -> should fail
+        $response = $this->put('/api/v1/notifications/read/non-existing-id');
         $response->assertNotFound();
 
-        //mark notification as read
+        // mark notification as read
         $response = $this->put("/api/v1/notifications/read/{$notification->id}");
         $response->assertOk();
 
-        //check if notification is read
+        // check if notification is read
         $notification = $alice->notifications()->first();
         $this->assertNotNull($notification->read_at);
 
-        //try to mark non-existing notification as unread -> should fail
-        $response = $this->put("/api/v1/notifications/unread/non-existing-id");
+        // try to mark non-existing notification as unread -> should fail
+        $response = $this->put('/api/v1/notifications/unread/non-existing-id');
         $response->assertNotFound();
 
-        //mark notification as unread
+        // mark notification as unread
         $response = $this->put("/api/v1/notifications/unread/{$notification->id}");
         $response->assertOk();
 
-        //check if notification is unread
+        // check if notification is unread
         $notification = $alice->notifications()->first();
         $this->assertNull($notification->read_at);
     }
 
-    public function testApiEndpointCanMarkAllNotificationAsRead(): void {
-        //create users
+    public function test_api_endpoint_can_mark_all_notification_as_read(): void
+    {
+        // create users
         $alice = User::factory()->create();
-        $bob   = User::factory()->create();
+        $bob = User::factory()->create();
 
         Passport::actingAs($alice, ['*']);
 
-        //check if there are no notifications in the database
+        // check if there are no notifications in the database
         $this->assertDatabaseCount('notifications', 0);
 
-        //create some notifications
+        // create some notifications
         for ($i = 0; $i < 10; $i++) {
             $status = Checkin::factory(['user_id' => $alice->id])->create()->status;
             StatusBackend::createLike($bob, $status);
         }
 
-        //check if there are 10 notifications in the database
+        // check if there are 10 notifications in the database
         $this->assertDatabaseCount('notifications', 10);
         $this->assertDatabaseHas('notifications', ['read_at' => null]);
 
-        //mark all notifications as read
-        $response = $this->put(uri: "/api/v1/notifications/read/all");
+        // mark all notifications as read
+        $response = $this->put(uri: '/api/v1/notifications/read/all');
         $response->assertOk();
 
-        //check if all notifications are read
+        // check if all notifications are read
         $this->assertDatabaseMissing('notifications', ['read_at' => null]);
     }
 
-    public function testFollowingAUserShouldSpawnANotification(): void {
-        //Create users
+    public function test_following_a_user_should_spawn_a_notification(): void
+    {
+        // Create users
         $alice = User::factory()->create();
-        $bob   = User::factory()->create();
+        $bob = User::factory()->create();
         Passport::actingAs($bob, ['*']);
 
-        //Check if there are no notifications
+        // Check if there are no notifications
         $this->assertDatabaseCount('notifications', 0);
 
-        //alice follows bob
+        // alice follows bob
         FollowBackend::createOrRequestFollow($alice, $bob);
         $follow = Follow::where('user_id', $alice->id)->where('follow_id', $bob->id)->first();
 
-        //Check if there is one notification
+        // Check if there is one notification
         $this->assertDatabaseCount('notifications', 1);
 
-        //bob should have one notification
+        // bob should have one notification
         $response = $this->get('/api/v1/notifications');
         $response->assertOk();
         $response->assertJsonCount(1, 'data'); // one notification
         $response->assertJsonFragment([
-                                          'type' => str_replace('App\\Notifications\\', '', UserFollowed::class),
-                                      ]);
+            'type' => str_replace('App\\Notifications\\', '', UserFollowed::class),
+        ]);
         $response->assertJsonFragment([
-                                          'data' => [
-                                              'follow'   => [
-                                                  'id' => $follow->id,
-                                              ],
-                                              'follower' => [
-                                                  'id'       => $alice->id,
-                                                  'username' => $alice->username,
-                                                  'name'     => $alice->name,
-                                              ]
-                                          ]
-                                      ]
+            'data' => [
+                'follow' => [
+                    'id' => $follow->id,
+                ],
+                'follower' => [
+                    'id' => $alice->id,
+                    'username' => $alice->username,
+                    'name' => $alice->name,
+                ],
+            ],
+        ]
         );
     }
 
-    public function testUnfollowingBobShouldRemoveTheNotification(): void {
-        //create alice and bob
+    public function test_unfollowing_bob_should_remove_the_notification(): void
+    {
+        // create alice and bob
         $alice = User::factory()->create();
-        $bob   = User::factory()->create();
+        $bob = User::factory()->create();
 
-        //check that there are no notifications
+        // check that there are no notifications
         $this->assertDatabaseCount('notifications', 0);
 
-        //alice follows bob
+        // alice follows bob
         FollowBackend::createOrRequestFollow($alice, $bob);
 
-        //check if there is one notification
+        // check if there is one notification
         $this->assertDatabaseCount('notifications', 1);
 
-        //alice unfollows bob
-        //TODO: improve backend function to accept two user models
+        // alice unfollows bob
+        // TODO: improve backend function to accept two user models
         $follow = Follow::where('user_id', $alice->id)
-                        ->where('follow_id', $bob->id)
-                        ->firstOrFail();
+            ->where('follow_id', $bob->id)
+            ->firstOrFail();
         FollowBackend::removeFollower(follow: $follow, user: $bob);
 
-        //check if there are no notifications
+        // check if there are no notifications
         $this->assertDatabaseCount('notifications', 0);
     }
 
-    public function testBobJoiningOnAlicesConnectionShouldSpawnANotification(): void {
-        //create users
-        $alice        = User::factory()->create();
+    public function test_bob_joining_on_alices_connection_should_spawn_a_notification(): void
+    {
+        // create users
+        $alice = User::factory()->create();
         $aliceCheckIn = Checkin::factory(['user_id' => $alice->id])->create();
-        $bob          = User::factory()->create();
+        $bob = User::factory()->create();
 
-        //Check if there are no notifications
+        // Check if there are no notifications
         $this->assertDatabaseCount('notifications', 0);
 
-        //bob also checks into the train (with same origin and destination - but not relevant)
-        $bobsData  = TrainCheckinController::checkin((new CheckinRequestTestHydrator($bob))->hydrateFromCheckin($aliceCheckIn));
+        // bob also checks into the train (with same origin and destination - but not relevant)
+        $bobsData = TrainCheckinController::checkin((new CheckinRequestTestHydrator($bob))->hydrateFromCheckin($aliceCheckIn));
         $bobStatus = $bobsData->status;
 
-        //Check if there is one notification
+        // Check if there is one notification
         $this->assertDatabaseCount('notifications', 1);
 
-        //Alice should have one notification
+        // Alice should have one notification
         $this->assertDatabaseHas('notifications', [
             'notifiable_id' => $alice->id,
-            'type'          => UserJoinedConnection::class,
+            'type' => UserJoinedConnection::class,
         ]);
 
-        //bob deletes his status
+        // bob deletes his status
         StatusBackend::DeleteStatus($bob, $bobStatus->id);
 
-        //alice should have no notifications
+        // alice should have no notifications
         $this->assertDatabaseMissing('notifications', [
             'notifiable_id' => $alice->id,
-            'type'          => UserJoinedConnection::class,
+            'type' => UserJoinedConnection::class,
         ]);
     }
 
-    public function testBobJoiningOnAlicesConnectionShouldNotSpawnANotificationWhenPrivate(): void {
+    public function test_bob_joining_on_alices_connection_should_not_spawn_a_notification_when_private(): void
+    {
         // GIVEN: A mocked checkin for Alice
-        $alice        = User::factory(['privacy_ack_at' => Carbon::now()])->create();
+        $alice = User::factory(['privacy_ack_at' => Carbon::now()])->create();
         $aliceCheckIn = Checkin::factory(['user_id' => $alice->id])->create();
 
-        //Check if there are no notifications
+        // Check if there are no notifications
         $this->assertDatabaseCount('notifications', 0);
 
         // WHEN: Bob also checks into the train (with same origin and destination - but not relevant)
@@ -225,136 +232,140 @@ class NotificationsTest extends ApiTestCase
         $dto->setStatusVisibility(StatusVisibility::PRIVATE);
         TrainCheckinController::checkin($dto);
 
-        //Check if there are no notifications
+        // Check if there are no notifications
         $this->assertDatabaseCount('notifications', 0);
     }
 
-    public function testMarkNotificationAsRead(): void {
-        //create alice and bob
+    public function test_mark_notification_as_read(): void
+    {
+        // create alice and bob
         $alice = User::factory()->create();
-        $bob   = User::factory()->create();
+        $bob = User::factory()->create();
         Passport::actingAs($bob, ['*']);
 
-        //alice follows bob
+        // alice follows bob
         UserBackend::createFollow($alice, $bob);
 
-        //get should have a notification witch is not read
+        // get should have a notification witch is not read
         $notification = $bob->notifications()->first();
         $this->assertNull($notification->read_at);
 
-        //mark notification as read via api
+        // mark notification as read via api
         $response = $this->put("/api/v1/notifications/read/{$notification->id}");
         $response->assertOk();
 
-        //check if notification is marked as read
+        // check if notification is marked as read
         $notification = $bob->notifications()->first();
         $this->assertNotNull($notification->read_at);
     }
 
-    public function testDeletingAUserShouldDeleteItsNotifications(): void {
+    public function test_deleting_a_user_should_delete_its_notifications(): void
+    {
         // Given: Users Alice and Bob
         $alice = User::factory()->create();
-        $bob   = User::factory()->create();
+        $bob = User::factory()->create();
 
-        //create a notification for bob by alice following bob
+        // create a notification for bob by alice following bob
         FollowBackend::createOrRequestFollow($alice, $bob);
 
-        //check if Bob has one notification
+        // check if Bob has one notification
         $this->assertDatabaseHas('notifications', ['notifiable_id' => $bob->id]);
 
-        //bob deletes their account
+        // bob deletes their account
         BackendUserController::deleteUserAccount($bob);
 
-        //there should be no notifications left for bob
+        // there should be no notifications left for bob
         $this->assertDatabaseMissing('notifications', ['notifiable_id' => $bob->id]);
     }
 
-    public function testAcceptingEventSuggestionSpawnANotification(): void {
-        //Create users
+    public function test_accepting_event_suggestion_spawn_a_notification(): void
+    {
+        // Create users
         $alice = User::factory()->create()
-                     ->assignRole('admin'); //additionally make alice an admin, so she can self-accept
+            ->assignRole('admin'); // additionally make alice an admin, so she can self-accept
 
-        //suggest an event
+        // suggest an event
         $eventSuggestion = EventSuggestion::factory(['user_id' => $alice->id])->create();
 
-        //accept event suggestion
+        // accept event suggestion
         $response = $this->actingAs($alice)
-                         ->post(
-                             uri:  '/admin/events/suggestions/accept',
-                             data: [
-                                       'suggestionId' => $eventSuggestion->id,
-                                       'name'         => $eventSuggestion->name,
-                                       'hashtag'      => $eventSuggestion->name,
-                                       'host'         => $eventSuggestion->host,
-                                       'begin'        => $eventSuggestion->begin,
-                                       'event_start'  => $eventSuggestion->begin,
-                                       'end'          => $eventSuggestion->end,
-                                       'event_end'    => $eventSuggestion->end
-                                   ]
-                         );
+            ->post(
+                uri: '/admin/events/suggestions/accept',
+                data: [
+                    'suggestionId' => $eventSuggestion->id,
+                    'name' => $eventSuggestion->name,
+                    'hashtag' => $eventSuggestion->name,
+                    'host' => $eventSuggestion->host,
+                    'begin' => $eventSuggestion->begin,
+                    'event_start' => $eventSuggestion->begin,
+                    'end' => $eventSuggestion->end,
+                    'event_end' => $eventSuggestion->end,
+                ]
+            );
         $response->assertRedirectToRoute('admin.events.suggestions');
 
-        //save event for later
+        // save event for later
         $event = Event::first();
 
-        //let alice request her notifications
+        // let alice request her notifications
         Passport::actingAs($alice, ['*']);
         $response = $this->get('/api/v1/notifications');
         $response->assertOk();
         $response->assertJsonCount(1, 'data'); // one notification
         $response->assertJsonFragment([
-                                          'type' => str_replace('App\\Notifications\\', '', EventSuggestionProcessed::class),
-                                      ]);
+            'type' => str_replace('App\\Notifications\\', '', EventSuggestionProcessed::class),
+        ]);
         $response->assertJsonFragment([
-                                          'data' => [
-                                              'accepted'        => true,
-                                              'event'           => [
-                                                  'id'            => $event->id,
-                                                  'slug'          => $event->slug,
-                                                  'name'          => $event->name,
-                                                  'checkin_start' => $event->checkin_start,
-                                                  'checkin_end'   => $event->checkin_end,
-                                              ],
-                                              'suggestedName'   => $eventSuggestion->name,
-                                              'rejectionReason' => null
-                                          ]
-                                      ]
+            'data' => [
+                'accepted' => true,
+                'event' => [
+                    'id' => $event->id,
+                    'slug' => $event->slug,
+                    'name' => $event->name,
+                    'checkin_start' => $event->checkin_start,
+                    'checkin_end' => $event->checkin_end,
+                ],
+                'suggestedName' => $eventSuggestion->name,
+                'rejectionReason' => null,
+            ],
+        ]
         );
     }
 
-    public function testDenyingEventSuggestionSpawnANotification(): void {
-        //Create users
+    public function test_denying_event_suggestion_spawn_a_notification(): void
+    {
+        // Create users
         $alice = User::factory()->create();
-        $alice->assignRole('admin'); //additionally make alice an admin, so she can self-accept
+        $alice->assignRole('admin'); // additionally make alice an admin, so she can self-accept
 
-        //suggest an event
+        // suggest an event
         $eventSuggestion = EventSuggestion::factory(['user_id' => $alice->id])->create();
 
-        //accept event suggestion
+        // accept event suggestion
         $response = $this->actingAs($alice)
-                         ->post(
-                             uri:  '/admin/events/suggestions/deny',
-                             data: ['id' => $eventSuggestion->id, 'rejectionReason' => 'denied']
-                         );
+            ->post(
+                uri: '/admin/events/suggestions/deny',
+                data: ['id' => $eventSuggestion->id, 'rejectionReason' => 'denied']
+            );
         $response->assertRedirectToRoute('admin.events.suggestions');
 
-        //let alice request her notifications
+        // let alice request her notifications
         Passport::actingAs($alice, ['*']);
         $response = $this->actingAs($alice)
-                         ->get('/api/v1/notifications');
+            ->get('/api/v1/notifications');
         $response->assertOk();
         $response->assertJsonCount(1, 'data'); // one notification
         $response->assertJsonFragment([
-                                          'type' => str_replace('App\\Notifications\\', '', EventSuggestionProcessed::class),
-                                      ]);
+            'type' => str_replace('App\\Notifications\\', '', EventSuggestionProcessed::class),
+        ]);
         $response->assertJsonFragment([
-                                          'data' => [
-                                              'accepted'        => false,
-                                              'event'           => null,
-                                              'suggestedName'   => $eventSuggestion->name,
-                                              'rejectionReason' => "denied"
-                                          ]
-                                      ]
+            'data' => [
+                'accepted' => false,
+                'event' => null,
+                'suggestedName' => $eventSuggestion->name,
+                'rejectionReason' => 'denied',
+            ],
+        ]
         );
     }
 }

@@ -18,58 +18,60 @@ use Tests\FeatureTestCase;
 
 class CleanUpTest extends FeatureTestCase
 {
-
     use RefreshDatabase;
 
-    public function testOldNotificationsGetRemoved(): void {
-        //Check if there are no notifications
+    public function test_old_notifications_get_removed(): void
+    {
+        // Check if there are no notifications
         $this->assertDatabaseCount('notifications', 0);
 
-        //Create a user, a liking user, a checkin, a like and a notification
-        $user       = User::factory()->create();
+        // Create a user, a liking user, a checkin, a like and a notification
+        $user = User::factory()->create();
         $likingUser = User::factory()->create();
-        $checkin    = Checkin::factory(['user_id' => $user->id])->create();
-        $like       = Like::factory([
-                                        'user_id'   => $likingUser->id,
-                                        'status_id' => $checkin->status_id,
-                                    ])->create();
+        $checkin = Checkin::factory(['user_id' => $user->id])->create();
+        $like = Like::factory([
+            'user_id' => $likingUser->id,
+            'status_id' => $checkin->status_id,
+        ])->create();
         $user->notify(new StatusLiked($like));
         $this->assertDatabaseCount('notifications', 1);
 
-        //Notification should not be removed yet
+        // Notification should not be removed yet
         $this->artisan('app:clean-db:notifications')->assertExitCode(Command::SUCCESS);
         $this->assertDatabaseCount('notifications', 1);
 
-        //Mark notification as read
+        // Mark notification as read
         $user->notifications->first()->markAsRead();
 
-        //Notification should not be removed yet
+        // Notification should not be removed yet
         $this->artisan('app:clean-db:notifications')->assertExitCode(Command::SUCCESS);
         $this->assertDatabaseCount('notifications', 1);
 
-        //Simulate 31 days passing
+        // Simulate 31 days passing
         $this->travel(31)->days();
 
-        //Notification should be removed now
+        // Notification should be removed now
         $this->artisan('app:clean-db:notifications')->assertExitCode(Command::SUCCESS);
         $this->assertDatabaseCount('notifications', 0);
     }
 
-    public function testUnusedTripsAreDeleted(): void {
-        //create an unused trip
+    public function test_unused_trips_are_deleted(): void
+    {
+        // create an unused trip
         Trip::factory()->create();
         $this->assertDatabaseCount('hafas_trips', 1);
         $this->artisan('app:clean-db:trips')->assertExitCode(Command::SUCCESS);
         $this->assertDatabaseCount('hafas_trips', 0);
 
-        //create a checkin (factory creates a trip)
+        // create a checkin (factory creates a trip)
         Checkin::factory()->create();
         $this->assertDatabaseCount('hafas_trips', 1);
         $this->artisan('app:clean-db:trips')->assertExitCode(Command::SUCCESS);
         $this->assertDatabaseCount('hafas_trips', 1);
     }
 
-    public function testOldPasswordResetRequestsAreDeleted(): void {
+    public function test_old_password_reset_requests_are_deleted(): void
+    {
         $this->assertDatabaseCount('password_resets', 0);
 
         $user = User::factory()->create();
@@ -82,17 +84,18 @@ class CleanUpTest extends FeatureTestCase
         $this->assertDatabaseCount('password_resets', 0);
     }
 
-    public function testUsersThatHaventAcceptedPrivacyPolicyWithinADayAreRemoved(): void {
+    public function test_users_that_havent_accepted_privacy_policy_within_a_day_are_removed(): void
+    {
         $this->assertDatabaseCount('users', 0);
 
         User::factory(['privacy_ack_at' => null, 'created_at' => now()])->create();
         $this->assertDatabaseCount('users', 1);
 
-        //should not be removed yet
+        // should not be removed yet
         $this->artisan('app:clean-db:user')->assertExitCode(Command::SUCCESS);
         $this->assertDatabaseCount('users', 1);
 
-        //should be removed 25 hours later
+        // should be removed 25 hours later
         $this->travel(25)->hours();
         $this->artisan('app:clean-db:user')->assertExitCode(Command::SUCCESS);
         $this->assertDatabaseCount('users', 0);
@@ -101,16 +104,17 @@ class CleanUpTest extends FeatureTestCase
     /**
      * @throws Exception
      */
-    public function testPolylineWithoutAnyReferenceAreDeleted(): void {
+    public function test_polyline_without_any_reference_are_deleted(): void
+    {
         $this->assertDatabaseCount('poly_lines', 0);
         $service = new PolylineStorageService();
 
         $polyline = PolyLine::create([
-                                         'hash'     => Str::uuid(),
-                                         'polyline' => json_encode(['some json data']),
-                                     ]);
-        $content  = $polyline->polyline; // this will store the polyline in the storage
-        $hash     = $polyline->hash;
+            'hash' => Str::uuid(),
+            'polyline' => json_encode(['some json data']),
+        ]);
+        $content = $polyline->polyline; // this will store the polyline in the storage
+        $hash = $polyline->hash;
         $this->assertDatabaseCount('poly_lines', 1);
         $this->assertSame($content, $service->get($hash));
 
@@ -118,27 +122,28 @@ class CleanUpTest extends FeatureTestCase
         $this->assertDatabaseCount('poly_lines', 0);
         $this->assertSame('', $service->get($hash));
 
-        //create a polyline with a reference and a parent
-        //Checkin Factory creates a trip which creates a polyline
+        // create a polyline with a reference and a parent
+        // Checkin Factory creates a trip which creates a polyline
         $checkin = Checkin::factory()->create();
         $this->assertDatabaseCount('poly_lines', 1);
 
-        //create a second polyline for testing parent deletion (this can be a Brouter polyline)
+        // create a second polyline for testing parent deletion (this can be a Brouter polyline)
         $polyline = PolyLine::create([
-                                         'hash'      => Str::uuid(),
-                                         'polyline'  => json_encode(['some json data']),
-                                         'parent_id' => $checkin->trip->polyline_id,
-                                     ]);
+            'hash' => Str::uuid(),
+            'polyline' => json_encode(['some json data']),
+            'parent_id' => $checkin->trip->polyline_id,
+        ]);
         $checkin->trip->update(['polyline_id' => $polyline->id]);
         $this->assertDatabaseCount('poly_lines', 2);
 
-        //no polylines should be deleted
+        // no polylines should be deleted
         $this->artisan('app:clean-db:polylines')->assertExitCode(Command::SUCCESS);
         $this->assertDatabaseCount('poly_lines', 2);
     }
 
-    public function testLeaderboardCachingCommand(): void {
-        //there is no complex logic in the command, so we just check if it runs without errors
+    public function test_leaderboard_caching_command(): void
+    {
+        // there is no complex logic in the command, so we just check if it runs without errors
         $this->artisan('trwl:cache:leaderboard')->assertExitCode(Command::SUCCESS);
     }
 }

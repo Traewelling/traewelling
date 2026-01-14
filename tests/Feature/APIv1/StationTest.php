@@ -10,16 +10,17 @@ use Tests\ApiTestCase;
 
 class StationTest extends ApiTestCase
 {
-
     use RefreshDatabase;
 
-    public function testUserCantAccessStationListBackend(): void {
+    public function test_user_cant_access_station_list_backend(): void
+    {
         $user = User::factory()->create();
         $response = $this->actingAs($user)->get('/admin/stations');
         $response->assertForbidden();
     }
 
-    public function testAdminCanAccessStationListBackend(): void {
+    public function test_admin_can_access_station_list_backend(): void
+    {
         $user = User::factory()->create();
         $user->assignRole('admin');
         Passport::actingAs($user, ['*']);
@@ -27,60 +28,65 @@ class StationTest extends ApiTestCase
         $response->assertOk();
     }
 
-    public function testUserCantAccessStationViewBackend(): void {
+    public function test_user_cant_access_station_view_backend(): void
+    {
         $user = User::factory()->create();
-        $station  = Station::factory()->create();
+        $station = Station::factory()->create();
         $response = $this->actingAs($user)->get('/admin/stations/' . $station->id);
         $response->assertForbidden();
     }
 
-    public function testAdminCanAccessStationViewBackend(): void {
+    public function test_admin_can_access_station_view_backend(): void
+    {
         $user = User::factory()->create();
         $user->assignRole('admin');
         Passport::actingAs($user, ['*']);
-        $station  = Station::factory()->create();
+        $station = Station::factory()->create();
         $response = $this->get('/admin/stations/' . $station->id);
         $response->assertOk();
     }
 
-    public function testUserCannotCreateStation(): void {
+    public function test_user_cannot_create_station(): void
+    {
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
         $response = $this->post('/api/v1/station', [
-            'ibnr'          => 123456,
+            'ibnr' => 123456,
             'rilIdentifier' => 'test',
-            'name'          => 'Test Station',
-            'latitude'      => 12.345678,
-            'longitude'     => 12.345678,
+            'name' => 'Test Station',
+            'latitude' => 12.345678,
+            'longitude' => 12.345678,
         ]);
         $response->assertForbidden();
     }
 
-    public function testAdminCanCreateStation(): void {
+    public function test_admin_can_create_station(): void
+    {
         $user = User::factory()->create();
         $user->assignRole('admin');
         Passport::actingAs($user, ['*']);
         $response = $this->post('/api/v1/station', [
-            'ibnr'          => 123456,
+            'ibnr' => 123456,
             'rilIdentifier' => 'test',
-            'name'          => 'Test Station',
-            'latitude'      => 12.345678,
-            'longitude'     => 12.345678,
+            'name' => 'Test Station',
+            'latitude' => 12.345678,
+            'longitude' => 12.345678,
         ]);
         $response->assertCreated();
         $this->assertDatabaseHas('train_stations', [
-            'ibnr'          => 123456,
+            'ibnr' => 123456,
             'rilIdentifier' => 'test',
-            'name'          => 'Test Station',
-            'latitude'      => 12.345678,
-            'longitude'     => 12.345678,
+            'name' => 'Test Station',
+            'latitude' => 12.345678,
+            'longitude' => 12.345678,
         ]);
     }
 
-    public function testUserCantDeleteStation(): void {
+    public function test_user_cant_delete_station(): void
+    {
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
-        $station  = Station::factory()->create();
+        $station = Station::factory()->create();
         $response = $this->delete('/api/v1/station/' . $station->id);
         $response->assertForbidden();
         $this->assertDatabaseHas('train_stations', [
@@ -88,11 +94,12 @@ class StationTest extends ApiTestCase
         ]);
     }
 
-    public function testAdminCanDeleteStation(): void {
+    public function test_admin_can_delete_station(): void
+    {
         $user = User::factory()->create();
         $user->assignRole('admin');
         Passport::actingAs($user, ['*']);
-        $station  = Station::factory()->create();
+        $station = Station::factory()->create();
         $response = $this->delete('/api/v1/station/' . $station->id);
         $response->assertOk();
         $this->assertDatabaseMissing('train_stations', [
@@ -100,7 +107,8 @@ class StationTest extends ApiTestCase
         ]);
     }
 
-    public function testUserCannotMergeStation(): void {
+    public function test_user_cannot_merge_station(): void
+    {
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
 
@@ -114,7 +122,8 @@ class StationTest extends ApiTestCase
         ]);
     }
 
-    public function testAdminCanMergeStation(): void {
+    public function test_admin_can_merge_station(): void
+    {
         $user = User::factory()->create();
         $user->assignRole('admin');
         Passport::actingAs($user, ['*']);

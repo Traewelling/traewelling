@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateUserMutesTable extends Migration
 {
-
-    public function up(): void {
-        Schema::create('user_mutes', function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::create('user_mutes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('muted_id');
@@ -17,17 +17,18 @@ class CreateUserMutesTable extends Migration
             $table->unique(['user_id', 'muted_id']);
 
             $table->foreign('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->cascadeOnDelete();
+                ->references('id')
+                ->on('users')
+                ->cascadeOnDelete();
             $table->foreign('muted_id')
-                  ->references('id')
-                  ->on('users')
-                  ->cascadeOnDelete();
+                ->references('id')
+                ->on('users')
+                ->cascadeOnDelete();
         });
     }
 
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropIfExists('user_mutes');
     }
 }

@@ -13,17 +13,17 @@ class ReportRepository
 {
     public function createReport(
         ReportableSubject $subjectType,
-        string|int        $subjectId,
-        ReportReason      $reason,
-        ?string           $description = null,
-        ?User             $reporter = null,
+        string|int $subjectId,
+        ReportReason $reason,
+        ?string $description = null,
+        ?User $reporter = null,
     ): void {
         Report::create([
-                           'subject_type' => 'App\\Models\\' . $subjectType->value,
-                           'subject_id'   => $subjectId,
-                           'reason'       => $reason->value,
-                           'description'  => $description ?? null,
-                           'reporter_id'  => $reporter?->id,
-                       ]);
+            'subject_type' => 'App\\Models\\' . $subjectType->value,
+            'subject_id' => $subjectId,
+            'reason' => $reason->value,
+            'description' => $description ?? null,
+            'reporter_id' => $reporter?->id,
+        ]);
     }
 }

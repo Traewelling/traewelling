@@ -1,5 +1,5 @@
-import {Business, StatusVisibility} from "../../types/Api.gen";
-import {trans} from "laravel-vue-i18n";
+import { Business, StatusVisibility } from '../../types/Api.gen';
+import { trans } from 'laravel-vue-i18n';
 
 const visibilityIcons = {
     0: 'fa-globe-americas',
@@ -8,13 +8,13 @@ const visibilityIcons = {
     3: 'fa-lock',
     4: 'fa-user-check',
     5: 'fa-user-shield',
-}
+};
 
 const businessIcons = {
     0: 'fa-user',
     1: 'fa-briefcase',
     2: 'fa-building',
-}
+};
 
 export class IconHelper {
     static getVisibilityIcon(visibility: StatusVisibility): string {
