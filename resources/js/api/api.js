@@ -11,7 +11,7 @@ export default class API {
         let request = fetch('/api/v1' + path, {
             method: method,
             headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json',
             },
             body: requestBody,
         });

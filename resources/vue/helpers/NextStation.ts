@@ -1,4 +1,4 @@
-import {StopoverResource} from "../../types/Api.gen";
+import { StopoverResource } from '../../types/Api.gen';
 
 export class NextStation {
     public static getNextStation(stations: StopoverResource[]): StopoverResource | null {

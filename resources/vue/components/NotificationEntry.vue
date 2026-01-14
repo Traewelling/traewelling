@@ -1,30 +1,25 @@
 <script>
 export default {
     props: {
-        "id": String,
-        "type": String,
-        "leadFormatted": String,
-        "lead": String,
-        "noticeFormatted": String,
-        "notice": String,
-        "link": String,
-        "data": Object,
-        "readAt": String,
-        "createdAt": String,
-        "createdAtForHumans": String
+        'id': String,
+        'type': String,
+        'leadFormatted': String,
+        'lead': String,
+        'noticeFormatted': String,
+        'notice': String,
+        'link': String,
+        'data': Object,
+        'readAt': String,
+        'createdAt': String,
+        'createdAtForHumans': String,
     },
     emits: ['toggle-read'],
-    methods: {
-        toggleUnread() {
-            this.$emit('toggle-read')
-        }
-    },
     computed: {
         internalLink() {
             if (this.link) {
                 return this.link;
             }
-            return "#";
+            return '#';
         },
         icon() {
             switch (this.type) {
@@ -62,29 +57,36 @@ export default {
         },
         read() {
             return this.readAt ?? false;
-        }
         },
-}
+    },
+    methods: {
+        toggleUnread() {
+            this.$emit('toggle-read');
+        },
+    },
+};
 </script>
 
 <template>
-  <div class="row notification" :class="[warnType, { unread: !read }]">
-    <a class="col-1 col-sm-1 align-left lead" :href="internalLink">
-      <i :class="icon"></i>
-    </a>
-    <a class="col-7 col-sm-8 align-middle" :href="internalLink">
-      <p class="lead" v-html="leadFormatted"></p>
-      <span v-html="noticeFormatted ?? ''"></span>
-    </a>
-    <div class="col col-sm-3 text-end">
-      <button type="button" class="interact toggleReadState" @click="toggleUnread">
+    <div class="row notification" :class="[warnType, { unread: !read }]">
+        <a class="col-1 col-sm-1 align-left lead" :href="internalLink">
+            <i :class="icon" />
+        </a>
+        <a class="col-7 col-sm-8 align-middle" :href="internalLink">
+            <p class="lead" v-html="leadFormatted" />
+            <span v-html="noticeFormatted ?? ''" />
+        </a>
+        <div class="col col-sm-3 text-end">
+            <button type="button" class="interact toggleReadState" @click="toggleUnread">
                 <span aria-hidden="true">
-                    <i class="far" :class="{'fa-envelope': !read, 'fa-envelope-open': read}"></i>
+                    <i class="far" :class="{'fa-envelope': !read, 'fa-envelope-open': read}" />
                 </span>
-      </button>
-      <div class="text-muted">{{ createdAtForHumans }}</div>
+            </button>
+            <div class="text-muted">
+                {{ createdAtForHumans }}
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <style scoped lang="scss">

@@ -1,6 +1,6 @@
-import {StatusResource} from "../../types/Api.gen";
-import {trans, transChoice} from "laravel-vue-i18n";
-import {getDepartureForStatus} from "./DateTimeHelper";
+import { StatusResource } from '../../types/Api.gen';
+import { trans, transChoice } from 'laravel-vue-i18n';
+import { getDepartureForStatus } from './DateTimeHelper';
 
 export class StatusHelper {
     private readonly status: StatusResource;
@@ -26,23 +26,23 @@ export class StatusHelper {
             {
                 lineName: this.status.train.lineName,
                 destination: this.status.train.destination.name,
-                hashtag: this.status.event!.hashtag
-            }
-        )
+                hashtag: this.status.event!.hashtag,
+            },
+        );
     }
 
     private generateAppendix(): string {
-        let hashtag = this.status.event?.hashtag ? ' ' + trans('controller.transport.social-post-for', {hashtag: this.status.event.hashtag}) : '';
-        let lineName = this.status.train.lineName;
-        let destination = this.status.train.destination.name;
+        const hashtag = this.status.event?.hashtag ? ' ' + trans('controller.transport.social-post-for', { hashtag: this.status.event.hashtag }) : '';
+        const lineName = this.status.train.lineName;
+        const destination = this.status.train.destination.name;
 
         return ` (@ ${lineName} ➜ ${destination}${hashtag}) #NowTräwelling`;
     }
 
     public generateSocialText(): string {
         if (this.status.body) {
-            let body = this.status.body.trim();
-            let appendix = this.generateAppendix();
+            const body = this.status.body.trim();
+            const appendix = this.generateAppendix();
             let postText = body.slice(0, 500 - appendix.length + 30);
 
             if (postText.length !== body.length) {
@@ -59,9 +59,9 @@ export class StatusHelper {
     }
 
     public getDescription(): string {
-        let originRil = this.status.train.origin.rilIdentifier ? ` (${this.status.train.origin.rilIdentifier})` : '';
-        let destinationRil = this.status.train.destination.rilIdentifier ? ` (${this.status.train.destination.rilIdentifier})` : '';
-        let departure = getDepartureForStatus(this.status);
+        const originRil = this.status.train.origin.rilIdentifier ? ` (${this.status.train.origin.rilIdentifier})` : '';
+        const destinationRil = this.status.train.destination.rilIdentifier ? ` (${this.status.train.destination.rilIdentifier})` : '';
+        const departure = getDepartureForStatus(this.status);
 
         return trans(
             'description.status',
@@ -70,14 +70,14 @@ export class StatusHelper {
                 origin: this.status.train.origin.name + originRil,
                 destination: this.status.train.destination.name + destinationRil,
                 date: departure.toLocaleString({
-                    year: "numeric",
-                    month: "numeric",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "2-digit"
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
                 }),
                 lineName: this.status.train.lineName,
-            }
+            },
         );
     }
 

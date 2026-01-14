@@ -1,420 +1,443 @@
 <script>
-import FullScreenModal from "../FullScreenModal.vue";
-import _ from "lodash";
-import {trans} from "laravel-vue-i18n";
+import FullScreenModal from '../FullScreenModal.vue';
+import _ from 'lodash';
+import { trans } from 'laravel-vue-i18n';
 import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css'
-import {DateTime} from "luxon";
-import {useUserStore} from "../../stores/user";
-import AutocompleteListEntry from "../Checkin/AutocompleteListEntry.vue";
-import Spinner from "../Loader/Spinner.vue";
-import ActiveStatusCard from "../ActiveStatusCard.vue";
-import FriendDropdown from "../Helpers/FriendDropdown.vue";
-import axios from "axios";
+import '@vuepic/vue-datepicker/dist/main.css';
+import { DateTime } from 'luxon';
+import { useUserStore } from '../../stores/user';
+import AutocompleteListEntry from '../Checkin/AutocompleteListEntry.vue';
+import Spinner from '../Loader/Spinner.vue';
+import ActiveStatusCard from '../ActiveStatusCard.vue';
+import FriendDropdown from '../Helpers/FriendDropdown.vue';
+import axios from 'axios';
 
 const LS_RECENT_KEY = 'trwl:station:recent';
 const MAX_RECENT = 12;
 
 export default {
-  setup() {
-    const userStore = useUserStore();
-    userStore.fetchSettings();
-    return {userStore};
-  },
-  name: "StationAutocomplete",
-  emits: ["update:station", "update:time", "update:travelType"],
-  components: {
-    ActiveStatusCard,
-    Spinner,
-    AutocompleteListEntry,
-    FullScreenModal,
-    VueDatePicker,
-    FriendDropdown
-  },
-  props: {
-    station: {type: Object, required: false, default: null},
-    stationName: {type: String, required: false, default: null},
-    dashboard: {type: Boolean, required: false, default: false},
-    time: {type: DateTime, required: false, default: null},
-    showFilterButton: {type: Boolean, required: false, default: false},
-    showGpsButton: {type: Boolean, required: false, default: false}
-  },
-  data() {
-    return {
-      recent: [],
-      loading: false,
-      lastError: null,
-      autocompleteList: [],
-      stationInput: "",
-      showFilter: false,
-      date: null,
-      selectedStation: null,
-      selectedType: null,
-      fetchingGps: false,
-      fetchingTextInput: false,
-      travelTypes: [
-        {value: "express", color: "rgba(197,199,196,0.5)", icon: "fa-train", contrast: true},
-        {value: "regional", color: "rgba(193,18,28,0.5)", icon: "fa-train"},
-        {value: "suburban", color: "rgba(0,111,53,0.5)", icon: "fa-train", image: "/img/suburban.svg"},
-        {value: "subway", color: "rgba(21,106,184,0.5)", icon: "fa-subway", image: "/img/subway.svg"},
-        {value: "tram", color: "rgba(217,34,42,0.5)", icon: "fa-tram", image: "/img/tram.svg"},
-        {value: "bus", color: "rgba(163,0,124,0.5)", icon: "fa-bus", image: "/img/bus.svg"},
-        {value: "ferry", color: "rgba(21,106,184,0.5)", icon: "fa-ship"},
-        {value: "taxi", color: "rgb(255,237,74,0.5)", icon: "fa-taxi", contrast: true},
-      ]
-    };
-  },
-  methods: {
-    trans,
-    showModal() {
-      this.$refs.modal.show();
+    name: 'StationAutocomplete',
+    components: {
+        ActiveStatusCard,
+        Spinner,
+        AutocompleteListEntry,
+        FullScreenModal,
+        VueDatePicker,
+        FriendDropdown,
     },
-    setHome() {
-      if (!this.isHome) {
-        this.userStore.setHome(this.station).catch(() => {
-          window.notyf.error(trans('action.error') + " (" + trans('action.set-home') + ")");
-        })
-      }
+    props: {
+        station: { type: Object, required: false, default: null },
+        stationName: { type: String, required: false, default: null },
+        dashboard: { type: Boolean, required: false, default: false },
+        time: { type: DateTime, required: false, default: null },
+        showFilterButton: { type: Boolean, required: false, default: false },
+        showGpsButton: { type: Boolean, required: false, default: false },
     },
-
-    /* === Local cache helpers === */
-    loadRecentFromCache() {
-      try {
-        const raw = localStorage.getItem(LS_RECENT_KEY);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed)) {
-            this.recent = parsed;
-          }
-        }
-      } catch (_) {
-        /* ignore cache errors */
-      }
+    emits: ['update:station', 'update:time', 'update:travelType'],
+    setup() {
+        const userStore = useUserStore();
+        userStore.fetchSettings();
+        return { userStore };
     },
-    saveRecentToCache(list) {
-      try {
-        localStorage.setItem(LS_RECENT_KEY, JSON.stringify(list.slice(0, MAX_RECENT)));
-      } catch (_) {
-        /* ignore quota errors */
-      }
+    data() {
+        return {
+            recent: [],
+            loading: false,
+            lastError: null,
+            autocompleteList: [],
+            stationInput: '',
+            showFilter: false,
+            date: null,
+            selectedStation: null,
+            selectedType: null,
+            fetchingGps: false,
+            fetchingTextInput: false,
+            travelTypes: [
+                { value: 'express', color: 'rgba(197,199,196,0.5)', icon: 'fa-train', contrast: true },
+                { value: 'regional', color: 'rgba(193,18,28,0.5)', icon: 'fa-train' },
+                { value: 'suburban', color: 'rgba(0,111,53,0.5)', icon: 'fa-train', image: '/img/suburban.svg' },
+                { value: 'subway', color: 'rgba(21,106,184,0.5)', icon: 'fa-subway', image: '/img/subway.svg' },
+                { value: 'tram', color: 'rgba(217,34,42,0.5)', icon: 'fa-tram', image: '/img/tram.svg' },
+                { value: 'bus', color: 'rgba(163,0,124,0.5)', icon: 'fa-bus', image: '/img/bus.svg' },
+                { value: 'ferry', color: 'rgba(21,106,184,0.5)', icon: 'fa-ship' },
+                { value: 'taxi', color: 'rgb(255,237,74,0.5)', icon: 'fa-taxi', contrast: true },
+            ],
+        };
     },
-    pushStationToRecent(stationObj) {
-      if (!stationObj || !stationObj.id) return;
-      const existing = this.recent.filter(s => s && s.id !== stationObj.id);
-      const updated = [stationObj, ...existing].slice(0, MAX_RECENT);
-      this.recent = updated;
-      this.saveRecentToCache(updated);
-    },
-
-    /* === Remote "recent" (server history) === */
-    getRecent() {
-      // show cached immediately
-      this.loadRecentFromCache();
-
-      // try to refresh from API (best effort)
-      fetch(`/api/v1/trains/station/history`)
-          .then((response) => response.ok ? response.json() : Promise.reject())
-          .then((result) => {
-            if (result && result.data) {
-              // merge with local
-              const byId = new Map();
-              const merged = [];
-              result.data.forEach(item => {
-                if (!byId.has(item.id)) {
-                  byId.set(item.id, true);
-                  merged.push(item);
-                }
-              });
-              this.recent.forEach(item => {
-                if (item && !byId.has(item.id)) {
-                  byId.set(item.id, true);
-                  merged.push(item);
-                }
-              });
-              this.recent = merged.slice(0, MAX_RECENT);
-              this.saveRecentToCache(this.recent);
+    methods: {
+        trans,
+        showModal() {
+            this.$refs.modal.show();
+        },
+        setHome() {
+            if (!this.isHome) {
+                this.userStore.setHome(this.station).catch(() => {
+                    window.notyf.error(trans('action.error') + ' (' + trans('action.set-home') + ')');
+                });
             }
-          })
-          .catch(() => {
-            // keep cache if network fails
-          });
-    },
+        },
 
-    autocomplete() {
-      this.loading = true;
-      if (!this.stationInput || this.stationInput.length < 2) {
-        this.autocompleteList = [];
-        this.loading = false;
-        return;
-      }
-      this.fetchAutocomplete().then((result) => {
-        this.autocompleteList = result?.data ?? [];
-        this.loading = false;
-      });
-    },
-    async fetchAutocomplete() {
-      this.loading = true;
-      this.lastError = null;
-      let query = (this.stationInput || "").replace(/%2F/, " ").replace(/\//, " ");
-      return await axios.get(`/api/v1/trains/station/autocomplete/${encodeURIComponent(query)}`)
-          .then((response) => {
-            this.autocompleteList = response.data;
-            return response.data;
-          })
-          .catch((error) => {
-            this.lastError = error?.message || 'Error';
-            notyf.error(this.lastError);
-            return null;
-          })
-          .finally(() => {
-            this.loading = false;
-          });
-    },
-    showPicker() {
-      this.$refs.picker.openMenu();
-    },
-    setTime() {
-      this.$emit("update:time", DateTime.fromJSDate(this.date).setZone('UTC').toISO());
-    },
-    setStationFromText() {
-      this.fetchingTextInput = true;
-      this.fetchAutocomplete()
-          .then((result) => {
-            const first = result?.data?.[0] || result?.[0];
-            if (first) {
-              this.setStation(first);
-            } else {
-              notyf.error(trans('action.error'));
+        /* === Local cache helpers === */
+        loadRecentFromCache() {
+            try {
+                const raw = localStorage.getItem(LS_RECENT_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed)) {
+                        this.recent = parsed;
+                    }
+                }
+            } catch (_) {
+                /* ignore cache errors */
             }
-          })
-          .finally(() => {
-            this.fetchingTextInput = false;
-          });
-    },
-    setStation(item) {
-      if (!item) return;
-      this.stationInput = item.name;
-      this.selectedStation = item;
-      this.$emit("update:station", item);
-      this.pushStationToRecent(item);
-      this.$refs.modal.hide();
-      const url = `/stationboard?stationId=${item.id}&stationName=${encodeURIComponent(item.name)}`;
-      if (this.$props.dashboard) {
-        window.location = url;
-      }
-    },
-    setTravelType(travelType) {
-      this.selectedType = this.selectedType === travelType.value ? null : travelType.value;
-      this.$emit("update:travelType", this.selectedType);
-    },
-    setStationFromGps() {
-      this.fetchingGps = true;
-      if (!navigator.geolocation) {
-        this.fetchingGps = false;
-        notyf.error(trans("stationboard.position-unavailable"));
-        return;
-      }
-      navigator.geolocation.getCurrentPosition(
-          (position) => {
-            fetch(`/api/v1/trains/station/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`)
-                .then((data) => {
-                  if (!data.ok) {
-                    notyf.error(trans("stationboard.position-unavailable"));
-                    this.fetchingGps = false;
-                    return;
-                  }
-                  data.json().then((result) => {
-                    this.setStation(result.data);
-                    this.fetchingGps = false;
-                  });
+        },
+        saveRecentToCache(list) {
+            try {
+                localStorage.setItem(LS_RECENT_KEY, JSON.stringify(list.slice(0, MAX_RECENT)));
+            } catch (_) {
+                /* ignore quota errors */
+            }
+        },
+        pushStationToRecent(stationObj) {
+            if (!stationObj || !stationObj.id) return;
+            const existing = this.recent.filter(s => s && s.id !== stationObj.id);
+            const updated = [stationObj, ...existing].slice(0, MAX_RECENT);
+            this.recent = updated;
+            this.saveRecentToCache(updated);
+        },
+
+        /* === Remote "recent" (server history) === */
+        getRecent() {
+            // show cached immediately
+            this.loadRecentFromCache();
+
+            // try to refresh from API (best effort)
+            fetch('/api/v1/trains/station/history')
+                .then((response) => response.ok ? response.json() : Promise.reject())
+                .then((result) => {
+                    if (result && result.data) {
+                        // merge with local
+                        const byId = new Map();
+                        const merged = [];
+                        result.data.forEach(item => {
+                            if (!byId.has(item.id)) {
+                                byId.set(item.id, true);
+                                merged.push(item);
+                            }
+                        });
+                        this.recent.forEach(item => {
+                            if (item && !byId.has(item.id)) {
+                                byId.set(item.id, true);
+                                merged.push(item);
+                            }
+                        });
+                        this.recent = merged.slice(0, MAX_RECENT);
+                        this.saveRecentToCache(this.recent);
+                    }
                 })
-          },
-          () => {
-            this.fetchingGps = false;
-            notyf.error(trans("stationboard.position-unavailable"));
-          }
-      );
+                .catch(() => {
+                    // keep cache if network fails
+                });
+        },
+
+        autocomplete() {
+            this.loading = true;
+            if (!this.stationInput || this.stationInput.length < 2) {
+                this.autocompleteList = [];
+                this.loading = false;
+                return;
+            }
+            this.fetchAutocomplete().then((result) => {
+                this.autocompleteList = result?.data ?? [];
+                this.loading = false;
+            });
+        },
+        async fetchAutocomplete() {
+            this.loading = true;
+            this.lastError = null;
+            let query = (this.stationInput || '').replace(/%2F/, ' ').replace(/\//, ' ');
+            return await axios.get(`/api/v1/trains/station/autocomplete/${encodeURIComponent(query)}`)
+                .then((response) => {
+                    this.autocompleteList = response.data;
+                    return response.data;
+                })
+                .catch((error) => {
+                    this.lastError = error?.message || 'Error';
+                    notyf.error(this.lastError);
+                    return null;
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
+        },
+        showPicker() {
+            this.$refs.picker.openMenu();
+        },
+        setTime() {
+            this.$emit('update:time', DateTime.fromJSDate(this.date).setZone('UTC').toISO());
+        },
+        setStationFromText() {
+            this.fetchingTextInput = true;
+            this.fetchAutocomplete()
+                .then((result) => {
+                    const first = result?.data?.[0] || result?.[0];
+                    if (first) {
+                        this.setStation(first);
+                    } else {
+                        notyf.error(trans('action.error'));
+                    }
+                })
+                .finally(() => {
+                    this.fetchingTextInput = false;
+                });
+        },
+        setStation(item) {
+            if (!item) return;
+            this.stationInput = item.name;
+            this.selectedStation = item;
+            this.$emit('update:station', item);
+            this.pushStationToRecent(item);
+            this.$refs.modal.hide();
+            const url = `/stationboard?stationId=${item.id}&stationName=${encodeURIComponent(item.name)}`;
+            if (this.$props.dashboard) {
+                window.location = url;
+            }
+        },
+        setTravelType(travelType) {
+            this.selectedType = this.selectedType === travelType.value ? null : travelType.value;
+            this.$emit('update:travelType', this.selectedType);
+        },
+        setStationFromGps() {
+            this.fetchingGps = true;
+            if (!navigator.geolocation) {
+                this.fetchingGps = false;
+                notyf.error(trans('stationboard.position-unavailable'));
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    fetch(`/api/v1/trains/station/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`)
+                        .then((data) => {
+                            if (!data.ok) {
+                                notyf.error(trans('stationboard.position-unavailable'));
+                                this.fetchingGps = false;
+                                return;
+                            }
+                            data.json().then((result) => {
+                                this.setStation(result.data);
+                                this.fetchingGps = false;
+                            });
+                        });
+                },
+                () => {
+                    this.fetchingGps = false;
+                    notyf.error(trans('stationboard.position-unavailable'));
+                },
+            );
+        },
+        clearInput() {
+            this.stationInput = '';
+            this.$refs.stationInput?.focus();
+        },
     },
-    clearInput() {
-      this.stationInput = "";
-      this.$refs.stationInput?.focus();
-    }
-  },
-  watch: {
-    stationInput: _.debounce(function () {
-      this.autocomplete();
-    }, 500),
-    stationName() {
-      this.stationInput = this.stationName ? this.stationName : this.stationInput;
+    watch: {
+        stationInput: _.debounce(function () {
+            this.autocomplete();
+        }, 500),
+        stationName() {
+            this.stationInput = this.stationName ? this.stationName : this.stationInput;
+        },
+        station() {
+            this.selectedStation = this.station;
+        },
     },
-    station() {
-      this.selectedStation = this.station;
-    }
-  },
-  mounted() {
-    this.date = this.time;
-    this.stationInput = this.stationName ? this.stationName : "";
-    this.selectedStation = this.station;
-    this.getRecent();
-  },
-  computed: {
-    placeholder() {
-      return `${trans('stationboard.station-placeholder')} ${trans('or-alternative')} ${trans('ril100')}`;
+    mounted() {
+        this.date = this.time;
+        this.stationInput = this.stationName ? this.stationName : '';
+        this.selectedStation = this.station;
+        this.getRecent();
     },
-    dark() {
-      return localStorage.getItem('darkMode') === 'dark';
+    computed: {
+        placeholder() {
+            return `${trans('stationboard.station-placeholder')} ${trans('or-alternative')} ${trans('ril100')}`;
+        },
+        dark() {
+            return localStorage.getItem('darkMode') === 'dark';
+        },
+        isHome() {
+            return this.userStore.getHome && this.station && this.userStore.getHome.id === this.station.id;
+        },
     },
-    isHome() {
-      return this.userStore.getHome && this.station && this.userStore.getHome.id === this.station.id;
-    }
-  }
-}
+};
 </script>
 
 <template>
-  <FullScreenModal ref="modal">
-    <template #header>
-      <div class="input-group mx-2">
-        <input
-            type="search"
-            name="station"
-            class="form-control mobile-input-fs-16"
-            :placeholder="placeholder"
-            v-model="stationInput"
-            :disabled="fetchingTextInput"
-            :aria-busy="loading || fetchingTextInput ? 'true' : 'false'"
-            @keyup.enter="setStationFromText"
-            ref="stationInput"
-        />
-        <span
-            v-if="loading || fetchingTextInput"
-            class="input-group-text bg-transparent border-0"
-            aria-live="polite"
-        >
-          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-          <span class="visually-hidden">Loading</span>
-        </span>
-        <button class="btn btn-light" @click="clearInput" :disabled="fetchingTextInput">
-          <i class="fa-solid fa-delete-left"></i>
-        </button>
-      </div>
-    </template>
-
-    <template #body>
-      <div v-if="lastError" class="alert alert-danger my-2" role="alert">
-        {{ lastError }}
-      </div>
-
-      <ul class="list-group list-group-light list-group-small">
-        <!-- Quick actions -->
-        <AutocompleteListEntry
-            v-show="autocompleteList.length === 0"
-            :text="trans('stationboard.search-by-location')"
-            prefix="fa fa-map-marker-alt"
-            @click="setStationFromGps"
-        />
-        <AutocompleteListEntry
-            v-show="autocompleteList.length === 0 && userStore.getHome"
-            :station="userStore.getHome"
-            prefix="fas fa-house"
-            @click="setStation(userStore.getHome)"
-        />
-
-        <!-- Locally cached / recent: always visible as fallback -->
-        <AutocompleteListEntry
-            v-for="item in recent"
-            :key="'recent-' + item.id"
-            v-show="autocompleteList.length === 0"
-            :station="item"
-            prefix="fas fa-clock-rotate-left"
-            @click="setStation(item)"
-        />
-
-        <!-- Autocomplete results -->
-        <AutocompleteListEntry
-            v-for="item in autocompleteList"
-            :key="'ac-' + item.id"
-            :station="item"
-            @click="setStation(item)"
-        />
-      </ul>
-    </template>
-  </FullScreenModal>
-
-  <div class="card mb-4">
-    <div class="card-header">
-      {{ trans("stationboard.where-are-you") }}
-      <a v-if="!dashboard && station" href="#" class="float-end" @click.prevent="setHome">
-        <i :class="{'fas': isHome, 'far': !isHome}" class="fa-star"></i>
-      </a>
-    </div>
-    <div class="card-body">
-      <div id="station-autocomplete-container" style="z-index: 3;">
-        <div class="input-group mb-2 mr-sm-2">
-          <input
-              type="text"
-              name="station"
-              class="form-control mobile-input-fs-16"
-              :placeholder="placeholder"
-              v-model="stationInput"
-              @focusin="showModal"
-              @keyup.enter="setStationFromText"
-          />
-          <button v-if="showFilterButton" type="button" class="btn btn-outline-dark stationSearchButton"
-                  @click="showFilter = !showFilter">
-            <i class="fa fa-filter" aria-hidden="true"></i>
-          </button>
-          <button v-if="showGpsButton" type="button" class="btn btn-outline-dark stationSearchButton"
-                  @click="setStationFromGps">
-            <i v-if="!fetchingGps" class="fa fa-map-marker-alt" aria-hidden="true"></i>
-            <div v-else class="spinner-border" role="status" style="height: 1rem; width: 1rem;">
-              <span class="visually-hidden">Loading...</span>
+    <FullScreenModal ref="modal">
+        <template #header>
+            <div class="input-group mx-2">
+                <input
+                    ref="stationInput"
+                    v-model="stationInput"
+                    type="search"
+                    name="station"
+                    class="form-control mobile-input-fs-16"
+                    :placeholder="placeholder"
+                    :disabled="fetchingTextInput"
+                    :aria-busy="loading || fetchingTextInput ? 'true' : 'false'"
+                    @keyup.enter="setStationFromText"
+                >
+                <span
+                    v-if="loading || fetchingTextInput"
+                    class="input-group-text bg-transparent border-0"
+                    aria-live="polite"
+                >
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
+                    <span class="visually-hidden">Loading</span>
+                </span>
+                <button class="btn btn-light" :disabled="fetchingTextInput" @click="clearInput">
+                    <i class="fa-solid fa-delete-left" />
+                </button>
             </div>
-          </button>
-          <button type="button" class="btn btn-outline-dark stationSearchButton" @click="showPicker">
-            <i class="fa fa-clock" aria-hidden="true"></i>
-          </button>
-        </div>
+        </template>
 
-        <div class="d-flex justify-content-center">
-          <Transition name="slide-fade">
-            <div class="flex-wrap" role="group" v-show="showFilter">
-              <button
-                  v-for="travelType in travelTypes"
-                  :key="travelType.value"
-                  type="button"
-                  class="btn btn-primary btn-sm btn-rounded text-center me-1"
-                  :class="{'active': selectedType === travelType.value, 'better-contrast': travelType.contrast ?? false}"
-                  value="travelType"
-                  :style="{backgroundColor: travelType.color}"
-                  @click="setTravelType(travelType)"
-              >
-                <img v-if="travelType.image" :src="travelType.image" alt="icon" class="product-icon">
-                <i v-else :class="`fa ${travelType.icon}`" aria-hidden="true"></i>
-              </button>
+        <template #body>
+            <div v-if="lastError" class="alert alert-danger my-2" role="alert">
+                {{ lastError }}
             </div>
-          </Transition>
+
+            <ul class="list-group list-group-light list-group-small">
+                <!-- Quick actions -->
+                <AutocompleteListEntry
+                    v-show="autocompleteList.length === 0"
+                    :text="trans('stationboard.search-by-location')"
+                    prefix="fa fa-map-marker-alt"
+                    @click="setStationFromGps"
+                />
+                <AutocompleteListEntry
+                    v-show="autocompleteList.length === 0 && userStore.getHome"
+                    :station="userStore.getHome"
+                    prefix="fas fa-house"
+                    @click="setStation(userStore.getHome)"
+                />
+
+                <!-- Locally cached / recent: always visible as fallback -->
+                <AutocompleteListEntry
+                    v-for="item in recent"
+                    v-show="autocompleteList.length === 0"
+                    :key="'recent-' + item.id"
+                    :station="item"
+                    prefix="fas fa-clock-rotate-left"
+                    @click="setStation(item)"
+                />
+
+                <!-- Autocomplete results -->
+                <AutocompleteListEntry
+                    v-for="item in autocompleteList"
+                    :key="'ac-' + item.id"
+                    :station="item"
+                    @click="setStation(item)"
+                />
+            </ul>
+        </template>
+    </FullScreenModal>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            {{ trans("stationboard.where-are-you") }}
+            <a
+                v-if="!dashboard && station"
+                href="#"
+                class="float-end"
+                @click.prevent="setHome"
+            >
+                <i :class="{'fas': isHome, 'far': !isHome}" class="fa-star" />
+            </a>
         </div>
+        <div class="card-body">
+            <div id="station-autocomplete-container" style="z-index: 3;">
+                <div class="input-group mb-2 mr-sm-2">
+                    <input
+                        v-model="stationInput"
+                        type="text"
+                        name="station"
+                        class="form-control mobile-input-fs-16"
+                        :placeholder="placeholder"
+                        @focusin="showModal"
+                        @keyup.enter="setStationFromText"
+                    >
+                    <button
+                        v-if="showFilterButton"
+                        type="button"
+                        class="btn btn-outline-dark stationSearchButton"
+                        @click="showFilter = !showFilter"
+                    >
+                        <i class="fa fa-filter" aria-hidden="true" />
+                    </button>
+                    <button
+                        v-if="showGpsButton"
+                        type="button"
+                        class="btn btn-outline-dark stationSearchButton"
+                        @click="setStationFromGps"
+                    >
+                        <i v-if="!fetchingGps" class="fa fa-map-marker-alt" aria-hidden="true" />
+                        <div
+                            v-else
+                            class="spinner-border"
+                            role="status"
+                            style="height: 1rem; width: 1rem;"
+                        >
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </button>
+                    <button type="button" class="btn btn-outline-dark stationSearchButton" @click="showPicker">
+                        <i class="fa fa-clock" aria-hidden="true" />
+                    </button>
+                </div>
 
-        <VueDatePicker
-            v-model="date"
-            ref="picker"
-            @update:model-value="setTime"
-            time-picker-inline
-            :dark="dark"
-            :action-row="{ showSelect: true, showCancel: true, showNow: true, showPreview: true }"
-        >
-          <template #trigger>
-            <button type="button" class="btn btn-outline-dark stationSearchButton" hidden>
-              <i class="fa fa-calendar" aria-hidden="true"></i>
-            </button>
-          </template>
-        </VueDatePicker>
-      </div>
+                <div class="d-flex justify-content-center">
+                    <Transition name="slide-fade">
+                        <div v-show="showFilter" class="flex-wrap" role="group">
+                            <button
+                                v-for="travelType in travelTypes"
+                                :key="travelType.value"
+                                type="button"
+                                class="btn btn-primary btn-sm btn-rounded text-center me-1"
+                                :class="{'active': selectedType === travelType.value, 'better-contrast': travelType.contrast ?? false}"
+                                value="travelType"
+                                :style="{backgroundColor: travelType.color}"
+                                @click="setTravelType(travelType)"
+                            >
+                                <img
+                                    v-if="travelType.image"
+                                    :src="travelType.image"
+                                    alt="icon"
+                                    class="product-icon"
+                                >
+                                <i v-else :class="`fa ${travelType.icon}`" aria-hidden="true" />
+                            </button>
+                        </div>
+                    </Transition>
+                </div>
+
+                <VueDatePicker
+                    ref="picker"
+                    v-model="date"
+                    time-picker-inline
+                    :dark="dark"
+                    :action-row="{ showSelect: true, showCancel: true, showNow: true, showPreview: true }"
+                    @update:model-value="setTime"
+                >
+                    <template #trigger>
+                        <button type="button" class="btn btn-outline-dark stationSearchButton" hidden>
+                            <i class="fa fa-calendar" aria-hidden="true" />
+                        </button>
+                    </template>
+                </VueDatePicker>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <ActiveStatusCard v-if="userStore.hasBeta"/>
+    <ActiveStatusCard v-if="userStore.hasBeta" />
 </template>
 
 <style lang="scss" scoped>
