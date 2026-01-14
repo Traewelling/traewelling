@@ -4,7 +4,6 @@ namespace App\Http\Resources;
 
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use Illuminate\Http\Resources\Json\JsonResource;
-use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(
@@ -15,6 +14,7 @@ use OpenApi\Annotations as OA;
  *      @OA\Property(property="displayName", type="string", example="Gertrud"),
  *      @OA\Property(property="username", type="string", example="Gertrud123"),
  *      @OA\Property(property="profilePicture", type="string", example="https://traewelling.de/@Gertrud123/picture"),
+ *      @OA\Property(property="mastodon", type="object", example={"server": "mastodon.social", "user_id": 1234567}),
  *      @OA\Property(property="preventIndex", type="boolean", example=false)
  * )
  */
@@ -26,6 +26,10 @@ class LightUserResource extends JsonResource
             'displayName'    => (string) $this->name,
             'username'       => (string) $this->username,
             'profilePicture' => ProfilePictureController::getUrl($this->resource),
+            'mastodon'       => [
+                'server'  => $this->socialProfile?->mastodonServer?->domain,
+                'user_id' => $this->socialProfile?->mastodon_id,
+            ],
             'mastodonUrl'    => null, // TODO: remove after 2026-07 (this is not lightweight enough for a LightResource)
             'preventIndex'   => (bool) $this->prevent_index,
         ];

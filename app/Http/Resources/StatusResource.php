@@ -7,12 +7,10 @@ use App\Models\Status;
 use App\Models\StatusTag;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Gate;
-use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(
  *      title="Status",
- *      required={"id", "body", "business", "bodyMentions", "business", "visibility", "likes", "liked", "isLikable", "client", "createdAt", "train", "event", "userDetails", "tags"},
  *      @OA\Property(property="id", type="integer", example=12345),
  *      @OA\Property(property="body", description="User defined status text", example="Hello world!"),
  *      @OA\Property(property="bodyMentions", description="Mentions in the status body", type="array", @OA\Items(ref="#/components/schemas/MentionDto")),
@@ -22,11 +20,11 @@ use OpenApi\Annotations as OA;
  *      @OA\Property(property="liked", description="Did the currently authenticated user like this status? (if unauthenticated = false)",type="boolean",example=true),
  *      @OA\Property(property="isLikable", description="Do the author of this status and the currently authenticated user allow liking of statuses? Only show the like UI if set to true",type="boolean", example=true),
  *      @OA\Property(property="client", ref="#/components/schemas/ClientResource"),
- *      @OA\Property(property="createdAt", description="creation date of this status",type="string",format="datetime", example="2022-07-17T13:37:00+02:00"),
- *      @OA\Property(property="train", ref="#/components/schemas/TransportResource"),
+ *      @OA\Property(property="checkin", ref="#/components/schemas/TransportResource"),
  *      @OA\Property(property="event", ref="#/components/schemas/EventResource", nullable=true),
- *      @OA\Property(property="userDetails", ref="#/components/schemas/LightUserResource"),
+ *      @OA\Property(property="user", ref="#/components/schemas/LightUserResource"),
  *      @OA\Property(property="tags", type="array", @OA\Items(ref="#/components/schemas/StatusTagResource")),
+ *      @OA\Property(property="createdAt", description="creation date of this status",type="string",format="datetime", example="2022-07-17T13:37:00+02:00"),
  * )
  * @todo: add moderation_notes, lock_visibility and hide_body
  */
@@ -45,12 +43,16 @@ class StatusResource extends JsonResource
             'likes'        => (int) $this->likes->count(),
             'liked'        => (bool) $this->favorited,
             'isLikable'    => Gate::allows('like', $this->resource),
+            'checkin'      => new TransportResource($this->checkin),
             'client'       => new ClientResource($this->client),
-            'createdAt'    => $this->created_at->toIso8601String(),
-            'train'        => new TransportResource($this->checkin), //TODO: don't call it train - we have more than trains
             'event'        => new EventResource($this?->event),
-            'userDetails'  => new LightUserResource($this->user), //TODO: rename this to user, after deprecated fields are removed (2024-08)
+            'user'         => new LightUserResource($this->user),
             'tags'         => StatusTagResource::collection($this->tags->filter(fn(StatusTag $tag) => Gate::allows('view', $tag))),
+            'createdAt'    => $this->created_at->toIso8601String(),
+
+
+            'train'       => new TransportResource($this->checkin), //TODO: delete after 2026-07 (replaced by 'checkin')
+            'userDetails' => new LightUserResource($this->user), //TODO: delete after 2026-07 (replaced by 'user')
         ];
     }
 }

@@ -5491,6 +5491,13 @@
                         "type": "string",
                         "example": "https://traewelling.de/@Gertrud123/picture"
                     },
+                    "mastodon": {
+                        "type": "object",
+                        "example": {
+                            "server": "mastodon.social",
+                            "user_id": 1234567
+                        }
+                    },
                     "preventIndex": {
                         "type": "boolean",
                         "example": false
@@ -5630,23 +5637,6 @@
             },
             "StatusResource": {
                 "title": "Status",
-                "required": [
-                    "id",
-                    "body",
-                    "business",
-                    "bodyMentions",
-                    "business",
-                    "visibility",
-                    "likes",
-                    "liked",
-                    "isLikable",
-                    "client",
-                    "createdAt",
-                    "train",
-                    "event",
-                    "userDetails",
-                    "tags"
-                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5687,13 +5677,7 @@
                     "client": {
                         "$ref": "#/components/schemas/ClientResource"
                     },
-                    "createdAt": {
-                        "description": "creation date of this status",
-                        "type": "string",
-                        "format": "datetime",
-                        "example": "2022-07-17T13:37:00+02:00"
-                    },
-                    "train": {
+                    "checkin": {
                         "$ref": "#/components/schemas/TransportResource"
                     },
                     "event": {
@@ -5704,7 +5688,7 @@
                         ],
                         "nullable": true
                     },
-                    "userDetails": {
+                    "user": {
                         "$ref": "#/components/schemas/LightUserResource"
                     },
                     "tags": {
@@ -5712,6 +5696,12 @@
                         "items": {
                             "$ref": "#/components/schemas/StatusTagResource"
                         }
+                    },
+                    "createdAt": {
+                        "description": "creation date of this status",
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2022-07-17T13:37:00+02:00"
                     }
                 },
                 "type": "object"
