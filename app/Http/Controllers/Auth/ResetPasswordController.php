@@ -22,8 +22,6 @@ class ResetPasswordController extends Controller
 
     /**
      * Where to redirect users after resetting their password.
-     *
-     * @var string
      */
     protected string $redirectTo = '/dashboard';
 
@@ -32,7 +30,8 @@ class ResetPasswordController extends Controller
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('guest');
     }
 }

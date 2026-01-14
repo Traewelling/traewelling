@@ -10,26 +10,30 @@ use Tests\Unit\UnitTestCase;
 
 class ExporterTest extends UnitTestCase
 {
-    private User                  $user;
+    private User $user;
+
     private PersonalDataSelection $personalDataSelection;
 
-    protected function setUp(): void {
+    protected function setUp(): void
+    {
         parent::setUp();
-        $this->user                  = User::factory()->make();
+        $this->user = User::factory()->make();
         $this->personalDataSelection = $this->getMockBuilder(PersonalDataSelection::class)
-                                            ->disableOriginalConstructor()
-                                            ->onlyMethods(['add'])
-                                            ->getMock();
+            ->disableOriginalConstructor()
+            ->onlyMethods(['add'])
+            ->getMock();
     }
 
-    public function testCorrectClasses() {
+    public function test_correct_classes()
+    {
         $exporter = new Exporter($this->personalDataSelection, $this->user);
         $this->personalDataSelection->expects($this->once())->method('add')->willReturn($this->personalDataSelection);
 
         $exporter->export([CorrectExporter::class]);
     }
 
-    public function testIncorrectClasses() {
+    public function test_incorrect_classes()
+    {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Tests\Unit\Services\Exporters\IncorrectExporter is not of type App\Services\PersonalDataSelection\Exporters\Base\AbstractExporter');
 
@@ -39,7 +43,8 @@ class ExporterTest extends UnitTestCase
         $exporter->export([IncorrectExporter::class]);
     }
 
-    public function testNotClass() {
+    public function test_not_class()
+    {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('foobar is not of type App\Services\PersonalDataSelection\Exporters\Base\AbstractExporter');
 
@@ -49,7 +54,8 @@ class ExporterTest extends UnitTestCase
         $exporter->export(['foobar']);
     }
 
-    public function testMultipleClasses() {
+    public function test_multiple_classes()
+    {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Tests\Unit\Services\Exporters\IncorrectExporter is not of type App\Services\PersonalDataSelection\Exporters\Base\AbstractExporter');
 
@@ -67,13 +73,15 @@ class IncorrectExporter
 
 class CorrectExporter extends AbstractExporter
 {
-    protected string $fileName = "test.csv";
+    protected string $fileName = 'test.csv';
 
-    protected function exportData(): array|string {
-        return "success";
+    protected function exportData(): array|string
+    {
+        return 'success';
     }
 
-    protected function onExportValidation(): bool {
+    protected function onExportValidation(): bool
+    {
         return true;
     }
 }

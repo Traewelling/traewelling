@@ -15,6 +15,6 @@
  * @copyright https://github.com/Laravel-Lang/lang MIT-License
  */
 return [
-    'next'     => 'Nästa &raquo;',
+    'next' => 'Nästa &raquo;',
     'previous' => '&laquo; Föregående',
 ];

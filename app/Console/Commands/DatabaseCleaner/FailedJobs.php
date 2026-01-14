@@ -9,15 +9,16 @@ class FailedJobs extends Command
 {
     protected $signature = 'app:clean-db:failed-jobs';
 
-    public function handle(): int {
+    public function handle(): int
+    {
         $affectedRows = 0;
         $this->info('Delete failed jobs older than 14 days...');
         $this->output->writeln('');
         do {
             $result = DB::table('failed_jobs')
-                        ->where('failed_at', '<', now()->subDays(14))
-                        ->limit(1000)
-                        ->delete();
+                ->where('failed_at', '<', now()->subDays(14))
+                ->limit(1000)
+                ->delete();
             if ($result > 0) {
                 $affectedRows += $result;
                 $this->output->write('.');

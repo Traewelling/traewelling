@@ -8,23 +8,22 @@ class CreateTrainCheckinsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up(): void {
-        Schema::create('train_checkins', function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::create('train_checkins', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('status_id')
-                  ->unique();
+                ->unique();
             $table->string('trip_id');
             $table->string('origin');
             $table->string('destination');
             $table->integer('distance');
             $table->timestampTz('departure')
-                  ->comment('planned departure');
+                ->comment('planned departure');
             $table->timestampTz('arrival')
-                  ->nullable()
-                  ->comment('planned arrival');
+                ->nullable()
+                ->comment('planned arrival');
             $table->integer('points')->nullable();
             $table->integer('delay')->nullable();
             $table->timestamps();
@@ -33,10 +32,9 @@ class CreateTrainCheckinsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropIfExists('train_checkins');
     }
 }

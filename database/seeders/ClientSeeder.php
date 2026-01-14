@@ -6,13 +6,15 @@ use App\Models\User;
 use App\Repositories\OAuthClientRepository;
 use Illuminate\Database\Seeder;
 
-class ClientSeeder extends Seeder {
+class ClientSeeder extends Seeder
+{
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    public function run() {
+    public function run()
+    {
         $gertrud = User::where('username', 'Gertrud123')->first();
         $clients = new OAuthClientRepository();
         $clients->create(
@@ -23,9 +25,9 @@ class ClientSeeder extends Seeder {
             false,
             false,
             false,
-            "https://example.com/privacy",
+            'https://example.com/privacy',
             true,
-            "https://example.com/webhook"
+            'https://example.com/webhook'
         );
     }
 }

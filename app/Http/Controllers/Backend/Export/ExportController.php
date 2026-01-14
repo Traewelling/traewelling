@@ -20,23 +20,23 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 abstract class ExportController extends Controller
 {
-
     /**
      * @throws DataOverflowException If too many results are given.
      */
-    public static function getExportableStatuses(User $user, Carbon $timestampFrom, Carbon $timestampTo): Collection {
+    public static function getExportableStatuses(User $user, Carbon $timestampFrom, Carbon $timestampTo): Collection
+    {
         $statuses = Status::with([
-                                     //'checkin.trip.stopovers', TODO: This eager load is doing weird things. Some Trips aren't loaded and this throws some http 500. Loading this manually is working.
-                                     'checkin.originStopover.station',
-                                     'checkin.destinationStopover.station',
-                                 ])
-                          ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
-                          ->where('statuses.user_id', $user->id)
-                          ->where('train_checkins.departure', '>=', $timestampFrom->startOfDay())
-                          ->where('train_checkins.departure', '<=', $timestampTo->endOfDay())
-                          ->select(['statuses.*'])
-                          ->limit(2001)
-                          ->get();
+            // 'checkin.trip.stopovers', TODO: This eager load is doing weird things. Some Trips aren't loaded and this throws some http 500. Loading this manually is working.
+            'checkin.originStopover.station',
+            'checkin.destinationStopover.station',
+        ])
+            ->join('train_checkins', 'statuses.id', '=', 'train_checkins.status_id')
+            ->where('statuses.user_id', $user->id)
+            ->where('train_checkins.departure', '>=', $timestampFrom->startOfDay())
+            ->where('train_checkins.departure', '<=', $timestampTo->endOfDay())
+            ->select(['statuses.*'])
+            ->limit(2001)
+            ->get();
         // A user should only be able to export 2000 statuses at once to avoid memory
         // overflows. Thus, if the database returns 2001 entries (which is the limit),
         // there are `>2000` statuses in this time frame and the user must choose a
@@ -44,6 +44,7 @@ abstract class ExportController extends Controller
         if ($statuses->count() === 2001) {
             throw new DataOverflowException();
         }
+
         return $statuses;
     }
 
@@ -53,27 +54,28 @@ abstract class ExportController extends Controller
     public static function generateExport(
         Carbon $from,
         Carbon $until,
-        array  $columns,
+        array $columns,
         string $filetype
     ): HttpResponse|StreamedResponse {
         $data = self::getExportData($from, $until, $columns);
 
         if ($filetype === 'pdf') {
             return self::exportPdf(
-                from:    $from,
-                until:   $until,
+                from: $from,
+                until: $until,
                 columns: $columns,
-                data:    $data,
+                data: $data,
             );
         }
 
         if ($filetype === 'csv_human' || $filetype === 'csv_machine') {
             unset($columns['sum']);
+
             return self::exportCsv(
-                from:                  $from,
-                until:                 $until,
-                columns:               $columns,
-                data:                  $data,
+                from: $from,
+                until: $until,
+                columns: $columns,
+                data: $data,
                 humanReadableHeadings: $filetype === 'csv_human',
             );
         }
@@ -81,7 +83,8 @@ abstract class ExportController extends Controller
         throw new InvalidArgumentException('unsupported filetype');
     }
 
-    private static function getExportMapping(Status $status, ExportableColumn $column) {
+    private static function getExportMapping(Status $status, ExportableColumn $column)
+    {
 
         switch ($column) {
             case ExportableColumn::STATUS_ID:
@@ -127,6 +130,7 @@ abstract class ExportController extends Controller
                 foreach ($status->tags as $tag) {
                     $tags[$tag->key] = $tag->value;
                 }
+
                 return $tags;
             default:
                 throw new InvalidArgumentException('unsupported column');
@@ -136,16 +140,17 @@ abstract class ExportController extends Controller
     /**
      * @throws DataOverflowException
      */
-    public static function getExportData(Carbon $timestampFrom, Carbon $timestampTo, array &$columns): array {
-        $statuses    = self::getExportableStatuses(auth()->user(), $timestampFrom, $timestampTo);
-        $data        = [];
-        $tagKeys     = [];
-        $statusTags  = [];
+    public static function getExportData(Carbon $timestampFrom, Carbon $timestampTo, array &$columns): array
+    {
+        $statuses = self::getExportableStatuses(auth()->user(), $timestampFrom, $timestampTo);
+        $data = [];
+        $tagKeys = [];
+        $statusTags = [];
         $distanceSum = 0;
         $durationSum = 0;
-        $pointsSum   = 0;
+        $pointsSum = 0;
         foreach ($statuses as $key => $status) {
-            $row  = [];
+            $row = [];
             $tags = [];
 
             foreach ($columns as $column) {
@@ -187,7 +192,7 @@ abstract class ExportController extends Controller
         $data['sum'] = [
             ExportableColumn::DISTANCE->value => $distanceSum,
             ExportableColumn::DURATION->value => $durationSum,
-            ExportableColumn::POINTS->value   => $pointsSum,
+            ExportableColumn::POINTS->value => $pointsSum,
         ];
 
         array_push($columns, ...$tagKeys);
@@ -202,64 +207,68 @@ abstract class ExportController extends Controller
     /**
      * @throws DataOverflowException
      */
-    public static function exportJson(Carbon $begin, Carbon $end): JsonResponse {
-        $headers    = [
-            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
-            'Content-type'        => 'text/json',
+    public static function exportJson(Carbon $begin, Carbon $end): JsonResponse
+    {
+        $headers = [
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Content-type' => 'text/json',
             'Content-Disposition' => sprintf(
                 'attachment; filename="Traewelling_export_%s_to_%s.json"',
                 $begin->format('Y-m-d'),
                 $end->format('Y-m-d')
             ),
-            'Expires'             => '0',
-            'Pragma'              => 'public',
+            'Expires' => '0',
+            'Pragma' => 'public',
         ];
         $exportData = JsonExportController::generateExport(auth()->user(), $begin, $end);
+
         return Response::json(data: $exportData, headers: $headers);
     }
 
-    private static function exportPdf(Carbon $from, Carbon $until, array $columns, array $data): HttpResponse {
+    private static function exportPdf(Carbon $from, Carbon $until, array $columns, array $data): HttpResponse
+    {
         return Pdf::loadView('pdf.export-template', [
-            'begin'   => $from,
-            'end'     => $until,
+            'begin' => $from,
+            'end' => $until,
             'columns' => $columns,
-            'data'    => $data,
+            'data' => $data,
         ])
-                  ->setPaper('a4', 'landscape')
-                  ->download(
-                      sprintf(
-                          'Traewelling_export_%s_to_%s.pdf',
-                          $from->format('Y-m-d'),
-                          $until->format('Y-m-d')
-                      )
-                  );
+            ->setPaper('a4', 'landscape')
+            ->download(
+                sprintf(
+                    'Traewelling_export_%s_to_%s.pdf',
+                    $from->format('Y-m-d'),
+                    $until->format('Y-m-d')
+                )
+            );
     }
 
     private static function exportCsv(
         Carbon $from,
         Carbon $until,
-        array  $columns,
-        array  $data,
-        bool   $humanReadableHeadings = false
+        array $columns,
+        array $data,
+        bool $humanReadableHeadings = false
     ): StreamedResponse {
         $headers = [
-            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
-            'Content-type'        => 'text/csv',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Content-type' => 'text/csv',
             'Content-Disposition' => sprintf(
                 'attachment; filename="Traewelling_export_%s_to_%s.csv"',
                 $from->format('Y-m-d'),
                 $until->format('Y-m-d')
             ),
-            'Expires'             => '0',
-            'Pragma'              => 'public',
+            'Expires' => '0',
+            'Pragma' => 'public',
         ];
 
-        $fileStream = static function() use ($humanReadableHeadings, $columns, $data) {
-            $csv           = fopen('php://output', 'w');
+        $fileStream = static function () use ($humanReadableHeadings, $columns, $data) {
+            $csv = fopen('php://output', 'w');
             $stringColumns = [];
             foreach ($columns as $column) {
                 if ($humanReadableHeadings) {
                     $stringColumns[] = self::getColumnTitle($column);
+
                     continue;
                 }
                 $stringColumns[] = $column->value ?? $column;
@@ -277,16 +286,19 @@ abstract class ExportController extends Controller
         return Response::stream($fileStream, 200, $headers);
     }
 
-    public static function getColumnTitle(ExportableColumn|string $column): string {
+    public static function getColumnTitle(ExportableColumn|string $column): string
+    {
         if ($column instanceof ExportableColumn) {
             return $column->title();
         }
 
         $key = StatusTagKey::tryFrom($column);
+
         return $key?->title() ?? $column;
     }
 
-    public static function formatExportableColumn(ExportableColumn|string $column, mixed $value): string {
+    public static function formatExportableColumn(ExportableColumn|string $column, mixed $value): string
+    {
         if (empty($value)) {
             return '';
         }
@@ -299,10 +311,10 @@ abstract class ExportController extends Controller
             ExportableColumn::ARRIVAL_REAL,
             ExportableColumn::DEPARTURE_PLANNED,
             ExportableColumn::DEPARTURE_REAL => userTime($value, __('datetime-format')),
-            ExportableColumn::DISTANCE       => number($value / 1000),
-            ExportableColumn::DURATION       => durationToSpan(secondsToDuration($value * 60)),
-            ExportableColumn::POINTS         => number($value, 0),
-            default                          => (string) $value,
+            ExportableColumn::DISTANCE => number($value / 1000),
+            ExportableColumn::DURATION => durationToSpan(secondsToDuration($value * 60)),
+            ExportableColumn::POINTS => number($value, 0),
+            default => (string) $value,
         };
     }
 }

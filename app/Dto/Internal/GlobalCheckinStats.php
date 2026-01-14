@@ -10,6 +10,5 @@ readonly class GlobalCheckinStats
         public int $distance,
         public int $duration,
         public int $userCount,
-    ) {
-    }
+    ) {}
 }

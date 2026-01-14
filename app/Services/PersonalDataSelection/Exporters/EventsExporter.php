@@ -15,7 +15,9 @@ class EventsExporter extends AbstractExporter
 {
     use ModelExportable;
 
-    protected string $fileName    = 'events.json';
-    protected string $model       = Event::class;
+    protected string $fileName = 'events.json';
+
+    protected string $model = Event::class;
+
     protected string $whereColumn = 'approved_by';
 }

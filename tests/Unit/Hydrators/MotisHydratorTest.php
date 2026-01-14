@@ -21,98 +21,103 @@ use Tests\Unit\UnitTestCase;
 
 class MotisHydratorTest extends UnitTestCase
 {
-    public static function filterLicenseProvider(): array {
-        $license         = new MotisSourceLicense();
+    public static function filterLicenseProvider(): array
+    {
+        $license = new MotisSourceLicense();
         $license->active = true;
 
         return [
-            'no license'   => [
+            'no license' => [
                 'expected' => 0,
-                'license'  => null,
+                'license' => null,
             ],
             'with license' => [
                 'expected' => 3,
-                'license'  => $license
+                'license' => $license,
             ],
         ];
     }
 
-    private function getStations(): Collection {
+    private function getStations(): Collection
+    {
         $stations = [
             [
-                'id'                => '1',
-                'name'              => 'Start Station',
-                'stationIdentifier' => 'trwl-demo-station:station:1'
+                'id' => '1',
+                'name' => 'Start Station',
+                'stationIdentifier' => 'trwl-demo-station:station:1',
             ],
             [
-                'id'                => '2',
-                'name'              => 'End Station',
-                'stationIdentifier' => 'trwl-demo-station:station:3'
+                'id' => '2',
+                'name' => 'End Station',
+                'stationIdentifier' => 'trwl-demo-station:station:3',
             ],
             [
-                'id'                => '3',
-                'name'              => 'Middle Station',
-                'stationIdentifier' => 'trwl-demo-station:station:2'
+                'id' => '3',
+                'name' => 'Middle Station',
+                'stationIdentifier' => 'trwl-demo-station:station:2',
             ],
         ];
-        return collect($stations)->map(function($data) {
+
+        return collect($stations)->map(function ($data) {
             $station = Station::factory()
-                              ->make([
-                                         'name' => $data['name'],
-                                         'ibnr' => $data['stationIdentifier'],
-                                     ]);
+                ->make([
+                    'name' => $data['name'],
+                    'ibnr' => $data['stationIdentifier'],
+                ]);
             $station->setAttribute('id', $data['id']);
             $identifier = StationIdentifier::factory()->make([
-                                                                 'identifier' => $data['stationIdentifier'],
-                                                                 'type'       => StationIdentifierType::MOTIS,
-                                                                 'origin'     => DataProviderEnum::TRANSITOUS->value,
-                                                             ]);
+                'identifier' => $data['stationIdentifier'],
+                'type' => StationIdentifierType::MOTIS,
+                'origin' => DataProviderEnum::TRANSITOUS->value,
+            ]);
             $station->setRelation(
                 'stationIdentifiers',
                 collect()->push($identifier)
             );
+
             return $station;
         });
     }
 
-    private function getDepartures(): array {
+    private function getDepartures(): array
+    {
         return json_decode(file_get_contents(__DIR__ . '/_data/motis_departures.json'), true);
     }
 
     #[DataProvider('filterLicenseProvider')]
-    public function testMapDeparturesFilterLicense(int $expected, ?MotisSourceLicense $license): void {
+    public function test_map_departures_filter_license(int $expected, ?MotisSourceLicense $license): void
+    {
         Config::set('trwl.motis.filter_licenses', true);
 
         $mockRepo = $this->getMockBuilder(MotisLicenseRepository::class)
-                         ->disableOriginalConstructor()
-                         ->onlyMethods(['getLicense'])
-                         ->getMock();
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getLicense'])
+            ->getMock();
         $mockRepo->method('getLicense')
-                 ->willReturn($license);
+            ->willReturn($license);
 
         $mockStationRepo = $this->getMockBuilder(StationRepository::class)
-                                ->disableOriginalConstructor()
-                                ->onlyMethods(['getStationsByIdentifiers'])
-                                ->getMock();
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getStationsByIdentifiers'])
+            ->getMock();
         $mockStationRepo->method('getStationsByIdentifiers')
-                        ->willReturn($this->getStations());
+            ->willReturn($this->getStations());
 
         $mockOperatorRepo = $this->getMockBuilder(OperatorService::class)
-                                 ->disableOriginalConstructor()
-                                 ->onlyMethods(['parseTransitousOperator'])
-                                 ->getMock();
+            ->disableOriginalConstructor()
+            ->onlyMethods(['parseTransitousOperator'])
+            ->getMock();
         $mockOperatorRepo->method('parseTransitousOperator')
-                         ->willReturn(null);
+            ->willReturn(null);
 
         $mockLicenseService = $this->getMockBuilder(LicenseService::class)
-                                   ->disableOriginalConstructor()
-                                   ->onlyMethods(['getLicenseDataForSource'])
-                                   ->getMock();
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getLicenseDataForSource'])
+            ->getMock();
         $mockLicenseService->method('getLicenseDataForSource')
-                           ->willReturn(null);
+            ->willReturn(null);
 
-
-        $hydrator   = new MotisHydrator($mockRepo, $mockStationRepo, $mockOperatorRepo, $mockLicenseService);
+        $hydrator = new MotisHydrator($mockRepo, $mockStationRepo, $mockOperatorRepo, $mockLicenseService);
         $departures = $hydrator->mapDepartures($this->getDepartures(), Station::factory()->makeOne(), DataProviderEnum::TRANSITOUS);
 
         $this->assertCount($expected, $departures->departures);
@@ -120,5 +125,4 @@ class MotisHydratorTest extends UnitTestCase
         $removedCount = count($this->getDepartures()) - $expected;
         $this->assertEquals($removedCount, $departures->removedCount);
     }
-
 }

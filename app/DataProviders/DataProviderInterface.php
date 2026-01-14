@@ -17,6 +17,7 @@ interface DataProviderInterface
 
     /** @deprecated use getFilteredDepartures*/
     public function getDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false);
+
     public function getFilteredDepartures(Station $station, Carbon $when, int $duration = 15, ?TravelType $type = null, bool $localtime = false): FilteredDepartures;
 
     public function getNearbyStations(float $latitude, float $longitude, int $results);

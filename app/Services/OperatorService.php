@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Services;
 
@@ -11,36 +13,33 @@ use Illuminate\Support\Facades\Log;
 
 class OperatorService
 {
-    private const string MAPPING_FILE_PATH  = 'storage/operator-mapping.csv';
+    private const string MAPPING_FILE_PATH = 'storage/operator-mapping.csv';
+
     private const string OPERATOR_FILE_PATH = 'storage/operator-operators.csv';
 
     /**
      * Parses the given agency ID and agency name, and updates or creates an Operator.
-     *
-     * @param string|null $motisAgencyId
-     * @param string|null $motisAgencyName
-     *
-     * @return Operator|null
      */
-    public function parseTransitousOperator(?string $motisAgencyId, ?string $motisAgencyName, DataProvider $source): ?Operator {
-        $motisAgencyId   = trim($motisAgencyId ?? '');
+    public function parseTransitousOperator(?string $motisAgencyId, ?string $motisAgencyName, DataProvider $source): ?Operator
+    {
+        $motisAgencyId = trim($motisAgencyId ?? '');
         $motisAgencyName = trim($motisAgencyName ?? '');
         if (empty($motisAgencyId) || empty($motisAgencyName)) {
             Log::debug('Agency ID or name is null', [
-                'agencyId'   => $motisAgencyId,
+                'agencyId' => $motisAgencyId,
                 'agencyName' => $motisAgencyName,
             ]);
+
             return null;
         }
 
         // First: check if there is an entry in the database with the given motis_id and motis_name.
         $databaseOperator = OperatorIdentifier::where([
-                                                          'identifier' => $motisAgencyId,
-                                                          'type'       => 'motis',
-                                                          'source'     => 'transitous',
-                                                          'name'       => $motisAgencyName,
-                                                      ])->with('operator')->first()?->operator ?? null;
-
+            'identifier' => $motisAgencyId,
+            'type' => 'motis',
+            'source' => 'transitous',
+            'name' => $motisAgencyName,
+        ])->with('operator')->first()?->operator ?? null;
 
         // If the operator is already linked with a wikidata ID we don't need to evaluate any further
         if ($databaseOperator?->wikidata_id) {
@@ -63,9 +62,9 @@ class OperatorService
             $operator->identifiers()->updateOrCreate(
                 [
                     'identifier' => $motisAgencyId,
-                    'type'       => $source->isMotis() ? 'motis' : 'hafas',
-                    'source'     => $source->value,
-                    'name'       => $motisAgencyName,
+                    'type' => $source->isMotis() ? 'motis' : 'hafas',
+                    'source' => $source->value,
+                    'name' => $motisAgencyName,
                 ]
             );
         }
@@ -78,12 +77,14 @@ class OperatorService
      *
      * @return array Array of mappings (keys: motis_id, motis_name, wikidata_id).
      */
-    private function loadOperatorMappings(): array {
+    private function loadOperatorMappings(): array
+    {
         $mappingFilePath = base_path(self::MAPPING_FILE_PATH);
         Log::debug('Loading operator mapping CSV file', ['filePath' => $mappingFilePath]);
 
         if (!file_exists($mappingFilePath)) {
             Log::debug('Operator mapping file does not exist', ['filePath' => $mappingFilePath]);
+
             return [];
         }
 
@@ -95,6 +96,7 @@ class OperatorService
             if ($header === false) {
                 Log::debug('Error reading CSV header');
                 fclose($handle);
+
                 return [];
             }
 
@@ -116,12 +118,14 @@ class OperatorService
      *
      * @return array Array that maps each wikidata_id to its official name.
      */
-    private static function loadOperatorOfficialNames(): array {
+    private static function loadOperatorOfficialNames(): array
+    {
         $operatorFilePath = base_path(self::OPERATOR_FILE_PATH);
         Log::debug('Loading official operator names from CSV', ['filePath' => $operatorFilePath]);
 
         if (!file_exists($operatorFilePath)) {
             Log::debug('Official operator names file does not exist', ['filePath' => $operatorFilePath]);
+
             return [];
         }
 
@@ -132,6 +136,7 @@ class OperatorService
             if ($header === false) {
                 Log::debug('Error reading header from official names CSV');
                 fclose($handle);
+
                 return [];
             }
 
@@ -139,9 +144,9 @@ class OperatorService
                 if (count($data) !== count($header)) {
                     continue; // Skip malformed rows.
                 }
-                $row        = array_combine($header, $data);
+                $row = array_combine($header, $data);
                 $wikidataId = $row['wikidata_id'] ?? null;
-                $name       = $row['name'] ?? null;
+                $name = $row['name'] ?? null;
                 if ($wikidataId && $name) {
                     $officialOperators[$wikidataId] = $name;
                 }
@@ -155,15 +160,15 @@ class OperatorService
     /**
      * Searches for a mapping using the agency ID and agency name.
      *
-     * @param array  $operatorMappings The loaded operator mappings.
-     * @param string $motisAgencyId    The agency ID.
-     * @param string $motisAgencyName  The agency name.
-     *
+     * @param  array  $operatorMappings  The loaded operator mappings.
+     * @param  string  $motisAgencyId  The agency ID.
+     * @param  string  $motisAgencyName  The agency name.
      * @return array|null The found mapping or null if none is found.
      */
-    private function findMapping(array $operatorMappings, string $motisAgencyId, string $motisAgencyName): ?array {
+    private function findMapping(array $operatorMappings, string $motisAgencyId, string $motisAgencyName): ?array
+    {
         Log::debug('Starting mapping search', [
-            'agencyId'   => $motisAgencyId,
+            'agencyId' => $motisAgencyId,
             'agencyName' => $motisAgencyName,
         ]);
 
@@ -175,31 +180,35 @@ class OperatorService
                 && strtolower(trim($mapping['motis_name'])) === strtolower(trim($motisAgencyName))
             ) {
                 Log::debug('Mapping found', ['agencyId' => $motisAgencyId, 'agencyName' => $motisAgencyName]);
+
                 return $mapping;
             }
         }
 
         Log::debug('No mapping found');
+
         return null;
     }
 
-    public function refreshFiles(): void {
+    public function refreshFiles(): void
+    {
         $this->refreshFile('mapping', self::MAPPING_FILE_PATH);
         $this->refreshFile('operators', self::OPERATOR_FILE_PATH);
         $this->refreshOperators();
     }
 
-    private function refreshFile(string $remoteFilename, string $localFilename): void {
+    private function refreshFile(string $remoteFilename, string $localFilename): void
+    {
         $response = Http::get("https://raw.githubusercontent.com/Traewelling/transitous-wikidata-operator-matching/refs/heads/main/$remoteFilename.csv");
         if ($response->successful()) {
-            $csvContent      = $response->body();
+            $csvContent = $response->body();
             $mappingFilePath = base_path($localFilename);
             file_put_contents($mappingFilePath, $csvContent);
-            Log::debug("File updated", ['filePath' => $mappingFilePath]);
+            Log::debug('File updated', ['filePath' => $mappingFilePath]);
         } else {
             Log::error('Failed to fetch file.', [
                 'status' => $response->status(),
-                'body'   => $response->body(),
+                'body' => $response->body(),
             ]);
         }
     }
@@ -208,7 +217,8 @@ class OperatorService
      * After new operator.csv file is downloaded, this function is called to refresh the operators in the database.
      * Users can change the operator names in the CSV file, and this function will update the database accordingly.
      */
-    private function refreshOperators(): void {
+    private function refreshOperators(): void
+    {
         $operators = $this->loadOperatorOfficialNames();
         foreach ($operators as $wikidataId => $name) {
             Operator::updateOrCreate(
@@ -218,12 +228,13 @@ class OperatorService
         }
     }
 
-    public function mergeOperators(Operator $oldOperator, Operator $newOperator): void {
+    public function mergeOperators(Operator $oldOperator, Operator $newOperator): void
+    {
         Log::debug('Merging operators', [
             'oldOperatorId' => $oldOperator->id,
             'newOperatorId' => $newOperator->id,
         ]);
-        DB::transaction(function() use ($oldOperator, $newOperator) {
+        DB::transaction(function () use ($oldOperator, $newOperator) {
             // Update all trips to point to the new operator
             $oldOperator->trips()->update(['operator_id' => $newOperator->id]);
 
@@ -235,26 +246,26 @@ class OperatorService
             // Update columns with old values, if newOperator has null values
             // AFTER deletion so there are no conflicts (duplicate entry)
             $newOperator->update([
-                                     'wikidata_id' => !empty($newOperator->wikidata_id) ? $newOperator->wikidata_id : $oldOperator->wikidata_id,
-                                 ]);
+                'wikidata_id' => !empty($newOperator->wikidata_id) ? $newOperator->wikidata_id : $oldOperator->wikidata_id,
+            ]);
 
             Log::debug('Operators merged successfully', [
                 'oldOperatorId' => $oldOperator->id,
                 'newOperatorId' => $newOperator->id,
-                'wikidataId'    => $newOperator->wikidata_id,
+                'wikidataId' => $newOperator->wikidata_id,
             ]);
         });
     }
 
     public function findInMappings(
-        string       $motisAgencyId,
-        string       $motisAgencyName,
+        string $motisAgencyId,
+        string $motisAgencyName,
         DataProvider $source,
-        ?Operator    $dbOperator = null,
-    ): Operator|null {
+        ?Operator $dbOperator = null,
+    ): ?Operator {
         try {
             Log::debug('Starting operator parsing', [
-                'agencyId'   => $motisAgencyId,
+                'agencyId' => $motisAgencyId,
                 'agencyName' => $motisAgencyName,
             ]);
 
@@ -264,7 +275,7 @@ class OperatorService
 
             // Find a matching mapping based on agency ID or agency name.
             $foundMapping = $this->findMapping($operatorMappings, $motisAgencyId, $motisAgencyName);
-            $wikidataId   = $foundMapping['wikidata_id'] ?? null;
+            $wikidataId = $foundMapping['wikidata_id'] ?? null;
             Log::debug('Mapping search result', ['mappingFound' => !is_null($foundMapping)]);
 
             // If a mapping with a valid wikidata_id is found:
@@ -273,22 +284,22 @@ class OperatorService
 
                 // Load official operator names from the CSV file.
                 $officialNames = $this->loadOperatorOfficialNames();
-                $name          = $officialNames[$wikidataId] ?? ($foundMapping['motis_name'] ?? $motisAgencyName);
+                $name = $officialNames[$wikidataId] ?? ($foundMapping['motis_name'] ?? $motisAgencyName);
 
                 if ($dbOperator) {
                     Log::debug('Updating existing operator in database', [
                         'operatorId' => $dbOperator->id,
                         'wikidataId' => $wikidataId,
-                        'name'       => $name,
+                        'name' => $name,
                     ]);
 
                     $lookupWikidataId = Operator::where('wikidata_id', $wikidataId)->first();
 
                     if ($lookupWikidataId) {
                         Log::debug('Wikidata ID already exists in database', [
-                            'wikidataId'      => $wikidataId,
-                            'operatorId'      => $lookupWikidataId->id,
-                            'motisAgencyId'   => $motisAgencyId,
+                            'wikidataId' => $wikidataId,
+                            'operatorId' => $lookupWikidataId->id,
+                            'motisAgencyId' => $motisAgencyId,
                             'motisAgencyName' => $motisAgencyName,
                         ]);
 
@@ -297,9 +308,9 @@ class OperatorService
 
                     // Update the existing operator with the new wikidata_id and name.
                     return $dbOperator->update([
-                                                   'wikidata_id' => $wikidataId,
-                                                   'name'        => $name,
-                                               ]) ? $dbOperator : null;
+                        'wikidata_id' => $wikidataId,
+                        'name' => $name,
+                    ]) ? $dbOperator : null;
                 }
 
                 $operator = Operator::updateOrCreate(
@@ -309,9 +320,9 @@ class OperatorService
                 $operator->identifiers()->updateOrCreate(
                     [
                         'identifier' => $motisAgencyId,
-                        'type'       => $source->isMotis() ? 'motis' : 'hafas',
-                        'source'     => $source->value,
-                        'name'       => $motisAgencyName,
+                        'type' => $source->isMotis() ? 'motis' : 'hafas',
+                        'source' => $source->value,
+                        'name' => $motisAgencyName,
                     ]
                 );
 
@@ -324,6 +335,7 @@ class OperatorService
                 'exception' => $exception,
             ]);
         }
+
         return $dbOperator ?? null;
     }
 }

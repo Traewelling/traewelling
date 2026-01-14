@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class LikeFactory extends Factory
 {
-    public function definition(): array {
+    public function definition(): array
+    {
         return [
-            'user_id'   => User::factory(),
+            'user_id' => User::factory(),
             'status_id' => Status::factory(),
         ];
     }

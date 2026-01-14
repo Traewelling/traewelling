@@ -12,7 +12,9 @@ class EventSuggestionsExporter extends AbstractExporter
 {
     use ModelExportable;
 
-    protected string $fileName    = 'event_suggestions.json';
-    protected string $model       = EventSuggestion::class;
+    protected string $fileName = 'event_suggestions.json';
+
+    protected string $model = EventSuggestion::class;
+
     protected string $whereColumn = 'user_id';
 }

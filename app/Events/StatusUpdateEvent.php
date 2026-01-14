@@ -13,8 +13,9 @@ class StatusUpdateEvent
 
     public Status $status;
 
-    public function __construct(Status $status) {
+    public function __construct(Status $status)
+    {
         $this->status = $status;
-        Log::debug("Dispatching StatusUpdateEvent event for status#" . $status->id);
+        Log::debug('Dispatching StatusUpdateEvent event for status#' . $status->id);
     }
 }

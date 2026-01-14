@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Enum;
@@ -7,39 +8,43 @@ use App\Interfaces\IconEnumInterface;
 
 enum StatusTagKey: string implements IconEnumInterface
 {
-    case SEAT             = 'trwl:seat';
-    case WAGON            = 'trwl:wagon';
-    case TICKET           = 'trwl:ticket';
-    case TRAVEL_CLASS     = 'trwl:travel_class';
+    case SEAT = 'trwl:seat';
+    case WAGON = 'trwl:wagon';
+    case TICKET = 'trwl:ticket';
+    case TRAVEL_CLASS = 'trwl:travel_class';
     case LOCOMOTIVE_CLASS = 'trwl:locomotive_class';
-    case WAGON_CLASS      = 'trwl:wagon_class';
-    case ROLE             = 'trwl:role';
-    case VEHICLE_NUMBER   = 'trwl:vehicle_number';
+    case WAGON_CLASS = 'trwl:wagon_class';
+    case ROLE = 'trwl:role';
+    case VEHICLE_NUMBER = 'trwl:vehicle_number';
     case PASSENGER_RIGHTS = 'trwl:passenger_rights';
-    case JOURNEY_NUMBER   = 'trwl:journey_number';
-    case PRICE            = 'trwl:price';
+    case JOURNEY_NUMBER = 'trwl:journey_number';
+    case PRICE = 'trwl:price';
 
-    public function faIcon(): ?string {
+    public function faIcon(): ?string
+    {
         return match ($this) {
-            self::SEAT             => 'fa-couch',
-            self::ROLE             => 'fa-briefcase',
-            self::TICKET           => 'fa-qrcode',
+            self::SEAT => 'fa-couch',
+            self::ROLE => 'fa-briefcase',
+            self::TICKET => 'fa-qrcode',
             self::PASSENGER_RIGHTS => 'fa-user-shield',
-            self::JOURNEY_NUMBER   => 'fa-hashtag',
-            self::PRICE            => 'fa-money-bill-wave',
-            default                => null,
+            self::JOURNEY_NUMBER => 'fa-hashtag',
+            self::PRICE => 'fa-money-bill-wave',
+            default => null,
         };
     }
 
-    public function title(): ?string {
+    public function title(): ?string
+    {
         $title = __('tag.title.' . $this->value);
         if (str_starts_with($title, 'tag.title.')) {
             return $this->value;
         }
+
         return $title;
     }
 
-    public function description(): ?string {
+    public function description(): ?string
+    {
         return null;
     }
 }

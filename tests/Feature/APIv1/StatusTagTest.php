@@ -6,17 +6,16 @@ use App\Enum\StatusVisibility;
 use App\Models\Status;
 use App\Models\StatusTag;
 use App\Models\User;
-use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
 
 class StatusTagTest extends ApiTestCase
 {
-
     use RefreshDatabase;
 
-    public function testViewNonExistingTagsOnOwnStatus(): void {
+    public function test_view_non_existing_tags_on_own_status(): void
+    {
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
         $status = Status::factory(['user_id' => $user->id])->create();
@@ -26,10 +25,11 @@ class StatusTagTest extends ApiTestCase
         $response->assertJsonCount(0, 'data');
     }
 
-    public function testViewTagsOnOwnStatusWithDifferentVisibilitiesAndDeleteOne(): void {
+    public function test_view_tags_on_own_status_with_different_visibilities_and_delete_one(): void
+    {
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
-        $status      = Status::factory(['user_id' => $user->id])->create();
+        $status = Status::factory(['user_id' => $user->id])->create();
         $tagToDelete = StatusTag::factory(['status_id' => $status->id, 'key' => 'first', 'visibility' => StatusVisibility::PUBLIC->value])->create();
         StatusTag::factory(['status_id' => $status->id, 'key' => 'second', 'visibility' => StatusVisibility::FOLLOWERS->value])->create();
         StatusTag::factory(['status_id' => $status->id, 'key' => 'third', 'visibility' => StatusVisibility::PRIVATE->value])->create();
@@ -37,19 +37,19 @@ class StatusTagTest extends ApiTestCase
 
         $response = $this->get('/api/v1/status/' . $status->id . '/tags');
         $response->assertJsonStructure([
-                                           'data' => [
-                                               '*' => [
-                                                   'key',
-                                                   'value',
-                                                   'visibility',
-                                               ]
-                                           ]
-                                       ]);
+            'data' => [
+                '*' => [
+                    'key',
+                    'value',
+                    'visibility',
+                ],
+            ],
+        ]);
         $response->assertJsonCount(4, 'data');
 
         $this->assertDatabaseHas('status_tags', ['id' => $tagToDelete->id]);
 
-        //Delete StatusTag
+        // Delete StatusTag
         $response = $this->delete('/api/v1/status/' . $status->id . '/tags/' . $tagToDelete->key);
         $response->assertOk();
         $response->assertJson(['status' => 'success']);
@@ -57,47 +57,48 @@ class StatusTagTest extends ApiTestCase
         $this->assertDatabaseMissing('status_tags', ['id' => $tagToDelete->id]);
     }
 
-    public function testCreateAndUpdateTag(): void {
+    public function test_create_and_update_tag(): void
+    {
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
         $status = Status::factory(['user_id' => $user->id])->create();
 
-        //Create StatusTag
+        // Create StatusTag
         $response = $this->post(
-            uri:  '/api/v1/status/' . $status->id . '/tags',
+            uri: '/api/v1/status/' . $status->id . '/tags',
             data: [
-                      'key'        => 'test',
-                      'value'      => 'test',
-                      'visibility' => StatusVisibility::PUBLIC->value,
-                  ],
+                'key' => 'test',
+                'value' => 'test',
+                'visibility' => StatusVisibility::PUBLIC->value,
+            ],
         );
         $response->assertOk();
         $response->assertJson([
-                                  'data' => [
-                                      'key'        => 'test',
-                                      'value'      => 'test',
-                                      'visibility' => StatusVisibility::PUBLIC->value,
-                                  ]
-                              ]);
+            'data' => [
+                'key' => 'test',
+                'value' => 'test',
+                'visibility' => StatusVisibility::PUBLIC->value,
+            ],
+        ]);
 
         $this->assertDatabaseHas('status_tags', ['status_id' => $status->id, 'key' => 'test', 'value' => 'test', 'visibility' => StatusVisibility::PUBLIC->value]);
 
-        //Update StatusTag and change key and value
+        // Update StatusTag and change key and value
         $response = $this->put(
-            uri:  '/api/v1/status/' . $status->id . '/tags/test',
+            uri: '/api/v1/status/' . $status->id . '/tags/test',
             data: [
-                      'key'   => 'test2',
-                      'value' => 'test2',
-                  ],
+                'key' => 'test2',
+                'value' => 'test2',
+            ],
         );
         $response->assertOk();
         $response->assertJson([
-                                  'data' => [
-                                      'key'        => 'test2',
-                                      'value'      => 'test2',
-                                      'visibility' => StatusVisibility::PUBLIC->value,
-                                  ]
-                              ]);
+            'data' => [
+                'key' => 'test2',
+                'value' => 'test2',
+                'visibility' => StatusVisibility::PUBLIC->value,
+            ],
+        ]);
 
         $this->assertDatabaseMissing('status_tags', ['status_id' => $status->id, 'key' => 'test', 'value' => 'test', 'visibility' => StatusVisibility::PUBLIC->value]);
         $this->assertDatabaseHas('status_tags', ['status_id' => $status->id, 'key' => 'test2', 'value' => 'test2', 'visibility' => StatusVisibility::PUBLIC->value]);

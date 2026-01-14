@@ -23,6 +23,7 @@ class LicenseDto
      * )
      */
     public string $licenseName;
+
     /**
      * @OA\Property(
      *     property="attributionString",
@@ -32,6 +33,7 @@ class LicenseDto
      * )
      */
     public ?string $attributionString;
+
     /**
      * @OA\Property(
      * property="licenseUrl",
@@ -41,6 +43,7 @@ class LicenseDto
      * ),
      */
     public ?string $licenseUrl;
+
     /**
      * @OA\Property(
      *      property="sourceUrl",
@@ -52,14 +55,14 @@ class LicenseDto
     public ?string $sourceUrl;
 
     public function __construct(
-        string  $licenseName,
+        string $licenseName,
         ?string $attributionString = null,
         ?string $licenseUrl = null,
         ?string $sourceUrl = null
     ) {
-        $this->licenseName       = $licenseName;
+        $this->licenseName = $licenseName;
         $this->attributionString = $attributionString;
-        $this->licenseUrl        = $licenseUrl;
-        $this->sourceUrl         = $sourceUrl;
+        $this->licenseUrl = $licenseUrl;
+        $this->sourceUrl = $sourceUrl;
     }
 }

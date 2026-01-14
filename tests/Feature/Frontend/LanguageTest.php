@@ -10,10 +10,11 @@ class LanguageTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    public function testBrowserHasValidLanguageCode(): void {
+    public function test_browser_has_valid_language_code(): void
+    {
         $this->assertGuest();
         $response = $this->get(
-            uri:     route('login'),
+            uri: route('login'),
             headers: ['Accept-Language' => 'de'],
         );
         $response->assertOk();
@@ -22,10 +23,11 @@ class LanguageTest extends FeatureTestCase
         $this->assertGuest();
     }
 
-    public function testBrowserHasInvalidLanguageCode(): void {
+    public function test_browser_has_invalid_language_code(): void
+    {
         $this->assertGuest();
         $response = $this->get(
-            uri:     route('login'),
+            uri: route('login'),
             headers: ['Accept-Language' => 'zz'],
         );
         $response->assertOk();
@@ -34,7 +36,8 @@ class LanguageTest extends FeatureTestCase
         $this->assertGuest();
     }
 
-    public function testRequestHasValidLanguageCode(): void {
+    public function test_request_has_valid_language_code(): void
+    {
         $this->assertGuest();
         $response = $this->get(
             uri: route('login', ['language' => 'de']),
@@ -45,7 +48,8 @@ class LanguageTest extends FeatureTestCase
         $this->assertGuest();
     }
 
-    public function testRequestHasInvalidLanguageCode(): void {
+    public function test_request_has_invalid_language_code(): void
+    {
         $this->assertGuest();
         $response = $this->get(
             uri: route('login', ['language' => 'zz']),
@@ -55,20 +59,22 @@ class LanguageTest extends FeatureTestCase
         $this->assertGuest();
     }
 
-    public function testRequestHasValidLanguageCodeWithLoggedInUser(): void {
-        $user     = User::factory()->create();
+    public function test_request_has_valid_language_code_with_logged_in_user(): void
+    {
+        $user = User::factory()->create();
         $this->assertDatabaseMissing('users', ['username' => $user->username, 'language' => 'de']);
         $response = $this->actingAs($user)
-                         ->get(route('dashboard', ['language' => 'de']));
+            ->get(route('dashboard', ['language' => 'de']));
         $response->assertOk();
         $response->assertViewIs('dashboard');
         $this->assertDatabaseHas('users', ['username' => $user->username, 'language' => 'de']);
     }
 
-    public function testLoggedInUsersWithSavedLanguageInProfile(): void {
-        $user     = User::factory(['language' => 'de'])->create();
+    public function test_logged_in_users_with_saved_language_in_profile(): void
+    {
+        $user = User::factory(['language' => 'de'])->create();
         $response = $this->actingAs($user)
-                         ->get(route('settings.profile'));
+            ->get(route('settings.profile'));
         $response->assertOk();
         $response->assertViewIs('settings.profile');
         $response->assertSee(__('menu.settings', [], 'de'));

@@ -24,7 +24,8 @@ class CheckinRequestHydratorTest extends UnitTestCase
     /**
      * @throws Exception
      */
-    public function setUp(): void {
+    protected function setUp(): void
+    {
         parent::setUp();
         $this->user = $this->createMock(Authenticatable::class);
     }
@@ -34,10 +35,11 @@ class CheckinRequestHydratorTest extends UnitTestCase
      * @throws Exception
      * @throws \JsonException
      */
-    public function testHydrateFromAdminWithFullArray() {
-        $origin      = $this->mock(Station::class);
+    public function test_hydrate_from_admin_with_full_array()
+    {
+        $origin = $this->mock(Station::class);
         $destination = $this->createMock(Station::class);
-        $repository  = $this->mock(CheckinHydratorRepository::class);
+        $repository = $this->mock(CheckinHydratorRepository::class);
         $repository->shouldReceive('getOneStation')->once()->andReturn($origin);
 
         $stopover = $this->mock(Stopover::class);
@@ -47,25 +49,24 @@ class CheckinRequestHydratorTest extends UnitTestCase
         $repository->shouldReceive('findEvent')->never();
         $repository->shouldReceive('getHafasTrip')->once()->with('1234', 'ICE 123');
 
-
         $array = [
-            'body'                => 'Test',
-            'business'            => Business::BUSINESS->value,
-            'visibility'          => StatusVisibility::PRIVATE->value,
-            'eventId'             => null,
-            'toot'                => false,
-            'chainPost'           => false,
-            'ibnr'                => false,
-            'tripId'              => '1234',
-            'lineName'            => 'ICE 123',
-            'start'               => 1234,
+            'body' => 'Test',
+            'business' => Business::BUSINESS->value,
+            'visibility' => StatusVisibility::PRIVATE->value,
+            'eventId' => null,
+            'toot' => false,
+            'chainPost' => false,
+            'ibnr' => false,
+            'tripId' => '1234',
+            'lineName' => 'ICE 123',
+            'start' => 1234,
             'destinationStopover' => 4321,
-            'departure'           => '2021-12-12 15:00:00',
-            'force'               => true
+            'departure' => '2021-12-12 15:00:00',
+            'force' => true,
         ];
 
         $hydrator = new CheckinRequestHydrator($array, $this->user, null, $repository);
-        $dto      = $hydrator->hydrateFromAdmin();
+        $dto = $hydrator->hydrateFromAdmin();
 
         $this->assertFalse($dto->postOnMastodonFlag);
         $this->assertTrue($dto->forceFlag);
@@ -85,36 +86,35 @@ class CheckinRequestHydratorTest extends UnitTestCase
      * @throws DataProviderException
      * @throws Exception
      */
-    public function testHydrateFromApiWithFullArray() {
-        $origin      = $this->mock(Station::class);
+    public function test_hydrate_from_api_with_full_array()
+    {
+        $origin = $this->mock(Station::class);
         $destination = $this->createMock(Station::class);
-        $repository  = $this->mock(CheckinHydratorRepository::class);
+        $repository = $this->mock(CheckinHydratorRepository::class);
         $repository->shouldReceive('getOneStation')->with('id', 4321)->andReturn($destination);
         $repository->shouldReceive('getOneStation')->with('id', 1234)->andReturn($origin);
         $repository->shouldReceive('getHafasTrip')->once();
         $repository->shouldReceive('findEvent')->never();
 
-
         $array = [
-            'body'        => 'Test',
-            'business'    => Business::PRIVATE->value,
-            'visibility'  => StatusVisibility::PUBLIC->value,
-            'eventId'     => null,
-            'toot'        => false,
-            'chainPost'   => true,
-            'ibnr'        => false,
-            'tripId'      => '1234',
-            'lineName'    => 'ICE 123',
-            'start'       => 1234,
+            'body' => 'Test',
+            'business' => Business::PRIVATE->value,
+            'visibility' => StatusVisibility::PUBLIC->value,
+            'eventId' => null,
+            'toot' => false,
+            'chainPost' => true,
+            'ibnr' => false,
+            'tripId' => '1234',
+            'lineName' => 'ICE 123',
+            'start' => 1234,
             'destination' => 4321,
-            'departure'   => '2021-12-12 15:00:00',
-            'arrival'     => '2021-12-12 15:32:45',
-            'force'       => false
+            'departure' => '2021-12-12 15:00:00',
+            'arrival' => '2021-12-12 15:32:45',
+            'force' => false,
         ];
 
         $hydrator = new CheckinRequestHydrator($array, $this->user, null, $repository);
-        $dto      = $hydrator->hydrateFromApi();
-
+        $dto = $hydrator->hydrateFromApi();
 
         $this->assertFalse($dto->postOnMastodonFlag);
         $this->assertFalse($dto->forceFlag);
@@ -130,37 +130,35 @@ class CheckinRequestHydratorTest extends UnitTestCase
         $this->assertNull($dto->event);
     }
 
-
     /**
      * @throws DataProviderException
      * @throws Exception
      */
-    public function testHydrateFromApiWithNullableFields() {
-        $origin      = $this->mock(Station::class);
+    public function test_hydrate_from_api_with_nullable_fields()
+    {
+        $origin = $this->mock(Station::class);
         $destination = $this->createMock(Station::class);
-        $repository  = $this->mock(CheckinHydratorRepository::class);
+        $repository = $this->mock(CheckinHydratorRepository::class);
         $repository->shouldReceive('getOneStation')->with('id', 4321)->andReturn($destination);
         $repository->shouldReceive('getOneStation')->with('id', 1234)->andReturn($origin);
         $repository->shouldReceive('getHafasTrip')->once();
         $repository->shouldReceive('findEvent')->never();
 
-
         $array = [
-            'business'    => Business::PRIVATE->value,
-            'visibility'  => StatusVisibility::PUBLIC->value,
-            'toot'        => false,
-            'chainPost'   => true,
-            'tripId'      => '1234',
-            'lineName'    => 'ICE 123',
-            'start'       => 1234,
+            'business' => Business::PRIVATE->value,
+            'visibility' => StatusVisibility::PUBLIC->value,
+            'toot' => false,
+            'chainPost' => true,
+            'tripId' => '1234',
+            'lineName' => 'ICE 123',
+            'start' => 1234,
             'destination' => 4321,
-            'departure'   => '2021-12-12 15:00:00',
-            'arrival'     => '2021-12-12 15:32:45',
+            'departure' => '2021-12-12 15:00:00',
+            'arrival' => '2021-12-12 15:32:45',
         ];
 
         $hydrator = new CheckinRequestHydrator($array, $this->user, null, $repository);
-        $dto      = $hydrator->hydrateFromApi();
-
+        $dto = $hydrator->hydrateFromApi();
 
         $this->assertFalse($dto->postOnMastodonFlag);
         $this->assertFalse($dto->forceFlag);
@@ -176,40 +174,38 @@ class CheckinRequestHydratorTest extends UnitTestCase
         $this->assertNull($dto->event);
     }
 
-
     /**
      * @throws DataProviderException
      * @throws Exception
      */
-    public function testHydrateFromApiWithEventAndForceId() {
-        $origin      = $this->mock(Station::class);
+    public function test_hydrate_from_api_with_event_and_force_id()
+    {
+        $origin = $this->mock(Station::class);
         $destination = $this->createMock(Station::class);
-        $event       = $this->createMock(Event::class);
-        $repository  = $this->mock(CheckinHydratorRepository::class);
+        $event = $this->createMock(Event::class);
+        $repository = $this->mock(CheckinHydratorRepository::class);
         $repository->shouldReceive('getOneStation')->with('ibnr', 4321)->andReturn($destination);
         $repository->shouldReceive('getOneStation')->with('ibnr', 1234)->andReturn($origin);
         $repository->shouldReceive('getHafasTrip')->once();
         $repository->shouldReceive('findEvent')->once()->with(123)->andReturn($event);
 
-
         $array = [
-            'business'    => Business::PRIVATE->value,
-            'visibility'  => StatusVisibility::PUBLIC->value,
-            'toot'        => false,
-            'chainPost'   => true,
-            'tripId'      => '1234',
-            'lineName'    => 'ICE 123',
-            'start'       => 1234,
+            'business' => Business::PRIVATE->value,
+            'visibility' => StatusVisibility::PUBLIC->value,
+            'toot' => false,
+            'chainPost' => true,
+            'tripId' => '1234',
+            'lineName' => 'ICE 123',
+            'start' => 1234,
             'destination' => 4321,
-            'departure'   => '2021-12-12 15:00:00',
-            'arrival'     => '2021-12-12 15:32:45',
-            'ibnr'        => true,
-            'eventId'       => 123,
+            'departure' => '2021-12-12 15:00:00',
+            'arrival' => '2021-12-12 15:32:45',
+            'ibnr' => true,
+            'eventId' => 123,
         ];
 
         $hydrator = new CheckinRequestHydrator($array, $this->user, null, $repository);
-        $dto      = $hydrator->hydrateFromApi();
-
+        $dto = $hydrator->hydrateFromApi();
 
         $this->assertFalse($dto->postOnMastodonFlag);
         $this->assertFalse($dto->forceFlag);

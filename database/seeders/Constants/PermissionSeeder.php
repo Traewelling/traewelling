@@ -12,38 +12,39 @@ use Spatie\Permission\Models\Role;
  */
 class PermissionSeeder extends Seeder
 {
-    public function run(): void {
-        //Create roles
-        $roleAdmin                  = Role::updateOrCreate(['name' => 'admin']);
-        $roleEventModerator         = Role::updateOrCreate(['name' => 'event-moderator']);
-        $roleOpenBeta               = Role::updateOrCreate(['name' => 'open-beta']);
-        $roleClosedBeta             = Role::updateOrCreate(['name' => 'closed-beta']);
-        $roleDisallowManualTrips    = Role::updateOrCreate(['name' => 'disallow-manual-trips']);
+    public function run(): void
+    {
+        // Create roles
+        $roleAdmin = Role::updateOrCreate(['name' => 'admin']);
+        $roleEventModerator = Role::updateOrCreate(['name' => 'event-moderator']);
+        $roleOpenBeta = Role::updateOrCreate(['name' => 'open-beta']);
+        $roleClosedBeta = Role::updateOrCreate(['name' => 'closed-beta']);
+        $roleDisallowManualTrips = Role::updateOrCreate(['name' => 'disallow-manual-trips']);
         $roleDeactivateAccountUsage = Role::updateOrCreate(['name' => 'deactivate-account-usage']);
-        Role::updateOrCreate(['name' => 'test-gdpr-export']);                                                    //TODO: remove this permission when GDPR export is no longer in testing
+        Role::updateOrCreate(['name' => 'test-gdpr-export']);                                                    // TODO: remove this permission when GDPR export is no longer in testing
 
-        //Create permissions
-        $permissionViewBackend                    = Permission::updateOrCreate(['name' => 'view-backend']);
-        $permissionViewEvents                     = Permission::updateOrCreate(['name' => 'view-events']);
-        $permissionAcceptEvents                   = Permission::updateOrCreate(['name' => 'accept-events']);
-        $permissionDenyEvents                     = Permission::updateOrCreate(['name' => 'deny-events']);
-        $permissionCreateEvents                   = Permission::updateOrCreate(['name' => 'create-events']);
-        $permissionUpdateEvents                   = Permission::updateOrCreate(['name' => 'update-events']);
-        $permissionDeleteEvents                   = Permission::updateOrCreate(['name' => 'delete-events']);
-        $permissionCreateManualTrip               = Permission::updateOrCreate(['name' => 'create-manual-trip']);
-        $permissionViewActivity                   = Permission::updateOrCreate(['name' => 'view activity']);
-        $permissionViewEventHistory               = Permission::updateOrCreate(['name' => 'view event history']);
-        $permissionCreateStations                 = Permission::updateOrCreate(['name' => 'create stations']);
-        $permissionUpdateStations                 = Permission::updateOrCreate(['name' => 'update stations']);
-        $permissionDeleteStations                 = Permission::updateOrCreate(['name' => 'delete stations']);
-        $permissionDisallowManualTrips            = Permission::updateOrCreate(['name' => 'disallow-manual-trips']);
-        $permissionDisallowStatusCreation         = Permission::updateOrCreate(['name' => 'disallow-status-creation']);
+        // Create permissions
+        $permissionViewBackend = Permission::updateOrCreate(['name' => 'view-backend']);
+        $permissionViewEvents = Permission::updateOrCreate(['name' => 'view-events']);
+        $permissionAcceptEvents = Permission::updateOrCreate(['name' => 'accept-events']);
+        $permissionDenyEvents = Permission::updateOrCreate(['name' => 'deny-events']);
+        $permissionCreateEvents = Permission::updateOrCreate(['name' => 'create-events']);
+        $permissionUpdateEvents = Permission::updateOrCreate(['name' => 'update-events']);
+        $permissionDeleteEvents = Permission::updateOrCreate(['name' => 'delete-events']);
+        $permissionCreateManualTrip = Permission::updateOrCreate(['name' => 'create-manual-trip']);
+        $permissionViewActivity = Permission::updateOrCreate(['name' => 'view activity']);
+        $permissionViewEventHistory = Permission::updateOrCreate(['name' => 'view event history']);
+        $permissionCreateStations = Permission::updateOrCreate(['name' => 'create stations']);
+        $permissionUpdateStations = Permission::updateOrCreate(['name' => 'update stations']);
+        $permissionDeleteStations = Permission::updateOrCreate(['name' => 'delete stations']);
+        $permissionDisallowManualTrips = Permission::updateOrCreate(['name' => 'disallow-manual-trips']);
+        $permissionDisallowStatusCreation = Permission::updateOrCreate(['name' => 'disallow-status-creation']);
         $permissionDisallowStatusVisibilityChange = Permission::updateOrCreate(['name' => 'disallow-status-visibility-change']);
-        $permissionDisallowSocialInteraction      = Permission::updateOrCreate(['name' => 'disallow-social-interaction']);
-        $permissionUseTransitous                  = Permission::updateOrCreate(['name' => 'use-transitous']);
-        $permissionAlertManage                    = Permission::updateOrCreate(['name' => 'alerts.manage']);
+        $permissionDisallowSocialInteraction = Permission::updateOrCreate(['name' => 'disallow-social-interaction']);
+        $permissionUseTransitous = Permission::updateOrCreate(['name' => 'use-transitous']);
+        $permissionAlertManage = Permission::updateOrCreate(['name' => 'alerts.manage']);
 
-        //Assign permissions to admin role
+        // Assign permissions to admin role
         $roleAdmin->givePermissionTo($permissionViewBackend);
         $roleAdmin->givePermissionTo($permissionViewEvents);
         $roleAdmin->givePermissionTo($permissionAcceptEvents);
@@ -59,27 +60,27 @@ class PermissionSeeder extends Seeder
         $roleAdmin->givePermissionTo($permissionDeleteStations);
         $roleAdmin->givePermissionTo($permissionAlertManage);
 
-        //Assign permissions to disallow-manual-trips role
+        // Assign permissions to disallow-manual-trips role
         $roleDisallowManualTrips->givePermissionTo($permissionDisallowManualTrips);
 
-        //Assign permissions to deactivate-account-usage role
+        // Assign permissions to deactivate-account-usage role
         $roleDeactivateAccountUsage->givePermissionTo($permissionDisallowManualTrips);
         $roleDeactivateAccountUsage->givePermissionTo($permissionDisallowStatusCreation);
         $roleDeactivateAccountUsage->givePermissionTo($permissionDisallowStatusVisibilityChange);
         $roleDeactivateAccountUsage->givePermissionTo($permissionDisallowSocialInteraction);
 
-        //Assign permissions to event-moderator role
+        // Assign permissions to event-moderator role
         $roleEventModerator->givePermissionTo($permissionViewBackend);
         $roleEventModerator->givePermissionTo($permissionViewEvents);
         $roleEventModerator->givePermissionTo($permissionAcceptEvents);
         $roleEventModerator->givePermissionTo($permissionDenyEvents);
         $roleEventModerator->givePermissionTo($permissionUpdateEvents);
 
-        //Revoke permissions from closed-beta role
-        $roleClosedBeta->revokePermissionTo($permissionCreateManualTrip);                                        //now in open-beta
+        // Revoke permissions from closed-beta role
+        $roleClosedBeta->revokePermissionTo($permissionCreateManualTrip);                                        // now in open-beta
         $roleClosedBeta->revokePermissionTo($permissionUseTransitous);                                           // now released
 
-        //Assign permissions to open-beta role
+        // Assign permissions to open-beta role
         $roleOpenBeta->givePermissionTo($permissionCreateManualTrip);
     }
 }

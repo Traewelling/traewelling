@@ -18,42 +18,49 @@ class StaticPagesThatMightHaveComputedPropertiesTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    public function testHomepageGet() {
+    public function test_homepage_get()
+    {
         $response = $this->get('/');
         $response->assertOk();
     }
 
-    public function testLoginGet() {
+    public function test_login_get()
+    {
         $response = $this->get('/login');
         $response->assertOk();
     }
 
-    public function testRegisterGet() {
+    public function test_register_get()
+    {
         $response = $this->get('/register');
         $response->assertOk();
     }
 
-    public function testLeaderboardGet() {
+    public function test_leaderboard_get()
+    {
         $response = $this->get('/leaderboard');
         $response->assertOk();
     }
 
-    public function testLegalNoticeGet() {
+    public function test_legal_notice_get()
+    {
         $response = $this->get('/legal/');
         $response->assertOk();
     }
 
-    public function testPrivacyGet() {
+    public function test_privacy_get()
+    {
         $response = $this->get('/legal/privacy-policy');
         $response->assertOk();
     }
 
-    public function testProfilePageGet() {
+    public function test_profile_page_get()
+    {
         // GIVEN: A gdpr-acked user
         $user = User::factory()->create();
 
         // WHEN: Someone visits the user's profile page
-        $response = $this->get(route('profile', ["username" => $user->username]));
+        $response = $this->get(route('profile', ['username' => $user->username]));
 
         // THEN: The page is rendered and shows the user's name and username
         $response->assertOk();

@@ -11,8 +11,9 @@ class CreateMastodonServersTable extends Migration
      *
      * @return void
      */
-    public function up() {
-        Schema::create('mastodon_servers', function(Blueprint $table) {
+    public function up()
+    {
+        Schema::create('mastodon_servers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('domain')->unique();
             $table->string('client_id');
@@ -26,7 +27,8 @@ class CreateMastodonServersTable extends Migration
      *
      * @return void
      */
-    public function down() {
+    public function down()
+    {
         Schema::dropIfExists('mastodon_servers');
     }
 }

@@ -2,7 +2,4 @@
 
 namespace App\Exceptions;
 
-class UnknownDataProvider extends \RuntimeException
-{
-
-}
+class UnknownDataProvider extends \RuntimeException {}

@@ -2,6 +2,4 @@
 
 namespace App\Http\Controllers\Backend\Support;
 
-class AdminLocationController extends LocationController
-{
-}
+class AdminLocationController extends LocationController {}

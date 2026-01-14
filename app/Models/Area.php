@@ -11,15 +11,17 @@ class Area extends Model
     use HasUuids;
 
     protected $fillable = ['id', 'name', 'adminLevel'];
-    protected $casts    = [
-        'id'         => 'string',
-        'name'       => 'string',
+
+    protected $casts = [
+        'id' => 'string',
+        'name' => 'string',
         'adminLevel' => 'integer',
     ];
 
-    public function stations(): BelongsToMany {
+    public function stations(): BelongsToMany
+    {
         return $this->belongsToMany(Station::class, 'areas_stations_maps')
-                    ->withPivot(['default'])
-                    ->using(AreasStationsMap::class);
+            ->withPivot(['default'])
+            ->using(AreasStationsMap::class);
     }
 }

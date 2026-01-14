@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 interface BaseNotification
 {
-
     public static function getLead(array $data): string;
 
     public static function getNotice(array $data): ?string;

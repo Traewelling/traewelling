@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'env'         => env('APP_ENV', 'production'),
+    'env' => env('APP_ENV', 'production'),
     'force-https' => env('FORCE_HTTPS', false),
     /*
     |--------------------------------------------------------------------------
@@ -69,7 +69,7 @@ return [
     |
     */
 
-    'timezone'         => 'UTC',
+    'timezone' => 'UTC',
 
     // This timezone will be used for displaying time in the frontend, when not logged in.
     'display_timezone' => env('DISPLAY_TIMEZONE', 'Europe/Berlin'),
@@ -85,24 +85,24 @@ return [
     |
     */
 
-    'locale'  => 'de',
+    'locale' => 'de',
     'locales' => [
-        'cs'     => 'Čeština',
-        'de'     => 'Deutsch',
-        'de_he'  => 'Deutsch (Südhessisch)',
+        'cs' => 'Čeština',
+        'de' => 'Deutsch',
+        'de_he' => 'Deutsch (Südhessisch)',
         'de_pfl' => 'Deutsch (Pfälzisch)',
-        'de_by'  => 'Deutsch (Bayerisch)',
-        'en'     => 'English',
-        'es'     => 'Spanish',
-        'is'     => 'Íslenska',
-        'it'     => 'Italiano',
-        'fr'     => 'Français',
-        'nb_NO'  => 'Norwegian Bokmål',
-        'nl'     => 'Nederlands',
-        'sv'     => 'Svenska',
-        'pl'     => 'Polski',
-        'pt'     => 'Português',
-        'tr'     => 'Türkçe',
+        'de_by' => 'Deutsch (Bayerisch)',
+        'en' => 'English',
+        'es' => 'Spanish',
+        'is' => 'Íslenska',
+        'it' => 'Italiano',
+        'fr' => 'Français',
+        'nb_NO' => 'Norwegian Bokmål',
+        'nl' => 'Nederlands',
+        'sv' => 'Svenska',
+        'pl' => 'Polski',
+        'pt' => 'Português',
+        'tr' => 'Türkçe',
     ],
 
     /*
@@ -189,7 +189,7 @@ return [
          * Package Service Providers...
          */
         Laravel\Socialite\SocialiteServiceProvider::class,
-        //Barryvdh\Debugbar\ServiceProvider::class,
+        // Barryvdh\Debugbar\ServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
 
         /*
@@ -218,63 +218,63 @@ return [
 
     'aliases' => [
 
-        'App'          => Illuminate\Support\Facades\App::class,
-        'Arr'          => Illuminate\Support\Arr::class,
-        'Artisan'      => Illuminate\Support\Facades\Artisan::class,
-        'Auth'         => Illuminate\Support\Facades\Auth::class,
-        'Blade'        => Illuminate\Support\Facades\Blade::class,
-        'Broadcast'    => Illuminate\Support\Facades\Broadcast::class,
-        'Bus'          => Illuminate\Support\Facades\Bus::class,
-        'Cache'        => Illuminate\Support\Facades\Cache::class,
-        'Config'       => Illuminate\Support\Facades\Config::class,
-        'Cookie'       => Illuminate\Support\Facades\Cookie::class,
-        'Crypt'        => Illuminate\Support\Facades\Crypt::class,
-        'DB'           => Illuminate\Support\Facades\DB::class,
-        'Eloquent'     => Illuminate\Database\Eloquent\Model::class,
-        'Event'        => Illuminate\Support\Facades\Event::class,
-        'File'         => Illuminate\Support\Facades\File::class,
-        'Gate'         => Illuminate\Support\Facades\Gate::class,
-        'Hash'         => Illuminate\Support\Facades\Hash::class,
-        'Lang'         => Illuminate\Support\Facades\Lang::class,
-        'Log'          => Illuminate\Support\Facades\Log::class,
-        'Mail'         => Illuminate\Support\Facades\Mail::class,
-        'Markdown'     => Illuminate\Mail\Markdown::class,
+        'App' => Illuminate\Support\Facades\App::class,
+        'Arr' => Illuminate\Support\Arr::class,
+        'Artisan' => Illuminate\Support\Facades\Artisan::class,
+        'Auth' => Illuminate\Support\Facades\Auth::class,
+        'Blade' => Illuminate\Support\Facades\Blade::class,
+        'Broadcast' => Illuminate\Support\Facades\Broadcast::class,
+        'Bus' => Illuminate\Support\Facades\Bus::class,
+        'Cache' => Illuminate\Support\Facades\Cache::class,
+        'Config' => Illuminate\Support\Facades\Config::class,
+        'Cookie' => Illuminate\Support\Facades\Cookie::class,
+        'Crypt' => Illuminate\Support\Facades\Crypt::class,
+        'DB' => Illuminate\Support\Facades\DB::class,
+        'Eloquent' => Illuminate\Database\Eloquent\Model::class,
+        'Event' => Illuminate\Support\Facades\Event::class,
+        'File' => Illuminate\Support\Facades\File::class,
+        'Gate' => Illuminate\Support\Facades\Gate::class,
+        'Hash' => Illuminate\Support\Facades\Hash::class,
+        'Lang' => Illuminate\Support\Facades\Lang::class,
+        'Log' => Illuminate\Support\Facades\Log::class,
+        'Mail' => Illuminate\Support\Facades\Mail::class,
+        'Markdown' => Illuminate\Mail\Markdown::class,
         'Notification' => Illuminate\Support\Facades\Notification::class,
-        'Password'     => Illuminate\Support\Facades\Password::class,
-        'Queue'        => Illuminate\Support\Facades\Queue::class,
-        'Redirect'     => Illuminate\Support\Facades\Redirect::class,
-        'Redis'        => Illuminate\Support\Facades\Redis::class,
-        'Request'      => Illuminate\Support\Facades\Request::class,
-        'Response'     => Illuminate\Support\Facades\Response::class,
-        'Route'        => Illuminate\Support\Facades\Route::class,
-        'Schema'       => Illuminate\Support\Facades\Schema::class,
-        'Session'      => Illuminate\Support\Facades\Session::class,
-        'Storage'      => Illuminate\Support\Facades\Storage::class,
-        'Str'          => Illuminate\Support\Str::class,
-        'URL'          => Illuminate\Support\Facades\URL::class,
-        'Validator'    => Illuminate\Support\Facades\Validator::class,
-        'View'         => Illuminate\Support\Facades\View::class,
-        'Socialite'    => Laravel\Socialite\Facades\Socialite::class,
-        'Mastodon'     => Mastodon::class,
-        'Debugbar'     => Barryvdh\Debugbar\Facade::class,
-        'Agent'        => Jenssegers\Agent\Facades\Agent::class,
-        'Image'        => Intervention\Image\Facades\Image::class,
+        'Password' => Illuminate\Support\Facades\Password::class,
+        'Queue' => Illuminate\Support\Facades\Queue::class,
+        'Redirect' => Illuminate\Support\Facades\Redirect::class,
+        'Redis' => Illuminate\Support\Facades\Redis::class,
+        'Request' => Illuminate\Support\Facades\Request::class,
+        'Response' => Illuminate\Support\Facades\Response::class,
+        'Route' => Illuminate\Support\Facades\Route::class,
+        'Schema' => Illuminate\Support\Facades\Schema::class,
+        'Session' => Illuminate\Support\Facades\Session::class,
+        'Storage' => Illuminate\Support\Facades\Storage::class,
+        'Str' => Illuminate\Support\Str::class,
+        'URL' => Illuminate\Support\Facades\URL::class,
+        'Validator' => Illuminate\Support\Facades\Validator::class,
+        'View' => Illuminate\Support\Facades\View::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'Mastodon' => Mastodon::class,
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'Agent' => Jenssegers\Agent\Facades\Agent::class,
+        'Image' => Intervention\Image\Facades\Image::class,
 
     ],
 
     'legal' => [
-        'name'     => env('MIX_LEGAL_NAME'),
+        'name' => env('MIX_LEGAL_NAME'),
         'address1' => env('MIX_LEGAL_ADDRESS1'),
         'address2' => env('MIX_LEGAL_ADDRESS2'),
-        'tel'      => env('MIX_LEGAL_TEL'),
-        'email'    => env('MIX_LEGAL_EMAIL')
+        'tel' => env('MIX_LEGAL_TEL'),
+        'email' => env('MIX_LEGAL_EMAIL'),
     ],
 
     'privacy' => [
         'account-deletion' => [
             'send-notification' => (bool) env('PRIVACY_ACCOUNT_DELETION_SEND_NOTIFICATION', false),
-            'delete-account'    => (bool) env('PRIVACY_ACCOUNT_DELETION_DELETE_ACCOUNT', false),
-        ]
+            'delete-account' => (bool) env('PRIVACY_ACCOUNT_DELETION_DELETE_ACCOUNT', false),
+        ],
     ],
 
     'registration' => [

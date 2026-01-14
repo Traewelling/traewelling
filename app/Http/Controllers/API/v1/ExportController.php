@@ -16,10 +16,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExportController extends Controller
 {
-    public function requestGdprExport(Request $request): JsonResponse|Response|RedirectResponse {
+    public function requestGdprExport(Request $request): JsonResponse|Response|RedirectResponse
+    {
         $validated = $request->validate([
-                                            'frontend' => ['nullable', 'boolean'],
-                                        ]);
+            'frontend' => ['nullable', 'boolean'],
+        ]);
 
         $user = $request->user();
 
@@ -27,13 +28,12 @@ class ExportController extends Controller
             return $this->frontendOrJson($validated, ['error' => __('export.error.gdpr')]);
         }
 
-
         if ($user->recent_gdpr_export && $user->recent_gdpr_export->diffInDays(now()) < config('trwl.gdpr_export.days')) {
             return $this->frontendOrJson(
                 $validated,
                 ['error' => __('export.error.gdpr-time', [
                     'date' => userTime($user->recent_gdpr_export),
-                    'days' => config('trwl.gdpr_export.days')
+                    'days' => config('trwl.gdpr_export.days'),
                 ])]
             );
         }
@@ -45,19 +45,20 @@ class ExportController extends Controller
         return $this->frontendOrJson($validated, ['message' => __('export.requested')], 200);
     }
 
-    public function generateStatusExport(Request $request): JsonResponse|StreamedResponse|Response|RedirectResponse {
+    public function generateStatusExport(Request $request): JsonResponse|StreamedResponse|Response|RedirectResponse
+    {
         $validated = $request->validate([
-                                            'from'      => ['required', 'date', 'before_or_equal:until'],
-                                            'until'     => ['required', 'date', 'after_or_equal:from'],
-                                            'columns.*' => ['required', Rule::enum(ExportableColumn::class)],
-                                            'filetype'  => [
-                                                'required',
-                                                Rule::in(['pdf', 'csv_human', 'csv_machine', 'json'])
-                                            ],
-                                            'frontend'  => ['nullable', 'boolean'],
-                                        ]);
+            'from' => ['required', 'date', 'before_or_equal:until'],
+            'until' => ['required', 'date', 'after_or_equal:from'],
+            'columns.*' => ['required', Rule::enum(ExportableColumn::class)],
+            'filetype' => [
+                'required',
+                Rule::in(['pdf', 'csv_human', 'csv_machine', 'json']),
+            ],
+            'frontend' => ['nullable', 'boolean'],
+        ]);
 
-        $from  = Carbon::parse($validated['from']);
+        $from = Carbon::parse($validated['from']);
         $until = Carbon::parse($validated['until']);
         if ($from->diffInDays($until) > 365) {
             return $this->frontendOrJson($validated, ['error' => __('export.error.time')]);
@@ -77,9 +78,9 @@ class ExportController extends Controller
 
         try {
             return ExportBackend::generateExport(
-                from:     $from,
-                until:    $until,
-                columns:  $columns,
+                from: $from,
+                until: $until,
+                columns: $columns,
                 filetype: $validated['filetype']
             );
         } catch (DataOverflowException) {
@@ -87,7 +88,8 @@ class ExportController extends Controller
         }
     }
 
-    private function frontendOrJson(array $validated, array $data, int $status = 400): RedirectResponse|JsonResponse {
+    private function frontendOrJson(array $validated, array $data, int $status = 400): RedirectResponse|JsonResponse
+    {
         if (empty($validated['frontend'])) {
             return response()->json($data, $status);
         }

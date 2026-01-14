@@ -13,52 +13,55 @@ class ExportTripsTest extends ApiTestCase
 {
     use RefreshDatabase;
 
-    public function test_pdf_export(): void {
+    public function test_pdf_export(): void
+    {
         $user = User::factory()->create();
         Checkin::factory(['user_id' => $user->id])->count(2)->create();
         Passport::actingAs($user, ['*']);
 
         $response = $this->postJson(
-            uri:  '/api/v1/export/statuses',
+            uri: '/api/v1/export/statuses',
             data: [
-                      'from'     => Date::today()->subWeek(),
-                      'until'    => Date::today()->addWeek(),
-                      'filetype' => 'pdf'
-                  ],
+                'from' => Date::today()->subWeek(),
+                'until' => Date::today()->addWeek(),
+                'filetype' => 'pdf',
+            ],
         );
         $response->assertSuccessful();
         $response->assertHeader('Content-Type', 'application/pdf');
     }
 
-    public function test_json_export(): void {
+    public function test_json_export(): void
+    {
         $user = User::factory()->create();
         Checkin::factory(['user_id' => $user->id])->count(2)->create();
         Passport::actingAs($user, ['*']);
 
         $response = $this->postJson(
-            uri:  '/api/v1/export/statuses',
+            uri: '/api/v1/export/statuses',
             data: [
-                      'from'     => Date::today()->subWeek(),
-                      'until'    => Date::today()->addWeek(),
-                      'filetype' => 'json'
-                  ],
+                'from' => Date::today()->subWeek(),
+                'until' => Date::today()->addWeek(),
+                'filetype' => 'json',
+            ],
         );
         $response->assertSuccessful();
         $response->assertHeader('Content-Type', 'text/json; charset=utf-8');
     }
 
-    public function test_csv_export(): void {
+    public function test_csv_export(): void
+    {
         $user = User::factory()->create();
         Checkin::factory(['user_id' => $user->id])->count(2)->create();
         Passport::actingAs($user, ['*']);
 
         $response = $this->postJson(
-            uri:  '/api/v1/export/statuses',
+            uri: '/api/v1/export/statuses',
             data: [
-                      'from'     => Date::today()->subWeek(),
-                      'until'    => Date::today()->addWeek(),
-                      'filetype' => 'csv_machine'
-                  ],
+                'from' => Date::today()->subWeek(),
+                'until' => Date::today()->addWeek(),
+                'filetype' => 'csv_machine',
+            ],
         );
         $response->assertSuccessful();
         $response->assertHeader('Content-Type', 'text/csv; charset=utf-8');

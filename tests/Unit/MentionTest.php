@@ -8,20 +8,21 @@ use PHPUnit\Framework\TestCase;
 
 class MentionTest extends TestCase
 {
-
     #[DataProvider('provideStringMatchesMentionDto')]
-    public function testStringMatchesMentionDto($string, $result): void {
+    public function test_string_matches_mention_dto($string, $result): void
+    {
         $this->assertSame($result, MentionHelper::findMentionsInString($string));
     }
 
-    public static function provideStringMatchesMentionDto(): array {
+    public static function provideStringMatchesMentionDto(): array
+    {
         return [
             ['I\'m on my way with @alice and @bob', [['@alice', 19], ['@bob', 30]]],
             ['@alice and @bob are waiting for me', [['@alice', 0], ['@bob', 11]]],
             ['@alice, atcha think?', [['@alice', 0]]],
             ['omw to #32c3 w/@alice', [['@alice', 15]]],
             ['omw w/@ alice', []],
-            ['hi there!', []]
+            ['hi there!', []],
         ];
     }
 }

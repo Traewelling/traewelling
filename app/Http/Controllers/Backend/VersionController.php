@@ -7,8 +7,10 @@ use Exception;
 
 abstract class VersionController extends Controller
 {
-    public static function getUserAgent(): string {
+    public static function getUserAgent(): string
+    {
         $version = self::getVersion() ?: self::getCurrentGitCommit() ?: 'unknown';
+
         return sprintf(
             '%s/%s (%s; bot; contact: %s)',
             config('app.name'),
@@ -18,21 +20,26 @@ abstract class VersionController extends Controller
         );
     }
 
-    public static function getVersion(): bool|string {
+    public static function getVersion(): bool|string
+    {
         if (file_exists(base_path() . '/VERSION')) {
             return trim(file_get_contents(base_path() . '/VERSION'));
         }
+
         return trim(self::getCurrentGitCommit());
     }
 
-    private static function getGitHead(): bool|string {
+    private static function getGitHead(): bool|string
+    {
         if ($head = @file_get_contents(base_path() . '/.git/HEAD')) {
             return substr($head, 5, -1);
         }
+
         return false;
     }
 
-    private static function getCurrentGitCommit(): bool|string {
+    private static function getCurrentGitCommit(): bool|string
+    {
         try {
             if ($hash = @file_get_contents(base_path() . '/.git/' . self::getGitHead())) {
                 return $hash;
@@ -40,6 +47,7 @@ abstract class VersionController extends Controller
         } catch (Exception $exception) {
             report($exception);
         }
+
         return false;
     }
 }

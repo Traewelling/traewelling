@@ -12,17 +12,16 @@ class SessionResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param Request $request
-     *
-     * @return array
+     * @param  Request  $request
      */
-    public function toArray($request): array {
+    public function toArray($request): array
+    {
         return [
-            'id'           => $this->id,
-            'ip'           => PrivacyHelper::maskIpAddress($this->ip_address),
-            'userAgent'    => $this->user_agent,
-            'platform'     => $this->platform,
-            'deviceIcon'   => $this->device_icon,
+            'id' => $this->id,
+            'ip' => PrivacyHelper::maskIpAddress($this->ip_address),
+            'userAgent' => $this->user_agent,
+            'platform' => $this->platform,
+            'deviceIcon' => $this->device_icon,
             'lastActivity' => Carbon::createFromTimestamp($this->last_activity)->toIso8601String(),
         ];
     }

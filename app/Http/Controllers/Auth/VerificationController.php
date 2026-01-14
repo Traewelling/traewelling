@@ -26,8 +26,6 @@ class VerificationController extends Controller
 
     /**
      * Where to redirect users after verification.
-     *
-     * @var string
      */
     protected string $redirectTo = '/dashboard';
 
@@ -36,7 +34,8 @@ class VerificationController extends Controller
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth');
         $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
@@ -45,12 +44,9 @@ class VerificationController extends Controller
     /**
      * Resend the email verification notification.
      * Overrides function in parent because of the response
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse|RedirectResponse
      */
-    public function resend(Request $request): JsonResponse|RedirectResponse {
+    public function resend(Request $request): JsonResponse|RedirectResponse
+    {
         if ($request->user()->hasVerifiedEmail()) {
             return $request->wantsJson() ? new JsonResponse([], 204) : redirect($this->redirectPath());
         }

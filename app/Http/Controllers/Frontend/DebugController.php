@@ -11,18 +11,18 @@ use Illuminate\View\View;
  */
 class DebugController extends Controller
 {
-
-    public function showMotisSources(): View {
+    public function showMotisSources(): View
+    {
         return view('debug.motis-source', [
-            'sources' => MotisSourceLicense::orderBy('country')->get()
+            'sources' => MotisSourceLicense::orderBy('country')->get(),
         ]);
     }
 
-    public function showStationMap(): View {
+    public function showStationMap(): View
+    {
         return view('temp-vue-inclusion', [
-            'pageTitle'    => 'Station Map Debug',
+            'pageTitle' => 'Station Map Debug',
             'vueComponent' => 'station-map',
         ]);
     }
-
 }

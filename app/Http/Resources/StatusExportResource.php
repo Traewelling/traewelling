@@ -10,14 +10,13 @@ class StatusExportResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param Request $request
-     *
-     * @return array
+     * @param  Request  $request
      */
-    public function toArray($request): array {
+    public function toArray($request): array
+    {
         return [
-            "status" => new StatusResource($this),
-            "trip"   => new TripResource($this->checkin->trip),
+            'status' => new StatusResource($this),
+            'trip' => new TripResource($this->checkin->trip),
         ];
     }
 }

@@ -10,15 +10,14 @@ class PrivacyPolicyResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param Request $request
-     *
-     * @return array
+     * @param  Request  $request
      */
-    public function toArray($request): array {
+    public function toArray($request): array
+    {
         return [
             'validFrom' => $this->valid_at,
-            'en'        => $this->body_md_en,
-            'de'        => $this->body_md_de
+            'en' => $this->body_md_en,
+            'de' => $this->body_md_de,
         ];
     }
 }

@@ -13,27 +13,31 @@ class Mention extends Model
     use HasFactory;
 
     protected $fillable = ['status_id', 'mentioned_id', 'position', 'length'];
-    protected $casts    = [
-        'status_id'    => 'int',
+
+    protected $casts = [
+        'status_id' => 'int',
         'mentioned_id' => 'int',
-        'position'     => 'int',
-        'length'       => 'int',
+        'position' => 'int',
+        'length' => 'int',
     ];
 
-    public function status(): BelongsTo {
+    public function status(): BelongsTo
+    {
         return $this->belongsTo(Status::class);
     }
 
-    public function mentioned(): HasOne {
+    public function mentioned(): HasOne
+    {
         return $this->hasOne(User::class, 'id', 'mentioned_id');
     }
 
-    public static function fromMentionDto(MentionDto $mentionDto, Status $status): self {
-        $mention               = new self();
-        $mention->status_id    = $status->id;
+    public static function fromMentionDto(MentionDto $mentionDto, Status $status): self
+    {
+        $mention = new self();
+        $mention->status_id = $status->id;
         $mention->mentioned_id = $mentionDto->user->id;
-        $mention->position     = $mentionDto->position;
-        $mention->length       = $mentionDto->length;
+        $mention->position = $mentionDto->position;
+        $mention->length = $mentionDto->length;
 
         return $mention;
     }

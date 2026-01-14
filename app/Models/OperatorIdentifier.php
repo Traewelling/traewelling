@@ -15,10 +15,11 @@ class OperatorIdentifier extends Model
         'identifier',
         'type',
         'source',
-        'name'
+        'name',
     ];
 
-    public function operator(): BelongsTo {
+    public function operator(): BelongsTo
+    {
         return $this->belongsTo(Operator::class, 'operator_id');
     }
 }

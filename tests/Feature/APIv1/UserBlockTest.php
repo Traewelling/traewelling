@@ -3,26 +3,25 @@
 namespace Tests\Feature\APIv1;
 
 use App\Http\Controllers\Backend\UserController;
-use App\Models\Event;
 use App\Models\Checkin;
+use App\Models\Event;
 use App\Models\User;
-use App\Providers\AuthServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Passport\Passport;
 use Tests\ApiTestCase;
 
 class UserBlockTest extends ApiTestCase
 {
-
     use RefreshDatabase;
 
-    public function testUserCanBeBlockedOnceAndThenUnblocked(): void {
-        $alice      = User::factory()->create();
+    public function test_user_can_be_blocked_once_and_then_unblocked(): void
+    {
+        $alice = User::factory()->create();
         Passport::actingAs($alice, ['*']);
-        $bob        = User::factory()->create();
+        $bob = User::factory()->create();
 
         $this->assertDatabaseMissing('user_blocks', [
-            'user_id'    => $alice->id,
+            'user_id' => $alice->id,
             'blocked_id' => $bob->id,
         ]);
 
@@ -30,46 +29,49 @@ class UserBlockTest extends ApiTestCase
         $response->assertCreated();
 
         $this->assertDatabaseHas('user_blocks', [
-            'user_id'    => $alice->id,
+            'user_id' => $alice->id,
             'blocked_id' => $bob->id,
         ]);
 
-        //Already blocked -> expect 409
+        // Already blocked -> expect 409
         $response = $this->postJson(strtr('/api/v1/user/:userId/block', [':userId' => $bob->id]));
         $response->assertConflict();
 
-        //Now unblock user
+        // Now unblock user
         $response = $this->deleteJson(strtr('/api/v1/user/:userId/block', [':userId' => $bob->id]));
         $response->assertOk();
 
         $this->assertDatabaseMissing('user_blocks', [
-            'user_id'    => $alice->id,
+            'user_id' => $alice->id,
             'blocked_id' => $bob->id,
         ]);
 
-        //Now unblock an already unblocked user and expect 409
+        // Now unblock an already unblocked user and expect 409
         $response = $this->deleteJson(strtr('/api/v1/user/:userId/block', [':userId' => $bob->id]));
         $response->assertConflict();
     }
 
-    public function testNonExistingUserCantBeBlocked(): void {
+    public function test_non_existing_user_cant_be_blocked(): void
+    {
         Passport::actingAs(User::factory()->create(), ['*']);
 
         $response = $this->postJson(strtr('/api/v1/user/:userId/block', [':userId' => 9999]));
         $response->assertNotFound();
     }
 
-    public function testNonExistingUserCantBeUnblocked(): void {
+    public function test_non_existing_user_cant_be_unblocked(): void
+    {
         Passport::actingAs(User::factory()->create(), ['*']);
 
         $response = $this->deleteJson(strtr('/api/v1/user/:userId/block', [':userId' => 9999]));
         $response->assertNotFound();
     }
 
-    public function testBlockedUserIsNotVisibleOnEventPage(): void {
+    public function test_blocked_user_is_not_visible_on_event_page(): void
+    {
         // due to issue#1755
         $alice = User::factory(['username' => 'alice'])->create();
-        $bob   = User::factory(['username' => 'bob'])->create();
+        $bob = User::factory(['username' => 'bob'])->create();
         $event = Event::factory()->create();
 
         // Alice and Bob check in to the event
@@ -80,7 +82,7 @@ class UserBlockTest extends ApiTestCase
 
         // alice should see both checkins
         $response = $this->actingAs($alice)
-                         ->getJson('/api/v1/event/' . $event->slug . '/statuses');
+            ->getJson('/api/v1/event/' . $event->slug . '/statuses');
         $response->assertOk();
         $response->assertSee($alice->username);
         $response->assertSee($bob->username);
@@ -90,7 +92,7 @@ class UserBlockTest extends ApiTestCase
 
         // alice should NOT see both checkins
         $response = $this->actingAs($alice)
-                         ->getJson('/api/v1/event/' . $event->slug . '/statuses');
+            ->getJson('/api/v1/event/' . $event->slug . '/statuses');
         $response->assertOk();
         $response->assertSee($alice->username);
         $response->assertDontSee($bob->username);

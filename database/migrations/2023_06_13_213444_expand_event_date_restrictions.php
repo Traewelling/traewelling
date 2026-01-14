@@ -4,9 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class() extends Migration
 {
-
     public function up(): void
     {
         Schema::table('events', static function (Blueprint $table) {
@@ -14,13 +13,12 @@ return new class extends Migration
             $table->dateTime('event_end')->nullable()->after('event_start');
             $table->unsignedBigInteger('approved_by')->nullable()->after('event_end');
             $table->foreign('approved_by')
-                  ->references('id')
-                  ->on('users')
-                  ->cascadeOnUpdate()
-                  ->nullOnDelete();
+                ->references('id')
+                ->on('users')
+                ->cascadeOnUpdate()
+                ->nullOnDelete();
         });
     }
-
 
     public function down(): void
     {

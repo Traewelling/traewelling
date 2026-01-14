@@ -10,12 +10,13 @@ class MigrateNotificationsToLaravel8 extends Migration
      *
      * @return void
      */
-    public function up() {
+    public function up()
+    {
         DB::table('notifications')
-          ->where('notifiable_type', 'App\User')
-          ->update([
-                       'notifiable_type' => 'App\Models\User'
-                   ]);
+            ->where('notifiable_type', 'App\User')
+            ->update([
+                'notifiable_type' => 'App\Models\User',
+            ]);
     }
 
     /**
@@ -23,7 +24,8 @@ class MigrateNotificationsToLaravel8 extends Migration
      *
      * @return void
      */
-    public function down() {
-        //cannot undo
+    public function down()
+    {
+        // cannot undo
     }
 }

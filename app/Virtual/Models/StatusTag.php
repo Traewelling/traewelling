@@ -6,6 +6,7 @@ namespace App\Virtual\Models;
  * @OA\Schema(
  *     title="StatusTag",
  *     description="StatusTag model",
+ *
  *     @OA\Xml(
  *         name="StatusTag"
  *     )
@@ -13,7 +14,6 @@ namespace App\Virtual\Models;
  */
 class StatusTag
 {
-
     /**
      * @OA\Property (
      *     title="key",

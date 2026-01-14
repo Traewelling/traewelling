@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Enum;
@@ -14,10 +15,11 @@ namespace App\Enum;
  */
 enum DataProvider: string
 {
-    case DEFAULT    = 'default';
+    case DEFAULT = 'default';
     case TRANSITOUS = 'transitous';
 
-    public function isMotis(): bool {
+    public function isMotis(): bool
+    {
         return $this === self::TRANSITOUS;
     }
 }

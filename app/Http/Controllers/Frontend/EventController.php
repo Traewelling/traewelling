@@ -8,15 +8,17 @@ use Illuminate\View\View;
 
 class EventController extends Controller
 {
-    public function renderEventOverview(): View {
+    public function renderEventOverview(): View
+    {
         $events = Event::forTimestamp(
-            timestamp:    now(),
+            timestamp: now(),
             showUpcoming: true
         )
-                       ->with(['station'])
-                       ->paginate(15);
+            ->with(['station'])
+            ->paginate(15);
+
         return view('events.overview', [
-            'liveAndUpcomingEvents' => $events
+            'liveAndUpcomingEvents' => $events,
         ]);
     }
 }

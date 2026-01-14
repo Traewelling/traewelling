@@ -21,23 +21,25 @@ use Traewelling\GooglePolyline\PolylineTranscoder;
 class OpenRailRoutingService
 {
     private const string API_URL = 'https://routing.openrailrouting.org';
-    private const int TIMEOUT = 30;
 
+    private const int TIMEOUT = 30;
 
     private Client $client;
 
-    private function initClient(): void {
+    private function initClient(): void
+    {
         $this->client = new Client([
-                                       'base_uri' => self::API_URL,
-                                       'timeout'  => self::TIMEOUT,
-                                       'cookies'  => true,
-                                       'headers'  => [
-                                           'User-Agent' => VersionController::getUserAgent(),
-                                       ],
-                                   ]);
+            'base_uri' => self::API_URL,
+            'timeout' => self::TIMEOUT,
+            'cookies' => true,
+            'headers' => [
+                'User-Agent' => VersionController::getUserAgent(),
+            ],
+        ]);
     }
 
-    private function getClient(): Client {
+    private function getClient(): Client
+    {
         if (!isset($this->client)) {
             $this->initClient();
         }
@@ -46,12 +48,13 @@ class OpenRailRoutingService
     }
 
     /**
-     * @param Point[] $coordinates
+     * @param  Point[]  $coordinates
      *
      * @throws GuzzleException
      * @throws OpenRailRoutingResponseFailed
      */
-    public function getRoute(array $coordinates, OpenRailRoutingProfile $profile = OpenRailRoutingProfile::ALL_TRACKS): RouteDto {
+    public function getRoute(array $coordinates, OpenRailRoutingProfile $profile = OpenRailRoutingProfile::ALL_TRACKS): RouteDto
+    {
         $gpxFile = new GpxFile();
         $track = new Track();
         $segment = new Segment();
@@ -59,14 +62,14 @@ class OpenRailRoutingService
         $track->segments[] = $segment;
         $gpxFile->tracks[] = $track;
 
-        $url      = sprintf(
+        $url = sprintf(
             '%s/match?type=json&key=&elevation=false&instructions=false&profile=%s',
             self::API_URL,
             $profile->value,
         );
         $response = $this->getClient()->post($url, [
             'headers' => ['Content-Type' => 'application/gpx+xml'],
-            'body' => $gpxFile->toXML()->saveXML()
+            'body' => $gpxFile->toXML()->saveXML(),
         ]);
 
         if ($response->getStatusCode() !== 200) {
@@ -81,18 +84,18 @@ class OpenRailRoutingService
             throw new OpenRailRoutingResponseFailed('BRouter returned no route features.');
         }
 
-        $data       = $json['paths'][0];
+        $data = $json['paths'][0];
         $properties = ['distance' => $data['distance'], 'time' => $data['time'] / 1000];
 
-
         if ($data['points_encoded']) {
-            $transcoder = new PolylineTranscoder;
-            $points     = $transcoder->decodePolyline($data['points'], (int) log10((float) $data['points_encoded_multiplier']));
+            $transcoder = new PolylineTranscoder();
+            $points = $transcoder->decodePolyline($data['points'], (int) log10((float) $data['points_encoded_multiplier']));
 
             $coordinates = [];
             foreach ($points as $point) {
                 $coordinates[] = new Coordinate($point->getLatitude(), $point->getLongitude());
             }
+
             return new RouteDto(
                 new Feature(coordinates: $coordinates, type: 'LineString', properties: $properties),
                 $data['distance'],

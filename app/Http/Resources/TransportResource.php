@@ -13,6 +13,7 @@ use OpenApi\Annotations as OA;
  *     title="TransportResource",
  *     required={"trip", "hafasId", "category", "number", "lineName", "journeyNumber", "distance", "points", "duration",
  *      "manualDeparture", "manualArrival", "origin", "destination", "operator", "dataSource", "mode"},
+ *
  *     @OA\Property(property="trip", type="integer", example="4711"),
  *     @OA\Property(property="hafasId", type="string", example="1|1234|567"),
  *     @OA\Property(property="category", ref="#/components/schemas/HafasTravelType"),
@@ -37,32 +38,34 @@ use OpenApi\Annotations as OA;
  */
 class TransportResource extends JsonResource
 {
-    public function toArray($request): array {
+    public function toArray($request): array
+    {
         /** @var Checkin $this */
-        $pointsEnabled       = $request->user()?->points_enabled ?? true;
+        $pointsEnabled = $request->user()?->points_enabled ?? true;
         $manualJourneyNumber = StatusTag::whereStatusId($this->status_id)
-                                        ->whereRaw('`key` = ?', [StatusTagKey::JOURNEY_NUMBER->value])
-                                        ->first();
+            ->whereRaw('`key` = ?', [StatusTagKey::JOURNEY_NUMBER->value])
+            ->first();
+
         return [
-            'trip'                => (int) $this->trip->id,
-            'hafasId'             => (string) $this->trip->trip_id,
-            'category'            => (string) $this->trip->category->value,
-            'mode'                => $this->trip->mode ? (string) $this->trip->mode->value : null,
-            'number'              => (string) $this->trip->number,
-            'lineName'            => (string) $this->trip->linename,
-            'routeColor'          => $this->trip->route_color,
-            'routeTextColor'      => $this->trip->route_text_color,
-            'journeyNumber'       => $this->trip->journey_number,
+            'trip' => (int) $this->trip->id,
+            'hafasId' => (string) $this->trip->trip_id,
+            'category' => (string) $this->trip->category->value,
+            'mode' => $this->trip->mode ? (string) $this->trip->mode->value : null,
+            'number' => (string) $this->trip->number,
+            'lineName' => (string) $this->trip->linename,
+            'routeColor' => $this->trip->route_color,
+            'routeTextColor' => $this->trip->route_text_color,
+            'journeyNumber' => $this->trip->journey_number,
             'manualJourneyNumber' => $manualJourneyNumber ? $manualJourneyNumber->value : null,
-            'distance'            => (int) $this->distance,
-            'points'              => (int) $pointsEnabled ? $this->points : 0,
-            'duration'            => (int) $this->duration,
-            'manualDeparture'     => $this->manual_departure?->toIso8601String(),
-            'manualArrival'       => $this->manual_arrival?->toIso8601String(),
-            'origin'              => new StopoverResource($this->originStopover),
-            'destination'         => new StopoverResource($this->destinationStopover),
-            'operator'            => $this?->trip->operator ? new OperatorResource($this?->trip->operator) : null,
-            'dataSource'          => $this->trip->motisSourceLicense ? new DataSourceResource($this->trip->motisSourceLicense) : null,
+            'distance' => (int) $this->distance,
+            'points' => (int) $pointsEnabled ? $this->points : 0,
+            'duration' => (int) $this->duration,
+            'manualDeparture' => $this->manual_departure?->toIso8601String(),
+            'manualArrival' => $this->manual_arrival?->toIso8601String(),
+            'origin' => new StopoverResource($this->originStopover),
+            'destination' => new StopoverResource($this->destinationStopover),
+            'operator' => $this?->trip->operator ? new OperatorResource($this?->trip->operator) : null,
+            'dataSource' => $this->trip->motisSourceLicense ? new DataSourceResource($this->trip->motisSourceLicense) : null,
         ];
     }
 }

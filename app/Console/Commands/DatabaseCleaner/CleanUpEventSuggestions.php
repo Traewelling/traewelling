@@ -11,7 +11,8 @@ class CleanUpEventSuggestions extends Command
 
     protected $description = 'Delete all event suggestions with begin older than 30 days';
 
-    public function handle(): int {
+    public function handle(): int
+    {
         $this->info('Cleaning up event suggestions older than 30 days...');
 
         // Assuming you have a model named EventSuggestion

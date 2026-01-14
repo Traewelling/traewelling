@@ -18,12 +18,13 @@ class ProfileLink extends Model
     ];
 
     protected $casts = [
-        'name'       => ProfileLinkName::class,
+        'name' => ProfileLinkName::class,
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
 
-    public function user(): BelongsTo {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 }

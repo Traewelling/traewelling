@@ -6,9 +6,11 @@ namespace App\Virtual\RequestBodies;
  * @OA\Schema(
  *      title="StatusUpdateBody",
  *      description="Status Update Body",
+ *
  *      @OA\Xml(
  *         name="StatusUpdateBody"
  *      ),
+ *
  *      @OA\Property (
  *          property="body",
  *          maxLength=280,
@@ -59,6 +61,4 @@ namespace App\Virtual\RequestBodies;
  *      )
  * )
  */
-class StatusUpdateBody
-{
-}
+class StatusUpdateBody {}

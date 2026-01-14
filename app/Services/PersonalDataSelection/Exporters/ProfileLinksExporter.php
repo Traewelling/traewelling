@@ -12,6 +12,7 @@ class ProfileLinksExporter extends AbstractExporter
     use RelationExportable;
 
     protected string $fileName = 'profile_links.json';
+
     protected string $relation = 'profileLinks';
     // todo: columns
 }

@@ -12,52 +12,59 @@ use Laravel\Passport\ClientRepository;
 
 class DevController extends Controller
 {
-    public function renderAppList(): View {
+    public function renderAppList(): View
+    {
         $clients = new ClientRepository();
 
         $userId = auth()->user()->getAuthIdentifier();
 
         return view('dev.apps', [
-            'apps' => $clients->activeForUser($userId)
+            'apps' => $clients->activeForUser($userId),
         ]);
     }
 
-    public function createPersonalAccessToken(): RedirectResponse {
+    public function createPersonalAccessToken(): RedirectResponse
+    {
         $token = auth()->user()->createToken('PAT@' . auth()->user()->username, ['*']);
         $token->token->update(['expires_at' => now()->addMonths(3)]);
+
         return back()->with('token', $token->accessToken);
     }
 
-    public function renderUpdateApp(int $appId): View {
+    public function renderUpdateApp(int $appId): View
+    {
         $clients = new ClientRepository();
-        $app     = $clients->findForUser($appId, auth()->user()->id);
+        $app = $clients->findForUser($appId, auth()->user()->id);
 
         if (!$app) {
             abort(404);
         }
+
         return view('dev.apps-edit', [
             'app' => $app,
         ]);
     }
 
-    public function renderCreateApp(): View {
+    public function renderCreateApp(): View
+    {
         return view('dev.apps-edit', [
-            'app' => null
+            'app' => null,
         ]);
     }
 
-    public function updateApp(int $appId, Request $request): RedirectResponse {
+    public function updateApp(int $appId, Request $request): RedirectResponse
+    {
         $validated = $request->validate([
-                                            'name'                   => ['required', 'string'],
-                                            'redirect'               => ['required', 'string'],
-                                            'confidential'           => ['nullable'],
-                                            'enable_webhooks'        => ['nullable'],
-                                            'authorized_webhook_url' => ['nullable', 'url', new SecureUrl()],
-                                            'privacy_policy_url'     => ['nullable', 'url', new SecureUrl()],
-                                        ]);
+            'name' => ['required', 'string'],
+            'redirect' => ['required', 'string'],
+            'confidential' => ['nullable'],
+            'enable_webhooks' => ['nullable'],
+            'authorized_webhook_url' => ['nullable', 'url', new SecureUrl()],
+            'privacy_policy_url' => ['nullable', 'url', new SecureUrl()],
+        ]);
 
         $clients = new OAuthClientRepository();
-        $app     = $clients->findForUser($appId, auth()->user()->id);
+        $app = $clients->findForUser($appId, auth()->user()->id);
 
         $clients->update(
             $app,
@@ -72,23 +79,24 @@ class DevController extends Controller
         return redirect(route('dev.apps'))->with('success', __('settings.saved'));
     }
 
-    public function createApp(Request $request): RedirectResponse {
+    public function createApp(Request $request): RedirectResponse
+    {
         $validated = $request->validate([
-                                            'name'                   => ['required', 'string'],
-                                            'redirect'               => ['required', 'string'],
-                                            'confidential'           => ['nullable'],
-                                            'enable_webhooks'        => ['nullable'],
-                                            'authorized_webhook_url' => ['nullable', 'url', new SecureUrl()],
-                                            'privacy_policy_url'     => ['nullable', 'url', new SecureUrl()],
-                                        ]);
+            'name' => ['required', 'string'],
+            'redirect' => ['required', 'string'],
+            'confidential' => ['nullable'],
+            'enable_webhooks' => ['nullable'],
+            'authorized_webhook_url' => ['nullable', 'url', new SecureUrl()],
+            'privacy_policy_url' => ['nullable', 'url', new SecureUrl()],
+        ]);
 
         $clients = new OAuthClientRepository();
         $clients->create(
-            userId:               auth()->user()->id,
-            name:                 $validated['name'],
-            redirect:             $validated['redirect'],
+            userId: auth()->user()->id,
+            name: $validated['name'],
+            redirect: $validated['redirect'],
             confidential: isset($validated['confidential']),
-            privacyPolicyUrl:     $validated['privacy_policy_url'],
+            privacyPolicyUrl: $validated['privacy_policy_url'],
             webhooksEnabled: isset($validated['enable_webhooks']),
             authorizedWebhookUrl: $validated['authorized_webhook_url'],
         );
@@ -96,9 +104,10 @@ class DevController extends Controller
         return redirect(route('dev.apps'))->with('success', __('settings.saved'));
     }
 
-    public function destroyApp(int $appId): RedirectResponse {
+    public function destroyApp(int $appId): RedirectResponse
+    {
         $clients = new ClientRepository();
-        $app     = $clients->findForUser($appId, auth()->user()->id);
+        $app = $clients->findForUser($appId, auth()->user()->id);
 
         if (!$app) {
             abort(404);

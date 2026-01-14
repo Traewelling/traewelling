@@ -6,12 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 class DropBlogpostsTable extends Migration
 {
-    public function up(): void {
+    public function up(): void
+    {
         Schema::dropIfExists('blogposts');
     }
 
-    public function down(): void {
-        Schema::create('blogposts', function(Blueprint $table) {
+    public function down(): void
+    {
+        Schema::create('blogposts', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('slug');

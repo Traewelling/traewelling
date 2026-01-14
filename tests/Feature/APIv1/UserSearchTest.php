@@ -9,12 +9,12 @@ use Tests\ApiTestCase;
 
 class UserSearchTest extends ApiTestCase
 {
-
     use RefreshDatabase;
 
-    public function testUserSearch(): void {
-        $alice   = User::factory(['name' => 'Alice', 'username' => 'alice'])->create();
-        $bob     = User::factory(['name' => 'Bob', 'username' => 'bob'])->create();
+    public function test_user_search(): void
+    {
+        $alice = User::factory(['name' => 'Alice', 'username' => 'alice'])->create();
+        $bob = User::factory(['name' => 'Bob', 'username' => 'bob'])->create();
         $charlie = User::factory(['name' => 'Charlie', 'username' => 'charlie'])->create();
 
         Passport::actingAs($alice, ['*']);

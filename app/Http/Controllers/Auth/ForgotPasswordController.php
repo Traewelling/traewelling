@@ -26,11 +26,13 @@ class ForgotPasswordController extends Controller
 
     use SendsPasswordResetEmails;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('guest');
     }
 
-    public function sendResetLinkEmail(Request $request): JsonResponse|RedirectResponse {
+    public function sendResetLinkEmail(Request $request): JsonResponse|RedirectResponse
+    {
         $user = User::where('email', $request->email)->first();
         if (
             ($user !== null && $user->created_at->diffInMinutes() < 60)

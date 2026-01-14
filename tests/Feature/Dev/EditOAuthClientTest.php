@@ -5,18 +5,21 @@ namespace Tests\Feature\Dev;
 use App\Models\User;
 use App\Repositories\OAuthClientRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\FeatureTestCase;
+
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertNotEquals;
+
+use Tests\FeatureTestCase;
 
 class EditOAuthClientTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    public function testOAuthClientConfidentialEditToggle() {
-        $user           = User::factory()->create();
-        $client         = $this->createOAuthClient($user, true);
-        $clients        = new OAuthClientRepository();
+    public function test_o_auth_client_confidential_edit_toggle()
+    {
+        $user = User::factory()->create();
+        $client = $this->createOAuthClient($user, true);
+        $clients = new OAuthClientRepository();
         $originalSecret = $client->secret;
 
         $clients->update(
