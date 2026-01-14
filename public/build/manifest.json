@@ -1,0 +1,69 @@
+{
+  "resources/css/welcome.css": {
+    "file": "assets/welcome-test.css",
+    "src": "resources/css/welcome.css"
+  },
+  "resources/images/welcome/map.png": {
+    "file": "assets/map-test.png",
+    "src": "resources/images/welcome/map.png"
+  },
+  "resources/images/welcome/stats.png": {
+    "file": "assets/stats-test.png",
+    "src": "resources/images/welcome/stats.png"
+  },
+  "resources/images/welcome/mobile-mockup.png": {
+    "file": "assets/mobile-mockup-test.png",
+    "src": "resources/images/welcome/mobile-mockup.png"
+  },
+  "resources/images/covers/hp0.jpg": {
+    "file": "assets/hp0-test.jpg",
+    "src": "resources/images/covers/hp0.jpg"
+  },
+  "resources/images/covers/abandoned.jpg": {
+    "file": "assets/abandoned-test.jpg",
+    "src": "resources/images/covers/abandoned.jpg"
+  },
+  "resources/images/covers/time.jpg": {
+    "file": "assets/time-test.jpg",
+    "src": "resources/images/covers/time.jpg"
+  },
+  "resources/images/covers/derailment.jpg": {
+    "file": "assets/derailment-test.jpg",
+    "src": "resources/images/covers/derailment.jpg"
+  },
+  "resources/images/marker/dot-primary.svg": {
+    "file": "assets/dot-primary-test.svg",
+    "src": "resources/images/marker/dot-primary.svg"
+  },
+  "resources/images/marker/dot-secondary.svg": {
+    "file": "assets/dot-secondary-test.svg",
+    "src": "resources/images/marker/dot-secondary.svg"
+  },
+  "resources/js/year-in-review.js": {
+    "file": "assets/year-in-review-test.js",
+    "src": "resources/js/year-in-review.js"
+  },
+  "resources/sass/app.scss": {
+    "file": "assets/app-test.css",
+    "src": "resources/sass/app.scss",
+    "css": ["assets/app-test.css"]
+  },
+  "resources/sass/app-dark.scss": {
+    "file": "assets/app-dark-test.css",
+    "src": "resources/sass/app-dark.scss",
+    "css": ["assets/app-dark-test.css"]
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-test.js",
+    "src": "resources/js/app.js"
+  },
+  "resources/sass/admin.scss": {
+    "file": "assets/admin-test.css",
+    "src": "resources/sass/admin.scss",
+    "css": ["assets/admin-test.css"]
+  },
+  "resources/js/admin.js": {
+    "file": "assets/admin-test.js",
+    "src": "resources/js/admin.js"
+  }
+}

@@ -47,6 +47,8 @@ result*
 
 # Vite
 /public/build
+# But keep manifest for tests
+!/public/build/manifest.json
 
 # laravel-vue-i18n
 lang/php_*.json
