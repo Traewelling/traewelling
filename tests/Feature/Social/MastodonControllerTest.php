@@ -339,10 +339,10 @@ class MastodonControllerTest extends FeatureTestCase
         $user = User::factory()->create();
 
         $mastodonServer = MastodonServer::create([
-                'domain' => 'https://example.com',
-                'client_id' => '123abc',
-                'client_secret' => '123abc',
-            ]);
+            'domain' => 'https://example.com',
+            'client_id' => '123abc',
+            'client_secret' => '123abc',
+        ]);
         $socialProfile = $mastodonServer
             ->socialProfiles()
             ->create([
