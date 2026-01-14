@@ -44,7 +44,7 @@ jobs:
         run: npm run build
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: vite-build
           path: public/build
@@ -82,7 +82,7 @@ jobs:
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --prefer-dist
 
       - name: Upload vendor directory
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: vendor
           path: vendor
@@ -124,7 +124,7 @@ jobs:
           extensions: mbstring, ctype, fileinfo, json, openssl, pdo, tokenizer, xml
 
       - name: Download vendor directory
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: vendor
           path: vendor
@@ -148,7 +148,7 @@ jobs:
           extensions: mbstring, ctype, fileinfo, json, openssl, pdo, simplexml, sodium, tokenizer, xml
 
       - name: Download vendor directory
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: vendor
           path: vendor
@@ -211,7 +211,7 @@ jobs:
           extensions: mbstring, ctype, fileinfo, json, openssl, pdo, pdo_mysql, simplexml, sodium, tokenizer, xml
 
       - name: Download vendor directory
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: vendor
           path: vendor
@@ -271,7 +271,7 @@ jobs:
           extensions: mbstring, ctype, fileinfo, json, openssl, pdo, simplexml, sodium, tokenizer, xml
 
       - name: Download vendor directory
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: vendor
           path: vendor
@@ -371,13 +371,13 @@ jobs:
           coverage: xdebug
 
       - name: Download vendor directory
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: vendor
           path: vendor
 
       - name: Download Vite build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: vite-build
           path: public/build
