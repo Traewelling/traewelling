@@ -1,7 +1,7 @@
-import {defineStore} from "pinia";
-import {CheckinResponse} from "../../types/Api.gen";
+import { defineStore } from 'pinia';
+import { CheckinResponse } from '../../types/Api.gen';
 
-export const checkinSuccessStore = defineStore("checkinSuccess", {
+export const checkinSuccessStore = defineStore('checkinSuccess', {
     persist: true,
     state: () => ({
         checkinResponse: null as CheckinResponse | null,
@@ -9,7 +9,7 @@ export const checkinSuccessStore = defineStore("checkinSuccess", {
     getters: {
         getCheckinResponse(): CheckinResponse | null {
             return this.checkinResponse;
-        }
+        },
     },
     actions: {
         setResponse(checkinResponse: CheckinResponse | any): void {
@@ -17,6 +17,6 @@ export const checkinSuccessStore = defineStore("checkinSuccess", {
         },
         reset(): void {
             this.checkinResponse = null;
-        }
-    }
+        },
+    },
 });

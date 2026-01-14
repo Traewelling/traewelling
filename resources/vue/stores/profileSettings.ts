@@ -1,5 +1,5 @@
-import {defineStore} from "pinia";
-import { ProfileSettings } from "../../types/ProfileSettings";
+import { defineStore } from 'pinia';
+import { ProfileSettings } from '../../types/ProfileSettings';
 
 export const useProfileSettingsStore = defineStore('profileSettings', {
     // because of the persist option. This option is defined in the pinia persisted state plugin
@@ -9,7 +9,7 @@ export const useProfileSettingsStore = defineStore('profileSettings', {
         settings: null as ProfileSettings | null,
         loading: false,
         error: null as unknown | null,
-        refreshed: "2021-08-01T12:00:00Z"
+        refreshed: '2021-08-01T12:00:00Z',
     }),
     getters: {
         getDisplayName(): string {
@@ -50,10 +50,10 @@ export const useProfileSettingsStore = defineStore('profileSettings', {
         },
         getMastodonVisibility(): number {
             return this.settings ? this.settings.mastodonVisibility : 0;
-        }
+        },
     },
     actions: {
-        async fetchSettings() : Promise<void>{
+        async fetchSettings() : Promise<void> {
             // Fetch Data every 15 Minutes
             // ToDo: reduce interval
             // ToDo: refresh with settings update
@@ -72,6 +72,6 @@ export const useProfileSettingsStore = defineStore('profileSettings', {
             } finally {
                 this.loading = false;
             }
-        }
-    }
+        },
+    },
 });

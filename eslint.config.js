@@ -41,7 +41,7 @@ export default [
         },
         rules: {
             // Code quality
-            'no-console': ['warn', {allow: ['warn', 'error']}],
+            'no-console': ['warn', { allow: ['warn', 'error'] }],
             'no-debugger': 'warn',
             'no-unused-vars': 'off', // Handled by TypeScript
             '@typescript-eslint/no-unused-vars': ['warn', {
@@ -60,11 +60,11 @@ export default [
                 SwitchCase: 1,
                 ignoredNodes: ['TemplateLiteral'],
             }],
-            'quotes': ['error', 'single', {avoidEscape: true}],
+            'quotes': ['error', 'single', { avoidEscape: true }],
             'semi': ['error', 'always'],
             'comma-dangle': ['error', 'always-multiline'],
             'eol-last': ['error', 'always'],
-            'no-multiple-empty-lines': ['error', {max: 1, maxEOF: 0}],
+            'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
             'no-trailing-spaces': 'error',
             'object-curly-spacing': ['error', 'always'],
             'array-bracket-spacing': ['error', 'never'],
@@ -98,7 +98,7 @@ export default [
                 order: ['script', 'template', 'style'],
             }],
             'vue/block-lang': ['error', {
-                script: {lang: 'ts'},
+                script: { lang: 'ts' },
             }],
             'vue/component-api-style': ['error', ['script-setup']],
             'vue/define-macros-order': ['error', {

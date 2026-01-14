@@ -1,4 +1,4 @@
-import {ShortStation} from "./Station";
+import { ShortStation } from './Station';
 
 export type User = {
     displayName: string,

@@ -1,4 +1,4 @@
-import API from "./api";
+import API from './api';
 
 window.Status = class Status {
 
@@ -26,4 +26,4 @@ window.Status = class Status {
     static unlike(statusId) {
         return API.request(`/status/${statusId}/like`, 'DELETE');
     }
-}
+};

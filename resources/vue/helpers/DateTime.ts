@@ -1,6 +1,6 @@
-import {DateTime, DateTimeFormatOptions, ToISOTimeOptions} from "luxon";
-import {DateTimeOptions, LocaleOptions, ToRelativeOptions} from "luxon/src/datetime";
-import {getActiveLanguage} from "laravel-vue-i18n";
+import { DateTime, DateTimeFormatOptions, ToISOTimeOptions } from 'luxon';
+import { DateTimeOptions, LocaleOptions, ToRelativeOptions } from 'luxon/src/datetime';
+import { getActiveLanguage } from 'laravel-vue-i18n';
 
 // todo: rewrite to extend DateTime instead of wrapping it
 export class Dtm {
@@ -9,14 +9,14 @@ export class Dtm {
     constructor(date: string, opts?: DateTimeOptions) {
         const defaultOpts: DateTimeOptions = {
             locale: this.getLocale(),
-        }
-        opts = {...defaultOpts, ...opts};
+        };
+        opts = { ...defaultOpts, ...opts };
 
         this.dateTime = DateTime.fromISO(date, opts);
     }
 
     private getLocale(): string {
-        let locale: string = getActiveLanguage();
+        const locale: string = getActiveLanguage();
 
         if (locale.startsWith('de')) {
             return 'de';
@@ -37,7 +37,7 @@ export class Dtm {
         formatOpts?: DateTimeFormatOptions,
         opts?: LocaleOptions,
     ): string {
-        let locale = this.dateTime.locale || this.getLocale();
+        const locale = this.dateTime.locale || this.getLocale();
         // If TIME_SIMPLE and English, force 24h
         if (
             formatOpts === DateTime.TIME_SIMPLE &&
@@ -51,13 +51,13 @@ export class Dtm {
 
     toFormat(
         format: string,
-        opts?: LocaleOptions
+        opts?: LocaleOptions,
     ): string {
         return this.dateTime.toFormat(format, opts);
     }
 
     toISO(
-        opts?: ToISOTimeOptions
+        opts?: ToISOTimeOptions,
     ): string | null {
         return this.dateTime.toISO(opts);
     }
