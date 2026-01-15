@@ -1,3 +1,5 @@
+@use "./font-awesome";
+
 // Variables
 @import "variables";
 
@@ -13,8 +15,6 @@ $dark: #000;
 
 // Bootstrap
 @import "bootstrap";
-
-@import "./font-awesome";
 
 @import "leaflet/dist/leaflet.css";
 @import "awesomplete/awesomplete.css";
