@@ -184,6 +184,7 @@ fetchStatuses(false);
                 <div class="card-body">
                     <p v-if="userData?.bio" class="text-muted fst-italic m-0">
                         <i class="fa fa-quote-left me-2" />
+                        <!-- eslint-disable-next-line vue/no-v-html -->
                         <span class="profile-bio" v-html="userData.bio" />
                     </p>
                     <div v-if="mergedLinks.length" class="d-flex justify-content-center flex-wrap gap-3 mt-4">

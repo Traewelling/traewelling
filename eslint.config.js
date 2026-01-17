@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import prettierConfig from '@vue/eslint-config-prettier';
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript';
 import pluginVue from 'eslint-plugin-vue';
+import globals from 'globals';
 
 export default defineConfigWithVueTs(
     {
@@ -30,6 +31,9 @@ export default defineConfigWithVueTs(
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module',
+            globals: {
+                ...globals.browser,
+            },
         },
         rules: {
             // Code quality
