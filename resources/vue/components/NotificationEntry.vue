@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/require-default-prop */
 export default {
     props: {
         id: String,

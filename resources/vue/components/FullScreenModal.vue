@@ -5,8 +5,14 @@ import { trans } from 'laravel-vue-i18n';
 export default {
     name: 'FullScreenModal',
     props: {
-        title: String,
-        bodyClass: String,
+        title: {
+            type: String,
+            default: '',
+        },
+        bodyClass: {
+            type: String,
+            default: '',
+        },
     },
     data() {
         return {

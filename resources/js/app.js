@@ -1,4 +1,4 @@
-// eslint-disable vue/one-component-per-file
+/* eslint-disable vue/one-component-per-file */
 import 'awesomplete/awesomplete';
 import 'bootstrap';
 import { i18nVue } from 'laravel-vue-i18n';

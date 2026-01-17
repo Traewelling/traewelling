@@ -6,16 +6,19 @@ export default defineComponent({
     name: 'AutocompleteListEntry',
     props: {
         station: {
-            type: Object as () => ShortStation,
+            type: Object as () => ShortStation | null,
             required: false,
+            default: null,
         },
         text: {
             type: String,
             required: false,
+            default: null,
         },
         prefix: {
             type: String,
             required: false,
+            default: null,
         },
     },
     methods: {

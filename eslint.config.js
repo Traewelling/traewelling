@@ -59,12 +59,9 @@ export default defineConfigWithVueTs(
             'no-console': ['error', { allow: ['warn', 'error'] }],
             'no-debugger': 'warn',
             '@typescript-eslint/no-this-alias': 'warn',
-            'no-undef': 'error',
-            'no-empty': 'warn',
 
             // Vue specific
             'vue/multi-word-component-names': 'off',
-            'vue/require-default-prop': 'off',
             'vue/no-template-shadow': 'error',
 
             // Remove these rules, once they are fixed

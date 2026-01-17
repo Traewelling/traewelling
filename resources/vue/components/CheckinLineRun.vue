@@ -19,6 +19,7 @@ export default {
         fastCheckinId: {
             type: Number,
             required: false,
+            default: null,
         },
         useInternalIdentifiers: {
             type: Boolean,

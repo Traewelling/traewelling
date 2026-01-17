@@ -11,6 +11,7 @@ export default {
     props: {
         placeholder: {
             type: String,
+            default: '',
         },
         arrival: {
             type: Boolean,

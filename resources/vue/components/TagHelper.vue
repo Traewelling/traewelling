@@ -13,9 +13,11 @@ export default {
     props: {
         statusId: {
             type: Number,
+            required: true,
         },
         statusObject: {
             type: Object,
+            required: true,
         },
         editable: {
             type: Boolean,
