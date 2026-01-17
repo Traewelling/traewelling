@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable vue/valid-v-bind */
 import { trans } from 'laravel-vue-i18n';
 import { getIcon, getTitle } from '../helpers/StatusTag';
 import FullScreenModal from './FullScreenModal.vue';
@@ -84,7 +85,7 @@ export default {
         </template>
     </FullScreenModal>
 
-    <div :class="props.class">
+    <div :class>
         <button
             v-show="editable"
             class="btn btn-link btn-sm text-white badge bg-trwl"
