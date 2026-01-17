@@ -10,3 +10,6 @@ _ide_helper_models.php
 *.min.css
 package-lock.json
 composer.lock
+*.gen.js
+*.gen.css
+*.gen.ts
