@@ -1,10 +1,10 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { trans } from 'laravel-vue-i18n';
-import { Api, FriendCheckinSetting, LightUserResource, TrustedUserResource, User } from '../../../types/Api.gen';
-import UserSearchDropdown from '../Helpers/UserSearchDropdown.vue';
 import { Notyf } from 'notyf';
+import { defineComponent } from 'vue';
+import { Api, FriendCheckinSetting, LightUserResource, TrustedUserResource, User } from '../../../types/Api.gen';
 import { showApiValidationErrors } from '../../helpers/NotyfHelper';
+import UserSearchDropdown from '../Helpers/UserSearchDropdown.vue';
 
 // TODO: split this component into partials
 export default defineComponent({
@@ -44,11 +44,11 @@ export default defineComponent({
             this.loading = true;
             this.api.settings
                 .getProfileSettings()
-                .then(data => {
+                .then((data) => {
                     if (!data.ok || data.status === 404) {
                         return;
                     }
-                    data.json().then(data => {
+                    data.json().then((data) => {
                         this.allow = data.data.friendCheckin;
                         this.username = data.data.username;
                         this.displayName = data.data.displayName;
@@ -62,12 +62,12 @@ export default defineComponent({
         fetchTrustedUsers() {
             this.api.user
                 .trustedUserIndex('self')
-                .then(data => {
+                .then((data) => {
                     if (!data.ok || data.status === 404) {
                         this.trustedUsers = [];
                         return;
                     }
-                    data.json().then(data => {
+                    data.json().then((data) => {
                         this.trustedUsers = data.data;
                     });
                 })
@@ -85,7 +85,7 @@ export default defineComponent({
                     privacyHideDays: this.privacyHideDays,
                     email: this.email,
                 })
-                .then(data => {
+                .then((data) => {
                     this.loading = false;
                     if (data.status !== 200) {
                         this.notyf.error(trans('messages.exception.general'));
@@ -93,7 +93,7 @@ export default defineComponent({
                     }
                     this.notyf.success(trans('settings.saved'));
                 })
-                .catch(res => {
+                .catch((res) => {
                     this.loading = false;
                     if (res.status === 422) {
                         // Handle validation errors
@@ -106,13 +106,13 @@ export default defineComponent({
         removeUser(user: TrustedUserResource) {
             this.api.user
                 .trustedUserDestroy('self', user.user.id)
-                .then(data => {
+                .then((data) => {
                     if (!data.ok) {
                         console.error(data);
                         return;
                     }
                     if (data.status === 204) {
-                        this.trustedUsers = this.trustedUsers.filter(u => u?.user?.id !== user?.user?.id);
+                        this.trustedUsers = this.trustedUsers.filter((u) => u?.user?.id !== user?.user?.id);
                     }
                 })
                 .catch(() => {});
@@ -120,7 +120,7 @@ export default defineComponent({
         addUser(user: User) {
             this.api.user
                 .trustedUserStore('self', { userId: user.id })
-                .then(data => {
+                .then((data) => {
                     if (data.status !== 201) {
                         this.notyf.error(trans('messages.exception.general'));
                         return;

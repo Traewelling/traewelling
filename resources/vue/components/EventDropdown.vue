@@ -26,8 +26,8 @@ const selectedEvent = ref<EventResource | null>(props.preSelectedEvent || null);
 
 function fetchEvents(timestamp: string | null = null) {
     fetch('/api/v1/events')
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
             events.value = data.data;
             filteredEvents.value = data.data;
         });
@@ -38,10 +38,10 @@ function fetchEvents(timestamp: string | null = null) {
 
     api.events
         .getEvents(query)
-        .then(response => {
+        .then((response) => {
             events.value = response.data?.data || [];
         })
-        .catch(error => {
+        .catch((error) => {
             console.error('Error fetching events:', error);
         });
 }
@@ -51,7 +51,9 @@ defineExpose({
 });
 
 function filterEvents() {
-    filteredEvents.value = events.value.filter(event => event.name.toLowerCase().includes(search.value.toLowerCase()));
+    filteredEvents.value = events.value.filter((event) =>
+        event.name.toLowerCase().includes(search.value.toLowerCase()),
+    );
 }
 
 function selectEvent(event: EventResource) {

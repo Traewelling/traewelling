@@ -25,7 +25,7 @@ export default class API {
             return response.json().then(this.handleGenericError);
         }
 
-        return response.json().then(data => {
+        return response.json().then((data) => {
             if (data && data.data && data.data.message) {
                 notyf.success(data.data.message);
             }

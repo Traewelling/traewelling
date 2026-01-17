@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { ShortStation } from '../../types/Station';
 import { Api, StationResource, UserAuthResource } from '../../types/Api.gen';
+import { ShortStation } from '../../types/Station';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
@@ -72,7 +72,7 @@ export const useUserStore = defineStore('user', {
 
             api.station
                 .setHomeStation(home.id)
-                .then(response => {
+                .then((response) => {
                     if (this.user && response.data.data) {
                         const newStation = response.data.data as StationResource;
                         newStation.areas = [];
@@ -80,7 +80,7 @@ export const useUserStore = defineStore('user', {
                         this.user.home = newStation;
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     if (curStation && this.user) {
                         this.user.home = curStation;
                     }
@@ -105,14 +105,14 @@ export const useUserStore = defineStore('user', {
                 this.loading = true;
                 api.auth
                     .getAuthenticatedUser()
-                    .then(response => {
+                    .then((response) => {
                         this.user = response.data.data || null;
                         this.authenticated = !!this.user;
 
                         this.loading = false;
                         this.refreshed = new Date().toString();
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         this.error = error;
                         this.authenticated = false;
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { trans } from 'laravel-vue-i18n';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
     name: 'Spinner',

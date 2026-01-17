@@ -1,6 +1,6 @@
 <script>
-import { trans } from 'laravel-vue-i18n';
 import Chart from 'chart.js/auto';
+import { trans } from 'laravel-vue-i18n';
 
 // todo: show text for all shown companies
 

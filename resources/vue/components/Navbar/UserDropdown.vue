@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useUserStore } from '../../stores/user';
 import { trans } from 'laravel-vue-i18n';
+import { useUserStore } from '../../stores/user';
 
 const user = useUserStore();
 user.fetchSettings(false, true);
@@ -25,7 +25,7 @@ function logout() {
             user.invalidateUser();
             window.location.href = '/';
         })
-        .catch(error => {
+        .catch((error) => {
             console.error('Error logging out:', error);
         });
 }

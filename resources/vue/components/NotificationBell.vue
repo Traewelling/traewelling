@@ -1,7 +1,7 @@
 <script>
+import { useNotificationsStore } from '../stores/notifications';
 import ModalComponent from './ModalComponent.vue';
 import NotificationList from './NotificationList.vue';
-import { useNotificationsStore } from '../stores/notifications';
 
 export default {
     components: {

@@ -1,5 +1,5 @@
-import { StatusResource, StopoverResource } from '../../types/Api.gen';
 import { DateTime } from 'luxon';
+import { StatusResource, StopoverResource } from '../../types/Api.gen';
 import { Dtm } from './DateTime';
 
 export function getDepartureForStatus(status: StatusResource): Dtm {

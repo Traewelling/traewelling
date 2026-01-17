@@ -1,7 +1,7 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -219,7 +219,7 @@ const data = ref({
 });
 
 // Translation function
-const t = key => {
+const t = (key) => {
     const keys = key.split('.');
     let result = translations[locale.value];
     for (const k of keys) {
@@ -267,17 +267,17 @@ const mostDelayedTrip = computed(() => {
 });
 
 // Helper Functions
-const formatKm = meters => {
+const formatKm = (meters) => {
     if (!meters) return '0';
     return Math.round(meters / 1000).toLocaleString('de-DE');
 };
 
-const formatHours = minutes => {
+const formatHours = (minutes) => {
     if (!minutes) return '0';
     return Math.round(minutes / 60).toLocaleString('de-DE');
 };
 
-const formatDate = dateString => {
+const formatDate = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString(locale.value === 'de' ? 'de-DE' : 'en-US', {
@@ -287,7 +287,7 @@ const formatDate = dateString => {
     });
 };
 
-const calculateSpeed = trip => {
+const calculateSpeed = (trip) => {
     if (!trip?.distance || !trip?.duration) return 0;
     const km = trip.distance / 1000;
     const hours = trip.duration / 60;
@@ -402,7 +402,7 @@ const setupAnimations = () => {
         '.section-thanks',
     ];
 
-    fadeInSections.forEach(selector => {
+    fadeInSections.forEach((selector) => {
         const element = document.querySelector(selector);
         if (element) {
             gsap.from(selector, {
@@ -446,7 +446,7 @@ const fetchData = async () => {
     }
 };
 
-const calculateDelay = trip => {
+const calculateDelay = (trip) => {
     if (!trip?.destination) return 0;
 
     const stop = trip.destination;
@@ -470,7 +470,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
 });
 </script>
 

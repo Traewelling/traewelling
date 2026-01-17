@@ -23,8 +23,8 @@ const livePositions = ref<LivePointDto[]>([]);
 if (props.statuses.length === 1) {
     lineColor.value = props.statuses[0].train.routeColor ? '#' + props.statuses[0].train.routeColor : '#c72730';
     api.polyline
-        .getPolylines(props.statuses.map(s => s.id.toString()).join(','))
-        .then(response => {
+        .getPolylines(props.statuses.map((s) => s.id.toString()).join(','))
+        .then((response) => {
             let newBounds = new LngLatBounds();
 
             for (const feature of response.data.data?.features || []) {
@@ -35,7 +35,7 @@ if (props.statuses.length === 1) {
             }
             setNewBounds(newBounds);
         })
-        .catch(error => {
+        .catch((error) => {
             console.error('Error fetching polylines:', error);
         });
 }
@@ -54,13 +54,13 @@ function setNewBounds(newBounds: LngLatBounds) {
 }
 
 api.positions
-    .getLivePositionsForStatuses(props.statuses.map(s => s.id.toString()).join(','))
-    .then(response => {
+    .getLivePositionsForStatuses(props.statuses.map((s) => s.id.toString()).join(','))
+    .then((response) => {
         livePositions.value = response.data.data || [];
 
         console.log(livePositions.value);
     })
-    .catch(error => {
+    .catch((error) => {
         console.error('Error fetching live positions:', error);
     });
 </script>

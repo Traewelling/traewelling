@@ -3,11 +3,11 @@ ToDo: Event.vue does currenly only load statuses. Put the whole Page in here lat
 ToDo: Cursor based pagination (API changes needed)
 -->
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import StatusCard from '../components/Status/StatusCard.vue';
-import type { StatusResource } from '../../types/Api.gen';
 import { trans } from 'laravel-vue-i18n';
+import { computed, onMounted, ref } from 'vue';
+import type { StatusResource } from '../../types/Api.gen';
 import LoadingSkeletonRows from '../components/Loader/LoadingSkeletonRows.vue';
+import StatusCard from '../components/Status/StatusCard.vue';
 
 const props = defineProps<{
     eventSlug: string;

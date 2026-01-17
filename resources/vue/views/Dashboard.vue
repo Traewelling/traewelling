@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
-import StationAutocomplete from '../components/StationAutocomplete/StationAutocomplete.vue';
+import { DateTime } from 'luxon';
+import { Notyf } from 'notyf';
 import { ref } from 'vue';
 import { Api, StatusResource, StopoverResource } from '../../types/Api.gen';
-import StatusCard from '../components/Status/StatusCard.vue';
-import { DateTime } from 'luxon';
-import { getDepartureForStatus } from '../helpers/DateTimeHelper';
-import { Notyf } from 'notyf';
-import { useUserStore } from '../stores/user';
 import ApiAlerts from '../components/ApiAlerts.vue';
 import LoadingSkeletonRows from '../components/Loader/LoadingSkeletonRows.vue';
+import StationAutocomplete from '../components/StationAutocomplete/StationAutocomplete.vue';
+import StatusCard from '../components/Status/StatusCard.vue';
+import { getDepartureForStatus } from '../helpers/DateTimeHelper';
+import { useUserStore } from '../stores/user';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const statuses = ref<StatusResource[]>([]);
@@ -26,8 +26,8 @@ function fetchStatuses(page: number | undefined = undefined, append: boolean = f
     showMore.value = false;
     api.dashboard
         .getDashboard({ page })
-        .then(response => {
-            response.json().then(data => {
+        .then((response) => {
+            response.json().then((data) => {
                 if (append) {
                     statuses.value.push(...data.data);
                 } else {
@@ -39,7 +39,7 @@ function fetchStatuses(page: number | undefined = undefined, append: boolean = f
                 currentPage.value = data.meta?.current_page || 0;
             });
         })
-        .catch(error => {
+        .catch((error) => {
             loading.value = false;
             notyf.error('Error fetching statuses: ' + error.message);
         });
@@ -50,11 +50,11 @@ function fetchStopovers(append: boolean = false) {
         return;
     }
 
-    const tripIds = statuses.value.map(status => status.train.trip.toString());
+    const tripIds = statuses.value.map((status) => status.train.trip.toString());
     api.stopovers
         .getStopOvers(tripIds.join(','))
-        .then(response => {
-            response.json().then(data => {
+        .then((response) => {
+            response.json().then((data) => {
                 if (append) {
                     for (const tripId in data.data) {
                         if (data.data.hasOwnProperty(tripId)) {
@@ -69,7 +69,7 @@ function fetchStopovers(append: boolean = false) {
                 }
             });
         })
-        .catch(error => {
+        .catch((error) => {
             console.error('Error fetching stopovers:', error);
         });
 }
@@ -81,12 +81,12 @@ function getStopoverForTrip(tripId: string): StopoverResource[] | undefined {
 function fetchFutureStatuses() {
     api.dashboard
         .getFutureDashboard()
-        .then(response => {
-            response.json().then(data => {
+        .then((response) => {
+            response.json().then((data) => {
                 futureStatuses.value = data.data;
             });
         })
-        .catch(error => {
+        .catch((error) => {
             notyf.error(trans('generic.error') + ': ' + error.message);
         });
 }

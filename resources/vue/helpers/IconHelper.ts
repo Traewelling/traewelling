@@ -1,5 +1,5 @@
-import { Business, StatusVisibility } from '../../types/Api.gen';
 import { trans } from 'laravel-vue-i18n';
+import { Business, StatusVisibility } from '../../types/Api.gen';
 
 const visibilityIcons = {
     0: 'fa-globe-americas',

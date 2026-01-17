@@ -1,6 +1,6 @@
 <script>
-import { trans } from 'laravel-vue-i18n';
 import Chart from 'chart.js/auto';
+import { trans } from 'laravel-vue-i18n';
 
 const businessKeyMap = {
     0: 'private',
@@ -40,7 +40,7 @@ export default {
             }
             if (!this.series.length) return;
 
-            const translatedLabels = this.labels.map(label => {
+            const translatedLabels = this.labels.map((label) => {
                 const key = businessKeyMap[Number(label)];
                 return key ? this.trans(`stationboard.business.${key}`) : label;
             });

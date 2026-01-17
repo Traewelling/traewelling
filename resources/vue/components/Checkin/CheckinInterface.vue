@@ -1,15 +1,15 @@
 <script>
+import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
-import { trans } from 'laravel-vue-i18n';
+import { useActiveCheckin } from '../../stores/activeCheckin';
+import { checkinSuccessStore } from '../../stores/checkinSuccess';
 import { useProfileSettingsStore } from '../../stores/profileSettings';
+import { useUserStore } from '../../stores/user';
+import BusinessDropdown from '../BusinessDropdown.vue';
 import EventDropdown from '../EventDropdown.vue';
 import FriendDropdown from '../Helpers/FriendDropdown.vue';
 import TagList from '../TagList.vue';
-import { useActiveCheckin } from '../../stores/activeCheckin';
-import { checkinSuccessStore } from '../../stores/checkinSuccess';
-import { useUserStore } from '../../stores/user';
-import BusinessDropdown from '../BusinessDropdown.vue';
 import VisibilityDropdown from '../VisibilityDropdown.vue';
 
 export default {
@@ -105,7 +105,7 @@ export default {
                 arrival: DateTime.fromISO(this.selectedDestination.arrivalPlanned).setZone('UTC').toISO(),
                 force: this.collision,
                 eventId: this.selectedEvent ? this.selectedEvent.id : null,
-                with: this.selectedFriends.map(friend => friend.user.id),
+                with: this.selectedFriends.map((friend) => friend.user.id),
             };
             fetch('/api/v1/trains/checkin', {
                 method: 'POST',
@@ -114,10 +114,10 @@ export default {
                 },
                 body: JSON.stringify(data),
             })
-                .then(response => {
+                .then((response) => {
                     this.loading = false;
                     if (response.ok) {
-                        response.json().then(result => {
+                        response.json().then((result) => {
                             this.activeCheckin.reset();
                             this.checkinSuccess.setResponse(result.data);
 
@@ -128,7 +128,7 @@ export default {
                     } else {
                         switch (response.status) {
                             case 400:
-                                response.json().then(result => {
+                                response.json().then((result) => {
                                     this.notyf.error(result.message);
                                 });
                                 break;

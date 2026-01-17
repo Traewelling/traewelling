@@ -1,14 +1,14 @@
 <script>
-import FullScreenModal from './FullScreenModal.vue';
-import ProductIcon from './ProductIcon.vue';
-import LineIndicator from './LineIndicator.vue';
-import { DateTime } from 'luxon';
-import CheckinLineRun from './CheckinLineRun.vue';
-import CheckinInterface from './Checkin/CheckinInterface.vue';
-import StationAutocomplete from './StationAutocomplete/StationAutocomplete.vue';
 import { getActiveLanguage, trans, transChoice } from 'laravel-vue-i18n';
+import { DateTime } from 'luxon';
+import CheckinInterface from './Checkin/CheckinInterface.vue';
 import StationBoardEntry from './Checkin/StationBoardEntry.vue';
+import CheckinLineRun from './CheckinLineRun.vue';
+import FullScreenModal from './FullScreenModal.vue';
+import LineIndicator from './LineIndicator.vue';
 import LoadingSkeletonRows from './Loader/LoadingSkeletonRows.vue';
+import ProductIcon from './ProductIcon.vue';
+import StationAutocomplete from './StationAutocomplete/StationAutocomplete.vue';
 
 export default {
     components: {
@@ -160,10 +160,10 @@ export default {
             );
 
             fetch(`/api/v1/station/${this.trwlStationId}/departures?when=${time}&travelType=${travelType}`).then(
-                response => {
+                (response) => {
                     this.loading = false;
                     if (response.ok) {
-                        response.json().then(result => {
+                        response.json().then((result) => {
                             if (appendPosition === 0) {
                                 this.data = result.data;
                             } else if (appendPosition === 1) {
@@ -220,7 +220,7 @@ export default {
                 }
                 this.show = true;
                 this.$refs?.modal?.show();
-                return new Promise(resolve => resolve());
+                return new Promise((resolve) => resolve());
             }
 
             if (!urlParams.has('stationId')) {
@@ -234,7 +234,7 @@ export default {
             this.trwlStationId = urlParams.get('stationId');
             this.show = false;
             this.$refs.modal.hide();
-            return new Promise(resolve => resolve());
+            return new Promise((resolve) => resolve());
         },
         popstateListener() {
             const urlParams = new URLSearchParams(window.location.search);

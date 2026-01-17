@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, PropType, ref, Transition, useTemplateRef } from 'vue';
 import { Tooltip } from 'bootstrap';
+import { onBeforeUnmount, onMounted, PropType, ref, Transition, useTemplateRef } from 'vue';
 import { StatusResource, StopoverResource } from '../../../types/Api.gen';
 import {
     getArrivalForStatus,
@@ -8,15 +8,15 @@ import {
     getDepartureForStatus,
     getDepartureForStopover,
 } from '../../helpers/DateTimeHelper';
-import ActiveJourneyMap from '../ActiveJourneyMap.vue';
-import StatusFooter from './Partials/StatusFooter.vue';
-import DestinationRow from './Partials/DestinationRow.vue';
-import OriginRow from './Partials/OriginRow.vue';
-import NextStop from './Partials/NextStop.vue';
 import { useActiveCheckin } from '../../stores/activeCheckin';
-import StatusBody from './Partials/StatusBody.vue';
-import Map from '../Map/Map.vue';
 import { useUserStore } from '../../stores/user';
+import ActiveJourneyMap from '../ActiveJourneyMap.vue';
+import Map from '../Map/Map.vue';
+import DestinationRow from './Partials/DestinationRow.vue';
+import NextStop from './Partials/NextStop.vue';
+import OriginRow from './Partials/OriginRow.vue';
+import StatusBody from './Partials/StatusBody.vue';
+import StatusFooter from './Partials/StatusFooter.vue';
 
 const props = defineProps({
     status: {

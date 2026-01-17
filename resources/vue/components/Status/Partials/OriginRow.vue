@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
+import { DateTime } from 'luxon';
 import { PropType, ref, watch } from 'vue';
 import { Business, StatusResource } from '../../../../types/Api.gen';
 import {
@@ -7,12 +9,10 @@ import {
     getDepartureForStatus,
     timeTypeTooltip,
 } from '../../../helpers/DateTimeHelper';
-import { trans } from 'laravel-vue-i18n';
-import { DateTime } from 'luxon';
-import ProductIcon from '../../ProductIcon.vue';
 import { IconHelper } from '../../../helpers/IconHelper';
-import DurationSpan from './DurationSpan.vue';
 import LineIndicator from '../../LineIndicator.vue';
+import ProductIcon from '../../ProductIcon.vue';
+import DurationSpan from './DurationSpan.vue';
 
 const props = defineProps({
     status: {

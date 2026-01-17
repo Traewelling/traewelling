@@ -1,33 +1,31 @@
 import js from '@eslint/js';
+import prettierConfig from '@vue/eslint-config-prettier';
+import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript';
 import pluginVue from 'eslint-plugin-vue';
-import tseslint from 'typescript-eslint';
 
-export default [
-    // Base recommended configs
+export default defineConfigWithVueTs(
+    {
+        name: 'app/files-to-lint',
+        files: ['**/*.{js,ts,vue}'],
+    },
     js.configs.recommended,
-    ...tseslint.configs.recommended,
     ...pluginVue.configs['flat/recommended'],
-
-    // Global ignores
+    prettierConfig,
+    vueTsConfigs.recommended,
     {
         ignores: [
-            'node_modules/**',
-            'vendor/**',
-            'public/build/**',
-            'public/hot',
-            'public/**/*.min.js',
-            'storage/**',
-            'bootstrap/cache/**',
-            '.phpstorm.meta.php',
-            '_ide_helper.php',
-            '_ide_helper_models.php',
+            'vendor',
+            'node_modules',
+            'public',
+            'tests-coverage',
+            'bootstrap/ssr',
+            'storage',
+            'bootstrap/cache',
             '**/*.min.js',
             '**/*.bundle.js',
             'resources/types/Api.gen.ts', // Auto-generated from Swagger
         ],
     },
-
-    // Configuration for all files
     {
         languageOptions: {
             ecmaVersion: 'latest',
@@ -81,97 +79,6 @@ export default [
             'vue/multi-word-component-names': 'off',
             'vue/require-default-prop': 'off',
             'vue/no-v-html': 'warn',
-
-            // Code style
-            indent: [
-                'error',
-                4,
-                {
-                    SwitchCase: 1,
-                    ignoredNodes: ['TemplateLiteral'],
-                },
-            ],
-            quotes: ['error', 'single', { avoidEscape: true }],
-            semi: ['error', 'always'],
-            'comma-dangle': ['error', 'always-multiline'],
-            'eol-last': ['error', 'always'],
-            'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
-            'no-trailing-spaces': 'error',
-            'object-curly-spacing': ['error', 'always'],
-            'array-bracket-spacing': ['error', 'never'],
-            'arrow-spacing': 'error',
-            'space-before-blocks': 'error',
-            'keyword-spacing': 'error',
         },
     },
-
-    // Vue-specific configuration
-    {
-        files: ['**/*.vue'],
-        languageOptions: {
-            parserOptions: {
-                parser: tseslint.parser,
-                ecmaVersion: 'latest',
-                sourceType: 'module',
-            },
-        },
-        rules: {
-            'vue/html-indent': ['error', 4],
-            'vue/max-attributes-per-line': [
-                'error',
-                {
-                    singleline: 3,
-                    multiline: 1,
-                },
-            ],
-            'vue/first-attribute-linebreak': [
-                'error',
-                {
-                    singleline: 'ignore',
-                    multiline: 'below',
-                },
-            ],
-            'vue/component-tags-order': [
-                'error',
-                {
-                    order: ['script', 'template', 'style'],
-                },
-            ],
-            // Warn instead of error for gradual migration to TypeScript and Composition API
-            'vue/block-lang': 'warn',
-            'vue/component-api-style': 'off', // Allow both Options and Composition API for now
-            'vue/define-macros-order': [
-                'error',
-                {
-                    order: ['defineProps', 'defineEmits', 'defineSlots'],
-                },
-            ],
-            'vue/one-component-per-file': 'off', // Allow multiple components in app.js for now
-            // Vue best practices - warn instead of error for gradual fixes (TODO! temporary to soft introduce eslint)
-            'vue/valid-v-bind': 'warn',
-            'vue/valid-v-for': 'warn',
-            'vue/valid-template-root': 'warn',
-            'vue/return-in-computed-property': 'warn',
-            'vue/no-unused-components': 'warn',
-            'vue/require-valid-default-prop': 'warn',
-            'vue/require-v-for-key': 'warn',
-            'vue/no-mutating-props': 'warn',
-            'vue/no-use-v-if-with-v-for': 'warn',
-            'vue/no-useless-template-attributes': 'warn',
-            'vue/valid-v-slot': 'warn',
-            'vue/no-side-effects-in-computed-properties': 'warn',
-            'vue/no-reserved-keys': 'warn',
-        },
-    },
-
-    // TypeScript files
-    {
-        files: ['**/*.ts'],
-        languageOptions: {
-            parser: tseslint.parser,
-            parserOptions: {
-                project: './tsconfig.json',
-            },
-        },
-    },
-];
+);

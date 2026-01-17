@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
-import { trans } from 'laravel-vue-i18n';
 import '@vuepic/vue-datepicker/dist/main.css';
+import { trans } from 'laravel-vue-i18n';
+import { computed, onMounted, ref, watch } from 'vue';
 
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
 
-import ChartPurpose from './ChartPurpose.vue';
+import Chart from 'chart.js/auto';
 import ChartCategories from './ChartCategories.vue';
 import ChartCompanies from './ChartCompanies.vue';
+import ChartPurpose from './ChartPurpose.vue';
 import ChartVolume from './ChartVolume.vue';
 import GlobalCards from './GlobalCards.vue';
-import Chart from 'chart.js/auto';
 
 const notyf = new Notyf();
 
@@ -154,8 +154,8 @@ onMounted(() => {
                 <ChartPurpose
                     v-if="data.purpose.length"
                     :key="'purpose-' + fromStr + '-' + untilStr"
-                    :series="data.purpose.map(p => p.duration)"
-                    :labels="data.purpose.map(p => p.name)"
+                    :series="data.purpose.map((p) => p.duration)"
+                    :labels="data.purpose.map((p) => p.name)"
                 />
                 <p v-else class="text-danger font-weight-bold mt-2">
                     {{ trans('stats.no-data') }}
@@ -165,8 +165,8 @@ onMounted(() => {
                 <ChartCategories
                     v-if="data.categories.length"
                     :key="'categories-' + fromStr + '-' + untilStr"
-                    :series="data.categories.map(c => c.duration)"
-                    :labels="data.categories.map(c => c.name)"
+                    :series="data.categories.map((c) => c.duration)"
+                    :labels="data.categories.map((c) => c.name)"
                 />
                 <p v-else class="text-danger font-weight-bold mt-2">
                     {{ trans('stats.no-data') }}
@@ -176,8 +176,8 @@ onMounted(() => {
                 <ChartCompanies
                     v-if="data.operators.length"
                     :key="'companies-' + fromStr + '-' + untilStr"
-                    :series="data.operators.map(o => o.duration)"
-                    :labels="data.operators.map(o => o.name || trans('other'))"
+                    :series="data.operators.map((o) => o.duration)"
+                    :labels="data.operators.map((o) => o.name || trans('other'))"
                 />
                 <p v-else class="text-danger font-weight-bold mt-2">
                     {{ trans('stats.no-data') }}

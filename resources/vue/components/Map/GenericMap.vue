@@ -39,7 +39,7 @@ const isDarkMode = ref(false);
 
 watch(
     () => document.documentElement.dataset.bsTheme,
-    newValue => {
+    (newValue) => {
         isDarkMode.value = newValue === 'dark';
     },
     { immediate: true, deep: true },

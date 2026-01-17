@@ -1,6 +1,6 @@
 <script>
-import 'leaflet';
 import { trans } from 'laravel-vue-i18n';
+import 'leaflet';
 import { DtmRange } from '../helpers/DateRange';
 import { useUserStore } from '../stores/user';
 
@@ -91,7 +91,7 @@ export default {
             return true;
         },
         clearMarkersOnly() {
-            this.points.forEach(point => {
+            this.points.forEach((point) => {
                 if (point && point.marker) {
                     point.marker.remove();
                 }
@@ -105,8 +105,8 @@ export default {
         fetchStatusPolyline() {
             this.clearRoute();
 
-            fetch('/api/v1/polyline/' + this.$props.statusId).then(response => {
-                response.json().then(results => {
+            fetch('/api/v1/polyline/' + this.$props.statusId).then((response) => {
+                response.json().then((results) => {
                     const strokeColor = this.parsedLineColor || '#C0392B';
 
                     // casing in grey (for better visibility)
@@ -143,11 +143,11 @@ export default {
             if (this.$props.statusId) url = url + '/' + this.$props.statusId;
 
             fetch(url)
-                .then(response => response.json())
-                .then(results => {
+                .then((response) => response.json())
+                .then((results) => {
                     this.clearMarkersOnly();
 
-                    results.data.forEach(result => {
+                    results.data.forEach((result) => {
                         let entry = null;
 
                         if (result.point) {
@@ -174,8 +174,8 @@ export default {
 
         fetchEvents() {
             fetch('/api/v1/events')
-                .then(response => response.json())
-                .then(results => {
+                .then((response) => response.json())
+                .then((results) => {
                     results.data.forEach(this.addEventMarker);
                 });
         },
@@ -214,7 +214,7 @@ export default {
             if (!this.canShowMarkers()) return this.createPointObject(data);
 
             const line = [];
-            data.polyline.features.forEach(point => {
+            data.polyline.features.forEach((point) => {
                 line.push([point.geometry.coordinates[1], point.geometry.coordinates[0]]);
             });
 
@@ -239,7 +239,7 @@ export default {
 
         refreshMarkers() {
             let refreshIds = [];
-            this.points.forEach(point => {
+            this.points.forEach((point) => {
                 if (point && point.departure * 1000 <= Date.now()) {
                     refreshIds.push(point.statusId);
                 }
@@ -250,12 +250,12 @@ export default {
 
         fetchPositions(refreshIds) {
             fetch('/api/v1/positions/' + refreshIds.join(','))
-                .then(response => response.json())
-                .then(result => {
+                .then((response) => response.json())
+                .then((result) => {
                     let tmpResult = [];
                     let updatedIds = [];
 
-                    result.data.forEach(stop => {
+                    result.data.forEach((stop) => {
                         tmpResult.push(stop);
                         let removeIdx = refreshIds.indexOf(stop.statusId);
                         if (removeIdx > -1) {
@@ -265,7 +265,7 @@ export default {
                     });
 
                     this.points = this.points
-                        .map(entry => {
+                        .map((entry) => {
                             if (!entry) return entry;
 
                             if (refreshIds.indexOf(entry.statusId) > -1) {
@@ -273,7 +273,7 @@ export default {
                                 return false;
                             }
                             if (updatedIds.indexOf(entry.statusId) > -1) {
-                                tmpResult.forEach(result => {
+                                tmpResult.forEach((result) => {
                                     if (result.polyline && result.statusId === entry.statusId) {
                                         entry = this.addMarker(result, entry.marker);
                                     }

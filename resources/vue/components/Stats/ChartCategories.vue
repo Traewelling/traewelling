@@ -1,6 +1,6 @@
 <script>
-import { trans } from 'laravel-vue-i18n';
 import Chart from 'chart.js/auto';
+import { trans } from 'laravel-vue-i18n';
 
 const transportKeyMap = {
     nationalExpress: 'nationalExpress',
@@ -48,7 +48,7 @@ export default {
             }
             if (!this.series.length) return;
 
-            const translatedLabels = this.labels.map(label => {
+            const translatedLabels = this.labels.map((label) => {
                 const key = transportKeyMap[label];
                 return key ? this.trans(`transport_types.${key}`) : label;
             });

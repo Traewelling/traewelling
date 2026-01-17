@@ -1,7 +1,7 @@
 <script>
-import Papa from 'papaparse';
-import { DateTime } from 'luxon';
 import { trans } from 'laravel-vue-i18n';
+import { DateTime } from 'luxon';
+import Papa from 'papaparse';
 
 export default {
     name: 'StopoversCsvImporter',
@@ -50,7 +50,7 @@ export default {
             if (this.busy) return;
             this.busy = true;
 
-            const parseLocal = val => {
+            const parseLocal = (val) => {
                 if (!val) return null;
                 const s = String(val).trim();
                 const dt = DateTime.fromFormat(s, 'yyyy-LL-dd HH:mm', { zone: 'local', setZone: true });
@@ -61,10 +61,10 @@ export default {
                 const parsed = Papa.parse(this.csvText || '', {
                     delimiter: ',',
                     skipEmptyLines: true,
-                    transform: v => (typeof v === 'string' ? v.trim() : v),
+                    transform: (v) => (typeof v === 'string' ? v.trim() : v),
                 });
 
-                const rows = (parsed?.data || []).filter(r => Array.isArray(r) && r.length >= 1);
+                const rows = (parsed?.data || []).filter((r) => Array.isArray(r) && r.length >= 1);
 
                 if (rows.length < 2) {
                     window?.notyf?.error?.(this.trans('trip_creation.csv_import.errors.min_two_rows'));

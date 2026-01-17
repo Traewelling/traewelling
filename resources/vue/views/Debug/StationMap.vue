@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, type Ref, ref } from 'vue';
 import {
     MglFullscreenControl,
     MglGeoJsonSource,
@@ -12,9 +11,10 @@ import {
     MglRasterLayer,
     MglRasterSource,
 } from '@indoorequal/vue-maplibre-gl';
-import { LngLat, LngLatBoundsLike, StyleSpecification } from 'maplibre-gl';
-import { Api, AreaResource, StationResource } from '../../../types/Api.gen';
 import type { FeatureCollection, Point } from 'geojson';
+import { LngLat, LngLatBoundsLike, StyleSpecification } from 'maplibre-gl';
+import { computed, onBeforeUnmount, onMounted, type Ref, ref } from 'vue';
+import { Api, AreaResource, StationResource } from '../../../types/Api.gen';
 
 const props = withDefaults(defineProps<Props>(), {
     apiUrl: '/api/v1/stations',
@@ -61,7 +61,7 @@ const showHeatmap = computed(() => zoom.value <= props.heatmapMaxZoom);
 
 const stationsGeoJson = computed<FeatureCollection<Point>>(() => ({
     type: 'FeatureCollection',
-    features: stations.value.map(station => ({
+    features: stations.value.map((station) => ({
         type: 'Feature',
         geometry: {
             type: 'Point',
@@ -125,10 +125,10 @@ function fetchStationsForCurrentView(): void {
             max_lon: max_lon,
             limit: Math.min(Math.max(props.limit, 1), 250),
         })
-        .then(res => {
+        .then((res) => {
             for (const s of res.data.data || []) {
                 if (!Number.isFinite(s?.latitude) || !Number.isFinite(s?.longitude)) continue;
-                if (stations.value.some(st => st.id === s.id)) continue;
+                if (stations.value.some((st) => st.id === s.id)) continue;
                 stations.value.push(s);
             }
             loading.value = false;

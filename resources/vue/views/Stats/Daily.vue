@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
 import { trans, transChoice as trans_choice } from 'laravel-vue-i18n';
-import StatusCard from '../../components/Status/StatusCard.vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import type { StatusResource } from '../../../types/Api.gen';
 import LoadingSkeletonRows from '../../components/Loader/LoadingSkeletonRows.vue';
+import StatusCard from '../../components/Status/StatusCard.vue';
 
 const props = defineProps<{
     date: string;

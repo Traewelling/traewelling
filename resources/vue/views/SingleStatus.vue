@@ -1,16 +1,16 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
+import { DateTime } from 'luxon';
 import { ref } from 'vue';
 import { Api, StatusResource, StopoverResource, UserAuthResource, UserResource } from '../../types/Api.gen';
-import StatusCard from '../components/Status/StatusCard.vue';
 import CheckinSuccessHelper from '../components/CheckinSuccessHelper.vue';
-import { trans } from 'laravel-vue-i18n';
-import { getDepartureForStatus } from '../helpers/DateTimeHelper';
-import { DateTime } from 'luxon';
-import { useUserStore } from '../stores/user';
-import TagHelper from '../components/TagHelper.vue';
-import LoadingSkeletonRows from '../components/Loader/LoadingSkeletonRows.vue';
 import Error403 from '../components/Errors/403.vue';
 import Error404 from '../components/Errors/404.vue';
+import LoadingSkeletonRows from '../components/Loader/LoadingSkeletonRows.vue';
+import StatusCard from '../components/Status/StatusCard.vue';
+import TagHelper from '../components/TagHelper.vue';
+import { getDepartureForStatus } from '../helpers/DateTimeHelper';
+import { useUserStore } from '../stores/user';
 
 const loading = ref(true);
 const status = ref<StatusResource | null>(null);
@@ -29,10 +29,10 @@ function fetchLikes() {
     }
     api.status
         .getLikesForStatus(statusId)
-        .then(response => {
+        .then((response) => {
             likedBy.value = response.data.data ?? [];
         })
-        .catch(error => {
+        .catch((error) => {
             console.error('Error fetching likes:', error);
         });
 }
@@ -44,10 +44,10 @@ function fetchStopovers() {
     }
     api.stopovers
         .getStopOvers(status.value!.train.trip.toString())
-        .then(response => {
+        .then((response) => {
             stopovers.value = response.data.data?.[status.value!.train.trip] ?? [];
         })
-        .catch(error => {
+        .catch((error) => {
             console.error('Error fetching stopovers:', error);
         });
 }
@@ -62,14 +62,14 @@ function fetchStatus() {
 
     api.status
         .getSingleStatus(statusId)
-        .then(response => {
-            response.json().then(data => {
+        .then((response) => {
+            response.json().then((data) => {
                 loading.value = false;
                 status.value = data.data;
                 fetchStopovers();
             });
         })
-        .catch(error => {
+        .catch((error) => {
             loading.value = false;
             if (error.status === 404) {
                 pageError.value = '404';
@@ -91,7 +91,7 @@ function removeSelfFromLikes() {
     if (!status.value || !user.user) return;
     status.value.likes--;
     status.value.liked = false;
-    likedBy.value = likedBy.value.filter(like => like.id !== user.user?.id);
+    likedBy.value = likedBy.value.filter((like) => like.id !== user.user?.id);
 }
 
 function userAuthToUserResource(user: UserAuthResource): UserResource {

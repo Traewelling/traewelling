@@ -61,9 +61,9 @@ const popularStations = [
         if (input.value.length < 2) return;
 
         fetch('/transport/train/autocomplete/' + encodeURI(input.value))
-            .then(res => res.json())
-            .then(json => {
-                window.awesomplete.list = json.map(station => {
+            .then((res) => res.json())
+            .then((json) => {
+                window.awesomplete.list = json.map((station) => {
                     return {
                         value: station.name,
                         label: station.name + (station.rilIdentifier ? ' (' + station.rilIdentifier + ')' : ''),

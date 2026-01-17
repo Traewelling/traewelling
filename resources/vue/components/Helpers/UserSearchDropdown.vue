@@ -1,8 +1,8 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { trans } from 'laravel-vue-i18n';
-import { Api, User } from '../../../types/Api.gen';
 import _ from 'lodash';
+import { defineComponent } from 'vue';
+import { Api, User } from '../../../types/Api.gen';
 
 export default defineComponent({
     name: 'UserSearchDropdown',
@@ -24,12 +24,12 @@ export default defineComponent({
         fetchFriends() {
             this.api.user
                 .searchUsers(this.search)
-                .then(data => {
+                .then((data) => {
                     if (!data.ok || data.status === 404) {
                         this.users = [];
                         return;
                     }
-                    data.json().then(data => {
+                    data.json().then((data) => {
                         this.users = data.data;
                     });
                 })

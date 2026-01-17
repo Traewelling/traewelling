@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
+import { DateTime } from 'luxon';
 import { PropType, ref, watch } from 'vue';
 import { StopoverResource } from '../../../../types/Api.gen';
-import { trans } from 'laravel-vue-i18n';
 import { getArrivalForStopover } from '../../../helpers/DateTimeHelper';
-import { DateTime } from 'luxon';
 
 const props = defineProps({
     stopovers: {
@@ -24,7 +24,7 @@ function getNextStop() {
         return;
     }
 
-    props.stopovers.every(stopover => {
+    props.stopovers.every((stopover) => {
         const diff = getArrivalForStopover(stopover).dateTime.diffNow('seconds');
         if (diff.seconds > 0) {
             nextStop.value = stopover;

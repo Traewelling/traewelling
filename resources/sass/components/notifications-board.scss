@@ -1,34 +1,34 @@
 @import '../variables';
 
 .navbar {
-    div.navbar-toggler {
+  div.navbar-toggler {
+    padding-right: 0;
+
+    button.navbar-toggler {
+      // The toggle buttons inside the div
+      vertical-align: middle;
+      padding-top: 0;
+      padding-bottom: 0;
+
+      &:last-child {
         padding-right: 0;
-
-        button.navbar-toggler {
-            // The toggle buttons inside the div
-            vertical-align: middle;
-            padding-top: 0;
-            padding-bottom: 0;
-
-            &:last-child {
-                padding-right: 0;
-            }
-        }
+      }
     }
+  }
 
-    .nav-item span.notifications-bell {
-        &.fa,
-        &.far {
-            padding-left: 3px;
-            padding-right: 3px;
-        }
+  .nav-item span.notifications-bell {
+    &.fa,
+    &.far {
+      padding-left: 3px;
+      padding-right: 3px;
     }
+  }
 }
 
 .notifications-pill {
-    background-color: #00476c !important;
+  background-color: #00476c !important;
 }
 
 .notifications-board-toggle {
-    white-space: nowrap;
+  white-space: nowrap;
 }

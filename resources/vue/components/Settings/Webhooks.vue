@@ -1,6 +1,6 @@
 <script>
-import { trans } from 'laravel-vue-i18n';
 import axios from 'axios';
+import { trans } from 'laravel-vue-i18n';
 
 export default {
     data() {
@@ -16,21 +16,21 @@ export default {
         async fetchWebhooks() {
             axios
                 .get('/api/v1/webhooks')
-                .then(response => {
+                .then((response) => {
                     this.webhooks = response.data.data;
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.error(error);
                 });
         },
         async deleteWebhook(webhook) {
             axios
                 .delete(`/api/v1/webhooks/${webhook.id}`)
-                .then(response => {
-                    this.webhooks = this.webhooks.filter(w => w.id !== webhook.id);
+                .then((response) => {
+                    this.webhooks = this.webhooks.filter((w) => w.id !== webhook.id);
                     notyf.success(trans('successfully-deleted'));
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.error(error);
                     notyf.error(trans('generic.error'));
                 });

@@ -1,9 +1,9 @@
 <script lang="ts">
+import { trans, transChoice } from 'laravel-vue-i18n';
+import { PointReason, Points, StatusResource } from '../../types/Api.gen';
+import { checkinSuccessStore } from '../stores/checkinSuccess';
 import FullScreenModal from './FullScreenModal.vue';
 import ModalComponent from './ModalComponent.vue';
-import { trans, transChoice } from 'laravel-vue-i18n';
-import { checkinSuccessStore } from '../stores/checkinSuccess';
-import { PointReason, Points, StatusResource } from '../../types/Api.gen';
 
 export default {
     name: 'CheckinSuccessHelper',

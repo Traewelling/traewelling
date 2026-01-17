@@ -1,5 +1,5 @@
-import 'lodash';
 import * as Popper from '@popperjs/core';
+import 'lodash';
 
 document.addEventListener('DOMContentLoaded', function () {
     try {

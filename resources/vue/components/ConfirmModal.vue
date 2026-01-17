@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import ModalComponent from './ModalComponent.vue';
-import { ref } from 'vue';
 import { trans } from 'laravel-vue-i18n';
+import { ref } from 'vue';
+import ModalComponent from './ModalComponent.vue';
 
 const props = defineProps({
     title: {

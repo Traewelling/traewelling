@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
+import { DateTime, Duration } from 'luxon';
+import { Notyf } from 'notyf';
 import { computed, ref } from 'vue';
 import { Api, StatusResource, StopoverResource } from '../../types/Api.gen';
-import StatusCard from '../components/Status/StatusCard.vue';
-import { DateTime, Duration } from 'luxon';
-import { getDepartureForStatus } from '../helpers/DateTimeHelper';
-import { Notyf } from 'notyf';
-import { useUserStore } from '../stores/user';
 import LoadingSkeletonRows from '../components/Loader/LoadingSkeletonRows.vue';
+import StatusCard from '../components/Status/StatusCard.vue';
+import { getDepartureForStatus } from '../helpers/DateTimeHelper';
+import { useUserStore } from '../stores/user';
 
 const props = defineProps<{ username: string }>();
 
@@ -79,7 +79,7 @@ async function fetchStatuses(append = false) {
 
 async function fetchStopovers() {
     if (!statuses.value.length) return;
-    const tripIds = [...new Set(statuses.value.map(s => s.train.trip.toString()))];
+    const tripIds = [...new Set(statuses.value.map((s) => s.train.trip.toString()))];
     if (!tripIds.length) return;
 
     try {
@@ -130,7 +130,7 @@ const showPoints = computed(() => !!(userData.value?.pointsEnabled || authUser.u
 
 const mergedLinks = computed(() => {
     const links = [...(userData.value?.profileLinks ?? [])];
-    const hasMastodon = links.some(l => (l.name || '').toUpperCase() === 'MASTODON');
+    const hasMastodon = links.some((l) => (l.name || '').toUpperCase() === 'MASTODON');
     if (userData.value?.mastodonUrl && !hasMastodon) {
         links.push({ name: 'Mastodon', url: userData.value.mastodonUrl, icon: 'fa-brands fa-mastodon' });
     }

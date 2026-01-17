@@ -1,9 +1,9 @@
 <script>
-import FullScreenModal from '../FullScreenModal.vue';
-import _ from 'lodash';
 import { trans } from 'laravel-vue-i18n';
-import AutocompleteListEntry from '../Checkin/AutocompleteListEntry.vue';
+import _ from 'lodash';
 import { DateTime } from 'luxon';
+import AutocompleteListEntry from '../Checkin/AutocompleteListEntry.vue';
+import FullScreenModal from '../FullScreenModal.vue';
 
 export default {
     name: 'StationInput',
@@ -120,8 +120,8 @@ export default {
             this.timeFieldB = this.formatTime(event.target.value);
         },
         getRecent() {
-            fetch('/api/v1/trains/station/history').then(response => {
-                response.json().then(result => {
+            fetch('/api/v1/trains/station/history').then((response) => {
+                response.json().then((result) => {
                     this.recent = result.data;
                 });
             });
@@ -138,8 +138,8 @@ export default {
                 return;
             }
             let query = this.stationInput.replace(/%2F/, ' ').replace(/\//, ' ');
-            fetch(`/api/v1/stations/?query=${query}`).then(response => {
-                response.json().then(result => {
+            fetch(`/api/v1/stations/?query=${query}`).then((response) => {
+                response.json().then((result) => {
                     this.autocompleteList = result.data;
                     this.loading = false;
                 });

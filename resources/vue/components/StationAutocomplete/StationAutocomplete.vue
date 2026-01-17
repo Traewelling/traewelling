@@ -1,16 +1,16 @@
 <script>
-import FullScreenModal from '../FullScreenModal.vue';
-import _ from 'lodash';
-import { trans } from 'laravel-vue-i18n';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import axios from 'axios';
+import { trans } from 'laravel-vue-i18n';
+import _ from 'lodash';
 import { DateTime } from 'luxon';
 import { useUserStore } from '../../stores/user';
-import AutocompleteListEntry from '../Checkin/AutocompleteListEntry.vue';
-import Spinner from '../Loader/Spinner.vue';
 import ActiveStatusCard from '../ActiveStatusCard.vue';
+import AutocompleteListEntry from '../Checkin/AutocompleteListEntry.vue';
+import FullScreenModal from '../FullScreenModal.vue';
 import FriendDropdown from '../Helpers/FriendDropdown.vue';
-import axios from 'axios';
+import Spinner from '../Loader/Spinner.vue';
 
 const LS_RECENT_KEY = 'trwl:station:recent';
 const MAX_RECENT = 12;
@@ -100,7 +100,7 @@ export default {
         },
         pushStationToRecent(stationObj) {
             if (!stationObj || !stationObj.id) return;
-            const existing = this.recent.filter(s => s && s.id !== stationObj.id);
+            const existing = this.recent.filter((s) => s && s.id !== stationObj.id);
             const updated = [stationObj, ...existing].slice(0, MAX_RECENT);
             this.recent = updated;
             this.saveRecentToCache(updated);
@@ -113,19 +113,19 @@ export default {
 
             // try to refresh from API (best effort)
             fetch('/api/v1/trains/station/history')
-                .then(response => (response.ok ? response.json() : Promise.reject()))
-                .then(result => {
+                .then((response) => (response.ok ? response.json() : Promise.reject()))
+                .then((result) => {
                     if (result && result.data) {
                         // merge with local
                         const byId = new Map();
                         const merged = [];
-                        result.data.forEach(item => {
+                        result.data.forEach((item) => {
                             if (!byId.has(item.id)) {
                                 byId.set(item.id, true);
                                 merged.push(item);
                             }
                         });
-                        this.recent.forEach(item => {
+                        this.recent.forEach((item) => {
                             if (item && !byId.has(item.id)) {
                                 byId.set(item.id, true);
                                 merged.push(item);
@@ -147,7 +147,7 @@ export default {
                 this.loading = false;
                 return;
             }
-            this.fetchAutocomplete().then(result => {
+            this.fetchAutocomplete().then((result) => {
                 this.autocompleteList = result?.data ?? [];
                 this.loading = false;
             });
@@ -158,11 +158,11 @@ export default {
             let query = (this.stationInput || '').replace(/%2F/, ' ').replace(/\//, ' ');
             return await axios
                 .get(`/api/v1/trains/station/autocomplete/${encodeURIComponent(query)}`)
-                .then(response => {
+                .then((response) => {
                     this.autocompleteList = response.data;
                     return response.data;
                 })
-                .catch(error => {
+                .catch((error) => {
                     this.lastError = error?.message || 'Error';
                     notyf.error(this.lastError);
                     return null;
@@ -180,7 +180,7 @@ export default {
         setStationFromText() {
             this.fetchingTextInput = true;
             this.fetchAutocomplete()
-                .then(result => {
+                .then((result) => {
                     const first = result?.data?.[0] || result?.[0];
                     if (first) {
                         this.setStation(first);
@@ -216,16 +216,16 @@ export default {
                 return;
             }
             navigator.geolocation.getCurrentPosition(
-                position => {
+                (position) => {
                     fetch(
                         `/api/v1/trains/station/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`,
-                    ).then(data => {
+                    ).then((data) => {
                         if (!data.ok) {
                             notyf.error(trans('stationboard.position-unavailable'));
                             this.fetchingGps = false;
                             return;
                         }
-                        data.json().then(result => {
+                        data.json().then((result) => {
                             this.setStation(result.data);
                             this.fetchingGps = false;
                         });

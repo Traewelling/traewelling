@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import { MglMarker, MglPopup } from '@indoorequal/vue-maplibre-gl';
 import { trans, transChoice } from 'laravel-vue-i18n';
+import { LngLat, LngLatBounds } from 'maplibre-gl';
+import { Notyf } from 'notyf';
 import { ref } from 'vue';
 import { Api, EventResource, LivePointDto, StatusResource } from '../../types/Api.gen';
-import StatusCard from '../components/Status/StatusCard.vue';
 import ActiveJourneyMap from '../components/ActiveJourneyMap.vue';
-import { Notyf } from 'notyf';
-import { useUserStore } from '../stores/user';
 import GenericMap from '../components/Map/GenericMap.vue';
-import { LngLat, LngLatBounds } from 'maplibre-gl';
-import { MglMarker, MglPopup } from '@indoorequal/vue-maplibre-gl';
+import StatusCard from '../components/Status/StatusCard.vue';
 import { DtmRange } from '../helpers/DateRange';
+import { useUserStore } from '../stores/user';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const statuses = ref<StatusResource[]>([]);
@@ -24,13 +24,13 @@ function fetchStatuses() {
     loading.value = true;
     api.statuses
         .getActiveStatuses()
-        .then(response => {
-            response.json().then(data => {
+        .then((response) => {
+            response.json().then((data) => {
                 statuses.value = data.data;
                 loading.value = false;
             });
         })
-        .catch(error => {
+        .catch((error) => {
             loading.value = false;
             notyf.error('Error fetching statuses: ' + error.message);
         });
@@ -41,11 +41,11 @@ function fetchStatusPositions(initialize: boolean = true) {
 
     api.positions
         .getLivePositionsForActiveStatuses()
-        .then(response => {
+        .then((response) => {
             livePositions.value = response.data.data || [];
             const newBounds = LngLatBounds.fromLngLat(new LngLat(9.902056, 49.843), 1000000);
             for (const position of livePositions.value) {
-                position.polyline?.features?.forEach(feature => {
+                position.polyline?.features?.forEach((feature) => {
                     const coord = feature.geometry?.coordinates;
                     if (coord && coord[0] && coord[1]) {
                         newBounds.extend([coord[0], coord[1]]);
@@ -56,14 +56,14 @@ function fetchStatusPositions(initialize: boolean = true) {
                 bounds.value = newBounds;
             }
         })
-        .catch(error => {
+        .catch((error) => {
             console.error('Error fetching live positions: ' + error.message);
         });
 }
 
 function fetchEvents() {
     if (!user.hasBeta) return;
-    api.events.getEvents().then(response => {
+    api.events.getEvents().then((response) => {
         events.value = response.data.data || [];
     });
 }

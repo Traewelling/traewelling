@@ -44,20 +44,20 @@ $blueCounterColor: rgb(0, 46, 102);
 // ==========================
 $dm-base: hsl(224, 15%, 7%);
 $dm-base-5: adjust-color(
-    $dm-base,
-    $lightness: 5%
+  $dm-base,
+  $lightness: 5%
 ); // TODO: deprecated in Dart Sass; replace with `color.adjust(...)` but we need to upgrade our files first to support modules
 $dm-base-10: adjust-color(
-    $dm-base,
-    $lightness: 10%
+  $dm-base,
+  $lightness: 10%
 ); // TODO: deprecated in Dart Sass; replace with `color.adjust(...)` but we need to upgrade our files first to support modules
 $dm-base-20: adjust-color(
-    $dm-base,
-    $lightness: 20%
+  $dm-base,
+  $lightness: 20%
 ); // TODO: deprecated in Dart Sass; replace with `color.adjust(...)` but we need to upgrade our files first to support modules
 $dm-base-30: adjust-color(
-    $dm-base,
-    $lightness: 30%
+  $dm-base,
+  $lightness: 30%
 ); // TODO: deprecated in Dart Sass; replace with `color.adjust(...)` but we need to upgrade our files first to support modules
 
 $dm-trwlRot: hsl(6, 100%, 73%);

@@ -1,6 +1,6 @@
+import { getActiveLanguage } from 'laravel-vue-i18n';
 import { DateTime, DateTimeFormatOptions, ToISOTimeOptions } from 'luxon';
 import { DateTimeOptions, LocaleOptions, ToRelativeOptions } from 'luxon/src/datetime';
-import { getActiveLanguage } from 'laravel-vue-i18n';
 
 // todo: rewrite to extend DateTime instead of wrapping it
 export class Dtm {

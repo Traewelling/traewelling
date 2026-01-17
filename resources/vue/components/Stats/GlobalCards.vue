@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { PropType } from 'vue';
-import DurationSpan from '../Status/Partials/DurationSpan.vue';
-import { StatisticsGlobalData } from '../../../types/Api.gen';
 import { trans } from 'laravel-vue-i18n';
+import { PropType } from 'vue';
+import { StatisticsGlobalData } from '../../../types/Api.gen';
+import DurationSpan from '../Status/Partials/DurationSpan.vue';
 
 defineProps({
     stats: {

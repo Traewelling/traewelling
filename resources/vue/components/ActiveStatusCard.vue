@@ -1,9 +1,9 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useActiveCheckin } from '../stores/activeCheckin';
-import { NextStation } from '../helpers/NextStation';
-import { StopoverResource } from '../../types/Api.gen';
 import { DateTime } from 'luxon';
+import { defineComponent } from 'vue';
+import { StopoverResource } from '../../types/Api.gen';
+import { NextStation } from '../helpers/NextStation';
+import { useActiveCheckin } from '../stores/activeCheckin';
 import LineIndicator from './LineIndicator.vue';
 
 export default defineComponent({

@@ -64,8 +64,8 @@ export default {
                 return;
             }
             fetch(`/api/v1/status/${this.$props.statusId}/tags`)
-                .then(response => response.json())
-                .then(data => {
+                .then((response) => response.json())
+                .then((data) => {
                     this.tags = data.data;
                 });
         },

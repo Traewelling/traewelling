@@ -1,7 +1,7 @@
 <script>
-import { defineComponent } from 'vue';
-import 'leaflet';
 import { trans } from 'laravel-vue-i18n';
+import 'leaflet';
+import { defineComponent } from 'vue';
 
 const trainIcon = L.divIcon({
     className: 'custom-div-icon',
@@ -51,7 +51,7 @@ export default defineComponent({
             setTilingLayer(this.$props.mapProvider, this.map);
         },
         clearAllElements() {
-            this.points.forEach(point => {
+            this.points.forEach((point) => {
                 if (point.marker) {
                     point.marker.remove();
                 }
@@ -98,7 +98,7 @@ export default defineComponent({
                 points = [...points, this.destination];
             }
 
-            let bounds = new L.featureGroup(points.map(point => point.marker));
+            let bounds = new L.featureGroup(points.map((point) => point.marker));
             this.map.fitBounds(bounds.getBounds());
         },
         removeMarker(index) {

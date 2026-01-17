@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { getActiveLanguage } from 'laravel-vue-i18n';
 import { ref } from 'vue';
 import { AlertResource, AlertTranslationResource, Api } from '../../types/Api.gen';
-import { getActiveLanguage } from 'laravel-vue-i18n';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const alerts = ref([] as AlertResource[]);
-api.alerts.getActiveAlerts().then(data => {
-    data.json().then(data => {
+api.alerts.getActiveAlerts().then((data) => {
+    data.json().then((data) => {
         alerts.value = data.data;
     });
 });
@@ -16,7 +16,7 @@ const getTranslation = (alert: AlertResource): AlertTranslationResource | null =
     const i18nLocale = getActiveLanguage();
     let match: AlertTranslationResource | null = null;
 
-    alert.translations?.forEach(translation => {
+    alert.translations?.forEach((translation) => {
         if (i18nLocale.startsWith(translation.locale)) {
             match = translation;
         }
@@ -25,7 +25,7 @@ const getTranslation = (alert: AlertResource): AlertTranslationResource | null =
         return match;
     }
 
-    alert.translations?.forEach(translation => {
+    alert.translations?.forEach((translation) => {
         if (translation.locale === 'en') {
             match = translation;
         }

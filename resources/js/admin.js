@@ -1,11 +1,11 @@
 import 'awesomplete/awesomplete';
 
-import 'leaflet/dist/leaflet.js';
-import './components/maps';
 import * as Popper from '@popperjs/core';
 import 'bootstrap';
 import 'leaflet';
+import 'leaflet/dist/leaflet.js';
 import { Notyf } from 'notyf';
+import './components/maps';
 
 window.addEventListener('load', () => {
     import('./components/station-autocomplete');

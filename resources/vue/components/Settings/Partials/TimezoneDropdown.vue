@@ -22,7 +22,7 @@ const timezones = ref<{ value: string; label: string }[]>([]);
 const filteredTimezones = ref<{ value: string; label: string }[]>([]);
 const search = ref('');
 
-timezones.value = Intl.supportedValuesOf('timeZone').map(timezone => {
+timezones.value = Intl.supportedValuesOf('timeZone').map((timezone) => {
     return { value: timezone, label: timezone };
 });
 
@@ -32,7 +32,7 @@ function filterTimezones() {
         return;
     }
     const searchLower = search.value.toLowerCase();
-    filteredTimezones.value = timezones.value.filter(timezone => {
+    filteredTimezones.value = timezones.value.filter((timezone) => {
         return timezone.label.toLowerCase().includes(searchLower);
     });
     // maximum 10 results
@@ -47,7 +47,7 @@ function selectTimezone(timezone: string) {
     filterTimezones();
 }
 
-watch(model, newValue => {
+watch(model, (newValue) => {
     search.value = newValue || '';
     filterTimezones();
 });

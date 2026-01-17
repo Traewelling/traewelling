@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { StopoverResource } from '../../../../types/Api.gen';
 import { PropType } from 'vue';
+import { StopoverResource } from '../../../../types/Api.gen';
 
 defineProps({
     stopovers: {

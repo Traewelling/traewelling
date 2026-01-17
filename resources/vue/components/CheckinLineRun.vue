@@ -1,8 +1,8 @@
 <script>
-import { DateTime } from 'luxon';
 import { trans } from 'laravel-vue-i18n';
-import Spinner from './Loader/Spinner.vue';
+import { DateTime } from 'luxon';
 import LoadingSkeletonRows from './Loader/LoadingSkeletonRows.vue';
+import Spinner from './Loader/Spinner.vue';
 
 export default {
     name: 'CheckinLineRun',
@@ -57,16 +57,16 @@ export default {
                 start: this.$props.selectedTrain.stop.id,
             });
             fetch(`/api/v1/trains/trip?${params.toString()}`)
-                .then(response => {
+                .then((response) => {
                     this.loading = false;
                     if (!response.ok) {
                         this.error = true;
                         this.errorMessage = trans('messages.exception.hafas.502');
                     }
-                    response.json().then(result => {
+                    response.json().then((result) => {
                         this.lineRun = result.data;
                         const givenDeparture = DateTime.fromISO(this.$props.selectedTrain.plannedWhen);
-                        this.lineRun.stopovers = this.lineRun.stopovers.filter(item => {
+                        this.lineRun.stopovers = this.lineRun.stopovers.filter((item) => {
                             // Get the planned departure time
                             let departure = null;
                             if (item.arrivalPlanned) {
@@ -104,11 +104,11 @@ export default {
         fastCheckin() {
             let destination = null;
             if (this.useInternalIdentifiers) {
-                destination = this.lineRun.stopovers.find(item => {
+                destination = this.lineRun.stopovers.find((item) => {
                     return Number(item.id) === Number(this.fastCheckinId);
                 });
             } else {
-                destination = this.lineRun.stopovers.find(item => {
+                destination = this.lineRun.stopovers.find((item) => {
                     return Number(item.evaIdentifier) === Number(this.fastCheckinId);
                 });
             }

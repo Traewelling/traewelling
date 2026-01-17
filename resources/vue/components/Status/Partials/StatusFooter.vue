@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
+import { DateTime } from 'luxon';
 import { computed, PropType, ref } from 'vue';
 import { Api, StatusResource } from '../../../../types/Api.gen';
-import { trans } from 'laravel-vue-i18n';
-import { IconHelper } from '../../../helpers/IconHelper';
-import StatusContextMenu from './StatusContextMenu.vue';
 import { Dtm } from '../../../helpers/DateTime';
-import { DateTime } from 'luxon';
+import { IconHelper } from '../../../helpers/IconHelper';
 import { useUserStore } from '../../../stores/user';
+import StatusContextMenu from './StatusContextMenu.vue';
 
 const props = defineProps({
     status: {
@@ -56,7 +56,7 @@ function deleteStatus() {
         .then(() => {
             emit('status-deleted', props.status.id);
         })
-        .catch(error => {
+        .catch((error) => {
             console.error('Error deleting status:', error);
         });
 }

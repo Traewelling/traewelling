@@ -1,7 +1,7 @@
 <script>
-import NotificationEntry from './NotificationEntry.vue';
-import { useNotificationsStore } from '../stores/notifications';
 import LoadingSkeletonRows from '../components/Loader/LoadingSkeletonRows.vue';
+import { useNotificationsStore } from '../stores/notifications';
+import NotificationEntry from './NotificationEntry.vue';
 
 export default {
     components: { NotificationEntry, LoadingSkeletonRows },

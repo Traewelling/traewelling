@@ -1,4 +1,4 @@
-Array.from(document.getElementsByClassName('progress-time')).forEach(element => {
+Array.from(document.getElementsByClassName('progress-time')).forEach((element) => {
     const departure = element.dataset.valuemin;
     const arrival = element.dataset.valuemax;
 

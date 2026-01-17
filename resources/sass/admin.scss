@@ -21,15 +21,15 @@ $dark: #000;
 @import 'notyf/notyf.min.css';
 
 #navbar-top {
-    background-color: $primary;
+  background-color: $primary;
 
-    a,
-    span.navbar-toggler-icon {
-        color: $white;
-    }
+  a,
+  span.navbar-toggler-icon {
+    color: $white;
+  }
 }
 
 .btn-secondary,
 .btn-outline-secondary {
-    color: $black;
+  color: $black;
 }

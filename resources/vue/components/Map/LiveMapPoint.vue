@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { MglMarker, MglPopup } from '@indoorequal/vue-maplibre-gl';
 import { onMounted, onUnmounted, PropType, ref } from 'vue';
 import { LivePointDto } from '../../../types/Api.gen';
-import { MglMarker, MglPopup } from '@indoorequal/vue-maplibre-gl';
 
 const props = defineProps({
     point: {

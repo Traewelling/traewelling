@@ -1,9 +1,9 @@
+import { trans } from 'laravel-vue-i18n';
 import _ from 'lodash';
 import { Follow } from './api/Follow';
-import { trans } from 'laravel-vue-i18n';
 
-document.querySelectorAll('.status .like').forEach(likeButton => {
-    likeButton.addEventListener('click', pointerEvent => {
+document.querySelectorAll('.status .like').forEach((likeButton) => {
+    likeButton.addEventListener('click', (pointerEvent) => {
         if (!pointerEvent.target.attributes.href.value === '#') {
             //Unauthenticated users should not like the status
             return;
@@ -17,7 +17,7 @@ document.querySelectorAll('.status .like').forEach(likeButton => {
         event.stopPropagation();
 
         if (pointerEvent.target.className.includes('like far fa-star')) {
-            Status.like(statusId).then(response => {
+            Status.like(statusId).then((response) => {
                 if (!response.ok) {
                     if (response.status === 429) {
                         const reset = response.headers.get('X-RateLimit-Reset');
@@ -34,7 +34,7 @@ document.querySelectorAll('.status .like').forEach(likeButton => {
                 pointerEvent.target.classList.add('fas');
                 pointerEvent.target.classList.add('animated');
                 pointerEvent.target.classList.add('bounceIn');
-                response.json().then(data => {
+                response.json().then((data) => {
                     let likeCount = data.data.count;
                     spanLikeCount.innerText = likeCount;
                     if (likeCount === 0) {
@@ -47,14 +47,14 @@ document.querySelectorAll('.status .like').forEach(likeButton => {
             return;
         }
 
-        Status.unlike(statusId).then(response => {
+        Status.unlike(statusId).then((response) => {
             if (!response.ok) {
                 return;
             }
             const peaches = pointerEvent.target.className.includes('peach');
             pointerEvent.target.className = `like far fa-star ${peaches ? 'peach' : ''}`;
 
-            response.json().then(data => {
+            response.json().then((data) => {
                 let likeCount = data.data.count;
                 spanLikeCount.innerText = likeCount;
                 if (likeCount === 0) {
@@ -68,15 +68,15 @@ document.querySelectorAll('.status .like').forEach(likeButton => {
 });
 
 const followButtons = document.querySelectorAll('.follow');
-followButtons.forEach(followButton => {
-    followButton.addEventListener('click', event => {
+followButtons.forEach((followButton) => {
+    followButton.addEventListener('click', (event) => {
         event.preventDefault();
         let userId = event.target.dataset['userid'];
         let privateProfile = event.target.dataset['private'] === 'yes';
         let following = event.target.dataset['following'] === 'yes';
 
         if (!following) {
-            Follow.create(userId).then(response => {
+            Follow.create(userId).then((response) => {
                 if (response.ok) {
                     event.target.dataset['following'] = 'yes';
                     event.target.classList.add(privateProfile ? 'disabled' : 'btn-danger');
@@ -85,7 +85,7 @@ followButtons.forEach(followButton => {
                 }
             });
         } else {
-            Follow.destroy(userId).then(response => {
+            Follow.destroy(userId).then((response) => {
                 if (response.ok) {
                     if (privateProfile) {
                         location.reload();
@@ -100,8 +100,8 @@ followButtons.forEach(followButton => {
     });
 });
 
-document.querySelectorAll('.disconnect').forEach(button => {
-    button.addEventListener('click', async event => {
+document.querySelectorAll('.disconnect').forEach((button) => {
+    button.addEventListener('click', async (event) => {
         event.preventDefault();
 
         const provider = event.target.dataset.provider;
@@ -131,8 +131,8 @@ document.querySelectorAll('.disconnect').forEach(button => {
 });
 
 const shareButtons = document.querySelectorAll('.trwl-share');
-shareButtons.forEach(shareButton => {
-    shareButton.addEventListener('click', event => {
+shareButtons.forEach((shareButton) => {
+    shareButton.addEventListener('click', (event) => {
         event.preventDefault();
 
         let shareText = getDataset(event).trwlShareText;

@@ -1,7 +1,7 @@
 <script>
-import VisibilityDropdown from './VisibilityDropdown.vue';
 import _ from 'lodash';
 import { getIcon, getTitle, keys } from '../helpers/StatusTag';
+import VisibilityDropdown from './VisibilityDropdown.vue';
 
 export default {
     name: 'TagRow',
@@ -30,7 +30,7 @@ export default {
     },
     computed: {
         tagKeys() {
-            return this.baseKeys.filter(key => !this.exclude.includes(key));
+            return this.baseKeys.filter((key) => !this.exclude.includes(key));
         },
         disabled() {
             return this.tagKeys.length === 0;

@@ -1,5 +1,5 @@
-import { StatusResource } from '../../types/Api.gen';
 import { trans, transChoice } from 'laravel-vue-i18n';
+import { StatusResource } from '../../types/Api.gen';
 import { getDepartureForStatus } from './DateTimeHelper';
 
 export class StatusHelper {

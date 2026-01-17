@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
 import { PropType, ref, watch } from 'vue';
 import { StatusResource } from '../../../../types/Api.gen';
-import { trans } from 'laravel-vue-i18n';
 
 const props = defineProps({
     status: {

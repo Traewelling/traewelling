@@ -13,7 +13,7 @@ function setIconForDropdown(value, buttons, inputFields, icons) {
 
     for (let button of buttons) {
         let classes = button.children[0].classList;
-        icons.forEach(value => {
+        icons.forEach((value) => {
             classes.remove(value);
         });
         classes.add(icons[number]);
@@ -71,13 +71,13 @@ function editModal(event) {
 }
 
 // Event listeners
-document.querySelectorAll('.trwl-business-item').forEach(item => {
+document.querySelectorAll('.trwl-business-item').forEach((item) => {
     item.addEventListener('click', function (event) {
         setIconForDropdown(event.currentTarget.dataset.trwlBusiness, businessButton, businessInput, businessIcons);
     });
 });
 
-document.querySelectorAll('.trwl-visibility-item').forEach(item => {
+document.querySelectorAll('.trwl-visibility-item').forEach((item) => {
     item.addEventListener('click', function (event) {
         setIconForDropdown(
             event.currentTarget.dataset.trwlVisibility,
@@ -88,6 +88,6 @@ document.querySelectorAll('.trwl-visibility-item').forEach(item => {
     });
 });
 
-document.querySelectorAll('.edit').forEach(item => {
+document.querySelectorAll('.edit').forEach((item) => {
     item.addEventListener('click', editModal);
 });

@@ -1,6 +1,6 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { trans } from 'laravel-vue-i18n';
+import { defineComponent } from 'vue';
 import { Api, TrustedUserResource } from '../../../types/Api.gen';
 
 export default defineComponent({
@@ -30,15 +30,15 @@ export default defineComponent({
     methods: {
         trans,
         fetchFriends() {
-            this.api.user.trustedByUserIndex().then(data => {
-                data.json().then(data => {
+            this.api.user.trustedByUserIndex().then((data) => {
+                data.json().then((data) => {
                     this.friends = data.data;
                     this.filterFriends();
                 });
             });
         },
         filterFriends() {
-            this.filteredFriends = this.friends.filter(user => {
+            this.filteredFriends = this.friends.filter((user) => {
                 return (
                     user.user?.displayName?.toLowerCase().includes(this.search.toLowerCase()) ||
                     user.user?.username?.toLowerCase().includes(this.search.toLowerCase())
@@ -46,8 +46,8 @@ export default defineComponent({
             });
         },
         selectFriend(friend: TrustedUserResource) {
-            if (this.selectedUsers.some(user => user.user?.id === friend.user?.id)) {
-                this.selectedUsers = this.selectedUsers.filter(user => user.user?.id !== friend.user?.id);
+            if (this.selectedUsers.some((user) => user.user?.id === friend.user?.id)) {
+                this.selectedUsers = this.selectedUsers.filter((user) => user.user?.id !== friend.user?.id);
             } else {
                 this.selectedUsers.push(friend);
             }
@@ -55,7 +55,7 @@ export default defineComponent({
             this.$emit('select-user', this.selectedUsers);
         },
         isSelected(friend: TrustedUserResource) {
-            return this.selectedUsers.some(user => user.user?.id === friend.user?.id);
+            return this.selectedUsers.some((user) => user.user?.id === friend.user?.id);
         },
     },
 });

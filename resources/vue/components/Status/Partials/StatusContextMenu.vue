@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
+import { DateTime } from 'luxon';
+import { Notyf } from 'notyf';
 import { computed, PropType, ref, useTemplateRef } from 'vue';
 import { Api, StatusResource, StatusUpdateBody } from '../../../../types/Api.gen';
-import { trans } from 'laravel-vue-i18n';
 import { StatusHelper } from '../../../helpers/StatusHelper';
-import { Notyf } from 'notyf';
-import ConfirmModal from '../../ConfirmModal.vue';
 import { useUserStore } from '../../../stores/user';
+import ConfirmModal from '../../ConfirmModal.vue';
 import UpdateModal from '../../UpdateModal/UpdateModal.vue';
-import { DateTime } from 'luxon';
 
 const props = defineProps({
     status: {
@@ -33,7 +33,7 @@ function share() {
                 text: shareText,
                 url: shareUrl,
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error('Error sharing:', error);
             });
     } else {
@@ -101,10 +101,10 @@ function getNowWithoutSeconds(): string {
 function departureNow() {
     api.status
         .updateSingleStatus({ manualDeparture: getNowWithoutSeconds() } as StatusUpdateBody, props.status.id)
-        .then(status => {
+        .then((status) => {
             emit('status-updated', status.data.data);
         })
-        .catch(error => {
+        .catch((error) => {
             console.error('Error updating status:', error);
         });
 }
@@ -112,10 +112,10 @@ function departureNow() {
 function arrivalNow() {
     api.status
         .updateSingleStatus({ manualArrival: getNowWithoutSeconds() } as StatusUpdateBody, props.status.id)
-        .then(status => {
+        .then((status) => {
             emit('status-updated', status.data.data);
         })
-        .catch(error => {
+        .catch((error) => {
             console.error('Error updating status:', error);
         });
 }

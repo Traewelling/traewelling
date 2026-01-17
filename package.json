@@ -6,8 +6,8 @@
         "dev": "vite",
         "build": "vite build",
         "api": "npx swagger-typescript-api generate --path storage/api-docs/api-docs.json --custom-config {} --output resources/types --name='Api.gen.ts'",
-        "lint": "npx eslint .",
-        "lint:fix": "npx eslint . --fix",
+        "lint": "npx eslint . --fix",
+        "lint:check": "npx eslint .",
         "format": "prettier --write resources/",
         "format:check": "prettier --check resources/"
     },
@@ -18,6 +18,8 @@
         "@types/lodash": "^4.17.16",
         "@types/luxon": "^3.4.2",
         "@vitejs/plugin-vue": "^6.0.0",
+        "@vue/eslint-config-prettier": "^10.2.0",
+        "@vue/eslint-config-typescript": "^14.6.0",
         "bootstrap": "^5.3",
         "daisyui": "^5.0.27",
         "eslint": "^9.18.0",
@@ -25,11 +27,13 @@
         "laravel-vite-plugin": "^2.0.0",
         "lodash": "^4.17.21",
         "prettier": "^3.8.0",
+        "prettier-plugin-organize-imports": "^4.3.0",
         "sass": "^1.85.1",
         "swagger-typescript-api": "^13.1.1",
         "tailwindcss": "^4.1.4",
         "typescript-eslint": "^8.20.0",
-        "vite": "^7.0.0"
+        "vite": "^7.0.0",
+        "vue-tsc": "^3.2.2"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^7.1.0",

@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { PropType, ref, useTemplateRef, watch } from 'vue';
-import ModalComponent from '../ModalComponent.vue';
 import { trans } from 'laravel-vue-i18n';
-import BusinessDropdown from '../BusinessDropdown.vue';
-import { Api, EventResource, StatusResource, StatusUpdateBody, StopoverResource } from '../../../types/Api.gen';
-import VisibilityDropdown from '../VisibilityDropdown.vue';
-import { Dtm } from '../../helpers/DateTime';
 import { DateTime } from 'luxon';
-import { useActiveCheckin } from '../../stores/activeCheckin';
+import { PropType, ref, useTemplateRef, watch } from 'vue';
+import { Api, EventResource, StatusResource, StatusUpdateBody, StopoverResource } from '../../../types/Api.gen';
+import { Dtm } from '../../helpers/DateTime';
 import { getDepartureForStatus } from '../../helpers/DateTimeHelper';
+import { useActiveCheckin } from '../../stores/activeCheckin';
+import BusinessDropdown from '../BusinessDropdown.vue';
 import EventDropdown from '../EventDropdown.vue';
 import DateTimeInput from '../Helpers/DateTimeInput.vue';
+import ModalComponent from '../ModalComponent.vue';
+import VisibilityDropdown from '../VisibilityDropdown.vue';
 
 const props = defineProps({
     status: {
@@ -58,7 +58,7 @@ function parseDestinationValue(value: string | null): { id: number | null; arriv
 
 watch(
     () => props.status,
-    newStatus => {
+    (newStatus) => {
         updateStatus.value = {
             body: newStatus.body,
             business: newStatus.business,
@@ -83,7 +83,7 @@ function show() {
         eventsDropdown.value?.fetchEvents(getDepartureForStatus(props.status).toISO());
         const currentDestStationId = props.status.train.destination.id;
         const currentDestArrivalPlanned = props.status.train.destination.arrivalPlanned;
-        const found = stopovers.value.find(so => {
+        const found = stopovers.value.find((so) => {
             return so.id === currentDestStationId && so.arrivalPlanned === currentDestArrivalPlanned;
         });
 
@@ -141,7 +141,7 @@ function updateData() {
 
     api.status
         .updateSingleStatus(updateStatus.value, props.status.id)
-        .then(status => {
+        .then((status) => {
             emit('status-updated', status.data.data);
             if (status.data.data) {
                 activeStatus.status = status.data.data;
@@ -149,7 +149,7 @@ function updateData() {
             loading.value = false;
             modal.value?.hide();
         })
-        .catch(error => {
+        .catch((error) => {
             console.error('Error updating status:', error);
             loading.value = false;
         });

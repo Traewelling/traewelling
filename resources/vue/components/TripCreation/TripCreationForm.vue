@@ -1,9 +1,9 @@
 <script>
-import { DateTime } from 'luxon';
 import { trans } from 'laravel-vue-i18n';
+import { DateTime } from 'luxon';
 import StationInput from './StationInput.vue';
-import TripCreationMap from './TripCreationMap.vue';
 import StopoversCsvImporter from './StopoversCsvImporter.vue';
+import TripCreationMap from './TripCreationMap.vue';
 
 export default {
     name: 'TripCreationForm',
@@ -92,7 +92,7 @@ export default {
                 this.setArrival(last.arrivalPlanned);
             }
 
-            this.stopovers = middle.map(s => ({
+            this.stopovers = middle.map((s) => ({
                 station: { id: '', name: '' },
                 arrivalPlanned: s.arrivalPlanned,
                 departurePlanned: s.departurePlanned,
@@ -236,7 +236,7 @@ export default {
                 !isNaN(this.journeyNumberInput) && !isNaN(parseInt(this.journeyNumberInput))
                     ? parseInt(this.journeyNumberInput)
                     : null;
-            this.form.stopovers = this.stopovers.map(stopover => {
+            this.form.stopovers = this.stopovers.map((stopover) => {
                 return {
                     stationId: stopover.station.id,
                     departure: DateTime.fromFormat(
@@ -260,9 +260,9 @@ export default {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(this.form),
-            }).then(data => {
+            }).then((data) => {
                 if (data.ok) {
-                    data.json().then(result => {
+                    data.json().then((result) => {
                         result = result.data;
                         let query = {
                             tripId: result.id,
@@ -276,7 +276,7 @@ export default {
                         window.location.href = `/stationboard?${new URLSearchParams(query).toString()}`;
                     });
                 } else if (data.status === 403 || data.status === 422 || data.status === 400) {
-                    data.json().then(result => {
+                    data.json().then((result) => {
                         notyf.error(result.message);
                     });
                 } else {
@@ -301,7 +301,7 @@ export default {
             this.validateTimes();
         },
         checkDisallowed() {
-            this.showDisallowed = this.disallowed.some(disallowed => {
+            this.showDisallowed = this.disallowed.some((disallowed) => {
                 return this.trainTypeInput.toLowerCase().includes(disallowed);
             });
         },
@@ -320,16 +320,16 @@ export default {
                         'Content-Type': 'application/json',
                     },
                 })
-                    .then(response => {
+                    .then((response) => {
                         if (!response.ok) {
                             throw new Error(response.statusText);
                         }
                         return response.json();
                     })
-                    .then(result => {
+                    .then((result) => {
                         this.$refs.originInput.setStation(result.data);
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         console.error(error);
                     });
             }
@@ -345,20 +345,20 @@ export default {
                     'Content-Type': 'application/json',
                 },
             })
-                .then(response => {
+                .then((response) => {
                     if (!response.ok) {
                         throw new Error(response.statusText);
                     }
                     return response.json();
                 })
-                .then(result => {
+                .then((result) => {
                     this.operators.push(...result.data);
 
                     if (result.meta.next_cursor) {
                         this.loadOperators(result.meta.next_cursor);
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.error(error);
                 });
         },

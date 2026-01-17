@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import ProductIcon from '../ProductIcon.vue';
-import LineIndicator from '../LineIndicator.vue';
-import { DateTime } from 'luxon';
 import { trans } from 'laravel-vue-i18n';
-import { departureEntry } from '../../../types/Departure';
+import { DateTime } from 'luxon';
 import { computed } from 'vue';
+import { departureEntry } from '../../../types/Departure';
+import LineIndicator from '../LineIndicator.vue';
+import ProductIcon from '../ProductIcon.vue';
 
 const props = defineProps({
     item: {

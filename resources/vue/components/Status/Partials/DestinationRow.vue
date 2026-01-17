@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
+import { DateTime } from 'luxon';
 import { PropType, ref, watch } from 'vue';
 import { StatusResource } from '../../../../types/Api.gen';
 import { getArrivalAttribute, timeTypeTooltip } from '../../../helpers/DateTimeHelper';
-import { trans } from 'laravel-vue-i18n';
-import { DateTime } from 'luxon';
 
 const props = defineProps({
     status: {
