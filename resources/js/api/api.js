@@ -27,6 +27,7 @@ export default class API {
 
         return response.json().then((data) => {
             if (data && data.data && data.data.message) {
+                // eslint-disable-next-line no-undef
                 notyf.success(data.data.message);
             }
         });
@@ -35,6 +36,7 @@ export default class API {
     static handleGenericError(error) {
         console.error(error);
         let errorMessage = error?.message ?? error?.data?.message ?? 'An unknown error occured.';
+        // eslint-disable-next-line no-undef
         notyf.error(errorMessage);
         return error;
     }

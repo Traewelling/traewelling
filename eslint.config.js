@@ -30,35 +30,11 @@ export default defineConfigWithVueTs(
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module',
-            globals: {
-                // Browser globals
-                window: 'readonly',
-                document: 'readonly',
-                navigator: 'readonly',
-                console: 'readonly',
-                // Laravel globals
-                route: 'readonly',
-                axios: 'readonly',
-                // External libraries
-                $: 'readonly', // jQuery
-                L: 'readonly', // Leaflet
-                notyf: 'readonly', // Notyf notifications
-                Awesomplete: 'readonly', // Awesomplete autocomplete
-                Status: 'readonly', // Laravel blade injected
-                Settings: 'readonly', // Laravel blade injected
-                urlDisconnect: 'readonly', // Laravel blade injected
-                setTilingLayer: 'readonly', // Maps helper
-                // TypeScript/Vue types
-                PropType: 'readonly', // Vue PropType
-                SelectOption: 'readonly', // Custom type
-                TimeDuration: 'readonly', // Custom type
-            },
         },
         rules: {
             // Code quality
             'no-console': ['error', { allow: ['warn', 'error'] }],
             'no-debugger': 'warn',
-            '@typescript-eslint/no-this-alias': 'warn',
 
             // Vue specific
             'vue/multi-word-component-names': 'off',

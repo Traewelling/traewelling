@@ -35,6 +35,7 @@ const popularStations = [
         return;
     }
 
+    // eslint-disable-next-line no-undef
     window.awesomplete = new Awesomplete(input, {
         minChars: 2,
         autoFirst: true,

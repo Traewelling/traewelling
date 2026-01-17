@@ -17,6 +17,7 @@ document.querySelectorAll('.status .like').forEach((likeButton) => {
         event.stopPropagation();
 
         if (pointerEvent.target.className.includes('like far fa-star')) {
+            // eslint-disable-next-line no-undef
             Status.like(statusId).then((response) => {
                 if (!response.ok) {
                     if (response.status === 429) {
@@ -25,6 +26,7 @@ document.querySelectorAll('.status .like').forEach((likeButton) => {
                         if (reset) {
                             message = message + ' ' + trans('messages.retry-in', { minutes: (reset / 60).toFixed(0) });
                         }
+                        // eslint-disable-next-line no-undef
                         notyf.error(message);
                     }
                     return;
@@ -47,6 +49,7 @@ document.querySelectorAll('.status .like').forEach((likeButton) => {
             return;
         }
 
+        // eslint-disable-next-line no-undef
         Status.unlike(statusId).then((response) => {
             if (!response.ok) {
                 return;
@@ -108,6 +111,7 @@ document.querySelectorAll('.disconnect').forEach((button) => {
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
         try {
+            // eslint-disable-next-line no-undef
             const response = await fetch(urlDisconnect, {
                 method: 'POST',
                 headers: {
@@ -121,9 +125,11 @@ document.querySelectorAll('.disconnect').forEach((button) => {
                 location.reload();
             } else {
                 const errorText = await response.text();
+                // eslint-disable-next-line no-undef
                 notyf.error(errorText);
             }
         } catch (error) {
+            // eslint-disable-next-line no-undef
             notyf.error('Ein unerwarteter Fehler ist aufgetreten.');
             console.error('Fetch-Error:', error);
         }

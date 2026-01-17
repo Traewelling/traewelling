@@ -38,6 +38,7 @@ if (uploadButton && uploadDemo) {
                 size: 'viewport',
             })
             .then(function (img) {
+                // eslint-disable-next-line no-undef
                 Settings.uploadProfilePicture(img)
                     .then(() => {
                         document.getElementById('theProfilePicture').src = img;
@@ -45,8 +46,10 @@ if (uploadButton && uploadDemo) {
                     })
                     .catch(function (error) {
                         if (error.status === 403) {
+                            // eslint-disable-next-line no-undef
                             notyf.error('Forbidden: You are not allowed to upload a profile picture.');
                         } else {
+                            // eslint-disable-next-line no-undef
                             notyf.error('An error occured while uploading the profile picture.');
                         }
                     });
