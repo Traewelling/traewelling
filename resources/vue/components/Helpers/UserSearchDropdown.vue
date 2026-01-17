@@ -1,8 +1,8 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { trans } from 'laravel-vue-i18n';
-import { Api, User } from '../../../types/Api.gen';
 import _ from 'lodash';
+import { defineComponent } from 'vue';
+import { Api, User } from '../../../types/Api.gen';
 
 export default defineComponent({
     name: 'UserSearchDropdown',
@@ -18,12 +18,17 @@ export default defineComponent({
             search: '' as string,
         };
     },
-    mounted() {
+    watch: {
+        search: _.debounce(function () {
+            this.fetchFriends();
+        }, 500),
     },
+    mounted() {},
     methods: {
         trans,
         fetchFriends() {
-            this.api.user.searchUsers(this.search)
+            this.api.user
+                .searchUsers(this.search)
                 .then((data) => {
                     if (!data.ok || data.status === 404) {
                         this.users = [];
@@ -41,11 +46,6 @@ export default defineComponent({
             this.$emit('select-event', user);
         },
     },
-    watch: {
-        search: _.debounce(function () {
-            this.fetchFriends();
-        }, 500),
-    },
 });
 </script>
 
@@ -61,10 +61,7 @@ export default defineComponent({
         >
             <i class="fas fa-users" aria-hidden="true" />
         </button>
-        <div
-            aria-labelledby="friendDropdown"
-            class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden"
-        >
+        <div aria-labelledby="friendDropdown" class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden">
             <form class="p-2 mb-2 border-bottom">
                 <input
                     v-model="search"
@@ -72,15 +69,11 @@ export default defineComponent({
                     class="form-control mobile-input-fs-16"
                     autocomplete="off"
                     :placeholder="trans('settings.find-users')"
-                >
+                />
             </form>
             <ul v-if="users.length > 0" class="list-unstyled mb-0">
                 <li v-for="user in users" :key="user?.id">
-                    <a
-                        href="#"
-                        class="dropdown-item d-flex align-items-center gap-2 py-2"
-                        @click="selectFriend(user)"
-                    >
+                    <a href="#" class="dropdown-item d-flex align-items-center gap-2 py-2" @click="selectFriend(user)">
                         <div class="flex-grow-1">
                             <div class="fw-bold">{{ user?.displayName }}</div>
                             <div class="text-muted small">{{ user?.username }}</div>
@@ -93,6 +86,4 @@ export default defineComponent({
     </div>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

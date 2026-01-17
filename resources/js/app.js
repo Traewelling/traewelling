@@ -1,38 +1,36 @@
-/**
- * Here, we include all of our external dependencies
- */
-import { Notyf } from 'notyf';
-import { createApp } from 'vue';
-import NotificationBell from '../vue/components/NotificationBell.vue';
-import ActiveJourneyMap from '../vue/components/ActiveJourneyMap.vue';
-import Stationboard from '../vue/components/Stationboard.vue';
-import StationAutocomplete from '../vue/components/StationAutocomplete/StationAutocomplete.vue';
-import 'bootstrap';
+/* eslint-disable vue/one-component-per-file */
 import 'awesomplete/awesomplete';
-import 'leaflet/dist/leaflet.js';
-import './api/api';
-import './components/maps';
-import CheckinSuccessHelper from '../vue/components/CheckinSuccessHelper.vue';
+import 'bootstrap';
 import { i18nVue } from 'laravel-vue-i18n';
-import TagHelper from '../vue/components/TagHelper.vue';
-import TripCreationForm from '../vue/components/TripCreation/TripCreationForm.vue';
+import 'leaflet/dist/leaflet.js';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import { Notyf } from 'notyf';
 import { createPinia } from 'pinia';
 import piniaPluginPersistedsState from 'pinia-plugin-persistedstate';
-import FriendCheckinSettings from '../vue/components/Settings/FriendCheckinSettings.vue';
-import WebhookSettings from '../vue/components/Settings/Webhooks.vue';
-import ProfileSettings from '../vue/components/Settings/ProfileSettings.vue';
-import Profile from '../vue/views/Profile.vue';
-import StatsDashboard from '../vue/components/Stats/StatsDashboard.vue';
-import Request from '../vue/components/Events/Request.vue';
+import { createApp } from 'vue';
+import ActiveJourneyMap from '../vue/components/ActiveJourneyMap.vue';
 import ApiAlerts from '../vue/components/ApiAlerts.vue';
-import Dashboard from '../vue/views/Dashboard.vue';
-import SingleStatus from '../vue/views/SingleStatus.vue';
-import ActiveJourneys from '../vue/views/ActiveJourneys.vue';
-import EventPage from '../vue/views/Event.vue';
-import StatsDaily from '../vue/views/Stats/Daily.vue';
-import StationMap from '../vue/views/Debug/StationMap.vue';
-import 'maplibre-gl/dist/maplibre-gl.css';
+import CheckinSuccessHelper from '../vue/components/CheckinSuccessHelper.vue';
+import Request from '../vue/components/Events/Request.vue';
 import UserDropdown from '../vue/components/Navbar/UserDropdown.vue';
+import NotificationBell from '../vue/components/NotificationBell.vue';
+import FriendCheckinSettings from '../vue/components/Settings/FriendCheckinSettings.vue';
+import ProfileSettings from '../vue/components/Settings/ProfileSettings.vue';
+import WebhookSettings from '../vue/components/Settings/Webhooks.vue';
+import StationAutocomplete from '../vue/components/StationAutocomplete/StationAutocomplete.vue';
+import Stationboard from '../vue/components/Stationboard.vue';
+import StatsDashboard from '../vue/components/Stats/StatsDashboard.vue';
+import TagHelper from '../vue/components/TagHelper.vue';
+import TripCreationForm from '../vue/components/TripCreation/TripCreationForm.vue';
+import ActiveJourneys from '../vue/views/ActiveJourneys.vue';
+import Dashboard from '../vue/views/Dashboard.vue';
+import StationMap from '../vue/views/Debug/StationMap.vue';
+import EventPage from '../vue/views/Event.vue';
+import Profile from '../vue/views/Profile.vue';
+import SingleStatus from '../vue/views/SingleStatus.vue';
+import StatsDaily from '../vue/views/Stats/Daily.vue';
+import './api/api';
+import './components/maps';
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -64,9 +62,9 @@ window.notyf = new Notyf({
 document.addEventListener('DOMContentLoaded', function () {
     // get language query parameter
     let fallbackLang = 'en';
-    const urlParams  = new URLSearchParams(window.location.search);
-    const lang       = urlParams.get('language');
-    const pinia      = createPinia();
+    const urlParams = new URLSearchParams(window.location.search);
+    const lang = urlParams.get('language');
+    const pinia = createPinia();
     pinia.use(piniaPluginPersistedsState);
 
     if (lang && lang.startsWith('de_')) {

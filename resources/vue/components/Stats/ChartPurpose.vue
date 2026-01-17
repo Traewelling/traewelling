@@ -1,6 +1,6 @@
 <script>
-import { trans } from 'laravel-vue-i18n';
 import Chart from 'chart.js/auto';
+import { trans } from 'laravel-vue-i18n';
 
 const businessKeyMap = {
     0: 'private',
@@ -42,9 +42,7 @@ export default {
 
             const translatedLabels = this.labels.map((label) => {
                 const key = businessKeyMap[Number(label)];
-                return key
-                    ? this.trans(`stationboard.business.${key}`)
-                    : label;
+                return key ? this.trans(`stationboard.business.${key}`) : label;
             });
 
             this.chart = new Chart(this.$refs.canvas, {
@@ -75,11 +73,7 @@ export default {
     <div class="card">
         <div class="card-body">
             <h5>{{ trans('stats.purpose') }}</h5>
-            <canvas
-                ref="canvas"
-                role="img"
-                :aria-label="trans('stats.purpose') + ' ' + trans('time.minutes')"
-            />
+            <canvas ref="canvas" role="img" :aria-label="trans('stats.purpose') + ' ' + trans('time.minutes')" />
         </div>
     </div>
 </template>

@@ -22,9 +22,10 @@ const livePositions = ref<LivePointDto[]>([]);
 
 if (props.statuses.length === 1) {
     lineColor.value = props.statuses[0].train.routeColor ? '#' + props.statuses[0].train.routeColor : '#c72730';
-    api.polyline.getPolylines(props.statuses.map(s => s.id.toString()).join(','))
-        .then(response => {
-            let newBounds = new LngLatBounds();
+    api.polyline
+        .getPolylines(props.statuses.map((s) => s.id.toString()).join(','))
+        .then((response) => {
+            const newBounds = new LngLatBounds();
 
             for (const feature of response.data.data?.features || []) {
                 polylines.value.push(feature as GeoJSONFeature);
@@ -34,7 +35,7 @@ if (props.statuses.length === 1) {
             }
             setNewBounds(newBounds);
         })
-        .catch(error => {
+        .catch((error) => {
             console.error('Error fetching polylines:', error);
         });
 }
@@ -52,13 +53,12 @@ function setNewBounds(newBounds: LngLatBounds) {
     bounds.value = newBounds;
 }
 
-api.positions.getLivePositionsForStatuses(props.statuses.map(s => s.id.toString()).join(','))
-    .then(response => {
+api.positions
+    .getLivePositionsForStatuses(props.statuses.map((s) => s.id.toString()).join(','))
+    .then((response) => {
         livePositions.value = response.data.data || [];
-
-        console.log(livePositions.value);
     })
-    .catch(error => {
+    .catch((error) => {
         console.error('Error fetching live positions:', error);
     });
 </script>

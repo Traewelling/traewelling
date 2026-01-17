@@ -1,6 +1,6 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { trans } from 'laravel-vue-i18n';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
     name: 'Spinner',
@@ -10,7 +10,7 @@ export default defineComponent({
 
 <template>
     <div class="d-flex justify-content-center p-2">
-        <div style="max-width: 200px;" class="spinner-grow text-trwl mx-auto">
+        <div style="max-width: 200px" class="spinner-grow text-trwl mx-auto">
             <span class="visually-hidden">{{ trans('menu.loading') }}...</span>
         </div>
     </div>

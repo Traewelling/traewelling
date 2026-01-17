@@ -1,25 +1,24 @@
 <script>
-import FullScreenModal from './FullScreenModal.vue';
-import VisibilityDropdown from './VisibilityDropdown.vue';
+/* eslint-disable vue/valid-v-bind */
 import { trans } from 'laravel-vue-i18n';
-import TagRow from './TagRow.vue';
 import { getIcon, getTitle } from '../helpers/StatusTag';
+import FullScreenModal from './FullScreenModal.vue';
 import TagList from './TagList.vue';
 
 export default {
     name: 'TagHelper',
     components: {
         TagList,
-        TagRow,
-        VisibilityDropdown,
         FullScreenModal,
     },
     props: {
         statusId: {
             type: Number,
+            required: true,
         },
         statusObject: {
             type: Object,
+            required: true,
         },
         editable: {
             type: Boolean,
@@ -64,8 +63,8 @@ export default {
                 return;
             }
             fetch(`/api/v1/status/${this.$props.statusId}/tags`)
-                .then(response => response.json())
-                .then(data => {
+                .then((response) => response.json())
+                .then((data) => {
                     this.tags = data.data;
                 });
         },
@@ -79,7 +78,7 @@ export default {
 <template>
     <FullScreenModal ref="modal">
         <template #header>
-            {{ trans("export.title.status_tags") }}
+            {{ trans('export.title.status_tags') }}
         </template>
         <template #body>
             <TagList :tags="tags" :status-id="statusId" @update:model-value="updateTags" />
@@ -90,24 +89,25 @@ export default {
         <button
             v-show="editable"
             class="btn btn-link btn-sm text-white badge bg-trwl"
-            style="text-transform: none;"
+            style="text-transform: none"
             @click="showModal()"
         >
             <i class="fa fa-plus" />
-            {{ trans("modals.tags.new") }}
+            {{ trans('modals.tags.new') }}
         </button>
 
-        <button
-            v-for="tag in tags"
-            v-if="editable"
-            :key="tag.key"
-            class="btn btn-link btn-sm text-white badge bg-trwl ms-1"
-            style="text-transform: none;"
-            @click="showModal(tag)"
-        >
-            <i v-show="getIcon(tag.key) !== 'fa-fw'" :class="[getIcon(tag.key), 'fa']" />
-            {{ tag.value }}
-        </button>
+        <template v-if="editable">
+            <button
+                v-for="tag in tags"
+                :key="tag.key"
+                class="btn btn-link btn-sm text-white badge bg-trwl ms-1"
+                style="text-transform: none"
+                @click="showModal(tag)"
+            >
+                <i v-show="getIcon(tag.key) !== 'fa-fw'" :class="[getIcon(tag.key), 'fa']" />
+                {{ tag.value }}
+            </button>
+        </template>
         <span
             v-for="tag in tags"
             v-else
@@ -125,11 +125,10 @@ export default {
 </template>
 
 <style scoped lang="scss">
-@import "../../sass/_variables.scss";
+@import '../../sass/_variables.scss';
 
 .btn-outline-trwl {
-  border-color: $trwlRot;
-  color: $trwlRot;
+    border-color: $trwlRot;
+    color: $trwlRot;
 }
-
 </style>

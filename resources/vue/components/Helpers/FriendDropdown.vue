@@ -1,6 +1,6 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { trans } from 'laravel-vue-i18n';
+import { defineComponent } from 'vue';
 import { Api, TrustedUserResource } from '../../../types/Api.gen';
 
 export default defineComponent({
@@ -39,13 +39,15 @@ export default defineComponent({
         },
         filterFriends() {
             this.filteredFriends = this.friends.filter((user) => {
-                return user.user?.displayName?.toLowerCase().includes(this.search.toLowerCase())
-            || user.user?.username?.toLowerCase().includes(this.search.toLowerCase());
+                return (
+                    user.user?.displayName?.toLowerCase().includes(this.search.toLowerCase()) ||
+                    user.user?.username?.toLowerCase().includes(this.search.toLowerCase())
+                );
             });
         },
         selectFriend(friend: TrustedUserResource) {
-            if (this.selectedUsers.some(user => user.user?.id === friend.user?.id)) {
-                this.selectedUsers = this.selectedUsers.filter(user => user.user?.id !== friend.user?.id);
+            if (this.selectedUsers.some((user) => user.user?.id === friend.user?.id)) {
+                this.selectedUsers = this.selectedUsers.filter((user) => user.user?.id !== friend.user?.id);
             } else {
                 this.selectedUsers.push(friend);
             }
@@ -53,7 +55,7 @@ export default defineComponent({
             this.$emit('select-user', this.selectedUsers);
         },
         isSelected(friend: TrustedUserResource) {
-            return this.selectedUsers.some(user => user.user?.id === friend.user?.id);
+            return this.selectedUsers.some((user) => user.user?.id === friend.user?.id);
         },
     },
 });
@@ -73,13 +75,10 @@ export default defineComponent({
             <i
                 class="fas"
                 aria-hidden="true"
-                :class="{'fa-users': selectedUsers.length === 0, 'fa-user-check':selectedUsers.length > 0}"
+                :class="{ 'fa-users': selectedUsers.length === 0, 'fa-user-check': selectedUsers.length > 0 }"
             />
         </button>
-        <div
-            aria-labelledby="friendDropdown"
-            class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden"
-        >
+        <div aria-labelledby="friendDropdown" class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden">
             <form class="p-2 mb-2 border-bottom">
                 <input
                     v-model="search"
@@ -87,17 +86,17 @@ export default defineComponent({
                     class="form-control mobile-input-fs-16"
                     autocomplete="off"
                     :placeholder="trans('stationboard.friend-filter')"
-                >
+                />
             </form>
             <ul v-if="filteredFriends.length > 0" class="list-unstyled mb-0">
                 <li v-for="user in filteredFriends" :key="user.user?.id">
                     <a
                         href="#"
                         class="dropdown-item d-flex align-items-center gap-2 py-2"
-                        :class="{'active': isSelected(user)}"
+                        :class="{ active: isSelected(user) }"
                         @click="selectFriend(user)"
                     >
-                        <i class="fas" :class="{'fa-check': isSelected(user)}" />
+                        <i class="fas" :class="{ 'fa-check': isSelected(user) }" />
                         <div class="flex-grow-1">
                             <div class="fw-bold">{{ user.user?.displayName }}</div>
                             <div class="text-muted small">{{ user.user?.username }}</div>
@@ -106,9 +105,9 @@ export default defineComponent({
                 </li>
             </ul>
             <div v-else class="p-2 mb-0 text-center text-muted">
-                <p>{{ trans("stationboard.friends-none") }}</p>
+                <p>{{ trans('stationboard.friends-none') }}</p>
                 <p>
-                    {{ trans("stationboard.friends-set") }}
+                    {{ trans('stationboard.friends-set') }}
                     <a href="/settings/privacy" target="_blank">traewelling.de/settings/privacy</a>
                 </p>
             </div>

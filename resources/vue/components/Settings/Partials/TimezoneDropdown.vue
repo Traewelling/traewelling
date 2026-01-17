@@ -13,13 +13,13 @@ defineProps({
     },
     errors: {
         type: Array,
-        default: [],
+        default: () => [],
     },
 });
 
 const model = defineModel<string>();
-const timezones = ref<{ value: string, label: string }[]>([]);
-const filteredTimezones = ref<{ value: string, label: string }[]>([]);
+const timezones = ref<{ value: string; label: string }[]>([]);
+const filteredTimezones = ref<{ value: string; label: string }[]>([]);
 const search = ref('');
 
 timezones.value = Intl.supportedValuesOf('timeZone').map((timezone) => {
@@ -84,7 +84,7 @@ watch(model, (newValue) => {
                             :placeholder="trans('user.timezone')"
                             @input="filterTimezones"
                             @keydown.enter="selectTimezone(filteredTimezones[0]?.value ?? '')"
-                        >
+                        />
                     </form>
                     <ul v-if="filteredTimezones.length > 0" class="list-unstyled mb-0">
                         <li v-for="timezone in filteredTimezones" :key="timezone?.value">
@@ -102,7 +102,7 @@ watch(model, (newValue) => {
                     <div v-else class="p-2 mb-0 text-center text-muted" />
                 </div>
             </div>
-            <span v-for="error in errors" class="invalid-feedback" role="alert">
+            <span v-for="error in errors" :key="error" class="invalid-feedback" role="alert">
                 <strong>{{ error }}</strong>
             </span>
         </div>

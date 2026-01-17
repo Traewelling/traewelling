@@ -67,21 +67,11 @@ const motisFontAwesomeIcon = (mode: MotisCategory) => {
 </script>
 <template>
     <template v-if="mode === null">
-        <img
-            v-if="iconForProduct(product)"
-            :alt="product"
-            :src="iconForProduct(product) || ''"
-            class="product-icon"
-        >
+        <img v-if="iconForProduct(product)" :alt="product" :src="iconForProduct(product) || ''" class="product-icon" />
         <i v-else class="fas" :class="fontAwesomeIcon(product)" />
     </template>
     <template v-else>
-        <img
-            v-if="iconForMode(mode)"
-            :alt="mode?.toString()"
-            :src="iconForMode(mode) || ''"
-            class="product-icon"
-        >
+        <img v-if="iconForMode(mode)" :alt="mode?.toString()" :src="iconForMode(mode) || ''" class="product-icon" />
         <i v-else class="fas" :class="motisFontAwesomeIcon(mode)" />
     </template>
 </template>

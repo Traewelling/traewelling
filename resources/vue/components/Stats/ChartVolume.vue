@@ -1,7 +1,7 @@
 <script>
-import { trans } from 'laravel-vue-i18n';
 import Chart from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
+import { trans } from 'laravel-vue-i18n';
 import { nextTick } from 'vue';
 
 Chart.defaults.animation = false;
@@ -40,10 +40,10 @@ export default {
                 this.chart = new Chart(this.$refs.canvas, {
                     type: 'line',
                     data: {
-                        labels: this.data.map(d => new Date(d.date)),
+                        labels: this.data.map((d) => new Date(d.date)),
                         datasets: [
                             {
-                                data: this.data.map(d => d.duration),
+                                data: this.data.map((d) => d.duration),
                                 label: this.trans('time.minutes'),
                                 fill: false,
                             },
@@ -59,7 +59,6 @@ export default {
                                 time: { unit: 'day' },
                             },
                         },
-
                     },
                 });
             });
@@ -73,11 +72,7 @@ export default {
         <div class="card-body">
             <h5>{{ trans('stats.time') }}</h5>
             <div style="height: 250px">
-                <canvas
-                    ref="canvas"
-                    role="img"
-                    :aria-label="trans('stats.time') + ' ' + trans('time.minutes')"
-                />
+                <canvas ref="canvas" role="img" :aria-label="trans('stats.time') + ' ' + trans('time.minutes')" />
             </div>
         </div>
     </div>

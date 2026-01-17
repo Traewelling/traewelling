@@ -1,7 +1,6 @@
 import API from './api';
 
 window.Status = class Status {
-
     static destroy(statusId) {
         API.request(`/status/${statusId}`, 'delete')
             .then(API.handleDefaultResponse)

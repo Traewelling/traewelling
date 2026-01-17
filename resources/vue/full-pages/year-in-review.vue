@@ -1,7 +1,7 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -81,7 +81,8 @@ const translations = {
         seventeen: {
             one: 'Du bist ein absoluter Weltenbummler!',
             two: 'Es gibt Orte, dort war niemand außer dir!',
-            disclaimer: 'Aufgrund von Datenfehlern ist diese Statistik mit Vorsicht zu genießen, da das ID-Matching nicht immer korrekt ist.',
+            disclaimer:
+                'Aufgrund von Datenfehlern ist diese Statistik mit Vorsicht zu genießen, da das ID-Matching nicht immer korrekt ist.',
         },
         eighteen: {
             one: 'Orte!',
@@ -169,7 +170,8 @@ const translations = {
         seventeen: {
             one: "You're an absolute globetrotter!",
             two: 'There are places where no one has been but you!',
-            disclaimer: 'Due to data inconsistencies, this statistic should be taken with caution as ID matching is not always accurate.',
+            disclaimer:
+                'Due to data inconsistencies, this statistic should be taken with caution as ID matching is not always accurate.',
         },
         eighteen: {
             one: 'places!',
@@ -255,9 +257,7 @@ const slowestTrip = computed(() => {
 
 const mostDelayedTrip = computed(() => {
     const trip = data.value.mostDelayedArrivals?.train;
-    console.log(trip);
     if (!trip) return null;
-    console.log(calculateDelay(trip));
     return {
         ...trip,
         computedDelay: calculateDelay(trip),
@@ -400,7 +400,7 @@ const setupAnimations = () => {
         '.section-thanks',
     ];
 
-    fadeInSections.forEach(selector => {
+    fadeInSections.forEach((selector) => {
         const element = document.querySelector(selector);
         if (element) {
             gsap.from(selector, {
@@ -449,11 +449,7 @@ const calculateDelay = (trip) => {
 
     const stop = trip.destination;
 
-    const bestArrival =
-      trip?.manualArrival ||
-      stop?.arrivalReal ||
-      stop?.arrivalPlanned ||
-      null;
+    const bestArrival = trip?.manualArrival || stop?.arrivalReal || stop?.arrivalPlanned || null;
 
     const plannedArrival = stop?.arrivalPlanned;
 
@@ -472,7 +468,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
 });
 </script>
 
@@ -481,9 +477,7 @@ onUnmounted(() => {
         <!-- Loading State -->
         <section v-if="loading" class="section section-loading">
             <div class="loader">
-                <div class="train-icon">
-                    🚂
-                </div>
+                <div class="train-icon">🚂</div>
                 <p class="loading-text">
                     {{ t('loading') }}
                 </p>
@@ -493,9 +487,7 @@ onUnmounted(() => {
         <!-- Error State -->
         <section v-else-if="error" class="section section-error">
             <div class="error-content">
-                <div class="error-icon">
-                    ⚠️
-                </div>
+                <div class="error-icon">⚠️</div>
                 <h1>{{ t('error') }}</h1>
                 <a href="/login" class="btn-login">Login</a>
             </div>
@@ -526,11 +518,10 @@ onUnmounted(() => {
             <!-- Welcome Section -->
             <section ref="sectionWelcome" class="section section-welcome">
                 <h1 ref="welcomeTitle" class="welcome-title">
-                    {{ t('hello') }} <span class="highlight">{{ data.user?.name }}</span>!
+                    {{ t('hello') }} <span class="highlight">{{ data.user?.name }}</span
+                    >!
                 </h1>
-                <h2 ref="welcomeSubtitle" class="welcome-subtitle">
-                    {{ data.year }} {{ t('longyear') }}
-                </h2>
+                <h2 ref="welcomeSubtitle" class="welcome-subtitle">{{ data.year }} {{ t('longyear') }}</h2>
             </section>
 
             <!-- Minutes Section -->
@@ -617,16 +608,12 @@ onUnmounted(() => {
             <!-- Earth Circumference Section -->
             <section class="section section-earth">
                 <div class="earth-visual">
-                    <div class="earth-icon">
-                        🌍
-                    </div>
+                    <div class="earth-icon">🌍</div>
                     <div class="stat-content">
                         <p class="stat-intro">
                             {{ t('five.one') }}
                         </p>
-                        <h1 class="stat-highlight">
-                            {{ earthCircumference }}x
-                        </h1>
+                        <h1 class="stat-highlight">{{ earthCircumference }}x</h1>
                         <p class="stat-outro">
                             {{ t('five.two') }}
                         </p>
@@ -661,9 +648,7 @@ onUnmounted(() => {
                         <p class="stat-intro">
                             {{ t('seven.one') }}
                         </p>
-                        <h1 class="stat-highlight">
-                            {{ vaticanMultiplier }}x
-                        </h1>
+                        <h1 class="stat-highlight">{{ vaticanMultiplier }}x</h1>
                         <p class="stat-outro">
                             {{ t('seven.two') }}
                         </p>
@@ -698,15 +683,16 @@ onUnmounted(() => {
                     <h1 class="operator-name">
                         {{ data.operators.topByDistance.operator }}
                     </h1>
-                    <p class="operator-stat">
-                        {{ formatKm(data.operators.topByDistance.distance) }} km
-                    </p>
+                    <p class="operator-stat">{{ formatKm(data.operators.topByDistance.distance) }} km</p>
                 </div>
             </section>
 
             <!-- Favorite Operator by Duration -->
             <section
-                v-if="data.operators?.topByDuration && data.operators.topByDuration.operator !== data.operators.topByDistance?.operator"
+                v-if="
+                    data.operators?.topByDuration &&
+                    data.operators.topByDuration.operator !== data.operators.topByDistance?.operator
+                "
                 class="section section-fav-operator-time"
             >
                 <div class="operator-card">
@@ -737,14 +723,19 @@ onUnmounted(() => {
                             <span class="line-stat">{{ formatKm(data.lines.topByDistance.distance) }} km</span>
                         </div>
                         <template
-                            v-if="data.lines?.topByDuration && data.lines.topByDuration.line !== data.lines.topByDistance?.line"
+                            v-if="
+                                data.lines?.topByDuration &&
+                                data.lines.topByDuration.line !== data.lines.topByDistance?.line
+                            "
                         >
                             <p class="lines-and">
                                 {{ t('eleven.three') }}
                             </p>
                             <div class="line-item">
                                 <span class="line-name">{{ data.lines.topByDuration.line }}</span>
-                                <span class="line-stat">{{ formatHours(data.lines.topByDuration.duration) }} {{ t('hours') }}</span>
+                                <span class="line-stat"
+                                    >{{ formatHours(data.lines.topByDuration.duration) }} {{ t('hours') }}</span
+                                >
                             </div>
                         </template>
                     </div>
@@ -768,9 +759,7 @@ onUnmounted(() => {
                         <span class="trip-arrow">→</span>
                         <span class="trip-dest">{{ longestTrip.destination?.name }}</span>
                     </div>
-                    <p class="trip-stat">
-                        {{ formatKm(longestTrip.distance) }} km
-                    </p>
+                    <p class="trip-stat">{{ formatKm(longestTrip.distance) }} km</p>
                 </div>
             </section>
 
@@ -794,9 +783,7 @@ onUnmounted(() => {
                         <span class="trip-arrow">→</span>
                         <span class="trip-dest">{{ longestDurationTrip.destination?.name }}</span>
                     </div>
-                    <p class="trip-stat">
-                        {{ longestDurationTrip.duration }} {{ t('one.two') }}
-                    </p>
+                    <p class="trip-stat">{{ longestDurationTrip.duration }} {{ t('one.two') }}</p>
                 </div>
             </section>
 
@@ -817,9 +804,7 @@ onUnmounted(() => {
                         <span class="trip-arrow">→</span>
                         <span class="trip-dest">{{ fastestTrip.destination?.name }}</span>
                     </div>
-                    <p class="trip-stat">
-                        Ø {{ calculateSpeed(fastestTrip) }} km/h
-                    </p>
+                    <p class="trip-stat">Ø {{ calculateSpeed(fastestTrip) }} km/h</p>
                 </div>
             </section>
 
@@ -840,9 +825,7 @@ onUnmounted(() => {
                         <span class="trip-arrow">→</span>
                         <span class="trip-dest">{{ slowestTrip.destination?.name }}</span>
                     </div>
-                    <p class="trip-stat">
-                        Ø {{ calculateSpeed(slowestTrip) }} km/h
-                    </p>
+                    <p class="trip-stat">Ø {{ calculateSpeed(slowestTrip) }} km/h</p>
                 </div>
             </section>
 
@@ -875,18 +858,14 @@ onUnmounted(() => {
             <!-- Most Visited Station -->
             <section v-if="data.topDestinations?.length" class="section section-top-station">
                 <div class="station-card">
-                    <div class="station-icon">
-                        📍
-                    </div>
+                    <div class="station-icon">📍</div>
                     <p class="stat-intro">
                         {{ t('sixteen.one') }}
                     </p>
                     <h1 class="station-name">
                         {{ data.topDestinations[0].station?.name }}
                     </h1>
-                    <p class="station-count">
-                        {{ data.topDestinations[0].count }}x
-                    </p>
+                    <p class="station-count">{{ data.topDestinations[0].count }}x</p>
                 </div>
             </section>
 
@@ -899,9 +878,7 @@ onUnmounted(() => {
                     <p class="lonely-subtitle">
                         {{ t('seventeen.two') }}
                     </p>
-                    <p class="lonely-count">
-                        {{ data.lonelyStations.length }} {{ t('eighteen.one') }}
-                    </p>
+                    <p class="lonely-count">{{ data.lonelyStations.length }} {{ t('eighteen.one') }}</p>
                     <div class="lonely-list">
                         <template v-if="data.lonelyStations.length > 5">
                             <span
@@ -914,14 +891,16 @@ onUnmounted(() => {
                             <span class="lonely-more">{{ t('eighteen.two') }}</span>
                         </template>
                         <template v-else>
-                            <span v-for="station in data.lonelyStations" :key="station.station?.id" class="lonely-station">
+                            <span
+                                v-for="station in data.lonelyStations"
+                                :key="station.station?.id"
+                                class="lonely-station"
+                            >
                                 {{ station.station?.name }}
                             </span>
                         </template>
                     </div>
-                    <p class="lonely-disclaimer">
-                        * {{ t('seventeen.disclaimer') }}
-                    </p>
+                    <p class="lonely-disclaimer">* {{ t('seventeen.disclaimer') }}</p>
                 </div>
             </section>
 
@@ -932,10 +911,17 @@ onUnmounted(() => {
                         {{ t('liked.title') }}
                     </h1>
                     <div class="liked-list">
-                        <div v-for="statusObj in data.mostLikedStatuses.slice(0, 3)" :key="statusObj.status.id" class="liked-item">
+                        <div
+                            v-for="statusObj in data.mostLikedStatuses.slice(0, 3)"
+                            :key="statusObj.status.id"
+                            class="liked-item"
+                        >
                             <span class="liked-count">{{ statusObj.status.likes }}x ❤️&nbsp;</span>
                             <span class="liked-line">{{ statusObj.status.train?.lineName }}&nbsp;</span>
-                            <span class="liked-route">{{ statusObj.status.train?.origin?.name }} → {{ statusObj.status.train?.destination?.name }}</span>
+                            <span class="liked-route"
+                                >{{ statusObj.status.train?.origin?.name }} →
+                                {{ statusObj.status.train?.destination?.name }}</span
+                            >
                         </div>
                     </div>
                 </div>
@@ -950,12 +936,8 @@ onUnmounted(() => {
                     <p class="thanks-subtitle">
                         {{ t('twenty.two') }}
                     </p>
-                    <div class="thanks-heart">
-                        ❤️
-                    </div>
-                    <div class="thanks-logo">
-                        Träwelling
-                    </div>
+                    <div class="thanks-heart">❤️</div>
+                    <div class="thanks-logo">Träwelling</div>
                 </div>
             </section>
         </template>
@@ -966,297 +948,300 @@ onUnmounted(() => {
 @import url('../../../public/fonts/Nunito/Nunito.css');
 
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 .year-in-review {
-  --primary: #c72730;
-  --primary-dark: #a01f27;
-  --accent: #ff6b6b;
-  --bg-dark: #0a0a0f;
-  --bg-darker: #050508;
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-muted: rgba(255, 255, 255, 0.5);
+    --primary: #c72730;
+    --primary-dark: #a01f27;
+    --accent: #ff6b6b;
+    --bg-dark: #0a0a0f;
+    --bg-darker: #050508;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.5);
 
-  font-family: 'Sora', sans-serif;
-  background: var(--bg-dark);
-  color: var(--text-primary);
-  height: 100vh;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
+    font-family: 'Sora', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
 }
 
 .section {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-  scroll-snap-align: start;
-  position: relative;
-  overflow: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    scroll-snap-align: start;
+    position: relative;
+    overflow: hidden;
 }
 
 /* Loading Section */
 .section-loading {
-  background: var(--bg-darker);
+    background: var(--bg-darker);
 }
 
 .loader {
-  text-align: center;
+    text-align: center;
 }
 
 .train-icon {
-  font-size: 4rem;
-  animation: bounce 1s ease-in-out infinite;
+    font-size: 4rem;
+    animation: bounce 1s ease-in-out infinite;
 }
 
 @keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
 }
 
 .loading-text {
-  margin-top: 1rem;
-  font-size: 1.2rem;
-  color: var(--text-secondary);
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
 }
 
 /* Error Section */
 .section-error {
-  background: var(--bg-darker);
+    background: var(--bg-darker);
 }
 
 .error-content {
-  text-align: center;
+    text-align: center;
 }
 
 .error-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
+    font-size: 4rem;
+    margin-bottom: 1rem;
 }
 
 .error-content h1 {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-  color: var(--text-secondary);
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: var(--text-secondary);
 }
 
 .btn-login {
-  display: inline-block;
-  padding: 1rem 2rem;
-  background: var(--primary);
-  color: white;
-  text-decoration: none;
-  border-radius: 50px;
-  font-weight: 600;
-  transition: all 0.3s ease;
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: var(--primary);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
 .btn-login:hover {
-  background: var(--primary-dark);
-  transform: translateY(-2px);
+    background: var(--primary-dark);
+    transform: translateY(-2px);
 }
 
 /* Hero Section */
 .section-hero {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  position: relative;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    position: relative;
 }
 
 .hero-bg-pattern {
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-  radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 40%);
-  pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 40%);
+    pointer-events: none;
 }
 
 .hero-content {
-  text-align: center;
-  z-index: 1;
+    text-align: center;
+    z-index: 1;
 }
 
 .logo-badge {
-  margin-bottom: 2rem;
+    margin-bottom: 2rem;
 }
 
 .year-badge {
-  display: inline-block;
-  padding: 0.5rem 1.5rem;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  backdrop-filter: blur(10px);
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
 }
 
 .hero-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(2.5rem, 8vw, 5rem);
-  font-weight: 700;
-  line-height: 1.1;
-  margin-bottom: 1rem;
-  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
 .hero-subtitle {
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 3rem;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 3rem;
 }
 
 .btn-start {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1rem 2rem;
-  background: white;
-  color: var(--primary);
-  border: none;
-  border-radius: 50px;
-  font-family: inherit;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: white;
+    color: var(--primary);
+    border: none;
+    border-radius: 50px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .btn-start:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .arrow-down {
-  animation: float 2s ease-in-out infinite;
+    animation: float 2s ease-in-out infinite;
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(5px);
-  }
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(5px);
+    }
 }
 
 /* Welcome Section */
 .section-welcome {
-  background: var(--bg-darker);
+    background: var(--bg-darker);
 }
 
 .welcome-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(2rem, 6vw, 4rem);
-  font-weight: 700;
-  text-align: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 700;
+    text-align: center;
 }
 
 .welcome-title .highlight {
-  color: var(--accent);
+    color: var(--accent);
 }
 
 .welcome-subtitle {
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  color: var(--text-secondary);
-  margin-top: 1rem;
-  font-weight: 300;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: var(--text-secondary);
+    margin-top: 1rem;
+    font-weight: 300;
 }
 
 /* Minutes Section */
 .section-minutes {
-  background: linear-gradient(180deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+    background: linear-gradient(180deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
 }
 
 .stat-container {
-  text-align: center;
+    text-align: center;
 }
 
 .stat-label {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
 }
 
 .stat-number {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(4rem, 15vw, 10rem);
-  font-weight: 700;
-  color: var(--accent);
-  line-height: 1;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(4rem, 15vw, 10rem);
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
 }
 
 .stat-unit {
-  font-size: 1.5rem;
-  color: var(--text-secondary);
-  margin: 0.5rem 0;
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    margin: 0.5rem 0;
 }
 
 .stat-desc {
-  font-size: 1rem;
-  color: var(--text-muted);
-  max-width: 400px;
+    font-size: 1rem;
+    color: var(--text-muted);
+    max-width: 400px;
 }
 
 /* Intro Stats */
 .section-intro-stats {
-  background: var(--bg-dark);
+    background: var(--bg-dark);
 }
 
 .intro-text {
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  text-align: center;
-  max-width: 800px;
-  line-height: 1.4;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    text-align: center;
+    max-width: 800px;
+    line-height: 1.4;
 }
 
 /* Your Year Section */
 .section-your-year {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
 }
 
 .your-year-title {
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  text-align: center;
-  margin-bottom: 3rem;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    text-align: center;
+    margin-bottom: 3rem;
 }
 
 .stats-preview {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  justify-content: center;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .stat-pill {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 1.5rem 2rem;
-  border-radius: 20px;
-  text-align: center;
-  backdrop-filter: blur(10px);
-  min-width: 120px;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 1.5rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    min-width: 120px;
 }
 
 .stat-pill .stat-value {
-  display: block;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 2rem;
-  font-weight: 700;
+    display: block;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
 }
 
 .stat-pill .stat-label {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin-top: 0.25rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 0.25rem;
 }
 
 /* Stat Card Sections */
@@ -1264,542 +1249,547 @@ onUnmounted(() => {
 .section-distance,
 .section-duration,
 .section-operators {
-  background: var(--bg-darker);
+    background: var(--bg-darker);
 }
 
 .stat-card {
-  text-align: center;
+    text-align: center;
 }
 
 .stat-intro {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
 }
 
 .stat-big-number {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(4rem, 12vw, 8rem);
-  font-weight: 700;
-  color: var(--accent);
-  line-height: 1;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(4rem, 12vw, 8rem);
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
 }
 
 .stat-big-number .unit {
-  font-size: 0.4em;
-  color: var(--text-secondary);
-  margin-left: 0.25em;
+    font-size: 0.4em;
+    color: var(--text-secondary);
+    margin-left: 0.25em;
 }
 
 .stat-outro {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  margin-top: 1rem;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-top: 1rem;
 }
 
 /* Earth Section */
 .section-earth {
-  background: linear-gradient(180deg, #1a472a 0%, #0d2818 100%);
+    background: linear-gradient(180deg, #1a472a 0%, #0d2818 100%);
 }
 
 .earth-visual {
-  text-align: center;
+    text-align: center;
 }
 
 .earth-icon {
-  font-size: 6rem;
-  margin-bottom: 2rem;
-  animation: rotate 20s linear infinite;
+    font-size: 6rem;
+    margin-bottom: 2rem;
+    animation: rotate 20s linear infinite;
 }
 
 @keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .stat-highlight {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(3rem, 10vw, 6rem);
-  font-weight: 700;
-  color: #4ade80;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 700;
+    color: #4ade80;
 }
 
 /* Trans-Siberian Section */
 .section-transsib {
-  background: linear-gradient(180deg, #1e3a5f 0%, #0f1f33 100%);
+    background: linear-gradient(180deg, #1e3a5f 0%, #0f1f33 100%);
 }
 
 .transsib-visual {
-  text-align: center;
+    text-align: center;
 }
 
 .train-route {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
 }
 
 .city {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
 }
 
 .route-line {
-  width: 100px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #60a5fa, transparent);
-  position: relative;
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #60a5fa, transparent);
+    position: relative;
 }
 
 .route-line::after {
-  content: '🚂';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 1.5rem;
-  animation: train 3s ease-in-out infinite;
+    content: '🚂';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    animation: train 3s ease-in-out infinite;
 }
 
 @keyframes train {
-  0%, 100% {
-    left: 0;
-  }
-  50% {
-    left: 100%;
-  }
+    0%,
+    100% {
+        left: 0;
+    }
+    50% {
+        left: 100%;
+    }
 }
 
 .stat-small {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  margin-top: 1rem;
-  max-width: 400px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 1rem;
+    max-width: 400px;
 }
 
 /* Operator Sections */
 .section-fav-operator,
 .section-fav-operator-time {
-  background: var(--bg-dark);
+    background: var(--bg-dark);
 }
 
 .operator-card {
-  text-align: center;
+    text-align: center;
 }
 
 .operator-name {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(2rem, 6vw, 4rem);
-  font-weight: 700;
-  color: var(--accent);
-  margin: 1rem 0;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 700;
+    color: var(--accent);
+    margin: 1rem 0;
 }
 
 .operator-stat {
-  font-size: 1.5rem;
-  color: var(--text-secondary);
+    font-size: 1.5rem;
+    color: var(--text-secondary);
 }
 
 /* Lines Section */
 .section-lines {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
 }
 
 .lines-card {
-  text-align: center;
-  max-width: 600px;
+    text-align: center;
+    max-width: 600px;
 }
 
 .lines-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
 }
 
 .lines-subtitle {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 2rem;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2rem;
 }
 
 .lines-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .line-item {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 1rem 1.5rem;
-  border-radius: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 1rem 1.5rem;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .line-name {
-  font-weight: 600;
-  font-size: 1.2rem;
+    font-weight: 600;
+    font-size: 1.2rem;
 }
 
 .line-stat {
-  color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .lines-and {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
 }
 
 /* Speed Section */
 .section-speed-intro {
-  background: var(--bg-darker);
+    background: var(--bg-darker);
 }
 
 .speed-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(3rem, 10vw, 6rem);
-  font-weight: 700;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 700;
 }
 
 .speed-icon {
-  font-size: 4rem;
-  margin-top: 1rem;
-  animation: wind 1s ease-in-out infinite;
+    font-size: 4rem;
+    margin-top: 1rem;
+    animation: wind 1s ease-in-out infinite;
 }
 
 @keyframes wind {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(20px);
-  }
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(20px);
+    }
 }
 
 /* Trip Cards */
 .section-longest,
 .section-fastest,
 .section-slowest {
-  background: linear-gradient(180deg, #f97316 0%, #c2410c 100%);
+    background: linear-gradient(180deg, #f97316 0%, #c2410c 100%);
 }
 
 .section-fastest {
-  background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
+    background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
 }
 
 .section-slowest {
-  background: linear-gradient(180deg, #8b5cf6 0%, #6d28d9 100%);
+    background: linear-gradient(180deg, #8b5cf6 0%, #6d28d9 100%);
 }
 
 .trip-card {
-  text-align: center;
-  max-width: 500px;
+    text-align: center;
+    max-width: 500px;
 }
 
 .trip-badge {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin-bottom: 1rem;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
 }
 
 .trip-date {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
 }
 
 .trip-line {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0.5rem 0;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
 }
 
 .trip-route {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin: 1rem 0;
-  flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
 }
 
 .trip-origin,
 .trip-dest {
-  font-size: 1.1rem;
+    font-size: 1.1rem;
 }
 
 .trip-arrow {
-  font-size: 1.5rem;
+    font-size: 1.5rem;
 }
 
 .trip-stat {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-top: 1rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-top: 1rem;
 }
 
 /* Top Station */
 .section-top-station {
-  background: linear-gradient(180deg, #059669 0%, #047857 100%);
+    background: linear-gradient(180deg, #059669 0%, #047857 100%);
 }
 
 .station-card {
-  text-align: center;
+    text-align: center;
 }
 
 .station-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
+    font-size: 4rem;
+    margin-bottom: 1rem;
 }
 
 .station-name {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(2rem, 6vw, 3.5rem);
-  font-weight: 700;
-  margin: 1rem 0;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 700;
+    margin: 1rem 0;
 }
 
 .station-count {
-  font-size: 2rem;
-  color: rgba(255, 255, 255, 0.9);
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 /* Lonely Stations */
 .section-lonely-intro {
-  background: var(--bg-darker);
+    background: var(--bg-darker);
 }
 
 .lonely-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 700;
-  text-align: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    text-align: center;
 }
 
 .lonely-subtitle {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  margin-top: 1rem;
-  text-align: center;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-top: 1rem;
+    text-align: center;
 }
 
 .section-lonely {
-  background: linear-gradient(180deg, #0d9488 0%, #0f766e 100%);
+    background: linear-gradient(180deg, #0d9488 0%, #0f766e 100%);
 }
 
 .lonely-card {
-  text-align: center;
+    text-align: center;
 }
 
 .lonely-count {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 2rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
 }
 
 .lonely-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
 .lonely-station {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 0.75rem 1.5rem;
-  border-radius: 10px;
-  font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-size: 1.1rem;
 }
 
 .lonely-more {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
 }
 
 /* Thanks Section */
 .section-thanks {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
 }
 
 .thanks-content {
-  text-align: center;
+    text-align: center;
 }
 
 .thanks-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 700;
-  margin-bottom: 1rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
 }
 
 .thanks-subtitle {
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.9);
-  max-width: 500px;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 500px;
 }
 
 .thanks-heart {
-  font-size: 4rem;
-  margin: 2rem 0;
-  animation: heartbeat 1.5s ease-in-out infinite;
+    font-size: 4rem;
+    margin: 2rem 0;
+    animation: heartbeat 1.5s ease-in-out infinite;
 }
 
 @keyframes heartbeat {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.2);
-  }
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
 }
 
 .thanks-logo {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 700;
-  opacity: 0.8;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    opacity: 0.8;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .section {
-    padding: 1.5rem;
-  }
+    .section {
+        padding: 1.5rem;
+    }
 
-  .stats-preview {
-    flex-direction: column;
-    width: 100%;
-    max-width: 300px;
-  }
+    .stats-preview {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+    }
 
-  .stat-pill {
-    width: 100%;
-  }
+    .stat-pill {
+        width: 100%;
+    }
 
-  .train-route {
-    flex-direction: column;
-  }
+    .train-route {
+        flex-direction: column;
+    }
 
-  .route-line {
-    width: 2px;
-    height: 50px;
-  }
+    .route-line {
+        width: 2px;
+        height: 50px;
+    }
 }
 
 /* Vatican Section */
 .section-vatican {
-  background: linear-gradient(180deg, #1e3a5f 0%, #0f1f33 100%);
+    background: linear-gradient(180deg, #1e3a5f 0%, #0f1f33 100%);
 }
 
 .vatican-visual {
-  text-align: center;
+    text-align: center;
 }
 
 .vatican-icon {
-  position: relative;
-  width: 200px;
-  height: 200px;
-  margin: 0 auto 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
-  border-radius: 50%;
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+    border-radius: 50%;
 }
 
 .vatican-flag {
-  font-size: 8rem;
-  filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.5));
-  animation: glow 3s ease-in-out infinite;
+    font-size: 8rem;
+    filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.5));
+    animation: glow 3s ease-in-out infinite;
 }
 
 .vatican-train {
-  position: absolute;
-  font-size: 2.5rem;
-  bottom: 10px;
-  animation: train-move 4s ease-in-out infinite;
+    position: absolute;
+    font-size: 2.5rem;
+    bottom: 10px;
+    animation: train-move 4s ease-in-out infinite;
 }
 
 @keyframes glow {
-  0%, 100% {
-    filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.5));
-  }
-  50% {
-    filter: drop-shadow(0 0 50px rgba(255, 215, 0, 0.8));
-  }
+    0%,
+    100% {
+        filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.5));
+    }
+    50% {
+        filter: drop-shadow(0 0 50px rgba(255, 215, 0, 0.8));
+    }
 }
 
 @keyframes train-move {
-  0%, 100% {
-    transform: translateX(-30px);
-  }
-  50% {
-    transform: translateX(30px);
-  }
+    0%,
+    100% {
+        transform: translateX(-30px);
+    }
+    50% {
+        transform: translateX(30px);
+    }
 }
 
 .section-vatican .stat-highlight {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(4rem, 12vw, 8rem);
-  font-weight: 700;
-  color: #fbbf24;
-  text-shadow: 0 0 40px rgba(251, 191, 36, 0.5);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(4rem, 12vw, 8rem);
+    font-weight: 700;
+    color: #fbbf24;
+    text-shadow: 0 0 40px rgba(251, 191, 36, 0.5);
 }
 
 .section-vatican .stat-intro,
 .section-vatican .stat-outro {
-  color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .section-vatican .stat-small {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.9rem;
-  margin-top: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    margin-top: 1rem;
 }
 
 .delayed-card {
-  position: relative;
+    position: relative;
 }
 
 .delay-highlight {
-  text-align: center;
-  margin-bottom: 1.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
 }
 
 .delay-value {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(4rem, 12vw, 7rem);
-  font-weight: 700;
-  color: #ffd700;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6),
-  0 0 20px rgba(255, 215, 0, 0.8),
-  0 0 30px rgba(255, 215, 0, 1);
-  display: block;
-  letter-spacing: -1px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(4rem, 12vw, 7rem);
+    font-weight: 700;
+    color: #ffd700;
+    text-shadow:
+        0 0 10px rgba(255, 215, 0, 0.6),
+        0 0 20px rgba(255, 215, 0, 0.8),
+        0 0 30px rgba(255, 215, 0, 1);
+    display: block;
+    letter-spacing: -1px;
 }
 
 .section-delayed {
-  background: linear-gradient(180deg, #b91c1c 0%, #7f1d1d 100%);
+    background: linear-gradient(180deg, #b91c1c 0%, #7f1d1d 100%);
 }
-
 </style>

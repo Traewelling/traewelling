@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
+import { DateTime } from 'luxon';
 import { PropType, ref, watch } from 'vue';
 import { Business, StatusResource } from '../../../../types/Api.gen';
 import {
@@ -7,12 +9,10 @@ import {
     getDepartureForStatus,
     timeTypeTooltip,
 } from '../../../helpers/DateTimeHelper';
-import { trans } from 'laravel-vue-i18n';
-import { DateTime } from 'luxon';
-import ProductIcon from '../../ProductIcon.vue';
 import { IconHelper } from '../../../helpers/IconHelper';
-import DurationSpan from './DurationSpan.vue';
 import LineIndicator from '../../LineIndicator.vue';
+import ProductIcon from '../../ProductIcon.vue';
+import DurationSpan from './DurationSpan.vue';
 
 const props = defineProps({
     status: {
@@ -22,14 +22,23 @@ const props = defineProps({
 });
 
 const arrival = ref(getDepartureAttribute(props.status));
-const duration = ref(getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, ['hours', 'minutes']));
+const duration = ref(
+    getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, ['hours', 'minutes']),
+);
 
-watch(() => props.status, () => {
-    arrival.value = getDepartureAttribute(props.status);
-    duration.value = getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, ['hours', 'minutes']);
-}, {
-    immediate: true,
-});
+watch(
+    () => props.status,
+    () => {
+        arrival.value = getDepartureAttribute(props.status);
+        duration.value = getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, [
+            'hours',
+            'minutes',
+        ]);
+    },
+    {
+        immediate: true,
+    },
+);
 </script>
 
 <template>
@@ -73,7 +82,10 @@ watch(() => props.status, () => {
                     ({{ status.train.manualJourneyNumber }})
                 </small>
                 <small
-                    v-else-if="status.train.journeyNumber && !status.train.lineName.includes(status.train.journeyNumber.toString())"
+                    v-else-if="
+                        status.train.journeyNumber &&
+                        !status.train.lineName.includes(status.train.journeyNumber.toString())
+                    "
                 >
                     ({{ status.train.journeyNumber }})
                 </small>
@@ -103,7 +115,7 @@ watch(() => props.status, () => {
             </span>
 
             <template v-if="status.event">
-                <br>
+                <br />
                 <span class="pl-sm-2">
                     <i class="fa fa-calendar-day" aria-hidden="true" />
                     <span class="text-trwl">&nbsp;</span>
@@ -116,5 +128,4 @@ watch(() => props.status, () => {
     </li>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -1,16 +1,14 @@
 <script>
-import FullScreenModal from '../FullScreenModal.vue';
-import _ from 'lodash';
-import { trans } from 'laravel-vue-i18n';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import axios from 'axios';
+import { trans } from 'laravel-vue-i18n';
+import _ from 'lodash';
 import { DateTime } from 'luxon';
 import { useUserStore } from '../../stores/user';
-import AutocompleteListEntry from '../Checkin/AutocompleteListEntry.vue';
-import Spinner from '../Loader/Spinner.vue';
 import ActiveStatusCard from '../ActiveStatusCard.vue';
-import FriendDropdown from '../Helpers/FriendDropdown.vue';
-import axios from 'axios';
+import AutocompleteListEntry from '../Checkin/AutocompleteListEntry.vue';
+import FullScreenModal from '../FullScreenModal.vue';
 
 const LS_RECENT_KEY = 'trwl:station:recent';
 const MAX_RECENT = 12;
@@ -19,11 +17,9 @@ export default {
     name: 'StationAutocomplete',
     components: {
         ActiveStatusCard,
-        Spinner,
         AutocompleteListEntry,
         FullScreenModal,
         VueDatePicker,
-        FriendDropdown,
     },
     props: {
         station: { type: Object, required: false, default: null },
@@ -64,6 +60,34 @@ export default {
             ],
         };
     },
+    computed: {
+        placeholder() {
+            return `${trans('stationboard.station-placeholder')} ${trans('or-alternative')} ${trans('ril100')}`;
+        },
+        dark() {
+            return localStorage.getItem('darkMode') === 'dark';
+        },
+        isHome() {
+            return this.userStore.getHome && this.station && this.userStore.getHome.id === this.station.id;
+        },
+    },
+    watch: {
+        stationInput: _.debounce(function () {
+            this.autocomplete();
+        }, 500),
+        stationName() {
+            this.stationInput = this.stationName ? this.stationName : this.stationInput;
+        },
+        station() {
+            this.selectedStation = this.station;
+        },
+    },
+    mounted() {
+        this.date = this.time;
+        this.stationInput = this.stationName ? this.stationName : '';
+        this.selectedStation = this.station;
+        this.getRecent();
+    },
     methods: {
         trans,
         showModal() {
@@ -87,20 +111,20 @@ export default {
                         this.recent = parsed;
                     }
                 }
-            } catch (_) {
+            } catch {
                 /* ignore cache errors */
             }
         },
         saveRecentToCache(list) {
             try {
                 localStorage.setItem(LS_RECENT_KEY, JSON.stringify(list.slice(0, MAX_RECENT)));
-            } catch (_) {
+            } catch {
                 /* ignore quota errors */
             }
         },
         pushStationToRecent(stationObj) {
             if (!stationObj || !stationObj.id) return;
-            const existing = this.recent.filter(s => s && s.id !== stationObj.id);
+            const existing = this.recent.filter((s) => s && s.id !== stationObj.id);
             const updated = [stationObj, ...existing].slice(0, MAX_RECENT);
             this.recent = updated;
             this.saveRecentToCache(updated);
@@ -113,19 +137,19 @@ export default {
 
             // try to refresh from API (best effort)
             fetch('/api/v1/trains/station/history')
-                .then((response) => response.ok ? response.json() : Promise.reject())
+                .then((response) => (response.ok ? response.json() : Promise.reject()))
                 .then((result) => {
                     if (result && result.data) {
                         // merge with local
                         const byId = new Map();
                         const merged = [];
-                        result.data.forEach(item => {
+                        result.data.forEach((item) => {
                             if (!byId.has(item.id)) {
                                 byId.set(item.id, true);
                                 merged.push(item);
                             }
                         });
-                        this.recent.forEach(item => {
+                        this.recent.forEach((item) => {
                             if (item && !byId.has(item.id)) {
                                 byId.set(item.id, true);
                                 merged.push(item);
@@ -155,8 +179,9 @@ export default {
         async fetchAutocomplete() {
             this.loading = true;
             this.lastError = null;
-            let query = (this.stationInput || '').replace(/%2F/, ' ').replace(/\//, ' ');
-            return await axios.get(`/api/v1/trains/station/autocomplete/${encodeURIComponent(query)}`)
+            const query = (this.stationInput || '').replace(/%2F/, ' ').replace(/\//, ' ');
+            return await axios
+                .get(`/api/v1/trains/station/autocomplete/${encodeURIComponent(query)}`)
                 .then((response) => {
                     this.autocompleteList = response.data;
                     return response.data;
@@ -216,18 +241,19 @@ export default {
             }
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    fetch(`/api/v1/trains/station/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`)
-                        .then((data) => {
-                            if (!data.ok) {
-                                notyf.error(trans('stationboard.position-unavailable'));
-                                this.fetchingGps = false;
-                                return;
-                            }
-                            data.json().then((result) => {
-                                this.setStation(result.data);
-                                this.fetchingGps = false;
-                            });
+                    fetch(
+                        `/api/v1/trains/station/nearby?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`,
+                    ).then((data) => {
+                        if (!data.ok) {
+                            notyf.error(trans('stationboard.position-unavailable'));
+                            this.fetchingGps = false;
+                            return;
+                        }
+                        data.json().then((result) => {
+                            this.setStation(result.data);
+                            this.fetchingGps = false;
                         });
+                    });
                 },
                 () => {
                     this.fetchingGps = false;
@@ -238,34 +264,6 @@ export default {
         clearInput() {
             this.stationInput = '';
             this.$refs.stationInput?.focus();
-        },
-    },
-    watch: {
-        stationInput: _.debounce(function () {
-            this.autocomplete();
-        }, 500),
-        stationName() {
-            this.stationInput = this.stationName ? this.stationName : this.stationInput;
-        },
-        station() {
-            this.selectedStation = this.station;
-        },
-    },
-    mounted() {
-        this.date = this.time;
-        this.stationInput = this.stationName ? this.stationName : '';
-        this.selectedStation = this.station;
-        this.getRecent();
-    },
-    computed: {
-        placeholder() {
-            return `${trans('stationboard.station-placeholder')} ${trans('or-alternative')} ${trans('ril100')}`;
-        },
-        dark() {
-            return localStorage.getItem('darkMode') === 'dark';
-        },
-        isHome() {
-            return this.userStore.getHome && this.station && this.userStore.getHome.id === this.station.id;
         },
     },
 };
@@ -285,7 +283,7 @@ export default {
                     :disabled="fetchingTextInput"
                     :aria-busy="loading || fetchingTextInput ? 'true' : 'false'"
                     @keyup.enter="setStationFromText"
-                >
+                />
                 <span
                     v-if="loading || fetchingTextInput"
                     class="input-group-text bg-transparent border-0"
@@ -343,18 +341,13 @@ export default {
 
     <div class="card mb-4">
         <div class="card-header">
-            {{ trans("stationboard.where-are-you") }}
-            <a
-                v-if="!dashboard && station"
-                href="#"
-                class="float-end"
-                @click.prevent="setHome"
-            >
-                <i :class="{'fas': isHome, 'far': !isHome}" class="fa-star" />
+            {{ trans('stationboard.where-are-you') }}
+            <a v-if="!dashboard && station" href="#" class="float-end" @click.prevent="setHome">
+                <i :class="{ fas: isHome, far: !isHome }" class="fa-star" />
             </a>
         </div>
         <div class="card-body">
-            <div id="station-autocomplete-container" style="z-index: 3;">
+            <div id="station-autocomplete-container" style="z-index: 3">
                 <div class="input-group mb-2 mr-sm-2">
                     <input
                         v-model="stationInput"
@@ -364,7 +357,7 @@ export default {
                         :placeholder="placeholder"
                         @focusin="showModal"
                         @keyup.enter="setStationFromText"
-                    >
+                    />
                     <button
                         v-if="showFilterButton"
                         type="button"
@@ -380,12 +373,7 @@ export default {
                         @click="setStationFromGps"
                     >
                         <i v-if="!fetchingGps" class="fa fa-map-marker-alt" aria-hidden="true" />
-                        <div
-                            v-else
-                            class="spinner-border"
-                            role="status"
-                            style="height: 1rem; width: 1rem;"
-                        >
+                        <div v-else class="spinner-border" role="status" style="height: 1rem; width: 1rem">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                     </button>
@@ -402,17 +390,15 @@ export default {
                                 :key="travelType.value"
                                 type="button"
                                 class="btn btn-primary btn-sm btn-rounded text-center me-1"
-                                :class="{'active': selectedType === travelType.value, 'better-contrast': travelType.contrast ?? false}"
+                                :class="{
+                                    active: selectedType === travelType.value,
+                                    'better-contrast': travelType.contrast ?? false,
+                                }"
                                 value="travelType"
-                                :style="{backgroundColor: travelType.color}"
+                                :style="{ backgroundColor: travelType.color }"
                                 @click="setTravelType(travelType)"
                             >
-                                <img
-                                    v-if="travelType.image"
-                                    :src="travelType.image"
-                                    alt="icon"
-                                    class="product-icon"
-                                >
+                                <img v-if="travelType.image" :src="travelType.image" alt="icon" class="product-icon" />
                                 <i v-else :class="`fa ${travelType.icon}`" aria-hidden="true" />
                             </button>
                         </div>
@@ -443,63 +429,63 @@ export default {
 <style lang="scss" scoped>
 .slide-fade-leave-active,
 .slide-fade-enter-active {
-  transition: all 0.3s ease-out;
-  overflow: hidden;
+    transition: all 0.3s ease-out;
+    overflow: hidden;
 }
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  transform: translateY(-20px);
-  opacity: 0;
+    transform: translateY(-20px);
+    opacity: 0;
 }
 
 .product-icon {
-  width: 1rem;
-  height: 1rem;
-  vertical-align: middle;
-  display: inline;
+    width: 1rem;
+    height: 1rem;
+    vertical-align: middle;
+    display: inline;
 }
 
 .better-contrast {
-  color: #4F4F4F;
+    color: #4f4f4f;
 }
 
 .better-contrast:hover {
-  color: #212529;
+    color: #212529;
 }
 
 :root.dark {
-  .better-contrast {
-    color: #FFF;
-  }
+    .better-contrast {
+        color: #fff;
+    }
 
-  .better-contrast:hover {
-    color: #FFF;
-  }
+    .better-contrast:hover {
+        color: #fff;
+    }
 }
 
 span.deleteicon {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
 }
 
 span.deleteicon span {
-  position: absolute;
-  right: 3px;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  color: #fff;
-  background-color: #ccc;
-  font: 13px monospace;
-  text-align: center;
-  line-height: 1em;
-  cursor: pointer;
+    position: absolute;
+    right: 3px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    color: #fff;
+    background-color: #ccc;
+    font: 13px monospace;
+    text-align: center;
+    line-height: 1em;
+    cursor: pointer;
 }
 
 span.deleteicon input {
-  padding-right: 18px;
-  box-sizing: border-box;
+    padding-right: 18px;
+    box-sizing: border-box;
 }
 </style>

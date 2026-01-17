@@ -1,6 +1,6 @@
 <script>
-import { trans } from 'laravel-vue-i18n';
 import axios from 'axios';
+import { trans } from 'laravel-vue-i18n';
 
 export default {
     data() {
@@ -14,21 +14,23 @@ export default {
     methods: {
         trans,
         async fetchWebhooks() {
-            axios.get('/api/v1/webhooks')
-                .then(response => {
+            axios
+                .get('/api/v1/webhooks')
+                .then((response) => {
                     this.webhooks = response.data.data;
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.error(error);
                 });
         },
         async deleteWebhook(webhook) {
-            axios.delete(`/api/v1/webhooks/${webhook.id}`)
-                .then(response => {
-                    this.webhooks = this.webhooks.filter(w => w.id !== webhook.id);
+            axios
+                .delete(`/api/v1/webhooks/${webhook.id}`)
+                .then(() => {
+                    this.webhooks = this.webhooks.filter((w) => w.id !== webhook.id);
                     notyf.success(trans('successfully-deleted'));
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.error(error);
                     notyf.error(trans('generic.error'));
                 });
@@ -52,11 +54,7 @@ export default {
                         {{ trans('settings.webhook-description') }}
                     </p>
 
-                    <p
-                        v-if="webhooks.length === 0"
-                        class="text-danger mx-4"
-                        v-text="trans('settings.no-webhooks')"
-                    />
+                    <p v-if="webhooks.length === 0" class="text-danger mx-4" v-text="trans('settings.no-webhooks')" />
 
                     <div v-else class="table-responsive">
                         <table class="table">
@@ -82,10 +80,7 @@ export default {
                                         </ul>
                                     </td>
                                     <td>
-                                        <button
-                                            class="btn btn-block btn-danger mx-0"
-                                            @click="deleteWebhook(webhook)"
-                                        >
+                                        <button class="btn btn-block btn-danger mx-0" @click="deleteWebhook(webhook)">
                                             <i class="fas fa-trash" />
                                         </button>
                                     </td>

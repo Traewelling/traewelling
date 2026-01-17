@@ -6,23 +6,27 @@ export default defineComponent({
     name: 'AutocompleteListEntry',
     props: {
         station: {
-            type: Object as () => ShortStation,
+            type: Object as () => ShortStation | null,
             required: false,
+            default: null,
         },
         text: {
             type: String,
             required: false,
+            default: null,
         },
         prefix: {
             type: String,
             required: false,
+            default: null,
         },
     },
     methods: {
         getArea(): string {
             if (this.$props.station?.areas) {
                 const defaultArea: null | Area = this.$props.station.areas.find((area: Area) => area.default) || null;
-                const country: null | Area = this.$props.station.areas.find((area: Area) => area.adminLevel === 2) || null;
+                const country: null | Area =
+                    this.$props.station.areas.find((area: Area) => area.adminLevel === 2) || null;
                 if (defaultArea) {
                     return country ? `${defaultArea.name}, ${country.name}` : defaultArea.name;
                 }
@@ -57,10 +61,14 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .autocomplete-item {
-  background-color: var(--bs-modal-bg) !important;
-  border: none;
-  border-bottom: 1px solid var(--bs-light);
+    background-color: var(--bs-modal-bg) !important;
+    border: none;
+    border-bottom: 1px solid var(--bs-light);
 }
-.autocomplete-item:last-child { border-bottom: none; }
-.badge { vertical-align: middle; }
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+.badge {
+    vertical-align: middle;
+}
 </style>

@@ -1,6 +1,6 @@
 <script>
-import 'leaflet';
 import { trans } from 'laravel-vue-i18n';
+import 'leaflet';
 import { DtmRange } from '../helpers/DateRange';
 import { useUserStore } from '../stores/user';
 
@@ -91,7 +91,7 @@ export default {
             return true;
         },
         clearMarkersOnly() {
-            this.points.forEach(point => {
+            this.points.forEach((point) => {
                 if (point && point.marker) {
                     point.marker.remove();
                 }
@@ -154,10 +154,10 @@ export default {
                             const icon = this.getIconForStatus(result);
                             const markerLayer = this.canShowMarkers()
                                 ? L.geoJSON(result.point, {
-                                    pointToLayer: function (point, latlng) {
-                                        return L.marker(latlng, { icon });
-                                    },
-                                }).addTo(this.map)
+                                      pointToLayer: function (point, latlng) {
+                                          return L.marker(latlng, { icon });
+                                      },
+                                  }).addTo(this.map)
                                 : null;
 
                             entry = this.createPointObject(result, markerLayer);
@@ -182,7 +182,7 @@ export default {
         addEventMarker(event) {
             if (!event.station) return;
 
-            let marker = L.marker([event.station.latitude, event.station.longitude], {
+            const marker = L.marker([event.station.latitude, event.station.longitude], {
                 title: event.name,
                 icon: eventIcon,
             }).addTo(this.map);
@@ -200,7 +200,10 @@ export default {
         getIconForStatus(response) {
             return L.divIcon({
                 className: 'custom-div-icon',
-                html: '<img class="img-thumbnail rounded-circle img-fluid" style="width: 20px;" src="' + response.status.user.profilePictureUrl + '" />',
+                html:
+                    '<img class="img-thumbnail rounded-circle img-fluid" style="width: 20px;" src="' +
+                    response.status.user.profilePictureUrl +
+                    '" />',
                 iconSize: [20, 20],
                 iconAnchor: [9, 18],
             });
@@ -211,15 +214,14 @@ export default {
             if (!this.canShowMarkers()) return this.createPointObject(data);
 
             const line = [];
-            data.polyline.features.forEach(point => {
+            data.polyline.features.forEach((point) => {
                 line.push([point.geometry.coordinates[1], point.geometry.coordinates[0]]);
             });
 
-            const marker = L.Marker.movingMarker(
-                line,
-                data.arrival * 1000 - Date.now(),
-                { icon: this.getIconForStatus(data), autostart: true },
-            ).addTo(this.map);
+            const marker = L.Marker.movingMarker(line, data.arrival * 1000 - Date.now(), {
+                icon: this.getIconForStatus(data),
+                autostart: true,
+            }).addTo(this.map);
             marker.start();
 
             return this.createPointObject(data, marker);
@@ -236,7 +238,7 @@ export default {
         },
 
         refreshMarkers() {
-            let refreshIds = [];
+            const refreshIds = [];
             this.points.forEach((point) => {
                 if (point && point.departure * 1000 <= Date.now()) {
                     refreshIds.push(point.statusId);
@@ -250,34 +252,36 @@ export default {
             fetch('/api/v1/positions/' + refreshIds.join(','))
                 .then((response) => response.json())
                 .then((result) => {
-                    let tmpResult = [];
-                    let updatedIds = [];
+                    const tmpResult = [];
+                    const updatedIds = [];
 
                     result.data.forEach((stop) => {
                         tmpResult.push(stop);
-                        let removeIdx = refreshIds.indexOf(stop.statusId);
+                        const removeIdx = refreshIds.indexOf(stop.statusId);
                         if (removeIdx > -1) {
                             refreshIds.splice(removeIdx, 1);
                             updatedIds.push(stop.statusId);
                         }
                     });
 
-                    this.points = this.points.map((entry) => {
-                        if (!entry) return entry;
+                    this.points = this.points
+                        .map((entry) => {
+                            if (!entry) return entry;
 
-                        if (refreshIds.indexOf(entry.statusId) > -1) {
-                            if (entry.marker) entry.marker.remove();
-                            return false;
-                        }
-                        if (updatedIds.indexOf(entry.statusId) > -1) {
-                            tmpResult.forEach((result) => {
-                                if (result.polyline && result.statusId === entry.statusId) {
-                                    entry = this.addMarker(result, entry.marker);
-                                }
-                            });
-                        }
-                        return entry;
-                    }).filter(Boolean);
+                            if (refreshIds.indexOf(entry.statusId) > -1) {
+                                if (entry.marker) entry.marker.remove();
+                                return false;
+                            }
+                            if (updatedIds.indexOf(entry.statusId) > -1) {
+                                tmpResult.forEach((result) => {
+                                    if (result.polyline && result.statusId === entry.statusId) {
+                                        entry = this.addMarker(result, entry.marker);
+                                    }
+                                });
+                            }
+                            return entry;
+                        })
+                        .filter(Boolean);
                 });
         },
     },
@@ -285,9 +289,5 @@ export default {
 </script>
 
 <template>
-    <div
-        ref="map"
-        class="map"
-        :style="mapStyle"
-    />
+    <div ref="map" class="map" :style="mapStyle" />
 </template>

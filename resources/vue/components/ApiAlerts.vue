@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { getActiveLanguage } from 'laravel-vue-i18n';
 import { ref } from 'vue';
 import { AlertResource, AlertTranslationResource, Api } from '../../types/Api.gen';
-import { getActiveLanguage } from 'laravel-vue-i18n';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const alerts = ref([] as AlertResource[]);
@@ -45,7 +45,7 @@ const getContent = (alert: AlertResource): string => {
 };
 
 const getUrl = (alert: AlertResource): string => {
-    let url = alert.url;
+    const url = alert.url;
     const trans = getTranslation(alert);
     return trans?.url || url || '';
 };
@@ -67,13 +67,7 @@ const getIcon = (alert: AlertResource): string => {
 </script>
 
 <template>
-    <div
-        v-for="alert in alerts"
-        :key="alert.id"
-        class="alert"
-        role="alert"
-        :class="`alert-${alert.type}`"
-    >
+    <div v-for="alert in alerts" :key="alert.id" class="alert" role="alert" :class="`alert-${alert.type}`">
         <h4 class="alert-heading">
             <i :class="getIcon(alert)" aria-hidden="true" />
             {{ getTitle(alert) }}
@@ -91,8 +85,8 @@ const getIcon = (alert: AlertResource): string => {
 
 <style scoped>
 .alert-pre {
-  white-space: pre-wrap;
-  word-break: break-word;
-  font-family: var(--bs-body-font-family), sans-serif;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: var(--bs-body-font-family), sans-serif;
 }
 </style>

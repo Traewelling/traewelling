@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import { MglMarker, MglPopup } from '@indoorequal/vue-maplibre-gl';
 import { trans, transChoice } from 'laravel-vue-i18n';
+import { LngLat, LngLatBounds } from 'maplibre-gl';
+import { Notyf } from 'notyf';
 import { ref } from 'vue';
 import { Api, EventResource, LivePointDto, StatusResource } from '../../types/Api.gen';
-import StatusCard from '../components/Status/StatusCard.vue';
 import ActiveJourneyMap from '../components/ActiveJourneyMap.vue';
-import { Notyf } from 'notyf';
-import { useUserStore } from '../stores/user';
 import GenericMap from '../components/Map/GenericMap.vue';
-import { LngLat, LngLatBounds } from 'maplibre-gl';
-import { MglMarker, MglPopup } from '@indoorequal/vue-maplibre-gl';
+import StatusCard from '../components/Status/StatusCard.vue';
 import { DtmRange } from '../helpers/DateRange';
+import { useUserStore } from '../stores/user';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const statuses = ref<StatusResource[]>([]);
@@ -22,15 +22,18 @@ const notyf = new Notyf({ position: { x: 'right', y: 'bottom' } });
 
 function fetchStatuses() {
     loading.value = true;
-    api.statuses.getActiveStatuses().then((response) => {
-        response.json().then((data) => {
-            statuses.value = data.data;
+    api.statuses
+        .getActiveStatuses()
+        .then((response) => {
+            response.json().then((data) => {
+                statuses.value = data.data;
+                loading.value = false;
+            });
+        })
+        .catch((error) => {
             loading.value = false;
+            notyf.error('Error fetching statuses: ' + error.message);
         });
-    }).catch((error) => {
-        loading.value = false;
-        notyf.error('Error fetching statuses: ' + error.message);
-    });
 }
 
 function fetchStatusPositions(initialize: boolean = true) {
@@ -60,11 +63,9 @@ function fetchStatusPositions(initialize: boolean = true) {
 
 function fetchEvents() {
     if (!user.hasBeta) return;
-    api.events
-        .getEvents()
-        .then((response) => {
-            events.value = response.data.data || [];
-        });
+    api.events.getEvents().then((response) => {
+        events.value = response.data.data || [];
+    });
 }
 
 fetchStatuses();
@@ -97,9 +98,13 @@ setInterval(() => {
                         :coordinates="[trwlEvent.station.longitude, trwlEvent.station.latitude]"
                     >
                         <mgl-popup>
-                            <strong><a target="_blank" :href="trwlEvent.url">{{ trwlEvent.name }}</a></strong><br>
-                            <i class="fa fa-user-clock" /> {{ trwlEvent.host }}<br>
-                            <i class="fa fa-calendar-day" />{{ DtmRange.fromISO(trwlEvent.begin, trwlEvent.end).toLocaleDateString() }}<br>
+                            <strong
+                                ><a target="_blank" :href="trwlEvent.url">{{ trwlEvent.name }}</a></strong
+                            ><br />
+                            <i class="fa fa-user-clock" /> {{ trwlEvent.host }}<br />
+                            <i class="fa fa-calendar-day" />{{
+                                DtmRange.fromISO(trwlEvent.begin, trwlEvent.end).toLocaleDateString()
+                            }}<br />
                             <a :href="`/event/${trwlEvent.slug}`">{{ trans('events.show-all-for-event') }}</a>
                         </mgl-popup>
                     </mgl-marker>

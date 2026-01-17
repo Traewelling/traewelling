@@ -1,9 +1,9 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useActiveCheckin } from '../stores/activeCheckin';
-import { NextStation } from '../helpers/NextStation';
-import { StopoverResource } from '../../types/Api.gen';
 import { DateTime } from 'luxon';
+import { defineComponent } from 'vue';
+import { StopoverResource } from '../../types/Api.gen';
+import { NextStation } from '../helpers/NextStation';
+import { useActiveCheckin } from '../stores/activeCheckin';
 import LineIndicator from './LineIndicator.vue';
 
 export default defineComponent({
@@ -26,11 +26,15 @@ export default defineComponent({
     },
     computed: {
         departure() {
-            const dep = this.state.status?.train?.origin?.departure ?? this.state.status?.train?.origin?.arrival ?? null;
+            const dep =
+                this.state.status?.train?.origin?.departure ?? this.state.status?.train?.origin?.arrival ?? null;
             return DateTime.fromISO(dep);
         },
         arrival() {
-            const arr = this.state.status?.train?.destination?.arrival ?? this.state.status?.train?.destination?.departure ?? null;
+            const arr =
+                this.state.status?.train?.destination?.arrival ??
+                this.state.status?.train?.destination?.departure ??
+                null;
             return DateTime.fromISO(arr);
         },
         showCard() {
@@ -86,9 +90,8 @@ export default defineComponent({
         <div class="card hover-card w-100 shadow-sm" @click="goToStatus">
             <div class="card-body py-2 px-3">
                 <p class="mb-0">
-                    {{ state.status?.train?.origin?.name }} <small
-                        class="float-end text-muted"
-                    >{{ format(departure) }}</small>
+                    {{ state.status?.train?.origin?.name }}
+                    <small class="float-end text-muted">{{ format(departure) }}</small>
                 </p>
 
                 <p v-show="state.status?.train?.lineName" class="ms-2 col-auto align-items-center d-flex my-0">
@@ -101,9 +104,8 @@ export default defineComponent({
                     <span v-show="nextStation" class="ms-1">next: {{ nextStation?.name }}</span>
                 </p>
                 <p class="mb-0">
-                    {{ state.status?.train?.destination?.name }} <small
-                        class="float-end text-muted"
-                    >{{ format(arrival) }}</small>
+                    {{ state.status?.train?.destination?.name }}
+                    <small class="float-end text-muted">{{ format(arrival) }}</small>
                 </p>
 
                 <div class="progress active-status-progress">
@@ -123,24 +125,24 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .active-status-progress {
-  height: 4px;
-  line-height: 4px;
+    height: 4px;
+    line-height: 4px;
 }
 
 .fab-container {
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  user-select: none;
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  width: 100%;
-  max-width: 100%;
-  margin-left: -50%;
-  padding-right: calc(var(--bs-gutter-x) * 0.5);
-  padding-left: calc(var(--bs-gutter-x) * 0.5);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    user-select: none;
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    width: 100%;
+    max-width: 100%;
+    margin-left: -50%;
+    padding-right: calc(var(--bs-gutter-x) * 0.5);
+    padding-left: calc(var(--bs-gutter-x) * 0.5);
 }
 </style>

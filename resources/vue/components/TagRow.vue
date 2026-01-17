@@ -1,7 +1,7 @@
 <script>
-import VisibilityDropdown from './VisibilityDropdown.vue';
 import _ from 'lodash';
 import { getIcon, getTitle, keys } from '../helpers/StatusTag';
+import VisibilityDropdown from './VisibilityDropdown.vue';
 
 export default {
     name: 'TagRow',
@@ -20,6 +20,7 @@ export default {
             default: () => [],
         },
     },
+    emits: ['update:model-value'],
     data() {
         return {
             baseKeys: keys,
@@ -35,6 +36,16 @@ export default {
         disabled() {
             return this.tagKeys.length === 0;
         },
+    },
+    watch: {
+        exclude() {
+            this.selectKey();
+        },
+        input: _.debounce(function () {
+            if (this.list) {
+                this.updateTag();
+            }
+        }, 1000),
     },
     mounted() {
         this.visibility = this.value?.visibility ?? 0;
@@ -81,17 +92,6 @@ export default {
             }
         },
     },
-    watch: {
-        exclude() {
-            this.selectKey();
-        },
-        input: _.debounce(function () {
-            if (this.list) {
-                this.updateTag();
-            }
-        }, 1000),
-    },
-    emits: ['update:model-value'],
 };
 </script>
 
@@ -108,7 +108,7 @@ export default {
             <span v-show="getIcon(selectedKey) === 'fa-fw'">{{ getTitle(selectedKey) }}</span>
         </button>
         <ul class="dropdown-menu">
-            <li v-for="tagKey in tagKeys">
+            <li v-for="tagKey in tagKeys" :key="tagKey">
                 <a class="dropdown-item" href="#" @click="selectKey(tagKey)">
                     <i :class="[getIcon(tagKey), 'fa']" class="w-0125 text-center" aria-hidden="true" />
                     {{ getTitle(tagKey) }}
@@ -122,20 +122,9 @@ export default {
             class="form-control border-secondary mobile-input-fs-16"
             :disabled="disabled"
             @keydown.enter="addTag"
-        >
-        <VisibilityDropdown
-            :start-value="visibility"
-            :disabled="disabled"
-            @update:model-value="setVisibility"
         />
-        <button
-            v-if="!list"
-            class="btn btn-primary"
-            :disabled="disabled"
-            @click="addTag"
-        >
-            Add
-        </button>
+        <VisibilityDropdown :start-value="visibility" :disabled="disabled" @update:model-value="setVisibility" />
+        <button v-if="!list" class="btn btn-primary" :disabled="disabled" @click="addTag">Add</button>
         <button v-if="list" class="btn btn-outline-danger" @click="deleteTag">
             <i class="fa fa-trash" />
         </button>
@@ -144,6 +133,6 @@ export default {
 
 <style scoped lang="scss">
 .w-0125 {
-  width: 12.5%;
+    width: 12.5%;
 }
 </style>

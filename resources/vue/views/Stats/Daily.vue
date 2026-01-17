@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
 import { trans, transChoice as trans_choice } from 'laravel-vue-i18n';
-import StatusCard from '../../components/Status/StatusCard.vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import type { StatusResource } from '../../../types/Api.gen';
 import LoadingSkeletonRows from '../../components/Loader/LoadingSkeletonRows.vue';
+import StatusCard from '../../components/Status/StatusCard.vue';
 
 const props = defineProps<{
-  date: string;
+    date: string;
 }>();
 
 type ApiResponse = {
-  data: {
-    statuses: StatusResource[];
-    totalDistance?: number; // meter
-    totalDuration?: number;
-    totalPoints?: number;
-  };
+    data: {
+        statuses: StatusResource[];
+        totalDistance?: number; // meter
+        totalDuration?: number;
+        totalPoints?: number;
+    };
 };
 
 const loading = ref(false);
@@ -42,6 +42,7 @@ async function fetchDaily() {
         totalDistance.value = json?.data?.totalDistance ?? 0;
         totalDurationMin.value = json?.data?.totalDuration ?? 0;
         totalPoints.value = json?.data?.totalPoints ?? 0;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
         errorMsg.value = e?.message || 'Unbekannter Fehler.';
     } finally {
@@ -52,13 +53,9 @@ async function fetchDaily() {
 onMounted(fetchDaily);
 watch(() => props.date, fetchDaily);
 
-const tripsText = computed(() =>
-    trans_choice('stats.trips', statuses.value.length),
-);
+const tripsText = computed(() => trans_choice('stats.trips', statuses.value.length));
 
-const kmRounded = computed(() =>
-    Math.round((totalDistance.value || 0) / 1000),
-);
+const kmRounded = computed(() => Math.round((totalDistance.value || 0) / 1000));
 
 const durationParts = computed(() => {
     const m = Math.max(0, totalDurationMin.value || 0);

@@ -1,5 +1,5 @@
-import { StatusResource, StopoverResource } from '../../types/Api.gen';
 import { DateTime } from 'luxon';
+import { StatusResource, StopoverResource } from '../../types/Api.gen';
 import { Dtm } from './DateTime';
 
 export function getDepartureForStatus(status: StatusResource): Dtm {
@@ -83,26 +83,20 @@ function getArrivalString(stopover: StopoverResource): string | null {
 }
 
 export function getDepartureAttribute(status: StatusResource): StopoverTime {
-    const planned = status.train.origin.departurePlanned
-        ?? status.train.origin.departure;
+    const planned = status.train.origin.departurePlanned ?? status.train.origin.departure;
     const real = status.train.origin.departureReal;
     const manual = status.train.manualDeparture;
     return prepareStopoverTime(planned, real, manual);
 }
 
 export function getArrivalAttribute(status: StatusResource): StopoverTime {
-    const planned = status.train.destination.arrivalPlanned
-        ?? status.train.destination.arrival;
+    const planned = status.train.destination.arrivalPlanned ?? status.train.destination.arrival;
     const real = status.train.destination.arrivalReal;
     const manual = status.train.manualArrival;
     return prepareStopoverTime(planned, real, manual);
 }
 
-function prepareStopoverTime(
-    planned: string | null,
-    real: string | null,
-    manual: string | null,
-): StopoverTime {
+function prepareStopoverTime(planned: string | null, real: string | null, manual: string | null): StopoverTime {
     let time: Dtm | null = null;
     let type: StopoverTimeType = StopoverTimeType.Planned;
     let plannedTime: Dtm | null = null;
@@ -132,7 +126,8 @@ function prepareStopoverTime(
 
     let originalTime = time;
     if (time && plannedTime) {
-        originalTime = Math.abs(plannedTime.dateTime.toSeconds() - time.dateTime.toSeconds()) >= 60 ? plannedTime : null;
+        originalTime =
+            Math.abs(plannedTime.dateTime.toSeconds() - time.dateTime.toSeconds()) >= 60 ? plannedTime : null;
     }
 
     return {

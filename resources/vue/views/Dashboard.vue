@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
-import StationAutocomplete from '../components/StationAutocomplete/StationAutocomplete.vue';
+import { DateTime } from 'luxon';
+import { Notyf } from 'notyf';
 import { ref } from 'vue';
 import { Api, StatusResource, StopoverResource } from '../../types/Api.gen';
-import StatusCard from '../components/Status/StatusCard.vue';
-import { DateTime } from 'luxon';
-import { getDepartureForStatus } from '../helpers/DateTimeHelper';
-import { Notyf } from 'notyf';
-import { useUserStore } from '../stores/user';
 import ApiAlerts from '../components/ApiAlerts.vue';
 import LoadingSkeletonRows from '../components/Loader/LoadingSkeletonRows.vue';
+import StationAutocomplete from '../components/StationAutocomplete/StationAutocomplete.vue';
+import StatusCard from '../components/Status/StatusCard.vue';
+import { getDepartureForStatus } from '../helpers/DateTimeHelper';
+import { useUserStore } from '../stores/user';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const statuses = ref<StatusResource[]>([]);
@@ -24,22 +24,25 @@ const notyf = new Notyf({ position: { x: 'right', y: 'bottom' } });
 function fetchStatuses(page: number | undefined = undefined, append: boolean = false) {
     loading.value = true;
     showMore.value = false;
-    api.dashboard.getDashboard({ page }).then((response) => {
-        response.json().then((data) => {
-            if (append) {
-                statuses.value.push(...data.data);
-            } else {
-                statuses.value = data.data;
-            }
-            fetchStopovers(append);
+    api.dashboard
+        .getDashboard({ page })
+        .then((response) => {
+            response.json().then((data) => {
+                if (append) {
+                    statuses.value.push(...data.data);
+                } else {
+                    statuses.value = data.data;
+                }
+                fetchStopovers(append);
+                loading.value = false;
+                showMore.value = data.links?.next?.length > 0;
+                currentPage.value = data.meta?.current_page || 0;
+            });
+        })
+        .catch((error) => {
             loading.value = false;
-            showMore.value = data.links?.next?.length > 0;
-            currentPage.value = data.meta?.current_page || 0;
+            notyf.error('Error fetching statuses: ' + error.message);
         });
-    }).catch((error) => {
-        loading.value = false;
-        notyf.error('Error fetching statuses: ' + error.message);
-    });
 }
 
 function fetchStopovers(append: boolean = false) {
@@ -47,26 +50,28 @@ function fetchStopovers(append: boolean = false) {
         return;
     }
 
-    const tripIds = statuses.value.map(status => status.train.trip.toString());
-    api.stopovers.getStopOvers(tripIds.join(',')).then((response) => {
-        response.json().then((data) => {
-            if (append) {
-                for (const tripId in data.data) {
-                    if (data.data.hasOwnProperty(tripId)) {
-                        if (!stopovers.value[tripId]) {
-                            stopovers.value[tripId] = [];
+    const tripIds = statuses.value.map((status) => status.train.trip.toString());
+    api.stopovers
+        .getStopOvers(tripIds.join(','))
+        .then((response) => {
+            response.json().then((data) => {
+                if (append) {
+                    for (const tripId in data.data) {
+                        if (Object.prototype.hasOwnProperty.call(data.data, tripId)) {
+                            if (!stopovers.value[tripId]) {
+                                stopovers.value[tripId] = [];
+                            }
+                            stopovers.value[tripId].push(...data.data[tripId]);
                         }
-                        stopovers.value[tripId].push(...data.data[tripId]);
                     }
+                } else {
+                    stopovers.value = data.data;
                 }
-            } else {
-                stopovers.value = data.data;
-            }
-
+            });
+        })
+        .catch((error) => {
+            console.error('Error fetching stopovers:', error);
         });
-    }).catch((error) => {
-        console.error('Error fetching stopovers:', error);
-    });
 }
 
 function getStopoverForTrip(tripId: string): StopoverResource[] | undefined {
@@ -74,13 +79,16 @@ function getStopoverForTrip(tripId: string): StopoverResource[] | undefined {
 }
 
 function fetchFutureStatuses() {
-    api.dashboard.getFutureDashboard().then((response) => {
-        response.json().then((data) => {
-            futureStatuses.value = data.data;
+    api.dashboard
+        .getFutureDashboard()
+        .then((response) => {
+            response.json().then((data) => {
+                futureStatuses.value = data.data;
+            });
+        })
+        .catch((error) => {
+            notyf.error(trans('generic.error') + ': ' + error.message);
         });
-    }).catch((error) => {
-        notyf.error(trans('generic.error') + ': ' + error.message);
-    });
 }
 
 fetchStatuses();
@@ -127,9 +135,15 @@ fetchFutureStatuses();
                 </div>
             </div>
 
-            <template v-for="(status, index) in statuses">
+            <template v-for="(status, index) in statuses" :key="status.id">
                 <h2
-                    v-if="index === 0 || !DateTime.fromISO(status.train.origin.departure || '').hasSame(DateTime.fromISO(statuses[index - 1].train.origin.departure || ''), 'day')"
+                    v-if="
+                        index === 0 ||
+                        !DateTime.fromISO(status.train.origin.departure || '').hasSame(
+                            DateTime.fromISO(statuses[index - 1].train.origin.departure || ''),
+                            'day',
+                        )
+                    "
                     class="mb-2 fs-5"
                 >
                     {{ getDepartureForStatus(status).toLocaleString(DateTime.DATE_HUGE) }}
@@ -142,12 +156,7 @@ fetchFutureStatuses();
             </template>
 
             <template v-if="loading">
-                <LoadingSkeletonRows
-                    class="text-center"
-                    :row-height="20"
-                    :columns="1"
-                    :rows="1"
-                />
+                <LoadingSkeletonRows class="text-center" :row-height="20" :columns="1" :rows="1" />
                 <LoadingSkeletonRows class="text-center mb-4" :row-height="206" />
             </template>
 
@@ -159,7 +168,7 @@ fetchFutureStatuses();
             <div v-if="!loading && !showMore && statuses.length > 0" class="text-center my-4">
                 <p class="text-muted">
                     Final stop. All change, please!
-                    <br>
+                    <br />
                     <small>{{ trans('dashboard-end-seven-days') }}</small>
                 </p>
             </div>

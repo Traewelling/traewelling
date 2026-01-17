@@ -3,14 +3,14 @@ ToDo: Event.vue does currenly only load statuses. Put the whole Page in here lat
 ToDo: Cursor based pagination (API changes needed)
 -->
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import StatusCard from '../components/Status/StatusCard.vue';
-import type { StatusResource } from '../../types/Api.gen';
 import { trans } from 'laravel-vue-i18n';
+import { computed, onMounted, ref } from 'vue';
+import type { StatusResource } from '../../types/Api.gen';
 import LoadingSkeletonRows from '../components/Loader/LoadingSkeletonRows.vue';
+import StatusCard from '../components/Status/StatusCard.vue';
 
 const props = defineProps<{
-  eventSlug: string;
+    eventSlug: string;
 }>();
 
 const statuses = ref<StatusResource[]>([]);
@@ -50,6 +50,7 @@ async function fetchStatuses(append = false) {
         const meta = json.meta ?? {};
         currentPage.value = meta.current_page ?? nextPage;
         lastPage.value = meta.last_page ?? null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
         errorMsg.value = e?.message || 'Unknown error occurred';
     } finally {
@@ -96,9 +97,8 @@ onMounted(() => {
 
         <div class="row justify-content-center mt-5">
             <small class="text-muted">
-                <sup>1</sup> {{ trans('events.disclaimer.organizer') }}
-                <sup>2</sup> {{ trans('events.disclaimer.source') }}
-                <sup>3</sup> {{ trans('events.disclaimer.warranty') }}
+                <sup>1</sup> {{ trans('events.disclaimer.organizer') }} <sup>2</sup>
+                {{ trans('events.disclaimer.source') }} <sup>3</sup> {{ trans('events.disclaimer.warranty') }}
             </small>
         </div>
     </div>

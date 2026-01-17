@@ -12,10 +12,10 @@ function setDarkMode(darkMode) {
     localStorage.setItem('darkMode', darkMode);
 }
 
-function updateDarkModeMenu(colorMode) {
+function updateDarkModeMenu() {
     let toggleLight = document.getElementById('colorModeToggleLight');
-    let toggleDark  = document.getElementById('colorModeToggleDark');
-    let toggleAuto  = document.getElementById('colorModeToggleAuto');
+    let toggleDark = document.getElementById('colorModeToggleDark');
+    let toggleAuto = document.getElementById('colorModeToggleAuto');
 
     if (!(toggleLight && toggleDark && toggleAuto)) {
         return;
@@ -38,10 +38,7 @@ function updateDarkMode() {
     let darkModeSetting = getDarkMode();
 
     if (darkModeSetting === 'auto') {
-        darkModeSetting = window.matchMedia('(prefers-color-scheme: dark)')
-            .matches
-            ? 'dark'
-            : 'light';
+        darkModeSetting = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
 
     if (darkModeSetting === 'dark') {
@@ -54,8 +51,8 @@ function updateDarkMode() {
 
 function mountListeners() {
     let toggleLight = document.getElementById('colorModeToggleLight');
-    let toggleDark  = document.getElementById('colorModeToggleDark');
-    let toggleAuto  = document.getElementById('colorModeToggleAuto');
+    let toggleDark = document.getElementById('colorModeToggleDark');
+    let toggleAuto = document.getElementById('colorModeToggleAuto');
 
     if (!(toggleLight && toggleDark && toggleAuto)) {
         return;
@@ -84,10 +81,8 @@ getDarkMode();
 updateDarkModeMenu();
 mountListeners();
 
-window
-    .matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', ({ matches }) => {
-        if (getDarkMode() === 'auto') {
-            updateDarkMode(matches ? 'dark' : 'light');
-        }
-    });
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ({ matches }) => {
+    if (getDarkMode() === 'auto') {
+        updateDarkMode(matches ? 'dark' : 'light');
+    }
+});

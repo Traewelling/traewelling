@@ -18,6 +18,7 @@ const split = ref<TimeDuration>(secondsToDuration(props.duration));
 </script>
 
 <template>
+    <!-- eslint-disable-next-line vue/valid-v-bind -->
     <span :class>
         <span v-if="split.years > 0">
             {{ split.years }} <small class="text-muted">{{ trans('time.years.short') }}</small>

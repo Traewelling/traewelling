@@ -1,6 +1,5 @@
-@import "variables";
-@import "bootstrap/scss/bootstrap";
-
+@import 'variables';
+@import 'bootstrap/scss/bootstrap';
 
 :root.dark {
   --bs-body-color: #{$dm-body};
@@ -159,14 +158,14 @@
 
         &.progress-pride {
           background: linear-gradient(
-                          66deg,
-                          hsl(0, 75%, 60%) 0 14.28%,
-                          hsl(39, 75%, 47%) 0 28.57%,
-                          hsl(60, 65%, 50%) 0 42.85%,
-                          hsl(120, 75%, 40%) 0 57.14%,
-                          hsl(181, 75%, 40%) 0 71.42%,
-                          hsl(240, 75%, 60%) 0 85.71%,
-                          hsl(275, 75%, 35%) 0
+            66deg,
+            hsl(0, 75%, 60%) 0 14.28%,
+            hsl(39, 75%, 47%) 0 28.57%,
+            hsl(60, 65%, 50%) 0 42.85%,
+            hsl(120, 75%, 40%) 0 57.14%,
+            hsl(181, 75%, 40%) 0 71.42%,
+            hsl(240, 75%, 60%) 0 85.71%,
+            hsl(275, 75%, 35%) 0
           );
         }
       }
@@ -388,11 +387,9 @@
   }
 
   .profile-banner {
-    background: linear-gradient(
-                    #{rgba(darken($dm-trwlRot, 60%), 0.4)},
-                    #{rgba(darken($dm-trwlRot, 60%), 0.4)}
-    ),
-    url("../images/covers/profile-background.png");
+    background:
+      linear-gradient(#{rgba(darken($dm-trwlRot, 60%), 0.4)}, #{rgba(darken($dm-trwlRot, 60%), 0.4)}),
+      url('../images/covers/profile-background.png');
     background-position: center;
   }
 

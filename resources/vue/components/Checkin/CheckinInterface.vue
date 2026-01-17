@@ -1,15 +1,15 @@
 <script>
+import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { Notyf } from 'notyf';
-import { trans } from 'laravel-vue-i18n';
+import { useActiveCheckin } from '../../stores/activeCheckin';
+import { checkinSuccessStore } from '../../stores/checkinSuccess';
 import { useProfileSettingsStore } from '../../stores/profileSettings';
+import { useUserStore } from '../../stores/user';
+import BusinessDropdown from '../BusinessDropdown.vue';
 import EventDropdown from '../EventDropdown.vue';
 import FriendDropdown from '../Helpers/FriendDropdown.vue';
 import TagList from '../TagList.vue';
-import { useActiveCheckin } from '../../stores/activeCheckin';
-import { checkinSuccessStore } from '../../stores/checkinSuccess';
-import { useUserStore } from '../../stores/user';
-import BusinessDropdown from '../BusinessDropdown.vue';
 import VisibilityDropdown from '../VisibilityDropdown.vue';
 
 export default {
@@ -68,6 +68,7 @@ export default {
                 case 2:
                     return 'fa fa-building';
             }
+            return '';
         },
         visibilityIcon() {
             switch (this.visibility) {
@@ -82,6 +83,7 @@ export default {
                 case 4:
                     return 'fa fa-user-check';
             }
+            return '';
         },
     },
     methods: {
@@ -98,7 +100,9 @@ export default {
                 tripId: this.selectedTrain.tripId,
                 lineName: this.selectedTrain.line.name ?? this.selectedTrain.line.fahrtNr,
                 start: this.selectedTrain.stop.id,
-                destination: this.useInternalIdentifiers ? this.selectedDestination.id : this.selectedDestination.evaIdentifier,
+                destination: this.useInternalIdentifiers
+                    ? this.selectedDestination.id
+                    : this.selectedDestination.evaIdentifier,
                 departure: DateTime.fromISO(this.selectedTrain.plannedWhen).setZone('UTC').toISO(),
                 arrival: DateTime.fromISO(this.selectedDestination.arrivalPlanned).setZone('UTC').toISO(),
                 force: this.collision,
@@ -111,39 +115,43 @@ export default {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data),
-            }).then((response) => {
-                this.loading = false;
-                if (response.ok) {
-                    response.json().then((result) => {
-                        this.activeCheckin.reset();
-                        this.checkinSuccess.setResponse(result.data);
+            })
+                .then((response) => {
+                    this.loading = false;
+                    if (response.ok) {
+                        response.json().then((result) => {
+                            this.activeCheckin.reset();
+                            this.checkinSuccess.setResponse(result.data);
 
-                        this.$refs.tagList.postAllTags(result.data.status.id).then(() => {
-                            window.location = '/status/' + result.data.status.id;
+                            this.$refs.tagList.postAllTags(result.data.status.id).then(() => {
+                                window.location = '/status/' + result.data.status.id;
+                            });
                         });
-                    });
-                } else {
-                    switch (response.status) {
-                        case 400:
-                            response.json().then((result) => {
-                                this.notyf.error(result.message);
-                            });
-                            break;
-                        case 409:
-                            response.json().then(() => {
-                                this.collision = true;
-                                this.notyf.error(trans('checkin.conflict') + '<br>' + trans('checkin.conflict.question'));
-                            });
-                            break;
-                        default:
-                            this.notyf.error(trans('messages.exception.general'));
-                            break;
+                    } else {
+                        switch (response.status) {
+                            case 400:
+                                response.json().then((result) => {
+                                    this.notyf.error(result.message);
+                                });
+                                break;
+                            case 409:
+                                response.json().then(() => {
+                                    this.collision = true;
+                                    this.notyf.error(
+                                        trans('checkin.conflict') + '<br>' + trans('checkin.conflict.question'),
+                                    );
+                                });
+                                break;
+                            default:
+                                this.notyf.error(trans('messages.exception.general'));
+                                break;
+                        }
                     }
-                }
-            }).catch(() => {
-                this.loading = false;
-                this.notyf.error(trans('messages.exception.general'));
-            });
+                })
+                .catch(() => {
+                    this.loading = false;
+                    this.notyf.error(trans('messages.exception.general'));
+                });
         },
         selectEvent(event) {
             this.selectedEvent = event;
@@ -163,10 +171,10 @@ export default {
             name="body"
             class="form-control mobile-input-fs-16 pt-4"
             :maxlength="allowedChars"
-            style="min-height: 130px; border: none;"
+            style="min-height: 130px; border: none"
         />
-        <label for="message-text" class="form-label pt-4 ms-0" :class="{'d-none': statusText.length}">
-            {{ trans("stationboard.label-message") }}
+        <label for="message-text" class="form-label pt-4 ms-0" :class="{ 'd-none': statusText.length }">
+            {{ trans('stationboard.label-message') }}
         </label>
     </div>
     <small v-show="typed < 20" class="float-end" :class="typed < 10 ? 'text-danger' : 'text-warning'">
@@ -175,7 +183,7 @@ export default {
 
     <div class="py-2 px-3 border-bottom">
         <div class="btn-group shadow-none">
-            <div class="col-auto btn-group" :class="{'d-none' : profileStore.getMastodon == null}">
+            <div class="col-auto btn-group" :class="{ 'd-none': profileStore.getMastodon == null }">
                 <input
                     id="toot_check"
                     v-model="toot"
@@ -184,13 +192,13 @@ export default {
                     autocomplete="off"
                     autocompleted=""
                     :disabled="visibility === 3"
-                >
+                />
                 <label class="btn btn-sm px-2" for="toot_check">
                     <i class="fab fa-mastodon" />
-                    <span class="visually-hidden-focusable">{{ trans("stationboard.check-toot") }}</span>
+                    <span class="visually-hidden-focusable">{{ trans('stationboard.check-toot') }}</span>
                 </label>
             </div>
-            <div class="col-auto btn-group" :class="{'d-none' : !toot}">
+            <div class="col-auto btn-group" :class="{ 'd-none': !toot }">
                 <input
                     id="toot_chain"
                     v-model="chainPost"
@@ -199,10 +207,10 @@ export default {
                     autocomplete="off"
                     autocompleted=""
                     :disabled="visibility === 3"
-                >
+                />
                 <label class="btn btn-sm px-2" for="toot_chain">
                     <i class="fas fa-link" />
-                    <span class="visually-hidden-focusable">{{ trans("stationboard.check-chainPost") }}</span>
+                    <span class="visually-hidden-focusable">{{ trans('stationboard.check-chainPost') }}</span>
                 </label>
             </div>
             <div class="col-auto btn-group">
@@ -219,14 +227,9 @@ export default {
             <FriendDropdown @select-user="selectFriends" />
         </div>
         <button class="col-auto float-end ms-auto btn btn-sm btn-outline-primary" @click="checkIn">
-            <span
-                v-if="loading"
-                class="spinner-border spinner-border-sm"
-                role="status"
-                aria-hidden="true"
-            />
+            <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
             <span v-if="loading" class="visually-hidden">Loading...</span>
-            {{ trans("stationboard.btn-checkin") }}
+            {{ trans('stationboard.btn-checkin') }}
         </button>
     </div>
 
@@ -237,10 +240,10 @@ export default {
 
 <style scoped>
 .form-floating > .form-control:not(:placeholder-shown) ~ label::after {
-  background-color: transparent;
+    background-color: transparent;
 }
 
 .form-control:focus {
-  box-shadow: none;
+    box-shadow: none;
 }
 </style>

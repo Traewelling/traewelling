@@ -1,13 +1,12 @@
 <script setup lang="ts">
-
+import { trans } from 'laravel-vue-i18n';
+import { DateTime } from 'luxon';
 import { computed, PropType, ref } from 'vue';
 import { Api, StatusResource } from '../../../../types/Api.gen';
-import { trans } from 'laravel-vue-i18n';
-import { IconHelper } from '../../../helpers/IconHelper';
-import StatusContextMenu from './StatusContextMenu.vue';
 import { Dtm } from '../../../helpers/DateTime';
-import { DateTime } from 'luxon';
+import { IconHelper } from '../../../helpers/IconHelper';
 import { useUserStore } from '../../../stores/user';
+import StatusContextMenu from './StatusContextMenu.vue';
 
 const props = defineProps({
     status: {
@@ -27,6 +26,7 @@ function like() {
 
     if (props.status.liked) {
         api.status.removeLikeFromStatus(props.status.id).then(() => {
+            // eslint-disable-next-line vue/no-mutating-props
             props.status.liked = false;
             likes.value--;
         });
@@ -34,6 +34,7 @@ function like() {
         emit('status-unliked', props.status.id);
     } else {
         api.status.addLikeToStatus(props.status.id).then(() => {
+            // eslint-disable-next-line vue/no-mutating-props
             props.status.liked = true;
             likes.value++;
         });
@@ -52,11 +53,14 @@ const createdAt = computed(() => {
 });
 
 function deleteStatus() {
-    api.status.destroySingleStatus(props.status.id).then(() => {
-        emit('status-deleted', props.status.id);
-    }).catch((error) => {
-        console.error('Error deleting status:', error);
-    });
+    api.status
+        .destroySingleStatus(props.status.id)
+        .then(() => {
+            emit('status-deleted', props.status.id);
+        })
+        .catch((error) => {
+            console.error('Error deleting status:', error);
+        });
 }
 
 likes.value = props.status.likes || 0;
@@ -70,14 +74,18 @@ likes.value = props.status.likes || 0;
                     <a
                         href="#"
                         class="like-heart"
-                        :class="{'fas fa-heart': status.liked, 'far fa-heart': !status.liked, 'peach': status.userDetails.id === 18574}"
+                        :class="{
+                            'fas fa-heart': status.liked,
+                            'far fa-heart': !status.liked,
+                            peach: status.userDetails.id === 18574,
+                        }"
                         @click.prevent="like()"
                     >
                         <span class="sr-only">{{ trans('action.like') }}</span>
                     </a>
                 </li>
                 <li class="like-text list-inline-item">
-                    <span class="pl-1" :class="{'d-none': likes <= 0}">
+                    <span class="pl-1" :class="{ 'd-none': likes <= 0 }">
                         {{ likes }}
                     </span>
                 </li>
@@ -93,7 +101,11 @@ likes.value = props.status.likes || 0;
                 />
             </li>
             <li class="like-text list-inline-item">
-                <StatusContextMenu :status @confirm-delete="deleteStatus()" @status-updated="emit('status-updated', $event)" />
+                <StatusContextMenu
+                    :status
+                    @confirm-delete="deleteStatus()"
+                    @status-updated="emit('status-updated', $event)"
+                />
             </li>
         </ul>
 
@@ -105,7 +117,7 @@ likes.value = props.status.likes || 0;
                         :src="status.userDetails.profilePicture"
                         class="profile-image"
                         :alt="status.userDetails.username"
-                    >
+                    />
                 </a>
             </li>
             <li class="list-inline-item me-1">
@@ -123,13 +135,13 @@ likes.value = props.status.likes || 0;
 </template>
 <style scoped>
 .like-heart {
-  color: #e74c3c;
-  cursor: pointer;
+    color: #e74c3c;
+    cursor: pointer;
 }
 
 :root.dark {
-  .like-heart {
-    color: #e74c3c;
-  }
+    .like-heart {
+        color: #e74c3c;
+    }
 }
 </style>

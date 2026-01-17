@@ -8,7 +8,6 @@ const props = defineProps({
         required: false,
         default: null,
     },
-
 });
 
 const user = useUserStore();
@@ -31,31 +30,24 @@ function adminPanel() {
             <img
                 src="/images/covers/hp0.jpg"
                 class="card-img-top object-fit-cover"
-                style="object-position: bottom;"
+                style="object-position: bottom"
                 :alt="trans('errors.403.alt_text')"
-            >
+            />
         </div>
         <div class="card-body text-center py-5">
-            <div class="display-6 mb-3" aria-hidden="true">
-                🔒
-            </div>
+            <div class="display-6 mb-3" aria-hidden="true">🔒</div>
             <h1 class="h4 mb-2">
-                {{ trans("error.403") }}
+                {{ trans('error.403') }}
             </h1>
             <p class="text-muted">
-                {{ trans("errors.403.lead") }}
+                {{ trans('errors.403.lead') }}
             </p>
 
             <button type="button" class="btn btn-primary" @click="goHome">
-                {{ trans("errors.actions.home") }}
+                {{ trans('errors.actions.home') }}
             </button>
-            <button
-                v-if="user?.isAdmin && statusId"
-                type="button"
-                class="btn btn-secondary ms-2"
-                @click="adminPanel"
-            >
-                {{ trans("menu.admin") }}
+            <button v-if="user?.isAdmin && statusId" type="button" class="btn btn-secondary ms-2" @click="adminPanel">
+                {{ trans('menu.admin') }}
             </button>
         </div>
     </div>

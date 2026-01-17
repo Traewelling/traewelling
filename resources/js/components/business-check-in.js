@@ -1,11 +1,11 @@
 import { Modal } from 'bootstrap';
 
-let businessInput       = document.getElementsByClassName('trwl-business-input');
-let businessButton      = document.getElementsByClassName('trwl-business-button');
+let businessInput = document.getElementsByClassName('trwl-business-input');
+let businessButton = document.getElementsByClassName('trwl-business-button');
 let visibilityFormInput = document.getElementsByClassName('trwl-visibility-input');
-let visibilityButton    = document.getElementsByClassName('trwl-visibility-button');
+let visibilityButton = document.getElementsByClassName('trwl-visibility-button');
 
-const businessIcons   = ['fa-user', 'fa-briefcase', 'fa-building'];
+const businessIcons = ['fa-user', 'fa-briefcase', 'fa-building'];
 const visibilityIcons = ['fa-globe-americas', 'fa-lock-open', 'fa-user-friends', 'fa-lock', 'fa-user-check'];
 
 function setIconForDropdown(value, buttons, inputFields, icons) {
@@ -28,14 +28,14 @@ function editModal(event) {
     event.preventDefault();
 
     let statusId = event.currentTarget.dataset.trwlStatusId;
-    let dataset  = document.getElementById('status-' + statusId).dataset;
+    let dataset = document.getElementById('status-' + statusId).dataset;
 
-    document.querySelector("#status-update input[name='statusId']").value        = statusId;
-    document.querySelector("#status-update textarea[name='body']").value         = dataset.trwlStatusBody;
+    document.querySelector("#status-update input[name='statusId']").value = statusId;
+    document.querySelector("#status-update textarea[name='body']").value = dataset.trwlStatusBody;
     document.querySelector("#status-update input[name='manualDeparture']").value = dataset.trwlManualDeparture;
-    document.querySelector("#status-update input[name='manualArrival']").value   = dataset.trwlManualArrival;
+    document.querySelector("#status-update input[name='manualArrival']").value = dataset.trwlManualArrival;
 
-    let statusBusiness   = dataset.trwlBusinessId;
+    let statusBusiness = dataset.trwlBusinessId;
     let statusVisibility = dataset.trwlVisibility;
     businessInput.value = statusBusiness;
     visibilityFormInput.value = statusVisibility;
@@ -49,17 +49,18 @@ function editModal(event) {
     if (alternativeDestinations) {
         document.querySelector('.destination-wrapper').classList.remove('d-none');
         for (let destId in alternativeDestinations) {
-            let dest            = alternativeDestinations[destId];
-            let stopoverId      = dest.id;
-            let stopoverName    = dest.name;
+            let dest = alternativeDestinations[destId];
+            let stopoverId = dest.id;
+            let stopoverName = dest.name;
             let stopoverArrival = dest.arrival_planned;
 
-            let stopoverOption   = document.createElement('option');
+            let stopoverOption = document.createElement('option');
             stopoverOption.value = stopoverId;
-            stopoverOption.text  = stopoverArrival + ': ' + stopoverName;
+            stopoverOption.text = stopoverArrival + ': ' + stopoverName;
             document.querySelector("#status-update select[name='destinationStopoverId']").appendChild(stopoverOption);
         }
-        document.querySelector("#status-update select[name='destinationStopoverId']").value = dataset.trwlDestinationStopover;
+        document.querySelector("#status-update select[name='destinationStopoverId']").value =
+            dataset.trwlDestinationStopover;
     } else {
         document.querySelector('.destination-wrapper').classList.add('d-none');
     }
@@ -78,7 +79,12 @@ document.querySelectorAll('.trwl-business-item').forEach((item) => {
 
 document.querySelectorAll('.trwl-visibility-item').forEach((item) => {
     item.addEventListener('click', function (event) {
-        setIconForDropdown(event.currentTarget.dataset.trwlVisibility, visibilityButton, visibilityFormInput, visibilityIcons);
+        setIconForDropdown(
+            event.currentTarget.dataset.trwlVisibility,
+            visibilityButton,
+            visibilityFormInput,
+            visibilityIcons,
+        );
     });
 });
 

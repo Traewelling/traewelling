@@ -1,20 +1,25 @@
 <script>
-import FullScreenModal from './FullScreenModal.vue';
-import ProductIcon from './ProductIcon.vue';
-import LineIndicator from './LineIndicator.vue';
-import { DateTime } from 'luxon';
-import CheckinLineRun from './CheckinLineRun.vue';
-import CheckinInterface from './Checkin/CheckinInterface.vue';
-import StationAutocomplete from './StationAutocomplete/StationAutocomplete.vue';
 import { getActiveLanguage, trans, transChoice } from 'laravel-vue-i18n';
+import { DateTime } from 'luxon';
+import CheckinInterface from './Checkin/CheckinInterface.vue';
 import StationBoardEntry from './Checkin/StationBoardEntry.vue';
+import CheckinLineRun from './CheckinLineRun.vue';
+import FullScreenModal from './FullScreenModal.vue';
+import LineIndicator from './LineIndicator.vue';
 import LoadingSkeletonRows from './Loader/LoadingSkeletonRows.vue';
+import ProductIcon from './ProductIcon.vue';
+import StationAutocomplete from './StationAutocomplete/StationAutocomplete.vue';
 
 export default {
     components: {
         LoadingSkeletonRows,
         StationBoardEntry,
-        StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal,
+        StationAutocomplete,
+        CheckinInterface,
+        CheckinLineRun,
+        LineIndicator,
+        ProductIcon,
+        FullScreenModal,
     },
     data() {
         return {
@@ -143,17 +148,19 @@ export default {
                 return;
             }
 
-            let travelType = this.travelType ? this.travelType : '';
+            const travelType = this.travelType ? this.travelType : '';
 
-            this.pushHistory(new URLSearchParams({
-                stationId: this.trwlStationId,
-                stationName: this.stationName,
-                when: time,
-                travelType: travelType,
-            }));
+            this.pushHistory(
+                new URLSearchParams({
+                    stationId: this.trwlStationId,
+                    stationName: this.stationName,
+                    when: time,
+                    travelType: travelType,
+                }),
+            );
 
-            fetch(`/api/v1/station/${this.trwlStationId}/departures?when=${time}&travelType=${travelType}`)
-                .then((response) => {
+            fetch(`/api/v1/station/${this.trwlStationId}/departures?when=${time}&travelType=${travelType}`).then(
+                (response) => {
                     this.loading = false;
                     if (response.ok) {
                         response.json().then((result) => {
@@ -166,7 +173,9 @@ export default {
                             }
                             this.meta = result.meta;
                             this.stationName = result.meta.station.name;
-                            this.removedLicenses = Array.isArray(result.meta.removedLicenses) ? result.meta.removedLicenses : [];
+                            this.removedLicenses = Array.isArray(result.meta.removedLicenses)
+                                ? result.meta.removedLicenses
+                                : [];
 
                             this.firstFetchTime = DateTime.fromISO(this.meta?.times?.now);
                         });
@@ -175,7 +184,8 @@ export default {
                             window.notyf.error(trans('messages.exception.hafas.502'));
                         }
                     }
-                });
+                },
+            );
         },
         formatTime(time) {
             return DateTime.fromISO(time).toFormat('HH:mm');
@@ -184,7 +194,7 @@ export default {
             return DateTime.fromISO(item.when) < DateTime.now();
         },
         async analyzeUrlParams() {
-            let urlParams = new URLSearchParams(window.location.search);
+            const urlParams = new URLSearchParams(window.location.search);
             this.fetchTime = DateTime.now().setZone('UTC');
 
             if (urlParams.has('tripId')) {
@@ -300,8 +310,11 @@ export default {
                             v-if="getActiveLanguage().startsWith('de')"
                             target="_blank"
                             href="https://help.traewelling.de/features/timetable/licensing/"
-                        >help.traewelling.de/features/timetable/licensing</a>
-                        <a v-else target="_blank" href="https://help.traewelling.de/en/features/timetable/licensing/">help.traewelling.de/en/features/timetable/licensing</a>
+                            >help.traewelling.de/features/timetable/licensing</a
+                        >
+                        <a v-else target="_blank" href="https://help.traewelling.de/en/features/timetable/licensing/"
+                            >help.traewelling.de/en/features/timetable/licensing</a
+                        >
                     </p>
                 </div>
             </div>
@@ -330,38 +343,28 @@ export default {
                 </div>
             </template>
         </template>
-        <template v-if="showLineRun" #body>
+        <template #body>
             <CheckinLineRun
+                v-if="showLineRun"
                 v-model:destination="selectedDestination"
                 :selected-train="selectedTrain"
                 :fast-checkin-id="fastCheckinIbnr"
                 :use-internal-identifiers="useInternalIdentifiers"
             />
-        </template>
-        <template v-if="showCheckinInterface" #close>
-            <button
-                type="button"
-                class="btn-close"
-                aria-label="Back"
-                @click="goBackToLineRun"
-            />
-        </template>
-        <template v-if="showCheckinInterface" #body>
             <CheckinInterface
+                v-if="showCheckinInterface"
                 :selected-train="selectedTrain"
                 :selected-destination="selectedDestination"
                 :use-internal-identifiers="useInternalIdentifiers"
             />
         </template>
+        <template v-if="showCheckinInterface" #close>
+            <button type="button" class="btn-close" aria-label="Back" @click="goBackToLineRun" />
+        </template>
     </FullScreenModal>
 
     <div class="text-center mb-2">
-        <button
-            type="button"
-            class="btn btn-primary"
-            :disabled="loading"
-            @click="fetchPrevious"
-        >
+        <button type="button" class="btn btn-primary" :disabled="loading" @click="fetchPrevious">
             <i class="fa-solid fa-angle-up" />
         </button>
     </div>
@@ -371,9 +374,9 @@ export default {
     <template v-if="!loading && data.length === 0">
         <div class="card mb-1 dep-card mt-3 mb-3">
             <div class="text-center my-auto py-3">
-                {{ trans("stationboard.no-departures") }}
+                {{ trans('stationboard.no-departures') }}
                 <div v-if="fetchTime">
-                    <br>
+                    <br />
                     {{ trans('requested-timestamp') }}: {{ formatTime(fetchTime) }}
                 </div>
             </div>
@@ -390,12 +393,7 @@ export default {
     />
 
     <div class="text-center mt-2">
-        <button
-            type="button"
-            class="btn btn-primary"
-            :disabled="loading"
-            @click="fetchNext"
-        >
+        <button type="button" class="btn btn-primary" :disabled="loading" @click="fetchNext">
             <i class="fa-solid fa-angle-down" />
         </button>
     </div>
@@ -403,17 +401,17 @@ export default {
 
 <style scoped lang="scss">
 .product-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
 }
 
 .timeline {
-  margin-left: -1rem;
+    margin-left: -1rem;
 }
 
 .second-stop {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 </style>

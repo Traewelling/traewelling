@@ -6,7 +6,7 @@ export type Notification = {
     noticeFormatted: string;
     notice: string;
     link: string;
-    data: StatusLikedNotification | any;
+    data: StatusLikedNotification | any; // eslint-disable-line @typescript-eslint/no-explicit-any
     readAt: null | string;
     createdAt: string;
     createdAtForHumans: string;

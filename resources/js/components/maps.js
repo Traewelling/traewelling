@@ -2,19 +2,20 @@
  * Set the tiling layers for the current map.
  */
 
-window.setTilingLayer = (mapprovider, map, opacity=1) => {
+window.setTilingLayer = (mapprovider, map, opacity = 1) => {
     switch (mapprovider) {
         case 'open-railway-map':
             // Base map without labels
+            // eslint-disable-next-line no-undef
             L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy; <a href="https://carto.com/attributions" target="carto">CARTO</a>',
                 subdomains: 'abcd',
                 maxZoom: 19,
                 opacity,
-            },
-            ).addTo(map);
+            }).addTo(map);
 
             // Semi-transparent Open Railway Map overlay. There are additional filters on the tiles in css.
+            // eslint-disable-next-line no-undef
             new L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://www.openrailwaymap.org/" target="orm">OpenRailwayMap</a>',
                 minZoom: 2,
@@ -28,6 +29,7 @@ window.setTilingLayer = (mapprovider, map, opacity=1) => {
         case 'cargo':
         default:
             // Default voyager map
+            // eslint-disable-next-line no-undef
             L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy; <a href="https://carto.com/attributions" target="carto">CARTO</a>',
                 subdomains: 'abcd',
@@ -35,5 +37,7 @@ window.setTilingLayer = (mapprovider, map, opacity=1) => {
             }).addTo(map);
     }
 
-    map.attributionControl.addAttribution('&copy; <a href="https://www.openstreetmap.org/copyright" target="osm">OpenStreetMap</a> contributors');
+    map.attributionControl.addAttribution(
+        '&copy; <a href="https://www.openstreetmap.org/copyright" target="osm">OpenStreetMap</a> contributors',
+    );
 };

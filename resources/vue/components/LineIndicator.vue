@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import { computed } from 'vue';
 import { MotisCategory } from '../../types/Api.gen';
 
@@ -117,9 +116,7 @@ const product = computed(() => {
         productName = 'bus_pill';
     }
 
-    return Object.hasOwn(products, productName)
-        ? products[productName as keyof typeof products]
-        : products.default;
+    return Object.hasOwn(products, productName) ? products[productName as keyof typeof products] : products.default;
 });
 
 function normalizeHexColor(hex?: string | string): string | null {
@@ -133,64 +130,62 @@ const effectiveBackground = computed((): string => {
     return normalizeHexColor(props.backgroundColor) ? normalizeHexColor(props.backgroundColor)! : product.value.color;
 });
 const effectiveText = computed((): string => {
-    return normalizeHexColor(props.color) && normalizeHexColor(props.backgroundColor) ? normalizeHexColor(props.color)! : product.value.text;
+    return normalizeHexColor(props.color) && normalizeHexColor(props.backgroundColor)
+        ? normalizeHexColor(props.color)!
+        : product.value.text;
 });
 const cssVars = computed((): string => {
     return `--accent: ${effectiveBackground.value}; --contrast: ${effectiveText.value};`;
 });
-
 </script>
 
 <template>
-    <span
-        :class="[product.shape, className]"
-        :style="cssVars"
-    >{{ lineName }}</span>
+    <span :class="[product.shape, className]" :style="cssVars">{{ lineName }}</span>
 </template>
 
 <style scoped lang="scss">
 .line-indicator.pill {
-  border-radius: 0.6em;
-  min-width: 1.75rem !important;
+    border-radius: 0.6em;
+    min-width: 1.75rem !important;
 }
 
 .line-indicator.rounded-corner {
-  border-radius: 0.3em;
-  min-width: 1.75rem !important;
+    border-radius: 0.3em;
+    min-width: 1.75rem !important;
 }
 
 .line-indicator.rounded {
-  min-width: 1.75rem;
-  border-radius: 99rem !important;
+    min-width: 1.75rem;
+    border-radius: 99rem !important;
 }
 
 .line-indicator {
-  background-color: var(--accent);
-  color: var(--contrast);
-  font-size: .75rem;
-  min-width: 1.5rem;
+    background-color: var(--accent);
+    color: var(--contrast);
+    font-size: 0.75rem;
+    min-width: 1.5rem;
 }
 
 .line-indicator.full {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 .375rem;
-  height: 1.25rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.375rem;
+    height: 1.25rem;
 }
 
 .line-indicator.line-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.05rem 0.35rem;
-  margin: 0 0.25rem 0 0.35rem;
-  border-radius: 0.35rem;
-  line-height: 1.1;
-  font-weight: 600;
-  font-size: 0.95em;
-  vertical-align: baseline;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06) inset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.05rem 0.35rem;
+    margin: 0 0.25rem 0 0.35rem;
+    border-radius: 0.35rem;
+    line-height: 1.1;
+    font-weight: 600;
+    font-size: 0.95em;
+    vertical-align: baseline;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06) inset;
 }
 </style>

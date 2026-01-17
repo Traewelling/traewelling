@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { PropType, ref, useTemplateRef, watch } from 'vue';
-import ModalComponent from '../ModalComponent.vue';
 import { trans } from 'laravel-vue-i18n';
-import BusinessDropdown from '../BusinessDropdown.vue';
-import { Api, EventResource, StatusResource, StatusUpdateBody, StopoverResource } from '../../../types/Api.gen';
-import VisibilityDropdown from '../VisibilityDropdown.vue';
-import { Dtm } from '../../helpers/DateTime';
 import { DateTime } from 'luxon';
-import { useActiveCheckin } from '../../stores/activeCheckin';
+import { PropType, ref, useTemplateRef, watch } from 'vue';
+import { Api, EventResource, StatusResource, StatusUpdateBody, StopoverResource } from '../../../types/Api.gen';
+import { Dtm } from '../../helpers/DateTime';
 import { getDepartureForStatus } from '../../helpers/DateTimeHelper';
+import { useActiveCheckin } from '../../stores/activeCheckin';
+import BusinessDropdown from '../BusinessDropdown.vue';
 import EventDropdown from '../EventDropdown.vue';
 import DateTimeInput from '../Helpers/DateTimeInput.vue';
+import ModalComponent from '../ModalComponent.vue';
+import VisibilityDropdown from '../VisibilityDropdown.vue';
 
 const props = defineProps({
     status: {
@@ -20,7 +20,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: 'status-updated', status: StatusResource): void
+    (e: 'status-updated', status: StatusResource): void;
 }>();
 
 const modal = ref<ModalComponent | null>(null);
@@ -45,7 +45,7 @@ function makeDestinationValue(stationId: number | string, arrivalPlannedIso: str
     return `${stationId}|${arrivalPlannedIso}`;
 }
 
-function parseDestinationValue(value: string | null): { id: number | null, arrivalPlanned: string | null } {
+function parseDestinationValue(value: string | null): { id: number | null; arrivalPlanned: string | null } {
     if (!value) return { id: null, arrivalPlanned: null };
     const idx = value.indexOf('|');
     if (idx === -1) return { id: null, arrivalPlanned: null };
@@ -83,8 +83,8 @@ function show() {
         eventsDropdown.value?.fetchEvents(getDepartureForStatus(props.status).toISO());
         const currentDestStationId = props.status.train.destination.id;
         const currentDestArrivalPlanned = props.status.train.destination.arrivalPlanned;
-        const found = stopovers.value.find(so => {
-            return (so.id === currentDestStationId && so.arrivalPlanned === currentDestArrivalPlanned);
+        const found = stopovers.value.find((so) => {
+            return so.id === currentDestStationId && so.arrivalPlanned === currentDestArrivalPlanned;
         });
 
         if (found?.arrivalPlanned) {
@@ -109,7 +109,9 @@ async function fetchDestinations() {
         const all = response.data?.data?.stopovers || [];
         const departurePlanned = DateTime.fromISO(props.status.train.origin.departurePlanned || '');
         stopovers.value = all.filter((stopover: StopoverResource) => {
-            const arrival = DateTime.fromISO(stopover.arrivalPlanned || stopover.arrival || stopover.departurePlanned || stopover.departure);
+            const arrival = DateTime.fromISO(
+                stopover.arrivalPlanned || stopover.arrival || stopover.departurePlanned || stopover.departure,
+            );
             return arrival.diff(departurePlanned).as('minutes') >= 0;
         });
     } catch (e) {
@@ -137,7 +139,8 @@ function updateData() {
     updateStatus.value.manualDeparture = manualDeparture.value ? manualDeparture.value.toISOString() : null;
     updateStatus.value.manualArrival = manualArrival.value ? manualArrival.value.toISOString() : null;
 
-    api.status.updateSingleStatus(updateStatus.value, props.status.id)
+    api.status
+        .updateSingleStatus(updateStatus.value, props.status.id)
         .then((status) => {
             emit('status-updated', status.data.data);
             if (status.data.data) {
@@ -177,7 +180,11 @@ defineExpose({ show });
                         :key="`${stopover.id}-${stopover.arrivalPlanned}`"
                         :value="`${stopover.id}|${stopover.arrivalPlanned}`"
                     >
-                        {{ new Dtm(stopover.arrivalPlanned || stopover.arrival || '').toLocaleString(DateTime.TIME_SIMPLE) }}:
+                        {{
+                            new Dtm(stopover.arrivalPlanned || stopover.arrival || '').toLocaleString(
+                                DateTime.TIME_SIMPLE,
+                            )
+                        }}:
                         {{ stopover.name }}
                     </option>
                 </select>
@@ -223,11 +230,12 @@ defineExpose({ show });
                     name="body"
                     maxlength="280"
                     :placeholder="trans('modals.editStatus-label')"
-                    style="min-height: 130px;"
+                    style="min-height: 130px"
                 />
             </div>
             <small v-show="(updateStatus.body || '').length > 100" class="text-muted float-end">
-                <span>{{ (updateStatus.body || '').length }}</span>/280
+                <span>{{ (updateStatus.body || '').length }}</span
+                >/280
             </small>
 
             <div class="py-2 gap-2">
@@ -248,18 +256,8 @@ defineExpose({ show });
         </template>
 
         <template #footer>
-            <button
-                type="button"
-                class="btn btn-primary"
-                :disabled="loading"
-                @click="updateData()"
-            >
-                <span
-                    v-if="loading"
-                    class="spinner-border spinner-border-sm"
-                    role="status"
-                    aria-hidden="true"
-                />
+            <button type="button" class="btn btn-primary" :disabled="loading" @click="updateData()">
+                <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
                 {{ trans('modals.edit-confirm') }}
             </button>
         </template>
@@ -268,10 +266,10 @@ defineExpose({ show });
 
 <style scoped>
 .form-floating > .form-control:not(:placeholder-shown) ~ label::after {
-  background-color: transparent;
+    background-color: transparent;
 }
 
 .form-control:focus {
-  box-shadow: none;
+    box-shadow: none;
 }
 </style>

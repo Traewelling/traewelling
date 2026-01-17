@@ -36,13 +36,24 @@ function showWarning(show = true) {
 function selectAll() {
     let select = document.getElementById('export-select');
 
+    // eslint-disable-next-line no-unsafe-optional-chaining
     for (const element of select?.options) {
         element.selected = true;
     }
 }
 
 function selectNominal() {
-    const nominal = ['status_id', 'line_name', 'origin_name', 'departure_planned', 'destination_name', 'arrival_planned', 'distance', 'points', 'body'];
+    const nominal = [
+        'status_id',
+        'line_name',
+        'origin_name',
+        'departure_planned',
+        'destination_name',
+        'arrival_planned',
+        'distance',
+        'points',
+        'body',
+    ];
     showWarning(false);
 
     selectFromArray(nominal);

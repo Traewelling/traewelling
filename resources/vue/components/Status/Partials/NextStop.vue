@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
+import { DateTime } from 'luxon';
 import { PropType, ref, watch } from 'vue';
 import { StopoverResource } from '../../../../types/Api.gen';
-import { trans } from 'laravel-vue-i18n';
 import { getArrivalForStopover } from '../../../helpers/DateTimeHelper';
-import { DateTime } from 'luxon';
 
 const props = defineProps({
     stopovers: {
         type: Array as PropType<StopoverResource[]>,
-        default: [],
+        default: () => [],
     },
     inProgress: {
         type: Boolean,
@@ -35,23 +35,30 @@ function getNextStop() {
     });
 }
 
-watch(() => props.stopovers, () => {
-    getNextStop();
-}, { immediate: true });
-watch(() => props.inProgress, () => {
-    if (props.inProgress) {
+watch(
+    () => props.stopovers,
+    () => {
         getNextStop();
-        setInterval(getNextStop, 10000);
-    } else {
-        nextStop.value = null;
-    }
-}, { immediate: true });
+    },
+    { immediate: true },
+);
+watch(
+    () => props.inProgress,
+    () => {
+        if (props.inProgress) {
+            getNextStop();
+            setInterval(getNextStop, 10000);
+        } else {
+            nextStop.value = null;
+        }
+    },
+    { immediate: true },
+);
 
 getNextStop();
 if (props.inProgress) {
     setInterval(getNextStop, 10000);
 }
-
 </script>
 
 <template>

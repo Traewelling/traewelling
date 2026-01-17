@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
+import { PropType } from 'vue';
 
 defineProps({
     name: {
@@ -7,8 +8,8 @@ defineProps({
         default: '',
     },
     options: {
-        type: Object as PropType<SelectOption[]>,
-        default: '',
+        type: Array as PropType<SelectOption[]>,
+        default: () => [],
     },
     title: {
         type: String,
@@ -20,7 +21,7 @@ defineProps({
     },
     errors: {
         type: Array,
-        default: [],
+        default: () => [],
     },
     autocomplete: {
         type: String,
@@ -32,7 +33,7 @@ defineProps({
     },
 });
 
-const model = defineModel();
+const model = defineModel(); // eslint-disable-line vue/require-prop-types
 </script>
 
 <template>
@@ -42,18 +43,18 @@ const model = defineModel();
         </label>
 
         <div class="col-md-6">
-            <div :class="{'input-group': !!prefix}">
+            <div :class="{ 'input-group': !!prefix }">
                 <span v-if="prefix" class="input-group-text">{{ prefix }}</span>
                 <input
                     :id="name"
                     v-model="model"
                     class="form-select"
-                    :class="{'is-invalid': errors.length}"
+                    :class="{ 'is-invalid': errors.length }"
                     :name="name"
                     :autocomplete="autocomplete"
                     :required="required"
                     :list="name + 'datalist'"
-                >
+                />
                 <datalist :id="name + 'datalist'">
                     <option v-for="option in options" :key="option" :value="option.value">
                         <template v-if="option.translationKey">
@@ -64,14 +65,10 @@ const model = defineModel();
                         </template>
                     </option>
                 </datalist>
-                <span v-for="error in errors" class="invalid-feedback" role="alert">
+                <span v-for="error in errors" :key="error" class="invalid-feedback" role="alert">
                     <strong>{{ error }}</strong>
                 </span>
             </div>
         </div>
     </div>
 </template>
-
-<style scoped lang="scss">
-
-</style>

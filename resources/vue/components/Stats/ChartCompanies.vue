@@ -1,6 +1,6 @@
 <script>
-import { trans } from 'laravel-vue-i18n';
 import Chart from 'chart.js/auto';
+import { trans } from 'laravel-vue-i18n';
 
 // todo: show text for all shown companies
 
@@ -55,11 +55,7 @@ export default {
     <div class="card">
         <div class="card-body">
             <h5>{{ trans('stats.companies') }}</h5>
-            <canvas
-                ref="canvas"
-                role="img"
-                :aria-label="trans('stats.companies') + ' ' + trans('time.minutes')"
-            />
+            <canvas ref="canvas" role="img" :aria-label="trans('stats.companies') + ' ' + trans('time.minutes')" />
         </div>
     </div>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
 import { PropType, ref, watch } from 'vue';
 import { StatusResource } from '../../../../types/Api.gen';
-import { trans } from 'laravel-vue-i18n';
 
 const props = defineProps({
     status: {
@@ -49,6 +49,7 @@ function byteOffsetToCharOffset(str: string, byteOffset: number): number {
 
 function buildBodyWithMentions(): string {
     const body = props.status.body ?? '';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mentions = (props.status as any).bodyMentions ?? [];
     if (!body || !Array.isArray(mentions) || mentions.length === 0) {
         return escapeHtml(body);
@@ -59,7 +60,7 @@ function buildBodyWithMentions(): string {
     let cursor = 0;
 
     for (const m of sorted) {
-    // Convert byte offsets (from PHP) to character offsets (for JavaScript)
+        // Convert byte offsets (from PHP) to character offsets (for JavaScript)
         const byteStart = Number(m.position) || 0;
         const byteLength = Number(m.length) || 0;
         const byteEnd = byteStart + byteLength;
@@ -80,36 +81,31 @@ function buildBodyWithMentions(): string {
     return result;
 }
 
-watch(() => props.status, () => {
-    enrichedBody.value = buildBodyWithMentions();
-    showMoreButton();
-}, {
-    immediate: true,
-});
+watch(
+    () => props.status,
+    () => {
+        enrichedBody.value = buildBodyWithMentions();
+        showMoreButton();
+    },
+    {
+        immediate: true,
+    },
+);
 </script>
 
 <template>
     <li>
-        <span class="status-body" :class="{'line-clamp': showMore}">
+        <span class="status-body" :class="{ 'line-clamp': showMore }">
             <i class="fas fa-quote-right me-1" aria-hidden="true" />
+            <!-- eslint-disable-next-line vue/no-v-html -->
             <span v-html="enrichedBody" />
 
-            <button
-                v-if="showMore"
-                class="btn btn-link p-0"
-                aria-expanded="false"
-                @click="showMore = !showMore"
-            >
+            <button v-if="showMore" class="btn btn-link p-0" aria-expanded="false" @click="showMore = !showMore">
                 {{ trans('status.show_more') }}
             </button>
         </span>
 
-        <button
-            v-if="showMore"
-            class="btn btn-link p-0"
-            aria-expanded="false"
-            @click="showMore = !showMore"
-        >
+        <button v-if="showMore" class="btn btn-link p-0" aria-expanded="false" @click="showMore = !showMore">
             {{ trans('status.show_more') }}
         </button>
     </li>
@@ -117,18 +113,18 @@ watch(() => props.status, () => {
 
 <style scoped>
 .status-body {
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
-  -webkit-box-orient: vertical;
-  display: -webkit-box;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
 }
 
 .line-clamp {
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>

@@ -1,9 +1,9 @@
 <script>
-import FullScreenModal from '../FullScreenModal.vue';
-import _ from 'lodash';
 import { trans } from 'laravel-vue-i18n';
-import AutocompleteListEntry from '../Checkin/AutocompleteListEntry.vue';
+import _ from 'lodash';
 import { DateTime } from 'luxon';
+import AutocompleteListEntry from '../Checkin/AutocompleteListEntry.vue';
+import FullScreenModal from '../FullScreenModal.vue';
 
 export default {
     name: 'StationInput',
@@ -11,6 +11,7 @@ export default {
     props: {
         placeholder: {
             type: String,
+            default: '',
         },
         arrival: {
             type: Boolean,
@@ -44,9 +45,6 @@ export default {
         };
     },
     computed: {
-        clearInput() {
-            this.stationInput = '';
-        },
         timeFieldALabel() {
             if (this.arrival && this.departure) {
                 return trans('trip_creation.form.arrival');
@@ -66,10 +64,21 @@ export default {
             return 'timeFieldB' + this.id;
         },
     },
+    watch: {
+        stationInput: _.debounce(function () {
+            this.autocomplete();
+        }, 500),
+        arrivalTime(newVal) {
+            this.timeFieldA = this.formatTime(newVal);
+        },
+        departureTime(newVal) {
+            this.timeFieldB = this.formatTime(newVal);
+        },
+    },
     mounted() {
-    // I hate it, it's extremely ugly, but it works
-    // see https://github.com/vuejs/vue/issues/5886
-    // There is a plugin for this, but it's not worth it with only one component
+        // I hate it, it's extremely ugly, but it works
+        // see https://github.com/vuejs/vue/issues/5886
+        // There is a plugin for this, but it's not worth it with only one component
         this.id = Math.random().toString().substring(2);
         this.getRecent();
 
@@ -78,14 +87,16 @@ export default {
         this.timeFieldB = this.formatTime(this.departureTime);
     },
     methods: {
+        clearInput() {
+            this.stationInput = '';
+        },
         formatTime(time) {
-            let object = DateTime.fromISO(time);
+            const object = DateTime.fromISO(time);
 
             if (object.isValid) {
                 return object.toFormat('HH:mm');
             }
             return '--:--';
-
         },
         showModal() {
             this.$refs.modal.show();
@@ -138,24 +149,13 @@ export default {
                 this.loading = false;
                 return;
             }
-            let query = this.stationInput.replace(/%2F/, ' ').replace(/\//, ' ');
+            const query = this.stationInput.replace(/%2F/, ' ').replace(/\//, ' ');
             fetch(`/api/v1/stations/?query=${query}`).then((response) => {
                 response.json().then((result) => {
                     this.autocompleteList = result.data;
                     this.loading = false;
                 });
             });
-        },
-    },
-    watch: {
-        stationInput: _.debounce(function () {
-            this.autocomplete();
-        }, 500),
-        arrivalTime(newVal) {
-            this.timeFieldA = this.formatTime(newVal);
-        },
-        departureTime(newVal) {
-            this.timeFieldB = this.formatTime(newVal);
         },
     },
 };
@@ -175,7 +175,7 @@ export default {
                     class="form-control mobile-input-fs-16"
                     name="station"
                     type="text"
-                >
+                />
                 <button class="btn btn-light" type="button" @click="clearInput">
                     <i class="fa-solid fa-delete-left" />
                 </button>
@@ -184,11 +184,13 @@ export default {
                 <AutocompleteListEntry
                     v-for="item in recent"
                     v-show="stationInput.length <= 0"
+                    :key="item.id"
                     :station="item"
                     @click="setStation(item)"
                 />
                 <AutocompleteListEntry
                     v-for="item in autocompleteList"
+                    :key="item.id"
                     :station="item"
                     @click="setStation(item)"
                 />
@@ -209,7 +211,7 @@ export default {
                         type="datetime-local"
                         :value="arrivalTime"
                         @input="timeFieldAChanged"
-                    >
+                    />
                 </div>
             </div>
 
@@ -227,7 +229,7 @@ export default {
                         type="datetime-local"
                         :value="departureTime"
                         @input="timeFieldBChanged"
-                    >
+                    />
                 </div>
             </div>
         </template>
@@ -243,7 +245,7 @@ export default {
             :aria-label="placeholder"
             aria-describedby="basic-addon1"
             @focusin="showModal"
-        >
+        />
         <span v-if="departure && arrival" class="input-group-text font-monospace" @click="showModalFocusTime(false)">
             {{ timeFieldA }}
         </span>

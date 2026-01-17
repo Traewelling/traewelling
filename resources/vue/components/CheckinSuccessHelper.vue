@@ -1,13 +1,12 @@
 <script lang="ts">
-import FullScreenModal from './FullScreenModal.vue';
-import ModalComponent from './ModalComponent.vue';
 import { trans, transChoice } from 'laravel-vue-i18n';
-import { checkinSuccessStore } from '../stores/checkinSuccess';
 import { PointReason, Points, StatusResource } from '../../types/Api.gen';
+import { checkinSuccessStore } from '../stores/checkinSuccess';
+import ModalComponent from './ModalComponent.vue';
 
 export default {
     name: 'CheckinSuccessHelper',
-    components: { ModalComponent, FullScreenModal },
+    components: { ModalComponent },
     setup() {
         const checkinSuccess = checkinSuccessStore();
 
@@ -56,67 +55,72 @@ export default {
     >
         <template #body>
             <p>
-                {{ trans("checkin.success.body") }}
+                {{ trans('checkin.success.body') }}
             </p>
             <p>
                 {{
-                    trans(
-                        "checkin.success.body2",
-                        {
-                            lineName: status?.train?.lineName ?? "",
-                            distance: ((status?.train?.distance ?? 0) / 1000).toFixed(2).toString(),
-                            origin: status?.train?.origin?.name ?? "",
-                            destination: status?.train?.destination?.name ?? ""
-                        }
-                    )
+                    trans('checkin.success.body2', {
+                        lineName: status?.train?.lineName ?? '',
+                        distance: ((status?.train?.distance ?? 0) / 1000).toFixed(2).toString(),
+                        origin: status?.train?.origin?.name ?? '',
+                        destination: status?.train?.destination?.name ?? '',
+                    })
                 }}
             </p>
             <p v-if="points?.calculation?.reason !== 5">
                 {{
-                    transChoice("checkin.points.earned", points?.points ?? 0, {points: points?.points?.toString() ?? "0"})
+                    transChoice('checkin.points.earned', points?.points ?? 0, {
+                        points: points?.points?.toString() ?? '0',
+                    })
                 }}
             </p>
             <p v-if="points?.calculation?.reason === 1 || points?.calculation?.reason === 2" class="text-muted">
-                {{ trans("checkin.points.could-have") }}
+                {{ trans('checkin.points.could-have') }}
                 {{
-                    trans("checkin.points.full", {points: (points.calculation.base + points.calculation.distance).toString()})
+                    trans('checkin.points.full', {
+                        points: (points.calculation.base + points.calculation.distance).toString(),
+                    })
                 }}
             </p>
             <p v-if="points?.calculation?.reason === 3" class="text-danger">
-                {{ trans("checkin.points.forced") }}
+                {{ trans('checkin.points.forced') }}
             </p>
 
             <template v-if="alsoOnThisConnection.length > 0">
                 <h5 class="mt-5">
-                    {{ transChoice("controller.transport.also-in-connection", alsoOnThisConnection.length) }}
+                    {{ transChoice('controller.transport.also-in-connection', alsoOnThisConnection.length) }}
                 </h5>
                 <div class="list-group">
                     <a
-                        v-for="status in alsoOnThisConnection"
-                        :key="status.id"
-                        :href="`/status/${status.id}`"
+                        v-for="connectionStatus in alsoOnThisConnection"
+                        :key="connectionStatus.id"
+                        :href="`/status/${connectionStatus.id}`"
                         class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3"
                         aria-current="true"
                     >
                         <img
-                            :src="status.userDetails.profilePicture"
+                            :src="connectionStatus.userDetails.profilePicture"
                             alt="Profilbild"
                             class="rounded-circle flex-shrink-0"
-                            style="width: 40px; height: 40px; object-fit: cover;"
-                        >
+                            style="width: 40px; height: 40px; object-fit: cover"
+                        />
 
                         <div class="d-flex flex-column flex-grow-1">
                             <h6 class="mb-1 fw-bold opacity-75 text-truncate">
-                                {{ status.userDetails.displayName }}
+                                {{ connectionStatus.userDetails.displayName }}
                                 <span
-                                    v-if="status.userDetails.displayName !== status.userDetails.username"
+                                    v-if="
+                                        connectionStatus.userDetails.displayName !==
+                                        connectionStatus.userDetails.username
+                                    "
                                     class="text-muted"
                                 >
-                                    (@{{ status.userDetails.username }})
+                                    (@{{ connectionStatus.userDetails.username }})
                                 </span>
                             </h6>
                             <p class="mb-0 text-truncate">
-                                {{ status?.train?.origin?.name }} ➜ {{ status?.train?.destination?.name }}
+                                {{ connectionStatus?.train?.origin?.name }} ➜
+                                {{ connectionStatus?.train?.destination?.name }}
                             </p>
                         </div>
                     </a>

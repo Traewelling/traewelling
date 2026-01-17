@@ -1,18 +1,18 @@
-@use "./font-awesome";
-@import "lgbtq.css";
-@import "base";
+@use './font-awesome';
+@import 'lgbtq.css';
+@import 'base';
 // Variables
-@import "variables";
+@import 'variables';
 
 // bootstrap
-@import "bootstrap/scss/bootstrap.scss";
+@import 'bootstrap/scss/bootstrap.scss';
 
 .fas.peach::before {
-  content: "\1f351" !important;
+  content: '\1f351' !important;
 }
 
 body {
-  font-family: "Nunito", sans-serif;
+  font-family: 'Nunito', sans-serif;
   font-weight: 300;
 }
 
@@ -40,38 +40,37 @@ a {
   color: $blue !important;
 }
 
-
-@import "notyf/notyf.min.css";
+@import 'notyf/notyf.min.css';
 
 // Overall site layout
-@import "site";
-@import "small-phones";
+@import 'site';
+@import 'small-phones';
 
 // Sites
-@import "components/about";
-@import "components/timepicker";
+@import 'components/about';
+@import 'components/timepicker';
 
 // Leaflet
-@import "leaflet/dist/leaflet.css";
+@import 'leaflet/dist/leaflet.css';
 
 // Station Autocomplete
-@import "awesomplete/awesomplete.css";
-@import "components/station-autocomplete";
+@import 'awesomplete/awesomplete.css';
+@import 'components/station-autocomplete';
 
 // Components
-@import "./components/status";
-@import "./components/activeJourneys";
-@import "bootstrap-cookie-alert/cookiealert.css";
-@import "./components/image-box";
-@import "./components/settings";
-@import "./components/eventspage";
-@import "./components/notifications-board";
-@import "./components/leaderboard";
-@import "./components/search";
-@import "./components/custom-buttons";
-@import "./components/stationboard";
-@import "./components/dailyStats";
-@import "./components/maps";
+@import './components/status';
+@import './components/activeJourneys';
+@import 'bootstrap-cookie-alert/cookiealert.css';
+@import './components/image-box';
+@import './components/settings';
+@import './components/eventspage';
+@import './components/notifications-board';
+@import './components/leaderboard';
+@import './components/search';
+@import './components/custom-buttons';
+@import './components/stationboard';
+@import './components/dailyStats';
+@import './components/maps';
 
 .table-vertical-center td {
   vertical-align: middle;
@@ -82,7 +81,7 @@ a {
 }
 
 .profile-banner {
-  background-image: url("../images/covers/profile-background.png");
+  background-image: url('../images/covers/profile-background.png');
   background-position: center;
   background-color: #c5232c;
 }
@@ -133,7 +132,11 @@ a {
   padding-right: 5px;
 
   // outline the text for better readability
-  text-shadow: -1px -1px 0 $trwlRot, 1px -1px 0 $trwlRot, -1px 1px 0 $trwlRot, 1px 1px 0 $trwlRot;
+  text-shadow:
+    -1px -1px 0 $trwlRot,
+    1px -1px 0 $trwlRot,
+    -1px 1px 0 $trwlRot,
+    1px 1px 0 $trwlRot;
 }
 
 .navbar-toggler {

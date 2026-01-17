@@ -1,10 +1,10 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
 import { trans } from 'laravel-vue-i18n';
-import { Api, FriendCheckinSetting, LightUserResource, TrustedUserResource, User } from '../../../types/Api.gen';
-import UserSearchDropdown from '../Helpers/UserSearchDropdown.vue';
 import { Notyf } from 'notyf';
+import { defineComponent } from 'vue';
+import { Api, FriendCheckinSetting, LightUserResource, TrustedUserResource, User } from '../../../types/Api.gen';
 import { showApiValidationErrors } from '../../helpers/NotyfHelper';
+import UserSearchDropdown from '../Helpers/UserSearchDropdown.vue';
 
 // TODO: split this component into partials
 export default defineComponent({
@@ -25,7 +25,12 @@ export default defineComponent({
             trustedUsers: [] as TrustedUserResource[],
             privacyHideDays: null as number | null,
             email: '',
-            notyf: new Notyf({ position: { x: 'right', y: 'bottom' }, duration: 2000, dismissible: true, ripple: true }),
+            notyf: new Notyf({
+                position: { x: 'right', y: 'bottom' },
+                duration: 2000,
+                dismissible: true,
+                ripple: true,
+            }),
             FriendCheckinSetting,
         };
     },
@@ -37,7 +42,8 @@ export default defineComponent({
         trans,
         fetchUserProfileSettings() {
             this.loading = true;
-            this.api.settings.getProfileSettings()
+            this.api.settings
+                .getProfileSettings()
                 .then((data) => {
                     if (!data.ok || data.status === 404) {
                         return;
@@ -51,11 +57,11 @@ export default defineComponent({
                         this.loading = false;
                     });
                 })
-                .catch(() => {
-                });
+                .catch(() => {});
         },
         fetchTrustedUsers() {
-            this.api.user.trustedUserIndex('self')
+            this.api.user
+                .trustedUserIndex('self')
                 .then((data) => {
                     if (!data.ok || data.status === 404) {
                         this.trustedUsers = [];
@@ -71,13 +77,14 @@ export default defineComponent({
         },
         submit() {
             this.loading = true;
-            this.api.settings.updateProfileSettings({
-                friendCheckin: this.allow,
-                username: this.username,
-                displayName: this.displayName,
-                privacyHideDays: this.privacyHideDays,
-                email: this.email,
-            })
+            this.api.settings
+                .updateProfileSettings({
+                    friendCheckin: this.allow,
+                    username: this.username,
+                    displayName: this.displayName,
+                    privacyHideDays: this.privacyHideDays,
+                    email: this.email,
+                })
                 .then((data) => {
                     this.loading = false;
                     if (data.status !== 200) {
@@ -97,7 +104,8 @@ export default defineComponent({
                 });
         },
         removeUser(user: TrustedUserResource) {
-            this.api.user.trustedUserDestroy('self', user.user.id)
+            this.api.user
+                .trustedUserDestroy('self', user.user.id)
                 .then((data) => {
                     if (!data.ok) {
                         console.error(data);
@@ -107,11 +115,11 @@ export default defineComponent({
                         this.trustedUsers = this.trustedUsers.filter((u) => u?.user?.id !== user?.user?.id);
                     }
                 })
-                .catch(() => {
-                });
+                .catch(() => {});
         },
         addUser(user: User) {
-            this.api.user.trustedUserStore('self', { userId: user.id })
+            this.api.user
+                .trustedUserStore('self', { userId: user.id })
                 .then((data) => {
                     if (data.status !== 201) {
                         this.notyf.error(trans('messages.exception.general'));
@@ -167,7 +175,7 @@ export default defineComponent({
                     </div>
                 </div>
                 <div class="form-group row" />
-                <hr>
+                <hr />
                 <div class="form-group row mb-0">
                     <div class="col-6 col-md-3 offset-md-4">
                         <button type="submit" class="btn btn-primary" :disabled="loading">
@@ -193,22 +201,25 @@ export default defineComponent({
             </div>
 
             <ul class="list-group list-group-flush border-top border-3 mb-3">
-                <li v-for="user in trustedUsers" class="list-group-item d-flex gap-3 py-3" aria-current="true">
+                <li
+                    v-for="user in trustedUsers"
+                    :key="user.user?.id"
+                    class="list-group-item d-flex gap-3 py-3"
+                    aria-current="true"
+                >
                     <img
                         :src="user.user?.profilePicture"
                         alt="twbs"
                         width="32"
                         height="32"
                         class="rounded-circle flex-shrink-0"
-                    >
+                    />
                     <div class="d-flex gap-2 w-100 justify-content-between">
                         <div>
                             <h6 class="mb-0">
                                 {{ user.user?.displayName }}
                             </h6>
-                            <p class="mb-0 opacity-75">
-                                @{{ user.user?.username }}
-                            </p>
+                            <p class="mb-0 opacity-75">@{{ user.user?.username }}</p>
                         </div>
                         <button class="btn btn-sm btn-danger" @click="removeUser(user)">
                             <i class="fas fa-trash-alt" />

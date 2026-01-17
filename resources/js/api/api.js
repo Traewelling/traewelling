@@ -1,11 +1,10 @@
 'use strict';
 
 export default class API {
-
     static request(path, method = 'GET', data = {}, customErrorHandling = false) {
         let requestBody = undefined;
 
-        if (method !== 'GET' && data !== {}) {
+        if (method !== 'GET' && data != {}) {
             requestBody = JSON.stringify(data);
         }
         let request = fetch('/api/v1' + path, {
@@ -26,8 +25,9 @@ export default class API {
             return response.json().then(this.handleGenericError);
         }
 
-        return response.json().then(data => {
+        return response.json().then((data) => {
             if (data && data.data && data.data.message) {
+                // eslint-disable-next-line no-undef
                 notyf.success(data.data.message);
             }
         });
@@ -36,6 +36,7 @@ export default class API {
     static handleGenericError(error) {
         console.error(error);
         let errorMessage = error?.message ?? error?.data?.message ?? 'An unknown error occured.';
+        // eslint-disable-next-line no-undef
         notyf.error(errorMessage);
         return error;
     }

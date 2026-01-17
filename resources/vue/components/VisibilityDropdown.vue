@@ -39,6 +39,7 @@ export default {
                 case 5:
                     return 'fa fa-user-shield';
             }
+            return '';
         },
     },
     watch: {
@@ -60,6 +61,7 @@ export default {
 </script>
 
 <template>
+    <!-- eslint-disable vue/valid-v-bind -->
     <button
         :class
         type="button"
@@ -72,36 +74,34 @@ export default {
     </button>
     <ul class="dropdown-menu" aria-labelledby="visibilityDropdownButton">
         <li class="dropdown-item" @click="setVisibility(0)">
-            <i class="fa fa-globe-americas" aria-hidden="true" /> {{ trans("status.visibility.0") }}
-            <br>
-            <span
-                class="text-muted"
-            > {{ trans("status.visibility.0.detail") }}</span>
+            <i class="fa fa-globe-americas" aria-hidden="true" /> {{ trans('status.visibility.0') }}
+            <br />
+            <span class="text-muted"> {{ trans('status.visibility.0.detail') }}</span>
         </li>
         <li class="dropdown-item" @click="setVisibility(1)">
-            <i class="fa fa-lock-open" aria-hidden="true" /> {{ trans("status.visibility.1") }}
-            <br>
-            <span class="text-muted"> {{ trans("status.visibility.1.detail") }}</span>
+            <i class="fa fa-lock-open" aria-hidden="true" /> {{ trans('status.visibility.1') }}
+            <br />
+            <span class="text-muted"> {{ trans('status.visibility.1.detail') }}</span>
         </li>
         <li class="dropdown-item" @click="setVisibility(2)">
-            <i class="fa fa-user-friends" aria-hidden="true" /> {{ trans("status.visibility.2") }}
-            <br>
-            <span class="text-muted"> {{ trans("status.visibility.2.detail") }}</span>
+            <i class="fa fa-user-friends" aria-hidden="true" /> {{ trans('status.visibility.2') }}
+            <br />
+            <span class="text-muted"> {{ trans('status.visibility.2.detail') }}</span>
         </li>
         <li class="dropdown-item" @click="setVisibility(3)">
-            <i class="fa fa-lock" aria-hidden="true" /> {{ trans("status.visibility.3") }}
-            <br>
-            <span class="text-muted"> {{ trans("status.visibility.3.detail") }}</span>
+            <i class="fa fa-lock" aria-hidden="true" /> {{ trans('status.visibility.3') }}
+            <br />
+            <span class="text-muted"> {{ trans('status.visibility.3.detail') }}</span>
         </li>
         <li class="dropdown-item" @click="setVisibility(4)">
-            <i class="fa fa-user-check" aria-hidden="true" /> {{ trans("status.visibility.4") }}
-            <br>
-            <span class="text-muted"> {{ trans("status.visibility.4.detail") }}</span>
+            <i class="fa fa-user-check" aria-hidden="true" /> {{ trans('status.visibility.4') }}
+            <br />
+            <span class="text-muted"> {{ trans('status.visibility.4.detail') }}</span>
         </li>
         <li class="dropdown-item" @click="setVisibility(5)">
-            <i class="fa fa-user-shield" aria-hidden="true" /> {{ trans("status.visibility.5") }}
-            <br>
-            <span class="text-muted"> {{ trans("status.visibility.5.detail") }}</span>
+            <i class="fa fa-user-shield" aria-hidden="true" /> {{ trans('status.visibility.5') }}
+            <br />
+            <span class="text-muted"> {{ trans('status.visibility.5.detail') }}</span>
         </li>
     </ul>
 </template>

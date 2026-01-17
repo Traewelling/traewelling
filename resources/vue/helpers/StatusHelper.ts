@@ -1,5 +1,5 @@
-import { StatusResource } from '../../types/Api.gen';
 import { trans, transChoice } from 'laravel-vue-i18n';
+import { StatusResource } from '../../types/Api.gen';
 import { getDepartureForStatus } from './DateTimeHelper';
 
 export class StatusHelper {
@@ -16,7 +16,8 @@ export class StatusHelper {
             {
                 lineName: this.status.train.lineName,
                 destination: this.status.train.destination.name,
-            });
+            },
+        );
     }
 
     private generateEventText(): string {
@@ -32,7 +33,9 @@ export class StatusHelper {
     }
 
     private generateAppendix(): string {
-        const hashtag = this.status.event?.hashtag ? ' ' + trans('controller.transport.social-post-for', { hashtag: this.status.event.hashtag }) : '';
+        const hashtag = this.status.event?.hashtag
+            ? ' ' + trans('controller.transport.social-post-for', { hashtag: this.status.event.hashtag })
+            : '';
         const lineName = this.status.train.lineName;
         const destination = this.status.train.destination.name;
 
@@ -60,25 +63,24 @@ export class StatusHelper {
 
     public getDescription(): string {
         const originRil = this.status.train.origin.rilIdentifier ? ` (${this.status.train.origin.rilIdentifier})` : '';
-        const destinationRil = this.status.train.destination.rilIdentifier ? ` (${this.status.train.destination.rilIdentifier})` : '';
+        const destinationRil = this.status.train.destination.rilIdentifier
+            ? ` (${this.status.train.destination.rilIdentifier})`
+            : '';
         const departure = getDepartureForStatus(this.status);
 
-        return trans(
-            'description.status',
-            {
-                username: this.status.userDetails.username,
-                origin: this.status.train.origin.name + originRil,
-                destination: this.status.train.destination.name + destinationRil,
-                date: departure.toLocaleString({
-                    year: 'numeric',
-                    month: 'numeric',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: '2-digit',
-                }),
-                lineName: this.status.train.lineName,
-            },
-        );
+        return trans('description.status', {
+            username: this.status.userDetails.username,
+            origin: this.status.train.origin.name + originRil,
+            destination: this.status.train.destination.name + destinationRil,
+            date: departure.toLocaleString({
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+            }),
+            lineName: this.status.train.lineName,
+        });
     }
 
     public getShareUrl() {

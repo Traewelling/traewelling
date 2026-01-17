@@ -1,5 +1,5 @@
 export type TrwlTag = {
-    key: string,
-    value: string,
-    visibility: number
-}
+    key: string;
+    value: string;
+    visibility: number;
+};

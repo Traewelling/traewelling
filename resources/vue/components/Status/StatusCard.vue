@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, PropType, ref, Transition, useTemplateRef } from 'vue';
 import { Tooltip } from 'bootstrap';
+import { onBeforeUnmount, onMounted, PropType, ref, useTemplateRef } from 'vue';
 import { StatusResource, StopoverResource } from '../../../types/Api.gen';
 import {
     getArrivalForStatus,
@@ -8,15 +8,15 @@ import {
     getDepartureForStatus,
     getDepartureForStopover,
 } from '../../helpers/DateTimeHelper';
-import ActiveJourneyMap from '../ActiveJourneyMap.vue';
-import StatusFooter from './Partials/StatusFooter.vue';
-import DestinationRow from './Partials/DestinationRow.vue';
-import OriginRow from './Partials/OriginRow.vue';
-import NextStop from './Partials/NextStop.vue';
 import { useActiveCheckin } from '../../stores/activeCheckin';
-import StatusBody from './Partials/StatusBody.vue';
-import Map from '../Map/Map.vue';
 import { useUserStore } from '../../stores/user';
+import ActiveJourneyMap from '../ActiveJourneyMap.vue';
+import Map from '../Map/Map.vue';
+import DestinationRow from './Partials/DestinationRow.vue';
+import NextStop from './Partials/NextStop.vue';
+import OriginRow from './Partials/OriginRow.vue';
+import StatusBody from './Partials/StatusBody.vue';
+import StatusFooter from './Partials/StatusFooter.vue';
 
 const props = defineProps({
     status: {
@@ -136,11 +136,12 @@ function statusUpdated(status: StatusResource) {
     <Transition>
         <div v-show="!deleted" ref="rootEl" class="card status mb-3">
             <div v-if="showMap" class="card-img-top">
-                <div id="activeJourneys" class="statusMap embed-responsive" :class="{'map embed-responsive-16by9': !userStore?.hasBeta }">
-                    <Map
-                        v-if="userStore?.hasBeta"
-                        :statuses="[statusObject]"
-                    />
+                <div
+                    id="activeJourneys"
+                    class="statusMap embed-responsive"
+                    :class="{ 'map embed-responsive-16by9': !userStore?.hasBeta }"
+                >
+                    <Map v-if="userStore?.hasBeta" :statuses="[statusObject]" />
                     <ActiveJourneyMap
                         v-else
                         ref="map"
@@ -160,7 +161,7 @@ function statusUpdated(status: StatusResource) {
                             decoding="async"
                             :src="statusObject.userDetails.profilePicture"
                             :alt="statusObject.userDetails.username"
-                        >
+                        />
                     </a>
                 </div>
 
@@ -199,10 +200,10 @@ function statusUpdated(status: StatusResource) {
 <style lang="scss" scoped>
 /* we will explain what these classes do next! */
 .v-leave-active {
-  transition: opacity 0.5s ease;
+    transition: opacity 0.5s ease;
 }
 
 .v-leave-to {
-  opacity: 0;
+    opacity: 0;
 }
 </style>
