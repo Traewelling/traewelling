@@ -57,8 +57,6 @@ api.positions
     .getLivePositionsForStatuses(props.statuses.map((s) => s.id.toString()).join(','))
     .then((response) => {
         livePositions.value = response.data.data || [];
-
-        console.log(livePositions.value);
     })
     .catch((error) => {
         console.error('Error fetching live positions:', error);

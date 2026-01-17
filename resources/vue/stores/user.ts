@@ -67,6 +67,7 @@ export const useUserStore = defineStore('user', {
         },
     },
     actions: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         async setHome(home: ShortStation | any): Promise<void> {
             const curStation = this.user?.home;
 

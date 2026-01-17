@@ -12,7 +12,7 @@ function setDarkMode(darkMode) {
     localStorage.setItem('darkMode', darkMode);
 }
 
-function updateDarkModeMenu(colorMode) {
+function updateDarkModeMenu() {
     let toggleLight = document.getElementById('colorModeToggleLight');
     let toggleDark = document.getElementById('colorModeToggleDark');
     let toggleAuto = document.getElementById('colorModeToggleAuto');

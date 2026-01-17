@@ -9,24 +9,19 @@ import {
     MastodonVisibility,
     StatusVisibility,
     UpdateProfileInformationRequest,
-    UserProfileSettingsResource,
+    UserProfileSettingsResource
 } from '../../../types/Api.gen';
 import { showApiValidationErrors } from '../../helpers/NotyfHelper';
 import { useUserStore } from '../../stores/user';
 import Input from './Partials/Input.vue';
 import Select from './Partials/Select.vue';
-import { SelectOption } from './Partials/SelectOption';
 import Textfield from './Partials/Textfield.vue';
 import TimezoneDropdown from './Partials/TimezoneDropdown.vue';
+
 const userStore = useUserStore();
 const notyf = new Notyf({ position: { x: 'right', y: 'bottom' } });
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
-const timezones = Intl.supportedValuesOf('timeZone').map((timezone) => {
-    return { value: timezone, label: timezone } as SelectOption;
-});
-const providers = Object.values(MapProvider).map((provider) => {
-    return { value: provider, translationKey: `map-providers.${provider}` } as SelectOption;
-});
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const errors = ref({} as any);
 const userData = ref({
     username: '',

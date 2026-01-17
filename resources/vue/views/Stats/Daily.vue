@@ -42,6 +42,7 @@ async function fetchDaily() {
         totalDistance.value = json?.data?.totalDistance ?? 0;
         totalDurationMin.value = json?.data?.totalDuration ?? 0;
         totalPoints.value = json?.data?.totalPoints ?? 0;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
         errorMsg.value = e?.message || 'Unbekannter Fehler.';
     } finally {

@@ -50,6 +50,7 @@ async function fetchStatuses(append = false) {
         const meta = json.meta ?? {};
         currentPage.value = meta.current_page ?? nextPage;
         lastPage.value = meta.last_page ?? null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
         errorMsg.value = e?.message || 'Unknown error occurred';
     } finally {

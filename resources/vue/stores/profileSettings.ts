@@ -64,7 +64,9 @@ export const useProfileSettingsStore = defineStore('profileSettings', {
             this.loading = true;
             try {
                 this.settings = await fetch('/api/v1/settings/profile')
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((response: { json: () => any }) => response.json())
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((data: { data: any }) => data.data);
                 this.refreshed = new Date().toString();
             } catch (error) {

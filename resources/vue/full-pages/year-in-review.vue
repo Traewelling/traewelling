@@ -257,9 +257,7 @@ const slowestTrip = computed(() => {
 
 const mostDelayedTrip = computed(() => {
     const trip = data.value.mostDelayedArrivals?.train;
-    console.log(trip);
     if (!trip) return null;
-    console.log(calculateDelay(trip));
     return {
         ...trip,
         computedDelay: calculateDelay(trip),

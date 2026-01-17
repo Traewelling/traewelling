@@ -71,7 +71,9 @@ export default {
             for (let i = 0; i < oldLen; i++) {
                 try {
                     if (this.stopovers[i]?.station?.id) this.$refs.map.removeMarker(i);
-                } catch (_) {}
+                } catch {
+                    // ignore
+                }
             }
 
             const first = imported[0]; //origin
@@ -215,7 +217,7 @@ export default {
 
                 this.validation.times = true;
                 return true;
-            } catch (e) {
+            } catch {
                 this.validation.times = false;
                 return false;
             }

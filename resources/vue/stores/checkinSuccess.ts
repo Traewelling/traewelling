@@ -12,6 +12,7 @@ export const checkinSuccessStore = defineStore('checkinSuccess', {
         },
     },
     actions: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         setResponse(checkinResponse: CheckinResponse | any): void {
             this.checkinResponse = checkinResponse;
         },

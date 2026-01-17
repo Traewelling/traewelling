@@ -56,17 +56,8 @@ export default defineConfigWithVueTs(
         },
         rules: {
             // Code quality
-            'no-console': ['warn', { allow: ['warn', 'error'] }],
+            'no-console': ['error', { allow: ['warn', 'error'] }],
             'no-debugger': 'warn',
-            'no-unused-vars': 'off', // Handled by TypeScript
-            '@typescript-eslint/no-unused-vars': [
-                'warn',
-                {
-                    argsIgnorePattern: '^_',
-                    varsIgnorePattern: '^_',
-                },
-            ],
-            '@typescript-eslint/no-explicit-any': 'warn',
             '@typescript-eslint/ban-ts-comment': 'warn',
             '@typescript-eslint/no-this-alias': 'warn',
             'no-constant-binary-expression': 'warn',
@@ -78,7 +69,6 @@ export default defineConfigWithVueTs(
             // Vue specific
             'vue/multi-word-component-names': 'off',
             'vue/require-default-prop': 'off',
-            'vue/no-v-html': 'warn',
 
             // Remove these rules, once they are fixed
             'vue/block-lang': 'off',

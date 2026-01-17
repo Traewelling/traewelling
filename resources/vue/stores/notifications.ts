@@ -18,7 +18,9 @@ export const useNotificationsStore = defineStore('notifications', {
             this.loading = true;
             try {
                 this.notifications = await API.request('/notifications')
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((response: any) => response.json())
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((data: any) => data.data);
                 this.refreshed = new Date().getTime();
             } catch (error) {
@@ -33,7 +35,9 @@ export const useNotificationsStore = defineStore('notifications', {
             }
             try {
                 this.count = await API.request('/notifications/unread/count', 'GET', {}, true)
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((response: any) => response.json())
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((data: any) => data.data);
                 this.refreshed = new Date().getTime();
             } catch (error) {
@@ -60,7 +64,9 @@ export const useNotificationsStore = defineStore('notifications', {
             const readAction = notification.readAt ? 'unread' : 'read';
             try {
                 await API.request(`/notifications/${readAction}/${notification.id}`, 'PUT')
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((response: any) => response.json())
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((data: any) => {
                         this.notifications[key].readAt = data.data.readAt;
                         this.count = readAction === 'read' ? this.count - 1 : this.count + 1;

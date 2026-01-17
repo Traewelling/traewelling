@@ -26,7 +26,7 @@ export default {
         async deleteWebhook(webhook) {
             axios
                 .delete(`/api/v1/webhooks/${webhook.id}`)
-                .then((response) => {
+                .then(() => {
                     this.webhooks = this.webhooks.filter((w) => w.id !== webhook.id);
                     notyf.success(trans('successfully-deleted'));
                 })

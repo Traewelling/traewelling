@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Tooltip } from 'bootstrap';
-import { onBeforeUnmount, onMounted, PropType, ref, Transition, useTemplateRef } from 'vue';
+import { onBeforeUnmount, onMounted, PropType, ref, useTemplateRef } from 'vue';
 import { StatusResource, StopoverResource } from '../../../types/Api.gen';
 import {
     getArrivalForStatus,

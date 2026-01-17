@@ -59,6 +59,7 @@ export default defineComponent({
                 this.i_tags.push(data.data);
             });
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         updateTag(event: any, tag: TrwlTag) {
             if (event === null) {
                 this.postDeleteTag(tag).then(() => {
@@ -90,6 +91,7 @@ export default defineComponent({
                 method: 'DELETE',
             }).then((response) => response.json());
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         async postUpdateTag(event: any, tag: TrwlTag) {
             if (this.$props.cacheLocally) {
                 return new Promise((resolve) => {

@@ -83,14 +83,14 @@ export default {
                         this.recent = parsed;
                     }
                 }
-            } catch (_) {
+            } catch {
                 /* ignore cache errors */
             }
         },
         saveRecentToCache(list) {
             try {
                 localStorage.setItem(LS_RECENT_KEY, JSON.stringify(list.slice(0, MAX_RECENT)));
-            } catch (_) {
+            } catch {
                 /* ignore quota errors */
             }
         },

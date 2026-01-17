@@ -34,7 +34,6 @@ export default defineComponent({
     mounted() {
         this.renderMap();
         this.initializeMap();
-        const temp = this;
     },
     methods: {
         trans,

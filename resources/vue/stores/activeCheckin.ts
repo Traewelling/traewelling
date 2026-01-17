@@ -21,7 +21,9 @@ export const useActiveCheckin = defineStore('activeStatus', {
         },
         async fetchStopovers(trip: number): Promise<void> {
             await fetch('/api/v1/stopovers/' + trip)
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 .then((response: { json: () => any }) => response.json())
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 .then((data: { data: any }) => {
                     if (data.data.hasOwnProperty(trip)) {
                         this.stopovers = data.data[trip];
@@ -44,7 +46,9 @@ export const useActiveCheckin = defineStore('activeStatus', {
             this.loading = true;
             try {
                 this.status = await fetch('/api/v1/user/statuses/active')
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((response: { json: () => any }) => response.json())
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((data: { data: any }) => {
                         if (data.data.id) {
                             return data.data;

@@ -46,10 +46,12 @@ const delayClass = computed((): string => {
 });
 
 const backgroundColor = computed<string | null>(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (props.item as any)?.line?.color || null;
 });
 
 const textColor = computed<string | null>(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (props.item as any)?.line?.textColor || null;
 });
 

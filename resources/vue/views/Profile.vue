@@ -17,6 +17,7 @@ const notyf = new Notyf({ position: { x: 'right', y: 'bottom' } });
 // -------------------------
 // State
 // -------------------------
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const userData = ref<any>(null);
 const statuses = ref<StatusResource[]>([]);
 const stopovers = ref<Record<string, StopoverResource[]>>({});
@@ -38,6 +39,7 @@ async function fetchUser() {
         });
         const json = await res.json();
         userData.value = json.data;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
         notyf.error('Error fetching user: ' + err.message);
     } finally {
@@ -70,6 +72,7 @@ async function fetchStatuses(append = false) {
         }
 
         fetchStopovers();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
         notyf.error('Error fetching statuses: ' + err.message);
     } finally {

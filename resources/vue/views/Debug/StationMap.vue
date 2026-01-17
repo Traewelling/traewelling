@@ -87,7 +87,7 @@ function onMapLoad(): void {
     }
 }
 
-function onMapMoveEnd(event: any): void {
+function onMapMoveEnd(): void {
     if (debounceTimer !== null) {
         clearTimeout(debounceTimer);
     }

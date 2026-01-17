@@ -26,6 +26,7 @@ export default {
             default: false,
         },
     },
+    emits: ['update:destination'],
     data() {
         return {
             lineRun: [],
@@ -157,6 +158,7 @@ export default {
         </li>
     </ul>
     <div v-if="lineRun?.dataSource?.attribution" class="pt-5 pb-2">
+        <!-- eslint-disable-next-line vue/no-v-html -->
         <span class="text-xs text-muted" v-html="lineRun.dataSource?.attribution" />
     </div>
 </template>

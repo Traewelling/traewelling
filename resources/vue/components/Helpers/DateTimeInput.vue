@@ -13,7 +13,7 @@ defineProps({
     },
 });
 
-const emits = defineEmits(['update:model-value']);
+defineEmits(['update:model-value']);
 
 const model = defineModel({
     type: Object as PropType<Date | null>,
@@ -21,7 +21,6 @@ const model = defineModel({
 });
 
 function setModel(value: string | null) {
-    console.log('Setting model value:', value);
     if (!value) {
         model.value = null;
         return;
@@ -31,7 +30,6 @@ function setModel(value: string | null) {
         console.error('Invalid date format:', value);
         return;
     }
-    console.log(date, date.toISO().slice(0, 16));
 
     model.value = date.toJSDate();
 }
