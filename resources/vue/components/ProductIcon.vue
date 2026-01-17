@@ -4,7 +4,6 @@ import { MotisCategory } from '../../types/Api.gen';
 defineProps({
     product: {
         type: String,
-        default: '',
         required: true,
     },
     mode: {
