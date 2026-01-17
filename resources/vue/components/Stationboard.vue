@@ -148,7 +148,7 @@ export default {
                 return;
             }
 
-            let travelType = this.travelType ? this.travelType : '';
+            const travelType = this.travelType ? this.travelType : '';
 
             this.pushHistory(
                 new URLSearchParams({
@@ -194,7 +194,7 @@ export default {
             return DateTime.fromISO(item.when) < DateTime.now();
         },
         async analyzeUrlParams() {
-            let urlParams = new URLSearchParams(window.location.search);
+            const urlParams = new URLSearchParams(window.location.search);
             this.fetchTime = DateTime.now().setZone('UTC');
 
             if (urlParams.has('tripId')) {

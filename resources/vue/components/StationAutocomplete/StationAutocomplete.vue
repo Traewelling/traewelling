@@ -155,7 +155,7 @@ export default {
         async fetchAutocomplete() {
             this.loading = true;
             this.lastError = null;
-            let query = (this.stationInput || '').replace(/%2F/, ' ').replace(/\//, ' ');
+            const query = (this.stationInput || '').replace(/%2F/, ' ').replace(/\//, ' ');
             return await axios
                 .get(`/api/v1/trains/station/autocomplete/${encodeURIComponent(query)}`)
                 .then((response) => {

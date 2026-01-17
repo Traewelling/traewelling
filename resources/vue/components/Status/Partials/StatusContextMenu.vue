@@ -21,10 +21,10 @@ const notyf = new Notyf({ position: { x: 'right', y: 'bottom' } });
 const user = useUserStore();
 
 function share() {
-    let helper = new StatusHelper(props.status);
-    let shareText =
+    const helper = new StatusHelper(props.status);
+    const shareText =
         props.status?.userDetails.id === user.user?.id ? helper.generateSocialText() : helper.getDescription();
-    let shareUrl = helper.getShareUrl();
+    const shareUrl = helper.getShareUrl();
 
     if (navigator.share) {
         navigator
@@ -44,7 +44,7 @@ function share() {
 }
 
 function rideAlongUrl() {
-    let queryParams = new URLSearchParams({
+    const queryParams = new URLSearchParams({
         tripId: props.status?.train.trip.toString(),
         lineName: props.status?.train.lineName,
         start: props.status?.train.origin.id.toString(),

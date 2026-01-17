@@ -45,7 +45,7 @@ const getContent = (alert: AlertResource): string => {
 };
 
 const getUrl = (alert: AlertResource): string => {
-    let url = alert.url;
+    const url = alert.url;
     const trans = getTranslation(alert);
     return trans?.url || url || '';
 };

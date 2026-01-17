@@ -25,7 +25,7 @@ if (props.statuses.length === 1) {
     api.polyline
         .getPolylines(props.statuses.map((s) => s.id.toString()).join(','))
         .then((response) => {
-            let newBounds = new LngLatBounds();
+            const newBounds = new LngLatBounds();
 
             for (const feature of response.data.data?.features || []) {
                 polylines.value.push(feature as GeoJSONFeature);

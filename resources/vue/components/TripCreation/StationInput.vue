@@ -79,7 +79,7 @@ export default {
     },
     methods: {
         formatTime(time) {
-            let object = DateTime.fromISO(time);
+            const object = DateTime.fromISO(time);
 
             if (object.isValid) {
                 return object.toFormat('HH:mm');
@@ -137,7 +137,7 @@ export default {
                 this.loading = false;
                 return;
             }
-            let query = this.stationInput.replace(/%2F/, ' ').replace(/\//, ' ');
+            const query = this.stationInput.replace(/%2F/, ' ').replace(/\//, ' ');
             fetch(`/api/v1/stations/?query=${query}`).then((response) => {
                 response.json().then((result) => {
                     this.autocompleteList = result.data;

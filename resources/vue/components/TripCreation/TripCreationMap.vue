@@ -34,7 +34,7 @@ export default defineComponent({
     mounted() {
         this.renderMap();
         this.initializeMap();
-        let temp = this;
+        const temp = this;
     },
     methods: {
         trans,
@@ -59,7 +59,7 @@ export default defineComponent({
             this.points = [];
         },
         addMarker(data, index, length) {
-            let marker = L.marker([data.latitude, data.longitude], { icon: trainIcon }).addTo(this.map);
+            const marker = L.marker([data.latitude, data.longitude], { icon: trainIcon }).addTo(this.map);
 
             marker.bindPopup(`<strong>${data.name}</strong> <i>${data.rilIdentifier || ''}</i>`);
 
@@ -98,7 +98,7 @@ export default defineComponent({
                 points = [...points, this.destination];
             }
 
-            let bounds = new L.featureGroup(points.map((point) => point.marker));
+            const bounds = new L.featureGroup(points.map((point) => point.marker));
             this.map.fitBounds(bounds.getBounds());
         },
         removeMarker(index) {

@@ -182,7 +182,7 @@ export default {
         addEventMarker(event) {
             if (!event.station) return;
 
-            let marker = L.marker([event.station.latitude, event.station.longitude], {
+            const marker = L.marker([event.station.latitude, event.station.longitude], {
                 title: event.name,
                 icon: eventIcon,
             }).addTo(this.map);
@@ -238,7 +238,7 @@ export default {
         },
 
         refreshMarkers() {
-            let refreshIds = [];
+            const refreshIds = [];
             this.points.forEach((point) => {
                 if (point && point.departure * 1000 <= Date.now()) {
                     refreshIds.push(point.statusId);
@@ -252,12 +252,12 @@ export default {
             fetch('/api/v1/positions/' + refreshIds.join(','))
                 .then((response) => response.json())
                 .then((result) => {
-                    let tmpResult = [];
-                    let updatedIds = [];
+                    const tmpResult = [];
+                    const updatedIds = [];
 
                     result.data.forEach((stop) => {
                         tmpResult.push(stop);
-                        let removeIdx = refreshIds.indexOf(stop.statusId);
+                        const removeIdx = refreshIds.indexOf(stop.statusId);
                         if (removeIdx > -1) {
                             refreshIds.splice(removeIdx, 1);
                             updatedIds.push(stop.statusId);

@@ -264,7 +264,7 @@ export default {
                 if (data.ok) {
                     data.json().then((result) => {
                         result = result.data;
-                        let query = {
+                        const query = {
                             tripId: result.id,
                             lineName: result.lineName,
                             start: result.origin.id,
