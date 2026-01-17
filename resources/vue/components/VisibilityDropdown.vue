@@ -61,8 +61,8 @@ export default {
 </script>
 
 <template>
+    <!-- eslint-disable vue/valid-v-bind -->
     <button
-        <!-- eslint-disable-next-line vue/vue-v-bind -->
         :class
         type="button"
         class="dropdown-toggle"

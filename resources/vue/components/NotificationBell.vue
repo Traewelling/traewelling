@@ -77,7 +77,7 @@ export default {
         body-class="p-0"
         :hide-footer="true"
     >
-        <template #body class="p-0">
+        <template #body>
             <NotificationList ref="notifications" />
         </template>
         <template #header-extra>

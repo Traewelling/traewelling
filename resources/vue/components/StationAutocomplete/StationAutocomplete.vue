@@ -9,8 +9,6 @@ import { useUserStore } from '../../stores/user';
 import ActiveStatusCard from '../ActiveStatusCard.vue';
 import AutocompleteListEntry from '../Checkin/AutocompleteListEntry.vue';
 import FullScreenModal from '../FullScreenModal.vue';
-import FriendDropdown from '../Helpers/FriendDropdown.vue';
-import Spinner from '../Loader/Spinner.vue';
 
 const LS_RECENT_KEY = 'trwl:station:recent';
 const MAX_RECENT = 12;
@@ -19,11 +17,9 @@ export default {
     name: 'StationAutocomplete',
     components: {
         ActiveStatusCard,
-        Spinner,
         AutocompleteListEntry,
         FullScreenModal,
         VueDatePicker,
-        FriendDropdown,
     },
     props: {
         station: { type: Object, required: false, default: null },

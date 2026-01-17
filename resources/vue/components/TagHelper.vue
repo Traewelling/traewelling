@@ -1,7 +1,7 @@
 <script>
-import FullScreenModal from './FullScreenModal.vue';
 import { trans } from 'laravel-vue-i18n';
 import { getIcon, getTitle } from '../helpers/StatusTag';
+import FullScreenModal from './FullScreenModal.vue';
 import TagList from './TagList.vue';
 
 export default {
@@ -82,8 +82,7 @@ export default {
         </template>
     </FullScreenModal>
 
-    <!-- eslint-disable-next-line vue/vue-v-bind -->
-    <div :class>
+    <div :class="props.class">
         <button
             v-show="editable"
             class="btn btn-link btn-sm text-white badge bg-trwl"

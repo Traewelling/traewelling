@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
 import { PropType } from 'vue';
 import { Business } from '../../types/Api.gen';
 import { IconHelper } from '../helpers/IconHelper';
-import { trans } from 'laravel-vue-i18n';
 
-defineProps({
+const props = defineProps({
     class: {
         type: String,
         default: 'btn btn-sm btn-link px-2',
@@ -21,7 +21,7 @@ const model = defineModel({
     <button
         id="businessDropdownButton"
         class="dropdown-toggle"
-        :class
+        :class="props.class"
         type="button"
         data-bs-dropdown-animation="off"
         data-bs-toggle="dropdown"

@@ -26,6 +26,7 @@ function like() {
 
     if (props.status.liked) {
         api.status.removeLikeFromStatus(props.status.id).then(() => {
+            // eslint-disable-next-line vue/no-mutating-props
             props.status.liked = false;
             likes.value--;
         });
@@ -33,6 +34,7 @@ function like() {
         emit('status-unliked', props.status.id);
     } else {
         api.status.addLikeToStatus(props.status.id).then(() => {
+            // eslint-disable-next-line vue/no-mutating-props
             props.status.liked = true;
             likes.value++;
         });

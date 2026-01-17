@@ -343,23 +343,23 @@ export default {
                 </div>
             </template>
         </template>
-        <template v-if="showLineRun" #body>
+        <template #body>
             <CheckinLineRun
+                v-if="showLineRun"
                 v-model:destination="selectedDestination"
                 :selected-train="selectedTrain"
                 :fast-checkin-id="fastCheckinIbnr"
                 :use-internal-identifiers="useInternalIdentifiers"
             />
-        </template>
-        <template v-if="showCheckinInterface" #close>
-            <button type="button" class="btn-close" aria-label="Back" @click="goBackToLineRun" />
-        </template>
-        <template v-if="showCheckinInterface" #body>
             <CheckinInterface
+                v-if="showCheckinInterface"
                 :selected-train="selectedTrain"
                 :selected-destination="selectedDestination"
                 :use-internal-identifiers="useInternalIdentifiers"
             />
+        </template>
+        <template v-if="showCheckinInterface" #close>
+            <button type="button" class="btn-close" aria-label="Back" @click="goBackToLineRun" />
         </template>
     </FullScreenModal>
 

@@ -14,7 +14,7 @@ export default {
         destination: {
             type: Object,
             required: false,
-            default: {},
+            default: () => {},
         },
         fastCheckinId: {
             type: Number,
