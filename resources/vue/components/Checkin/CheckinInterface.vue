@@ -68,6 +68,7 @@ export default {
                 case 2:
                     return 'fa fa-building';
             }
+            return '';
         },
         visibilityIcon() {
             switch (this.visibility) {
@@ -82,6 +83,7 @@ export default {
                 case 4:
                     return 'fa fa-user-check';
             }
+            return '';
         },
     },
     methods: {

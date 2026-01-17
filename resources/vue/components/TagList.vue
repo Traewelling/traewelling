@@ -10,7 +10,7 @@ export default defineComponent({
         tags: {
             type: Array as () => TrwlTag[],
             required: false,
-            default: [],
+            default: () => [],
         },
         statusId: {
             type: Number,
@@ -26,59 +26,59 @@ export default defineComponent({
     emits: ['update:model-value'],
     data() {
         return {
-            _tags: [] as TrwlTag[],
-            _statusId: null as null | number,
+            i_tags: [] as TrwlTag[],
+            i_statusId: null as null | number,
         };
     },
     computed: {
         excludeTags() {
-            return this._tags.map((key) => key.key);
+            return this.i_tags.map((key) => key.key);
         },
     },
     watch: {
         tags: {
             handler(tags: TrwlTag[]) {
-                this._tags = tags;
+                this.i_tags = tags;
             },
             immediate: true,
         },
         statusId: {
             handler(statusId: number) {
-                this._statusId = statusId;
+                this.i_statusId = statusId;
             },
             immediate: true,
         },
     },
     mounted() {
-        this._tags = this.$props.tags;
-        this._statusId = this.statusId;
+        this.i_tags = this.$props.tags;
+        this.i_statusId = this.statusId;
     },
     methods: {
         addTag(value: string) {
             this.postAddTag(value).then((data) => {
-                this._tags.push(data.data);
+                this.i_tags.push(data.data);
             });
         },
         updateTag(event: any, tag: TrwlTag) {
             if (event === null) {
                 this.postDeleteTag(tag).then(() => {
-                    this._tags = this._tags.filter((item) => item.key !== tag.key);
-                    this.$emit('update:model-value', this._tags);
+                    this.i_tags = this.i_tags.filter((item) => item.key !== tag.key);
+                    this.$emit('update:model-value', this.i_tags);
                 });
             } else {
                 this.postUpdateTag(event, tag).then((data) => {
-                    this._tags = this._tags.map((item) => {
+                    this.i_tags = this.i_tags.map((item) => {
                         if (item.key === tag.key) {
                             return data.data;
                         }
                         return item;
                     });
-                    this.$emit('update:model-value', this._tags);
+                    this.$emit('update:model-value', this.i_tags);
                 });
             }
         },
         async postAllTags(statusId: number) {
-            return Promise.all(this._tags.map((tag) => this.postAddTag(tag, statusId)));
+            return Promise.all(this.i_tags.map((tag) => this.postAddTag(tag, statusId)));
         },
         async postDeleteTag(tag: TrwlTag) {
             if (this.$props.cacheLocally) {
@@ -86,7 +86,7 @@ export default defineComponent({
                     resolve({});
                 });
             }
-            return fetch(`/api/v1/status/${this._statusId}/tags/${tag.key}`, {
+            return fetch(`/api/v1/status/${this.i_statusId}/tags/${tag.key}`, {
                 method: 'DELETE',
             }).then((response) => response.json());
         },
@@ -96,7 +96,7 @@ export default defineComponent({
                     resolve({ data: event });
                 });
             }
-            return fetch(`/api/v1/status/${this._statusId}/tags/${tag.key}`, {
+            return fetch(`/api/v1/status/${this.i_statusId}/tags/${tag.key}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ export default defineComponent({
                     resolve({ data: value });
                 });
             }
-            statusId = statusId || this._statusId;
+            statusId = statusId || this.i_statusId;
 
             return fetch(`/api/v1/status/${statusId}/tags`, {
                 method: 'POST',
@@ -128,7 +128,7 @@ export default defineComponent({
     <TagRow :exclude="excludeTags" @update:model-value="addTag" />
     <hr v-if="tags.length" />
     <TagRow
-        v-for="tag in _tags"
+        v-for="tag in i_tags"
         :key="tag.key"
         class="mb-1"
         :value="tag"

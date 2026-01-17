@@ -8,7 +8,7 @@ import { getArrivalForStopover } from '../../../helpers/DateTimeHelper';
 const props = defineProps({
     stopovers: {
         type: Array as PropType<StopoverResource[]>,
-        default: [],
+        default: () => [],
     },
     inProgress: {
         type: Boolean,

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
+import { PropType } from 'vue';
+import { SelectOption } from './SelectOption';
 
 defineProps({
     name: {
@@ -7,8 +9,8 @@ defineProps({
         default: '',
     },
     options: {
-        type: Object as PropType<SelectOption[]>,
-        default: '',
+        type: Array as PropType<SelectOption[]>,
+        default: () => [],
     },
     title: {
         type: String,
@@ -20,7 +22,7 @@ defineProps({
     },
     errors: {
         type: Array,
-        default: [],
+        default: () => [],
     },
     autocomplete: {
         type: String,
@@ -62,12 +64,10 @@ const model = defineModel();
                         </template>
                     </option>
                 </select>
-                <span v-for="error in errors" class="invalid-feedback" role="alert">
+                <span v-for="error in errors" class="invalid-feedback" role="alert" :key="error">
                     <strong>{{ error }}</strong>
                 </span>
             </div>
         </div>
     </div>
 </template>
-
-<style scoped lang="scss"></style>

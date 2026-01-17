@@ -49,6 +49,7 @@ function byteOffsetToCharOffset(str: string, byteOffset: number): number {
 
 function buildBodyWithMentions(): string {
     const body = props.status.body ?? '';
+    /** eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const mentions = (props.status as any).bodyMentions ?? [];
     if (!body || !Array.isArray(mentions) || mentions.length === 0) {
         return escapeHtml(body);
@@ -96,6 +97,7 @@ watch(
     <li>
         <span class="status-body" :class="{ 'line-clamp': showMore }">
             <i class="fas fa-quote-right me-1" aria-hidden="true" />
+            <!-- eslint-disable-next-line vue/no-v-html -->
             <span v-html="enrichedBody" />
 
             <button v-if="showMore" class="btn btn-link p-0" aria-expanded="false" @click="showMore = !showMore">

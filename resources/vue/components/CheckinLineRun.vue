@@ -2,11 +2,10 @@
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import LoadingSkeletonRows from './Loader/LoadingSkeletonRows.vue';
-import Spinner from './Loader/Spinner.vue';
 
 export default {
     name: 'CheckinLineRun',
-    components: { LoadingSkeletonRows, Spinner },
+    components: { LoadingSkeletonRows },
     props: {
         selectedTrain: {
             type: Object,
@@ -137,8 +136,8 @@ export default {
 
     <LoadingSkeletonRows v-if="loading" :row-height="30" class="mt-4" :rows="10" />
 
-    <ul v-else class="timeline">
-        <li v-for="item in lineRun.stopovers" v-if="lineRun" :key="item" @click.prevent="handleSetDestination(item)">
+    <ul v-else-if="lineRun" class="timeline">
+        <li v-for="item in lineRun.stopovers" :key="item" @click.prevent="handleSetDestination(item)">
             <i class="trwl-bulletpoint" aria-hidden="true" />
             <span class="float-end" :class="{ 'text-trwl': !item.cancelled, 'cancelled-stop': item.cancelled }">
                 <small

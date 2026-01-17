@@ -135,7 +135,7 @@ fetchFutureStatuses();
                 </div>
             </div>
 
-            <template v-for="(status, index) in statuses">
+            <template v-for="(status, index) in statuses" :key="status.id">
                 <h2
                     v-if="
                         index === 0 ||

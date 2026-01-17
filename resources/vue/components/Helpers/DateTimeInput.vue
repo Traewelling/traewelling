@@ -38,6 +38,7 @@ function setModel(value: string | null) {
 </script>
 
 <template>
+    <!-- eslint-disable-next-line vue/valid-v-bind -->
     <input
         :value="model ? DateTime.fromJSDate(model).toISO()?.slice(0, 16) : ''"
         :class

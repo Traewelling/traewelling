@@ -206,32 +206,33 @@ onBeforeUnmount(() => {
                 />
             </mgl-geo-json-source>
 
-            <mgl-marker
-                v-for="station in stations"
-                v-if="!showHeatmap"
-                :key="station.id"
-                :coordinates="[station.longitude, station.latitude]"
-            >
-                <mgl-popup>
-                    <div style="min-width: 220px">
-                        <div style="font-weight: 600; margin-bottom: 2px">
-                            {{ station.name ?? '???' }}
-                        </div>
-                        <div style="font-size: 12px; color: #555">
-                            <div><b>ID:</b> {{ String(station.id ?? '–') }}</div>
-                            <div>
-                                <b>IBNR:</b> {{ station.ibnr ?? '–' }} &nbsp; <b>RIL:</b>
-                                {{ station.rilIdentifier ?? '–' }}
+            <template v-if="!showHeatmap">
+                <mgl-marker
+                    v-for="station in stations"
+                    :key="station.id"
+                    :coordinates="[station.longitude, station.latitude]"
+                >
+                    <mgl-popup>
+                        <div style="min-width: 220px">
+                            <div style="font-weight: 600; margin-bottom: 2px">
+                                {{ station.name ?? '???' }}
                             </div>
-                            <div v-show="station.areas"><b>Gebiet:</b> {{ getAreaName(station) }}</div>
-                            <div>
-                                <b>Lat/Lon:</b> {{ Number(station.latitude).toFixed(5) }},
-                                {{ Number(station.longitude).toFixed(5) }}
+                            <div style="font-size: 12px; color: #555">
+                                <div><b>ID:</b> {{ String(station.id ?? '–') }}</div>
+                                <div>
+                                    <b>IBNR:</b> {{ station.ibnr ?? '–' }} &nbsp; <b>RIL:</b>
+                                    {{ station.rilIdentifier ?? '–' }}
+                                </div>
+                                <div v-show="station.areas"><b>Gebiet:</b> {{ getAreaName(station) }}</div>
+                                <div>
+                                    <b>Lat/Lon:</b> {{ Number(station.latitude).toFixed(5) }},
+                                    {{ Number(station.longitude).toFixed(5) }}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </mgl-popup>
-            </mgl-marker>
+                    </mgl-popup>
+                </mgl-marker>
+            </template>
         </mgl-map>
         <div v-if="zoom < (minZoomForData || 11)" class="alert alert-warning mt-2">
             Zoom in to load stations (min zoom: {{ minZoomForData }}).

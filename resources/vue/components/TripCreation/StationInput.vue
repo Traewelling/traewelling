@@ -44,9 +44,6 @@ export default {
         };
     },
     computed: {
-        clearInput() {
-            this.stationInput = '';
-        },
         timeFieldALabel() {
             if (this.arrival && this.departure) {
                 return trans('trip_creation.form.arrival');
@@ -78,6 +75,9 @@ export default {
         this.timeFieldB = this.formatTime(this.departureTime);
     },
     methods: {
+        clearInput() {
+            this.stationInput = '';
+        },
         formatTime(time) {
             const object = DateTime.fromISO(time);
 
@@ -183,10 +183,16 @@ export default {
                 <AutocompleteListEntry
                     v-for="item in recent"
                     v-show="stationInput.length <= 0"
+                    :key="item.id"
                     :station="item"
                     @click="setStation(item)"
                 />
-                <AutocompleteListEntry v-for="item in autocompleteList" :station="item" @click="setStation(item)" />
+                <AutocompleteListEntry
+                    v-for="item in autocompleteList"
+                    :key="item.id"
+                    :station="item"
+                    @click="setStation(item)"
+                />
             </ul>
 
             <!-- Time Fields -->

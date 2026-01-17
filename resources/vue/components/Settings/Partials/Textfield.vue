@@ -14,7 +14,7 @@ defineProps({
     },
     errors: {
         type: Array,
-        default: [],
+        default: () => [],
     },
     autocomplete: {
         type: String,
@@ -58,12 +58,10 @@ const model = defineModel();
                     :rows="rows"
                     :placeholder="placeholder"
                 />
-                <span v-for="error in errors" class="invalid-feedback" role="alert">
+                <span v-for="error in errors" :key="error" class="invalid-feedback" role="alert">
                     <strong>{{ error }}</strong>
                 </span>
             </div>
         </div>
     </div>
 </template>
-
-<style scoped lang="scss"></style>

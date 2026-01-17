@@ -1,8 +1,6 @@
 <script>
 import FullScreenModal from './FullScreenModal.vue';
-import VisibilityDropdown from './VisibilityDropdown.vue';
 import { trans } from 'laravel-vue-i18n';
-import TagRow from './TagRow.vue';
 import { getIcon, getTitle } from '../helpers/StatusTag';
 import TagList from './TagList.vue';
 
@@ -10,8 +8,6 @@ export default {
     name: 'TagHelper',
     components: {
         TagList,
-        TagRow,
-        VisibilityDropdown,
         FullScreenModal,
     },
     props: {
@@ -86,6 +82,7 @@ export default {
         </template>
     </FullScreenModal>
 
+    <!-- eslint-disable-next-line vue/vue-v-bind -->
     <div :class>
         <button
             v-show="editable"
@@ -97,17 +94,18 @@ export default {
             {{ trans('modals.tags.new') }}
         </button>
 
-        <button
-            v-for="tag in tags"
-            v-if="editable"
-            :key="tag.key"
-            class="btn btn-link btn-sm text-white badge bg-trwl ms-1"
-            style="text-transform: none"
-            @click="showModal(tag)"
-        >
-            <i v-show="getIcon(tag.key) !== 'fa-fw'" :class="[getIcon(tag.key), 'fa']" />
-            {{ tag.value }}
-        </button>
+        <template v-if="editable">
+            <button
+                v-for="tag in tags"
+                :key="tag.key"
+                class="btn btn-link btn-sm text-white badge bg-trwl ms-1"
+                style="text-transform: none"
+                @click="showModal(tag)"
+            >
+                <i v-show="getIcon(tag.key) !== 'fa-fw'" :class="[getIcon(tag.key), 'fa']" />
+                {{ tag.value }}
+            </button>
+        </template>
         <span
             v-for="tag in tags"
             v-else

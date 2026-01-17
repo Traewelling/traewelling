@@ -2,12 +2,11 @@
 import { trans, transChoice } from 'laravel-vue-i18n';
 import { PointReason, Points, StatusResource } from '../../types/Api.gen';
 import { checkinSuccessStore } from '../stores/checkinSuccess';
-import FullScreenModal from './FullScreenModal.vue';
 import ModalComponent from './ModalComponent.vue';
 
 export default {
     name: 'CheckinSuccessHelper',
-    components: { ModalComponent, FullScreenModal },
+    components: { ModalComponent },
     setup() {
         const checkinSuccess = checkinSuccessStore();
 

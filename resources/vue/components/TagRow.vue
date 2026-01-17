@@ -108,7 +108,7 @@ export default {
             <span v-show="getIcon(selectedKey) === 'fa-fw'">{{ getTitle(selectedKey) }}</span>
         </button>
         <ul class="dropdown-menu">
-            <li v-for="tagKey in tagKeys">
+            <li v-for="tagKey in tagKeys" :key="tagKey">
                 <a class="dropdown-item" href="#" @click="selectKey(tagKey)">
                     <i :class="[getIcon(tagKey), 'fa']" class="w-0125 text-center" aria-hidden="true" />
                     {{ getTitle(tagKey) }}

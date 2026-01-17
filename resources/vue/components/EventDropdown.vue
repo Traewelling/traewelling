@@ -77,6 +77,7 @@ if (props.prefetchEvents) {
 
 <template>
     <div class="col btn-group">
+        <!-- eslint-disable-next-line vue/valid-v-bind -->
         <button
             id="eventDropdown"
             :class

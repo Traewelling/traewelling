@@ -201,7 +201,12 @@ export default defineComponent({
             </div>
 
             <ul class="list-group list-group-flush border-top border-3 mb-3">
-                <li v-for="user in trustedUsers" class="list-group-item d-flex gap-3 py-3" aria-current="true">
+                <li
+                    v-for="user in trustedUsers"
+                    :key="user.user?.id"
+                    class="list-group-item d-flex gap-3 py-3"
+                    aria-current="true"
+                >
                     <img
                         :src="user.user?.profilePicture"
                         alt="twbs"

@@ -13,7 +13,7 @@ defineProps({
     },
     errors: {
         type: Array,
-        default: [],
+        default: () => [],
     },
 });
 
@@ -102,7 +102,7 @@ watch(model, (newValue) => {
                     <div v-else class="p-2 mb-0 text-center text-muted" />
                 </div>
             </div>
-            <span v-for="error in errors" class="invalid-feedback" role="alert">
+            <span v-for="error in errors" :key="error" class="invalid-feedback" role="alert">
                 <strong>{{ error }}</strong>
             </span>
         </div>

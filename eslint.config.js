@@ -79,6 +79,9 @@ export default defineConfigWithVueTs(
             'vue/multi-word-component-names': 'off',
             'vue/require-default-prop': 'off',
             'vue/no-v-html': 'warn',
+
+            // Remove these rules, once they are fixed
+            'vue/block-lang': 'off',
         },
     },
 );

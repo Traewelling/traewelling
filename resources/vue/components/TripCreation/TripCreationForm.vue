@@ -475,7 +475,7 @@ export default {
                     >
                         <div class="accordion-body">
                             <ul class="list-group">
-                                <li v-for="item in categories" class="list-group-item">
+                                <li v-for="item in categories" :key="item.value" class="list-group-item">
                                     <input
                                         :id="item.value"
                                         v-model="selectedCategory"
@@ -526,7 +526,7 @@ export default {
                             <!-- todo: make searchable -->
                             <select v-model="selectedOperator" class="form-select">
                                 <option selected>-/-</option>
-                                <option v-for="operator in operators" :value="operator">
+                                <option v-for="(operator, key) in operators" :key="key" :value="operator">
                                     {{ operator.name }}
                                 </option>
                             </select>

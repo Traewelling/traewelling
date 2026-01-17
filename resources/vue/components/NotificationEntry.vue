@@ -73,7 +73,9 @@ export default {
             <i :class="icon" />
         </a>
         <a class="col-7 col-sm-8 align-middle" :href="internalLink">
+            <!-- eslint-disable-next-line vue/no-v-html -->
             <p class="lead" v-html="leadFormatted" />
+            <!-- eslint-disable-next-line vue/no-v-html -->
             <span v-html="noticeFormatted ?? ''" />
         </a>
         <div class="col col-sm-3 text-end">

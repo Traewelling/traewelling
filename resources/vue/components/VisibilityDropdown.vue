@@ -39,6 +39,7 @@ export default {
                 case 5:
                     return 'fa fa-user-shield';
             }
+            return '';
         },
     },
     watch: {
@@ -61,6 +62,7 @@ export default {
 
 <template>
     <button
+        <!-- eslint-disable-next-line vue/vue-v-bind -->
         :class
         type="button"
         class="dropdown-toggle"
