@@ -119,8 +119,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-        node-version: 25
-        cache: npm
+          node-version: 25
+          cache: npm
 
       - name: Install npm Dependencies
         run: npm ci
