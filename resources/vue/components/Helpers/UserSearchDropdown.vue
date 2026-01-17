@@ -18,6 +18,11 @@ export default defineComponent({
             search: '' as string,
         };
     },
+    watch: {
+        search: _.debounce(function () {
+            this.fetchFriends();
+        }, 500),
+    },
     mounted() {},
     methods: {
         trans,
@@ -40,11 +45,6 @@ export default defineComponent({
         selectFriend(user: User) {
             this.$emit('select-event', user);
         },
-    },
-    watch: {
-        search: _.debounce(function () {
-            this.fetchFriends();
-        }, 500),
     },
 });
 </script>

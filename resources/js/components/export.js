@@ -36,6 +36,7 @@ function showWarning(show = true) {
 function selectAll() {
     let select = document.getElementById('export-select');
 
+    // eslint-disable-next-line no-unsafe-optional-chaining
     for (const element of select?.options) {
         element.selected = true;
     }

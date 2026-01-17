@@ -26,7 +26,7 @@ defineProps({
     },
 });
 
-const model = defineModel();
+const model = defineModel(); // eslint-disable-line vue/require-prop-types
 </script>
 
 <template>

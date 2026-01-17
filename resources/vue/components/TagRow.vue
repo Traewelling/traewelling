@@ -20,6 +20,7 @@ export default {
             default: () => [],
         },
     },
+    emits: ['update:model-value'],
     data() {
         return {
             baseKeys: keys,
@@ -35,6 +36,16 @@ export default {
         disabled() {
             return this.tagKeys.length === 0;
         },
+    },
+    watch: {
+        exclude() {
+            this.selectKey();
+        },
+        input: _.debounce(function () {
+            if (this.list) {
+                this.updateTag();
+            }
+        }, 1000),
     },
     mounted() {
         this.visibility = this.value?.visibility ?? 0;
@@ -81,17 +92,6 @@ export default {
             }
         },
     },
-    watch: {
-        exclude() {
-            this.selectKey();
-        },
-        input: _.debounce(function () {
-            if (this.list) {
-                this.updateTag();
-            }
-        }, 1000),
-    },
-    emits: ['update:model-value'],
 };
 </script>
 

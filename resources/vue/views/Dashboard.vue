@@ -57,7 +57,7 @@ function fetchStopovers(append: boolean = false) {
             response.json().then((data) => {
                 if (append) {
                     for (const tripId in data.data) {
-                        if (data.data.hasOwnProperty(tripId)) {
+                        if (Object.prototype.hasOwnProperty.call(data.data, tripId)) {
                             if (!stopovers.value[tripId]) {
                                 stopovers.value[tripId] = [];
                             }

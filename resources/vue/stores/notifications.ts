@@ -3,7 +3,6 @@ import API from '../../js/api/api';
 import { Notification } from '../../types/Notification';
 
 export const useNotificationsStore = defineStore('notifications', {
-    // @ts-ignore
     persist: true,
     state: () => ({
         notifications: [] as Notification[],

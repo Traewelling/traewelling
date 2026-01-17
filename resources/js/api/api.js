@@ -4,7 +4,7 @@ export default class API {
     static request(path, method = 'GET', data = {}, customErrorHandling = false) {
         let requestBody = undefined;
 
-        if (method !== 'GET' && data !== {}) {
+        if (method !== 'GET' && data != {}) {
             requestBody = JSON.stringify(data);
         }
         let request = fetch('/api/v1' + path, {

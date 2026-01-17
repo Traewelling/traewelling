@@ -63,6 +63,17 @@ export default {
             return 'timeFieldB' + this.id;
         },
     },
+    watch: {
+        stationInput: _.debounce(function () {
+            this.autocomplete();
+        }, 500),
+        arrivalTime(newVal) {
+            this.timeFieldA = this.formatTime(newVal);
+        },
+        departureTime(newVal) {
+            this.timeFieldB = this.formatTime(newVal);
+        },
+    },
     mounted() {
         // I hate it, it's extremely ugly, but it works
         // see https://github.com/vuejs/vue/issues/5886
@@ -144,17 +155,6 @@ export default {
                     this.loading = false;
                 });
             });
-        },
-    },
-    watch: {
-        stationInput: _.debounce(function () {
-            this.autocomplete();
-        }, 500),
-        arrivalTime(newVal) {
-            this.timeFieldA = this.formatTime(newVal);
-        },
-        departureTime(newVal) {
-            this.timeFieldB = this.formatTime(newVal);
         },
     },
 };

@@ -25,7 +25,7 @@ export const useActiveCheckin = defineStore('activeStatus', {
                 .then((response: { json: () => any }) => response.json())
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 .then((data: { data: any }) => {
-                    if (data.data.hasOwnProperty(trip)) {
+                    if (Object.prototype.hasOwnProperty.call(data.data, trip)) {
                         this.stopovers = data.data[trip];
                     }
                 });

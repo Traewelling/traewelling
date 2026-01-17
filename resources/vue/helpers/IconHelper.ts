@@ -18,7 +18,7 @@ const businessIcons = {
 
 export class IconHelper {
     static getVisibilityIcon(visibility: StatusVisibility): string {
-        if (visibilityIcons.hasOwnProperty(visibility)) {
+        if (Object.prototype.hasOwnProperty.call(visibilityIcons, visibility)) {
             return visibilityIcons[visibility];
         }
         return 'fa-question'; // Fallback icon for unknown visibility
@@ -29,7 +29,7 @@ export class IconHelper {
     }
 
     static getBusinessIcon(business: Business): string {
-        if (businessIcons.hasOwnProperty(business)) {
+        if (Object.prototype.hasOwnProperty.call(businessIcons, business)) {
             return businessIcons[business];
         }
         return 'fa-question'; // Fallback icon for unknown business type

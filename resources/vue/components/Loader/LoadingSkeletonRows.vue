@@ -36,7 +36,9 @@ export default {
 
 <template>
     <div class="ls-wrap" v-bind="rootAria" :style="cssVars">
+        <!-- eslint-disable-next-line vue/no-template-shadow -->
         <div v-for="(_, i) in list" :key="'row-' + i" class="ls-row-group">
+            <!-- eslint-disable-next-line vue/no-template-shadow -->
             <div v-for="(_, j) in colList" :key="'col-' + j" class="ls-row ls-animate" />
         </div>
     </div>

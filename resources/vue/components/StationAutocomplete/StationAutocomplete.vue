@@ -60,6 +60,34 @@ export default {
             ],
         };
     },
+    computed: {
+        placeholder() {
+            return `${trans('stationboard.station-placeholder')} ${trans('or-alternative')} ${trans('ril100')}`;
+        },
+        dark() {
+            return localStorage.getItem('darkMode') === 'dark';
+        },
+        isHome() {
+            return this.userStore.getHome && this.station && this.userStore.getHome.id === this.station.id;
+        },
+    },
+    watch: {
+        stationInput: _.debounce(function () {
+            this.autocomplete();
+        }, 500),
+        stationName() {
+            this.stationInput = this.stationName ? this.stationName : this.stationInput;
+        },
+        station() {
+            this.selectedStation = this.station;
+        },
+    },
+    mounted() {
+        this.date = this.time;
+        this.stationInput = this.stationName ? this.stationName : '';
+        this.selectedStation = this.station;
+        this.getRecent();
+    },
     methods: {
         trans,
         showModal() {
@@ -236,34 +264,6 @@ export default {
         clearInput() {
             this.stationInput = '';
             this.$refs.stationInput?.focus();
-        },
-    },
-    watch: {
-        stationInput: _.debounce(function () {
-            this.autocomplete();
-        }, 500),
-        stationName() {
-            this.stationInput = this.stationName ? this.stationName : this.stationInput;
-        },
-        station() {
-            this.selectedStation = this.station;
-        },
-    },
-    mounted() {
-        this.date = this.time;
-        this.stationInput = this.stationName ? this.stationName : '';
-        this.selectedStation = this.station;
-        this.getRecent();
-    },
-    computed: {
-        placeholder() {
-            return `${trans('stationboard.station-placeholder')} ${trans('or-alternative')} ${trans('ril100')}`;
-        },
-        dark() {
-            return localStorage.getItem('darkMode') === 'dark';
-        },
-        isHome() {
-            return this.userStore.getHome && this.station && this.userStore.getHome.id === this.station.id;
         },
     },
 };

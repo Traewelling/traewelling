@@ -92,14 +92,14 @@ export default {
                 </h5>
                 <div class="list-group">
                     <a
-                        v-for="status in alsoOnThisConnection"
-                        :key="status.id"
-                        :href="`/status/${status.id}`"
+                        v-for="connectionStatus in alsoOnThisConnection"
+                        :key="connectionStatus.id"
+                        :href="`/status/${connectionStatus.id}`"
                         class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3"
                         aria-current="true"
                     >
                         <img
-                            :src="status.userDetails.profilePicture"
+                            :src="connectionStatus.userDetails.profilePicture"
                             alt="Profilbild"
                             class="rounded-circle flex-shrink-0"
                             style="width: 40px; height: 40px; object-fit: cover"
@@ -107,16 +107,20 @@ export default {
 
                         <div class="d-flex flex-column flex-grow-1">
                             <h6 class="mb-1 fw-bold opacity-75 text-truncate">
-                                {{ status.userDetails.displayName }}
+                                {{ connectionStatus.userDetails.displayName }}
                                 <span
-                                    v-if="status.userDetails.displayName !== status.userDetails.username"
+                                    v-if="
+                                        connectionStatus.userDetails.displayName !==
+                                        connectionStatus.userDetails.username
+                                    "
                                     class="text-muted"
                                 >
-                                    (@{{ status.userDetails.username }})
+                                    (@{{ connectionStatus.userDetails.username }})
                                 </span>
                             </h6>
                             <p class="mb-0 text-truncate">
-                                {{ status?.train?.origin?.name }} ➜ {{ status?.train?.destination?.name }}
+                                {{ connectionStatus?.train?.origin?.name }} ➜
+                                {{ connectionStatus?.train?.destination?.name }}
                             </p>
                         </div>
                     </a>

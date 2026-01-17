@@ -58,17 +58,14 @@ export default defineConfigWithVueTs(
             // Code quality
             'no-console': ['error', { allow: ['warn', 'error'] }],
             'no-debugger': 'warn',
-            '@typescript-eslint/ban-ts-comment': 'warn',
             '@typescript-eslint/no-this-alias': 'warn',
-            'no-constant-binary-expression': 'warn',
-            'no-unsafe-optional-chaining': 'warn',
             'no-undef': 'error',
             'no-empty': 'warn',
-            'no-prototype-builtins': 'warn',
 
             // Vue specific
             'vue/multi-word-component-names': 'off',
             'vue/require-default-prop': 'off',
+            'vue/no-template-shadow': 'error',
 
             // Remove these rules, once they are fixed
             'vue/block-lang': 'off',
