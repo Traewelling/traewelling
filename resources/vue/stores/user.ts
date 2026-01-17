@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia';
 import { ShortStation } from '../../types/Station';
-import { StationResource, UserAuthResource } from '../../types/Api.gen';
+import { Api, StationResource, UserAuthResource } from '../../types/Api.gen';
+
+const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
 export const useUserStore = defineStore('user', {
     persist: true,
     state: () => ({
         user: null as UserAuthResource | null,
+        authenticated: null as boolean | null,
         loading: false,
         error: null as unknown | null,
         refreshed: '2021-08-01T12:00:00Z',
@@ -56,50 +59,66 @@ export const useUserStore = defineStore('user', {
         isAdmin(): boolean {
             return this.user?.roles?.includes('admin') ?? false;
         },
+        isEventModerator(): boolean {
+            return this.user?.roles?.includes('event-moderator') ?? false;
+        },
+        isAuthenticated(): boolean {
+            return this.authenticated === true;
+        },
     },
     actions: {
         async setHome(home: ShortStation | any): Promise<void> {
             const curStation = this.user?.home;
-            if (this.user) {
-                this.user.home = home;
-            }
 
-            fetch(`/api/v1/station/${home.id}/home`, {
-                method: 'PUT',
-            })
-                .then(response => response.json())
-                .then((data) => {
-                    if (this.user) {
-                        this.user.home = data.data;
+            api.station
+                .setHomeStation(home.id)
+                .then(response => {
+                    if (this.user && response.data.data) {
+                        const newStation = response.data.data as StationResource;
+                        newStation.areas = [];
+
+                        this.user.home = newStation;
                     }
-
                 })
-                .catch((error) => {
-                    if (this.user) {
+                .catch(error => {
+                    if (curStation && this.user) {
                         this.user.home = curStation;
                     }
-
                     return error;
                 });
         },
-        async fetchSettings(force: boolean = false): Promise<void> {
-            // Fetch Data every 15 Minutes
-            // ToDo: reduce interval
+        invalidateUser(): void {
+            this.user = null;
+            this.authenticated = false;
+            this.refreshed = new Date().toString();
+            this.error = null;
+            this.loading = false;
+        },
+        async fetchSettings(force: boolean = false, authRefresh: boolean = false): Promise<void> {
+            // Fetch Data every 5 Minutes
             // ToDo: refresh with settings update
-            // ToDo: invalidate when logging out
-            if (!force && this.refreshed && (new Date().getTime() - new Date(this.refreshed).getTime()) < 60 * 15 * 1000) {
-                return;
-            }
-            this.loading = true;
-            try {
-                this.user = await fetch('/api/v1/auth/user')
-                    .then((response: { json: () => any; }) => response.json())
-                    .then((data: { data: any; }) => data.data);
-                this.refreshed = new Date().toString();
-            } catch (error) {
-                this.error = error;
-            } finally {
-                this.loading = false;
+            if (
+                force ||
+                (!this.authenticated && authRefresh) ||
+                (this.refreshed && new Date().getTime() - new Date(this.refreshed).getTime() > 60 * 5 * 1000)
+            ) {
+                this.loading = true;
+                api.auth
+                    .getAuthenticatedUser()
+                    .then(response => {
+                        this.user = response.data.data || null;
+                        this.authenticated = !!this.user;
+
+                        this.loading = false;
+                        this.refreshed = new Date().toString();
+                    })
+                    .catch(error => {
+                        this.error = error;
+                        this.authenticated = false;
+
+                        this.loading = false;
+                        this.refreshed = new Date().toString();
+                    });
             }
         },
     },

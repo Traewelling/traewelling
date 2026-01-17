@@ -32,6 +32,7 @@ import EventPage from '../vue/views/Event.vue';
 import StatsDaily from '../vue/views/Stats/Daily.vue';
 import StationMap from '../vue/views/Debug/StationMap.vue';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import UserDropdown from '../vue/components/Navbar/UserDropdown.vue';
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -83,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (document.getElementById('nav-main')) {
         const app = createApp({});
         app.component('NotificationBell', NotificationBell);
+        app.component('VueDropdown', UserDropdown);
         app.use(pinia);
         app.use(i18nVue, i18nOptions);
         app.mount('#nav-main');
