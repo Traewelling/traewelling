@@ -5,8 +5,8 @@ import { getActiveLanguage } from 'laravel-vue-i18n';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const alerts = ref([] as AlertResource[]);
-api.alerts.getActiveAlerts().then((data) => {
-    data.json().then((data) => {
+api.alerts.getActiveAlerts().then(data => {
+    data.json().then(data => {
         alerts.value = data.data;
     });
 });
@@ -16,7 +16,7 @@ const getTranslation = (alert: AlertResource): AlertTranslationResource | null =
     const i18nLocale = getActiveLanguage();
     let match: AlertTranslationResource | null = null;
 
-    alert.translations?.forEach((translation) => {
+    alert.translations?.forEach(translation => {
         if (i18nLocale.startsWith(translation.locale)) {
             match = translation;
         }
@@ -25,7 +25,7 @@ const getTranslation = (alert: AlertResource): AlertTranslationResource | null =
         return match;
     }
 
-    alert.translations?.forEach((translation) => {
+    alert.translations?.forEach(translation => {
         if (translation.locale === 'en') {
             match = translation;
         }
@@ -67,13 +67,7 @@ const getIcon = (alert: AlertResource): string => {
 </script>
 
 <template>
-    <div
-        v-for="alert in alerts"
-        :key="alert.id"
-        class="alert"
-        role="alert"
-        :class="`alert-${alert.type}`"
-    >
+    <div v-for="alert in alerts" :key="alert.id" class="alert" role="alert" :class="`alert-${alert.type}`">
         <h4 class="alert-heading">
             <i :class="getIcon(alert)" aria-hidden="true" />
             {{ getTitle(alert) }}
@@ -91,8 +85,8 @@ const getIcon = (alert: AlertResource): string => {
 
 <style scoped>
 .alert-pre {
-  white-space: pre-wrap;
-  word-break: break-word;
-  font-family: var(--bs-body-font-family), sans-serif;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: var(--bs-body-font-family), sans-serif;
 }
 </style>

@@ -13,21 +13,19 @@ function goHome() {
                 src="/images/covers/abandoned.jpg"
                 class="card-img-top object-fit-cover"
                 :alt="trans('errors.404.alt_text')"
-            >
+            />
         </div>
         <div class="card-body text-center py-5">
-            <div class="display-6 mb-3" aria-hidden="true">
-                🕵️
-            </div>
+            <div class="display-6 mb-3" aria-hidden="true">🕵️</div>
             <h1 class="h4 mb-2">
-                {{ trans("error.404") }}
+                {{ trans('error.404') }}
             </h1>
             <p class="text-muted mb-4">
-                {{ trans("errors.404.lead") }}
+                {{ trans('errors.404.lead') }}
             </p>
 
             <button type="button" class="btn btn-primary" @click="goHome">
-                {{ trans("errors.actions.home") }}
+                {{ trans('errors.actions.home') }}
             </button>
         </div>
     </div>

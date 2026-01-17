@@ -22,7 +22,8 @@ const livePositions = ref<LivePointDto[]>([]);
 
 if (props.statuses.length === 1) {
     lineColor.value = props.statuses[0].train.routeColor ? '#' + props.statuses[0].train.routeColor : '#c72730';
-    api.polyline.getPolylines(props.statuses.map(s => s.id.toString()).join(','))
+    api.polyline
+        .getPolylines(props.statuses.map(s => s.id.toString()).join(','))
         .then(response => {
             let newBounds = new LngLatBounds();
 
@@ -52,7 +53,8 @@ function setNewBounds(newBounds: LngLatBounds) {
     bounds.value = newBounds;
 }
 
-api.positions.getLivePositionsForStatuses(props.statuses.map(s => s.id.toString()).join(','))
+api.positions
+    .getLivePositionsForStatuses(props.statuses.map(s => s.id.toString()).join(','))
     .then(response => {
         livePositions.value = response.data.data || [];
 

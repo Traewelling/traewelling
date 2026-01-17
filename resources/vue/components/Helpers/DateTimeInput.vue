@@ -39,10 +39,10 @@ function setModel(value: string | null) {
 
 <template>
     <input
-        :value="model ? DateTime.fromJSDate(model).toISO()?.slice(0,16) : ''"
+        :value="model ? DateTime.fromJSDate(model).toISO()?.slice(0, 16) : ''"
         :class
         type="datetime-local"
         :placeholder="placeholder"
         @change="setModel($event?.target?.value)"
-    >
+    />
 </template>

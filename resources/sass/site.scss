@@ -21,7 +21,7 @@ ul.timeline {
         padding-left: 20px;
 
         > i.trwl-bulletpoint {
-            content: " ";
+            content: ' ';
             background: #fff;
             display: inline-block;
             position: absolute;
@@ -34,7 +34,7 @@ ul.timeline {
         }
 
         &:first-child:before {
-            content: " ";
+            content: ' ';
             background: #d4d9df;
             display: inline-block;
             left: 29px;
@@ -85,12 +85,14 @@ p.train-status:before {
 #nav-main {
     a.nav-link {
         color: #fff;
-        transition: text-shadow .3s;
+        transition: text-shadow 0.3s;
     }
 
     a.nav-link:hover,
     a.nav-link.active {
-        text-shadow: 0 0 .65px #cecece, 0 0 .65px #cecece;
+        text-shadow:
+            0 0 0.65px #cecece,
+            0 0 0.65px #cecece;
     }
 
     button.navbar-toggler {

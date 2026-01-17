@@ -25,7 +25,12 @@ export default defineComponent({
             trustedUsers: [] as TrustedUserResource[],
             privacyHideDays: null as number | null,
             email: '',
-            notyf: new Notyf({ position: { x: 'right', y: 'bottom' }, duration: 2000, dismissible: true, ripple: true }),
+            notyf: new Notyf({
+                position: { x: 'right', y: 'bottom' },
+                duration: 2000,
+                dismissible: true,
+                ripple: true,
+            }),
             FriendCheckinSetting,
         };
     },
@@ -37,12 +42,13 @@ export default defineComponent({
         trans,
         fetchUserProfileSettings() {
             this.loading = true;
-            this.api.settings.getProfileSettings()
-                .then((data) => {
+            this.api.settings
+                .getProfileSettings()
+                .then(data => {
                     if (!data.ok || data.status === 404) {
                         return;
                     }
-                    data.json().then((data) => {
+                    data.json().then(data => {
                         this.allow = data.data.friendCheckin;
                         this.username = data.data.username;
                         this.displayName = data.data.displayName;
@@ -51,17 +57,17 @@ export default defineComponent({
                         this.loading = false;
                     });
                 })
-                .catch(() => {
-                });
+                .catch(() => {});
         },
         fetchTrustedUsers() {
-            this.api.user.trustedUserIndex('self')
-                .then((data) => {
+            this.api.user
+                .trustedUserIndex('self')
+                .then(data => {
                     if (!data.ok || data.status === 404) {
                         this.trustedUsers = [];
                         return;
                     }
-                    data.json().then((data) => {
+                    data.json().then(data => {
                         this.trustedUsers = data.data;
                     });
                 })
@@ -71,14 +77,15 @@ export default defineComponent({
         },
         submit() {
             this.loading = true;
-            this.api.settings.updateProfileSettings({
-                friendCheckin: this.allow,
-                username: this.username,
-                displayName: this.displayName,
-                privacyHideDays: this.privacyHideDays,
-                email: this.email,
-            })
-                .then((data) => {
+            this.api.settings
+                .updateProfileSettings({
+                    friendCheckin: this.allow,
+                    username: this.username,
+                    displayName: this.displayName,
+                    privacyHideDays: this.privacyHideDays,
+                    email: this.email,
+                })
+                .then(data => {
                     this.loading = false;
                     if (data.status !== 200) {
                         this.notyf.error(trans('messages.exception.general'));
@@ -86,7 +93,7 @@ export default defineComponent({
                     }
                     this.notyf.success(trans('settings.saved'));
                 })
-                .catch((res) => {
+                .catch(res => {
                     this.loading = false;
                     if (res.status === 422) {
                         // Handle validation errors
@@ -97,22 +104,23 @@ export default defineComponent({
                 });
         },
         removeUser(user: TrustedUserResource) {
-            this.api.user.trustedUserDestroy('self', user.user.id)
-                .then((data) => {
+            this.api.user
+                .trustedUserDestroy('self', user.user.id)
+                .then(data => {
                     if (!data.ok) {
                         console.error(data);
                         return;
                     }
                     if (data.status === 204) {
-                        this.trustedUsers = this.trustedUsers.filter((u) => u?.user?.id !== user?.user?.id);
+                        this.trustedUsers = this.trustedUsers.filter(u => u?.user?.id !== user?.user?.id);
                     }
                 })
-                .catch(() => {
-                });
+                .catch(() => {});
         },
         addUser(user: User) {
-            this.api.user.trustedUserStore('self', { userId: user.id })
-                .then((data) => {
+            this.api.user
+                .trustedUserStore('self', { userId: user.id })
+                .then(data => {
                     if (data.status !== 201) {
                         this.notyf.error(trans('messages.exception.general'));
                         return;
@@ -167,7 +175,7 @@ export default defineComponent({
                     </div>
                 </div>
                 <div class="form-group row" />
-                <hr>
+                <hr />
                 <div class="form-group row mb-0">
                     <div class="col-6 col-md-3 offset-md-4">
                         <button type="submit" class="btn btn-primary" :disabled="loading">
@@ -200,15 +208,13 @@ export default defineComponent({
                         width="32"
                         height="32"
                         class="rounded-circle flex-shrink-0"
-                    >
+                    />
                     <div class="d-flex gap-2 w-100 justify-content-between">
                         <div>
                             <h6 class="mb-0">
                                 {{ user.user?.displayName }}
                             </h6>
-                            <p class="mb-0 opacity-75">
-                                @{{ user.user?.username }}
-                            </p>
+                            <p class="mb-0 opacity-75">@{{ user.user?.username }}</p>
                         </div>
                         <button class="btn btn-sm btn-danger" @click="removeUser(user)">
                             <i class="fas fa-trash-alt" />

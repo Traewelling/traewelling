@@ -64,9 +64,9 @@ window.notyf = new Notyf({
 document.addEventListener('DOMContentLoaded', function () {
     // get language query parameter
     let fallbackLang = 'en';
-    const urlParams  = new URLSearchParams(window.location.search);
-    const lang       = urlParams.get('language');
-    const pinia      = createPinia();
+    const urlParams = new URLSearchParams(window.location.search);
+    const lang = urlParams.get('language');
+    const pinia = createPinia();
     pinia.use(piniaPluginPersistedsState);
 
     if (lang && lang.startsWith('de_')) {
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const i18nOptions = {
         fallbackLang: fallbackLang,
         fallbackMissingTranslations: true,
-        resolve: (lang) => import(`../../lang/${lang}.json`),
+        resolve: lang => import(`../../lang/${lang}.json`),
     };
 
     if (document.getElementById('nav-main')) {

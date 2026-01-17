@@ -35,12 +35,12 @@ const model = defineModel({
         </li>
         <li class="dropdown-item" @click="model = Business.Value1">
             <i class="fa fa-briefcase" /> {{ trans(IconHelper.getBusinessTitle(Business.Value1)) }}
-            <br>
+            <br />
             <span class="text-muted"> {{ trans(IconHelper.getBusinessDescription(Business.Value1)) }}</span>
         </li>
         <li class="dropdown-item" @click="model = Business.Value2">
             <i class="fa fa-building" /> {{ trans(IconHelper.getBusinessTitle(Business.Value2)) }}
-            <br>
+            <br />
             <span class="text-muted"> {{ trans(IconHelper.getBusinessDescription(Business.Value2)) }}</span>
         </li>
     </ul>

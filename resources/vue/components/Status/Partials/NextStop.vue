@@ -24,7 +24,7 @@ function getNextStop() {
         return;
     }
 
-    props.stopovers.every((stopover) => {
+    props.stopovers.every(stopover => {
         const diff = getArrivalForStopover(stopover).dateTime.diffNow('seconds');
         if (diff.seconds > 0) {
             nextStop.value = stopover;
@@ -35,23 +35,30 @@ function getNextStop() {
     });
 }
 
-watch(() => props.stopovers, () => {
-    getNextStop();
-}, { immediate: true });
-watch(() => props.inProgress, () => {
-    if (props.inProgress) {
+watch(
+    () => props.stopovers,
+    () => {
         getNextStop();
-        setInterval(getNextStop, 10000);
-    } else {
-        nextStop.value = null;
-    }
-}, { immediate: true });
+    },
+    { immediate: true },
+);
+watch(
+    () => props.inProgress,
+    () => {
+        if (props.inProgress) {
+            getNextStop();
+            setInterval(getNextStop, 10000);
+        } else {
+            nextStop.value = null;
+        }
+    },
+    { immediate: true },
+);
 
 getNextStop();
 if (props.inProgress) {
     setInterval(getNextStop, 10000);
 }
-
 </script>
 
 <template>

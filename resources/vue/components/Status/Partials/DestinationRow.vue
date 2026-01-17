@@ -14,11 +14,15 @@ const props = defineProps({
 
 const arrival = ref(getArrivalAttribute(props.status));
 
-watch(() => props.status, () => {
-    arrival.value = getArrivalAttribute(props.status);
-}, {
-    immediate: true,
-});
+watch(
+    () => props.status,
+    () => {
+        arrival.value = getArrivalAttribute(props.status);
+    },
+    {
+        immediate: true,
+    },
+);
 </script>
 
 <template>

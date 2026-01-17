@@ -55,19 +55,19 @@ export default defineComponent({
     },
     methods: {
         addTag(value: string) {
-            this.postAddTag(value).then((data) => {
+            this.postAddTag(value).then(data => {
                 this._tags.push(data.data);
             });
         },
         updateTag(event: any, tag: TrwlTag) {
             if (event === null) {
                 this.postDeleteTag(tag).then(() => {
-                    this._tags = this._tags.filter((item) => item.key !== tag.key);
+                    this._tags = this._tags.filter(item => item.key !== tag.key);
                     this.$emit('update:model-value', this._tags);
                 });
             } else {
-                this.postUpdateTag(event, tag).then((data) => {
-                    this._tags = this._tags.map((item) => {
+                this.postUpdateTag(event, tag).then(data => {
+                    this._tags = this._tags.map(item => {
                         if (item.key === tag.key) {
                             return data.data;
                         }
@@ -82,7 +82,7 @@ export default defineComponent({
         },
         async postDeleteTag(tag: TrwlTag) {
             if (this.$props.cacheLocally) {
-                return new Promise((resolve) => {
+                return new Promise(resolve => {
                     resolve({});
                 });
             }
@@ -92,7 +92,7 @@ export default defineComponent({
         },
         async postUpdateTag(event: any, tag: TrwlTag) {
             if (this.$props.cacheLocally) {
-                return new Promise((resolve) => {
+                return new Promise(resolve => {
                     resolve({ data: event });
                 });
             }
@@ -104,9 +104,9 @@ export default defineComponent({
                 body: JSON.stringify(event),
             }).then(response => response.json());
         },
-        async postAddTag(value: string | TrwlTag, statusId: number|null = null) {
+        async postAddTag(value: string | TrwlTag, statusId: number | null = null) {
             if (this.$props.cacheLocally && statusId === null) {
-                return new Promise((resolve) => {
+                return new Promise(resolve => {
                     resolve({ data: value });
                 });
             }
@@ -118,8 +118,7 @@ export default defineComponent({
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(value),
-            })
-                .then((response) => response.json());
+            }).then(response => response.json());
         },
     },
 });
@@ -127,7 +126,7 @@ export default defineComponent({
 
 <template>
     <TagRow :exclude="excludeTags" @update:model-value="addTag" />
-    <hr v-if="tags.length">
+    <hr v-if="tags.length" />
     <TagRow
         v-for="tag in _tags"
         :key="tag.key"
@@ -138,6 +137,4 @@ export default defineComponent({
     />
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

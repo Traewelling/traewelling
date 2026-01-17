@@ -6,16 +6,16 @@ import type { StatusResource } from '../../../types/Api.gen';
 import LoadingSkeletonRows from '../../components/Loader/LoadingSkeletonRows.vue';
 
 const props = defineProps<{
-  date: string;
+    date: string;
 }>();
 
 type ApiResponse = {
-  data: {
-    statuses: StatusResource[];
-    totalDistance?: number; // meter
-    totalDuration?: number;
-    totalPoints?: number;
-  };
+    data: {
+        statuses: StatusResource[];
+        totalDistance?: number; // meter
+        totalDuration?: number;
+        totalPoints?: number;
+    };
 };
 
 const loading = ref(false);
@@ -52,13 +52,9 @@ async function fetchDaily() {
 onMounted(fetchDaily);
 watch(() => props.date, fetchDaily);
 
-const tripsText = computed(() =>
-    trans_choice('stats.trips', statuses.value.length),
-);
+const tripsText = computed(() => trans_choice('stats.trips', statuses.value.length));
 
-const kmRounded = computed(() =>
-    Math.round((totalDistance.value || 0) / 1000),
-);
+const kmRounded = computed(() => Math.round((totalDistance.value || 0) / 1000));
 
 const durationParts = computed(() => {
     const m = Math.max(0, totalDurationMin.value || 0);

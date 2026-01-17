@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 defineProps({
     name: {
         type: String,
@@ -37,18 +36,18 @@ const model = defineModel();
         </label>
 
         <div class="col-md-6">
-            <div :class="{'input-group': !!prefix}">
+            <div :class="{ 'input-group': !!prefix }">
                 <span v-if="prefix" class="input-group-text">{{ prefix }}</span>
                 <input
                     :id="name"
                     v-model="model"
                     type="text"
                     class="form-control"
-                    :class="{'is-invalid': errors.length}"
+                    :class="{ 'is-invalid': errors.length }"
                     :name="name"
                     :autocomplete="autocomplete"
                     :required="required"
-                >
+                />
                 <span v-for="error in errors" class="invalid-feedback" role="alert">
                     <strong>{{ error }}</strong>
                 </span>
@@ -57,6 +56,4 @@ const model = defineModel();
     </div>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

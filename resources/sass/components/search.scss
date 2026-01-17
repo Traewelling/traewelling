@@ -1,18 +1,18 @@
-@import "../variables";
+@import '../variables';
 
 .navbar.navbar-dark form .md-form input:focus:not([readonly]) {
-  border-color: $blueCounterColor;
+    border-color: $blueCounterColor;
 }
 
 .stationSearchButton {
-  align-items: center;
-  border: 1px solid #bdbdbd;
-  border-left-width: 0;
-  display: flex;
-  gap: 0.25em;
+    align-items: center;
+    border: 1px solid #bdbdbd;
+    border-left-width: 0;
+    display: flex;
+    gap: 0.25em;
 
-  &:hover,
-  &:focus {
-    border-color: #bdbdbd !important;
-  }
+    &:hover,
+    &:focus {
+        border-color: #bdbdbd !important;
+    }
 }

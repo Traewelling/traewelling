@@ -2,7 +2,7 @@
  * Set the tiling layers for the current map.
  */
 
-window.setTilingLayer = (mapprovider, map, opacity=1) => {
+window.setTilingLayer = (mapprovider, map, opacity = 1) => {
     switch (mapprovider) {
         case 'open-railway-map':
             // Base map without labels
@@ -11,8 +11,7 @@ window.setTilingLayer = (mapprovider, map, opacity=1) => {
                 subdomains: 'abcd',
                 maxZoom: 19,
                 opacity,
-            },
-            ).addTo(map);
+            }).addTo(map);
 
             // Semi-transparent Open Railway Map overlay. There are additional filters on the tiles in css.
             new L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
@@ -35,5 +34,7 @@ window.setTilingLayer = (mapprovider, map, opacity=1) => {
             }).addTo(map);
     }
 
-    map.attributionControl.addAttribution('&copy; <a href="https://www.openstreetmap.org/copyright" target="osm">OpenStreetMap</a> contributors');
+    map.attributionControl.addAttribution(
+        '&copy; <a href="https://www.openstreetmap.org/copyright" target="osm">OpenStreetMap</a> contributors',
+    );
 };

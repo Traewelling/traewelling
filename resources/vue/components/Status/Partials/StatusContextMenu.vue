@@ -22,17 +22,20 @@ const user = useUserStore();
 
 function share() {
     let helper = new StatusHelper(props.status);
-    let shareText = props.status?.userDetails.id === user.user?.id ? helper.generateSocialText() : helper.getDescription();
+    let shareText =
+        props.status?.userDetails.id === user.user?.id ? helper.generateSocialText() : helper.getDescription();
     let shareUrl = helper.getShareUrl();
 
     if (navigator.share) {
-        navigator.share({
-            title: 'Träwelling',
-            text: shareText,
-            url: shareUrl,
-        }).catch((error) => {
-            console.error('Error sharing:', error);
-        });
+        navigator
+            .share({
+                title: 'Träwelling',
+                text: shareText,
+                url: shareUrl,
+            })
+            .catch(error => {
+                console.error('Error sharing:', error);
+            });
     } else {
         navigator.clipboard.writeText(shareText + ' ' + shareUrl).then(() => {
             notyf.success('Copied to clipboard');
@@ -46,7 +49,9 @@ function rideAlongUrl() {
         lineName: props.status?.train.lineName,
         start: props.status?.train.origin.id.toString(),
         destination: props.status?.train.destination.id.toString(),
-        departure: props.status?.train.origin.departurePlanned ? props.status?.train.origin.departurePlanned.toString() : '',
+        departure: props.status?.train.origin.departurePlanned
+            ? props.status?.train.origin.departurePlanned.toString()
+            : '',
         idType: 'trwl',
         category: props.status?.train.category,
     });
@@ -65,12 +70,8 @@ const showDepartureNowButton = computed(() => {
     const train = props.status?.train;
     if (!train || !train.origin || !train.destination) return false;
 
-    const plannedDeparture = DateTime.fromISO(
-        train.origin.departurePlanned || train.origin.departure || '',
-    );
-    const plannedArrival = DateTime.fromISO(
-        train.destination.arrivalPlanned || train.destination.arrival || '',
-    );
+    const plannedDeparture = DateTime.fromISO(train.origin.departurePlanned || train.origin.departure || '');
+    const plannedArrival = DateTime.fromISO(train.destination.arrivalPlanned || train.destination.arrival || '');
     if (!plannedDeparture.isValid || !plannedArrival.isValid) return false;
 
     const now = DateTime.now();
@@ -81,12 +82,8 @@ const showArrivalNowButton = computed(() => {
     const train = props.status?.train;
     if (!train || !train.origin || !train.destination) return false;
 
-    const plannedDeparture = DateTime.fromISO(
-        train.origin.departurePlanned || train.origin.departure || '',
-    );
-    const plannedArrival = DateTime.fromISO(
-        train.destination.arrivalPlanned || train.destination.arrival || '',
-    );
+    const plannedDeparture = DateTime.fromISO(train.origin.departurePlanned || train.origin.departure || '');
+    const plannedArrival = DateTime.fromISO(train.destination.arrivalPlanned || train.destination.arrival || '');
     if (!plannedDeparture.isValid || !plannedArrival.isValid) return false;
 
     const now = DateTime.now();
@@ -96,40 +93,34 @@ const showArrivalNowButton = computed(() => {
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
 function getNowWithoutSeconds(): string {
-    return DateTime.now().set({ second: 0, millisecond: 0 }).toISO({ suppressSeconds: true, suppressMilliseconds: true });
+    return DateTime.now()
+        .set({ second: 0, millisecond: 0 })
+        .toISO({ suppressSeconds: true, suppressMilliseconds: true });
 }
 
 function departureNow() {
     api.status
-        .updateSingleStatus(
-          { manualDeparture: getNowWithoutSeconds() } as StatusUpdateBody,
-          props.status.id,
-        )
-        .then((status) => {
+        .updateSingleStatus({ manualDeparture: getNowWithoutSeconds() } as StatusUpdateBody, props.status.id)
+        .then(status => {
             emit('status-updated', status.data.data);
         })
-        .catch((error) => {
+        .catch(error => {
             console.error('Error updating status:', error);
         });
 }
 
 function arrivalNow() {
     api.status
-        .updateSingleStatus(
-          { manualArrival: getNowWithoutSeconds() } as StatusUpdateBody,
-          props.status.id,
-        )
-        .then((status) => {
+        .updateSingleStatus({ manualArrival: getNowWithoutSeconds() } as StatusUpdateBody, props.status.id)
+        .then(status => {
             emit('status-updated', status.data.data);
         })
-        .catch((error) => {
+        .catch(error => {
             console.error('Error updating status:', error);
         });
 }
 
-const canModerateTarget = computed(
-    () => !!user.user && user.user.id !== props.status.userDetails.id,
-);
+const canModerateTarget = computed(() => !!user.user && user.user.id !== props.status.userDetails.id);
 
 const busyMute = ref(false);
 const busyBlock = ref(false);
@@ -167,9 +158,9 @@ async function handleBlock() {
 <template>
     <div class="dropdown dropdown-flex">
         <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
-      &nbsp;
+            &nbsp;
             <i class="fa fa-ellipsis-vertical" aria-hidden="true" />
-      &nbsp;
+            &nbsp;
         </a>
         <ul class="dropdown-menu">
             <li>
@@ -184,7 +175,7 @@ async function handleBlock() {
                 <template v-if="user.user.id == status.userDetails.id">
                     <template v-if="showArrivalNowButton || showDepartureNowButton">
                         <li>
-                            <hr class="dropdown-divider">
+                            <hr class="dropdown-divider" />
                         </li>
                         <li v-if="showDepartureNowButton">
                             <button class="dropdown-item" type="button" @click="departureNow()">
@@ -203,7 +194,7 @@ async function handleBlock() {
                             </button>
                         </li>
                         <li>
-                            <hr class="dropdown-divider">
+                            <hr class="dropdown-divider" />
                         </li>
                     </template>
                     <li>
@@ -233,13 +224,10 @@ async function handleBlock() {
                         </a>
                     </li>
                     <li>
-                        <hr class="dropdown-divider">
+                        <hr class="dropdown-divider" />
                     </li>
                     <li>
-                        <a
-                            :href="`/report?subjectType=Status&subjectId=${status.id}`"
-                            class="dropdown-item"
-                        >
+                        <a :href="`/report?subjectType=Status&subjectId=${status.id}`" class="dropdown-item">
                             <div class="dropdown-icon-suspense">
                                 <i class="fas fa-flag" aria-hidden="true" />
                             </div>
@@ -248,12 +236,7 @@ async function handleBlock() {
                     </li>
 
                     <li v-if="canModerateTarget">
-                        <button
-                            class="dropdown-item"
-                            type="button"
-                            :disabled="busyMute"
-                            @click="handleMute"
-                        >
+                        <button class="dropdown-item" type="button" :disabled="busyMute" @click="handleMute">
                             <div class="dropdown-icon-suspense">
                                 <i class="fas fa-volume-mute" aria-hidden="true" />
                             </div>
@@ -277,7 +260,7 @@ async function handleBlock() {
                 </template>
                 <template v-if="user?.isAdmin">
                     <li>
-                        <hr class="dropdown-divider">
+                        <hr class="dropdown-divider" />
                     </li>
                     <li>
                         <a :href="`/admin/statuses/${status.id}/edit`" class="dropdown-item">

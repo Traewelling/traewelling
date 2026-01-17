@@ -14,7 +14,12 @@ export default {
     components: {
         LoadingSkeletonRows,
         StationBoardEntry,
-        StationAutocomplete, CheckinInterface, CheckinLineRun, LineIndicator, ProductIcon, FullScreenModal,
+        StationAutocomplete,
+        CheckinInterface,
+        CheckinLineRun,
+        LineIndicator,
+        ProductIcon,
+        FullScreenModal,
     },
     data() {
         return {
@@ -145,18 +150,20 @@ export default {
 
             let travelType = this.travelType ? this.travelType : '';
 
-            this.pushHistory(new URLSearchParams({
-                stationId: this.trwlStationId,
-                stationName: this.stationName,
-                when: time,
-                travelType: travelType,
-            }));
+            this.pushHistory(
+                new URLSearchParams({
+                    stationId: this.trwlStationId,
+                    stationName: this.stationName,
+                    when: time,
+                    travelType: travelType,
+                }),
+            );
 
-            fetch(`/api/v1/station/${this.trwlStationId}/departures?when=${time}&travelType=${travelType}`)
-                .then((response) => {
+            fetch(`/api/v1/station/${this.trwlStationId}/departures?when=${time}&travelType=${travelType}`).then(
+                response => {
                     this.loading = false;
                     if (response.ok) {
-                        response.json().then((result) => {
+                        response.json().then(result => {
                             if (appendPosition === 0) {
                                 this.data = result.data;
                             } else if (appendPosition === 1) {
@@ -166,7 +173,9 @@ export default {
                             }
                             this.meta = result.meta;
                             this.stationName = result.meta.station.name;
-                            this.removedLicenses = Array.isArray(result.meta.removedLicenses) ? result.meta.removedLicenses : [];
+                            this.removedLicenses = Array.isArray(result.meta.removedLicenses)
+                                ? result.meta.removedLicenses
+                                : [];
 
                             this.firstFetchTime = DateTime.fromISO(this.meta?.times?.now);
                         });
@@ -175,7 +184,8 @@ export default {
                             window.notyf.error(trans('messages.exception.hafas.502'));
                         }
                     }
-                });
+                },
+            );
         },
         formatTime(time) {
             return DateTime.fromISO(time).toFormat('HH:mm');
@@ -210,7 +220,7 @@ export default {
                 }
                 this.show = true;
                 this.$refs?.modal?.show();
-                return new Promise((resolve) => resolve());
+                return new Promise(resolve => resolve());
             }
 
             if (!urlParams.has('stationId')) {
@@ -224,7 +234,7 @@ export default {
             this.trwlStationId = urlParams.get('stationId');
             this.show = false;
             this.$refs.modal.hide();
-            return new Promise((resolve) => resolve());
+            return new Promise(resolve => resolve());
         },
         popstateListener() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -300,8 +310,11 @@ export default {
                             v-if="getActiveLanguage().startsWith('de')"
                             target="_blank"
                             href="https://help.traewelling.de/features/timetable/licensing/"
-                        >help.traewelling.de/features/timetable/licensing</a>
-                        <a v-else target="_blank" href="https://help.traewelling.de/en/features/timetable/licensing/">help.traewelling.de/en/features/timetable/licensing</a>
+                            >help.traewelling.de/features/timetable/licensing</a
+                        >
+                        <a v-else target="_blank" href="https://help.traewelling.de/en/features/timetable/licensing/"
+                            >help.traewelling.de/en/features/timetable/licensing</a
+                        >
                     </p>
                 </div>
             </div>
@@ -339,12 +352,7 @@ export default {
             />
         </template>
         <template v-if="showCheckinInterface" #close>
-            <button
-                type="button"
-                class="btn-close"
-                aria-label="Back"
-                @click="goBackToLineRun"
-            />
+            <button type="button" class="btn-close" aria-label="Back" @click="goBackToLineRun" />
         </template>
         <template v-if="showCheckinInterface" #body>
             <CheckinInterface
@@ -356,12 +364,7 @@ export default {
     </FullScreenModal>
 
     <div class="text-center mb-2">
-        <button
-            type="button"
-            class="btn btn-primary"
-            :disabled="loading"
-            @click="fetchPrevious"
-        >
+        <button type="button" class="btn btn-primary" :disabled="loading" @click="fetchPrevious">
             <i class="fa-solid fa-angle-up" />
         </button>
     </div>
@@ -371,9 +374,9 @@ export default {
     <template v-if="!loading && data.length === 0">
         <div class="card mb-1 dep-card mt-3 mb-3">
             <div class="text-center my-auto py-3">
-                {{ trans("stationboard.no-departures") }}
+                {{ trans('stationboard.no-departures') }}
                 <div v-if="fetchTime">
-                    <br>
+                    <br />
                     {{ trans('requested-timestamp') }}: {{ formatTime(fetchTime) }}
                 </div>
             </div>
@@ -390,12 +393,7 @@ export default {
     />
 
     <div class="text-center mt-2">
-        <button
-            type="button"
-            class="btn btn-primary"
-            :disabled="loading"
-            @click="fetchNext"
-        >
+        <button type="button" class="btn btn-primary" :disabled="loading" @click="fetchNext">
             <i class="fa-solid fa-angle-down" />
         </button>
     </div>
@@ -403,17 +401,17 @@ export default {
 
 <style scoped lang="scss">
 .product-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
 }
 
 .timeline {
-  margin-left: -1rem;
+    margin-left: -1rem;
 }
 
 .second-stop {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 </style>

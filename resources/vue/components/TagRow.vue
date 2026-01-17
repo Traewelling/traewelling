@@ -30,7 +30,7 @@ export default {
     },
     computed: {
         tagKeys() {
-            return this.baseKeys.filter((key) => !this.exclude.includes(key));
+            return this.baseKeys.filter(key => !this.exclude.includes(key));
         },
         disabled() {
             return this.tagKeys.length === 0;
@@ -122,20 +122,9 @@ export default {
             class="form-control border-secondary mobile-input-fs-16"
             :disabled="disabled"
             @keydown.enter="addTag"
-        >
-        <VisibilityDropdown
-            :start-value="visibility"
-            :disabled="disabled"
-            @update:model-value="setVisibility"
         />
-        <button
-            v-if="!list"
-            class="btn btn-primary"
-            :disabled="disabled"
-            @click="addTag"
-        >
-            Add
-        </button>
+        <VisibilityDropdown :start-value="visibility" :disabled="disabled" @update:model-value="setVisibility" />
+        <button v-if="!list" class="btn btn-primary" :disabled="disabled" @click="addTag">Add</button>
         <button v-if="list" class="btn btn-outline-danger" @click="deleteTag">
             <i class="fa fa-trash" />
         </button>
@@ -144,6 +133,6 @@ export default {
 
 <style scoped lang="scss">
 .w-0125 {
-  width: 12.5%;
+    width: 12.5%;
 }
 </style>

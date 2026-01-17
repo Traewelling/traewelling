@@ -59,7 +59,6 @@ export default {
                                 time: { unit: 'day' },
                             },
                         },
-
                     },
                 });
             });
@@ -73,11 +72,7 @@ export default {
         <div class="card-body">
             <h5>{{ trans('stats.time') }}</h5>
             <div style="height: 250px">
-                <canvas
-                    ref="canvas"
-                    role="img"
-                    :aria-label="trans('stats.time') + ' ' + trans('time.minutes')"
-                />
+                <canvas ref="canvas" role="img" :aria-label="trans('stats.time') + ' ' + trans('time.minutes')" />
             </div>
         </div>
     </div>

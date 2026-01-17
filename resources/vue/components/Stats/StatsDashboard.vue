@@ -19,11 +19,11 @@ const notyf = new Notyf();
 const until = ref(new Date() as Date);
 const from = ref(new Date(new Date().setMonth(new Date().getMonth() - 3)) as Date);
 
-const globalFrom = ref(null as Date|null);
-const globalUntil = ref(null as Date|null);
+const globalFrom = ref(null as Date | null);
+const globalUntil = ref(null as Date | null);
 
 function getQueryParameters() {
-// Get Query Parameters
+    // Get Query Parameters
     const urlParams = new URLSearchParams(window.location.search);
     const fromUrlString = urlParams.get('from');
     if (fromUrlString && fromUrlString !== fromStr.value) {
@@ -125,8 +125,8 @@ onMounted(() => {
 
 <template>
     <div class="stats-dashboard">
-        <h4>{{ trans('stats.personal', {fromDate: formatDate(from), toDate: formatDate(until)}) }}</h4>
-        <hr>
+        <h4>{{ trans('stats.personal', { fromDate: formatDate(from), toDate: formatDate(until) }) }}</h4>
+        <hr />
         <div class="row mb-3">
             <div class="col-md-3">
                 <label for="fromDate" class="sr-only">{{ trans('stats.from') }}</label>
@@ -136,7 +136,7 @@ onMounted(() => {
                     class="form-control"
                     :value="from.toISOString().split('T')[0]"
                     @change="from = new Date($event.target.value)"
-                >
+                />
             </div>
             <div class="col-md-3">
                 <label for="untilDate" class="sr-only">{{ trans('stats.to') }}</label>
@@ -146,7 +146,7 @@ onMounted(() => {
                     :value="until.toISOString().split('T')[0]"
                     type="date"
                     @change="until = new Date($event.target.value)"
-                >
+                />
             </div>
         </div>
         <div class="row">
@@ -184,11 +184,7 @@ onMounted(() => {
                 </p>
             </div>
             <div class="col-12 mb-4">
-                <ChartVolume
-                    v-if="data.time.length"
-                    :key="'volume-' + fromStr + '-' + untilStr"
-                    :data="data.time"
-                />
+                <ChartVolume v-if="data.time.length" :key="'volume-' + fromStr + '-' + untilStr" :data="data.time" />
                 <p v-else class="text-danger font-weight-bold mt-2">
                     {{ trans('stats.no-data') }}
                 </p>

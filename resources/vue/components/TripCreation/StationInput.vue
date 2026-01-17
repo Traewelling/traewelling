@@ -67,9 +67,9 @@ export default {
         },
     },
     mounted() {
-    // I hate it, it's extremely ugly, but it works
-    // see https://github.com/vuejs/vue/issues/5886
-    // There is a plugin for this, but it's not worth it with only one component
+        // I hate it, it's extremely ugly, but it works
+        // see https://github.com/vuejs/vue/issues/5886
+        // There is a plugin for this, but it's not worth it with only one component
         this.id = Math.random().toString().substring(2);
         this.getRecent();
 
@@ -85,7 +85,6 @@ export default {
                 return object.toFormat('HH:mm');
             }
             return '--:--';
-
         },
         showModal() {
             this.$refs.modal.show();
@@ -121,8 +120,8 @@ export default {
             this.timeFieldB = this.formatTime(event.target.value);
         },
         getRecent() {
-            fetch('/api/v1/trains/station/history').then((response) => {
-                response.json().then((result) => {
+            fetch('/api/v1/trains/station/history').then(response => {
+                response.json().then(result => {
                     this.recent = result.data;
                 });
             });
@@ -139,8 +138,8 @@ export default {
                 return;
             }
             let query = this.stationInput.replace(/%2F/, ' ').replace(/\//, ' ');
-            fetch(`/api/v1/stations/?query=${query}`).then((response) => {
-                response.json().then((result) => {
+            fetch(`/api/v1/stations/?query=${query}`).then(response => {
+                response.json().then(result => {
                     this.autocompleteList = result.data;
                     this.loading = false;
                 });
@@ -175,7 +174,7 @@ export default {
                     class="form-control mobile-input-fs-16"
                     name="station"
                     type="text"
-                >
+                />
                 <button class="btn btn-light" type="button" @click="clearInput">
                     <i class="fa-solid fa-delete-left" />
                 </button>
@@ -187,11 +186,7 @@ export default {
                     :station="item"
                     @click="setStation(item)"
                 />
-                <AutocompleteListEntry
-                    v-for="item in autocompleteList"
-                    :station="item"
-                    @click="setStation(item)"
-                />
+                <AutocompleteListEntry v-for="item in autocompleteList" :station="item" @click="setStation(item)" />
             </ul>
 
             <!-- Time Fields -->
@@ -209,7 +204,7 @@ export default {
                         type="datetime-local"
                         :value="arrivalTime"
                         @input="timeFieldAChanged"
-                    >
+                    />
                 </div>
             </div>
 
@@ -227,7 +222,7 @@ export default {
                         type="datetime-local"
                         :value="departureTime"
                         @input="timeFieldBChanged"
-                    >
+                    />
                 </div>
             </div>
         </template>
@@ -243,7 +238,7 @@ export default {
             :aria-label="placeholder"
             aria-describedby="basic-addon1"
             @focusin="showModal"
-        >
+        />
         <span v-if="departure && arrival" class="input-group-text font-monospace" @click="showModalFocusTime(false)">
             {{ timeFieldA }}
         </span>

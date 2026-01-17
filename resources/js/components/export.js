@@ -42,7 +42,17 @@ function selectAll() {
 }
 
 function selectNominal() {
-    const nominal = ['status_id', 'line_name', 'origin_name', 'departure_planned', 'destination_name', 'arrival_planned', 'distance', 'points', 'body'];
+    const nominal = [
+        'status_id',
+        'line_name',
+        'origin_name',
+        'departure_planned',
+        'destination_name',
+        'arrival_planned',
+        'distance',
+        'points',
+        'body',
+    ];
     showWarning(false);
 
     selectFromArray(nominal);

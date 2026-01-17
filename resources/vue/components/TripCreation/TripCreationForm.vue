@@ -71,8 +71,7 @@ export default {
             for (let i = 0; i < oldLen; i++) {
                 try {
                     if (this.stopovers[i]?.station?.id) this.$refs.map.removeMarker(i);
-                } catch (_) {
-                }
+                } catch (_) {}
             }
 
             const first = imported[0]; //origin
@@ -101,7 +100,7 @@ export default {
 
             this.$nextTick(() => {
                 const refs = this.$refs.stopoverInputs;
-                const children = Array.isArray(refs) ? refs : (refs ? [refs] : []);
+                const children = Array.isArray(refs) ? refs : refs ? [refs] : [];
                 middle.forEach((s, idx) => {
                     const child = children[idx];
                     if (child?.setStation && s.station?.id) {
@@ -187,7 +186,9 @@ export default {
             this.form.destinationId = item.id;
         },
         setArrival(time) {
-            this.destinationArrivalLocal = DateTime.fromISO(time, this.destinationTimezone).toFormat("yyyy-MM-dd'T'HH:mm");
+            this.destinationArrivalLocal = DateTime.fromISO(time, this.destinationTimezone).toFormat(
+                "yyyy-MM-dd'T'HH:mm",
+            );
             this.form.destinationArrivalPlanned = DateTime.fromISO(time, this.destinationTimezone).toISO();
             this.validateTimes();
         },
@@ -231,13 +232,23 @@ export default {
             }
 
             this.form.lineName = this.trainTypeInput;
-            this.form.journeyNumber = !isNaN(this.journeyNumberInput) && !isNaN(parseInt(this.journeyNumberInput))
-                ? parseInt(this.journeyNumberInput) : null;
-            this.form.stopovers = this.stopovers.map((stopover) => {
+            this.form.journeyNumber =
+                !isNaN(this.journeyNumberInput) && !isNaN(parseInt(this.journeyNumberInput))
+                    ? parseInt(this.journeyNumberInput)
+                    : null;
+            this.form.stopovers = this.stopovers.map(stopover => {
                 return {
                     stationId: stopover.station.id,
-                    departure: DateTime.fromFormat(stopover.departurePlanned, "yyyy-MM-dd'T'HH:mm", this.originTimezone).toISO(),
-                    arrival: DateTime.fromFormat(stopover.arrivalPlanned, "yyyy-MM-dd'T'HH:mm", this.originTimezone).toISO(),
+                    departure: DateTime.fromFormat(
+                        stopover.departurePlanned,
+                        "yyyy-MM-dd'T'HH:mm",
+                        this.originTimezone,
+                    ).toISO(),
+                    arrival: DateTime.fromFormat(
+                        stopover.arrivalPlanned,
+                        "yyyy-MM-dd'T'HH:mm",
+                        this.originTimezone,
+                    ).toISO(),
                 };
             });
             this.form.category = this.selectedCategory.value;
@@ -249,9 +260,9 @@ export default {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(this.form),
-            }).then((data) => {
+            }).then(data => {
                 if (data.ok) {
-                    data.json().then((result) => {
+                    data.json().then(result => {
                         result = result.data;
                         let query = {
                             tripId: result.id,
@@ -265,7 +276,7 @@ export default {
                         window.location.href = `/stationboard?${new URLSearchParams(query).toString()}`;
                     });
                 } else if (data.status === 403 || data.status === 422 || data.status === 400) {
-                    data.json().then((result) => {
+                    data.json().then(result => {
                         notyf.error(result.message);
                     });
                 } else {
@@ -278,15 +289,19 @@ export default {
             this.stopovers[key].station = item;
         },
         setStopoverDeparture(time, key) {
-            this.stopovers[key].departurePlanned = DateTime.fromISO(time, this.originTimezone).toFormat("yyyy-MM-dd'T'HH:mm");
+            this.stopovers[key].departurePlanned = DateTime.fromISO(time, this.originTimezone).toFormat(
+                "yyyy-MM-dd'T'HH:mm",
+            );
             this.validateTimes();
         },
         setStopoverArrival(time, key) {
-            this.stopovers[key].arrivalPlanned = DateTime.fromISO(time, this.destinationTimezone).toFormat("yyyy-MM-dd'T'HH:mm");
+            this.stopovers[key].arrivalPlanned = DateTime.fromISO(time, this.destinationTimezone).toFormat(
+                "yyyy-MM-dd'T'HH:mm",
+            );
             this.validateTimes();
         },
         checkDisallowed() {
-            this.showDisallowed = this.disallowed.some((disallowed) => {
+            this.showDisallowed = this.disallowed.some(disallowed => {
                 return this.trainTypeInput.toLowerCase().includes(disallowed);
             });
         },
@@ -305,16 +320,16 @@ export default {
                         'Content-Type': 'application/json',
                     },
                 })
-                    .then((response) => {
+                    .then(response => {
                         if (!response.ok) {
                             throw new Error(response.statusText);
                         }
                         return response.json();
                     })
-                    .then((result) => {
+                    .then(result => {
                         this.$refs.originInput.setStation(result.data);
                     })
-                    .catch((error) => {
+                    .catch(error => {
                         console.error(error);
                     });
             }
@@ -330,20 +345,20 @@ export default {
                     'Content-Type': 'application/json',
                 },
             })
-                .then((response) => {
+                .then(response => {
                     if (!response.ok) {
                         throw new Error(response.statusText);
                     }
                     return response.json();
                 })
-                .then((result) => {
+                .then(result => {
                     this.operators.push(...result.data);
 
                     if (result.meta.next_cursor) {
                         this.loadOperators(result.meta.next_cursor);
                     }
                 })
-                .catch((error) => {
+                .catch(error => {
                     console.error(error);
                 });
         },
@@ -358,19 +373,19 @@ export default {
     <div class="row mt-n4 mb-4 border-bottom d-block d-md-none">
         <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link" :class="{'active': tripDataActive}" @click="showData">
+                <button class="nav-link" :class="{ active: tripDataActive }" @click="showData">
                     {{ trans('trip_creation.form.trip_data') }}
                 </button>
             </li>
             <li class="nav-item" role="presentation" @click="showMap">
-                <button class="nav-link" :class="{'active': !tripDataActive}">
+                <button class="nav-link" :class="{ active: !tripDataActive }">
                     {{ trans('trip_creation.form.map') }}
                 </button>
             </li>
         </ul>
     </div>
     <div class="row full-height mt-n4 mx-0">
-        <div class="col d-md-block col-md-5 col-lg-4 col-xl-3 p-0 h-100" :class="{'d-none': !tripDataActive}">
+        <div class="col d-md-block col-md-5 col-lg-4 col-xl-3 p-0 h-100" :class="{ 'd-none': !tripDataActive }">
             <div id="TripCreationMetaDataAccordion" class="accordion accordion-flush border-bottom">
                 <div class="accordion-item">
                     <h2 id="accordionTripInfo" class="accordion-header">
@@ -390,7 +405,9 @@ export default {
                                     </span>
                                     <span v-else class="fw-bold">
                                         {{ trainTypeInput }}
-                                        <span class="fw-lighter fst-italic text-secondary">{{ journeyNumberInput }}</span>
+                                        <span class="fw-lighter fst-italic text-secondary">{{
+                                            journeyNumberInput
+                                        }}</span>
                                     </span>
                                 </span>
                             </div>
@@ -411,7 +428,7 @@ export default {
                                 :aria-label="trans('trip_creation.form.line')"
                                 aria-describedby="basic-addon1"
                                 @focusout="onLineInput"
-                            >
+                            />
                             <input
                                 v-model="journeyNumberInput"
                                 type="text"
@@ -419,7 +436,7 @@ export default {
                                 :placeholder="trans('trip_creation.form.number')"
                                 :aria-label="trans('trip_creation.form.number')"
                                 aria-describedby="basic-addon1"
-                            >
+                            />
                             <div v-show="showDisallowed" class="alert alert-danger mt-2">
                                 <i class="fas fa-triangle-exclamation" />
                                 {{ trans('trip_creation.limitations.6') }}
@@ -445,7 +462,7 @@ export default {
                                 {{ selectedCategory.emoji }}
                                 <span class="d-flex justify-content-between w-100 px-2">
                                     <span class="fw-bold">{{ trans('trip_creation.form.travel_type') }}</span>
-                                    <span>{{ trans("transport_types." + selectedCategory.value) }}</span>
+                                    <span>{{ trans('transport_types.' + selectedCategory.value) }}</span>
                                 </span>
                             </div>
                         </button>
@@ -466,9 +483,9 @@ export default {
                                         class="form-check-input me-1"
                                         name="categoryRadio"
                                         :value="item"
-                                    >
+                                    />
                                     <label class="form-check-label stretched-link" :for="item.value">
-                                        {{ item.emoji }} {{ trans("transport_types." + item.value) }}
+                                        {{ item.emoji }} {{ trans('transport_types.' + item.value) }}
                                     </label>
                                 </li>
                             </ul>
@@ -508,9 +525,7 @@ export default {
                         <div class="accordion-body">
                             <!-- todo: make searchable -->
                             <select v-model="selectedOperator" class="form-select">
-                                <option selected>
-                                    -/-
-                                </option>
+                                <option selected>-/-</option>
                                 <option v-for="operator in operators" :value="operator">
                                     {{ operator.name }}
                                 </option>
@@ -549,7 +564,7 @@ export default {
 
                 <div class="mb-2 px-3 d-flex align-items-center">
                     <a href="#" @click="addStopover">
-                        {{ trans("trip_creation.form.add_stopover") }}
+                        {{ trans('trip_creation.form.add_stopover') }}
                         <i class="fa fa-plus" aria-hidden="true" />
                     </a>
                 </div>
@@ -573,11 +588,11 @@ export default {
                         :title="trans('trip_creation.csv_import.button')"
                     >
                         <i class="fa-solid fa-file-csv me-1" aria-hidden="true" />
-                        <span class="d-none d-sm-inline">{{ trans("trip_creation.csv_import.button") }}</span>
+                        <span class="d-none d-sm-inline">{{ trans('trip_creation.csv_import.button') }}</span>
                     </a>
 
                     <button type="submit" class="btn btn-primary">
-                        {{ trans("trip_creation.form.save") }}
+                        {{ trans('trip_creation.form.save') }}
                     </button>
                 </div>
             </form>
@@ -585,41 +600,39 @@ export default {
             <div class="alert alert-warning m-2">
                 <h2 class="fs-5">
                     <i class="fa fa-exclamation-triangle" aria-hidden="true" />
-                    {{ trans("trip_creation.limitations") }}
+                    {{ trans('trip_creation.limitations') }}
                 </h2>
 
                 <ul>
                     <li>
-                        {{ trans("trip_creation.limitations.2") }}
-                        <small>(<a
-                            href="https://help.traewelling.de/features/map/"
-                            target="_blank"
-                        >{{ trans("messages.cookie-notice-learn") }}</a>)</small>
+                        {{ trans('trip_creation.limitations.2') }}
+                        <small
+                            >(<a href="https://help.traewelling.de/features/map/" target="_blank">{{
+                                trans('messages.cookie-notice-learn')
+                            }}</a
+                            >)</small
+                        >
                     </li>
-                    <li>{{ trans("trip_creation.limitations.3") }}</li>
+                    <li>{{ trans('trip_creation.limitations.3') }}</li>
                 </ul>
 
                 <p class="fw-bold text-danger">
-                    {{ trans("trip_creation.limitations.6") }}
+                    {{ trans('trip_creation.limitations.6') }}
                     <a :href="trans('trip_creation.limitations.6.link')" target="_blank">
                         {{ trans('trip_creation.limitations.6.rules') }}
                     </a>
                 </p>
             </div>
         </div>
-        <div class="col d-md-block bg-warning px-0" :class="{'d-none': tripDataActive}">
+        <div class="col d-md-block bg-warning px-0" :class="{ 'd-none': tripDataActive }">
             <TripCreationMap ref="map" />
         </div>
     </div>
-    <StopoversCsvImporter
-        offcanvas-id="stopoversCsvImporterOffcanvas"
-        :max-items="50"
-        @imported="onCsvImported"
-    />
+    <StopoversCsvImporter offcanvas-id="stopoversCsvImporterOffcanvas" :max-items="50" @imported="onCsvImported" />
 </template>
 
 <style scoped>
 .full-height {
-  min-height: 90vh;
+    min-height: 90vh;
 }
 </style>

@@ -136,11 +136,12 @@ function statusUpdated(status: StatusResource) {
     <Transition>
         <div v-show="!deleted" ref="rootEl" class="card status mb-3">
             <div v-if="showMap" class="card-img-top">
-                <div id="activeJourneys" class="statusMap embed-responsive" :class="{'map embed-responsive-16by9': !userStore?.hasBeta }">
-                    <Map
-                        v-if="userStore?.hasBeta"
-                        :statuses="[statusObject]"
-                    />
+                <div
+                    id="activeJourneys"
+                    class="statusMap embed-responsive"
+                    :class="{ 'map embed-responsive-16by9': !userStore?.hasBeta }"
+                >
+                    <Map v-if="userStore?.hasBeta" :statuses="[statusObject]" />
                     <ActiveJourneyMap
                         v-else
                         ref="map"
@@ -160,7 +161,7 @@ function statusUpdated(status: StatusResource) {
                             decoding="async"
                             :src="statusObject.userDetails.profilePicture"
                             :alt="statusObject.userDetails.username"
-                        >
+                        />
                     </a>
                 </div>
 
@@ -199,10 +200,10 @@ function statusUpdated(status: StatusResource) {
 <style lang="scss" scoped>
 /* we will explain what these classes do next! */
 .v-leave-active {
-  transition: opacity 0.5s ease;
+    transition: opacity 0.5s ease;
 }
 
 .v-leave-to {
-  opacity: 0;
+    opacity: 0;
 }
 </style>

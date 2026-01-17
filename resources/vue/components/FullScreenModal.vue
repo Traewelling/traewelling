@@ -32,24 +32,13 @@ export default {
 </script>
 
 <template>
-    <div
-        ref="myModal"
-        class="modal"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-    >
+    <div ref="myModal" class="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-fullscreen-md-down">
             <div class="modal-content">
                 <div class="modal-header d-flex">
                     <slot name="header" />
                     <slot name="close">
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                        />
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
                     </slot>
                 </div>
                 <div class="modal-body" :class="bodyClass">
@@ -57,10 +46,10 @@ export default {
                 </div>
                 <div class="modal-footer d-none">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        {{ trans("menu.close") }}
+                        {{ trans('menu.close') }}
                     </button>
                     <button type="button" class="btn btn-primary">
-                        {{ trans("modals.edit-confirm") }}
+                        {{ trans('modals.edit-confirm') }}
                     </button>
                 </div>
             </div>
@@ -68,6 +57,4 @@ export default {
     </div>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

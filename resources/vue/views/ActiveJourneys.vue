@@ -22,15 +22,18 @@ const notyf = new Notyf({ position: { x: 'right', y: 'bottom' } });
 
 function fetchStatuses() {
     loading.value = true;
-    api.statuses.getActiveStatuses().then((response) => {
-        response.json().then((data) => {
-            statuses.value = data.data;
+    api.statuses
+        .getActiveStatuses()
+        .then(response => {
+            response.json().then(data => {
+                statuses.value = data.data;
+                loading.value = false;
+            });
+        })
+        .catch(error => {
             loading.value = false;
+            notyf.error('Error fetching statuses: ' + error.message);
         });
-    }).catch((error) => {
-        loading.value = false;
-        notyf.error('Error fetching statuses: ' + error.message);
-    });
 }
 
 function fetchStatusPositions(initialize: boolean = true) {
@@ -38,11 +41,11 @@ function fetchStatusPositions(initialize: boolean = true) {
 
     api.positions
         .getLivePositionsForActiveStatuses()
-        .then((response) => {
+        .then(response => {
             livePositions.value = response.data.data || [];
             const newBounds = LngLatBounds.fromLngLat(new LngLat(9.902056, 49.843), 1000000);
             for (const position of livePositions.value) {
-                position.polyline?.features?.forEach((feature) => {
+                position.polyline?.features?.forEach(feature => {
                     const coord = feature.geometry?.coordinates;
                     if (coord && coord[0] && coord[1]) {
                         newBounds.extend([coord[0], coord[1]]);
@@ -53,18 +56,16 @@ function fetchStatusPositions(initialize: boolean = true) {
                 bounds.value = newBounds;
             }
         })
-        .catch((error) => {
+        .catch(error => {
             console.error('Error fetching live positions: ' + error.message);
         });
 }
 
 function fetchEvents() {
     if (!user.hasBeta) return;
-    api.events
-        .getEvents()
-        .then((response) => {
-            events.value = response.data.data || [];
-        });
+    api.events.getEvents().then(response => {
+        events.value = response.data.data || [];
+    });
 }
 
 fetchStatuses();
@@ -97,9 +98,13 @@ setInterval(() => {
                         :coordinates="[trwlEvent.station.longitude, trwlEvent.station.latitude]"
                     >
                         <mgl-popup>
-                            <strong><a target="_blank" :href="trwlEvent.url">{{ trwlEvent.name }}</a></strong><br>
-                            <i class="fa fa-user-clock" /> {{ trwlEvent.host }}<br>
-                            <i class="fa fa-calendar-day" />{{ DtmRange.fromISO(trwlEvent.begin, trwlEvent.end).toLocaleDateString() }}<br>
+                            <strong
+                                ><a target="_blank" :href="trwlEvent.url">{{ trwlEvent.name }}</a></strong
+                            ><br />
+                            <i class="fa fa-user-clock" /> {{ trwlEvent.host }}<br />
+                            <i class="fa fa-calendar-day" />{{
+                                DtmRange.fromISO(trwlEvent.begin, trwlEvent.end).toLocaleDateString()
+                            }}<br />
                             <a :href="`/event/${trwlEvent.slug}`">{{ trans('events.show-all-for-event') }}</a>
                         </mgl-popup>
                     </mgl-marker>

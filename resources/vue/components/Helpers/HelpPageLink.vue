@@ -18,7 +18,6 @@ if (!activeLanguage.startsWith('de')) {
 const helpPageUrl = computed(() => {
     return `${baseUrl}${lang}${props.helpPage}`;
 });
-
 </script>
 
 <template>

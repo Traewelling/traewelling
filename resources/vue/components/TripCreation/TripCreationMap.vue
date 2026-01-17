@@ -59,10 +59,7 @@ export default defineComponent({
             this.points = [];
         },
         addMarker(data, index, length) {
-            let marker = L.marker(
-                [data.latitude, data.longitude],
-                { icon: trainIcon },
-            ).addTo(this.map);
+            let marker = L.marker([data.latitude, data.longitude], { icon: trainIcon }).addTo(this.map);
 
             marker.bindPopup(`<strong>${data.name}</strong> <i>${data.rilIdentifier || ''}</i>`);
 
@@ -77,7 +74,6 @@ export default defineComponent({
                 }
                 this.destination = this.createPointObject(data, marker);
             } else {
-
                 if (length === this.points.length) {
                     this.removeMarker(index);
                 }
@@ -102,9 +98,7 @@ export default defineComponent({
                 points = [...points, this.destination];
             }
 
-            let bounds = new L.featureGroup(
-                points.map(point => point.marker),
-            );
+            let bounds = new L.featureGroup(points.map(point => point.marker));
             this.map.fitBounds(bounds.getBounds());
         },
         removeMarker(index) {
@@ -124,24 +118,21 @@ export default defineComponent({
 </script>
 
 <template>
-    <div
-        ref="map"
-        class="map h-100"
-    />
+    <div ref="map" class="map h-100" />
 </template>
 
 <style>
 .marker-pin {
-  width: 20px;
-  height: 20px;
-  border-radius: 50% 50% 50% 0;
-  border-color: #830b62;
-  border-width: 1px;
-  background: #c30b82;
-  position: absolute;
-  transform: rotate(-45deg);
-  left: 50%;
-  top: 50%;
-  margin: -15px 0 0 -15px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50% 50% 50% 0;
+    border-color: #830b62;
+    border-width: 1px;
+    background: #c30b82;
+    position: absolute;
+    transform: rotate(-45deg);
+    left: 50%;
+    top: 50%;
+    margin: -15px 0 0 -15px;
 }
 </style>

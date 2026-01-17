@@ -10,7 +10,7 @@ import { trans } from 'laravel-vue-i18n';
 import LoadingSkeletonRows from '../components/Loader/LoadingSkeletonRows.vue';
 
 const props = defineProps<{
-  eventSlug: string;
+    eventSlug: string;
 }>();
 
 const statuses = ref<StatusResource[]>([]);
@@ -96,9 +96,8 @@ onMounted(() => {
 
         <div class="row justify-content-center mt-5">
             <small class="text-muted">
-                <sup>1</sup> {{ trans('events.disclaimer.organizer') }}
-                <sup>2</sup> {{ trans('events.disclaimer.source') }}
-                <sup>3</sup> {{ trans('events.disclaimer.warranty') }}
+                <sup>1</sup> {{ trans('events.disclaimer.organizer') }} <sup>2</sup>
+                {{ trans('events.disclaimer.source') }} <sup>3</sup> {{ trans('events.disclaimer.warranty') }}
             </small>
         </div>
     </div>

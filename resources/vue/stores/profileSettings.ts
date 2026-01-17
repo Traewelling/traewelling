@@ -53,19 +53,19 @@ export const useProfileSettingsStore = defineStore('profileSettings', {
         },
     },
     actions: {
-        async fetchSettings() : Promise<void> {
+        async fetchSettings(): Promise<void> {
             // Fetch Data every 15 Minutes
             // ToDo: reduce interval
             // ToDo: refresh with settings update
             // ToDo: invalidate when logging out
-            if (this.refreshed && (new Date().getTime() - new Date(this.refreshed).getTime()) < 60 * 15 * 1000) {
+            if (this.refreshed && new Date().getTime() - new Date(this.refreshed).getTime() < 60 * 15 * 1000) {
                 return;
             }
             this.loading = true;
             try {
-                this.settings  = await fetch('/api/v1/settings/profile')
-                    .then((response: { json: () => any; }) => response.json())
-                    .then((data: { data: any; }) => data.data);
+                this.settings = await fetch('/api/v1/settings/profile')
+                    .then((response: { json: () => any }) => response.json())
+                    .then((data: { data: any }) => data.data);
                 this.refreshed = new Date().toString();
             } catch (error) {
                 this.error = error;

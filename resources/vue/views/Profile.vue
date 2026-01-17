@@ -64,7 +64,7 @@ async function fetchStatuses(append = false) {
         lastPage.value = meta.last_page ?? null;
 
         if (lastPage.value === null) {
-            showMore.value = !!(json.links?.next);
+            showMore.value = !!json.links?.next;
         } else {
             showMore.value = currentPage.value < lastPage.value;
         }
@@ -96,7 +96,7 @@ function getStopoverForTrip(tripId: string) {
 }
 
 const isOwnProfile = computed(() => {
-    return authUser && (authUser.getId === userData.value?.id);
+    return authUser && authUser.getId === userData.value?.id;
 });
 
 function isNewDay(index: number): boolean {
@@ -117,7 +117,7 @@ function statsDailyHref(s: StatusResource): string {
 
 // Metrics
 const kmDisplay = computed(() => {
-    const meters = (userData.value?.trainDistance ?? 0);
+    const meters = userData.value?.trainDistance ?? 0;
     const km = meters / 1000;
     return km.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 });
@@ -126,13 +126,11 @@ const durationParts = computed(() => {
     const dur = Duration.fromObject({ minutes }).shiftTo('days', 'hours', 'minutes');
     return { d: dur.days ?? 0, h: dur.hours ?? 0, m: Math.round(dur.minutes ?? 0) };
 });
-const showPoints = computed(() =>
-    !!(userData.value?.pointsEnabled || authUser.user?.pointsEnabled),
-);
+const showPoints = computed(() => !!(userData.value?.pointsEnabled || authUser.user?.pointsEnabled));
 
 const mergedLinks = computed(() => {
     const links = [...(userData.value?.profileLinks ?? [])];
-    const hasMastodon = links.some((l) => (l.name || '').toUpperCase() === 'MASTODON');
+    const hasMastodon = links.some(l => (l.name || '').toUpperCase() === 'MASTODON');
     if (userData.value?.mastodonUrl && !hasMastodon) {
         links.push({ name: 'Mastodon', url: userData.value.mastodonUrl, icon: 'fa-brands fa-mastodon' });
     }
@@ -162,9 +160,9 @@ fetchStatuses(false);
                         <div class="col">
                             <i class="fa fa-stopwatch fa-2x text-trwl" />
                             <div class="h5 mb-0">
-                                {{ durationParts.d }}<small class="text-muted">d</small>&nbsp;
-                                {{ durationParts.h }}<small class="text-muted">h</small>&nbsp;
-                                {{ durationParts.m }}<small class="text-muted">min</small>
+                                {{ durationParts.d }}<small class="text-muted">d</small>&nbsp; {{ durationParts.h
+                                }}<small class="text-muted">h</small>&nbsp; {{ durationParts.m
+                                }}<small class="text-muted">min</small>
                             </div>
                         </div>
                         <div v-if="showPoints" class="col">
@@ -179,19 +177,13 @@ fetchStatuses(false);
             </div>
 
             <!-- Bio & links -->
-            <div
-                v-if="userData?.bio || mergedLinks.length"
-                class="card mb-3 shadow-sm rounded"
-            >
+            <div v-if="userData?.bio || mergedLinks.length" class="card mb-3 shadow-sm rounded">
                 <div class="card-body">
                     <p v-if="userData?.bio" class="text-muted fst-italic m-0">
                         <i class="fa fa-quote-left me-2" />
                         <span class="profile-bio" v-html="userData.bio" />
                     </p>
-                    <div
-                        v-if="mergedLinks.length"
-                        class="d-flex justify-content-center flex-wrap gap-3 mt-4"
-                    >
+                    <div v-if="mergedLinks.length" class="d-flex justify-content-center flex-wrap gap-3 mt-4">
                         <a
                             v-for="(l, i) in mergedLinks"
                             :key="i"
@@ -216,12 +208,7 @@ fetchStatuses(false);
             <template v-for="(s, i) in statuses" :key="s.id">
                 <h2 v-if="isNewDay(i)" class="mb-2 fs-5">
                     {{ dateTitleFor(s) }}
-                    <a
-                        v-if="isOwnProfile"
-                        :href="statsDailyHref(s)"
-                        class="text-trwl"
-                        aria-label="Tägliche Fahrten"
-                    >
+                    <a v-if="isOwnProfile" :href="statsDailyHref(s)" class="text-trwl" aria-label="Tägliche Fahrten">
                         <i class="fa-solid fa-map-location-dot" aria-hidden="true" />
                     </a>
                 </h2>
@@ -234,54 +221,29 @@ fetchStatuses(false);
             </template>
 
             <template v-if="loadingStatuses">
-                <LoadingSkeletonRows
-                    class="text-center"
-                    :row-height="30"
-                    :columns="1"
-                    :rows="1"
-                />
-                <LoadingSkeletonRows
-                    class="text-center"
-                    :row-height="15"
-                    :columns="1"
-                    :rows="1"
-                />
-                <LoadingSkeletonRows
-                    class="text-center mb-4"
-                    :row-height="206"
-                    :columns="1"
-                    :rows="5"
-                />
+                <LoadingSkeletonRows class="text-center" :row-height="30" :columns="1" :rows="1" />
+                <LoadingSkeletonRows class="text-center" :row-height="15" :columns="1" :rows="1" />
+                <LoadingSkeletonRows class="text-center mb-4" :row-height="206" :columns="1" :rows="5" />
             </template>
 
             <div v-if="!loadingStatuses && showMore" class="text-center my-4">
                 <button class="btn btn-primary" :disabled="loadingStatuses" @click="fetchStatuses(true)">
                     <i class="fa-solid fa-arrow-down" />
                 </button>
-                <div v-if="lastPage !== null" class="small text-muted mt-2">
-                    {{ currentPage }} / {{ lastPage }}
-                </div>
+                <div v-if="lastPage !== null" class="small text-muted mt-2">{{ currentPage }} / {{ lastPage }}</div>
             </div>
 
-            <div
-                v-if="!loadingStatuses && !showMore && statuses.length"
-                class="text-center my-4"
-            >
-                <p class="text-muted">
-                    Final stop. All change, please!
-                </p>
+            <div v-if="!loadingStatuses && !showMore && statuses.length" class="text-center my-4">
+                <p class="text-muted">Final stop. All change, please!</p>
             </div>
 
-            <div
-                v-if="!loadingStatuses && !statuses.length"
-                class="text-center my-4"
-            >
+            <div v-if="!loadingStatuses && !statuses.length" class="text-center my-4">
                 <span class="text-danger fs-3">
                     <template v-if="(userData?.trainDistance ?? 0) > 0">
-                        {{ trans('profile.no-visible-statuses', {username: userData?.displayName}) }}
+                        {{ trans('profile.no-visible-statuses', { username: userData?.displayName }) }}
                     </template>
                     <template v-else>
-                        {{ trans('profile.no-statuses', {username: userData?.displayName}) }}
+                        {{ trans('profile.no-statuses', { username: userData?.displayName }) }}
                     </template>
                 </span>
             </div>

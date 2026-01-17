@@ -42,9 +42,7 @@ export default {
             }
 
             if (this.errors.length > 0) {
-                const message = this.errors.join('\n\n') +
-            '\n\n' +
-            trans('events.request.warn.confirm');
+                const message = this.errors.join('\n\n') + '\n\n' + trans('events.request.warn.confirm');
 
                 if (confirm(message)) {
                     this.errors = [];
@@ -91,30 +89,20 @@ export default {
             <h2 id="heading-live-upcoming" class="fs-4">
                 <em class="far fa-calendar-plus" />
                 {{ trans('events.request') }}
-            </h2><small class="text-muted">
+            </h2>
+            <small class="text-muted">
                 {{ trans('events.notice.help') }}
                 <HelpPageLink help-page="/features/events">{{ trans('events.notice.helppage') }}</HelpPageLink>
             </small>
-            <hr>
+            <hr />
 
             <form @submit.prevent="submit">
                 <div class="form-floating mb-2">
-                    <input
-                        id="event-name"
-                        v-model="event.name"
-                        type="text"
-                        class="form-control"
-                        required
-                    >
+                    <input id="event-name" v-model="event.name" type="text" class="form-control" required />
                     <label class="form-label" for="event-name">{{ trans('events.name') }} *</label>
                 </div>
                 <div class="form-floating mb-2">
-                    <input
-                        id="event-host"
-                        v-model="event.host"
-                        type="text"
-                        class="form-control"
-                    >
+                    <input id="event-host" v-model="event.host" type="text" class="form-control" />
                     <label class="form-label" for="event-host">{{ trans('events.host') }}</label>
                 </div>
                 <div class="row">
@@ -127,43 +115,23 @@ export default {
                                 class="form-control"
                                 required
                                 @focusout="updateBegin"
-                            >
-                            <label class="form-label" for="event-begin">
-                                {{ trans('events.begin') }} *
-                            </label>
+                            />
+                            <label class="form-label" for="event-begin"> {{ trans('events.begin') }} * </label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-2 datepicker">
-                            <input
-                                id="event-end"
-                                v-model="event.end"
-                                type="date"
-                                class="form-control"
-                                required
-                            >
-                            <label class="form-label" for="event-end">
-                                {{ trans('events.end') }} *
-                            </label>
+                            <input id="event-end" v-model="event.end" type="date" class="form-control" required />
+                            <label class="form-label" for="event-end"> {{ trans('events.end') }} * </label>
                         </div>
                     </div>
                 </div>
                 <div class="form-floating mb-2">
-                    <input
-                        id="event-url"
-                        v-model="event.url"
-                        type="url"
-                        class="form-control"
-                    >
+                    <input id="event-url" v-model="event.url" type="url" class="form-control" />
                     <label class="form-label" for="event-url">{{ trans('events.url') }}</label>
                 </div>
                 <div class="form-floating mb-2">
-                    <input
-                        id="event-hashtag"
-                        v-model="event.hashtag"
-                        type="text"
-                        class="form-control"
-                    >
+                    <input id="event-hashtag" v-model="event.hashtag" type="text" class="form-control" />
                     <label class="form-label" for="event-requester-hashtag">{{ trans('events.hashtag') }}</label>
                 </div>
                 <div id="station-autocomplete-container" class="form-floating mb-2">
@@ -174,7 +142,7 @@ export default {
                         type="text"
                         name="nearestStation"
                         class="form-control"
-                    >
+                    />
                     <label class="form-label" for="station-autocomplete">{{ trans('events.closestStation') }}</label>
                 </div>
                 <button type="submit" class="btn btn-primary">
@@ -182,7 +150,7 @@ export default {
                 </button>
             </form>
 
-            <hr>
+            <hr />
             <small class="text-muted">{{ trans('events.notice') }}</small>
         </div>
     </div>

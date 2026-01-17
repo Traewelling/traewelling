@@ -50,33 +50,22 @@ export default {
 </script>
 
 <template>
-    <div
-        ref="modalComponent"
-        class="modal fade"
-        tabindex="-1"
-        aria-labelledby=""
-        aria-hidden="true"
-    >
+    <div ref="modalComponent" class="modal fade" tabindex="-1" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog" :class="dialogClass">
             <div class="modal-content">
                 <div class="modal-header" :class="headerClass">
-                    <h5 class="modal-title" :class="{'flex-grow-1': !!$slots['header-extra']}">
+                    <h5 class="modal-title" :class="{ 'flex-grow-1': !!$slots['header-extra'] }">
                         {{ title }}
                     </h5>
                     <slot name="header-extra" />
-                    <button
-                        type="button"
-                        class="btn-close"
-                        aria-label="Close"
-                        @click="hide"
-                    />
+                    <button type="button" class="btn-close" aria-label="Close" @click="hide" />
                 </div>
                 <div v-if="!hideBody" class="modal-body" :class="bodyClass">
                     <slot name="body" />
                 </div>
                 <div v-if="!hideFooter" class="modal-footer">
                     <button type="button" class="btn btn-secondary" @click="hide()">
-                        {{ trans("menu.close") }}
+                        {{ trans('menu.close') }}
                     </button>
                     <slot name="footer" />
                 </div>

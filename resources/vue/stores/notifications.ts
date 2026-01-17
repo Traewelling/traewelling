@@ -43,15 +43,14 @@ export const useNotificationsStore = defineStore('notifications', {
         },
         async toggleAllRead(): Promise<boolean> {
             try {
-                return await API.request('/notifications/read/all', 'PUT')
-                    .then(() => {
-                        this.notifications.map((notification: Notification) => {
-                            notification.readAt = new Date().toISOString();
-                            return notification;
-                        });
-                        this.count = 0;
-                        return true;
+                return await API.request('/notifications/read/all', 'PUT').then(() => {
+                    this.notifications.map((notification: Notification) => {
+                        notification.readAt = new Date().toISOString();
+                        return notification;
                     });
+                    this.count = 0;
+                    return true;
+                });
             } catch (error) {
                 this.error = error;
                 return false;

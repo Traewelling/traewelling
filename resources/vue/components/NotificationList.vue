@@ -41,30 +41,30 @@ export default {
         <div v-else class="text-center text-muted notifications-empty">
             <i class="fa-solid fa-envelope fs-1" />
             <p class="fs-5">
-                {{ $t("notifications.empty") }}
+                {{ $t('notifications.empty') }}
             </p>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
-@import "../../sass/variables";
+@import '../../sass/variables';
 
 .row {
-  background-color: white;
-  padding: 1rem 0;
-  border-bottom: 0.5rem solid $body-bg;
-  margin: 0;
+    background-color: white;
+    padding: 1rem 0;
+    border-bottom: 0.5rem solid $body-bg;
+    margin: 0;
 }
 
 .notifications-empty {
-  padding: 2rem 0;
+    padding: 2rem 0;
 }
 
 .dark {
-  .row {
-    background-color: $dm-base-5;
-    border-bottom-color: $dm-base-5;
-  }
+    .row {
+        background-color: $dm-base-5;
+        border-bottom-color: $dm-base-5;
+    }
 }
 </style>

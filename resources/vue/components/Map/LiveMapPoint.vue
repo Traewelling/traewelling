@@ -62,14 +62,15 @@ onUnmounted(() => {
         <template #marker>
             <img
                 class="img-thumbnail rounded-circle img-fluid"
-                style="width: 20px; padding: 1px;"
+                style="width: 20px; padding: 1px"
                 :src="point.status.user.profilePictureUrl"
                 :alt="point.status.user.username"
-            >
+            />
         </template>
         <mgl-popup ref="popup">
             <div>
-                <strong>{{ point.lineName }}</strong><br>
+                <strong>{{ point.lineName }}</strong
+                ><br />
             </div>
         </mgl-popup>
     </mgl-marker>

@@ -1,7 +1,6 @@
 'use strict';
 
 export default class API {
-
     static request(path, method = 'GET', data = {}, customErrorHandling = false) {
         let requestBody = undefined;
 

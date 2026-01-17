@@ -23,10 +23,7 @@ export class DtmRange {
         return range;
     }
 
-    toLocaleDateString(
-        formatOpts?: DateTimeFormatOptions,
-        opts?: LocaleOptions,
-    ): string {
+    toLocaleDateString(formatOpts?: DateTimeFormatOptions, opts?: LocaleOptions): string {
         if (this.isSameDay) {
             return this.dateTimeStart.toLocaleString(formatOpts, opts);
         }
@@ -34,10 +31,7 @@ export class DtmRange {
         return `${this.dateTimeStart.toLocaleString(formatOpts, opts)} - ${this.dateTimeEnd.toLocaleString(formatOpts, opts)}`;
     }
 
-    toLocaleDateTimeString(
-        formatOpts?: DateTimeFormatOptions,
-        opts?: LocaleOptions,
-    ): string {
+    toLocaleDateTimeString(formatOpts?: DateTimeFormatOptions, opts?: LocaleOptions): string {
         formatOpts = formatOpts || DateTime.DATETIME_FULL;
 
         return `${this.dateTimeStart.toLocaleString(formatOpts, opts)} - ${this.dateTimeEnd.toLocaleString(formatOpts, opts)}`;

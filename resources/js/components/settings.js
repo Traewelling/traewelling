@@ -2,7 +2,7 @@ import Croppie from 'croppie/croppie';
 import API from '../api/api';
 
 const uploadButton = document.getElementById('upload-button');
-const uploadDemo   = document.getElementById('upload-demo');
+const uploadDemo = document.getElementById('upload-demo');
 if (uploadButton && uploadDemo) {
     let resize = new Croppie(uploadDemo, {
         enableExif: true,
@@ -23,7 +23,7 @@ if (uploadButton && uploadDemo) {
         uploadButton.classList.remove('d-none');
         uploadDemo.classList.remove('d-none');
 
-        let reader    = new FileReader();
+        let reader = new FileReader();
         reader.onload = function (e) {
             const url = e.target.result;
             resize.bind({ url });
@@ -32,23 +32,25 @@ if (uploadButton && uploadDemo) {
     });
 
     document.querySelector('.upload-image').addEventListener('click', function () {
-        resize.result({
-            type: 'canvas',
-            size: 'viewport',
-        }).then(function (img) {
-            Settings.uploadProfilePicture(img)
-                .then(() => {
-                    document.getElementById('theProfilePicture').src = img;
-                    document.getElementById('btnModalDeleteProfilePicture')?.classList.remove('d-none');
-                })
-                .catch(function (error) {
-                    if (error.status === 403) {
-                        notyf.error('Forbidden: You are not allowed to upload a profile picture.');
-                    } else {
-                        notyf.error('An error occured while uploading the profile picture.');
-                    }
-                });
-        });
+        resize
+            .result({
+                type: 'canvas',
+                size: 'viewport',
+            })
+            .then(function (img) {
+                Settings.uploadProfilePicture(img)
+                    .then(() => {
+                        document.getElementById('theProfilePicture').src = img;
+                        document.getElementById('btnModalDeleteProfilePicture')?.classList.remove('d-none');
+                    })
+                    .catch(function (error) {
+                        if (error.status === 403) {
+                            notyf.error('Forbidden: You are not allowed to upload a profile picture.');
+                        } else {
+                            notyf.error('An error occured while uploading the profile picture.');
+                        }
+                    });
+            });
     });
 }
 
@@ -68,7 +70,6 @@ window.Settings = class Settings {
     }
 
     static uploadProfilePicture(image) {
-        return API.request('/settings/profilePicture', 'POST', { image: image })
-            .then(API.handleDefaultResponse);
+        return API.request('/settings/profilePicture', 'POST', { image: image }).then(API.handleDefaultResponse);
     }
 };

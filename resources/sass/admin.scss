@@ -1,24 +1,24 @@
-@use "./font-awesome";
+@use './font-awesome';
 
 // Variables
-@import "variables";
+@import 'variables';
 
 //Override some variables
 $primary: $trwlRot;
 $secondary: #ced4da;
-$success: #61CE5D;
-$info: #1487C7;
-$warning: #FA5719;
-$danger: #941E23;
+$success: #61ce5d;
+$info: #1487c7;
+$warning: #fa5719;
+$danger: #941e23;
 $light: #fff;
 $dark: #000;
 
 // Bootstrap
-@import "bootstrap";
+@import 'bootstrap';
 
-@import "leaflet/dist/leaflet.css";
-@import "awesomplete/awesomplete.css";
-@import "notyf/notyf.min.css";
+@import 'leaflet/dist/leaflet.css';
+@import 'awesomplete/awesomplete.css';
+@import 'notyf/notyf.min.css';
 
 #navbar-top {
     background-color: $primary;

@@ -57,10 +57,12 @@ export default {
                 type: 'doughnut',
                 data: {
                     labels: translatedLabels,
-                    datasets: [{
-                        data: this.series,
-                        label: this.trans('time.minutes'),
-                    }],
+                    datasets: [
+                        {
+                            data: this.series,
+                            label: this.trans('time.minutes'),
+                        },
+                    ],
                 },
                 options: {
                     responsive: true,
@@ -77,11 +79,7 @@ export default {
     <div class="card">
         <div class="card-body">
             <h5>{{ trans('stats.categories') }}</h5>
-            <canvas
-                ref="canvas"
-                role="img"
-                :aria-label="trans('stats.categories') + ' ' + trans('time.minutes')"
-            />
+            <canvas ref="canvas" role="img" :aria-label="trans('stats.categories') + ' ' + trans('time.minutes')" />
         </div>
     </div>
 </template>

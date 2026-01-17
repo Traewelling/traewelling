@@ -42,13 +42,13 @@ const model = defineModel();
         </label>
 
         <div class="col-md-6">
-            <div :class="{'input-group': !!prefix}">
+            <div :class="{ 'input-group': !!prefix }">
                 <span v-if="prefix" class="input-group-text">{{ prefix }}</span>
                 <select
                     :id="name"
                     v-model="model"
                     class="form-select"
-                    :class="{'is-invalid': errors.length}"
+                    :class="{ 'is-invalid': errors.length }"
                     :name="name"
                     :autocomplete="autocomplete"
                     :required="required"
@@ -70,6 +70,4 @@ const model = defineModel();
     </div>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

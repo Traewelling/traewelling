@@ -27,11 +27,14 @@ function fetchLikes() {
         console.error('Status ID not found in URL');
         return;
     }
-    api.status.getLikesForStatus(statusId).then((response) => {
-        likedBy.value = response.data.data ?? [];
-    }).catch((error) => {
-        console.error('Error fetching likes:', error);
-    });
+    api.status
+        .getLikesForStatus(statusId)
+        .then(response => {
+            likedBy.value = response.data.data ?? [];
+        })
+        .catch(error => {
+            console.error('Error fetching likes:', error);
+        });
 }
 
 function fetchStopovers() {
@@ -39,11 +42,14 @@ function fetchStopovers() {
         console.error('Status not loaded yet');
         return;
     }
-    api.stopovers.getStopOvers(status.value!.train.trip.toString()).then((response) => {
-        stopovers.value = response.data.data?.[status.value!.train.trip] ?? [];
-    }).catch((error) => {
-        console.error('Error fetching stopovers:', error);
-    });
+    api.stopovers
+        .getStopOvers(status.value!.train.trip.toString())
+        .then(response => {
+            stopovers.value = response.data.data?.[status.value!.train.trip] ?? [];
+        })
+        .catch(error => {
+            console.error('Error fetching stopovers:', error);
+        });
 }
 
 function fetchStatus() {
@@ -54,21 +60,24 @@ function fetchStatus() {
         return;
     }
 
-    api.status.getSingleStatus(statusId).then((response) => {
-        response.json().then((data) => {
+    api.status
+        .getSingleStatus(statusId)
+        .then(response => {
+            response.json().then(data => {
+                loading.value = false;
+                status.value = data.data;
+                fetchStopovers();
+            });
+        })
+        .catch(error => {
             loading.value = false;
-            status.value = data.data;
-            fetchStopovers();
+            if (error.status === 404) {
+                pageError.value = '404';
+            } else if (error.status === 403) {
+                pageError.value = '403';
+            }
+            console.error('Error fetching status:', error);
         });
-    }).catch((error) => {
-        loading.value = false;
-        if (error.status === 404) {
-            pageError.value = '404';
-        } else if (error.status === 403) {
-            pageError.value = '403';
-        }
-        console.error('Error fetching status:', error);
-    });
 }
 
 function addSelfToLikes() {
@@ -119,7 +128,11 @@ fetchLikes();
                         @status-liked="addSelfToLikes()"
                         @status-unliked="removeSelfFromLikes()"
                     />
-                    <TagHelper :status-id="status.id" :editable="status.userDetails.id === user.user?.id" class="mb-3" />
+                    <TagHelper
+                        :status-id="status.id"
+                        :editable="status.userDetails.id === user.user?.id"
+                        class="mb-3"
+                    />
 
                     <div v-show="likedBy.length" class="card">
                         <div v-for="like in likedBy" :key="like.id" class="card-footer text-muted clearfix">
@@ -129,7 +142,7 @@ fetchLikes();
                                     :src="like.profilePicture"
                                     class="profile-image float-start me-2"
                                     :alt="trans('settings.picture')"
-                                >
+                                />
                             </a>
                             <span class="like-text pl-2 d-table-cell">
                                 <a :href="`/@${like.username}`">
@@ -138,9 +151,7 @@ fetchLikes();
                                 <span v-if="like.id === status.userDetails.id">
                                     &thinsp;{{ trans('user.liked-own-status') }}
                                 </span>
-                                <span v-else>
-                                    &thinsp;{{ trans('user.liked-status') }}
-                                </span>
+                                <span v-else> &thinsp;{{ trans('user.liked-status') }} </span>
                             </span>
                         </div>
                     </div>
@@ -159,7 +170,7 @@ fetchLikes();
 
 <style scoped lang="scss">
 .profile-image {
-  height: 2em;
-  border-radius: 50%;
+    height: 2em;
+    border-radius: 50%;
 }
 </style>

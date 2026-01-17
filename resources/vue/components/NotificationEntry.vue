@@ -1,17 +1,17 @@
 <script>
 export default {
     props: {
-        'id': String,
-        'type': String,
-        'leadFormatted': String,
-        'lead': String,
-        'noticeFormatted': String,
-        'notice': String,
-        'link': String,
-        'data': Object,
-        'readAt': String,
-        'createdAt': String,
-        'createdAtForHumans': String,
+        id: String,
+        type: String,
+        leadFormatted: String,
+        lead: String,
+        noticeFormatted: String,
+        notice: String,
+        link: String,
+        data: Object,
+        readAt: String,
+        createdAt: String,
+        createdAtForHumans: String,
     },
     emits: ['toggle-read'],
     computed: {
@@ -79,7 +79,7 @@ export default {
         <div class="col col-sm-3 text-end">
             <button type="button" class="interact toggleReadState" @click="toggleUnread">
                 <span aria-hidden="true">
-                    <i class="far" :class="{'fa-envelope': !read, 'fa-envelope-open': read}" />
+                    <i class="far" :class="{ 'fa-envelope': !read, 'fa-envelope-open': read }" />
                 </span>
             </button>
             <div class="text-muted">
@@ -90,75 +90,75 @@ export default {
 </template>
 
 <style scoped lang="scss">
-@import "../../sass/_variables.scss";
+@import '../../sass/_variables.scss';
 
 div {
-  font-size: var(--bs-body-font-size);
-  line-height: var(--bs-body-line-height);
+    font-size: var(--bs-body-font-size);
+    line-height: var(--bs-body-line-height);
 }
 
 .notification {
-  a {
-    color: $text-color;
-  }
+    a {
+        color: $text-color;
+    }
 }
 
 .unread {
-  &.warning {
-    background-color: lighten($bahnrot, 40%);
-  }
+    &.warning {
+        background-color: lighten($bahnrot, 40%);
+    }
 
-  &.neutral {
-    background-color: lighten($blue, 40%);
-  }
+    &.neutral {
+        background-color: lighten($blue, 40%);
+    }
 }
 
 .col-1 i,
 .interact {
-  font-weight: 700;
-  line-height: 1;
-  color: $dark;
-  text-shadow: 0 1px 0 #fff;
-  padding: 0;
-  background-color: transparent;
-  border: 0;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1;
+    color: $dark;
+    text-shadow: 0 1px 0 #fff;
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-size: 1.25rem;
 }
 
 p.lead {
-  margin-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
 
-  i {
-    padding-right: 0.5rem;
-  }
+    i {
+        padding-right: 0.5rem;
+    }
 }
 
 a ::v-deep(b) {
-  font-weight: bold;
+    font-weight: bold;
 }
 
-.dark { // class .dark ist on <html> element
-  .fas,
-  .far,
-  .fa {
-    filter: invert(1);
-  }
-
-  a {
-    color: $dm-body;
-  }
-
-  .unread {
-    &.warning {
-      background-color: mix($dm-base, $bahnrot, 78%);
+.dark {
+    // class .dark ist on <html> element
+    .fas,
+    .far,
+    .fa {
+        filter: invert(1);
     }
 
-    &.neutral {
-      background-color: mix($dm-base, $blue, 78%);
+    a {
+        color: $dm-body;
     }
-  }
+
+    .unread {
+        &.warning {
+            background-color: mix($dm-base, $bahnrot, 78%);
+        }
+
+        &.neutral {
+            background-color: mix($dm-base, $blue, 78%);
+        }
+    }
 }
-
 </style>

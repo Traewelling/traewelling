@@ -52,9 +52,7 @@ function logout() {
                 </a>
             </li>
             <li>
-                <a class="dropdown-item" href="/export">
-                    <i class="fas fa-save" /> {{ trans('menu.export') }}
-                </a>
+                <a class="dropdown-item" href="/export"> <i class="fas fa-save" /> {{ trans('menu.export') }} </a>
             </li>
             <li>
                 <a class="dropdown-item" href="/settings"> <i class="fas fa-cog" /> {{ trans('menu.settings') }} </a>
@@ -69,7 +67,7 @@ function logout() {
                 <a class="dropdown-item" href="/admin"> <i class="fas fa-tools" /> Backend </a>
             </li>
             <li>
-                <hr class="dropdown-divider">
+                <hr class="dropdown-divider" />
             </li>
 
             <button type="submit" class="dropdown-item" @click="logout">

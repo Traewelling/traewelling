@@ -39,7 +39,7 @@ const isDarkMode = ref(false);
 
 watch(
     () => document.documentElement.dataset.bsTheme,
-    (newValue) => {
+    newValue => {
         isDarkMode.value = newValue === 'dark';
     },
     { immediate: true, deep: true },
@@ -52,40 +52,26 @@ const style: StyleSpecification = {
     sources: {},
     layers: [],
 };
-const osmTiles = [
-    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-];
+const osmTiles = ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'];
 
 const ormTiles = [
     'https://a.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
     'https://b.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
     'https://c.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
 ];
-const ormAttribution =
-    '<a href="https://openrailwaymap.org" target="reservoirwatch">OpenRailwayMap</a>';
-const osmAttribution =
-    'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
+const ormAttribution = '<a href="https://openrailwaymap.org" target="reservoirwatch">OpenRailwayMap</a>';
+const osmAttribution = 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
 </script>
 
 <template>
-    <mgl-map
-        ref="mapComponent"
-        :map-style="style"
-        :max-zoom="18"
-        :bounds="bounds"
-        height="45vh"
-    >
+    <mgl-map ref="mapComponent" :map-style="style" :max-zoom="18" :bounds="bounds" height="45vh">
         <mgl-fullscreen-control />
-        <mgl-navigation-control
-            position="top-right"
-            :show-zoom="false"
-            :show-compass="true"
-        />
+        <mgl-navigation-control position="top-right" :show-zoom="false" :show-compass="true" />
         <mgl-geolocate-control />
         <!-- ToDo: Switch base layers based on dark mode https://github.com/Traewelling/traewelling/issues/4132 -->
         <!-- ToDo: Vector layers https://github.com/Traewelling/traewelling/issues/4131 -->
         <mgl-raster-source source-id="osm-source" :tiles="osmTiles" :attribution="osmAttribution">
-            <mgl-raster-layer layer-id="osm-layer" :paint="{'raster-opacity': .5, 'raster-saturation': -1}" />
+            <mgl-raster-layer layer-id="osm-layer" :paint="{ 'raster-opacity': 0.5, 'raster-saturation': -1 }" />
         </mgl-raster-source>
 
         <!-- ToDo: Make overlay layer toggleable w/ different map styles https://github.com/Traewelling/traewelling/issues/4133 -->
@@ -96,7 +82,7 @@ const osmAttribution =
             :maxzoom="18"
             :attribution="ormAttribution"
         >
-            <mgl-raster-layer layer-id="orm-layer" :paint="{'raster-opacity': 0.5}" />
+            <mgl-raster-layer layer-id="orm-layer" :paint="{ 'raster-opacity': 0.5 }" />
         </mgl-raster-source>
         <mgl-geo-json-source
             v-if="polyLines.length > 0"

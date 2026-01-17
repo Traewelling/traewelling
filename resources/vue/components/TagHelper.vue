@@ -79,7 +79,7 @@ export default {
 <template>
     <FullScreenModal ref="modal">
         <template #header>
-            {{ trans("export.title.status_tags") }}
+            {{ trans('export.title.status_tags') }}
         </template>
         <template #body>
             <TagList :tags="tags" :status-id="statusId" @update:model-value="updateTags" />
@@ -90,11 +90,11 @@ export default {
         <button
             v-show="editable"
             class="btn btn-link btn-sm text-white badge bg-trwl"
-            style="text-transform: none;"
+            style="text-transform: none"
             @click="showModal()"
         >
             <i class="fa fa-plus" />
-            {{ trans("modals.tags.new") }}
+            {{ trans('modals.tags.new') }}
         </button>
 
         <button
@@ -102,7 +102,7 @@ export default {
             v-if="editable"
             :key="tag.key"
             class="btn btn-link btn-sm text-white badge bg-trwl ms-1"
-            style="text-transform: none;"
+            style="text-transform: none"
             @click="showModal(tag)"
         >
             <i v-show="getIcon(tag.key) !== 'fa-fw'" :class="[getIcon(tag.key), 'fa']" />
@@ -125,11 +125,10 @@ export default {
 </template>
 
 <style scoped lang="scss">
-@import "../../sass/_variables.scss";
+@import '../../sass/_variables.scss';
 
 .btn-outline-trwl {
-  border-color: $trwlRot;
-  color: $trwlRot;
+    border-color: $trwlRot;
+    color: $trwlRot;
 }
-
 </style>

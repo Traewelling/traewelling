@@ -1,154 +1,157 @@
-@use "./font-awesome";
-@import "lgbtq.css";
-@import "base";
+@use './font-awesome';
+@import 'lgbtq.css';
+@import 'base';
 // Variables
-@import "variables";
+@import 'variables';
 
 // bootstrap
-@import "bootstrap/scss/bootstrap.scss";
+@import 'bootstrap/scss/bootstrap.scss';
 
 .fas.peach::before {
-  content: "\1f351" !important;
+    content: '\1f351' !important;
 }
 
 body {
-  font-family: "Nunito", sans-serif;
-  font-weight: 300;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 300;
 }
 
 a {
-  text-decoration: none !important;
+    text-decoration: none !important;
 }
 
 .card {
-  box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
 }
 
 .hover-card {
-  background-color: $light;
+    background-color: $light;
 }
 
 .btn-primary {
-  color: $white !important;
+    color: $white !important;
 }
 
 .btn-link {
-  color: $blue;
+    color: $blue;
 }
 
 .btn-outline-primary {
-  color: $blue !important;
+    color: $blue !important;
 }
 
-
-@import "notyf/notyf.min.css";
+@import 'notyf/notyf.min.css';
 
 // Overall site layout
-@import "site";
-@import "small-phones";
+@import 'site';
+@import 'small-phones';
 
 // Sites
-@import "components/about";
-@import "components/timepicker";
+@import 'components/about';
+@import 'components/timepicker';
 
 // Leaflet
-@import "leaflet/dist/leaflet.css";
+@import 'leaflet/dist/leaflet.css';
 
 // Station Autocomplete
-@import "awesomplete/awesomplete.css";
-@import "components/station-autocomplete";
+@import 'awesomplete/awesomplete.css';
+@import 'components/station-autocomplete';
 
 // Components
-@import "./components/status";
-@import "./components/activeJourneys";
-@import "bootstrap-cookie-alert/cookiealert.css";
-@import "./components/image-box";
-@import "./components/settings";
-@import "./components/eventspage";
-@import "./components/notifications-board";
-@import "./components/leaderboard";
-@import "./components/search";
-@import "./components/custom-buttons";
-@import "./components/stationboard";
-@import "./components/dailyStats";
-@import "./components/maps";
+@import './components/status';
+@import './components/activeJourneys';
+@import 'bootstrap-cookie-alert/cookiealert.css';
+@import './components/image-box';
+@import './components/settings';
+@import './components/eventspage';
+@import './components/notifications-board';
+@import './components/leaderboard';
+@import './components/search';
+@import './components/custom-buttons';
+@import './components/stationboard';
+@import './components/dailyStats';
+@import './components/maps';
 
 .table-vertical-center td {
-  vertical-align: middle;
+    vertical-align: middle;
 }
 
 .color-main {
-  color: $trwlRot;
+    color: $trwlRot;
 }
 
 .profile-banner {
-  background-image: url("../images/covers/profile-background.png");
-  background-position: center;
-  background-color: #c5232c;
+    background-image: url('../images/covers/profile-background.png');
+    background-position: center;
+    background-color: #c5232c;
 }
 
 .profile-picture {
-  width: 30%;
-  height: 30%;
-  bottom: 0;
+    width: 30%;
+    height: 30%;
+    bottom: 0;
 }
 
 .profile-stats {
-  font-size: map-get($font-sizes, 5);
+    font-size: map-get($font-sizes, 5);
 }
 
 .profile-name {
-  font-size: map-get($font-sizes, 4);
+    font-size: map-get($font-sizes, 4);
 }
 
 .navbar .nav-link {
-  color: $white !important;
+    color: $white !important;
 }
 
 .profile-tag {
-  font-size: map-get($font-sizes, 6);
+    font-size: map-get($font-sizes, 6);
 }
 
 @include media-breakpoint-up(md) {
-  .profile-picture {
-    width: 20%;
-    height: 20%;
-  }
+    .profile-picture {
+        width: 20%;
+        height: 20%;
+    }
 
-  .profile-name {
-    font-size: map-get($font-sizes, 2);
-  }
+    .profile-name {
+        font-size: map-get($font-sizes, 2);
+    }
 
-  .profile-tag {
-    font-size: map-get($font-sizes, 5);
-  }
+    .profile-tag {
+        font-size: map-get($font-sizes, 5);
+    }
 }
 
 .mobile-input-fs-16 {
-  font-size: 16px !important;
+    font-size: 16px !important;
 }
 
 .text-pride {
-  padding-left: 5px;
-  padding-right: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
 
-  // outline the text for better readability
-  text-shadow: -1px -1px 0 $trwlRot, 1px -1px 0 $trwlRot, -1px 1px 0 $trwlRot, 1px 1px 0 $trwlRot;
+    // outline the text for better readability
+    text-shadow:
+        -1px -1px 0 $trwlRot,
+        1px -1px 0 $trwlRot,
+        -1px 1px 0 $trwlRot,
+        1px 1px 0 $trwlRot;
 }
 
 .navbar-toggler {
-  border: none !important;
+    border: none !important;
 }
 
 .profile-bio {
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
-  -webkit-line-clamp: 15;
-  -webkit-box-orient: vertical;
-  display: -webkit-box;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    -webkit-line-clamp: 15;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

@@ -105,8 +105,8 @@ export default {
         fetchStatusPolyline() {
             this.clearRoute();
 
-            fetch('/api/v1/polyline/' + this.$props.statusId).then((response) => {
-                response.json().then((results) => {
+            fetch('/api/v1/polyline/' + this.$props.statusId).then(response => {
+                response.json().then(results => {
                     const strokeColor = this.parsedLineColor || '#C0392B';
 
                     // casing in grey (for better visibility)
@@ -143,21 +143,21 @@ export default {
             if (this.$props.statusId) url = url + '/' + this.$props.statusId;
 
             fetch(url)
-                .then((response) => response.json())
-                .then((results) => {
+                .then(response => response.json())
+                .then(results => {
                     this.clearMarkersOnly();
 
-                    results.data.forEach((result) => {
+                    results.data.forEach(result => {
                         let entry = null;
 
                         if (result.point) {
                             const icon = this.getIconForStatus(result);
                             const markerLayer = this.canShowMarkers()
                                 ? L.geoJSON(result.point, {
-                                    pointToLayer: function (point, latlng) {
-                                        return L.marker(latlng, { icon });
-                                    },
-                                }).addTo(this.map)
+                                      pointToLayer: function (point, latlng) {
+                                          return L.marker(latlng, { icon });
+                                      },
+                                  }).addTo(this.map)
                                 : null;
 
                             entry = this.createPointObject(result, markerLayer);
@@ -174,8 +174,8 @@ export default {
 
         fetchEvents() {
             fetch('/api/v1/events')
-                .then((response) => response.json())
-                .then((results) => {
+                .then(response => response.json())
+                .then(results => {
                     results.data.forEach(this.addEventMarker);
                 });
         },
@@ -200,7 +200,10 @@ export default {
         getIconForStatus(response) {
             return L.divIcon({
                 className: 'custom-div-icon',
-                html: '<img class="img-thumbnail rounded-circle img-fluid" style="width: 20px;" src="' + response.status.user.profilePictureUrl + '" />',
+                html:
+                    '<img class="img-thumbnail rounded-circle img-fluid" style="width: 20px;" src="' +
+                    response.status.user.profilePictureUrl +
+                    '" />',
                 iconSize: [20, 20],
                 iconAnchor: [9, 18],
             });
@@ -215,11 +218,10 @@ export default {
                 line.push([point.geometry.coordinates[1], point.geometry.coordinates[0]]);
             });
 
-            const marker = L.Marker.movingMarker(
-                line,
-                data.arrival * 1000 - Date.now(),
-                { icon: this.getIconForStatus(data), autostart: true },
-            ).addTo(this.map);
+            const marker = L.Marker.movingMarker(line, data.arrival * 1000 - Date.now(), {
+                icon: this.getIconForStatus(data),
+                autostart: true,
+            }).addTo(this.map);
             marker.start();
 
             return this.createPointObject(data, marker);
@@ -237,7 +239,7 @@ export default {
 
         refreshMarkers() {
             let refreshIds = [];
-            this.points.forEach((point) => {
+            this.points.forEach(point => {
                 if (point && point.departure * 1000 <= Date.now()) {
                     refreshIds.push(point.statusId);
                 }
@@ -248,12 +250,12 @@ export default {
 
         fetchPositions(refreshIds) {
             fetch('/api/v1/positions/' + refreshIds.join(','))
-                .then((response) => response.json())
-                .then((result) => {
+                .then(response => response.json())
+                .then(result => {
                     let tmpResult = [];
                     let updatedIds = [];
 
-                    result.data.forEach((stop) => {
+                    result.data.forEach(stop => {
                         tmpResult.push(stop);
                         let removeIdx = refreshIds.indexOf(stop.statusId);
                         if (removeIdx > -1) {
@@ -262,22 +264,24 @@ export default {
                         }
                     });
 
-                    this.points = this.points.map((entry) => {
-                        if (!entry) return entry;
+                    this.points = this.points
+                        .map(entry => {
+                            if (!entry) return entry;
 
-                        if (refreshIds.indexOf(entry.statusId) > -1) {
-                            if (entry.marker) entry.marker.remove();
-                            return false;
-                        }
-                        if (updatedIds.indexOf(entry.statusId) > -1) {
-                            tmpResult.forEach((result) => {
-                                if (result.polyline && result.statusId === entry.statusId) {
-                                    entry = this.addMarker(result, entry.marker);
-                                }
-                            });
-                        }
-                        return entry;
-                    }).filter(Boolean);
+                            if (refreshIds.indexOf(entry.statusId) > -1) {
+                                if (entry.marker) entry.marker.remove();
+                                return false;
+                            }
+                            if (updatedIds.indexOf(entry.statusId) > -1) {
+                                tmpResult.forEach(result => {
+                                    if (result.polyline && result.statusId === entry.statusId) {
+                                        entry = this.addMarker(result, entry.marker);
+                                    }
+                                });
+                            }
+                            return entry;
+                        })
+                        .filter(Boolean);
                 });
         },
     },
@@ -285,9 +289,5 @@ export default {
 </script>
 
 <template>
-    <div
-        ref="map"
-        class="map"
-        :style="mapStyle"
-    />
+    <div ref="map" class="map" :style="mapStyle" />
 </template>

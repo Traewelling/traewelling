@@ -15,25 +15,25 @@ export type departureEntry = {
     currentTripPosition: {
         type: string;
         latitude: number;
-        longitude: number
-    }
-    cancelled: boolean|null|undefined;
+        longitude: number;
+    };
+    cancelled: boolean | null | undefined;
     station: {
         id: number;
         ibnr: number;
-        wikidata_id: null|any;
-        ifopt_a: any|null;
-        ifopt_b: any|null;
-        ifopt_c: any|null;
-        ifopt_d: any|null;
-        ifopt_e: any|null;
-        rilIdentifier: string|null;
+        wikidata_id: null | any;
+        ifopt_a: any | null;
+        ifopt_b: any | null;
+        ifopt_c: any | null;
+        ifopt_d: any | null;
+        ifopt_e: any | null;
+        rilIdentifier: string | null;
         name: string;
-        latitude: number|null;
-        longitude: number|null;
-        ifopt: any|null;
-    }
-}
+        latitude: number | null;
+        longitude: number | null;
+        ifopt: any | null;
+    };
+};
 
 export type HafasDestination = {
     type: string;
@@ -42,9 +42,9 @@ export type HafasDestination = {
     location: HafasLocation;
     products: {
         [key: string]: boolean;
-    }
+    };
     station: HafasStation;
-}
+};
 
 export type HafasLine = {
     type: string;
@@ -57,7 +57,7 @@ export type HafasLine = {
     mode: any;
     product: any;
     operator: any;
-}
+};
 
 export type HafasStop = {
     type: string;
@@ -66,9 +66,9 @@ export type HafasStop = {
     location: HafasLocation;
     products: {
         [key: string]: boolean;
-    }
-    station: HafasStation
-}
+    };
+    station: HafasStation;
+};
 export type HafasStation = {
     type: string;
     id: string;
@@ -76,12 +76,12 @@ export type HafasStation = {
     location: HafasLocation;
     products: {
         [key: string]: boolean;
-    }
-}
+    };
+};
 
 export type HafasLocation = {
-            type: string;
-            id: string;
-            latitude: number;
-            longitude: number;
-        }
+    type: string;
+    id: string;
+    latitude: number;
+    longitude: number;
+};

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import { computed, PropType, ref } from 'vue';
 import { Api, StatusResource } from '../../../../types/Api.gen';
 import { trans } from 'laravel-vue-i18n';
@@ -52,11 +51,14 @@ const createdAt = computed(() => {
 });
 
 function deleteStatus() {
-    api.status.destroySingleStatus(props.status.id).then(() => {
-        emit('status-deleted', props.status.id);
-    }).catch((error) => {
-        console.error('Error deleting status:', error);
-    });
+    api.status
+        .destroySingleStatus(props.status.id)
+        .then(() => {
+            emit('status-deleted', props.status.id);
+        })
+        .catch(error => {
+            console.error('Error deleting status:', error);
+        });
 }
 
 likes.value = props.status.likes || 0;
@@ -70,14 +72,18 @@ likes.value = props.status.likes || 0;
                     <a
                         href="#"
                         class="like-heart"
-                        :class="{'fas fa-heart': status.liked, 'far fa-heart': !status.liked, 'peach': status.userDetails.id === 18574}"
+                        :class="{
+                            'fas fa-heart': status.liked,
+                            'far fa-heart': !status.liked,
+                            peach: status.userDetails.id === 18574,
+                        }"
                         @click.prevent="like()"
                     >
                         <span class="sr-only">{{ trans('action.like') }}</span>
                     </a>
                 </li>
                 <li class="like-text list-inline-item">
-                    <span class="pl-1" :class="{'d-none': likes <= 0}">
+                    <span class="pl-1" :class="{ 'd-none': likes <= 0 }">
                         {{ likes }}
                     </span>
                 </li>
@@ -93,7 +99,11 @@ likes.value = props.status.likes || 0;
                 />
             </li>
             <li class="like-text list-inline-item">
-                <StatusContextMenu :status @confirm-delete="deleteStatus()" @status-updated="emit('status-updated', $event)" />
+                <StatusContextMenu
+                    :status
+                    @confirm-delete="deleteStatus()"
+                    @status-updated="emit('status-updated', $event)"
+                />
             </li>
         </ul>
 
@@ -105,7 +115,7 @@ likes.value = props.status.likes || 0;
                         :src="status.userDetails.profilePicture"
                         class="profile-image"
                         :alt="status.userDetails.username"
-                    >
+                    />
                 </a>
             </li>
             <li class="list-inline-item me-1">
@@ -123,13 +133,13 @@ likes.value = props.status.likes || 0;
 </template>
 <style scoped>
 .like-heart {
-  color: #e74c3c;
-  cursor: pointer;
+    color: #e74c3c;
+    cursor: pointer;
 }
 
 :root.dark {
-  .like-heart {
-    color: #e74c3c;
-  }
+    .like-heart {
+        color: #e74c3c;
+    }
 }
 </style>
