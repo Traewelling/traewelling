@@ -65,7 +65,7 @@ const model = defineModel();
                         </template>
                     </option>
                 </datalist>
-                <span v-for="error in errors" class="invalid-feedback" :key="error" role="alert">
+                <span v-for="error in errors" :key="error" class="invalid-feedback" role="alert">
                     <strong>{{ error }}</strong>
                 </span>
             </div>

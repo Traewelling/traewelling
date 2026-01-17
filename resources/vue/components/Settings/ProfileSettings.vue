@@ -9,7 +9,7 @@ import {
     MastodonVisibility,
     StatusVisibility,
     UpdateProfileInformationRequest,
-    UserProfileSettingsResource
+    UserProfileSettingsResource,
 } from '../../../types/Api.gen';
 import { showApiValidationErrors } from '../../helpers/NotyfHelper';
 import { useUserStore } from '../../stores/user';
