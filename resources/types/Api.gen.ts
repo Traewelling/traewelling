@@ -4101,4 +4101,22 @@ export class Api<
         ...params,
       }),
   };
+  yearInReview = {
+    /**
+     * @description Please note: This endpoint is only available when the year in review feature is enabled in the backend configuration. There is no full documentation - this endpoint may change every year.
+     *
+     * @tags Statistics
+     * @name GetYearInReview
+     * @summary Returns the year in review for the given year and authenticated user
+     * @request GET:/year-in-review
+     * @secure
+     */
+    getYearInReview: (params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/year-in-review`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+  };
 }
