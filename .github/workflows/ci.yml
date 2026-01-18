@@ -424,7 +424,7 @@ jobs:
       - name: Check if API client is up to date
         run: |
           if ! diff -q resources/types/Api.gen.ts resources/types/Api.gen.ts.backup > /dev/null 2>&1; then
-            echo "::error::API client is out of sync!"
+            echo "::error::group::API client is out of sync!"
             echo ""
             echo "❌ The generated API client does not match the committed version."
             echo ""
@@ -443,7 +443,7 @@ jobs:
             echo ""
             echo "Showing first 50 lines of differences:"
             diff -u resources/types/Api.gen.ts.backup resources/types/Api.gen.ts | head -50 || true
-            echo ""
+            echo "::endgroup"
             exit 1
           fi
           echo "✓ API client is up to date"
