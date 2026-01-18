@@ -37,7 +37,7 @@ export default {
             }
 
             this.points = success?.points ?? null;
-            this.alsoOnThisConnection = success?.alsoOnThisConnection ?? [];
+            this.alsoOnThisConnection = success?.alsoOnThisconnection ?? [];
             this.status = success?.status ?? null;
             this.$refs.modal.show();
             this.checkinSuccess.reset();
