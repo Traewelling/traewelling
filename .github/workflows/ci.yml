@@ -367,7 +367,9 @@ jobs:
             echo "To fix this issue, run the following commands locally:"
             echo ""
             echo "  php artisan l5-swagger:generate"
+            echo "  npm run api"
             echo "  git add storage/api-docs/api-docs.json"
+            echo "  git add resources/types/Api.gen.ts"
             echo "  git commit -m '📝 Update API documentation'"
             echo ""
             echo "Then push your changes to update this PR."
@@ -392,6 +394,75 @@ jobs:
           fi
 
           echo "✓ API documentation file exists and is valid JSON"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 25
+          cache: npm
+
+      - name: Install npm Dependencies
+        run: npm ci
+
+      - name: Backup committed API client for comparison
+        run: cp resources/types/Api.gen.ts resources/types/Api.gen.ts.backup
+
+      - name: Generate API client
+        run: |
+          echo "Generating API client..."
+          npm run api
+
+          if [ $? -ne 0 ]; then
+            echo "::error::Failed to generate API client"
+            echo "There are errors in the API documentation or generation script."
+            echo "Please check the API docs and try again."
+            exit 1
+          fi
+
+          echo "✓ API client generated successfully"
+
+      - name: Check if API client is up to date
+        run: |
+          if ! diff -q resources/types/Api.gen.ts resources/types/Api.gen.ts.backup > /dev/null 2>&1; then
+            echo "::error::API client is out of sync!"
+            echo ""
+            echo "❌ The generated API client does not match the committed version."
+            echo ""
+            echo "This means you made changes to API endpoints, request/response structures,"
+            echo "or Swagger annotations without regenerating the client."
+            echo ""
+            echo "To fix this issue, run the following commands locally:"
+            echo ""
+            echo "  php artisan l5-swagger:generate"
+            echo "  npm run api"
+            echo "  git add storage/api-docs/api-docs.json"
+            echo "  git add resources/types/Api.gen.ts"
+            echo "  git commit -m '📝 Update API documentation'"
+            echo ""
+            echo "Then push your changes to update this PR."
+            echo ""
+            echo "Showing first 50 lines of differences:"
+            diff -u resources/types/Api.gen.ts.backup resources/types/Api.gen.ts | head -50 || true
+            echo ""
+            exit 1
+          fi
+          echo "✓ API client is up to date"
+
+      - name: Verify API client file exists and is valid TypeScript
+        run: |
+          if [ ! -f resources/types/Api.gen.ts ]; then
+            echo "::error::API client file not found at resources/types/Api.gen.ts"
+            exit 1
+          fi
+
+          # Basic check if it's TypeScript (contains export or interface)
+          if ! grep -q "export\|interface\|type" resources/types/Api.gen.ts; then
+            echo "::error::API client file does not appear to be valid TypeScript"
+            exit 1
+          fi
+
+          echo "✓ API client file exists and appears valid"
+
 
   test:
     name: Unit & Feature Tests with Coverage
