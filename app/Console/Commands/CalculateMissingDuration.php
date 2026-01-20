@@ -12,21 +12,24 @@ use Symfony\Component\Console\Command\Command as CommandAlias;
  */
 class CalculateMissingDuration extends Command
 {
-    protected $signature   = 'trwl:calculate-missing-duration';
+    protected $signature = 'trwl:calculate-missing-duration';
+
     protected $description = 'Calculate missing duration for train checkins. Currently only needed for migrating old checkins.';
 
-    public function handle(): int {
+    public function handle(): int
+    {
         while (true) {
             Checkin::with(['HafasTrip.stopovers', 'originStation', 'destinationStation'])
-                   ->whereNull('duration')
-                   ->limit(250)
-                   ->each(function($checkin) {
-                       // foreach ($checkins as $checkin) {
-                       $duration = $checkin->duration;
-                       $this->info("Duration for checkin {$checkin->id} is {$duration}");
-                       //}
-                   });
+                ->whereNull('duration')
+                ->limit(250)
+                ->each(function ($checkin) {
+                    // foreach ($checkins as $checkin) {
+                    $duration = $checkin->duration;
+                    $this->info("Duration for checkin {$checkin->id} is {$duration}");
+                    // }
+                });
         }
+
         return CommandAlias::SUCCESS;
     }
 }

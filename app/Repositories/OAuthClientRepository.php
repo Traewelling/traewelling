@@ -4,9 +4,8 @@ namespace App\Repositories;
 
 use App\Models\OAuthClient;
 use App\Models\Webhook;
-use Laravel\Passport\Passport;
 use Illuminate\Support\Str;
-use Laravel\Passport\Token;
+use Laravel\Passport\Passport;
 
 // Based on Passports's code:
 // https://github.com/laravel/passport/blob/d8cc34766635da552a9ddff80248c5505f19bd04/src/ClientRepository.php#L140-L156
@@ -16,16 +15,16 @@ class OAuthClientRepository
      * Store a new client.
      */
     public function create(
-        int         $userId,
-        string      $name,
-        string      $redirect,
-        string|null $provider = null,
-        bool        $personalAccess = false,
+        int $userId,
+        string $name,
+        string $redirect,
+        ?string $provider = null,
+        bool $personalAccess = false,
         bool $password = false,
         bool $confidential = true,
-        string|null $privacyPolicyUrl = null,
+        ?string $privacyPolicyUrl = null,
         bool $webhooksEnabled = false,
-        string|null $authorizedWebhookUrl = null,
+        ?string $authorizedWebhookUrl = null,
     ): OAuthClient {
         $client = Passport::client()->forceFill([
             'user_id' => $userId,
@@ -53,9 +52,9 @@ class OAuthClientRepository
         OAuthClient $client,
         string $name,
         string $redirect,
-        string|null $privacyPolicyUrl,
+        ?string $privacyPolicyUrl,
         bool $webhooksEnabled,
-        string|null $authorizedWebhookUrl,
+        ?string $authorizedWebhookUrl,
         bool $confidential = true,
     ): OAuthClient {
         $secret = $client->secret;
@@ -79,7 +78,8 @@ class OAuthClientRepository
         return $client;
     }
 
-    public function findForUser(int $clientId, int $userId): OAuthClient {
+    public function findForUser(int $clientId, int $userId): OAuthClient
+    {
         $client = Passport::client();
 
         return $client
@@ -88,14 +88,17 @@ class OAuthClientRepository
             ->first();
     }
 
-    public function find(int $id): OAuthClient {
+    public function find(int $id): OAuthClient
+    {
         $client = Passport::client();
 
         return $client->where($client->getKeyName(), $id)->first();
     }
 
-    public function hasWebhooks(int $id): bool {
-        $webhooks = (new Webhook)->where('oauth_client_id', $id)->get();
+    public function hasWebhooks(int $id): bool
+    {
+        $webhooks = (new Webhook())->where('oauth_client_id', $id)->get();
+
         return $webhooks->count() > 0;
     }
 }

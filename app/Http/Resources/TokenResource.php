@@ -11,17 +11,16 @@ class TokenResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param Request $request
-     *
-     * @return array
+     * @param  Request  $request
      */
-    public function toArray($request): array {
+    public function toArray($request): array
+    {
         return [
-            'id'        => $this->id,
-            'client'    => $this->client->name,
-            'scopes'    => $this->scopes,
+            'id' => $this->id,
+            'client' => $this->client->name,
+            'scopes' => $this->scopes,
             'createdAt' => Carbon::parse($this->created_at)?->toIso8601String(),
-            'expiresAt' => Carbon::parse($this->expires_at)?->toIso8601String()
+            'expiresAt' => Carbon::parse($this->expires_at)?->toIso8601String(),
         ];
     }
 }

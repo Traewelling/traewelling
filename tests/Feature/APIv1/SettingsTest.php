@@ -13,10 +13,10 @@ use Tests\ApiTestCase;
 
 class SettingsTest extends ApiTestCase
 {
-
     use RefreshDatabase;
 
-    public function testGetProfileSettings(): void {
+    public function test_get_profile_settings(): void
+    {
         Passport::actingAs(User::factory()->create(), ['*']);
 
         $response = $this->get(
@@ -24,20 +24,21 @@ class SettingsTest extends ApiTestCase
         );
         $response->assertOk();
         $response->assertJsonStructure([
-                                           'data' => [
-                                               'username',
-                                               'displayName',
-                                               'profilePicture',
-                                               //...
-                                           ]
-                                       ]);
+            'data' => [
+                'username',
+                'displayName',
+                'profilePicture',
+                // ...
+            ],
+        ]);
 
         $this->assertEquals(FriendCheckinSetting::FORBIDDEN->value, $response->json('data.friendCheckin'));
         $this->assertTrue($response->json('data.likesEnabled'));
         $this->assertTrue($response->json('data.pointsEnabled'));
     }
 
-    public function testUpdateProfileSettings(): void {
+    public function test_update_profile_settings(): void
+    {
         $user = User::factory(['username' => 'old', 'name' => 'old'])->create();
         Passport::actingAs($user, ['*']);
 
@@ -54,22 +55,22 @@ class SettingsTest extends ApiTestCase
         $this->assertEquals(FriendCheckinSetting::FORBIDDEN, $user->friend_checkin);
 
         $response = $this->putJson(
-            uri:  '/api/v1/settings/profile',
+            uri: '/api/v1/settings/profile',
             data: [
-                      'username'                => 'new',
-                      'displayName'             => 'new',
-                      'email'                   => 'no-reply@traewelling.de',
-                      'timezone'                => 'Europe/Berlin',
-                      'privateProfile'          => true,
-                      'preventIndex'            => true,
-                      'privacyHideDays'         => 1,
-                      'defaultStatusVisibility' => StatusVisibility::PRIVATE->value,
-                      'mapProvider'             => MapProvider::OPEN_RAILWAY_MAP->value,
-                      'mastodonVisibility'      => MastodonVisibility::PUBLIC->value,
-                      'likesEnabled'            => false,
-                      'pointsEnabled'           => false,
-                      'friendCheckin'           => FriendCheckinSetting::FRIENDS->value,
-                  ],
+                'username' => 'new',
+                'displayName' => 'new',
+                'email' => 'no-reply@traewelling.de',
+                'timezone' => 'Europe/Berlin',
+                'privateProfile' => true,
+                'preventIndex' => true,
+                'privacyHideDays' => 1,
+                'defaultStatusVisibility' => StatusVisibility::PRIVATE->value,
+                'mapProvider' => MapProvider::OPEN_RAILWAY_MAP->value,
+                'mastodonVisibility' => MastodonVisibility::PUBLIC->value,
+                'likesEnabled' => false,
+                'pointsEnabled' => false,
+                'friendCheckin' => FriendCheckinSetting::FRIENDS->value,
+            ],
         );
         $response->assertOk();
 

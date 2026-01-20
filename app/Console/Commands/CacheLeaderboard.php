@@ -26,10 +26,9 @@ class CacheLeaderboard extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle(LeaderboardController $leaderboardController): int {
+    public function handle(LeaderboardController $leaderboardController): int
+    {
         DB::beginTransaction();
         Cache::forget(CacheKey::LEADERBOARD_GLOBAL_POINTS);
         Cache::forget(CacheKey::LEADERBOARD_GLOBAL_DISTANCE);

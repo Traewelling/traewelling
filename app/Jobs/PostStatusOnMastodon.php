@@ -19,27 +19,29 @@ class PostStatusOnMastodon implements ShouldQueue
     use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
     protected Status $status;
-    protected bool   $shouldChain;
+
+    protected bool $shouldChain;
 
     // HTTP status codes that should not be retried (permanent errors)
     private const PERMANENT_ERROR_CODES = [401, 404, 410, 422];
 
-    public function __construct(Status $status, bool $shouldChain) {
-        $this->status      = $status;
+    public function __construct(Status $status, bool $shouldChain)
+    {
+        $this->status = $status;
         $this->shouldChain = $shouldChain;
     }
 
     /**
      * Execute the job.
      *
-     * @return void
      * @throws Exception|GuzzleException
      */
-    public function handle(): void {
+    public function handle(): void
+    {
         $this->queueData([
-                             "status_id"    => $this->status->id,
-                             "should_chain" => $this->shouldChain,
-                         ]);
+            'status_id' => $this->status->id,
+            'should_chain' => $this->shouldChain,
+        ]);
 
         try {
             MastodonController::postStatus($this->status, $this->shouldChain);
@@ -53,6 +55,7 @@ class PostStatusOnMastodon implements ShouldQueue
                 );
                 // Mark job as failed without retry
                 $this->fail($e);
+
                 return;
             }
 
@@ -76,7 +79,8 @@ class PostStatusOnMastodon implements ShouldQueue
      * Seconds until the job is retried after an error.
      * Shorter backoff times since most errors are temporary server issues.
      */
-    public function backoff(): array {
+    public function backoff(): array
+    {
         return [30, 120, 300, 900]; // 30s, 2m, 5m, 15m
     }
 

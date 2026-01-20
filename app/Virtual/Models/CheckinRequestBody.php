@@ -6,6 +6,7 @@ namespace App\Virtual\Models;
  * @OA\Schema(
  *     title="CheckinRequestBody",
  *     description="Fields for creating a train checkin",
+ *
  *     @OA\Property(property="body", type="string", maxLength=280, nullable=true, example="Meine erste Fahrt nach Knuffingen!"),
  *     @OA\Property(property="business", ref="#/components/schemas/Business",),
  *     @OA\Property(property="visibility", ref="#/components/schemas/StatusVisibility",),
@@ -23,8 +24,4 @@ namespace App\Virtual\Models;
  *     @OA\Property(property="with", type="array", @OA\Items(type="integer", example="1"), example="[1, 2]", nullable=true, description="If set, the checkin will be created for all given users as well. The user creating the checkin must be allowed to checkin for the other users. Max. 10 users."),
  * )
  */
-class CheckinRequestBody
-{
-
-
-}
+class CheckinRequestBody {}

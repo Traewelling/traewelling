@@ -20,31 +20,24 @@ use InvalidArgumentException;
 
 abstract class UserController extends Controller
 {
-    /**
-     * @param User $user
-     *
-     * @return bool|null
-     */
-    public static function deleteUserAccount(User $user): ?bool {
+    public static function deleteUserAccount(User $user): ?bool
+    {
         SettingsController::deleteProfilePicture(user: $user);
 
         DatabaseNotification::where([
-                                        'notifiable_id'   => $user->id,
-                                        'notifiable_type' => get_class($user)
-                                    ])->delete();
+            'notifiable_id' => $user->id,
+            'notifiable_type' => get_class($user),
+        ])->delete();
 
         return $user->delete();
     }
 
     /**
-     * @param User $user
-     * @param User $userToBeBlocked
-     *
-     * @return bool
      * @throws UserAlreadyBlockedException
      * @throws InvalidArgumentException
      */
-    public static function blockUser(User $user, User $userToBeBlocked): bool {
+    public static function blockUser(User $user, User $userToBeBlocked): bool
+    {
         if ($user->blockedUsers->contains('id', $userToBeBlocked->id)) {
             throw new UserAlreadyBlockedException();
         }
@@ -59,43 +52,40 @@ abstract class UserController extends Controller
             Like::where('user_id', $userToBeBlocked->id)->whereIn('status_id', $user->statuses()->select('id'))->delete();
 
             UserBlock::create([
-                                  'user_id'    => $user->id,
-                                  'blocked_id' => $userToBeBlocked->id
-                              ]);
+                'user_id' => $user->id,
+                'blocked_id' => $userToBeBlocked->id,
+            ]);
             $user->load('blockedUsers');
+
             return true;
         } catch (Exception $exception) {
             report($exception);
+
             return false;
         }
     }
 
     /**
-     * @param User $user
-     * @param User $userToBeUnblocked
-     *
-     * @return bool
      * @throws UserNotBlockedException
      */
-    public static function unblockUser(User $user, User $userToBeUnblocked): bool {
+    public static function unblockUser(User $user, User $userToBeUnblocked): bool
+    {
         if (!$user->blockedUsers->contains('id', $userToBeUnblocked->id)) {
             throw new UserNotBlockedException();
         }
 
         $queryCount = UserBlock::where('user_id', $user->id)->where('blocked_id', $userToBeUnblocked->id)->delete();
         $user->load('blockedUsers');
+
         return $queryCount === 1;
     }
 
     /**
-     * @param User $user
-     * @param User $userToBeMuted
-     *
-     * @return bool
      * @throws UserAlreadyMutedException
      * @throws InvalidArgumentException
      */
-    public static function muteUser(User $user, User $userToBeMuted): bool {
+    public static function muteUser(User $user, User $userToBeMuted): bool
+    {
         if ($user->mutedUsers->contains('id', $userToBeMuted->id)) {
             throw new UserAlreadyMutedException();
         }
@@ -104,52 +94,50 @@ abstract class UserController extends Controller
         }
         try {
             UserMute::create([
-                                 'user_id'  => $user->id,
-                                 'muted_id' => $userToBeMuted->id
-                             ]);
+                'user_id' => $user->id,
+                'muted_id' => $userToBeMuted->id,
+            ]);
             $user->load('mutedUsers');
+
             return true;
         } catch (Exception $exception) {
             report($exception);
+
             return false;
         }
     }
 
     /**
-     * @param User $user
-     * @param User $userToBeUnmuted
-     *
-     * @return bool
      * @throws UserNotMutedException
      */
-    public static function unmuteUser(User $user, User $userToBeUnmuted): bool {
+    public static function unmuteUser(User $user, User $userToBeUnmuted): bool
+    {
         if (!$user->mutedUsers->contains('id', $userToBeUnmuted->id)) {
             throw new UserNotMutedException();
         }
 
         $queryCount = UserMute::where('user_id', $user->id)->where('muted_id', $userToBeUnmuted->id)->delete();
         $user->load('mutedUsers');
+
         return $queryCount === 1;
     }
 
     /**
-     * @param string|null $searchQuery
-     *
-     * @return Paginator
      * @throws InvalidArgumentException
      */
-    public static function searchUser(?string $searchQuery): Paginator {
+    public static function searchUser(?string $searchQuery): Paginator
+    {
         $validator = Validator::make(['searchQuery' => $searchQuery], ['searchQuery' => [
             'required',
-            'regex:/^[a-zA-Z0-9_\-\s]*$/'
+            'regex:/^[a-zA-Z0-9_\-\s]*$/',
         ]]);
         if ($validator->fails()) {
             throw new InvalidArgumentException();
         }
 
         return User::where('name', 'like', "%{$searchQuery}%")
-                   ->orWhere('username', 'like', "%{$searchQuery}%")
-                   ->orderByDesc('last_login')
-                   ->simplePaginate(10);
+            ->orWhere('username', 'like', "%{$searchQuery}%")
+            ->orderByDesc('last_login')
+            ->simplePaginate(10);
     }
 }

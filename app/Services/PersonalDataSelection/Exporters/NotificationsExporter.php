@@ -12,6 +12,7 @@ class NotificationsExporter extends AbstractExporter
     use RelationExportable;
 
     protected string $fileName = 'notifications.json';
+
     protected string $relation = 'notifications';
     // todo: columns
 }

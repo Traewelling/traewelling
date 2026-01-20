@@ -10,14 +10,14 @@ class StatisticsTravelPurposeResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param Request $request
-     * @return array
+     * @param  Request  $request
      */
-    public function toArray($request): array {
+    public function toArray($request): array
+    {
         return [
-            'name'     => $this->reason,
-            'count'    => $this->count,
-            'duration' => $this->duration
+            'name' => $this->reason,
+            'count' => $this->count,
+            'duration' => $this->duration,
         ];
     }
 }

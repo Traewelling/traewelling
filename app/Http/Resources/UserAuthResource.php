@@ -13,6 +13,7 @@ use OpenApi\Annotations as OA;
  *      required={"id", "displayName", "username", "profilePicture", "totalDistance", "totalDuration", "points",
  *      "mastodonUrl", "privateProfile", "preventIndex", "likes_enabled", "mapProvider", "home", "language",
  *      "defaultStatusVisibility", "roles"},
+ *
  *      @OA\Property(property="id", type="integer", example="1"),
  *      @OA\Property(property="displayName", type="string", example="Gertrud"),
  *      @OA\Property(property="username", type="string", example="Gertrud123"),
@@ -33,28 +34,30 @@ use OpenApi\Annotations as OA;
  */
 class UserAuthResource extends JsonResource
 {
-    public function toArray($request): array {
+    public function toArray($request): array
+    {
         $pointsEnabled = $request->user()?->points_enabled ?? true;
+
         /** @var User $this */
         return [
-            'id'                      => (int) $this->id,
-            'displayName'             => (string) $this->name,
-            'username'                => (string) $this->username,
-            'profilePicture'          => ProfilePictureController::getUrlForUserId($this->id),
-            'trainDistance'           => (float) $this->train_distance, // @deprecated: remove after 2024-08
-            'totalDistance'           => (float) $this->train_distance,
-            'trainDuration'           => (int) $this->train_duration, // @deprecated: remove after 2024-08
-            'totalDuration'           => (int) $this->train_duration,
-            'points'                  => (int) $pointsEnabled ? $this->points : 0,
-            'mastodonUrl'             => $this->mastodonUrl ?? null,
-            'privateProfile'          => (bool) $this->private_profile,
-            'preventIndex'            => $this->prevent_index,
-            'likes_enabled'           => $this->likes_enabled,
-            'mapProvider'             => $this->mapprovider ?? 'default',
-            'home'                    => new StationResource($this->home),
-            'language'                => $this->language,
+            'id' => (int) $this->id,
+            'displayName' => (string) $this->name,
+            'username' => (string) $this->username,
+            'profilePicture' => ProfilePictureController::getUrlForUserId($this->id),
+            'trainDistance' => (float) $this->train_distance, // @deprecated: remove after 2024-08
+            'totalDistance' => (float) $this->train_distance,
+            'trainDuration' => (int) $this->train_duration, // @deprecated: remove after 2024-08
+            'totalDuration' => (int) $this->train_duration,
+            'points' => (int) $pointsEnabled ? $this->points : 0,
+            'mastodonUrl' => $this->mastodonUrl ?? null,
+            'privateProfile' => (bool) $this->private_profile,
+            'preventIndex' => $this->prevent_index,
+            'likes_enabled' => $this->likes_enabled,
+            'mapProvider' => $this->mapprovider ?? 'default',
+            'home' => new StationResource($this->home),
+            'language' => $this->language,
             'defaultStatusVisibility' => $this->default_status_visibility,
-            'roles'                   => $this->roles->pluck('name')
+            'roles' => $this->roles->pluck('name'),
         ];
     }
 }

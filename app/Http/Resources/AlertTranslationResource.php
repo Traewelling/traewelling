@@ -11,6 +11,7 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(
  *     schema="AlertTranslationResource",
  *     required={"title", "content", "url", "locale"},
+ *
  *     @OA\Property(property="title", type="string", example="Alert Title"),
  *     @OA\Property(property="content", type="string", example="Alert Content"),
  *     @OA\Property(property="url", type="string", example="https://example.com"),
@@ -19,14 +20,14 @@ use OpenApi\Annotations as OA;
  */
 class AlertTranslationResource extends JsonResource
 {
-
-    public function toArray(Request $request): array {
+    public function toArray(Request $request): array
+    {
         /** @var AlertTranslation $this */
         return [
-            'title'   => $this->title,
+            'title' => $this->title,
             'content' => $this->content,
-            'url'     => $this->url,
-            'locale'  => $this->locale,
+            'url' => $this->url,
+            'locale' => $this->locale,
         ];
     }
 }

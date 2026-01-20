@@ -1,28 +1,30 @@
-@import "@fortawesome/fontawesome-free/css/brands.css";
-@import "@fortawesome/fontawesome-free/css/regular.css";
-@import "@fortawesome/fontawesome-free/css/solid.css";
-@import "@fortawesome/fontawesome-free/css/fontawesome.css";
+@import '@fortawesome/fontawesome-free/css/brands.css';
+@import '@fortawesome/fontawesome-free/css/regular.css';
+@import '@fortawesome/fontawesome-free/css/solid.css';
+@import '@fortawesome/fontawesome-free/css/fontawesome.css';
 
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @plugin "daisyui" {
-  themes: lightone --default, darkone --prefersdark;
+  themes:
+    lightone --default,
+    darkone --prefersdark;
 }
 
 @plugin "daisyui/theme" {
-  name: "lightone";
+  name: 'lightone';
   default: true;
   prefersdark: false;
-  color-scheme: "light";
+  color-scheme: 'light';
   --color-base-100: #ffffff;
   --color-base-200: oklch(97% 0.001 106.424);
   --color-base-300: oklch(92% 0.003 48.717);
   --color-base-content: oklch(21% 0.006 56.043);
   --color-primary: #c72730;
   --color-primary-content: oklch(28% 0.109 3.907);
-  --color-secondary: #8EC7D2;
+  --color-secondary: #8ec7d2;
   --color-secondary-content: oklch(26% 0.051 172.552);
-  --color-accent: #DBA507;
+  --color-accent: #dba507;
   --color-accent-content: oklch(27% 0.046 192.524);
   --color-neutral: #3d4451;
   --color-neutral-content: oklch(98% 0.001 106.423);
@@ -36,24 +38,24 @@
   --color-error-content: oklch(96% 0.015 12.422);
 
   --radius-box: 1rem;
-  --radius-field: .5rem;
+  --radius-field: 0.5rem;
   --size-field: 0.3rem;
 }
 
 @plugin "daisyui/theme" {
-  name: "darkone";
+  name: 'darkone';
   default: false;
   prefersdark: true;
-  color-scheme: "dark";
+  color-scheme: 'dark';
   --color-base-100: oklch(25.33% 0.016 252.42);
   --color-base-200: oklch(23.26% 0.014 253.1);
   --color-base-300: oklch(21.15% 0.012 254.09);
   --color-base-content: oklch(97.807% 0.029 256.847);
   --color-primary: #c72730;
   --color-primary-content: oklch(96% 0.018 272.314);
-  --color-secondary: #8EC7D2;
+  --color-secondary: #8ec7d2;
   --color-secondary-content: oklch(94% 0.028 342.258);
-  --color-accent: #DBA507;
+  --color-accent: #dba507;
   --color-accent-content: oklch(38% 0.063 188.416);
   --color-neutral: oklch(14% 0.005 285.823);
   --color-neutral-content: oklch(92% 0.004 286.32);
@@ -67,7 +69,7 @@
   --color-error-content: oklch(27% 0.105 12.094);
 
   --radius-box: 1rem;
-  --radius-field: .5rem;
+  --radius-field: 0.5rem;
   --size-field: 0.3rem;
 
   --border: 1px;

@@ -12,7 +12,8 @@ class TimeTypeTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    public static function getTimeTypeFindPreference(): array {
+    public static function getTimeTypeFindPreference(): array
+    {
         return [
             [false, false, TimeType::PLANNED],
             [false, true, TimeType::REALTIME],
@@ -22,7 +23,8 @@ class TimeTypeTest extends FeatureTestCase
     }
 
     #[DataProvider('getTimeTypeFindPreference')]
-    public function testTimeTypeFindPreference(bool $manual, bool $delay, TimeType $expected): void {
+    public function test_time_type_find_preference(bool $manual, bool $delay, TimeType $expected): void
+    {
         // GIVEN
         $checkin = Checkin::factory()->create();
 
@@ -45,7 +47,8 @@ class TimeTypeTest extends FeatureTestCase
         }
     }
 
-    public function testSameManualDeparture(): void {
+    public function test_same_manual_departure(): void
+    {
         // GIVEN
         $checkin = Checkin::factory()->create();
 
@@ -59,7 +62,8 @@ class TimeTypeTest extends FeatureTestCase
         $this->assertNull($checkin->displayDeparture->original);
     }
 
-    public function testSameRealTimeDeparture(): void {
+    public function test_same_real_time_departure(): void
+    {
         // GIVEN
         $checkin = Checkin::factory()->create();
 
@@ -73,17 +77,19 @@ class TimeTypeTest extends FeatureTestCase
         $this->assertNull($checkin->displayDeparture->original);
     }
 
-    private function setDelayedTrainDeparture(Checkin $checkin, int $min): void {
+    private function setDelayedTrainDeparture(Checkin $checkin, int $min): void
+    {
         $checkin->originStopover->update([
-                                             'departure_real' => $checkin->originStopover->departure_planned
-                                                 ->copy()
-                                                 ->addMinutes($min)
-                                         ]);
+            'departure_real' => $checkin->originStopover->departure_planned
+                ->copy()
+                ->addMinutes($min),
+        ]);
     }
 
-    private function setManualDeparture(Checkin $checkin, int $min): void {
+    private function setManualDeparture(Checkin $checkin, int $min): void
+    {
         $checkin->update([
-                             'manual_departure' => $checkin->departure->copy()->addMinutes($min)
-                         ]);
+            'manual_departure' => $checkin->departure->copy()->addMinutes($min),
+        ]);
     }
 }

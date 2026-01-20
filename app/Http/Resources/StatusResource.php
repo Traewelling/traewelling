@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Gate;
 /**
  * @OA\Schema(
  *      title="Status",
+ *      required={"id", "body", "business", "bodyMentions", "business", "visibility", "likes", "liked", "isLikable", "client", "createdAt", "train", "event", "userDetails", "tags"},
+ *
  *      @OA\Property(property="id", type="integer", example=12345),
  *      @OA\Property(property="body", description="User defined status text", example="Hello world!"),
  *      @OA\Property(property="bodyMentions", description="Mentions in the status body", type="array", @OA\Items(ref="#/components/schemas/MentionDto")),
@@ -23,30 +25,34 @@ use Illuminate\Support\Facades\Gate;
  *      @OA\Property(property="checkin", ref="#/components/schemas/TransportResource"),
  *      @OA\Property(property="event", ref="#/components/schemas/EventResource", nullable=true),
  *      @OA\Property(property="user", ref="#/components/schemas/LightUserResource"),
+ *      @OA\Property(property="createdBy", description="User who created this check-in on behalf of the status owner (null if self-checkin)", ref="#/components/schemas/LightUserResource", nullable=true),
  *      @OA\Property(property="tags", type="array", @OA\Items(ref="#/components/schemas/StatusTagResource")),
  *      @OA\Property(property="createdAt", description="creation date of this status",type="string",format="datetime", example="2022-07-17T13:37:00+02:00"),
  * )
+ *
  * @todo: add moderation_notes, lock_visibility and hide_body
  */
 class StatusResource extends JsonResource
 {
-    public function toArray($request): array {
+    public function toArray($request): array
+    {
         /** @var Status $this */
         return [
-            'id'           => (int) $this->id,
-            'body'         => (string) $this->body,
+            'id' => (int) $this->id,
+            'body' => (string) $this->body,
             'bodyMentions' => $this->mentions->map(
-                fn($mention) => new MentionDto($mention->mentioned, $mention->position, $mention->length)
+                fn ($mention) => new MentionDto($mention->mentioned, $mention->position, $mention->length)
             ),
-            'business'     => (int) $this->business->value,
-            'visibility'   => (int) $this->visibility->value,
-            'likes'        => (int) $this->likes->count(),
-            'liked'        => (bool) $this->favorited,
-            'isLikable'    => Gate::allows('like', $this->resource),
+            'business' => (int) $this->business->value,
+            'visibility' => (int) $this->visibility->value,
+            'likes' => (int) $this->likes->count(),
+            'liked' => (bool) $this->favorited,
+            'isLikable' => Gate::allows('like', $this->resource),
             'checkin'      => new TransportResource($this->checkin),
-            'client'       => new ClientResource($this->client),
-            'event'        => new EventResource($this?->event),
+            'client' => new ClientResource($this->client),
+            'event' => new EventResource($this?->event),
             'user'         => new LightUserResource($this->user),
+            'createdBy' => $this->createdByUser ? new LightUserResource($this->createdByUser) : null,
             'tags'         => StatusTagResource::collection($this->tags->filter(fn(StatusTag $tag) => Gate::allows('view', $tag))),
             'createdAt'    => $this->created_at->toIso8601String(),
 

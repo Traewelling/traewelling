@@ -10,7 +10,7 @@ use App\OpenRailRoutingProfile;
 class TripRepository
 {
     public function setRouteSegmentForStop(
-        Stopover     $stop,
+        Stopover $stop,
         RouteSegment $routeSegment
     ): void {
         $stop->route_segment_id = $routeSegment->id;
@@ -18,35 +18,34 @@ class TripRepository
     }
 
     public function getRouteSegmentBetweenStops(
-        Stopover               $start,
-        Stopover               $end,
-        int                    $duration,
+        Stopover $start,
+        Stopover $end,
+        int $duration,
         OpenRailRoutingProfile $pathType = OpenRailRoutingProfile::ALL_TRACKS
     ): ?RouteSegment {
         return RouteSegment::where('from_station_id', $start->train_station_id)
-                           ->where('to_station_id', $end->train_station_id)
-                           ->where('path_type', $pathType)
-                           ->whereBetween('duration', [$duration * 0.9, $duration * 1.1])
-                           ->first();
+            ->where('to_station_id', $end->train_station_id)
+            ->where('path_type', $pathType)
+            ->whereBetween('duration', [$duration * 0.9, $duration * 1.1])
+            ->first();
     }
 
-
     public function createRouteSegment(
-        Station                 $fromStation,
-        Station                 $toStation,
-        string                  $encodedPolyline,
-        int                     $polylinePrecision = 5,
-        ?int                    $duration = null,
+        Station $fromStation,
+        Station $toStation,
+        string $encodedPolyline,
+        int $polylinePrecision = 5,
+        ?int $duration = null,
         ?OpenRailRoutingProfile $pathType = null,
-        ?int                    $distanceInMeters = null,
+        ?int $distanceInMeters = null,
     ): RouteSegment {
-        $segment                     = new RouteSegment;
-        $segment->from_station_id    = $fromStation->id;
-        $segment->to_station_id      = $toStation->id;
-        $segment->duration           = $duration;
-        $segment->distance           = $distanceInMeters;
-        $segment->path_type          = $pathType;
-        $segment->polyline           = $encodedPolyline;
+        $segment = new RouteSegment();
+        $segment->from_station_id = $fromStation->id;
+        $segment->to_station_id = $toStation->id;
+        $segment->duration = $duration;
+        $segment->distance = $distanceInMeters;
+        $segment->path_type = $pathType;
+        $segment->polyline = $encodedPolyline;
         $segment->polyline_precision = $polylinePrecision;
 
         $segment->save();

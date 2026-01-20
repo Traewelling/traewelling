@@ -15,6 +15,7 @@ class AppsExporter extends AbstractExporter
     use RelationExportable;
 
     protected string $fileName = 'apps.json';
+
     protected string $relation = 'oAuthClients';
     // todo: columns
 }

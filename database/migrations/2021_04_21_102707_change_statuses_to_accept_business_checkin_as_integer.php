@@ -7,26 +7,28 @@ use Illuminate\Support\Facades\Schema;
 
 class ChangeStatusesToAcceptBusinessCheckinAsInteger extends Migration
 {
-    public function up() {
-        Schema::table('statuses', function(Blueprint $table) {
+    public function up()
+    {
+        Schema::table('statuses', function (Blueprint $table) {
             $table->unsignedSmallInteger('business')
-                  ->default(0)
-                  ->change();
+                ->default(0)
+                ->change();
         });
 
         DB::table('statuses')
-          ->whereNull('business')
-          ->update(['business' => 0]);
+            ->whereNull('business')
+            ->update(['business' => 0]);
     }
 
-    public function down() {
-        Schema::table('statuses', function(Blueprint $table) {
+    public function down()
+    {
+        Schema::table('statuses', function (Blueprint $table) {
             $table->boolean('business')
-                  ->change();
+                ->change();
         });
 
         DB::table('statuses')
-          ->where('business', '>', '1')
-          ->update(['business' => 1]);
+            ->where('business', '>', '1')
+            ->update(['business' => 1]);
     }
 }

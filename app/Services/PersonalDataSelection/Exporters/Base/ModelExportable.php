@@ -6,7 +6,8 @@ namespace App\Services\PersonalDataSelection\Exporters\Base;
 
 trait ModelExportable
 {
-    protected function exportData(): string {
+    protected function exportData(): string
+    {
         $condition = $this->whereCondition ?? 'id';
 
         return $this->model::where(
@@ -15,7 +16,8 @@ trait ModelExportable
         )->get()->toJson();
     }
 
-    protected function onExportValidation(): bool {
+    protected function onExportValidation(): bool
+    {
         return !empty($this->model) && !empty($this->whereColumn);
     }
 }

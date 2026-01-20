@@ -11,43 +11,46 @@ class LoginTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    public function testSuccessfulLogin(): void {
+    public function test_successful_login(): void
+    {
         $user = User::factory(['password' => Hash::make('password')])->create();
         $this->assertGuest();
         $response = $this->followingRedirects()
-                         ->post(route('login', [
-                             'login'    => $user->username,
-                             'password' => 'password',
-                         ]));
+            ->post(route('login', [
+                'login' => $user->username,
+                'password' => 'password',
+            ]));
         $response->assertOk();
         $response->assertViewIs('dashboard');
         $this->assertAuthenticated();
     }
 
-    public function testLoginWithWrongCredentials(): void {
+    public function test_login_with_wrong_credentials(): void
+    {
         $user = User::factory(['password' => Hash::make('password')])->create();
         $this->assertGuest();
         $response = $this->post(route('login', [
-            'login'    => $user->username,
+            'login' => $user->username,
             'password' => 'wrong password',
         ]));
         $response->assertRedirectToRoute('login');
         $this->assertGuest();
     }
 
-    public function testTooManyLoginAttempts(): void {
+    public function test_too_many_login_attempts(): void
+    {
         $user = User::factory()->create();
         $this->assertGuest();
         for ($i = 0; $i < 5; $i++) {
             $response = $this->post(route('login', [
-                'login'    => $user->username,
+                'login' => $user->username,
                 'password' => 'wrong password',
             ]));
             $response->assertRedirectToRoute('login');
             $this->assertGuest();
         }
         $response = $this->post(route('login', [
-            'login'    => $user->username,
+            'login' => $user->username,
             'password' => 'wrong password',
         ]));
         $response->assertSessionHasErrors('login');

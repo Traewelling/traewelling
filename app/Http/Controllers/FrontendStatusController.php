@@ -16,12 +16,14 @@ class FrontendStatusController extends Controller
 {
     private LicenseService $licenseService;
 
-    public function __construct(LicenseService $licenseService) {
+    public function __construct(LicenseService $licenseService)
+    {
         $this->licenseService = $licenseService;
     }
 
-    public function statusesByEvent(string $slug): Renderable {
-        $event    = Event::where('slug', $slug)->firstOrFail();
+    public function statusesByEvent(string $slug): Renderable
+    {
+        $event = Event::where('slug', $slug)->firstOrFail();
         $response = StatusController::getStatusesByEvent($event);
 
         if ($response['event']->checkin_end->isPast() && $response['statuses']->count() === 0) {
@@ -29,13 +31,15 @@ class FrontendStatusController extends Controller
         }
 
         return view('eventsMap', [
-            'event' => $response['event']
+            'event' => $response['event'],
         ]);
     }
 
-    public function getStatus(int $statusId): View {
-        $status        = Status::find($statusId);
+    public function getStatus(int $statusId): View
+    {
+        $status = Status::find($statusId);
         $allowedToView = Gate::allows('view', $status);
+
         return view('single-status', [
             'statusId' => $statusId,
             'username' => $allowedToView ? $status?->user->username : null,

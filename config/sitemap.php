@@ -11,12 +11,12 @@ return [
      *
      * http://docs.guzzlephp.org/en/stable/request-options.html
      */
-    'guzzle_options'     => [
+    'guzzle_options' => [
 
         /*
          * Whether or not cookies are used in a request.
          */
-        RequestOptions::COOKIES         => true,
+        RequestOptions::COOKIES => true,
 
         /*
          * The number of seconds to wait while trying to connect to a server.
@@ -27,7 +27,7 @@ return [
         /*
          * The timeout of the request in seconds. Use 0 to wait indefinitely.
          */
-        RequestOptions::TIMEOUT         => 10,
+        RequestOptions::TIMEOUT => 10,
 
         /*
          * Describes the redirect behavior of a request.
@@ -52,6 +52,6 @@ return [
      * The sitemap generator uses a CrawlProfile implementation to determine
      * which urls should be crawled for the sitemap.
      */
-    'crawl_profile'      => Profile::class,
+    'crawl_profile' => Profile::class,
 
 ];

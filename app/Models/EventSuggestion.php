@@ -12,24 +12,27 @@ class EventSuggestion extends Model
 
     protected $fillable = [
         'user_id', 'name', 'host', 'url', 'station_id', 'begin', 'end', 'hashtag',
-        'admin_notification_id', 'processed'
-    ];
-    protected $casts    = [
-        'id'                    => 'integer',
-        'user_id'               => 'integer',
-        'station_id'            => 'integer',
-        'begin'                 => 'datetime',
-        'end'                   => 'datetime',
-        'hashtag'               => 'string',
-        'admin_notification_id' => 'integer',
-        'processed'             => 'boolean',
+        'admin_notification_id', 'processed',
     ];
 
-    public function user(): BelongsTo {
+    protected $casts = [
+        'id' => 'integer',
+        'user_id' => 'integer',
+        'station_id' => 'integer',
+        'begin' => 'datetime',
+        'end' => 'datetime',
+        'hashtag' => 'string',
+        'admin_notification_id' => 'integer',
+        'processed' => 'boolean',
+    ];
+
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function station(): BelongsTo {
+    public function station(): BelongsTo
+    {
         return $this->belongsTo(Station::class, 'station_id', 'id');
     }
 }

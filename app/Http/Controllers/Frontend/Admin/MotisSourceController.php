@@ -55,8 +55,8 @@ class MotisSourceController
                 ->paginate(50);
         }
 
-
         $sources->appends($request->validated())->links();
+
         return view(
             'admin.sources.index',
             [

@@ -10,20 +10,24 @@ class AreasStationsMap extends Pivot
 {
     use HasUuids;
 
-    protected $table    = 'areas_stations_maps';
+    protected $table = 'areas_stations_maps';
+
     protected $fillable = ['id', 'station_id', 'area_id', 'default'];
-    protected $casts    = [
-        'id'         => 'string',
+
+    protected $casts = [
+        'id' => 'string',
         'station_id' => 'string',
-        'area_id'    => 'string',
-        'default'    => 'boolean',
+        'area_id' => 'string',
+        'default' => 'boolean',
     ];
 
-    public function area(): BelongsTo {
+    public function area(): BelongsTo
+    {
         return $this->belongsTo(Area::class);
     }
 
-    public function station(): BelongsTo {
+    public function station(): BelongsTo
+    {
         return $this->belongsTo(Station::class);
     }
 }

@@ -6,12 +6,14 @@ namespace App\Virtual\Models;
  * @OA\Schema(
  *     title="Webhook",
  *     description="Webhook model",
+ *
  *     @OA\Xml(
  *         name="Webhook"
  *     )
  * )
  */
-class Webhook {
+class Webhook
+{
     /**
      * @OA\Property(
      *     title="ID",
@@ -20,10 +22,9 @@ class Webhook {
      *     example=12345
      * )
      *
-     * @var integer
+     * @var int
      **/
     private $id;
-
 
     /**
      * @OA\Property(
@@ -33,10 +34,9 @@ class Webhook {
      *     example=12345
      * )
      *
-     * @var integer
+     * @var int
      **/
     private $clientId;
-
 
     /**
      * @OA\Property(
@@ -46,10 +46,9 @@ class Webhook {
      *     example=12345
      * )
      *
-     * @var integer
+     * @var int
      **/
     private $userId;
-
 
     /**
      * @OA\Property(
@@ -61,7 +60,6 @@ class Webhook {
      * @var string;
      */
     private $url;
-
 
     /**
      * @OA\Property(
@@ -81,9 +79,9 @@ class Webhook {
      *     title="events",
      *     description="array of events this webhook receives",
      *     type="array",
+     *
      *     @OA\Items()
      * )
-     *
      */
     private $events;
 }

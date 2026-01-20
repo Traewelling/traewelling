@@ -13,10 +13,11 @@ use Illuminate\Support\Facades\Schema;
  * This is intentionally kept so small to make migration easier.
  * The double columns should be gradually changed in the code.
  */
-return new class extends Migration
+return new class() extends Migration
 {
-    public function up(): void {
-        Schema::table('train_checkins', static function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::table('train_checkins', static function (Blueprint $table) {
             $table->unsignedBigInteger('origin_stopover_id')->nullable()->after('origin');
             $table->unsignedBigInteger('destination_stopover_id')->nullable()->after('destination');
 
@@ -25,8 +26,9 @@ return new class extends Migration
         });
     }
 
-    public function down(): void {
-        Schema::table('train_checkins', static function(Blueprint $table) {
+    public function down(): void
+    {
+        Schema::table('train_checkins', static function (Blueprint $table) {
             $table->dropForeign(['origin_stopover_id']);
             $table->dropForeign(['destination_stopover_id']);
 

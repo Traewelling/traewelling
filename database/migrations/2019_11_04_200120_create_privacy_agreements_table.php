@@ -11,8 +11,9 @@ class CreatePrivacyAgreementsTable extends Migration
      *
      * @return void
      */
-    public function up() {
-        Schema::create('privacy_agreements', function(Blueprint $table) {
+    public function up()
+    {
+        Schema::create('privacy_agreements', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('body_md_de');
             $table->text('body_md_en');
@@ -26,7 +27,8 @@ class CreatePrivacyAgreementsTable extends Migration
      *
      * @return void
      */
-    public function down() {
+    public function down()
+    {
         Schema::dropIfExists('privacy_agreements');
     }
 }

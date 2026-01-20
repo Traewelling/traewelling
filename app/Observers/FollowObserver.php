@@ -8,12 +8,12 @@ use Illuminate\Notifications\DatabaseNotification;
 
 class FollowObserver
 {
-
-    public function deleted(Follow $follow): void {
-        //delete all UserFollowed notifications between these users
+    public function deleted(Follow $follow): void
+    {
+        // delete all UserFollowed notifications between these users
         DatabaseNotification::where('type', UserFollowed::class)
-                            ->where('notifiable_id', $follow->follow_id)
-                            ->where('data->follower->id', $follow->user_id)
-                            ->delete();
+            ->where('notifiable_id', $follow->follow_id)
+            ->where('data->follower->id', $follow->user_id)
+            ->delete();
     }
 }

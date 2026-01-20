@@ -2,7 +2,4 @@
 
 namespace App\Exceptions;
 
-class CheckinException extends \Exception
-{
-
-}
+class CheckinException extends \Exception {}

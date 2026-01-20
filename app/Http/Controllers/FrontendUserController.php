@@ -22,7 +22,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  */
 class FrontendUserController extends Controller
 {
-    public function getProfilePage(string $username): View {
+    public function getProfilePage(string $username): View
+    {
         $user = User::where('username', $username)->firstOrFail();
         try {
             $statuses = UserController::statusesForUser($user);
@@ -32,20 +33,18 @@ class FrontendUserController extends Controller
 
         return view('profile.profile', [
             'statuses' => $statuses,
-            'user'     => $user,
+            'user' => $user,
         ]);
     }
 
     /**
-     * @param Request $request
-     *
-     * @return JsonResponse
      * @deprecated
      */
-    public function CreateFollow(Request $request): JsonResponse {
+    public function CreateFollow(Request $request): JsonResponse
+    {
         $validated = $request->validate([
-                                            'follow_id' => ['required', 'exists:users,id']
-                                        ]);
+            'follow_id' => ['required', 'exists:users,id'],
+        ]);
 
         $userToFollow = User::find($validated['follow_id']);
 
@@ -60,18 +59,15 @@ class FrontendUserController extends Controller
         if (!$createFollowResponse) {
             abort(409);
         }
+
         return response()->json(['message' => __('controller.user.follow-ok')], 201);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function requestFollow(Request $request): JsonResponse {
+    public function requestFollow(Request $request): JsonResponse
+    {
         $validated = $request->validate([
-                                            'follow_id' => ['required', 'exists:users,id']
-                                        ]);
+            'follow_id' => ['required', 'exists:users,id'],
+        ]);
 
         $userToFollow = User::find($validated['follow_id']);
 
@@ -83,39 +79,41 @@ class FrontendUserController extends Controller
         if ($createFollowResponse === false) {
             abort(409);
         }
+
         return response()->json(['message' => __('controller.user.follow-request-ok')], 201);
     }
 
     /**
-     * @param Request $request
-     *
-     * @return JsonResponse
      * @deprecated
      */
-    public function destroyFollow(Request $request): JsonResponse {
-        $validated      = $request->validate([
-                                                 'follow_id' => ['required', 'exists:users,id']
-                                             ]);
+    public function destroyFollow(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'follow_id' => ['required', 'exists:users,id'],
+        ]);
         $userToUnfollow = User::find($validated['follow_id']);
 
         $destroyFollowResponse = UserBackend::destroyFollow(Auth::user(), $userToUnfollow);
         if ($destroyFollowResponse === false) {
             return response()->json(['message' => __('controller.user.follow-404')], 409);
         }
+
         return response()->json(['message' => __('controller.user.follow-destroyed')], 200);
     }
 
-    public function searchUser(Request $request): Renderable|RedirectResponse {
+    public function searchUser(Request $request): Renderable|RedirectResponse
+    {
         try {
             $users = UserControllerAlias::searchUser($request['searchQuery']);
             if ($users->count() === 1) {
                 return redirect()->route('profile', ['username' => $users->first()->username]);
             }
+
             return view('search', [
                 'users' => $users,
             ]);
         } catch (HttpException|InvalidArgumentException) {
-            //abort(400) is triggered.
+            // abort(400) is triggered.
             return redirect()->back()->with('error', __('error.bad-request'));
         }
     }

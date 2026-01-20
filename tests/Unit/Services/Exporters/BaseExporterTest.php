@@ -10,45 +10,50 @@ class BaseExporterTest extends UnitTestCase
 {
     private User $user;
 
-    protected function setUp(): void {
+    protected function setUp(): void
+    {
         parent::setUp();
         $this->user = User::factory()->make();
     }
 
-    public function testAllParamsGiven() {
-        $exporter = new TestExporter($this->user, "test.csv");
+    public function test_all_params_given()
+    {
+        $exporter = new TestExporter($this->user, 'test.csv');
 
         $result = $exporter->getData();
-        $this->assertEquals("success", $result);
+        $this->assertEquals('success', $result);
     }
 
-    public function testMissingFileName() {
+    public function test_missing_file_name()
+    {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Property $fileName must be set in Tests\Unit\Services\Exporters\TestBaseExporter');
 
         new TestExporter($this->user);
     }
 
-    public function testValidationFailed() {
+    public function test_validation_failed()
+    {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Export validation failed in Tests\Unit\Services\Exporters\TestBaseExporter');
 
-        $exporter                 = new TestExporter($this->user, "test.csv");
+        $exporter = new TestExporter($this->user, 'test.csv');
         $exporter->failValidation = true;
         $exporter->getData();
     }
 
-    public function testEmptyFileName() {
+    public function test_empty_file_name()
+    {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Property $fileName must be set in Tests\Unit\Services\Exporters\TestBaseExporter');
 
-        $exporter = new TestExporter($this->user, "0");
+        $exporter = new TestExporter($this->user, '0');
         $exporter->getData();
     }
 
-    public function testGetFileName() {
-        $exporter = new TestExporter($this->user, "test.csv");
-        $this->assertEquals("test.csv", $exporter->getFileName());
+    public function test_get_file_name()
+    {
+        $exporter = new TestExporter($this->user, 'test.csv');
+        $this->assertEquals('test.csv', $exporter->getFileName());
     }
 }
-

@@ -13,13 +13,13 @@ class RouteSegmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'from_station_id'      => Station::inRandomOrder()->first()->id,
-            'to_station_id'        => Station::inRandomOrder()->first()->id,
-            'distance'             => $this->faker->numberBetween(1000, 100000),
-            'duration'             => $this->faker->numberBetween(600, 7200),
-            'polyline'             => '_p~iF~ps|U_ulLnnqC_mqNvxq`@',
-            'polyline_precision'   => 5,
-            'path_type'            => 'driving',
+            'from_station_id' => Station::inRandomOrder()->first()->id,
+            'to_station_id' => Station::inRandomOrder()->first()->id,
+            'distance' => $this->faker->numberBetween(1000, 100000),
+            'duration' => $this->faker->numberBetween(600, 7200),
+            'polyline' => '_p~iF~ps|U_ulLnnqC_mqNvxq`@',
+            'polyline_precision' => 5,
+            'path_type' => 'driving',
         ];
     }
 }

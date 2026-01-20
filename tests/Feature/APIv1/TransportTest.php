@@ -12,20 +12,20 @@ use Tests\ApiTestCase;
 
 class TransportTest extends ApiTestCase
 {
-
     use RefreshDatabase;
 
-    public function testGetDeparturesFetchTripAndCheckin(): void {
+    public function test_get_departures_fetch_trip_and_checkin(): void
+    {
         $this->skipTestBecauseOfLegacyApiUsage();
 
         Http::fake([
-                       '/locations*'                              => Http::response([self::FRANKFURT_HBF]),
-                       '/stops/8000105/departures*'               => Http::response([self::ICE802]),
-                       '/trips/' . urlencode(self::TRIP_ID) . '*' => Http::response(self::TRIP_INFO),
-                   ]);
+            '/locations*' => Http::response([self::FRANKFURT_HBF]),
+            '/stops/8000105/departures*' => Http::response([self::ICE802]),
+            '/trips/' . urlencode(self::TRIP_ID) . '*' => Http::response(self::TRIP_INFO),
+        ]);
 
-        //Test departures
-        $station   = Station::factory(['ibnr' => self::FRANKFURT_HBF['id'], 'name' => self::FRANKFURT_HBF['name']])->create();
+        // Test departures
+        $station = Station::factory(['ibnr' => self::FRANKFURT_HBF['id'], 'name' => self::FRANKFURT_HBF['name']])->create();
         $timestamp = Date::parse('next monday 8 am');
         $this->actAsApiUserWithAllScopes();
         $response = $this->get(
@@ -33,38 +33,38 @@ class TransportTest extends ApiTestCase
         );
         $response->assertOk();
         $response->assertJsonStructure([
-                                           'data' => [
-                                               '*' => [
-                                                   'tripId',
-                                                   'stop',
-                                                   'when',
-                                                   'plannedWhen',
-                                                   //and more...
-                                               ]
-                                           ],
-                                           'meta' => [
-                                               'station' => [
-                                                   'id',
-                                                   'ibnr',
-                                                   'name',
-                                                   'latitude',
-                                                   'longitude',
-                                                   'rilIdentifier'
-                                               ],
-                                               'times'   => [
-                                                   'now',
-                                                   'prev',
-                                                   'next',
-                                               ]
-                                           ]
-                                       ]);
+            'data' => [
+                '*' => [
+                    'tripId',
+                    'stop',
+                    'when',
+                    'plannedWhen',
+                    // and more...
+                ],
+            ],
+            'meta' => [
+                'station' => [
+                    'id',
+                    'ibnr',
+                    'name',
+                    'latitude',
+                    'longitude',
+                    'rilIdentifier',
+                ],
+                'times' => [
+                    'now',
+                    'prev',
+                    'next',
+                ],
+            ],
+        ]);
 
         $this->assertEquals($station->name, $response->json('meta.station.name'));
         $this->assertGreaterThan(0, $response->json('data'));
 
         $departure = $response->json('data')[0];
 
-        //Fetch trip with wrong origin / stopover
+        // Fetch trip with wrong origin / stopover
         $response = $this->get(
             uri: '/api/v1/trains/trip'
                  . '?hafasTripId=' . $departure['tripId']
@@ -81,112 +81,115 @@ class TransportTest extends ApiTestCase
         );
         $response->assertOk();
         $response->assertJsonStructure([
-                                           'data' => [
-                                               'id',
-                                               'category',
-                                               'number',
-                                               'lineName',
-                                               'origin'      => [
-                                                   'id', //and more...
-                                               ],
-                                               'destination' => [
-                                                   'id', //and more...
-                                               ],
-                                               'stopovers'   => [
-                                                   '*' => [
-                                                       'id',
-                                                       'name',
-                                                       'arrivalPlanned',
-                                                       'arrivalReal',
-                                                       'departurePlanned',
-                                                       'departureReal',
-                                                   ]
-                                               ]
-                                           ]
-                                       ]);
+            'data' => [
+                'id',
+                'category',
+                'number',
+                'lineName',
+                'origin' => [
+                    'id', // and more...
+                ],
+                'destination' => [
+                    'id', // and more...
+                ],
+                'stopovers' => [
+                    '*' => [
+                        'id',
+                        'name',
+                        'arrivalPlanned',
+                        'arrivalReal',
+                        'departurePlanned',
+                        'departureReal',
+                    ],
+                ],
+            ],
+        ]);
         $trip = $response->json('data');
 
-        //Now checkin...
+        // Now checkin...
         $response = $this->postJson(
-            uri:  '/api/v1/trains/checkin',
+            uri: '/api/v1/trains/checkin',
             data: [
-                      'tripId'      => $departure['tripId'],
-                      'lineName'    => $departure['line']['name'],
-                      'start'       => $trip['stopovers'][0]['evaIdentifier'],
-                      'departure'   => $trip['stopovers'][0]['departurePlanned'],
-                      'destination' => $trip['stopovers'][1]['evaIdentifier'],
-                      'arrival'     => $trip['stopovers'][1]['arrivalPlanned'],
-                      'ibnr'        => true,
-                  ],
+                'tripId' => $departure['tripId'],
+                'lineName' => $departure['line']['name'],
+                'start' => $trip['stopovers'][0]['evaIdentifier'],
+                'departure' => $trip['stopovers'][0]['departurePlanned'],
+                'destination' => $trip['stopovers'][1]['evaIdentifier'],
+                'arrival' => $trip['stopovers'][1]['arrivalPlanned'],
+                'ibnr' => true,
+            ],
         );
         $response->assertCreated();
         $response->assertJsonStructure([
-                                           'data' => [
-                                               'status' => [
-                                                   'id', 'body', 'user', //and more...
-                                               ],
-                                               'points' => [
-                                                   'points', //TODO: should be renamed... this sounds weird duplicated.
-                                                   'calculation' => [
-                                                       'base', 'distance', 'factor', 'reason',
-                                                   ],
-                                                   'additional'
-                                               ],
-                                               'alsoOnThisConnection',
-                                           ]
-                                       ]);
+            'data' => [
+                'status' => [
+                    'id', 'body', 'user', // and more...
+                ],
+                'points' => [
+                    'points', // TODO: should be renamed... this sounds weird duplicated.
+                    'calculation' => [
+                        'base', 'distance', 'factor', 'reason',
+                    ],
+                    'additional',
+                ],
+                'alsoOnThisConnection',
+            ],
+        ]);
 
-        //Do the same thing again! Should be a CheckInCollision
+        // Do the same thing again! Should be a CheckInCollision
         $response = $this->postJson(
-            uri:  '/api/v1/trains/checkin',
+            uri: '/api/v1/trains/checkin',
             data: [
-                      'tripId'      => $departure['tripId'],
-                      'lineName'    => $departure['line']['name'],
-                      'start'       => $trip['stopovers'][0]['evaIdentifier'],
-                      'departure'   => $trip['stopovers'][0]['departurePlanned'],
-                      'destination' => $trip['stopovers'][1]['evaIdentifier'],
-                      'arrival'     => $trip['stopovers'][1]['arrivalPlanned'],
-                      'ibnr'        => true,
-                  ],
+                'tripId' => $departure['tripId'],
+                'lineName' => $departure['line']['name'],
+                'start' => $trip['stopovers'][0]['evaIdentifier'],
+                'departure' => $trip['stopovers'][0]['departurePlanned'],
+                'destination' => $trip['stopovers'][1]['evaIdentifier'],
+                'arrival' => $trip['stopovers'][1]['arrivalPlanned'],
+                'ibnr' => true,
+            ],
         );
         $response->assertStatus(409);
     }
 
-    public function testGetStationByCoordinates(): void {
+    public function test_get_station_by_coordinates(): void
+    {
         $this->skipTestBecauseOfLegacyApiUsage();
 
-        Http::fake(["*/stops/nearby*" => Http::response([array_merge(
-                                                             self::HANNOVER_HBF,
-                                                             ["distance" => 421]
-                                                         )])]);
+        Http::fake(['*/stops/nearby*' => Http::response([array_merge(
+            self::HANNOVER_HBF,
+            ['distance' => 421]
+        )])]);
 
         $this->actAsApiUserWithAllScopes();
         $response = $this->get('/api/v1/trains/station/nearby?latitude=52.376564&longitude=9.741046&limit=1');
         $response->assertOk();
         $response->assertJsonStructure([
-                                           'data' => [
-                                               'id',
-                                               'name',
-                                               'latitude',
-                                               'longitude',
-                                               'ibnr',
-                                               'rilIdentifier',
-                                           ]
-                                       ]);
+            'data' => [
+                'id',
+                'name',
+                'latitude',
+                'longitude',
+                'ibnr',
+                'rilIdentifier',
+            ],
+        ]);
         $this->assertEquals('Hannover Hbf', $response->json('data.name'));
     }
 
-    public function testGetStationByCoordinatesIfNoStationIsNearby(): void {
+    public function test_get_station_by_coordinates_if_no_station_is_nearby(): void
+    {
         $this->skipTestBecauseOfLegacyApiUsage();
 
-        Http::fake(["*/stops/nearby*" => Http::response([])]);
+        Http::fake(['*/stops/nearby*' => Http::response([])]);
 
         $this->actAsApiUserWithAllScopes();
         $response = $this->get('/api/v1/trains/station/nearby?latitude=0&longitude=0&limit=1');
         $response->assertNotFound();
     }
 
-    public function testSetHome(): void {
+    public function test_set_home(): void
+    {
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
 
@@ -200,25 +203,26 @@ class TransportTest extends ApiTestCase
         $this->assertEquals($station->name, $user->home?->name);
     }
 
-    public function testAutocompleteWithDs100(): void {
+    public function test_autocomplete_with_ds100(): void
+    {
         $this->skipTestBecauseOfLegacyApiUsage();
 
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
 
-        Http::fake(["*/stations/" . self::HANNOVER_HBF['ril100'] => Http::response(self::HANNOVER_HBF)]);
+        Http::fake(['*/stations/' . self::HANNOVER_HBF['ril100'] => Http::response(self::HANNOVER_HBF)]);
 
         $response = $this->get('/api/v1/trains/station/autocomplete/HH');
         $response->assertOk();
         $response->assertJsonStructure([
-                                           'data' => [
-                                               '*' => [
-                                                   'ibnr',
-                                                   'rilIdentifier',
-                                                   'name',
-                                               ]
-                                           ]
-                                       ]);
+            'data' => [
+                '*' => [
+                    'ibnr',
+                    'rilIdentifier',
+                    'name',
+                ],
+            ],
+        ]);
         $this->assertCount(1, $response->json('data'));
         $this->assertEquals('HH', $response->json('data.0.rilIdentifier'));
         $this->assertEquals('Hannover Hbf', $response->json('data.0.name'));

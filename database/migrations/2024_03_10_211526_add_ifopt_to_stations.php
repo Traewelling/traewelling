@@ -4,10 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class() extends Migration
 {
-    public function up(): void {
-        Schema::table('train_stations', static function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::table('train_stations', static function (Blueprint $table) {
             $table->unsignedInteger('ifopt_e')->nullable()->comment('Stop Place Component (or unused)')->after('wikidata_id');
             $table->unsignedInteger('ifopt_d')->nullable()->comment('Stop Place or Stop Place Component')->after('wikidata_id');
             $table->unsignedInteger('ifopt_c')->nullable()->comment('Mode or Stop Place')->after('wikidata_id');
@@ -18,8 +19,9 @@ return new class extends Migration
         });
     }
 
-    public function down(): void {
-        Schema::table('train_stations', static function(Blueprint $table) {
+    public function down(): void
+    {
+        Schema::table('train_stations', static function (Blueprint $table) {
             $table->dropIndex('ifopt');
             $table->dropColumn('ifopt_e');
             $table->dropColumn('ifopt_d');

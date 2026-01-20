@@ -12,6 +12,7 @@ use stdClass;
  * @OA\Schema(
  *     title="LivePointDto",
  *     description="All necessary information to calculate live position",
+ *
  *     @OA\Xml(
  *         name="LivePointDto"
  *     )
@@ -28,6 +29,7 @@ readonly class LivePointDto implements JsonSerializable
      * )
      */
     public ?Coordinate $point;
+
     /**
      * @OA\Property(
      *     title="polyline",
@@ -36,6 +38,7 @@ readonly class LivePointDto implements JsonSerializable
      * )
      */
     public ?stdClass $polyline;
+
     /**
      * @OA\Property(
      *     title="arrival",
@@ -45,6 +48,7 @@ readonly class LivePointDto implements JsonSerializable
      * )
      */
     public int $arrival;
+
     /**
      * @OA\Property(
      *     title="departure",
@@ -54,6 +58,7 @@ readonly class LivePointDto implements JsonSerializable
      * )
      */
     public int $departure;
+
     /**
      * @OA\Property(
      *     title="lineName",
@@ -63,6 +68,7 @@ readonly class LivePointDto implements JsonSerializable
      * )
      **/
     public string $lineName;
+
     /**
      * @deprecated how to remove this unnecessary property (use status model instead) without breaking the API?
      *
@@ -79,43 +85,45 @@ readonly class LivePointDto implements JsonSerializable
 
     public function __construct(
         ?Coordinate $point,
-        ?stdClass   $polyline,
-        int         $arrival,
-        int         $departure,
-        string      $lineName,
-        Status      $status
+        ?stdClass $polyline,
+        int $arrival,
+        int $departure,
+        string $lineName,
+        Status $status
     ) {
-        $this->point     = $point;
-        $this->polyline  = $polyline;
-        $this->arrival   = $arrival;
+        $this->point = $point;
+        $this->polyline = $polyline;
+        $this->arrival = $arrival;
         $this->departure = $departure;
-        $this->lineName  = $lineName;
-        $this->status    = $status;
-        $this->statusId  = $status->id;
+        $this->lineName = $lineName;
+        $this->status = $status;
+        $this->statusId = $status->id;
     }
 
-    public function jsonSerialize(): mixed {
+    public function jsonSerialize(): mixed
+    {
         return $this->toArray();
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
-            'point'     => $this->point ? Feature::fromCoordinate($this->point) : null,
-            'polyline'  => $this->polyline,
-            'arrival'   => $this->arrival,
+            'point' => $this->point ? Feature::fromCoordinate($this->point) : null,
+            'polyline' => $this->polyline,
+            'arrival' => $this->arrival,
             'departure' => $this->departure,
-            'lineName'  => $this->lineName,
-            'statusId'  => $this->status->id, //deprecate this... why aren't we using a resource here...? why is a DTO a resource now? isn't a DTO supposed to be a simple data transfer object for internal use?
-            'status'    => [
-                //undocumented
-                'id'   => $this->status->id,
+            'lineName' => $this->lineName,
+            'statusId' => $this->status->id, // deprecate this... why aren't we using a resource here...? why is a DTO a resource now? isn't a DTO supposed to be a simple data transfer object for internal use?
+            'status' => [
+                // undocumented
+                'id' => $this->status->id,
                 'user' => [
-                    'id'                => $this->status->user->id,
-                    'username'          => $this->status->user->username,
-                    'name'              => $this->status->user->name,
-                    'profilePictureUrl' => ProfilePictureController::getUrl($this->status->user)
+                    'id' => $this->status->user->id,
+                    'username' => $this->status->user->username,
+                    'name' => $this->status->user->name,
+                    'profilePictureUrl' => ProfilePictureController::getUrl($this->status->user),
                 ],
-            ]
+            ],
         ];
     }
 }

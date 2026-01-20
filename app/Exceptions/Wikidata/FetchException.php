@@ -1,10 +1,9 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Exceptions\Wikidata;
 
 use Exception;
 
-class FetchException extends Exception
-{
-    
-}
+class FetchException extends Exception {}

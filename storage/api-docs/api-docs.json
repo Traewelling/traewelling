@@ -5691,6 +5691,15 @@
                     "user": {
                         "$ref": "#/components/schemas/LightUserResource"
                     },
+                    "createdBy": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/LightUserResource"
+                            }
+                        ],
+                        "nullable": true,
+                        "description": "User who created this check-in on behalf of the status owner (null if self-checkin)"
+                    },
                     "tags": {
                         "type": "array",
                         "items": {

@@ -14,6 +14,7 @@ use romanzipp\QueueMonitor\Traits\IsMonitored;
 
 /**
  * Send the Email which verifies a user account asynchronously.
+ *
  * @see https://aregsar.com/blog/2020/how-to-queue-laravel-user-verification-email/
  */
 class SendVerificationEmail implements ShouldQueue
@@ -27,22 +28,22 @@ class SendVerificationEmail implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(User $user) {
+    public function __construct(User $user)
+    {
         $this->user = $user;
     }
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle(): void {
+    public function handle(): void
+    {
         $this->queueData([
-                             "user_id"  => $this->user->id,
-                             "username" => $this->user->username,
-                         ]);
+            'user_id' => $this->user->id,
+            'username' => $this->user->username,
+        ]);
 
-        $this->user->notify(new VerifyEmail);
+        $this->user->notify(new VerifyEmail());
 
         Log::info('Verification email sent.', ['user_id' => $this->user->id, 'username' => $this->user->username]);
     }

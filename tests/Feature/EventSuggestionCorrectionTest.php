@@ -12,28 +12,30 @@ class EventSuggestionCorrectionTest extends FeatureTestCase
 {
     use RefreshDatabase, WithFaker;
 
-    public function testSuggestionHashTagCorrection(): void {
+    public function test_suggestion_hash_tag_correction(): void
+    {
         $user = User::factory()->create();
 
         $suggestion = EventController::suggestEvent(
-            user:    $user,
-            name:    $this->faker->name,
-            begin:   now(),
-            end:     now()->addDay(),
+            user: $user,
+            name: $this->faker->name,
+            begin: now(),
+            end: now()->addDay(),
             hashtag: '#GreatTestCase',
         );
 
         $this->assertEquals('GreatTestCase', $suggestion->hashtag);
     }
 
-    public function testSuggestionHashTagWithoutCorrection(): void {
+    public function test_suggestion_hash_tag_without_correction(): void
+    {
         $user = User::factory()->create();
 
         $suggestion = EventController::suggestEvent(
-            user:    $user,
-            name:    $this->faker->name,
-            begin:   now(),
-            end:     now()->addDay(),
+            user: $user,
+            name: $this->faker->name,
+            begin: now(),
+            end: now()->addDay(),
             hashtag: 'GreatTestCase',
         );
 

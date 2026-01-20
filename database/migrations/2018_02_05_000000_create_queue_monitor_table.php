@@ -6,8 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateQueueMonitorTable extends Migration
 {
-    public function up(): void {
-        Schema::create(config('queue-monitor.table'), function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::create(config('queue-monitor.table'), function (Blueprint $table) {
             $table->id();
 
             $table->string('job_id')->index();
@@ -35,7 +36,8 @@ class CreateQueueMonitorTable extends Migration
         });
     }
 
-    public function down(): void {
+    public function down(): void
+    {
         Schema::drop(config('queue-monitor.table'));
     }
 }

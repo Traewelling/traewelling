@@ -11,9 +11,10 @@ use Illuminate\Validation\Rule;
  */
 class FindStationRequest extends FormRequest
 {
-    public function rules(): array {
+    public function rules(): array
+    {
         return [
-            'identifier'          => ['required', 'string', 'max:255'],
+            'identifier' => ['required', 'string', 'max:255'],
             'identifier_provider' => ['required', 'string', Rule::in(['transitous', 'ibnr'])],
         ];
     }

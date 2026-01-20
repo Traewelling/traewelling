@@ -14,64 +14,70 @@ use Tests\ApiTestCase;
 
 class StatusTagPrivacyTest extends ApiTestCase
 {
-
     use RefreshDatabase;
 
-    public function testUserViewPublicStatusTag(): void {
-        $statusTag  = StatusTag::factory(['visibility' => StatusVisibility::PUBLIC->value])->create();
+    public function test_user_view_public_status_tag(): void
+    {
+        $statusTag = StatusTag::factory(['visibility' => StatusVisibility::PUBLIC->value])->create();
         $randomUser = User::factory()->create();
         $this->assertTrue($randomUser->can('view', $statusTag));
     }
 
-    public function testUserViewPrivateStatusTag(): void {
-        $statusTag  = StatusTag::factory(['visibility' => StatusVisibility::PRIVATE])->create();
+    public function test_user_view_private_status_tag(): void
+    {
+        $statusTag = StatusTag::factory(['visibility' => StatusVisibility::PRIVATE])->create();
         $randomUser = User::factory()->create();
         $this->assertFalse($randomUser->can('view', $statusTag));
     }
 
-    public function testUserViewFollowersOnlyStatusTag(): void {
-        $statusTag  = StatusTag::factory(['visibility' => StatusVisibility::FOLLOWERS])->create();
+    public function test_user_view_followers_only_status_tag(): void
+    {
+        $statusTag = StatusTag::factory(['visibility' => StatusVisibility::FOLLOWERS])->create();
         $randomUser = User::factory()->create();
         $this->assertFalse($randomUser->can('view', $statusTag));
     }
 
-    public function testFollowerViewFollowersOnlyStatusTag(): void {
-        $user     = User::factory()->create();
+    public function test_follower_view_followers_only_status_tag(): void
+    {
+        $user = User::factory()->create();
         $follower = User::factory()->create();
 
-        $status    = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::FOLLOWERS])->create();
+        $status = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::FOLLOWERS])->create();
         $statusTag = StatusTag::factory([
-                                            'status_id'  => $status->id,
-                                            'visibility' => StatusVisibility::FOLLOWERS,
-                                        ])->create();
+            'status_id' => $status->id,
+            'visibility' => StatusVisibility::FOLLOWERS,
+        ])->create();
 
         FollowController::createOrRequestFollow($user, $follower);
         FollowController::createOrRequestFollow($follower, $user);
         $this->assertTrue($follower->refresh()->can('view', $statusTag));
     }
 
-    public function testFollowerCantViewPrivateStatusTag(): void {
+    public function test_follower_cant_view_private_status_tag(): void
+    {
         $statusTag = StatusTag::factory(['visibility' => StatusVisibility::PRIVATE])->create();
-        $user      = User::factory()->create();
-        $follower  = User::factory()->create();
+        $user = User::factory()->create();
+        $follower = User::factory()->create();
         Follow::factory(['user_id' => $user->id, 'follow_id' => $follower->id])->create();
         $this->assertFalse($follower->can('view', $statusTag));
     }
 
-    public function testOwnerCanViewPrivateStatusTag(): void {
+    public function test_owner_can_view_private_status_tag(): void
+    {
         $statusTag = StatusTag::factory(['visibility' => StatusVisibility::PRIVATE])->create();
         $this->assertTrue($statusTag->status->user->can('view', $statusTag));
     }
 
-    public function testTrustedUserCanViewTrustedStatusTag(): void {
-        $user        = User::factory()->create();
+    public function test_trusted_user_can_view_trusted_status_tag(): void
+    {
+        $user = User::factory()->create();
         $trustedUser = User::factory()->create();
-        
-        $status    = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::TRUSTED])->create();
+
+        $status = Status::factory(['user_id' => $user->id, 'visibility' => StatusVisibility::TRUSTED])->create();
         $statusTag = StatusTag::factory([
-                                            'status_id'  => $status->id,
-                                            'visibility' => StatusVisibility::TRUSTED,
-                                        ])->create();
+            'status_id' => $status->id,
+            'visibility' => StatusVisibility::TRUSTED,
+        ])->create();
 
         TrustedUser::create([
             'user_id' => $user->id,
@@ -81,8 +87,9 @@ class StatusTagPrivacyTest extends ApiTestCase
         $this->assertTrue($trustedUser->can('view', $statusTag));
     }
 
-    public function testNonTrustedUserCantViewTrustedStatusTag(): void {
-        $statusTag  = StatusTag::factory(['visibility' => StatusVisibility::TRUSTED])->create();
+    public function test_non_trusted_user_cant_view_trusted_status_tag(): void
+    {
+        $statusTag = StatusTag::factory(['visibility' => StatusVisibility::TRUSTED])->create();
         $randomUser = User::factory()->create();
         $this->assertFalse($randomUser->can('view', $statusTag));
     }

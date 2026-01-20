@@ -1,6 +1,6 @@
-import {Tooltip} from "bootstrap";
+import { Tooltip } from 'bootstrap';
 
-const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-tooltipTriggerList.forEach(tooltipTriggerEl => {
-    new Tooltip(tooltipTriggerEl)
-})
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+tooltipTriggerList.forEach((tooltipTriggerEl) => {
+    new Tooltip(tooltipTriggerEl);
+});

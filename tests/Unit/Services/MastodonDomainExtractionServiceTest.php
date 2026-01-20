@@ -10,7 +10,8 @@ use Tests\Unit\UnitTestCase;
 class MastodonDomainExtractionServiceTest extends UnitTestCase
 {
     #[DataProvider('providerTestFormatDomain')]
-    public function testFormatDomain($case, $expected): void {
+    public function test_format_domain($case, $expected): void
+    {
         $formatted = (new MastodonDomainExtractionService())->formatDomain($case);
         $this->assertEquals($expected, $formatted);
 
@@ -19,7 +20,8 @@ class MastodonDomainExtractionServiceTest extends UnitTestCase
         $this->assertFalse($validated->fails());
     }
 
-    public static function providerTestFormatDomain(): array {
+    public static function providerTestFormatDomain(): array
+    {
         return [
             ['   https://github.com    ', 'https://github.com'],
             ['    ', ''],
@@ -33,7 +35,7 @@ class MastodonDomainExtractionServiceTest extends UnitTestCase
             ['https://traewelling.github.io/', 'https://traewelling.github.io'],
             ['https://traewelling.github.io/@foobar', 'https://traewelling.github.io'],
             ['github.com/mastodon/mastodon', 'https://github.com'],
-            ['@user@github.com/@mastodon/mastodon', 'https://github.com'] // who would do this?
+            ['@user@github.com/@mastodon/mastodon', 'https://github.com'], // who would do this?
         ];
     }
 }

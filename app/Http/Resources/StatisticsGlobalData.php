@@ -10,6 +10,7 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(
  *     title="StatisticsGlobalData",
  *     required={"distance", "duration", "activeUsers"},
+ *
  *     @OA\Property(
  *                      property="distance",
  *                      description="Globally travelled distance in meters",
@@ -32,12 +33,13 @@ use OpenApi\Annotations as OA;
  */
 class StatisticsGlobalData extends JsonResource
 {
-    public function toArray($request): array {
+    public function toArray($request): array
+    {
         /** @var GlobalCheckinStats $this */
         return [
-            'distance'    => $this->distance,
-            'duration'    => $this->duration,
-            'activeUsers' => $this->userCount
+            'distance' => $this->distance,
+            'duration' => $this->duration,
+            'activeUsers' => $this->userCount,
         ];
     }
 }

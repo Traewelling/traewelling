@@ -7,10 +7,11 @@ use App\Exceptions\UnknownDataProvider;
 
 class DataProviderBuilder
 {
-    public function build(?bool $cache = null): DataProviderInterface {
+    public function build(?bool $cache = null): DataProviderInterface
+    {
         $dp = match (config('trwl.data_provider')) {
             'transitous' => new Motis(DataProvider::TRANSITOUS),
-            default      => throw new UnknownDataProvider('No valid data provider configured'),
+            default => throw new UnknownDataProvider('No valid data provider configured'),
         };
 
         if ($cache === true || ($cache === null && config('trwl.cache.data_provider'))) {

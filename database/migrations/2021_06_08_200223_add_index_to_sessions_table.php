@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 class AddIndexToSessionsTable extends Migration
 {
-
-    public function up(): void {
-        Schema::table('sessions', function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::table('sessions', function (Blueprint $table) {
             $table->dropUnique(['id']);
             $table->primary('id');
 
@@ -17,8 +17,9 @@ class AddIndexToSessionsTable extends Migration
         });
     }
 
-    public function down(): void {
-        Schema::table('sessions', function(Blueprint $table) {
+    public function down(): void
+    {
+        Schema::table('sessions', function (Blueprint $table) {
             $table->dropPrimary(['id']);
             $table->unique('id');
 

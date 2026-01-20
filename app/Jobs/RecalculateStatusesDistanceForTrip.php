@@ -16,15 +16,17 @@ class RecalculateStatusesDistanceForTrip implements ShouldQueue
 
     private $tripId;
 
-    public function __construct(int $tripId) {
+    public function __construct(int $tripId)
+    {
         $this->tripId = $tripId;
     }
 
-    public function handle(): void {
+    public function handle(): void
+    {
         $checkinsToRecalc = Checkin::with(['status'])->where('trip_id', $this->tripId)->get();
         foreach ($checkinsToRecalc as $checkin) {
-            Log::debug('Recalculating points and distance for Checkin #'. $checkin->checkin_id, [
-                'Trip#' . $this->tripId
+            Log::debug('Recalculating points and distance for Checkin #' . $checkin->checkin_id, [
+                'Trip#' . $this->tripId,
             ]);
             try {
                 DB::beginTransaction();
@@ -32,7 +34,7 @@ class RecalculateStatusesDistanceForTrip implements ShouldQueue
                 DB::commit();
             } catch (DistanceDeviationException) {
                 Log::info('Distance Deviation detected. Reverting changes.', [
-                    'RecalculateStatusesDistanceForTrip', 'Trip#' . $this->tripId, 'Checkin#' . $checkin->checkin_id
+                    'RecalculateStatusesDistanceForTrip', 'Trip#' . $this->tripId, 'Checkin#' . $checkin->checkin_id,
                 ]);
                 DB::rollBack();
             }
