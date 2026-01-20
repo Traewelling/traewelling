@@ -5637,6 +5637,23 @@
             },
             "StatusResource": {
                 "title": "Status",
+                "required": [
+                    "id",
+                    "body",
+                    "business",
+                    "bodyMentions",
+                    "business",
+                    "visibility",
+                    "likes",
+                    "liked",
+                    "isLikable",
+                    "client",
+                    "createdAt",
+                    "train",
+                    "event",
+                    "userDetails",
+                    "tags"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer",

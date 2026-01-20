@@ -521,6 +521,8 @@ export interface LightUserResource {
   username: string;
   /** @example "https://traewelling.de/@Gertrud123/picture" */
   profilePicture: string;
+  /** @example {"server":"mastodon.social","user_id":1234567} */
+  mastodon?: object;
   /** @example false */
   preventIndex: boolean;
 }
@@ -627,19 +629,19 @@ export interface StatusResource {
    */
   isLikable: boolean;
   client: ClientResource;
+  checkin?: TransportResource;
+  event: EventResource | null;
+  /** User model with just basic information */
+  user?: LightUserResource;
+  /** User who created this check-in on behalf of the status owner (null if self-checkin) */
+  createdBy?: LightUserResource | null;
+  tags: StatusTagResource[];
   /**
    * creation date of this status
    * @format datetime
    * @example "2022-07-17T13:37:00+02:00"
    */
   createdAt: string;
-  train: TransportResource;
-  event: EventResource | null;
-  /** User model with just basic information */
-  userDetails: LightUserResource;
-  /** User who created this check-in on behalf of the status owner (null if self-checkin) */
-  createdBy?: LightUserResource | null;
-  tags: StatusTagResource[];
 }
 
 /** StatusTagResource */
