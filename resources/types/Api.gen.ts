@@ -637,6 +637,8 @@ export interface StatusResource {
   event: EventResource | null;
   /** User model with just basic information */
   userDetails: LightUserResource;
+  /** User who created this check-in on behalf of the status owner (null if self-checkin) */
+  createdBy?: LightUserResource | null;
   tags: StatusTagResource[];
 }
 
