@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Http\Controllers\Backend\Auth\AuthorizationController;
 use App\Http\Controllers\Backend\VersionController;
+use Carbon\CarbonInterval;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Pagination\Paginator;
@@ -27,6 +28,9 @@ class AppServiceProvider extends ServiceProvider
             ->needs(StatefulGuard::class)
             ->give(fn () => Auth::guard(config('passport.guard', null)));
         Passport::ignoreCsrfToken();
+        Passport::tokensExpireIn(CarbonInterval::minutes(60));
+        Passport::refreshTokensExpireIn(CarbonInterval::days(30));
+        Passport::personalAccessTokensExpireIn(CarbonInterval::days(90));
     }
 
     /**
