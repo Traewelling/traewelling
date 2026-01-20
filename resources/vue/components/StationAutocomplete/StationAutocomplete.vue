@@ -1,5 +1,5 @@
 <script>
-import VueDatePicker from '@vuepic/vue-datepicker';
+import { VueDatePicker } from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import axios from 'axios';
 import { trans } from 'laravel-vue-i18n';
@@ -408,7 +408,7 @@ export default {
                 <VueDatePicker
                     ref="picker"
                     v-model="date"
-                    time-picker-inline
+                    :time-config="{ timePickerInline: true }"
                     :dark="dark"
                     :action-row="{ showSelect: true, showCancel: true, showNow: true, showPreview: true }"
                     @update:model-value="setTime"
