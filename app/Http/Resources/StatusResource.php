@@ -12,8 +12,6 @@ use OpenApi\Annotations as OA;
 /**
  * @OA\Schema(
  *      title="Status",
- *      required={"id", "body", "business", "bodyMentions", "business", "visibility", "likes", "liked", "isLikable", "client", "createdAt", "train", "event", "userDetails", "tags"},
- *
  *      @OA\Property(property="id", type="integer", example=12345),
  *      @OA\Property(property="body", description="User defined status text", example="Hello world!"),
  *      @OA\Property(property="bodyMentions", description="Mentions in the status body", type="array", @OA\Items(ref="#/components/schemas/MentionDto")),
@@ -27,6 +25,7 @@ use OpenApi\Annotations as OA;
  *      @OA\Property(property="train", ref="#/components/schemas/TransportResource"),
  *      @OA\Property(property="event", ref="#/components/schemas/EventResource", nullable=true),
  *      @OA\Property(property="userDetails", ref="#/components/schemas/LightUserResource"),
+ *      @OA\Property(property="createdBy", description="User who created this check-in on behalf of the status owner (null if self-checkin)", ref="#/components/schemas/LightUserResource", nullable=true),
  *      @OA\Property(property="tags", type="array", @OA\Items(ref="#/components/schemas/StatusTagResource")),
  * )
  *
@@ -53,6 +52,7 @@ class StatusResource extends JsonResource
             'train' => new TransportResource($this->checkin), // TODO: don't call it train - we have more than trains
             'event' => new EventResource($this?->event),
             'userDetails' => new LightUserResource($this->user), // TODO: rename this to user, after deprecated fields are removed (2024-08)
+            'createdBy' => $this->createdByUser ? new LightUserResource($this->createdByUser) : null,
             'tags' => StatusTagResource::collection($this->tags->filter(fn (StatusTag $tag) => Gate::allows('view', $tag))),
         ];
     }

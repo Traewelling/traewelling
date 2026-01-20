@@ -5630,23 +5630,6 @@
             },
             "StatusResource": {
                 "title": "Status",
-                "required": [
-                    "id",
-                    "body",
-                    "business",
-                    "bodyMentions",
-                    "business",
-                    "visibility",
-                    "likes",
-                    "liked",
-                    "isLikable",
-                    "client",
-                    "createdAt",
-                    "train",
-                    "event",
-                    "userDetails",
-                    "tags"
-                ],
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -5706,6 +5689,15 @@
                     },
                     "userDetails": {
                         "$ref": "#/components/schemas/LightUserResource"
+                    },
+                    "createdBy": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/LightUserResource"
+                            }
+                        ],
+                        "nullable": true,
+                        "description": "User who created this check-in on behalf of the status owner (null if self-checkin)"
                     },
                     "tags": {
                         "type": "array",
