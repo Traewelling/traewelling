@@ -3,6 +3,9 @@
 namespace App\Http\Resources;
 
 use App\Http\Controllers\Backend\User\ProfilePictureController;
+use App\Models\MastodonServer;
+use App\Models\SocialLoginProfile;
+use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
@@ -18,22 +21,31 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *      @OA\Property(property="mastodon", type="object", example={"server": "mastodon.social", "user_id": 1234567}),
  *      @OA\Property(property="preventIndex", type="boolean", example=false)
  * )
+ *
+ * @mixin User
  */
 class LightUserResource extends JsonResource
 {
     public function toArray($request): array
     {
+        /** @var User $user */
+        $user = $this->resource;
+        /** @var SocialLoginProfile|null $socialProfile */
+        $socialProfile = $user->socialProfile;
+        /** @var MastodonServer|null $mastodonServer */
+        $mastodonServer = $socialProfile?->mastodonServer;
+
         return [
-            'id' => (int) $this->id,
-            'displayName' => (string) $this->name,
-            'username' => (string) $this->username,
-            'profilePicture' => ProfilePictureController::getUrl($this->resource),
+            'id' => (int) $user->id,
+            'displayName' => (string) $user->name,
+            'username' => (string) $user->username,
+            'profilePicture' => ProfilePictureController::getUrl($user),
             'mastodon' => [
-                'server' => $this->socialProfile?->mastodonServer?->domain,
-                'user_id' => $this->socialProfile?->mastodon_id,
+                'server' => $mastodonServer?->domain,
+                'user_id' => $socialProfile?->mastodon_id,
             ],
             'mastodonUrl' => null, // TODO: remove after 2026-07 (this is not lightweight enough for a LightResource)
-            'preventIndex' => (bool) $this->prevent_index,
+            'preventIndex' => (bool) $user->prevent_index,
         ];
     }
 }

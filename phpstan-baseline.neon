@@ -1477,30 +1477,6 @@ parameters:
 			path: app/Http/Resources/LeaderboardUserResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\LightUserResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/LightUserResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\LightUserResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/LightUserResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\LightUserResource\:\:\$prevent_index\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/LightUserResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\LightUserResource\:\:\$username\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/LightUserResource.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$identifier\.$#'
 			identifier: property.notFound
 			count: 1
