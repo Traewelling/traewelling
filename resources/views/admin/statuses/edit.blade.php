@@ -30,6 +30,21 @@
                             </small>
                         </div>
                     </div>
+                    @if($status->created_by_user_id)
+                        <div class="row">
+                            <div class="col-4">
+                                <label class="form-label">Checked in by</label>
+                            </div>
+                            <div class="col-8">
+                                {{$status->createdByUser->name}}
+                                <small>
+                                    <a href="{{route('admin.users.show', ['id' => $status->createdByUser->id])}}">
+                                        {{'@'.$status->createdByUser->username}}
+                                    </a>
+                                </small>
+                            </div>
+                        </div>
+                    @endif
                     <div class="row">
                         <div class="col-4"></div>
                         <div class="col-8">

@@ -51,7 +51,7 @@ class StatusEditController extends Controller
     public function renderEdit(int $statusId, Request $request): View
     {
         return view('admin.statuses.edit', [
-            'status' => Status::findOrFail($statusId),
+            'status' => Status::with('createdByUser')->findOrFail($statusId),
         ]);
     }
 
