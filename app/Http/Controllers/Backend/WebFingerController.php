@@ -6,24 +6,25 @@ use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WebFingerController extends Controller
 {
-
     private string $resource;
+
     private string $serverName;
 
-    public function __construct(string $resource) {
-        $this->resource   = $resource;
+    public function __construct(string $resource)
+    {
+        $this->resource = $resource;
         $this->serverName = self::getServerName(config('app.url'));
     }
 
-    public static function getServerName(string $url): string {
-        $parsedUrl  = parse_url($url);
-        $protocol   = $parsedUrl['scheme'];
+    public static function getServerName(string $url): string
+    {
+        $parsedUrl = parse_url($url);
+        $protocol = $parsedUrl['scheme'];
         $serverName = $parsedUrl['host'];
 
         if (isset($parsedUrl['port'])) {
@@ -33,8 +34,13 @@ class WebFingerController extends Controller
         return $serverName;
     }
 
-    public function renderResponse(): JsonResponse {
-        [$username, $host] = $this->parseDetails($this->resource);
+    public function renderResponse(): JsonResponse
+    {
+        try {
+            [$username, $host] = $this->parseDetails($this->resource);
+        } catch (\Exception $e) {
+            throw new InvalidArgumentException('Invalid resource format.');
+        }
 
         if ($host != $this->serverName) {
             throw new InvalidArgumentException('Only users from ' . $this->serverName . ' are accepted.');
@@ -53,14 +59,14 @@ class WebFingerController extends Controller
                 'aliases' => [
                     route('profile', ['username' => $username]),
                 ],
-                'links'   => [
+                'links' => [
                     [
-                        'rel'  => 'http://webfinger.net/rel/profile-page',
+                        'rel' => 'http://webfinger.net/rel/profile-page',
                         'type' => 'text/html',
                         'href' => route('profile', ['username' => $username]),
                     ],
                     [
-                        'rel'  => 'http://webfinger.net/rel/avatar',
+                        'rel' => 'http://webfinger.net/rel/avatar',
                         'type' => 'image/png',
                         'href' => $avatarUrl,
                     ],
@@ -73,12 +79,14 @@ class WebFingerController extends Controller
         );
     }
 
-    function parseDetails(string $resource): mixed {
+    public function parseDetails(string $resource): mixed
+    {
         // is it a 'acct:' uri?
         if (str_starts_with($resource, 'acct:')) {
-            $atPos    = strpos($resource, '@', strlen('acct:'));
+            $atPos = strpos($resource, '@', strlen('acct:'));
             $username = substr($resource, strlen('acct:'), $atPos - strlen('acct:'));
-            $host     = substr($resource, $atPos + 1);
+            $host = substr($resource, $atPos + 1);
+
             return [
                 $username,
                 $host,
@@ -86,10 +94,10 @@ class WebFingerController extends Controller
         }
         // otherwise it's a regular url
         // e.g. https://traewelling.de/@Gertrud123
-        $url      = parse_url($resource);
+        $url = parse_url($resource);
         $username = substr($url['path'], 2);
-        $host     = $url['host'];
-        $scheme   = $url['scheme'];
+        $host = $url['host'];
+        $scheme = $url['scheme'];
         if (isset($url['port'])) {
             $host = $this->appendNonStandardPort($scheme, $host, $url['port']);
         }
@@ -100,7 +108,8 @@ class WebFingerController extends Controller
         ];
     }
 
-    public static function appendNonStandardPort(string $scheme, string $host, int|null $port): string {
+    public static function appendNonStandardPort(string $scheme, string $host, ?int $port): string
+    {
         if ($scheme == 'http' && $port != 80) {
             $host .= ':' . $port;
         }

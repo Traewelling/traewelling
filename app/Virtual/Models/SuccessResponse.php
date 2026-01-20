@@ -6,6 +6,7 @@ namespace App\Virtual\Models;
  * @OA\Schema(
  *     title="SuccessResponse",
  *     description="Success Response",
+ *
  *     @OA\Xml(
  *         name="SuccessResponse"
  *     )

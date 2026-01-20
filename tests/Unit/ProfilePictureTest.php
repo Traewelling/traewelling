@@ -9,12 +9,14 @@ use Tests\TestCase;
 class ProfilePictureTest extends TestCase
 {
     #[DataProvider('pictureColorProvider')]
-    public function testPictureColor($avatar) {
+    public function test_picture_color($avatar)
+    {
         $this->assertEquals(6, strlen(ProfilePictureController::generateBackgroundHash($avatar)));
         $this->assertTrue(preg_match('^(?:[0-9a-fA-F]{3}){1,2}$^', ProfilePictureController::generateBackgroundHash($avatar)) === 1);
     }
 
-    public static function pictureColorProvider(): array {
+    public static function pictureColorProvider(): array
+    {
         return [
             ['abc'],
             ['123'],

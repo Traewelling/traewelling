@@ -11,13 +11,16 @@ use Illuminate\View\View;
 
 class LandingPageController
 {
-    private const string CACHE_KEY_STATS             = 'welcome.stats';
-    private const string CACHE_KEY_STATS_TTL         = 'welcome.stats.revalidate';
+    private const string CACHE_KEY_STATS = 'welcome.stats';
+
+    private const string CACHE_KEY_STATS_TTL = 'welcome.stats.revalidate';
+
     private const string CACHE_KEY_STATS_CALCULATING = 'welcome.stats.calculating';
 
-    private function getStats(): GlobalCheckinStats {
-        $stats       = Cache::get(self::CACHE_KEY_STATS);
-        $ttl         = Cache::get(self::CACHE_KEY_STATS_TTL, 0);
+    private function getStats(): GlobalCheckinStats
+    {
+        $stats = Cache::get(self::CACHE_KEY_STATS);
+        $ttl = Cache::get(self::CACHE_KEY_STATS_TTL, 0);
         $calculating = Cache::get(self::CACHE_KEY_STATS_CALCULATING, false);
 
         // refresh stats if they are outdated. rand(0,10) to reduce risk of multiple processes starting calculation
@@ -27,7 +30,7 @@ class LandingPageController
              || $ttl < now()->format('u'))
             && !$calculating
         ) {
-            dispatch(function() {
+            dispatch(function () {
                 Cache::put(self::CACHE_KEY_STATS_CALCULATING, true, now()->addMinutes(15));
                 $stats = StatisticController::getGlobalCheckInStatsAllTime();
 
@@ -40,10 +43,12 @@ class LandingPageController
         return $stats ?? new GlobalCheckinStats(0, 0, 0);
     }
 
-    public function renderLandingPage(): View|RedirectResponse {
+    public function renderLandingPage(): View|RedirectResponse
+    {
         if (Auth::check()) {
             return redirect()->route('dashboard');
         }
+
         return view('welcome/welcome', ['stats' => $this->getStats()]);
     }
 }

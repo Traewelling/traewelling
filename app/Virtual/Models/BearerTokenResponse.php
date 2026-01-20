@@ -2,11 +2,10 @@
 
 namespace App\Virtual\Models;
 
-use Carbon\Carbon;
-
 /**
  * @OA\Schema(
  *     title="BearerTokenResponse",
+ *
  *     @OA\Xml(
  *         name="BearerTokenResponse"
  *     )
@@ -35,5 +34,4 @@ class BearerTokenResponse
      * @var string
      */
     private $expires_at;
-
 }

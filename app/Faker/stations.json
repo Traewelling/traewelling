@@ -1,0 +1,992 @@
+[
+  {
+    "wikidata_id": "Q745942",
+    "name": "Bahnhof Paris-Nord",
+    "latitude": 48.881111111,
+    "longitude": 2.355277777,
+    "ibnr": "8700014",
+    "rl100": "XFPN",
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q165368",
+    "name": "Frankfurt (Main) Hauptbahnhof",
+    "latitude": 50.107256,
+    "longitude": 8.662616,
+    "ibnr": "8000105",
+    "rl100": "FF",
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q6456",
+    "name": "Hamburg Hauptbahnhof",
+    "latitude": 53.552778,
+    "longitude": 10.006389,
+    "ibnr": "8002549",
+    "rl100": "AH",
+    "ifopt": "de:02000:10950"
+  },
+  {
+    "wikidata_id": "Q254647",
+    "name": "München Hauptbahnhof",
+    "latitude": 48.140833,
+    "longitude": 11.555,
+    "ibnr": "8000261",
+    "rl100": "MH",
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q801193",
+    "name": "Bahnhof Milano Centrale",
+    "latitude": 45.485658,
+    "longitude": 9.203988,
+    "ibnr": "8300046",
+    "rl100": "XIMB",
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1097",
+    "name": "Berlin Hauptbahnhof",
+    "latitude": 52.525083333,
+    "longitude": 13.369388888,
+    "ibnr": "8011160",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q575655",
+    "name": "Bahnhof Utrecht Centraal",
+    "latitude": 52.089316,
+    "longitude": 5.109972,
+    "ibnr": "8400621",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1954",
+    "name": "Köln Hauptbahnhof",
+    "latitude": 50.9425,
+    "longitude": 6.958055555,
+    "ibnr": "8000207",
+    "rl100": "KK",
+    "ifopt": "de:05315:11201"
+  },
+  {
+    "wikidata_id": "Q703918",
+    "name": "Hannover Hauptbahnhof",
+    "latitude": 52.3772,
+    "longitude": 9.74167,
+    "ibnr": "8000152",
+    "rl100": "HH",
+    "ifopt": "de:03241:31"
+  },
+  {
+    "wikidata_id": "Q1063602",
+    "name": "T-Centralen",
+    "latitude": 59.331666666,
+    "longitude": 18.060833333,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q335891",
+    "name": "Stephansplatz",
+    "latitude": 48.208,
+    "longitude": 16.3716,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q255951",
+    "name": "Düsseldorf Hauptbahnhof",
+    "latitude": 51.220277777,
+    "longitude": 6.792777777,
+    "ibnr": "8000085",
+    "rl100": "KD",
+    "ifopt": "de:05111:18235"
+  },
+  {
+    "wikidata_id": "Q335894",
+    "name": "Karlsplatz",
+    "latitude": 48.201,
+    "longitude": 16.369,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q50719",
+    "name": "Bahnhof Amsterdam Centraal",
+    "latitude": 52.37895,
+    "longitude": 4.90016,
+    "ibnr": "8400058",
+    "rl100": "XNAC",
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q801523",
+    "name": "Bahnhof Torino Porta Nuova",
+    "latitude": 45.0625,
+    "longitude": 7.678888888,
+    "ibnr": "8300001",
+    "rl100": "XITU",
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q704394",
+    "name": "Dortmund Hauptbahnhof",
+    "latitude": 51.5175,
+    "longitude": 7.458888888,
+    "ibnr": "8000080",
+    "rl100": "EDO",
+    "ifopt": "de:05913:131"
+  },
+  {
+    "wikidata_id": "Q2105249",
+    "name": "Bahnhof Kyjiw-Passaschyrskyj",
+    "latitude": 50.44045,
+    "longitude": 30.48904,
+    "ibnr": "2200005",
+    "rl100": "ZUK",
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q15241526",
+    "name": "Landstraße",
+    "latitude": 48.2062,
+    "longitude": 16.3844,
+    "ibnr": "8170028",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q806704",
+    "name": "Bank und Monument",
+    "latitude": 51.513,
+    "longitude": -0.088,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q15268470",
+    "name": "Praterstern",
+    "latitude": 48.219,
+    "longitude": 16.392,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q631114",
+    "name": "Paris Gare Montparnasse",
+    "latitude": 48.839333333,
+    "longitude": 2.318288888,
+    "ibnr": "8700013",
+    "rl100": "XFPMP",
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q698497",
+    "name": "Bahnhof Berlin-Alexanderplatz",
+    "latitude": 52.521388888,
+    "longitude": 13.411944444,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q52690491",
+    "name": "U-Bahnhof Berliner Tor",
+    "latitude": 53.553382,
+    "longitude": 10.023099,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q3783676",
+    "name": "U-Bahnhof Hauptbahnhof Süd",
+    "latitude": 53.5523,
+    "longitude": 10.0098,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q650270",
+    "name": "Bahnhof Hamburg-Altona",
+    "latitude": 53.55194444,
+    "longitude": 9.935,
+    "ibnr": "8002553",
+    "rl100": "AA",
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q683239",
+    "name": "Berlin Ostbahnhof",
+    "latitude": 52.51,
+    "longitude": 13.4347,
+    "ibnr": "8010255",
+    "rl100": "BHF",
+    "ifopt": "de:11000:900120005"
+  },
+  {
+    "wikidata_id": "Q547567",
+    "name": "Bahnhof Frankfurt Konstablerwache",
+    "latitude": 50.1147,
+    "longitude": 8.68639,
+    "ibnr": "8004429",
+    "rl100": "FKON",
+    "ifopt": "de:06412:510"
+  },
+  {
+    "wikidata_id": "Q566471",
+    "name": "Bahnhof Frankfurt (Main) Hauptwache",
+    "latitude": 50.1139,
+    "longitude": 8.67889,
+    "ibnr": "8006692",
+    "rl100": "FHAU",
+    "ifopt": "de:06412:1"
+  },
+  {
+    "wikidata_id": "Q200704",
+    "name": "Bahnhof Den Haag Centraal",
+    "latitude": 52.081111,
+    "longitude": 4.323889,
+    "ibnr": "8400282",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q564970",
+    "name": "München-Pasing",
+    "latitude": 48.15,
+    "longitude": 11.461388888,
+    "ibnr": "8004158",
+    "rl100": "MP",
+    "ifopt": "de:09162:10"
+  },
+  {
+    "wikidata_id": "Q751174",
+    "name": "Bahnhof Praha hlavní nádraží",
+    "latitude": 50.083055555,
+    "longitude": 14.435833333,
+    "ibnr": "5400014",
+    "rl100": "XTP",
+    "ifopt": "cz:55100:5457076"
+  },
+  {
+    "wikidata_id": "Q672214",
+    "name": "Bahnhof Lausanne-Flon",
+    "latitude": 46.520799993,
+    "longitude": 6.630339996,
+    "ibnr": "8501181",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q908640",
+    "name": "Bahnhof Verona Porta Nuova",
+    "latitude": 45.429167,
+    "longitude": 10.982222,
+    "ibnr": "8300120",
+    "rl100": "XIVP",
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q660792",
+    "name": "Bahnhof Bruxelles-Nord\/Brussel-Noord",
+    "latitude": 50.860278,
+    "longitude": 4.360833,
+    "ibnr": "8800002",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q800588",
+    "name": "Bahnhof Bruxelles-Central\/Brussel-Centraal",
+    "latitude": 50.845556,
+    "longitude": 4.357222,
+    "ibnr": "8800003",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q2465965",
+    "name": "U-Bahnhof Kellinghusenstraße",
+    "latitude": 53.588889,
+    "longitude": 9.991111,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q2465929",
+    "name": "U-Bahnhof Heinrich-Heine-Allee",
+    "latitude": 51.2256,
+    "longitude": 6.77628,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q800587",
+    "name": "Bahnhof Bruxelles-Midi\/Brussel-Zuid",
+    "latitude": 50.835278,
+    "longitude": 4.335833,
+    "ibnr": "8800004",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q801224",
+    "name": "Bahnhof München Rosenheimer Platz",
+    "latitude": 48.128611111,
+    "longitude": 11.593888888,
+    "ibnr": "8004136",
+    "rl100": "MRP",
+    "ifopt": "de:09162:4"
+  },
+  {
+    "wikidata_id": "Q800814",
+    "name": "Bahnhof Gent-Sint-Pieters",
+    "latitude": 51.035556,
+    "longitude": 3.710556,
+    "ibnr": "8800031",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q636700",
+    "name": "Mainz Hauptbahnhof",
+    "latitude": 50.0013,
+    "longitude": 8.25865,
+    "ibnr": "8000240",
+    "rl100": "FMZ",
+    "ifopt": "de:07315:9037"
+  },
+  {
+    "wikidata_id": "Q513804",
+    "name": "Frankfurt am Main Flughafen Regionalbahnhof",
+    "latitude": 50.0519,
+    "longitude": 8.57778,
+    "ibnr": "8070004",
+    "rl100": "FFLU",
+    "ifopt": "de:06412:2930"
+  },
+  {
+    "wikidata_id": "Q1398047",
+    "name": "U-Bahnhof Wandsbek-Gartenstadt",
+    "latitude": 53.59255,
+    "longitude": 10.07643,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q320098",
+    "name": "Bahnhof Göttingen",
+    "latitude": 51.5367,
+    "longitude": 9.92694,
+    "ibnr": "8000128",
+    "rl100": "HG",
+    "ifopt": "de:03152:33817"
+  },
+  {
+    "wikidata_id": "Q682505",
+    "name": "Augsburg Hauptbahnhof",
+    "latitude": 48.365552873,
+    "longitude": 10.886371469,
+    "ibnr": "8000013",
+    "rl100": "MA",
+    "ifopt": "de:09761:100"
+  },
+  {
+    "wikidata_id": "Q3783675",
+    "name": "U-Bahnhof Hauptbahnhof Nord",
+    "latitude": 53.5545,
+    "longitude": 10.0076,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q801221",
+    "name": "Bahnhof München Isartor",
+    "latitude": 48.135,
+    "longitude": 11.581944444,
+    "ibnr": "8004131",
+    "rl100": "MIT",
+    "ifopt": "de:09162:3"
+  },
+  {
+    "wikidata_id": "Q634142",
+    "name": "Haltepunkt Hamburg Dammtor",
+    "latitude": 53.560833,
+    "longitude": 9.989444,
+    "ibnr": "8002548",
+    "rl100": "ADF",
+    "ifopt": "de:02000:8002548"
+  },
+  {
+    "wikidata_id": "Q1341849",
+    "name": "République",
+    "latitude": 48.8675,
+    "longitude": 2.36333,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q697300",
+    "name": "Wien Hauptbahnhof",
+    "latitude": 48.185,
+    "longitude": 16.377777777,
+    "ibnr": "8103000",
+    "rl100": "XAWIE",
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q667121",
+    "name": "Wiesbaden Hauptbahnhof",
+    "latitude": 50.0708,
+    "longitude": 8.24389,
+    "ibnr": "8000250",
+    "rl100": "FW",
+    "ifopt": "de:06414:6907"
+  },
+  {
+    "wikidata_id": "Q2519286",
+    "name": "Liverpool Central",
+    "latitude": 53.4045,
+    "longitude": -2.9797,
+    "ibnr": "7001315",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1846051",
+    "name": "U-Bahnhof Chreschtschatyk",
+    "latitude": 50.44726,
+    "longitude": 30.52483,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1864476",
+    "name": "U-Bahnhof Majdan Nesaleschnosti",
+    "latitude": 50.44831,
+    "longitude": 30.52467,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q800398",
+    "name": "Bahnhof Antwerpen-Centraal",
+    "latitude": 51.216944444,
+    "longitude": 4.421111111,
+    "ibnr": "8800007",
+    "rl100": "XBAC",
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q508256",
+    "name": "Bastille",
+    "latitude": 48.85284173,
+    "longitude": 2.369180605,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1537246",
+    "name": "Place d’Italie",
+    "latitude": 48.83139,
+    "longitude": 2.35556,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q140277",
+    "name": "La Défense",
+    "latitude": 48.891934469,
+    "longitude": 2.237882798,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q801090",
+    "name": "Bahnhof Leuven",
+    "latitude": 50.880833,
+    "longitude": 4.716111,
+    "ibnr": "8800011",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1538339",
+    "name": "Liljeholmen",
+    "latitude": 59.310278,
+    "longitude": 18.0225,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q17937",
+    "name": "Bahnhof Groningen",
+    "latitude": 53.210556,
+    "longitude": 6.563889,
+    "ibnr": "8400263",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1719628",
+    "name": "U-Bahnhof Lübecker Straße",
+    "latitude": 53.55972222,
+    "longitude": 10.02805556,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q800871",
+    "name": "Bahnhof Hamburg-Blankenese",
+    "latitude": 53.563967,
+    "longitude": 9.813849,
+    "ibnr": "8001007",
+    "rl100": "AB",
+    "ifopt": "de:02000:81950"
+  },
+  {
+    "wikidata_id": "Q635929",
+    "name": "Bahnhof Østerport",
+    "latitude": 55.692222,
+    "longitude": 12.5875,
+    "ibnr": "8601878",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q811635",
+    "name": "U-Bahnhof Baumwall",
+    "latitude": 53.544184,
+    "longitude": 9.981498,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1875185",
+    "name": "U-Bahnhof Arsenalna",
+    "latitude": 50.444444444,
+    "longitude": 30.545277777,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1811832",
+    "name": "Tekniska högskolan",
+    "latitude": 59.345833,
+    "longitude": 18.071389,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q694694",
+    "name": "Salzburg Hauptbahnhof",
+    "latitude": 47.813056,
+    "longitude": 13.046667,
+    "ibnr": "8100002",
+    "rl100": "XASB",
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1494179",
+    "name": "Gare d’Austerlitz",
+    "latitude": 48.8425,
+    "longitude": 2.36472,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q2521322",
+    "name": "Bahnhof Ottignies",
+    "latitude": 50.67367,
+    "longitude": 4.56936,
+    "ibnr": "8800138",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q15851861",
+    "name": "U-Bahnhof Langenhorn Markt",
+    "latitude": 53.6489,
+    "longitude": 10.0172,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q54318",
+    "name": "Stockholms östra",
+    "latitude": 59.346388888,
+    "longitude": 18.070833333,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q658720",
+    "name": "U-Bahnhof Mundsburg",
+    "latitude": 53.57111111,
+    "longitude": 10.0275,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1951230",
+    "name": "Bahnhof Namur",
+    "latitude": 50.46913,
+    "longitude": 4.86247,
+    "ibnr": "8800018",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q770919",
+    "name": "Bahnhof Mechelen",
+    "latitude": 51.0175,
+    "longitude": 4.483611,
+    "ibnr": "8800010",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q180052",
+    "name": "U-Bahnhof Lohmühlenstraße",
+    "latitude": 53.556944,
+    "longitude": 10.02,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q2151985",
+    "name": "U-Bahnhof Osterstraße",
+    "latitude": 53.57625,
+    "longitude": 9.95166667,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1844369",
+    "name": "Hyllie railway station",
+    "latitude": 55.562694444,
+    "longitude": 12.975833333,
+    "ibnr": "7400976",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q5644290",
+    "name": "Bahnhof Hamburg Airport",
+    "latitude": 53.632311111,
+    "longitude": 10.006647222,
+    "ibnr": "8002547",
+    "rl100": "AAI",
+    "ifopt": "de:02000:99651"
+  },
+  {
+    "wikidata_id": "Q473903",
+    "name": "Rosenheim",
+    "latitude": 47.850361111,
+    "longitude": 12.119527777,
+    "ibnr": "8000320",
+    "rl100": "MRO",
+    "ifopt": "de:09163:9"
+  },
+  {
+    "wikidata_id": "Q12809602",
+    "name": "Neu-Edingen\/Mhm-Friedrichsfeld",
+    "latitude": 49.4487,
+    "longitude": 8.5804,
+    "ibnr": "8000631",
+    "rl100": "RMF",
+    "ifopt": "de:08222:2331"
+  },
+  {
+    "wikidata_id": "Q800876",
+    "name": "Bahnhof Ohlsdorf",
+    "latitude": 53.620278,
+    "longitude": 10.031389,
+    "ibnr": "8004661",
+    "rl100": "AOP",
+    "ifopt": "de:02000:90950"
+  },
+  {
+    "wikidata_id": "Q801317",
+    "name": "Bahnhof Pinneberg",
+    "latitude": 53.6553,
+    "longitude": 9.79761,
+    "ibnr": "8004819",
+    "rl100": "AP",
+    "ifopt": "de:01056:99951"
+  },
+  {
+    "wikidata_id": "Q826773",
+    "name": "U-Bahnhof Meßberg",
+    "latitude": 53.547778,
+    "longitude": 9.999722,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q2363470",
+    "name": "U-Bahnhof Hagenbecks Tierpark",
+    "latitude": 53.59277778,
+    "longitude": 9.94388889,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q801116",
+    "name": "Bahnhof Liège-Guillemins",
+    "latitude": 50.624699,
+    "longitude": 5.566968,
+    "ibnr": "8800012",
+    "rl100": "XBLIG",
+    "ifopt": "be:62000:7500"
+  },
+  {
+    "wikidata_id": "Q800580",
+    "name": "Bahnhof Brugge",
+    "latitude": 51.1903,
+    "longitude": 3.22278,
+    "ibnr": "8800029",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q800387",
+    "name": "Bahnhof Antwerpen-Berchem",
+    "latitude": 51.199722222,
+    "longitude": 4.432222222,
+    "ibnr": "8800008",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q2466044",
+    "name": "U-Bahnhof Rauhes Haus",
+    "latitude": 53.55416667,
+    "longitude": 10.06611111,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q827247",
+    "name": "U-Bahnhof Mönckebergstraße",
+    "latitude": 53.55121001,
+    "longitude": 10.00137806,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q2466086",
+    "name": "U-Bahnhof Wartenau",
+    "latitude": 53.56416667,
+    "longitude": 10.03444444,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q4016141",
+    "name": "U-Bahnhof Volksdorf",
+    "latitude": 53.65055556,
+    "longitude": 10.16305556,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q2465914",
+    "name": "U-Bahnhof Hammer Kirche",
+    "latitude": 53.55555556,
+    "longitude": 10.055,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1694188",
+    "name": "U-Bahnhof Merkenstraße",
+    "latitude": 53.5385,
+    "longitude": 10.124,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q2043526",
+    "name": "Bahnhof Charleroi-Central",
+    "latitude": 50.404282,
+    "longitude": 4.438924,
+    "ibnr": "8800024",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q827583",
+    "name": "U-Bahnhof Steinstraße",
+    "latitude": 53.55,
+    "longitude": 10.00583333,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1938674",
+    "name": "Bahnhof Denderleeuw",
+    "latitude": 50.89139,
+    "longitude": 4.07259,
+    "ibnr": "8800050",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q800486",
+    "name": "Bahnhof Berlin-Marzahn",
+    "latitude": 52.5436,
+    "longitude": 13.5411,
+    "ibnr": "8089075",
+    "rl100": "BMAR",
+    "ifopt": "de:11000:900170001"
+  },
+  {
+    "wikidata_id": "Q3968902",
+    "name": "Arezzo railway station",
+    "latitude": 43.46111111,
+    "longitude": 11.87555556,
+    "ibnr": "8300179",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q801485",
+    "name": "Bahnhof Stuttgart Flughafen\/Messe",
+    "latitude": 48.69,
+    "longitude": 9.18944,
+    "ibnr": "8005768",
+    "rl100": "TFL",
+    "ifopt": "de:08116:2103"
+  },
+  {
+    "wikidata_id": "Q275505",
+    "name": "U-Bahnhof Messehallen",
+    "latitude": 53.55777778,
+    "longitude": 9.97666667,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q852880",
+    "name": "Bahnhof Flughafen Brüssel",
+    "latitude": 50.897222,
+    "longitude": 4.484722,
+    "ibnr": "8800043",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1572428",
+    "name": "Haltestelle Wien Traisengasse",
+    "latitude": 48.2348,
+    "longitude": 16.3834,
+    "ibnr": "8101641",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q3097068",
+    "name": "Mons railway station",
+    "latitude": 50.453977,
+    "longitude": 3.941722,
+    "ibnr": "8800025",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q2549821",
+    "name": "Bahnhof Halle",
+    "latitude": 50.733399,
+    "longitude": 4.239956,
+    "ibnr": "8800006",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q15076918",
+    "name": "U-Bahnhof Fuhlsbüttel",
+    "latitude": 53.6325,
+    "longitude": 10.0264,
+    "ibnr": null,
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q800583",
+    "name": "Bahnhof Bruxelles-Luxembourg\/Brussel-Luxemburg",
+    "latitude": 50.838889,
+    "longitude": 4.373333,
+    "ibnr": "8800005",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q2786619",
+    "name": "Kortrijk railway station",
+    "latitude": 50.8242,
+    "longitude": 3.26417,
+    "ibnr": "8800077",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q800589",
+    "name": "Bahnhof Brüssel-Schuman",
+    "latitude": 50.84328,
+    "longitude": 4.380725,
+    "ibnr": "8800146",
+    "rl100": null,
+    "ifopt": null
+  },
+  {
+    "wikidata_id": "Q1907355",
+    "name": "Sint-Niklaas railway station",
+    "latitude": 51.17194,
+    "longitude": 4.14417,
+    "ibnr": "8800143",
+    "rl100": null,
+    "ifopt": null
+  }
+]

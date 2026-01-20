@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class YearInReviewController extends Controller
 {
-
     /**
      * @OA\Get(
      *      path="/year-in-review",
@@ -17,6 +16,7 @@ class YearInReviewController extends Controller
      *      tags={"Statistics"},
      *      summary="Returns the year in review for the given year and authenticated user",
      *      description="Please note: This endpoint is only available when the year in review feature is enabled in the backend configuration. There is no full documentation - this endpoint may change every year.",
+     *
      *      @OA\Response(
      *          response=200,
      *          description="JSON object with the year in review data. The structure of the object may change every year. There is no full documentation at this point.",
@@ -29,14 +29,15 @@ class YearInReviewController extends Controller
      *       }
      *     )
      */
-    public function show(Request $request): JsonResponse {
+    public function show(Request $request): JsonResponse
+    {
         if (config('trwl.year_in_review.backend') === false) {
             return $this->sendError('Year in review is not active', 403);
         }
 
         $validated = $request->validate([
-                                            'year' => ['nullable', 'integer', 'min:2019', 'max:' . Carbon::now()->year],
-                                        ]);
+            'year' => ['nullable', 'integer', 'min:2019', 'max:' . Carbon::now()->year],
+        ]);
 
         if (isset($validated['year'])) {
             $year = $validated['year'];

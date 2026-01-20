@@ -15,7 +15,7 @@
     "user.displayname": "Enw arddangos",
     "user.email.new": "Cyfeiriad E-bost newydd",
     "about.express": "InterCity, EuroCity",
-    "about.regional": "Rhanbarthol tren/-gyflym",
+    "about.regional": "Rhanbarthol trên/-gyflym",
     "about.suburban": "Rheil maestrefol, Fferi",
     "about.tram": "Tram / rheil golau, bws, tanlwybr",
     "admin.greeting": "Helô",
@@ -26,5 +26,6 @@
     "user.you": "Chi",
     "user.private-profile": "Proffil preifat",
     "user.username": "Enw defnyddiwr",
-    "user.profile-picture": "Llun proffil o @:username"
+    "user.profile-picture": "Llun proffil o @:username",
+    "license.info": "Trwydded"
 }

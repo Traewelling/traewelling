@@ -13,23 +13,24 @@ use Illuminate\Database\Seeder;
 
 class CheckinSeeder extends Seeder
 {
-
-    public function run(): void {
-        foreach (User::all() as $user) {
-            $trip = Trip::all()->random();
+    public function run(): void
+    {
+        for ($i = 0; $i < 10; $i++) {
+            $user = User::inRandomOrder()->first();
+            $trip = Trip::inRandomOrder()->first();
 
             $dto = new CheckInRequestDto();
             $dto->setUser($user)
                 ->setTrip($trip)
-                ->setOrigin($trip->originStation)//Checkin from the first station...
+                ->setOrigin($trip->originStation)// Checkin from the first station...
                 ->setDeparture($trip->departure)
-                ->setDestination($trip->destinationStation)//...to the last station
+                ->setDestination($trip->destinationStation)// ...to the last station
                 ->setArrival($trip->arrival)
-                ->setEvent(random_int(0, 1) ? Event::all()->random() : null);
+                ->setEvent(random_int(0, 1) ? Event::inRandomOrder()->first() : null);
 
             try {
                 $checkinResponse = TrainCheckinController::checkin($dto);
-                $status          = $checkinResponse->status;
+                $status = $checkinResponse->status;
                 StatusTag::factory(['status_id' => $status->id])->create();
             } catch (Exception) {
                 continue;

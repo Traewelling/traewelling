@@ -11,12 +11,12 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-
-    public function run(): void {
-        //Seed obligatory constants
+    public function run(): void
+    {
+        // Seed obligatory constants
         $this->call(PermissionSeeder::class);
 
-        //Seed example data for development
+        // Seed example data for development
         $this->call(UsersTableSeeder::class);
         $this->call(ClientSeeder::class);
         $this->call(FollowTableSeeder::class);

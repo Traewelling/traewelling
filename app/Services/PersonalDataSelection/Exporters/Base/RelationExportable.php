@@ -6,7 +6,8 @@ namespace App\Services\PersonalDataSelection\Exporters\Base;
 
 trait RelationExportable
 {
-    protected function exportData(): string|array {
+    protected function exportData(): string|array
+    {
 
         $relation = $this->user->{$this->relation}();
 
@@ -30,7 +31,8 @@ trait RelationExportable
         return $relation->get()->toJson();
     }
 
-    protected function onExportValidation(): bool {
+    protected function onExportValidation(): bool
+    {
         return !empty($this->relation);
     }
 }

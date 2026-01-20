@@ -1,47 +1,54 @@
 <script>
-import NotificationEntry from "./NotificationEntry.vue";
-import {useNotificationsStore} from "../stores/notifications";
+import LoadingSkeletonRows from '../components/Loader/LoadingSkeletonRows.vue';
+import { useNotificationsStore } from '../stores/notifications';
+import NotificationEntry from './NotificationEntry.vue';
 
 export default {
+    components: { NotificationEntry, LoadingSkeletonRows },
     setup() {
         const store = useNotificationsStore();
-
         return { store };
     },
-    components: {NotificationEntry},
     methods: {
         toggleAllRead() {
             this.store.toggleAllRead().then(() => {
-                notyf.success(this.$t("notifications.readAll.success"));
+                notyf.success(this.$t('notifications.readAll.success'));
             });
-        }
+        },
     },
-}
+};
 </script>
 
 <template>
-    <div id="notifications-loading" class="text-center text-muted" v-if="store.loading">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
-    <div id="notifications-list" v-else-if="store.notifications.length">
+    <div>
+        <LoadingSkeletonRows
+            v-if="store.loading"
+            :rows="10"
+            :columns="1"
+            :row-height="100"
+            :gutter="12"
+            :border-radius="'0em'"
+        />
+
         <NotificationEntry
             v-for="(item, index) in store.notifications"
+            v-else-if="store.notifications.length"
             v-bind="item"
             :key="item.id"
-            @toggleRead="store.toggleRead(item, index)">
-        </NotificationEntry>
-    </div>
-    <div class="text-center text-muted notifications-empty" v-else>
-        <i class="fa-solid fa-envelope fs-1"></i>
-        <p class="fs-5">{{ $t("notifications.empty") }}</p>
+            @toggle-read="store.toggleRead(item, index)"
+        />
+
+        <div v-else class="text-center text-muted notifications-empty">
+            <i class="fa-solid fa-envelope fs-1" />
+            <p class="fs-5">
+                {{ $t('notifications.empty') }}
+            </p>
+        </div>
     </div>
 </template>
 
 <style scoped lang="scss">
-
-@import "../../sass/variables";
+@import '../../sass/variables';
 
 .row {
     background-color: white;

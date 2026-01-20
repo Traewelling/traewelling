@@ -13,15 +13,16 @@ class PasswordResetTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    public function testPasswordResetAfterCreation(): void {
+    public function test_password_reset_after_creation(): void
+    {
         $this->assertGuest();
         Notification::fake();
 
-        $user     = User::factory(['created_at' => now()])->create();
+        $user = User::factory(['created_at' => now()])->create();
         $response = $this->followingRedirects()
-                         ->post(route('password.email'), [
-                             'email' => $user->email,
-                         ]);
+            ->post(route('password.email'), [
+                'email' => $user->email,
+            ]);
         $response->assertOk();
         $mails = DB::table('password_resets')->where('email', $user->email)->get();
         $this->assertEmpty($mails);
@@ -29,65 +30,68 @@ class PasswordResetTest extends FeatureTestCase
         Notification::assertNothingSent();
     }
 
-    public function testPasswordReset(): void {
+    public function test_password_reset(): void
+    {
         $this->assertGuest();
         Notification::fake();
 
-        $user     = User::factory(['created_at' => now()->subDay()])->create();
+        $user = User::factory(['created_at' => now()->subDay()])->create();
         $response = $this->followingRedirects()
-                         ->post(route('password.email'), [
-                             'email' => $user->email,
-                         ]);
+            ->post(route('password.email'), [
+                'email' => $user->email,
+            ]);
         $response->assertOk();
 
         Notification::assertSentTo($user, ResetPassword::class);
     }
 
-    public function testPasswordResetWithWrongEmail(): void {
+    public function test_password_reset_with_wrong_email(): void
+    {
         $this->assertGuest();
         Notification::fake();
         $response = $this->post(route('password.email'), [
-            'email' => 'wrong@email.de'
+            'email' => 'wrong@email.de',
         ]);
         $response->assertSessionHasErrors('email');
         Notification::assertNothingSent();
     }
 
-    public function testPasswordResetWithCorrectToken(): void {
+    public function test_password_reset_with_correct_token(): void
+    {
         $this->assertGuest();
 
         $user = User::factory(['created_at' => now()->subDay()])->create();
         Notification::fake();
         $response = $this->followingRedirects()
-                         ->post(route('password.email'), [
-                             'email' => $user->email,
-                         ]);
+            ->post(route('password.email'), [
+                'email' => $user->email,
+            ]);
         $response->assertOk();
         Notification::assertSentTo($user, ResetPassword::class);
 
         $newToken = 'some random token, because we cannot access the real token';
-        $token    = hash('sha256', $newToken);
+        $token = hash('sha256', $newToken);
         DB::table('password_resets')->where('email', $user->email)->update(['token' => $token]);
 
         $response = $this->get(route('password.reset', ['token' => $token]));
         $response->assertOk();
 
         $response = $this->followingRedirects()
-                         ->post(route('password.update'), [
-                             'token'                 => 'wrong token',
-                             'email'                 => $user->email,
-                             'password'              => 'GoodPassword123!',
-                             'password_confirmation' => 'GoodPassword123!',
-                         ]);
+            ->post(route('password.update'), [
+                'token' => 'wrong token',
+                'email' => $user->email,
+                'password' => 'GoodPassword123!',
+                'password_confirmation' => 'GoodPassword123!',
+            ]);
         $response->assertSeeText('This password reset token is invalid.');
 
         $response = $this->followingRedirects()
-                         ->post(route('password.update'), [
-                             'token'                 => $newToken,
-                             'email'                 => $user->email,
-                             'password'              => 'GoodPassword123!',
-                             'password_confirmation' => 'GoodPassword123!',
-                         ]);
+            ->post(route('password.update'), [
+                'token' => $newToken,
+                'email' => $user->email,
+                'password' => 'GoodPassword123!',
+                'password_confirmation' => 'GoodPassword123!',
+            ]);
         $response->assertOk();
     }
 }

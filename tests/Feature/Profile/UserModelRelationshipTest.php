@@ -11,8 +11,9 @@ class UserModelRelationshipTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    public function testFollowersRelationship(): void {
-        $user     = User::factory()->create();
+    public function test_followers_relationship(): void
+    {
+        $user = User::factory()->create();
         $follower = User::factory()->create();
         FollowController::createOrRequestFollow($follower, $user);
 
@@ -22,8 +23,9 @@ class UserModelRelationshipTest extends FeatureTestCase
         $this->assertEquals($follower->id, $user->userFollowers->first()->id);
     }
 
-    public function testFollowingRelationship(): void {
-        $user      = User::factory()->create();
+    public function test_following_relationship(): void
+    {
+        $user = User::factory()->create();
         $following = User::factory()->create();
         FollowController::createOrRequestFollow($user, $following);
 

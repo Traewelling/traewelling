@@ -11,8 +11,9 @@ class CreateUsersTable extends Migration
      *
      * @return void
      */
-    public function up() {
-        Schema::create('users', function(Blueprint $table) {
+    public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->nullable();
             $table->string('username')->unique();
@@ -22,11 +23,11 @@ class CreateUsersTable extends Migration
             $table->timestamp('privacy_ack_at')->nullable();
             $table->string('password')->nullable();
             $table->float('train_distance')->default(0.00);
-            $table->unsignedInteger('train_duration')->default(0); //travel_time
+            $table->unsignedInteger('train_duration')->default(0); // travel_time
             $table->unsignedInteger('points')->default(0);
             $table->boolean('always_dbl')->default(false);
             $table->integer('home_id')->unsigned()
-                  ->default(0);
+                ->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -37,7 +38,8 @@ class CreateUsersTable extends Migration
      *
      * @return void
      */
-    public function down() {
+    public function down()
+    {
         Schema::dropIfExists('users');
     }
 }

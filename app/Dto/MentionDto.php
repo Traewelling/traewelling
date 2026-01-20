@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Dto;
 
@@ -11,6 +13,7 @@ use OpenApi\Annotations as OA;
  *     title="Mention",
  *     required={"user", "position", "length"},
  *     description="Mentioned user and position in status body",
+ *
  *     @OA\Xml(
  *         name="Mention"
  *     )
@@ -26,6 +29,7 @@ readonly class MentionDto implements \JsonSerializable
      * )
      */
     public User $user;
+
     /**
      * @OA\Property(
      *     title="position",
@@ -34,6 +38,7 @@ readonly class MentionDto implements \JsonSerializable
      * )
      */
     public int $position;
+
     /**
      * @OA\Property(
      *     title="length",
@@ -43,21 +48,24 @@ readonly class MentionDto implements \JsonSerializable
      */
     public int $length;
 
-    public function __construct(User $user, int $position, int $length) {
-        $this->user     = $user;
+    public function __construct(User $user, int $position, int $length)
+    {
+        $this->user = $user;
         $this->position = $position;
-        $this->length   = $length;
+        $this->length = $length;
     }
 
-    public function jsonSerialize(): array {
+    public function jsonSerialize(): array
+    {
         return $this->toArray();
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
-            'user'     => new UserResource($this->user),
+            'user' => new UserResource($this->user),
             'position' => $this->position,
-            'length'   => $this->length
+            'length' => $this->length,
         ];
     }
 }

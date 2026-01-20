@@ -18,108 +18,171 @@ use InvalidArgumentException;
 
 class ManualTripCreator extends Controller
 {
+    private ?Trip $trip;
 
-    private ?Trip           $trip;
     private HafasTravelType $category;
-    private string          $lineName;
-    private ?int            $journeyNumber;
-    private ?Operator       $operator  = null;
-    private Station         $origin;
-    private Carbon          $originDeparturePlanned;
-    private ?Carbon         $originDepartureReal;
-    private Station         $destination;
-    private Carbon          $destinationArrivalPlanned;
-    private ?Carbon         $destinationArrivalReal;
-    private array           $stopovers = [];
 
-    public function createFullTrip(): Trip {
+    private string $lineName;
+
+    private ?int $journeyNumber;
+
+    private ?Operator $operator = null;
+
+    private Station $origin;
+
+    private Carbon $originDeparturePlanned;
+
+    private ?Carbon $originDepartureReal;
+
+    private Station $destination;
+
+    private Carbon $destinationArrivalPlanned;
+
+    private ?Carbon $destinationArrivalReal;
+
+    private array $stopovers = [];
+
+    /**
+     * @throws ManualTripValidationException
+     */
+    public function createFullTrip(): Trip
+    {
+        // checks first
+        $this->checkIfStopoverAreValid();
+
+        // creation
         $this->createTrip();
         $this->createOriginStopover();
         $this->createDestinationStopover();
         $this->processStopovers();
+
         return $this->trip;
     }
 
-    private function createTrip(): void {
+    private function createTrip(): void
+    {
+        \Log::debug('Create manual trip', [
+            'user_id' => auth()->user()?->id ?? null,
+            'category' => $this->category,
+            'lineName' => $this->lineName,
+            'journeyNumber' => $this->journeyNumber,
+            'operator_id' => $this->operator->id ?? null,
+            'origin_id' => $this->origin->id,
+            'destination_id' => $this->destination->id,
+            'departure' => $this->originDeparturePlanned,
+            'arrival' => $this->destinationArrivalPlanned,
+        ]);
         $this->trip = Trip::create([
-                                       'trip_id'        => $this->generateUniqueTripId(),
-                                       'category'       => $this->category,
-                                       'number'         => $this->lineName,
-                                       'linename'       => $this->lineName,
-                                       'journey_number' => $this->journeyNumber,
-                                       'operator_id'    => $this->operator->id ?? null,
-                                       'origin_id'      => $this->origin->id,
-                                       'destination_id' => $this->destination->id,
-                                       'departure'      => $this->originDeparturePlanned,
-                                       'arrival'        => $this->destinationArrivalPlanned,
-                                       'source'         => TripSource::USER,
-                                       'user_id'        => auth()->user()?->id ?? null,
-                                   ]);
+            'trip_id' => $this->generateUniqueTripId(),
+            'category' => $this->category,
+            'number' => $this->lineName,
+            'linename' => $this->lineName,
+            'journey_number' => $this->journeyNumber,
+            'operator_id' => $this->operator->id ?? null,
+            'origin_id' => $this->origin->id,
+            'destination_id' => $this->destination->id,
+            'departure' => $this->originDeparturePlanned,
+            'arrival' => $this->destinationArrivalPlanned,
+            'source' => TripSource::USER,
+            'user_id' => auth()->user()?->id ?? null,
+        ]);
     }
 
-    private function createOriginStopover(): void {
+    private function createOriginStopover(): void
+    {
         if ($this->trip === null) {
             throw new InvalidArgumentException('Cannot create stopover without trip');
         }
+        \Log::debug('Create origin stopover for manual trip', [
+            'user_id' => auth()->user()?->id ?? null,
+            'trip_id' => $this->trip->trip_id,
+            'train_station_id' => $this->origin->id,
+            'arrival_planned' => $this->originDeparturePlanned,
+            'departure_planned' => $this->originDeparturePlanned,
+            'arrival_real' => $this->originDepartureReal,
+            'departure_real' => $this->originDepartureReal,
+        ]);
         Stopover::create([
-                             'trip_id'           => $this->trip->trip_id,
-                             'train_station_id'  => $this->origin->id,
-                             'arrival_planned'   => $this->originDeparturePlanned,
-                             'departure_planned' => $this->originDeparturePlanned,
-                             'arrival_real'      => $this->originDepartureReal,
-                             'departure_real'    => $this->originDepartureReal,
-                         ]);
+            'trip_id' => $this->trip->trip_id,
+            'train_station_id' => $this->origin->id,
+            'arrival_planned' => $this->originDeparturePlanned,
+            'departure_planned' => $this->originDeparturePlanned,
+            'arrival_real' => $this->originDepartureReal,
+            'departure_real' => $this->originDepartureReal,
+        ]);
     }
 
-    private function createDestinationStopover(): void {
+    private function createDestinationStopover(): void
+    {
         if ($this->trip === null) {
             throw new InvalidArgumentException('Cannot create stopover without trip');
         }
+        \Log::debug('Create destination stopover for manual trip', [
+            'user_id' => auth()->user()?->id ?? null,
+            'trip_id' => $this->trip->trip_id,
+            'train_station_id' => $this->origin->id,
+            'arrival_planned' => $this->originDeparturePlanned,
+            'departure_planned' => $this->originDeparturePlanned,
+            'arrival_real' => $this->originDepartureReal,
+            'departure_real' => $this->originDepartureReal,
+        ]);
         Stopover::create([
-                             'trip_id'           => $this->trip->trip_id,
-                             'train_station_id'  => $this->destination->id,
-                             'arrival_planned'   => $this->destinationArrivalPlanned,
-                             'departure_planned' => $this->destinationArrivalPlanned,
-                             'arrival_real'      => $this->destinationArrivalReal,
-                             'departure_real'    => $this->destinationArrivalReal,
-                         ]);
+            'trip_id' => $this->trip->trip_id,
+            'train_station_id' => $this->destination->id,
+            'arrival_planned' => $this->destinationArrivalPlanned,
+            'departure_planned' => $this->destinationArrivalPlanned,
+            'arrival_real' => $this->destinationArrivalReal,
+            'departure_real' => $this->destinationArrivalReal,
+        ]);
     }
 
-    private function generateUniqueTripId(): string {
+    private function generateUniqueTripId(): string
+    {
         $tripId = Str::uuid();
         while (Trip::where('trip_id', $tripId)->exists()) {
             $tripId = Str::uuid();
         }
+
         return $tripId->toString();
     }
 
-    public function setCategory(HafasTravelType $category): ManualTripCreator {
+    public function setCategory(HafasTravelType $category): ManualTripCreator
+    {
         $this->category = $category;
+
         return $this;
     }
 
-    public function setLine(string $lineName, ?int $journeyNumber): ManualTripCreator {
-        $this->lineName      = $lineName;
+    public function setLine(string $lineName, ?int $journeyNumber): ManualTripCreator
+    {
+        $this->lineName = $lineName;
         $this->journeyNumber = $journeyNumber;
+
         return $this;
     }
 
-    public function setOperator(?Operator $operator): ManualTripCreator {
+    public function setOperator(?Operator $operator): ManualTripCreator
+    {
         $this->operator = $operator;
+
         return $this;
     }
 
-    public function setOrigin(Station $origin, Carbon $plannedDeparture, ?Carbon $realDeparture = null): ManualTripCreator {
-        $this->origin                 = $origin;
+    public function setOrigin(Station $origin, Carbon $plannedDeparture, ?Carbon $realDeparture = null): ManualTripCreator
+    {
+        $this->origin = $origin;
         $this->originDeparturePlanned = $plannedDeparture;
-        $this->originDepartureReal    = $realDeparture;
+        $this->originDepartureReal = $realDeparture;
+
         return $this;
     }
 
-    public function setDestination(Station $destination, Carbon $plannedArrival, ?Carbon $realArrival = null): ManualTripCreator {
-        $this->destination               = $destination;
+    public function setDestination(Station $destination, Carbon $plannedArrival, ?Carbon $realArrival = null): ManualTripCreator
+    {
+        $this->destination = $destination;
         $this->destinationArrivalPlanned = $plannedArrival;
-        $this->destinationArrivalReal    = $realArrival;
+        $this->destinationArrivalReal = $realArrival;
+
         return $this;
     }
 
@@ -144,28 +207,56 @@ class ManualTripCreator extends Controller
         }
 
         $this->stopovers[] = [
-            'station'        => $station,
-            'departure'      => $plannedDeparture ?? $plannedArrival,
-            'arrival'        => $plannedArrival ?? $plannedDeparture,
+            'station' => $station,
+            'departure' => $plannedDeparture ?? $plannedArrival,
+            'arrival' => $plannedArrival ?? $plannedDeparture,
             'departure_real' => $realDeparture,
-            'arrival_real'   => $realArrival
+            'arrival_real' => $realArrival,
         ];
+
         return $this;
     }
 
-    private function processStopovers(): void {
+    /**
+     * @throws ManualTripValidationException
+     */
+    private function checkIfStopoverAreValid(): void
+    {
+        // check if there are duplicate stopovers (same station and same planned arrival and departure)
+        $seen = [];
+
+        foreach ($this->stopovers as $stopover) {
+            $key = $stopover['station']->id . '|' . $stopover['arrival']->toIso8601String() . '|' . $stopover['departure']->toIso8601String();
+            if (isset($seen[$key])) {
+                throw new ManualTripValidationException('Duplicate stopover for station ' . $stopover['station']->name);
+            }
+            $seen[$key] = true;
+        }
+    }
+
+    private function processStopovers(): void
+    {
         if ($this->trip === null) {
             throw new InvalidArgumentException('Cannot add stopover without trip');
         }
         foreach ($this->stopovers as $stopover) {
+            \Log::debug('Create stopover for manual trip', [
+                'user_id' => auth()->user()?->id ?? null,
+                'trip_id' => $this->trip->trip_id,
+                'train_station_id' => $stopover['station']->id,
+                'arrival_planned' => $stopover['arrival'],
+                'departure_planned' => $stopover['departure'],
+                'arrival_real' => $stopover['arrival_real'],
+                'departure_real' => $stopover['departure_real'],
+            ]);
             Stopover::create([
-                                 'trip_id'           => $this->trip->trip_id,
-                                 'train_station_id'  => $stopover['station']->id,
-                                 'arrival_planned'   => $stopover['arrival'],
-                                 'departure_planned' => $stopover['departure'],
-                                 'arrival_real'      => $stopover['arrival_real'],
-                                 'departure_real'    => $stopover['departure_real'],
-                             ]);
+                'trip_id' => $this->trip->trip_id,
+                'train_station_id' => $stopover['station']->id,
+                'arrival_planned' => $stopover['arrival'],
+                'departure_planned' => $stopover['departure'],
+                'arrival_real' => $stopover['arrival_real'],
+                'departure_real' => $stopover['departure_real'],
+            ]);
         }
     }
 }

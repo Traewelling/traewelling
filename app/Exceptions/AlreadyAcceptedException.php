@@ -8,7 +8,8 @@ use DateTime;
 
 class AlreadyAcceptedException extends Referencable
 {
-    private readonly User             $user;
+    private readonly User $user;
+
     private readonly PrivacyAgreement $privacyAgreement;
 
     /**
@@ -17,20 +18,22 @@ class AlreadyAcceptedException extends Referencable
      * OR
      * $initiator has already requested a follow to $user
      *
-     * @param PrivacyAgreement $agreement privacyPolicy
-     * @param User             $user
+     * @param  PrivacyAgreement  $agreement  privacyPolicy
      */
-    public function __construct(PrivacyAgreement $agreement, User $user) {
+    public function __construct(PrivacyAgreement $agreement, User $user)
+    {
         $this->privacyAgreement = $agreement;
-        $this->user             = $user;
+        $this->user = $user;
         parent::__construct();
     }
 
-    public function getPrivacyValidity(): DateTime {
+    public function getPrivacyValidity(): DateTime
+    {
         return $this->privacyAgreement->valid_at;
     }
 
-    public function getUserAccepted(): DateTime {
+    public function getUserAccepted(): DateTime
+    {
         return $this->user->privacy_ack_at;
     }
 }

@@ -11,8 +11,9 @@ class AddUniqueKeyToEvents extends Migration
      *
      * @return void
      */
-    public function up() {
-        Schema::table('events', function(Blueprint $table) {
+    public function up()
+    {
+        Schema::table('events', function (Blueprint $table) {
             $table->unique('slug');
         });
     }
@@ -22,8 +23,9 @@ class AddUniqueKeyToEvents extends Migration
      *
      * @return void
      */
-    public function down() {
-        Schema::table('events', function(Blueprint $table) {
+    public function down()
+    {
+        Schema::table('events', function (Blueprint $table) {
             $table->dropUnique('events_slug_unique');
         });
     }

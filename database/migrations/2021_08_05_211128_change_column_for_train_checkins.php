@@ -7,32 +7,33 @@ use Illuminate\Support\Facades\Schema;
 
 class ChangeColumnForTrainCheckins extends Migration
 {
-
-    public function up(): void {
-        Schema::table('train_checkins', function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::table('train_checkins', function (Blueprint $table) {
             $table->unsignedInteger('distance')
-                  ->comment('meters')
-                  ->nullable()
-                  ->default(null)
-                  ->change();
+                ->comment('meters')
+                ->nullable()
+                ->default(null)
+                ->change();
         });
 
         DB::table('train_checkins')->update([
-                                                'distance' => DB::raw('distance * 1000'),
-                                            ]);
+            'distance' => DB::raw('distance * 1000'),
+        ]);
     }
 
-    public function down(): void {
-        Schema::table('train_checkins', function(Blueprint $table) {
+    public function down(): void
+    {
+        Schema::table('train_checkins', function (Blueprint $table) {
             $table->integer('distance')
-                  ->comment('kilometers')
-                  ->nullable()
-                  ->default(null)
-                  ->change();
+                ->comment('kilometers')
+                ->nullable()
+                ->default(null)
+                ->change();
         });
 
         DB::table('train_checkins')->update([
-                                                'distance' => DB::raw('distance / 1000'),
-                                            ]);
+            'distance' => DB::raw('distance / 1000'),
+        ]);
     }
 }

@@ -15,15 +15,16 @@ use Illuminate\Support\Facades\Auth;
  */
 class PrivacyAgreementController extends Controller
 {
-
-    public function intercept(): Renderable {
+    public function intercept(): Renderable
+    {
         $agreement = PrivacyPolicyService::getCurrentPrivacyPolicy();
-        $user      = Auth::user();
+        $user = Auth::user();
 
         return view('legal.privacy-interception', ['agreement' => $agreement, 'user' => $user]);
     }
 
-    public function ack(Request $request): RedirectResponse|JsonResponse {
+    public function ack(Request $request): RedirectResponse|JsonResponse
+    {
         try {
             PrivacyPolicyService::acceptPrivacyPolicy(user: auth()->user());
         } catch (AlreadyAcceptedException) {

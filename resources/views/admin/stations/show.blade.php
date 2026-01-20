@@ -131,24 +131,6 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>
-                                <a href="https://www.wikidata.org/wiki/Property:P2561"
-                                   target="P2561">
-                                    Names
-                                </a>
-                            </th>
-                            <td>
-                                <table class="table table-bordered">
-                                    @foreach($station->names as $name)
-                                        <tr>
-                                            <td>{{ $name->language }}</td>
-                                            <td>{{ $name->name }}</td>
-                                        </tr>
-                                    @endforeach
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
                             <th>Created at</th>
                             <td>
                                 {{ $station->created_at?->toIso8601String() }}
@@ -259,7 +241,7 @@
                         @foreach($latestCheckins as $checkin)
                             <tr>
                                 <td>
-                                    <a href="{{ route('admin.status.edit', ['statusId' => $checkin->status_id]) }}">
+                                    <a href="{{ route('admin.statuses.edit', ['statusId' => $checkin->status_id]) }}">
                                         {{ $checkin->id }}
                                     </a>
                                 </td>

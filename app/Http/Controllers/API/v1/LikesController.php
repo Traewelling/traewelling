@@ -26,24 +26,31 @@ class LikesController extends Controller
      *      summary="[Auth optional] Get likes for status",
      *      description="Returns array of users that liked the status. Can return an empty dataset when the status
      *      author or the requesting user has deactivated likes",
+     *
      *      @OA\Parameter (
      *          name="id",
      *          in="path",
      *          description="Status-ID",
      *          example=1337,
+     *
      *          @OA\Schema(type="integer")
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", type="array",
+     *
      *                  @OA\Items(
      *                      ref="#/components/schemas/UserResource"
      *                  )
      *              ),
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No status found for this id"),
      *       @OA\Response(response=403, description="User not authorized to access this status"),
@@ -52,16 +59,15 @@ class LikesController extends Controller
      *
      *       }
      *     )
-     * @param int $statusId
      *
-     * @return AnonymousResourceCollection
      * @todo maybe put this in separate controller?
      */
-    public function show(int $statusId): AnonymousResourceCollection {
+    public function show(int $statusId): AnonymousResourceCollection
+    {
         $status = Status::with('likes.user')->findOrFail($statusId);
 
         if (!Gate::allows('like', $status)) {
-            //Return empty array if current user or status owner disabled likes
+            // Return empty array if current user or status owner disabled likes
             return UserResource::collection([]);
         }
 
@@ -75,22 +81,28 @@ class LikesController extends Controller
      *      tags={"Likes"},
      *      summary="Add like to status",
      *      description="Add like to status",
+     *
      *      @OA\Parameter (
      *          name="id",
      *          in="path",
      *          description="Status-ID",
      *          example=1337,
+     *
      *          @OA\Schema(type="integer")
      *      ),
+     *
      *      @OA\Response(
      *          response=201,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", type="object",
      *                      ref="#/components/schemas/LikeResponse"
      *              )
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=403, description="User not authorized to access this status"),
      *       @OA\Response(response=404, description="No status found for this id"),
@@ -100,16 +112,14 @@ class LikesController extends Controller
      *           {"passport": {"write-likes"}}, {"token": {}}
      *       }
      *     )
-     *
-     * @param int $statusId
-     *
-     * @return JsonResponse
      */
-    public function create(int $statusId): JsonResponse {
+    public function create(int $statusId): JsonResponse
+    {
         try {
             $this->authorize('create', Like::class);
             $status = Status::findOrFail($statusId);
             StatusBackend::createLike(Auth::user(), $status);
+
             return $this->sendResponse(
                 data: ['count' => $status->likes->count()],
                 code: 201,
@@ -117,7 +127,7 @@ class LikesController extends Controller
         } catch (StatusAlreadyLikedException) {
             return $this->sendError(
                 error: __('controller.status.like-already'),
-                code:  409,
+                code: 409,
             );
         } catch (AuthorizationException) {
             return $this->sendError(code: 403);
@@ -125,9 +135,9 @@ class LikesController extends Controller
             return $this->sendError(code: 404);
         } catch (RateLimitExceededException $exception) {
             return response()->json(null, 429, [
-                'X-RateLimit-Limit'     => $exception->limit,
+                'X-RateLimit-Limit' => $exception->limit,
                 'X-RateLimit-Remaining' => $exception->remaining,
-                'X-RateLimit-Reset'     => $exception->reset,
+                'X-RateLimit-Reset' => $exception->reset,
             ]);
         }
     }
@@ -139,22 +149,28 @@ class LikesController extends Controller
      *      tags={"Likes"},
      *      summary="Remove like from status",
      *      description="Removes like from status",
+     *
      *      @OA\Parameter (
      *          name="id",
      *          in="path",
      *          description="Status-ID",
      *          example=1337,
+     *
      *          @OA\Schema(type="integer")
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", type="object",
      *                      ref="#/components/schemas/LikeResponse"
      *              )
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No status found for this id"),
      *       security={
@@ -162,16 +178,14 @@ class LikesController extends Controller
      *
      *       }
      *     )
-     *
-     * @param int $statusId
-     *
-     * @return JsonResponse
      */
-    public function destroy(int $statusId): JsonResponse {
+    public function destroy(int $statusId): JsonResponse
+    {
         try {
             $status = Status::findOrFail($statusId);
             StatusBackend::destroyLike(Auth::user(), $statusId);
             $status->refresh();
+
             return $this->sendResponse(
                 data: ['count' => $status->likes->count()],
             );

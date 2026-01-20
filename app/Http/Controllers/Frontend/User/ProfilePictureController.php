@@ -9,8 +9,8 @@ use Illuminate\Http\Response;
 
 class ProfilePictureController extends Controller
 {
-
-    public function generateProfilePicture($username): Response {
+    public function generateProfilePicture($username): Response
+    {
         $user = User::where('username', $username)->firstOrFail();
 
         $profilePicture = ProfilePictureBackend::generateProfilePicture($user);

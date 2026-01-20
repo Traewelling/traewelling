@@ -7,7 +7,8 @@ use Illuminate\Notifications\Events\NotificationSent;
 
 class NotificationSentWebhookListener
 {
-    public function handle(NotificationSent $event) {
+    public function handle(NotificationSent $event)
+    {
         if ($event->channel !== 'database') {
             return;
         }

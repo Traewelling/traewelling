@@ -33,8 +33,8 @@ class LicensesController
                 ->paginate(50);
         }
 
-
         $licenses->appends($request->validated())->links();
+
         return view(
             'admin.licenses.index',
             [
@@ -52,6 +52,7 @@ class LicensesController
     public function store(CreateLicenseRequest $request): Redirector|RedirectResponse
     {
         License::create($request->validated());
+
         return redirect(route('licenses.index'))
             ->with('success', 'License created successfully');
     }

@@ -11,6 +11,7 @@ use OpenApi\Annotations as OA;
  *     type="object",
  *     title="StatusTagResource",
  *     required={"key", "value", "visibility"},
+ *
  *     @OA\Property(property="key", type="string", example="trwl:vehicle_number"),
  *     @OA\Property(property="value", type="string", example="94 80 0450 921 D-AVG"),
  *     @OA\Property(property="visibility", type="integer", example="1"),
@@ -18,11 +19,11 @@ use OpenApi\Annotations as OA;
  */
 class StatusTagResource extends JsonResource
 {
-
-    public function toArray($request): array {
+    public function toArray($request): array
+    {
         return [
-            'key'        => $this->key,
-            'value'      => $this->value,
+            'key' => $this->key,
+            'value' => $this->value,
             'visibility' => $this->visibility->value,
         ];
     }

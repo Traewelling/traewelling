@@ -7,30 +7,30 @@ use Illuminate\Support\Facades\Schema;
 
 class ChangeAvatarToBeNullOnUsers extends Migration
 {
-
-    public function up(): void {
-        Schema::table('users', function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
             $table->string('avatar')
-                  ->nullable()
-                  ->default(null)
-                  ->change();
+                ->nullable()
+                ->default(null)
+                ->change();
         });
 
         DB::table('users')
-          ->where('avatar', 'user.jpg')
-          ->update(['avatar' => null]);
+            ->where('avatar', 'user.jpg')
+            ->update(['avatar' => null]);
     }
 
-
-    public function down(): void {
-        Schema::table('users', function(Blueprint $table) {
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
             $table->string('avatar')
-                  ->default('user.jpg')
-                  ->change();
+                ->default('user.jpg')
+                ->change();
         });
 
         DB::table('users')
-          ->whereNull('avatar')
-          ->update(['avatar' => 'user.jpg']);
+            ->whereNull('avatar')
+            ->update(['avatar' => 'user.jpg']);
     }
 }

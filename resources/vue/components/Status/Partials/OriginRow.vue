@@ -1,121 +1,131 @@
 <script setup lang="ts">
-import {PropType, ref, watch} from "vue";
-import {Business, StatusResource} from "../../../../types/Api.gen";
+import { trans } from 'laravel-vue-i18n';
+import { DateTime } from 'luxon';
+import { PropType, ref, watch } from 'vue';
+import { Business, StatusResource } from '../../../../types/Api.gen';
 import {
-  getArrivalForStatus,
-  getDepartureAttribute,
-  getDepartureForStatus,
-  timeTypeTooltip
-} from "../../../helpers/DateTimeHelper";
-import {trans} from "laravel-vue-i18n";
-import {DateTime} from "luxon";
-import ProductIcon from "../../ProductIcon.vue";
-import {IconHelper} from "../../../helpers/IconHelper";
-import DurationSpan from "./DurationSpan.vue";
+    getArrivalForStatus,
+    getDepartureAttribute,
+    getDepartureForStatus,
+    timeTypeTooltip,
+} from '../../../helpers/DateTimeHelper';
+import { IconHelper } from '../../../helpers/IconHelper';
+import LineIndicator from '../../LineIndicator.vue';
+import ProductIcon from '../../ProductIcon.vue';
+import DurationSpan from './DurationSpan.vue';
 
 const props = defineProps({
-  status: {
-    type: Object as PropType<StatusResource>,
-    required: true
-  }
+    status: {
+        type: Object as PropType<StatusResource>,
+        required: true,
+    },
 });
 
 const arrival = ref(getDepartureAttribute(props.status));
-const duration = ref(getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, ['hours', 'minutes']));
-const showMore = ref(false);
+const duration = ref(
+    getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, ['hours', 'minutes']),
+);
 
-function showMoreButton() {
-  showMore.value = props.status.body && props.status.body.split(/\r\n|\r|\n/).length > 3;
-}
-
-watch(() => props.status, () => {
-  arrival.value = getDepartureAttribute(props.status);
-  duration.value = getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, ['hours', 'minutes']);
-  showMoreButton();
-}, {
-  immediate: true
-});
-
-showMoreButton();
+watch(
+    () => props.status,
+    () => {
+        arrival.value = getDepartureAttribute(props.status);
+        duration.value = getArrivalForStatus(props.status).dateTime.diff(getDepartureForStatus(props.status).dateTime, [
+            'hours',
+            'minutes',
+        ]);
+    },
+    {
+        immediate: true,
+    },
+);
 </script>
 
 <template>
-  <li>
-    <i class="trwl-bulletpoint" aria-hidden="true"></i>
-    <span class="text-trwl float-end">
-      <s v-show="arrival.originalTime" class="text-muted">
-        {{ arrival.originalTime?.toLocaleString(DateTime.TIME_SIMPLE) }}
-      </s>
-      <span data-bs-toggle="tooltip" :title="trans(timeTypeTooltip(arrival.type))">
-        {{ arrival.time?.toLocaleString(DateTime.TIME_SIMPLE) }}
-      </span>
-    </span>
-    <a :href="`/stationboard?stationId=${status.train.origin.id}&${status.train.origin.name}`"
-       class="text-trwl clearfix">
-      {{ status.train.origin.name }}
-    </a>
-    <p class="train-status text-muted m-0">
-      <span>
-        <ProductIcon :product="status.train.category"/>
-        {{ status.train.lineName }}
-        <small v-if="status.train.manualJourneyNumber" data-bs-toggle="tooltip"
-               data-bs-placement="top" :title="trans('status.manual_journey_number')">
-          ({{ status.train.manualJourneyNumber }})
-        </small>
-        <small
-            v-else-if="status.train.journeyNumber && !status.train.lineName.includes(status.train.journeyNumber.toString())">
-          ({{ status.train.journeyNumber }})
-        </small>
-      </span>
-      <span class="ps-2">
-        <i class="fa fa-route d-inline" aria-hidden="true"></i>&nbsp;
-        <span v-if="status.train.distance < 1000">{{ status.train.distance }} <small>m</small></span>
-        <span v-else>{{ (status.train.distance / 1000).toFixed(0) }} <small>km</small></span>
-      </span>
-      <span class="ps-2">
-        <i class="fa fa-clock d-inline" aria-hidden="true"></i>&nbsp;
-        <DurationSpan :duration="duration.as('seconds')" class="d-inline"/>
-      </span>
-      <span v-if="status.business !== Business.Value0" class="ps-2">
-        <i class="fa" :class="IconHelper.getBusinessIcon(status.business)" aria-hidden="true" data-bs-toggle="tooltip"
-           data-bs-placement="top" :title="trans(IconHelper.getBusinessTitle(status.business))"></i>
-        <span class="sr-only">{{ trans(IconHelper.getBusinessTitle(status.business)) }}</span>
-      </span>
-      <template v-if="status.event">
-        <br>
-        <span class="pl-sm-2">
-          <i class="fa fa-calendar-day" aria-hidden="true"></i>
-          <span class="text-trwl">&nbsp;</span>
-          <a :href="`/event/${status.event.slug}`">
-            {{ status.event.name }}
-          </a>
+    <li>
+        <i class="trwl-bulletpoint" aria-hidden="true" />
+        <span class="text-trwl float-end">
+            <s v-show="arrival.originalTime" class="text-muted me-1">
+                {{ arrival.originalTime?.toLocaleString(DateTime.TIME_SIMPLE) }}
+            </s>
+            <span data-bs-toggle="tooltip" :title="trans(timeTypeTooltip(arrival.type))">
+                {{ arrival.time?.toLocaleString(DateTime.TIME_SIMPLE) }}
+            </span>
         </span>
-      </template>
-      <p v-if="status.body" class="status-body mt-2" :class="{'line-clamp': showMore}">
-        <i class="fas fa-quote-right" aria-hidden="true"></i>
-        {{ status.body }} <!-- todo: mentions -->
-      </p>
-      <button v-if="showMore" class="btn btn-link p-0" aria-expanded="false" @click="showMore = !showMore">
-        {{ trans('status.show_more') }}
-      </button>
-    </p>
-  </li>
+
+        <a
+            :href="`/stationboard?stationId=${status.train.origin.id}&${status.train.origin.name}`"
+            class="text-trwl clearfix"
+        >
+            {{ status.train.origin.name }}
+        </a>
+
+        <p class="train-status text-muted m-0">
+            <span class="align-middle">
+                <ProductIcon :mode="status.train.mode" :product="status.train.category" />
+
+                <LineIndicator
+                    class-name="line-badge align-middle line-indicator"
+                    :product-name="status.train.category"
+                    :number="status.train.lineName"
+                    :mode="status.train.mode"
+                    :color="status.train.routeTextColor"
+                    :background-color="status.train.routeColor"
+                />
+
+                <small
+                    v-if="status.train.manualJourneyNumber"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    :title="trans('status.manual_journey_number')"
+                >
+                    ({{ status.train.manualJourneyNumber }})
+                </small>
+                <small
+                    v-else-if="
+                        status.train.journeyNumber &&
+                        !status.train.lineName.includes(status.train.journeyNumber.toString())
+                    "
+                >
+                    ({{ status.train.journeyNumber }})
+                </small>
+            </span>
+
+            <span class="ps-2">
+                <i class="fa fa-route d-inline" aria-hidden="true" />&nbsp;
+                <span v-if="status.train.distance < 1000">{{ status.train.distance }} <small>m</small></span>
+                <span v-else>{{ (status.train.distance / 1000).toFixed(0) }} <small>km</small></span>
+            </span>
+
+            <span class="ps-2">
+                <i class="fa fa-clock d-inline" aria-hidden="true" />&nbsp;
+                <DurationSpan :duration="duration.as('seconds')" class="d-inline" />
+            </span>
+
+            <span v-if="status.business !== Business.Value0" class="ps-2">
+                <i
+                    class="fa"
+                    :class="IconHelper.getBusinessIcon(status.business)"
+                    aria-hidden="true"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    :title="trans(IconHelper.getBusinessTitle(status.business))"
+                />
+                <span class="sr-only">{{ trans(IconHelper.getBusinessTitle(status.business)) }}</span>
+            </span>
+
+            <template v-if="status.event">
+                <br />
+                <span class="pl-sm-2">
+                    <i class="fa fa-calendar-day" aria-hidden="true" />
+                    <span class="text-trwl">&nbsp;</span>
+                    <a :href="`/event/${status.event.slug}`">
+                        {{ status.event.name }}
+                    </a>
+                </span>
+            </template>
+        </p>
+    </li>
 </template>
 
-<style scoped>
-.status-body {
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
-  -webkit-box-orient: vertical;
-  display: -webkit-box;
-}
-
-.line-clamp {
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-</style>
+<style scoped></style>

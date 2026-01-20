@@ -8,7 +8,6 @@ use App\Enum\TravelType;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
-use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Models\Stopover;
 use App\Models\User;
 use App\Repositories\CheckinHydratorRepository;
@@ -23,31 +22,33 @@ class BackendCheckinTest extends FeatureTestCase
 {
     private DataProviderInterface $dataProvider;
 
-    public function setUp(): void {
+    protected function setUp(): void
+    {
         parent::setUp();
         $this->dataProvider = (new DataProviderBuilder())->build();
     }
 
     use RefreshDatabase;
 
-    public function testStationNotOnTripException() {
+    public function test_station_not_on_trip_exception()
+    {
         $this->skipTestBecauseOfLegacyApiUsage();
 
         Http::fake([
-                       '/stops/8000001'             => Http::response(self::AACHEN_HBF),
-                       '/stops/8000152'             => Http::response(self::HANNOVER_HBF),
-                       '/stops/8000152/departures*' => Http::response([self::ICE802]),
-                       '/trips/*'                   => Http::response(self::TRIP_INFO),
-                   ]);
+            '/stops/8000001' => Http::response(self::AACHEN_HBF),
+            '/stops/8000152' => Http::response(self::HANNOVER_HBF),
+            '/stops/8000152/departures*' => Http::response([self::ICE802]),
+            '/trips/*' => Http::response(self::TRIP_INFO),
+        ]);
 
-        $user            = User::factory()->create();
+        $user = User::factory()->create();
         $stationHannover = HafasHelpers::getStationById(8000152);
-        $departures      = $this->dataProvider->getDepartures(
+        $departures = $this->dataProvider->getDepartures(
             station: $stationHannover,
-            when:    Carbon::parse('2023-01-12 08:00'),
-            type:    TravelType::EXPRESS,
+            when: Carbon::parse('2023-01-12 08:00'),
+            type: TravelType::EXPRESS,
         );
-        $rawTrip         = $departures->first();
+        $rawTrip = $departures->first();
         if ($rawTrip === null) {
             $this->fail('Unable to find trip.');
         }
@@ -63,32 +64,33 @@ class BackendCheckinTest extends FeatureTestCase
         TrainCheckinController::checkin($dto);
     }
 
-    public function testSwitchedOriginAndDestinationShouldThrowException() {
+    public function test_switched_origin_and_destination_should_throw_exception()
+    {
         $this->skipTestBecauseOfLegacyApiUsage();
 
         Http::fake([
-                       '/stops/8000105'             => Http::response(self::FRANKFURT_HBF),
-                       '/stops/8000152'             => Http::response(self::HANNOVER_HBF),
-                       '/stops/8000105/departures*' => Http::response([self::ICE802]),
-                       '/trips/*'                   => Http::response(self::TRIP_INFO),
-                   ]);
+            '/stops/8000105' => Http::response(self::FRANKFURT_HBF),
+            '/stops/8000152' => Http::response(self::HANNOVER_HBF),
+            '/stops/8000105/departures*' => Http::response([self::ICE802]),
+            '/trips/*' => Http::response(self::TRIP_INFO),
+        ]);
 
-        $user       = User::factory()->create();
-        $station    = HafasHelpers::getStationById(8000105);
+        $user = User::factory()->create();
+        $station = HafasHelpers::getStationById(8000105);
         $departures = $this->dataProvider->getDepartures(
             station: $station,
-            when:    Carbon::parse('2023-01-12 08:00'),
-            type:    TravelType::EXPRESS,
+            when: Carbon::parse('2023-01-12 08:00'),
+            type: TravelType::EXPRESS,
         );
-        $rawTrip    = $departures->first();
+        $rawTrip = $departures->first();
         if ($rawTrip === null) {
             $this->fail('Unable to find trip.');
         }
         $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
-        $originStopover      = $trip->stopovers->where('station.ibnr', $station->ibnr)->first();
-        $nextStopovers       = $trip->stopovers
-            ->where(function(Stopover $stopover) use ($originStopover) {
+        $originStopover = $trip->stopovers->where('station.ibnr', $station->ibnr)->first();
+        $nextStopovers = $trip->stopovers
+            ->where(function (Stopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned);
             });
@@ -99,32 +101,33 @@ class BackendCheckinTest extends FeatureTestCase
         TrainCheckinController::checkin($dto);
     }
 
-    public function testDuplicateCheckinsShouldThrowException() {
+    public function test_duplicate_checkins_should_throw_exception()
+    {
         $this->skipTestBecauseOfLegacyApiUsage();
 
         Http::fake([
-                       '/stops/8000105'             => Http::response(self::FRANKFURT_HBF),
-                       '/stops/8000152'             => Http::response(self::HANNOVER_HBF),
-                       '/stops/8000105/departures*' => Http::response([self::ICE802]),
-                       '/trips/*'                   => Http::response(self::TRIP_INFO),
-                   ]);
+            '/stops/8000105' => Http::response(self::FRANKFURT_HBF),
+            '/stops/8000152' => Http::response(self::HANNOVER_HBF),
+            '/stops/8000105/departures*' => Http::response([self::ICE802]),
+            '/trips/*' => Http::response(self::TRIP_INFO),
+        ]);
 
-        $user       = User::factory()->create();
-        $station    = HafasHelpers::getStationById(8000105);
+        $user = User::factory()->create();
+        $station = HafasHelpers::getStationById(8000105);
         $departures = $this->dataProvider->getDepartures(
             station: $station,
-            when:    Carbon::parse('2023-01-12 08:00'),
-            type:    TravelType::EXPRESS,
+            when: Carbon::parse('2023-01-12 08:00'),
+            type: TravelType::EXPRESS,
         );
-        $rawTrip    = $departures->first();
+        $rawTrip = $departures->first();
         if ($rawTrip === null) {
             $this->fail('Unable to find trip.');
         }
         $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
-        $originStopover      = $trip->stopovers->where('station.ibnr', $station->ibnr)->first();
-        $nextStopovers       = $trip->stopovers
-            ->where(function(Stopover $stopover) use ($originStopover) {
+        $originStopover = $trip->stopovers->where('station.ibnr', $station->ibnr)->first();
+        $nextStopovers = $trip->stopovers
+            ->where(function (Stopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned);
             });
@@ -146,26 +149,28 @@ class BackendCheckinTest extends FeatureTestCase
      * appeared which was negative in time from our trip. This led to negative durations.
      *
      * @author jeyemwey
+     *
      * @see    https://github.com/Traewelling/traewelling/issues/37
      */
-    public function testCheckinAtBerlinRingbahnRollingOverSuedkreuz(): void {
+    public function test_checkin_at_berlin_ringbahn_rolling_over_suedkreuz(): void
+    {
         $this->skipTestBecauseOfLegacyApiUsage();
 
         Http::fake([
-                       '/stops/8089110'             => Http::response(json_decode(file_get_contents(__DIR__ . '/ringbahn-via-suedkreuz-location.json'), true)),
-                       '/stops/8089110/departures*' => Http::response(json_decode(file_get_contents(__DIR__ . '/ringbahn-via-suedkreuz-departures.json'), true)),
-                       '/trips*'                    => Http::response(json_decode(file_get_contents(__DIR__ . '/ringbahn-via-suedkreuz-tripinfo.json'), true)),
-                   ]);
+            '/stops/8089110' => Http::response(json_decode(file_get_contents(__DIR__ . '/ringbahn-via-suedkreuz-location.json'), true)),
+            '/stops/8089110/departures*' => Http::response(json_decode(file_get_contents(__DIR__ . '/ringbahn-via-suedkreuz-departures.json'), true)),
+            '/trips*' => Http::response(json_decode(file_get_contents(__DIR__ . '/ringbahn-via-suedkreuz-tripinfo.json'), true)),
+        ]);
 
         // First: Get a train that's fine for our stuff
         // The 10:00 train actually quits at Südkreuz, but the 10:05 does not.
-        $station    = HafasHelpers::getStationById(8089110);
+        $station = HafasHelpers::getStationById(8089110);
         $departures = $this->dataProvider->getDepartures(
             station: $station,
-            when:    Carbon::parse('2023-01-16 10:00'),
+            when: Carbon::parse('2023-01-16 10:00'),
         );
-        $rawTrip    = $departures->where('line.name', 'S 42')
-                                 ->first();
+        $rawTrip = $departures->where('line.name', 'S 42')
+            ->first();
         if ($rawTrip === null) {
             $this->markTestSkipped('Unable to find trip.');
         }
@@ -178,15 +183,15 @@ class BackendCheckinTest extends FeatureTestCase
         // Berlin-Tempelhof is 7 stations behind Westkreuz and runs over the Südkreuz mark
         $destinationStopover = $trip->stopovers
             ->where('station.ibnr', 8089090)
-            ->where(function(Stopover $stopover) use ($originStopover) {
+            ->where(function (Stopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned->clone()->addMinutes(10));
             })
             ->last();
 
-        $dto      = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
+        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
         $response = TrainCheckinController::checkin($dto);
-        $checkin  = $response->status->checkin;
+        $checkin = $response->status->checkin;
 
         $this->assertEquals(8089047, $checkin->originStopover->station->ibnr);
         $this->assertEquals(8089090, $checkin->destinationStopover->station->ibnr);
@@ -194,35 +199,36 @@ class BackendCheckinTest extends FeatureTestCase
         $this->assertTrue($checkin->departure->isBefore($checkin->arrival));
     }
 
-    public function testDistanceCalculationOnRingLinesForFirstOccurrence(): void {
+    public function test_distance_calculation_on_ring_lines_for_first_occurrence(): void
+    {
         $this->skipTestBecauseOfLegacyApiUsage();
 
         Http::fake([
-                       '/stops/736165'             => Http::response([
-                                                                         "type"     => "stop",
-                                                                         "id"       => "736165",
-                                                                         "name"     => "Plantagenstr., Potsdam",
-                                                                         "location" => [
-                                                                             "type"      => "location",
-                                                                             "id"        => "736165",
-                                                                             "latitude"  => 52.392396,
-                                                                             "longitude" => 13.103279
-                                                                         ]
-                                                                     ]),
-                       '/stops/736165/departures*' => Http::response(json_decode(file_get_contents(__DIR__ . '/plantagenstr-departures.json'), true)),
-                       '/trips*'                   => Http::response(json_decode(file_get_contents(__DIR__ . '/plantagenstr-tripinfo.json'), true)),
-                   ]);
+            '/stops/736165' => Http::response([
+                'type' => 'stop',
+                'id' => '736165',
+                'name' => 'Plantagenstr., Potsdam',
+                'location' => [
+                    'type' => 'location',
+                    'id' => '736165',
+                    'latitude' => 52.392396,
+                    'longitude' => 13.103279,
+                ],
+            ]),
+            '/stops/736165/departures*' => Http::response(json_decode(file_get_contents(__DIR__ . '/plantagenstr-departures.json'), true)),
+            '/trips*' => Http::response(json_decode(file_get_contents(__DIR__ . '/plantagenstr-tripinfo.json'), true)),
+        ]);
 
-        $user                    = User::factory()->create();
+        $user = User::factory()->create();
         $stationPlantagenPotsdam = HafasHelpers::getStationById(736165);
-        $departures              = $this->dataProvider->getDepartures(
+        $departures = $this->dataProvider->getDepartures(
             station: $stationPlantagenPotsdam,
-            when:    Carbon::parse('2023-01-16 10:00'),
-            type:    TravelType::TRAM,
+            when: Carbon::parse('2023-01-16 10:00'),
+            type: TravelType::TRAM,
         );
-        $rawTrip                 = $departures->where('line.name', 'STR 94')
-                                              ->where('direction', 'Schloss Charlottenhof, Potsdam')
-                                              ->first();
+        $rawTrip = $departures->where('line.name', 'STR 94')
+            ->where('direction', 'Schloss Charlottenhof, Potsdam')
+            ->first();
         if ($rawTrip === null) {
             $this->markTestSkipped('Unable to find trip.');
         }
@@ -233,51 +239,52 @@ class BackendCheckinTest extends FeatureTestCase
         // We check out two stations later at Babelsberg (S)/Wattstr., Potsdam.
         $destinationStopover = $trip->stopovers
             ->where('trainStation.ibnr', 736089)
-            ->where(function(Stopover $stopover) use ($originStopover) {
+            ->where(function (Stopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned);
             })
             ->first();
 
-        $dto          = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
-        $response     = TrainCheckinController::checkin($dto);
+        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
+        $response = TrainCheckinController::checkin($dto);
         $trainCheckin = $response->status->checkin;
-        $distance     = $trainCheckin->distance;
+        $distance = $trainCheckin->distance;
 
-        //We check, that the distance is between 500 and 1000 meters.
+        // We check, that the distance is between 500 and 1000 meters.
         // This avoids failed tests when the polyline is changed by the EVU.
         $this->assertGreaterThan(500, $distance);
         $this->assertLessThan(1000, $distance);
     }
 
-    public function testDistanceCalculationOnRingLinesForSecondOccurrence(): void {
+    public function test_distance_calculation_on_ring_lines_for_second_occurrence(): void
+    {
         $this->skipTestBecauseOfLegacyApiUsage();
 
         Http::fake([
-                       '/stops/736165'             => Http::response([
-                                                                         "type"     => "stop",
-                                                                         "id"       => "736165",
-                                                                         "name"     => "Plantagenstr., Potsdam",
-                                                                         "location" => [
-                                                                             "type"      => "location",
-                                                                             "id"        => "736165",
-                                                                             "latitude"  => 52.392396,
-                                                                             "longitude" => 13.103279
-                                                                         ]
-                                                                     ]),
-                       '/stops/736165/departures*' => Http::response(json_decode(file_get_contents(__DIR__ . '/plantagenstr-departures.json'), true)),
-                       '/trips*'                   => Http::response(json_decode(file_get_contents(__DIR__ . '/plantagenstr-tripinfo.json'), true)),
-                   ]);
+            '/stops/736165' => Http::response([
+                'type' => 'stop',
+                'id' => '736165',
+                'name' => 'Plantagenstr., Potsdam',
+                'location' => [
+                    'type' => 'location',
+                    'id' => '736165',
+                    'latitude' => 52.392396,
+                    'longitude' => 13.103279,
+                ],
+            ]),
+            '/stops/736165/departures*' => Http::response(json_decode(file_get_contents(__DIR__ . '/plantagenstr-departures.json'), true)),
+            '/trips*' => Http::response(json_decode(file_get_contents(__DIR__ . '/plantagenstr-tripinfo.json'), true)),
+        ]);
 
-        $user                    = User::factory()->create();
+        $user = User::factory()->create();
         $stationPlantagenPotsdam = HafasHelpers::getStationById(736165);
-        $departures              = $this->dataProvider->getDepartures(
+        $departures = $this->dataProvider->getDepartures(
             station: $stationPlantagenPotsdam,
-            when:    Carbon::parse('2023-01-16 10:00'),
+            when: Carbon::parse('2023-01-16 10:00'),
         );
-        $rawTrip                 = $departures->where('line.name', 'STR 94')
-                                              ->where('direction', 'Schloss Charlottenhof, Potsdam')
-                                              ->first();
+        $rawTrip = $departures->where('line.name', 'STR 94')
+            ->where('direction', 'Schloss Charlottenhof, Potsdam')
+            ->first();
         if ($rawTrip === null) {
             $this->markTestSkipped('Unable to find trip.');
         }
@@ -288,51 +295,52 @@ class BackendCheckinTest extends FeatureTestCase
         // We check out at Babelsberg (S)/Wattstr., Potsdam. But this time we go a whole round with.
         $destinationStopover = $trip->stopovers
             ->where('trainStation.ibnr', 736089)
-            ->where(function(Stopover $stopover) use ($originStopover) {
+            ->where(function (Stopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned->clone()->addMinutes(10));
             })
             ->first();
 
-        $dto          = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
-        $response     = TrainCheckinController::checkin($dto);
+        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
+        $response = TrainCheckinController::checkin($dto);
         $trainCheckin = $response->status->checkin;
-        $distance     = $trainCheckin->distance;
+        $distance = $trainCheckin->distance;
 
-        //We check, that the distance is between 12000 and 12500 meters.
+        // We check, that the distance is between 12000 and 12500 meters.
         // This avoids failed tests when the polyline is changed by the EVU.
         $this->assertGreaterThan(12000, $distance);
         $this->assertLessThan(12500, $distance);
     }
 
-    public function testBusAirAtFrankfurtAirport(): void {
+    public function test_bus_air_at_frankfurt_airport(): void
+    {
         $this->skipTestBecauseOfLegacyApiUsage();
 
         Http::fake([
-                       '/stops/102932'             => Http::response([
-                                                                         "type"     => "stop",
-                                                                         "id"       => "102932",
-                                                                         "name"     => "Flughafen Terminal 1, Frankfurt a.M.",
-                                                                         "location" => [
-                                                                             "type"      => "location",
-                                                                             "id"        => "102932",
-                                                                             "latitude"  => 50.05085,
-                                                                             "longitude" => 8.570585
-                                                                         ]
-                                                                     ]),
-                       '/stops/102932/departures*' => Http::response(json_decode(file_get_contents(__DIR__ . '/frankfurt-flughafenbus-departures.json'), true)),
-                       '/trips*'                   => Http::response(json_decode(file_get_contents(__DIR__ . '/frankfurt-flughafen-tripinfo.json'), true)),
-                   ]);
+            '/stops/102932' => Http::response([
+                'type' => 'stop',
+                'id' => '102932',
+                'name' => 'Flughafen Terminal 1, Frankfurt a.M.',
+                'location' => [
+                    'type' => 'location',
+                    'id' => '102932',
+                    'latitude' => 50.05085,
+                    'longitude' => 8.570585,
+                ],
+            ]),
+            '/stops/102932/departures*' => Http::response(json_decode(file_get_contents(__DIR__ . '/frankfurt-flughafenbus-departures.json'), true)),
+            '/trips*' => Http::response(json_decode(file_get_contents(__DIR__ . '/frankfurt-flughafen-tripinfo.json'), true)),
+        ]);
 
-        $user       = User::factory()->create();
-        $station    = HafasHelpers::getStationById(102932); // Flughafen Terminal 1, Frankfurt a.M.
+        $user = User::factory()->create();
+        $station = HafasHelpers::getStationById(102932); // Flughafen Terminal 1, Frankfurt a.M.
         $departures = $this->dataProvider->getDepartures(
             station: $station,
-            when:    Carbon::parse('2023-01-16 10:00'),
-            type:    TravelType::BUS,
+            when: Carbon::parse('2023-01-16 10:00'),
+            type: TravelType::BUS,
         );
-        $rawTrip    = $departures->where('line.name', 'Bus AIR')
-                                 ->first();
+        $rawTrip = $departures->where('line.name', 'Bus AIR')
+            ->first();
         if ($rawTrip === null) {
             $this->fail('Unable to find trip.');
         }
@@ -343,14 +351,14 @@ class BackendCheckinTest extends FeatureTestCase
         // We check out at Hauptbahnhof, Darmstadt
         $destinationStopover = $trip->stopovers
             ->where('trainStation.ibnr', 104734)
-            ->where(function(Stopover $stopover) use ($originStopover) {
+            ->where(function (Stopover $stopover) use ($originStopover) {
                 return isset($stopover->arrival_planned)
                        && $stopover->arrival_planned->isAfter($originStopover->departure_planned->clone()->addMinutes(10));
             })
             ->first();
 
-        $dto          = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
-        $response     = TrainCheckinController::checkin($dto);
+        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $destinationStopover);
+        $response = TrainCheckinController::checkin($dto);
         $trainCheckin = $response->status->checkin;
 
         $this->assertEquals(102932, $trainCheckin->originStopover->station->ibnr);
@@ -358,33 +366,34 @@ class BackendCheckinTest extends FeatureTestCase
         $this->assertTrue($trainCheckin->departure->isBefore($trainCheckin->arrival));
     }
 
-    public function testChangeTripDestination(): void {
+    public function test_change_trip_destination(): void
+    {
         $this->skipTestBecauseOfLegacyApiUsage();
 
         Http::fake([
-                       '/stops/8000105'             => Http::response(self::FRANKFURT_HBF),
-                       '/stops/8000105/departures*' => Http::response([self::ICE802]),
-                       '/trips/*'                   => Http::response(self::TRIP_INFO),
-                   ]);
+            '/stops/8000105' => Http::response(self::FRANKFURT_HBF),
+            '/stops/8000105/departures*' => Http::response([self::ICE802]),
+            '/trips/*' => Http::response(self::TRIP_INFO),
+        ]);
 
-        $user       = User::factory()->create();
-        $station    = HafasHelpers::getStationById(self::FRANKFURT_HBF['id']);
+        $user = User::factory()->create();
+        $station = HafasHelpers::getStationById(self::FRANKFURT_HBF['id']);
         $departures = $this->dataProvider->getDepartures(
             station: $station,
-            when:    Carbon::parse('2023-01-16 08:00'),
-            type:    TravelType::EXPRESS,
+            when: Carbon::parse('2023-01-16 08:00'),
+            type: TravelType::EXPRESS,
         );
-        $rawTrip    = $departures->first();
+        $rawTrip = $departures->first();
         if ($rawTrip === null) {
             $this->fail('Unable to find trip.');
         }
         $trip = (new CheckinHydratorRepository())->getHafasTrip($rawTrip->tripId, $rawTrip->line->name);
 
-        $originStopover      = $trip->stopovers->where('trainStation.ibnr', self::FRANKFURT_HBF['id'])->first();
+        $originStopover = $trip->stopovers->where('trainStation.ibnr', self::FRANKFURT_HBF['id'])->first();
         $originalDestination = $trip->stopovers->where('trainStation.ibnr', self::AACHEN_HBF['id'])->first();
-        $changedDestination  = $trip->stopovers->where('trainStation.ibnr', self::HANNOVER_HBF['id'])->first();
+        $changedDestination = $trip->stopovers->where('trainStation.ibnr', self::HANNOVER_HBF['id'])->first();
 
-        $dto    = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $originalDestination);
+        $dto = (new CheckinRequestTestHydrator($user))->hydrateFromStopovers($trip, $originStopover, $originalDestination);
         $status = TrainCheckinController::checkin($dto)->status;
 
         $this->assertEquals($originStopover->id, $status->checkin->originStopover->id);

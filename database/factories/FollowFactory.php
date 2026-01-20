@@ -2,15 +2,15 @@
 
 namespace Database\Factories;
 
-use App\Models\Follow;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FollowFactory extends Factory
 {
-    public function definition(): array {
+    public function definition(): array
+    {
         return [
-            'user_id'   => User::factory(),
+            'user_id' => User::factory(),
             'follow_id' => User::factory(),
         ];
     }

@@ -21,7 +21,6 @@ use InvalidArgumentException;
 
 class UserController extends Controller
 {
-
     /**
      * @OA\Delete(
      *     path="/settings/account",
@@ -29,9 +28,12 @@ class UserController extends Controller
      *     tags={"Settings"},
      *     summary="Delete User Account",
      *     description="Deletes the Account for the user and all posts created by it",
+     *
      *     @OA\RequestBody(
      *          required=true,
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property (
      *                  property="confirmation",
      *                  title="confirmation",
@@ -40,6 +42,7 @@ class UserController extends Controller
      *              )
      *          )
      *     ),
+     *
      * @OA\Response(
      *          response=200,
      *          description="successful operation"
@@ -53,17 +56,15 @@ class UserController extends Controller
      *
      *       }
      * )
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
-    public function deleteAccount(Request $request): JsonResponse {
+    public function deleteAccount(Request $request): JsonResponse
+    {
         $request->validate(['confirmation' => ['required', Rule::in([auth()->user()->username])]]);
 
         if (!BackendUserBackend::deleteUserAccount(user: auth()->user())) {
             return $this->sendError(__('messages.exception.general'), 500);
         }
+
         return $this->sendResponse(true);
     }
 
@@ -74,6 +75,7 @@ class UserController extends Controller
      *      tags={"User", "Status"},
      *      summary="[Auth optional] Get paginated statuses for single user",
      *      description="Returns paginated statuses of a single user specified by the username",
+     *
      *      @OA\Parameter (
      *           name="username",
      *           in="path",
@@ -85,21 +87,28 @@ class UserController extends Controller
      *          description="Page of pagination",
      *          required=false,
      *          in="query",
+     *
      *          @OA\Schema(type="integer")
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", type="array",
+     *
      *                  @OA\Items(
      *                      ref="#/components/schemas/StatusResource"
      *                  )
      *              ),
+     *
      *              @OA\Property(property="links", ref="#/components/schemas/Links"),
      *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       security={
      *           {"passport": {}}, {"token": {}}
@@ -111,18 +120,14 @@ class UserController extends Controller
      *     )
      *
      * Returns paginated statuses for user
-     *
-     * @param Request $request
-     * @param string  $username
-     *
-     * @return AnonymousResourceCollection
      */
-    public function statuses(Request $request, string $username): AnonymousResourceCollection {
+    public function statuses(Request $request, string $username): AnonymousResourceCollection
+    {
         $user = User::where('username', 'like', $username)->firstOrFail();
 
         $validated = $request->validate([
-                                            'limit' => ['nullable', 'integer', 'min:1', 'max:15'],
-                                        ]);
+            'limit' => ['nullable', 'integer', 'min:1', 'max:15'],
+        ]);
 
         try {
             $this->authorize('view', $user);
@@ -130,6 +135,7 @@ class UserController extends Controller
         } catch (AuthorizationException $exception) {
             abort(403, $exception->response()->message() ?? 'No statuses found, or statuses are not visible to you.');
         }
+
         return StatusResource::collection($userResponse);
     }
 
@@ -140,6 +146,7 @@ class UserController extends Controller
      *      tags={"User"},
      *      summary="[Auth optional] Get information for single user",
      *      description="Returns general information, metadata and statistics for a user",
+     *
      *      @OA\Parameter (
      *           name="username",
      *           in="path",
@@ -151,17 +158,22 @@ class UserController extends Controller
      *          description="Page of pagination",
      *          required=false,
      *          in="query",
+     *
      *          @OA\Schema(type="integer")
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data",
      *                      ref="#/components/schemas/UserResource"
      *              ),
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=403, description="Forbidden, User is blocked"),
      *       @OA\Response(response=404, description="User not found"),
@@ -171,12 +183,10 @@ class UserController extends Controller
      *     )
      * Returns Model of user
      *
-     * @param string $username
-     *
-     * @return UserResource
      * @todo Maybe put this into another method?
      */
-    public function show(string $username): UserResource {
+    public function show(string $username): UserResource
+    {
         $user = User::where('username', 'like', $username)->firstOrFail();
 
         try {
@@ -196,9 +206,12 @@ class UserController extends Controller
      *      summary="Block a user",
      *      description="Block a specific user. That user will not be able to see your statuses or profile information,
      *      and cannot send you follow requests. Public statuses are still visible through the incognito mode.",
+     *
      *      @OA\RequestBody(
      *          required=true,
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(
      *                  property="userId",
      *                  title="userId",
@@ -208,13 +221,17 @@ class UserController extends Controller
      *              )
      *          )
      *      ),
+     *
      *      @OA\Response(
      *          response=201,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", ref="#/components/schemas/UserResource")
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Not logged in"),
      *       @OA\Response(response=403, description="User not authorized"),
@@ -225,30 +242,27 @@ class UserController extends Controller
      *
      *       }
      *     )
-     *
-     *
-     * @param int $userId
-     *
-     * @return JsonResponse
      */
-    public function createBlock(int $userId): JsonResponse {
+    public function createBlock(int $userId): JsonResponse
+    {
         try {
-            $userToBeBlocked   = User::findOrFail($userId);
+            $userToBeBlocked = User::findOrFail($userId);
             $blockUserResponse = BackendUserBackend::blockUser(auth()->user(), $userToBeBlocked);
             $userToBeBlocked->refresh();
             if ($blockUserResponse) {
                 return $this->sendResponse(new UserResource($userToBeBlocked), 201);
             }
+
             return $this->sendError(['message' => __('messages.exception.general')], 400);
         } catch (ModelNotFoundException) {
             return $this->sendError(['message' => 'User not found'], 404);
         } catch (UserAlreadyBlockedException) {
             return $this->sendError([
-                                        'message' => __(
-                                            'user.already-blocked',
-                                            ['username' => $userToBeBlocked->username]
-                                        )
-                                    ], 409);
+                'message' => __(
+                    'user.already-blocked',
+                    ['username' => $userToBeBlocked->username]
+                ),
+            ], 409);
         }
     }
 
@@ -260,9 +274,12 @@ class UserController extends Controller
      *      summary="Unmute a user",
      *      description="Unblock a specific user. They are now able to see your statuses and profile information again,
      *      and send you follow requests.",
+     *
      *      @OA\RequestBody(
      *          required=true,
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(
      *                  property="userId",
      *                  title="userId",
@@ -272,13 +289,17 @@ class UserController extends Controller
      *              )
      *          )
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", ref="#/components/schemas/UserResource")
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Not logged in"),
      *       @OA\Response(response=403, description="User not authorized"),
@@ -289,30 +310,27 @@ class UserController extends Controller
      *
      *       }
      *     )
-     *
-     *
-     * @param int $userId
-     *
-     * @return JsonResponse
      */
-    public function destroyBlock(int $userId): JsonResponse {
+    public function destroyBlock(int $userId): JsonResponse
+    {
         try {
-            $userToBeUnblocked   = User::findOrFail($userId);
+            $userToBeUnblocked = User::findOrFail($userId);
             $unblockUserResponse = BackendUserBackend::unblockUser(auth()->user(), $userToBeUnblocked);
             $userToBeUnblocked->refresh();
             if ($unblockUserResponse) {
                 return $this->sendResponse(new UserResource($userToBeUnblocked));
             }
+
             return $this->sendError(['message' => __('messages.exception.general')], 400);
         } catch (ModelNotFoundException) {
             return $this->sendError(['message' => 'User not found'], 404);
         } catch (UserNotBlockedException) {
             return $this->sendError([
-                                        'message' => __(
-                                            'user.already-unblocked',
-                                            ['username' => $userToBeUnblocked->username]
-                                        )
-                                    ], 409);
+                'message' => __(
+                    'user.already-unblocked',
+                    ['username' => $userToBeUnblocked->username]
+                ),
+            ], 409);
         }
     }
 
@@ -324,20 +342,26 @@ class UserController extends Controller
      *      summary="Mute a user",
      *      description="Mute a specific user. That way they will not be shown on your dashboard and in the active
      *      journeys tab",
+     *
      *      @OA\Parameter (
      *          name="id",
      *          in="path",
      *          description="User-ID",
      *          example=1337,
+     *
      *          @OA\Schema(type="integer")
      *      ),
+     *
      *      @OA\Response(
      *          response=201,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", ref="#/components/schemas/UserResource")
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Not logged in"),
      *       @OA\Response(response=409, description="User is already muted"),
@@ -347,30 +371,27 @@ class UserController extends Controller
      *
      *       }
      *     )
-     *
-     *
-     * @param int $userId
-     *
-     * @return JsonResponse
      */
-    public function createMute(int $userId): JsonResponse {
+    public function createMute(int $userId): JsonResponse
+    {
         try {
-            $userToBeMuted    = User::findOrFail($userId);
+            $userToBeMuted = User::findOrFail($userId);
             $muteUserResponse = BackendUserBackend::muteUser(auth()->user(), $userToBeMuted);
             $userToBeMuted->refresh();
             if ($muteUserResponse) {
                 return $this->sendResponse(new UserResource($userToBeMuted), 201);
             }
+
             return $this->sendError(['message' => __('messages.exception.general')], 400);
         } catch (ModelNotFoundException) {
             return $this->sendError(['message' => 'User not found'], 404);
         } catch (UserAlreadyMutedException) {
             return $this->sendError([
-                                        'message' => __(
-                                            'user.already-muted',
-                                            ['username' => $userToBeMuted->username]
-                                        )
-                                    ], 409);
+                'message' => __(
+                    'user.already-muted',
+                    ['username' => $userToBeMuted->username]
+                ),
+            ], 409);
         }
     }
 
@@ -382,20 +403,26 @@ class UserController extends Controller
      *      summary="Unmute a user",
      *      description="Unmute a specific user. That way they will be shown on your dashboard and in the active
      *      journeys tab again",
+     *
      *      @OA\Parameter (
      *          name="id",
      *          in="path",
      *          description="User-ID",
      *          example=1337,
+     *
      *          @OA\Schema(type="integer")
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", ref="#/components/schemas/UserResource")
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Not logged in"),
      *       @OA\Response(response=409, description="User is not muted"),
@@ -405,30 +432,27 @@ class UserController extends Controller
      *
      *       }
      *     )
-     *
-     *
-     * @param int $userId
-     *
-     * @return JsonResponse
      */
-    public function destroyMute(int $userId): JsonResponse {
+    public function destroyMute(int $userId): JsonResponse
+    {
         try {
-            $userToBeUnmuted    = User::findOrFail($userId);
+            $userToBeUnmuted = User::findOrFail($userId);
             $unmuteUserResponse = BackendUserBackend::unmuteUser(auth()->user(), $userToBeUnmuted);
             $userToBeUnmuted->refresh();
             if ($unmuteUserResponse) {
                 return $this->sendResponse(new UserResource($userToBeUnmuted));
             }
+
             return $this->sendError(['message' => __('messages.exception.general')], 400);
         } catch (ModelNotFoundException) {
             return $this->sendError(['message' => 'User not found'], 404);
         } catch (UserNotMutedException) {
             return $this->sendError([
-                                        'message' => __(
-                                            'user.already-unmuted',
-                                            ['username' => $userToBeUnmuted->username]
-                                        )
-                                    ], 409);
+                'message' => __(
+                    'user.already-unmuted',
+                    ['username' => $userToBeUnmuted->username]
+                ),
+            ], 409);
         }
     }
 
@@ -439,6 +463,7 @@ class UserController extends Controller
      *      tags={"User"},
      *      summary="Get paginated search results for combined search on username and (display)name",
      *      description="Returns paginated search results for a user based on the given query.",
+     *
      *      @OA\Parameter (
      *           name="query",
      *           in="path",
@@ -450,29 +475,36 @@ class UserController extends Controller
      *          description="Page of pagination",
      *          required=false,
      *          in="query",
+     *
      *          @OA\Schema(type="integer")
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", type="array",
+     *
      *                  @OA\Items(
      *                      ref="#/components/schemas/UserResource"
      *                  )
      *              ),
+     *
      *              @OA\Property(property="links", ref="#/components/schemas/Links"),
      *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       security={
      *           {"passport": {"read-search"}}, {"token": {}}
      *       }
      *     )
-     *
      */
-    public function search(string $query): AnonymousResourceCollection|JsonResponse {
+    public function search(string $query): AnonymousResourceCollection|JsonResponse
+    {
         try {
             return UserResource::collection(BackendUserBackend::searchUser($query));
         } catch (InvalidArgumentException) {
@@ -487,13 +519,16 @@ class UserController extends Controller
      *      tags={"User"},
      *      summary="Get paginated search results for users by either username or (display)name",
      *      description="Returns paginated search results for users based on the given parameters.",
+     *
      *      @OA\Parameter (
      *          name="page",
      *          description="Page of pagination",
      *          required=false,
      *          in="query",
+     *
      *          @OA\Schema(type="integer")
      *      ),
+     *
      *      @OA\Parameter (
      *          name="username",
      *          in="query",
@@ -506,32 +541,38 @@ class UserController extends Controller
      *          required=false,
      *          description="Search for parts of users (display)name",
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", type="array",
+     *
      *                  @OA\Items(
      *                      ref="#/components/schemas/UserResource"
      *                  )
      *              ),
+     *
      *              @OA\Property(property="links", ref="#/components/schemas/Links"),
      *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       security={
      *           {"passport": {"read-search"}}, {"token": {}}
      *       }
      *     )
-     *
      */
-    public function searchByParameters(Request $request): AnonymousResourceCollection|JsonResponse {
+    public function searchByParameters(Request $request): AnonymousResourceCollection|JsonResponse
+    {
         try {
             $validated = $request->validate([
-                                                'username' => ['nullable', 'string', 'max:255'],
-                                                'name'     => ['nullable', 'string', 'max:255'],
-                                            ]);
+                'username' => ['nullable', 'string', 'max:255'],
+                'name' => ['nullable', 'string', 'max:255'],
+            ]);
             if (empty($validated)) {
                 return response()->json(null, 400);
             }

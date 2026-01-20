@@ -11,18 +11,19 @@ class CreatePolyLinesTable extends Migration
      *
      * @return void
      */
-    public function up() {
-        Schema::create('poly_lines', function(Blueprint $table) {
+    public function up()
+    {
+        Schema::create('poly_lines', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('hash');
             $table->json('polyline');
             $table->timestamps();
         });
 
-        Schema::table('hafas_trips', function(Blueprint $table) {
+        Schema::table('hafas_trips', function (Blueprint $table) {
             $table->foreign('polyline_id')
-                  ->references('id')
-                  ->on('poly_lines');
+                ->references('id')
+                ->on('poly_lines');
         });
     }
 
@@ -31,7 +32,8 @@ class CreatePolyLinesTable extends Migration
      *
      * @return void
      */
-    public function down() {
+    public function down()
+    {
         Schema::dropIfExists('poly_lines');
     }
 }

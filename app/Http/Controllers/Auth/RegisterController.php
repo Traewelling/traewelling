@@ -26,8 +26,6 @@ class RegisterController extends Controller
 
     /**
      * Where to redirect users after registration.
-     *
-     * @var string
      */
     protected string $redirectTo = '/dashboard';
 
@@ -36,40 +34,39 @@ class RegisterController extends Controller
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('guest');
     }
 
     /**
      * Get a validator for an incoming registration request.
-     *
-     * @param array $data
-     *
-     * @return ContractsValidator
      */
-    protected function validator(array $data): ContractsValidator {
+    protected function validator(array $data): ContractsValidator
+    {
         return Validator::make($data, [
             'username' => ['required', 'string', 'max:25', 'regex:/^[a-zA-Z0-9_]*$/', 'unique:users'],
-            'name'     => ['required', 'string', 'max:50'],
-            'email'    => ['required', 'string', 'email:rfc,dns', 'max:255', 'unique:users'],
+            'name' => ['required', 'string', 'max:50'],
+            'email' => ['required', 'string', 'email:rfc,dns', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
 
     /**
      * Create a new user instance after a valid registration.
-     *
-     * @param array $data
-     *
-     * @return User
      */
-    protected function create(array $data): User {
+    protected function create(array $data): User
+    {
+        if (!config('app.registration.enabled')) {
+            abort(403, 'Registrations are currently closed.');
+        }
+
         return User::create([
-                                'username'   => $data['username'],
-                                'name'       => $data['name'],
-                                'email'      => strtolower($data['email']),
-                                'password'   => Hash::make($data['password']),
-                                'last_login' => now(),
-                            ]);
+            'username' => $data['username'],
+            'name' => $data['name'],
+            'email' => strtolower($data['email']),
+            'password' => Hash::make($data['password']),
+            'last_login' => now(),
+        ]);
     }
 }

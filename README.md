@@ -4,7 +4,8 @@
 > transit journeys. In short, you can check into trains and get points for it.
 > Check it out at [traewelling.de](https://traewelling.de).
 
-![Resources build with `prod`](https://img.shields.io/github/actions/workflow/status/Traewelling/traewelling/nodejs-prod.yml?branch=develop&logo=github)
+![Resources build with
+`prod`](https://img.shields.io/github/actions/workflow/status/Traewelling/traewelling/nodejs-prod.yml?branch=develop&logo=github)
 ![Composer install and test Laravel](https://img.shields.io/github/actions/workflow/status/Traewelling/traewelling/phpunit.yml?branch=develop&label=Laravel&logo=github)
 [![Gitmoji](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg)](https://gitmoji.dev)
 [![Codacy Badge](https://img.shields.io/codacy/grade/60765ceacee5494184476eae9bf27a1f)](https://app.codacy.com/gh/Traewelling/traewelling?utm_source=github.com&utm_medium=referral&utm_content=Traewelling/traewelling&utm_campaign=Badge_Grade_Dashboard)
@@ -25,6 +26,11 @@
 * Export your trips to CSV, JSON or PDF
 * Create own applications with our API
 * Available in German, English, Polish, French, Dutch and [more](https://translate.codeberg.org/engage/trawelling/)
+
+## Self hosting
+
+If you want to host your own instance of Träwelling, please see
+the [self-hosting documentation](docs/hosting/README.md).
 
 ### Security
 

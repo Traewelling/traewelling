@@ -9,6 +9,7 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(
  *     title="FeatureCollection",
  *     description="featurecollection of multiple GeoJson points",
+ *
  *     @OA\Xml(
  *         name="FeatureCollection"
  *     )
@@ -21,36 +22,39 @@ class FeatureCollection implements \JsonSerializable
      *     title="type",
      *     example="FeatureCollection"
      * )
-     * @var string
      */
     private string $type;
-
 
     /**
      * @OA\Property(
      *     property="features",
      *     type="array",
+     *
      *     @OA\Items(
      *         ref="#/components/schemas/Coordinate"
      *     )
      * )
-     * @var Collection|Feature[]
+     *
+     * @var Collection<Feature>
      */
     public Collection $features;
 
-    public function __construct(Collection $features, string $type = 'FeatureCollection') {
+    public function __construct(Collection $features, string $type = 'FeatureCollection')
+    {
         $this->features = $features;
-        $this->type     = $type;
+        $this->type = $type;
     }
 
-    public function toArray(): array {
+    public function toArray(): array
+    {
         return [
-            'type'     => $this->type,
+            'type' => $this->type,
             'features' => $this->features->toArray(),
         ];
     }
 
-    public function jsonSerialize(): array {
+    public function jsonSerialize(): array
+    {
         return $this->toArray();
     }
 }

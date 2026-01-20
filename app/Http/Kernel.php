@@ -3,7 +3,6 @@
 namespace App\Http;
 
 use App\Http\Middleware\Api\JsonMiddleware;
-use App\Http\Middleware\SemiGuest;
 use App\Http\Middleware\SemiScope;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Laravel\Passport\Http\Middleware\CheckForAnyScope;
@@ -46,7 +45,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:60,1',
+            'throttle:500,5', // 500 requests per 5 minutes
             JsonMiddleware::class,
             'bindings',
             \App\Http\Middleware\Language::class,
@@ -61,23 +60,23 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth'               => \App\Http\Middleware\Authenticate::class,
-        'auth.basic'         => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'bindings'           => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        'cache.headers'      => \Illuminate\Http\Middleware\SetCacheHeaders::class,
-        'can'                => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest'              => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'privacy'            => \App\Http\Middleware\PrivacyInterceptionMiddleware::class,
-        'signed'             => \Illuminate\Routing\Middleware\ValidateSignature::class,
-        'throttle'           => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'verified'           => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'return-json'        => JsonMiddleware::class,
-        'privacy-policy'     => \App\Http\Middleware\PrivacyPolicyInterceptionMiddleware::class,
-        'scopes'             => CheckScopes::class,
-        'scope'              => CheckForAnyScope::class,
-        'semiscope'          => SemiScope::class,
-        'role'               => \Spatie\Permission\Middleware\RoleMiddleware::class,
-        'permission'         => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+        'auth' => \App\Http\Middleware\Authenticate::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'privacy' => \App\Http\Middleware\PrivacyInterceptionMiddleware::class,
+        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'return-json' => JsonMiddleware::class,
+        'privacy-policy' => \App\Http\Middleware\PrivacyPolicyInterceptionMiddleware::class,
+        'scopes' => CheckScopes::class,
+        'scope' => CheckForAnyScope::class,
+        'semiscope' => SemiScope::class,
+        'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
     ];
 

@@ -15,7 +15,7 @@
  * @copyright https://github.com/Laravel-Lang/lang MIT-License
  */
 return [
-    'failed'   => 'De combinatie van het opgegeven e-mailadres en wachtwoord is ongeldig.',
+    'failed' => 'De combinatie van het opgegeven e-mailadres en wachtwoord is ongeldig.',
     'password' => 'Het opgegeven wachtwoord is onjuist.',
     'throttle' => 'Te veel ongeldige aanmeldpogingen. Probeer het over :seconds seconden opnieuw.',
 ];

@@ -8,11 +8,10 @@ class CreateLikesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up(): void {
-        Schema::create('likes', function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::create('likes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user_id')->unsigned();
             $table->integer('status_id')->unsigned();
@@ -22,10 +21,9 @@ class CreateLikesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropIfExists('likes');
     }
 }

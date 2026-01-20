@@ -11,7 +11,8 @@ class CleanUpActivity extends Command
 
     protected $description = 'Delete all activity logs older than 30 days';
 
-    public function handle(): int {
+    public function handle(): int
+    {
         $this->info('Cleaning up activity logs older than 30 days...');
 
         // Assuming you have a model named ActivityLog

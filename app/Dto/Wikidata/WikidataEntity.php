@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Dto\Wikidata;
 
@@ -8,27 +10,25 @@ use JsonException;
 
 readonly class WikidataEntity
 {
-
     public string $qId;
-    public array  $rawData;
+
+    public array $rawData;
 
     /**
-     * @param string $qId
-     *
-     * @return self
      * @throws JsonException|ModelNotFoundException
      */
-    public static function fetch(string $qId): self {
+    public static function fetch(string $qId): self
+    {
         if (!str_starts_with($qId, 'Q')) {
             throw new \InvalidArgumentException('Invalid QID');
         }
-        $instance      = new self();
+        $instance = new self();
         $instance->qId = $qId;
 
         $json = Http::withUserAgent(config('services.user_agent'))
-                    ->get('https://www.wikidata.org/wiki/Special:EntityData/' . $qId . '.json')
-                    ->json();
-        if(!isset($json['entities'][$qId])) {
+            ->get('https://www.wikidata.org/wiki/Special:EntityData/' . $qId . '.json')
+            ->json();
+        if (!isset($json['entities'][$qId])) {
             throw new ModelNotFoundException('Entity not found');
         }
 
@@ -37,20 +37,23 @@ readonly class WikidataEntity
         return $instance;
     }
 
-    public function getLabels(): array {
+    public function getLabels(): array
+    {
         return $this->rawData['labels'] ?? [];
     }
 
-    public function getLabel(string $language = 'en'): ?string {
+    public function getLabel(string $language = 'en'): ?string
+    {
         return $this->rawData['labels'][$language]['value'] ?? null;
     }
 
-    public function getDescription(string $language = 'en'): ?string {
+    public function getDescription(string $language = 'en'): ?string
+    {
         return $this->rawData['descriptions'][$language]['value'] ?? null;
     }
 
-    public function getClaims(string $property): array {
+    public function getClaims(string $property): array
+    {
         return $this->rawData['claims'][$property] ?? [];
     }
-
 }

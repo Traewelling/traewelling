@@ -19,35 +19,38 @@ use Throwable;
 class IcsExportService extends Controller
 {
     private User $user;
+
     private bool $useEmojis;
+
     private bool $useRealTime;
 
-    public function __construct(User $user, bool $useEmojis = true, bool $useRealTime = false) {
-        $this->user        = $user;
-        $this->useEmojis   = $useEmojis;
+    public function __construct(User $user, bool $useEmojis = true, bool $useRealTime = false)
+    {
+        $this->user = $user;
+        $this->useEmojis = $useEmojis;
         $this->useRealTime = $useRealTime;
     }
 
     public function generateIcsCalendar(
-        string  $token,
-        int     $limit = 10000,
+        string $token,
+        int $limit = 10000,
         ?Carbon $from = null,
         ?Carbon $until = null,
     ): Calendar {
         $icsToken = IcsToken::where([['token', $token], ['user_id', $this->user->id]])->firstOrFail();
 
         $calendar = Calendar::create()
-                            ->name(__('profile.last-journeys-of') . ' ' . $this->user->name)
-                            ->description(__('ics.description', [], $this->user->language));
+            ->name(__('profile.last-journeys-of') . ' ' . $this->user->name)
+            ->description(__('ics.description', [], $this->user->language));
 
-        $from  = $from ?? Carbon::now()->subMonths(3);
+        $from = $from ?? Carbon::now()->subMonths(3);
         $until = $until ?? Carbon::now()->addMonths(2);
 
         Log::debug('Starting ICS export', [
             'user_id' => $this->user->id,
-            'from'    => $from->toDateTimeString(),
-            'until'   => $until->toDateTimeString(),
-            'limit'   => $limit,
+            'from' => $from->toDateTimeString(),
+            'until' => $until->toDateTimeString(),
+            'limit' => $limit,
         ]);
 
         $date = $from->copy();
@@ -55,8 +58,8 @@ class IcsExportService extends Controller
             $events = $this->getCachedCheckinsForMonth($date, $limit);
             Log::debug('Adding events for month', [
                 'user_id' => $this->user->id,
-                'date'    => $date->toDateString(),
-                'count'   => count($events),
+                'date' => $date->toDateString(),
+                'count' => count($events),
             ]);
             foreach ($events as $event) {
                 $calendar->event($this->getEvent($event));
@@ -70,22 +73,23 @@ class IcsExportService extends Controller
     }
 
     /** @return IcsExportStatus[] */
-    private function getCachedCheckinsForMonth(Carbon $date, int $limit): array {
-        $date           = $date->copy();
-        $cacheKey       = CacheKey::getIcsUserMonthlyKey($this->user, $date);
+    private function getCachedCheckinsForMonth(Carbon $date, int $limit): array
+    {
+        $date = $date->copy();
+        $cacheKey = CacheKey::getIcsUserMonthlyKey($this->user, $date);
         $calculatingKey = CacheKey::getIcsUserMonthlyCalculatingKey($this->user, $date);
-        $ttlKey         = CacheKey::getIcsUserMonthlyTtlKey($this->user, $date);
+        $ttlKey = CacheKey::getIcsUserMonthlyTtlKey($this->user, $date);
 
-        $stats       = Cache::get($cacheKey, null);
+        $stats = Cache::get($cacheKey, null);
         $calculating = Cache::get($calculatingKey, false);
-        $ttl         = Cache::get($ttlKey, 0);
+        $ttl = Cache::get($ttlKey, 0);
 
         if (
             ($stats === null || $ttl < now()->format('u'))
             && !$calculating
         ) {
             Cache::put($calculatingKey, true, now()->addMinutes(15));
-            dispatch(function() use ($cacheKey, $ttlKey, $date, $limit) {
+            dispatch(function () use ($cacheKey, $ttlKey, $date, $limit) {
                 $stats = $this->getCheckinsForMonth($date, $limit);
 
                 // ttl for this month and every future month should be 15 minutes
@@ -94,9 +98,9 @@ class IcsExportService extends Controller
 
                 Log::debug('Caching checkins for month', [
                     'user_id' => $this->user->id,
-                    'date'    => $date->toDateString(),
-                    'count'   => count($stats),
-                    'ttl'     => $ttl,
+                    'date' => $date->toDateString(),
+                    'count' => count($stats),
+                    'ttl' => $ttl,
                 ]);
                 Cache::put($cacheKey, $stats, now()->addDays(30));
                 Cache::put($ttlKey, $ttl);
@@ -106,35 +110,37 @@ class IcsExportService extends Controller
         return $stats ?? [];
     }
 
-    private function getEvent(IcsExportStatus $checkin): Event {
+    private function getEvent(IcsExportStatus $checkin): Event
+    {
         $name = '';
         if ($checkin->emoji) {
             $name .= $checkin->emoji . ' ';
         }
         $name .= __(
-            key:     'export.journey-from-to',
+            key: 'export.journey-from-to',
             replace: [
-                         'origin'      => $checkin->originName,
-                         'destination' => $checkin->destinationName,
-                     ],
-            locale:  $this->user->language
+                'origin' => $checkin->originName,
+                'destination' => $checkin->destinationName,
+            ],
+            locale: $this->user->language
         );
 
         return Event::create()
-                    ->name($name)
-                    ->uniqueIdentifier($checkin->checkinId)
-                    ->createdAt($checkin->createdAt ? Carbon::parse($checkin->createdAt) : now())
-                    ->description($this->getDescriptionForCheckin($checkin))
-                    ->startsAt($checkin->departure ? Carbon::parse($checkin->departure) : now())
-                    ->endsAt($checkin->arrival ? Carbon::parse($checkin->arrival) : now());
+            ->name($name)
+            ->uniqueIdentifier($checkin->checkinId)
+            ->createdAt($checkin->createdAt ? Carbon::parse($checkin->createdAt) : now())
+            ->description($this->getDescriptionForCheckin($checkin))
+            ->startsAt($checkin->departure ? Carbon::parse($checkin->departure) : now())
+            ->endsAt($checkin->arrival ? Carbon::parse($checkin->arrival) : now());
     }
 
-    private function getEventDto(Checkin $checkin): IcsExportStatus {
+    private function getEventDto(Checkin $checkin): IcsExportStatus
+    {
         $tags = [];
         if ($checkin->status->tags->count() > 0) {
             foreach ($checkin->status->tags as $tag) {
                 $tags[] = new IcsExportStatusTag(
-                    key:   $tag->key,
+                    key: $tag->key,
                     value: $tag->value
                 );
             }
@@ -158,33 +164,34 @@ class IcsExportService extends Controller
     /**
      * @return IcsExportStatus[]
      */
-    private function getCheckinsForMonth(Carbon $date, int $limit): array {
-        $from  = $date->startOfMonth()->startOfDay();
+    private function getCheckinsForMonth(Carbon $date, int $limit): array
+    {
+        $from = $date->startOfMonth()->startOfDay();
         $until = (clone $date)->endOfMonth()->endOfDay();
         Log::debug('Starting checkins for month ICS export', [
             'user_id' => $this->user->id,
-            'from'    => $from->toDateTimeString(),
-            'until'   => $until->toDateTimeString(),
+            'from' => $from->toDateTimeString(),
+            'until' => $until->toDateTimeString(),
         ]);
 
         $checkinQuery = Checkin::with(['status.tags', 'originStopover.station', 'destinationStopover.station', 'trip.stopovers'])
-                               ->where('user_id', $this->user->id)
-                               ->orderByDesc('departure')
-                               ->limit($limit)
-                               ->where('departure', '>=', $from)
-                               ->where('departure', '<=', $until);
+            ->where('user_id', $this->user->id)
+            ->orderByDesc('departure')
+            ->limit($limit)
+            ->where('departure', '>=', $from)
+            ->where('departure', '<=', $until);
 
         $events = [];
-        $checkinQuery->chunk(1000, function($checkins) use (&$events) {
+        $checkinQuery->chunk(1000, function ($checkins) use (&$events) {
             foreach ($checkins as $checkin) {
                 try {
                     $events[] = $this->getEventDto($checkin, $this->user);
                     Log::debug(
                         'ICS Export: Added checkin to calendar',
                         [
-                            'user_id'    => $this->user->id,
+                            'user_id' => $this->user->id,
                             'checkin_id' => $checkin->id,
-                            'departure'  => $checkin->departure,
+                            'departure' => $checkin->departure,
                         ]
                     );
                 } catch (Throwable $throwable) {
@@ -193,16 +200,16 @@ class IcsExportService extends Controller
             }
         });
 
-
         Log::debug('Finished checkins for month ICS export', [
             'user_id' => $this->user->id,
-            'count'   => count($events),
+            'count' => count($events),
         ]);
 
         return $events;
     }
 
-    private function getDescriptionForCheckin(IcsExportStatus $checkin): string {
+    private function getDescriptionForCheckin(IcsExportStatus $checkin): string
+    {
         $description = '';
         if ($checkin->body !== null) {
             $description .= $checkin->body . PHP_EOL . PHP_EOL;
@@ -221,6 +228,7 @@ class IcsExportService extends Controller
                 $description .= $tagName . ': ' . $tag->value . PHP_EOL;
             }
         }
+
         return $description;
     }
 }

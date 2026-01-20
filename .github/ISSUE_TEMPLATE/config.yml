@@ -1,8 +1,21 @@
 blank_issues_enabled: false
 contact_links:
-  - name: 🤔 Questions / Support
+  - name: 🤔 Questions / Support | Fragen / Support
     url: https://github.com/Traewelling/traewelling/discussions/new?category=questions-support
-    about: For Questions and Support in English 🇬🇧 and German 🇩🇪
-  - name: 🚀 Feature Request
+    about: For questions and support in English 🇬🇧 and German 🇩🇪 | Für Fragen & Support auf Deutsch 🇩🇪 und Englisch 🇬🇧
+
+  - name: 🚀 Feature Request | Funktionswunsch
     url: https://github.com/Traewelling/traewelling/discussions/new?category=ideas-feature-requests
-    about: Please check if your feature request already exists and upvote it
+    about: Please check for existing requests and upvote them | Bitte prüfe bestehende Wünsche und stimme ggf. ab
+
+  - name: 🧭 Wrong operator / Falscher Betreiber (Transitous Wikidata Matching)
+    url: https://github.com/Traewelling/transitous-wikidata-operator-matching/issues
+    about: Report wrong/unknown operators for trips. | Melde falsche/unbekannte Betreiber von Fahrten.
+
+#  - name: 🗺️ Wrong or missing schedule data / Fehlerhafte oder fehlende Fahrplandaten (GTFS)
+#    url: https://github.com/mfdz/GTFS-Issues/issues
+#    about: Missing stops/times/coords or wrong times/positions. | Fehlende Halte/Zeiten/Koordinaten oder falsche Zeiten/Positionen.
+
+#  - name: 🔁 Duplicate trips / Doppelte Fahrten (Transitous)
+#    url: https://github.com/public-transport/transitous/issues
+#    about: Same trips appear multiple times. | Dieselben Fahrten tauchen mehrfach auf.

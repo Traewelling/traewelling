@@ -12,7 +12,9 @@ class SocialProfileExporter extends AbstractExporter
     use RelationExportable;
 
     protected string $fileName = 'social_profiles.json';
+
     protected string $relation = 'socialProfile';
-    protected string $with     = 'mastodonserver';
+
+    protected string $with = 'mastodonserver';
     // todo: columns
 }

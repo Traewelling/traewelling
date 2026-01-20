@@ -26,19 +26,21 @@ class OAuthClient extends PassportClient
 
     protected $casts = [
         'personal_access_client' => 'bool',
-        'password_client'        => 'bool',
-        'revoked'                => 'bool',
+        'password_client' => 'bool',
+        'revoked' => 'bool',
     ];
 
     protected $hidden = [
         'secret',
     ];
 
-    public static function newFactory() {
+    public static function newFactory()
+    {
         return parent::newFactory();
     }
 
-    public function isConfidential(): bool {
+    public function isConfidential(): bool
+    {
         return $this->secret != null;
     }
 }

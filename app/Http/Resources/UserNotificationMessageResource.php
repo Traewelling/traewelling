@@ -10,16 +10,15 @@ class UserNotificationMessageResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param Request $request
-     *
-     * @return array
+     * @param  Request  $request
      */
-    public function toArray($request): array {
+    public function toArray($request): array
+    {
         return [
-            'icon'     => $this['icon'] ?? '',
+            'icon' => $this['icon'] ?? '',
             'severity' => $this['severity'] ?? 'notice',
-            'lead'     => $this['lead'] ?? [],
-            'notice'   => $this['notice'] ?? []
+            'lead' => $this['lead'] ?? [],
+            'notice' => $this['notice'] ?? [],
         ];
     }
 }

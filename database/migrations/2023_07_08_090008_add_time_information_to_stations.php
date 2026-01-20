@@ -4,19 +4,19 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class() extends Migration
 {
     public function up(): void
     {
         Schema::table('train_stations', function (Blueprint $table) {
             $table->tinyInteger('time_offset')
-                  ->nullable()
-                  ->after('longitude')
-                  ->comment('Defines the offset of the train station relative to Europe/Berlin');
+                ->nullable()
+                ->after('longitude')
+                ->comment('Defines the offset of the train station relative to Europe/Berlin');
             $table->boolean('shift_time')
-                  ->nullable()
-                  ->after('time_offset')
-                  ->comment('If false, the timezone of the hafas request will not be shifted to Europe/Berlin');
+                ->nullable()
+                ->after('time_offset')
+                ->comment('If false, the timezone of the hafas request will not be shifted to Europe/Berlin');
         });
     }
 

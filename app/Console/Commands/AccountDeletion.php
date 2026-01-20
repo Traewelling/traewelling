@@ -7,11 +7,12 @@ use Illuminate\Console\Command;
 
 class AccountDeletion extends Command
 {
+    protected $signature = 'app:account-deletion';
 
-    protected $signature   = 'app:account-deletion';
     protected $description = 'Send notifications about account deletion and delete inactive accounts.';
 
-    public function handle(): void {
+    public function handle(): void
+    {
         AccountDeletionController::sendAccountDeletionNotificationTwoWeeksBefore();
         AccountDeletionController::deleteInactiveUsers();
     }

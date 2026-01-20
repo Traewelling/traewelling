@@ -1,24 +1,30 @@
-import {defineStore} from "pinia";
-import {ShortStation} from "../../types/Station";
-import {StationResource, UserAuthResource} from "../../types/Api.gen";
+import { defineStore } from 'pinia';
+import { Api, StationResource, UserAuthResource } from '../../types/Api.gen';
+import { ShortStation } from '../../types/Station';
 
-export const useUserStore = defineStore("user", {
+const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
+
+export const useUserStore = defineStore('user', {
     persist: true,
     state: () => ({
         user: null as UserAuthResource | null,
+        authenticated: null as boolean | null,
         loading: false,
         error: null as unknown | null,
-        refreshed: "2021-08-01T12:00:00Z"
+        refreshed: '2021-08-01T12:00:00Z',
     }),
     getters: {
+        getId(): number | null {
+            return this.user?.id ?? null;
+        },
         getDisplayName(): string {
-            return this.user?.displayName ?? "";
+            return this.user?.displayName ?? '';
         },
         getUsername(): string {
-            return this.user?.username ?? "";
+            return this.user?.username ?? '';
         },
         getProfilePicture(): string {
-            return this.user?.profilePicture ?? "";
+            return this.user?.profilePicture ?? '';
         },
         getTotalDistance(): number {
             return this.user?.totalDistance ?? 0;
@@ -45,59 +51,76 @@ export const useUserStore = defineStore("user", {
             return this.user?.home ?? null;
         },
         getLanguage(): string {
-            return this.user?.language ?? "";
+            return this.user?.language ?? '';
         },
         hasBeta(): boolean {
-            return this.user?.roles?.includes("open-beta") ?? false;
+            return this.user?.roles?.includes('open-beta') ?? false;
         },
         isAdmin(): boolean {
-            return this.user?.roles?.includes("admin") ?? false;
-        }
+            return this.user?.roles?.includes('admin') ?? false;
+        },
+        isEventModerator(): boolean {
+            return this.user?.roles?.includes('event-moderator') ?? false;
+        },
+        isAuthenticated(): boolean {
+            return this.authenticated === true;
+        },
     },
     actions: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         async setHome(home: ShortStation | any): Promise<void> {
             const curStation = this.user?.home;
-            if (this.user) {
-                this.user.home = home;
-            }
 
-            fetch(`/api/v1/station/${home.id}/home`, {
-                method: "PUT"
-            })
-                .then(response => response.json())
-                .then((data) => {
-                    if (this.user) {
-                        this.user.home = data.data;
+            api.station
+                .setHomeStation(home.id)
+                .then((response) => {
+                    if (this.user && response.data.data) {
+                        const newStation = response.data.data as StationResource;
+                        newStation.areas = [];
+
+                        this.user.home = newStation;
                     }
-
                 })
                 .catch((error) => {
-                    if (this.user) {
+                    if (curStation && this.user) {
                         this.user.home = curStation;
                     }
-
                     return error;
-                })
+                });
         },
-        async fetchSettings(): Promise<void> {
-            // Fetch Data every 15 Minutes
-            // ToDo: reduce interval
+        invalidateUser(): void {
+            this.user = null;
+            this.authenticated = false;
+            this.refreshed = new Date().toString();
+            this.error = null;
+            this.loading = false;
+        },
+        async fetchSettings(force: boolean = false, authRefresh: boolean = false): Promise<void> {
+            // Fetch Data every 5 Minutes
             // ToDo: refresh with settings update
-            // ToDo: invalidate when logging out
-            if (this.refreshed && (new Date().getTime() - new Date(this.refreshed).getTime()) < 60 * 15 * 1000) {
-                return;
+            if (
+                force ||
+                (!this.authenticated && authRefresh) ||
+                (this.refreshed && new Date().getTime() - new Date(this.refreshed).getTime() > 60 * 5 * 1000)
+            ) {
+                this.loading = true;
+                api.auth
+                    .getAuthenticatedUser()
+                    .then((response) => {
+                        this.user = response.data.data || null;
+                        this.authenticated = !!this.user;
+
+                        this.loading = false;
+                        this.refreshed = new Date().toString();
+                    })
+                    .catch((error) => {
+                        this.error = error;
+                        this.authenticated = false;
+
+                        this.loading = false;
+                        this.refreshed = new Date().toString();
+                    });
             }
-            this.loading = true;
-            try {
-                this.user = await fetch("/api/v1/auth/user")
-                    .then((response: { json: () => any; }) => response.json())
-                    .then((data: { data: any; }) => data.data);
-                this.refreshed = new Date().toString();
-            } catch (error) {
-                this.error = error;
-            } finally {
-                this.loading = false;
-            }
-        }
-    }
+        },
+    },
 });

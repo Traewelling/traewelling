@@ -8,82 +8,91 @@ use Tests\FeatureTestCase;
 
 class BackendAccessTest extends FeatureTestCase
 {
-
     use RefreshDatabase;
 
-    public function testDefaultUserCantAccessBackend(): void {
+    public function test_default_user_cant_access_backend(): void
+    {
         $user = User::factory()->create();
         $this->actingAs($user)
-             ->get(route('admin.dashboard'))
-             ->assertForbidden();
+            ->get(route('admin.welcome'))
+            ->assertForbidden();
     }
 
-    public function testDefaultUserCantAccessActivity(): void {
+    public function test_default_user_cant_access_activity(): void
+    {
         $user = User::factory()->create();
         $this->actingAs($user)
-             ->get(route('admin.activity'))
-             ->assertForbidden();
+            ->get(route('admin.activity'))
+            ->assertForbidden();
     }
 
-    public function testAdminCanAccessBackend(): void {
+    public function test_admin_can_access_backend(): void
+    {
         $user = User::factory()->create();
         $user->assignRole('admin');
         $this->actingAs($user)
-             ->get(route('admin.dashboard'))
-             ->assertStatus(200);
+            ->get(route('admin.welcome'))
+            ->assertStatus(200);
     }
 
-    public function testEventModeratorCanAccessBackend(): void {
+    public function test_event_moderator_can_access_backend(): void
+    {
         $user = User::factory()->create();
         $user->assignRole('event-moderator');
         $this->actingAs($user)
-             ->get(route('admin.dashboard'))
-             ->assertStatus(200);
+            ->get(route('admin.welcome'))
+            ->assertStatus(200);
     }
 
-    public function testDefaultUserCantAccessUserDetailPage(): void {
+    public function test_default_user_cant_access_user_detail_page(): void
+    {
         $user = User::factory()->create();
         $this->actingAs($user)
-             ->get(route('admin.users.user', ['id' => $user->id]))
-             ->assertForbidden();
+            ->get(route('admin.users.show', ['id' => $user->id]))
+            ->assertForbidden();
     }
 
-    public function testAdminCanAccessUserDetailPage(): void {
+    public function test_admin_can_access_user_detail_page(): void
+    {
         $user = User::factory()->create();
         $user->assignRole('admin');
         $this->actingAs($user)
-             ->get(route('admin.users.user', ['id' => $user->id]))
-             ->assertStatus(200);
+            ->get(route('admin.users.show', ['id' => $user->id]))
+            ->assertStatus(200);
     }
 
-    public function testEventModeratorCantAccessUserDetailPage(): void {
+    public function test_event_moderator_cant_access_user_detail_page(): void
+    {
         $user = User::factory()->create();
         $user->assignRole('event-moderator');
         $this->actingAs($user)
-             ->get(route('admin.users.user', ['id' => $user->id]))
-             ->assertForbidden();
+            ->get(route('admin.users.show', ['id' => $user->id]))
+            ->assertForbidden();
     }
 
-    public function testDefaultUserCantAccessEventSuggestions(): void {
+    public function test_default_user_cant_access_event_suggestions(): void
+    {
         $user = User::factory()->create();
         $this->actingAs($user)
-             ->get(route('admin.events.suggestions'))
-             ->assertForbidden();
+            ->get(route('admin.events.suggestions'))
+            ->assertForbidden();
     }
 
-    public function testAdminCanAccessEventSuggestions(): void {
+    public function test_admin_can_access_event_suggestions(): void
+    {
         $user = User::factory()->create();
         $user->assignRole('admin');
         $this->actingAs($user)
-             ->get(route('admin.events.suggestions'))
-             ->assertStatus(200);
+            ->get(route('admin.events.suggestions'))
+            ->assertStatus(200);
     }
 
-    public function testEventModeratorCanAccessEventSuggestions(): void {
+    public function test_event_moderator_can_access_event_suggestions(): void
+    {
         $user = User::factory()->create();
         $user->assignRole('event-moderator');
         $this->actingAs($user)
-             ->get(route('admin.events.suggestions'))
-             ->assertStatus(200);
+            ->get(route('admin.events.suggestions'))
+            ->assertStatus(200);
     }
 }

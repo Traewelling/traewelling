@@ -1,22 +1,23 @@
-import {defineStore} from "pinia";
-import {CheckinResponse} from "../../types/Api.gen";
+import { defineStore } from 'pinia';
+import { CheckinSuccessResource } from '../../types/Api.gen';
 
-export const checkinSuccessStore = defineStore("checkinSuccess", {
+export const checkinSuccessStore = defineStore('checkinSuccess', {
     persist: true,
     state: () => ({
-        checkinResponse: null as CheckinResponse | null,
+        checkinResponse: null as CheckinSuccessResource | null,
     }),
     getters: {
-        getCheckinResponse(): CheckinResponse | null {
+        getCheckinSuccessResource(): CheckinSuccessResource | null {
             return this.checkinResponse;
-        }
+        },
     },
     actions: {
-        setResponse(checkinResponse: CheckinResponse | any): void {
-            this.checkinResponse = checkinResponse;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setResponse(CheckinSuccessResource: CheckinSuccessResource | any): void {
+            this.checkinResponse = CheckinSuccessResource;
         },
         reset(): void {
             this.checkinResponse = null;
-        }
-    }
+        },
+    },
 });

@@ -8,6 +8,7 @@ use Carbon\Carbon;
  * @OA\Schema(
  *     title="EventSuggestion",
  *     description="Fields for suggesting an event",
+ *
  *     @OA\Xml(
  *         name="EventSuggestion"
  *     )
@@ -103,5 +104,4 @@ class EventSuggestion
      * @var string
      */
     private $nearestStation;
-
 }

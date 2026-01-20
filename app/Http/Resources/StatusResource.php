@@ -13,6 +13,7 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(
  *      title="Status",
  *      required={"id", "body", "business", "bodyMentions", "business", "visibility", "likes", "liked", "isLikable", "client", "createdAt", "train", "event", "userDetails", "tags"},
+ *
  *      @OA\Property(property="id", type="integer", example=12345),
  *      @OA\Property(property="body", description="User defined status text", example="Hello world!"),
  *      @OA\Property(property="bodyMentions", description="Mentions in the status body", type="array", @OA\Items(ref="#/components/schemas/MentionDto")),
@@ -26,31 +27,35 @@ use OpenApi\Annotations as OA;
  *      @OA\Property(property="train", ref="#/components/schemas/TransportResource"),
  *      @OA\Property(property="event", ref="#/components/schemas/EventResource", nullable=true),
  *      @OA\Property(property="userDetails", ref="#/components/schemas/LightUserResource"),
+ *      @OA\Property(property="createdBy", description="User who created this check-in on behalf of the status owner (null if self-checkin)", ref="#/components/schemas/LightUserResource", nullable=true),
  *      @OA\Property(property="tags", type="array", @OA\Items(ref="#/components/schemas/StatusTagResource")),
  * )
+ *
  * @todo: add moderation_notes, lock_visibility and hide_body
  */
 class StatusResource extends JsonResource
 {
-    public function toArray($request): array {
+    public function toArray($request): array
+    {
         /** @var Status $this */
         return [
-            'id'           => (int) $this->id,
-            'body'         => (string) $this->body,
+            'id' => (int) $this->id,
+            'body' => (string) $this->body,
             'bodyMentions' => $this->mentions->map(
-                fn($mention) => new MentionDto($mention->mentioned, $mention->position, $mention->length)
+                fn ($mention) => new MentionDto($mention->mentioned, $mention->position, $mention->length)
             ),
-            'business'     => (int) $this->business->value,
-            'visibility'   => (int) $this->visibility->value,
-            'likes'        => (int) $this->likes->count(),
-            'liked'        => (bool) $this->favorited,
-            'isLikable'    => Gate::allows('like', $this->resource),
-            'client'       => new ClientResource($this->client),
-            'createdAt'    => $this->created_at->toIso8601String(),
-            'train'        => new TransportResource($this->checkin), //TODO: don't call it train - we have more than trains
-            'event'        => new EventResource($this?->event),
-            'userDetails'  => new LightUserResource($this->user), //TODO: rename this to user, after deprecated fields are removed (2024-08)
-            'tags'         => StatusTagResource::collection($this->tags->filter(fn(StatusTag $tag) => Gate::allows('view', $tag))),
+            'business' => (int) $this->business->value,
+            'visibility' => (int) $this->visibility->value,
+            'likes' => (int) $this->likes->count(),
+            'liked' => (bool) $this->favorited,
+            'isLikable' => Gate::allows('like', $this->resource),
+            'client' => new ClientResource($this->client),
+            'createdAt' => $this->created_at->toIso8601String(),
+            'train' => new TransportResource($this->checkin), // TODO: don't call it train - we have more than trains
+            'event' => new EventResource($this?->event),
+            'userDetails' => new LightUserResource($this->user), // TODO: rename this to user, after deprecated fields are removed (2024-08)
+            'createdBy' => $this->createdByUser ? new LightUserResource($this->createdByUser) : null,
+            'tags' => StatusTagResource::collection($this->tags->filter(fn (StatusTag $tag) => Gate::allows('view', $tag))),
         ];
     }
 }

@@ -46,7 +46,7 @@
                                 <td>{{$eventSuggestion->url}}</td>
                                 @if(auth()->user()->hasRole('admin'))
                                     <td>
-                                        <a href="{{route('admin.users.user', ['id' => $eventSuggestion->user->id])}}">
+                                        <a href="{{route('admin.users.show', ['id' => $eventSuggestion->user->id])}}">
                                             {{$eventSuggestion->user->name}}
                                         </a>
                                     </td>

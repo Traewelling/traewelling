@@ -11,8 +11,9 @@ class CreateUserRoles extends Migration
      *
      * @return void
      */
-    public function up() {
-        Schema::table("users", function(Blueprint $table) {
+    public function up()
+    {
+        Schema::table('users', function (Blueprint $table) {
             $table->tinyInteger('role')->default('0')->after('home_id');
         });
     }
@@ -22,7 +23,8 @@ class CreateUserRoles extends Migration
      *
      * @return void
      */
-    public function down() {
+    public function down()
+    {
         Schema::dropColumns('users', ['role']);
     }
 }

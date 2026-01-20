@@ -1,11 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Enum\Report;
 
 enum ReportableSubject: string
 {
-    case EVENT  = 'Event';
+    case EVENT = 'Event';
     case STATUS = 'Status';
-    case USER   = 'User';
-    case TRIP   = 'Trip';
+    case USER = 'User';
+    case TRIP = 'Trip';
 }

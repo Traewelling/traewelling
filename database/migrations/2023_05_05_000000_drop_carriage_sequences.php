@@ -4,14 +4,16 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+return new class() extends Migration
 {
-    public function up(): void {
+    public function up(): void
+    {
         Schema::drop('carriage_sequences');
     }
 
-    public function down(): void {
-        Schema::create('carriage_sequences', static function(Blueprint $table) {
+    public function down(): void
+    {
+        Schema::create('carriage_sequences', static function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('stopover_id');
             $table->unsignedTinyInteger('position');
@@ -24,9 +26,9 @@ return new class extends Migration
             $table->unique(['stopover_id', 'position']);
 
             $table->foreign('stopover_id')
-                  ->references('id')
-                  ->on('train_stopovers')
-                  ->cascadeOnDelete();
+                ->references('id')
+                ->on('train_stopovers')
+                ->cascadeOnDelete();
         });
     }
 };

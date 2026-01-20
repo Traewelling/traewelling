@@ -1,9 +1,8 @@
-import {defineStore} from "pinia";
-import {Notification} from "../../types/Notification";
-import API from "../../js/api/api";
+import { defineStore } from 'pinia';
+import API from '../../js/api/api';
+import { Notification } from '../../types/Notification';
 
 export const useNotificationsStore = defineStore('notifications', {
-    // @ts-ignore
     persist: true,
     state: () => ({
         notifications: [] as Notification[],
@@ -18,7 +17,9 @@ export const useNotificationsStore = defineStore('notifications', {
             this.loading = true;
             try {
                 this.notifications = await API.request('/notifications')
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((response: any) => response.json())
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((data: any) => data.data);
                 this.refreshed = new Date().getTime();
             } catch (error) {
@@ -32,8 +33,10 @@ export const useNotificationsStore = defineStore('notifications', {
                 return;
             }
             try {
-                this.count = await API.request("/notifications/unread/count", "GET", {}, true)
+                this.count = await API.request('/notifications/unread/count', 'GET', {}, true)
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((response: any) => response.json())
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((data: any) => data.data);
                 this.refreshed = new Date().getTime();
             } catch (error) {
@@ -43,32 +46,33 @@ export const useNotificationsStore = defineStore('notifications', {
         },
         async toggleAllRead(): Promise<boolean> {
             try {
-                return await API.request("/notifications/read/all", "PUT")
-                    .then(() => {
-                        this.notifications.map((notification: Notification) => {
-                            notification.readAt = new Date().toISOString();
-                            return notification
-                        });
-                        this.count = 0;
-                        return true;
+                return await API.request('/notifications/read/all', 'PUT').then(() => {
+                    this.notifications.map((notification: Notification) => {
+                        notification.readAt = new Date().toISOString();
+                        return notification;
                     });
+                    this.count = 0;
+                    return true;
+                });
             } catch (error) {
                 this.error = error;
                 return false;
             }
         },
         async toggleRead(notification: Notification, key: number): Promise<void> {
-            let readAction = notification.readAt ? "unread" : "read";
+            const readAction = notification.readAt ? 'unread' : 'read';
             try {
-                await API.request(`/notifications/${readAction}/${notification.id}`, "PUT")
+                await API.request(`/notifications/${readAction}/${notification.id}`, 'PUT')
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((response: any) => response.json())
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     .then((data: any) => {
                         this.notifications[key].readAt = data.data.readAt;
-                        this.count = readAction === "read" ? this.count - 1 : this.count + 1;
+                        this.count = readAction === 'read' ? this.count - 1 : this.count + 1;
                     });
             } catch (error) {
                 this.error = error;
             }
-        }
-    }
+        },
+    },
 });

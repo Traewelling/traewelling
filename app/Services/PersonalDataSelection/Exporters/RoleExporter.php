@@ -12,8 +12,10 @@ class RoleExporter extends AbstractExporter
     use RelationExportable;
 
     protected string $fileName = 'roles.json';
+
     protected string $relation = 'roles';
-    protected array  $columns  = [
-        'name', 'guard_name', 'created_at', 'updated_at'
+
+    protected array $columns = [
+        'name', 'guard_name', 'created_at', 'updated_at',
     ];
 }

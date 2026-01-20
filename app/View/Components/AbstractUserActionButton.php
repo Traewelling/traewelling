@@ -2,7 +2,6 @@
 
 namespace App\View\Components;
 
-use App\Interfaces\UserActionButtonComponentInterface;
 use App\Models\User;
 use Illuminate\View\Component;
 use Illuminate\View\View;
@@ -10,18 +9,23 @@ use Illuminate\View\View;
 abstract class AbstractUserActionButton extends Component
 {
     public User $user;
+
     public bool $dropdown;
+
     public bool $showText;
+
     public bool $disabled;
 
-    public function __construct(User $user, bool $showText = false, bool $disabled = false, bool $dropdown = false) {
-        $this->user     = $user;
+    public function __construct(User $user, bool $showText = false, bool $disabled = false, bool $dropdown = false)
+    {
+        $this->user = $user;
         $this->dropdown = $dropdown;
         $this->showText = $showText;
         $this->disabled = $disabled;
     }
 
-    public function render(): View {
+    public function render(): View
+    {
         return view('components.user-action-button');
     }
 
@@ -31,19 +35,23 @@ abstract class AbstractUserActionButton extends Component
 
     abstract public function getIcon(): string;
 
-    public function getUser(): User {
+    public function getUser(): User
+    {
         return $this->user;
     }
 
-    public function showText(): bool {
+    public function showText(): bool
+    {
         return $this->dropdown || $this->showText;
     }
 
-    public function isDropdown(): bool {
+    public function isDropdown(): bool
+    {
         return $this->dropdown;
     }
 
-    public function isDisabled(): bool {
+    public function isDisabled(): bool
+    {
         return $this->disabled;
     }
 }

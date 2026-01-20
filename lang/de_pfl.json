@@ -13,8 +13,6 @@
     "admin.select-range": "Bereich auswähle",
     "admin.checkins": "Check-ins",
     "admin.registered-users": "Regischtrierte Nutzer",
-    "admin.hafas-entries-by-type": "HAFAS-Einträäch nooch Transport-Typ",
-    "admin.hafas-entries-by-polylines": "HAFAS-Einträäch un Anzahl dezugeheerende Polylines",
     "admin.new-users": "neie Nutzer",
     "admin.statuses": "Status",
     "auth.failed": "Des Konto exischtiert net orre die Date sinn falsch ingebbe worre.",

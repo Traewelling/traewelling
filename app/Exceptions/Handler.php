@@ -9,7 +9,6 @@ use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -24,7 +23,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        OAuthServerException::class
+        OAuthServerException::class,
     ];
 
     /**
@@ -43,19 +42,19 @@ class Handler extends ExceptionHandler
         AuthenticationException::class,
         NotFoundHttpException::class,
         ThrottleRequestsException::class,
-        ValidationException::class
+        ValidationException::class,
     ];
 
     /**
      * Render an exception into an HTTP response.
      *
-     * @param Request   $request
-     * @param Throwable $exception
-     *
+     * @param  Request  $request
      * @return Response
+     *
      * @throws Throwable
      */
-    public function render($request, Throwable $exception) {
+    public function render($request, Throwable $exception)
+    {
         $response = parent::render($request, $exception);
 
         if ($response instanceof JsonResponse && !config('app.debug') && $exception instanceof Referencable) {
@@ -67,10 +66,9 @@ class Handler extends ExceptionHandler
 
     /**
      * Builds the exception's context array.
-     *
-     * @return array
      */
-    protected function context(): array {
+    protected function context(): array
+    {
         try {
             return array_merge(parent::context(), [
                 'url' => request()?->fullUrl(),

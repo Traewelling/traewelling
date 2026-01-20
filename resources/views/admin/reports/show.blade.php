@@ -19,7 +19,7 @@
                         <dt>Reporter</dt>
                         <dd>
                             @isset($report->reporter)
-                                <a href="{{ route('admin.users.user', $report->reporter->id) }}">
+                                <a href="{{ route('admin.users.show', $report->reporter->id) }}">
                                     {{ $report->reporter->name}}<br/>
                                     <small>{{ '@' . $report->reporter->username }}</small>
                                 </a>
@@ -30,11 +30,11 @@
                             <dt>Subject</dt>
                             <dd>
                                 @if( $report->subject_type === \App\Models\Trip::class )
-                                    <a href="{{ route('admin.trip.show', $report->subject_id) }}">
+                                    <a href="{{ route('admin.trips.show', $report->subject_id) }}">
                                         Trip #{{ $report->subject_id }}
                                     </a>
                                 @elseif( $report->subject_type === \App\Models\User::class )
-                                    <a href="{{ route('admin.users.user', $report->subject_id) }}">
+                                    <a href="{{ route('admin.users.show', $report->subject_id) }}">
                                         User #{{ $report->subject_id }}
                                     </a>
                                 @elseif( $report->subject_type === \App\Models\Event::class )
@@ -42,7 +42,7 @@
                                         Event #{{ $report->subject_id }}
                                     </a>
                                 @elseif( $report->subject_type === \App\Models\Status::class )
-                                    <a href="{{ route('admin.status.edit', ['statusId' => $report->subject_id]) }}">
+                                    <a href="{{ route('admin.statuses.edit', ['statusId' => $report->subject_id]) }}">
                                         Status #{{ $report->subject_id }}
                                     </a>
                                 @endif

@@ -1,4 +1,4 @@
-@import "../variables";
+@import '../variables';
 
 .status {
   .map {
@@ -21,14 +21,15 @@
       background: rgb(192, 57, 43);
 
       &.progress-pride {
-        background: linear-gradient(66deg,
-                red 0 14.28%,
-                orange 0 28.57%,
-                yellow 0 42.85%,
-                green 0 57.14%,
-                darkturquoise 0 71.42%,
-                blue 0 85.71%,
-                indigo 0
+        background: linear-gradient(
+          66deg,
+          red 0 14.28%,
+          orange 0 28.57%,
+          yellow 0 42.85%,
+          green 0 57.14%,
+          darkturquoise 0 71.42%,
+          blue 0 85.71%,
+          indigo 0
         );
       }
     }
@@ -59,7 +60,6 @@
       cursor: pointer;
     }
   }
-
 
   .visibility-icon {
     color: #b3b3b3 !important;

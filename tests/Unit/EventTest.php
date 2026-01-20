@@ -10,7 +10,8 @@ class EventTest extends FeatureTestCase
 {
     use RefreshDatabase;
 
-    public function testIsPrideAttribute(): void {
+    public function test_is_pride_attribute(): void
+    {
         $positiveCases = [
             'Cologne Pride',
             '22. Gulaschpridenacht',
@@ -31,7 +32,8 @@ class EventTest extends FeatureTestCase
         }
     }
 
-    private function makeEventWithName(string $name) {
+    private function makeEventWithName(string $name)
+    {
         return Event::factory()->create(['name' => $name]);
     }
 }

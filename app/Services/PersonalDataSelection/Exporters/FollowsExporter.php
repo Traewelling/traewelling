@@ -11,8 +11,11 @@ class FollowsExporter extends AbstractExporter
 {
     use DatabaseExportable;
 
-    protected string $fileName    = 'follows.json';
-    protected string $tableName   = 'follows';
-    protected array  $columns     = ['id', 'user_id', 'follow_id', 'created_at', 'updated_at'];
+    protected string $fileName = 'follows.json';
+
+    protected string $tableName = 'follows';
+
+    protected array $columns = ['id', 'user_id', 'follow_id', 'created_at', 'updated_at'];
+
     protected string $whereColumn = 'user_id';
 }

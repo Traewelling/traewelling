@@ -14,12 +14,14 @@ class WebhookEvent extends Model
     public $timestamps = false;
 
     protected $fillable = ['webhook_id', 'event'];
-    protected $casts    = [
+
+    protected $casts = [
         'webhook_id' => 'integer',
-        'event'      => WebhookEventEnum::class,
+        'event' => WebhookEventEnum::class,
     ];
 
-    public function webhook(): HasOne {
+    public function webhook(): HasOne
+    {
         return $this->hasOne(Webhook::class, 'id', 'webhook_id');
     }
 }

@@ -13,7 +13,8 @@ class StatusTagPolicy
 {
     use HandlesAuthorization;
 
-    public function view(?User $user, StatusTag $statusTag): Response|bool {
+    public function view(?User $user, StatusTag $statusTag): Response|bool
+    {
         // Case 1: User is owner of this status
         if ($user?->id === $statusTag->status->user_id) {
             return Response::allow('User is owner of this status');
@@ -39,7 +40,12 @@ class StatusTagPolicy
             return $user->follows->contains('id', $statusTag->status->user_id);
         }
 
-        // Case 6: StatusTag is for authenticated users only
+        // Case 6: StatusTag is trusted users only
+        if ($statusTag->visibility === StatusVisibility::TRUSTED && $user !== null) {
+            return $statusTag->status->user->trustedUsers->contains('trusted_id', $user->id);
+        }
+
+        // Case 7: StatusTag is for authenticated users only
         if ($user !== null && $statusTag->visibility === StatusVisibility::AUTHENTICATED) {
             return Response::allow('StatusTag is for authenticated users');
         }
@@ -47,15 +53,17 @@ class StatusTagPolicy
         // Case x: Status is unlisted
         // This isn't checked here. This is done in the query from the (global/private) dashboard.
 
-        //In any edge case it should be false. Each case should be treated here.
+        // In any edge case it should be false. Each case should be treated here.
         return Response::deny('Congratulations! You\'ve found an edge-case!');
     }
 
-    public function update(User $user, StatusTag $statusTag): bool {
+    public function update(User $user, StatusTag $statusTag): bool
+    {
         return $statusTag->status->user_id === $user->id;
     }
 
-    public function destroy(User $user, StatusTag $statusTag): bool {
+    public function destroy(User $user, StatusTag $statusTag): bool
+    {
         return $statusTag->status->user_id === $user->id;
     }
 }

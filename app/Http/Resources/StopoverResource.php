@@ -13,6 +13,7 @@ use OpenApi\Annotations as OA;
  *     "arrivalPlatformPlanned", "arrivalPlatformReal", "departure", "departurePlanned", "departureReal",
  *     "departurePlatformPlanned", "departurePlatformReal", "platform", "isArrivalDelayed", "isDepartureDelayed",
  *     "cancelled"},
+ *
  *     @OA\Property(property="id", type="integer", example=12345),
  *     @OA\Property(property="name", type="string", example="Karlsruhe Hbf", description="name of the station"),
  *     @OA\Property(property="rilIdentifier", type="string", example="RK", nullable=true, description="Identifier specified in 'Richtline 100' of the Deutsche Bahn"),
@@ -35,28 +36,28 @@ use OpenApi\Annotations as OA;
  */
 class StopoverResource extends JsonResource
 {
-
-    public function toArray($request): array {
+    public function toArray($request): array
+    {
         /** @var Stopover $this */
         return [
-            'id'                       => (int) $this->train_station_id,
-            'name'                     => $this->station->name,
-            'rilIdentifier'            => $this->station->rilIdentifier ?? null,
-            'evaIdentifier'            => $this->station->ibnr ?? null,
-            'arrival'                  => $this->arrival?->toIso8601String(), //TODO: not necessary if planned and real are available
-            'arrivalPlanned'           => $this->arrival_planned?->toIso8601String(),
-            'arrivalReal'              => $this->arrival_real?->toIso8601String(),
-            'arrivalPlatformPlanned'   => $this->arrival_platform_planned ?? null,
-            'arrivalPlatformReal'      => $this->arrival_platform_real ?? null,
-            'departure'                => $this->departure?->toIso8601String(), //TODO: not necessary if planned and real are available
-            'departurePlanned'         => $this->departure_planned?->toIso8601String(),
-            'departureReal'            => $this->departure_real?->toIso8601String(),
+            'id' => (int) $this->train_station_id,
+            'name' => $this->station->name,
+            'rilIdentifier' => $this->station->rilIdentifier ?? null,
+            'evaIdentifier' => $this->station->ibnr ?? null,
+            'arrival' => $this->arrival?->toIso8601String(), // TODO: not necessary if planned and real are available
+            'arrivalPlanned' => $this->arrival_planned?->toIso8601String(),
+            'arrivalReal' => $this->arrival_real?->toIso8601String(),
+            'arrivalPlatformPlanned' => $this->arrival_platform_planned ?? null,
+            'arrivalPlatformReal' => $this->arrival_platform_real ?? null,
+            'departure' => $this->departure?->toIso8601String(), // TODO: not necessary if planned and real are available
+            'departurePlanned' => $this->departure_planned?->toIso8601String(),
+            'departureReal' => $this->departure_real?->toIso8601String(),
             'departurePlatformPlanned' => $this->departure_platform_planned ?? null,
-            'departurePlatformReal'    => $this->departure_platform_real ?? null,
-            'platform'                 => $this->platform ?? null,
-            'isArrivalDelayed'         => (bool) $this->isArrivalDelayed,
-            'isDepartureDelayed'       => (bool) $this->isDepartureDelayed,
-            'cancelled'                => (bool) ($this->cancelled ?? false),
+            'departurePlatformReal' => $this->departure_platform_real ?? null,
+            'platform' => $this->platform ?? null,
+            'isArrivalDelayed' => (bool) $this->isArrivalDelayed,
+            'isDepartureDelayed' => (bool) $this->isDepartureDelayed,
+            'cancelled' => (bool) ($this->cancelled ?? false),
         ];
     }
 }

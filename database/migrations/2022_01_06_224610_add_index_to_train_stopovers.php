@@ -9,14 +9,16 @@ use Illuminate\Support\Facades\Schema;
  */
 class AddIndexToTrainStopovers extends Migration
 {
-    public function up(): void {
-        Schema::table('train_stopovers', static function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::table('train_stopovers', static function (Blueprint $table) {
             $table->index(['arrival_planned', 'arrival_real']);
         });
     }
 
-    public function down(): void {
-        Schema::table('train_stopovers', static function(Blueprint $table) {
+    public function down(): void
+    {
+        Schema::table('train_stopovers', static function (Blueprint $table) {
             $table->dropIndex(['arrival_planned', 'arrival_real']);
         });
     }

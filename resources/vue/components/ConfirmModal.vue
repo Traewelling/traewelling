@@ -1,51 +1,50 @@
 <script setup lang="ts">
-import ModalComponent from "./ModalComponent.vue";
-import {ref} from "vue";
-import {trans} from "laravel-vue-i18n";
+import { trans } from 'laravel-vue-i18n';
+import { ref } from 'vue';
+import ModalComponent from './ModalComponent.vue';
 
 const props = defineProps({
-  title: {
-    type: String,
-    default: ''
-  },
-  confirmButtonClass: {
-    type: String,
-    default: 'btn btn-danger'
-  },
-  confirmButtonKey: {
-    type: String,
-    default: 'modals.delete-confirm'
-  }
+    title: {
+        type: String,
+        default: '',
+    },
+    confirmButtonClass: {
+        type: String,
+        default: 'btn btn-danger',
+    },
+    confirmButtonKey: {
+        type: String,
+        default: 'modals.delete-confirm',
+    },
 });
 
-const modal = ref<ModalComponent | null>(null);
 const emit = defineEmits(['confirm']);
-
+const modal = ref<ModalComponent | null>(null);
 const show = () => {
-  modal.value?.show();
-}
+    modal.value?.show();
+};
 const getTitle = () => {
-  if (props.title !== '') {
-    return trans(props.title);
-  }
+    if (props.title !== '') {
+        return trans(props.title);
+    }
 
-  return '';
-}
+    return '';
+};
 
 const confirm = () => {
-  modal.value?.hide();
-  emit('confirm');
-}
+    modal.value?.hide();
+    emit('confirm');
+};
 
-defineExpose({show});
+defineExpose({ show });
 </script>
 
 <template>
-  <ModalComponent ref="modal" :title="getTitle()" :hideBody="true">
-    <template #footer>
-      <button type="button" :class="confirmButtonClass" @click="confirm()">
-        {{ trans(confirmButtonKey) }}
-      </button>
-    </template>
-  </ModalComponent>
+    <ModalComponent ref="modal" :title="getTitle()" :hide-body="true">
+        <template #footer>
+            <button type="button" :class="confirmButtonClass" @click="confirm()">
+                {{ trans(confirmButtonKey) }}
+            </button>
+        </template>
+    </ModalComponent>
 </template>

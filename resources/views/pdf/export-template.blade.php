@@ -15,7 +15,7 @@
                 margin: 0;
                 font-size: 16px;
                 line-height: 24px;
-                font-family: 'Helvetica Neue', 'Helvetica', 'Helvetica', 'Arial', sans-serif;
+                font-family: 'DejaVu Sans', sans-serif;
                 color: #555;
             }
 

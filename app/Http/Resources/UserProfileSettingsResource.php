@@ -13,6 +13,7 @@ use OpenApi\Annotations as OA;
  *      required={"username", "displayName", "profilePicture", "privateProfile", "preventIndex", "defaultStatusVisibility",
  *      "privacyHideDays", "password", "email", "emailVerified", "profilePictureSet", "likesEnabled", "pointsEnabled",
  *      "profileLinks", "mapProvider", "timezone", "experimental"},
+ *
  *      @OA\Property(property="username",                   type="string",  example="Gertrud123"),
  *      @OA\Property(property="displayName",                type="string",  example="Gertrud"),
  *      @OA\Property(property="profilePicture",             type="string",  example="https://traewelling.de/@Gertrud123/picture"),
@@ -38,30 +39,31 @@ use OpenApi\Annotations as OA;
  */
 class UserProfileSettingsResource extends JsonResource
 {
-    public function toArray($request): array {
+    public function toArray($request): array
+    {
         /** @var User $this */
         return [
-            'username'                => $this->username,
-            'displayName'             => $this->name,
-            'profilePicture'          => ProfilePictureController::getUrlForUserId($this->id),
-            'privateProfile'          => (bool) $this->private_profile,
-            'preventIndex'            => (bool) $this->prevent_index,
+            'username' => $this->username,
+            'displayName' => $this->name,
+            'profilePicture' => ProfilePictureController::getUrlForUserId($this->id),
+            'privateProfile' => (bool) $this->private_profile,
+            'preventIndex' => (bool) $this->prevent_index,
             'defaultStatusVisibility' => (int) $this->default_status_visibility->value,
-            'privacyHideDays'         => (int) $this->privacy_hide_days,
-            'password'                => (bool) !empty($this->password),
-            'email'                   => $this->email,
-            'emailVerified'           => !empty($this->email_verified_at),
-            'profilePictureSet'       => !empty($this->avatar),
-            'mastodon'                => $this->mastodon_url,
-            'mastodonVisibility'      => $this->socialProfile->mastodon_visibility->value,
-            'friendCheckin'           => $this->friend_checkin?->value,
-            'likesEnabled'            => (bool) $this->likes_enabled,
-            'pointsEnabled'           => (bool) $this->points_enabled,
-            'mapProvider'             => $this->mapprovider,
-            'timezone'                => $this->timezone,
-            'experimental'            => (bool) $this->hasRole('open-beta'),
-            'bio'                     => $this->bio,
-            'profileLinks'            => ProfileLinkResource::collection($this->profileLinks)
+            'privacyHideDays' => (int) $this->privacy_hide_days,
+            'password' => (bool) !empty($this->password),
+            'email' => $this->email,
+            'emailVerified' => !empty($this->email_verified_at),
+            'profilePictureSet' => !empty($this->avatar),
+            'mastodon' => $this->mastodon_url,
+            'mastodonVisibility' => $this->socialProfile->mastodon_visibility->value,
+            'friendCheckin' => $this->friend_checkin?->value,
+            'likesEnabled' => (bool) $this->likes_enabled,
+            'pointsEnabled' => (bool) $this->points_enabled,
+            'mapProvider' => $this->mapprovider,
+            'timezone' => $this->timezone,
+            'experimental' => (bool) $this->hasRole('open-beta'),
+            'bio' => $this->bio,
+            'profileLinks' => ProfileLinkResource::collection($this->profileLinks),
         ];
     }
 }

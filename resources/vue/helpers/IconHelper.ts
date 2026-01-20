@@ -1,4 +1,5 @@
-import {Business, StatusVisibility} from "../../types/Api.gen";
+import { trans } from 'laravel-vue-i18n';
+import { Business, StatusVisibility } from '../../types/Api.gen';
 
 const visibilityIcons = {
     0: 'fa-globe-americas',
@@ -6,41 +7,29 @@ const visibilityIcons = {
     2: 'fa-user-friends',
     3: 'fa-lock',
     4: 'fa-user-check',
-}
+    5: 'fa-user-shield',
+};
 
 const businessIcons = {
     0: 'fa-user',
     1: 'fa-briefcase',
     2: 'fa-building',
-}
+};
 
 export class IconHelper {
     static getVisibilityIcon(visibility: StatusVisibility): string {
-        if (visibilityIcons.hasOwnProperty(visibility)) {
+        if (Object.prototype.hasOwnProperty.call(visibilityIcons, visibility)) {
             return visibilityIcons[visibility];
         }
         return 'fa-question'; // Fallback icon for unknown visibility
     }
 
     static getVisibilityTooltip(visibility: StatusVisibility): string {
-        switch (visibility) {
-            case 0:
-                return 'Public';
-            case 1:
-                return 'Unlisted';
-            case 2:
-                return 'Friends';
-            case 3:
-                return 'Private';
-            case 4:
-                return 'Restricted';
-            default:
-                return 'Unknown Visibility';
-        }
+        return trans('status.visibility.' + visibility);
     }
 
     static getBusinessIcon(business: Business): string {
-        if (businessIcons.hasOwnProperty(business)) {
+        if (Object.prototype.hasOwnProperty.call(businessIcons, business)) {
             return businessIcons[business];
         }
         return 'fa-question'; // Fallback icon for unknown business type

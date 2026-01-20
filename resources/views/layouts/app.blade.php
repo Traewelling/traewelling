@@ -90,7 +90,7 @@
                         </li>
                         @if(config('trwl.year_in_review.alert'))
                             <li class="nav-item">
-                                <a class="nav-link" href="/your-year/">
+                                <a class="nav-link" href="/year-in-review">
                                     <i class="fa-solid fa-champagne-glasses"></i>
                                     {{__('year-review')}}
                                 </a>
@@ -106,11 +106,13 @@
                                 {{ __('menu.login') }}
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">
-                                {{ __('menu.register') }}
-                            </a>
-                        </li>
+                        @if(config('app.registration.enabled'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('register') }}">
+                                    {{ __('menu.register') }}
+                                </a>
+                            </li>
+                        @endif
                     @else
                         <form class="form-inline" action="{{ route('userSearch') }}">
                             <div class="input-group md-form form-sm form-2 ps-0 m-0">
@@ -129,57 +131,8 @@
                         <li class="nav-item d-none d-md-inline-block">
                             <notification-bell :link="true" :allow-fetch="false"></notification-bell>
                         </li>
-                        <li class="nav-item dropdown">
-                            <button id="navbarDropdown" class="nav-link dropdown-toggle select"
-                                    data-bs-dropdown-animation="off" data-bs-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                {{ Auth::user()->name }}
-                                <span class="caret"></span>
-                            </button>
 
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li>
-                                    <a class="dropdown-item"
-                                       href="{{ route('profile', ['username' => auth()->user()->username]) }}">
-                                        <i class="fas fa-user"></i> {{ __('menu.profile') }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('export') }}">
-                                        <i class="fas fa-save"></i> {{ __('menu.export') }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('settings') }}">
-                                        <i class="fas fa-cog"></i> {{ __('menu.settings') }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="https://help.traewelling.de/faq/"
-                                       target="_blank">
-                                        <i class="fa-solid fa-bug" aria-hidden="true"></i>
-                                        {{ __('help') }}
-                                    </a>
-                                </li>
-                                @if(auth()->user()->hasRole('admin') || auth()->user()->can('view-events'))
-                                    <li>
-                                        <a class="dropdown-item" href="{{route('admin.dashboard')}}">
-                                            <i class="fas fa-tools"></i> Backend
-                                        </a>
-                                    </li>
-                                @endif
-                                <li>
-                                    <hr class="dropdown-divider"/>
-                                </li>
-
-                                <form method="POST" action="{{ route('logout') }}" id="logout-form">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item">
-                                        <i class="fas fa-sign-out-alt"></i> {{ __('menu.logout') }}
-                                    </button>
-                                </form>
-                            </ul>
-                        </li>
+                        <vue-dropdown></vue-dropdown>
                     @endguest
                 </ul>
             </div>

@@ -16,20 +16,18 @@ class StatusPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param User|null $user
-     * @param Status    $status
      *
-     * @return Response|bool
      * @todo implement blocked and muted
      */
-    public function view(?User $user, Status $status): Response|bool {
+    public function view(?User $user, Status $status): Response|bool
+    {
         // Case 1: User is unauthenticated
         if ($user === null) {
             // true, if user is not private and visibility is UNLISTED or PUBLIC.
             return !$status->user->private_profile && (
-                    $status->visibility === StatusVisibility::UNLISTED ||
-                    $status->visibility === StatusVisibility::PUBLIC
-                );
+                $status->visibility === StatusVisibility::UNLISTED ||
+                $status->visibility === StatusVisibility::PUBLIC
+            );
         }
 
         // Case 1½: User is already invisible
@@ -57,70 +55,73 @@ class StatusPolicy
             return $user->follows->contains('id', $status->user_id);
         }
 
-        // Case 6: Status is unlisted
+        // Case 6: Status is trusted users only
+        if ($status->visibility === StatusVisibility::TRUSTED) {
+            return $status->user->trustedUsers->contains('trusted_id', $user->id);
+        }
+
+        // Case 7: Status is unlisted
         if ($status->visibility === StatusVisibility::UNLISTED) {
-            //This isn't checked here. This is done in the query from the (global/private) dashboard.
-            //But in general, unlisted statuses are visible to everyone.
+            // This isn't checked here. This is done in the query from the (global/private) dashboard.
+            // But in general, unlisted statuses are visible to everyone.
             return Response::allow();
         }
 
-        // Case 7: Status is public or authenticated
+        // Case 8: Status is public or authenticated
         if ($status->visibility === StatusVisibility::PUBLIC || $status->visibility === StatusVisibility::AUTHENTICATED) {
-            return Response::allow(); //TODO: How to handle with private profile?
+            return Response::allow(); // TODO: How to handle with private profile?
         }
 
-        //In any edge case it should be false. Each case should be treated here.
+        // In any edge case it should be false. Each case should be treated here.
         return Response::deny('Congratulations! You\'ve found an edge-case!');
     }
 
-    public function viewBody(?User $user, Status $status): Response|bool {
-        if($user?->id === $status->user_id) {
+    public function viewBody(?User $user, Status $status): Response|bool
+    {
+        if ($user?->id === $status->user_id) {
             return Response::allow();
         }
+
         return !$status->hide_body && $this->view($user, $status);
     }
 
-    public function create(User $user): bool {
+    public function create(User $user): bool
+    {
         return $user->cannot('disallow-status-creation');
     }
 
     /**
      * Determine whether the user can update the model.
      *
-     * @param User   $user
-     * @param Status $status
      *
-     * @return bool
      * @todo test
      */
-    public function update(User $user, Status $status): bool {
+    public function update(User $user, Status $status): bool
+    {
         return $user->id === $status->user_id;
     }
 
     /**
-     * @param User|null $user
-     * @param Status    $status
-     *
      * @return bool If the given user (or unauthenticated) can like the given status
      */
-    public function like(?User $user, Status $status): bool {
+    public function like(?User $user, Status $status): bool
+    {
         if ($user === null) {
-            //Unauthenticated users can't like things...
+            // Unauthenticated users can't like things...
             return false;
         }
+
         return $this->view($user, $status) && $user->likes_enabled && $status->user->likes_enabled;
     }
 
     /**
      * Determine whether the user can delete the model.
      *
-     * @param User   $user
-     * @param Status $status
      *
-     * @return bool
      * @todo test
      */
-    public function delete(User $user, Status $status): bool {
+    public function delete(User $user, Status $status): bool
+    {
         return $user->id === $status->user_id;
     }
 }

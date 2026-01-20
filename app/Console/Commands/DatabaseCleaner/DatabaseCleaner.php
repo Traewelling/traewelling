@@ -8,7 +8,8 @@ class DatabaseCleaner extends Command
 {
     protected $signature = 'app:clean-db';
 
-    public function handle(): int {
+    public function handle(): int
+    {
         $this->call(FailedJobs::class);
         $this->call(Notifications::class);
         $this->call(PasswordResets::class);
@@ -22,10 +23,12 @@ class DatabaseCleaner extends Command
         $this->call(CleanUpActivity::class);
         $this->call(CleanUpEventSuggestions::class);
         $this->call(CleanUpTokens::class);
+        $this->call(YearInReview::class);
 
         $this->call('queue-monitor:purge', ['--beforeDays' => 7]);
         $this->call('activitylog:clean');
         $this->call('cache:clear-database');
+
         return 0;
     }
 }

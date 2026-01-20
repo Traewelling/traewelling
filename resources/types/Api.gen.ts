@@ -39,7 +39,7 @@ export enum TravelType {
 
 /**
  * visibility
- * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
+ * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
  *  *      user specify?
  * @example 0
  */
@@ -49,6 +49,7 @@ export enum StatusVisibility {
   Value2 = 2,
   Value3 = 3,
   Value4 = 4,
+  Value5 = 5,
 }
 
 /**
@@ -63,6 +64,43 @@ export enum PointReason {
   Value3 = 3,
   Value4 = 4,
   Value5 = 5,
+}
+
+/**
+ * mode
+ * Mode of transport
+ * @example "suburban"
+ */
+export enum MotisCategory {
+  WALK = "WALK",
+  BIKE = "BIKE",
+  RENTAL = "RENTAL",
+  CAR = "CAR",
+  CAR_PARKING = "CAR_PARKING",
+  CAR_DROPOFF = "CAR_DROPOFF",
+  ODM = "ODM",
+  RIDE_SHARING = "RIDE_SHARING",
+  FLEX = "FLEX",
+  TRANSIT = "TRANSIT",
+  TRAM = "TRAM",
+  SUBWAY = "SUBWAY",
+  FERRY = "FERRY",
+  AIRPLANE = "AIRPLANE",
+  SUBURBAN = "SUBURBAN",
+  BUS = "BUS",
+  COACH = "COACH",
+  RAIL = "RAIL",
+  HIGHSPEED_RAIL = "HIGHSPEED_RAIL",
+  LONG_DISTANCE = "LONG_DISTANCE",
+  NIGHT_RAIL = "NIGHT_RAIL",
+  REGIONAL_FAST_RAIL = "REGIONAL_FAST_RAIL",
+  REGIONAL_RAIL = "REGIONAL_RAIL",
+  CABLE_CAR = "CABLE_CAR",
+  FUNICULAR = "FUNICULAR",
+  AERIAL_LIFT = "AERIAL_LIFT",
+  OTHER = "OTHER",
+  AERAL_LIFT = "AERAL_LIFT",
+  METRO = "METRO",
 }
 
 /**
@@ -483,8 +521,6 @@ export interface LightUserResource {
   username: string;
   /** @example "https://traewelling.de/@Gertrud123/picture" */
   profilePicture: string;
-  /** @example "https://traewelling.social/@Gertrud123" */
-  mastodonUrl: string;
   /** @example false */
   preventIndex: boolean;
 }
@@ -516,6 +552,14 @@ export interface ProfileLinkResource {
   url?: string;
 }
 
+/** StationIdentifier */
+export interface StationIdentifierResource {
+  /** @example "de_db_ril100" */
+  type?: string;
+  /** @example "RK" */
+  identifier?: string;
+}
+
 /** Station */
 export interface StationResource {
   /** @example "1" */
@@ -526,11 +570,8 @@ export interface StationResource {
   latitude: number;
   /** @example "8.400977" */
   longitude: number;
-  /** @example "8000191" */
-  ibnr: string;
-  /** @example "RK" */
-  rilIdentifier: string;
   areas: AreaResource[];
+  identifiers?: StationIdentifierResource[];
 }
 
 /** StatisticsGlobalData */
@@ -566,7 +607,7 @@ export interface StatusResource {
   /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
   business: Business;
   /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
+   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
    *  *      user specify?
    */
   visibility: StatusVisibility;
@@ -596,6 +637,8 @@ export interface StatusResource {
   event: EventResource | null;
   /** User model with just basic information */
   userDetails: LightUserResource;
+  /** User who created this check-in on behalf of the status owner (null if self-checkin) */
+  createdBy?: LightUserResource | null;
   tags: StatusTagResource[];
 }
 
@@ -711,6 +754,7 @@ export interface TransportResource {
   hafasId: string;
   /** Category of transport.  */
   category: HafasTravelType;
+  mode: MotisCategory | null;
   /**
    * Internal number of the journey
    * @example "4-a6s8-8"
@@ -718,6 +762,16 @@ export interface TransportResource {
   number: any;
   /** @example "S 1" */
   lineName: string;
+  /**
+   * Hex color code of the route, if available
+   * @example "FFEE00"
+   */
+  routeColor?: string | null;
+  /**
+   * Hex color code of the route text, if available
+   * @example "FFFFFF"
+   */
+  routeTextColor?: string | null;
   /** @example 85639 */
   journeyNumber: number;
   /**
@@ -759,6 +813,7 @@ export interface TripResource {
   id?: number;
   /** Category of transport.  */
   category?: HafasTravelType;
+  mode?: MotisCategory | null;
   /** @example "4-a6s4-4" */
   number?: string;
   /** @example "S 4" */
@@ -835,7 +890,7 @@ export interface UserProfileSettingsResource {
    */
   preventIndex: boolean;
   /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
+   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
    *  *      user specify?
    */
   defaultStatusVisibility: StatusVisibility;
@@ -1011,7 +1066,7 @@ export interface CheckinRequestBody {
   /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
   business?: Business;
   /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
+   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
    *  *      user specify?
    */
   visibility?: StatusVisibility;
@@ -1359,7 +1414,7 @@ export interface Polyline {
   type?: string;
   geometry?: {
     /** @example "LineString" */
-    type?: object;
+    type?: any;
     coordinates?: any[];
   };
   properties?: {
@@ -1395,7 +1450,7 @@ export interface StatusTag {
    */
   value?: string;
   /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
+   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
    *  *      user specify?
    */
   visibility?: StatusVisibility;
@@ -1474,7 +1529,7 @@ export interface StatusUpdateBody {
   /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
   business?: Business;
   /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the
+   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
    *  *      user specify?
    */
   visibility?: StatusVisibility;
@@ -1629,8 +1684,12 @@ export class HttpClient<SecurityDataType = unknown> {
       input !== null && typeof input !== "string"
         ? JSON.stringify(input)
         : input,
-    [ContentType.FormData]: (input: any) =>
-      Object.keys(input || {}).reduce((formData, key) => {
+    [ContentType.FormData]: (input: any) => {
+      if (input instanceof FormData) {
+        return input;
+      }
+
+      return Object.keys(input || {}).reduce((formData, key) => {
         const property = input[key];
         formData.append(
           key,
@@ -1641,7 +1700,8 @@ export class HttpClient<SecurityDataType = unknown> {
               : `${property}`,
         );
         return formData;
-      }, new FormData()),
+      }, new FormData());
+    },
     [ContentType.UrlEncoded]: (input: any) => this.toQueryString(input),
   };
 
@@ -1727,13 +1787,14 @@ export class HttpClient<SecurityDataType = unknown> {
             : payloadFormatter(body),
       },
     ).then(async (response) => {
-      const r = response.clone() as HttpResponse<T, E>;
+      const r = response as HttpResponse<T, E>;
       r.data = null as unknown as T;
       r.error = null as unknown as E;
 
+      const responseToParse = responseFormat ? response.clone() : response;
       const data = !responseFormat
         ? r
-        : await response[responseFormat]()
+        : await responseToParse[responseFormat]()
             .then((data) => {
               if (r.ok) {
                 r.data = data;
@@ -2628,6 +2689,62 @@ export class Api<
       }),
 
     /**
+     * @description Returns paginated list of statuses, filtered by given parameters
+     *
+     * @tags Status
+     * @name ListStatuses
+     * @summary [Auth optional] List and filter statuses
+     * @request GET:/status
+     */
+    listStatuses: (
+      query?: {
+        /**
+         * Filter by text in status body
+         * @example "Having a great trip!"
+         */
+        body?: string;
+        /**
+         * Filter by user ID
+         * @example 42
+         */
+        user_id?: number;
+        /**
+         * Filter by origin station name
+         * @example "Central Station"
+         */
+        origin_text?: string;
+        /**
+         * Filter by origin station ID
+         * @example 5
+         */
+        origin_id?: number;
+        /**
+         * Filter by destination station name
+         * @example "Main Square"
+         */
+        destination_text?: string;
+        /**
+         * Filter by destination station ID
+         * @example 10
+         */
+        destination_id?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: StatusResource[];
+        },
+        any
+      >({
+        path: `/status`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
      * @description Returns a single status Object, if user is authorized to see it
      *
      * @tags Status
@@ -2689,11 +2806,10 @@ export class Api<
      * @secure
      */
     destroySingleStatus: (id?: number, params: RequestParams = {}) =>
-      this.request<SuccessResponse, void>({
+      this.request<void, void>({
         path: `/status/${id}`,
         method: "DELETE",
         secure: true,
-        format: "json",
         ...params,
       }),
 
@@ -3105,7 +3221,7 @@ export class Api<
   };
   stations = {
     /**
-     * @description UNSTABLE: This request returns an array of max. 20 station objects matching the query. **CAUTION:** All *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)
+     * @description UNSTABLE: Returns stations by fuzzy text, exact identifier, or within a bounding box (BBOX). **CAUTION:** Slashes in {query} must be replaced (e.g. with %20).
      *
      * @tags Checkin
      * @name IndexStation
@@ -3116,10 +3232,53 @@ export class Api<
     indexStation: (
       query?: {
         /**
-         * station query
-         * @example "Karls"
+         * Fuzzy station search
+         * @maxLength 255
+         * @example "Karlsruhe Hbf"
          */
-        query?: any;
+        query?: string;
+        /**
+         * Identifier provider for exact lookup
+         * @example "ibnr"
+         */
+        identifier_provider?: "ibnr" | "transitous";
+        /**
+         * Station identifier for exact lookup
+         * @maxLength 255
+         * @example "8000191"
+         */
+        identifier?: string;
+        /**
+         * Minimum latitude of BBOX (WGS84, -90..90)
+         * @format float
+         * @example 48.9
+         */
+        min_lat?: number;
+        /**
+         * Maximum latitude of BBOX (WGS84, -90..90)
+         * @format float
+         * @example 49.1
+         */
+        max_lat?: number;
+        /**
+         * Minimum longitude of BBOX (WGS84, -180..180)
+         * @format float
+         * @example 8.2
+         */
+        min_lon?: number;
+        /**
+         * Maximum longitude of BBOX (WGS84, -180..180)
+         * @format float
+         * @example 8.6
+         */
+        max_lon?: number;
+        /**
+         * Maximum number of results (capped at 100).
+         * @min 1
+         * @max 100
+         * @example 50
+         */
+        limit?: number;
       },
       params: RequestParams = {},
     ) =>
@@ -3755,11 +3914,6 @@ export class Api<
          * @example "S 4"
          */
         lineName: any;
-        /**
-         * start point from where the stopovers should be desplayed
-         * @example 4711
-         */
-        start: any;
       },
       params: RequestParams = {},
     ) =>

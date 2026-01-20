@@ -37,7 +37,8 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
 
 class UserGdprDataService
 {
-    public function addUserPersonalData(PersonalDataSelection $personalDataSelection, User $userModel, bool $export = true): void {
+    public function addUserPersonalData(PersonalDataSelection $personalDataSelection, User $userModel, bool $export = true): void
+    {
         if ($userModel->avatar && file_exists(public_path('/uploads/avatars/' . $userModel->avatar))) {
             $personalDataSelection->addFile(public_path('/uploads/avatars/' . $userModel->avatar));
         }

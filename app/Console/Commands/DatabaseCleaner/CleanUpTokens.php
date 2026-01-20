@@ -7,10 +7,12 @@ use Laravel\Passport\Passport;
 
 class CleanUpTokens extends Command
 {
-    protected $signature   = 'app:clean-up-tokens';
+    protected $signature = 'app:clean-up-tokens';
+
     protected $description = 'Delete all tokens expired more than 30 days';
 
-    public function handle(): int {
+    public function handle(): int
+    {
         $this->info('Cleaning up tokens older than 30 days...');
 
         // Assuming you have a model named Token

@@ -11,8 +11,9 @@ class AddUniqueKeyToLikes extends Migration
      *
      * @return void
      */
-    public function up() {
-        Schema::table('likes', function(Blueprint $table) {
+    public function up()
+    {
+        Schema::table('likes', function (Blueprint $table) {
             $table->unique(['user_id', 'status_id']);
         });
     }
@@ -22,8 +23,9 @@ class AddUniqueKeyToLikes extends Migration
      *
      * @return void
      */
-    public function down() {
-        Schema::table('likes', function(Blueprint $table) {
+    public function down()
+    {
+        Schema::table('likes', function (Blueprint $table) {
             $table->dropUnique('likes_user_id_status_id_unique');
         });
     }

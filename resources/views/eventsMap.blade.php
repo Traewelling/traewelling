@@ -64,26 +64,8 @@
             </div>
         </div>
     </div>
-    <div class="container mt-3">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7" id="activeJourneys">
-                @foreach($statuses as $status)
-                    @include('includes.status')
-                @endforeach
-            </div>
-        </div>
 
-        <div class="row justify-content-center mt-5">
-            {{ $statuses->links() }}
-
-            <small class="text-muted">
-                <sup>1</sup> {{__('events.disclaimer.organizer')}}
-                <sup>2</sup> {{__('events.disclaimer.source')}}
-                <sup>3</sup> {{__('events.disclaimer.warranty')}}
-            </small>
-        </div>
+    <div id="vue-event">
+        <event :event-slug="'{{$event->slug}}'"></event>
     </div>
-
-    @include('includes.edit-modal')
-    @include('includes.delete-modal')
 @endsection

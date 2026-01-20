@@ -10,24 +10,26 @@ use romanzipp\QueueMonitor\Models\Monitor;
 
 class UpdateQueueMonitorTable extends Migration
 {
-    public function up(): void {
-        Schema::table(config('queue-monitor.table'), static function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::table(config('queue-monitor.table'), static function (Blueprint $table) {
             $table->unsignedInteger('status')->default(MonitorStatus::RUNNING)->after('queue');
         });
 
         $this->upgradeColumns();
 
-        Schema::table(config('queue-monitor.table'), static function(Blueprint $table) {
+        Schema::table(config('queue-monitor.table'), static function (Blueprint $table) {
             $table->dropColumn(['failed', 'time_elapsed']);
         });
     }
 
-    public function upgradeColumns(): void {
-        Monitor::query()->chunk(500, function(Collection $monitors) {
+    public function upgradeColumns(): void
+    {
+        Monitor::query()->chunk(500, function (Collection $monitors) {
             /** @var array<int, array<Monitor>> $matrix */
             $matrix = [
-                MonitorStatus::RUNNING   => [],
-                MonitorStatus::FAILED    => [],
+                MonitorStatus::RUNNING => [],
+                MonitorStatus::FAILED => [],
                 MonitorStatus::SUCCEEDED => [],
             ];
 
@@ -35,7 +37,7 @@ class UpdateQueueMonitorTable extends Migration
                 /** @phpstan-ignore-next-line */
                 if ($monitor->failed) {
                     $matrix[MonitorStatus::FAILED][] = $monitor;
-                } elseif (null !== $monitor->finished_at) {
+                } elseif ($monitor->finished_at !== null) {
                     $matrix[MonitorStatus::SUCCEEDED][] = $monitor;
                 } else {
                     $matrix[MonitorStatus::RUNNING][] = $monitor;
@@ -44,14 +46,15 @@ class UpdateQueueMonitorTable extends Migration
 
             foreach ($matrix as $status => $monitors) {
                 DB::table(config('queue-monitor.table'))
-                  ->whereIn('id', array_map(static fn(Monitor $monitor) => $monitor->id, $monitors))
-                  ->update(['status' => $status]);
+                    ->whereIn('id', array_map(static fn (Monitor $monitor) => $monitor->id, $monitors))
+                    ->update(['status' => $status]);
             }
         });
     }
 
-    public function down(): void {
-        Schema::table(config('queue-monitor.table'), static function(Blueprint $table) {
+    public function down(): void
+    {
+        Schema::table(config('queue-monitor.table'), static function (Blueprint $table) {
             $table->dropColumn('status');
 
             $table->float('time_elapsed', 12, 6)->nullable()->index();

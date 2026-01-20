@@ -7,16 +7,17 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateDefaultVisibilityOnUsers extends Migration
 {
-
-    public function up(): void {
-        Schema::table('users', function(Blueprint $table) {
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
             $table->unsignedTinyInteger('default_status_visibility')
-                  ->default(StatusVisibility::PUBLIC->value)
-                  ->after('private_profile');
+                ->default(StatusVisibility::PUBLIC->value)
+                ->after('private_profile');
         });
     }
 
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropColumns('users', ['default_status_visibility']);
     }
 }

@@ -11,8 +11,9 @@ class UnifyColumnsFromTrainStations extends Migration
      *
      * @return void
      */
-    public function up() {
-        Schema::table('train_stations', function(Blueprint $table) {
+    public function up()
+    {
+        Schema::table('train_stations', function (Blueprint $table) {
             $table->bigInteger('ibnr')->unsigned()->change();
         });
     }
@@ -22,8 +23,9 @@ class UnifyColumnsFromTrainStations extends Migration
      *
      * @return void
      */
-    public function down() {
-        Schema::table('train_stations', function(Blueprint $table) {
+    public function down()
+    {
+        Schema::table('train_stations', function (Blueprint $table) {
             $table->string('ibnr', 255)->change();
         });
     }

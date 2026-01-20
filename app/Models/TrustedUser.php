@@ -10,21 +10,26 @@ class TrustedUser extends Model
 {
     use HasUuids;
 
-    protected $keyType      = 'string';
-    public    $incrementing = false;
-    protected $fillable     = ['user_id', 'trusted_id', 'expires_at'];
-    protected $casts        = [
-        'id'         => 'string',
-        'user_id'    => 'integer',
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
+    protected $fillable = ['user_id', 'trusted_id', 'expires_at'];
+
+    protected $casts = [
+        'id' => 'string',
+        'user_id' => 'integer',
         'trusted_id' => 'integer',
         'expires_at' => 'datetime',
     ];
 
-    public function trusted(): BelongsTo {
+    public function trusted(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'trusted_id', 'id');
     }
 
-    public function user(): BelongsTo {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

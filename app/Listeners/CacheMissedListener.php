@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Cache;
 
 class CacheMissedListener
 {
-    public function handle(CacheMissed $event): void {
+    public function handle(CacheMissed $event): void
+    {
         switch ($event->key) {
             case CacheKey::USER_CREATED:
             case CacheKey::USER_DELETED:
@@ -29,29 +30,32 @@ class CacheMissedListener
         }
     }
 
-    private function setWebhookAbsent(): void {
+    private function setWebhookAbsent(): void
+    {
         Cache::set(CacheKey::WEBHOOK_ABSENT, 0);
     }
 
-    private function fetchUserData(): void {
-        $count      = (new User)->count();
+    private function fetchUserData(): void
+    {
+        $count = (new User())->count();
         $highest_id = $this->getHighestId(User::query());
 
         Cache::set(CacheKey::USER_CREATED, $highest_id);
         Cache::set(CacheKey::USER_DELETED, $highest_id - $count);
     }
 
-    private function fetchStatusData(): void {
-        $count      = (new Status)->count();
+    private function fetchStatusData(): void
+    {
+        $count = (new Status())->count();
         $highest_id = $this->getHighestId(Status::query());
 
         Cache::set(CacheKey::STATUS_CREATED, $highest_id);
         Cache::set(CacheKey::STATUS_DELETED, $highest_id - $count);
     }
 
-
-    private function getHighestId(Builder $query) {
-        $firstOrNull = $query->orderBy("id", "desc")->first();
+    private function getHighestId(Builder $query)
+    {
+        $firstOrNull = $query->orderBy('id', 'desc')->first();
         if (!$firstOrNull || !isset($firstOrNull->id)) {
             return 0;
         }

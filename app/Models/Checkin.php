@@ -23,51 +23,60 @@ use stdClass;
  */
 class Checkin extends Model
 {
-
     use HasFactory;
 
-    protected $table    = 'train_checkins';
+    protected $table = 'train_checkins';
+
     protected $fillable = [
         'status_id', 'user_id', 'trip_id', 'origin_stopover_id', 'destination_stopover_id',
         'distance', 'duration', 'manual_departure', 'manual_arrival', 'points', 'forced',
 
-        'departure', 'arrival' //TODO: -> use {origin/destination}_stopover->{arrival/departure} instead
-    ];
-    protected $hidden   = ['created_at', 'updated_at'];
-    protected $appends  = ['speed', 'displayDeparture', 'displayArrival'];
-    protected $casts    = [
-        'id'                      => 'integer',
-        'status_id'               => 'integer',
-        'user_id'                 => 'integer',
-        'origin_stopover_id'      => 'integer',
-        'destination_stopover_id' => 'integer',
-        'distance'                => 'integer',
-        'duration'                => 'integer',
-        'departure'               => UTCDateTime::class, //@deprecated -> use origin_stopover_id instead
-        'manual_departure'        => UTCDateTime::class,
-        'arrival'                 => UTCDateTime::class, //@deprecated -> use destination_stopover_id instead
-        'manual_arrival'          => UTCDateTime::class,
-        'points'                  => 'integer',
-        'forced'                  => 'boolean',
+        'departure', 'arrival', // TODO: -> use {origin/destination}_stopover->{arrival/departure} instead
     ];
 
-    public function status(): BelongsTo {
+    protected $hidden = ['created_at', 'updated_at'];
+
+    protected $appends = ['speed', 'displayDeparture', 'displayArrival'];
+
+    protected $casts = [
+        'id' => 'integer',
+        'status_id' => 'integer',
+        'user_id' => 'integer',
+        'trip_id' => 'string',
+        'origin_stopover_id' => 'integer',
+        'destination_stopover_id' => 'integer',
+        'distance' => 'integer',
+        'duration' => 'integer',
+        'departure' => UTCDateTime::class, // @deprecated -> use origin_stopover_id instead
+        'manual_departure' => UTCDateTime::class,
+        'arrival' => UTCDateTime::class, // @deprecated -> use destination_stopover_id instead
+        'manual_arrival' => UTCDateTime::class,
+        'points' => 'integer',
+        'forced' => 'boolean',
+    ];
+
+    public function status(): BelongsTo
+    {
         return $this->belongsTo(Status::class);
     }
 
-    public function user(): BelongsTo {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function trip(): HasOne {
+    public function trip(): HasOne
+    {
         return $this->hasOne(Trip::class, 'trip_id', 'trip_id');
     }
 
-    public function originStopover(): BelongsTo {
+    public function originStopover(): BelongsTo
+    {
         return $this->belongsTo(Stopover::class, 'origin_stopover_id', 'id');
     }
 
-    public function destinationStopover(): BelongsTo {
+    public function destinationStopover(): BelongsTo
+    {
         return $this->belongsTo(Stopover::class, 'destination_stopover_id', 'id');
     }
 
@@ -76,7 +85,8 @@ class Checkin extends Model
      * Precedence: Manual > Real > Planned.
      * Only returns the 'original' planned time if the updated time differs from the planned time.
      */
-    private static function prepareDisplayTime($planned, $real = null, $manual = null): array {
+    private static function prepareDisplayTime($planned, $real = null, $manual = null): array
+    {
         if (isset($manual)) {
             $time = $manual;
             $type = TimeType::MANUAL;
@@ -87,67 +97,75 @@ class Checkin extends Model
             $time = $planned;
             $type = TimeType::PLANNED;
         }
+
         return [
-            'time'     => $time,
+            'time' => $time,
             'original' => ($planned->toString() !== $time->toString()) ? $planned : null,
-            'type'     => $type
+            'type' => $type,
         ];
     }
 
-    public function getDisplayDepartureAttribute(): stdClass {
+    public function getDisplayDepartureAttribute(): stdClass
+    {
         $planned = $this->originStopover?->departure_planned
                    ?? $this->originStopover?->departure
                       ?? $this->departure;
-        $real    = $this->originStopover?->departure_real;
-        $manual  = $this->manual_departure;
+        $real = $this->originStopover?->departure_real;
+        $manual = $this->manual_departure;
+
         return (object) self::prepareDisplayTime($planned, $real, $manual);
     }
 
-    public function getDisplayArrivalAttribute(): stdClass {
+    public function getDisplayArrivalAttribute(): stdClass
+    {
         $planned = $this->destinationStopover?->arrival_planned
                    ?? $this->destinationStopover?->arrival
                       ?? $this->arrival;
-        $real    = $this->destinationStopover?->arrival_real;
-        $manual  = $this->manual_arrival;
+        $real = $this->destinationStopover?->arrival_real;
+        $manual = $this->manual_arrival;
+
         return (object) self::prepareDisplayTime($planned, $real, $manual);
     }
 
     /**
      * Overwrite the default getter to return the cached value if available
-     * @return int
      */
-    public function getDurationAttribute(): int {
-        //If the duration is already calculated and saved, return it
+    public function getDurationAttribute(): int
+    {
+        // If the duration is already calculated and saved, return it
         if (isset($this->attributes['duration']) && $this->attributes['duration'] !== null) {
             return $this->attributes['duration'];
         }
 
-        //Else calculate and cache it
+        // Else calculate and cache it
         return TrainCheckinController::calculateCheckinDuration($this);
     }
 
-    public function getSpeedAttribute(): float {
+    public function getSpeedAttribute(): float
+    {
         return $this->duration === 0 ? 0 : ($this->distance / 1000) / ($this->duration / 60);
     }
 
     /**
      * @return Collection<Status>
+     *
      * @todo Sichtbarkeit der CheckIns prüfen! Hier werden auch Private CheckIns angezeigt
      */
-    public function getAlsoOnThisConnectionAttribute(): Collection {
+    public function getAlsoOnThisConnectionAttribute(): Collection
+    {
         return self::with(['status'])
-                   ->where([
-                               ['status_id', '<>', $this->status->id],
-                               ['trip_id', '=', $this->trip->trip_id],
-                               ['arrival', '>', $this->departure],
-                               ['departure', '<', $this->arrival]
-                           ])
-                   ->get()
-                   ->map(function(Checkin $checkin) {
-                       return $checkin->status;
-                   })
-                   ->filter(function($status) {
-                       return $status !== null && Gate::forUser(Auth::user())->allows('view', $status);
-                   });
+            ->where([
+                ['status_id', '<>', $this->status->id],
+                ['trip_id', '=', $this->trip->trip_id],
+                ['arrival', '>', $this->departure],
+                ['departure', '<', $this->arrival],
+            ])
+            ->get()
+            ->map(function (Checkin $checkin) {
+                return $checkin->status;
+            })
+            ->filter(function ($status) {
+                return $status !== null && Gate::forUser(Auth::user())->allows('view', $status);
+            });
     }
 }

@@ -3,9 +3,8 @@
 namespace Tests\Feature;
 
 use App\Exceptions\CheckInCollisionException;
-use App\Exceptions\HafasException;
+use App\Exceptions\DataProviderException;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
-use App\Http\Controllers\Frontend\Admin\CheckinController;
 use App\Models\Station;
 use App\Models\Trip;
 use App\Models\User;
@@ -15,15 +14,15 @@ use Tests\Helpers\CheckinRequestTestHydrator;
 
 class CheckinTest extends FeatureTestCase
 {
-
     use RefreshDatabase;
 
-    private string $plus_one_day_then_8pm = "+1 day 8:00";
+    private string $plus_one_day_then_8pm = '+1 day 8:00';
 
     /**
      * Test if the checkin collision is truly working
      */
-    public function testCheckinCollision(): void {
+    public function test_checkin_collision(): void
+    {
         // GIVEN: Generate Stations
         Station::factory()->count(4)->create();
 
@@ -50,75 +49,75 @@ class CheckinTest extends FeatureTestCase
          *
          */
 
-        $collisionTrips    = [];
+        $collisionTrips = [];
         $nonCollisionTrips = [];
-        $baseTrip          = Trip::factory()->create(
+        $baseTrip = Trip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:sP', strtotime('12:00')),
-                'arrival'   => date('Y-m-d H:i:sP', strtotime('13:00'))
+                'arrival' => date('Y-m-d H:i:sP', strtotime('13:00')),
             ]
         );
 
-        //Trips Case 1 - 4 for which a collisionException should be thrown
+        // Trips Case 1 - 4 for which a collisionException should be thrown
         $collisionTrips[] = Trip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:sP', strtotime('11:45')),
-                'arrival'   => date('Y-m-d H:i:sP', strtotime('12:15'))
+                'arrival' => date('Y-m-d H:i:sP', strtotime('12:15')),
             ]
         );
         $collisionTrips[] = Trip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:sP', strtotime('12:45')),
-                'arrival'   => date('Y-m-d H:i:sP', strtotime('13:15'))
+                'arrival' => date('Y-m-d H:i:sP', strtotime('13:15')),
             ]
         );
         $collisionTrips[] = Trip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:sP', strtotime('12:15')),
-                'arrival'   => date('Y-m-d H:i:sP', strtotime('12:45'))
+                'arrival' => date('Y-m-d H:i:sP', strtotime('12:45')),
             ]
         );
         $collisionTrips[] = Trip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:sP', strtotime('11:45')),
-                'arrival'   => date('Y-m-d H:i:sP', strtotime('13:15'))
+                'arrival' => date('Y-m-d H:i:sP', strtotime('13:15')),
             ]
         );
 
-        //Trips case 5 & 6 for which no Exception should be thrown
+        // Trips case 5 & 6 for which no Exception should be thrown
         $nonCollisionTrips[] = Trip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:sP', strtotime('11:15')),
-                'arrival'   => date('Y-m-d H:i:sP', strtotime('11:45'))
+                'arrival' => date('Y-m-d H:i:sP', strtotime('11:45')),
             ]
         );
         $nonCollisionTrips[] = Trip::factory()->create(
             [
                 'departure' => date('Y-m-d H:i:sP', strtotime('13:30')),
-                'arrival'   => date('Y-m-d H:i:sP', strtotime('13:45'))
+                'arrival' => date('Y-m-d H:i:sP', strtotime('13:45')),
             ]
         );
 
         try {
             TrainCheckinController::checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($baseTrip));
-        } catch (HafasException $e) {
+        } catch (DataProviderException $e) {
             $this->markTestSkipped($e->getMessage());
         }
 
-        $caseCount = 1; //This variable is needed to output error messages in case of a failed test
+        $caseCount = 1; // This variable is needed to output error messages in case of a failed test
         foreach ($collisionTrips as $trip) {
             try {
                 TrainCheckinController::checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($trip));
                 $this->fail("Expected exception for Collision Case $caseCount not thrown");
             } catch (CheckInCollisionException $exception) {
                 $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);
-            } catch (HafasException $e) {
+            } catch (DataProviderException $e) {
                 $this->markTestSkipped($e->getMessage());
             }
             $caseCount++;
         }
 
-        //check normal checkin possibility
+        // check normal checkin possibility
         foreach ($nonCollisionTrips as $trip) {
             try {
                 TrainCheckinController::checkin((new CheckinRequestTestHydrator($user))->hydrateFromTrip($trip));
@@ -126,7 +125,7 @@ class CheckinTest extends FeatureTestCase
             } catch (CheckInCollisionException $exception) {
                 $this->assertEquals($baseTrip->linename, $exception->checkin->trip->first()->linename);
                 $this->fail("Exception for Case $caseCount thrown even though checkin should happen.");
-            } catch (HafasException $e) {
+            } catch (DataProviderException $e) {
                 $this->markTestSkipped($e->getMessage());
             }
             $caseCount++;

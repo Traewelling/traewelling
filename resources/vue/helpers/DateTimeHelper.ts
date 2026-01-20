@@ -1,9 +1,9 @@
-import {StatusResource, StopoverResource} from "../../types/Api.gen";
-import {DateTime} from "luxon";
-import {Dtm} from "./DateTime";
+import { DateTime } from 'luxon';
+import { StatusResource, StopoverResource } from '../../types/Api.gen';
+import { Dtm } from './DateTime';
 
 export function getDepartureForStatus(status: StatusResource): Dtm {
-    let departure = status.train.manualDeparture;
+    const departure = status.train.manualDeparture;
     if (departure) {
         return Dtm.fromISO(departure);
     }
@@ -12,7 +12,7 @@ export function getDepartureForStatus(status: StatusResource): Dtm {
 }
 
 export function getArrivalForStatus(status: StatusResource): Dtm {
-    let arrival = status.train.manualArrival;
+    const arrival = status.train.manualArrival;
     if (arrival) {
         return Dtm.fromISO(arrival);
     }
@@ -82,36 +82,28 @@ function getArrivalString(stopover: StopoverResource): string | null {
     return null;
 }
 
-
 export function getDepartureAttribute(status: StatusResource): StopoverTime {
-    let planned = status.train.origin.departurePlanned
-        ?? status.train.origin.departure
-    let real = status.train.origin.departureReal;
-    let manual = status.train.manualDeparture;
+    const planned = status.train.origin.departurePlanned ?? status.train.origin.departure;
+    const real = status.train.origin.departureReal;
+    const manual = status.train.manualDeparture;
     return prepareStopoverTime(planned, real, manual);
 }
 
 export function getArrivalAttribute(status: StatusResource): StopoverTime {
-    let planned = status.train.destination.arrivalPlanned
-        ?? status.train.destination.arrival
-    let real = status.train.destination.arrivalReal;
-    let manual = status.train.manualArrival;
+    const planned = status.train.destination.arrivalPlanned ?? status.train.destination.arrival;
+    const real = status.train.destination.arrivalReal;
+    const manual = status.train.manualArrival;
     return prepareStopoverTime(planned, real, manual);
 }
 
-
-function prepareStopoverTime(
-    planned: string | null,
-    real: string | null,
-    manual: string | null
-): StopoverTime {
+function prepareStopoverTime(planned: string | null, real: string | null, manual: string | null): StopoverTime {
     let time: Dtm | null = null;
     let type: StopoverTimeType = StopoverTimeType.Planned;
     let plannedTime: Dtm | null = null;
 
     if (planned) {
         plannedTime = Dtm.fromISO(planned);
-        plannedTime.dateTime = plannedTime.dateTime.set({second: 0}); // remove seconds for consistency
+        plannedTime.dateTime = plannedTime.dateTime.set({ second: 0 }); // remove seconds for consistency
     }
 
     if (manual) {
@@ -128,19 +120,20 @@ function prepareStopoverTime(
         return {
             time: plannedTime,
             originalTime: null,
-            type: StopoverTimeType.Manual // fallback to manual if no time is available
+            type: StopoverTimeType.Manual, // fallback to manual if no time is available
         };
     }
 
     let originalTime = time;
     if (time && plannedTime) {
-        originalTime = Math.abs(plannedTime.dateTime.toSeconds() - time.dateTime.toSeconds()) > 60 ? plannedTime : null;
+        originalTime =
+            Math.abs(plannedTime.dateTime.toSeconds() - time.dateTime.toSeconds()) >= 60 ? plannedTime : null;
     }
 
     return {
         time: time,
         originalTime: originalTime,
-        type: type
+        type: type,
     };
 }
 
@@ -149,9 +142,9 @@ export function timeTypeTooltip(type: StopoverTimeType): string {
         case StopoverTimeType.Manual:
             return 'time-is-manual';
         case StopoverTimeType.Realtime:
-            return 'time-is-real'
+            return 'time-is-real';
         case StopoverTimeType.Planned:
-            return 'time-is-planned'
+            return 'time-is-planned';
         default:
             return 'time-is-unknown';
     }
@@ -164,7 +157,6 @@ export function secondsToDuration(seconds: number): TimeDuration {
     duration.days = Math.floor((seconds % (365 * 24 * 60 * 60)) / (24 * 60 * 60));
     duration.hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
     duration.minutes = Math.floor((seconds % (60 * 60)) / 60);
-
 
     return duration;
 }

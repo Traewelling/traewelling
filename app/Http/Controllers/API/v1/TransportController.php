@@ -12,7 +12,7 @@ use App\Enum\TravelType;
 use App\Exceptions\Checkin\AlreadyCheckedInException;
 use App\Exceptions\CheckInCollisionException;
 use App\Exceptions\CheckinException;
-use App\Exceptions\HafasException;
+use App\Exceptions\DataProviderException;
 use App\Exceptions\StationNotOnTripException;
 use App\Http\Controllers\Backend\Transport\StationController;
 use App\Http\Controllers\Backend\Transport\TrainCheckinController;
@@ -24,6 +24,8 @@ use App\Models\Station;
 use App\Models\Status;
 use App\Models\User;
 use App\Notifications\YouHaveBeenCheckedIn;
+use App\Repositories\CheckinHydratorRepository;
+use App\Repositories\StationRepository;
 use App\Services\GeoService;
 use Carbon\Carbon;
 use Exception;
@@ -34,16 +36,19 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
-use OpenApi\Annotations as OA;
 use Throwable;
 
 class TransportController extends Controller
 {
+    private StationRepository $stationRepository;
+
+    public function __construct(StationRepository $stationRepository)
+    {
+        parent::__construct();
+        $this->stationRepository = $stationRepository;
+    }
+
     /**
-     * @param Request $request
-     * @param int     $stationId
-     *
-     * @return JsonResponse
      * @todo: This endpoint needs to be restructured to use own Resources! Currently we just throw the raw db-rest response.
      *
      * @OA\Get(
@@ -52,6 +57,7 @@ class TransportController extends Controller
      *      tags={"Checkin"},
      *      summary="Get departures from a station",
      *      description="Get departures from a station.",
+     *
      *      @OA\Parameter(
      *          name="id",
      *          in="path",
@@ -62,29 +68,36 @@ class TransportController extends Controller
      *          in="query",
      *          description="When to get the departures (default: now). If you omit the timezone, the datetime is interpreted as localtime. This is especially helpful when träwelling abroad.",
      *          required=false,
+     *
      *          @OA\Schema(
      *              type="string",
      *              format="date-time",
      *              example="2020-01-01T12:00:00.000Z"
      *          )
      *      ),
+     *
      *      @OA\Parameter(
      *          name="travelType",
      *          in="query",
      *          description="Means of transport (default: all)",
      *          required=false,
+     *
      *          @OA\Schema(
      *              ref="#/components/schemas/TravelType"
      *          )
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
+     *
      *          @OA\JsonContent(
      *              type="object",
+     *
      *              @OA\Property(
      *                  property="data",
      *                  type="array",
+     *
      *                  @OA\Items(
      *                      externalDocs="https://v5.db.transport.rest/api.html#get-stopsiddepartures",
      *                      description="HAFAS Train model. This model might be subject to unexpected changes. See also external documentation at [https://v5.db.transport.rest/api.html#get-stopsiddepartures](https://v5.db.transport.rest/api.html#get-stopsiddepartures).",
@@ -110,6 +123,7 @@ class TransportController extends Controller
      *                      }
      *                 )
      *              ),
+     *
      *              @OA\Property(
      *                  property="meta",
      *                  type="object",
@@ -139,13 +153,14 @@ class TransportController extends Controller
      *                              example="2020-01-01T12:15:00.000Z"
      *                          )
      *                  ),
-     *
      *                  @OA\Property(
      *                      description="List of licenses that were filtered out",
      *                      property="removedLicenses",
      *                      type="array",
+     *
      *                      @OA\Items(
      *                          oneOf={
+     *
      *                              @OA\Schema(
      *                                  type="string",
      *                                  example="FR: fr_horaires-sncf.gtfs",
@@ -154,6 +169,7 @@ class TransportController extends Controller
      *                          }
      *                      ),
      *                  ),
+     *
      *                  @OA\Property(
      *                      description="Number of removed entries due to license filtering",
      *                      property="removedCount",
@@ -163,6 +179,7 @@ class TransportController extends Controller
      *              )
      *          )
      *      ),
+     *
      *      @OA\Response(response=401, description="Unauthorized"),
      *      @OA\Response(response=404, description="Station not found"),
      *      @OA\Response(response=422, description="Invalid input"),
@@ -170,48 +187,54 @@ class TransportController extends Controller
      *      security={{"passport": {"create-statuses"}}, {"token": {}}}
      * )
      */
-    public function getDepartures(Request $request, int $stationId): JsonResponse {
+    public function getDepartures(Request $request, int $stationId): JsonResponse
+    {
         $validated = $request->validate([
-                                            'when'       => ['nullable', 'date'],
-                                            'travelType' => ['nullable', new Enum(TravelType::class)],
-                                        ]);
+            'when' => ['nullable', 'date'],
+            'travelType' => ['nullable', new Enum(TravelType::class)],
+        ]);
 
         $timestamp = isset($validated['when']) ? Carbon::parse($validated['when']) : now();
-        $station   = Station::findOrFail($stationId);
+        $station = Station::findOrFail($stationId);
 
         try {
             $filtered = $this->dataProvider->getFilteredDepartures(
-                station:   $station,
-                when:      $timestamp,
-                type:      TravelType::tryFrom($validated['travelType'] ?? null),
+                station: $station,
+                when: $timestamp,
+                type: TravelType::tryFrom($validated['travelType'] ?? null),
                 localtime: isset($validated['when']) && !preg_match('(\+|Z)', $validated['when'])
             );
 
-            $departures = $filtered->departures->sortBy(function($departure) {
+            $departures = $filtered->departures->sortBy(function ($departure) {
                 return $departure->when ?? $departure->plannedWhen;
             });
 
+            $times = $departures->map(fn ($d) => $d->when ?? $d->plannedWhen)->filter()->sort();
+            $prev = $timestamp->clone()->subMinutes(15);
+            $next = $times->isNotEmpty() ? Carbon::parse($times->last())->addMinute() : $timestamp->clone()->addMinutes(15);
+
             return $this->sendResponse(
-                data:       $departures->values(),
+                data: $departures->values(),
                 additional: [
-                                'meta' => [
-                                    'station' => StationDto::fromModel($station),
-                                    'times'   => [
-                                        'now'  => $timestamp,
-                                        'prev' => $timestamp->clone()->subMinutes(15),
-                                        'next' => $timestamp->clone()->addMinutes(15)
-                                    ],
-                                    'removedLicenses' => $filtered->removedEntries,
-                                    'removedCount' => $filtered->removedCount
-                                ]
-                            ]
+                    'meta' => [
+                        'station' => StationDto::fromModel($station),
+                        'times' => [
+                            'now' => $timestamp,
+                            'prev' => $prev,
+                            'next' => $next,
+                        ],
+                        'removedLicenses' => $filtered->removedEntries,
+                        'removedCount' => $filtered->removedCount,
+                    ],
+                ]
             );
-        } catch (HafasException) {
+        } catch (DataProviderException) {
             return $this->sendError(__('messages.exception.generalHafas', [], 'en'), 502);
         } catch (ModelNotFoundException) {
             return $this->sendError(__('controller.transport.no-station-found', [], 'en'));
         } catch (Exception $exception) {
             report($exception);
+
             return $this->sendError('An unknown error occurred.', 500, null, $exception);
         }
     }
@@ -222,6 +245,7 @@ class TransportController extends Controller
      *      operationId="getTrainTrip",
      *      tags={"Checkin"},
      *      summary="Get the stopovers and trip information for a given train",
+     *
      *      @OA\Parameter(
      *          name="hafasTripId",
      *          in="query",
@@ -236,24 +260,22 @@ class TransportController extends Controller
      *          example="S 4",
      *          required=true
      *     ),
-     *     @OA\Parameter(
-     *          name="start",
-     *          in="query",
-     *          description="start point from where the stopovers should be desplayed",
-     *          example=4711,
-     *          required=true
-     *     ),
+     *
      *     @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", type="array",
+     *
      *                  @OA\Items(
      *                      ref="#/components/schemas/TripResource"
      *                  )
      *              )
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Unauthorized"),
      *       @OA\Response(response=404, description="No station found"),
@@ -263,24 +285,25 @@ class TransportController extends Controller
      *       }
      *     )
      */
-    public function getTrip(Request $request): JsonResponse {
+    public function getTrip(Request $request): JsonResponse
+    {
         $validated = $request->validate([
-                                            'hafasTripId' => ['required', 'string'],
-                                            'lineName'    => ['required', 'string'],
-                                            'start'       => ['required', 'numeric', 'gt:0'],
-                                        ]);
+            'hafasTripId' => ['required', 'string'],
+            'lineName' => ['required', 'string'],
+        ]);
 
         try {
-            $trip = TrainCheckinController::getHafasTrip(
-                $validated['hafasTripId'],
-                $validated['lineName'],
-                (int) $validated['start']
-            );
+            $trip = app(CheckinHydratorRepository::class)
+                ->getHafasTrip(
+                    tripID: $validated['hafasTripId'],
+                    lineName: $validated['lineName']
+                )
+                ->loadMissing(['stopovers', 'originStation', 'destinationStation']);
+
             return $this->sendResponse(data: new TripResource($trip));
-        } catch (StationNotOnTripException) {
-            return $this->sendError(__('controller.transport.not-in-stopovers', [], 'en'), 400);
-        } catch (HafasException $exception) {
+        } catch (DataProviderException $exception) {
             report($exception);
+
             return $this->sendError(__('messages.exception.hafas.502', [], 'en'), 503);
         }
     }
@@ -292,6 +315,7 @@ class TransportController extends Controller
      *      tags={"Checkin"},
      *      summary="Location based search for stations",
      *      description="Returns the nearest station to the given coordinates",
+     *
      *      @OA\Parameter(
      *          name="latitude",
      *          in="query",
@@ -306,17 +330,22 @@ class TransportController extends Controller
      *          example=8.4005,
      *          required=true
      *     ),
+     *
      *     @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", type="array",
+     *
      *                  @OA\Items(
      *                      ref="#/components/schemas/Station"
      *                  )
      *              )
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Unauthorized"),
      *       @OA\Response(response=404, description="No station found"),
@@ -327,26 +356,27 @@ class TransportController extends Controller
      *       }
      *     )
      */
-    public function getNextStationByCoordinates(Request $request): JsonResponse {
+    public function getNextStationByCoordinates(Request $request): JsonResponse
+    {
         $validated = $request->validate([
-                                            'latitude'  => ['required', 'numeric', 'min:-90', 'max:90'],
-                                            'longitude' => ['required', 'numeric', 'min:-180', 'max:180'],
-                                        ]);
+            'latitude' => ['required', 'numeric', 'min:-90', 'max:90'],
+            'longitude' => ['required', 'numeric', 'min:-180', 'max:180'],
+        ]);
 
         try {
             $nearestStation = $this->dataProvider->getNearbyStations(
-                latitude:  $validated['latitude'],
+                latitude: $validated['latitude'],
                 longitude: $validated['longitude'],
-                results:   1
+                results: 1
             )->first();
-        } catch (HafasException) {
+        } catch (DataProviderException) {
             $bbox = (new GeoService())->getBoundingBox(new Coordinate($validated['latitude'], $validated['longitude']), 100, 6);
 
             $nearestStation = Station::whereBetween('latitude', [$bbox->lowerRight->latitude, $bbox->upperLeft->latitude])
-                                     ->whereBetween('longitude', [$bbox->lowerRight->longitude, $bbox->upperLeft->longitude])
-                                     ->whereNotNull('ibnr')
-                                     ->orderBy('id', 'asc')
-                                     ->first();
+                ->whereBetween('longitude', [$bbox->lowerRight->longitude, $bbox->upperLeft->longitude])
+                ->whereNotNull('ibnr')
+                ->orderBy('id', 'asc')
+                ->first();
         }
 
         if ($nearestStation === null) {
@@ -362,15 +392,20 @@ class TransportController extends Controller
      *      operationId="createCheckin",
      *      tags={"Checkin"},
      *      summary="Check in to a trip.",
+     *
      *      @OA\RequestBody(
      *          required=true,
+     *
      *          @OA\JsonContent(ref="#/components/schemas/CheckinRequestBody")
      *      ),
+     *
      *      @OA\Response(
      *          response=201,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(ref="#/components/schemas/CheckinSuccessResource")
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=401, description="Unauthorized"),
      *       @OA\Response(response=403, description="Forbidden", @OA\JsonContent(ref="#/components/schemas/CheckinForbiddenWithUsersResponse")),
@@ -379,34 +414,31 @@ class TransportController extends Controller
      *           {"passport": {"create-statuses"}}, {"token": {}}
      *       }
      *     )
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
      */
-    public function create(Request $request): JsonResponse {
+    public function create(Request $request): JsonResponse
+    {
         $this->authorize('create', Status::class);
 
         $withUsers = null;
         $validated = $request->validate([
-                                            'body'        => ['nullable', 'max:280'],
-                                            'business'    => ['nullable', new Enum(Business::class)],
-                                            'visibility'  => ['nullable', new Enum(StatusVisibility::class)],
-                                            'eventId'     => ['nullable', 'integer', 'exists:events,id'],
-                                            'toot'        => ['nullable', 'boolean'],
-                                            'chainPost'   => ['nullable', 'boolean'],
-                                            'ibnr'        => ['nullable', 'boolean'],
-                                            'tripId'      => ['required'],
-                                            'lineName'    => ['required'],
-                                            'start'       => ['required', 'numeric'],
-                                            'destination' => ['required', 'numeric'],
-                                            'departure'   => ['required', 'date'],
-                                            'arrival'     => ['required', 'date'],
-                                            'force'       => ['nullable', 'boolean'],
-                                            'with'        => ['nullable', 'array', 'max:10'],
-                                        ]);
+            'body' => ['nullable', 'max:280'],
+            'business' => ['nullable', new Enum(Business::class)],
+            'visibility' => ['nullable', new Enum(StatusVisibility::class)],
+            'eventId' => ['nullable', 'integer', 'exists:events,id'],
+            'toot' => ['nullable', 'boolean'],
+            'chainPost' => ['nullable', 'boolean'],
+            'ibnr' => ['nullable', 'boolean'],
+            'tripId' => ['required'],
+            'lineName' => ['required'],
+            'start' => ['required', 'numeric'],
+            'destination' => ['required', 'numeric'],
+            'departure' => ['required', 'date'],
+            'arrival' => ['required', 'date'],
+            'force' => ['nullable', 'boolean'],
+            'with' => ['nullable', 'array', 'max:10'],
+        ]);
         if (isset($validated['with'])) {
-            $withUsers      = User::whereIn('id', $validated['with'])->get();
+            $withUsers = User::whereIn('id', $validated['with'])->get();
             $forbiddenUsers = collect();
             foreach ($withUsers as $user) {
                 if (!Auth::user()?->can('checkin', $user)) {
@@ -415,20 +447,21 @@ class TransportController extends Controller
             }
             if ($forbiddenUsers->isNotEmpty()) {
                 $forbiddenUserIds = $forbiddenUsers->pluck('id')->toArray();
+
                 return response()->json(
-                    data:   [
-                                'message' => 'You are not allowed to check in the following users: ' . implode(',', $forbiddenUserIds),
-                                'meta'    => [
-                                    'invalidUsers' => $forbiddenUserIds
-                                ]
-                            ],
+                    data: [
+                        'message' => 'You are not allowed to check in the following users: ' . implode(',', $forbiddenUserIds),
+                        'meta' => [
+                            'invalidUsers' => $forbiddenUserIds,
+                        ],
+                    ],
                     status: 403
                 );
             }
         }
 
         try {
-            $dto             = (new CheckinRequestHydrator($validated))->hydrateFromApi();
+            $dto = (new CheckinRequestHydrator($validated))->hydrateFromApi();
             $checkinResponse = TrainCheckinController::checkin($dto);
 
             // if isset, check in the other users with their default values
@@ -437,22 +470,22 @@ class TransportController extends Controller
             return $this->sendResponse(new CheckinSuccessResource($checkinResponse), 201);
         } catch (CheckInCollisionException $exception) {
             return $this->sendError([
-                                        'status_id' => $exception->checkin->status_id,
-                                        'lineName'  => $exception->checkin->trip->linename
-                                    ], 409);
+                'status_id' => $exception->checkin->status_id,
+                'lineName' => $exception->checkin->trip->linename,
+            ], 409);
 
         } catch (StationNotOnTripException) {
             return $this->sendError('Given stations are not on the trip/have wrong departure/arrival.', 400);
-        } catch (HafasException|CheckinException $exception) {
+        } catch (DataProviderException|CheckinException $exception) {
             return $this->sendError($exception->getMessage(), 400);
         } catch (AlreadyCheckedInException) {
             return $this->sendError(__('messages.exception.already-checkedin', [], 'en'), 400);
         } catch (Exception $exception) {
             report($exception);
+
             return $this->sendError('An unknown error occurred.', 500, null, $exception);
         }
     }
-
 
     /**
      * @OA\Put(
@@ -460,6 +493,7 @@ class TransportController extends Controller
      *     operationId="setHomeStation",
      *     tags={"Checkin"},
      *     summary="Set a station as home station",
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -467,31 +501,33 @@ class TransportController extends Controller
      *         required=true,
      *         example=1234,
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="successful operation",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="data", ref="#/components/schemas/Station")
      *         ),
      *     ),
+     *
      *     @OA\Response(response=400, description="Bad request"),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Station not found"),
      *     @OA\Response(response=500, description="Unknown error"),
      *     security={{"passport": {"create-statuses"}}, {"token": {}}}
      * )
-     * @param int $stationId
-     *
-     * @return JsonResponse
      */
-    public function setHome(int $stationId): JsonResponse {
+    public function setHome(int $stationId): JsonResponse
+    {
         try {
             $station = Station::findOrFail($stationId);
 
             auth()->user()?->update([
-                                        'home_id' => $station->id
-                                    ]);
+                'home_id' => $station->id,
+            ]);
 
             return $this->sendResponse(
                 data: new StationResource($station),
@@ -500,6 +536,7 @@ class TransportController extends Controller
             return $this->sendError('The station could not be found');
         } catch (Exception $exception) {
             report($exception);
+
             return $this->sendError('Unknown error', 500);
         }
     }
@@ -512,23 +549,29 @@ class TransportController extends Controller
      *      summary="Autocomplete for stations",
      *      description="This request returns an array of max. 10 station objects matching the query. **CAUTION:** All
      *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
+     *
      * @OA\Parameter(
      *          name="query",
      *          in="path",
      *          description="station query",
      *          example="Karls"
      *     ),
+     *
      * @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", type="array",
+     *
      *                  @OA\Items(
      *                      ref="#/components/schemas/StationResource"
      *                  )
      *              )
      *          )
      *       ),
+     *
      * @OA\Response(response=401, description="Unauthorized"),
      * @OA\Response(response=503, description="There has been an error with our data provider"),
      *       security={
@@ -537,14 +580,16 @@ class TransportController extends Controller
      *       }
      *     )
      */
-    public function getTrainStationAutocomplete(string $query): JsonResponse {
+    public function getTrainStationAutocomplete(string $query): JsonResponse
+    {
         try {
             $trainAutocompleteResponse = (new StationController())->search($query);
+
             return $this->sendResponse(StationResource::collection($trainAutocompleteResponse));
-        } catch (HafasException $e) {
+        } catch (DataProviderException $e) {
             // check if app is in debug mode
             return $this->sendError(
-                "There has been an error with our data provider",
+                'There has been an error with our data provider',
                 503,
                 null,
                 $e
@@ -560,29 +605,37 @@ class TransportController extends Controller
      *      summary="History for stations",
      *      description="This request returns an array of max. 10 most recent station objects that the user has arrived
      *      at.",
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data", type="array",
+     *
      *                  @OA\Items(
      *                      ref="#/components/schemas/Station"
      *                  )
      *              )
      *          )
      *       ),
+     *
      *       @OA\Response(response=401, description="Unauthorized"),
      *       security={
      *          {"passport": {"create-statuses"}}, {"token": {}}
-     *
      *       }
      *     )
      */
-    public function getTrainStationHistory(): AnonymousResourceCollection {
-        return StationResource::collection(StationController::getLatestArrivals(auth()->user()));
+    public function getTrainStationHistory(): AnonymousResourceCollection
+    {
+        $latestArrivals = $this->stationRepository->getLatestArrivalsForUser(\auth()->user(), 10);
+
+        return StationResource::collection($latestArrivals);
     }
 
-    public function checkinOtherUsers(?Collection $withUsers, CheckInRequestDto $dto, CheckinSuccessDto $checkinResponse): void {
+    public function checkinOtherUsers(?Collection $withUsers, CheckInRequestDto $dto, CheckinSuccessDto $checkinResponse): void
+    {
         $by = $dto->user;
         foreach ($withUsers ?? [] as $user) {
             $dto->setUser($user);

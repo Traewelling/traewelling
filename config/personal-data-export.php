@@ -6,7 +6,7 @@ return [
     /*
      * The disk where the exports will be stored by default.
      */
-    'disk'                     => 'personal-data-exports',
+    'disk' => 'personal-data-exports',
 
     /*
      * If you want to keep the original directory structure for added files,
@@ -16,26 +16,26 @@ return [
     /*
      * The amount of days the exports will be available.
      */
-    'delete_after_days'        => 7,
+    'delete_after_days' => 7,
 
     /*
      * Determines whether the user should be logged in to be able
      * to access the export.
      */
-    'authentication_required'  => true,
+    'authentication_required' => true,
 
     /*
      * The notification which will be sent to the user when the export
      * has been created.
      */
-    'notification'             => PersonalDataExportedNotification::class,
+    'notification' => PersonalDataExportedNotification::class,
 
     /*
      * Configure the queue and connection used by `CreatePersonalDataExportJob`
      * which will create the export.
      */
-    'job'                      => [
-        'queue'      => 'export',
+    'job' => [
+        'queue' => 'export',
         'connection' => null,
     ],
 ];

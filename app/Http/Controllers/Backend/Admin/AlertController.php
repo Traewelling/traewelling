@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Backend\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreAlertRequest;
 use App\Models\Alert;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
 
 class AlertController extends Controller
 {
@@ -35,10 +32,9 @@ class AlertController extends Controller
         $alert = Alert::with('translations')
             ->where('id', $alertId)
             ->firstOrFail();
+
         return view('admin.alerts.show', [
             'alert' => $alert,
         ]);
     }
-
-
 }

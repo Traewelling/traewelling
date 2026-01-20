@@ -18,12 +18,13 @@ class License extends Model
         'license_url',
         'source_url',
         'spdx',
-        'automatically_activate_source'
+        'automatically_activate_source',
     ];
 
     public $incrementing = false;
 
-    public function motisSourceLicenses(): HasMany {
+    public function motisSourceLicenses(): HasMany
+    {
         return $this->hasMany(MotisSourceLicense::class);
     }
 }

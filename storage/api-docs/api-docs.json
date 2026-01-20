@@ -1520,19 +1520,23 @@
                     "Checkin"
                 ],
                 "summary": "Search for stations",
-                "description": "UNSTABLE: This request returns an array of max. 20 station objects matching the query. **CAUTION:** All\n     *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
+                "description": "UNSTABLE: Returns stations by fuzzy text, exact identifier, or within a bounding box (BBOX). **CAUTION:** Slashes in {query} must be replaced (e.g. with %20).",
                 "operationId": "indexStation",
                 "parameters": [
                     {
                         "name": "query",
                         "in": "query",
-                        "description": "station query",
-                        "example": "Karls"
+                        "description": "Fuzzy station search",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 255
+                        },
+                        "example": "Karlsruhe Hbf"
                     },
                     {
                         "name": "identifier_provider",
                         "in": "query",
-                        "description": "identifier provider",
+                        "description": "Identifier provider for exact lookup",
                         "schema": {
                             "type": "string",
                             "enum": [
@@ -1545,12 +1549,63 @@
                     {
                         "name": "identifier",
                         "in": "query",
-                        "description": "station identifier",
+                        "description": "Station identifier for exact lookup",
                         "schema": {
                             "type": "string",
                             "maxLength": 255
                         },
-                        "example": "1337"
+                        "example": "8000191"
+                    },
+                    {
+                        "name": "min_lat",
+                        "in": "query",
+                        "description": "Minimum latitude of BBOX (WGS84, -90..90)",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        },
+                        "example": 48.9
+                    },
+                    {
+                        "name": "max_lat",
+                        "in": "query",
+                        "description": "Maximum latitude of BBOX (WGS84, -90..90)",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        },
+                        "example": 49.1
+                    },
+                    {
+                        "name": "min_lon",
+                        "in": "query",
+                        "description": "Minimum longitude of BBOX (WGS84, -180..180)",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        },
+                        "example": 8.2
+                    },
+                    {
+                        "name": "max_lon",
+                        "in": "query",
+                        "description": "Maximum longitude of BBOX (WGS84, -180..180)",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        },
+                        "example": 8.6
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Maximum number of results (capped at 100).",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1
+                        },
+                        "example": 50
                     }
                 ],
                 "responses": {
@@ -1574,6 +1629,9 @@
                     },
                     "401": {
                         "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Station not found"
                     },
                     "503": {
                         "description": "There has been an error with our data provider"
@@ -2390,6 +2448,92 @@
                 ]
             }
         },
+        "/status": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "[Auth optional] List and filter statuses",
+                "description": "Returns paginated list of statuses, filtered by given parameters",
+                "operationId": "listStatuses",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "query",
+                        "description": "Filter by text in status body",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Having a great trip!"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "Filter by user ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 42
+                    },
+                    {
+                        "name": "origin_text",
+                        "in": "query",
+                        "description": "Filter by origin station name",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Central Station"
+                    },
+                    {
+                        "name": "origin_id",
+                        "in": "query",
+                        "description": "Filter by origin station ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 5
+                    },
+                    {
+                        "name": "destination_text",
+                        "in": "query",
+                        "description": "Filter by destination station name",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Main Square"
+                    },
+                    {
+                        "name": "destination_id",
+                        "in": "query",
+                        "description": "Filter by destination station ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 10
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "list of matching statuses",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/StatusResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/status/{id}": {
             "get": {
                 "tags": [
@@ -2530,15 +2674,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/SuccessResponse"
-                                }
-                            }
-                        }
+                    "204": {
+                        "description": "Status deleted."
                     },
                     "400": {
                         "description": "Bad request"
@@ -3314,13 +3451,6 @@
                         "description": "line name for that train",
                         "required": true,
                         "example": "S 4"
-                    },
-                    {
-                        "name": "start",
-                        "in": "query",
-                        "description": "start point from where the stopovers should be desplayed",
-                        "required": true,
-                        "example": 4711
                     }
                 ],
                 "responses": {
@@ -4674,19 +4804,19 @@
                         "description": "Attribution string for the license",
                         "type": "string",
                         "example": "Provided by OpenStreetMap contributors",
-                        "nullable": true
+                        "nullable": "true"
                     },
                     "licenseUrl": {
                         "description": "URL to the license text",
                         "type": "string",
                         "example": "https://creativecommons.org/licenses/by/4.0/",
-                        "nullable": true
+                        "nullable": "true"
                     },
                     "sourceUrl": {
                         "description": "URL to the source of the data",
                         "type": "string",
                         "example": "https://www.openstreetmap.org/",
-                        "nullable": true
+                        "nullable": "true"
                     }
                 },
                 "type": "object"
@@ -4808,7 +4938,7 @@
                         "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
                         "type": "string",
                         "example": "RK",
-                        "nullable": true
+                        "nullable": "true"
                     }
                 },
                 "type": "object",
@@ -4878,6 +5008,43 @@
                 ],
                 "example": 1
             },
+            "MotisCategory": {
+                "title": "mode",
+                "description": "Mode of transport",
+                "type": "string",
+                "enum": [
+                    "WALK",
+                    "BIKE",
+                    "RENTAL",
+                    "CAR",
+                    "CAR_PARKING",
+                    "CAR_DROPOFF",
+                    "ODM",
+                    "RIDE_SHARING",
+                    "FLEX",
+                    "TRANSIT",
+                    "TRAM",
+                    "SUBWAY",
+                    "FERRY",
+                    "AIRPLANE",
+                    "SUBURBAN",
+                    "BUS",
+                    "COACH",
+                    "RAIL",
+                    "HIGHSPEED_RAIL",
+                    "LONG_DISTANCE",
+                    "NIGHT_RAIL",
+                    "REGIONAL_FAST_RAIL",
+                    "REGIONAL_RAIL",
+                    "CABLE_CAR",
+                    "FUNICULAR",
+                    "AERIAL_LIFT",
+                    "OTHER",
+                    "AERAL_LIFT",
+                    "METRO"
+                ],
+                "example": "suburban"
+            },
             "PointReason": {
                 "title": "PointsReason",
                 "description": "What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points, 4=manual trip => no points, 5=points disabled)",
@@ -4894,14 +5061,15 @@
             },
             "StatusVisibility": {
                 "title": "visibility",
-                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated) did the\n *      user specify?",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the\n *      user specify?",
                 "type": "integer",
                 "enum": [
                     0,
                     1,
                     2,
                     3,
-                    4
+                    4,
+                    5
                 ],
                 "example": 0
             },
@@ -5304,7 +5472,6 @@
                     "displayName",
                     "username",
                     "profilePicture",
-                    "mastodonUrl",
                     "preventIndex"
                 ],
                 "properties": {
@@ -5323,10 +5490,6 @@
                     "profilePicture": {
                         "type": "string",
                         "example": "https://traewelling.de/@Gertrud123/picture"
-                    },
-                    "mastodonUrl": {
-                        "type": "string",
-                        "example": "https://traewelling.social/@Gertrud123"
                     },
                     "preventIndex": {
                         "type": "boolean",
@@ -5382,6 +5545,20 @@
                 },
                 "type": "object"
             },
+            "StationIdentifierResource": {
+                "title": "StationIdentifier",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "de_db_ril100"
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "example": "RK"
+                    }
+                },
+                "type": "object"
+            },
             "StationResource": {
                 "title": "Station",
                 "required": [
@@ -5410,18 +5587,16 @@
                         "type": "number",
                         "example": "8.400977"
                     },
-                    "ibnr": {
-                        "type": "string",
-                        "example": "8000191"
-                    },
-                    "rilIdentifier": {
-                        "type": "string",
-                        "example": "RK"
-                    },
                     "areas": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/AreaResource"
+                        }
+                    },
+                    "identifiers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StationIdentifierResource"
                         }
                     }
                 },
@@ -5531,6 +5706,15 @@
                     },
                     "userDetails": {
                         "$ref": "#/components/schemas/LightUserResource"
+                    },
+                    "createdBy": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/LightUserResource"
+                            }
+                        ],
+                        "nullable": true,
+                        "description": "User who created this check-in on behalf of the status owner (null if self-checkin)"
                     },
                     "tags": {
                         "type": "array",
@@ -5714,7 +5898,8 @@
                     "origin",
                     "destination",
                     "operator",
-                    "dataSource"
+                    "dataSource",
+                    "mode"
                 ],
                 "properties": {
                     "trip": {
@@ -5728,6 +5913,14 @@
                     "category": {
                         "$ref": "#/components/schemas/HafasTravelType"
                     },
+                    "mode": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/MotisCategory"
+                            }
+                        ],
+                        "nullable": true
+                    },
                     "number": {
                         "description": "Internal number of the journey",
                         "example": "4-a6s8-8"
@@ -5735,6 +5928,18 @@
                     "lineName": {
                         "type": "string",
                         "example": "S 1"
+                    },
+                    "routeColor": {
+                        "description": "Hex color code of the route, if available",
+                        "type": "string",
+                        "example": "FFEE00",
+                        "nullable": true
+                    },
+                    "routeTextColor": {
+                        "description": "Hex color code of the route text, if available",
+                        "type": "string",
+                        "example": "FFFFFF",
+                        "nullable": true
                     },
                     "journeyNumber": {
                         "type": "integer",
@@ -5806,6 +6011,14 @@
                     },
                     "category": {
                         "$ref": "#/components/schemas/HafasTravelType"
+                    },
+                    "mode": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/MotisCategory"
+                            }
+                        ],
+                        "nullable": true
                     },
                     "number": {
                         "type": "string",
@@ -6607,7 +6820,6 @@
                     "geometry": {
                         "properties": {
                             "type": {
-                                "type": "object",
                                 "example": "LineString"
                             },
                             "coordinates": {

@@ -18,24 +18,30 @@ class WebhookController extends Controller
      *     tags={"Webhooks"},
      *     summary="Get webhooks for current user and current application.",
      *     description="Returns all webhooks which are created for the current user and which the current authorized applicaton has access to.",
+     *
      *     @OA\Response(
      *         response=200,
      *         description="successful operation",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="data", type="array",
+     *
      *                 @OA\Items(
      *                     ref="#/components/schemas/Webhook"
      *                 )
      *             ),
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     security={
      *         {"passport": {}}, {"token": {}}
      *     }
      * )
      */
-    public function index(): AnonymousResourceCollection {
+    public function index(): AnonymousResourceCollection
+    {
         $currentClient = APIController::getCurrentOAuthClient();
 
         $query = Webhook::where('user_id', auth()->id());
@@ -53,22 +59,28 @@ class WebhookController extends Controller
      *      tags={"Webhooks"},
      *      summary="Get single webhook",
      *      description="Returns a single webhook Object, if user and application is authorized to see it",
+     *
      *      @OA\Parameter (
      *          name="id",
      *          in="path",
      *          description="Webhook-ID",
      *          example=1337,
+     *
      *          @OA\Schema(type="integer")
      *      ),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="successful operation",
+     *
      *          @OA\JsonContent(
+     *
      *              @OA\Property(property="data",
      *                      ref="#/components/schemas/Webhook"
      *              ),
      *          )
      *       ),
+     *
      *       @OA\Response(response=400, description="Bad request"),
      *       @OA\Response(response=404, description="No webhook found or unauthorized for this id"),
      *       security={
@@ -76,11 +88,13 @@ class WebhookController extends Controller
      *       }
      *     )
      */
-    public function show(int $webhookId): WebhookResource|JsonResponse {
+    public function show(int $webhookId): WebhookResource|JsonResponse
+    {
         $webhook = $this->getWebhookForUserAndCurrentClient($webhookId);
         if ($webhook == null) {
             return response()->json(null, 404);
         }
+
         return new WebhookResource($webhook);
     }
 
@@ -91,13 +105,16 @@ class WebhookController extends Controller
      *      tags={"Webhooks"},
      *      summary="Delete a webhook if the user and application is authorized to do",
      *      description="",
+     *
      *      @OA\Parameter (
      *          name="id",
      *          in="path",
      *          description="Status-ID",
      *          example=1337,
+     *
      *          @OA\Schema(type="integer")
      *      ),
+     *
      *      @OA\Response(response=204, description="Webhook deleted."),
      *      @OA\Response(response=400, description="Bad request"),
      *      @OA\Response(response=404, description="No webhook found for this id"),
@@ -107,7 +124,8 @@ class WebhookController extends Controller
      *      }
      *     )
      */
-    public function destroy(int $webhookId): JsonResponse {
+    public function destroy(int $webhookId): JsonResponse
+    {
         try {
             $webhook = $this->getWebhookForUserAndCurrentClient($webhookId);
             if ($webhook == null) {
@@ -116,6 +134,7 @@ class WebhookController extends Controller
 
             $this->authorize('delete', $webhook);
             $webhook->delete();
+
             return response()->json(null, 204);
         } catch (AuthorizationException) {
             return $this->sendError('You are not allowed to delete this webhook', 403);
@@ -123,11 +142,10 @@ class WebhookController extends Controller
     }
 
     /**
-     * @param int $webhookId
-     *
      * @return Webhook|null null if not found or not authorized for client
      */
-    private function getWebhookForUserAndCurrentClient(int $webhookId): ?Webhook {
+    private function getWebhookForUserAndCurrentClient(int $webhookId): ?Webhook
+    {
         $currentClient = APIController::getCurrentOAuthClient();
 
         $query = Webhook::where('user_id', auth()->id());

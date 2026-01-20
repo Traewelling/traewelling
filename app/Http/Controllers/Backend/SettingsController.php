@@ -16,14 +16,15 @@ abstract class SettingsController extends Controller
     /**
      * @throws RateLimitExceededException if the user has exceeded the rate limit for sending verification emails
      */
-    public static function updateSettings(array $fields, User $user = null): Authenticatable|null|User {
+    public static function updateSettings(array $fields, ?User $user = null): Authenticatable|null|User
+    {
         if ($user === null) {
             $user = auth()->user();
         }
 
         if (in_array('email', $fields, true) && $fields['email'] !== $user->email) {
             $fields['email_verified_at'] = null;
-            $fields['email']             = strtolower($fields['email']);
+            $fields['email'] = strtolower($fields['email']);
             $user->sendEmailVerificationNotification();
         }
 
@@ -35,7 +36,6 @@ abstract class SettingsController extends Controller
             }
         }
 
-
         if (array_key_exists('profileLinks', $fields)) {
             self::updateProfileLinks($fields['profileLinks'], $user);
             unset($fields['profileLinks']);
@@ -45,16 +45,16 @@ abstract class SettingsController extends Controller
         // this is necessary because the API uses different field names than the model
         // don't add your field if your api field is identical to the model field
         $mappings = [
-            'displayName'             => 'name',
-            'friendCheckin'           => 'friend_checkin',
-            'privateProfile'          => 'private_profile',
-            'likesEnabled'            => 'likes_enabled',
-            'pointsEnabled'           => 'points_enabled',
-            'preventIndex'            => 'prevent_index',
-            'privacyHideDays'         => 'privacy_hide_days',
+            'displayName' => 'name',
+            'friendCheckin' => 'friend_checkin',
+            'privateProfile' => 'private_profile',
+            'likesEnabled' => 'likes_enabled',
+            'pointsEnabled' => 'points_enabled',
+            'preventIndex' => 'prevent_index',
+            'privacyHideDays' => 'privacy_hide_days',
             'defaultStatusVisibility' => 'default_status_visibility',
-            'mapProvider'             => 'mapprovider',
-            'dataProvider'            => 'data_provider',
+            'mapProvider' => 'mapprovider',
+            'dataProvider' => 'data_provider',
         ];
         foreach ($mappings as $apiField => $modelField) {
             if (array_key_exists($apiField, $fields)) {
@@ -72,43 +72,45 @@ abstract class SettingsController extends Controller
         return $user;
     }
 
-    private static function updateProfileLinks(array $profileLinks, User $user): void {
+    private static function updateProfileLinks(array $profileLinks, User $user): void
+    {
         $user->profileLinks()->delete();
         foreach ($profileLinks as $link) {
 
-
             $user->profileLinks()->create([
-                                              'name' => $link['name'],
-                                              'url'  => $link['url'],
-                                          ]);
+                'name' => $link['name'],
+                'url' => $link['url'],
+            ]);
         }
     }
 
-
-    public static function deleteProfilePicture(User $user): bool {
+    public static function deleteProfilePicture(User $user): bool
+    {
         if ($user->avatar !== null) {
             File::delete(public_path('/uploads/avatars/' . $user->avatar));
             $user->update(['avatar' => null]);
+
             return true;
         }
+
         return false;
     }
 
-    public static function updateProfilePicture(string $avatar): bool {
+    public static function updateProfilePicture(string $avatar): bool
+    {
         $filename = strtr(':userId_:time.png', [':userId' => Auth::user()->id, ':time' => time()]);
 
-
         (new Image(new Driver()))->read($avatar)
-                                 ->resize(400, 400)
-                                 ->save(public_path('/uploads/avatars/' . $filename));
+            ->resize(400, 400)
+            ->save(public_path('/uploads/avatars/' . $filename));
 
         if (auth()->user()->avatar) {
             File::delete(public_path('/uploads/avatars/' . auth()->user()->avatar));
         }
 
         auth()->user()->update([
-                                   'avatar' => $filename
-                               ]);
+            'avatar' => $filename,
+        ]);
 
         return true;
     }

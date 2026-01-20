@@ -19,7 +19,8 @@ class AlertTranslation extends Model
         'url',
     ];
 
-    public function banner(): BelongsTo {
+    public function banner(): BelongsTo
+    {
         return $this->belongsTo(Alert::class);
     }
 }

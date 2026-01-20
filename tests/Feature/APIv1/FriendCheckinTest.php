@@ -14,24 +14,26 @@ use Tests\ApiTestCase;
 
 class FriendCheckinTest extends ApiTestCase
 {
-
     use RefreshDatabase;
 
-    public function testUserCanCheckinThemself(): void {
+    public function test_user_can_checkin_themself(): void
+    {
         // a little bit useless, but a user can always check in themselves somehow ⊂(◉‿◉)つ
         $user = User::factory()->create();
         $this->assertTrue(Gate::forUser($user)->allows('checkin', $user));
     }
 
-    public function testUserCanForbidFriendCheckins(): void {
+    public function test_user_can_forbid_friend_checkins(): void
+    {
         $userToCheckin = User::factory(['friend_checkin' => FriendCheckinSetting::FORBIDDEN->value])->create();
-        $user          = User::factory()->create();
+        $user = User::factory()->create();
         $this->assertFalse(Gate::forUser($user)->allows('checkin', $userToCheckin));
     }
 
-    public function testUserCanAllowCheckinsForFriends(): void {
+    public function test_user_can_allow_checkins_for_friends(): void
+    {
         $userToCheckin = User::factory(['friend_checkin' => FriendCheckinSetting::FRIENDS->value])->create();
-        $user          = User::factory()->create();
+        $user = User::factory()->create();
 
         $this->assertFalse(Gate::forUser($user->refresh())->allows('checkin', $userToCheckin->refresh()));
 
@@ -49,18 +51,18 @@ class FriendCheckinTest extends ApiTestCase
 
         $this->actAsApiUserWithAllScopes($user);
         $response = $this->postJson(
-            uri:  '/api/v1/trains/checkin',
+            uri: '/api/v1/trains/checkin',
             data: [
-                      'tripId'      => $trip->trip_id,
-                      'lineName'    => $trip->linename,
-                      'start'       => $trip->originStation->id,
-                      'departure'   => $trip->departure,
-                      'destination' => $trip->destinationStation->id,
-                      'arrival'     => $trip->arrival,
-                      'with'        => [
-                          $userToCheckin->id
-                      ]
-                  ],
+                'tripId' => $trip->trip_id,
+                'lineName' => $trip->linename,
+                'start' => $trip->originStation->id,
+                'departure' => $trip->departure,
+                'destination' => $trip->destinationStation->id,
+                'arrival' => $trip->arrival,
+                'with' => [
+                    $userToCheckin->id,
+                ],
+            ],
         );
         $response->assertCreated();
 
@@ -73,16 +75,17 @@ class FriendCheckinTest extends ApiTestCase
         $this->assertStringContainsString($userToCheckin->statuses->last()->id, YouHaveBeenCheckedIn::getLink($notification->data));
     }
 
-    public function testUserCanAllowCheckinsForTrustedUsers(): void {
+    public function test_user_can_allow_checkins_for_trusted_users(): void
+    {
         $userToCheckin = User::factory(['friend_checkin' => FriendCheckinSetting::LIST->value])->create();
-        $user          = User::factory()->create();
+        $user = User::factory()->create();
 
         $this->assertFalse(Gate::forUser($user->fresh())->allows('checkin', $userToCheckin->fresh()));
 
         // Create a trusted relationship between the two users
         $this->actAsApiUserWithAllScopes($userToCheckin);
         $response = $this->postJson(
-            uri:  "/api/v1/user/{$userToCheckin->id}/trusted",
+            uri: "/api/v1/user/{$userToCheckin->id}/trusted",
             data: ['userId' => $user->id]
         );
         $response->assertCreated();
@@ -90,33 +93,35 @@ class FriendCheckinTest extends ApiTestCase
         $this->assertTrue(Gate::forUser($user->fresh())->allows('checkin', $userToCheckin->fresh()));
     }
 
-    public function testUserCannotCheckinMoreThen10Users(): void {
+    public function test_user_cannot_checkin_more_then10_users(): void
+    {
         $usersToCheckin = User::factory()->count(11)->create();
-        $user           = User::factory()->create();
+        $user = User::factory()->create();
 
         $trip = Trip::factory()->create();
 
         $this->actAsApiUserWithAllScopes($user);
         $response = $this->postJson(
-            uri:  '/api/v1/trains/checkin',
+            uri: '/api/v1/trains/checkin',
             data: [
-                      'tripId'      => $trip->trip_id,
-                      'lineName'    => $trip->linename,
-                      'start'       => $trip->originStation->id,
-                      'departure'   => $trip->departure,
-                      'destination' => $trip->destinationStation->id,
-                      'arrival'     => $trip->arrival,
-                      'with'        => $usersToCheckin->pluck('id')->toArray()
-                  ],
+                'tripId' => $trip->trip_id,
+                'lineName' => $trip->linename,
+                'start' => $trip->originStation->id,
+                'departure' => $trip->departure,
+                'destination' => $trip->destinationStation->id,
+                'arrival' => $trip->arrival,
+                'with' => $usersToCheckin->pluck('id')->toArray(),
+            ],
         );
         $response->assertStatus(422);
         $response->assertJsonValidationErrors('with');
     }
 
-    public function testErrorResponseShouldContainForbiddenUsers(): void {
+    public function test_error_response_should_contain_forbidden_users(): void
+    {
         $forbiddenUser = User::factory()->create(['friend_checkin' => FriendCheckinSetting::FORBIDDEN->value]);
-        $allowedUser   = User::factory()->create(['friend_checkin' => FriendCheckinSetting::FRIENDS->value]);
-        $user          = User::factory()->create();
+        $allowedUser = User::factory()->create(['friend_checkin' => FriendCheckinSetting::FRIENDS->value]);
+        $user = User::factory()->create();
         $this->actAsApiUserWithAllScopes($user);
 
         Follow::create(['user_id' => $user->id, 'follow_id' => $allowedUser->id]);
@@ -125,23 +130,91 @@ class FriendCheckinTest extends ApiTestCase
         $trip = Trip::factory()->create();
 
         $response = $this->postJson(
-            uri:  '/api/v1/trains/checkin',
+            uri: '/api/v1/trains/checkin',
             data: [
-                      'tripId'      => $trip->trip_id,
-                      'lineName'    => $trip->linename,
-                      'start'       => $trip->originStation->id,
-                      'departure'   => $trip->departure,
-                      'destination' => $trip->destinationStation->id,
-                      'arrival'     => $trip->arrival,
-                      'with'        => [
-                          $forbiddenUser->id,
-                          $allowedUser->id
-                      ]
-                  ],
+                'tripId' => $trip->trip_id,
+                'lineName' => $trip->linename,
+                'start' => $trip->originStation->id,
+                'departure' => $trip->departure,
+                'destination' => $trip->destinationStation->id,
+                'arrival' => $trip->arrival,
+                'with' => [
+                    $forbiddenUser->id,
+                    $allowedUser->id,
+                ],
+            ],
         );
         $response->assertStatus(403);
         $response->assertJsonStructure(['message', 'meta' => ['invalidUsers']]);
         $this->assertContains($forbiddenUser->id, $response->json('meta.invalidUsers'));
         $this->assertNotContains($allowedUser->id, $response->json('meta.invalidUsers'));
+    }
+
+    public function test_friend_checkin_stores_created_by_user_id(): void
+    {
+        $userToCheckin = User::factory(['friend_checkin' => FriendCheckinSetting::FRIENDS->value])->create();
+        $user = User::factory()->create();
+
+        // Create a follow relationship between the two users (following each other = friends)
+        FollowController::createOrRequestFollow($user, $userToCheckin);
+        FollowController::createOrRequestFollow($userToCheckin, $user);
+
+        // check in both users
+        $trip = Trip::factory()->create();
+
+        $this->actAsApiUserWithAllScopes($user);
+        $response = $this->postJson(
+            uri: '/api/v1/trains/checkin',
+            data: [
+                'tripId' => $trip->trip_id,
+                'lineName' => $trip->linename,
+                'start' => $trip->originStation->id,
+                'departure' => $trip->departure,
+                'destination' => $trip->destinationStation->id,
+                'arrival' => $trip->arrival,
+                'with' => [
+                    $userToCheckin->id,
+                ],
+            ],
+        );
+        $response->assertCreated();
+
+        // Verify that the user who created the checkin is stored for the friend
+        $this->assertDatabaseHas('statuses', [
+            'user_id' => $userToCheckin->id,
+            'created_by_user_id' => $user->id,
+        ]);
+
+        // Verify that the user's own checkin has NULL as created_by_user_id
+        $this->assertDatabaseHas('statuses', [
+            'user_id' => $user->id,
+            'created_by_user_id' => null,
+        ]);
+    }
+
+    public function test_self_checkin_has_null_created_by_user_id(): void
+    {
+        $user = User::factory()->create();
+        $trip = Trip::factory()->create();
+
+        $this->actAsApiUserWithAllScopes($user);
+        $response = $this->postJson(
+            uri: '/api/v1/trains/checkin',
+            data: [
+                'tripId' => $trip->trip_id,
+                'lineName' => $trip->linename,
+                'start' => $trip->originStation->id,
+                'departure' => $trip->departure,
+                'destination' => $trip->destinationStation->id,
+                'arrival' => $trip->arrival,
+            ],
+        );
+        $response->assertCreated();
+
+        // Verify that self-checkin has NULL as created_by_user_id
+        $this->assertDatabaseHas('statuses', [
+            'user_id' => $user->id,
+            'created_by_user_id' => null,
+        ]);
     }
 }

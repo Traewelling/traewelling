@@ -19,7 +19,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark" id="navbar-top">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{route('admin.dashboard')}}">
+        <a class="navbar-brand" href="{{route('admin.welcome')}}">
             <img src="{{ asset('images/icons/touch-icon-vector.svg') }}" alt="{{ config('app.name') }} Logo"
                  class="brand-image me-3" style="width: 30px; opacity: 0.8">
             TRWL Backend
@@ -31,9 +31,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav me-auto">
-                <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                <a class="nav-link" href="{{ route('admin.trips') }}">
                     <i class="fa-solid fa-table-columns"></i>
-                    Dashboard
+                    Trips
                 </a>
                 @if(auth()->user()->hasRole('admin'))
                     <a class="nav-link" href="{{ route('admin.users') }}">
@@ -50,7 +50,7 @@
                 @endif
 
                 @if(auth()->user()->hasRole('admin'))
-                    <a class="nav-link" href="{{ route('admin.status') }}">
+                    <a class="nav-link" href="{{ route('admin.statuses') }}">
                         <i class="fa-solid fa-broadcast-tower"></i>
                         Status
                     </a>

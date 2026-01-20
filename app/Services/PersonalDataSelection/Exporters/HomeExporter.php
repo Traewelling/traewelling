@@ -12,6 +12,7 @@ class HomeExporter extends AbstractExporter
     use RelationExportable;
 
     protected string $fileName = 'home.json';
+
     protected string $relation = 'home';
     // todo: columns
 }
