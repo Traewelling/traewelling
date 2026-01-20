@@ -28,8 +28,8 @@ class LightUserResource extends JsonResource
             'displayName' => (string) $this->name,
             'username' => (string) $this->username,
             'profilePicture' => ProfilePictureController::getUrl($this->resource),
-            'mastodon'       => [
-                'server'  => $this->socialProfile?->mastodonServer?->domain,
+            'mastodon' => [
+                'server' => $this->socialProfile?->mastodonServer?->domain,
                 'user_id' => $this->socialProfile?->mastodon_id,
             ],
             'mastodonUrl' => null, // TODO: remove after 2026-07 (this is not lightweight enough for a LightResource)

@@ -48,17 +48,16 @@ class StatusResource extends JsonResource
             'likes' => (int) $this->likes->count(),
             'liked' => (bool) $this->favorited,
             'isLikable' => Gate::allows('like', $this->resource),
-            'checkin'      => new TransportResource($this->checkin),
+            'checkin' => new TransportResource($this->checkin),
             'client' => new ClientResource($this->client),
             'event' => new EventResource($this?->event),
-            'user'         => new LightUserResource($this->user),
+            'user' => new LightUserResource($this->user),
             'createdBy' => $this->createdByUser ? new LightUserResource($this->createdByUser) : null,
-            'tags'         => StatusTagResource::collection($this->tags->filter(fn(StatusTag $tag) => Gate::allows('view', $tag))),
-            'createdAt'    => $this->created_at->toIso8601String(),
+            'tags' => StatusTagResource::collection($this->tags->filter(fn (StatusTag $tag) => Gate::allows('view', $tag))),
+            'createdAt' => $this->created_at->toIso8601String(),
 
-
-            'train'       => new TransportResource($this->checkin), //TODO: delete after 2026-07 (replaced by 'checkin')
-            'userDetails' => new LightUserResource($this->user), //TODO: delete after 2026-07 (replaced by 'user')
+            'train' => new TransportResource($this->checkin), // TODO: delete after 2026-07 (replaced by 'checkin')
+            'userDetails' => new LightUserResource($this->user), // TODO: delete after 2026-07 (replaced by 'user')
         ];
     }
 }
