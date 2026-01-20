@@ -22,11 +22,11 @@ class Status extends Model
     use HasFactory, LogsActivity;
 
     protected $fillable = [
-        'user_id', 'body', 'business', 'visibility', 'event_id', 'mastodon_post_id', 'client_id',
+        'user_id', 'created_by_user_id', 'body', 'business', 'visibility', 'event_id', 'mastodon_post_id', 'client_id',
         'moderation_notes', 'lock_visibility', 'hide_body',
     ];
 
-    protected $hidden = ['user_id', 'business'];
+    protected $hidden = ['user_id', 'created_by_user_id', 'business'];
 
     protected $appends = ['favorited', 'statusInvisibleToMe', 'description'];
 
@@ -34,6 +34,7 @@ class Status extends Model
         'id' => 'integer',
         'body' => 'string',
         'user_id' => 'integer',
+        'created_by_user_id' => 'integer',
         'business' => Business::class,
         'visibility' => StatusVisibility::class,
         'event_id' => 'integer',
@@ -49,6 +50,11 @@ class Status extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function createdByUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by_user_id');
     }
 
     public function likes(): HasMany

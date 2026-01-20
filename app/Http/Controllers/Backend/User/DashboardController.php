@@ -23,6 +23,7 @@ abstract class DashboardController extends Controller
             'likes',
             'user.blockedByUsers',
             'user.blockedUsers',
+            'createdByUser',
             'checkin',
             'tags',
             'mentions.mentioned',

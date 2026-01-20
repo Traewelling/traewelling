@@ -149,4 +149,72 @@ class FriendCheckinTest extends ApiTestCase
         $this->assertContains($forbiddenUser->id, $response->json('meta.invalidUsers'));
         $this->assertNotContains($allowedUser->id, $response->json('meta.invalidUsers'));
     }
+
+    public function test_friend_checkin_stores_created_by_user_id(): void
+    {
+        $userToCheckin = User::factory(['friend_checkin' => FriendCheckinSetting::FRIENDS->value])->create();
+        $user = User::factory()->create();
+
+        // Create a follow relationship between the two users (following each other = friends)
+        FollowController::createOrRequestFollow($user, $userToCheckin);
+        FollowController::createOrRequestFollow($userToCheckin, $user);
+
+        // check in both users
+        $trip = Trip::factory()->create();
+
+        $this->actAsApiUserWithAllScopes($user);
+        $response = $this->postJson(
+            uri: '/api/v1/trains/checkin',
+            data: [
+                'tripId' => $trip->trip_id,
+                'lineName' => $trip->linename,
+                'start' => $trip->originStation->id,
+                'departure' => $trip->departure,
+                'destination' => $trip->destinationStation->id,
+                'arrival' => $trip->arrival,
+                'with' => [
+                    $userToCheckin->id,
+                ],
+            ],
+        );
+        $response->assertCreated();
+
+        // Verify that the user who created the checkin is stored for the friend
+        $this->assertDatabaseHas('statuses', [
+            'user_id' => $userToCheckin->id,
+            'created_by_user_id' => $user->id,
+        ]);
+
+        // Verify that the user's own checkin has NULL as created_by_user_id
+        $this->assertDatabaseHas('statuses', [
+            'user_id' => $user->id,
+            'created_by_user_id' => null,
+        ]);
+    }
+
+    public function test_self_checkin_has_null_created_by_user_id(): void
+    {
+        $user = User::factory()->create();
+        $trip = Trip::factory()->create();
+
+        $this->actAsApiUserWithAllScopes($user);
+        $response = $this->postJson(
+            uri: '/api/v1/trains/checkin',
+            data: [
+                'tripId' => $trip->trip_id,
+                'lineName' => $trip->linename,
+                'start' => $trip->originStation->id,
+                'departure' => $trip->departure,
+                'destination' => $trip->destinationStation->id,
+                'arrival' => $trip->arrival,
+            ],
+        );
+        $response->assertCreated();
+
+        // Verify that self-checkin has NULL as created_by_user_id
+        $this->assertDatabaseHas('statuses', [
+            'user_id' => $user->id,
+            'created_by_user_id' => null,
+        ]);
+    }
 }

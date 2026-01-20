@@ -52,7 +52,8 @@ abstract class TrainCheckinController extends Controller
                 business: $dto->travelReason,
                 visibility: $dto->statusVisibility,
                 body: $dto->body,
-                event: $dto->event
+                event: $dto->event,
+                createdByUser: $checkedInBy
             );
 
             $checkinResponse = self::createCheckin(

@@ -51,6 +51,7 @@ class StatusController extends Controller
                 'likes',
                 'user.blockedByUsers',
                 'user.blockedUsers',
+                'createdByUser',
                 'checkin',
                 'tags',
                 'checkin.originStopover.station',
@@ -76,6 +77,7 @@ class StatusController extends Controller
             'user.blockedByUsers',
             'user.blockedUsers',
             'user.followers',
+            'createdByUser',
             'checkin.originStopover.station',
             'checkin.destinationStopover.station',
             'checkin.trip.stopovers.station',
@@ -120,6 +122,7 @@ class StatusController extends Controller
             'user.blockedByUsers',
             'user.blockedUsers',
             'user.followers',
+            'createdByUser',
             'checkin.originStopover.station',
             'checkin.destinationStopover.station',
             'checkin.trip.stopovers.station',
@@ -212,7 +215,7 @@ class StatusController extends Controller
     {
         $statuses = $event->statuses()
             ->with([
-                'user.blockedUsers', 'checkin.originStopover.station',
+                'user.blockedUsers', 'createdByUser', 'checkin.originStopover.station',
                 'checkin.destinationStopover.station', 'checkin.trip.stopovers', 'event', 'likes', 'tags',
             ])
             ->select('statuses.*')
@@ -237,7 +240,7 @@ class StatusController extends Controller
     {
         return auth()->user()->statuses()
             ->with([
-                'user', 'checkin.originStopover.station', 'checkin.destinationStopover.station',
+                'user', 'createdByUser', 'checkin.originStopover.station', 'checkin.destinationStopover.station',
                 'checkin.trip', 'event', 'tags',
             ])
             ->orderByDesc('created_at')
@@ -252,7 +255,8 @@ class StatusController extends Controller
         Business $business,
         StatusVisibility $visibility,
         ?string $body = null,
-        ?Event $event = null
+        ?Event $event = null,
+        ?User $createdByUser = null
     ): Status {
         if ($event !== null && !Carbon::now()->isBetween($event->checkin_start, $event->checkin_end)) {
             Log::info('Event checkin was prevented because the event is not active anymore', [
@@ -264,6 +268,7 @@ class StatusController extends Controller
 
         return Status::create([
             'user_id' => $user->id,
+            'created_by_user_id' => $createdByUser?->id,
             'body' => $body,
             'business' => $business,
             'visibility' => $visibility,
