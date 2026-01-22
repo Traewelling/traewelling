@@ -10,7 +10,7 @@ class VueFrontendController
 {
     public function stationBoard(Request $request): View
     {
-        return view('beta.vue-stationboard', [
+        return view('vue.stationboard', [
             'station' => Station::find((int) $request->stationId),
         ]);
     }

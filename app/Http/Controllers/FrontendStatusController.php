@@ -40,7 +40,7 @@ class FrontendStatusController extends Controller
         $status = Status::find($statusId);
         $allowedToView = Gate::allows('view', $status);
 
-        return view('single-status', [
+        return view('vue.single-status', [
             'statusId' => $statusId,
             'username' => $allowedToView ? $status?->user->username : null,
         ]);

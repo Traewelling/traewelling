@@ -64,7 +64,7 @@ Route::get('/leaderboard', [LeaderboardController::class, 'renderLeaderboard'])
 Route::get('/leaderboard/{date}', [LeaderboardController::class, 'renderMonthlyLeaderboard'])
     ->name('leaderboard.month');
 
-Route::view('/statuses/active', 'active-journeys')
+Route::view('/statuses/active', 'vue.active-journeys')
     ->name('statuses.active');
 
 Route::get('/event/{slug}', [FrontendStatusController::class, 'statusesByEvent'])
@@ -198,7 +198,7 @@ Route::middleware(['auth', 'privacy'])->group(function () {
             ->name('deltoken'); // TODO: Replace with API Endpoint
     });
 
-    Route::view('/dashboard', 'dashboard')
+    Route::view('/dashboard', 'vue.dashboard')
         ->name('dashboard');
 
     Route::post('/status/update', [StatusController::class, 'updateStatus'])
