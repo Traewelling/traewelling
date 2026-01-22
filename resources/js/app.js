@@ -12,8 +12,7 @@ import ActiveJourneyMap from '../vue/components/ActiveJourneyMap.vue';
 import ApiAlerts from '../vue/components/ApiAlerts.vue';
 import CheckinSuccessHelper from '../vue/components/CheckinSuccessHelper.vue';
 import Request from '../vue/components/Events/Request.vue';
-import UserDropdown from '../vue/components/Navbar/UserDropdown.vue';
-import NotificationBell from '../vue/components/NotificationBell.vue';
+import Navbar from '../vue/components/Navbar/Navbar.vue';
 import FriendCheckinSettings from '../vue/components/Settings/FriendCheckinSettings.vue';
 import ProfileSettings from '../vue/components/Settings/ProfileSettings.vue';
 import WebhookSettings from '../vue/components/Settings/Webhooks.vue';
@@ -81,8 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (document.getElementById('nav-main')) {
         const app = createApp({});
-        app.component('NotificationBell', NotificationBell);
-        app.component('VueDropdown', UserDropdown);
+        app.component('VueNavbar', Navbar);
         app.use(pinia);
         app.use(i18nVue, i18nOptions);
         app.mount('#nav-main');

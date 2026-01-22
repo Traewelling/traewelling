@@ -6142,6 +6142,10 @@
                         "type": "boolean",
                         "example": "true"
                     },
+                    "pointsEnabled": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
                     "mapProvider": {
                         "type": "string",
                         "example": "default"
