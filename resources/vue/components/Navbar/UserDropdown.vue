@@ -13,6 +13,7 @@ function logout() {
         return;
     }
 
+    user.invalidateUser();
     fetch('/logout', {
         method: 'POST',
         headers: {
@@ -22,7 +23,6 @@ function logout() {
         body: JSON.stringify({}),
     })
         .then(() => {
-            user.invalidateUser();
             window.location.href = '/';
         })
         .catch((error) => {

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 @php
     use App\Http\Controllers\Backend\VersionController;
-    use App\Services\PrideService;
 @endphp
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" data-bs-theme="dark">
 <head>
@@ -40,105 +39,9 @@
 </head>
 <body>
 <div id="app">
-    <nav class="navbar navbar-expand-md navbar-dark bg-trwl" id="nav-main">
-        <div class="container">
-            <a class="navbar-brand {{ PrideService::getCssClassesForPrideFlag() }}" href="{{ url('/') }}">
-                {{ config('app.name') }}
-            </a>
-
-            <div class="navbar-toggler">
-                @auth
-                    <notification-bell></notification-bell>
-                @endauth
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="{{ __('toggle-navigation') }}">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto">
-                    @auth
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->is('dashboard/*') ? 'active' : '' }}"
-                               href="{{ route('dashboard') }}">
-                                {{ __('menu.dashboard') }}
-                            </a>
-                        </li>
-                    @endauth
-                    @if(!auth()->check() || auth()->user()->points_enabled)
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->is('leaderboard') ? 'active' : '' }}"
-                               href="{{ route('leaderboard') }}">
-                                {{ __('menu.leaderboard') }}
-                            </a>
-                        </li>
-                    @endif
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->is('statuses/active') ? 'active' : '' }}"
-                           href="{{ route('statuses.active') }}">
-                            {{ __('menu.active') }}
-                        </a>
-                    </li>
-                    @auth
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->is('stats') ? 'active' : '' }}"
-                               href="{{ route('stats') }}">
-                                {{__('stats')}}
-                            </a>
-                        </li>
-                        @if(config('trwl.year_in_review.alert'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="/year-in-review">
-                                    <i class="fa-solid fa-champagne-glasses"></i>
-                                    {{__('year-review')}}
-                                </a>
-                            </li>
-                        @endif
-                    @endauth
-                </ul>
-
-                <ul class="navbar-nav w-auto">
-                    @guest
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">
-                                {{ __('menu.login') }}
-                            </a>
-                        </li>
-                        @if(config('app.registration.enabled'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('register') }}">
-                                    {{ __('menu.register') }}
-                                </a>
-                            </li>
-                        @endif
-                    @else
-                        <form class="form-inline" action="{{ route('userSearch') }}">
-                            <div class="input-group md-form form-sm form-2 ps-0 m-0">
-                                <input name="searchQuery" type="text" value="{{ request()->get('searchQuery', '') }}"
-                                       class="border border-white rounded-left form-control my-0 py-1"
-                                       placeholder="{{ __('stationboard.submit-search') }}"
-                                       aria-label="{{ __('stationboard.submit-search') }}"
-                                       required
-                                />
-                                <button class="btn btn-primary" type="submit"
-                                        aria-label="{{ __('stationboard.submit-search') }}">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </form>
-                        <li class="nav-item d-none d-md-inline-block">
-                            <notification-bell :link="true" :allow-fetch="false"></notification-bell>
-                        </li>
-
-                        <vue-dropdown></vue-dropdown>
-                    @endguest
-                </ul>
-            </div>
-        </div>
-    </nav>
-
+    <div id="nav-main">
+        <vue-navbar></vue-navbar>
+    </div>
     <main class="py-4" role="main">
         @include('includes.message-block')
         @yield('content')

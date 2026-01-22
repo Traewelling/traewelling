@@ -21,7 +21,7 @@ class LoginTest extends FeatureTestCase
                 'password' => 'password',
             ]));
         $response->assertOk();
-        $response->assertViewIs('dashboard');
+        $response->assertViewIs('vue.dashboard');
         $this->assertAuthenticated();
     }
 

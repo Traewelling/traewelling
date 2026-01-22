@@ -865,6 +865,8 @@ export interface UserAuthResource {
   preventIndex: boolean;
   /** @example "true" */
   likes_enabled: boolean;
+  /** @example "true" */
+  pointsEnabled?: boolean;
   /** @example "default" */
   mapProvider: string;
   home: StationResource;
