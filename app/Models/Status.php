@@ -16,6 +16,57 @@ use Spatie\Activitylog\Traits\LogsActivity;
 /**
  * @todo merge model with "Checkin" (later only "Checkin") because the difference between trip sources (HAFAS,
  *       User, and future sources) should be handled in the Trip model.
+ *
+ * @property int $id
+ * @property string|null $body
+ * @property int $user_id
+ * @property Business|null $business
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $event_id
+ * @property StatusVisibility $visibility
+ * @property string|null $mastodon_post_id
+ * @property int|null $client_id
+ * @property string|null $moderation_notes
+ * @property bool $lock_visibility
+ * @property bool $hide_body
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
+ * @property-read int|null $activities_count
+ * @property-read \App\Models\Checkin|null $checkin
+ * @property-read \App\Models\OAuthClient|null $client
+ * @property-read \App\Models\User|null $createdByUser
+ * @property-read \App\Models\Event|null $event
+ * @property-read string $description
+ * @property-read bool|null $favorited
+ * @property-read bool $status_invisible_to_me
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Like> $likes
+ * @property-read int|null $likes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Mention> $mentions
+ * @property-read int|null $mentions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StatusTag> $tags
+ * @property-read int|null $tags_count
+ * @property-read \App\Models\Checkin|null $trainCheckin
+ * @property-read \App\Models\User|null $user
+ *
+ * @method static \Database\Factories\StatusFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereBody($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereBusiness($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereEventId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereHideBody($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereLockVisibility($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereMastodonPostId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereModerationNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Status whereVisibility($value)
+ *
+ * @mixin \Eloquent
  */
 class Status extends Model
 {

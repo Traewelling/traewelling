@@ -20,6 +20,55 @@ use stdClass;
  *        User, and future sources) should be handled in the Trip model.
  * @todo use the `id` from trips, instead of the hafas trip id - this is duplicated data
  * @todo drop the `departure` and `arrival` columns and use the stopover instead
+ *
+ * @property int $id
+ * @property int $status_id
+ * @property string $trip_id
+ * @property int|null $distance
+ * @property $departure
+ * @property $arrival
+ * @property int|null $points
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $user_id
+ * @property bool $forced
+ * @property $manual_departure
+ * @property $manual_arrival
+ * @property int $duration
+ * @property int|null $origin_stopover_id
+ * @property int|null $destination_stopover_id
+ * @property-read \App\Models\Stopover|null $destinationStopover
+ * @property-read \Illuminate\Support\Collection<Status> $also_on_this_connection
+ * @property-read stdClass $display_arrival
+ * @property-read stdClass $display_departure
+ * @property-read float $speed
+ * @property-read \App\Models\Stopover|null $originStopover
+ * @property-read \App\Models\Status|null $status
+ * @property-read \App\Models\Trip|null $trip
+ * @property-read \App\Models\User|null $user
+ *
+ * @method static \Database\Factories\CheckinFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereArrival($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereDeparture($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereDestinationStopoverId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereDistance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereDuration($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereForced($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereManualArrival($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereManualDeparture($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereOriginStopoverId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin wherePoints($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereStatusId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereTripId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Checkin whereUserId($value)
+ *
+ * @mixin \Eloquent
  */
 class Checkin extends Model
 {

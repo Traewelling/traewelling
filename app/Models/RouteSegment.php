@@ -11,6 +11,41 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Traewelling\GooglePolyline\PolylineTranscoder;
 
+/**
+ * @property string $id
+ * @property int $from_station_id
+ * @property int $to_station_id
+ * @property int $distance
+ * @property int $duration
+ * @property string|null $path_type
+ * @property string $polyline
+ * @property int $polyline_precision
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Station $fromStation
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stopover> $stopOvers
+ * @property-read int|null $stop_overs_count
+ * @property-read \App\Models\Station $toStation
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Trip> $trips
+ * @property-read int|null $trips_count
+ *
+ * @method static \Database\Factories\RouteSegmentFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereDistance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereDuration($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereFromStationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment wherePathType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment wherePolyline($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment wherePolylinePrecision($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereToStationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RouteSegment whereUpdatedAt($value)
+ *
+ * @mixin \Eloquent
+ */
 class RouteSegment extends Model
 {
     use HasFactory, HasUuids;

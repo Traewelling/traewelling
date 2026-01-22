@@ -8,6 +8,32 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Passport\Passport;
 
+/**
+ * @property int $id
+ * @property int $oauth_client_id
+ * @property int $user_id
+ * @property string $url
+ * @property string|null $secret
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\OAuthClient $client
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WebhookEvent> $events
+ * @property-read int|null $events_count
+ * @property-read \App\Models\User $user
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Webhook newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Webhook newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Webhook query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Webhook whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Webhook whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Webhook whereOauthClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Webhook whereSecret($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Webhook whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Webhook whereUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Webhook whereUserId($value)
+ *
+ * @mixin \Eloquent
+ */
 class Webhook extends Model
 {
     use HasFactory;

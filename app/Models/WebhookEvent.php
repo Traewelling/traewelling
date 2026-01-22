@@ -7,6 +7,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @property int $webhook_id
+ * @property WebhookEventEnum $event
+ * @property-read \App\Models\Webhook|null $webhook
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookEvent newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookEvent newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookEvent query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookEvent whereEvent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookEvent whereWebhookId($value)
+ *
+ * @mixin \Eloquent
+ */
 class WebhookEvent extends Model
 {
     use HasFactory;
