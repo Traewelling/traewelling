@@ -5,6 +5,7 @@ import { PrideService } from '../../services/PrideService';
 import { useUserStore } from '../../stores/user';
 import NotificationBell from '../NotificationBell.vue';
 import NavLink from './NavLink.vue';
+import UserDropdown from './UserDropdown.vue';
 
 const user = useUserStore();
 
@@ -109,7 +110,7 @@ const prideClass = computed(() => {
                             <notification-bell :link="true" :allow-fetch="false"></notification-bell>
                         </li>
 
-                        <vue-dropdown></vue-dropdown>
+                        <UserDropdown />
                     </template>
                 </ul>
             </div>
