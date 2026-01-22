@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { computed } from 'vue';
+import { PrideService } from '../../services/PrideService';
 import { useUserStore } from '../../stores/user';
 import NotificationBell from '../NotificationBell.vue';
 import NavLink from './NavLink.vue';
@@ -11,15 +12,16 @@ const searchQuery = computed(() => {
     const params = new URLSearchParams(window.location.search);
     return params.get('searchQuery') || '';
 });
+
+const prideClass = computed(() => {
+    return PrideService.getCssClassesForPrideFlag();
+});
 </script>
 
 <template>
     <nav id="nav-main" class="navbar navbar-expand-md navbar-dark bg-trwl">
         <div class="container">
-            <!-- todo: pride service -->
-            <a class="navbar-brand {{ PrideService::getCssClassesForPrideFlag() }}" href="/">
-                Träwelling<!-- todo: customizable name -->
-            </a>
+            <a class="navbar-brand" :class="prideClass" href="/"> Träwelling<!-- todo: customizable name --> </a>
 
             <div class="navbar-toggler">
                 <NotificationBell v-if="user.authenticated"></NotificationBell>

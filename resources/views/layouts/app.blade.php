@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 @php
     use App\Http\Controllers\Backend\VersionController;
-    use App\Services\PrideService;
 @endphp
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark" data-bs-theme="dark">
 <head>
