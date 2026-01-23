@@ -166,6 +166,28 @@
                 ]
             }
         },
+        "/app/configuration": {
+            "get": {
+                "tags": [
+                    "Configuration Information"
+                ],
+                "summary": "Get Application Configuration Information",
+                "description": "Retrieves configuration information about the application, including features and supported languages.",
+                "operationId": "getConfigurationInfo",
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of configuration information.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConfigurationInformation"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/event/{slug}": {
             "get": {
                 "tags": [
@@ -4730,6 +4752,94 @@
     },
     "components": {
         "schemas": {
+            "Feature": {
+                "description": "Represents a configuration feature and its status.",
+                "required": [
+                    "name",
+                    "enabled"
+                ],
+                "properties": {
+                    "name": {
+                        "schema": "#/components/schemas/ConfigurationFeatureEnum",
+                        "description": "The name of the feature.",
+                        "type": "string",
+                        "example": "user_registration"
+                    },
+                    "enabled": {
+                        "description": "Indicates whether the feature is enabled.",
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "ConfigurationInformation": {
+                "description": "Holds configuration information about the application.",
+                "required": [
+                    "appName",
+                    "appDebug",
+                    "appUrl",
+                    "features",
+                    "languages",
+                    "version"
+                ],
+                "properties": {
+                    "appName": {
+                        "description": "The name of the application.",
+                        "type": "string",
+                        "example": "Träwelling"
+                    },
+                    "appDebug": {
+                        "description": "Indicates whether the application is in debug mode.",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "appUrl": {
+                        "description": "The base URL of the application.",
+                        "type": "string",
+                        "example": "https://traewelling.de"
+                    },
+                    "version": {
+                        "description": "The current version of the application.",
+                        "type": "string",
+                        "example": "1.0.0"
+                    },
+                    "features": {
+                        "description": "A list of configuration features available in the application.",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Feature"
+                        }
+                    },
+                    "languages": {
+                        "description": "A list of supported languages in the application.",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Language"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Language": {
+                "description": "Represents a language with its code and name.",
+                "required": [
+                    "code",
+                    "name"
+                ],
+                "properties": {
+                    "code": {
+                        "description": "The language code (e.g., \"en\", \"fr\").",
+                        "type": "string",
+                        "example": "en"
+                    },
+                    "name": {
+                        "description": "The name of the language (e.g., \"English\", \"French\").",
+                        "type": "string",
+                        "example": "English"
+                    }
+                },
+                "type": "object"
+            },
             "Coordinate": {
                 "title": "Coordinate",
                 "description": "GeoJson Coordinates",
@@ -4956,6 +5066,14 @@
                     2
                 ],
                 "example": 0
+            },
+            "ConfigurationFeatureEnum": {
+                "description": "Enumeration of configuration features available in the application.",
+                "type": "string",
+                "enum": [
+                    "user_registration",
+                    "year_in_review"
+                ]
             },
             "DataProvider": {
                 "title": "DataProvider",
@@ -7079,6 +7197,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Configuration Information",
+            "description": "Endpoints related to application configuration information."
+        },
         {
             "name": "Auth",
             "description": "Logging in, creating Accounts, etc."

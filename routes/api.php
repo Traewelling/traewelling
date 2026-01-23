@@ -47,6 +47,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
         });
     });
 
+    Route::get('app/configuration', [\App\Http\Controllers\API\v1\ConfigurationInfoController::class, 'getConfigurationInfo'])
+        ->name('api.v1.getConfigurationInfo');
+
     Route::get('static/privacy', [PrivacyPolicyController::class, 'getPrivacyPolicy'])
         ->name('api.v1.getPrivacyPolicy');
 
