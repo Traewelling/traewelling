@@ -16,6 +16,7 @@ class ConfigurationInfoController extends Controller
             appName: config('app.name'),
             appDebug: config('app.debug'),
             appUrl: config('app.url'),
+            version: VersionController::getVersion() ?: 'unknown',
             features: $this->getFeatures(),
             languages: $this->getLanguages(),
         );

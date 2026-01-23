@@ -4779,7 +4779,8 @@
                     "appDebug",
                     "appUrl",
                     "features",
-                    "languages"
+                    "languages",
+                    "version"
                 ],
                 "properties": {
                     "appName": {
@@ -4796,6 +4797,11 @@
                         "description": "The base URL of the application.",
                         "type": "string",
                         "example": "https://traewelling.de"
+                    },
+                    "version": {
+                        "description": "The current version of the application.",
+                        "type": "string",
+                        "example": "1.0.0"
                     },
                     "features": {
                         "description": "A list of configuration features available in the application.",

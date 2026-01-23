@@ -200,6 +200,11 @@ export interface ConfigurationInformation {
    * @example "https://traewelling.de"
    */
   appUrl: string;
+  /**
+   * The current version of the application.
+   * @example "1.0.0"
+   */
+  version: string;
   /** A list of configuration features available in the application. */
   features: Feature[];
   /** A list of supported languages in the application. */

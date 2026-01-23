@@ -28,6 +28,12 @@ use OpenApi\Attributes as OA;
             description: 'The base URL of the application.'
         ),
         new OA\Property(
+            property: 'version',
+            type: 'string',
+            example: '1.0.0',
+            description: 'The current version of the application.'
+        ),
+        new OA\Property(
             property: 'features',
             type: 'array',
             description: 'A list of configuration features available in the application.',
@@ -40,7 +46,7 @@ use OpenApi\Attributes as OA;
             items: new OA\Items(ref: Language::class)
         ),
     ],
-    required: ['appName', 'appDebug', 'appUrl', 'features', 'languages'],
+    required: ['appName', 'appDebug', 'appUrl', 'features', 'languages', 'version'],
     description: 'Holds configuration information about the application.'
 )]
 readonly class ConfigurationInformation implements \JsonSerializable
@@ -51,6 +57,7 @@ readonly class ConfigurationInformation implements \JsonSerializable
         public string $appName,
         public bool $appDebug,
         public string $appUrl,
+        public string $version,
         public array $features = [],
         public array $languages = [],
     ) {}
