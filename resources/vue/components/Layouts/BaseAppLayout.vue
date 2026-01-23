@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import Navbar from './Navbar/Navbar.vue';
 import Footer from './Footer/Footer.vue';
+import Navbar from './Navbar/Navbar.vue';
 </script>
 
 <template>
-    <Navbar/>
+    <Navbar />
     <main class="py-4" role="main">
         <slot></slot>
     </main>
-    <Footer/>
+    <Footer />
 </template>

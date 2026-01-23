@@ -12,6 +12,7 @@ import ActiveJourneyMap from '../vue/components/ActiveJourneyMap.vue';
 import ApiAlerts from '../vue/components/ApiAlerts.vue';
 import CheckinSuccessHelper from '../vue/components/CheckinSuccessHelper.vue';
 import Request from '../vue/components/Events/Request.vue';
+import BaseAppLayout from '../vue/components/Layouts/BaseAppLayout.vue';
 import FriendCheckinSettings from '../vue/components/Settings/FriendCheckinSettings.vue';
 import ProfileSettings from '../vue/components/Settings/ProfileSettings.vue';
 import WebhookSettings from '../vue/components/Settings/Webhooks.vue';
@@ -29,7 +30,6 @@ import SingleStatus from '../vue/views/SingleStatus.vue';
 import StatsDaily from '../vue/views/Stats/Daily.vue';
 import './api/api';
 import './components/maps';
-import BaseAppLayout from '../vue/components/Layouts/BaseAppLayout.vue';
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -186,7 +186,6 @@ document.addEventListener('DOMContentLoaded', function () {
  * Once the page is loaded, we can load our frontend components.
  */
 window.addEventListener('load', () => {
-    import('./components/DarkModeService');
     import('./components/progressbar');
     import('./components/settings');
     import('./components/station-autocomplete');

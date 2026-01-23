@@ -2,6 +2,7 @@
 import { trans } from 'laravel-vue-i18n';
 import { DateTime } from 'luxon';
 import { useConfigurationStore } from '../../../stores/configuration';
+import DarkModeSelector from './DarkModeSelector.vue';
 
 const config = useConfigurationStore();
 config.fetchData();
@@ -97,32 +98,7 @@ const selectLanguageUrl = (langCode: string): string => {
                             </div>
                         </li>
                         <li class="nav-item mb-2">
-                            <div class="btn-group dropup w-100">
-                                <button
-                                    type="button"
-                                    class="btn btn-primary btn-block dropdown-toggle"
-                                    data-bs-toggle="dropdown"
-                                    aria-haspopup="true"
-                                    aria-expanded="false"
-                                >
-                                    <i class="fas fa-circle-half-stroke"></i>
-                                    {{ trans('settings.colorscheme.set') }}
-                                </button>
-                                <div class="dropdown-menu">
-                                    <div class="dropdown-item" id="colorModeToggleLight">
-                                        <i class="fas fa-sun"></i>
-                                        {{ trans('settings.colorscheme.light') }}
-                                    </div>
-                                    <div class="dropdown-item" id="colorModeToggleDark">
-                                        <i class="fas fa-moon"></i>
-                                        {{ trans('settings.colorscheme.dark') }}
-                                    </div>
-                                    <div class="dropdown-item" id="colorModeToggleAuto">
-                                        <i class="fas fa-circle-half-stroke"></i>
-                                        {{ trans('settings.colorscheme.auto') }}
-                                    </div>
-                                </div>
-                            </div>
+                            <DarkModeSelector />
                         </li>
                     </ul>
                 </div>
