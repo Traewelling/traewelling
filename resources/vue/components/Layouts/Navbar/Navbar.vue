@@ -26,7 +26,7 @@ const prideClass = computed(() => {
 <template>
     <nav id="nav-main" class="navbar navbar-expand-md navbar-dark bg-trwl">
         <div class="container">
-            <a class="navbar-brand" :class="prideClass" href="/public">
+            <a class="navbar-brand" :class="prideClass" href="/">
                 {{ config.appName }}
             </a>
 
