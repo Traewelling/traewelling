@@ -552,19 +552,19 @@ export interface EventResource {
 /** LeaderboardUserResource */
 export interface LeaderboardUserResource {
   /** User model with just basic information */
-  user?: LightUserResource;
+  user: LightUserResource;
   /**
    * duration travelled in minutes
    * @example 6
    */
-  totalDuration?: number;
+  totalDuration: number;
   /**
    * distance travelled in meters
    * @example 12345
    */
-  totalDistance?: number;
+  totalDistance: number;
   /** points of user */
-  points?: number;
+  points: number;
 }
 
 /**
