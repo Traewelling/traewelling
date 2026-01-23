@@ -12,7 +12,6 @@ import ActiveJourneyMap from '../vue/components/ActiveJourneyMap.vue';
 import ApiAlerts from '../vue/components/ApiAlerts.vue';
 import CheckinSuccessHelper from '../vue/components/CheckinSuccessHelper.vue';
 import Request from '../vue/components/Events/Request.vue';
-import Navbar from '../vue/components/Navbar/Navbar.vue';
 import FriendCheckinSettings from '../vue/components/Settings/FriendCheckinSettings.vue';
 import ProfileSettings from '../vue/components/Settings/ProfileSettings.vue';
 import WebhookSettings from '../vue/components/Settings/Webhooks.vue';
@@ -30,6 +29,7 @@ import SingleStatus from '../vue/views/SingleStatus.vue';
 import StatsDaily from '../vue/views/Stats/Daily.vue';
 import './api/api';
 import './components/maps';
+import BaseAppLayout from '../vue/components/Layouts/BaseAppLayout.vue';
 
 window.notyf = new Notyf({
     duration: 5000,
@@ -78,12 +78,12 @@ document.addEventListener('DOMContentLoaded', function () {
         resolve: (lang) => import(`../../lang/${lang}.json`),
     };
 
-    if (document.getElementById('nav-main')) {
+    if (document.getElementById('vue-app')) {
         const app = createApp({});
-        app.component('VueNavbar', Navbar);
+        app.component('VueLayout', BaseAppLayout);
         app.use(pinia);
         app.use(i18nVue, i18nOptions);
-        app.mount('#nav-main');
+        app.mount('#vue-app');
     }
 
     if (document.getElementById('activeJourneys')) {
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
  * Once the page is loaded, we can load our frontend components.
  */
 window.addEventListener('load', () => {
-    import('./components/DarkModeToggle');
+    import('./components/DarkModeService');
     import('./components/progressbar');
     import('./components/settings');
     import('./components/station-autocomplete');

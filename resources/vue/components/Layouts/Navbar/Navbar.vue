@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { computed } from 'vue';
-import { ConfigurationFeatureEnum } from '../../../types/Api.gen';
-import { PrideService } from '../../services/PrideService';
-import { useConfigurationStore } from '../../stores/configuration';
-import { useUserStore } from '../../stores/user';
-import NotificationBell from '../NotificationBell.vue';
+import { ConfigurationFeatureEnum } from '../../../../types/Api.gen';
+import { PrideService } from '../../../services/PrideService';
+import { useConfigurationStore } from '../../../stores/configuration';
+import { useUserStore } from '../../../stores/user';
+import NotificationBell from '../../NotificationBell.vue';
 import NavLink from './NavLink.vue';
 import UserDropdown from './UserDropdown.vue';
 
@@ -26,7 +26,7 @@ const prideClass = computed(() => {
 <template>
     <nav id="nav-main" class="navbar navbar-expand-md navbar-dark bg-trwl">
         <div class="container">
-            <a class="navbar-brand" :class="prideClass" href="/">
+            <a class="navbar-brand" :class="prideClass" href="/public">
                 {{ config.appName }}
             </a>
 

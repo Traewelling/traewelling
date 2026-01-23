@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { Api, ConfigurationFeatureEnum, ConfigurationInformation, Feature } from '../../types/Api.gen';
+import { Api, ConfigurationFeatureEnum, ConfigurationInformation, Feature, Language } from '../../types/Api.gen';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
@@ -14,6 +14,12 @@ export const useConfigurationStore = defineStore('apiConfiguration', {
     getters: {
         appName: (state): string => {
             return state.configuration?.appName || 'App';
+        },
+        appVersion: (state): string => {
+            return state.configuration?.version || 'unknown';
+        },
+        languages: (state): Language[] => {
+            return state.configuration?.languages || [];
         },
         isFeatureEnabled: (state) => {
             return (feature: ConfigurationFeatureEnum): boolean => {
