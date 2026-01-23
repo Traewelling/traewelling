@@ -11,6 +11,7 @@ import { createApp } from 'vue';
 import ApiAlerts from '../vue/components/ApiAlerts.vue';
 import Request from '../vue/components/Events/Request.vue';
 import BaseAppLayout from '../vue/components/Layouts/BaseAppLayout.vue';
+import Leaderboard from '../vue/components/Leaderboard/Leaderboard.vue';
 import FriendCheckinSettings from '../vue/components/Settings/FriendCheckinSettings.vue';
 import ProfileSettings from '../vue/components/Settings/ProfileSettings.vue';
 import WebhookSettings from '../vue/components/Settings/Webhooks.vue';
@@ -151,6 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
         contentApp.component('SingleStatus', SingleStatus);
         contentApp.component('ActiveJourneys', ActiveJourneys);
         contentApp.component('StationMap', StationMap);
+        contentApp.component('Leaderboard', Leaderboard);
         contentApp.use(i18nVue, i18nOptions);
         contentApp.use(pinia);
         contentApp.mount('#vue-content');

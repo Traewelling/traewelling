@@ -58,7 +58,7 @@ Route::prefix('legal')->group(function () {
 Route::get('/@{username}', [FrontendUserController::class, 'getProfilePage'])
     ->name('profile');
 
-Route::get('/leaderboard', [LeaderboardController::class, 'renderLeaderboard'])
+Route::view('/leaderboard', 'vue.leaderboard')
     ->name('leaderboard');
 
 Route::get('/leaderboard/{date}', [LeaderboardController::class, 'renderMonthlyLeaderboard'])

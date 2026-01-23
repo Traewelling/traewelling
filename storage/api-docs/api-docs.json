@@ -5561,6 +5561,12 @@
             },
             "LeaderboardUserResource": {
                 "title": "LeaderboardUserResource",
+                "required": [
+                    "user",
+                    "totalDuration",
+                    "totalDistance",
+                    "points"
+                ],
                 "properties": {
                     "user": {
                         "$ref": "#/components/schemas/LightUserResource"

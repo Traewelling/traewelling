@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Helpers\CacheKey;
-use App\Http\Controllers\Frontend\LeaderboardController;
+use App\Http\Controllers\Backend\LeaderboardController;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -32,7 +32,9 @@ class CacheLeaderboard extends Command
         DB::beginTransaction();
         Cache::forget(CacheKey::LEADERBOARD_GLOBAL_POINTS);
         Cache::forget(CacheKey::LEADERBOARD_GLOBAL_DISTANCE);
-        $leaderboardController->renderLeaderboard();
+        $leaderboardController->getCachedGlobalLeaderboard();
+        $leaderboardController->getCachedDistanceLeaderboard();
+        $leaderboardController->getCachedFriendsLeaderboard();
         DB::commit();
 
         return Command::SUCCESS;
