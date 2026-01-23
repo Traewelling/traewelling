@@ -20,6 +20,7 @@ class ConfigurationInfoController
 
     #[OA\Get(
         path: '/app/configuration',
+        operationId: 'getConfigurationInfo',
         summary: 'Get Application Configuration Information',
         description: 'Retrieves configuration information about the application, including features and supported languages.',
         tags: ['Configuration Information'],
@@ -35,5 +36,4 @@ class ConfigurationInfoController
     {
         return $this->backendController->getConfigurationInfo();
     }
-
 }

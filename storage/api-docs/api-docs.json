@@ -173,7 +173,7 @@
                 ],
                 "summary": "Get Application Configuration Information",
                 "description": "Retrieves configuration information about the application, including features and supported languages.",
-                "operationId": "019adeee451ed0a104ec4e1367adc77f",
+                "operationId": "getConfigurationInfo",
                 "responses": {
                     "200": {
                         "description": "Successful retrieval of configuration information.",
@@ -4760,12 +4760,9 @@
                 ],
                 "properties": {
                     "name": {
+                        "schema": "#/components/schemas/ConfigurationFeatureEnum",
                         "description": "The name of the feature.",
                         "type": "string",
-                        "enum": [
-                            "user_registration",
-                            "year_in_review"
-                        ],
                         "example": "user_registration"
                     },
                     "enabled": {

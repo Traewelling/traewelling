@@ -178,7 +178,7 @@ export interface Feature {
    * The name of the feature.
    * @example "user_registration"
    */
-  name: "user_registration" | "year_in_review";
+  name: string;
   /** Indicates whether the feature is enabled. */
   enabled: boolean;
 }
@@ -1986,11 +1986,11 @@ export class Api<
      * @description Retrieves configuration information about the application, including features and supported languages.
      *
      * @tags Configuration Information
-     * @name 019Adeee451Ed0A104Ec4E1367Adc77F
+     * @name GetConfigurationInfo
      * @summary Get Application Configuration Information
      * @request GET:/app/configuration
      */
-    "019Adeee451Ed0A104Ec4E1367Adc77F": (params: RequestParams = {}) =>
+    getConfigurationInfo: (params: RequestParams = {}) =>
       this.request<ConfigurationInformation, any>({
         path: `/app/configuration`,
         method: "GET",

@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { computed } from 'vue';
+import { ConfigurationFeatureEnum } from '../../../types/Api.gen';
 import { PrideService } from '../../services/PrideService';
+import { useConfigurationStore } from '../../stores/configuration';
 import { useUserStore } from '../../stores/user';
 import NotificationBell from '../NotificationBell.vue';
 import NavLink from './NavLink.vue';
 import UserDropdown from './UserDropdown.vue';
 
 const user = useUserStore();
+const config = useConfigurationStore();
+config.fetchData();
 
 const searchQuery = computed(() => {
     const params = new URLSearchParams(window.location.search);
@@ -22,7 +26,9 @@ const prideClass = computed(() => {
 <template>
     <nav id="nav-main" class="navbar navbar-expand-md navbar-dark bg-trwl">
         <div class="container">
-            <a class="navbar-brand" :class="prideClass" href="/"> Träwelling<!-- todo: customizable name --> </a>
+            <a class="navbar-brand" :class="prideClass" href="/">
+                {{ config.appName }}
+            </a>
 
             <div class="navbar-toggler">
                 <NotificationBell v-if="user.authenticated"></NotificationBell>
@@ -57,18 +63,16 @@ const prideClass = computed(() => {
                         </NavLink>
                     </li>
                     <li v-if="user.authenticated" class="nav-item">
-                        <NavLink hreF="/statistics">
+                        <NavLink hre-f="/statistics">
                             {{ trans('stats') }}
                         </NavLink>
                     </li>
-                    <!-- todo: year in review
-                    <li class="nav-item">
+                    <li v-if="config.isFeatureEnabled(ConfigurationFeatureEnum.YearInReview)" class="nav-item">
                         <a class="nav-link" href="/year-in-review">
                             <i class="fa-solid fa-champagne-glasses"></i>
                             {{ trans('year-review') }}
                         </a>
                     </li>
-                    -->
                 </ul>
 
                 <ul class="navbar-nav w-auto">
@@ -78,8 +82,7 @@ const prideClass = computed(() => {
                                 {{ trans('menu.login') }}
                             </a>
                         </li>
-                        <!-- todo: hide if registration disabled -->
-                        <li class="nav-item">
+                        <li v-if="config.isFeatureEnabled(ConfigurationFeatureEnum.UserRegistration)" class="nav-item">
                             <a class="nav-link" href="/register">
                                 {{ trans('menu.register') }}
                             </a>

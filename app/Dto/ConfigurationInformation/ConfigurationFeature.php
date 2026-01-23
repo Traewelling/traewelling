@@ -13,7 +13,7 @@ use OpenApi\Attributes as OA;
             property: 'name',
             type: 'string',
             example: ConfigurationFeatureEnum::USER_REGISTRATION,
-            enum: ConfigurationFeatureEnum::class,
+            schema: '#/components/schemas/ConfigurationFeatureEnum',
             description: 'The name of the feature.',
         ),
         new OA\Property(
