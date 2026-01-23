@@ -22,7 +22,7 @@
                             <i class="fa-solid fa-plus"></i>
                             {{__('missing-journey')}}
                         </p>
-                        <a href="{{ vue-stationboard.blade.phproute('trip.create') . $createTripQuery }}"
+                        <a href="{{ route('trip.create') . $createTripQuery }}"
                            class="btn btn-sm btn-outline-secondary">
                             <i class="fa-solid fa-plus"></i>
                             {{__('create-journey')}}

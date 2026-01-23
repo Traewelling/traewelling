@@ -8,18 +8,15 @@ import { Notyf } from 'notyf';
 import { createPinia } from 'pinia';
 import piniaPluginPersistedsState from 'pinia-plugin-persistedstate';
 import { createApp } from 'vue';
-import ActiveJourneyMap from '../vue/components/ActiveJourneyMap.vue';
 import ApiAlerts from '../vue/components/ApiAlerts.vue';
-import CheckinSuccessHelper from '../vue/components/CheckinSuccessHelper.vue';
 import Request from '../vue/components/Events/Request.vue';
-import Navbar from '../vue/components/Navbar/Navbar.vue';
+import BaseAppLayout from '../vue/components/Layouts/BaseAppLayout.vue';
 import FriendCheckinSettings from '../vue/components/Settings/FriendCheckinSettings.vue';
 import ProfileSettings from '../vue/components/Settings/ProfileSettings.vue';
 import WebhookSettings from '../vue/components/Settings/Webhooks.vue';
 import StationAutocomplete from '../vue/components/StationAutocomplete/StationAutocomplete.vue';
 import Stationboard from '../vue/components/Stationboard.vue';
 import StatsDashboard from '../vue/components/Stats/StatsDashboard.vue';
-import TagHelper from '../vue/components/TagHelper.vue';
 import TripCreationForm from '../vue/components/TripCreation/TripCreationForm.vue';
 import ActiveJourneys from '../vue/views/ActiveJourneys.vue';
 import Dashboard from '../vue/views/Dashboard.vue';
@@ -78,20 +75,12 @@ document.addEventListener('DOMContentLoaded', function () {
         resolve: (lang) => import(`../../lang/${lang}.json`),
     };
 
-    if (document.getElementById('nav-main')) {
+    if (document.getElementById('vue-app')) {
         const app = createApp({});
-        app.component('VueNavbar', Navbar);
+        app.component('VueLayout', BaseAppLayout);
         app.use(pinia);
         app.use(i18nVue, i18nOptions);
-        app.mount('#nav-main');
-    }
-
-    if (document.getElementById('activeJourneys')) {
-        const app2 = createApp({});
-        app2.component('ActiveJourneyMap', ActiveJourneyMap);
-        app2.use(pinia);
-        app2.use(i18nVue, i18nOptions);
-        app2.mount('#activeJourneys');
+        app.mount('#vue-app');
     }
 
     if (document.getElementById('station-board-new')) {
@@ -102,20 +91,6 @@ document.addEventListener('DOMContentLoaded', function () {
         app3.use(pinia);
         app3.use(i18nVue, i18nOptions);
         app3.mount('#station-board-new');
-    }
-
-    if (document.getElementById('checkin-success-helper')) {
-        const app4 = createApp({});
-        app4.component('CheckinSuccessHelper', CheckinSuccessHelper);
-        app4.use(i18nVue, i18nOptions);
-        app4.mount('#checkin-success-helper');
-    }
-
-    if (document.getElementById('tag-helper')) {
-        const app5 = createApp({});
-        app5.component('TagHelper', TagHelper);
-        app5.use(i18nVue, i18nOptions);
-        app5.mount('#tag-helper');
     }
 
     if (document.getElementById('settings-friend-checkin')) {
@@ -186,7 +161,6 @@ document.addEventListener('DOMContentLoaded', function () {
  * Once the page is loaded, we can load our frontend components.
  */
 window.addEventListener('load', () => {
-    import('./components/DarkModeToggle');
     import('./components/progressbar');
     import('./components/settings');
     import('./components/station-autocomplete');
