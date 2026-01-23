@@ -25,6 +25,13 @@ use Illuminate\Validation\Rule;
 
 class StatisticsController extends Controller
 {
+    private LeaderboardBackend $leaderboardBackend;
+
+    public function __construct(LeaderboardBackend $leaderboard)
+    {
+        $this->leaderboardBackend = $leaderboard;
+    }
+
     /**
      * @OA\Get(
      *      path="/leaderboard",
@@ -56,7 +63,7 @@ class StatisticsController extends Controller
      */
     public function leaderboard(): AnonymousResourceCollection
     {
-        return LeaderboardUserResource::collection(LeaderboardBackend::getLeaderboard());
+        return LeaderboardUserResource::collection($this->leaderboardBackend->getCachedGlobalLeaderboard());
     }
 
     /**
@@ -91,7 +98,7 @@ class StatisticsController extends Controller
      */
     public function leaderboardByDistance(): AnonymousResourceCollection
     {
-        return LeaderboardUserResource::collection(LeaderboardBackend::getLeaderboard(orderBy: 'distance'));
+        return LeaderboardUserResource::collection($this->leaderboardBackend->getCachedDistanceLeaderboard());
     }
 
     /**
@@ -126,7 +133,7 @@ class StatisticsController extends Controller
      */
     public function leaderboardFriends(): AnonymousResourceCollection
     {
-        return LeaderboardUserResource::collection(LeaderboardBackend::getLeaderboard(onlyFollowings: true));
+        return LeaderboardUserResource::collection($this->leaderboardBackend->getCachedFriendsLeaderboard());
     }
 
     /**

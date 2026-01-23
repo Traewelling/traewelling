@@ -2,18 +2,63 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Helpers\CacheKey;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use InvalidArgumentException;
+use stdClass;
 use UnexpectedValueException;
 
-abstract class LeaderboardController extends Controller
+class LeaderboardController extends Controller
 {
-    public static function getLeaderboard(
+    private const string CACHE_RETENTION_CONFIG_KEY = 'trwl.cache.leaderboard-retention-seconds';
+
+    private $ttl;
+
+    public function __construct()
+    {
+        $this->ttl = config(self::CACHE_RETENTION_CONFIG_KEY, 5 * 60);
+    }
+
+    public function getCachedGlobalLeaderboard(): Collection
+    {
+        return Cache::remember(
+            CacheKey::LEADERBOARD_GLOBAL_POINTS,
+            $this->ttl,
+            fn () => $this->getLeaderboard()
+        )->filter(function (stdClass $row) {
+            return Gate::allows('view', $row->user);
+        });
+    }
+
+    public function getCachedFriendsLeaderboard(): ?Collection
+    {
+        return auth()->check()
+            ? Cache::remember(
+                CacheKey::getFriendsLeaderboardKey(auth()->id()),
+                $this->ttl,
+                fn () => $this->getLeaderboard(onlyFollowings: true))
+            : null;
+    }
+
+    public function getCachedDistanceLeaderboard(): Collection
+    {
+        return Cache::remember(
+            CacheKey::LEADERBOARD_GLOBAL_DISTANCE,
+            $this->ttl,
+            fn () => $this->getLeaderboard(orderBy: 'distance')
+        )->filter(function (stdClass $row) {
+            return Gate::allows('view', $row->user);
+        });
+    }
+
+    private function getLeaderboard(
         string $orderBy = 'points',
         ?Carbon $since = null,
         ?Carbon $until = null,

@@ -37,42 +37,4 @@ class LeaderboardController extends Controller
             'date' => Carbon::parse($date),
         ]);
     }
-
-    public function renderLeaderboard(): Renderable|RedirectResponse
-    {
-        if (auth()->user()?->points_enabled === false) {
-            return redirect()->route('dashboard');
-        }
-
-        $ttl = config(self::$cacheRetentionConfigKey);
-
-        $usersLeaderboard = Cache::remember(
-            CacheKey::LEADERBOARD_GLOBAL_POINTS,
-            $ttl,
-            static fn () => LeaderboardBackend::getLeaderboard()
-        )->filter(function (stdClass $row) {
-            return Gate::allows('view', $row->user);
-        });
-
-        $distanceLeaderboard = Cache::remember(
-            CacheKey::LEADERBOARD_GLOBAL_DISTANCE,
-            $ttl,
-            static fn () => LeaderboardBackend::getLeaderboard(orderBy: 'distance')
-        )->filter(function (stdClass $row) {
-            return Gate::allows('view', $row->user);
-        });
-
-        $friendsLeaderboard = auth()->check()
-            ? Cache::remember(
-                CacheKey::getFriendsLeaderboardKey(auth()->id()),
-                $ttl,
-                static fn () => LeaderboardBackend::getLeaderboard(onlyFollowings: true))
-            : null;
-
-        return view('leaderboard.leaderboard', [
-            'users' => $usersLeaderboard,
-            'distance' => $distanceLeaderboard,
-            'friends' => $friendsLeaderboard,
-        ]);
-    }
 }
