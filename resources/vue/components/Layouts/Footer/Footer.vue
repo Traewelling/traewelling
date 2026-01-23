@@ -104,7 +104,7 @@ const selectLanguageUrl = (langCode: string): string => {
                 </div>
             </div>
             <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
-                <p class="mb-0">&copy; {{ DateTime.now().toFormat('Y') }} Tr&auml;welling</p>
+                <p class="mb-0">&copy; {{ DateTime.now().toFormat('yyyy') }} Tr&auml;welling</p>
                 <p class="mb-0" v-html="trans('menu.developed')"></p>
                 <p class="mb-0 text-muted small">
                     Version
