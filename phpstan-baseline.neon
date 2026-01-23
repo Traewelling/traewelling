@@ -1455,13 +1455,13 @@ parameters:
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\LeaderboardUserResource\:\:\$distance\.$#'
 			identifier: property.notFound
-			count: 2
+			count: 1
 			path: app/Http/Resources/LeaderboardUserResource.php
 
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\LeaderboardUserResource\:\:\$duration\.$#'
 			identifier: property.notFound
-			count: 2
+			count: 1
 			path: app/Http/Resources/LeaderboardUserResource.php
 
 		-
@@ -1473,7 +1473,7 @@ parameters:
 		-
 			message: '#^Access to an undefined property App\\Http\\Resources\\LeaderboardUserResource\:\:\$user\.$#'
 			identifier: property.notFound
-			count: 5
+			count: 1
 			path: app/Http/Resources/LeaderboardUserResource.php
 
 		-
