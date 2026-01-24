@@ -3,6 +3,9 @@
 namespace Database\Factories;
 
 use App\Faker\StationFaker;
+use App\Models\Station;
+use App\Models\StationIdentifier;
+use App\StationIdentifierType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class StationFactory extends Factory
@@ -13,17 +16,8 @@ class StationFactory extends Factory
 
         /** @var StationFaker $station */
         $station = $this->faker->unique()->station();
-        $ifopt = $this->getIfopt($station['ifopt'] ?? '');
 
         return [
-            'ibnr' => $station['ibnr'] ?? null,
-            'wikidata_id' => $station['wikidata_id'],
-            'ifopt_a' => $ifopt['ifopt_a'],
-            'ifopt_b' => $ifopt['ifopt_b'],
-            'ifopt_c' => $ifopt['ifopt_c'],
-            'ifopt_d' => $ifopt['ifopt_d'],
-            'ifopt_e' => $ifopt['ifopt_e'],
-            'rilIdentifier' => $station['rl100'] ?? null,
             'name' => $station['name'],
             'latitude' => $station['latitude'],
             'longitude' => $station['longitude'],
@@ -32,16 +26,53 @@ class StationFactory extends Factory
         ];
     }
 
-    private function getIfopt(string $ifopt): array
+    public function configure(): static
     {
-        $splitIfopt = explode(':', $ifopt);
+        return $this->afterCreating(function (Station $stationModel) {
+            $this->faker->addProvider(new StationFaker($this->faker));
+            /** @var StationFaker $station */
+            $station = $this->faker->station();
 
-        return [
-            'ifopt_a' => $splitIfopt[0] ?? null,
-            'ifopt_b' => $splitIfopt[1] ?? null,
-            'ifopt_c' => $splitIfopt[2] ?? null,
-            'ifopt_d' => $splitIfopt[3] ?? null,
-            'ifopt_e' => $splitIfopt[4] ?? null,
-        ];
+            // Create station identifiers
+            if (!empty($station['ibnr'])) {
+                StationIdentifier::create([
+                    'station_id' => $stationModel->id,
+                    'type' => StationIdentifierType::DE_DB_IBNR,
+                    'identifier' => (string) $station['ibnr'],
+                    'name' => $stationModel->name,
+                    'origin' => 'factory',
+                ]);
+            }
+
+            if (!empty($station['wikidata_id'])) {
+                StationIdentifier::create([
+                    'station_id' => $stationModel->id,
+                    'type' => StationIdentifierType::WIKIDATA_ID,
+                    'identifier' => $station['wikidata_id'],
+                    'name' => $stationModel->name,
+                    'origin' => 'factory',
+                ]);
+            }
+
+            if (!empty($station['rl100'])) {
+                StationIdentifier::create([
+                    'station_id' => $stationModel->id,
+                    'type' => StationIdentifierType::DE_DB_RIL100,
+                    'identifier' => $station['rl100'],
+                    'name' => $stationModel->name,
+                    'origin' => 'factory',
+                ]);
+            }
+
+            if (!empty($station['ifopt'])) {
+                StationIdentifier::create([
+                    'station_id' => $stationModel->id,
+                    'type' => StationIdentifierType::DE_DB_IFOPT,
+                    'identifier' => $station['ifopt'],
+                    'name' => $stationModel->name,
+                    'origin' => 'factory',
+                ]);
+            }
+        });
     }
 }

@@ -25,7 +25,13 @@ class TransportTest extends ApiTestCase
         ]);
 
         // Test departures
-        $station = Station::factory(['ibnr' => self::FRANKFURT_HBF['id'], 'name' => self::FRANKFURT_HBF['name']])->create();
+        $station = Station::factory(['name' => self::FRANKFURT_HBF['name']])->create();
+        \App\Models\StationIdentifier::create([
+            'station_id' => $station->id,
+            'type' => \App\StationIdentifierType::DE_DB_IBNR,
+            'identifier' => (string) self::FRANKFURT_HBF['id'],
+            'name' => $station->name,
+        ]);
         $timestamp = Date::parse('next monday 8 am');
         $this->actAsApiUserWithAllScopes();
         $response = $this->get(

@@ -25,7 +25,7 @@ class DepartureHydrator
                 'name' => $request->station->name,
                 'location' => [
                     'type' => 'location',
-                    'id' => $request->station->ibnr,
+                    'id' => $request->station->getIdentifier(\App\StationIdentifierType::DE_DB_IBNR),
                     'latitude' => $request->station->latitude,
                     'longitude' => $request->station->longitude,
                 ],

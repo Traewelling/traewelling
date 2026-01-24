@@ -213,7 +213,7 @@ class MotisHydrator
                 if ($closestKey !== null) {
                     $features[$closestKey]['properties'] = [
                         'stationId' => $station->id,
-                        'id' => $station->ibnr ?? null,
+                        'id' => $station->getIdentifier(\App\StationIdentifierType::DE_DB_IBNR),
                         'name' => $station->name ?? $stop['name'] ?? null,
                         'arrival_planned' => $stop['scheduledArrival'] ?? null,
                         'departure_planned' => $stop['scheduledDeparture'] ?? null,

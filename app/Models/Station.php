@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\StationIdentifierType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -20,29 +21,19 @@ class Station extends Model
     protected $table = 'train_stations';
 
     protected $fillable = [
-        'ibnr', 'wikidata_id', 'rilIdentifier',
-        'ifopt_a', 'ifopt_b', 'ifopt_c', 'ifopt_d', 'ifopt_e', 'relevance',
-        'name', 'latitude', 'longitude', 'source', 'time_offset', 'shift_time',
+        'relevance', 'name', 'latitude', 'longitude', 'source', 'time_offset', 'shift_time',
     ];
 
     protected $hidden = ['created_at', 'updated_at', 'time_offset', 'shift_time'];
 
     protected $casts = [
         'id' => 'integer',
-        'ibnr' => 'integer',
-        'wikidata_id' => 'string',
-        'ifopt_a' => 'string',
-        'ifopt_b' => 'integer',
-        'ifopt_c' => 'integer',
-        'ifopt_d' => 'integer',
-        'ifopt_e' => 'integer',
-        'rilIdentifier' => 'string',
         'name' => 'string',
         'latitude' => 'float',
         'longitude' => 'float',
     ];
 
-    protected $appends = ['ifopt', 'location'];
+    protected $appends = ['location'];
 
     public function getLocationAttribute(): Point
     {
@@ -51,21 +42,6 @@ class Station extends Model
         $point->longitude = $this->longitude;
 
         return $point;
-    }
-
-    public function getIfoptAttribute(): ?string
-    {
-        if (!$this->ifopt_a) {
-            return null;
-        }
-        $ifopt = $this->ifopt_a;
-        foreach (['b', 'c', 'd', 'e'] as $level) {
-            if ($this->{"ifopt_$level"}) {
-                $ifopt .= ':' . $this->{"ifopt_$level"};
-            }
-        }
-
-        return $ifopt;
     }
 
     public function getActivitylogOptions(): LogOptions
@@ -78,6 +54,19 @@ class Station extends Model
     public function stationIdentifiers(): HasMany
     {
         return $this->hasMany(StationIdentifier::class, 'station_id', 'id');
+    }
+
+    /**
+     * Get a specific identifier by type (returns first match if multiple exist)
+     */
+    public function getIdentifier(StationIdentifierType $type): ?string
+    {
+        /** @var StationIdentifier|null $stationIdentifier */
+        $stationIdentifier = $this->stationIdentifiers
+            ->where('type', $type)
+            ->first();
+
+        return $stationIdentifier?->identifier;
     }
 
     public function stopovers(): HasMany

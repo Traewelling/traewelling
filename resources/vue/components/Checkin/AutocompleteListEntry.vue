@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { Area, ShortStation } from '../../../types/Station';
+import { Area, ShortStation, getStationRIL100 } from '../../../types/Station';
 
 export default defineComponent({
     name: 'AutocompleteListEntry',
@@ -36,6 +36,9 @@ export default defineComponent({
             }
             return '';
         },
+        getRilIdentifier(): string | null {
+            return getStationRIL100(this.$props.station);
+        },
     },
 });
 </script>
@@ -47,8 +50,8 @@ export default defineComponent({
             <div class="flex-grow-1 overflow-hidden">
                 <div class="text-truncate">
                     {{ station?.name || text }}
-                    <span v-if="station?.rilIdentifier" class="badge rounded-pill bg-light text-muted ms-1">
-                        {{ station.rilIdentifier }}
+                    <span v-if="getRilIdentifier()" class="badge rounded-pill bg-light text-muted ms-1">
+                        {{ getRilIdentifier() }}
                     </span>
                 </div>
                 <div v-if="getArea()" class="text-sm text-muted text-truncate">

@@ -15,6 +15,7 @@ import type { FeatureCollection, Point } from 'geojson';
 import { LngLat, LngLatBoundsLike, StyleSpecification } from 'maplibre-gl';
 import { computed, onBeforeUnmount, onMounted, type Ref, ref } from 'vue';
 import { Api, AreaResource, StationResource } from '../../../types/Api.gen';
+import { getStationIBNR, getStationRIL100 } from '../../../types/Station';
 
 const props = withDefaults(defineProps<Props>(), {
     apiUrl: '/api/v1/stations',
@@ -220,8 +221,8 @@ onBeforeUnmount(() => {
                             <div style="font-size: 12px; color: #555">
                                 <div><b>ID:</b> {{ String(station.id ?? '–') }}</div>
                                 <div>
-                                    <b>IBNR:</b> {{ station.ibnr ?? '–' }} &nbsp; <b>RIL:</b>
-                                    {{ station.rilIdentifier ?? '–' }}
+                                    <b>IBNR:</b> {{ getStationIBNR(station) ?? '–' }} &nbsp; <b>RIL:</b>
+                                    {{ getStationRIL100(station) ?? '–' }}
                                 </div>
                                 <div v-show="station.areas"><b>Gebiet:</b> {{ getAreaName(station) }}</div>
                                 <div>

@@ -117,10 +117,10 @@ class Station
         $dto = new self();
         $dto->setId($station->id)
             ->setName($station->name)
-            ->setIbnr($station->ibnr)
+            ->setIbnr($station->getIdentifier(\App\StationIdentifierType::DE_DB_IBNR) ? (int) $station->getIdentifier(\App\StationIdentifierType::DE_DB_IBNR) : null)
             ->setLatitude($station->latitude)
             ->setLongitude($station->longitude)
-            ->setRilIdentifier($station->rilIdentifier);
+            ->setRilIdentifier($station->getIdentifier(\App\StationIdentifierType::DE_DB_RIL100));
 
         return $dto;
     }

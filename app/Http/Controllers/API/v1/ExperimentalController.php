@@ -26,7 +26,7 @@ class ExperimentalController extends Controller
         $allowUpdate = request()->boolean('allowUpdate');
         // TODO: there will be an error when updating non-existing stations.
         $station = Station::findOrFail($stationId);
-        if ($station->wikidata_id && !$allowUpdate) {
+        if ($station->getIdentifier(\App\StationIdentifierType::WIKIDATA_ID) && !$allowUpdate) {
             return response()->json(['error' => 'This station already has a wikidata id.'], 400);
         }
 

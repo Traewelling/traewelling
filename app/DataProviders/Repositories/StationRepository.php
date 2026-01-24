@@ -29,6 +29,13 @@ class StationRepository
      */
     public static function parseHafasStopObject(stdClass $hafasStop): Station
     {
+        // Try to find existing station by IBNR identifier
+        $existingStation = Station::with(['areas', 'stationIdentifiers'])
+            ->whereHas('stationIdentifiers', function ($query) use ($hafasStop) {
+                $query->where('type', StationIdentifierType::DE_DB_IBNR)
+                    ->where('identifier', $hafasStop->id);
+            })
+            ->first();
 
         $data = [
             'name' => $hafasStop->name,
@@ -36,44 +43,82 @@ class StationRepository
             'longitude' => $hafasStop->location?->longitude,
         ];
 
-        if (isset($hafasStop->ril100)) {
-            $data['rilIdentifier'] = $hafasStop->ril100;
+        if ($existingStation) {
+            $existingStation->update($data);
+            $station = $existingStation;
+        } else {
+            $station = Station::create($data);
         }
 
-        return Station::updateOrCreate(
-            ['ibnr' => $hafasStop->id],
-            $data
+        // Update IBNR identifier
+        StationIdentifier::updateOrCreate(
+            [
+                'type' => StationIdentifierType::DE_DB_IBNR,
+                'identifier' => $hafasStop->id,
+            ],
+            [
+                'station_id' => $station->id,
+                'name' => $station->name,
+                'origin' => 'hafas',
+            ]
         );
+
+        // Update RIL100 identifier if present
+        if (isset($hafasStop->ril100)) {
+            StationIdentifier::updateOrCreate(
+                [
+                    'type' => StationIdentifierType::DE_DB_RIL100,
+                    'identifier' => $hafasStop->ril100,
+                ],
+                [
+                    'station_id' => $station->id,
+                    'name' => $station->name,
+                    'origin' => 'hafas',
+                ]
+            );
+        }
+
+        return $station;
     }
 
     public static function parseHafasStops(array $hafasResponse): Collection
     {
-        $payload = [];
+        $stations = new Collection();
+
         foreach ($hafasResponse as $hafasStation) {
-            $payload[] = [
-                'ibnr' => $hafasStation->id,
-                'name' => $hafasStation->name,
-                'latitude' => $hafasStation?->location?->latitude,
-                'longitude' => $hafasStation?->location?->longitude,
-            ];
+            $station = self::parseHafasStopObject($hafasStation);
+            $stations->push($station);
         }
 
-        return self::upsertStations($payload);
+        return $stations;
     }
 
     public static function upsertStations(array $payload)
     {
-        $ibnrs = array_column($payload, 'ibnr');
-        if (empty($ibnrs)) {
-            return new Collection();
-        }
-        Station::upsert($payload, ['ibnr'], ['name', 'latitude', 'longitude']);
+        // This method is deprecated and should use parseHafasStops instead
+        // Keeping for backwards compatibility but refactoring to use identifiers
+        $stations = new Collection();
 
-        return Station::whereIn('ibnr', $ibnrs)->get()
-            ->sortBy(function (Station $station) use ($ibnrs) {
-                return array_search($station->ibnr, $ibnrs);
-            })
-            ->values();
+        foreach ($payload as $stationData) {
+            if (!isset($stationData['ibnr'])) {
+                continue;
+            }
+
+            // Convert to stdClass to match parseHafasStopObject signature
+            $hafasStop = (object) [
+                'id' => $stationData['ibnr'],
+                'name' => $stationData['name'],
+                'location' => (object) [
+                    'latitude' => $stationData['latitude'] ?? null,
+                    'longitude' => $stationData['longitude'] ?? null,
+                ],
+            ];
+
+            $station = self::parseHafasStopObject($hafasStop);
+            $stations->push($station);
+        }
+
+        return $stations;
     }
 
     /**
@@ -95,16 +140,12 @@ class StationRepository
 
     public function getStationByIfopt(string $ifopt): ?Station
     {
-        $ifoptParts = explode(':', $ifopt);
-        if (count($ifoptParts) < 3) {
-            return null;
-        }
-
-        return Station::with(['areas', 'stationIdentifiers'])->where([
-            'ifopt_a' => $ifoptParts[0],
-            'ifopt_b' => $ifoptParts[1],
-            'ifopt_c' => $ifoptParts[2],
-        ])->first();
+        return Station::with(['areas', 'stationIdentifiers'])
+            ->whereHas('stationIdentifiers', function ($query) use ($ifopt) {
+                $query->where('type', StationIdentifierType::DE_DB_IFOPT)
+                    ->where('identifier', $ifopt);
+            })
+            ->first();
     }
 
     public function updateStationIdentifier(?Station $station, string $identifier, ?DataProvider $source = null, StationIdentifierType $type = StationIdentifierType::MOTIS, ?float $latitude = null, ?float $longitude = null): void
@@ -174,7 +215,12 @@ class StationRepository
 
     public function getStationByrilIdentifier(string $rilIdentifier): ?Station
     {
-        return Station::where('rilIdentifier', $rilIdentifier)->first();
+        return Station::with(['areas', 'stationIdentifiers'])
+            ->whereHas('stationIdentifiers', function ($query) use ($rilIdentifier) {
+                $query->where('type', StationIdentifierType::DE_DB_RIL100)
+                    ->where('identifier', $rilIdentifier);
+            })
+            ->first();
     }
 
     public function updateStationAreas(Station $station, $areas): void
@@ -258,7 +304,10 @@ class StationRepository
         });
 
         return $stations->sortBy([
-            ['ibnr', 'desc'],
+            function ($station) {
+                // Stations with IBNR identifier should come first (lower value = higher priority)
+                return $station->stationIdentifiers->where('type', StationIdentifierType::DE_DB_IBNR)->isEmpty() ? 1 : 0;
+            },
             ['relevance', 'desc'],
             ['tempNameSimilarityPercent', 'desc'],
         ]);

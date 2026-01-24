@@ -35,9 +35,9 @@ class StationController extends Controller
             }
 
             $stations->where('name', 'LIKE', '%' . $query . '%')
-                ->orWhere('ibnr', 'LIKE', '%' . $query . '%')
-                ->orWhere('rilIdentifier', 'LIKE', '%' . $query . '%')
-                ->orWhere('wikidata_id', 'LIKE', '%' . $query . '%');
+                ->orWhereHas('stationIdentifiers', function ($q) use ($query) {
+                    $q->where('identifier', 'LIKE', '%' . $query . '%');
+                });
 
             if ($stations->count() === 1) {
                 return redirect()->route('admin.station', ['id' => $stations->first()->id]);
@@ -55,21 +55,29 @@ class StationController extends Controller
 
         $station = Station::findOrFail($id);
 
-        if (isset($station->ifopt_a, $station->ifopt_b, $station->ifopt_c)) {
-            $stationsWithSameIfopt = Station::where('ifopt_a', $station->ifopt_a)
-                ->where('ifopt_b', $station->ifopt_b)
-                ->where('ifopt_c', $station->ifopt_c)
-                ->limit(100)
-                ->get()
-                ->reject(fn (Station $s) => $s->id === $station->id)
-                ->map(function (Station $s) use ($station) {
-                    $stationCoordinate = new Coordinate($s->latitude, $s->longitude);
-                    $sameStationCoordinate = new Coordinate($station->latitude, $station->longitude);
-                    $lineSegment = new LineSegment($stationCoordinate, $sameStationCoordinate);
-                    $s->distanceToSimilarStation = $lineSegment->calculateDistance();
+        $ifopt = $station->getIdentifier(\App\StationIdentifierType::DE_DB_IFOPT);
+        if ($ifopt) {
+            // Extract first 3 parts of IFOPT (country:area:mode) to find similar stations
+            $ifoptParts = explode(':', $ifopt);
+            if (count($ifoptParts) >= 3) {
+                $ifoptPrefix = $ifoptParts[0] . ':' . $ifoptParts[1] . ':' . $ifoptParts[2];
 
-                    return $s;
-                });
+                $stationsWithSameIfopt = Station::whereHas('stationIdentifiers', function ($query) use ($ifoptPrefix) {
+                    $query->where('type', \App\StationIdentifierType::DE_DB_IFOPT)
+                        ->where('identifier', 'LIKE', $ifoptPrefix . '%');
+                })
+                    ->limit(100)
+                    ->get()
+                    ->reject(fn (Station $s) => $s->id === $station->id)
+                    ->map(function (Station $s) use ($station) {
+                        $stationCoordinate = new Coordinate($s->latitude, $s->longitude);
+                        $sameStationCoordinate = new Coordinate($station->latitude, $station->longitude);
+                        $lineSegment = new LineSegment($stationCoordinate, $sameStationCoordinate);
+                        $s->distanceToSimilarStation = $lineSegment->calculateDistance();
+
+                        return $s;
+                    });
+            }
         }
 
         return view('admin.stations.show', [

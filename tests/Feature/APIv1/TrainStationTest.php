@@ -43,8 +43,8 @@ class TrainStationTest extends ApiTestCase
         $station = Station::where('id', $response->json('data.0.id'))->first();
         $this->assertNotNull($station);
         $this->assertEquals($station->name, $response->json('data.0.name'));
-        $this->assertEquals($station->ibnr, $response->json('data.0.ibnr'));
-        $this->assertEquals($station->rilIdentifier, $response->json('data.0.rilIdentifier'));
+        $this->assertEquals($station->getIdentifier(\App\StationIdentifierType::DE_DB_IBNR), $response->json('data.0.ibnr'));
+        $this->assertEquals($station->getIdentifier(\App\StationIdentifierType::DE_DB_RIL100), $response->json('data.0.rilIdentifier'));
         $this->assertEquals($station->latitude, $response->json('data.0.latitude'));
         $this->assertEquals($station->longitude, $response->json('data.0.longitude'));
     }

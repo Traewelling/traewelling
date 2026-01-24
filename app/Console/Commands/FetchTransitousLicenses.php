@@ -84,7 +84,9 @@ class FetchTransitousLicenses extends Command
             ];
             $dbSource = MotisSourceLicense::with('manualLicense')->where($where)->first();
 
-            $forceActive = $dbSource?->manualLicense?->automatically_activate_source ?? $dbSource?->force_active ?? false;
+            /** @var \App\Models\License|null $manualLicense */
+            $manualLicense = $dbSource?->manualLicense;
+            $forceActive = $manualLicense?->automatically_activate_source ?? $dbSource?->force_active ?? false;
 
             $payload = [
                 'license_url' => $licenseUrl,

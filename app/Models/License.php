@@ -21,6 +21,10 @@ class License extends Model
         'automatically_activate_source',
     ];
 
+    protected $casts = [
+        'automatically_activate_source' => 'boolean',
+    ];
+
     public $incrementing = false;
 
     public function motisSourceLicenses(): HasMany

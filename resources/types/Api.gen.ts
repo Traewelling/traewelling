@@ -723,16 +723,6 @@ export interface StopoverResource {
    */
   name: string;
   /**
-   * Identifier specified in 'Richtline 100' of the Deutsche Bahn
-   * @example "RK"
-   */
-  rilIdentifier: string | null;
-  /**
-   * IBNR identifier of Deutsche Bahn
-   * @example "8000191"
-   */
-  evaIdentifier: string | null;
-  /**
    * currently known arrival time. Equal to arrivalReal if known. Else equal to arrivalPlanned.
    * @format date-time
    * @example "2022-07-17T13:37:00+02:00"

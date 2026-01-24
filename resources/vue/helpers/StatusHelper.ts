@@ -1,5 +1,6 @@
 import { trans, transChoice } from 'laravel-vue-i18n';
 import { StatusResource } from '../../types/Api.gen';
+import { getStationRIL100 } from '../../types/Station';
 import { getDepartureForStatus } from './DateTimeHelper';
 
 export class StatusHelper {
@@ -62,9 +63,11 @@ export class StatusHelper {
     }
 
     public getDescription(): string {
-        const originRil = this.status.train.origin.rilIdentifier ? ` (${this.status.train.origin.rilIdentifier})` : '';
-        const destinationRil = this.status.train.destination.rilIdentifier
-            ? ` (${this.status.train.destination.rilIdentifier})`
+        const originRil = getStationRIL100(this.status.train.origin)
+            ? ` (${getStationRIL100(this.status.train.origin)})`
+            : '';
+        const destinationRil = getStationRIL100(this.status.train.destination)
+            ? ` (${getStationRIL100(this.status.train.destination)})`
             : '';
         const departure = getDepartureForStatus(this.status);
 

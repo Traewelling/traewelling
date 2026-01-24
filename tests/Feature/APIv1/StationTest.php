@@ -74,11 +74,21 @@ class StationTest extends ApiTestCase
         ]);
         $response->assertCreated();
         $this->assertDatabaseHas('train_stations', [
-            'ibnr' => 123456,
-            'rilIdentifier' => 'test',
             'name' => 'Test Station',
             'latitude' => 12.345678,
             'longitude' => 12.345678,
+        ]);
+        // Check that identifiers were created in station_identifiers table
+        $station = Station::where('name', 'Test Station')->first();
+        $this->assertDatabaseHas('station_identifiers', [
+            'station_id' => $station->id,
+            'type' => \App\StationIdentifierType::DE_DB_IBNR,
+            'identifier' => '123456',
+        ]);
+        $this->assertDatabaseHas('station_identifiers', [
+            'station_id' => $station->id,
+            'type' => \App\StationIdentifierType::DE_DB_RIL100,
+            'identifier' => 'test',
         ]);
     }
 

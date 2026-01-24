@@ -8,4 +8,5 @@ enum StationIdentifierType: string
     case WIKIDATA_ID = 'wikidata_id';
     case DE_DB_RIL100 = 'de_db_ril100'; // Germany: Deutsche Bahn Richtline 100 identifier
     case DE_DB_IBNR = 'de_db_ibnr';   // Germany: internal train station ID
+    case DE_DB_IFOPT = 'de_db_ifopt'; // IFOPT (Identification of Fixed Objects in Public Transport)
 }

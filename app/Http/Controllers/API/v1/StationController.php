@@ -36,13 +36,43 @@ class StationController extends Controller
         $this->authorize('create', Station::class);
 
         $validated = $request->validate([
-            'ibnr' => ['nullable', 'numeric', 'unique:train_stations'],
+            'ibnr' => ['nullable', 'numeric'],
             'rilIdentifier' => ['nullable', 'string', 'max:10'],
             'name' => ['required', 'string', 'max:255'],
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
         ]);
-        $station = Station::create($validated);
+
+        // Create station with base fields only
+        $station = Station::create([
+            'name' => $validated['name'],
+            'latitude' => $validated['latitude'],
+            'longitude' => $validated['longitude'],
+        ]);
+
+        // Create station identifiers
+        if (!empty($validated['ibnr'])) {
+            \App\Models\StationIdentifier::create([
+                'station_id' => $station->id,
+                'type' => \App\StationIdentifierType::DE_DB_IBNR,
+                'identifier' => (string) $validated['ibnr'],
+                'name' => $station->name,
+                'origin' => 'user',
+            ]);
+        }
+
+        if (!empty($validated['rilIdentifier'])) {
+            \App\Models\StationIdentifier::create([
+                'station_id' => $station->id,
+                'type' => \App\StationIdentifierType::DE_DB_RIL100,
+                'identifier' => $validated['rilIdentifier'],
+                'name' => $station->name,
+                'origin' => 'user',
+            ]);
+        }
+
+        // Reload station with identifiers
+        $station->load('stationIdentifiers');
 
         return new StationResource($station);
     }
@@ -52,12 +82,14 @@ class StationController extends Controller
         $station = Station::findOrFail($id);
         $this->authorize('delete', $station);
 
+        $ibnr = $station->getIdentifier(\App\StationIdentifierType::DE_DB_IBNR);
+
         if (
             Stopover::where('train_station_id', $station->id)->exists()
             || Event::where('station_id', $station->id)->exists()
             || EventSuggestion::where('station_id', $station->id)->exists()
-            || Checkin::where('origin', $station->ibnr)->orWhere('destination', $station->ibnr)->exists()
-            || Trip::where('origin', $station->ibnr)->orWhere('destination', $station->ibnr)->exists()
+            || ($ibnr && (Checkin::where('origin', $ibnr)->orWhere('destination', $ibnr)->exists()))
+            || ($ibnr && (Trip::where('origin', $ibnr)->orWhere('destination', $ibnr)->exists()))
         ) {
             return $this->sendError('Station is still in use and cannot be deleted', 409);
         }
@@ -111,11 +143,20 @@ class StationController extends Controller
             Event::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
             EventSuggestion::where('station_id', $oldStation->id)->update(['station_id' => $newStation->id]);
 
-            // merge columns from old->new if they are null
-            $columns = ['ibnr', 'wikidata_id', 'rilIdentifier', 'ifopt_a', 'ifopt_b', 'ifopt_c', 'ifopt_d', 'ifopt_e'];
-            foreach ($columns as $column) {
-                if ($newStation->{$column} === null && $oldStation->{$column} !== null) {
-                    $newStation->{$column} = $oldStation->{$column};
+            // Merge station identifiers from old->new (copy missing identifiers)
+            /** @var \App\Models\StationIdentifier $oldIdentifier */
+            foreach ($oldStation->stationIdentifiers as $oldIdentifier) {
+                // Check if the new station already has this type of identifier
+                $existingIdentifier = $newStation->stationIdentifiers
+                    ->where('type', $oldIdentifier->type)
+                    ->where('identifier', $oldIdentifier->identifier)
+                    ->first();
+
+                if (!$existingIdentifier) {
+                    // Copy the identifier to the new station
+                    $oldIdentifier->update([
+                        'station_id' => $newStation->id,
+                    ]);
                 }
             }
 

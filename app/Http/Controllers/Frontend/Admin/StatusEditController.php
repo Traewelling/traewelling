@@ -96,9 +96,9 @@ class StatusEditController extends Controller
         );
 
         $status->checkin->update([
-            'origin' => $originStation->ibnr,
+            'origin' => $originStation->getIdentifier(\App\StationIdentifierType::DE_DB_IBNR),
             'origin_stopover_id' => $newOrigin->id,
-            'destination' => $destinationStation->ibnr,
+            'destination' => $destinationStation->getIdentifier(\App\StationIdentifierType::DE_DB_IBNR),
             'destination_stopover_id' => $newDestination->id,
             'departure' => $newDeparture,
             'arrival' => $newArrival,

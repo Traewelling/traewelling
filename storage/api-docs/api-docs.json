@@ -5697,8 +5697,6 @@
                     "name",
                     "latitude",
                     "longitude",
-                    "ibnr",
-                    "rilIdentifier",
                     "areas"
                 ],
                 "properties": {
@@ -5884,8 +5882,6 @@
                 "required": [
                     "id",
                     "name",
-                    "rilIdentifier",
-                    "evaIdentifier",
                     "arrival",
                     "arrivalPlanned",
                     "arrivalReal",
@@ -5910,18 +5906,6 @@
                         "description": "name of the station",
                         "type": "string",
                         "example": "Karlsruhe Hbf"
-                    },
-                    "rilIdentifier": {
-                        "description": "Identifier specified in 'Richtline 100' of the Deutsche Bahn",
-                        "type": "string",
-                        "example": "RK",
-                        "nullable": true
-                    },
-                    "evaIdentifier": {
-                        "description": "IBNR identifier of Deutsche Bahn",
-                        "type": "string",
-                        "example": "8000191",
-                        "nullable": true
                     },
                     "arrival": {
                         "description": "currently known arrival time. Equal to arrivalReal if known. Else equal to arrivalPlanned.",

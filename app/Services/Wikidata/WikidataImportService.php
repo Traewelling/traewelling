@@ -80,23 +80,38 @@ class WikidataImportService
         }
 
         // if ibnr is already in use, we can't import the station, but we can add the wikidata information to the existing station
-        if ($ibnr !== null && Station::where('ibnr', $ibnr)->exists()) {
-            $station = Station::where('ibnr', $ibnr)->first();
-            $station->wikidata_id = $qId;
+        $existingStation = null;
+        if ($ibnr !== null) {
+            $existingStation = Station::with(['areas', 'stationIdentifiers'])
+                ->whereHas('stationIdentifiers', function ($query) use ($ibnr) {
+                    $query->where('type', StationIdentifierType::DE_DB_IBNR)
+                        ->where('identifier', $ibnr);
+                })
+                ->first();
+        }
 
-            if ($station->ifopt_a === null && isset($splitIfopt)) {
-                $station->ifopt_a = $splitIfopt[0] ?? null;
-                $station->ifopt_b = $splitIfopt[1] ?? null;
-                $station->ifopt_c = $splitIfopt[2] ?? null;
-                $station->ifopt_d = $splitIfopt[3] ?? null;
-                $station->ifopt_e = $splitIfopt[4] ?? null;
+        if ($existingStation) {
+            $station = $existingStation;
+
+            // Write to station_identifiers table
+            $station->stationIdentifiers()->updateOrCreate(
+                ['type' => StationIdentifierType::WIKIDATA_ID, 'identifier' => $qId, 'origin' => 'wikidata'],
+                ['station_id' => $station->id, 'name' => $station->name]
+            );
+
+            if ($rl100 !== null) {
+                $station->stationIdentifiers()->updateOrCreate(
+                    ['type' => StationIdentifierType::DE_DB_RIL100, 'identifier' => $rl100, 'origin' => 'wikidata'],
+                    ['station_id' => $station->id, 'name' => $station->name]
+                );
             }
 
-            if ($station->rilIdentifier === null && $rl100 !== null) {
-                $station->rilIdentifier = $rl100;
+            if ($ifopt !== null) {
+                $station->stationIdentifiers()->updateOrCreate(
+                    ['type' => StationIdentifierType::DE_DB_IFOPT, 'identifier' => $ifopt, 'origin' => 'wikidata'],
+                    ['station_id' => $station->id, 'name' => $station->name]
+                );
             }
-
-            $station->save();
 
             return $station;
         }
@@ -118,12 +133,14 @@ class WikidataImportService
         $station->stationIdentifiers()->create([
             'type' => StationIdentifierType::WIKIDATA_ID,
             'identifier' => $qId,
+            'origin' => 'wikidata',
         ]);
 
         if ($rl100) {
             $station->stationIdentifiers()->create([
                 'type' => StationIdentifierType::DE_DB_RIL100,
                 'identifier' => $rl100,
+                'origin' => 'wikidata',
             ]);
         }
 
@@ -131,6 +148,15 @@ class WikidataImportService
             $station->stationIdentifiers()->create([
                 'type' => StationIdentifierType::DE_DB_IBNR,
                 'identifier' => (string) $ibnr,
+                'origin' => 'wikidata',
+            ]);
+        }
+
+        if ($ifopt) {
+            $station->stationIdentifiers()->create([
+                'type' => StationIdentifierType::DE_DB_IFOPT,
+                'identifier' => $ifopt,
+                'origin' => 'wikidata',
             ]);
         }
 
@@ -142,40 +168,54 @@ class WikidataImportService
      */
     public static function searchStation(Station $station): void
     {
+        // Get IBNR from station_identifiers
+        $ibnr = $station->getIdentifier(StationIdentifierType::DE_DB_IBNR);
+
+        if (!$ibnr) {
+            throw new FetchException('Station has no IBNR identifier');
+        }
+
         // P054 = IBNR
         $sparqlQuery = <<<SPARQL
-            SELECT ?item WHERE { ?item wdt:P954 "{$station->ibnr}". }
+            SELECT ?item WHERE { ?item wdt:P954 "{$ibnr}". }
         SPARQL;
 
         $objects = (new WikidataQueryService())->setQuery($sparqlQuery)->execute()->getObjects();
         if (count($objects) > 1) {
-            Log::debug('More than one object found for station ' . $station->ibnr . ' (' . $station->id . ') - skipping');
-            throw new FetchException('There are multiple Wikidata entitied with IBNR ' . $station->ibnr);
+            Log::debug('More than one object found for station with IBNR ' . $ibnr . ' (' . $station->id . ') - skipping');
+            throw new FetchException('There are multiple Wikidata entities with IBNR ' . $ibnr);
         }
 
         if (empty($objects)) {
-            Log::debug('No object found for station ' . $station->ibnr . ' (' . $station->id . ') - skipping');
-            throw new FetchException('No Wikidata entity found for IBNR ' . $station->ibnr);
+            Log::debug('No object found for station with IBNR ' . $ibnr . ' (' . $station->id . ') - skipping');
+            throw new FetchException('No Wikidata entity found for IBNR ' . $ibnr);
         }
 
         $object = $objects[0];
-        $station->update(['wikidata_id' => $object->qId]);
         activity()->performedOn($station)->log('Linked wikidata entity ' . $object->qId);
         Log::debug('Fetched object ' . $object->qId . ' for station ' . $station->name . ' (Trwl-ID: ' . $station->id . ')');
 
         $ifopt = $object->getClaims('P12393')[0]['mainsnak']['datavalue']['value'] ?? null;
-        if ($station->ifopt_a === null && $ifopt !== null) {
-            $splitIfopt = explode(':', $ifopt);
-            $station->update([
-                'ifopt_a' => $splitIfopt[0] ?? null,
-                'ifopt_b' => $splitIfopt[1] ?? null,
-                'ifopt_c' => $splitIfopt[2] ?? null,
-            ]);
+        $rl100 = $object->getClaims('P8671')[0]['mainsnak']['datavalue']['value'] ?? null;
+
+        // Write to station_identifiers table
+        $station->stationIdentifiers()->updateOrCreate(
+            ['type' => StationIdentifierType::WIKIDATA_ID, 'identifier' => $object->qId, 'origin' => 'wikidata'],
+            ['station_id' => $station->id, 'name' => $station->name]
+        );
+
+        if ($rl100 !== null) {
+            $station->stationIdentifiers()->updateOrCreate(
+                ['type' => StationIdentifierType::DE_DB_RIL100, 'identifier' => $rl100, 'origin' => 'wikidata'],
+                ['station_id' => $station->id, 'name' => $station->name]
+            );
         }
 
-        $rl100 = $object->getClaims('P8671')[0]['mainsnak']['datavalue']['value'] ?? null;
-        if ($station->rilIdentifier === null && $rl100 !== null) {
-            $station->update(['rilIdentifier' => $rl100]);
+        if ($ifopt !== null) {
+            $station->stationIdentifiers()->updateOrCreate(
+                ['type' => StationIdentifierType::DE_DB_IFOPT, 'identifier' => $ifopt, 'origin' => 'wikidata'],
+                ['station_id' => $station->id, 'name' => $station->name]
+            );
         }
     }
 

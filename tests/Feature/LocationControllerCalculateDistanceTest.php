@@ -166,8 +166,21 @@ class LocationControllerCalculateDistanceTest extends FeatureTestCase
 
     public function test_calculate_distance_with_polyline(): void
     {
-        $origin = Station::factory(['latitude' => 50.637486, 'longitude' => 3.071129, 'ibnr' => 8700030])->create();
-        $destination = Station::factory(['latitude' => 48.880886, 'longitude' => 2.354931, 'ibnr' => 8700014])->create();
+        $origin = Station::factory(['latitude' => 50.637486, 'longitude' => 3.071129])->create();
+        \App\Models\StationIdentifier::create([
+            'station_id' => $origin->id,
+            'type' => \App\StationIdentifierType::DE_DB_IBNR,
+            'identifier' => '8700030',
+            'name' => $origin->name,
+        ]);
+
+        $destination = Station::factory(['latitude' => 48.880886, 'longitude' => 2.354931])->create();
+        \App\Models\StationIdentifier::create([
+            'station_id' => $destination->id,
+            'type' => \App\StationIdentifierType::DE_DB_IBNR,
+            'identifier' => '8700014',
+            'name' => $destination->name,
+        ]);
 
         $geoJson = [
             'type' => 'FeatureCollection',
