@@ -6104,16 +6104,16 @@
         },
         {
             "name": "spatie/laravel-activitylog",
-            "version": "4.10.2",
+            "version": "4.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-activitylog.git",
-                "reference": "bb879775d487438ed9a99e64f09086b608990c10"
+                "reference": "cd7c458f0e128e56eb2d71977d67a846ce4cc10f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-activitylog/zipball/bb879775d487438ed9a99e64f09086b608990c10",
-                "reference": "bb879775d487438ed9a99e64f09086b608990c10",
+                "url": "https://api.github.com/repos/spatie/laravel-activitylog/zipball/cd7c458f0e128e56eb2d71977d67a846ce4cc10f",
+                "reference": "cd7c458f0e128e56eb2d71977d67a846ce4cc10f",
                 "shasum": ""
             },
             "require": {
@@ -6125,7 +6125,7 @@
             },
             "require-dev": {
                 "ext-json": "*",
-                "orchestra/testbench": "^6.23 || ^7.0 || ^8.0 || ^9.0 || ^10.0",
+                "orchestra/testbench": "^6.23 || ^7.0 || ^8.0 || ^9.6 || ^10.0",
                 "pestphp/pest": "^1.20 || ^2.0 || ^3.0"
             },
             "type": "library",
@@ -6179,7 +6179,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-activitylog/issues",
-                "source": "https://github.com/spatie/laravel-activitylog/tree/4.10.2"
+                "source": "https://github.com/spatie/laravel-activitylog/tree/4.11.0"
             },
             "funding": [
                 {
@@ -6191,7 +6191,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-06-15T06:59:49+00:00"
+            "time": "2026-01-31T12:25:02+00:00"
         },
         {
             "name": "spatie/laravel-package-tools",
