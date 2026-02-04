@@ -9,7 +9,7 @@
             <div class="col-lg-8">
                 <h1>{{__('menu.legal-notice')}}</h1>
 
-                <h2>Angaben gem&auml;&szlig; &sect; 5 TMG</h2>
+                <h2>Angaben gem&auml;&szlig; &sect; 5 DDG</h2>
                 <p>{{config('app.legal.name')}}<br/>
                     {{config('app.legal.address1')}}<br/>
                     {{config('app.legal.address2')}}</p>
@@ -23,8 +23,8 @@
                 @endif
 
                 <h3>Haftung f&uuml;r Inhalte</h3>
-                <p>Als Diensteanbieter sind wir gem&auml;&szlig; &sect; 7 Abs.1 TMG f&uuml;r eigene Inhalte auf diesen
-                    Seiten nach den allgemeinen Gesetzen verantwortlich. Nach &sect;&sect; 8 bis 10 TMG sind wir als
+                <p>Als Diensteanbieter sind wir gem&auml;&szlig; &sect; 7 Abs.1 DDG f&uuml;r eigene Inhalte auf diesen
+                    Seiten nach den allgemeinen Gesetzen verantwortlich. Nach &sect;&sect; 8 bis 10 DDG sind wir als
                     Diensteanbieter jedoch nicht verpflichtet, &uuml;bermittelte oder gespeicherte fremde Informationen
                     zu &uuml;berwachen oder nach Umst&auml;nden zu forschen, die auf eine rechtswidrige T&auml;tigkeit
                     hinweisen.</p>
