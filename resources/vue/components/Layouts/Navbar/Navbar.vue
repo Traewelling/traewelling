@@ -63,7 +63,7 @@ const prideClass = computed(() => {
                         </NavLink>
                     </li>
                     <li v-if="user.authenticated" class="nav-item">
-                        <NavLink hre-f="/statistics">
+                        <NavLink href="/statistics">
                             {{ trans('stats') }}
                         </NavLink>
                     </li>
