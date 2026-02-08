@@ -19,6 +19,12 @@ parameters:
 			path: app/Console/Commands/CalculateMissingDuration.php
 
 		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$automatically_activate_source\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Console/Commands/FetchTransitousLicenses.php
+
+		-
 			message: '#^Using nullsafe property access "\?\-\>automatically_activate_source" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
 			identifier: nullsafe.neverNull
 			count: 1
@@ -326,12 +332,6 @@ parameters:
 
 		-
 			message: '#^Property App\\Models\\Alert\:\:\$active_until \(Carbon\\Carbon\|null\) does not accept string\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: app/Http/Controllers/API/v1/AlertController.php
-
-		-
-			message: '#^Property App\\Models\\Alert\:\:\$id \(int\) does not accept string\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: app/Http/Controllers/API/v1/AlertController.php
@@ -1209,7 +1209,7 @@ parameters:
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$location\.$#'
 			identifier: property.notFound
-			count: 2
+			count: 4
 			path: app/Http/Controllers/ReRoutingController.php
 
 		-
@@ -1265,6 +1265,18 @@ parameters:
 			identifier: method.notFound
 			count: 1
 			path: app/Http/Controllers/StatusController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$arrival\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/TransportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$departure\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/TransportController.php
 
 		-
 			message: '#^Using nullsafe property access "\?\-\>arrival" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
@@ -1951,7 +1963,31 @@ parameters:
 			path: app/Listeners/StatusCreateCheckPolylineListener.php
 
 		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$arrival\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Checkin.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$arrival_planned\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Checkin.php
+
+		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$arrival_real\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Checkin.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$departure\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Checkin.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$departure_planned\.$#'
 			identifier: property.notFound
 			count: 1
 			path: app/Models/Checkin.php
@@ -2270,12 +2306,6 @@ parameters:
 
 		-
 			message: '#^Property App\\Models\\RouteSegment\:\:\$path_type \(string\|null\) does not accept App\\OpenRailRoutingProfile\|null\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: app/Repositories/TripRepository.php
-
-		-
-			message: '#^Property App\\Models\\Stopover\:\:\$route_segment_id \(string\|null\) does not accept int\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: app/Repositories/TripRepository.php
@@ -2863,6 +2893,54 @@ parameters:
 			path: database/migrations/2018_02_05_000000_create_queue_monitor_table.php
 
 		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: database/migrations/2020_09_28_170000_add_foreign_keys_to_social_login_profiles.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: database/migrations/2020_09_28_170003_add_foreign_keys_to_follows.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: database/migrations/2020_09_28_170005_add_foreign_keys_to_hafas_trips.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: database/migrations/2020_09_28_170006_add_foreign_keys_to_likes.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: database/migrations/2020_09_28_170007_add_foreign_keys_to_sessions.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: database/migrations/2020_09_28_170008_add_foreign_keys_to_statuses.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: database/migrations/2020_09_28_170009_add_foreign_keys_to_train_checkins.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: database/migrations/2020_09_28_170010_add_foreign_keys_to_users.php
+
+		-
 			message: '#^Call to method bigIncrements\(\) on an unknown class Blueprint\.$#'
 			identifier: class.notFound
 			count: 1
@@ -2899,6 +2977,18 @@ parameters:
 			path: database/migrations/2023_03_01_000000_update_queue_monitor_table.php
 
 		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: database/migrations/2023_11_21_000001_create_permission_tables.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: database/migrations/2023_11_23_000002_add_user_id_to_hafas_trips.php
+
+		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$station\.$#'
 			identifier: property.notFound
 			count: 2
@@ -2909,6 +2999,24 @@ parameters:
 			identifier: property.notFound
 			count: 2
 			path: database/migrations/2023_12_20_000000_migrate_stopover_relation_id_in_train_checkins.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: database/migrations/2024_07_28_000001_add_trusted_users_table.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: database/migrations/2024_08_07_000000_create_station_names_table.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: database/migrations/2025_04_11_131601_add_motis_source_to_trips.php
 
 		-
 			message: '#^Access to an undefined property App\\Models\\Operator\:\:\$hafas_id\.$#'
@@ -2927,6 +3035,24 @@ parameters:
 			identifier: property.notFound
 			count: 1
 			path: database/migrations/2025_07_18_083705_drop_identifiers_from_hafas_operator.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: database/migrations/2025_10_21_200629_create_route_segments_table.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: database/migrations/2025_12_14_000000_create_year_in_review_caches_table.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:onDelete\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: database/migrations/2026_01_12_100352_drop_station_names_table.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:assignRole\(\)\.$#'
