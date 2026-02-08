@@ -31,11 +31,11 @@ class CheckinSeeder extends Seeder
             $checkin = Checkin::factory()
                 ->for($user)
                 ->create([
-                    'trip_id'                  => $trip->trip_id,
-                    'origin_stopover_id'       => $originStopover->id,
-                    'destination_stopover_id'  => $destinationStopover->id,
-                    'departure'                => $trip->departure,
-                    'arrival'                  => $trip->arrival,
+                    'trip_id' => $trip->trip_id,
+                    'origin_stopover_id' => $originStopover->id,
+                    'destination_stopover_id' => $destinationStopover->id,
+                    'departure' => $trip->departure,
+                    'arrival' => $trip->arrival,
                 ]);
 
             $checkin->status->update([
