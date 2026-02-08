@@ -190,6 +190,57 @@ class StatusTest extends ApiTestCase
         $this->assertEquals($checkin->destinationStopover->station->id, $newStation->id);
     }
 
+    public function test_status_update_change_destination_with_ambiguous_stopover(): void
+    {
+        $user = User::factory()->create();
+        Passport::actingAs($user, ['*']);
+
+        $newStation = Station::factory()->create();
+        $arrivalTime = Date::now()->setSecond(0);
+
+        $otherTrip = Trip::factory()->create();
+        Stopover::factory([
+            'trip_id' => $otherTrip->trip_id,
+            'train_station_id' => $newStation->id,
+            'arrival_planned' => $arrivalTime,
+            'arrival_real' => $arrivalTime,
+            'departure_planned' => $arrivalTime,
+            'departure_real' => $arrivalTime,
+        ])->create();
+
+        $checkin = Checkin::factory(['user_id' => $user->id])->create();
+
+        // Add a stopover on the checkin's trip at the same station and time
+        // (we had a bug where the query in StatusController::update didn't filter by trip_id,
+        // so it could pick up the wrong stopover from another trip)
+        $correctStopover = Stopover::factory([
+            'trip_id' => $checkin->trip_id,
+            'train_station_id' => $newStation->id,
+            'arrival_planned' => $arrivalTime,
+            'arrival_real' => $arrivalTime,
+            'departure_planned' => $arrivalTime,
+            'departure_real' => $arrivalTime,
+        ])->create();
+
+        $this->assertNotEquals($checkin->trip_id, $otherTrip->trip_id);
+
+        // Try to change the destination to the new station.
+        $response = $this->put(
+            uri: '/api/v1/status/' . $checkin->status_id,
+            data: [
+                'visibility' => StatusVisibility::PUBLIC->value,
+                'business' => Business::BUSINESS->value,
+                'destinationId' => $newStation->id,
+                'destinationArrivalPlanned' => $arrivalTime->toDateTimeString(),
+            ],
+        );
+        $response->assertOk();
+
+        $checkin->refresh();
+        $this->assertEquals($newStation->id, $checkin->destinationStopover->station->id);
+        $this->assertEquals($correctStopover->id, $checkin->destination_stopover_id);
+    }
+
     public function test_status_list_endpoint(): void
     {
         $user = User::factory()->create();

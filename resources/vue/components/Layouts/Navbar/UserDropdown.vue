@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
-import { useUserStore } from '../../stores/user';
+import { useUserStore } from '../../../stores/user';
 
 const user = useUserStore();
 user.fetchSettings(false, true);
@@ -13,6 +13,7 @@ function logout() {
         return;
     }
 
+    user.invalidateUser();
     fetch('/logout', {
         method: 'POST',
         headers: {
@@ -22,7 +23,6 @@ function logout() {
         body: JSON.stringify({}),
     })
         .then(() => {
-            user.invalidateUser();
             window.location.href = '/';
         })
         .catch((error) => {

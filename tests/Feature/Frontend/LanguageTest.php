@@ -66,7 +66,7 @@ class LanguageTest extends FeatureTestCase
         $response = $this->actingAs($user)
             ->get(route('dashboard', ['language' => 'de']));
         $response->assertOk();
-        $response->assertViewIs('dashboard');
+        $response->assertViewIs('vue.dashboard');
         $this->assertDatabaseHas('users', ['username' => $user->username, 'language' => 'de']);
     }
 

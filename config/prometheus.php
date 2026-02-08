@@ -14,12 +14,9 @@ return [
      * Only these IP's will be allowed to visit the above urls.
      * All IP's are allowed when empty.
      */
-    'allowed_ips' => [
-        '127.0.0.1',
-        '::1',
-        '10.11.12.1',
-        // '1.2.3.4',
-    ],
+    'allowed_ips' => env('PROMETHEUS_ALLOWED_IPS')
+        ? explode(',', env('PROMETHEUS_ALLOWED_IPS'))
+        : [],
 
     /*
      * This is the default namespace that will be

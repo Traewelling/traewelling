@@ -155,6 +155,12 @@ export enum DataProvider {
   Transitous = "transitous",
 }
 
+/** Enumeration of configuration features available in the application. */
+export enum ConfigurationFeatureEnum {
+  UserRegistration = "user_registration",
+  YearInReview = "year_in_review",
+}
+
 /**
  * Business
  * What type of travel (0=private, 1=business, 2=commute) did the user specify?
@@ -164,6 +170,59 @@ export enum Business {
   Value0 = 0,
   Value1 = 1,
   Value2 = 2,
+}
+
+/** Represents a configuration feature and its status. */
+export interface Feature {
+  /**
+   * The name of the feature.
+   * @example "user_registration"
+   */
+  name: string;
+  /** Indicates whether the feature is enabled. */
+  enabled: boolean;
+}
+
+/** Holds configuration information about the application. */
+export interface ConfigurationInformation {
+  /**
+   * The name of the application.
+   * @example "Träwelling"
+   */
+  appName: string;
+  /**
+   * Indicates whether the application is in debug mode.
+   * @example false
+   */
+  appDebug: boolean;
+  /**
+   * The base URL of the application.
+   * @example "https://traewelling.de"
+   */
+  appUrl: string;
+  /**
+   * The current version of the application.
+   * @example "1.0.0"
+   */
+  version: string;
+  /** A list of configuration features available in the application. */
+  features: Feature[];
+  /** A list of supported languages in the application. */
+  languages: Language[];
+}
+
+/** Represents a language with its code and name. */
+export interface Language {
+  /**
+   * The language code (e.g., "en", "fr").
+   * @example "en"
+   */
+  code: string;
+  /**
+   * The name of the language (e.g., "English", "French").
+   * @example "English"
+   */
+  name: string;
 }
 
 /**
@@ -493,19 +552,19 @@ export interface EventResource {
 /** LeaderboardUserResource */
 export interface LeaderboardUserResource {
   /** User model with just basic information */
-  user?: LightUserResource;
+  user: LightUserResource;
   /**
    * duration travelled in minutes
    * @example 6
    */
-  totalDuration?: number;
+  totalDuration: number;
   /**
    * distance travelled in meters
    * @example 12345
    */
-  totalDistance?: number;
+  totalDistance: number;
   /** points of user */
-  points?: number;
+  points: number;
 }
 
 /**
@@ -865,6 +924,8 @@ export interface UserAuthResource {
   preventIndex: boolean;
   /** @example "true" */
   likes_enabled: boolean;
+  /** @example "true" */
+  pointsEnabled?: boolean;
   /** @example "default" */
   mapProvider: string;
   home: StationResource;
@@ -1921,6 +1982,23 @@ export class Api<
         path: `/auth/refresh`,
         method: "POST",
         secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  app = {
+    /**
+     * @description Retrieves configuration information about the application, including features and supported languages.
+     *
+     * @tags Configuration Information
+     * @name GetConfigurationInfo
+     * @summary Get Application Configuration Information
+     * @request GET:/app/configuration
+     */
+    getConfigurationInfo: (params: RequestParams = {}) =>
+      this.request<ConfigurationInformation, any>({
+        path: `/app/configuration`,
+        method: "GET",
         format: "json",
         ...params,
       }),

@@ -11,7 +11,6 @@ return new class() extends Migration
         Schema::table('statuses', function (Blueprint $table) {
             $table->foreignId('created_by_user_id')
                 ->nullable()
-                ->after('user_id')
                 ->constrained('users')
                 ->nullOnDelete();
         });
