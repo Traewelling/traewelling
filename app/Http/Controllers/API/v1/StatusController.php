@@ -14,7 +14,6 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
-use App\Models\Checkin;
 use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Trip;
