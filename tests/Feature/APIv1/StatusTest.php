@@ -195,10 +195,13 @@ class StatusTest extends ApiTestCase
         $user = User::factory()->create();
         Passport::actingAs($user, ['*']);
 
-        $newStation = Station::factory()->create();
         $arrivalTime = Date::now()->setSecond(0);
 
         $otherTrip = Trip::factory()->create();
+        $checkin = Checkin::factory(['user_id' => $user->id])->create();
+
+        $newStation = Station::factory()->create();
+
         Stopover::factory([
             'trip_id' => $otherTrip->trip_id,
             'train_station_id' => $newStation->id,
@@ -207,8 +210,6 @@ class StatusTest extends ApiTestCase
             'departure_planned' => $arrivalTime,
             'departure_real' => $arrivalTime,
         ])->create();
-
-        $checkin = Checkin::factory(['user_id' => $user->id])->create();
 
         // Add a stopover on the checkin's trip at the same station and time
         // (we had a bug where the query in StatusController::update didn't filter by trip_id,
