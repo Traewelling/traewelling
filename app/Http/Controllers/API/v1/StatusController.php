@@ -14,6 +14,7 @@ use App\Http\Controllers\StatusController as StatusBackend;
 use App\Http\Controllers\UserController as UserBackend;
 use App\Http\Resources\StatusResource;
 use App\Http\Resources\StopoverResource;
+use App\Models\Checkin;
 use App\Models\Status;
 use App\Models\Stopover;
 use App\Models\Trip;
@@ -557,10 +558,11 @@ class StatusController extends Controller
                     || (Carbon::parse($validated['destinationArrivalPlanned'])->ne($status->checkin->destinationStopover->arrival_planned))
                 )
             ) {
+                $checkIn = $status->checkin;
                 $arrival = Carbon::parse($validated['destinationArrivalPlanned'])->timezone(config('app.timezone'));
                 $stopover = Stopover::where('train_station_id', $validated['destinationId'])
                     ->where('arrival_planned', $arrival)
-                    ->where('trip_id', $status->checkin->trip->trip_id)
+                    ->where('trip_id', $checkIn->trip_id)
                     ->first();
 
                 if ($stopover === null) {
@@ -568,7 +570,7 @@ class StatusController extends Controller
                 }
 
                 TrainCheckinController::changeDestination(
-                    checkin: $status->checkin,
+                    checkin: $checkIn,
                     newDestinationStopover: $stopover,
                 );
             }
