@@ -55,11 +55,9 @@
     "brianium/paratest": "^7.8",
     "fakerphp/faker": "^1.9",
     "filp/whoops": "^2.0",
-    "larastan/larastan": "^3.8",
     "laravel/pint": "^1.27",
     "mockery/mockery": "^1.0",
     "nunomaduro/collision": "^8.8",
-    "phpstan/phpstan": "^2.1",
     "phpunit/phpunit": "^12.0",
     "roave/security-advisories": "dev-latest",
     "spatie/laravel-ignition": "2.10.0"
