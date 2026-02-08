@@ -560,6 +560,7 @@ class StatusController extends Controller
                 $arrival = Carbon::parse($validated['destinationArrivalPlanned'])->timezone(config('app.timezone'));
                 $stopover = Stopover::where('train_station_id', $validated['destinationId'])
                     ->where('arrival_planned', $arrival)
+                    ->where("trip_id", $status->checkin->trip->trip_id)
                     ->first();
 
                 if ($stopover === null) {
