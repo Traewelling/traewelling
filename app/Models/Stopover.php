@@ -14,6 +14,58 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @todo rename "train_station_id" to "station_id" - we have more than just trains.
  * @todo rename "cancelled" to "is_cancelled" - or split into "is_arrival_cancelled" and "is_departure_cancelled"? need
  *       to think about this.
+ *
+ * @property int $id
+ * @property string $trip_id
+ * @property int $train_station_id
+ * @property $arrival_planned
+ * @property $arrival_real
+ * @property string|null $arrival_platform_planned
+ * @property string|null $arrival_platform_real
+ * @property $departure_planned
+ * @property $departure_real
+ * @property string|null $departure_platform_planned
+ * @property string|null $departure_platform_real
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property bool $cancelled
+ * @property string|null $route_segment_id
+ * @property string|null $station_identifier_id
+ * @property-read \Carbon\Carbon|null $arrival
+ * @property-read \Carbon\Carbon|null $departure
+ * @property-read bool $is_arrival_cancelled
+ * @property-read bool $is_arrival_delayed
+ * @property-read bool $is_departure_cancelled
+ * @property-read bool $is_departure_delayed
+ * @property-read string|null $platform
+ * @property-read \App\Models\RouteSegment|null $routeSegment
+ * @property-read \App\Models\Station $station
+ * @property-read \App\Models\StationIdentifier|null $stationIdentifier
+ * @property-read \App\Models\Station $trainStation
+ * @property-read \App\Models\Trip $trip
+ *
+ * @method static \Database\Factories\StopoverFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereArrivalPlanned($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereArrivalPlatformPlanned($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereArrivalPlatformReal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereArrivalReal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereCancelled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereDeparturePlanned($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereDeparturePlatformPlanned($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereDeparturePlatformReal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereDepartureReal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereRouteSegmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereStationIdentifierId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereTrainStationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereTripId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Stopover whereUpdatedAt($value)
+ *
+ * @mixin \Eloquent
  */
 class Stopover extends Model
 {

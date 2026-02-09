@@ -7,6 +7,30 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Passport\Passport;
 
+/**
+ * @property string $id
+ * @property int $user_id
+ * @property int $oauth_client_id
+ * @property bool $revoked
+ * @property \Illuminate\Support\Carbon $expires_at
+ * @property string $events
+ * @property string $url
+ * @property-read \App\Models\OAuthClient $client
+ * @property-read \App\Models\User $user
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCreationRequest newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCreationRequest newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCreationRequest query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCreationRequest whereEvents($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCreationRequest whereExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCreationRequest whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCreationRequest whereOauthClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCreationRequest whereRevoked($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCreationRequest whereUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WebhookCreationRequest whereUserId($value)
+ *
+ * @mixin \Eloquent
+ */
 class WebhookCreationRequest extends Model
 {
     public $timestamps = false;

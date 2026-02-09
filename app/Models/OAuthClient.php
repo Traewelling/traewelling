@@ -5,6 +5,49 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Passport\Client as PassportClient;
 
+/**
+ * @property int $id
+ * @property string|null $user_id
+ * @property string $name
+ * @property string|null $secret
+ * @property string|null $provider
+ * @property string $redirect
+ * @property bool $personal_access_client
+ * @property bool $password_client
+ * @property bool $revoked
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $authorized_webhook_url
+ * @property string|null $privacy_policy_url
+ * @property bool $webhooks_enabled
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Passport\AuthCode> $authCodes
+ * @property-read int|null $auth_codes_count
+ * @property-read string|null $plain_secret
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Passport\Token> $tokens
+ * @property-read int|null $tokens_count
+ * @property-read \App\Models\User|null $user
+ *
+ * @method static \Laravel\Passport\Database\Factories\ClientFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient whereAuthorizedWebhookUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient wherePasswordClient($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient wherePersonalAccessClient($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient wherePrivacyPolicyUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient whereProvider($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient whereRedirect($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient whereRevoked($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient whereSecret($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OAuthClient whereWebhooksEnabled($value)
+ *
+ * @mixin \Eloquent
+ */
 class OAuthClient extends PassportClient
 {
     use HasFactory;

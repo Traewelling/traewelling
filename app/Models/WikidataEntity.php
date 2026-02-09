@@ -4,6 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WikidataEntity newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WikidataEntity newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|WikidataEntity query()
+ *
+ * @mixin \Eloquent
+ */
 class WikidataEntity extends Model
 {
     protected $keyType = 'string';
