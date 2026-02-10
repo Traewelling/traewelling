@@ -6639,16 +6639,16 @@
         },
         {
             "name": "spatie/laravel-webhook-server",
-            "version": "3.8.3",
+            "version": "3.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-webhook-server.git",
-                "reference": "e3d8f24030bbb4087867cd0be681c028736b772f"
+                "reference": "be9c0699ff22b1c0ae2fce1caf54d4295e0e1df1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-webhook-server/zipball/e3d8f24030bbb4087867cd0be681c028736b772f",
-                "reference": "e3d8f24030bbb4087867cd0be681c028736b772f",
+                "url": "https://api.github.com/repos/spatie/laravel-webhook-server/zipball/be9c0699ff22b1c0ae2fce1caf54d4295e0e1df1",
+                "reference": "be9c0699ff22b1c0ae2fce1caf54d4295e0e1df1",
                 "shasum": ""
             },
             "require": {
@@ -6701,7 +6701,7 @@
                 "webhook"
             ],
             "support": {
-                "source": "https://github.com/spatie/laravel-webhook-server/tree/3.8.3"
+                "source": "https://github.com/spatie/laravel-webhook-server/tree/3.9.0"
             },
             "funding": [
                 {
@@ -6709,7 +6709,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-02-14T12:55:41+00:00"
+            "time": "2026-02-09T15:45:35+00:00"
         },
         {
             "name": "spatie/robots-txt",
