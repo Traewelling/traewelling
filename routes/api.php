@@ -13,6 +13,7 @@
 
 use App\Http\Controllers\API\v1\AlertController;
 use App\Http\Controllers\API\v1\AuthController as v1Auth;
+use App\Http\Controllers\API\v1\CommunityController;
 use App\Http\Controllers\API\v1\EventController;
 use App\Http\Controllers\API\v1\ExperimentalController;
 use App\Http\Controllers\API\v1\ExportController;
@@ -192,6 +193,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
             // undocumented, unstable, experimental endpoints. don't use in external applications!
 
             Route::post('/station/{id}/wikidata', [ExperimentalController::class, 'fetchWikidata']);
+        });
+
+        Route::prefix('community')->group(static function () {
+            Route::get('profile', [CommunityController::class, 'getMyProfile']);
         });
     });
 

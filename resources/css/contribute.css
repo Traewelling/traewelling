@@ -1,0 +1,4 @@
+@import 'tailwindcss';
+@import '@fortawesome/fontawesome-free/css/all.css';
+
+@plugin "daisyui";
