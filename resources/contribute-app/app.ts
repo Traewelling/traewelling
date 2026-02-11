@@ -1,14 +1,18 @@
 import { i18nVue } from 'laravel-vue-i18n';
-import { Notyf } from 'notyf';
+import { Notyf, INotyfOptions } from 'notyf';
 import { createPinia } from 'pinia';
-import piniaPluginPersistedsState from 'pinia-plugin-persistedstate';
-import { createApp } from 'vue';
-import { createRouter, createWebHistory } from 'vue-router';
+import piniaPluginPersistedState from 'pinia-plugin-persistedstate';
+import {createApp} from 'vue';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import '../css/contribute.css';
 import App from './App.vue';
 
-// Initialize Notyf for notifications
-window.notyf = new Notyf({
+// Notyf can be used like this in the options api:
+//
+// const notyf = inject('notyf') as Notyf
+// notyf.success('hi there!')
+//
+const notyf = new Notyf({
     duration: 5000,
     position: { x: 'right', y: window.innerWidth > 480 ? 'top' : 'bottom' },
     dismissible: true,
@@ -33,44 +37,37 @@ window.notyf = new Notyf({
             },
         },
     ],
-});
+} as INotyfOptions);
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Get language fallback
-    let fallbackLang = 'en';
-    const urlParams = new URLSearchParams(window.location.search);
-    const lang = urlParams.get('language');
-
-    if (lang && lang.startsWith('de_')) {
-        fallbackLang = 'de';
-    }
-
     // Setup Pinia
     const pinia = createPinia();
-    pinia.use(piniaPluginPersistedsState);
+    pinia.use(piniaPluginPersistedState);
 
     // Setup i18n
     const i18nOptions = {
-        fallbackLang: fallbackLang,
+        fallbackLang: 'en',
         fallbackMissingTranslations: true,
-        resolve: (lang) => import(`../../lang/${lang}.json`),
+        resolve: (lang: string) => import(`../../lang/${lang}.json`),
     };
 
     // Setup router
+    const routes: Array<RouteRecordRaw> = [
+        {
+            path: '/',
+            name: 'index',
+            component: () => import('./views/Index.vue'),
+        },
+        {
+            path: '/profile',
+            name: 'profile',
+            component: () => import('./views/Profile.vue'),
+        },
+    ];
+
     const router = createRouter({
         history: createWebHistory('/contribute'),
-        routes: [
-            {
-                path: '/',
-                name: 'index',
-                component: () => import('./views/Index.vue'),
-            },
-            {
-                path: '/profile',
-                name: 'profile',
-                component: () => import('./views/Profile.vue'),
-            },
-        ],
+        routes,
     });
 
     // Create and mount app
@@ -79,6 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
         app.use(pinia);
         app.use(i18nVue, i18nOptions);
         app.use(router);
+        app.provide('notyf', notyf);
         app.mount('#contribute-app');
     }
 });
