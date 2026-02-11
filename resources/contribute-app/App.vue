@@ -5,21 +5,7 @@
             <div class="navbar-start">
                 <div class="dropdown">
                     <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            color="white"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M4 6h16M4 12h8m-8 6h16"
-                            />
-                        </svg>
+                        <Menu class="inline-block w-6 h-6 text-white"/>
                     </div>
                     <ul
                         tabindex="-1"
@@ -27,46 +13,48 @@
                     >
                         <li class="mb-2">
                             <a href="/" class="btn btn-outline btn-xs">
-                                <i class="fa fa-arrow-left mr-2"></i>{{ trans('contribute.nav.back_to_traewelling') }}
+                                <ArrowLeft class="inline-block w-4 h-4 mr-2"/>
+                                {{ trans('contribute.nav.back_to_traewelling') }}
                             </a>
                         </li>
                         <li>
-                            <router-link to="/"
-                            ><i class="fa fa-home mr-2"></i>{{ trans('contribute.nav.overview') }}
-                            </router-link
-                            >
+                            <router-link to="/">
+                                <House class="inline-block w-6 h-6 mr-2"/>
+                                {{ trans('contribute.nav.overview') }}
+                            </router-link>
                         </li>
                         <li>
-                            <router-link to="/profile"
-                            ><i class="fa fa-user mr-2"></i>{{ trans('contribute.nav.profile') }}
-                            </router-link
-                            >
+                            <router-link to="/profile">
+                                <User class="inline-block w-6 h-6 mr-2"/>
+                                {{ trans('contribute.nav.profile') }}
+                            </router-link>
                         </li>
                     </ul>
                 </div>
                 <router-link to="/" class="btn btn-ghost text-xl text-white">
-                    <i class="fa fa-users mr-2"></i>{{ trans('contribute.title') }}
+                    <PencilRuler class="inline-block w-6 h-6 mr-2"/>{{ trans('contribute') }}
                 </router-link>
             </div>
             <div class="navbar-center hidden text-white lg:flex">
                 <ul class="menu menu-horizontal px-1">
                     <li>
-                        <router-link to="/"
-                        ><i class="fa fa-home mr-2"></i>{{ trans('contribute.nav.overview') }}
-                        </router-link
-                        >
+                        <router-link to="/">
+                            <House class="inline-block w-6 h-6 mr-2"/>
+                            {{ trans('contribute.nav.overview') }}
+                        </router-link>
                     </li>
                     <li>
-                        <router-link to="/profile"
-                        ><i class="fa fa-user mr-2"></i>{{ trans('contribute.nav.profile') }}
-                        </router-link
-                        >
+                        <router-link to="/profile">
+                            <User class="inline-block w-6 h-6 mr-2"/>
+                            {{ trans('contribute.nav.profile') }}
+                        </router-link>
                     </li>
                 </ul>
             </div>
             <div class="navbar-end hidden lg:flex">
                 <a href="/" class="btn btn-sm">
-                    <i class="fa fa-arrow-left mr-2"></i>{{ trans('contribute.nav.back_to_traewelling') }}
+                    <ArrowLeft class="inline-block w-4 h-4 mr-2"/>
+                    {{ trans('contribute.nav.back_to_traewelling') }}
                 </a>
             </div>
         </div>
@@ -99,4 +87,5 @@
 
 <script setup lang="ts">
 import {trans} from 'laravel-vue-i18n';
+import {PencilRuler, ArrowLeft, House, User, Menu} from 'lucide-vue-next'
 </script>

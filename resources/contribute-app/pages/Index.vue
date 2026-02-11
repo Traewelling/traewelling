@@ -1,34 +1,53 @@
 <template>
-    <div class="w-full">
-        <h1 class="text-4xl font-bold mb-8 text-base-content">{{ trans('contribute.title') }}</h1>
-
-        <div class="card bg-base-200 shadow-xl mb-6">
-            <div class="card-body">
-                <h2 class="card-title text-2xl text-base-content">{{ trans('contribute.hero.title') }}</h2>
-                <p class="text-base-content opacity-80 leading-relaxed">{{ trans('contribute.hero.description') }}</p>
-            </div>
+    <div class="w-full" v-if="user.user">
+        <h1 class="font-title text-2xl md:text-3xl lg:text-4xl font-bold">
+            {{ trans('contribute.title', {username: user.user.displayName}) }}
+        </h1>
+        <h2 class="mb-2 md:mb-6">
+            {{ trans('contribute.hero.title') }}
+        </h2>
+        <div role="alert" class="alert alert-vertical sm:alert-horizontal mb-6">
+            <Info class="stroke-info h-6 w-6"/>
+            <span>
+                {{ trans('contribute.hero.description') }}
+            </span>
         </div>
 
-        <div class="card bg-base-200 shadow-xl mb-8">
-            <div class="card-body">
-                <h3 class="card-title text-xl text-base-content">{{ trans('contribute.how_it_works.title') }}</h3>
-                <ul class="list-disc list-inside space-y-3 text-base-content opacity-80 ml-2">
-                    <li>{{ trans('contribute.how_it_works.step1') }}</li>
-                    <li>{{ trans('contribute.how_it_works.step2') }}</li>
-                    <li>{{ trans('contribute.how_it_works.step3') }}</li>
-                </ul>
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
+            <!-- left grid -->
+            <div class="col-span-1 md:col-span-4">
+                <div class="card bg-base-200 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title text-xl text-base-content">
+                            {{ trans('contribute.how_it_works.title') }}
+                        </h3>
+                        <ul class="list-disc list-inside space-y-3 text-base-content opacity-80 ml-2">
+                            <li>{{ trans('contribute.how_it_works.step1') }}</li>
+                            <li>{{ trans('contribute.how_it_works.step2') }}</li>
+                            <li>{{ trans('contribute.how_it_works.step3') }}</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="text-center">
-            <router-link to="/profile" class="btn btn-primary btn-lg gap-2">
-                <i class="fa fa-user"></i>
-                {{ trans('contribute.view_profile') }}
-            </router-link>
+            <div class="col-span-1 md:col-span-2">
+                <Profile/>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { trans } from 'laravel-vue-i18n';
+import {trans} from 'laravel-vue-i18n';
+import {onMounted} from "vue";
+import {useUserStore} from "../../vue/stores/user";
+import {Info} from "lucide-vue-next";
+import Profile from "./Profile.vue";
+import { PencilRuler } from "lucide-vue-next";
+
+
+const user = useUserStore();
+
+onMounted(() => {
+    user.fetchSettings();
+});
 </script>
