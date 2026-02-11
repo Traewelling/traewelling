@@ -13,6 +13,55 @@ use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
+/**
+ * @property int $id
+ * @property int|null $station_id
+ * @property string $name
+ * @property string $slug
+ * @property string|null $hashtag
+ * @property string|null $host
+ * @property string|null $url
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $event_start
+ * @property \Illuminate\Support\Carbon|null $event_end
+ * @property int|null $approved_by
+ * @property \Illuminate\Support\Carbon $checkin_start
+ * @property \Illuminate\Support\Carbon $checkin_end
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
+ * @property-read int|null $activities_count
+ * @property-read \App\Models\User|null $approvedBy
+ * @property-read Carbon $end
+ * @property-read bool $has_extended_checkin
+ * @property-read bool $is_pride
+ * @property-read Carbon $start
+ * @property-read int $total_distance
+ * @property-read int $total_duration
+ * @property-read \App\Models\Station|null $station
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Status> $statuses
+ * @property-read int|null $statuses_count
+ *
+ * @method static \Database\Factories\EventFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event whereApprovedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event whereCheckinEnd($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event whereCheckinStart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event whereEventEnd($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event whereEventStart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event whereHashtag($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event whereHost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event whereStationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Event whereUrl($value)
+ *
+ * @mixin \Eloquent
+ */
 class Event extends Model
 {
     use HasFactory, LogsActivity;

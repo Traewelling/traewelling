@@ -31,6 +31,133 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
 /**
  * @todo rename home_id to home_station_id
  * @todo rename mapprovider to map_provider
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $username
+ * @property string|null $avatar
+ * @property string|null $email
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property \Illuminate\Support\Carbon|null $privacy_ack_at
+ * @property string|null $password
+ * @property int|null $home_id
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property bool $private_profile
+ * @property bool $prevent_index
+ * @property string|null $language
+ * @property \Illuminate\Support\Carbon|null $last_login
+ * @property StatusVisibility $default_status_visibility
+ * @property int|null $privacy_hide_days
+ * @property bool $likes_enabled
+ * @property MapProvider $mapprovider
+ * @property string $timezone
+ * @property FriendCheckinSetting $friend_checkin
+ * @property bool $points_enabled
+ * @property \Illuminate\Support\Carbon|null $recent_gdpr_export
+ * @property DataProvider $data_provider
+ * @property string|null $bio
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $blockedByUsers
+ * @property-read int|null $blocked_by_users_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $blockedUsers
+ * @property-read int|null $blocked_users_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OAuthClient> $clients
+ * @property-read int|null $clients_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FollowRequest> $followRequests
+ * @property-read int|null $follow_requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Follow> $followers
+ * @property-read int|null $followers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Follow> $followings
+ * @property-read int|null $followings_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $follows
+ * @property-read int|null $follows_count
+ * @property-read bool $follow_pending
+ * @property-read bool $followed_by
+ * @property-read bool $following
+ * @property-read bool $is_auth_user_blocked
+ * @property-read bool $is_blocked_by_auth_user
+ * @property-read string|null $mastodon_url
+ * @property-read bool $muted
+ * @property-read int $points
+ * @property-read float $train_distance
+ * @property-read float $train_duration
+ * @property-read bool $user_invisible_to_me
+ * @property-read \App\Models\Station|null $home
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\IcsToken> $icsTokens
+ * @property-read int|null $ics_tokens_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Like> $likes
+ * @property-read int|null $likes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $mutedUsers
+ * @property-read int|null $muted_users_count
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OAuthClient> $oAuthClients
+ * @property-read int|null $o_auth_clients_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
+ * @property-read int|null $permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProfileLink> $profileLinks
+ * @property-read int|null $profile_links_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
+ * @property-read int|null $roles_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Session> $sessions
+ * @property-read int|null $sessions_count
+ * @property-read \App\Models\SocialLoginProfile|null $socialProfile
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Status> $statuses
+ * @property-read int|null $statuses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Passport\Token> $tokens
+ * @property-read int|null $tokens_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Checkin> $trainCheckins
+ * @property-read int|null $train_checkins_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TrustedUser> $trustedByUsers
+ * @property-read int|null $trusted_by_users_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TrustedUser> $trustedUsers
+ * @property-read int|null $trusted_users_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $userFollowRequests
+ * @property-read int|null $user_follow_requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $userFollowers
+ * @property-read int|null $user_followers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $userFollowings
+ * @property-read int|null $user_followings_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Webhook> $webhooks
+ * @property-read int|null $webhooks_count
+ *
+ * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User permission($permissions, $without = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User role($roles, $guard = null, $without = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereAvatar($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereBio($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereDataProvider($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereDefaultStatusVisibility($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereFriendCheckin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereHomeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLanguage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLastLogin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLikesEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereMapprovider($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePointsEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePreventIndex($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePrivacyAckAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePrivacyHideDays($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePrivateProfile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRecentGdprExport($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTimezone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUsername($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutPermission($permissions)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, $guard = null)
+ *
+ * @mixin \Eloquent
  */
 class User extends Authenticatable implements ExportsPersonalData
 {

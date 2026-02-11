@@ -6,6 +6,31 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property string $id
+ * @property int $operator_id
+ * @property string $type
+ * @property string $identifier
+ * @property string|null $source
+ * @property string|null $name
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Operator $operator
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OperatorIdentifier newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OperatorIdentifier newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OperatorIdentifier query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OperatorIdentifier whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OperatorIdentifier whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OperatorIdentifier whereIdentifier($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OperatorIdentifier whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OperatorIdentifier whereOperatorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OperatorIdentifier whereSource($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OperatorIdentifier whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|OperatorIdentifier whereUpdatedAt($value)
+ *
+ * @mixin \Eloquent
+ */
 class OperatorIdentifier extends Model
 {
     use HasUuids;

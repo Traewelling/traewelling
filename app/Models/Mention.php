@@ -8,6 +8,30 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @property int $id
+ * @property int $status_id
+ * @property int $mentioned_id
+ * @property int $position
+ * @property int $length
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $mentioned
+ * @property-read \App\Models\Status $status
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention whereLength($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention whereMentionedId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention wherePosition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention whereStatusId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Mention whereUpdatedAt($value)
+ *
+ * @mixin \Eloquent
+ */
 class Mention extends Model
 {
     use HasFactory;

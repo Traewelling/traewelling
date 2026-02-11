@@ -6,6 +6,32 @@ use App\Enum\MastodonVisibility;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int|null $mastodon_id
+ * @property int|null $mastodon_server
+ * @property string|null $mastodon_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property MastodonVisibility $mastodon_visibility
+ * @property-read \App\Models\MastodonServer|null $mastodonServer
+ * @property-read \App\Models\User|null $user
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereMastodonId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereMastodonServer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereMastodonToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereMastodonVisibility($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SocialLoginProfile whereUserId($value)
+ *
+ * @mixin \Eloquent
+ */
 class SocialLoginProfile extends Model
 {
     protected $fillable = [
