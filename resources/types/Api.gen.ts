@@ -500,6 +500,34 @@ export interface ClientResource {
   privacyPolicyUrl: string;
 }
 
+/**
+ * CommunityProfile
+ * Community contribution profile data
+ */
+export interface CommunityProfile {
+  /**
+   * Total contribution XP earned
+   * @example 75
+   */
+  xp: number;
+  /**
+   * Current contribution level
+   * @example 1
+   */
+  level: number;
+  /**
+   * XP required for next level
+   * @example 150
+   */
+  nextLevelXP: number;
+  /**
+   * Progress percentage to next level
+   * @format float
+   * @example 25
+   */
+  progressPercent: number;
+}
+
 /** DataSourceResource */
 export interface DataSourceResource {
   /** @example "foobar" */
@@ -1981,6 +2009,31 @@ export class Api<
       >({
         path: `/auth/refresh`,
         method: "POST",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  community = {
+    /**
+     * @description Returns contribution XP, level, and progress information for the authenticated user
+     *
+     * @tags Community
+     * @name GetCommunityProfile
+     * @summary Get your contribution profile
+     * @request GET:/community/profile
+     * @secure
+     */
+    getCommunityProfile: (params: RequestParams = {}) =>
+      this.request<
+        {
+          /** Community contribution profile data */
+          data?: CommunityProfile;
+        },
+        void
+      >({
+        path: `/community/profile`,
+        method: "GET",
         secure: true,
         format: "json",
         ...params,
