@@ -1,7 +1,7 @@
 <template>
-    <div class="min-h-screen flex flex-col bg-base-100">
+    <div class="min-h-screen flex flex-col bg-base-300">
         <!-- Navigation -->
-        <div class="navbar traewelling-nav shadow-lg">
+        <div class="navbar bg-primary shadow-lg">
             <div class="navbar-start">
                 <div class="dropdown">
                     <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -11,6 +11,7 @@
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
+                            color="white"
                         >
                             <path
                                 stroke-linecap="round"
@@ -24,38 +25,47 @@
                         tabindex="-1"
                         class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
                     >
+                        <li class="mb-2">
+                            <a href="/" class="btn btn-outline btn-xs">
+                                <i class="fa fa-arrow-left mr-2"></i>{{ trans('contribute.nav.back_to_traewelling') }}
+                            </a>
+                        </li>
                         <li>
                             <router-link to="/"
-                                ><i class="fa fa-home mr-2"></i>{{ trans('contribute.nav.overview') }}</router-link
+                            ><i class="fa fa-home mr-2"></i>{{ trans('contribute.nav.overview') }}
+                            </router-link
                             >
                         </li>
                         <li>
                             <router-link to="/profile"
-                                ><i class="fa fa-user mr-2"></i>{{ trans('contribute.nav.profile') }}</router-link
+                            ><i class="fa fa-user mr-2"></i>{{ trans('contribute.nav.profile') }}
+                            </router-link
                             >
                         </li>
                     </ul>
                 </div>
-                <router-link to="/" class="btn btn-ghost text-xl">
+                <router-link to="/" class="btn btn-ghost text-xl text-white">
                     <i class="fa fa-users mr-2"></i>{{ trans('contribute.title') }}
                 </router-link>
             </div>
-            <div class="navbar-center hidden lg:flex">
+            <div class="navbar-center hidden text-white lg:flex">
                 <ul class="menu menu-horizontal px-1">
                     <li>
                         <router-link to="/"
-                            ><i class="fa fa-home mr-2"></i>{{ trans('contribute.nav.overview') }}</router-link
+                        ><i class="fa fa-home mr-2"></i>{{ trans('contribute.nav.overview') }}
+                        </router-link
                         >
                     </li>
                     <li>
                         <router-link to="/profile"
-                            ><i class="fa fa-user mr-2"></i>{{ trans('contribute.nav.profile') }}</router-link
+                        ><i class="fa fa-user mr-2"></i>{{ trans('contribute.nav.profile') }}
+                        </router-link
                         >
                     </li>
                 </ul>
             </div>
-            <div class="navbar-end">
-                <a href="/public" class="btn">
+            <div class="navbar-end hidden lg:flex">
+                <a href="/" class="btn btn-sm">
                     <i class="fa fa-arrow-left mr-2"></i>{{ trans('contribute.nav.back_to_traewelling') }}
                 </a>
             </div>
@@ -67,57 +77,26 @@
         </main>
 
         <!-- Footer -->
-        <footer class="traewelling-footer"></footer>
+        <footer class="footer footer-horizontal footer-center bg-primary text-white rounded p-10">
+            <nav class="grid grid-flow-col gap-4">
+                <a
+                    href="https://help.traewelling.de/faq/"
+                    target="_blank"
+                    class="link link-hover"
+                >
+                    {{ trans('menu.about') }}
+                </a>
+                <a href="/legal/privacy-policy" class="link link-hover">
+                    {{ trans('menu.privacy') }}
+                </a>
+                <a href="/legal" class="link link-hover">
+                    {{ trans('menu.legal-notice') }}
+                </a>
+            </nav>
+        </footer>
     </div>
 </template>
 
 <script setup lang="ts">
-import { trans } from 'laravel-vue-i18n';
+import {trans} from 'laravel-vue-i18n';
 </script>
-
-<style scoped>
-/* Träwelling Red Theme */
-.traewelling-nav {
-    background: linear-gradient(135deg, hsl(6, 67%, 45%) 0%, hsl(6, 67%, 35%) 100%);
-    border-bottom: 3px solid hsl(6, 100%, 65%);
-}
-
-.traewelling-footer {
-    background: linear-gradient(135deg, hsl(6, 67%, 35%) 0%, hsl(6, 67%, 25%) 100%);
-    border-top: 3px solid hsl(6, 100%, 65%);
-    height: 3rem;
-}
-
-html:not(.dark) .traewelling-nav {
-    background: linear-gradient(135deg, rgb(199, 39, 48) 0%, rgb(179, 29, 38) 100%);
-    border-bottom: 3px solid rgb(219, 49, 58);
-}
-
-html:not(.dark) .traewelling-footer {
-    background: linear-gradient(135deg, rgb(179, 29, 38) 0%, rgb(159, 19, 28) 100%);
-    border-top: 3px solid rgb(219, 49, 58);
-}
-
-/* Navigation link colors */
-.traewelling-nav :deep(.btn) {
-    color: white;
-}
-
-.traewelling-nav :deep(.menu a) {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.traewelling-nav :deep(.btn:hover),
-.traewelling-nav :deep(.menu a:hover) {
-    color: white;
-    background-color: rgba(255, 255, 255, 0.15);
-}
-
-.traewelling-nav :deep(.btn-ghost:hover) {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.traewelling-nav :deep(svg) {
-    stroke: white;
-}
-</style>
