@@ -21,10 +21,10 @@
         </div>
 
         <div class="text-center">
-            <a href="/contribute/profile" class="btn btn-primary btn-lg gap-2">
+            <router-link to="/profile" class="btn btn-primary btn-lg gap-2">
                 <i class="fa fa-user"></i>
                 {{ trans('contribute.view_profile') }}
-            </a>
+            </router-link>
         </div>
     </div>
 </template>

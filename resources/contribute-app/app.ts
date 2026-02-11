@@ -3,7 +3,7 @@ import { Notyf, INotyfOptions } from 'notyf';
 import { createPinia } from 'pinia';
 import piniaPluginPersistedState from 'pinia-plugin-persistedstate';
 import {createApp} from 'vue';
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import router from './router';
 import '../css/contribute.css';
 import App from './App.vue';
 
@@ -50,25 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
         fallbackMissingTranslations: true,
         resolve: (lang: string) => import(`../../lang/${lang}.json`),
     };
-
-    // Setup router
-    const routes: Array<RouteRecordRaw> = [
-        {
-            path: '/',
-            name: 'index',
-            component: () => import('./views/Index.vue'),
-        },
-        {
-            path: '/profile',
-            name: 'profile',
-            component: () => import('./views/Profile.vue'),
-        },
-    ];
-
-    const router = createRouter({
-        history: createWebHistory('/contribute'),
-        routes,
-    });
 
     // Create and mount app
     if (document.getElementById('contribute-app')) {
