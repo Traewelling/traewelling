@@ -166,6 +166,41 @@
                 ]
             }
         },
+        "/community/profile": {
+            "get": {
+                "tags": [
+                    "Community"
+                ],
+                "summary": "Get your contribution profile",
+                "description": "Returns contribution XP, level, and progress information for the authenticated user",
+                "operationId": "getCommunityProfile",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CommunityProfile"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
         "/app/configuration": {
             "get": {
                 "tags": [
@@ -5461,6 +5496,40 @@
                 },
                 "type": "object"
             },
+            "CommunityProfile": {
+                "title": "CommunityProfile",
+                "description": "Community contribution profile data",
+                "required": [
+                    "xp",
+                    "level",
+                    "nextLevelXP",
+                    "progressPercent"
+                ],
+                "properties": {
+                    "xp": {
+                        "description": "Total contribution XP earned",
+                        "type": "integer",
+                        "example": 75
+                    },
+                    "level": {
+                        "description": "Current contribution level",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nextLevelXP": {
+                        "description": "XP required for next level",
+                        "type": "integer",
+                        "example": 150
+                    },
+                    "progressPercent": {
+                        "description": "Progress percentage to next level",
+                        "type": "number",
+                        "format": "float",
+                        "example": 25
+                    }
+                },
+                "type": "object"
+            },
             "DataSourceResource": {
                 "title": "DataSourceResource",
                 "required": [
@@ -7203,6 +7272,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Community",
+            "description": "Community contribution system endpoints"
+        },
         {
             "name": "Configuration Information",
             "description": "Endpoints related to application configuration information."

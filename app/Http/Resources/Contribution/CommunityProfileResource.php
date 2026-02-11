@@ -11,6 +11,7 @@ use OpenApi\Annotations as OA;
 
 /**
  * @OA\Schema(
+ *      schema="CommunityProfile",
  *      title="CommunityProfile",
  *      description="Community contribution profile data",
  *      required={"xp", "level", "nextLevelXP", "progressPercent"},
