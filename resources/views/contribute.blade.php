@@ -30,7 +30,7 @@
     <link rel="shortcut icon" href="{{ asset('images/icons/favicon.ico') }}">
 
     <!-- Styles -->
-    @vite(['resources/js/contribute.js'])
+    @vite(['resources/contribute-app/app.js'])
 </head>
 <body>
     <div id="contribute-app"></div>

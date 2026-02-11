@@ -74,7 +74,7 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { onMounted } from 'vue';
-import { useContributeStore } from '../../stores/contribute';
+import { useContributeStore } from '../../vue/stores/contribute';
 
 const store = useContributeStore();
 

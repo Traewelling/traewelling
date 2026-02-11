@@ -55,7 +55,7 @@
                 </ul>
             </div>
             <div class="navbar-end">
-                <a href="/" class="btn">
+                <a href="/public" class="btn">
                     <i class="fa fa-arrow-left mr-2"></i>{{ trans('contribute.nav.back_to_traewelling') }}
                 </a>
             </div>

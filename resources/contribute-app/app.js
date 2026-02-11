@@ -5,7 +5,7 @@ import piniaPluginPersistedsState from 'pinia-plugin-persistedstate';
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import '../css/contribute.css';
-import ContributeApp from '../vue/ContributeApp.vue';
+import App from './App.vue';
 
 // Initialize Notyf for notifications
 window.notyf = new Notyf({
@@ -63,19 +63,19 @@ document.addEventListener('DOMContentLoaded', function () {
             {
                 path: '/',
                 name: 'index',
-                component: () => import('../vue/views/Contribute/Index.vue'),
+                component: () => import('./views/Index.vue'),
             },
             {
                 path: '/profile',
                 name: 'profile',
-                component: () => import('../vue/views/Contribute/Profile.vue'),
+                component: () => import('./views/Profile.vue'),
             },
         ],
     });
 
     // Create and mount app
     if (document.getElementById('contribute-app')) {
-        const app = createApp(ContributeApp);
+        const app = createApp(App);
         app.use(pinia);
         app.use(i18nVue, i18nOptions);
         app.use(router);
