@@ -50,7 +50,7 @@
                     </div>
 
                     <div class="stat stat-card place-items-center">
-                        <div class="stat-figure text-primary">
+                        <div class="stat-figure text-warning">
                             <i class="fa fa-trophy text-5xl"></i>
                         </div>
                         <div class="stat-title text-base-content opacity-70">
