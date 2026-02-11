@@ -4,7 +4,7 @@
 
 @plugin "daisyui";
 @plugin "daisyui/theme" {
-  name: "dark";
+  name: 'dark';
   prefersdark: true; /* set as default dark mode (prefers-color-scheme:dark) */
   color-scheme: dark; /* color of browser-provided UI */
 
@@ -16,7 +16,7 @@
 }
 
 @plugin "daisyui/theme" {
-  name: "light";
+  name: 'light';
   prefersdark: false; /* set as default light mode (prefers-color-scheme:light) */
   color-scheme: light; /* color of browser-provided UI */
 

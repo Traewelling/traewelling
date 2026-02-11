@@ -5,4 +5,3 @@ export default createRouter({
     history: createWebHistory('/contribute'),
     routes,
 });
-

@@ -1,6 +1,6 @@
-import {RouteRecordRaw} from "vue-router";
-import Index from "../pages/Index.vue"
-import Profile from "../pages/Profile.vue"
+import { RouteRecordRaw } from 'vue-router';
+import Index from '../pages/Index.vue';
+import Profile from '../pages/Profile.vue';
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -15,4 +15,4 @@ const routes: Array<RouteRecordRaw> = [
     },
 ];
 
-export default routes
+export default routes;

@@ -5,7 +5,7 @@
             <div class="navbar-start">
                 <div class="dropdown">
                     <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
-                        <Menu class="inline-block w-6 h-6 text-white"/>
+                        <Menu class="inline-block w-6 h-6 text-white" />
                     </div>
                     <ul
                         tabindex="-1"
@@ -13,39 +13,39 @@
                     >
                         <li class="mb-2">
                             <a href="/" class="btn btn-outline btn-xs">
-                                <ArrowLeft class="inline-block w-4 h-4 mr-2"/>
+                                <ArrowLeft class="inline-block w-4 h-4 mr-2" />
                                 {{ trans('contribute.nav.back_to_traewelling') }}
                             </a>
                         </li>
                         <li>
                             <router-link to="/">
-                                <House class="inline-block w-6 h-6 mr-2"/>
+                                <House class="inline-block w-6 h-6 mr-2" />
                                 {{ trans('contribute.nav.overview') }}
                             </router-link>
                         </li>
                         <li>
                             <router-link to="/profile">
-                                <User class="inline-block w-6 h-6 mr-2"/>
+                                <User class="inline-block w-6 h-6 mr-2" />
                                 {{ trans('contribute.nav.profile') }}
                             </router-link>
                         </li>
                     </ul>
                 </div>
                 <router-link to="/" class="btn btn-ghost text-xl text-white">
-                    <PencilRuler class="inline-block w-6 h-6 mr-2"/>{{ trans('contribute') }}
+                    <PencilRuler class="inline-block w-6 h-6 mr-2" />{{ trans('contribute') }}
                 </router-link>
             </div>
             <div class="navbar-center hidden text-white lg:flex">
                 <ul class="menu menu-horizontal px-1">
                     <li>
                         <router-link to="/">
-                            <House class="inline-block w-6 h-6 mr-2"/>
+                            <House class="inline-block w-6 h-6 mr-2" />
                             {{ trans('contribute.nav.overview') }}
                         </router-link>
                     </li>
                     <li>
                         <router-link to="/profile">
-                            <User class="inline-block w-6 h-6 mr-2"/>
+                            <User class="inline-block w-6 h-6 mr-2" />
                             {{ trans('contribute.nav.profile') }}
                         </router-link>
                     </li>
@@ -53,7 +53,7 @@
             </div>
             <div class="navbar-end hidden lg:flex">
                 <a href="/" class="btn btn-sm">
-                    <ArrowLeft class="inline-block w-4 h-4 mr-2"/>
+                    <ArrowLeft class="inline-block w-4 h-4 mr-2" />
                     {{ trans('contribute.nav.back_to_traewelling') }}
                 </a>
             </div>
@@ -67,11 +67,7 @@
         <!-- Footer -->
         <footer class="footer footer-horizontal footer-center bg-primary text-white rounded p-10">
             <nav class="grid grid-flow-col gap-4">
-                <a
-                    href="https://help.traewelling.de/faq/"
-                    target="_blank"
-                    class="link link-hover"
-                >
+                <a href="https://help.traewelling.de/faq/" target="_blank" class="link link-hover">
                     {{ trans('menu.about') }}
                 </a>
                 <a href="/legal/privacy-policy" class="link link-hover">
@@ -86,6 +82,6 @@
 </template>
 
 <script setup lang="ts">
-import {trans} from 'laravel-vue-i18n';
-import {PencilRuler, ArrowLeft, House, User, Menu} from 'lucide-vue-next'
+import { trans } from 'laravel-vue-i18n';
+import { ArrowLeft, House, Menu, PencilRuler, User } from 'lucide-vue-next';
 </script>

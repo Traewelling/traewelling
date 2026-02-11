@@ -1,13 +1,13 @@
 <template>
-    <div class="w-full" v-if="user.user">
+    <div v-if="user.user" class="w-full">
         <h1 class="font-title text-2xl md:text-3xl lg:text-4xl font-bold">
-            {{ trans('contribute.title', {username: user.user.displayName}) }}
+            {{ trans('contribute.title', { username: user.user.displayName }) }}
         </h1>
         <h2 class="mb-2 md:mb-6">
             {{ trans('contribute.hero.title') }}
         </h2>
         <div role="alert" class="alert alert-vertical sm:alert-horizontal mb-6">
-            <Info class="stroke-info h-6 w-6"/>
+            <Info class="stroke-info h-6 w-6" />
             <span>
                 {{ trans('contribute.hero.description') }}
             </span>
@@ -30,20 +30,18 @@
                 </div>
             </div>
             <div class="col-span-1 md:col-span-2">
-                <Profile/>
+                <Profile />
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import {trans} from 'laravel-vue-i18n';
-import {onMounted} from "vue";
-import {useUserStore} from "../../vue/stores/user";
-import {Info} from "lucide-vue-next";
-import Profile from "./Profile.vue";
-import { PencilRuler } from "lucide-vue-next";
-
+import { trans } from 'laravel-vue-i18n';
+import { Info } from 'lucide-vue-next';
+import { onMounted } from 'vue';
+import { useUserStore } from '../../vue/stores/user';
+import Profile from './Profile.vue';
 
 const user = useUserStore();
 

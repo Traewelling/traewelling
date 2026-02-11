@@ -1,11 +1,11 @@
 import { i18nVue } from 'laravel-vue-i18n';
-import { Notyf, INotyfOptions } from 'notyf';
+import { INotyfOptions, Notyf } from 'notyf';
 import { createPinia } from 'pinia';
 import piniaPluginPersistedState from 'pinia-plugin-persistedstate';
-import {createApp} from 'vue';
-import router from './router';
+import { createApp } from 'vue';
 import '../css/contribute.css';
 import App from './App.vue';
+import router from './router';
 
 // Notyf can be used like this in the options api:
 //
