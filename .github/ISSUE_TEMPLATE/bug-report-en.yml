@@ -25,6 +25,15 @@ body:
         - label: Yes, this is a Traewelling software bug (not a data issue).
           required: true
 
+  - type: checkboxes
+    id: no_duplicate
+    attributes:
+      label: Have you checked for existing issues?
+      description: Please check the [open issues](https://github.com/Traewelling/traewelling/issues) to see if this problem has already been reported.
+      options:
+        - label: Yes, I have verified that no existing issue covers this problem.
+          required: true
+
   - type: input
     id: url
     attributes:
