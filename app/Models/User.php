@@ -167,7 +167,7 @@ class User extends Authenticatable implements ExportsPersonalData
         'username', 'name', 'avatar', 'email', 'email_verified_at', 'password', 'home_id', 'privacy_ack_at',
         'default_status_visibility', 'likes_enabled', 'points_enabled', 'private_profile', 'prevent_index',
         'privacy_hide_days', 'language', 'last_login', 'mapprovider', 'timezone', 'friend_checkin', 'data_provider', 'recent_gdpr_export',
-        'bio',
+        'bio', 'contribution_xp', 'contribution_level',
     ];
 
     protected $hidden = [
@@ -197,6 +197,8 @@ class User extends Authenticatable implements ExportsPersonalData
         'timezone' => 'string',
         'friend_checkin' => FriendCheckinSetting::class,
         'recent_gdpr_export' => 'datetime',
+        'contribution_xp' => 'integer',
+        'contribution_level' => 'integer',
     ];
 
     public function getTrainDistanceAttribute(): float

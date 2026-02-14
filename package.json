@@ -53,12 +53,14 @@
         "leaflet": "^1.9.4",
         "Leaflet-MovingMaker": "^0.0.1",
         "lgbtq.css": "^2.0.7",
+        "lucide-vue-next": "^0.563.0",
         "luxon": "^3.4.4",
         "maplibre-gl": "^5.11.0",
         "notyf": "^3.10.0",
         "papaparse": "^5.5.3",
         "pinia": "^3.0.1",
         "pinia-plugin-persistedstate": "^4.7.1",
-        "vue": "^3.3.4"
+        "vue": "^3.3.4",
+        "vue-router": "^4.6.4"
     }
 }
