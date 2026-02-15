@@ -1271,11 +1271,18 @@ export interface EventSuggestion {
   hashtag?: string | null;
   /**
    * nearestStation
-   * Query string for the nearest station to this event
+   * Query string for the nearest station to this event. Deprecated: use nearestStationId instead.
+   * @deprecated
    * @maxLength 255
    * @example "Berlin Hbf"
    */
   nearestStation?: string | null;
+  /**
+   * nearestStationId
+   * ID of the nearest station to this event
+   * @example 1
+   */
+  nearestStationId?: number | null;
 }
 
 /**
