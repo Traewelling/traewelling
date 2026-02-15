@@ -9,7 +9,6 @@ import { createPinia } from 'pinia';
 import piniaPluginPersistedsState from 'pinia-plugin-persistedstate';
 import { createApp } from 'vue';
 import ApiAlerts from '../vue/components/ApiAlerts.vue';
-import Request from '../vue/components/Events/Request.vue';
 import BaseAppLayout from '../vue/components/Layouts/BaseAppLayout.vue';
 import Leaderboard from '../vue/components/Leaderboard/Leaderboard.vue';
 import FriendCheckinSettings from '../vue/components/Settings/FriendCheckinSettings.vue';
@@ -102,13 +101,6 @@ document.addEventListener('DOMContentLoaded', function () {
         app6.mount('#settings-friend-checkin');
     }
 
-    if (document.getElementById('vue-request-events')) {
-        const app7 = createApp({});
-        app7.component('Request', Request);
-        app7.use(i18nVue, i18nOptions);
-        app7.use(pinia);
-        app7.mount('#vue-request-events');
-    }
 
     if (document.getElementById('settings-profile')) {
         const app8 = createApp({});

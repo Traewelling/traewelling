@@ -95,13 +95,29 @@ class EventSuggestion
      * @OA\Property (
      *     title="nearestStation",
      *     nullable=true,
-     *     description="Query string for the nearest station to this event",
+     *     description="Query string for the nearest station to this event. Deprecated: use nearestStationId instead.",
      *     type="string",
      *     maxLength=255,
-     *     example="Berlin Hbf"
+     *     example="Berlin Hbf",
+     *     deprecated=true
      * )
      *
      * @var string
+     *
+     * @deprecated Use nearestStationId instead
      */
     private $nearestStation;
+
+    /**
+     * @OA\Property (
+     *     title="nearestStationId",
+     *     nullable=true,
+     *     description="ID of the nearest station to this event",
+     *     type="integer",
+     *     example=1
+     * )
+     *
+     * @var int
+     */
+    private $nearestStationId;
 }

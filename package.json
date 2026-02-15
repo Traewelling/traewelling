@@ -61,6 +61,6 @@
         "pinia": "^3.0.1",
         "pinia-plugin-persistedstate": "^4.7.1",
         "vue": "^3.3.4",
-        "vue-router": "^4.6.4"
+        "vue-router": "^5.0"
     }
 }

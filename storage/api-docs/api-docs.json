@@ -6744,10 +6744,18 @@
                     },
                     "nearestStation": {
                         "title": "nearestStation",
-                        "description": "Query string for the nearest station to this event",
+                        "description": "Query string for the nearest station to this event. Deprecated: use nearestStationId instead.",
                         "type": "string",
                         "maxLength": 255,
                         "example": "Berlin Hbf",
+                        "nullable": true,
+                        "deprecated": true
+                    },
+                    "nearestStationId": {
+                        "title": "nearestStationId",
+                        "description": "ID of the nearest station to this event",
+                        "type": "integer",
+                        "example": 1,
                         "nullable": true
                     }
                 },

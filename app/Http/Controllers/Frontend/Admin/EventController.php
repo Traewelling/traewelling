@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\Admin;
 
 use App\DataProviders\DataProviderBuilder;
 use App\DataProviders\DataProviderInterface;
+use App\Enum\ContributionActionType;
 use App\Enum\EventRejectionReason;
 use App\Exceptions\DataProviderException;
 use App\Http\Controllers\Backend\Admin\EventController as AdminEventBackend;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventSuggestion;
 use App\Notifications\EventSuggestionProcessed;
+use App\Services\Contribution\ContributionXPService;
 use App\Services\TelegramService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -133,13 +135,26 @@ class EventController extends Controller
             TelegramService::admin()->deleteMessage($eventSuggestion->admin_notification_id);
         }
 
+        $rejectionReason = EventRejectionReason::from($validated['rejectionReason']);
+
         $eventSuggestion->user->notify(
             new EventSuggestionProcessed(
                 $eventSuggestion,
                 null,
-                EventRejectionReason::from($validated['rejectionReason'])
+                $rejectionReason,
             )
         );
+
+        if ($eventSuggestion->user !== null && $rejectionReason->getXPChange() !== 0) {
+            ContributionXPService::grantXP(
+                user: $eventSuggestion->user,
+                xpChange: $rejectionReason->getXPChange(),
+                action: ContributionActionType::EVENT_SUGGESTED,
+                entityType: 'event_suggestion',
+                entityId: $eventSuggestion->id,
+                note: 'Event denied: ' . $rejectionReason->value,
+            );
+        }
 
         return redirect()->route('admin.events.suggestions')->with('alert-success', 'Event denied.');
     }
@@ -198,6 +213,17 @@ class EventController extends Controller
         }
 
         $eventSuggestion->user->notify(new EventSuggestionProcessed($eventSuggestion, $event));
+
+        if ($eventSuggestion->user !== null) {
+            ContributionXPService::grantXP(
+                user: $eventSuggestion->user,
+                xpChange: ContributionXPService::getXPForEventApproval(),
+                action: ContributionActionType::EVENT_SUGGESTED,
+                entityType: 'event_suggestion',
+                entityId: $eventSuggestion->id,
+                note: 'Event approved: ' . $event->name,
+            );
+        }
 
         return redirect()->route('admin.events.suggestions')->with('alert-success', 'Das Event wurde akzeptiert!');
     }

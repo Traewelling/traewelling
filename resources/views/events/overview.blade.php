@@ -70,21 +70,25 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-lg-4" id="vue-request-events">
-                @auth
-                    <Request></Request>
-                @else
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="fs-4" id="heading-live-upcoming">
-                                <em class="far fa-calendar-plus"></em>
-                                {{trans('events.request')}}
-                            </h2>
-                            <hr/>
+            <div class="col-md-4 col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="fs-4">
+                            <em class="far fa-calendar-plus"></em>
+                            {{trans('events.suggest.card_title')}}
+                        </h2>
+                        <hr/>
+                        <p>{{trans('events.suggest.card_description')}}</p>
+                        @auth
+                            <a href="/contribute/events/suggest" class="btn btn-primary">
+                                {{trans('events.suggest.card_button')}}
+                                <em class="fas fa-angle-double-right"></em>
+                            </a>
+                        @else
                             <p class="text-trwl bold">{{trans('auth.required')}}</p>
-                        </div>
+                        @endauth
                     </div>
-                @endauth
+                </div>
             </div>
         </div>
     </div>

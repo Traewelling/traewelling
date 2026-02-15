@@ -8,6 +8,7 @@ use App\Http\Resources\EventDetailsResource;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\StatusResource;
 use App\Models\Event;
+use App\Models\Station;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -270,9 +271,13 @@ class EventController extends Controller
             'url' => ['nullable', 'url', 'max:255'],
             'hashtag' => ['nullable', 'string', 'max:40'],
             'nearestStation' => ['nullable', 'string', 'max:255'],
+            'nearestStationId' => ['nullable', 'integer', 'exists:train_stations,id'],
         ]);
 
-        if (isset($validated['nearestStation'])) {
+        $nearestStation = null;
+        if (isset($validated['nearestStationId'])) {
+            $nearestStation = Station::find($validated['nearestStationId']);
+        } elseif (isset($validated['nearestStation'])) {
             $stations = $this->dataProvider->getStations($validated['nearestStation'], 1);
             if (count($stations) === 0) {
                 return $this->sendError(error: __('events.request.station_not_found'), code: 400);
