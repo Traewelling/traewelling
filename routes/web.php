@@ -147,7 +147,7 @@ Route::middleware(['auth', 'privacy'])->group(function () {
             ->name('open-data.wikidata');
     });
 
-    Route::prefix('contribute')->middleware(['role:open-beta|admin'])->group(function () {
+    Route::prefix('contribute')->group(function () {
         Route::get('/{any?}', function () {
             return view('contribute');
         })->where('any', '.*')->name('contribute');
