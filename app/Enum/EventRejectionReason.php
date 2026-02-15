@@ -14,4 +14,13 @@ enum EventRejectionReason: string
     {
         return __(sprintf('notifications.eventSuggestionProcessed.%s', $this->value));
     }
+
+    public function getXPChange(): int
+    {
+        return match ($this) {
+            self::DUPLICATE, self::LATE, self::DEFAULT => 0,
+            self::NOT_APPLICABLE => -1,
+            self::MISSING_INFORMATION => -5,
+        };
+    }
 }

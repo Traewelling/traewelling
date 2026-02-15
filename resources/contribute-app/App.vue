@@ -29,6 +29,12 @@
                                 {{ trans('contribute.nav.profile') }}
                             </router-link>
                         </li>
+                        <li>
+                            <router-link to="/events/suggest">
+                                <CalendarPlus class="inline-block w-6 h-6 mr-2" />
+                                {{ trans('contribute.nav.suggest_event') }}
+                            </router-link>
+                        </li>
                     </ul>
                 </div>
                 <router-link to="/" class="btn btn-ghost text-xl text-white">
@@ -47,6 +53,12 @@
                         <router-link to="/profile">
                             <User class="inline-block w-6 h-6 mr-2" />
                             {{ trans('contribute.nav.profile') }}
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/events/suggest">
+                            <CalendarPlus class="inline-block w-6 h-6 mr-2" />
+                            {{ trans('contribute.nav.suggest_event') }}
                         </router-link>
                     </li>
                 </ul>
@@ -83,5 +95,5 @@
 
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
-import { ArrowLeft, House, Menu, PencilRuler, User } from 'lucide-vue-next';
+import { ArrowLeft, CalendarPlus, House, Menu, PencilRuler, User } from 'lucide-vue-next';
 </script>
