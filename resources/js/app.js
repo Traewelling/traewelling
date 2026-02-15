@@ -101,7 +101,6 @@ document.addEventListener('DOMContentLoaded', function () {
         app6.mount('#settings-friend-checkin');
     }
 
-
     if (document.getElementById('settings-profile')) {
         const app8 = createApp({});
         app8.component('ProfileSettings', ProfileSettings);
