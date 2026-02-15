@@ -218,6 +218,18 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of entries per page (min 5, max 50, default 15)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15,
+                            "maximum": 50,
+                            "minimum": 5
+                        }
                     }
                 ],
                 "responses": {
