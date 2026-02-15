@@ -2090,6 +2090,13 @@ export class Api<
       query?: {
         /** Cursor for pagination */
         cursor?: string;
+        /**
+         * Number of entries per page (min 5, max 50, default 15)
+         * @min 5
+         * @max 50
+         * @default 15
+         */
+        limit?: number;
       },
       params: RequestParams = {},
     ) =>
