@@ -528,6 +528,37 @@ export interface CommunityProfile {
   progressPercent: number;
 }
 
+/**
+ * ContributionHistory
+ * A single contribution history entry
+ */
+export interface ContributionHistory {
+  /**
+   * @format uuid
+   * @example "9e3a1b2c-4d5e-6f7a-8b9c-0d1e2f3a4b5c"
+   */
+  id: string;
+  /** @example "event_suggested" */
+  actionType: string;
+  /** @example "event_suggestion" */
+  entityType: string;
+  /** @example 42 */
+  entityId: number;
+  /** @example 5 */
+  xpChange: number;
+  /** @example 0 */
+  levelBefore: number;
+  /** @example 1 */
+  levelAfter: number;
+  /** @example "Event approved: GPN 22" */
+  note?: string | null;
+  /**
+   * @format date-time
+   * @example "2026-02-15T12:00:00Z"
+   */
+  createdAt: string;
+}
+
 /** DataSourceResource */
 export interface DataSourceResource {
   /** @example "foobar" */
@@ -2041,6 +2072,36 @@ export class Api<
       >({
         path: `/community/profile`,
         method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Returns a cursor-paginated list of contribution history entries for the authenticated user
+     *
+     * @tags Community
+     * @name GetCommunityHistory
+     * @summary Get your contribution history
+     * @request GET:/community/history
+     * @secure
+     */
+    getCommunityHistory: (
+      query?: {
+        /** Cursor for pagination */
+        cursor?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: ContributionHistory[];
+        },
+        void
+      >({
+        path: `/community/history`,
+        method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,
