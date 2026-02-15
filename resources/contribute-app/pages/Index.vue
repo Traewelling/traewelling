@@ -15,7 +15,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
             <!-- left grid -->
-            <div class="col-span-1 md:col-span-4">
+            <div class="col-span-1 md:col-span-4 space-y-6">
                 <div class="card bg-base-200 shadow-sm">
                     <div class="card-body">
                         <h3 class="card-title text-xl text-base-content">
@@ -28,24 +28,30 @@
                         </ul>
                     </div>
                 </div>
-            </div>
-            <div class="col-span-1 md:col-span-2">
-                <Profile />
-            </div>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            <router-link to="/events/suggest" class="card bg-base-200 shadow-sm hover:shadow-md transition-shadow">
-                <div class="card-body">
-                    <h3 class="card-title text-lg">
-                        <CalendarPlus class="w-5 h-5" />
-                        {{ trans('contribute.index.suggest_event') }}
-                    </h3>
-                    <p class="text-base-content opacity-70 text-sm">
-                        {{ trans('contribute.index.suggest_event_description') }}
-                    </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <router-link
+                        to="/events/suggest"
+                        class="card bg-base-200 shadow-sm hover:shadow-md transition-shadow"
+                    >
+                        <div class="card-body">
+                            <h3 class="card-title text-lg">
+                                <CalendarPlus class="w-5 h-5" />
+                                {{ trans('contribute.index.suggest_event') }}
+                            </h3>
+                            <p class="text-base-content opacity-70 text-sm">
+                                {{ trans('contribute.index.suggest_event_description') }}
+                            </p>
+                        </div>
+                    </router-link>
                 </div>
-            </router-link>
+            </div>
+
+            <!-- right sidebar -->
+            <div class="col-span-1 md:col-span-2 space-y-6">
+                <ContributionStats />
+                <ContributionHistory :limit="5" />
+            </div>
         </div>
     </div>
 </template>
@@ -55,7 +61,8 @@ import { trans } from 'laravel-vue-i18n';
 import { CalendarPlus, Info } from 'lucide-vue-next';
 import { onMounted } from 'vue';
 import { useUserStore } from '../../vue/stores/user';
-import Profile from './Profile.vue';
+import ContributionHistory from '../components/ContributionHistory.vue';
+import ContributionStats from '../components/ContributionStats.vue';
 
 const user = useUserStore();
 

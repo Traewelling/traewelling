@@ -936,6 +936,9 @@
     "contribute.suggest_event.url_label": "Link to the event",
     "contribute.suggest_event.url_hint": "Link the official website or another credible source that confirms the event. This helps us review and approve your suggestion more quickly.",
     "contribute.suggest_event.nearest_station_no_results": "No stations found. Try a different search term.",
+    "contribute.history.title": "XP History",
+    "contribute.history.empty": "No contributions yet. Start by suggesting an event!",
+    "contribute.history.load_more": "Load more",
     "contribute.index.suggest_event": "Suggest Event",
     "contribute.index.suggest_event_description": "Know about an upcoming event related to public transit? Suggest it and earn XP when it gets approved!"
 }

@@ -201,6 +201,55 @@
                 ]
             }
         },
+        "/community/history": {
+            "get": {
+                "tags": [
+                    "Community"
+                ],
+                "summary": "Get your contribution history",
+                "description": "Returns a cursor-paginated list of contribution history entries for the authenticated user",
+                "operationId": "getCommunityHistory",
+                "parameters": [
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "description": "Cursor for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ContributionHistory"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
         "/app/configuration": {
             "get": {
                 "tags": [
@@ -5526,6 +5575,62 @@
                         "type": "number",
                         "format": "float",
                         "example": 25
+                    }
+                },
+                "type": "object"
+            },
+            "ContributionHistory": {
+                "title": "ContributionHistory",
+                "description": "A single contribution history entry",
+                "required": [
+                    "id",
+                    "actionType",
+                    "entityType",
+                    "entityId",
+                    "xpChange",
+                    "levelBefore",
+                    "levelAfter",
+                    "createdAt"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "9e3a1b2c-4d5e-6f7a-8b9c-0d1e2f3a4b5c"
+                    },
+                    "actionType": {
+                        "type": "string",
+                        "example": "event_suggested"
+                    },
+                    "entityType": {
+                        "type": "string",
+                        "example": "event_suggestion"
+                    },
+                    "entityId": {
+                        "type": "integer",
+                        "example": 42
+                    },
+                    "xpChange": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "levelBefore": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "levelAfter": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "note": {
+                        "type": "string",
+                        "example": "Event approved: GPN 22",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-02-15T12:00:00Z"
                     }
                 },
                 "type": "object"

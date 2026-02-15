@@ -936,6 +936,9 @@
     "contribute.suggest_event.url_label": "Link zum Event",
     "contribute.suggest_event.url_hint": "Verlinke die offizielle Webseite oder eine andere seriöse Quelle, die das Event belegt. Das hilft uns, deinen Vorschlag schneller zu prüfen und freizugeben.",
     "contribute.suggest_event.nearest_station_no_results": "Keine Stationen gefunden. Probiere einen anderen Suchbegriff.",
+    "contribute.history.title": "XP-Verlauf",
+    "contribute.history.empty": "Noch keine Beiträge. Schlage doch ein Event vor!",
+    "contribute.history.load_more": "Mehr laden",
     "contribute.index.suggest_event": "Event vorschlagen",
     "contribute.index.suggest_event_description": "Du kennst eine bevorstehende Veranstaltung rund um den ÖPNV? Schlage sie vor und verdiene XP, wenn sie genehmigt wird!"
 }
