@@ -370,7 +370,7 @@
     "description.en-route": "Carte globale de toustes les Träwelleur·se·s actuellement en route dans le monde.",
     "events.period": "Période",
     "events.no-upcoming": "Nous avons actuellement connaissance d'aucun évènement.",
-    "events.request": "Signaler un évènement",
+    "events.request": "Suggérer un évènement",
     "events.request.success": "Nous avons reçu ton évènement suggéré. Merci beaucoup !",
     "event": "Évènement",
     "events": "Évènements",
@@ -898,5 +898,8 @@
     "trip_creation.csv_import.errors.bad_row": "rows: :rows invalides",
     "trip_creation.csv_import.errors.station_not_found": "Aucune station n'a pu être identifiée.",
     "trip_creation.csv_import.errors.some_stations_failed": ":count station(s) n'ont pas pu être trouvées.",
-    "trip_creation.csv_import.help.station_list_link": "Afficher la carte avec les stations et leurs identifiants"
+    "trip_creation.csv_import.help.station_list_link": "Afficher la carte avec les stations et leurs identifiants",
+    "events.suggest.card_title": "Un évènement manque ?",
+    "events.suggest.card_description": "Vous connaissez un évènement qui n'est pas encore listé ici ? Suggérez-le et aidez la communauté !",
+    "events.suggest.card_button": "Suggérer un évènement"
 }
