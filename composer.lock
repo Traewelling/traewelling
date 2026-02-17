@@ -10172,16 +10172,16 @@
     "packages-dev": [
         {
             "name": "barryvdh/laravel-debugbar",
-            "version": "v4.0.8",
+            "version": "v4.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fruitcake/laravel-debugbar.git",
-                "reference": "ad7a5b11c11bf7773c9acd04d0fe0d79a229b1c7"
+                "reference": "4eee2f032172fd6548028395d7a1adbd8eae2ba0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fruitcake/laravel-debugbar/zipball/ad7a5b11c11bf7773c9acd04d0fe0d79a229b1c7",
-                "reference": "ad7a5b11c11bf7773c9acd04d0fe0d79a229b1c7",
+                "url": "https://api.github.com/repos/fruitcake/laravel-debugbar/zipball/4eee2f032172fd6548028395d7a1adbd8eae2ba0",
+                "reference": "4eee2f032172fd6548028395d7a1adbd8eae2ba0",
                 "shasum": ""
             },
             "require": {
@@ -10255,7 +10255,7 @@
             ],
             "support": {
                 "issues": "https://github.com/fruitcake/laravel-debugbar/issues",
-                "source": "https://github.com/fruitcake/laravel-debugbar/tree/v4.0.8"
+                "source": "https://github.com/fruitcake/laravel-debugbar/tree/v4.0.9"
             },
             "funding": [
                 {
@@ -10267,7 +10267,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-14T13:26:03+00:00"
+            "time": "2026-02-17T08:14:13+00:00"
         },
         {
             "name": "barryvdh/laravel-ide-helper",
