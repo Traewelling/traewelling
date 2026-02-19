@@ -3,10 +3,11 @@ import { trans } from 'laravel-vue-i18n';
 import { DateTime, Duration } from 'luxon';
 import { Notyf } from 'notyf';
 import { computed, ref } from 'vue';
-import { Api, StatusResource, StopoverResource } from '../../types/Api.gen';
+import { Api, StatusResource, StopoverResource, UserResource } from '../../types/Api.gen';
 import LoadingSkeletonRows from '../components/Loader/LoadingSkeletonRows.vue';
 import StatusCard from '../components/Status/StatusCard.vue';
 import { getDepartureForStatus } from '../helpers/DateTimeHelper';
+import { IconHelper } from '../helpers/IconHelper';
 import { useUserStore } from '../stores/user';
 
 const props = defineProps<{ username: string }>();
@@ -17,8 +18,7 @@ const notyf = new Notyf({ position: { x: 'right', y: 'bottom' } });
 // -------------------------
 // State
 // -------------------------
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const userData = ref<any>(null);
+const userData = ref<UserResource | null>(null);
 const statuses = ref<StatusResource[]>([]);
 const stopovers = ref<Record<string, StopoverResource[]>>({});
 const loadingUser = ref(true);
@@ -30,15 +30,15 @@ const lastPage = ref<number | null>(null);
 
 const authUser = useUserStore();
 
-async function fetchUser() {
+function fetchUser() {
     loadingUser.value = true;
     try {
-        const res = await fetch(`/api/v1/user/${encodeURIComponent(props.username)}`, {
-            headers: { Accept: 'application/json' },
-            credentials: 'same-origin',
+        api.user.showUser(props.username).then((res) => {
+            if (!res.ok) throw new Error(`HTTP ${res.status} - ${res.statusText}`);
+            res.json().then((user) => {
+                userData.value = user.data;
+            });
         });
-        const json = await res.json();
-        userData.value = json.data;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
         notyf.error('Error fetching user: ' + err.message);
@@ -47,31 +47,33 @@ async function fetchUser() {
     }
 }
 
-async function fetchStatuses(append = false) {
+function fetchStatuses(append = false) {
     loadingStatuses.value = true;
 
     const nextPage = append ? currentPage.value + 1 : 1;
-    const url = `/api/v1/user/${encodeURIComponent(props.username)}/statuses?page=${nextPage}`;
 
     try {
-        const res = await fetch(url, { headers: { Accept: 'application/json' }, credentials: 'same-origin' });
-        const json = await res.json();
+        api.user.getStatusesForUser(props.username).then((res) => {
+            if (!res.ok) throw new Error(`HTTP ${res.status} - ${res.statusText}`);
+            res.json().then((json) => {
+                const list: StatusResource[] = json.data ?? [];
+                if (append) statuses.value.push(...list);
+                else statuses.value = list;
 
-        const list: StatusResource[] = json.data ?? [];
-        if (append) statuses.value.push(...list);
-        else statuses.value = list;
+                const meta = json.meta ?? {};
+                currentPage.value = meta.current_page ?? nextPage;
+                lastPage.value = meta.last_page ?? null;
 
-        const meta = json.meta ?? {};
-        currentPage.value = meta.current_page ?? nextPage;
-        lastPage.value = meta.last_page ?? null;
+                if (lastPage.value === null) {
+                    showMore.value = !!json.links?.next;
+                } else {
+                    showMore.value = currentPage.value < lastPage.value;
+                }
 
-        if (lastPage.value === null) {
-            showMore.value = !!json.links?.next;
-        } else {
-            showMore.value = currentPage.value < lastPage.value;
-        }
+                fetchStopovers();
+            });
+        });
 
-        fetchStopovers();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
         notyf.error('Error fetching statuses: ' + err.message);
@@ -82,7 +84,7 @@ async function fetchStatuses(append = false) {
 
 async function fetchStopovers() {
     if (!statuses.value.length) return;
-    const tripIds = [...new Set(statuses.value.map((s) => s.train.trip.toString()))];
+    const tripIds = [...new Set(statuses.value.map((s) => s.checkin.trip.toString()))];
     if (!tripIds.length) return;
 
     try {
@@ -135,7 +137,7 @@ const mergedLinks = computed(() => {
     const links = [...(userData.value?.profileLinks ?? [])];
     const hasMastodon = links.some((l) => (l.name || '').toUpperCase() === 'MASTODON');
     if (userData.value?.mastodonUrl && !hasMastodon) {
-        links.push({ name: 'Mastodon', url: userData.value.mastodonUrl, icon: 'fa-brands fa-mastodon' });
+        links.push({ name: 'mastodon', url: userData.value.mastodonUrl });
     }
     return links;
 });
@@ -189,15 +191,15 @@ fetchStatuses(false);
                     </p>
                     <div v-if="mergedLinks.length" class="d-flex justify-content-center flex-wrap gap-3 mt-4">
                         <a
-                            v-for="(l, i) in mergedLinks"
+                            v-for="(link, i) in mergedLinks"
                             :key="i"
-                            :href="l.url"
+                            :href="link.url"
                             class="text-muted fs-4"
-                            :aria-label="l.name"
+                            :aria-label="link.name"
                             target="_blank"
                             rel="me"
                         >
-                            <i :class="l.icon || 'fa-solid fa-link'" />
+                            <i :class="IconHelper.getLinkIcon(link.name) || 'fa-link'" class="fa-solid" />
                         </a>
                     </div>
                 </div>
@@ -220,7 +222,7 @@ fetchStatuses(false);
                 <StatusCard
                     :status="s"
                     :authenticated-user="authUser.user"
-                    :stopovers="getStopoverForTrip(s.train.trip.toString())"
+                    :stopovers="getStopoverForTrip(s.checkin.trip.toString())"
                 />
             </template>
 
@@ -241,18 +243,16 @@ fetchStatuses(false);
                 <p class="text-muted">Final stop. All change, please!</p>
             </div>
 
-            <div v-if="!loadingStatuses && !statuses.length" class="text-center my-4">
+            <div v-if="!loadingStatuses && !statuses.length && userData" class="text-center my-4">
                 <span class="text-danger fs-3">
                     <template v-if="(userData?.trainDistance ?? 0) > 0">
-                        {{ trans('profile.no-visible-statuses', { username: userData?.displayName }) }}
+                        {{ trans('profile.no-visible-statuses', { username: userData.displayName }) }}
                     </template>
                     <template v-else>
-                        {{ trans('profile.no-statuses', { username: userData?.displayName }) }}
+                        {{ trans('profile.no-statuses', { username: userData.displayName }) }}
                     </template>
                 </span>
             </div>
         </div>
     </div>
 </template>
-
-<style scoped></style>

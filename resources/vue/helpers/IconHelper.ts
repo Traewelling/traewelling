@@ -16,7 +16,24 @@ const businessIcons = {
     2: 'fa-building',
 };
 
+const linkIcons: { [key: string]: string } = {
+    website: 'fa-globe',
+    instagram: 'fa-instagram',
+    bluesky: 'fa-bluesky',
+    facebook: 'fa-facebook',
+    mastodon: 'fa-mastodon',
+    tiktok: 'fa-tiktok',
+    github: 'fa-github',
+};
+
 export class IconHelper {
+    static getLinkIcon(linkType: string): string | null {
+        if (Object.prototype.hasOwnProperty.call(linkIcons, linkType)) {
+            return linkIcons[linkType] || null;
+        }
+        return null;
+    }
+
     static getVisibilityIcon(visibility: StatusVisibility): string {
         if (Object.prototype.hasOwnProperty.call(visibilityIcons, visibility)) {
             return visibilityIcons[visibility];

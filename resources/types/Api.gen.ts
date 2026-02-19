@@ -660,7 +660,7 @@ export interface OperatorResource {
  */
 export interface ProfileLinkResource {
   /** @example "website" */
-  name?:
+  name:
     | "website"
     | "instagram"
     | "bluesky"
@@ -669,7 +669,7 @@ export interface ProfileLinkResource {
     | "tiktok"
     | "github";
   /** @example "https://traewelling.de" */
-  url?: string;
+  url: string;
 }
 
 /** StationIdentifier */
@@ -747,12 +747,12 @@ export interface StatusResource {
    */
   isLikable: boolean;
   client: ClientResource;
-  checkin?: TransportResource;
+  checkin: TransportResource;
   event: EventResource | null;
   /** User model with just basic information */
-  user?: LightUserResource;
+  user: LightUserResource;
   /** User who created this check-in on behalf of the status owner (null if self-checkin) */
-  createdBy?: LightUserResource | null;
+  createdBy: LightUserResource | null;
   tags: StatusTagResource[];
   /**
    * creation date of this status

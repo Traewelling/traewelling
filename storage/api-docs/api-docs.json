@@ -5841,6 +5841,10 @@
             "ProfileLinkResource": {
                 "title": "ProfileLinkResource",
                 "description": "ProfileLinkResource",
+                "required": [
+                    "name",
+                    "url"
+                ],
                 "properties": {
                     "name": {
                         "type": "enum",
@@ -5962,7 +5966,10 @@
                     "train",
                     "event",
                     "userDetails",
-                    "tags"
+                    "tags",
+                    "checkin",
+                    "user",
+                    "createdBy"
                 ],
                 "properties": {
                     "id": {
