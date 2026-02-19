@@ -4,6 +4,9 @@ import { UserResource } from '../../../../types/Api.gen';
 import BlockButton from '../../../components/BlockButton.vue';
 import FollowButton from '../../../components/FollowButton.vue';
 import MuteButton from '../../../components/MuteButton.vue';
+import { useUserStore } from '../../../stores/user';
+
+const authUser = useUserStore();
 
 defineProps<{
     userData: UserResource;
@@ -35,10 +38,22 @@ defineProps<{
                         </span>
                     </small>
                 </span>
-                <div class="d-flex py-3 flex-row justify-content-md-start align-items-md-center gap-1">
+                <div
+                    v-if="authUser.authenticated"
+                    class="d-flex py-3 flex-row justify-content-md-start align-items-md-center gap-1"
+                >
                     <FollowButton :user-data="userData" />
-                    <MuteButton :user-data="userData" />
-                    <BlockButton :user-data="userData" />
+                    <template v-if="userData.id !== authUser.getId">
+                        <MuteButton :user-data="userData" />
+                        <BlockButton :user-data="userData" />
+                    </template>
+                    <a
+                        v-if="authUser?.isAdmin"
+                        :href="`/admin/users/${userData.id}`"
+                        class="btn btn-sm btn-outline-light"
+                    >
+                        <i class="fa fa-tools"></i>
+                    </a>
                 </div>
             </div>
         </div>
