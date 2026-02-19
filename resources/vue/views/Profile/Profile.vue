@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { trans } from 'laravel-vue-i18n';
-import { Duration } from 'luxon';
 import { Notyf } from 'notyf';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { Api, StatusResource, StopoverResource, UserResource } from '../../../types/Api.gen';
 import LoadingSkeletonRows from '../../components/Loader/LoadingSkeletonRows.vue';
-import { IconHelper } from '../../helpers/IconHelper';
-import { useUserStore } from '../../stores/user';
+import BioCard from './partials/BioCard.vue';
+import StatisticsCard from './partials/StatisticsCard.vue';
 import Statuses from './partials/Statuses.vue';
 
 const props = defineProps<{ username: string }>();
@@ -26,8 +24,6 @@ const loadingStatuses = ref(true);
 const showMore = ref(false);
 const currentPage = ref(1);
 const lastPage = ref<number | null>(null);
-
-const authUser = useUserStore();
 
 function fetchUser() {
     loadingUser.value = true;
@@ -94,29 +90,6 @@ async function fetchStopovers() {
         console.error('Stopovers error', err);
     }
 }
-
-// Metrics
-const kmDisplay = computed(() => {
-    const meters = userData.value?.trainDistance ?? 0;
-    const km = meters / 1000;
-    return km.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-});
-const durationParts = computed(() => {
-    const minutes = userData.value?.trainDuration ?? 0;
-    const dur = Duration.fromObject({ minutes }).shiftTo('days', 'hours', 'minutes');
-    return { d: dur.days ?? 0, h: dur.hours ?? 0, m: Math.round(dur.minutes ?? 0) };
-});
-const showPoints = computed(() => !!(userData.value?.pointsEnabled || authUser.user?.pointsEnabled));
-
-const mergedLinks = computed(() => {
-    const links = [...(userData.value?.profileLinks ?? [])];
-    const hasMastodon = links.some((l) => (l.name || '').toUpperCase() === 'MASTODON');
-    if (userData.value?.mastodonUrl && !hasMastodon) {
-        links.push({ name: 'mastodon', url: userData.value.mastodonUrl });
-    }
-    return links;
-});
-
 fetchUser();
 fetchStatuses(false);
 </script>
@@ -124,61 +97,11 @@ fetchStatuses(false);
 <template>
     <div class="row mt-4">
         <!-- LEFT COLUMN -->
-        <div class="col">
-            <!-- Stats card -->
-            <div class="card mb-3 shadow-sm rounded">
-                <div class="card-body">
-                    <LoadingSkeletonRows v-if="loadingUser" :columns="3" :rows="1" />
-                    <div v-else class="row text-center gx-2 gy-3">
-                        <div class="col">
-                            <i class="fa fa-route fa-2x text-trwl" />
-                            <div class="h5 mb-0">
-                                {{ kmDisplay }}
-                                <small class="text-muted">km</small>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <i class="fa fa-stopwatch fa-2x text-trwl" />
-                            <div class="h5 mb-0">
-                                {{ durationParts.d }}<small class="text-muted">d</small>&nbsp; {{ durationParts.h
-                                }}<small class="text-muted">h</small>&nbsp; {{ durationParts.m
-                                }}<small class="text-muted">min</small>
-                            </div>
-                        </div>
-                        <div v-if="showPoints" class="col">
-                            <i class="fa fa-dice-d20 fa-2x text-trwl" />
-                            <div class="h5 mb-0">
-                                {{ userData?.points ?? 0 }}
-                                <small class="text-muted">{{ trans('profile.points-abbr') }}</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <LoadingSkeletonRows v-if="loadingUser" :count="3" :row-height="90" class="mb-3 col" />
+        <div v-else class="col">
+            <StatisticsCard v-if="userData" :user-data="userData" :loading-user="loadingUser" />
 
-            <!-- Bio & links -->
-            <div v-if="userData?.bio || mergedLinks.length" class="card mb-3 shadow-sm rounded">
-                <div class="card-body">
-                    <p v-if="userData?.bio" class="text-muted fst-italic m-0">
-                        <i class="fa fa-quote-left me-2" />
-                        <!-- eslint-disable-next-line vue/no-v-html -->
-                        <span class="profile-bio" v-html="userData.bio" />
-                    </p>
-                    <div v-if="mergedLinks.length" class="d-flex justify-content-center flex-wrap gap-3 mt-4">
-                        <a
-                            v-for="(link, i) in mergedLinks"
-                            :key="i"
-                            :href="link.url"
-                            class="text-muted fs-4"
-                            :aria-label="link.name"
-                            target="_blank"
-                            rel="me"
-                        >
-                            <i :class="IconHelper.getLinkIcon(link.name) || 'fa-link'" class="fa-solid" />
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <BioCard v-if="userData" :user-data="userData" />
         </div>
 
         <div class="col-md-8 col-lg-7">
