@@ -228,20 +228,14 @@ class UserController extends Controller
      *      description="Block a specific user. That user will not be able to see your statuses or profile information,
      *      and cannot send you follow requests. Public statuses are still visible through the incognito mode.",
      *
-     *      @OA\RequestBody(
-     *          required=true,
+     *      @OA\Parameter (
+     *            name="id",
+     *            in="path",
+     *            description="User-ID",
+     *            example=1337,
      *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(
-     *                  property="userId",
-     *                  title="userId",
-     *                  format="int",
-     *                  description="ID of the to-be-blocked user",
-     *                  example=1
-     *              )
-     *          )
-     *      ),
+     *            @OA\Schema(type="integer")
+     *        ),
      *
      *      @OA\Response(
      *          response=201,
@@ -296,20 +290,14 @@ class UserController extends Controller
      *      description="Unblock a specific user. They are now able to see your statuses and profile information again,
      *      and send you follow requests.",
      *
-     *      @OA\RequestBody(
-     *          required=true,
+     *      @OA\Parameter (
+     *              name="id",
+     *              in="path",
+     *              description="User-ID",
+     *              example=1337,
      *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(
-     *                  property="userId",
-     *                  title="userId",
-     *                  format="int",
-     *                  description="ID of the to-be-unblocked user",
-     *                  example=1
-     *              )
-     *          )
-     *      ),
+     *              @OA\Schema(type="integer")
+     *          ),
      *
      *      @OA\Response(
      *          response=200,

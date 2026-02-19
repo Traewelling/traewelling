@@ -45,7 +45,7 @@ class UserPolicy
             return Response::denyWithStatus(ViewUserForbiddenReason::PrivateProfile, __('profile.private-profile-text'));
         }
         if ($user->mutedUsers->contains('id', $model->id)) {
-            return Response::denyWithStatus(ViewUserForbiddenReason::USER_MUTED, __('user.muted.heading'));
+            return Response::denyWithStatus(ViewUserForbiddenReason::Muted, __('user.muted.heading'));
         }
         if (BlockController::isBlocked($model, $user)) {
             return Response::denyWithStatus(ViewUserForbiddenReason::YoureBlocked, __('profile.youre-blocked-text'));

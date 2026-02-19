@@ -2660,19 +2660,7 @@ export class Api<
      * @request POST:/user/{id}/block
      * @secure
      */
-    createBlock: (
-      id: string,
-      data: {
-        /**
-         * userId
-         * ID of the to-be-blocked user
-         * @format int
-         * @example 1
-         */
-        userId?: any;
-      },
-      params: RequestParams = {},
-    ) =>
+    createBlock: (id?: number, params: RequestParams = {}) =>
       this.request<
         {
           /** User model */
@@ -2682,9 +2670,7 @@ export class Api<
       >({
         path: `/user/${id}/block`,
         method: "POST",
-        body: data,
         secure: true,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -2698,19 +2684,7 @@ export class Api<
      * @request DELETE:/user/{id}/block
      * @secure
      */
-    destroyBlock: (
-      id: string,
-      data: {
-        /**
-         * userId
-         * ID of the to-be-unblocked user
-         * @format int
-         * @example 1
-         */
-        userId?: any;
-      },
-      params: RequestParams = {},
-    ) =>
+    destroyBlock: (id?: number, params: RequestParams = {}) =>
       this.request<
         {
           /** User model */
@@ -2720,9 +2694,7 @@ export class Api<
       >({
         path: `/user/${id}/block`,
         method: "DELETE",
-        body: data,
         secure: true,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),

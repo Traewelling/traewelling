@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import { Api, StatusResource, StopoverResource, UserResource, ViewUserForbiddenReason } from '../../../types/Api.gen';
 import LoadingSkeletonRows from '../../components/Loader/LoadingSkeletonRows.vue';
 import BioCard from './partials/BioCard.vue';
+import Header from './partials/Header.vue';
 import ProfileNotVisibleInfo from './partials/ProfileNotVisibleInfo.vue';
 import StatisticsCard from './partials/StatisticsCard.vue';
 import Statuses from './partials/Statuses.vue';
@@ -99,31 +100,34 @@ fetchStatuses(false);
 </script>
 
 <template>
-    <div class="row mt-4">
-        <!-- LEFT COLUMN -->
-        <LoadingSkeletonRows v-if="loadingUser" :count="3" :row-height="90" class="mb-3 col" />
-        <div v-else class="col">
-            <StatisticsCard v-if="userData" :user-data="userData" :loading-user="loadingUser" />
+    <Header v-if="userData" :user-data="userData" />
+    <div class="container">
+        <div class="row mt-4">
+            <!-- LEFT COLUMN -->
+            <LoadingSkeletonRows v-if="loadingUser" :count="3" :row-height="90" class="mb-3 col" />
+            <div v-else class="col">
+                <StatisticsCard v-if="userData" :user-data="userData" :loading-user="loadingUser" />
 
-            <BioCard v-if="userData" :user-data="userData" />
-        </div>
+                <BioCard v-if="userData" :user-data="userData" />
+            </div>
 
-        <div class="col-md-8 col-lg-7">
-            <ProfileNotVisibleInfo
-                v-if="!loadingUser && userData !== null && userData.userInvisibleToMe"
-                :user-data="userData"
-            />
-            <Statuses
-                v-else-if="userData"
-                :statuses="statuses"
-                :stopovers="stopovers"
-                :user-data="userData"
-                :loading-statuses="loadingStatuses"
-                :show-more="showMore"
-                :last-page="lastPage"
-                :current-page="currentPage"
-                @fetch-more-statuses="fetchStatuses(true)"
-            />
+            <div class="col-md-8 col-lg-7">
+                <ProfileNotVisibleInfo
+                    v-if="!loadingUser && userData !== null && userData.userInvisibleToMe"
+                    :user-data="userData"
+                />
+                <Statuses
+                    v-else-if="userData"
+                    :statuses="statuses"
+                    :stopovers="stopovers"
+                    :user-data="userData"
+                    :loading-statuses="loadingStatuses"
+                    :show-more="showMore"
+                    :last-page="lastPage"
+                    :current-page="currentPage"
+                    @fetch-more-statuses="fetchStatuses(true)"
+                />
+            </div>
         </div>
     </div>
 </template>
