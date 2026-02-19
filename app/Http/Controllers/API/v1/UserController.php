@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
+use OpenApi\Annotations as OA;
 
 class UserController extends Controller
 {
@@ -175,7 +176,19 @@ class UserController extends Controller
      *       ),
      *
      *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=403, description="Forbidden, User is blocked"),
+     *       @OA\Response(
+     *           response=403,
+     *           description="Forbidden, User is blocked",
+     *
+     *           @OA\JsonContent(
+     *               required={"message"},
+     *
+     *               @OA\Property(property="message", type="string", example="User not accessible."),
+     *               @OA\Property(property="reason", ref="#/components/schemas/ViewUserForbiddenReason"),
+     *               @OA\Property(property="user", ref="#/components/schemas/UserResource")
+     *           )
+     *       ),
+     *
      *       @OA\Response(response=404, description="User not found"),
      *       security={
      *           {"passport": {"read-statuses"}}, {"token": {}}
@@ -192,7 +205,15 @@ class UserController extends Controller
         try {
             $this->authorize('view', $user);
         } catch (AuthorizationException $exception) {
-            abort(403, $exception->response()->message() ?? 'User not accessible.');
+
+            $this->abort(
+                403,
+                $exception->response()->message() ?? 'User not accessible.',
+                [
+                    'reason' => $exception->response()->status(),
+                    'user' => new UserResource($user),
+                ]
+            );
         }
 
         return new UserResource($user);

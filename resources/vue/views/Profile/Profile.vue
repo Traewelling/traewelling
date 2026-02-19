@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { Notyf } from 'notyf';
 import { ref } from 'vue';
-import { Api, StatusResource, StopoverResource, UserResource } from '../../../types/Api.gen';
+import { Api, StatusResource, StopoverResource, UserResource, ViewUserForbiddenReason } from '../../../types/Api.gen';
 import LoadingSkeletonRows from '../../components/Loader/LoadingSkeletonRows.vue';
 import BioCard from './partials/BioCard.vue';
+import ProfileNotVisibleInfo from './partials/ProfileNotVisibleInfo.vue';
 import StatisticsCard from './partials/StatisticsCard.vue';
 import Statuses from './partials/Statuses.vue';
 
@@ -16,6 +17,7 @@ const notyf = new Notyf({ position: { x: 'right', y: 'bottom' } });
 // State
 // -------------------------
 const userData = ref<UserResource | null>(null);
+const userInvisibleReason = ref<ViewUserForbiddenReason | null>(null);
 const statuses = ref<StatusResource[]>([]);
 const stopovers = ref<Record<string, StopoverResource[]>>({});
 const loadingUser = ref(true);
@@ -27,19 +29,23 @@ const lastPage = ref<number | null>(null);
 
 function fetchUser() {
     loadingUser.value = true;
-    try {
-        api.user.showUser(props.username).then((res) => {
-            if (!res.ok) throw new Error(`HTTP ${res.status} - ${res.statusText}`);
+    api.user
+        .showUser(props.username)
+        .then((res) => {
             res.json().then((user) => {
                 userData.value = user.data;
             });
+            loadingUser.value = false;
+        })
+        .catch((err) => {
+            if (err.status === 403) {
+                userInvisibleReason.value = err.error?.meta?.reason || null;
+                userData.value = err.error?.meta?.user || null;
+            } else {
+                notyf.error('Error fetching user: ' + err.message);
+            }
+            loadingUser.value = false;
         });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-        notyf.error('Error fetching user: ' + err.message);
-    } finally {
-        loadingUser.value = false;
-    }
 }
 
 function fetchStatuses(append = false) {
@@ -47,9 +53,9 @@ function fetchStatuses(append = false) {
 
     const nextPage = append ? currentPage.value + 1 : 1;
 
-    try {
-        api.user.getStatusesForUser(props.username).then((res) => {
-            if (!res.ok) throw new Error(`HTTP ${res.status} - ${res.statusText}`);
+    api.user
+        .getStatusesForUser(props.username)
+        .then((res) => {
             res.json().then((json) => {
                 const list: StatusResource[] = json.data ?? [];
                 if (append) statuses.value.push(...list);
@@ -66,15 +72,13 @@ function fetchStatuses(append = false) {
                 }
 
                 fetchStopovers();
+                loadingStatuses.value = false;
             });
+        })
+        .catch((err) => {
+            notyf.error('Error fetching statuses: ' + err.error?.message);
+            loadingStatuses.value = false;
         });
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-        notyf.error('Error fetching statuses: ' + err.message);
-    } finally {
-        loadingStatuses.value = false;
-    }
 }
 
 async function fetchStopovers() {
@@ -105,8 +109,12 @@ fetchStatuses(false);
         </div>
 
         <div class="col-md-8 col-lg-7">
+            <ProfileNotVisibleInfo
+                v-if="!loadingUser && userData !== null && userData.userInvisibleToMe"
+                :user-data="userData"
+            />
             <Statuses
-                v-if="userData"
+                v-else-if="userData"
                 :statuses="statuses"
                 :stopovers="stopovers"
                 :user-data="userData"

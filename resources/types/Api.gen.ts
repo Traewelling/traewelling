@@ -11,6 +11,17 @@
  */
 
 /**
+ * ViewUserForbiddenReason
+ * @example "PRIVATE_PROFILE"
+ */
+export enum ViewUserForbiddenReason {
+  PRIVATE_PROFILE = "PRIVATE_PROFILE",
+  USER_MUTED = "USER_MUTED",
+  YOU_ARE_BLOCKED = "YOU_ARE_BLOCKED",
+  USER_BLOCKED = "USER_BLOCKED",
+}
+
+/**
  * FriendCheckinSetting
  * @example "forbidden"
  */
@@ -1064,47 +1075,47 @@ export interface UserResource {
    * ID
    * @example 1
    */
-  id?: number;
+  id: number;
   /**
    * Display name of the user
    * @example "Gertrud"
    */
-  displayName?: any;
+  displayName: any;
   /**
    * username of user
    * @example "Gertrud123"
    */
-  username?: any;
+  username: any;
   /**
    * URL of the profile picture of the user
    * @example "https://traewelling.de/@Gertrud123/picture"
    */
-  profilePicture?: any;
+  profilePicture: any;
   /**
    * distance travelled by train in meters
    * @example 12345
    */
-  trainDistance?: number;
+  trainDistance: number;
   /**
    * duration travelled by train in minutes
    * @example 6
    */
-  trainDuration?: number;
+  trainDuration: number;
   /**
    * Current points of the last 7 days
    * @example 300
    */
-  points?: number;
+  points: number;
   /**
    * URL to the Mastodon profile of the user
    * @example "https://chaos.social/@traewelling"
    */
-  mastodonUrl?: any;
+  mastodonUrl: any;
   /**
    * is this profile set to private?
    * @example false
    */
-  privateProfile?: boolean;
+  privateProfile: boolean;
   /**
    * Does this profile allow points? Only offer the UI to show points at any status if this setting is set to true. If set to false, the points will always be displayed as 0
    * @example true
@@ -1119,44 +1130,49 @@ export interface UserResource {
    * Does this profile allow points? Only offer the UI to show points at any status if this setting is set to true. If set to false, the points will always be displayed as 0
    * @example true
    */
-  pointsEnabled?: boolean;
+  pointsEnabled: boolean;
   /**
    * Can the currently authenticated user see the statuses of this user?
    * @example false
    */
-  userInvisibleToMe?: boolean;
+  userInvisibleToMe: boolean;
   /**
    * Is this user muted by the currently authenticated user?
    * @example false
    */
-  muted?: boolean;
+  muted: boolean;
+  /**
+   * Is this user blocked by the currently authenticated user?
+   * @example false
+   */
+  blocked: boolean;
   /**
    * Does the currently authenticated user follow this user?
    * @example false
    */
-  following?: boolean;
+  following: boolean;
   /**
    * Is there a currently pending follow request?
    * @example false
    */
-  followPending?: boolean;
+  followPending: boolean;
   /**
    * Is the user following you?
    * @example false
    */
-  followedBy?: boolean;
+  followedBy: boolean;
   /**
    * Did the user choose to prevent search engines from indexing their profile?
    * @example false
    */
-  preventIndex?: boolean;
+  preventIndex: boolean;
   /**
    * Bio of the user
    * @example "Hi there! I am Gertrud!"
    */
-  bio?: string;
+  bio: string;
   /** Profile links of the user */
-  profileLinks?: ProfileLinkResource[];
+  profileLinks: ProfileLinkResource[];
 }
 
 /** BearerTokenResponse */
@@ -2619,7 +2635,13 @@ export class Api<
           /** User model */
           data?: UserResource;
         },
-        void
+        void | {
+          /** @example "User not accessible." */
+          message: string;
+          reason?: ViewUserForbiddenReason;
+          /** User model */
+          user?: UserResource;
+        }
       >({
         path: `/user/${username}`,
         method: "GET",

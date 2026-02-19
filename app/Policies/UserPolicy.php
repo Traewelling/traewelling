@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Enum\User\FriendCheckinSetting;
+use App\Enum\ViewUserForbiddenReason;
 use App\Http\Controllers\Backend\User\BlockController;
 use App\Http\Controllers\Backend\User\FollowController;
 use App\Models\User;
@@ -35,22 +36,22 @@ class UserPolicy
     public function view(?User $user, User $model): Response
     {
         if ($user === null) {
-            return $model->private_profile ? Response::deny(__('profile.private-profile-text')) : Response::allow();
+            return $model->private_profile ? Response::denyWithStatus(ViewUserForbiddenReason::PrivateProfile, __('profile.private-profile-text')) : Response::allow();
         }
         if ($user->is($model)) {
             return Response::allow();
         }
         if ($model->private_profile && !$model->followers->contains('user_id', $user->id)) {
-            return Response::deny(__('profile.private-profile-text'));
+            return Response::denyWithStatus(ViewUserForbiddenReason::PrivateProfile, __('profile.private-profile-text'));
         }
         if ($user->mutedUsers->contains('id', $model->id)) {
-            return Response::deny(__('user.muted.heading'));
+            return Response::denyWithStatus(ViewUserForbiddenReason::USER_MUTED, __('user.muted.heading'));
         }
         if (BlockController::isBlocked($model, $user)) {
-            return Response::deny(__('profile.youre-blocked-text'));
+            return Response::denyWithStatus(ViewUserForbiddenReason::YoureBlocked, __('profile.youre-blocked-text'));
         }
         if (BlockController::isBlocked($user, $model)) {
-            return Response::deny(__('user.blocked.heading'));
+            return Response::denyWithStatus(ViewUserForbiddenReason::Blocked, __('user.blocked.heading'));
         }
 
         return Response::allow();

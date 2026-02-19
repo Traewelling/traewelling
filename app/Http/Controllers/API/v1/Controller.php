@@ -164,6 +164,17 @@ class Controller extends \App\Http\Controllers\Controller
         return response()->json($response, $code);
     }
 
+    protected function abort(int $code = 404, ?string $message = '', ?array $additional = null): JsonResponse
+    {
+        $response = [
+            'message' => $message,
+        ];
+
+        $response = $additional ? array_merge($response, ['meta' => $additional]) : $response;
+
+        abort(response()->json($response, $code));
+    }
+
     public static function getCurrentOAuthClient(): ?OAuthClient
     {
         try {

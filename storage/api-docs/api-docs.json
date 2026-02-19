@@ -4265,7 +4265,29 @@
                         "description": "Bad request"
                     },
                     "403": {
-                        "description": "Forbidden, User is blocked"
+                        "description": "Forbidden, User is blocked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not accessible."
+                                        },
+                                        "reason": {
+                                            "$ref": "#/components/schemas/ViewUserForbiddenReason"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/UserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "description": "User not found"
@@ -5313,6 +5335,17 @@
                     "list"
                 ],
                 "example": "forbidden"
+            },
+            "ViewUserForbiddenReason": {
+                "title": "ViewUserForbiddenReason",
+                "type": "string",
+                "enum": [
+                    "PRIVATE_PROFILE",
+                    "USER_MUTED",
+                    "YOU_ARE_BLOCKED",
+                    "USER_BLOCKED"
+                ],
+                "example": "PRIVATE_PROFILE"
             },
             "UpdateProfileInformationRequest": {
                 "title": "UpdateProfileInformationRequest",
@@ -6605,6 +6638,27 @@
             "UserResource": {
                 "title": "User",
                 "description": "User model",
+                "required": [
+                    "id",
+                    "displayName",
+                    "username",
+                    "profilePicture",
+                    "trainDistance",
+                    "trainDuration",
+                    "points",
+                    "mastodonUrl",
+                    "privateProfile",
+                    "pointsEnabled",
+                    "userInvisibleToMe",
+                    "muted",
+                    "blocked",
+                    "following",
+                    "followPending",
+                    "followedBy",
+                    "preventIndex",
+                    "bio",
+                    "profileLinks"
+                ],
                 "properties": {
                     "id": {
                         "description": "ID",
@@ -6670,6 +6724,11 @@
                     },
                     "muted": {
                         "description": "Is this user muted by the currently authenticated user?",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "blocked": {
+                        "description": "Is this user blocked by the currently authenticated user?",
                         "type": "boolean",
                         "example": false
                     },
