@@ -25,14 +25,8 @@ class FrontendUserController extends Controller
     public function getProfilePage(string $username): View
     {
         $user = User::where('username', $username)->firstOrFail();
-        try {
-            $statuses = UserController::statusesForUser($user);
-        } catch (AuthorizationException) {
-            $statuses = null;
-        }
 
         return view('profile.profile', [
-            'statuses' => $statuses,
             'user' => $user,
         ]);
     }
