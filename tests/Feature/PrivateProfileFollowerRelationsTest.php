@@ -81,10 +81,12 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
         $alice = $this->alice;
         $bob = $this->user;
 
-        // Alice cannot see Bob
+        // Alice cannot see Bob. API returns 403 with PRIVATE_PROFILE reason
         $this->assertFalse($alice->can('view', $bob));
-        $guest = $this->actingAs($alice)->get(route('profile', ['username' => $bob->username]));
-        $guest->assertSee(__('profile.private-profile-text'));
+        Passport::actingAs($alice, ['*']);
+        $this->getJson('/api/v1/user/' . $bob->username)
+            ->assertForbidden()
+            ->assertJsonPath('meta.reason', 'PRIVATE_PROFILE');
 
         // When: Alice follows Bob
         $request = $this->actingAs($alice)->post(route('follow.request'), ['follow_id' => $bob->id]);
@@ -95,9 +97,9 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
         $bob->refresh();
         $this->assertContains($alice->id, $bob->followers->pluck('user_id'));
 
-        // Alice can see Bob
-        $guest = $this->actingAs($alice)->get(route('profile', ['username' => $bob->username]));
-        $guest->assertDontSee(__('profile.private-profile-text'));
+        // Alice can see Bob. API returns 200
+        Passport::actingAs($alice, ['*']);
+        $this->getJson('/api/v1/user/' . $bob->username)->assertOk();
         $this->assertTrue($alice->can('view', $bob));
     }
 
@@ -108,12 +110,14 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
         $alice = $this->alice;
         $bob = $this->user;
 
-        // Alice cannot see Bob
+        // Alice cannot see Bob. API returns 403 with PRIVATE_PROFILE reason
         $this->assertFalse($alice->can('view', $bob));
-        $guest = $this->actingAs($alice)->get(route('profile', ['username' => $bob->username]));
-        $guest->assertSee(__('profile.private-profile-text'));
+        Passport::actingAs($alice, ['*']);
+        $this->getJson('/api/v1/user/' . $bob->username)
+            ->assertForbidden()
+            ->assertJsonPath('meta.reason', 'PRIVATE_PROFILE');
 
-        // When: Alice follows Bob
+        // When: Alice requests to follow Bob, but Bob declines
         $request = $this->actingAs($alice)->post(route('follow.request'), ['follow_id' => $bob->id]);
         $request->assertStatus(201);
         $follow = $this->actingAs($bob)->post(route('settings.follower.reject'), ['user_id' => $alice->id]);
@@ -122,37 +126,41 @@ class PrivateProfileFollowerRelationsTest extends ApiTestCase
         $alice->refresh();
         $bob->refresh();
 
-        // Alice cannot see Bob
-        $guest = $this->actingAs($alice)->get(route('profile', ['username' => $bob->username]));
-        $guest->assertSee(__('profile.private-profile-text'));
+        // Alice still cannot see Bob. API still returns 403
+        Passport::actingAs($alice, ['*']);
+        $this->getJson('/api/v1/user/' . $bob->username)
+            ->assertForbidden()
+            ->assertJsonPath('meta.reason', 'PRIVATE_PROFILE');
         $this->assertFalse($alice->can('view', $bob));
     }
 
     #[Test]
     public function removing_a_follower_should_result_in_invisibility(): void
     {
-        // Given: Users Alice and Bob
+        // Given: Alice is an approved follower of Bob's private profile
         $alice = $this->alice;
         $bob = $this->user;
-        UserController::createFollow($alice, $bob);
+        UserController::createFollow($alice, $bob, isApprovedRequest: true);
         $alice->refresh();
+        $bob->refresh();
 
-        // Alice cannot see Bob
-        // ToDo: This technically checks if Alice CANNOT see Bob. But.. she should here?
-        $guest = $this->actingAs($alice)->get(route('profile', ['username' => $bob->username]));
-        $guest->assertSee(__('profile.private-profile-text'));
-        $invisible = $this->actingAs($alice)->user->getUserInvisibleToMeAttribute();
-        $this->assertTrue($invisible);
+        // Alice can see Bob : she is an approved follower
+        $this->assertTrue($alice->can('view', $bob));
+        Passport::actingAs($alice, ['*']);
+        $this->getJson('/api/v1/user/' . $bob->username)->assertOk();
 
-        // When: Alice follows Bob
-        $follow = $this->actingAs($bob)->post(route('settings.follower.remove'), ['user_id' => $alice->id]);
-        $follow->assertStatus(302);
+        // When: Bob removes Alice from his followers
+        $this->actingAs($bob)
+            ->post(route('settings.follower.remove'), ['user_id' => $alice->id])
+            ->assertStatus(302);
 
-        // Alice cannot see Bob
+        // Alice can no longer see Bob : removing a follower restores invisibility
         $alice->refresh();
-        $invisible = $this->actingAs($alice)->user->getUserInvisibleToMeAttribute();
-        $this->assertTrue($invisible);
-        $guest = $this->actingAs($alice)->get(route('profile', ['username' => $bob->username]));
-        $guest->assertSee(__('profile.private-profile-text'));
+        $bob->refresh();
+        $this->assertFalse($alice->can('view', $bob));
+        Passport::actingAs($alice, ['*']);
+        $this->getJson('/api/v1/user/' . $bob->username)
+            ->assertForbidden()
+            ->assertJsonPath('meta.reason', 'PRIVATE_PROFILE');
     }
 }

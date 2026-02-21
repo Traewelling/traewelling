@@ -8,9 +8,10 @@ use App\Models\Like;
 use App\Models\Status;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\FeatureTestCase;
+use Laravel\Passport\Passport;
+use Tests\ApiTestCase;
 
-class UserBlockTest extends FeatureTestCase
+class UserBlockTest extends ApiTestCase
 {
     use RefreshDatabase;
 
@@ -89,15 +90,17 @@ class UserBlockTest extends FeatureTestCase
 
     public function test_profile_shows_limited_info(): void
     {
-        $this->actingAs($this->bob)
-            ->get(route('profile', ['username' => $this->alice->username]))
-            ->assertDontSee(__('profile.youre-blocked-text'));
+        // Before blocking: Bob can access Alice's profile via API
+        Passport::actingAs($this->bob, ['*']);
+        $this->getJson('/api/v1/user/' . $this->alice->username)->assertOk();
 
         $this->aliceBlocksBob();
 
-        $this->actingAs($this->bob)
-            ->get(route('profile', ['username' => $this->alice->username]))
-            ->assertSee(__('profile.youre-blocked-text'));
+        // After Alice blocks Bob: API returns 403 with YOU_ARE_BLOCKED reason
+        Passport::actingAs($this->bob, ['*']);
+        $this->getJson('/api/v1/user/' . $this->alice->username)
+            ->assertForbidden()
+            ->assertJsonPath('meta.reason', 'YOU_ARE_BLOCKED');
     }
 
     public function test_likes_are_deleted(): void
