@@ -77,7 +77,9 @@ function fetchStatuses(append = false) {
             });
         })
         .catch((err) => {
-            notyf.error('Error fetching statuses: ' + err.error?.message);
+            if (err.status !== 403) {
+                notyf.error('Error fetching statuses: ' + err.error?.message);
+            }
             loadingStatuses.value = false;
         });
 }
@@ -100,21 +102,29 @@ fetchStatuses(false);
 </script>
 
 <template>
-    <Header v-if="userData" :user-data="userData" />
+    <Header v-if="userData" :user-data="userData" :user-invisible-reason="userInvisibleReason" />
     <div class="container">
         <div class="row mt-4">
             <!-- LEFT COLUMN -->
             <LoadingSkeletonRows v-if="loadingUser" :count="3" :row-height="90" class="mb-3 col" />
             <div v-else class="col">
-                <StatisticsCard v-if="userData" :user-data="userData" :loading-user="loadingUser" />
+                <StatisticsCard
+                    v-if="userData && userInvisibleReason !== ViewUserForbiddenReason.YOU_ARE_BLOCKED"
+                    :user-data="userData"
+                    :loading-user="loadingUser"
+                />
 
-                <BioCard v-if="userData" :user-data="userData" />
+                <BioCard
+                    v-if="userData && userInvisibleReason !== ViewUserForbiddenReason.YOU_ARE_BLOCKED"
+                    :user-data="userData"
+                />
             </div>
 
             <div class="col-md-8 col-lg-7">
                 <ProfileNotVisibleInfo
                     v-if="!loadingUser && userData !== null && userData.userInvisibleToMe"
                     :user-data="userData"
+                    :user-invisible-reason="userInvisibleReason"
                 />
                 <Statuses
                     v-else-if="userData"

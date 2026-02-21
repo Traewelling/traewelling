@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
-import { UserResource } from '../../../../types/Api.gen';
+import { UserResource, ViewUserForbiddenReason } from '../../../../types/Api.gen';
 
 defineProps<{
     userData: UserResource;
+    userInvisibleReason?: ViewUserForbiddenReason | null;
 }>();
 </script>
 
@@ -27,6 +28,17 @@ defineProps<{
                 <br />
                 <span class="fs-5">
                     {{ trans('profile.youre-blocking-information-text') }}
+                </span>
+            </div>
+        </div>
+    </template>
+    <template v-else-if="userInvisibleReason === ViewUserForbiddenReason.YOU_ARE_BLOCKED">
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8 col-lg-7 text-center mb-5">
+                <span class="fs-3">{{ trans('profile.private-profile-text') }}</span>
+                <br />
+                <span class="fs-5">
+                    {{ trans('profile.no-visible-statuses', { username: userData.username }) }}
                 </span>
             </div>
         </div>

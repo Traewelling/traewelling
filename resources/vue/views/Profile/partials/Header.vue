@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
-import { UserResource } from '../../../../types/Api.gen';
+import { UserResource, ViewUserForbiddenReason } from '../../../../types/Api.gen';
 import BlockButton from '../../../components/BlockButton.vue';
 import FollowButton from '../../../components/FollowButton.vue';
 import MuteButton from '../../../components/MuteButton.vue';
@@ -10,6 +10,7 @@ const authUser = useUserStore();
 
 defineProps<{
     userData: UserResource;
+    userInvisibleReason?: ViewUserForbiddenReason | null;
 }>();
 </script>
 
@@ -39,7 +40,7 @@ defineProps<{
                     </small>
                 </span>
                 <div
-                    v-if="authUser.authenticated"
+                    v-if="authUser.authenticated && userInvisibleReason !== ViewUserForbiddenReason.YOU_ARE_BLOCKED"
                     class="d-flex py-3 flex-row justify-content-md-start align-items-md-center gap-1"
                 >
                     <FollowButton :user-data="userData" />

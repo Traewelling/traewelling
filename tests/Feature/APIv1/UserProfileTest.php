@@ -93,4 +93,21 @@ class UserProfileTest extends ApiTestCase
             ->assertJsonPath('meta.user.username', $bob->username)
             ->assertJsonPath('meta.user.blocked', true);
     }
+
+    // -------------------------------------------------------------------------
+    // Blocked by private profile
+    // -------------------------------------------------------------------------
+
+    public function test_private_profile_that_blocked_auth_user_returns_you_are_blocked_not_private_profile(): void
+    {
+        $alice = User::factory()->create();
+        $bob = User::factory(['private_profile' => true])->create();
+
+        UserController::blockUser($bob, $alice);
+
+        Passport::actingAs($alice, ['*']);
+        $this->getJson('/api/v1/user/' . $bob->username)
+            ->assertForbidden()
+            ->assertJsonPath('meta.reason', 'YOU_ARE_BLOCKED');
+    }
 }

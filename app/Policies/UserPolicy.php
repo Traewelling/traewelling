@@ -41,17 +41,17 @@ class UserPolicy
         if ($user->is($model)) {
             return Response::allow();
         }
-        if ($model->private_profile && !$model->followers->contains('user_id', $user->id)) {
-            return Response::denyWithStatus(ViewUserForbiddenReason::PrivateProfile, __('profile.private-profile-text'));
-        }
-        if ($user->mutedUsers->contains('id', $model->id)) {
-            return Response::denyWithStatus(ViewUserForbiddenReason::Muted, __('user.muted.heading'));
-        }
         if (BlockController::isBlocked($model, $user)) {
             return Response::denyWithStatus(ViewUserForbiddenReason::YoureBlocked, __('profile.youre-blocked-text'));
         }
         if (BlockController::isBlocked($user, $model)) {
             return Response::denyWithStatus(ViewUserForbiddenReason::Blocked, __('user.blocked.heading'));
+        }
+        if ($model->private_profile && !$model->followers->contains('user_id', $user->id)) {
+            return Response::denyWithStatus(ViewUserForbiddenReason::PrivateProfile, __('profile.private-profile-text'));
+        }
+        if ($user->mutedUsers->contains('id', $model->id)) {
+            return Response::denyWithStatus(ViewUserForbiddenReason::Muted, __('user.muted.heading'));
         }
 
         return Response::allow();
