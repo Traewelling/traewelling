@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Gate;
 /**
  * @OA\Schema(
  *      title="Status",
- *      required={"id", "body", "business", "bodyMentions", "business", "visibility", "likes", "liked", "isLikable", "client", "createdAt", "train", "event", "userDetails", "tags"},
+ *      required={"id", "body", "business", "bodyMentions", "business", "visibility", "likes", "liked", "isLikable", "client", "createdAt", "train", "event", "userDetails", "tags", "checkin", "user", "createdBy"},
  *
  *      @OA\Property(property="id", type="integer", example=12345),
  *      @OA\Property(property="body", description="User defined status text", example="Hello world!"),

@@ -22,7 +22,7 @@ import ActiveJourneys from '../vue/views/ActiveJourneys.vue';
 import Dashboard from '../vue/views/Dashboard.vue';
 import StationMap from '../vue/views/Debug/StationMap.vue';
 import EventPage from '../vue/views/Event.vue';
-import Profile from '../vue/views/Profile.vue';
+import Profile from '../vue/views/Profile/Profile.vue';
 import SingleStatus from '../vue/views/SingleStatus.vue';
 import StatsDaily from '../vue/views/Stats/Daily.vue';
 import './api/api';

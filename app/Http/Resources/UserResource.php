@@ -11,6 +11,7 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(
  *     title="User",
  *     description="User model",
+ *     required={"id", "displayName", "username", "profilePicture", "trainDistance", "trainDuration", "points", "mastodonUrl", "privateProfile", "pointsEnabled", "userInvisibleToMe", "muted", "blocked", "following", "followPending", "followedBy", "preventIndex", "bio", "profileLinks"},
  *
  *     @OA\Property(property="id",description="ID",type="integer",example=1),
  *     @OA\Property(property="displayName",description="Display name of the user",example="Gertrud"),
@@ -26,6 +27,7 @@ use OpenApi\Annotations as OA;
  *     @OA\Property(property="pointsEnabled",  description="Does this profile allow points? Only offer the UI to show points at any status if this setting is set to true. If set to false, the points will always be displayed as 0",  type="boolean",  example=true),
  *     @OA\Property(property="userInvisibleToMe",  description="Can the currently authenticated user see the statuses of this user?",  type="boolean",  example=false),
  *     @OA\Property(property="muted",  description="Is this user muted by the currently authenticated user?",  type="boolean",  example=false),
+ *     @OA\Property(property="blocked",  description="Is this user blocked by the currently authenticated user?",  type="boolean",  example=false),
  *     @OA\Property(property="following",  description="Does the currently authenticated user follow this user?",  type="boolean",  example=false),
  *     @OA\Property(property="followPending",  description="Is there a currently pending follow request?",  type="boolean",  example=false),
  *     @OA\Property(property="followedBy",  description="Is the user following you?",  type="boolean",  example=false),
@@ -58,6 +60,7 @@ class UserResource extends JsonResource
             'pointsEnabled' => $this->points_enabled,
             'userInvisibleToMe' => (bool) $request->user()?->cannot('view', User::find($this->id)),
             'muted' => (bool) $this->muted,
+            'blocked' => (bool) $this->is_blocked_by_auth_user,
             'following' => (bool) $this->following,
             'followPending' => (bool) $this->followPending,
             'followedBy' => (bool) $this->followedBy,

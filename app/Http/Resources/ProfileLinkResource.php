@@ -11,6 +11,7 @@ use OpenApi\Annotations as OA;
  * @OA\Schema(
  *     title="ProfileLinkResource",
  *     description="ProfileLinkResource",
+ *     required={"name", "url"},
  *
  *     @OA\Property(property="name", type="enum", enum={"website", "instagram", "bluesky", "facebook", "mastodon", "tiktok", "github"}, example="website"),
  *     @OA\Property(property="url", type="string", example="https://traewelling.de"),
