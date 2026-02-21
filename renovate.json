@@ -7,8 +7,8 @@
     "packageRules": [
         {
             "matchUpdateTypes": ["minor", "patch"],
-            "matchCurrentVersion": "!/^0/",
-            "automerge": true
+            "groupName": "all non-major dependencies",
+            "schedule": ["every 2 weeks on Monday"]
         }
     ]
 }
