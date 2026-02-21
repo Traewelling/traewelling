@@ -2,9 +2,7 @@
 import { trans } from 'laravel-vue-i18n';
 import { ref, watch } from 'vue';
 import { Api, UserResource } from '../../types/Api.gen';
-import { useUserStore } from '../stores/user';
 
-const authUser = useUserStore();
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 
 const props = defineProps<{
