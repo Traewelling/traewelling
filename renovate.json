@@ -8,7 +8,8 @@
         {
             "matchUpdateTypes": ["minor", "patch"],
             "groupName": "all non-major dependencies",
-            "schedule": ["every 2 weeks on Monday"]
+            "schedule": ["every 2 weeks on Monday"],
+            "automerge": true
         }
     ]
 }
