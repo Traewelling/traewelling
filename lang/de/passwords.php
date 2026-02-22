@@ -16,6 +16,7 @@
 return [
     'reset' => 'Das Passwort wurde zurückgesetzt!',
     'sent' => 'Passworterinnerung wurde gesendet!',
+    'sent_if_exists' => 'Falls ein Konto mit dieser E-Mail-Adresse existiert, wurde ein Link zum Zurücksetzen des Passworts versendet.',
     'throttled' => 'Bitte warten Sie, bevor Sie es erneut versuchen.',
     'token' => 'Der Passwort-Wiederherstellungs-Schlüssel ist ungültig oder abgelaufen.',
     'user' => 'Es konnte leider kein Nutzer mit dieser E-Mail-Adresse gefunden werden.',

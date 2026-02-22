@@ -45,14 +45,17 @@ class PasswordResetTest extends FeatureTestCase
         Notification::assertSentTo($user, ResetPassword::class);
     }
 
-    public function test_password_reset_with_wrong_email(): void
+    public function test_password_reset_with_nonexistent_email_returns_consistent_message(): void
     {
+        // OWASP: Avoid user enumeration - return the same message regardless of whether the account exists
         $this->assertGuest();
         Notification::fake();
         $response = $this->post(route('password.email'), [
-            'email' => 'wrong@email.de',
+            'email' => 'nonexistent@example.com',
         ]);
-        $response->assertSessionHasErrors('email');
+        $response->assertRedirect();
+        $response->assertSessionHasNoErrors();
+        $response->assertSessionHas('status', trans('passwords.sent_if_exists'));
         Notification::assertNothingSent();
     }
 
