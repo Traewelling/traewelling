@@ -40,6 +40,12 @@ export function getIcon(key) {
             return 'fa-money-bill-wave';
         case 'trwl:social_status':
             return 'fa-comments';
+        case 'trwl:wagon':
+            return 'fa-arrow-up-1-9';
+        case 'trwl:wagon_class':
+            return 'fa-list-check';
+        case 'trwl:vehicle_number':
+            return 'fa-tag';
     }
     return 'fa-fw';
 }
