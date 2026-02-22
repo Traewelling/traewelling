@@ -103,7 +103,7 @@ export default {
                 });
         },
         fastCheckin() {
-            let destination = null;
+            let destination;
             if (this.useInternalIdentifiers) {
                 destination = this.lineRun.stopovers.find((item) => {
                     return Number(item.id) === Number(this.fastCheckinId);
