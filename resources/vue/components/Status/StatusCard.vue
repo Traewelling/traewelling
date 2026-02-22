@@ -40,6 +40,7 @@ const statusObject = ref<StatusResource>(props.status);
 const progress = ref(0);
 const interval = ref<number | null>(null);
 const deleted = ref(false);
+const deleting = ref(false);
 const map = useTemplateRef('map');
 const departure = getDepartureForStopover(statusObject.value.train.origin).dateTime;
 const arrival = getArrivalForStopover(statusObject.value.train.destination).dateTime;
@@ -134,7 +135,7 @@ function statusUpdated(status: StatusResource) {
 
 <template>
     <Transition>
-        <div v-show="!deleted" ref="rootEl" class="card status mb-3">
+        <div v-show="!deleted" ref="rootEl" class="card status mb-3 position-relative">
             <div v-if="showMap" class="card-img-top">
                 <div
                     id="activeJourneys"
@@ -185,10 +186,20 @@ function statusUpdated(status: StatusResource) {
                 />
             </div>
 
+            <!-- delete loading overlay -->
+            <Transition name="delete-overlay">
+                <div v-if="deleting" class="delete-overlay">
+                    <div class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading</span>
+                    </div>
+                </div>
+            </Transition>
+
             <!-- footer -->
             <StatusFooter
                 :status="statusObject"
                 @status-deleted="deleteSelf()"
+                @status-deleting="deleting = $event"
                 @status-liked="emit('status-liked')"
                 @status-unliked="emit('status-unliked')"
                 @status-updated="statusUpdated"
@@ -204,6 +215,31 @@ function statusUpdated(status: StatusResource) {
 }
 
 .v-leave-to {
+    opacity: 0;
+}
+
+.delete-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: inherit;
+
+    :root.dark & {
+        background: rgba(0, 0, 0, 0.45);
+    }
+}
+
+.delete-overlay-enter-active,
+.delete-overlay-leave-active {
+    transition: opacity 0.15s ease;
+}
+
+.delete-overlay-enter-from,
+.delete-overlay-leave-to {
     opacity: 0;
 }
 </style>
