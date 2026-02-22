@@ -1,23 +1,20 @@
 import { RouteRecordRaw } from 'vue-router';
-import Index from '../pages/Index.vue';
-import Profile from '../pages/Profile.vue';
-import SuggestEvent from '../pages/SuggestEvent.vue';
 
 const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
         name: 'index',
-        component: () => Index,
+        component: () => import('../pages/Index.vue'),
     },
     {
         path: '/profile',
         name: 'profile',
-        component: () => Profile,
+        component: () => import('../pages/Profile.vue'),
     },
     {
         path: '/events/suggest',
         name: 'events-suggest',
-        component: () => SuggestEvent,
+        component: () => import('../pages/SuggestEvent.vue'),
     },
 ];
 
