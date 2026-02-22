@@ -174,8 +174,8 @@ class CacheKey
         }
     }
 
-    public static function getPasswordResetThrottleKey(?User $user): string
+    public static function getPasswordResetThrottleKey(?User $user, string $emailFallback = ''): string
     {
-        return 'password_reset_' . $user?->id;
+        return 'password_reset_' . ($user?->id ?? sha1($emailFallback));
     }
 }
