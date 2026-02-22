@@ -98,7 +98,7 @@ export default {
     <div :class>
         <button
             v-show="editable"
-            class="btn btn-link btn-sm text-white badge bg-trwl"
+            class="btn border-0 btn-sm text-white badge bg-trwl"
             style="text-transform: none"
             @click="showModal()"
         >
@@ -110,7 +110,7 @@ export default {
             <button
                 v-for="tag in tags"
                 :key="tag.key"
-                class="btn btn-link btn-sm text-white badge bg-trwl ms-1"
+                class="btn border-0 btn-sm text-white badge bg-trwl ms-1"
                 style="text-transform: none"
                 @click="showModal(tag)"
             >
@@ -141,4 +141,5 @@ export default {
     border-color: $trwlRot;
     color: $trwlRot;
 }
+
 </style>
