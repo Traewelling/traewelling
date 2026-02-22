@@ -148,7 +148,7 @@ export default {
             :disabled="disabled"
             @keydown.enter="addTag"
         />
-        <VisibilityDropdown :start-value="visibility" :disabled="disabled" @update:model-value="setVisibility" />
+        <VisibilityDropdown :model-value="visibility" :disabled="disabled" @update:model-value="setVisibility" />
         <button v-if="!list" class="btn btn-primary" :disabled="disabled" @click="addTag">Add</button>
         <button v-if="list" class="btn btn-outline-danger" @click="deleteTag">
             <i class="fa fa-trash" />

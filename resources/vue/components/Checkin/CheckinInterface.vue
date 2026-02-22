@@ -217,11 +217,7 @@ export default {
                 <BusinessDropdown v-model="business" />
             </div>
             <div class="col btn-group">
-                <VisibilityDropdown
-                    v-model="visibility"
-                    :start-value="profileStore.getDefaultStatusVisibility"
-                    class="btn btn-sm btn-link px-2 dropdown-toggle"
-                />
+                <VisibilityDropdown v-model="visibility" class="btn btn-sm btn-link px-2 dropdown-toggle" />
             </div>
             <EventDropdown @select-event="selectEvent" />
             <FriendDropdown @select-user="selectFriends" />
