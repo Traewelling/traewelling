@@ -31,6 +31,9 @@ enum StatusTagKey: string implements IconEnumInterface
             self::JOURNEY_NUMBER => 'fa-hashtag',
             self::PRICE => 'fa-money-bill-wave',
             self::SOCIAL_STATUS => 'fa-comments',
+            self::WAGON => 'fa-arrow-up-1-9',
+            self::WAGON_CLASS => 'fa-list-check',
+            self::VEHICLE_NUMBER => 'fa-tag',
             default => null,
         };
     }
