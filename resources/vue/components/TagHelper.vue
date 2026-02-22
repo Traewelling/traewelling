@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable vue/valid-v-bind */
 import { trans } from 'laravel-vue-i18n';
-import { getIcon, getTitle } from '../helpers/StatusTag';
+import { getEnumValues, getIcon, getTitle } from '../helpers/StatusTag';
 import FullScreenModal from './FullScreenModal.vue';
 import TagList from './TagList.vue';
 
@@ -46,6 +46,16 @@ export default {
         getTitle,
         getIcon,
         trans,
+        getDisplayValue(tag) {
+            const options = getEnumValues(tag.key);
+            if (!options) {
+                return tag.value;
+            }
+            return options.find((o) => o.value === tag.value)?.label ?? tag.value;
+        },
+        showTagIcon(tag) {
+            return getIcon(tag.key) !== 'fa-fw' && !getEnumValues(tag.key);
+        },
         showModal(tag) {
             this.$refs.modal.show();
             let input = 'input';
@@ -104,8 +114,8 @@ export default {
                 style="text-transform: none"
                 @click="showModal(tag)"
             >
-                <i v-show="getIcon(tag.key) !== 'fa-fw'" :class="[getIcon(tag.key), 'fa']" />
-                {{ tag.value }}
+                <i v-show="showTagIcon(tag)" :class="[getIcon(tag.key), 'fa']" />
+                {{ getDisplayValue(tag) }}
             </button>
         </template>
         <span

@@ -19,6 +19,7 @@ enum StatusTagKey: string implements IconEnumInterface
     case PASSENGER_RIGHTS = 'trwl:passenger_rights';
     case JOURNEY_NUMBER = 'trwl:journey_number';
     case PRICE = 'trwl:price';
+    case SOCIAL_STATUS = 'trwl:social_status';
 
     public function faIcon(): ?string
     {
@@ -29,6 +30,7 @@ enum StatusTagKey: string implements IconEnumInterface
             self::PASSENGER_RIGHTS => 'fa-user-shield',
             self::JOURNEY_NUMBER => 'fa-hashtag',
             self::PRICE => 'fa-money-bill-wave',
+            self::SOCIAL_STATUS => 'fa-comments',
             default => null,
         };
     }

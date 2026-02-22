@@ -275,6 +275,11 @@ class StatusTagController extends Controller
      *          <li>trwl:role (i.e. Tf, Zf, Gf, Lokführer, conducteur de train, ...)</li>
      *          <li>trwl:vehicle_number (i.e. 425 001, Tz9001, 123, ...)</li>
      *          <li>trwl:passenger_rights (i.e. yes / no / ID of claim)</li>
+     *          <li>trwl:social_status – social availability indicator. Allowed values:
+     *          <code>open</code> (open to chatting),
+     *          <code>open_find_me</code> (open, but staying at seat),
+     *          <code>open_lets_hang</code> (open and willing to move around),
+     *          <code>do_not_disturb</code> (prefer not to be disturbed).</li>
      *      </ul>",
      *
      * @OA\Parameter (
