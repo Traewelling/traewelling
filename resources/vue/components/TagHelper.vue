@@ -141,5 +141,4 @@ export default {
     border-color: $trwlRot;
     color: $trwlRot;
 }
-
 </style>
