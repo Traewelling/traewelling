@@ -19,6 +19,7 @@ enum StatusTagKey: string implements IconEnumInterface
     case PASSENGER_RIGHTS = 'trwl:passenger_rights';
     case JOURNEY_NUMBER = 'trwl:journey_number';
     case PRICE = 'trwl:price';
+    case SOCIAL_STATUS = 'trwl:social_status';
 
     public function faIcon(): ?string
     {
@@ -29,6 +30,7 @@ enum StatusTagKey: string implements IconEnumInterface
             self::PASSENGER_RIGHTS => 'fa-user-shield',
             self::JOURNEY_NUMBER => 'fa-hashtag',
             self::PRICE => 'fa-money-bill-wave',
+            self::SOCIAL_STATUS => 'fa-comments',
             default => null,
         };
     }
@@ -46,5 +48,18 @@ enum StatusTagKey: string implements IconEnumInterface
     public function description(): ?string
     {
         return null;
+    }
+
+    /**
+     * Returns the list of allowed values for this tag key, or null if the value is free-text.
+     *
+     * @return string[]|null
+     */
+    public function allowedValues(): ?array
+    {
+        return match ($this) {
+            self::SOCIAL_STATUS => ['open', 'open_find_me', 'open_lets_hang', 'do_not_disturb'],
+            default => null,
+        };
     }
 }

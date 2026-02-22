@@ -1,6 +1,6 @@
 <script>
 import _ from 'lodash';
-import { getIcon, getTitle, keys } from '../helpers/StatusTag';
+import { enumKeys, getEnumValues, getIcon, getTitle, keys } from '../helpers/StatusTag';
 import VisibilityDropdown from './VisibilityDropdown.vue';
 
 export default {
@@ -36,6 +36,12 @@ export default {
         disabled() {
             return this.tagKeys.length === 0;
         },
+        enumValues() {
+            return getEnumValues(this.selectedKey);
+        },
+        isEnumKey() {
+            return this.selectedKey in enumKeys;
+        },
     },
     watch: {
         exclude() {
@@ -61,6 +67,12 @@ export default {
                 this.selectedKey = key;
             } else {
                 this.selectedKey = this.tagKeys[0];
+            }
+            const values = getEnumValues(this.selectedKey);
+            if (values) {
+                this.input = values[0].value;
+            } else {
+                this.input = null;
             }
         },
         addTag() {
@@ -115,7 +127,20 @@ export default {
                 </a>
             </li>
         </ul>
+        <select
+            v-if="isEnumKey"
+            :id="`input-${selectedKey?.replace(':', '')}`"
+            v-model="input"
+            class="form-select border-secondary"
+            :disabled="disabled"
+            @change="list && updateTag()"
+        >
+            <option v-for="option in enumValues" :key="option.value" :value="option.value">
+                {{ option.label }}
+            </option>
+        </select>
         <input
+            v-else
             :id="`input-${selectedKey?.replace(':', '')}`"
             v-model="input"
             type="text"
