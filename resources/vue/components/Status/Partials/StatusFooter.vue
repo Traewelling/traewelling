@@ -14,7 +14,7 @@ const props = defineProps({
         required: true,
     },
 });
-const emit = defineEmits(['status-liked', 'status-unliked', 'status-deleted', 'status-updated']);
+const emit = defineEmits(['status-liked', 'status-unliked', 'status-deleted', 'status-deleting', 'status-updated']);
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
 const user = useUserStore();
 const likes = ref(0);
@@ -53,12 +53,14 @@ const createdAt = computed(() => {
 });
 
 function deleteStatus() {
+    emit('status-deleting', true);
     api.status
         .destroySingleStatus(props.status.id)
         .then(() => {
             emit('status-deleted', props.status.id);
         })
         .catch((error) => {
+            emit('status-deleting', false);
             console.error('Error deleting status:', error);
         });
 }
