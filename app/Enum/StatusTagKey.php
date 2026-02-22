@@ -49,4 +49,17 @@ enum StatusTagKey: string implements IconEnumInterface
     {
         return null;
     }
+
+    /**
+     * Returns the list of allowed values for this tag key, or null if the value is free-text.
+     *
+     * @return string[]|null
+     */
+    public function allowedValues(): ?array
+    {
+        return match ($this) {
+            self::SOCIAL_STATUS => ['open', 'open_find_me', 'open_lets_hang', 'do_not_disturb'],
+            default => null,
+        };
+    }
 }

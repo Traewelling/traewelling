@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\APIv1;
 
+use App\Enum\StatusTagKey;
 use App\Enum\StatusVisibility;
 use App\Models\Status;
 use App\Models\StatusTag;
@@ -102,5 +103,75 @@ class StatusTagTest extends ApiTestCase
 
         $this->assertDatabaseMissing('status_tags', ['status_id' => $status->id, 'key' => 'test', 'value' => 'test', 'visibility' => StatusVisibility::PUBLIC->value]);
         $this->assertDatabaseHas('status_tags', ['status_id' => $status->id, 'key' => 'test2', 'value' => 'test2', 'visibility' => StatusVisibility::PUBLIC->value]);
+    }
+
+    public function test_social_status_tag_accepts_all_allowed_values(): void
+    {
+        $user = User::factory()->create();
+        $status = Status::factory(['user_id' => $user->id])->create();
+        Passport::actingAs($user, ['*']);
+
+        foreach (StatusTagKey::SOCIAL_STATUS->allowedValues() as $value) {
+            $response = $this->post(
+                uri: '/api/v1/status/' . $status->id . '/tags',
+                data: [
+                    'key' => StatusTagKey::SOCIAL_STATUS->value,
+                    'value' => $value,
+                    'visibility' => StatusVisibility::PUBLIC->value,
+                ],
+            );
+            $response->assertOk();
+            $response->assertJson(['data' => ['key' => StatusTagKey::SOCIAL_STATUS->value, 'value' => $value]]);
+
+            // Clean up so the unique constraint doesn't block the next iteration
+            $this->delete('/api/v1/status/' . $status->id . '/tags/' . StatusTagKey::SOCIAL_STATUS->value);
+        }
+    }
+
+    public function test_social_status_tag_rejects_invalid_value_on_store(): void
+    {
+        $user = User::factory()->create();
+        $status = Status::factory(['user_id' => $user->id])->create();
+        Passport::actingAs($user, ['*']);
+
+        $response = $this->post(
+            uri: '/api/v1/status/' . $status->id . '/tags',
+            data: [
+                'key' => StatusTagKey::SOCIAL_STATUS->value,
+                'value' => 'invalid_value',
+                'visibility' => StatusVisibility::PUBLIC->value,
+            ],
+        );
+
+        $response->assertStatus(400);
+        $this->assertDatabaseMissing('status_tags', [
+            'status_id' => $status->id,
+            'key' => StatusTagKey::SOCIAL_STATUS->value,
+        ]);
+    }
+
+    public function test_social_status_tag_rejects_invalid_value_on_update(): void
+    {
+        $user = User::factory()->create();
+        $status = Status::factory(['user_id' => $user->id])->create();
+        StatusTag::factory([
+            'status_id' => $status->id,
+            'key' => StatusTagKey::SOCIAL_STATUS->value,
+            'value' => 'open',
+            'visibility' => StatusVisibility::PUBLIC->value,
+        ])->create();
+        Passport::actingAs($user, ['*']);
+
+        $response = $this->put(
+            uri: '/api/v1/status/' . $status->id . '/tags/' . StatusTagKey::SOCIAL_STATUS->value,
+            data: ['value' => 'invalid_value'],
+        );
+
+        $response->assertStatus(422);
+        $this->assertDatabaseHas('status_tags', [
+            'status_id' => $status->id,
+            'key' => StatusTagKey::SOCIAL_STATUS->value,
+            'value' => 'open',
+        ]);
     }
 }
