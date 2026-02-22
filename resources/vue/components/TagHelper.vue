@@ -106,31 +106,21 @@ export default {
             {{ trans('modals.tags.new') }}
         </button>
 
-        <template v-if="editable">
-            <button
-                v-for="tag in tags"
-                :key="tag.key"
-                class="btn border-0 btn-sm text-white badge bg-trwl ms-1"
-                style="text-transform: none"
-                @click="showModal(tag)"
-            >
-                <i v-show="showTagIcon(tag)" :class="[getIcon(tag.key), 'fa']" />
-                {{ getDisplayValue(tag) }}
-            </button>
-        </template>
-        <span
+        <button
             v-for="tag in tags"
-            v-else
             :key="tag.key"
             :ref="tag.key"
-            class="text-white badge bg-trwl ms-1"
+            class="text-white badge bg-trwl ms-1 border-0"
+            :class="{ 'btn btn-sm': editable }"
+            :style="{ textTransform: 'none', cursor: editable ? undefined : 'default' }"
             data-bs-toggle="tooltip"
             data-bs-placement="top"
             :title="getTitle(tag.key)"
+            @click="editable && showModal(tag)"
         >
-            <i v-show="getIcon(tag.key) !== 'fa-fw'" :class="[getIcon(tag.key), 'fa']" />
-            {{ tag.value }}
-        </span>
+            <i v-show="showTagIcon(tag)" :class="[getIcon(tag.key), 'fa']" />
+            {{ getDisplayValue(tag) }}
+        </button>
     </div>
 </template>
 
