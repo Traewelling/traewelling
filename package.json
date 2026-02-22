@@ -37,6 +37,9 @@
         "vite": "^7.0.0",
         "vue-tsc": "^3.2.2"
     },
+    "overrides": {
+        "minimatch": ">=10.2.2"
+    },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^7.1.0",
         "@indoorequal/vue-maplibre-gl": "^8.4.2",
