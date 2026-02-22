@@ -3739,6 +3739,16 @@ export class Api<
             totalDuration?: number;
             /** @example "42" */
             totalPoints?: number;
+            /**
+             * Nearest earlier date with check-ins (YYYY-MM-DD), or null.
+             * @example "2024-04-07"
+             */
+            prevDate?: string | null;
+            /**
+             * Nearest later date with check-ins (YYYY-MM-DD), or null.
+             * @example "2024-04-11"
+             */
+            nextDate?: string | null;
           };
         },
         void

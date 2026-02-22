@@ -2221,6 +2221,18 @@
                                                 "totalPoints": {
                                                     "type": "integer",
                                                     "example": "42"
+                                                },
+                                                "prevDate": {
+                                                    "description": "Nearest earlier date with check-ins (YYYY-MM-DD), or null.",
+                                                    "type": "string",
+                                                    "example": "2024-04-07",
+                                                    "nullable": true
+                                                },
+                                                "nextDate": {
+                                                    "description": "Nearest later date with check-ins (YYYY-MM-DD), or null.",
+                                                    "type": "string",
+                                                    "example": "2024-04-11",
+                                                    "nullable": true
                                                 }
                                             },
                                             "type": "object"

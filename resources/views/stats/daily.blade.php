@@ -7,17 +7,19 @@
             <div class="col-12 mb-3">
                 <h1 class="fs-4">{{__('stats-day', ['date' => $date->isoFormat(__('dateformat.with-weekday'))])}}</h1>
 
-                <a href="{{route('stats.daily', ['dateString' => userTime($date->clone()->subDay(), 'Y-m-d', false)])}}"
-                   class="btn btn-primary"
-                >
-                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-                    {{userTime($date->clone()->subDay(),__('date-format'))}}
-                </a>
-                @if($date->clone()->addDay()->isBefore(\Illuminate\Support\Facades\Date::today()->endOfDay()))
-                    <a href="{{route('stats.daily', ['dateString' => $date->clone()->addDay()->format('Y-m-d')])}}"
+                @if($prevDate)
+                    <a href="{{route('stats.daily', ['dateString' => $prevDate->format('Y-m-d')])}}"
+                       class="btn btn-primary"
+                    >
+                        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                        {{userTime($prevDate, __('date-format'))}}
+                    </a>
+                @endif
+                @if($nextDate)
+                    <a href="{{route('stats.daily', ['dateString' => $nextDate->format('Y-m-d')])}}"
                        class="btn btn-primary float-end"
                     >
-                        {{userTime($date->clone()->addDay(), __('date-format'))}}
+                        {{userTime($nextDate, __('date-format'))}}
                         <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                     </a>
                 @endif
