@@ -1,6 +1,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-7">
+            @push('scripts')
             <script>
                 document.addEventListener("DOMContentLoaded", function () {
                     @if ($errors->any())
@@ -26,6 +27,7 @@
                     @endif
                 });
             </script>
+            @endpush
 
             @if(!request()->routeIs('gdpr.intercept'))
                 @include('includes.messages.mail-verification')

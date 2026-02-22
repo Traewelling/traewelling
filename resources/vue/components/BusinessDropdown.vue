@@ -12,7 +12,7 @@ const props = defineProps({
 });
 
 const model = defineModel({
-    type: Object as PropType<Business>,
+    type: Number as PropType<Business>,
     default: Business.Value0,
 });
 </script>

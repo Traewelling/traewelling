@@ -130,6 +130,7 @@ fetchLikes();
                     />
                     <TagHelper
                         :status-id="status.id"
+                        :status-object="status"
                         :editable="status.userDetails.id === user.user?.id"
                         class="mb-3"
                     />
