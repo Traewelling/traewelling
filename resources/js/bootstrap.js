@@ -11,6 +11,6 @@ document.addEventListener('DOMContentLoaded', function () {
         import('bootstrap/js/dist/tab');
         import('bootstrap/js/dist/dropdown');
     } catch (e) {
-        throw new Error(e);
+        throw new Error('Failed to load Bootstrap modules', { cause: e });
     }
 });

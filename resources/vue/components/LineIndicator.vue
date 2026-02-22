@@ -104,7 +104,7 @@ const lineName = computed((): string => {
 });
 
 const product = computed(() => {
-    let productName = null;
+    let productName;
     // remap via motis category if possible
     if (props.mode && Object.hasOwn(motisMapping, props.mode)) {
         productName = motisMapping[props.mode as keyof typeof motisMapping];

@@ -6,7 +6,7 @@ Array.from(document.getElementsByClassName('progress-time')).forEach((element) =
         const now = Math.floor(new Date().getTime() / 1000);
         element.dataset.valuenow = now;
 
-        let percentage = 0;
+        let percentage;
         if (departure == arrival) {
             // Edge Case for DIV/0
             if (now < arrival) {

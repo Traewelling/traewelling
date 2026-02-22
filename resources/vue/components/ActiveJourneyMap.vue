@@ -148,7 +148,7 @@ export default {
                     this.clearMarkersOnly();
 
                     results.data.forEach((result) => {
-                        let entry = null;
+                        let entry;
 
                         if (result.point) {
                             const icon = this.getIconForStatus(result);
