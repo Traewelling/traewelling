@@ -388,6 +388,20 @@ class StatisticsController extends Controller
      *                      example="42",
      *                      type="integer"
      *                  ),
+     *                  @OA\Property(
+     *                      property="prevDate",
+     *                      example="2024-04-07",
+     *                      type="string",
+     *                      nullable=true,
+     *                      description="Nearest earlier date with check-ins (YYYY-MM-DD), or null."
+     *                  ),
+     *                  @OA\Property(
+     *                      property="nextDate",
+     *                      example="2024-04-11",
+     *                      type="string",
+     *                      nullable=true,
+     *                      description="Nearest later date with check-ins (YYYY-MM-DD), or null."
+     *                  ),
      *              )
      *          )
      *       ),
@@ -410,10 +424,8 @@ class StatisticsController extends Controller
                 Rule::in(DateTimeZone::listIdentifiers()),
             ],
         ]);
-        $statuses = DailyStatsController::getStatusesOnDate(
-            auth()->user(),
-            Carbon::parse($dateString, $validated['timezone'] ?? auth()->user()->timezone)
-        );
+        $date = Carbon::parse($dateString, $validated['timezone'] ?? auth()->user()->timezone);
+        $statuses = DailyStatsController::getStatusesOnDate(auth()->user(), $date);
 
         $polylines = null;
         if (!empty($validated['withPolylines']) && $validated['withPolylines'] !== 'false') {
@@ -424,12 +436,17 @@ class StatisticsController extends Controller
             $featureCollection = new FeatureCollection($polylines);
         }
 
+        $prevDate = DailyStatsController::getPrevDateWithStatuses(auth()->user(), $date);
+        $nextDate = DailyStatsController::getNextDateWithStatuses(auth()->user(), $date);
+
         return $this->sendResponse([
             'statuses' => StatusResource::collection($statuses),
             'polylines' => $polylines && count($polylines) ? $featureCollection : null,
             'totalDistance' => $statuses->sum('checkin.distance'),
             'totalDuration' => $statuses->sum('checkin.duration'),
             'totalPoints' => $statuses->sum('checkin.points'),
+            'prevDate' => $prevDate?->format('Y-m-d'),
+            'nextDate' => $nextDate?->format('Y-m-d'),
         ]);
     }
 

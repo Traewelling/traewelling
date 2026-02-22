@@ -25,6 +25,8 @@ class DailyStatsController extends Controller
         return view('stats.daily', [
             'date' => $date,
             'statuses' => $statuses,
+            'prevDate' => DailyStatsBackend::getPrevDateWithStatuses(Auth::user(), $date),
+            'nextDate' => DailyStatsBackend::getNextDateWithStatuses(Auth::user(), $date),
         ]);
     }
 }
