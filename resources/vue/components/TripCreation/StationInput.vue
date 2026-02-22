@@ -47,7 +47,7 @@ export default {
     computed: {
         timeFieldALabel() {
             if (this.arrival && this.departure) {
-                return trans('trip_creation.form.arrival');
+                return trans('trip_creation.form.arrival') + ' (' + trans('optional') + ')';
             }
             return this.arrival ? trans('trip_creation.form.arrival') : trans('trip_creation.form.departure');
         },
@@ -246,7 +246,11 @@ export default {
             aria-describedby="basic-addon1"
             @focusin="showModal"
         />
-        <span v-if="departure && arrival" class="input-group-text font-monospace" @click="showModalFocusTime(false)">
+        <span
+            v-if="departure && arrival && timeFieldA !== '--:--'"
+            class="input-group-text font-monospace"
+            @click="showModalFocusTime(false)"
+        >
             {{ timeFieldA }}
         </span>
         <span class="input-group-text font-monospace" @click="showModalFocusTime">

@@ -803,6 +803,7 @@
     "trip_creation.form.add_stopover": "Add stopover",
     "trip_creation.form.stopover": "Stopover",
     "trip_creation.form.departure": "Departure",
+    "optional": "optional",
     "trip_creation.form.arrival": "Arrival",
     "trip_creation.form.line": "Line (S1, ICE 13, …)",
     "trip_creation.form.travel_type": "Travel type",
