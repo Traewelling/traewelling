@@ -31,9 +31,9 @@ class ManualTripCreationRequest extends FormRequest
             'destinationArrivalPlanned' => ['required', 'date'],
             'destinationArrivalReal' => ['nullable', 'date'],
             'stopovers.*.stationId' => ['required', 'exists:train_stations,id'],
-            'stopovers.*.arrival' => ['required_without:stopovers.*.departure', 'required_with:stopovers.*.arrivalReal', 'date'],
+            'stopovers.*.arrival' => ['nullable', 'date', 'required_without:stopovers.*.departure', 'required_with:stopovers.*.arrivalReal'],
             'stopovers.*.arrivalReal' => ['nullable', 'date'],
-            'stopovers.*.departure' => ['required_without:stopovers.*.arrival,null', 'required_with:stopovers.*.departureReal', 'date'],
+            'stopovers.*.departure' => ['nullable', 'date', 'required_without:stopovers.*.arrival', 'required_with:stopovers.*.departureReal'],
             'stopovers.*.departureReal' => ['nullable', 'date'],
         ];
     }

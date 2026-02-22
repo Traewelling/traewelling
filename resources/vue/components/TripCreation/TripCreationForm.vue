@@ -145,7 +145,7 @@ export default {
                     id: '',
                 },
                 departurePlanned: baseDate.toFormat("yyyy-MM-dd'T'HH:mm"),
-                arrivalPlanned: baseDate.toFormat("yyyy-MM-dd'T'HH:mm"),
+                arrivalPlanned: '',
             };
             this.stopovers.push(dummyStopover);
 
@@ -200,8 +200,16 @@ export default {
                 let time = DateTime.fromISO(this.form.originDeparturePlanned, this.originTimezone);
 
                 for (const stopover of this.stopovers) {
-                    const arrival = DateTime.fromISO(stopover.arrivalPlanned, this.originTimezone);
-                    const departure = DateTime.fromISO(stopover.departurePlanned, this.originTimezone);
+                    const arrivalStr = stopover.arrivalPlanned || stopover.departurePlanned;
+                    const departureStr = stopover.departurePlanned || stopover.arrivalPlanned;
+
+                    if (!arrivalStr && !departureStr) {
+                        this.validation.times = false;
+                        return false;
+                    }
+
+                    const arrival = DateTime.fromISO(arrivalStr, this.originTimezone);
+                    const departure = DateTime.fromISO(departureStr, this.originTimezone);
 
                     if (arrival < time || departure < arrival) {
                         this.validation.times = false;
@@ -239,19 +247,22 @@ export default {
                     ? parseInt(this.journeyNumberInput)
                     : null;
             this.form.stopovers = this.stopovers.map((stopover) => {
-                return {
-                    stationId: stopover.station.id,
-                    departure: DateTime.fromFormat(
+                const mapped = { stationId: stopover.station.id };
+                if (stopover.departurePlanned) {
+                    mapped.departure = DateTime.fromFormat(
                         stopover.departurePlanned,
                         "yyyy-MM-dd'T'HH:mm",
                         this.originTimezone,
-                    ).toISO(),
-                    arrival: DateTime.fromFormat(
+                    ).toISO();
+                }
+                if (stopover.arrivalPlanned) {
+                    mapped.arrival = DateTime.fromFormat(
                         stopover.arrivalPlanned,
                         "yyyy-MM-dd'T'HH:mm",
                         this.originTimezone,
-                    ).toISO(),
-                };
+                    ).toISO();
+                }
+                return mapped;
             });
             this.form.category = this.selectedCategory.value;
             this.form.operatorId = this.selectedOperator ? this.selectedOperator.id : null;
@@ -291,15 +302,13 @@ export default {
             this.stopovers[key].station = item;
         },
         setStopoverDeparture(time, key) {
-            this.stopovers[key].departurePlanned = DateTime.fromISO(time, this.originTimezone).toFormat(
-                "yyyy-MM-dd'T'HH:mm",
-            );
+            const dt = DateTime.fromISO(time, this.originTimezone);
+            this.stopovers[key].departurePlanned = dt.isValid ? dt.toFormat("yyyy-MM-dd'T'HH:mm") : '';
             this.validateTimes();
         },
         setStopoverArrival(time, key) {
-            this.stopovers[key].arrivalPlanned = DateTime.fromISO(time, this.destinationTimezone).toFormat(
-                "yyyy-MM-dd'T'HH:mm",
-            );
+            const dt = DateTime.fromISO(time, this.destinationTimezone);
+            this.stopovers[key].arrivalPlanned = dt.isValid ? dt.toFormat("yyyy-MM-dd'T'HH:mm") : '';
             this.validateTimes();
         },
         checkDisallowed() {
