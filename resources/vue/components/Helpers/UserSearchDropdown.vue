@@ -16,6 +16,7 @@ export default defineComponent({
         return {
             users: [] as User[],
             search: '' as string,
+            showResults: false,
         };
     },
     watch: {
@@ -27,62 +28,73 @@ export default defineComponent({
     methods: {
         trans,
         fetchFriends() {
+            if (!this.search.trim()) {
+                this.users = [];
+                this.showResults = false;
+                return;
+            }
             this.api.user
                 .searchUsers(this.search)
                 .then((data) => {
                     if (!data.ok || data.status === 404) {
                         this.users = [];
+                        this.showResults = false;
                         return;
                     }
                     data.json().then((data) => {
                         this.users = data.data;
+                        this.showResults = this.users.length > 0;
                     });
                 })
                 .catch(() => {
                     this.users = [];
+                    this.showResults = false;
                 });
         },
         selectFriend(user: User) {
             this.$emit('select-event', user);
+            this.search = '';
+            this.users = [];
+            this.showResults = false;
+        },
+        handleBlur() {
+            // Delay to allow click on result items to fire first
+            setTimeout(() => {
+                this.showResults = false;
+            }, 200);
         },
     },
 });
 </script>
 
 <template>
-    <div class="col btn-group me-1">
-        <button
-            id="friendDropdown"
-            class="btn btn-sm btn-outline-primary dropdown-toggle"
-            type="button"
-            data-bs-dropdown-animation="off"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
+    <div class="position-relative">
+        <input
+            v-model="search"
+            type="search"
+            class="form-control mobile-input-fs-16"
+            autocomplete="off"
+            :placeholder="trans('settings.find-users')"
+            @focus="showResults = users.length > 0"
+            @blur="handleBlur"
+        />
+        <ul
+            v-if="showResults && users.length > 0"
+            class="dropdown-menu show w-100 shadow rounded-3 overflow-hidden mt-1"
         >
-            <i class="fas fa-users" aria-hidden="true" />
-        </button>
-        <div aria-labelledby="friendDropdown" class="dropdown-menu pt-0 mx-0 rounded-3 shadow overflow-hidden">
-            <form class="p-2 mb-2 border-bottom">
-                <input
-                    v-model="search"
-                    type="search"
-                    class="form-control mobile-input-fs-16"
-                    autocomplete="off"
-                    :placeholder="trans('settings.find-users')"
-                />
-            </form>
-            <ul v-if="users.length > 0" class="list-unstyled mb-0">
-                <li v-for="user in users" :key="user?.id">
-                    <a href="#" class="dropdown-item d-flex align-items-center gap-2 py-2" @click="selectFriend(user)">
-                        <div class="flex-grow-1">
-                            <div class="fw-bold">{{ user?.displayName }}</div>
-                            <div class="text-muted small">{{ user?.username }}</div>
-                        </div>
-                    </a>
-                </li>
-            </ul>
-            <div v-else class="p-2 mb-0 text-center text-muted" />
-        </div>
+            <li v-for="user in users" :key="user?.id">
+                <a
+                    href="#"
+                    class="dropdown-item d-flex align-items-center gap-2 py-2"
+                    @click.prevent="selectFriend(user)"
+                >
+                    <div class="flex-grow-1">
+                        <div class="fw-bold">{{ user?.displayName }}</div>
+                        <div class="text-muted small">{{ user?.username }}</div>
+                    </div>
+                </a>
+            </li>
+        </ul>
     </div>
 </template>
 
