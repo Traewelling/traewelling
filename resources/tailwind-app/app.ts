@@ -3,7 +3,7 @@ import { INotyfOptions, Notyf } from 'notyf';
 import { createPinia } from 'pinia';
 import piniaPluginPersistedState from 'pinia-plugin-persistedstate';
 import { createApp } from 'vue';
-import '../css/contribute.css';
+import '../css/tailwind-app.css';
 import App from './App.vue';
 import router from './router';
 
@@ -52,12 +52,12 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Create and mount app
-    if (document.getElementById('contribute-app')) {
+    if (document.getElementById('tailwind-app')) {
         const app = createApp(App);
         app.use(pinia);
         app.use(i18nVue, i18nOptions);
         app.use(router);
         app.provide('notyf', notyf);
-        app.mount('#contribute-app');
+        app.mount('#tailwind-app');
     }
 });

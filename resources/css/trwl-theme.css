@@ -1,0 +1,20 @@
+@plugin "daisyui/theme" {
+  name: 'dark';
+  prefersdark: true; /* set as default dark mode (prefers-color-scheme:dark) */
+  color-scheme: dark; /* color of browser-provided UI */
+
+  --color-primary: #811a0e;
+  --color-base-100: oklch(0.25 0.009 264.318);
+  --color-base-200: oklch(0.21 0.009 264.318);
+  --color-base-300: oklch(0.177 0.009 264.318);
+  --color-secondary: teal;
+}
+
+@plugin "daisyui/theme" {
+  name: 'light';
+  prefersdark: false; /* set as default light mode (prefers-color-scheme:light) */
+  color-scheme: light; /* color of browser-provided UI */
+
+  --color-primary: #c72730;
+  --color-secondary: teal;
+}
