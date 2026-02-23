@@ -99,6 +99,7 @@
 </template>
 
 <script setup lang="ts">
+import '../css/contribute-theme.css';
 import { trans } from 'laravel-vue-i18n';
 import { ArrowLeft, CalendarPlus, House, Menu, PencilRuler, User } from 'lucide-vue-next';
 import '../css/contribute-theme.css';
