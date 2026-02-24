@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { MglMarker, MglPopup } from '@indoorequal/vue-maplibre-gl';
-import { trans } from 'laravel-vue-i18n';
 import { GeoJSONFeature, LngLat, LngLatBounds } from 'maplibre-gl';
 import { computed, PropType, ref } from 'vue';
 import { Api, EventResource, LivePointDto, MapProvider, StatusResource } from '../../../types/Api.gen';
-import { DtmRange } from '../../helpers/DateRange';
 import { useUserStore } from '../../stores/user';
+import EventMarker from './EventMarker.vue';
 import GenericMap from './GenericMap.vue';
 
 const props = defineProps({
@@ -88,22 +86,6 @@ api.events
         :live-positions="livePositions"
         :map-provider="mapProvider"
     >
-        <template v-for="trwlEvent in events">
-            <mgl-marker
-                v-if="trwlEvent.station?.latitude && trwlEvent.station?.longitude"
-                :key="trwlEvent.id"
-                :coordinates="[trwlEvent.station.longitude, trwlEvent.station.latitude]"
-            >
-                <mgl-popup>
-                    <strong
-                        ><a target="_blank" :href="trwlEvent.url">{{ trwlEvent.name }}</a></strong
-                    ><br />
-                    <i class="fa fa-user-clock" /> {{ trwlEvent.host }}<br />
-                    <i class="fa fa-calendar-day" />
-                    {{ DtmRange.fromISO(trwlEvent.begin, trwlEvent.end).toLocaleDateString() }}<br />
-                    <a :href="`/event/${trwlEvent.slug}`">{{ trans('events.show-all-for-event') }}</a>
-                </mgl-popup>
-            </mgl-marker>
-        </template>
+        <EventMarker v-for="trwlEvent in events" :key="trwlEvent.id" :event="trwlEvent" />
     </GenericMap>
 </template>
