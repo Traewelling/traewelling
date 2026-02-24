@@ -96,7 +96,7 @@ const style: StyleSpecification = {
 </script>
 
 <template>
-    <mgl-map :map-style="style" :max-zoom="18" :bounds="bounds" height="45vh">
+    <mgl-map :map-style="style" :max-zoom="18" :bounds="bounds" height="45vh" :attribution-control="{ compact: true }">
         <mgl-navigation-control position="top-right" :show-zoom="false" :show-compass="true" />
         <mgl-geolocate-control />
 
