@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { MglMarker, MglPopup } from '@indoorequal/vue-maplibre-gl';
 import { trans, transChoice } from 'laravel-vue-i18n';
 import { LngLat, LngLatBounds } from 'maplibre-gl';
 import { Notyf } from 'notyf';
 import { ref } from 'vue';
-import { Api, EventResource, LivePointDto, StatusResource } from '../../types/Api.gen';
+import { Api, EventResource, LivePointDto, MapProvider, StatusResource } from '../../types/Api.gen';
 import ActiveJourneyMap from '../components/ActiveJourneyMap.vue';
+import EventMarker from '../components/Map/EventMarker.vue';
 import GenericMap from '../components/Map/GenericMap.vue';
 import StatusCard from '../components/Status/StatusCard.vue';
-import { DtmRange } from '../helpers/DateRange';
 import { useUserStore } from '../stores/user';
 
 const api = new Api({ baseUrl: window.location.origin + '/api/v1' });
@@ -90,25 +89,13 @@ setInterval(() => {
             </h1>
         </div>
         <div id="activeJourneys" class="col-md-6 mb-4">
-            <GenericMap v-if="user.hasBeta" :live-positions="livePositions" :bounds="bounds">
-                <template v-for="trwlEvent in events">
-                    <mgl-marker
-                        v-if="trwlEvent.station?.latitude && trwlEvent.station?.longitude"
-                        :key="trwlEvent.id"
-                        :coordinates="[trwlEvent.station.longitude, trwlEvent.station.latitude]"
-                    >
-                        <mgl-popup>
-                            <strong
-                                ><a target="_blank" :href="trwlEvent.url">{{ trwlEvent.name }}</a></strong
-                            ><br />
-                            <i class="fa fa-user-clock" /> {{ trwlEvent.host }}<br />
-                            <i class="fa fa-calendar-day" />{{
-                                DtmRange.fromISO(trwlEvent.begin, trwlEvent.end).toLocaleDateString()
-                            }}<br />
-                            <a :href="`/event/${trwlEvent.slug}`">{{ trans('events.show-all-for-event') }}</a>
-                        </mgl-popup>
-                    </mgl-marker>
-                </template>
+            <GenericMap
+                v-if="user.hasBeta"
+                :live-positions="livePositions"
+                :bounds="bounds"
+                :map-provider="user.user?.mapProvider ?? MapProvider.Cargo"
+            >
+                <EventMarker v-for="trwlEvent in events" :key="trwlEvent.id" :event="trwlEvent" />
             </GenericMap>
             <ActiveJourneyMap v-else ref="map" :map-provider="user.user?.mapProvider || 'default'" />
 
