@@ -90,8 +90,8 @@
                                         <li class="breadcrumb-item">
                                             <code>similarity: {{ round($parallelEvent->similarity, 1) }} %</code></li>
                                     </ol>
-                                    {{ $parallelEvent->checkin_start->format('Y-m-d H:i') }}
-                                    - {{ $parallelEvent->checkin_end->format('Y-m-d H:i') }}
+                                    {{ $parallelEvent->checkin_start->format('Y-m-d') }}
+                                    - {{ $parallelEvent->checkin_end->format('Y-m-d') }}
                                     <code>Created at: {{ $parallelEvent->created_at }}</code>
                                 </li>
                             @endforeach
@@ -111,8 +111,8 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-floating">
-                                    <input id="begin" type="datetime-local" class="form-control" name="begin"
-                                           value="{{ $eventSuggestion->begin->startOfDay()->toDateTimeLocalString() }}"
+                                    <input id="begin" type="date" class="form-control" name="begin"
+                                           value="{{ $eventSuggestion->begin->toDateString() }}"
                                            required
                                     />
                                     <label for="begin">Checkin {{ __('events.begin') }}:</label>
@@ -120,8 +120,8 @@
                             </div>
                             <div class="col-6">
                                 <div class="form-floating">
-                                    <input id="end" type="datetime-local" class="form-control" name="end"
-                                           value="{{ $eventSuggestion->end->endOfDay()->setSeconds(0)->toDateTimeLocalString() }}"
+                                    <input id="end" type="date" class="form-control" name="end"
+                                           value="{{ $eventSuggestion->end->toDateString() }}"
                                            required
                                     />
                                     <label for="end">Checkin {{ __('events.end') }}:</label>
@@ -143,7 +143,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-floating">
-                                    <input id="event-start" type="datetime-local" class="form-control"
+                                    <input id="event-start" type="date" class="form-control"
                                            name="event_start"
                                     />
                                     <label for="event-begin">{{ __('events.begin') }}</label>
@@ -151,7 +151,7 @@
                             </div>
                             <div class="col-6">
                                 <div class="form-floating">
-                                    <input id="event-end" type="datetime-local" class="form-control" name="event_end"
+                                    <input id="event-end" type="date" class="form-control" name="event_end"
                                     />
                                     <label for="event-end">{{ __('events.end') }}</label>
                                 </div>

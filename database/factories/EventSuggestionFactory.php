@@ -20,8 +20,8 @@ class EventSuggestionFactory extends Factory
             'host' => $this->faker->company,
             'url' => $this->faker->url,
             'station_id' => Station::factory(),
-            'begin' => $begin->toIso8601String(),
-            'end' => $end->toIso8601String(),
+            'begin' => $begin->toDateString(),
+            'end' => $end->toDateString(),
         ];
     }
 }
