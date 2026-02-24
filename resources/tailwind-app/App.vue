@@ -3,7 +3,43 @@
         <!-- Navigation -->
         <div class="navbar bg-primary shadow-lg">
             <div class="navbar-start">
-                <div class="dropdown">
+                <a href="/" class="btn btn-sm hidden lg:flex">
+                    <ArrowLeft class="inline-block w-4 h-4 mr-2" />
+                    {{ trans('contribute.nav.back_to_traewelling') }}
+                </a>
+                <router-link to="/" class="btn btn-ghost text-xl text-white flex lg:hidden">
+                    <PencilRuler class="inline-block w-6 h-6 mr-2" />{{ trans('contribute') }}
+                </router-link>
+            </div>
+
+            <div class="navbar-center hidden text-white lg:flex">
+                <ul class="menu menu-horizontal px-1">
+                    <li>
+                        <router-link to="/">
+                            <House class="inline-block w-6 h-6 mr-2" />
+                            {{ trans('contribute.nav.overview') }}
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/profile">
+                            <User class="inline-block w-6 h-6 mr-2" />
+                            {{ trans('contribute.nav.profile') }}
+                        </router-link>
+                    </li>
+                    <li>
+                        <router-link to="/events/suggest">
+                            <CalendarPlus class="inline-block w-6 h-6 mr-2" />
+                            {{ trans('contribute.nav.suggest_event') }}
+                        </router-link>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="navbar-end">
+                <router-link to="/" class="btn btn-ghost text-xl text-white hidden lg:flex">
+                    <PencilRuler class="inline-block w-6 h-6 mr-2" />{{ trans('contribute') }}
+                </router-link>
+                <div class="dropdown dropdown-end">
                     <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
                         <Menu class="inline-block w-6 h-6 text-white" />
                     </div>
@@ -37,37 +73,6 @@
                         </li>
                     </ul>
                 </div>
-                <router-link to="/" class="btn btn-ghost text-xl text-white">
-                    <PencilRuler class="inline-block w-6 h-6 mr-2" />{{ trans('contribute') }}
-                </router-link>
-            </div>
-            <div class="navbar-center hidden text-white lg:flex">
-                <ul class="menu menu-horizontal px-1">
-                    <li>
-                        <router-link to="/">
-                            <House class="inline-block w-6 h-6 mr-2" />
-                            {{ trans('contribute.nav.overview') }}
-                        </router-link>
-                    </li>
-                    <li>
-                        <router-link to="/profile">
-                            <User class="inline-block w-6 h-6 mr-2" />
-                            {{ trans('contribute.nav.profile') }}
-                        </router-link>
-                    </li>
-                    <li>
-                        <router-link to="/events/suggest">
-                            <CalendarPlus class="inline-block w-6 h-6 mr-2" />
-                            {{ trans('contribute.nav.suggest_event') }}
-                        </router-link>
-                    </li>
-                </ul>
-            </div>
-            <div class="navbar-end hidden lg:flex">
-                <a href="/" class="btn btn-sm">
-                    <ArrowLeft class="inline-block w-4 h-4 mr-2" />
-                    {{ trans('contribute.nav.back_to_traewelling') }}
-                </a>
             </div>
         </div>
 
@@ -96,4 +101,5 @@
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 import { ArrowLeft, CalendarPlus, House, Menu, PencilRuler, User } from 'lucide-vue-next';
+import '../css/contribute-theme.css';
 </script>
