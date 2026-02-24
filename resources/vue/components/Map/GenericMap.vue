@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {
-    MglFullscreenControl,
     MglGeoJsonSource,
     MglGeolocateControl,
     MglLineLayer,
@@ -98,7 +97,6 @@ const style: StyleSpecification = {
 
 <template>
     <mgl-map :map-style="style" :max-zoom="18" :bounds="bounds" height="45vh">
-        <mgl-fullscreen-control />
         <mgl-navigation-control position="top-right" :show-zoom="false" :show-compass="true" />
         <mgl-geolocate-control />
 
