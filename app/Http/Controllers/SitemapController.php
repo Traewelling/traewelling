@@ -69,7 +69,7 @@ class SitemapController extends Controller
 
         $eventIdsWithCheckins = Status::whereNotNull('event_id')->select('event_id');
         $events = Event::whereIn('id', $eventIdsWithCheckins)
-            ->orWhere('event_end', '>=', DB::raw('CURRENT_TIMESTAMP'))
+            ->orWhere('event_end', '>=', today()->toDateString())
             ->get();
 
         foreach ($events as $event) {

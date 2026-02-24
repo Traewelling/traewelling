@@ -17,7 +17,6 @@ use App\Services\TelegramService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
 
@@ -49,18 +48,20 @@ class EventController extends Controller
             $queryBase->where('name', 'LIKE', '%' . strip_tags($request->get('query')) . '%');
         }
 
+        $today = today()->toDateString();
+
         return view('admin.events.index', [
             'events_future' => $queryBase->clone()
                 ->orderBy('checkin_start')
-                ->whereDate('checkin_start', '>', DB::raw('now()'))
+                ->where('checkin_start', '>', $today)
                 ->paginate(10, pageName: 'future'),
             'events_current' => $queryBase->clone()
                 ->orderBy('checkin_start')
-                ->where('checkin_start', '<', DB::raw('now()'))
-                ->where('checkin_end', '>', DB::raw('now()'))
+                ->where('checkin_start', '<=', $today)
+                ->where('checkin_end', '>=', $today)
                 ->paginate(10, pageName: 'current'),
             'events_past' => $queryBase->clone()
-                ->where('checkin_end', '<', DB::raw('now()'))
+                ->where('checkin_end', '<', $today)
                 ->paginate(10, pageName: 'past'),
         ]);
     }
@@ -69,7 +70,7 @@ class EventController extends Controller
     {
         return view('admin.events.suggestions', [
             'suggestions' => EventSuggestion::where('processed', false)
-                ->where(DB::raw('DATE(end)'), '>=', DB::raw('DATE(CURRENT_TIMESTAMP)'))
+                ->where('end', '>=', today()->toDateString())
                 ->orderBy('begin')
                 ->get(),
         ]);
@@ -79,25 +80,19 @@ class EventController extends Controller
     {
         $suggestion = EventSuggestion::findOrFail($id);
         $parallelEvents = Event::where([
-            [DB::raw('DATE(checkin_start)'), '>=', $suggestion->begin->toDateString()],
-            [DB::raw('DATE(checkin_end)'), '<=', $suggestion->end->toDateString()],
+            ['checkin_start', '>=', $suggestion->begin->toDateString()],
+            ['checkin_end', '<=', $suggestion->end->toDateString()],
         ])
-            ->orWhere(function ($query) use ($suggestion) {
+            ->orWhere(function ($query) use ($suggestion): void {
                 $query->where([
-                    [DB::raw('DATE(checkin_start)'), '<=', $suggestion->begin->toDateString()],
-                    [DB::raw('DATE(checkin_end)'), '>=', $suggestion->begin->toDateString()],
+                    ['checkin_start', '<=', $suggestion->begin->toDateString()],
+                    ['checkin_end', '>=', $suggestion->begin->toDateString()],
                 ]);
             })
-            ->orWhere(function ($query) use ($suggestion) {
+            ->orWhere(function ($query) use ($suggestion): void {
                 $query->where([
-                    [DB::raw('DATE(checkin_start)'), '<=', $suggestion->begin->toDateString()],
-                    [DB::raw('DATE(checkin_end)'), '>=', $suggestion->begin->toDateString()],
-                ]);
-            })
-            ->orWhere(function ($query) use ($suggestion) {
-                $query->where([
-                    [DB::raw('DATE(checkin_start)'), '<=', $suggestion->end->toDateString()],
-                    [DB::raw('DATE(checkin_end)'), '>=', $suggestion->end->toDateString()],
+                    ['checkin_start', '<=', $suggestion->end->toDateString()],
+                    ['checkin_end', '>=', $suggestion->end->toDateString()],
                 ]);
             })
             ->get();
@@ -198,10 +193,10 @@ class EventController extends Controller
             'hashtag' => $validated['hashtag'],
             'host' => $validated['host'],
             'station_id' => $station?->id,
-            'checkin_start' => Carbon::parse($validated['begin'])->toIso8601String(),
-            'checkin_end' => Carbon::parse($validated['end'])->toIso8601String(),
-            'event_start' => Carbon::parse($validated['event_start'] ?? $validated['begin'])->toIso8601String(),
-            'event_end' => Carbon::parse($validated['event_end'] ?? $validated['end'])->toIso8601String(),
+            'checkin_start' => Carbon::parse($validated['begin'])->toDateString(),
+            'checkin_end' => Carbon::parse($validated['end'])->toDateString(),
+            'event_start' => isset($validated['event_start']) ? Carbon::parse($validated['event_start'])->toDateString() : null,
+            'event_end' => isset($validated['event_end']) ? Carbon::parse($validated['event_end'])->toDateString() : null,
             'url' => $validated['url'] ?? null,
             'accepted_by' => auth()->user()->id,
         ]);
@@ -246,13 +241,13 @@ class EventController extends Controller
 
         $validated['slug'] = AdminEventBackend::createSlugFromName($validated['name']);
         $validated['station_id'] = $station?->id;
-        $validated['checkin_start'] = Carbon::parse($validated['checkin_start'])->toIso8601String();
-        $validated['checkin_end'] = Carbon::parse($validated['checkin_end'])->toIso8601String();
+        $validated['checkin_start'] = Carbon::parse($validated['checkin_start'])->toDateString();
+        $validated['checkin_end'] = Carbon::parse($validated['checkin_end'])->toDateString();
         if (isset($validated['event_start'])) {
-            $validated['event_start'] = Carbon::parse($validated['event_start'])->toIso8601String();
+            $validated['event_start'] = Carbon::parse($validated['event_start'])->toDateString();
         }
         if (isset($validated['event_end'])) {
-            $validated['event_end'] = Carbon::parse($validated['event_end'])->toIso8601String();
+            $validated['event_end'] = Carbon::parse($validated['event_end'])->toDateString();
         }
         $validated['accepted_by'] = auth()->user()->id;
 

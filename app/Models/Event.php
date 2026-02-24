@@ -31,10 +31,10 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
  * @property-read \App\Models\User|null $approvedBy
- * @property-read Carbon $end
+ * @property-read \Illuminate\Support\Carbon $end
  * @property-read bool $has_extended_checkin
  * @property-read bool $is_pride
- * @property-read Carbon $start
+ * @property-read \Illuminate\Support\Carbon $start
  * @property-read int $total_distance
  * @property-read int $total_duration
  * @property-read \App\Models\Station|null $station
@@ -79,10 +79,10 @@ class Event extends Model
     protected $casts = [
         'id' => 'integer',
         'station_id' => 'integer',
-        'checkin_start' => 'datetime',
-        'checkin_end' => 'datetime',
-        'event_start' => 'datetime',
-        'event_end' => 'datetime',
+        'checkin_start' => 'date',
+        'checkin_end' => 'date',
+        'event_start' => 'date',
+        'event_end' => 'date',
     ];
 
     public function station(): HasOne
@@ -163,10 +163,11 @@ class Event extends Model
      */
     public static function forTimestamp(Carbon $timestamp, bool $showUpcoming = false): Builder
     {
-        $query = self::where('checkin_end', '>=', $timestamp)
+        $date = $timestamp->toDateString();
+        $query = self::where('checkin_end', '>=', $date)
             ->orderBy('checkin_start', 'asc');
         if (!$showUpcoming) {
-            $query->where('checkin_start', '<=', $timestamp);
+            $query->where('checkin_start', '<=', $date);
         }
 
         return $query;

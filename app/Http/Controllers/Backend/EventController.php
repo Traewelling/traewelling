@@ -30,8 +30,8 @@ abstract class EventController extends Controller
         $eventSuggestion = EventSuggestion::create([
             'user_id' => $user->id,
             'name' => $name,
-            'begin' => $begin->toIso8601String(),
-            'end' => $end->toIso8601String(),
+            'begin' => $begin->toDateString(),
+            'end' => $end->toDateString(),
             'station_id' => $station?->id,
             'url' => $url,
             'host' => $host,

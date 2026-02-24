@@ -258,7 +258,7 @@ class StatusController extends Controller
         ?Event $event = null,
         ?User $createdByUser = null
     ): Status {
-        if ($event !== null && !Carbon::now()->isBetween($event->checkin_start, $event->checkin_end)) {
+        if ($event !== null && !today()->isBetween($event->checkin_start, $event->checkin_end)) {
             Log::info('Event checkin was prevented because the event is not active anymore', [
                 'event' => $event->only(['id', 'name', 'checkin_start', 'checkin_end']),
                 'user' => $user->only(['id', 'username']),

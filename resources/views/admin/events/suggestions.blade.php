@@ -1,4 +1,3 @@
-@php use Illuminate\Support\Facades\Date; @endphp
 @extends('admin.layout')
 
 @section('title', 'Event suggestions')
@@ -31,14 +30,14 @@
                                 @continue
                             @endif
 
-                            <tr class="{{$eventSuggestion->begin->isPast() ? 'table-danger' : ''}}">
+                            <tr class="{{$eventSuggestion->begin->lt(today()) ? 'table-danger' : ''}}">
                                 <td>{{$eventSuggestion->name}}</td>
                                 <td>{{$eventSuggestion->host}}</td>
                                 <td>
                                     {{$eventSuggestion->begin->format('d.m.Y')}}
-                                    @if($eventSuggestion->begin->isPast())
+                                    @if($eventSuggestion->begin->lt(today()))
                                         <div class="spinner-grow text-danger" style="width: 1rem; height: 1rem;"></div>
-                                    @elseif($eventSuggestion->begin->isBefore(Date::today()->addDays(3)))
+                                    @elseif($eventSuggestion->begin->lte(today()->addDays(3)))
                                         <div class="spinner-grow text-info" style="width: 1rem; height: 1rem;"></div>
                                     @endif
                                 </td>

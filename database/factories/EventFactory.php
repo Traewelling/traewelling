@@ -16,8 +16,8 @@ class EventFactory extends Factory
             'slug' => $this->faker->unique()->slug,
             'host' => $this->faker->company,
             'url' => $this->faker->url,
-            'checkin_start' => Carbon::now()->subDays(3)->toIso8601String(),
-            'checkin_end' => Carbon::now()->addDays(3)->toIso8601String(),
+            'checkin_start' => Carbon::now()->subDays(3)->toDateString(),
+            'checkin_end' => Carbon::now()->addDays(3)->toDateString(),
             'station_id' => Station::factory(),
         ];
     }

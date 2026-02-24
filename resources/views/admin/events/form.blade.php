@@ -68,16 +68,16 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-floating">
-                                    <input id="checkin_start" type="datetime-local" class="form-control" name="checkin_start"
-                                           required value="{{$event?->checkin_start}}"
+                                    <input id="checkin_start" type="date" class="form-control" name="checkin_start"
+                                           required value="{{$event?->checkin_start?->toDateString()}}"
                                     />
                                     <label for="checkin_start">Checkin {{ __('events.begin') }}:</label>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-floating">
-                                    <input id="checkin_end" type="datetime-local" class="form-control" name="checkin_end"
-                                           required value="{{$event?->checkin_end}}"
+                                    <input id="checkin_end" type="date" class="form-control" name="checkin_end"
+                                           required value="{{$event?->checkin_end?->toDateString()}}"
                                     />
                                     <label for="checkin_end">Checkin {{ __('events.end') }}:</label>
                                 </div>
@@ -96,16 +96,16 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-floating">
-                                    <input id="event-start" type="datetime-local" class="form-control"
-                                           name="event_start" value="{{$event?->event_start}}"
+                                    <input id="event-start" type="date" class="form-control"
+                                           name="event_start" value="{{$event?->event_start?->toDateString()}}"
                                     />
                                     <label for="event-begin">{{ __('events.begin') }}</label>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-floating">
-                                    <input id="event-end" type="datetime-local" class="form-control" name="event_end"
-                                           value="{{$event?->event_end}}"
+                                    <input id="event-end" type="date" class="form-control" name="event_end"
+                                           value="{{$event?->event_end?->toDateString()}}"
                                     />
                                     <label for="event-end">{{ __('events.end') }}</label>
                                 </div>
