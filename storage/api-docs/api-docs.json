@@ -5759,13 +5759,13 @@
                     },
                     "begin": {
                         "type": "string",
-                        "format": "date-time",
-                        "example": "2022-01-01T00:00:00+00:00"
+                        "format": "date",
+                        "example": "2022-01-01"
                     },
                     "end": {
                         "type": "string",
-                        "format": "date-time",
-                        "example": "2022-01-02T00:00:00+00:00"
+                        "format": "date",
+                        "example": "2022-01-02"
                     },
                     "station": {
                         "$ref": "#/components/schemas/Station"

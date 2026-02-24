@@ -605,13 +605,13 @@ export interface EventResource {
   /** @example "https://9-euro-ticket.de" */
   url: string;
   /**
-   * @format date-time
-   * @example "2022-01-01T00:00:00+00:00"
+   * @format date
+   * @example "2022-01-01"
    */
   begin: string;
   /**
-   * @format date-time
-   * @example "2022-01-02T00:00:00+00:00"
+   * @format date
+   * @example "2022-01-02"
    */
   end: string;
   /** train station model */
