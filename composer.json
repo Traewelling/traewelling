@@ -60,7 +60,7 @@
     "nunomaduro/collision": "^8.8",
     "phpunit/phpunit": "^12.0",
     "roave/security-advisories": "dev-latest",
-    "spatie/laravel-ignition": "2.10.0"
+    "spatie/laravel-ignition": "2.11.0"
   },
   "config": {
     "optimize-autoloader": true,
