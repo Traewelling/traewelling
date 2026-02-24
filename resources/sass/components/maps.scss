@@ -1,3 +1,46 @@
 .leaflet-tile-container img[src*='tiles.openrailwaymap.org'] {
   filter: grayscale(80%) opacity(0.5);
 }
+
+// Dark mode overrides for MapLibre GL controls
+[data-bs-theme='dark'] {
+  // Navigation / geolocate button groups
+  .maplibregl-ctrl-group {
+    background: #2b2b2b;
+
+    button + button {
+      border-top-color: #555;
+    }
+
+    button:not(:disabled):hover,
+    button:not(:disabled):active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    // SVG icons are dark fills on transparent – invert to light fills
+    .maplibregl-ctrl-icon {
+      filter: invert(1);
+    }
+  }
+
+  // Attribution panel (expanded text)
+  .maplibregl-ctrl-attrib {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #ccc;
+
+    &.maplibregl-compact {
+      background-color: #2b2b2b;
+      color: #ccc;
+    }
+
+    a {
+      color: rgba(210, 210, 210, 0.85);
+    }
+  }
+
+  // The info icon button
+  .maplibregl-ctrl-attrib-button {
+    background-color: rgba(0, 0, 0, 0.4);
+    filter: invert(1);
+  }
+}
