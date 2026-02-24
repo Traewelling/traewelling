@@ -7,7 +7,7 @@
   --color-base-100: oklch(0.25 0.009 264.318);
   --color-base-200: oklch(0.21 0.009 264.318);
   --color-base-300: oklch(0.177 0.009 264.318);
-  --color-secondary: teal;
+  --color-secondary: #3b71ca;
 }
 
 @plugin "daisyui/theme" {
@@ -16,5 +16,5 @@
   color-scheme: light; /* color of browser-provided UI */
 
   --color-primary: #c72730;
-  --color-secondary: teal;
+  --color-secondary: #3b71ca;
 }
