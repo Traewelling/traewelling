@@ -4,7 +4,7 @@ import { trans, transChoice } from 'laravel-vue-i18n';
 import { LngLat, LngLatBounds } from 'maplibre-gl';
 import { Notyf } from 'notyf';
 import { ref } from 'vue';
-import { Api, EventResource, LivePointDto, StatusResource } from '../../types/Api.gen';
+import { Api, EventResource, LivePointDto, MapProvider, StatusResource } from '../../types/Api.gen';
 import ActiveJourneyMap from '../components/ActiveJourneyMap.vue';
 import GenericMap from '../components/Map/GenericMap.vue';
 import StatusCard from '../components/Status/StatusCard.vue';
@@ -90,7 +90,12 @@ setInterval(() => {
             </h1>
         </div>
         <div id="activeJourneys" class="col-md-6 mb-4">
-            <GenericMap v-if="user.hasBeta" :live-positions="livePositions" :bounds="bounds">
+            <GenericMap
+                v-if="user.hasBeta"
+                :live-positions="livePositions"
+                :bounds="bounds"
+                :map-provider="user.user?.mapProvider ?? MapProvider.Cargo"
+            >
                 <template v-for="trwlEvent in events">
                     <mgl-marker
                         v-if="trwlEvent.station?.latitude && trwlEvent.station?.longitude"

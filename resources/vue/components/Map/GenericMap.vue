@@ -10,11 +10,11 @@ import {
     MglRasterSource,
 } from '@indoorequal/vue-maplibre-gl';
 import { GeoJSONFeature, LngLat, LngLatBounds, StyleSpecification } from 'maplibre-gl';
-import { PropType, ref, watch } from 'vue';
-import { LivePointDto } from '../../../types/Api.gen';
+import { computed, PropType } from 'vue';
+import { LivePointDto, MapProvider } from '../../../types/Api.gen';
 import LiveMapPoint from './LiveMapPoint.vue';
 
-defineProps({
+const props = defineProps({
     polyLines: {
         type: Array as PropType<GeoJSONFeature[]>,
         required: false,
@@ -33,57 +33,90 @@ defineProps({
         required: false,
         default: () => [],
     },
+    mapProvider: {
+        type: String as PropType<MapProvider>,
+        default: MapProvider.Cargo,
+    },
 });
 
-const isDarkMode = ref(false);
+const isDarkMode = document.documentElement.dataset.bsTheme === 'dark';
 
-watch(
-    () => document.documentElement.dataset.bsTheme,
-    (newValue) => {
-        isDarkMode.value = newValue === 'dark';
-    },
-    { immediate: true, deep: true },
-);
+const cartoAttribution =
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attribution">CARTO</a>';
+const ormAttribution = '<a href="https://openrailwaymap.org" target="_blank">OpenRailwayMap</a>';
 
-// Map setup
-const style: StyleSpecification = {
-    version: 8,
-    projection: { type: 'globe' },
-    sources: {},
-    layers: [],
-};
-const osmTiles = ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'];
+const cartoVoyagerTiles = [
+    'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+    'https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+    'https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+    'https://d.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+];
+const cartoVoyagerNoLabelsTiles = [
+    'https://a.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png',
+    'https://b.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png',
+    'https://c.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png',
+    'https://d.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png',
+];
+
+const cartoDarkAllTiles = [
+    'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+    'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+    'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+    'https://d.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+];
+const cartoDarkNoLabelsTiles = [
+    'https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
+    'https://b.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
+    'https://c.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
+    'https://d.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png',
+];
 
 const ormTiles = [
     'https://a.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
     'https://b.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
     'https://c.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
 ];
-const ormAttribution = '<a href="https://openrailwaymap.org" target="reservoirwatch">OpenRailwayMap</a>';
-const osmAttribution = 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
+
+const useNoLabels = props.mapProvider === MapProvider.OpenRailwayMap;
+const baseTiles: string[] = isDarkMode
+    ? useNoLabels
+        ? cartoDarkNoLabelsTiles
+        : cartoDarkAllTiles
+    : useNoLabels
+      ? cartoVoyagerNoLabelsTiles
+      : cartoVoyagerTiles;
+
+const showOrmLayer = computed(() => props.mapProvider === MapProvider.OpenRailwayMap);
+
+const style: StyleSpecification = {
+    version: 8,
+    projection: { type: 'globe' },
+    sources: {},
+    layers: [],
+};
 </script>
 
 <template>
-    <mgl-map ref="mapComponent" :map-style="style" :max-zoom="18" :bounds="bounds" height="45vh">
+    <mgl-map :map-style="style" :max-zoom="18" :bounds="bounds" height="45vh">
         <mgl-fullscreen-control />
         <mgl-navigation-control position="top-right" :show-zoom="false" :show-compass="true" />
         <mgl-geolocate-control />
-        <!-- ToDo: Switch base layers based on dark mode https://github.com/Traewelling/traewelling/issues/4132 -->
-        <!-- ToDo: Vector layers https://github.com/Traewelling/traewelling/issues/4131 -->
-        <mgl-raster-source source-id="osm-source" :tiles="osmTiles" :attribution="osmAttribution">
-            <mgl-raster-layer layer-id="osm-layer" :paint="{ 'raster-opacity': 0.5, 'raster-saturation': -1 }" />
+
+        <mgl-raster-source source-id="base-source" :tiles="baseTiles" :attribution="cartoAttribution">
+            <mgl-raster-layer layer-id="base-layer" />
         </mgl-raster-source>
 
-        <!-- ToDo: Make overlay layer toggleable w/ different map styles https://github.com/Traewelling/traewelling/issues/4133 -->
         <mgl-raster-source
+            v-if="showOrmLayer"
             source-id="orm-source"
             :tiles="ormTiles"
             :tile-size="256"
             :maxzoom="18"
             :attribution="ormAttribution"
         >
-            <mgl-raster-layer layer-id="orm-layer" :paint="{ 'raster-opacity': 0.5 }" />
+            <mgl-raster-layer layer-id="orm-layer" :paint="{ 'raster-opacity': 0.35, 'raster-saturation': -1 }" />
         </mgl-raster-source>
+
         <mgl-geo-json-source
             v-if="polyLines.length > 0"
             :data="{
@@ -92,8 +125,24 @@ const osmAttribution = 'Map data © <a href="https://openstreetmap.org">OpenStre
             }"
             source-id="polylines"
         >
+            <!-- Dark casing underneath for contrast on all base maps -->
             <mgl-line-layer
-                layer-id="line"
+                layer-id="line-casing"
+                source-id="polylines"
+                :layout="{
+                    'line-cap': 'round',
+                    'line-join': 'round',
+                    visibility: 'visible',
+                }"
+                :paint="{
+                    'line-color': '#181818',
+                    'line-width': 7,
+                    'line-opacity': 0.9,
+                }"
+            />
+            <!-- Colored route line on top -->
+            <mgl-line-layer
+                layer-id="line-main"
                 source-id="polylines"
                 :layout="{
                     'line-cap': 'round',
@@ -102,8 +151,8 @@ const osmAttribution = 'Map data © <a href="https://openstreetmap.org">OpenStre
                 }"
                 :paint="{
                     'line-color': lineColor,
-                    'line-width': 4,
-                    'line-opacity': 0.8,
+                    'line-width': 5,
+                    'line-opacity': 1,
                 }"
             />
         </mgl-geo-json-source>
