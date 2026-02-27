@@ -55,7 +55,9 @@ function fetchStatuses(append = false) {
     const nextPage = append ? currentPage.value + 1 : 1;
 
     api.user
-        .getStatusesForUser(props.username)
+        .getStatusesForUser(props.username, {
+            page: nextPage,
+        })
         .then((res) => {
             res.json().then((json) => {
                 const list: StatusResource[] = json.data ?? [];
