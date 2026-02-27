@@ -135,13 +135,13 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 ->middleware(['scope:read-settings']);
             Route::put('profile', [SettingsController::class, 'updateSettings'])
                 ->middleware(['scope:write-settings-profile']);
-            Route::delete('profilePicture', [SettingsController::class, 'deleteProfilePicture']) // TODO: undocumented endpoint - document when stable
+            Route::delete('profile-picture', [SettingsController::class, 'deleteProfilePicture'])
                 ->middleware(['scope:write-settings-profile-picture']);
-            Route::post('profilePicture', [SettingsController::class, 'uploadProfilePicture']) // TODO: undocumented endpoint - document when stable
+            Route::post('profile-picture', [SettingsController::class, 'uploadProfilePicture'])
                 ->middleware(['scope:write-settings-profile-picture']);
-            Route::put('email', [SettingsController::class, 'updateMail']) // TODO: undocumented endpoint - document when stable
+            Route::put('email', [SettingsController::class, 'updateMail'])
                 ->middleware(['scope:write-settings-mail']);
-            Route::post('email/resend', [SettingsController::class, 'resendMail']) // TODO: undocumented endpoint - document when stable
+            Route::post('email/verification', [SettingsController::class, 'resendMail'])
                 ->middleware(['scope:write-settings-mail']);
             Route::put('password', [SettingsController::class, 'updatePassword']) // TODO: undocumented endpoint - document when stable
                 ->middleware(['scope:extra-write-password']);

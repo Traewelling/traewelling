@@ -1632,6 +1632,189 @@
                 ]
             }
         },
+        "/settings/email": {
+            "put": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Update the current user's email address",
+                "description": "Update the current user's email address",
+                "operationId": "updateEmail",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "mail@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "thisisnotasecurepassword123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserProfileSettingsResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                },
+                "security": [
+                    {
+                        "securityScheme": "passport",
+                        "type": "oauth2"
+                    }
+                ]
+            }
+        },
+        "/settings/email/verification": {
+            "post": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Resend verification email",
+                "description": "Resend verification email",
+                "operationId": "resendVerificationEmail",
+                "responses": {
+                    "201": {
+                        "description": "Success"
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded"
+                    }
+                },
+                "security": [
+                    {
+                        "securityScheme": "passport",
+                        "type": "oauth2"
+                    }
+                ]
+            }
+        },
+        "/settings/profile-picture": {
+            "post": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Upload a new profile picture for the current user",
+                "description": "Upload a new profile picture for the current user",
+                "operationId": "uploadProfilePicture",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "image": {
+                                        "type": "string",
+                                        "format": "base64",
+                                        "example": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA..."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile picture updated successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "securityScheme": "passport",
+                        "type": "oauth2"
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Delete the current user's profile picture",
+                "description": "Delete the current user's profile picture",
+                "operationId": "deleteProfilePicture",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile picture deleted successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "securityScheme": "passport",
+                        "type": "oauth2"
+                    }
+                ]
+            }
+        },
         "/stations": {
             "get": {
                 "tags": [
@@ -5437,12 +5620,6 @@
                     "timezone": {
                         "type": "string",
                         "example": "Europe/Berlin"
-                    },
-                    "email": {
-                        "type": "string",
-                        "format": "email",
-                        "maxLength": 255,
-                        "example": "mail@example.com"
                     }
                 },
                 "type": "object"
@@ -6412,6 +6589,10 @@
             },
             "TrustedUserResource": {
                 "title": "TrustedUser",
+                "required": [
+                    "user",
+                    "expiresAt"
+                ],
                 "properties": {
                     "user": {
                         "$ref": "#/components/schemas/LightUserResource"
@@ -6419,7 +6600,8 @@
                     "expiresAt": {
                         "type": "string",
                         "format": "date-time",
-                        "example": "2024-07-28T00:00:00Z"
+                        "example": "2024-07-28T00:00:00Z",
+                        "nullable": true
                     }
                 },
                 "type": "object"
@@ -6542,7 +6724,11 @@
                     "profileLinks",
                     "mapProvider",
                     "timezone",
-                    "experimental"
+                    "experimental",
+                    "friendCheckin",
+                    "mastodon",
+                    "mastodonVisibility",
+                    "bio"
                 ],
                 "properties": {
                     "username": {

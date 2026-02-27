@@ -2,7 +2,9 @@ import { RouteRecordRaw } from 'vue-router';
 import Index from '../pages/Contribute/Index.vue';
 import Profile from '../pages/Contribute/Profile.vue';
 import SuggestEvent from '../pages/Contribute/SuggestEvent.vue';
-import ProfileSettings from '../pages/Settings/Profile.vue';
+import Account from '../pages/Settings/Account/Account.vue';
+import Privacy from '../pages/Settings/Privacy/Privacy.vue';
+import ProfileSettings from '../pages/Settings/Profile/Profile.vue';
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -24,6 +26,16 @@ const routes: Array<RouteRecordRaw> = [
         path: '/settings/profile',
         name: 'settings-profile',
         component: ProfileSettings,
+    },
+    {
+        path: '/settings/account',
+        name: 'settings-account',
+        component: Account,
+    },
+    {
+        path: '/settings/privacy',
+        name: 'settings-privacy',
+        component: Privacy,
     },
 ];
 

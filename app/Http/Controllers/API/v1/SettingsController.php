@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use OpenApi\Attributes as OA;
 
 class SettingsController extends Controller
 {
@@ -44,13 +45,63 @@ class SettingsController extends Controller
     /**
      * @throws ValidationException
      */
+    #[OA\Put(
+        path: '/settings/email',
+        operationId: 'updateEmail',
+        description: 'Update the current user\'s email address',
+        summary: 'Update the current user\'s email address',
+        security: [new OA\SecurityScheme(
+            securityScheme: 'passport',
+            type: 'oauth2',
+        )],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(
+                        property: 'email',
+                        type: 'string',
+                        format: 'email',
+                        example: 'mail@example.com',
+                    ),
+                    new OA\Property(
+                        property: 'password',
+                        type: 'string',
+                        format: 'password',
+                        example: 'thisisnotasecurepassword123',
+                    ),
+                ]
+            )
+        ),
+        tags: ['Settings'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Success',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            ref: '#/components/schemas/UserProfileSettingsResource',
+                            type: 'object',
+                        ),
+                    ]
+                )
+            ),
+            new OA\Response(response: 400, description: 'Bad Request'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 422, description: 'Unprocessable Entity'),
+        ],
+    )]
     public function updateMail(Request $request): UserProfileSettingsResource|JsonResponse
     {
-        $validated = $request->validate(['email' => ['required',
-            'string',
-            'email:rfc,dns',
-            'max:255',
-            'unique:users'],
+        $validated = $request->validate([
+            'email' => ['required',
+                'string',
+                'email:rfc,dns',
+                'max:255',
+                'unique:users',
+            ],
             'password' => ['required', 'string'],
         ]);
         if (!Hash::check($validated['password'], auth()->user()->password)) {
@@ -59,7 +110,7 @@ class SettingsController extends Controller
         unset($validated['password']);
 
         try {
-            return new UserProfileSettingsResource(BackendSettingsController::updateSettings($validated));
+            return new UserProfileSettingsResource(BackendSettingsController::updateMail($validated['email'], auth()->user()));
         } catch (RateLimitExceededException) {
             return $this->sendError(error: __('email.verification.too-many-requests'), code: 400);
         }
@@ -106,13 +157,35 @@ class SettingsController extends Controller
         }
     }
 
-    public function resendMail(): void
+    #[OA\Post(
+        path: '/settings/email/verification',
+        operationId: 'resendVerificationEmail',
+        description: 'Resend verification email',
+        summary: 'Resend verification email',
+        security: [new OA\SecurityScheme(
+            securityScheme: 'passport',
+            type: 'oauth2',
+        )],
+        tags: ['Settings'],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Success',
+            ),
+            new OA\Response(
+                response: 429,
+                description: 'Rate limit exceeded',
+            ),
+        ]
+    )]
+    public function resendMail(): JsonResponse
     {
         try {
             auth()->user()->sendEmailVerificationNotification();
-            $this->sendResponse('', 204);
+
+            return $this->sendResponse(null, 201);
         } catch (RateLimitExceededException) {
-            $this->sendError(error: __('email.verification.too-many-requests'), code: 429);
+            return $this->sendError(error: __('email.verification.too-many-requests'), code: 429);
         }
     }
 
@@ -141,9 +214,34 @@ class SettingsController extends Controller
         }
     }
 
-    /**
-     * Undocumented and unofficial API Endpoint
-     */
+    #[OA\Delete(
+        path: '/settings/profile-picture',
+        operationId: 'deleteProfilePicture',
+        description: 'Delete the current user\'s profile picture',
+        summary: 'Delete the current user\'s profile picture',
+        security: [new OA\SecurityScheme(
+            securityScheme: 'passport',
+            type: 'oauth2',
+        )],
+        tags: ['Settings'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Success',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Profile picture deleted successfully.',
+                        ),
+                    ]
+                )
+            ),
+            new OA\Response(response: 400, description: 'Bad Request'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+        ]
+    )]
     public function deleteProfilePicture(): JsonResponse
     {
         if (BackendSettingsController::deleteProfilePicture(user: auth()->user())) {
@@ -153,9 +251,47 @@ class SettingsController extends Controller
         return $this->sendError(__('messages.exception.general'), 400);
     }
 
-    /**
-     * Undocumented and unofficial API Endpoint
-     */
+    #[OA\Post(
+        path: '/settings/profile-picture',
+        operationId: 'uploadProfilePicture',
+        description: 'Upload a new profile picture for the current user',
+        summary: 'Upload a new profile picture for the current user',
+        security: [new OA\SecurityScheme(
+            securityScheme: 'passport',
+            type: 'oauth2',
+        )],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(
+                        property: 'image',
+                        type: 'string',
+                        format: 'base64',
+                        example: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...',
+                    ),
+                ]
+            )
+        ),
+        tags: ['Settings'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Success',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'Profile picture updated successfully.',
+                        ),
+                    ]
+                )
+            ),
+            new OA\Response(response: 400, description: 'Bad Request'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+        ]
+    )]
     public function uploadProfilePicture(Request $request): JsonResponse
     {
         if (auth()->user()->can('disallow-social-interaction')) {

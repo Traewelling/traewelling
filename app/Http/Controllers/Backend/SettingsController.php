@@ -22,11 +22,11 @@ abstract class SettingsController extends Controller
             $user = auth()->user();
         }
 
-        if (in_array('email', $fields, true) && $fields['email'] !== $user->email) {
-            $fields['email_verified_at'] = null;
-            $fields['email'] = strtolower($fields['email']);
-            $user->sendEmailVerificationNotification();
+        // todo: remove, once new mail endpoint is implemented everywhere
+        if (in_array('email', $fields) && $fields['email'] !== $user->email) {
+            self::updateMail($fields['email'], $user);
         }
+        unset($fields['email']);
 
         if (array_key_exists('experimental', $fields)) {
             if ($fields['experimental'] && !$user->hasRole('open-beta')) {
@@ -68,6 +68,18 @@ abstract class SettingsController extends Controller
         if (array_key_exists('mastodonVisibility', $fields)) {
             $user->socialProfile->update(['mastodon_visibility' => $fields['mastodonVisibility']]);
         }
+
+        return $user;
+    }
+
+    public static function updateMail(string $newMail, User $user): User
+    {
+        // todo: #4459 implement notification on mail change
+
+        $user->email = $newMail;
+        $user->email_verified_at = null;
+        $user->save();
+        $user->sendEmailVerificationNotification();
 
         return $user;
     }

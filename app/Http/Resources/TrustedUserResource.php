@@ -7,9 +7,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * @OA\Schema(
  *     title="TrustedUser",
+ *     required={"user", "expiresAt"},
  *
  *     @OA\Property(property="user", ref="#/components/schemas/LightUserResource"),
- *     @OA\Property(property="expiresAt", type="string", format="date-time", example="2024-07-28T00:00:00Z")
+ *     @OA\Property(property="expiresAt", type="string", format="date-time", example="2024-07-28T00:00:00Z", nullable=true)
  * )
  */
 class TrustedUserResource extends JsonResource

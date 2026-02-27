@@ -2,7 +2,7 @@
 import { trans } from 'laravel-vue-i18n';
 import _ from 'lodash';
 import { defineComponent } from 'vue';
-import { Api, User } from '../../../types/Api.gen';
+import { Api, UserResource } from '../../../types/Api.gen';
 
 export default defineComponent({
     name: 'UserSearchDropdown',
@@ -14,7 +14,7 @@ export default defineComponent({
     },
     data() {
         return {
-            users: [] as User[],
+            users: [] as UserResource[],
             search: '' as string,
             showResults: false,
         };
@@ -51,7 +51,7 @@ export default defineComponent({
                     this.showResults = false;
                 });
         },
-        selectFriend(user: User) {
+        selectFriend(user: UserResource) {
             this.$emit('select-event', user);
             this.search = '';
             this.users = [];

@@ -18,6 +18,7 @@ export default defineConfig({
                 'resources/js/year-in-review.js',
                 'resources/tailwind-app/app.ts',
                 'resources/css/contribute-theme.css',
+                'resources/css/trwl-theme.css',
                 'resources/css/tailwind-app.css',
             ],
             refresh: true,
