@@ -26,11 +26,11 @@ function updateDisplayName() {
 </script>
 
 <template>
-    <SettingsListRow :title="trans('user.displayname')" @click="modal?.showModal()" :badge="profile.displayName" />
-    <dialog class="modal" ref="modal">
+    <SettingsListRow :title="trans('user.displayname')" :badge="profile.displayName" @click="modal?.showModal()" />
+    <dialog ref="modal" class="modal">
         <div class="modal-box">
             <h3 class="text-lg font-bold">{{ trans('user.displayname') }}</h3>
-            <input type="text" class="input input-bordered w-full mt-4" v-model="input" />
+            <input v-model="input" type="text" class="input input-bordered w-full mt-4" />
             <div class="modal-action">
                 <form method="dialog">
                     <button class="btn me-2">{{ trans('menu.abort') }}</button>

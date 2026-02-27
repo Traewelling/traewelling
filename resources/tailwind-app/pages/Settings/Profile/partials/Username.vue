@@ -26,13 +26,13 @@ function updateUsername() {
 </script>
 
 <template>
-    <SettingsListRow :title="trans('user.username')" @click="modal?.showModal()" :badge="`@${profile.username}`" />
-    <dialog class="modal" ref="modal">
+    <SettingsListRow :title="trans('user.username')" :badge="`@${profile.username}`" @click="modal?.showModal()" />
+    <dialog ref="modal" class="modal">
         <div class="modal-box">
             <h3 class="text-lg font-bold">{{ trans('user.username') }}</h3>
             <label class="input input-bordered w-full mt-4">
                 <span class="label">@</span>
-                <input type="text" v-model="input" />
+                <input v-model="input" type="text" />
             </label>
             <div class="modal-action">
                 <form method="dialog">

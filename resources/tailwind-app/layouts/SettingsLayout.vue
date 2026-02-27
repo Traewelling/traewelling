@@ -28,9 +28,9 @@ function isActiveTab(route: string) {
             </div>
             <div role="tablist" class="tabs tabs-border">
                 <a
+                    v-for="tab in tabs"
                     role="tab"
                     class="tab"
-                    v-for="tab in tabs"
                     :href="tab.route"
                     :class="{ 'tab-active': isActiveTab(tab.route) }"
                 >

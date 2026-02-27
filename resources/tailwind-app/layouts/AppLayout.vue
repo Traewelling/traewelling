@@ -22,14 +22,14 @@
             </div>
 
             <div class="navbar-end">
-                <div class="dropdown dropdown-end hidden lg:flex" v-if="user.authenticated && user.user">
+                <div v-if="user.authenticated && user.user" class="dropdown dropdown-end hidden lg:flex">
                     <div tabindex="0" role="button" class="btn btn-sm m-1">
                         <User class="inline-block w-6 h-6" />
                         {{ user.user.username }}
                     </div>
                     <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                         <li v-for="link in userLinks" :key="link.route">
-                            <a :href="link.route" v-show="link.condition === undefined || link.condition">
+                            <a v-show="link.condition === undefined || link.condition" :href="link.route">
                                 <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                                 {{ trans(link.name) }}
                             </a>
@@ -104,7 +104,7 @@
                 </li>
                 <li class="border-1"></li>
                 <li v-for="link in userLinks">
-                    <a :href="link.route" v-show="link.condition === undefined || link.condition">
+                    <a v-show="link.condition === undefined || link.condition" :href="link.route">
                         <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                         {{ trans(link.name) }}
                     </a>

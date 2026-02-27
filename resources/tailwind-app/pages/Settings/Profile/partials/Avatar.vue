@@ -54,7 +54,7 @@ function profileImage() {
 
 <template>
     <SettingsListRow :title="trans('settings.picture')" @click="modal?.showModal()" />
-    <dialog class="modal" ref="modal">
+    <dialog ref="modal" class="modal">
         <div class="modal-box">
             <h3 class="text-lg font-bold">{{ trans('settings.picture') }}</h3>
             <div class="grid grid-cols-3 gap-2 mt-4">

@@ -12,12 +12,12 @@ defineProps<{
     <li class="list-row cursor-pointer hover:bg-base-200">
         <div class="list-col-grow">
             <div class="font-semibold">{{ title }}</div>
-            <div class="text-xs opacity-60" v-if="description">{{ description }}</div>
-            <div class="text-xs opacity-60" v-if="$slots.default">
+            <div v-if="description" class="text-xs opacity-60">{{ description }}</div>
+            <div v-if="$slots.default" class="text-xs opacity-60">
                 <slot></slot>
             </div>
         </div>
-        <div class="flex items-center" v-if="badge">
+        <div v-if="badge" class="flex items-center">
             <div class="badge badge-xs badge-neutral badge-outline text-xs" :class="badgeClass">
                 {{ badge }}
             </div>

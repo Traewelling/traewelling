@@ -57,11 +57,11 @@ function updateVisibility() {
         :badge="getLabel(profile.defaultStatusVisibility)"
         @click.prevent="modal?.showModal()"
     />
-    <dialog class="modal" ref="modal">
+    <dialog ref="modal" class="modal">
         <div class="modal-box">
             <form @submit.prevent="updateVisibility">
                 <h3 class="text-lg font-bold">{{ trans('settings.visibility.default') }}</h3>
-                <select class="select w-full" v-model="input">
+                <select v-model="input" class="select w-full">
                     <option v-for="option in visibilities" :key="option.value" :value="option.value">
                         {{ trans(option.label) }} ({{ trans(option.description) }})
                     </option>

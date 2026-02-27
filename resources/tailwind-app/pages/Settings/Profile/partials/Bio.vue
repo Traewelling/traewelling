@@ -27,10 +27,10 @@ function updateBio() {
 
 <template>
     <SettingsListRow :title="trans('profile.bio')" @click="modal?.showModal()" />
-    <dialog class="modal" ref="modal">
+    <dialog ref="modal" class="modal">
         <div class="modal-box">
             <h3 class="text-lg font-bold">{{ trans('profile.bio') }}</h3>
-            <textarea class="textarea w-full" rows="3" v-model="input"></textarea>
+            <textarea v-model="input" class="textarea w-full" rows="3"></textarea>
             <div class="modal-action">
                 <form method="dialog">
                     <button class="btn me-2">{{ trans('menu.abort') }}</button>

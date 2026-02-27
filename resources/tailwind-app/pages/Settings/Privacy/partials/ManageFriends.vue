@@ -120,7 +120,7 @@ watch(search, _.debounce(fetchFriends, 500));
                 </span>
             </div>
             <ul v-if="showResults && users.length > 0" class="list">
-                <li class="list-row hover:bg-base-200 cursor-pointer" v-for="user in users" :key="user?.id">
+                <li v-for="user in users" :key="user?.id" class="list-row hover:bg-base-200 cursor-pointer">
                     <div class="avatar">
                         <div class="rounded-full w-12 h-12">
                             <img :src="user.profilePicture" :alt="user.displayName" />
@@ -135,7 +135,7 @@ watch(search, _.debounce(fetchFriends, 500));
                     </button>
                 </li>
             </ul>
-            <ul class="list" v-if="!showResults && users.length <= 0">
+            <ul v-if="!showResults && users.length <= 0" class="list">
                 <li v-for="friend in trustedUsers" :key="friend.user.id" class="list-row">
                     <div class="avatar">
                         <div class="rounded-full w-12 h-12">

@@ -39,11 +39,11 @@ function updateDays() {
         :badge="profile.privacyHideDays > 0 ? profile.privacyHideDays.toString() : undefined"
         @click.prevent="modal?.showModal()"
     />
-    <dialog class="modal" ref="modal">
+    <dialog ref="modal" class="modal">
         <div class="modal-box">
             <form @submit.prevent="updateDays">
                 <h3 class="text-lg font-bold">{{ trans('settings.visibility.hide') }}</h3>
-                <input type="number" v-model.number="input" class="input w-full mt-4" min="0" />
+                <input v-model.number="input" type="number" class="input w-full mt-4" min="0" />
                 <span>{{ trans('empty-input-disable-function') }}</span>
                 <div class="modal-action">
                     <form method="dialog">

@@ -45,17 +45,17 @@ watch(input, (newValue) => {
 </script>
 
 <template>
-    <SettingsListRow :title="trans('user.timezone')" @click="modal?.showModal()" :badge="profile.timezone" />
-    <dialog class="modal" ref="modal">
+    <SettingsListRow :title="trans('user.timezone')" :badge="profile.timezone" @click="modal?.showModal()" />
+    <dialog ref="modal" class="modal">
         <div class="modal-box">
             <h3 class="text-lg font-bold">{{ trans('user.timezone') }}</h3>
             <input
+                v-model="input"
                 type="text"
                 :placeholder="trans('generic.search')"
                 class="input input-bordered w-full mt-4"
-                v-model="input"
             />
-            <ul class="menu bg-base-100 w-full mt-2 rounded-box shadow-md" v-if="filteredTimezones.length > 0">
+            <ul v-if="filteredTimezones.length > 0" class="menu bg-base-100 w-full mt-2 rounded-box shadow-md">
                 <li v-for="timezone in filteredTimezones" :key="timezone.value">
                     <a @click.prevent="input = timezone.value">{{ timezone.label }}</a>
                 </li>

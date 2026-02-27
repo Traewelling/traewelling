@@ -21,11 +21,11 @@ watch(value, (newValue) => {
     <li class="list-row hover:bg-base-200 cursor-pointer">
         <div class="list-col-grow" @click="value = !value">
             <div class="font-semibold">{{ title }}</div>
-            <div class="text-xs opacity-60" v-if="description">{{ description }}</div>
+            <div v-if="description" class="text-xs opacity-60">{{ description }}</div>
         </div>
         <div class="flex items-center">
             <label class="toggle text-base-content">
-                <input type="checkbox" v-model="value" />
+                <input v-model="value" type="checkbox" />
                 <!-- empty svg to prevent the toggle from shrinking -->
                 <svg class="hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M0 0h24v24H0z" fill="none" />

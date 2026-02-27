@@ -42,7 +42,7 @@ getUserProfile();
 <template>
     <SettingsLayout>
         <h2 class="text-xl font-bold">{{ trans('settings.title-profile') }}</h2>
-        <ul class="list bg-base-100 rounded-box shadow-md mt-2" v-if="!loading && profile">
+        <ul v-if="!loading && profile" class="list bg-base-100 rounded-box shadow-md mt-2">
             <Avatar :profile @image-updated="updateImage" />
             <Displayname :profile @profile-updated="updateProfile" />
             <Username :profile @profile-updated="updateProfile" />

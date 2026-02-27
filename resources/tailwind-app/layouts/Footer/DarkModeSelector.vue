@@ -23,13 +23,13 @@ const selectMode = (mode: DarkMode) => {
             class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm text-base-content"
         >
             <li>
-                <a href="#" @click="selectMode('light')" :class="{ active: selectedMode === 'light' }">
+                <a href="#" :class="{ active: selectedMode === 'light' }" @click="selectMode('light')">
                     <Sun class="inline-block w-4 h-4 mr-2" />
                     {{ trans('settings.colorscheme.light') }}
                 </a>
             </li>
             <li>
-                <a href="#" @click="selectMode('dark')" :class="{ active: selectedMode === 'dark' }">
+                <a href="#" :class="{ active: selectedMode === 'dark' }" @click="selectMode('dark')">
                     <Moon class="inline-block w-4 h-4 mr-2" />
                     {{ trans('settings.colorscheme.dark') }}
                 </a>

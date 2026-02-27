@@ -80,15 +80,15 @@ function removeLink(): void {
 
 <template>
     <SettingsListRow :title="trans('settings.profile.links')" @click="modal?.showModal()" />
-    <dialog class="modal" ref="modal">
+    <dialog ref="modal" class="modal">
         <div class="modal-box">
             <template v-if="selectedProvider === null">
                 <h3 class="text-lg font-bold">{{ trans('settings.profile.links') }}</h3>
                 <input
+                    v-model="searchInput"
                     type="text"
                     :placeholder="trans('generic.search')"
                     class="input input-bordered w-full mt-4"
-                    v-model="searchInput"
                 />
                 <ul class="menu bg-base-100 w-full mt-2 rounded-box">
                     <template v-if="searchInput.length > 0">
@@ -110,8 +110,8 @@ function removeLink(): void {
                                 <img v-if="option.icon" :src="option.icon" alt="" class="w-4 h-4 me-2 inline" />
                                 {{ option.label }}
                                 <span
-                                    class="badge badge-xs badge-outline text-xs"
                                     v-if="getCurrentLink(option.value).length > 0"
+                                    class="badge badge-xs badge-outline text-xs"
                                 >
                                     {{ getCurrentLink(option.value) }}
                                 </span>
@@ -129,10 +129,10 @@ function removeLink(): void {
                 <form @submit.prevent="saveLink()">
                     <h3 class="text-lg font-bold">{{ selectedProvider.label }}</h3>
                     <input
+                        v-model="input"
                         type="url"
                         :placeholder="trans('settings.profile.link-placeholder')"
                         class="input input-bordered w-full mt-4"
-                        v-model="input"
                         required
                         tabindex="-3"
                     />
@@ -148,11 +148,11 @@ function removeLink(): void {
                         <button
                             type="button"
                             class="btn me-2"
+                            tabindex="-1"
                             @click="
                                 selectedProvider = null;
                                 input = '';
                             "
-                            tabindex="-1"
                         >
                             {{ trans('menu.abort') }}
                         </button>

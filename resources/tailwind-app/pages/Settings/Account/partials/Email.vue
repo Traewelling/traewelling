@@ -55,28 +55,28 @@ function resendMail() {
 <template>
     <SettingsListRow
         :title="trans('user.email')"
-        @click.prevent="modal?.showModal()"
         :badge="profile.email"
         :badge-class="!profile.emailVerified ? 'badge-warning' : ''"
+        @click.prevent="modal?.showModal()"
     >
         <div v-if="!profile.emailVerified">
             {{ trans('user.email-verify') }}
-            <a href="#" @click.prevent="resendMail" class="link">
+            <a href="#" class="link" @click.prevent="resendMail">
                 {{ trans('controller.status.email-resend-mail') }}
             </a>
         </div>
     </SettingsListRow>
-    <dialog class="modal" ref="modal">
+    <dialog ref="modal" class="modal">
         <div class="modal-box">
             <form @submit.prevent="updateEmail">
                 <h3 class="text-lg font-bold">{{ trans('user.email') }}</h3>
                 <input
+                    v-model="password"
                     type="password"
                     class="input input-bordered w-full mt-4"
-                    v-model="password"
                     :placeholder="trans('settings.current-password')"
                 />
-                <input type="email" class="input input-bordered w-full mt-4" v-model="input" />
+                <input v-model="input" type="email" class="input input-bordered w-full mt-4" />
                 <div class="modal-action">
                     <form method="dialog">
                         <button class="btn me-2">{{ trans('menu.abort') }}</button>
