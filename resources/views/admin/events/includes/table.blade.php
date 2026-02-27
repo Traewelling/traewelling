@@ -70,5 +70,5 @@
             </tbody>
         </table>
     </div>
-    {{$events->links()}}
+    {{$events->appends(request()->query())->links()}}
 @endif
