@@ -60,7 +60,7 @@ function profileImage() {
             <div class="grid grid-cols-3 gap-2 mt-4">
                 <div class="avatar col-span-1">
                     <div class="w-24 rounded-full">
-                        <img :src="imageUploadBase64 || props.profile.profilePicture" alt="Profile Picture" />
+                        <img :src="profileImage()" alt="Profile Picture" />
                     </div>
                 </div>
                 <fieldset class="fieldset col-span-2">

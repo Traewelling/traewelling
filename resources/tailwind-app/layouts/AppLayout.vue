@@ -96,14 +96,14 @@
             <label for="my-drawer-5" aria-label="close sidebar" class="drawer-overlay"></label>
             <ul class="menu bg-base-200 min-h-full w-80 p-4">
                 <!-- Sidebar content here -->
-                <li v-for="link in links">
+                <li v-for="link in links" :key="link.route">
                     <a :href="link.route">
                         <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                         {{ trans(link.name) }}
                     </a>
                 </li>
                 <li class="border-1"></li>
-                <li v-for="link in userLinks">
+                <li v-for="link in userLinks" :key="link.route">
                     <a v-show="link.condition === undefined || link.condition" :href="link.route">
                         <component :is="link.icon" class="inline-block w-6 h-6 mr-2" />
                         {{ trans(link.name) }}
@@ -134,6 +134,7 @@ import {
     Settings,
     User,
 } from 'lucide-vue-next';
+import { FunctionalComponent } from 'vue';
 import '../../css/trwl-theme.css';
 import { useConfigurationStore } from '../../vue/stores/configuration';
 import { useUserStore } from '../../vue/stores/user';
@@ -145,7 +146,7 @@ const user = useUserStore();
 const config = useConfigurationStore();
 config.fetchData();
 
-const links: { name: string; icon: any; route: string }[] = [
+const links: { name: string; icon: FunctionalComponent; route: string }[] = [
     { name: 'menu.dashboard', icon: House, route: '/dashboard' },
     { name: 'menu.leaderboard', icon: Medal, route: '/leaderboard' },
     { name: 'menu.active', icon: Map, route: '/statuses/active' },
