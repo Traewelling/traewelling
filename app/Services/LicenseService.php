@@ -31,7 +31,7 @@ class LicenseService
     private function getManualLicenseData(License $license, MotisSourceLicense $source): LicenseDto
     {
         $licenseName = $license->name;
-        $dataOrigin = $license->human_name ?? $license->name;
+        $dataOrigin = $source->human_name ?? $license->human_name ?? $license->name;
         $provider = $source->provider;
 
         $attributionString =
@@ -39,7 +39,7 @@ class LicenseService
 
         return new LicenseDto(
             $licenseName ?? '',
-            $license->attribution ?? $attributionString,
+            $license->attribution ? $attributionString . ' – ' . $license->attribution : $attributionString,
             $license->license_url,
             $source->source_url
         );
