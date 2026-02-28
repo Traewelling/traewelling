@@ -14,7 +14,7 @@ class DebugController extends Controller
     public function showMotisSources(): View
     {
         return view('debug.motis-source', [
-            'sources' => MotisSourceLicense::orderBy('country')->get(),
+            'sources' => MotisSourceLicense::with('manualLicense')->orderBy('country')->get(),
         ]);
     }
 

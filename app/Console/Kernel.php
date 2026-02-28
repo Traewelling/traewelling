@@ -12,6 +12,7 @@ use App\Console\Commands\HideStatus;
 use App\Console\Commands\ReduceRelevance;
 use App\Console\Commands\RefreshCurrentTrips;
 use App\Console\Commands\RefreshOperatorMappings;
+use App\Jobs\FetchManualTransitousLicenses;
 use App\Jobs\MigrationStationIdentifiers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -33,11 +34,17 @@ class Kernel extends ConsoleKernel
         $schedule->command(HideStatus::class)->hourly();
         $schedule->command(RefreshOperatorMappings::class)->hourly();
 
+        // every six hours
+        $schedule->job(FetchManualTransitousLicenses::class)->everySixHours();
+
         // daily tasks
         $schedule->command(DatabaseCleaner::class)->daily();
         $schedule->command(CleanUpProfilePictures::class)->daily();
         $schedule->command(CleanOldPersonalDataExportsCommand::class)->daily();
-        $schedule->command(FetchTransitousLicenses::class)->daily();
+        $schedule->command(FetchTransitousLicenses::class)->daily()->after(function () {
+            // After fetching the licenses, we want to make sure that the manual licenses are also updated, so we dispatch the job here.
+            FetchManualTransitousLicenses::dispatch();
+        });
         $schedule->command(ReduceRelevance::class)->daily();
 
         // weekly tasks

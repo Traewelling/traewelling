@@ -156,6 +156,9 @@ fetchLikes();
                             </span>
                         </div>
                     </div>
+                    <span class="text-muted text-xs mt-3 d-block" v-if="status.checkin.dataSource?.attribution">
+                        {{ status.checkin.dataSource?.attribution }}
+                    </span>
                 </template>
 
                 <template v-else-if="pageError === '403'">
