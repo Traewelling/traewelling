@@ -34,8 +34,8 @@ class EventResource extends JsonResource
             'hashtag' => $this->hashtag,
             'host' => $this->host,
             'url' => $this->url,
-            'begin' => ($this->event_start ?? $this->checkin_start)->toDateString(),
-            'end' => ($this->event_end ?? $this->checkin_end)->toDateString(),
+            'begin' => ($this->event_start ?? $this->checkin_start)->toIso8601String(),
+            'end' => ($this->event_end ?? $this->checkin_end)->toIso8601String(),
             'station' => new StationResource($this->station),
             'isPride' => $this->isPride ? true : false,
         ];
