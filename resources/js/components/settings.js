@@ -59,7 +59,7 @@ if (uploadButton && uploadDemo) {
 
 window.Settings = class Settings {
     static deleteProfilePicture() {
-        API.request('/settings/profilePicture', 'delete')
+        API.request('/settings/profile-picture', 'delete')
             .then(API.handleDefaultResponse)
             .then(() => {
                 //Remove delete-btn if existing
@@ -73,6 +73,6 @@ window.Settings = class Settings {
     }
 
     static uploadProfilePicture(image) {
-        return API.request('/settings/profilePicture', 'POST', { image: image }).then(API.handleDefaultResponse);
+        return API.request('/settings/profile-picture', 'POST', { image: image }).then(API.handleDefaultResponse);
     }
 };

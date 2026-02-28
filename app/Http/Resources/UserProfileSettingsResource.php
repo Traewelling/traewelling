@@ -12,7 +12,8 @@ use OpenApi\Annotations as OA;
  *      title="UserProfileSettings",
  *      required={"username", "displayName", "profilePicture", "privateProfile", "preventIndex", "defaultStatusVisibility",
  *      "privacyHideDays", "password", "email", "emailVerified", "profilePictureSet", "likesEnabled", "pointsEnabled",
- *      "profileLinks", "mapProvider", "timezone", "experimental"},
+ *      "profileLinks", "mapProvider", "timezone", "experimental", "friendCheckin", "mastodon", "mastodonVisibility",
+ *      "bio"},
  *
  *      @OA\Property(property="username",                   type="string",  example="Gertrud123"),
  *      @OA\Property(property="displayName",                type="string",  example="Gertrud"),

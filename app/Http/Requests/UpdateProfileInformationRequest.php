@@ -34,7 +34,6 @@ use OpenApi\Annotations as OA;
  *    @OA\Property(property="experimental",               type="boolean", example=false, description="Experimental features enabled"),
  *    @OA\Property(property="profileLinks",               type="array",  @OA\Items(ref="#/components/schemas/ProfileLinkResource"), nullable=true),
  *    @OA\Property(property="timezone",                   type="string",  example="Europe/Berlin"),
- *    @OA\Property(property="email",                      type="string",  example="mail@example.com", format="email", maxLength=255),
  * )
  */
 class UpdateProfileInformationRequest extends FormRequest

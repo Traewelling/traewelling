@@ -1,4 +1,4 @@
-@extends('layouts.settings')
+@extends(!auth()->user()?->hasRole('open-beta') ? 'layouts.settings' : 'layouts.tailwind-vue-layout')
 @section('title', __('settings.title-privacy'))
 
 @section('content')

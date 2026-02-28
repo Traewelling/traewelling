@@ -443,12 +443,6 @@ export interface UpdateProfileInformationRequest {
   profileLinks?: ProfileLinkResource[] | null;
   /** @example "Europe/Berlin" */
   timezone?: string;
-  /**
-   * @format email
-   * @maxLength 255
-   * @example "mail@example.com"
-   */
-  email?: string;
 }
 
 export interface AlertResource {
@@ -962,12 +956,12 @@ export interface TripResource {
 /** TrustedUser */
 export interface TrustedUserResource {
   /** User model with just basic information */
-  user?: LightUserResource;
+  user: LightUserResource;
   /**
    * @format date-time
    * @example "2024-07-28T00:00:00Z"
    */
-  expiresAt?: string;
+  expiresAt: string | null;
 }
 
 /** UserAuth */
@@ -1041,13 +1035,13 @@ export interface UserProfileSettingsResource {
   /** @example true */
   profilePictureSet: boolean;
   /** @example "https://mastodon.social/@Gertrud123" */
-  mastodon?: string;
+  mastodon: string;
   /**
    * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for
    *  *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.
    */
-  mastodonVisibility?: MastodonVisibility;
-  friendCheckin?: FriendCheckinSetting;
+  mastodonVisibility: MastodonVisibility;
+  friendCheckin: FriendCheckinSetting;
   /** @example true */
   likesEnabled: boolean;
   /** @example true */
@@ -1057,7 +1051,7 @@ export interface UserProfileSettingsResource {
   /** @example "Europe/Berlin" */
   timezone: string;
   /** @example "Hi there! I am Gertrud!" */
-  bio?: string;
+  bio: string;
   profileLinks: ProfileLinkResource[];
   /**
    * Experimental features enabled
@@ -3355,6 +3349,121 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Update the current user's email address
+     *
+     * @tags Settings
+     * @name UpdateEmail
+     * @summary Update the current user's email address
+     * @request PUT:/settings/email
+     * @secure
+     */
+    updateEmail: (
+      data: {
+        /**
+         * @format email
+         * @example "mail@example.com"
+         */
+        email?: string;
+        /**
+         * @format password
+         * @example "thisisnotasecurepassword123"
+         */
+        password?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          data?: UserProfileSettingsResource;
+        },
+        void
+      >({
+        path: `/settings/email`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Resend verification email
+     *
+     * @tags Settings
+     * @name ResendVerificationEmail
+     * @summary Resend verification email
+     * @request POST:/settings/email/verification
+     * @secure
+     */
+    resendVerificationEmail: (params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/settings/email/verification`,
+        method: "POST",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Upload a new profile picture for the current user
+     *
+     * @tags Settings
+     * @name UploadProfilePicture
+     * @summary Upload a new profile picture for the current user
+     * @request POST:/settings/profile-picture
+     * @secure
+     */
+    uploadProfilePicture: (
+      data: {
+        /**
+         * @format base64
+         * @example "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA..."
+         */
+        image?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** @example "Profile picture updated successfully." */
+          message?: string;
+        },
+        void
+      >({
+        path: `/settings/profile-picture`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Delete the current user's profile picture
+     *
+     * @tags Settings
+     * @name DeleteProfilePicture
+     * @summary Delete the current user's profile picture
+     * @request DELETE:/settings/profile-picture
+     * @secure
+     */
+    deleteProfilePicture: (params: RequestParams = {}) =>
+      this.request<
+        {
+          /** @example "Profile picture deleted successfully." */
+          message?: string;
+        },
+        void
+      >({
+        path: `/settings/profile-picture`,
+        method: "DELETE",
+        secure: true,
         format: "json",
         ...params,
       }),
