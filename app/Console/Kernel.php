@@ -12,6 +12,7 @@ use App\Console\Commands\HideStatus;
 use App\Console\Commands\ReduceRelevance;
 use App\Console\Commands\RefreshCurrentTrips;
 use App\Console\Commands\RefreshOperatorMappings;
+use App\Jobs\FetchManualTransitousLicenses;
 use App\Jobs\MigrationStationIdentifiers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -32,6 +33,9 @@ class Kernel extends ConsoleKernel
         // hourly tasks
         $schedule->command(HideStatus::class)->hourly();
         $schedule->command(RefreshOperatorMappings::class)->hourly();
+
+        // every six hours
+        $schedule->job(FetchManualTransitousLicenses::class)->everySixHours();
 
         // daily tasks
         $schedule->command(DatabaseCleaner::class)->daily();

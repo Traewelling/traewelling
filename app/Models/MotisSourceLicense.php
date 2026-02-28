@@ -62,6 +62,7 @@ class MotisSourceLicense extends Model
         'spdx',
         'active',
         'force_active',
+        'license_id',
     ];
 
     public const array SPDX = [
