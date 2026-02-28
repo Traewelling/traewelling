@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ChevronRight } from 'lucide-vue-next';
+
 defineProps<{
     title: string;
     description?: string;
@@ -18,7 +19,7 @@ defineProps<{
             </div>
         </div>
         <div v-if="badge" class="flex items-center">
-            <div class="badge badge-xs badge-neutral badge-outline text-xs" :class="badgeClass">
+            <div class="badge badge-xs badge-outline text-xs" :class="badgeClass">
                 {{ badge }}
             </div>
         </div>
