@@ -14,6 +14,9 @@
                 <div class="table-responsive">
                     <table class="table">
                         <tbody>
+                        @php
+                            /** @var \App\Models\MotisSourceLicense[] $sources */
+                        @endphp
                         @foreach($sources as $source)
                             <tr>
                                 <td>{{$source->country}}</td>
@@ -27,7 +30,12 @@
                                     </small>
                                 </td>
                                 <td>
-                                    @if($source->spdx)
+                                    @if($source->manualLicense)
+                                        <a href="{{$source->manualLicense->license_url}}" target="_blank">
+                                            {{$source->manualLicense->human_name}}
+                                            <i class="fas fa-external-link-alt"></i>
+                                        </a>
+                                    @elseif($source->spdx)
                                         {{$source->spdx}}
                                     @else
                                         <span class="badge bg-secondary">No license information</span>

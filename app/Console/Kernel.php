@@ -41,7 +41,10 @@ class Kernel extends ConsoleKernel
         $schedule->command(DatabaseCleaner::class)->daily();
         $schedule->command(CleanUpProfilePictures::class)->daily();
         $schedule->command(CleanOldPersonalDataExportsCommand::class)->daily();
-        $schedule->command(FetchTransitousLicenses::class)->daily();
+        $schedule->command(FetchTransitousLicenses::class)->daily()->after(function () {
+            // After fetching the licenses, we want to make sure that the manual licenses are also updated, so we dispatch the job here.
+            FetchManualTransitousLicenses::dispatch();
+        });
         $schedule->command(ReduceRelevance::class)->daily();
 
         // weekly tasks
