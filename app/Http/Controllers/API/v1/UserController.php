@@ -35,8 +35,7 @@ class UserController extends Controller
                     new OA\Property(
                         property: 'confirmation',
                         title: 'confirmation',
-                        description: 'Username of the to be deleted account (needs to match the currently logged in
-user)',
+                        description: 'Username of the to be deleted account (needs to match the currently logged in user)',
                         example: 'Gertrud123',
                     ),
                 ],
@@ -210,8 +209,7 @@ user)',
         operationId: 'createBlock',
         tags: ['User/Hide and Block'],
         summary: 'Block a user',
-        description: 'Block a specific user. That user will not be able to see your statuses or profile information,
-and cannot send you follow requests. Public statuses are still visible through the incognito mode.',
+        description: 'Block a specific user. That user will not be able to see your statuses or profile information, and cannot send you follow requests. Public statuses are still visible through the incognito mode.',
         security: [['passport' => ['write-block']], ['token' => []]],
         parameters: [
             new OA\Parameter(
@@ -265,8 +263,7 @@ and cannot send you follow requests. Public statuses are still visible through t
         operationId: 'destroyBlock',
         tags: ['User/Hide and Block'],
         summary: 'Unmute a user',
-        description: 'Unblock a specific user. They are now able to see your statuses and profile information again,
-and send you follow requests.',
+        description: 'Unblock a specific user. They are now able to see your statuses and profile information again, and send you follow requests.',
         security: [['passport' => ['write-block']], ['token' => []]],
         parameters: [
             new OA\Parameter(
@@ -320,8 +317,7 @@ and send you follow requests.',
         operationId: 'createMute',
         tags: ['User/Hide and Block'],
         summary: 'Mute a user',
-        description: 'Mute a specific user. That way they will not be shown on your dashboard and in the active
-journeys tab',
+        description: 'Mute a specific user. That way they will not be shown on your dashboard and in the active journeys tab',
         security: [['passport' => ['write-block']], ['token' => []]],
         parameters: [
             new OA\Parameter(
@@ -374,8 +370,7 @@ journeys tab',
         operationId: 'destroyMute',
         tags: ['User/Hide and Block'],
         summary: 'Unmute a user',
-        description: 'Unmute a specific user. That way they will be shown on your dashboard and in the active
-journeys tab again',
+        description: 'Unmute a specific user. That way they will be shown on your dashboard and in the active journeys tab again',
         security: [['passport' => ['write-block']], ['token' => []]],
         parameters: [
             new OA\Parameter(

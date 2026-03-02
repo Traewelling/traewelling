@@ -27,8 +27,7 @@ class LikesController extends Controller
         operationId: 'getLikesForStatus',
         tags: ['Likes'],
         summary: '[Auth optional] Get likes for status',
-        description: 'Returns array of users that liked the status. Can return an empty dataset when the status
-author or the requesting user has deactivated likes',
+        description: 'Returns array of users that liked the status. Can return an empty dataset when the status author or the requesting user has deactivated likes',
         security: [['passport' => ['read-statuses']], ['token' => []]],
         parameters: [
             new OA\Parameter(
