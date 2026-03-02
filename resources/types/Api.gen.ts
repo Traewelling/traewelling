@@ -3484,8 +3484,7 @@ export class Api<
       data: {
         /**
          * confirmation
-         * Username of the to be deleted account (needs to match the currently logged in
-         * user)
+         * Username of the to be deleted account (needs to match the currently logged in user)
          * @example "Gertrud123"
          */
         confirmation?: any;
@@ -3761,8 +3760,7 @@ export class Api<
               /** @example 11 */
               count?: number;
               /**
-               * Duration in
-               * minutes
+               * Duration in minutes
                * @example 425
                */
               duration?: number;
@@ -3832,10 +3830,7 @@ export class Api<
          * @example "Europe/Berlin"
          */
         timezone?: string;
-        /**
-         * If this parameter is set, the polylines will be returned as well. Otherwise attribute is
-         * null.
-         */
+        /** If this parameter is set, the polylines will be returned as well. Otherwise attribute is null. */
         withPolylines?: boolean;
       },
       params: RequestParams = {},
