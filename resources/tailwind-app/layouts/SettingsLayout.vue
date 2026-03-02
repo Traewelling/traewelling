@@ -7,7 +7,7 @@ const tabs = [
     { name: 'menu.profile', route: '/settings/profile' },
     { name: 'settings.tab.account', route: '/settings/account' },
     { name: 'menu.privacy', route: '/settings/privacy' },
-    { name: 'settings.title-loginservices', route: '/settings/security/login-providers' },
+    { name: 'settings.title-security', route: '/settings/security' },
     { name: 'your-apps', route: '/settings/applications' },
 ];
 

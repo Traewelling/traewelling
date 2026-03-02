@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Frontend\Social;
 
-use App\Http\Controllers\Backend\Social\MastodonProfileDetails;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -10,6 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 
+/**
+ * @deprecated
+ */
 class SocialController extends Controller
 {
     public function destroyProvider(Request $request): Response|Application|ResponseFactory
@@ -31,14 +33,7 @@ class SocialController extends Controller
         }
 
         if ($validated['provider'] === 'mastodon') {
-            $user->socialProfile->update([
-                'mastodon_id' => null,
-                'mastodon_server' => null,
-                'mastodon_token' => null,
-            ]);
-
-            $mastodonProfileDetails = new MastodonProfileDetails($user);
-            $mastodonProfileDetails->forgetData();
+            (new \App\Http\Controllers\Backend\Social\SocialController())->destroyMastodon($user);
         }
 
         return response(__('controller.social.deleted'), 200);

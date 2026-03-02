@@ -54,4 +54,12 @@ abstract class TokenController extends Controller
     {
         Token::where('user_id', $user->id)->update(['revoked' => true]);
     }
+
+    public static function createPersonalAccessToken(User $user): string
+    {
+        $tokenResult = $user->createToken('PAT@' . auth()->user()->username, ['*']);
+        $tokenResult->token->update(['expires_at' => now()->addMonths(3)]);
+
+        return $tokenResult->accessToken;
+    }
 }

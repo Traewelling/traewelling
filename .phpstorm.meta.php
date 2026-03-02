@@ -3556,7 +3556,7 @@ namespace PHPSTORM_META {
 'login','logout','register',
 'password.request','password.email','password.reset','password.update','verification.notice',
 'verification.verify','verification.resend','status',
-'personal-data-exports','gdpr.intercept','gdpr.ack','account.destroy','ics','trip.create','report','ics.createToken','ics.revokeToken',
+'personal-data-exports','gdpr.intercept','gdpr.ack','account.destroy','ics','trip.create','report','ics.createPersonalAccessToken','ics.revokeToken',
 'provider.destroy','stats',
 'stats.stations','stats.daily','open-data.wikidata','dev.apps','dev.apps.createPersonalAccessToken',
 'dev.apps.create','dev.apps.edit','dev.apps.update','dev.apps.destroy','dev.apps.create.post',

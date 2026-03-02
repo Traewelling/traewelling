@@ -5,6 +5,7 @@ import SuggestEvent from '../pages/Contribute/SuggestEvent.vue';
 import Account from '../pages/Settings/Account/Account.vue';
 import Privacy from '../pages/Settings/Privacy/Privacy.vue';
 import ProfileSettings from '../pages/Settings/Profile/Profile.vue';
+import Security from '../pages/Settings/Services/Security.vue';
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -31,6 +32,11 @@ const routes: Array<RouteRecordRaw> = [
         path: '/settings/account',
         name: 'settings-account',
         component: Account,
+    },
+    {
+        path: '/settings/security',
+        name: 'settings-security',
+        component: Security,
     },
     {
         path: '/settings/privacy',

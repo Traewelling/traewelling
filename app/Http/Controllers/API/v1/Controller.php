@@ -90,6 +90,10 @@ use Throwable;
  *     description="User/Profile-Settings"
  * )
  * @OA\Tag(
+ *     name="ICS Tokens",
+ *     description="Manage ICS Tokens for calendar export"
+ * )
+ * @OA\Tag(
  *     name="Webhooks",
  *     description="Manage Webhooks for third party applications"
  * )
@@ -101,6 +105,18 @@ use Throwable;
 class Controller extends \App\Http\Controllers\Controller
 {
     protected DataProviderInterface $dataProvider;
+
+    public const string OA_DESC_SUCCESS = 'successful operation';
+
+    public const string OA_DESC_NO_CONTENT = 'No Content';
+
+    public const string OA_DESC_FORBIDDEN = 'Forbidden';
+
+    public const string OA_DESC_BAD_REQUEST = 'Bad Request';
+
+    public const string OA_DESC_NOT_FOUND = 'Not Found';
+
+    public const string OA_DESC_NOT_ACCEPTABLE = 'Not Acceptable';
 
     public function __construct()
     {

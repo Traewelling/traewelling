@@ -24,11 +24,13 @@ class WebhookController extends Controller
      *         description="successful operation",
      *
      *         @OA\JsonContent(
+     *             type="object",
+     *             required={"data"},
      *
      *             @OA\Property(property="data", type="array",
      *
      *                 @OA\Items(
-     *                     ref="#/components/schemas/Webhook"
+     *                     ref="#/components/schemas/WebhookResource"
      *                 )
      *             ),
      *         )
@@ -74,9 +76,11 @@ class WebhookController extends Controller
      *          description="successful operation",
      *
      *          @OA\JsonContent(
+     *             type="object",
+     *        required={"data"},
      *
      *              @OA\Property(property="data",
-     *                      ref="#/components/schemas/Webhook"
+     *                      ref="#/components/schemas/WebhookResource"
      *              ),
      *          )
      *       ),

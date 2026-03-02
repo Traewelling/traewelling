@@ -613,6 +613,36 @@ export interface EventResource {
   isPride: StationResource;
 }
 
+export interface IcsEntryResource {
+  /**
+   * The unique identifier of the ICS token
+   * @example 1
+   */
+  id: number;
+  /**
+   * The first 8 characters of the ICS token
+   * @example "abcd1234"
+   */
+  token: string;
+  /**
+   * The name of the ICS token
+   * @example "My ICS Token"
+   */
+  name: string;
+  /**
+   * The ISO 8601 timestamp when the ICS token was created
+   * @format date-time
+   * @example "2024-01-01T12:00:00Z"
+   */
+  createdAt?: string | null;
+  /**
+   * The ISO 8601 timestamp when the ICS token was last accessed
+   * @format date-time
+   * @example "2024-01-15T08:30:00Z"
+   */
+  lastAccessed: string | null;
+}
+
 /** LeaderboardUserResource */
 export interface LeaderboardUserResource {
   /** User model with just basic information */
@@ -675,6 +705,40 @@ export interface ProfileLinkResource {
     | "github";
   /** @example "https://traewelling.de" */
   url: string;
+}
+
+export interface SessionResource {
+  /**
+   * The session ID
+   * @example "abc123"
+   */
+  id: string;
+  /**
+   * The masked IP address of the session
+   * @example "192.168.***.***"
+   */
+  ip: string;
+  /**
+   * The user agent string of the session
+   * @example "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+   */
+  userAgent: string;
+  /**
+   * The platform of the session
+   * @example "Windows"
+   */
+  platform: string;
+  /**
+   * The type representing the device used in the session
+   * @example "mobile"
+   */
+  deviceType: string;
+  /**
+   * The timestamp of the last activity in ISO 8601 format
+   * @format date-time
+   * @example "2024-06-01T12:34:56Z"
+   */
+  lastActivity: string;
 }
 
 /** StationIdentifier */
@@ -869,6 +933,36 @@ export interface StopoverResource {
    * @example false
    */
   cancelled: boolean;
+}
+
+export interface TokenResource {
+  /**
+   * The token ID
+   * @example "abc123"
+   */
+  id: string;
+  /**
+   * The name of the client associated with the token
+   * @example "MyApp"
+   */
+  client: string;
+  /**
+   * The scopes associated with the token
+   * @example ["read","write"]
+   */
+  scopes: string[];
+  /**
+   * The timestamp when the token was created in ISO 8601 format
+   * @format date-time
+   * @example "2024-06-01T12:34:56Z"
+   */
+  createdAt: string;
+  /**
+   * The timestamp when the token expires in ISO 8601 format
+   * @format date-time
+   * @example "2024-07-01T12:34:56Z"
+   */
+  expiresAt: string;
 }
 
 /** TransportResource */
@@ -1167,6 +1261,57 @@ export interface UserResource {
   bio: string;
   /** Profile links of the user */
   profileLinks: ProfileLinkResource[];
+}
+
+/**
+ * WebhookEventResource
+ * WebhookEvent model
+ */
+export interface WebhookEventResource {
+  /**
+   * The type of the event
+   * @example "notification"
+   */
+  type: any;
+}
+
+/**
+ * WebhookResource
+ * Webhook model
+ */
+export interface WebhookResource {
+  /**
+   * ID
+   * @format int
+   * @example 12345
+   */
+  id: any;
+  client: ClientResource;
+  /**
+   * ID of the client which created this webhook
+   * @format int
+   * @example 12345
+   */
+  clientId: any;
+  /**
+   * ID of the user which created this webhook
+   * @format int
+   * @example 12345
+   */
+  userId: any;
+  /**
+   * URL where the webhook gets sent to
+   * @example "https://example.com/webhook"
+   */
+  url: any;
+  /**
+   * The ISO 8601 timestamp when the webhook was created
+   * @format date-time
+   * @example "2024-01-01T12:00:00Z"
+   */
+  createdAt: string;
+  /** List of events which are triggered for this webhook */
+  events: WebhookEventResource[];
 }
 
 /** BearerTokenResponse */
@@ -1606,52 +1751,6 @@ export interface SuccessResponse {
    * @example "success"
    */
   status?: string;
-}
-
-/**
- * Webhook
- * Webhook model
- */
-export interface Webhook {
-  /**
-   * ID
-   * ID
-   * @format int
-   * @example 12345
-   */
-  id?: number;
-  /**
-   * ClientID
-   * ID of the client which created this webhook
-   * @format int
-   * @example 12345
-   */
-  clientId?: number;
-  /**
-   * UserID
-   * ID of the user which created this webhook
-   * @format int
-   * @example 12345
-   */
-  userId?: number;
-  /**
-   * url
-   * URL where the webhook gets sent to
-   * @example "https://example.com/webhook"
-   */
-  url?: any;
-  /**
-   * createdAt
-   * creation date of this webhook
-   * @format datetime
-   * @example "2022-07-17T13:37:00+02:00"
-   */
-  createdAt?: string;
-  /**
-   * events
-   * array of events this webhook receives
-   */
-  events?: any[];
 }
 
 /**
@@ -2814,6 +2913,90 @@ export class Api<
         ...params,
       }),
   };
+  icsTokens = {
+    /**
+     * @description Get all ICS tokens of the authenticated user
+     *
+     * @tags ICS Tokens
+     * @name GetIcsTokens
+     * @summary Get ICS tokens
+     * @request GET:/ics-tokens
+     * @secure
+     */
+    getIcsTokens: (params: RequestParams = {}) =>
+      this.request<
+        {
+          /** The list of ICS tokens belonging to the authenticated user */
+          data: IcsEntryResource[];
+        },
+        any
+      >({
+        path: `/ics-tokens`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Create a new ICS token for the authenticated user
+     *
+     * @tags ICS Tokens
+     * @name CreateIcsToken
+     * @summary Create ICS token
+     * @request POST:/ics-tokens
+     * @secure
+     */
+    createIcsToken: (
+      data: {
+        /**
+         * The name of the ICS token
+         * @example "My ICS Token"
+         */
+        name: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** The URL to access the ICS feed with the created token */
+          data: {
+            /**
+             * The URL to access the ICS feed with the created token
+             * @format uri
+             * @example "https://example.com/ics?user_id=1&token=abcd1234&limit=10000&from=2010-01-01&until=2030-12-31"
+             */
+            url: string;
+          };
+        },
+        void
+      >({
+        path: `/ics-tokens`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Revoke an ICS token of the authenticated user
+     *
+     * @tags ICS Tokens
+     * @name RevokeIcsToken
+     * @summary Revoke ICS token
+     * @request DELETE:/ics-tokens/{tokenId}
+     * @secure
+     */
+    revokeIcsToken: (tokenId: number, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/ics-tokens/${tokenId}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+  };
   status = {
     /**
      * @description Returns array of users that liked the status. Can return an empty dataset when the status *      author or the requesting user has deactivated likes
@@ -3527,6 +3710,158 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        ...params,
+      }),
+  };
+  security = {
+    /**
+     * @description Get all active sessions for the authenticated user
+     *
+     * @tags Security
+     * @name GetSessions
+     * @summary Get active sessions
+     * @request GET:/security/sessions
+     * @secure
+     */
+    getSessions: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data?: SessionResource[];
+        },
+        any
+      >({
+        path: `/security/sessions`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Delete all active sessions for the authenticated user
+     *
+     * @tags Security
+     * @name DeleteAllSessions
+     * @summary Delete all sessions
+     * @request DELETE:/security/sessions
+     * @secure
+     */
+    deleteAllSessions: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/security/sessions`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Delete a connected social provider from the authenticated user
+     *
+     * @tags Security
+     * @name DeleteSocialProvider
+     * @summary Delete social provider
+     * @request DELETE:/security/social
+     * @secure
+     */
+    deleteSocialProvider: (
+      data: {
+        /** The social provider to delete */
+        provider: "mastodon";
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, void>({
+        path: `/security/social`,
+        method: "DELETE",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * @description Get all active API tokens for the authenticated user
+     *
+     * @tags Security
+     * @name GetTokens
+     * @summary Get active API tokens
+     * @request GET:/security/tokens
+     * @secure
+     */
+    getTokens: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data: TokenResource[];
+        },
+        any
+      >({
+        path: `/security/tokens`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Create a new API token for the authenticated user
+     *
+     * @tags Security
+     * @name CreateToken
+     * @summary Create API token
+     * @request POST:/security/tokens
+     * @secure
+     */
+    createToken: (params: RequestParams = {}) =>
+      this.request<
+        {
+          data: {
+            /**
+             * The newly created API token
+             * @example "abc123def456"
+             */
+            token: string;
+          };
+        },
+        any
+      >({
+        path: `/security/tokens`,
+        method: "POST",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Revoke all API tokens for the authenticated user
+     *
+     * @tags Security
+     * @name RevokeAllTokens
+     * @summary Revoke all API tokens
+     * @request DELETE:/security/tokens
+     * @secure
+     */
+    revokeAllTokens: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/security/tokens`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description Revoke a specific API token for the authenticated user
+     *
+     * @tags Security
+     * @name RevokeToken
+     * @summary Revoke API token
+     * @request DELETE:/security/tokens/{tokenId}
+     * @secure
+     */
+    revokeToken: (tokenId: string, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/security/tokens/${tokenId}`,
+        method: "DELETE",
+        secure: true,
         ...params,
       }),
   };
@@ -4372,7 +4707,7 @@ export class Api<
     getWebhooks: (params: RequestParams = {}) =>
       this.request<
         {
-          data?: Webhook[];
+          data: WebhookResource[];
         },
         void
       >({
@@ -4396,7 +4731,7 @@ export class Api<
       this.request<
         {
           /** Webhook model */
-          data?: Webhook;
+          data: WebhookResource;
         },
         void
       >({
