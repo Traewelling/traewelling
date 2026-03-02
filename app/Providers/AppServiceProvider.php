@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->when(AuthorizationController::class)
             ->needs(StatefulGuard::class)
             ->give(fn () => Auth::guard(config('passport.guard', null)));
+        Passport::$clientUuids = false; // Preserve existing integer client IDs (legacy)
         Passport::ignoreCsrfToken();
         Passport::tokensExpireIn(CarbonInterval::minutes(60));
         Passport::refreshTokensExpireIn(CarbonInterval::days(30));

@@ -8,40 +8,41 @@ use App\Models\Webhook;
 use App\Repositories\OAuthClientRepository;
 use App\Rules\AuthorizedWebhookURL;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Enum;
-use Laravel\Passport\ClientRepository;
+use Laravel\Passport\Bridge\User;
+use Laravel\Passport\Contracts\AuthorizationViewResponse;
 use Laravel\Passport\Exceptions\AuthenticationException;
+use Laravel\Passport\Exceptions\OAuthServerException as PassportOAuthServerException;
 use Laravel\Passport\Http\Controllers\AuthorizationController as PassportAuthorizationController;
-use Laravel\Passport\TokenRepository;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Spatie\ValidationRules\Rules\Delimited;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthorizationController extends PassportAuthorizationController
 {
     // most of this is based on passports original code
-    // see: https://github.com/laravel/passport/blob/11.x/src/Http/Controllers/AuthorizationController.php
+    // see: https://github.com/laravel/passport/blob/13.x/src/Http/Controllers/AuthorizationController.php
     /**
      * Authorize a client to access the user's account.
      *
-     *
-     * @throws AuthenticationException
-     * @throws \Laravel\Passport\Exceptions\OAuthServerException
+     * @throws PassportOAuthServerException|AuthenticationException
      */
     public function authorize(
         ServerRequestInterface $psrRequest,
         Request $request,
-        ClientRepository $_,
-        TokenRepository $tokens
+        ResponseInterface $psrResponse,
+        AuthorizationViewResponse $viewResponse
     ): Response {
         $clients = new OAuthClientRepository();
 
-        $authRequest = $this->withErrorHandling(function () use ($psrRequest) {
-            return $this->server->validateAuthorizationRequest($psrRequest);
-        });
+        $authRequest = $this->withErrorHandling(
+            fn () => $this->server->validateAuthorizationRequest($psrRequest),
+            ($psrRequest->getQueryParams()['response_type'] ?? null) === 'token'
+        );
 
         $client = $clients->find($authRequest->getClient()->getIdentifier());
 
@@ -50,9 +51,10 @@ class AuthorizationController extends PassportAuthorizationController
         });
 
         if ($this->guard->guest()) {
-            return $request->get('prompt') === 'none'
-                ? $this->denyRequest($authRequest)
-                : $this->promptForLogin($request);
+            if ($request->get('prompt') === 'none') {
+                throw PassportOAuthServerException::loginRequired($authRequest);
+            }
+            $this->promptForLogin($request);
         }
 
         if (
@@ -63,24 +65,26 @@ class AuthorizationController extends PassportAuthorizationController
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return $this->promptForLogin($request);
+            $this->promptForLogin($request);
         }
 
         $request->session()->forget('promptedForLogin');
 
+        $user = $this->guard->user();
+        $authRequest->setUser(new User($user->getAuthIdentifier()));
+
         $scopes = $this->parseScopes($authRequest);
-        $user = $request->user();
 
         if (
             $webhook === null &&
             $request->get('prompt') !== 'consent' &&
-            ($client->skipsAuthorization() || $this->hasValidToken($tokens, $user, $client, $scopes))
+            ($client->skipsAuthorization($user, $scopes) || $this->hasGrantedScopes($user, $client, $scopes))
         ) {
-            return $this->approveRequest($authRequest, $user);
+            return $this->approveRequest($authRequest, $psrResponse);
         }
 
         if ($request->get('prompt') === 'none') {
-            return $this->denyRequest($authRequest, $user);
+            throw PassportOAuthServerException::consentRequired($authRequest);
         }
 
         $request->session()->put('authToken', $authToken = Str::random());

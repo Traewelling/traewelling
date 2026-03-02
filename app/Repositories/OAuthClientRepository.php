@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\OAuthClient;
 use App\Models\Webhook;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Str;
 use Laravel\Passport\Passport;
 
@@ -57,29 +58,28 @@ class OAuthClientRepository
         ?string $authorizedWebhookUrl,
         bool $confidential = true,
     ): OAuthClient {
-        $secret = $client->secret;
-        if ($client->isConfidential() != $confidential) {
-            if ($secret == null) {
-                $secret = Str::random(40);
-            } else {
-                $secret = null;
-            }
-        }
-
-        $client->forceFill([
+        $fill = [
             'name' => $name,
             'redirect' => $redirect,
             'privacy_policy_url' => $privacyPolicyUrl,
             'webhooks_enabled' => $webhooksEnabled,
             'authorized_webhook_url' => $authorizedWebhookUrl,
-            'secret' => $secret,
-        ])->save();
+        ];
+
+        // Only modify the secret when the confidentiality status actually changes,
+        // to avoid re-hashing an already-hashed secret (v13 auto-hashes via mutator).
+        if ($client->isConfidential() !== $confidential) {
+            $fill['secret'] = $confidential ? Str::random(40) : null;
+        }
+
+        $client->forceFill($fill)->save();
 
         return $client;
     }
 
-    public function findForUser(int $clientId, int $userId): OAuthClient
+    public function findForUser(int $clientId, Authenticatable|int $user): ?OAuthClient
     {
+        $userId = $user instanceof Authenticatable ? $user->getAuthIdentifier() : $user;
         $client = Passport::client();
 
         return $client
