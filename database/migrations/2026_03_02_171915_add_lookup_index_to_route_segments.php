@@ -17,7 +17,11 @@ return new class() extends Migration
     public function down(): void
     {
         Schema::table('route_segments', function (Blueprint $table) {
+            // MariaDB refuses to drop the index while a FK uses it as its backing index
+            // so... Drop the FK, remove the index, then restore the FK.
+            $table->dropForeign(['from_station_id']);
             $table->dropIndex('route_segments_lookup');
+            $table->foreign('from_station_id')->references('id')->on('train_stations')->cascadeOnDelete();
         });
     }
 };
