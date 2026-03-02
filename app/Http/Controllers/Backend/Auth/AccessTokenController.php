@@ -19,9 +19,11 @@ class AccessTokenController extends PassportAccessTokenController
     public function issueToken(ServerRequestInterface $requestInterface, ResponseInterface $psrResponse): Response
     {
         return $this->withErrorHandling(function () use ($requestInterface, $psrResponse) {
-            return $this->extendResponseWithWebhookData(
-                $requestInterface,
-                $this->server->respondToAccessTokenRequest($requestInterface, $psrResponse)
+            return $this->convertResponse(
+                $this->extendResponseWithWebhookData(
+                    $requestInterface,
+                    $this->server->respondToAccessTokenRequest($requestInterface, $psrResponse)
+                )
             );
         });
     }
