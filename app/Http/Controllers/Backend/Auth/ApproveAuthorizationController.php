@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Backend\Auth;
 
 use App\Http\Controllers\Backend\WebhookController;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Http\Controllers\ApproveAuthorizationController as PassportApproveAuthorizationController;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class ApproveAuthorizationController extends PassportApproveAuthorizationController
 {
