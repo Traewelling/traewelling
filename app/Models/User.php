@@ -22,6 +22,7 @@ use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
+use Laravel\Passport\Contracts\OAuthenticatable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
@@ -159,7 +160,7 @@ use Spatie\PersonalDataExport\PersonalDataSelection;
  *
  * @mixin \Eloquent
  */
-class User extends Authenticatable implements ExportsPersonalData
+class User extends Authenticatable implements ExportsPersonalData, OAuthenticatable
 {
     use HasApiTokens, HasFactory, HasPermissions, HasRoles, MustVerifyEmail, Notifiable;
 

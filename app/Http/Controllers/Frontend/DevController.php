@@ -16,10 +16,8 @@ class DevController extends Controller
     {
         $clients = new ClientRepository();
 
-        $userId = auth()->user()->getAuthIdentifier();
-
         return view('dev.apps', [
-            'apps' => $clients->activeForUser($userId),
+            'apps' => $clients->forUser(auth()->user()),
         ]);
     }
 
@@ -34,7 +32,7 @@ class DevController extends Controller
     public function renderUpdateApp(int $appId): View
     {
         $clients = new ClientRepository();
-        $app = $clients->findForUser($appId, auth()->user()->id);
+        $app = $clients->findForUser($appId, auth()->user());
 
         if (!$app) {
             abort(404);
@@ -64,7 +62,7 @@ class DevController extends Controller
         ]);
 
         $clients = new OAuthClientRepository();
-        $app = $clients->findForUser($appId, auth()->user()->id);
+        $app = $clients->findForUser($appId, auth()->user());
 
         $clients->update(
             $app,
@@ -107,7 +105,7 @@ class DevController extends Controller
     public function destroyApp(int $appId): RedirectResponse
     {
         $clients = new ClientRepository();
-        $app = $clients->findForUser($appId, auth()->user()->id);
+        $app = $clients->findForUser($appId, auth()->user());
 
         if (!$app) {
             abort(404);

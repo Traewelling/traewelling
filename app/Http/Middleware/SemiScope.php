@@ -7,7 +7,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Illuminate\Http\Request;
 use Laravel\Passport\Exceptions\MissingScopeException;
-use Laravel\Passport\Http\Middleware\CheckForAnyScope;
+use Laravel\Passport\Http\Middleware\CheckTokenForAnyScope;
 
 class SemiScope extends Middleware
 {
@@ -29,6 +29,6 @@ class SemiScope extends Middleware
             return $next($request);
         }
 
-        return (new CheckForAnyScope())->handle($request, $next, ...$scopes);
+        return app(CheckTokenForAnyScope::class)->handle($request, $next, ...$scopes);
     }
 }

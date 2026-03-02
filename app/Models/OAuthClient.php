@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Passport\Client as PassportClient;
 
 /**
@@ -50,8 +49,6 @@ use Laravel\Passport\Client as PassportClient;
  */
 class OAuthClient extends PassportClient
 {
-    use HasFactory;
-
     protected $fillable = [
         'user_id',
         'name',
@@ -76,11 +73,6 @@ class OAuthClient extends PassportClient
     protected $hidden = [
         'secret',
     ];
-
-    public static function newFactory()
-    {
-        return parent::newFactory();
-    }
 
     public function isConfidential(): bool
     {
