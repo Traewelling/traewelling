@@ -410,7 +410,7 @@ export interface BearerTokenResponse {
    */
   token?: string;
   /**
-   * End of life for this token. Lifespan is usually one year.
+   * End of life for this token.
    * @example "2023-10-19T15:15:06+02:00"
    */
   expires_at?: string;
