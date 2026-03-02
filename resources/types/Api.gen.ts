@@ -50,8 +50,7 @@ export enum TravelType {
 
 /**
  * visibility
- * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
- *  *      user specify?
+ * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify?
  * @example 0
  */
 export enum StatusVisibility {
@@ -116,8 +115,7 @@ export enum MotisCategory {
 
 /**
  * visibility
- * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for
- *  *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.
+ * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.
  * @example 1
  */
 export enum MastodonVisibility {
@@ -734,10 +732,7 @@ export interface StatusResource {
   bodyMentions: MentionDto[];
   /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
   business: Business;
-  /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
-   *  *      user specify?
-   */
+  /** What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify? */
   visibility: StatusVisibility;
   /**
    * How many people have liked this status
@@ -880,7 +875,7 @@ export interface TransportResource {
   trip: number;
   /** @example "1|1234|567" */
   hafasId: string;
-  /** Category of transport.  */
+  /** Category of transport. */
   category: HafasTravelType;
   mode: MotisCategory | null;
   /**
@@ -939,7 +934,7 @@ export interface TransportResource {
 export interface TripResource {
   /** @example 1 */
   id?: number;
-  /** Category of transport.  */
+  /** Category of transport. */
   category?: HafasTravelType;
   mode?: MotisCategory | null;
   /** @example "4-a6s4-4" */
@@ -1019,10 +1014,7 @@ export interface UserProfileSettingsResource {
    * @example false
    */
   preventIndex: boolean;
-  /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
-   *  *      user specify?
-   */
+  /** What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify? */
   defaultStatusVisibility: StatusVisibility;
   /**
    * Number of days to hide the user's location history
@@ -1039,10 +1031,7 @@ export interface UserProfileSettingsResource {
   profilePictureSet: boolean;
   /** @example "https://mastodon.social/@Gertrud123" */
   mastodon: string;
-  /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for
-   *  *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.
-   */
+  /** What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines. */
   mastodonVisibility: MastodonVisibility;
   friendCheckin: FriendCheckinSetting;
   /** @example true */
@@ -1200,10 +1189,7 @@ export interface CheckinRequestBody {
   body?: string | null;
   /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
   business?: Business;
-  /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
-   *  *      user specify?
-   */
+  /** What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify? */
   visibility?: StatusVisibility;
   /**
    * Id of an event the status should be connected to
@@ -1292,13 +1278,13 @@ export interface EventSuggestion {
    * Timestamp for the start of the event
    * @example "2022-06-01T00:00:00+02:00"
    */
-  begin?: any;
+  begin?: string;
   /**
    * end
    * Timestamp for the end of the event
    * @example "2022-08-31T23:59:00+02:00"
    */
-  end?: any;
+  end?: string;
   /**
    * url
    * external URL for this event
@@ -1532,14 +1518,16 @@ export interface PointsCalculation {
   /**
    * distance
    * Points for the travelled distance
+   * @format float
    * @example 0.25
    */
-  distance?: any;
+  distance?: number;
   /**
    * factor
+   * @format float
    * @example 0.25
    */
-  factor?: any;
+  factor?: number;
   /** What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points, 4=manual trip => no points, 5=points disabled) */
   reason?: PointReason;
 }
@@ -1556,7 +1544,7 @@ export interface Polyline {
   type?: string;
   geometry?: {
     /** @example "LineString" */
-    type?: any;
+    type?: string;
     coordinates?: any[];
   };
   properties?: {
@@ -1568,7 +1556,7 @@ export interface Polyline {
 /** CheckinForbiddenWithUsersResponse */
 export interface CheckinForbiddenWithUsersResponse {
   /** @example "You are not allowed to check in the following users: 1" */
-  message?: any;
+  message?: string;
   meta?: {
     invalidUsers?: number[];
   };
@@ -1591,10 +1579,7 @@ export interface StatusTag {
    * @example "BahnCard 100"
    */
   value?: string;
-  /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
-   *  *      user specify?
-   */
+  /** What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify? */
   visibility?: StatusVisibility;
 }
 
@@ -1642,7 +1627,7 @@ export interface Webhook {
    * URL where the webhook gets sent to
    * @example "https://example.com/webhook"
    */
-  url?: any;
+  url?: string;
   /**
    * createdAt
    * creation date of this webhook
@@ -1667,42 +1652,39 @@ export interface StatusUpdateBody {
    * @maxLength 280
    * @example "Wow. This train is extremely crowded!"
    */
-  body?: any;
+  body?: string | null;
   /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
   business?: Business;
-  /**
-   * What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the
-   *  *      user specify?
-   */
+  /** What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify? */
   visibility?: StatusVisibility;
   /**
    * The ID of the event this status is related to - or null
    * @example "1"
    */
-  eventId?: any;
+  eventId?: string | null;
   /**
    * Manual departure time set by the user
    * @format date
    * @example "2020-01-01 12:00:00"
    */
-  manualDeparture?: any;
+  manualDeparture?: string | null;
   /**
    * Manual arrival time set by the user
    * @format date
    * @example "2020-01-01 13:00:00"
    */
-  manualArrival?: any;
+  manualArrival?: string | null;
   /**
    * Destination station id
    * @example "1"
    */
-  destinationId?: any;
+  destinationId?: string | null;
   /**
    * Destination arrival time
    * @format date
    * @example "2020-01-01 13:00:00"
    */
-  destinationArrivalPlanned?: any;
+  destinationArrivalPlanned?: string | null;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -3767,7 +3749,7 @@ export class Api<
             }[];
             /** The categories of the travel */
             categories?: {
-              /** Category of transport.  */
+              /** Category of transport. */
               name?: HafasTravelType;
               /** @example 11 */
               count?: number;
