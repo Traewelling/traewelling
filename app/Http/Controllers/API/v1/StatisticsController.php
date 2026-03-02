@@ -209,8 +209,7 @@ class StatisticsController extends Controller
                                                 property: 'duration',
                                                 type: 'integer',
                                                 example: 425,
-                                                description: 'Duration in
-minutes',
+                                                description: 'Duration in minutes',
                                             ),
                                         ],
                                     ),
@@ -363,8 +362,7 @@ minutes',
             new OA\Parameter(
                 name: 'withPolylines',
                 in: 'query',
-                description: 'If this parameter is set, the polylines will be returned as well. Otherwise attribute is
-null.',
+                description: 'If this parameter is set, the polylines will be returned as well. Otherwise attribute is null.',
                 schema: new OA\Schema(type: 'boolean'),
             ),
         ],

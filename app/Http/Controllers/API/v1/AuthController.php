@@ -82,8 +82,7 @@ class AuthController extends Controller
         operationId: 'refreshToken',
         tags: ['Auth'],
         summary: 'Refresh Bearer Token',
-        description: 'This request issues a new Bearer-Token with a new expiration date while also revoking the old
-token.',
+        description: 'This request issues a new Bearer-Token with a new expiration date while also revoking the old token.',
         security: [['passport' => []], ['token' => []]],
         responses: [
             new OA\Response(

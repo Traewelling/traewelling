@@ -603,8 +603,7 @@ class TransportController extends Controller
         operationId: 'trainStationAutocomplete',
         tags: ['Checkin'],
         summary: 'Autocomplete for stations',
-        description: 'This request returns an array of max. 10 station objects matching the query. **CAUTION:** All
-slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)',
+        description: 'This request returns an array of max. 10 station objects matching the query. **CAUTION:** All slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)',
         security: [['passport' => ['create-statuses']], ['token' => []]],
         parameters: [
             new OA\Parameter(
@@ -657,8 +656,7 @@ slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably 
         operationId: 'trainStationHistory',
         tags: ['Checkin'],
         summary: 'History for stations',
-        description: 'This request returns an array of max. 10 most recent station objects that the user has arrived
-at.',
+        description: 'This request returns an array of max. 10 most recent station objects that the user has arrived at.',
         security: [['passport' => ['create-statuses']], ['token' => []]],
         responses: [
             new OA\Response(
