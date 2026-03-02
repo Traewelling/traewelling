@@ -49,7 +49,7 @@ class StatusTagController extends Controller
                         new OA\Property(
                             property: 'data',
                             type: 'array',
-                            items: new OA\Items(ref: '#/components/schemas/StatusTag'),
+                            items: new OA\Items(ref: '#/components/schemas/StatusTagResource'),
                         ),
                     ],
                 ),
@@ -104,12 +104,12 @@ class StatusTagController extends Controller
                                 new OA\Property(
                                     property: '1337',
                                     type: 'array',
-                                    items: new OA\Items(ref: '#/components/schemas/StatusTag'),
+                                    items: new OA\Items(ref: '#/components/schemas/StatusTagResource'),
                                 ),
                                 new OA\Property(
                                     property: '4711',
                                     type: 'array',
-                                    items: new OA\Items(ref: '#/components/schemas/StatusTag'),
+                                    items: new OA\Items(ref: '#/components/schemas/StatusTagResource'),
                                 ),
                             ],
                         ),
@@ -158,7 +158,7 @@ class StatusTagController extends Controller
         requestBody: new OA\RequestBody(
             content: new OA\MediaType(
                 mediaType: 'application/json',
-                schema: new OA\Schema(ref: '#/components/schemas/StatusTag'),
+                schema: new OA\Schema(ref: '#/components/schemas/StatusTagResource'),
             ),
         ),
         security: [['passport' => ['write-statuses']], ['token' => []]],
@@ -187,7 +187,7 @@ class StatusTagController extends Controller
                         new OA\Property(
                             property: 'data',
                             type: 'object',
-                            ref: '#/components/schemas/StatusTag',
+                            ref: '#/components/schemas/StatusTagResource',
                         ),
                     ],
                 ),
@@ -256,7 +256,7 @@ class StatusTagController extends Controller
         requestBody: new OA\RequestBody(
             content: new OA\MediaType(
                 mediaType: 'application/json',
-                schema: new OA\Schema(ref: '#/components/schemas/StatusTag'),
+                schema: new OA\Schema(ref: '#/components/schemas/StatusTagResource'),
             ),
         ),
         security: [['passport' => ['write-statuses']], ['token' => []]],
@@ -278,7 +278,7 @@ class StatusTagController extends Controller
                         new OA\Property(
                             property: 'data',
                             type: 'object',
-                            ref: '#/components/schemas/StatusTag',
+                            ref: '#/components/schemas/StatusTagResource',
                         ),
                     ],
                 ),
@@ -367,7 +367,9 @@ class StatusTagController extends Controller
             new OA\Response(
                 response: 200,
                 description: 'successful operation',
-                content: new OA\JsonContent(ref: '#/components/schemas/SuccessResponse'),
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'status', type: 'string', example: 'success')],
+                ),
             ),
             new OA\Response(response: 400, description: 'Bad request'),
             new OA\Response(response: 401, description: 'Unauthorized'),

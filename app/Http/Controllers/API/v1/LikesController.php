@@ -17,6 +17,13 @@ use Illuminate\Support\Facades\Gate;
 use InvalidArgumentException;
 use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: 'LikeResponse',
+    title: 'LikeResponse',
+    properties: [
+        new OA\Property(property: 'count', type: 'integer', format: 'int32', description: 'Amount of likes', example: 12),
+    ],
+)]
 class LikesController extends Controller
 {
     /**

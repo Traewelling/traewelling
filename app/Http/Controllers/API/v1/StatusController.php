@@ -32,6 +32,44 @@ use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: 'StatusUpdateBody',
+    title: 'StatusUpdateBody',
+    description: 'Status Update Body',
+    properties: [
+        new OA\Property(property: 'body', type: 'string', maxLength: 280, nullable: true, example: 'Wow. This train is extremely crowded!', description: 'Status-Text to be displayed alongside the checkin'),
+        new OA\Property(property: 'business', ref: '#/components/schemas/Business'),
+        new OA\Property(property: 'visibility', ref: '#/components/schemas/StatusVisibility'),
+        new OA\Property(property: 'eventId', type: 'string', nullable: true, example: '1', description: 'The ID of the event this status is related to - or null'),
+        new OA\Property(property: 'manualDeparture', type: 'string', format: 'date', nullable: true, example: '2020-01-01 12:00:00', description: 'Manual departure time set by the user'),
+        new OA\Property(property: 'manualArrival', type: 'string', format: 'date', nullable: true, example: '2020-01-01 13:00:00', description: 'Manual arrival time set by the user'),
+        new OA\Property(property: 'destinationId', type: 'string', nullable: true, example: '1', description: 'Destination station id'),
+        new OA\Property(property: 'destinationArrivalPlanned', type: 'string', format: 'date', nullable: true, example: '2020-01-01 13:00:00', description: 'Destination arrival time'),
+    ],
+)]
+#[OA\Schema(
+    schema: 'Polyline',
+    title: 'Polyline',
+    description: 'Polyline of a single status as GeoJSON Feature',
+    properties: [
+        new OA\Property(property: 'type', type: 'string', example: 'Feature'),
+        new OA\Property(
+            property: 'geometry',
+            type: 'object',
+            properties: [
+                new OA\Property(property: 'type', type: 'string', example: 'LineString'),
+                new OA\Property(property: 'coordinates', type: 'array', items: new OA\Items(example: '[[8.39767,49.01625],[8.45947,49.06576]]')),
+            ],
+        ),
+        new OA\Property(
+            property: 'properties',
+            type: 'object',
+            properties: [
+                new OA\Property(property: 'statusId', type: 'integer', example: 1337),
+            ],
+        ),
+    ],
+)]
 class StatusController extends Controller
 {
     #[OA\Get(

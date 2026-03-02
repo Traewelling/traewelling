@@ -402,6 +402,222 @@ export interface Station {
   rilIdentifier?: string | null;
 }
 
+/** BearerTokenResponse */
+export interface BearerTokenResponse {
+  /**
+   * Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)
+   * @example "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9..."
+   */
+  token?: string;
+  /**
+   * End of life for this token. Lifespan is usually one year.
+   * @example "2023-10-19T15:15:06+02:00"
+   */
+  expires_at?: string;
+}
+
+/**
+ * EventSuggestion
+ * Fields for suggesting an event
+ */
+export interface EventSuggestion {
+  /**
+   * name of the event
+   * @maxLength 255
+   * @example "Eröffnung der Nebenbahn in Knuffingen"
+   */
+  name?: string;
+  /**
+   * host of the event
+   * @example "MiWuLa"
+   */
+  host?: string | null;
+  /**
+   * Timestamp for the start of the event
+   * @format date-time
+   * @example "2022-06-01T00:00:00+02:00"
+   */
+  begin?: string;
+  /**
+   * Timestamp for the end of the event
+   * @format date-time
+   * @example "2022-08-31T23:59:00+02:00"
+   */
+  end?: string;
+  /**
+   * external URL for this event
+   * @maxLength 255
+   * @example "https://www.example.com/event"
+   */
+  url?: string | null;
+  /**
+   * hashtag for this event
+   * @maxLength 40
+   * @example "gpn21"
+   */
+  hashtag?: string | null;
+  /**
+   * Query string for the nearest station. Deprecated: use nearestStationId instead.
+   * @deprecated
+   * @maxLength 255
+   * @example "Berlin Hbf"
+   */
+  nearestStation?: string | null;
+  /**
+   * ID of the nearest station to this event
+   * @example 1
+   */
+  nearestStationId?: number | null;
+}
+
+/** LikeResponse */
+export interface LikeResponse {
+  /**
+   * Amount of likes
+   * @format int32
+   * @example 12
+   */
+  count?: number;
+}
+
+/**
+ * StatusUpdateBody
+ * Status Update Body
+ */
+export interface StatusUpdateBody {
+  /**
+   * Status-Text to be displayed alongside the checkin
+   * @maxLength 280
+   * @example "Wow. This train is extremely crowded!"
+   */
+  body?: string | null;
+  /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
+  business?: Business;
+  /** What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify? */
+  visibility?: StatusVisibility;
+  /**
+   * The ID of the event this status is related to - or null
+   * @example "1"
+   */
+  eventId?: string | null;
+  /**
+   * Manual departure time set by the user
+   * @format date
+   * @example "2020-01-01 12:00:00"
+   */
+  manualDeparture?: string | null;
+  /**
+   * Manual arrival time set by the user
+   * @format date
+   * @example "2020-01-01 13:00:00"
+   */
+  manualArrival?: string | null;
+  /**
+   * Destination station id
+   * @example "1"
+   */
+  destinationId?: string | null;
+  /**
+   * Destination arrival time
+   * @format date
+   * @example "2020-01-01 13:00:00"
+   */
+  destinationArrivalPlanned?: string | null;
+}
+
+/**
+ * Polyline
+ * Polyline of a single status as GeoJSON Feature
+ */
+export interface Polyline {
+  /** @example "Feature" */
+  type?: string;
+  geometry?: {
+    /** @example "LineString" */
+    type?: string;
+    coordinates?: any[];
+  };
+  properties?: {
+    /** @example 1337 */
+    statusId?: number;
+  };
+}
+
+/**
+ * CheckinRequestBody
+ * Fields for creating a transit checkin
+ */
+export interface CheckinRequestBody {
+  /**
+   * @maxLength 280
+   * @example "Meine erste Fahrt nach Knuffingen!"
+   */
+  body?: string | null;
+  /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
+  business?: Business;
+  /** What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify? */
+  visibility?: StatusVisibility;
+  /**
+   * Id of an event the status should be connected to
+   * @example 1
+   */
+  eventId?: number | null;
+  /**
+   * Should this status be posted to mastodon?
+   * @example false
+   */
+  toot?: boolean | null;
+  /**
+   * Should this status be posted to mastodon as a chained post?
+   * @example false
+   */
+  chainPost?: boolean | null;
+  /**
+   * If true, `start` and `destination` can be supplied as IBNR. Otherwise Träwelling-ID. Default: false.
+   * @example true
+   */
+  ibnr?: boolean | null;
+  /**
+   * The tripId for the trip to check into
+   * @example "b37ff515-22e1-463c-94de-3ad7964b5cb8"
+   */
+  tripId?: string | null;
+  /**
+   * The line name for the trip to check into
+   * @example "S 4"
+   */
+  lineName?: string | null;
+  /**
+   * Station-ID of the starting point (see `ibnr`)
+   * @example 8000191
+   */
+  start?: number;
+  /**
+   * Station-ID of the destination (see `ibnr`)
+   * @example 8000192
+   */
+  destination?: number;
+  /**
+   * Timestamp of the departure
+   * @format date-time
+   * @example "2022-12-19T20:41:00+01:00"
+   */
+  departure?: string;
+  /**
+   * Timestamp of the arrival
+   * @format date-time
+   * @example "2022-12-19T20:42:00+01:00"
+   */
+  arrival?: string;
+  /**
+   * If true, the checkin is created even on collision. No points awarded.
+   * @example false
+   */
+  force?: boolean | null;
+  /** Also check in these user IDs (max. 10). Requires mutual follow. */
+  with?: number[] | null;
+}
+
 /**
  * UpdateProfileInformationRequest
  * UpdateProfileInformationRequest
@@ -485,6 +701,44 @@ export interface AreaResource {
   default: boolean;
   /** @example "1" */
   adminLevel: number;
+}
+
+/** PointsCalculation */
+export interface PointsCalculation {
+  /**
+   * Basepoints for this type of vehicle
+   * @format float
+   * @example 0.5
+   */
+  base?: number;
+  /**
+   * Points for the travelled distance
+   * @format float
+   * @example 0.25
+   */
+  distance?: number;
+  /**
+   * @format float
+   * @example 0.25
+   */
+  factor?: number;
+  /** What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points, 4=manual trip => no points, 5=points disabled) */
+  reason?: PointReason;
+}
+
+/**
+ * Points
+ * Points model
+ */
+export interface Points {
+  /**
+   * points
+   * @example 1
+   */
+  points?: number;
+  calculation?: PointsCalculation;
+  /** extra points that can be given */
+  additional?: any[] | null;
 }
 
 /** CheckinResponse */
@@ -651,6 +905,34 @@ export interface LightUserResource {
   preventIndex: boolean;
 }
 
+/**
+ * Links
+ * Pagination links
+ */
+export interface Links {
+  /**
+   * Shared OA schema for Laravel pagination links. Not a real resource.
+   * @format uri
+   * @example "https://traewelling.de/api/v1/ENDPOINT?page=1"
+   */
+  first?: string | null;
+  /**
+   * @format uri
+   * @example null
+   */
+  last?: string | null;
+  /**
+   * @format uri
+   * @example null
+   */
+  prev?: string | null;
+  /**
+   * @format uri
+   * @example "https://traewelling.de/api/v1/ENDPOINT?page=2"
+   */
+  next?: string | null;
+}
+
 export interface OperatorResource {
   /** @example 1 */
   id: number;
@@ -658,6 +940,29 @@ export interface OperatorResource {
   identifier: string | null;
   /** @example "DB Regio AG Nord" */
   name: string;
+}
+
+/**
+ * Meta
+ * Pagination meta data
+ */
+export interface PaginationMeta {
+  /**
+   * Shared OA schema for Laravel pagination meta data. Not a real resource.
+   * @example 2
+   */
+  current_page?: number;
+  /** @example 16 */
+  from?: number;
+  /**
+   * @format url
+   * @example "https://traewelling.de/api/v1/ENDPOINT"
+   */
+  path?: string;
+  /** @example 15 */
+  per_page?: number;
+  /** @example 30 */
+  to?: number;
 }
 
 /**
@@ -999,6 +1304,34 @@ export interface UserAuthResource {
   roles: string[];
 }
 
+/**
+ * Notification
+ * Notification model
+ */
+export interface Notification {
+  /** @example "bb1ba9a5-9c2b-43c3-b8c9-2f70651fc51c" */
+  id?: string;
+  /** @example "UserJoinedConnection" */
+  type?: string;
+  /** @example "<b>@bob</b> is in your connection!" */
+  leadFormatted?: string;
+  /** @example "@bob is in your connection!" */
+  lead?: string;
+  /** @example "@bob is on <b>S 81</b> from <b>Karlsruhe Hbf</b> to <b>Freudenstadt Hbf</b>." */
+  noticeFormatted?: string;
+  /** @example "@bob is on S 81 from Karlsruhe Hbf to Freudenstadt Hbf." */
+  notice?: string;
+  /** @example "https://traewelling.de/status/123456" */
+  link?: string;
+  data?: any[];
+  /** @example "2023-01-01T00:00:00+00:00" */
+  readAt?: string | null;
+  /** @example "2023-01-01T00:00:00+00:00" */
+  createdAt?: string;
+  /** @example "2 days ago" */
+  createdAtForHumans?: string;
+}
+
 /** UserProfileSettings */
 export interface UserProfileSettingsResource {
   /** @example "Gertrud123" */
@@ -1161,530 +1494,30 @@ export interface UserResource {
   profileLinks: ProfileLinkResource[];
 }
 
-/** BearerTokenResponse */
-export interface BearerTokenResponse {
-  /**
-   * token
-   * Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)
-   * @example "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZWU2ZWZiOWUxYTIwN2FmMjZjNjk4NjVkOTA5ODNmNzFjYzYyMzE5ODA3NGU1NjlhNjU1MGRiMTdhMWY5YmNhMmY4ZjNjNTQ4ZGZkZTY5ZmUiLCJpYXQiOjE2NjYxODUzMDYuOTczODU3LCJuYmYiOjE2NjYxODUzMDYuOTczODYsImV4cCI6MTY5NzcyMTMwNi45NDYyNDgsInN1YiI6IjEiLCJzY29wZXMiOltdfQ.tiv8VeL8qw6BRwo5QZZ71Zn3WnFJjtvVciahiUJjzVNfqgofdRF6EoWrTFc_WmrgbVCdfXBjBI02fjbSrsD4....."
-   */
-  token?: string;
-  /**
-   * slug
-   * end of life for this token. Lifespan is usually one year.
-   * @example "2023-10-19T15:15:06+02:00"
-   */
-  expires_at?: string;
-}
-
-/**
- * CheckinRequestBody
- * Fields for creating a train checkin
- */
-export interface CheckinRequestBody {
-  /**
-   * @maxLength 280
-   * @example "Meine erste Fahrt nach Knuffingen!"
-   */
-  body?: string | null;
-  /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
-  business?: Business;
-  /** What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify? */
-  visibility?: StatusVisibility;
-  /**
-   * Id of an event the status should be connected to
-   * @example "1"
-   */
-  eventId?: number | null;
-  /**
-   * Should this status be posted to mastodon?
-   * @example "false"
-   */
-  toot?: boolean | null;
-  /**
-   * Should this status be posted to mastodon as a chained post?
-   * @example "false"
-   */
-  chainPost?: boolean | null;
-  /**
-   * If true, the `start` and `destination` properties can be supplied as an ibnr. Otherwise they should be given as the Träwelling-ID. Default behavior is `false`.
-   * @example "true"
-   */
-  ibnr?: boolean | null;
-  /**
-   * The tripId for the to be checked in train
-   * @example "b37ff515-22e1-463c-94de-3ad7964b5cb8"
-   */
-  tripId?: string | null;
-  /**
-   * The line name for the to be checked in train
-   * @example "S 4"
-   */
-  lineName?: string | null;
-  /**
-   * The Station-ID of the starting point (see `ibnr`)
-   * @example "8000191"
-   */
-  start?: number;
-  /**
-   * The Station-ID of the destination point (see `ibnr`)
-   * @example "8000192"
-   */
-  destination?: number;
-  /**
-   * Timestamp of the departure
-   * @format date-time
-   * @example "2022-12-19T20:41:00+01:00"
-   */
-  departure?: string;
-  /**
-   * Timestamp of the arrival
-   * @format date-time
-   * @example "2022-12-19T20:42:00+01:00"
-   */
-  arrival?: string;
-  /**
-   * If true, the checkin will be created, even if a colliding checkin exists. No points will be awarded.
-   * @example "false"
-   */
-  force?: boolean | null;
-  /**
-   * If set, the checkin will be created for all given users as well. The user creating the checkin must be allowed to checkin for the other users. Max. 10 users.
-   * @example "[1, 2]"
-   */
-  with?: number[] | null;
-}
-
-/**
- * EventSuggestion
- * Fields for suggesting an event
- */
-export interface EventSuggestion {
-  /**
-   * name
-   * name of the event
-   * @maxLength 255
-   * @example "Eröffnung der Nebenbahn in Knuffingen"
-   */
-  name?: string;
-  /**
-   * host
-   * host of the event
-   * @example "MiWuLa"
-   */
-  host?: string | null;
-  /**
-   * begin
-   * Timestamp for the start of the event
-   * @example "2022-06-01T00:00:00+02:00"
-   */
-  begin?: string;
-  /**
-   * end
-   * Timestamp for the end of the event
-   * @example "2022-08-31T23:59:00+02:00"
-   */
-  end?: string;
-  /**
-   * url
-   * external URL for this event
-   * @maxLength 255
-   * @example "https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756"
-   */
-  url?: string | null;
-  /**
-   * hashtag
-   * hashtag for this event
-   * @maxLength 40
-   * @example "gpn21"
-   */
-  hashtag?: string | null;
-  /**
-   * nearestStation
-   * Query string for the nearest station to this event. Deprecated: use nearestStationId instead.
-   * @deprecated
-   * @maxLength 255
-   * @example "Berlin Hbf"
-   */
-  nearestStation?: string | null;
-  /**
-   * nearestStationId
-   * ID of the nearest station to this event
-   * @example 1
-   */
-  nearestStationId?: number | null;
-}
-
-/**
- * Links
- * pagination links
- */
-export interface Links {
-  /**
-   * first
-   * URL to first page of this pagination
-   * @format uri
-   * @example "https://traewelling.de/api/v1/ENDPOINT?page=1"
-   */
-  first?: string | null;
-  /**
-   * last
-   * URL to last page of this pagination (mostly null)
-   * @format uri
-   * @example null
-   */
-  last?: string | null;
-  /**
-   * prev
-   * URL to previous page of this pagination (mostly null)
-   * @format uri
-   * @example "https://traewelling.de/api/v1/ENDPOINT?page=1"
-   */
-  prev?: string | null;
-  /**
-   * next
-   * URL to next page of this pagination (mostly null)
-   * @format uri
-   * @example "https://traewelling.de/api/v1/ENDPOINT?page=2"
-   */
-  next?: string | null;
-}
-
-/**
- * Meta
- * Pagination meta data
- */
-export interface PaginationMeta {
-  /**
-   * current_page
-   * currently displayed page in this pagination
-   * @example 2
-   */
-  current_page?: number;
-  /**
-   * from
-   * The first element on this page is the nth element of the query
-   * @example 16
-   */
-  from?: number;
-  /**
-   * path
-   * The path of this pagination
-   * @format url
-   * @example "https://traewelling.de/api/v1/ENDPOINT"
-   */
-  path?: string;
-  /**
-   * per_page
-   * the amount of items per page in this pagination
-   * @example 15
-   */
-  per_page?: number;
-  /**
-   * to
-   * The last element on this page is the nth element of the query
-   * @example 30
-   */
-  to?: number;
-}
-
-/** LikeResponse */
-export interface LikeResponse {
-  /**
-   * count
-   * Amount of likes
-   * @format int32
-   * @example 12
-   */
-  count?: number;
-}
-
-/**
- * Notification
- * Notification model
- */
-export interface Notification {
-  /**
-   * ID
-   * ID
-   * @format string
-   * @example "bb1ba9a5-9c2b-43c3-b8c9-2f70651fc51c"
-   */
-  id?: string;
-  /**
-   * type
-   * type of notification
-   * @example "UserJoinedConnection"
-   */
-  type?: string;
-  /**
-   * leadFormatted
-   * the title of notification in html formatted form
-   * @format string
-   * @example "<b>@bob</b> is in your connection!"
-   */
-  leadFormatted?: string;
-  /**
-   * lead
-   * the title of notification in plain text form
-   * @format string
-   * @example "@bob is in your connection!"
-   */
-  lead?: string;
-  /**
-   * noticeFormatted
-   * the body of notification in html formatted form
-   * @format string
-   * @example "@bob is on <b>S 81</b> from <b>Karlsruhe Hbf</b> to <b>Freudenstadt Hbf</b>."
-   */
-  noticeFormatted?: string;
-  /**
-   * notice
-   * the body of notification in plain text form
-   * @format string
-   * @example "@bob is on S 81 from Karlsruhe Hbf to Freudenstadt Hbf."
-   */
-  notice?: string;
-  /**
-   * link
-   * the link to the notification
-   * @format string
-   * @example "https://traewelling.de/status/123456"
-   */
-  link?: string;
-  /**
-   * data
-   * the data of the notification
-   */
-  data?: any[];
-  /**
-   * readAt
-   * the date when the notification was read, null if not read yet
-   * @format string
-   * @example "2023-01-01T00:00:00+00:00"
-   */
-  readAt?: string | null;
-  /**
-   * createdAt
-   * the date when the notification was created
-   * @format string
-   * @example "2023-01-01T00:00:00+00:00"
-   */
-  createdAt?: string;
-  /**
-   * createdAtForHumans
-   * DON'T USE THIS ATTRIBUTE! This Attribute will be removed in the future. The date when the notification was created, but in human readable form
-   * @format string
-   * @example "2 days ago"
-   */
-  createdAtForHumans?: string;
-}
-
-/**
- * PaginationPage
- * pagination links
- */
-export type PaginationPage = any;
-
-/**
- * Points
- * Points model
- */
-export interface Points {
-  /**
-   * points
-   * points
-   * @format int
-   * @example 1
-   */
-  points?: number;
-  calculation?: PointsCalculation;
-  /**
-   * additional
-   * extra points that can be given
-   */
-  additional?: any[];
-}
-
-/** PointsCalculation */
-export interface PointsCalculation {
-  /**
-   * base
-   * Basepoints for this type of vehicle
-   * @format float
-   * @example 0.5
-   */
-  base?: number;
-  /**
-   * distance
-   * Points for the travelled distance
-   * @format float
-   * @example 0.25
-   */
-  distance?: number;
-  /**
-   * factor
-   * @format float
-   * @example 0.25
-   */
-  factor?: number;
-  /** What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points, 4=manual trip => no points, 5=points disabled) */
-  reason?: PointReason;
-}
-
-/**
- * Polyline
- * Polyline of a single status as GeoJSON Feature
- */
-export interface Polyline {
-  /**
-   * type
-   * @example "Feature"
-   */
-  type?: string;
-  geometry?: {
-    /** @example "LineString" */
-    type?: string;
-    coordinates?: any[];
-  };
-  properties?: {
-    /** @example 1337 */
-    statusId?: number;
-  };
-}
-
-/** CheckinForbiddenWithUsersResponse */
-export interface CheckinForbiddenWithUsersResponse {
-  /** @example "You are not allowed to check in the following users: 1" */
-  message?: string;
-  meta?: {
-    invalidUsers?: number[];
-  };
-}
-
-/**
- * StatusTag
- * StatusTag model
- */
-export interface StatusTag {
-  /**
-   * key
-   * Key of tag
-   * @example "trwl:ticket"
-   */
-  key?: string;
-  /**
-   * value
-   * Value of tag
-   * @example "BahnCard 100"
-   */
-  value?: string;
-  /** What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify? */
-  visibility?: StatusVisibility;
-}
-
-/**
- * SuccessResponse
- * Success Response
- */
-export interface SuccessResponse {
-  /**
-   * status
-   * status
-   * @example "success"
-   */
-  status?: string;
-}
-
 /**
  * Webhook
  * Webhook model
  */
 export interface Webhook {
-  /**
-   * ID
-   * ID
-   * @format int
-   * @example 12345
-   */
+  /** @example 12345 */
   id?: number;
-  /**
-   * ClientID
-   * ID of the client which created this webhook
-   * @format int
-   * @example 12345
-   */
+  /** @example 12345 */
   clientId?: number;
-  /**
-   * UserID
-   * ID of the user which created this webhook
-   * @format int
-   * @example 12345
-   */
+  client?: ClientResource;
+  /** @example 12345 */
   userId?: number;
-  /**
-   * url
-   * URL where the webhook gets sent to
-   * @example "https://example.com/webhook"
-   */
+  /** @example "https://example.com/webhook" */
   url?: string;
   /**
-   * createdAt
-   * creation date of this webhook
    * @format datetime
    * @example "2022-07-17T13:37:00+02:00"
    */
   createdAt?: string;
-  /**
-   * events
-   * array of events this webhook receives
-   */
-  events?: any[];
-}
-
-/**
- * StatusUpdateBody
- * Status Update Body
- */
-export interface StatusUpdateBody {
-  /**
-   * Status-Text to be displayed alongside the checkin
-   * @maxLength 280
-   * @example "Wow. This train is extremely crowded!"
-   */
-  body?: string | null;
-  /** What type of travel (0=private, 1=business, 2=commute) did the user specify? */
-  business?: Business;
-  /** What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify? */
-  visibility?: StatusVisibility;
-  /**
-   * The ID of the event this status is related to - or null
-   * @example "1"
-   */
-  eventId?: string | null;
-  /**
-   * Manual departure time set by the user
-   * @format date
-   * @example "2020-01-01 12:00:00"
-   */
-  manualDeparture?: string | null;
-  /**
-   * Manual arrival time set by the user
-   * @format date
-   * @example "2020-01-01 13:00:00"
-   */
-  manualArrival?: string | null;
-  /**
-   * Destination station id
-   * @example "1"
-   */
-  destinationId?: string | null;
-  /**
-   * Destination arrival time
-   * @format date
-   * @example "2020-01-01 13:00:00"
-   */
-  destinationArrivalPlanned?: string | null;
+  /** array of events this webhook receives */
+  events?: {
+    /** @example "checkin" */
+    type?: string;
+  }[];
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -2193,7 +2026,7 @@ export class Api<
       this.request<
         {
           data?: StatusResource[];
-          /** pagination links */
+          /** Pagination links */
           links?: Links;
           /** Pagination meta data */
           meta?: PaginationMeta;
@@ -2325,7 +2158,7 @@ export class Api<
       this.request<
         {
           data?: UserResource[];
-          /** pagination links */
+          /** Pagination links */
           links?: Links;
           /** Pagination meta data */
           meta?: PaginationMeta;
@@ -2352,7 +2185,7 @@ export class Api<
       this.request<
         {
           data?: UserResource[];
-          /** pagination links */
+          /** Pagination links */
           links?: Links;
           /** Pagination meta data */
           meta?: PaginationMeta;
@@ -2379,7 +2212,7 @@ export class Api<
       this.request<
         {
           data?: UserResource[];
-          /** pagination links */
+          /** Pagination links */
           links?: Links;
           /** Pagination meta data */
           meta?: PaginationMeta;
@@ -2577,7 +2410,7 @@ export class Api<
       this.request<
         {
           data?: StatusResource[];
-          /** pagination links */
+          /** Pagination links */
           links?: Links;
           /** Pagination meta data */
           meta?: PaginationMeta;
@@ -2746,7 +2579,7 @@ export class Api<
       this.request<
         {
           data?: UserResource[];
-          /** pagination links */
+          /** Pagination links */
           links?: Links;
           /** Pagination meta data */
           meta?: PaginationMeta;
@@ -2784,7 +2617,7 @@ export class Api<
       this.request<
         {
           data?: UserResource[];
-          /** pagination links */
+          /** Pagination links */
           links?: Links;
           /** Pagination meta data */
           meta?: PaginationMeta;
@@ -3006,7 +2839,7 @@ export class Api<
     getTagsForStatus: (statusId?: number, params: RequestParams = {}) =>
       this.request<
         {
-          data?: StatusTag[];
+          data?: StatusTagResource[];
         },
         void
       >({
@@ -3027,14 +2860,13 @@ export class Api<
      * @secure
      */
     createSingleStatusTag: (
-      data: StatusTag,
+      data: StatusTagResource,
       statusId?: number,
       params: RequestParams = {},
     ) =>
       this.request<
         {
-          /** StatusTag model */
-          data?: StatusTag;
+          data?: StatusTagResource;
         },
         void
       >({
@@ -3057,15 +2889,14 @@ export class Api<
      * @secure
      */
     updateSingleStatusTag: (
-      data: StatusTag,
+      data: StatusTagResource,
       statusId?: number,
       tagKey?: string,
       params: RequestParams = {},
     ) =>
       this.request<
         {
-          /** StatusTag model */
-          data?: StatusTag;
+          data?: StatusTagResource;
         },
         void
       >({
@@ -3092,7 +2923,13 @@ export class Api<
       tagKey?: string,
       params: RequestParams = {},
     ) =>
-      this.request<SuccessResponse, void>({
+      this.request<
+        {
+          /** @example "success" */
+          status?: string;
+        },
+        void
+      >({
         path: `/status/${statusId}/tags/${tagKey}`,
         method: "DELETE",
         secure: true,
@@ -3138,7 +2975,7 @@ export class Api<
       this.request<
         {
           data?: Notification[];
-          /** pagination links */
+          /** Pagination links */
           links?: Links;
           /** Pagination meta data */
           meta?: PaginationMeta;
@@ -3210,7 +3047,13 @@ export class Api<
      * @secure
      */
     markAllAsRead: (params: RequestParams = {}) =>
-      this.request<SuccessResponse, void>({
+      this.request<
+        {
+          /** @example "success" */
+          status?: string;
+        },
+        void
+      >({
         path: `/notifications/read/all`,
         method: "PUT",
         secure: true,
@@ -3899,7 +3742,7 @@ export class Api<
       this.request<
         {
           data?: StatusResource[];
-          /** pagination links */
+          /** Pagination links */
           links?: Links;
           /** Pagination meta data */
           meta?: PaginationMeta;
@@ -3933,7 +3776,7 @@ export class Api<
       this.request<
         {
           data?: StatusResource[];
-          /** pagination links */
+          /** Pagination links */
           links?: Links;
           /** Pagination meta data */
           meta?: PaginationMeta;
@@ -3988,8 +3831,8 @@ export class Api<
       this.request<
         {
           data?: {
-            "1337"?: StatusTag[];
-            "4711"?: StatusTag[];
+            "1337"?: StatusTagResource[];
+            "4711"?: StatusTagResource[];
           };
         },
         void
@@ -4282,7 +4125,13 @@ export class Api<
     createCheckin: (data: CheckinRequestBody, params: RequestParams = {}) =>
       this.request<
         CheckinSuccessResource,
-        void | CheckinForbiddenWithUsersResponse
+        void | {
+          /** @example "You are not allowed to check in the following users: 1" */
+          message?: string;
+          meta?: {
+            invalidUsers?: number[];
+          };
+        }
       >({
         path: `/trains/checkin`,
         method: "POST",

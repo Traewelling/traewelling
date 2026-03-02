@@ -179,7 +179,9 @@ class NotificationsController extends Controller
             new OA\Response(
                 response: 200,
                 description: 'successful operation',
-                content: new OA\JsonContent(ref: '#/components/schemas/SuccessResponse'),
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'status', type: 'string', example: 'success')],
+                ),
             ),
             new OA\Response(response: 401, description: 'Unauthorized'),
         ],

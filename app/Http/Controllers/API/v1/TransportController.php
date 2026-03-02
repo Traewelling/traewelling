@@ -39,6 +39,28 @@ use Illuminate\Validation\Rules\Enum;
 use OpenApi\Attributes as OA;
 use Throwable;
 
+#[OA\Schema(
+    schema: 'CheckinRequestBody',
+    title: 'CheckinRequestBody',
+    description: 'Fields for creating a transit checkin',
+    properties: [
+        new OA\Property(property: 'body', type: 'string', maxLength: 280, nullable: true, example: 'Meine erste Fahrt nach Knuffingen!'),
+        new OA\Property(property: 'business', ref: '#/components/schemas/Business'),
+        new OA\Property(property: 'visibility', ref: '#/components/schemas/StatusVisibility'),
+        new OA\Property(property: 'eventId', type: 'integer', nullable: true, example: 1, description: 'Id of an event the status should be connected to'),
+        new OA\Property(property: 'toot', type: 'boolean', nullable: true, example: false, description: 'Should this status be posted to mastodon?'),
+        new OA\Property(property: 'chainPost', type: 'boolean', nullable: true, example: false, description: 'Should this status be posted to mastodon as a chained post?'),
+        new OA\Property(property: 'ibnr', type: 'boolean', nullable: true, example: true, description: 'If true, `start` and `destination` can be supplied as IBNR. Otherwise Träwelling-ID. Default: false.'),
+        new OA\Property(property: 'tripId', type: 'string', nullable: true, example: 'b37ff515-22e1-463c-94de-3ad7964b5cb8', description: 'The tripId for the trip to check into'),
+        new OA\Property(property: 'lineName', type: 'string', nullable: true, example: 'S 4', description: 'The line name for the trip to check into'),
+        new OA\Property(property: 'start', type: 'integer', example: 8000191, description: 'Station-ID of the starting point (see `ibnr`)'),
+        new OA\Property(property: 'destination', type: 'integer', example: 8000192, description: 'Station-ID of the destination (see `ibnr`)'),
+        new OA\Property(property: 'departure', type: 'string', format: 'date-time', example: '2022-12-19T20:41:00+01:00', description: 'Timestamp of the departure'),
+        new OA\Property(property: 'arrival', type: 'string', format: 'date-time', example: '2022-12-19T20:42:00+01:00', description: 'Timestamp of the arrival'),
+        new OA\Property(property: 'force', type: 'boolean', nullable: true, example: false, description: 'If true, the checkin is created even on collision. No points awarded.'),
+        new OA\Property(property: 'with', type: 'array', nullable: true, items: new OA\Items(type: 'integer', example: 1), description: 'Also check in these user IDs (max. 10). Requires mutual follow.'),
+    ],
+)]
 class TransportController extends Controller
 {
     private StationRepository $stationRepository;
@@ -469,8 +491,19 @@ class TransportController extends Controller
             new OA\Response(response: 401, description: 'Unauthorized'),
             new OA\Response(
                 response: 403,
-                description: 'Forbidden',
-                content: new OA\JsonContent(ref: '#/components/schemas/CheckinForbiddenWithUsersResponse'),
+                description: 'Forbidden — one or more users in `with` cannot be checked in',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'You are not allowed to check in the following users: 1'),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'invalidUsers', type: 'array', items: new OA\Items(type: 'integer', example: 1)),
+                            ],
+                        ),
+                    ],
+                ),
             ),
             new OA\Response(response: 409, description: 'Checkin collision'),
         ],

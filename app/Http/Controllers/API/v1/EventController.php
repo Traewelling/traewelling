@@ -15,6 +15,21 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: 'EventSuggestion',
+    title: 'EventSuggestion',
+    description: 'Fields for suggesting an event',
+    properties: [
+        new OA\Property(property: 'name', type: 'string', maxLength: 255, description: 'name of the event', example: 'Eröffnung der Nebenbahn in Knuffingen'),
+        new OA\Property(property: 'host', type: 'string', nullable: true, description: 'host of the event', example: 'MiWuLa'),
+        new OA\Property(property: 'begin', type: 'string', format: 'date-time', description: 'Timestamp for the start of the event', example: '2022-06-01T00:00:00+02:00'),
+        new OA\Property(property: 'end', type: 'string', format: 'date-time', description: 'Timestamp for the end of the event', example: '2022-08-31T23:59:00+02:00'),
+        new OA\Property(property: 'url', type: 'string', maxLength: 255, nullable: true, description: 'external URL for this event', example: 'https://www.example.com/event'),
+        new OA\Property(property: 'hashtag', type: 'string', maxLength: 40, nullable: true, description: 'hashtag for this event', example: 'gpn21'),
+        new OA\Property(property: 'nearestStation', type: 'string', maxLength: 255, nullable: true, deprecated: true, description: 'Query string for the nearest station. Deprecated: use nearestStationId instead.', example: 'Berlin Hbf'),
+        new OA\Property(property: 'nearestStationId', type: 'integer', nullable: true, description: 'ID of the nearest station to this event', example: 1),
+    ],
+)]
 class EventController extends Controller
 {
     #[OA\Get(

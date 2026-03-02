@@ -8,6 +8,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: 'BearerTokenResponse',
+    title: 'BearerTokenResponse',
+    properties: [
+        new OA\Property(property: 'token', type: 'string', description: "Bearer Token. Use in Authentication-Header with prefix 'Bearer '. (space is needed)", example: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9...'),
+        new OA\Property(property: 'expires_at', type: 'string', description: 'End of life for this token. Lifespan is usually one year.', example: '2023-10-19T15:15:06+02:00'),
+    ],
+)]
 class AuthController extends Controller
 {
     /**
