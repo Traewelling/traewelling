@@ -6,17 +6,20 @@ use App\Models\MotisSourceLicense;
 use App\Services\LicenseService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *     title="DataSourceResource",
- *     required={"id", "attribution"},
- *
- *     @OA\Property(property="id", type="string", example="foobar"),
- *     @OA\Property(property="attribution", type="string", example="Provided by foobar under CC BY 4.0")
- * )
- */
+#[OA\Schema(
+    title: 'DataSourceResource',
+    required: ['id', 'attribution'],
+    properties: [
+        new OA\Property(property: 'id', type: 'string', example: 'foobar'),
+        new OA\Property(
+            property: 'attribution',
+            type: 'string',
+            example: 'Provided by foobar under CC BY 4.0',
+        ),
+    ],
+)]
 class DataSourceResource extends JsonResource
 {
     private LicenseService $licenseService;

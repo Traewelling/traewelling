@@ -8,35 +8,33 @@ use App\Services\OperatorService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use OpenApi\Attributes as OA;
 
 class OperatorController extends Controller
 {
-    /**
-     * @OA\Get(
-     *      path="/operators",
-     *      summary="Get a list of all operators.",
-     *      tags={"Checkin"},
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(
-     *                  property="data",
-     *                  type="array",
-     *
-     *                  @OA\Items(ref="#/components/schemas/OperatorResource")
-     *              )
-     *          )
-     *      ),
-     *
-     *     @OA\Response(response=401, description="Unauthenticated"),
-     *     @OA\Response(response=403, description="Unauthorized"),
-     *     @OA\Response(response=500, description="Internal Server Error")
-     * )
-     */
+    #[OA\Get(
+        path: '/operators',
+        summary: 'Get a list of all operators.',
+        tags: ['Checkin'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/OperatorResource'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Unauthorized'),
+            new OA\Response(response: 500, description: 'Internal Server Error'),
+        ],
+    )]
     public function index(): AnonymousResourceCollection
     {
         return OperatorResource::collection(Operator::orderBy('name')->cursorPaginate(250));

@@ -3,40 +3,22 @@
 namespace App\Dto\GeoJson;
 
 use Illuminate\Support\Collection;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *     title="FeatureCollection",
- *     description="featurecollection of multiple GeoJson points",
- *
- *     @OA\Xml(
- *         name="FeatureCollection"
- *     )
- * )
- */
+#[OA\Schema(
+    title: 'FeatureCollection',
+    description: 'featurecollection of multiple GeoJson points',
+    xml: new OA\Xml(name: 'FeatureCollection'),
+)]
 class FeatureCollection implements \JsonSerializable
 {
-    /**
-     * @OA\Property (
-     *     title="type",
-     *     example="FeatureCollection"
-     * )
-     */
+    #[OA\Property(title: 'type', example: 'FeatureCollection')]
     private string $type;
 
     /**
-     * @OA\Property(
-     *     property="features",
-     *     type="array",
-     *
-     *     @OA\Items(
-     *         ref="#/components/schemas/Coordinate"
-     *     )
-     * )
-     *
      * @var Collection<Feature>
      */
+    #[OA\Property(property: 'features', type: 'array', items: new OA\Items(ref: '#/components/schemas/Coordinate'))]
     public Collection $features;
 
     public function __construct(Collection $features, string $type = 'FeatureCollection')

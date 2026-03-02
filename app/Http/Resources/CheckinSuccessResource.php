@@ -6,16 +6,29 @@ namespace App\Http\Resources;
 
 use App\Dto\Internal\CheckinSuccessDto;
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *      title="CheckinResponse",
- *
- *     @OA\Property(property="status", description="StatusModel of the created status", ref="#/components/schemas/StatusResource"),
- *     @OA\Property(property="points", description="points and reasons for the points", ref="#/components/schemas/Points"),
- *     @OA\Property(property="alsoOnThisconnection", description="Statuses of other people on this connection", type="array", @OA\Items(ref="#/components/schemas/StatusResource"))
- * )
- */
+#[OA\Schema(
+    title: 'CheckinResponse',
+    properties: [
+        new OA\Property(
+            property: 'status',
+            description: 'StatusModel of the created status',
+            ref: '#/components/schemas/StatusResource',
+        ),
+        new OA\Property(
+            property: 'points',
+            description: 'points and reasons for the points',
+            ref: '#/components/schemas/Points',
+        ),
+        new OA\Property(
+            property: 'alsoOnThisconnection',
+            description: 'Statuses of other people on this connection',
+            type: 'array',
+            items: new OA\Items(ref: '#/components/schemas/StatusResource'),
+        ),
+    ],
+)]
 class CheckinSuccessResource extends JsonResource
 {
     public function toArray($request): array

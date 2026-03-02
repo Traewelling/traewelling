@@ -6,46 +6,23 @@ namespace App\Dto;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *     title="Mention",
- *     required={"user", "position", "length"},
- *     description="Mentioned user and position in status body",
- *
- *     @OA\Xml(
- *         name="Mention"
- *     )
- * )
- */
+#[OA\Schema(
+    title: 'Mention',
+    required: ['user', 'position', 'length'],
+    description: 'Mentioned user and position in status body',
+    xml: new OA\Xml(name: 'Mention'),
+)]
 readonly class MentionDto implements \JsonSerializable
 {
-    /**
-     * @OA\Property(
-     *     title="user",
-     *     nullable="true",
-     *     ref="#/components/schemas/UserResource"
-     * )
-     */
+    #[OA\Property(title: 'user', nullable: true, ref: '#/components/schemas/UserResource')]
     public User $user;
 
-    /**
-     * @OA\Property(
-     *     title="position",
-     *     format="int",
-     *     example=0
-     * )
-     */
+    #[OA\Property(title: 'position', format: 'int', example: 0)]
     public int $position;
 
-    /**
-     * @OA\Property(
-     *     title="length",
-     *     format="integer",
-     *     example=4
-     * )
-     */
+    #[OA\Property(title: 'length', format: 'integer', example: 4)]
     public int $length;
 
     public function __construct(User $user, int $position, int $length)

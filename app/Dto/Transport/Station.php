@@ -2,72 +2,32 @@
 
 namespace App\Dto\Transport;
 
-/**
- * @OA\Schema (
- *     title="Station",
- *     description="train station model",
- *
- *     @OA\Xml(
- *        name="Station"
- *     )
- * )
- */
+use OpenApi\Attributes as OA;
+
+#[OA\Schema(title: 'Station', description: 'train station model', xml: new OA\Xml(name: 'Station'))]
 class Station
 {
-    /**
-     * @OA\Property (
-     *     title="id",
-     *     description="id",
-     *     example="4711"
-     * )
-     */
+    #[OA\Property(title: 'id', description: 'id', example: '4711')]
     public readonly int $id;
 
-    /**
-     * @OA\Property(
-     *     title="name",
-     *     description="name of the station",
-     *     example="Karlsruhe Hbf"
-     * )
-     */
+    #[OA\Property(title: 'name', description: 'name of the station', example: 'Karlsruhe Hbf')]
     public readonly string $name;
 
-    /**
-     * @OA\Property(
-     *     title="latitude",
-     *     description="latitude of the station",
-     *     example="48.991591"
-     * )
-     */
+    #[OA\Property(title: 'latitude', description: 'latitude of the station', example: '48.991591')]
     public readonly float $latitude;
 
-    /**
-     * @OA\Property(
-     *     title="longitude",
-     *     description="longitude of the station",
-     *     example="8.400538"
-     * )
-     */
+    #[OA\Property(title: 'longitude', description: 'longitude of the station', example: '8.400538')]
     public readonly float $longitude;
 
-    /**
-     * @OA\Property(
-     *     title="ibnr",
-     *     description="IBNR of the station",
-     *     example="8000191",
-     *     nullable=true
-     * )
-     */
+    #[OA\Property(title: 'ibnr', description: 'IBNR of the station', example: '8000191', nullable: true)]
     public readonly ?int $ibnr;
 
-    /**
-     * @OA\Property (
-     *     title="rilIdentifier",
-     *     description="Identifier specified in 'Richtline 100' of the Deutsche Bahn",
-     *     nullable="true",
-     *     example="RK"
-     * )
-     */
+    #[OA\Property(
+        title: 'rilIdentifier',
+        description: 'Identifier specified in \'Richtline 100\' of the Deutsche Bahn',
+        nullable: true,
+        example: 'RK',
+    )]
     public readonly ?string $rilIdentifier;
 
     public function setId(int $id): self

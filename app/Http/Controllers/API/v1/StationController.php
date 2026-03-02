@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Log;
+use OpenApi\Attributes as OA;
 
 class StationController extends Controller
 {
@@ -161,105 +162,93 @@ class StationController extends Controller
         return new StationResource($station);
     }
 
-    /**
-     * @OA\Get(
-     *      path="/stations",
-     *      operationId="indexStation",
-     *      tags={"Checkin"},
-     *      summary="Search for stations",
-     *      description="UNSTABLE: Returns stations by fuzzy text, exact identifier, or within a bounding box (BBOX). **CAUTION:** Slashes in {query} must be replaced (e.g. with %20).",
-     *
-     *      @OA\Parameter(
-     *          name="query",
-     *          in="query",
-     *          description="Fuzzy station search",
-     *          example="Karlsruhe Hbf",
-     *
-     *          @OA\Schema(type="string", maxLength=255)
-     *      ),
-     *
-     *      @OA\Parameter(
-     *          name="identifier_provider",
-     *          in="query",
-     *          description="Identifier provider for exact lookup",
-     *          example="ibnr",
-     *
-     *          @OA\Schema(type="string", enum={"ibnr", "transitous"})
-     *      ),
-     *
-     *      @OA\Parameter(
-     *          name="identifier",
-     *          in="query",
-     *          description="Station identifier for exact lookup",
-     *          example="8000191",
-     *
-     *          @OA\Schema(type="string", maxLength=255)
-     *      ),
-     *
-     *      @OA\Parameter(
-     *          name="min_lat",
-     *          in="query",
-     *          description="Minimum latitude of BBOX (WGS84, -90..90)",
-     *          example=48.90,
-     *
-     *          @OA\Schema(type="number", format="float")
-     *      ),
-     *
-     *      @OA\Parameter(
-     *          name="max_lat",
-     *          in="query",
-     *          description="Maximum latitude of BBOX (WGS84, -90..90)",
-     *          example=49.10,
-     *
-     *          @OA\Schema(type="number", format="float")
-     *      ),
-     *
-     *      @OA\Parameter(
-     *          name="min_lon",
-     *          in="query",
-     *          description="Minimum longitude of BBOX (WGS84, -180..180)",
-     *          example=8.20,
-     *
-     *          @OA\Schema(type="number", format="float")
-     *      ),
-     *
-     *      @OA\Parameter(
-     *          name="max_lon",
-     *          in="query",
-     *          description="Maximum longitude of BBOX (WGS84, -180..180)",
-     *          example=8.60,
-     *
-     *          @OA\Schema(type="number", format="float")
-     *      ),
-     *
-     *      @OA\Parameter(
-     *          name="limit",
-     *          in="query",
-     *          description="Maximum number of results (capped at 100).",
-     *          example=50,
-     *
-     *          @OA\Schema(type="integer", minimum=1, maximum=100)
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(ref="#/components/schemas/StationResource")
-     *              )
-     *          )
-     *      ),
-     *
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=404, description="Station not found"),
-     *      @OA\Response(response=503, description="There has been an error with our data provider"),
-     *      security={{"passport": {"create-statuses"}}, {"token": {}}}
-     * )
-     */
+    #[OA\Get(
+        path: '/stations',
+        operationId: 'indexStation',
+        tags: ['Checkin'],
+        summary: 'Search for stations',
+        description: 'UNSTABLE: Returns stations by fuzzy text, exact identifier, or within a bounding box (BBOX). **CAUTION:** Slashes in {query} must be replaced (e.g. with %20).',
+        security: [['passport' => ['create-statuses']], ['token' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'query',
+                in: 'query',
+                description: 'Fuzzy station search',
+                example: 'Karlsruhe Hbf',
+                schema: new OA\Schema(type: 'string', maxLength: 255),
+            ),
+            new OA\Parameter(
+                name: 'identifier_provider',
+                in: 'query',
+                description: 'Identifier provider for exact lookup',
+                example: 'ibnr',
+                schema: new OA\Schema(type: 'string', enum: ['ibnr', 'transitous']),
+            ),
+            new OA\Parameter(
+                name: 'identifier',
+                in: 'query',
+                description: 'Station identifier for exact lookup',
+                example: '8000191',
+                schema: new OA\Schema(type: 'string', maxLength: 255),
+            ),
+            new OA\Parameter(
+                name: 'min_lat',
+                in: 'query',
+                description: 'Minimum latitude of BBOX (WGS84, -90..90)',
+                example: 48.90,
+                schema: new OA\Schema(type: 'number', format: 'float'),
+            ),
+            new OA\Parameter(
+                name: 'max_lat',
+                in: 'query',
+                description: 'Maximum latitude of BBOX (WGS84, -90..90)',
+                example: 49.10,
+                schema: new OA\Schema(type: 'number', format: 'float'),
+            ),
+            new OA\Parameter(
+                name: 'min_lon',
+                in: 'query',
+                description: 'Minimum longitude of BBOX (WGS84, -180..180)',
+                example: 8.20,
+                schema: new OA\Schema(type: 'number', format: 'float'),
+            ),
+            new OA\Parameter(
+                name: 'max_lon',
+                in: 'query',
+                description: 'Maximum longitude of BBOX (WGS84, -180..180)',
+                example: 8.60,
+                schema: new OA\Schema(type: 'number', format: 'float'),
+            ),
+            new OA\Parameter(
+                name: 'limit',
+                in: 'query',
+                description: 'Maximum number of results (capped at 100).',
+                example: 50,
+                schema: new OA\Schema(type: 'integer', minimum: 1, maximum: 100),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/StationResource'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 404, description: 'Station not found'),
+            new OA\Response(
+                response: 503,
+                description: 'There has been an error with our data provider',
+            ),
+        ],
+    )]
     public function index(Request $request): AnonymousResourceCollection|JsonResponse
     {
         $validated = $request->validate([
@@ -353,38 +342,35 @@ class StationController extends Controller
         return StationResource::collection([new StationResource($station)]);
     }
 
-    /**
-     * @OA\Get(
-     *      path="/stations/{id}",
-     *      operationId="showStation",
-     *      tags={"Checkin"},
-     *      summary="Show station",
-     *      description="This request returns a single station object",
-     *
-     *      @OA\Parameter(
-     *          name="id",
-     *          in="path",
-     *          description="station id",
-     *          example="1337"
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="object", ref="#/components/schemas/StationResource")
-     *          )
-     *      ),
-     *
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=503, description="There has been an error with our data provider"),
-     *      security={
-     *          {"passport": {"create-statuses"}}, {"token": {}}
-     *      }
-     *     )
-     */
+    #[OA\Get(
+        path: '/stations/{id}',
+        operationId: 'showStation',
+        tags: ['Checkin'],
+        summary: 'Show station',
+        description: 'This request returns a single station object',
+        security: [['passport' => ['create-statuses']], ['token' => []]],
+        parameters: [new OA\Parameter(name: 'id', in: 'path', description: 'station id', example: '1337')],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'object',
+                            ref: '#/components/schemas/StationResource',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(
+                response: 503,
+                description: 'There has been an error with our data provider',
+            ),
+        ],
+    )]
     public function show(int $id): JsonResponse
     {
         $station = Station::findOrFail($id);

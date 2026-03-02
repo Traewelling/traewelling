@@ -6,34 +6,26 @@ namespace App\Dto;
 
 use App\Dto\GeoJson\Feature;
 use JsonSerializable;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 use stdClass;
 
-/**
- * @OA\Schema(
- *     title="Coordinate",
- *     description="GeoJson Coordinates",
- *
- *     @OA\Xml(name="Coordinate"),
- * )
- */
+#[OA\Schema(title: 'Coordinate', description: 'GeoJson Coordinates', xml: new OA\Xml(name: 'Coordinate'))]
 readonly class Coordinate implements JsonSerializable
 {
-    /**
-     * @OA\Property(property="type", example="Feature"),
-     * @OA\Property(property="properties", type="object", example="{}"),
-     * @OA\Property(
-     *     property="geometry",
-     *     type="object",
-     *     @OA\Property(property="type", type="string", example="Point"),
-     *     @OA\Property(property="coordinates", type="array",
-     *
-     *         @OA\Items(
-     *             example="[8.39767,49.01625]"
-     *         )
-     *     )
-     * )
-     */
+    #[OA\Property(property: 'type', example: 'Feature')]
+    #[OA\Property(property: 'properties', type: 'object', example: '{}')]
+    #[OA\Property(
+        property: 'geometry',
+        type: 'object',
+        properties: [
+            new OA\Property(property: 'type', type: 'string', example: 'Point'),
+            new OA\Property(
+                property: 'coordinates',
+                type: 'array',
+                items: new OA\Items(example: '[8.39767,49.01625]'),
+            ),
+        ],
+    )]
     public float $latitude;
 
     public float $longitude;

@@ -5,34 +5,66 @@ namespace App\Http\Resources;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *      title="UserAuth",
- *      required={"id", "displayName", "username", "profilePicture", "totalDistance", "totalDuration", "points",
- *      "mastodonUrl", "privateProfile", "preventIndex", "likes_enabled", "mapProvider", "home", "language",
- *      "defaultStatusVisibility", "roles"},
- *
- *      @OA\Property(property="id", type="integer", example="1"),
- *      @OA\Property(property="displayName", type="string", example="Gertrud"),
- *      @OA\Property(property="username", type="string", example="Gertrud123"),
- *      @OA\Property(property="profilePicture", type="string", example="https://traewelling.de/@Gertrud123/picture"),
- *      @OA\Property(property="totalDistance", type="integer", example="100"),
- *      @OA\Property(property="totalDuration", type="integer", example="100"),
- *      @OA\Property(property="points", type="integer", example="100"),
- *      @OA\Property(property="mastodonUrl", type="string", example="https://mastodon.social/@Gertrud123", nullable=true),
- *      @OA\Property(property="privateProfile", type="boolean", example="false"),
- *      @OA\Property(property="preventIndex", type="boolean", example="false"),
- *      @OA\Property(property="likes_enabled", type="boolean", example="true"),
- *      @OA\Property(property="pointsEnabled", type="boolean", example="true"),
- *      @OA\Property(property="mapProvider", type="string", example="default"),
- *      @OA\Property(property="home", type="object", ref="#/components/schemas/StationResource"),
- *      @OA\Property(property="language", type="string", example="de"),
- *      @OA\Property(property="defaultStatusVisibility", type="integer", example=0),
- *      @OA\Property(property="roles", type="array", @OA\Items(type="string"), example={"admin", "open-beta", "closed-beta"})
- * )
- */
+#[OA\Schema(
+    title: 'UserAuth',
+    required: [
+        'id',
+        'displayName',
+        'username',
+        'profilePicture',
+        'totalDistance',
+        'totalDuration',
+        'points',
+        'mastodonUrl',
+        'privateProfile',
+        'preventIndex',
+        'likes_enabled',
+        'mapProvider',
+        'home',
+        'language',
+        'defaultStatusVisibility',
+        'roles',
+    ],
+    properties: [
+        new OA\Property(property: 'id', type: 'integer', example: '1'),
+        new OA\Property(property: 'displayName', type: 'string', example: 'Gertrud'),
+        new OA\Property(property: 'username', type: 'string', example: 'Gertrud123'),
+        new OA\Property(
+            property: 'profilePicture',
+            type: 'string',
+            example: 'https://traewelling.de/@Gertrud123/picture',
+        ),
+        new OA\Property(property: 'totalDistance', type: 'integer', example: '100'),
+        new OA\Property(property: 'totalDuration', type: 'integer', example: '100'),
+        new OA\Property(property: 'points', type: 'integer', example: '100'),
+        new OA\Property(
+            property: 'mastodonUrl',
+            type: 'string',
+            example: 'https://mastodon.social/@Gertrud123',
+            nullable: true,
+        ),
+        new OA\Property(property: 'privateProfile', type: 'boolean', example: false),
+        new OA\Property(property: 'preventIndex', type: 'boolean', example: false),
+        new OA\Property(property: 'likes_enabled', type: 'boolean', example: true),
+        new OA\Property(property: 'pointsEnabled', type: 'boolean', example: true),
+        new OA\Property(property: 'mapProvider', type: 'string', example: 'default'),
+        new OA\Property(
+            property: 'home',
+            type: 'object',
+            ref: '#/components/schemas/StationResource',
+        ),
+        new OA\Property(property: 'language', type: 'string', example: 'de'),
+        new OA\Property(property: 'defaultStatusVisibility', type: 'integer', example: 0),
+        new OA\Property(
+            property: 'roles',
+            type: 'array',
+            items: new OA\Items(type: 'string'),
+            example: ['admin', 'open-beta', 'closed-beta'],
+        ),
+    ],
+)]
 class UserAuthResource extends JsonResource
 {
     public function toArray($request): array

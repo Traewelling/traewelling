@@ -4,20 +4,28 @@ namespace App\Http\Resources;
 
 use App\Models\Station;
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *     title="Station",
- *     required={"id", "name", "latitude", "longitude", "ibnr", "rilIdentifier", "areas"},
- *
- *     @OA\Property(property="id", type="integer", example="1"),
- *     @OA\Property(property="name", type="string", example="Karlsruhe Hbf"),
- *     @OA\Property(property="latitude", type="number", example="48.993207"),
- *     @OA\Property(property="longitude", type="number", example="8.400977"),
- *     @OA\Property(property="areas", type="array", @OA\Items(ref="#/components/schemas/AreaResource")),
- *     @OA\Property(property="identifiers", type="array", @OA\Items(ref="#/components/schemas/StationIdentifierResource")),
- * )
- */
+#[OA\Schema(
+    title: 'Station',
+    required: ['id', 'name', 'latitude', 'longitude', 'ibnr', 'rilIdentifier', 'areas'],
+    properties: [
+        new OA\Property(property: 'id', type: 'integer', example: '1'),
+        new OA\Property(property: 'name', type: 'string', example: 'Karlsruhe Hbf'),
+        new OA\Property(property: 'latitude', type: 'number', example: '48.993207'),
+        new OA\Property(property: 'longitude', type: 'number', example: '8.400977'),
+        new OA\Property(
+            property: 'areas',
+            type: 'array',
+            items: new OA\Items(ref: '#/components/schemas/AreaResource'),
+        ),
+        new OA\Property(
+            property: 'identifiers',
+            type: 'array',
+            items: new OA\Items(ref: '#/components/schemas/StationIdentifierResource'),
+        ),
+    ],
+)]
 class StationResource extends JsonResource
 {
     public function toArray($request): array
