@@ -190,8 +190,6 @@ return [
          */
         Laravel\Socialite\SocialiteServiceProvider::class,
         // Barryvdh\Debugbar\ServiceProvider::class,
-        Jenssegers\Agent\AgentServiceProvider::class,
-
         /*
          * Application Service Providers...
          */
@@ -257,7 +255,6 @@ return [
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Mastodon' => Mastodon::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
-        'Agent' => Jenssegers\Agent\Facades\Agent::class,
         'Image' => Intervention\Image\Facades\Image::class,
 
     ],
