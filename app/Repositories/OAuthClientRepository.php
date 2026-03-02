@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\OAuthClient;
 use App\Models\Webhook;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Str;
 use Laravel\Passport\Passport;
 
@@ -76,8 +77,9 @@ class OAuthClientRepository
         return $client;
     }
 
-    public function findForUser(int $clientId, int $userId): OAuthClient
+    public function findForUser(int $clientId, Authenticatable|int $user): ?OAuthClient
     {
+        $userId = $user instanceof Authenticatable ? $user->getAuthIdentifier() : $user;
         $client = Passport::client();
 
         return $client

@@ -64,13 +64,17 @@ class DevController extends Controller
         $clients = new OAuthClientRepository();
         $app = $clients->findForUser($appId, auth()->user());
 
+        if (!$app) {
+            abort(404);
+        }
+
         $clients->update(
             $app,
             $validated['name'],
             $validated['redirect'],
-            $validated['privacy_policy_url'],
+            $validated['privacy_policy_url'] ?? null,
             isset($validated['enable_webhooks']) || $clients->hasWebhooks(id: $appId),
-            $validated['authorized_webhook_url'],
+            $validated['authorized_webhook_url'] ?? null,
             isset($validated['confidential'])
         );
 
