@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Http\Controllers\Backend\User\TokenController;
 use App\Http\Controllers\Controller;
 use App\Repositories\OAuthClientRepository;
 use App\Rules\SecureUrl;
@@ -23,10 +24,9 @@ class DevController extends Controller
 
     public function createPersonalAccessToken(): RedirectResponse
     {
-        $token = auth()->user()->createToken('PAT@' . auth()->user()->username, ['*']);
-        $token->token->update(['expires_at' => now()->addMonths(3)]);
+        $token = TokenController::createPersonalAccessToken(auth()->user());
 
-        return back()->with('token', $token->accessToken);
+        return back()->with('token', $token);
     }
 
     public function renderUpdateApp(int $appId): View

@@ -26,6 +26,7 @@ use App\Http\Controllers\API\v1\PrivacyPolicyController;
 use App\Http\Controllers\API\v1\ReportController;
 use App\Http\Controllers\API\v1\SessionController;
 use App\Http\Controllers\API\v1\SettingsController;
+use App\Http\Controllers\API\v1\SocialController;
 use App\Http\Controllers\API\v1\StationController;
 use App\Http\Controllers\API\v1\StatisticsController;
 use App\Http\Controllers\API\v1\StatusController;
@@ -145,21 +146,30 @@ Route::group(['prefix' => 'v1', 'middleware' => ['return-json']], static functio
                 ->middleware(['scope:write-settings-mail']);
             Route::put('password', [SettingsController::class, 'updatePassword']) // TODO: undocumented endpoint - document when stable
                 ->middleware(['scope:extra-write-password']);
+
             Route::delete('account', [UserController::class, 'deleteAccount'])
                 ->middleware(['scope:extra-delete'])
                 ->withoutMiddleware('privacy-policy');
-            Route::group(['middleware' => ['scope:write-settings-calendar']], static function () {
-                Route::get('ics-tokens', [IcsController::class, 'getIcsTokens']);     // TODO: undocumented endpoint - document when stable
-                Route::post('ics-token', [IcsController::class, 'createIcsToken']);   // TODO: undocumented endpoint - document when stable
-                Route::delete('ics-token', [IcsController::class, 'revokeIcsToken']); // TODO: undocumented endpoint - document when stable
-            });
+        });
+
+        Route::group(['prefix' => 'security'], static function () {
+            Route::delete('/social', [SocialController::class, 'destroyProvider'])
+                ->middleware(['scope:extra-write-password']);
+
             Route::group(['middleware' => ['scope:extra-terminate-sessions']], static function () {
-                Route::get('sessions', [SessionController::class, 'index']);                // TODO: undocumented endpoint - document when stable
-                Route::delete('sessions', [SessionController::class, 'deleteAllSessions']); // TODO: undocumented endpoint - document when stable
-                Route::get('tokens', [TokenController::class, 'index']);                    // TODO: undocumented endpoint - document when stable
-                Route::delete('tokens', [TokenController::class, 'revokeAllTokens']);       // TODO: undocumented endpoint - document when stable
-                Route::delete('token', [TokenController::class, 'revokeToken']);            // TODO: undocumented endpoint - document when stable
+                Route::get('sessions', [SessionController::class, 'index']);
+                Route::delete('sessions', [SessionController::class, 'deleteAllSessions']);
+                Route::post('tokens', [TokenController::class, 'createToken']);
+                Route::get('tokens', [TokenController::class, 'index']);
+                Route::delete('tokens', [TokenController::class, 'revokeAllTokens']);
+                Route::delete('tokens/{tokenId}', [TokenController::class, 'revokeToken']);
             });
+        });
+
+        Route::group(['prefix' => 'ics-tokens', 'middleware' => ['scope:write-settings-calendar']], static function () {
+            Route::get('/', [IcsController::class, 'getIcsTokens']);
+            Route::post('/', [IcsController::class, 'createIcsToken']);
+            Route::delete('/{tokenId}', [IcsController::class, 'revokeIcsToken']);
         });
 
         Route::apiResource('webhooks', WebhookController::class)->only(['index', 'show', 'destroy']);

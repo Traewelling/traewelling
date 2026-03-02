@@ -8,20 +8,92 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use OpenApi\Attributes as OA;
 
 class TokenController extends Controller
 {
+    #[OA\Get(
+        path: '/security/tokens',
+        operationId: 'getTokens',
+        description: 'Get all active API tokens for the authenticated user',
+        summary: 'Get active API tokens',
+        security: [['passport' => ['scope:extra-terminate-sessions']]],
+        tags: ['Security'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: Controller::OA_DESC_SUCCESS,
+                content: new OA\JsonContent(
+                    type: 'object',
+                    required: ['data'],
+                    properties: [
+                        new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/TokenResource')),
+                    ]
+                ),
+            ),
+        ]
+    )]
     public function index(): AnonymousResourceCollection
     {
         return TokenResource::collection(BackendTokenController::index(user: auth()->user()));
     }
 
-    public function revokeToken(Request $request): JsonResponse
+    #[OA\Post(
+        path: '/security/tokens',
+        operationId: 'createToken',
+        description: 'Create a new API token for the authenticated user',
+        summary: 'Create API token',
+        security: [['passport' => ['scope:extra-terminate-sessions']]],
+        tags: ['Security'],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: Controller::OA_DESC_SUCCESS,
+                content: new OA\JsonContent(
+                    type: 'object',
+                    required: ['data'],
+                    properties: [
+                        new OA\Property(property: 'data', type: 'object', required: ['token'], properties: [
+                            new OA\Property(property: 'token', description: 'The newly created API token', type: 'string', example: 'abc123def456'),
+                        ]),
+                    ]
+                ),
+            ),
+        ]
+    )]
+    public function createToken(Request $request): JsonResponse
     {
-        $validated = $request->validate(['tokenId' => ['required', 'exists:oauth_access_tokens,id']]);
+        $token = BackendTokenController::createPersonalAccessToken(auth()->user());
 
+        return $this->sendResponse(['token' => $token], 201);
+    }
+
+    #[OA\Delete(
+        path: '/security/tokens/{tokenId}',
+        operationId: 'revokeToken',
+        description: 'Revoke a specific API token for the authenticated user',
+        summary: 'Revoke API token',
+        security: [['passport' => ['scope:extra-terminate-sessions']]],
+        tags: ['Security'],
+        parameters: [
+            new OA\Parameter(
+                name: 'tokenId',
+                in: 'path',
+                description: 'The ID of the token to revoke',
+                required: true,
+                schema: new OA\Schema(type: 'string'),
+            ),
+        ],
+        responses: [
+            new OA\Response(response: 204, description: Controller::OA_DESC_NO_CONTENT),
+            new OA\Response(response: 403, description: Controller::OA_DESC_FORBIDDEN),
+            new OA\Response(response: 404, description: Controller::OA_DESC_NOT_FOUND),
+        ]
+    )]
+    public function revokeToken(Request $request, string $tokenId): JsonResponse
+    {
         try {
-            BackendTokenController::revokeToken($validated['tokenId'], auth()->user());
+            BackendTokenController::revokeToken($tokenId, auth()->user());
 
             return $this->sendResponse(null, 204);
         } catch (AuthorizationException) {
@@ -29,6 +101,15 @@ class TokenController extends Controller
         }
     }
 
+    #[OA\Delete(
+        path: '/security/tokens',
+        operationId: 'revokeAllTokens',
+        description: 'Revoke all API tokens for the authenticated user',
+        summary: 'Revoke all API tokens',
+        security: [['passport' => ['scope:extra-terminate-sessions']]],
+        tags: ['Security'],
+        responses: [new OA\Response(response: 204, description: Controller::OA_DESC_NO_CONTENT)]
+    )]
     public function revokeAllTokens(): JsonResponse
     {
         BackendTokenController::revokeAllTokens(user: auth()->user());

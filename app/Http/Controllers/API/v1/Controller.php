@@ -34,12 +34,25 @@ use Throwable;
 #[OA\Tag(name: 'User/Hide and Block', description: 'Mute and block users')]
 #[OA\Tag(name: 'Leaderboard', description: 'Leaderboard related endpoints')]
 #[OA\Tag(name: 'Statistics', description: 'Statistics related endpoints')]
+#[OA\Tag(name: 'ICS Tokens', description: 'Manage ICS Tokens for calendar export')]
 #[OA\Tag(name: 'Settings', description: 'User/Profile-Settings')]
 #[OA\Tag(name: 'Webhooks', description: 'Manage Webhooks for third party applications')]
 #[OA\Tag(name: 'Report', description: 'Report a Status, Event or User to the admins')]
 class Controller extends \App\Http\Controllers\Controller
 {
     protected DataProviderInterface $dataProvider;
+
+    public const string OA_DESC_SUCCESS = 'successful operation';
+
+    public const string OA_DESC_NO_CONTENT = 'No Content';
+
+    public const string OA_DESC_FORBIDDEN = 'Forbidden';
+
+    public const string OA_DESC_BAD_REQUEST = 'Bad Request';
+
+    public const string OA_DESC_NOT_FOUND = 'Not Found';
+
+    public const string OA_DESC_NOT_ACCEPTABLE = 'Not Acceptable';
 
     public function __construct()
     {

@@ -119,13 +119,13 @@ Route::middleware(['auth', 'privacy'])->group(function () {
     Route::view('/report', 'report')
         ->name('report');
 
-    Route::post('/ics/createToken', [IcsController::class, 'createIcsToken'])
-        ->name('ics.createToken'); // TODO: Replace with API Endpoint
+    Route::post('/ics/createPersonalAccessToken', [IcsController::class, 'createIcsToken'])
+        ->name('ics.createPersonalAccessToken'); // TODO: Replace with API Endpoint
     Route::post('/ics/revokeToken', [IcsController::class, 'revokeIcsToken'])
         ->name('ics.revokeToken'); // TODO: Replace with API Endpoint
 
     Route::post('/destroy/provider', [SocialController::class, 'destroyProvider'])
-        ->name('provider.destroy'); // TODO: Replace with API Endpoint
+        ->name('provider.destroy');
 
     Route::prefix('stats')->group(static function () {
         Route::permanentRedirect('/', '/statistics');
@@ -167,8 +167,8 @@ Route::middleware(['auth', 'privacy'])->group(function () {
         });
 
         Route::redirect('/', 'settings/profile')->name('settings');
-        Route::get('/profile', [SettingsController::class, 'renderProfile'])->name('settings.profile');
-        Route::get('/privacy', [SettingsController::class, 'renderPrivacy'])->name('settings.privacy');
+        Route::view('/profile', 'settings.profile')->name('settings.profile');
+        Route::view('/privacy', 'settings.privacy')->name('settings.privacy');
         Route::post('/update/privacy', [SettingsController::class, 'updatePrivacySettings'])
             ->name('settings.privacy.update');
 
@@ -177,7 +177,8 @@ Route::middleware(['auth', 'privacy'])->group(function () {
         Route::post('/account/update', [SettingsController::class, 'updatePassword'])
             ->name('password.change');
 
-        Route::get('/security/login-providers', [SettingsController::class, 'renderLoginProviders'])
+        Route::view('/security', 'settings.account');
+        Route::view('/security/login-providers', 'settings.login-providers')
             ->name('settings.login-providers');
         Route::get('/security/sessions', [SettingsController::class, 'renderSessions'])
             ->name('settings.sessions');
@@ -195,8 +196,8 @@ Route::middleware(['auth', 'privacy'])->group(function () {
         Route::post('/follower/reject', [SettingsController::class, 'rejectFollower'])
             ->name('settings.follower.reject'); // TODO: Replace with API Endpoint
 
-        Route::get('/blocks', [SettingsController::class, 'renderBlockedUsers'])->name('settings.blocks');
-        Route::get('/mutes', [SettingsController::class, 'renderMutedUsers'])->name('settings.mutes');
+        Route::view('/blocks', 'settings.blocks')->name('settings.blocks');
+        Route::view('/mutes', 'settings.mutes')->name('settings.mutes');
 
         Route::post('/delsession', [UserController::class, 'deleteSession'])
             ->name('delsession'); // TODO: Replace with API Endpoint

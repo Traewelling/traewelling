@@ -7,7 +7,7 @@ use App\Models\User;
 use Exception;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 
-abstract class SocialController extends Controller
+class SocialController extends Controller
 {
     public static function getDisplayName(SocialiteUser $socialiteUser): string
     {
@@ -32,5 +32,17 @@ abstract class SocialController extends Controller
         }
 
         return $username;
+    }
+
+    public function destroyMastodon(User $user): void
+    {
+        $user->socialProfile->update([
+            'mastodon_id' => null,
+            'mastodon_server' => null,
+            'mastodon_token' => null,
+        ]);
+
+        $mastodonProfileDetails = new MastodonProfileDetails($user);
+        $mastodonProfileDetails->forgetData();
     }
 }

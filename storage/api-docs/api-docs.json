@@ -954,6 +954,157 @@
                 ]
             }
         },
+        "/ics-tokens": {
+            "get": {
+                "tags": [
+                    "ICS Tokens"
+                ],
+                "summary": "Get ICS tokens",
+                "description": "Get all ICS tokens of the authenticated user",
+                "operationId": "getIcsTokens",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "description": "The list of ICS tokens belonging to the authenticated user",
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/IcsEntryResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2_security_example": [
+                            "write:projects",
+                            "read:projects"
+                        ]
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "ICS Tokens"
+                ],
+                "summary": "Create ICS token",
+                "description": "Create a new ICS token for the authenticated user",
+                "operationId": "createIcsToken",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "The name of the ICS token",
+                                        "type": "string",
+                                        "example": "My ICS Token"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created - ICS token created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "description": "The URL to access the ICS feed with the created token",
+                                            "required": [
+                                                "url"
+                                            ],
+                                            "properties": {
+                                                "url": {
+                                                    "description": "The URL to access the ICS feed with the created token",
+                                                    "type": "string",
+                                                    "format": "uri",
+                                                    "example": "https://example.com/ics?user_id=1&token=abcd1234&limit=10000&from=2010-01-01&until=2030-12-31"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity - validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2_security_example": [
+                            "write:projects",
+                            "read:projects"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/ics-tokens/{tokenId}": {
+            "delete": {
+                "tags": [
+                    "ICS Tokens"
+                ],
+                "summary": "Revoke ICS token",
+                "description": "Revoke an ICS token of the authenticated user",
+                "operationId": "revokeIcsToken",
+                "parameters": [
+                    {
+                        "name": "tokenId",
+                        "in": "path",
+                        "description": "The unique identifier of the ICS token to revoke",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content - token revoked successfully"
+                    },
+                    "404": {
+                        "description": "Not Found - token not found or does not belong to the authenticated user"
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2_security_example": [
+                            "write:projects",
+                            "read:projects"
+                        ]
+                    }
+                ]
+            }
+        },
         "/status/{id}/likes": {
             "get": {
                 "tags": [
@@ -1556,6 +1707,63 @@
                 ]
             }
         },
+        "/security/sessions": {
+            "get": {
+                "tags": [
+                    "Security"
+                ],
+                "summary": "Get active sessions",
+                "description": "Get all active sessions for the authenticated user",
+                "operationId": "getSessions",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SessionResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "scope:extra-terminate-sessions"
+                        ]
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Security"
+                ],
+                "summary": "Delete all sessions",
+                "description": "Delete all active sessions for the authenticated user",
+                "operationId": "deleteAllSessions",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "scope:extra-terminate-sessions"
+                        ]
+                    }
+                ]
+            }
+        },
         "/settings/profile": {
             "get": {
                 "tags": [
@@ -1829,6 +2037,60 @@
                     {
                         "securityScheme": "passport",
                         "type": "oauth2"
+                    }
+                ]
+            }
+        },
+        "/security/social": {
+            "delete": {
+                "tags": [
+                    "Security"
+                ],
+                "summary": "Delete social provider",
+                "description": "Delete a connected social provider from the authenticated user",
+                "operationId": "deleteSocialProvider",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "provider"
+                                ],
+                                "properties": {
+                                    "provider": {
+                                        "description": "The social provider to delete",
+                                        "type": "string",
+                                        "enum": [
+                                            "mastodon"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "406": {
+                        "description": "Not Acceptable"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "write:projects",
+                            "read:projects"
+                        ]
                     }
                 ]
             }
@@ -3550,6 +3812,150 @@
                 ]
             }
         },
+        "/security/tokens": {
+            "get": {
+                "tags": [
+                    "Security"
+                ],
+                "summary": "Get active API tokens",
+                "description": "Get all active API tokens for the authenticated user",
+                "operationId": "getTokens",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TokenResource"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "scope:extra-terminate-sessions"
+                        ]
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Security"
+                ],
+                "summary": "Create API token",
+                "description": "Create a new API token for the authenticated user",
+                "operationId": "createToken",
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
+                                    "properties": {
+                                        "data": {
+                                            "required": [
+                                                "token"
+                                            ],
+                                            "properties": {
+                                                "token": {
+                                                    "description": "The newly created API token",
+                                                    "type": "string",
+                                                    "example": "abc123def456"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "scope:extra-terminate-sessions"
+                        ]
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Security"
+                ],
+                "summary": "Revoke all API tokens",
+                "description": "Revoke all API tokens for the authenticated user",
+                "operationId": "revokeAllTokens",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "scope:extra-terminate-sessions"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/security/tokens/{tokenId}": {
+            "delete": {
+                "tags": [
+                    "Security"
+                ],
+                "summary": "Revoke API token",
+                "description": "Revoke a specific API token for the authenticated user",
+                "operationId": "revokeToken",
+                "parameters": [
+                    {
+                        "name": "tokenId",
+                        "in": "path",
+                        "description": "The ID of the token to revoke",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": [
+                            "scope:extra-terminate-sessions"
+                        ]
+                    }
+                ]
+            }
+        },
         "/station/{id}/departures": {
             "get": {
                 "tags": [
@@ -4944,11 +5350,14 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/Webhook"
+                                                "$ref": "#/components/schemas/WebhookResource"
                                             }
                                         }
                                     },
@@ -4996,9 +5405,12 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "required": [
+                                        "data"
+                                    ],
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/components/schemas/Webhook"
+                                            "$ref": "#/components/schemas/WebhookResource"
                                         }
                                     },
                                     "type": "object"
@@ -6330,6 +6742,47 @@
                 },
                 "type": "object"
             },
+            "IcsEntryResource": {
+                "required": [
+                    "id",
+                    "token",
+                    "name",
+                    "created",
+                    "lastAccessed"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier of the ICS token",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "token": {
+                        "description": "The first 8 characters of the ICS token",
+                        "type": "string",
+                        "example": "abcd1234"
+                    },
+                    "name": {
+                        "description": "The name of the ICS token",
+                        "type": "string",
+                        "example": "My ICS Token"
+                    },
+                    "createdAt": {
+                        "description": "The ISO 8601 timestamp when the ICS token was created",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00Z",
+                        "nullable": true
+                    },
+                    "lastAccessed": {
+                        "description": "The ISO 8601 timestamp when the ICS token was last accessed",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-15T08:30:00Z",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "LeaderboardUserResource": {
                 "title": "LeaderboardUserResource",
                 "required": [
@@ -6508,6 +6961,50 @@
                     "url": {
                         "type": "string",
                         "example": "https://traewelling.de"
+                    }
+                },
+                "type": "object"
+            },
+            "SessionResource": {
+                "required": [
+                    "id",
+                    "ip",
+                    "userAgent",
+                    "platform",
+                    "deviceType",
+                    "lastActivity"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "The session ID",
+                        "type": "string",
+                        "example": "abc123"
+                    },
+                    "ip": {
+                        "description": "The masked IP address of the session",
+                        "type": "string",
+                        "example": "192.168.***.***"
+                    },
+                    "userAgent": {
+                        "description": "The user agent string of the session",
+                        "type": "string",
+                        "example": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+                    },
+                    "platform": {
+                        "description": "The platform of the session",
+                        "type": "string",
+                        "example": "Windows"
+                    },
+                    "deviceType": {
+                        "description": "The type representing the device used in the session",
+                        "type": "string",
+                        "example": "mobile"
+                    },
+                    "lastActivity": {
+                        "description": "The timestamp of the last activity in ISO 8601 format",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-06-01T12:34:56Z"
                     }
                 },
                 "type": "object"
@@ -6847,6 +7344,51 @@
                         "description": "is this stopover cancelled?",
                         "type": "boolean",
                         "example": false
+                    }
+                },
+                "type": "object"
+            },
+            "TokenResource": {
+                "required": [
+                    "id",
+                    "client",
+                    "scopes",
+                    "createdAt",
+                    "expiresAt"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "The token ID",
+                        "type": "string",
+                        "example": "abc123"
+                    },
+                    "client": {
+                        "description": "The name of the client associated with the token",
+                        "type": "string",
+                        "example": "MyApp"
+                    },
+                    "scopes": {
+                        "description": "The scopes associated with the token",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "read",
+                            "write"
+                        ]
+                    },
+                    "createdAt": {
+                        "description": "The timestamp when the token was created in ISO 8601 format",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-06-01T12:34:56Z"
+                    },
+                    "expiresAt": {
+                        "description": "The timestamp when the token expires in ISO 8601 format",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-07-01T12:34:56Z"
                     }
                 },
                 "type": "object"
@@ -7441,45 +7983,66 @@
                 },
                 "type": "object"
             },
-            "Webhook": {
-                "title": "Webhook",
+            "WebhookEventResource": {
+                "title": "WebhookEventResource",
+                "description": "WebhookEvent model",
+                "required": [
+                    "type"
+                ],
+                "properties": {
+                    "type": {
+                        "description": "The type of the event",
+                        "example": "notification"
+                    }
+                },
+                "type": "object"
+            },
+            "WebhookResource": {
+                "title": "WebhookResource",
                 "description": "Webhook model",
+                "required": [
+                    "id",
+                    "clientId",
+                    "client",
+                    "userId",
+                    "url",
+                    "createdAt",
+                    "events"
+                ],
                 "properties": {
                     "id": {
-                        "type": "integer",
-                        "example": 12345
-                    },
-                    "clientId": {
-                        "type": "integer",
+                        "description": "ID",
+                        "format": "int",
                         "example": 12345
                     },
                     "client": {
                         "$ref": "#/components/schemas/ClientResource"
                     },
+                    "clientId": {
+                        "description": "ID of the client which created this webhook",
+                        "format": "int",
+                        "example": 12345
+                    },
                     "userId": {
-                        "type": "integer",
+                        "description": "ID of the user which created this webhook",
+                        "format": "int",
                         "example": 12345
                     },
                     "url": {
-                        "type": "string",
+                        "description": "URL where the webhook gets sent to",
                         "example": "https://example.com/webhook"
                     },
                     "createdAt": {
+                        "description": "The ISO 8601 timestamp when the webhook was created",
                         "type": "string",
-                        "format": "datetime",
-                        "example": "2022-07-17T13:37:00+02:00"
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00Z"
                     },
                     "events": {
-                        "description": "array of events this webhook receives",
+                        "description": "List of events which are triggered for this webhook",
                         "type": "array",
                         "items": {
-                            "properties": {
-                                "type": {
-                                    "type": "string",
-                                    "example": "checkin"
-                                }
-                            },
-                            "type": "object"
+                            "$ref": "#/components/schemas/WebhookEventResource"
                         }
                     }
                 },
@@ -7592,6 +8155,10 @@
             "description": "Statistics related endpoints"
         },
         {
+            "name": "ICS Tokens",
+            "description": "Manage ICS Tokens for calendar export"
+        },
+        {
             "name": "Settings",
             "description": "User/Profile-Settings"
         },
@@ -7602,6 +8169,10 @@
         {
             "name": "Report",
             "description": "Report a Status, Event or User to the admins"
+        },
+        {
+            "name": "Security",
+            "description": "Security"
         }
     ]
 }

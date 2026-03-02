@@ -50,7 +50,7 @@
                         </div>
                     @endif
 
-                    <form method="POST" class="mx-2" action="{{route('ics.createToken')}}">
+                    <form method="POST" class="mx-2" action="{{route('ics.createPersonalAccessToken')}}">
                         @csrf
                         <div class="input-group mt-0">
                             <input type="text" name="name" class="form-control" required

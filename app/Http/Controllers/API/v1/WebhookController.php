@@ -24,11 +24,12 @@ class WebhookController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
+                    required: ['data'],
                     properties: [
                         new OA\Property(
                             property: 'data',
                             type: 'array',
-                            items: new OA\Items(ref: '#/components/schemas/Webhook'),
+                            items: new OA\Items(ref: '#/components/schemas/WebhookResource'),
                         ),
                     ],
                 ),
@@ -69,7 +70,8 @@ class WebhookController extends Controller
                 response: 200,
                 description: 'successful operation',
                 content: new OA\JsonContent(
-                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/Webhook')],
+                    required: ['data'],
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/WebhookResource')],
                 ),
             ),
             new OA\Response(response: 400, description: 'Bad request'),

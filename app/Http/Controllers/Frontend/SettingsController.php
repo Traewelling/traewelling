@@ -31,16 +31,6 @@ class SettingsController extends Controller
         ]);
     }
 
-    public function renderBlockedUsers(): Renderable
-    {
-        return view('settings.blocks');
-    }
-
-    public function renderMutedUsers(): Renderable
-    {
-        return view('settings.mutes');
-    }
-
     public function updatePrivacySettings(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -95,21 +85,6 @@ class SettingsController extends Controller
         ]);
 
         return back()->with('info', __('controller.user.password-changed-ok'));
-    }
-
-    public function renderProfile(): Renderable
-    {
-        return view('settings.profile');
-    }
-
-    public function renderPrivacy(): Renderable
-    {
-        return view('settings.privacy');
-    }
-
-    public function renderLoginProviders(): Renderable
-    {
-        return view('settings.login-providers');
     }
 
     public function renderSessions(): Renderable
