@@ -8,7 +8,6 @@ use App\Models\Webhook;
 use App\Repositories\OAuthClientRepository;
 use App\Rules\AuthorizedWebhookURL;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Enum;
@@ -21,6 +20,7 @@ use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Spatie\ValidationRules\Rules\Delimited;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthorizationController extends PassportAuthorizationController
 {
@@ -36,7 +36,7 @@ class AuthorizationController extends PassportAuthorizationController
         Request $request,
         ResponseInterface $psrResponse,
         AuthorizationViewResponse $viewResponse
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $clients = new OAuthClientRepository();
 
         $authRequest = $this->withErrorHandling(
