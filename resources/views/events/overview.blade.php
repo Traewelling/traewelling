@@ -80,7 +80,7 @@
                         <hr/>
                         <p>{{trans('events.suggest.card_description')}}</p>
                         @auth
-                            <a href="/contribute/events/suggest" class="btn btn-primary">
+                            <a href="/contribute/event-proposal" class="btn btn-primary">
                                 {{trans('events.suggest.card_button')}}
                                 <em class="fas fa-angle-double-right"></em>
                             </a>
