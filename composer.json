@@ -22,13 +22,12 @@
     "ext-simplexml": "*",
     "ext-sodium": "*",
     "barryvdh/laravel-dompdf": "^3.0",
-    "darkaonline/l5-swagger": "^9.0",
+    "darkaonline/l5-swagger": "^10.0",
     "easyrdf/easyrdf": "^1.1",
     "guzzlehttp/guzzle": "^7.1",
     "intervention/image": "^3.5",
-    "jenssegers/agent": "^2.6",
-    "laravel/framework": "^12.0",
-    "laravel/passport": "^12.0",
+"laravel/framework": "^12.0",
+    "laravel/passport": "^13.0",
     "laravel/socialite": "^5.0",
     "laravel/tinker": "^2.0",
     "laravel/ui": "^4.0",
@@ -41,7 +40,7 @@
     "spatie/laravel-permission": "^7.0",
     "spatie/laravel-personal-data-export": "^4.3",
     "spatie/laravel-prometheus": "^1.0",
-    "spatie/laravel-sitemap": "^7.2.1",
+    "spatie/laravel-sitemap": "^8.0",
     "spatie/laravel-validation-rules": "^3.2",
     "spatie/laravel-webhook-server": "^3.4",
     "traewelling/google-polyline": "^0.3.0",
@@ -67,6 +66,7 @@
     "preferred-install": "dist",
     "sort-packages": true,
     "allow-plugins": {
+      "php-http/discovery": true,
       "stephank/composer-plugin-nixify": true
     }
   },
@@ -112,11 +112,6 @@
     "dev": [
       "Composer\\Config::disableProcessTimeout",
       "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"npm run dev\" --names=server,queue,logs,vite"
-    ],
-    "dev:ssr": [
-      "npm run build:ssr",
-      "Composer\\Config::disableProcessTimeout",
-      "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan inertia:start-ssr\" --names=server,queue,logs,ssr"
     ],
     "test": [
       "@php artisan config:clear --ansi",

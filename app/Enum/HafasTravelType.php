@@ -5,17 +5,15 @@ declare(strict_types=1);
 namespace App\Enum;
 
 use App\OpenRailRoutingProfile;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *     title="category",
- *     description="Category of transport. ",
- *     type="string",
- *     enum={"nationalExpress", "national", "regionalExp", "regional", "suburban", "bus", "ferry", "subway",
- *     "tram", "taxi", "plane"},
- *     example="suburban"
- * )
- */
+#[OA\Schema(
+    title: 'category',
+    description: 'Category of transport.',
+    type: 'string',
+    example: 'suburban',
+    enum: ['nationalExpress', 'national', 'regionalExp', 'regional', 'suburban', 'bus', 'ferry', 'subway', 'tram', 'taxi', 'plane'],
+)]
 enum HafasTravelType: string
 {
     case NATIONAL_EXPRESS = 'nationalExpress';

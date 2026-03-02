@@ -5,39 +5,90 @@ namespace App\Http\Resources;
 use App\Http\Controllers\Backend\User\ProfilePictureController;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *      title="UserProfileSettings",
- *      required={"username", "displayName", "profilePicture", "privateProfile", "preventIndex", "defaultStatusVisibility",
- *      "privacyHideDays", "password", "email", "emailVerified", "profilePictureSet", "likesEnabled", "pointsEnabled",
- *      "profileLinks", "mapProvider", "timezone", "experimental", "friendCheckin", "mastodon", "mastodonVisibility",
- *      "bio"},
- *
- *      @OA\Property(property="username",                   type="string",  example="Gertrud123"),
- *      @OA\Property(property="displayName",                type="string",  example="Gertrud"),
- *      @OA\Property(property="profilePicture",             type="string",  example="https://traewelling.de/@Gertrud123/picture"),
- *      @OA\Property(property="privateProfile",             type="boolean", example=false),
- *      @OA\Property(property="preventIndex",               type="boolean", example=false, description="Did the user choose to prevent search engines from indexing their profile?"),
- *      @OA\Property(property="defaultStatusVisibility",    ref="#/components/schemas/StatusVisibility"),
- *      @OA\Property(property="privacyHideDays",            type="integer", example=1,  description="Number of days to hide the user's location history"),
- *      @OA\Property(property="password",                   type="boolean", example=true),
- *      @OA\Property(property="email",                      type="string",  example="gertrud@traewelling.de"),
- *      @OA\Property(property="emailVerified",              type="boolean", example=true),
- *      @OA\Property(property="profilePictureSet",          type="boolean", example=true),
- *      @OA\Property(property="mastodon",                   type="string",  example="https://mastodon.social/@Gertrud123"),
- *      @OA\Property(property="mastodonVisibility",         ref="#/components/schemas/MastodonVisibility"),
- *      @OA\Property(property="friendCheckin",              ref="#/components/schemas/FriendCheckinSetting"),
- *      @OA\Property(property="likesEnabled",               type="boolean", example=true),
- *      @OA\Property(property="pointsEnabled",              type="boolean", example=true),
- *      @OA\Property(property="mapProvider",                ref="#/components/schemas/MapProvider"),
- *      @OA\Property(property="timezone",                   type="string",  example="Europe/Berlin"),
- *      @OA\Property(property="bio",                        type="string",  example="Hi there! I am Gertrud!"),
- *      @OA\Property(property="profileLinks",               type="array",  @OA\Items(ref="#/components/schemas/ProfileLinkResource")),
- *      @OA\Property(property="experimental",               type="boolean", example=false, description="Experimental features enabled"),
- * )
- */
+#[OA\Schema(
+    title: 'UserProfileSettings',
+    required: [
+        'username',
+        'displayName',
+        'profilePicture',
+        'privateProfile',
+        'preventIndex',
+        'defaultStatusVisibility',
+        'privacyHideDays',
+        'password',
+        'email',
+        'emailVerified',
+        'profilePictureSet',
+        'likesEnabled',
+        'pointsEnabled',
+        'profileLinks',
+        'mapProvider',
+        'timezone',
+        'experimental',
+        'friendCheckin',
+        'mastodon',
+        'mastodonVisibility',
+        'bio',
+    ],
+    properties: [
+        new OA\Property(property: 'username', type: 'string', example: 'Gertrud123'),
+        new OA\Property(property: 'displayName', type: 'string', example: 'Gertrud'),
+        new OA\Property(
+            property: 'profilePicture',
+            type: 'string',
+            example: 'https://traewelling.de/@Gertrud123/picture',
+        ),
+        new OA\Property(property: 'privateProfile', type: 'boolean', example: false),
+        new OA\Property(
+            property: 'preventIndex',
+            description: 'Did the user choose to prevent search engines from indexing their profile?',
+            type: 'boolean',
+            example: false,
+        ),
+        new OA\Property(
+            property: 'defaultStatusVisibility',
+            ref: '#/components/schemas/StatusVisibility',
+        ),
+        new OA\Property(
+            property: 'privacyHideDays',
+            description: 'Number of days to hide the user\'s location history',
+            type: 'integer',
+            example: 1,
+        ),
+        new OA\Property(property: 'password', type: 'boolean', example: true),
+        new OA\Property(property: 'email', type: 'string', example: 'gertrud@traewelling.de'),
+        new OA\Property(property: 'emailVerified', type: 'boolean', example: true),
+        new OA\Property(property: 'profilePictureSet', type: 'boolean', example: true),
+        new OA\Property(
+            property: 'mastodon',
+            type: 'string',
+            example: 'https://mastodon.social/@Gertrud123',
+        ),
+        new OA\Property(
+            property: 'mastodonVisibility',
+            ref: '#/components/schemas/MastodonVisibility',
+        ),
+        new OA\Property(property: 'friendCheckin', ref: '#/components/schemas/FriendCheckinSetting'),
+        new OA\Property(property: 'likesEnabled', type: 'boolean', example: true),
+        new OA\Property(property: 'pointsEnabled', type: 'boolean', example: true),
+        new OA\Property(property: 'mapProvider', ref: '#/components/schemas/MapProvider'),
+        new OA\Property(property: 'timezone', type: 'string', example: 'Europe/Berlin'),
+        new OA\Property(property: 'bio', type: 'string', example: 'Hi there! I am Gertrud!'),
+        new OA\Property(
+            property: 'profileLinks',
+            type: 'array',
+            items: new OA\Items(ref: '#/components/schemas/ProfileLinkResource'),
+        ),
+        new OA\Property(
+            property: 'experimental',
+            description: 'Experimental features enabled',
+            type: 'boolean',
+            example: false,
+        ),
+    ],
+)]
 class UserProfileSettingsResource extends JsonResource
 {
     public function toArray($request): array

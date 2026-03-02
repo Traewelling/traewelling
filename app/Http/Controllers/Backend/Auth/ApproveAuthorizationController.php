@@ -4,15 +4,17 @@ namespace App\Http\Controllers\Backend\Auth;
 
 use App\Http\Controllers\Backend\WebhookController;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Http\Controllers\ApproveAuthorizationController as PassportApproveAuthorizationController;
+use Psr\Http\Message\ResponseInterface;
 
 class ApproveAuthorizationController extends PassportApproveAuthorizationController
 {
-    public function approve(Request $request)
+    public function approve(Request $request, ResponseInterface $psrResponse): Response
     {
         $webhook = $request->session()->get('webhook');
-        $response = parent::approve($request);
+        $response = parent::approve($request, $psrResponse);
         if ($webhook) {
             parse_str(parse_url($response->headers->get('Location'))['query'], $query);
             $code = $query['code'];

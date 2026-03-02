@@ -4,33 +4,32 @@ namespace App\Http\Resources;
 
 use App\Dto\Internal\GlobalCheckinStats;
 use Illuminate\Http\Resources\Json\JsonResource;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *     title="StatisticsGlobalData",
- *     required={"distance", "duration", "activeUsers"},
- *
- *     @OA\Property(
- *                      property="distance",
- *                      description="Globally travelled distance in meters",
- *                      type="integer",
- *                      example=1000
- *                  ),
- *                  @OA\Property(
- *                      property="duration",
- *                      description="Globally travelled duration in minutes",
- *                      type="integer",
- *                      example=1000
- *                  ),
- *                  @OA\Property(
- *                      property="activeUsers",
- *                      description="Number of active users",
- *                      type="integer",
- *                      example=1000
- *                 ),
- * )
- */
+#[OA\Schema(
+    title: 'StatisticsGlobalData',
+    required: ['distance', 'duration', 'activeUsers'],
+    properties: [
+        new OA\Property(
+            property: 'distance',
+            description: 'Globally travelled distance in meters',
+            type: 'integer',
+            example: 1000,
+        ),
+        new OA\Property(
+            property: 'duration',
+            description: 'Globally travelled duration in minutes',
+            type: 'integer',
+            example: 1000,
+        ),
+        new OA\Property(
+            property: 'activeUsers',
+            description: 'Number of active users',
+            type: 'integer',
+            example: 1000,
+        ),
+    ],
+)]
 class StatisticsGlobalData extends JsonResource
 {
     public function toArray($request): array

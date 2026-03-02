@@ -12,36 +12,49 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use OpenApi\Attributes as OA;
 use stdClass;
 
 class TrustedUserController extends Controller
 {
     /**
-     * @OA\Get(
-     *     path="/user/{user}/trusted",
-     *     operationId="trustedUserIndex",
-     *     summary="Get all trusted users for a user",
-     *     description="Get all trusted users for the current user or a specific user (admin only).",
-     *     tags={"User"},
-     *
-     *     @OA\Parameter(name="user", in="path", required=true, description="ID of the user (or string 'self' for current user)", @OA\Schema(type="string")),
-     *
-     *     @OA\Response(response="200", description="List of trusted users",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/TrustedUserResource")),
-     *          )
-     *     ),
-     *
-     *     @OA\Response(response="401", description="Unauthorized"),
-     *     @OA\Response(response="403", description="Forbidden"),
-     *     @OA\Response(response="404", description="User not found"),
-     *     @OA\Response(response="500", description="Internal Server Error"),
-     * )
-     *
      * @throws AuthorizationException
      */
+    #[OA\Get(
+        path: '/user/{user}/trusted',
+        operationId: 'trustedUserIndex',
+        description: 'Get all trusted users for the current user or a specific user (admin only).',
+        summary: 'Get all trusted users for a user',
+        tags: ['User'],
+        parameters: [
+            new OA\Parameter(
+                name: 'user',
+                description: 'ID of the user (or string \'self\' for current user)',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: '200',
+                description: 'List of trusted users',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/TrustedUserResource'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: '401', description: 'Unauthorized'),
+            new OA\Response(response: '403', description: 'Forbidden'),
+            new OA\Response(response: '404', description: 'User not found'),
+            new OA\Response(response: '500', description: 'Internal Server Error'),
+        ],
+    )]
     public function index(string|int $userIdOrSelf): AnonymousResourceCollection
     {
         $user = $this->getUserOrSelf($userIdOrSelf);
@@ -51,26 +64,31 @@ class TrustedUserController extends Controller
     }
 
     /**
-     * @OA\Get(
-     *     path="/user/self/trusted-by",
-     *     operationId="trustedByUserIndex",
-     *     summary="Get all users who trust the current user",
-     *     tags={"User"},
-     *
-     *     @OA\Response(response="200", description="List of users who trust the current user",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/TrustedUserResource")),
-     *          )
-     *     ),
-     *
-     *     @OA\Response(response="401", description="Unauthorized"),
-     *     @OA\Response(response="500", description="Internal Server Error"),
-     * )
-     *
      * @throws AuthorizationException
      */
+    #[OA\Get(
+        path: '/user/self/trusted-by',
+        operationId: 'trustedByUserIndex',
+        summary: 'Get all users who trust the current user',
+        tags: ['User'],
+        responses: [
+            new OA\Response(
+                response: '200',
+                description: 'List of users who trust the current user',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/TrustedUserResource'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: '401', description: 'Unauthorized'),
+            new OA\Response(response: '500', description: 'Internal Server Error'),
+        ],
+    )]
     public function indexTrustedBy(): AnonymousResourceCollection
     {
         $user = auth()->user();
@@ -96,36 +114,48 @@ class TrustedUserController extends Controller
     }
 
     /**
-     * @OA\Post(
-     *     path="/user/{user}/trusted",
-     *     operationId="trustedUserStore",
-     *     summary="Add a user to the trusted users for a user",
-     *     description="Add a user to the trusted users for the current user or a specific user (admin only).",
-     *     tags={"User"},
-     *
-     *     @OA\Parameter(name="user", in="path", required=true, description="ID of the user (or string 'self' for current user) who want's to trust.", @OA\Schema(type="string")),
-     *
-     *     @OA\RequestBody(
-     *          required=true,
-     *
-     *          @OA\JsonContent(
-     *              required={"user_id"},
-     *
-     *              @OA\Property(property="userId", type="integer", example="1"),
-     *              @OA\Property(property="expiresAt", type="string", format="date-time", example="2024-07-28T00:00:00Z", nullable=true),
-     *          )
-     *     ),
-     *
-     *     @OA\Response(response="201", description="User added to trusted users"),
-     *     @OA\Response(response="400", description="Bad Request"),
-     *     @OA\Response(response="401", description="Unauthorized"),
-     *     @OA\Response(response="403", description="Forbidden"),
-     *     @OA\Response(response="404", description="User not found"),
-     *     @OA\Response(response="500", description="Internal Server Error"),
-     * )
-     *
      * @throws AuthorizationException
      */
+    #[OA\Post(
+        path: '/user/{user}/trusted',
+        operationId: 'trustedUserStore',
+        description: 'Add a user to the trusted users for the current user or a specific user (admin only).',
+        summary: 'Add a user to the trusted users for a user',
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['user_id'],
+                properties: [
+                    new OA\Property(property: 'userId', type: 'integer', example: '1'),
+                    new OA\Property(
+                        property: 'expiresAt',
+                        type: 'string',
+                        format: 'date-time',
+                        example: '2024-07-28T00:00:00Z',
+                        nullable: true,
+                    ),
+                ],
+            ),
+        ),
+        tags: ['User'],
+        parameters: [
+            new OA\Parameter(
+                name: 'user',
+                description: 'ID of the user (or string \'self\' for current user) who want\'s to trust.',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string'),
+            ),
+        ],
+        responses: [
+            new OA\Response(response: '201', description: 'User added to trusted users'),
+            new OA\Response(response: '400', description: 'Bad Request'),
+            new OA\Response(response: '401', description: 'Unauthorized'),
+            new OA\Response(response: '403', description: 'Forbidden'),
+            new OA\Response(response: '404', description: 'User not found'),
+            new OA\Response(response: '500', description: 'Internal Server Error'),
+        ],
+    )]
     public function store(Request $request, string|int $userIdOrSelf): Response
     {
         $user = $this->getUserOrSelf($userIdOrSelf);
@@ -149,25 +179,38 @@ class TrustedUserController extends Controller
     }
 
     /**
-     * @OA\Delete(
-     *     path="/user/{user}/trusted/{trusted}",
-     *     operationId="trustedUserDestroy",
-     *     summary="Remove a user from the trusted users for a user",
-     *     description="Remove a user from the trusted users for the current user or a specific user (admin only).",
-     *     tags={"User"},
-     *
-     *     @OA\Parameter(name="user", in="path", required=true, description="ID of the user (or string 'self' for current user)", @OA\Schema(type="string")),
-     *     @OA\Parameter(name="trusted", in="path", required=true, description="ID of the trusted user", @OA\Schema(type="integer")),
-     *
-     *     @OA\Response(response="204", description="User removed from trusted users"),
-     *     @OA\Response(response="401", description="Unauthorized"),
-     *     @OA\Response(response="403", description="Forbidden"),
-     *     @OA\Response(response="404", description="User not found"),
-     *     @OA\Response(response="500", description="Internal Server Error"),
-     * )
-     *
      * @throws AuthorizationException
      */
+    #[OA\Delete(
+        path: '/user/{user}/trusted/{trusted}',
+        operationId: 'trustedUserDestroy',
+        description: 'Remove a user from the trusted users for the current user or a specific user (admin only).',
+        summary: 'Remove a user from the trusted users for a user',
+        tags: ['User'],
+        parameters: [
+            new OA\Parameter(
+                name: 'user',
+                description: 'ID of the user (or string \'self\' for current user)',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string'),
+            ),
+            new OA\Parameter(
+                name: 'trusted',
+                description: 'ID of the trusted user',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'integer'),
+            ),
+        ],
+        responses: [
+            new OA\Response(response: '204', description: 'User removed from trusted users'),
+            new OA\Response(response: '401', description: 'Unauthorized'),
+            new OA\Response(response: '403', description: 'Forbidden'),
+            new OA\Response(response: '404', description: 'User not found'),
+            new OA\Response(response: '500', description: 'Internal Server Error'),
+        ],
+    )]
     public function destroy(string|int $userIdOrSelf, int $trusted): Response
     {
         $user = $this->getUserOrSelf($userIdOrSelf);

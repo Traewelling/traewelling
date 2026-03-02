@@ -30,303 +30,298 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: 'StatusUpdateBody',
+    title: 'StatusUpdateBody',
+    description: 'Status Update Body',
+    properties: [
+        new OA\Property(property: 'body', description: 'Status-Text to be displayed alongside the checkin', type: 'string', example: 'Wow. This train is extremely crowded!', nullable: true, maxLength: 280),
+        new OA\Property(property: 'business', ref: '#/components/schemas/Business'),
+        new OA\Property(property: 'visibility', ref: '#/components/schemas/StatusVisibility'),
+        new OA\Property(property: 'eventId', description: 'The ID of the event this status is related to - or null', type: 'string', example: '1', nullable: true),
+        new OA\Property(property: 'manualDeparture', description: 'Manual departure time set by the user', type: 'string', format: 'date', example: '2020-01-01 12:00:00', nullable: true),
+        new OA\Property(property: 'manualArrival', description: 'Manual arrival time set by the user', type: 'string', format: 'date', example: '2020-01-01 13:00:00', nullable: true),
+        new OA\Property(property: 'destinationId', description: 'Destination station id', type: 'string', example: '1', nullable: true),
+        new OA\Property(property: 'destinationArrivalPlanned', description: 'Destination arrival time', type: 'string', format: 'date', example: '2020-01-01 13:00:00', nullable: true),
+    ],
+)]
+#[OA\Schema(
+    schema: 'Polyline',
+    title: 'Polyline',
+    description: 'Polyline of a single status as GeoJSON Feature',
+    properties: [
+        new OA\Property(property: 'type', type: 'string', example: 'Feature'),
+        new OA\Property(
+            property: 'geometry',
+            properties: [
+                new OA\Property(property: 'type', type: 'string', example: 'LineString'),
+                new OA\Property(property: 'coordinates', type: 'array', items: new OA\Items(example: '[[8.39767,49.01625],[8.45947,49.06576]]')),
+            ],
+            type: 'object',
+        ),
+        new OA\Property(
+            property: 'properties',
+            properties: [
+                new OA\Property(property: 'statusId', type: 'integer', example: 1337),
+            ],
+            type: 'object',
+        ),
+    ],
+)]
 class StatusController extends Controller
 {
-    /**
-     * @OA\Get(
-     *      path="/dashboard",
-     *      operationId="getDashboard",
-     *      tags={"Dashboard"},
-     *      summary="Get paginated statuses of personal dashboard",
-     *      description="Returns paginated statuses of personal dashboard",
-     *
-     *      @OA\Parameter (
-     *          name="page",
-     *          description="Page of pagination",
-     *          required=false,
-     *          in="query",
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/StatusResource"
-     *                  )
-     *              ),
-     *
-     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
-     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=401, description="Not logged in"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/dashboard',
+        operationId: 'getDashboard',
+        description: 'Returns paginated statuses of personal dashboard',
+        summary: 'Get paginated statuses of personal dashboard',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Dashboard'],
+        parameters: [
+            new OA\Parameter(
+                name: 'page',
+                description: 'Page of pagination',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/StatusResource'),
+                        ),
+                        new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
+                        new OA\Property(
+                            property: 'meta',
+                            ref: '#/components/schemas/PaginationMeta',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 401, description: 'Not logged in'),
+        ],
+    )]
     public static function getDashboard(): AnonymousResourceCollection
     {
         return StatusResource::collection(DashboardController::getPrivateDashboard(Auth::user()));
     }
 
-    /**
-     * @OA\Get(
-     *      path="/dashboard/future",
-     *      operationId="getFutureDashboard",
-     *      tags={"Dashboard"},
-     *      summary="Get paginated future statuses of current user",
-     *      description="Returns paginated statuses of the authenticated user, that are more than 20 minutes in the
-     *      future",
-     *
-     *      @OA\Parameter (
-     *          name="page",
-     *          description="Page of pagination",
-     *          required=false,
-     *          in="query",
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/StatusResource"
-     *                  )
-     *              ),
-     *
-     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
-     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=401, description="Not logged in"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/dashboard/future',
+        operationId: 'getFutureDashboard',
+        description: 'Returns paginated statuses of the authenticated user, that are more than 20 minutes in the future',
+        summary: 'Get paginated future statuses of current user',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Dashboard'],
+        parameters: [
+            new OA\Parameter(
+                name: 'page',
+                description: 'Page of pagination',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/StatusResource'),
+                        ),
+                        new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
+                        new OA\Property(
+                            property: 'meta',
+                            ref: '#/components/schemas/PaginationMeta',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 401, description: 'Not logged in'),
+        ],
+    )]
     public static function getFutureCheckins(): AnonymousResourceCollection
     {
         return StatusResource::collection(StatusBackend::getFutureCheckins());
     }
 
-    /**
-     * @OA\Get(
-     *      path="/statuses",
-     *      operationId="getActiveStatuses",
-     *      tags={"Status"},
-     *      summary="[Auth optional] Get active statuses",
-     *      description="Returns all currently active statuses that are visible to the (un)authenticated user",
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/StatusResource"
-     *                  )
-     *              ),
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/statuses',
+        operationId: 'getActiveStatuses',
+        description: 'Returns all currently active statuses that are visible to the (un)authenticated user',
+        summary: '[Auth optional] Get active statuses',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Status'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/StatusResource'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+        ],
+    )]
     public function enRoute(): AnonymousResourceCollection
     {
         return StatusResource::collection(StatusBackend::getActiveStatuses());
     }
 
-    /**
-     * @OA\Get(
-     *     path="/positions",
-     *     operationId="getLivePositionsForActiveStatuses",
-     *     tags={"Status"},
-     *     summary="[Auth optional] get live positions for active statuses",
-     *     description="Returns an array of live position objects for active statuses",
-     *
-     *     @OA\Response(
-     *         response="200",
-     *         description="successful operation",
-     *
-     *         @OA\JsonContent(
-     *
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="array",
-     *
-     *                 @OA\Items(
-     *                     ref="#/components/schemas/LivePointDto"
-     *                 )
-     *             )
-     *         )
-     *     ),
-     *
-     *     @OA\Response(response=403, description="User not authorized to access this status"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     * )
-     */
+    #[OA\Get(
+        path: '/positions',
+        operationId: 'getLivePositionsForActiveStatuses',
+        description: 'Returns an array of live position objects for active statuses',
+        summary: '[Auth optional] get live positions for active statuses',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Status'],
+        responses: [
+            new OA\Response(
+                response: '200',
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/LivePointDto'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 403, description: 'User not authorized to access this status'),
+        ],
+    )]
     public function livePositions(): JsonResource
     {
         return JsonResource::collection(StatusBackend::getLivePositions());
     }
 
-    /**
-     * @OA\Get(
-     *     path="/positions/{ids}",
-     *     operationId="getLivePositionsForStatuses",
-     *     tags={"Status"},
-     *     summary="[Auth optional] get live positions for given statuses",
-     *     description="Returns an array of live position objects for given status IDs",
-     *
-     *     @OA\Parameter(
-     *         name="ids",
-     *         in="path",
-     *         description="Status-IDs separated by comma",
-     *         example="1337,1338",
-     *
-     *         @OA\Schema(type="string")
-     *     ),
-     *
-     *     @OA\Response(
-     *         response="200",
-     *         description="successful operation",
-     *
-     *         @OA\JsonContent(
-     *
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="array",
-     *
-     *                 @OA\Items(
-     *                     ref="#/components/schemas/LivePointDto"
-     *                 )
-     *             )
-     *         )
-     *     ),
-     *
-     *     @OA\Response(response=403, description="User not authorized to access this status"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     * )
-     */
+    #[OA\Get(
+        path: '/positions/{ids}',
+        operationId: 'getLivePositionsForStatuses',
+        description: 'Returns an array of live position objects for given status IDs',
+        summary: '[Auth optional] get live positions for given statuses',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Status'],
+        parameters: [
+            new OA\Parameter(
+                name: 'ids',
+                description: 'Status-IDs separated by comma',
+                in: 'path',
+                schema: new OA\Schema(type: 'string'),
+                example: '1337,1338',
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: '200',
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/LivePointDto'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 403, description: 'User not authorized to access this status'),
+        ],
+    )]
     public function getLivePositionForStatus($ids): AnonymousResourceCollection
     {
         return JsonResource::collection(StatusBackend::getLivePositionForStatus($ids));
     }
 
-    /**
-     * @OA\Get(
-     *      path="/status",
-     *      operationId="listStatuses",
-     *      tags={"Status"},
-     *      summary="[Auth optional] List and filter statuses",
-     *      description="Returns paginated list of statuses, filtered by given parameters",
-     *
-     *      @OA\Parameter(
-     *          name="body",
-     *          in="query",
-     *          description="Filter by text in status body",
-     *          example="Having a great trip!",
-     *
-     *          @OA\Schema(type="string")
-     *      ),
-     *
-     *      @OA\Parameter(
-     *          name="user_id",
-     *          in="query",
-     *          description="Filter by user ID",
-     *          example=42,
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Parameter(
-     *          name="origin_text",
-     *          in="query",
-     *          description="Filter by origin station name",
-     *          example="Central Station",
-     *
-     *          @OA\Schema(type="string")
-     *      ),
-     *
-     *      @OA\Parameter(
-     *          name="origin_id",
-     *          in="query",
-     *          description="Filter by origin station ID",
-     *          example=5,
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Parameter(
-     *          name="destination_text",
-     *          in="query",
-     *          description="Filter by destination station name",
-     *          example="Main Square",
-     *
-     *          @OA\Schema(type="string")
-     *      ),
-     *
-     *      @OA\Parameter(
-     *          name="destination_id",
-     *          in="query",
-     *          description="Filter by destination station ID",
-     *          example=10,
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *     @OA\Response(
-     *          response=200,
-     *          description="list of matching statuses",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(
-     *                  property="data",
-     *                  type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/StatusResource"
-     *                  )
-     *              )
-     *          )
-     *     )
-     *  )
-     */
+    #[OA\Get(
+        path: '/status',
+        operationId: 'listStatuses',
+        description: 'Returns paginated list of statuses, filtered by given parameters',
+        summary: '[Auth optional] List and filter statuses',
+        tags: ['Status'],
+        parameters: [
+            new OA\Parameter(
+                name: 'body',
+                description: 'Filter by text in status body',
+                in: 'query',
+                schema: new OA\Schema(type: 'string'),
+                example: 'Having a great trip!',
+            ),
+            new OA\Parameter(
+                name: 'user_id',
+                description: 'Filter by user ID',
+                in: 'query',
+                schema: new OA\Schema(type: 'integer'),
+                example: 42,
+            ),
+            new OA\Parameter(
+                name: 'origin_text',
+                description: 'Filter by origin station name',
+                in: 'query',
+                schema: new OA\Schema(type: 'string'),
+                example: 'Central Station',
+            ),
+            new OA\Parameter(
+                name: 'origin_id',
+                description: 'Filter by origin station ID',
+                in: 'query',
+                schema: new OA\Schema(type: 'integer'),
+                example: 5,
+            ),
+            new OA\Parameter(
+                name: 'destination_text',
+                description: 'Filter by destination station name',
+                in: 'query',
+                schema: new OA\Schema(type: 'string'),
+                example: 'Main Square',
+            ),
+            new OA\Parameter(
+                name: 'destination_id',
+                description: 'Filter by destination station ID',
+                in: 'query',
+                schema: new OA\Schema(type: 'integer'),
+                example: 10,
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'list of matching statuses',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/StatusResource'),
+                        ),
+                    ],
+                ),
+            ),
+        ],
+    )]
     public function list(Request $request): AnonymousResourceCollection
     {
         $validated = $request->validate([
@@ -379,46 +374,35 @@ class StatusController extends Controller
         return StatusResource::collection($query->cursorPaginate(20));
     }
 
-    /**
-     * @OA\Get(
-     *      path="/status/{id}",
-     *      operationId="getSingleStatus",
-     *      tags={"Status"},
-     *      summary="[Auth optional] Get single statuses",
-     *      description="Returns a single status Object, if user is authorized to see it",
-     *
-     *      @OA\Parameter (
-     *          name="id",
-     *          in="path",
-     *          description="Status-ID",
-     *          example=1337,
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data",
-     *                      ref="#/components/schemas/StatusResource"
-     *              ),
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No status found for this id"),
-     *       @OA\Response(response=403, description="User not authorized to access this status"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     *
-     * Show single status
-     */
+    #[OA\Get(
+        path: '/status/{id}',
+        operationId: 'getSingleStatus',
+        description: 'Returns a single status Object, if user is authorized to see it',
+        summary: '[Auth optional] Get single statuses',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Status'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'Status-ID',
+                in: 'path',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1337,
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/StatusResource')],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 404, description: 'No status found for this id'),
+            new OA\Response(response: 403, description: 'User not authorized to access this status'),
+        ],
+    )]
     public function show(int $id): StatusResource|JsonResponse
     {
         $status = StatusBackend::getStatus($id);
@@ -431,32 +415,32 @@ class StatusController extends Controller
         return new StatusResource($status);
     }
 
-    /**
-     * @OA\Delete(
-     *      path="/status/{id}",
-     *      operationId="destroySingleStatus",
-     *      tags={"Status"},
-     *      summary="Destroy a status",
-     *      description="Deletes a single status Object, if user is authorized to",
-     *
-     *      @OA\Parameter (
-     *          name="id",
-     *          in="path",
-     *          description="Status-ID",
-     *          example=1337,
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(response=204, description="Status deleted."),
-     *      @OA\Response(response=400, description="Bad request"),
-     *      @OA\Response(response=404, description="No status found for this id"),
-     *      @OA\Response(response=403, description="User not authorized to manipulate this status"),
-     *      security={
-     *          {"passport": {"write-statuses"}}, {"token": {}}
-     *      }
-     * )
-     */
+    #[OA\Delete(
+        path: '/status/{id}',
+        operationId: 'destroySingleStatus',
+        description: 'Deletes a single status Object, if user is authorized to',
+        summary: 'Destroy a status',
+        security: [['passport' => ['write-statuses']], ['token' => []]],
+        tags: ['Status'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'Status-ID',
+                in: 'path',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1337,
+            ),
+        ],
+        responses: [
+            new OA\Response(response: 204, description: 'Status deleted.'),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 404, description: 'No status found for this id'),
+            new OA\Response(
+                response: 403,
+                description: 'User not authorized to manipulate this status',
+            ),
+        ],
+    )]
     public function destroy(int $statusId): JsonResponse
     {
         try {
@@ -471,52 +455,44 @@ class StatusController extends Controller
     }
 
     /**
-     * @OA\Put(
-     *      path="/status/{id}",
-     *      operationId="updateSingleStatus",
-     *      tags={"Status"},
-     *      summary="Update a status",
-     *      description="Updates a single status Object, if user is authorized to",
-     *
-     *      @OA\Parameter (
-     *          name="id",
-     *          in="path",
-     *          description="Status-ID",
-     *          example=1337,
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\RequestBody(
-     *          required=true,
-     *
-     *          @OA\JsonContent(ref="#/components/schemas/StatusUpdateBody")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(
-     *                  property="data",
-     *                  ref="#/components/schemas/StatusResource"
-     *              )
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No status found for this id"),
-     *       @OA\Response(response=403, description="User not authorized to manipulate this status"),
-     *       security={
-     *           {"passport": {"write-statuses"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     *
      * @throws ValidationException
      */
+    #[OA\Put(
+        path: '/status/{id}',
+        operationId: 'updateSingleStatus',
+        description: 'Updates a single status Object, if user is authorized to',
+        summary: 'Update a status',
+        security: [['passport' => ['write-statuses']], ['token' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/StatusUpdateBody'),
+        ),
+        tags: ['Status'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'Status-ID',
+                in: 'path',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1337,
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/StatusResource')],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 404, description: 'No status found for this id'),
+            new OA\Response(
+                response: 403,
+                description: 'User not authorized to manipulate this status',
+            ),
+        ],
+    )]
     public function update(Request $request, int $statusId): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -641,58 +617,51 @@ class StatusController extends Controller
     }
 
     /**
-     * @OA\Get(
-     *      path="/polyline/{ids}",
-     *      operationId="getPolylines",
-     *      tags={"Status"},
-     *      summary="[Auth optional] Get GeoJSON for statuses",
-     *      description="Returns GeoJSON for all requested status IDs",
-     *
-     *      @OA\Parameter (
-     *          name="ids",
-     *          in="path",
-     *          description="comma seperated status IDs",
-     *          example="1337,1338",
-     *
-     *          @OA\Schema(type="string")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property (
-     *                  property="data",
-     *                  type="object",
-     *                  @OA\Property(
-     *                      property="type",
-     *                      example="FeatureCollection"
-     *                  ),
-     *                  @OA\Property (
-     *                      property="features", type="array",
-     *
-     *                      @OA\Items (
-     *                          ref="#/components/schemas/Polyline"
-     *                      ),
-     *                  ),
-     *              )
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No status found for this id"),
-     *       @OA\Response(response=403, description="User not authorized to access this status"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     *
      * @todo extract this to backend
      * @todo does this conform to the private checkin-shit?
      */
+    #[OA\Get(
+        path: '/polyline/{ids}',
+        operationId: 'getPolylines',
+        description: 'Returns GeoJSON for all requested status IDs',
+        summary: '[Auth optional] Get GeoJSON for statuses',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Status'],
+        parameters: [
+            new OA\Parameter(
+                name: 'ids',
+                description: 'comma seperated status IDs',
+                in: 'path',
+                schema: new OA\Schema(type: 'string'),
+                example: '1337,1338',
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            properties: [
+                                new OA\Property(property: 'type', example: 'FeatureCollection'),
+                                new OA\Property(
+                                    property: 'features',
+                                    type: 'array',
+                                    items: new OA\Items(ref: '#/components/schemas/Polyline'),
+                                ),
+                            ],
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 404, description: 'No status found for this id'),
+            new OA\Response(response: 403, description: 'User not authorized to access this status'),
+        ],
+    )]
     public function getPolyline(string $parameters): JsonResource
     {
         $ids = explode(',', $parameters, 50);
@@ -720,48 +689,48 @@ class StatusController extends Controller
         return $ids ? new JsonResource($geoJson) : $this->sendError('');
     }
 
-    /**
-     ** @OA\Get(
-     *      path="/stopovers/{ids}",
-     *      operationId="getStopOvers",
-     *      tags={"Status"},
-     *      summary="[Auth optional] Get stopovers for statuses",
-     *      description="Returns all underway-stops for stations",
-     *
-     *      @OA\Parameter (
-     *          name="ids",
-     *          in="path",
-     *          description="comma seperated trip IDs",
-     *          example="1,2",
-     *
-     *          @OA\Schema(type="string")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property (
-     *                  property="data", type="object",
-     *                  @OA\Property(
-     *                      property="1", type="array", description="Array of stopovers. Key describes trip id",
-     *
-     *                      @OA\Items(ref="#/components/schemas/StopoverResource")
-     *                  )
-     *              )
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No status found for this id"),
-     *       @OA\Response(response=403, description="User not authorized to access this status"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/stopovers/{ids}',
+        operationId: 'getStopOvers',
+        description: 'Returns all underway-stops for stations',
+        summary: '[Auth optional] Get stopovers for statuses',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Status'],
+        parameters: [
+            new OA\Parameter(
+                name: 'ids',
+                description: 'comma seperated trip IDs',
+                in: 'path',
+                schema: new OA\Schema(type: 'string'),
+                example: '1,2',
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            properties: [
+                                new OA\Property(
+                                    property: '1',
+                                    description: 'Array of stopovers. Key describes trip id',
+                                    type: 'array',
+                                    items: new OA\Items(ref: '#/components/schemas/StopoverResource'),
+                                ),
+                            ],
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 404, description: 'No status found for this id'),
+            new OA\Response(response: 403, description: 'User not authorized to access this status'),
+        ],
+    )]
     public function getStopovers(string $parameters): JsonResponse
     {
         $tripIds = explode(',', $parameters, 50);
@@ -772,33 +741,31 @@ class StatusController extends Controller
         return $this->sendResponse($trips);
     }
 
-    /**
-     * @OA\Get(
-     *      path="/user/statuses/active",
-     *      operationId="userState",
-     *      tags={"Auth"},
-     *      summary="User state",
-     *      description="This request returns whether the currently logged-in user has an active check-in or not.",
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="object",
-     *                      ref="#/components/schemas/StatusResource"
-     *              )
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=401, description="Unauthorized"),
-     *       @OA\Response(response=204, description="No active checkin"),
-     *       security={
-     *          {"passport": {"read-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/user/statuses/active',
+        operationId: 'userState',
+        description: 'This request returns whether the currently logged-in user has an active check-in or not.',
+        summary: 'User state',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['Auth'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            ref: '#/components/schemas/StatusResource',
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 204, description: 'No active checkin'),
+        ],
+    )]
     public function getActiveStatus(): StatusResource|JsonResponse
     {
         $latestStatuses = UserBackend::statusesForUser(Auth::user());

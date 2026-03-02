@@ -22,6 +22,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Rule;
+use OpenApi\Attributes as OA;
 
 class StatisticsController extends Controller
 {
@@ -32,149 +33,126 @@ class StatisticsController extends Controller
         $this->leaderboardBackend = $leaderboard;
     }
 
-    /**
-     * @OA\Get(
-     *      path="/leaderboard",
-     *      operationId="getLeaderboard",
-     *      tags={"Leaderboard"},
-     *      summary="[Auth optional] Get array of 20 best users",
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUserResource"
-     *                  )
-     *              ),
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No Event found for this id"),
-     *       security={
-     *           {"passport": {"read-statistics"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/leaderboard',
+        operationId: 'getLeaderboard',
+        summary: '[Auth optional] Get array of 20 best users',
+        security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Leaderboard'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/LeaderboardUserResource'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 404, description: 'No Event found for this id'),
+        ],
+    )]
     public function leaderboard(): AnonymousResourceCollection
     {
         return LeaderboardUserResource::collection($this->leaderboardBackend->getCachedGlobalLeaderboard());
     }
 
-    /**
-     * @OA\Get(
-     *      path="/leaderboard/distance",
-     *      operationId="getLeaderboardByDistance",
-     *      tags={"Leaderboard"},
-     *      summary="[Auth optional] Get leaderboard array sorted by distance",
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUserResource"
-     *                  )
-     *              ),
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No Event found for this id"),
-     *       security={
-     *           {"passport": {"read-statistics"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/leaderboard/distance',
+        operationId: 'getLeaderboardByDistance',
+        summary: '[Auth optional] Get leaderboard array sorted by distance',
+        security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Leaderboard'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/LeaderboardUserResource'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 404, description: 'No Event found for this id'),
+        ],
+    )]
     public function leaderboardByDistance(): AnonymousResourceCollection
     {
         return LeaderboardUserResource::collection($this->leaderboardBackend->getCachedDistanceLeaderboard());
     }
 
-    /**
-     * @OA\Get(
-     *      path="/leaderboard/friends",
-     *      operationId="getLeaderboardByFriends",
-     *      tags={"Leaderboard"},
-     *      summary="Get friends-leaderboard array sorted",
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUserResource"
-     *                  )
-     *              ),
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No Event found for this id"),
-     *       security={
-     *           {"passport": {"read-statistics"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/leaderboard/friends',
+        operationId: 'getLeaderboardByFriends',
+        summary: 'Get friends-leaderboard array sorted',
+        security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Leaderboard'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/LeaderboardUserResource'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 404, description: 'No Event found for this id'),
+        ],
+    )]
     public function leaderboardFriends(): AnonymousResourceCollection
     {
         return LeaderboardUserResource::collection($this->leaderboardBackend->getCachedFriendsLeaderboard());
     }
 
-    /**
-     * @OA\Get(
-     *      path="/leaderboard/{month}",
-     *      operationId="getMonthlyLeaderboard",
-     *      tags={"Leaderboard"},
-     *      summary="[Auth optional] Get leaderboard array for a specific month",
-     *
-     *      @OA\Parameter(
-     *          name="month",
-     *          in="path",
-     *          description="Month for the complete leaderboard in Format `YYYY-MM`",
-     *          example="2022-04",
-     *
-     *          @OA\Schema(type="string")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/LeaderboardUserResource"
-     *                  )
-     *              ),
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="No Event found for this id"),
-     *       security={
-     *           {"passport": {"read-statistics"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/leaderboard/{month}',
+        operationId: 'getMonthlyLeaderboard',
+        summary: '[Auth optional] Get leaderboard array for a specific month',
+        security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Leaderboard'],
+        parameters: [
+            new OA\Parameter(
+                name: 'month',
+                description: 'Month for the complete leaderboard in Format `YYYY-MM`',
+                in: 'path',
+                schema: new OA\Schema(type: 'string'),
+                example: '2022-04',
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/LeaderboardUserResource'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 404, description: 'No Event found for this id'),
+        ],
+    )]
     public function leaderboardForMonth(string $date): AnonymousResourceCollection
     {
         $date = Carbon::parse($date);
@@ -182,96 +160,142 @@ class StatisticsController extends Controller
         return LeaderboardUserResource::collection(LeaderboardBackend::getMonthlyLeaderboard(date: $date));
     }
 
-    /**
-     * @OA\Get(
-     *     path="/statistics",
-     *     operationId="getStatistics",
-     *     tags={"Statistics"},
-     *     summary="Get personal statistics",
-     *
-     *     @OA\Parameter(
-     *         name="from",
-     *         in="query",
-     *         description="Start date for the statistics",
-     *         example="2021-01-01T00:00:00.000Z"
-     *     ),
-     *     @OA\Parameter(
-     *         name="until",
-     *         in="query",
-     *         description="End date for the statistics",
-     *         example="2021-02-01T00:00:00.000Z"
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=200,
-     *         description="successful operation",
-     *
-     *         @OA\JsonContent(
-     *
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 @OA\Property(
-     *                      property="purpose",
-     *                      description="The purpose of travel",
-     *                      type="array",
-     *
-     *                      @OA\Items(
-     *
-     *                          @OA\Property(property="name", ref="#/components/schemas/Business"),
-     *                          @OA\Property(property="count", type="integer", example=11),
-     *                          @OA\Property(property="duration", type="integer", example=425, description="Duration in
-     *                                                            minutes"),
-     *                      )
-     *                ),
-     *                @OA\Property(
-     *                    property="categories",
-     *                    description="The categories of the travel",
-     *                    type="array",
-     *
-     *                    @OA\Items(
-     *
-     *                        @OA\Property(property="name", ref="#/components/schemas/HafasTravelType"),
-     *                        @OA\Property(property="count", type="integer", example=11),
-     *                        @OA\Property(property="duration", type="integer", example=425, description="Duration in minutes"),
-     *                    )
-     *                ),
-     *                @OA\Property(
-     *                    property="operators",
-     *                    description="The operators of the means of transport",
-     *                    type="array",
-     *
-     *                    @OA\Items(
-     *
-     *                        @OA\Property(property="name", example="Gertruds Verkehrsgesellschaft mbH"),
-     *                        @OA\Property(property="count", type="integer", example=10),
-     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in minutes"),
-     *                    )
-     *                ),
-     *                @OA\Property(
-     *                    property="time",
-     *                    description="Shows the daily travel volume",
-     *                    type="array",
-     *
-     *                    @OA\Items(
-     *
-     *                        @OA\Property(property="date", type="string", example="2021-01-01T00:00:00.000Z"),
-     *                        @OA\Property(property="count", type="integer", example=10),
-     *                        @OA\Property(property="duration", type="integer", example=424, description="Duration in minutes"),
-     *                    )
-     *               ),
-     *            )
-     *        )
-     *    ),
-     *
-     *     @OA\Response(response=400, description="Bad request"),
-     *     @OA\Response(response=401, description="Unauthorized"),
-     *     security={
-     *     {"passport": {"read-statistics"}}, {"token": {}}
-     *
-     *     }
-     * )
-     */
+    #[OA\Get(
+        path: '/statistics',
+        operationId: 'getStatistics',
+        summary: 'Get personal statistics',
+        security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Statistics'],
+        parameters: [
+            new OA\Parameter(
+                name: 'from',
+                description: 'Start date for the statistics',
+                in: 'query',
+                example: '2021-01-01T00:00:00.000Z',
+            ),
+            new OA\Parameter(
+                name: 'until',
+                description: 'End date for the statistics',
+                in: 'query',
+                example: '2021-02-01T00:00:00.000Z',
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            properties: [
+                                new OA\Property(
+                                    property: 'purpose',
+                                    description: 'The purpose of travel',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(
+                                                property: 'name',
+                                                ref: '#/components/schemas/Business',
+                                            ),
+                                            new OA\Property(
+                                                property: 'count',
+                                                type: 'integer',
+                                                example: 11,
+                                            ),
+                                            new OA\Property(
+                                                property: 'duration',
+                                                description: 'Duration in minutes',
+                                                type: 'integer',
+                                                example: 425,
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                                new OA\Property(
+                                    property: 'categories',
+                                    description: 'The categories of the travel',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(
+                                                property: 'name',
+                                                ref: '#/components/schemas/HafasTravelType',
+                                            ),
+                                            new OA\Property(
+                                                property: 'count',
+                                                type: 'integer',
+                                                example: 11,
+                                            ),
+                                            new OA\Property(
+                                                property: 'duration',
+                                                description: 'Duration in minutes',
+                                                type: 'integer',
+                                                example: 425,
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                                new OA\Property(
+                                    property: 'operators',
+                                    description: 'The operators of the means of transport',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(
+                                                property: 'name',
+                                                example: 'Gertruds Verkehrsgesellschaft mbH',
+                                            ),
+                                            new OA\Property(
+                                                property: 'count',
+                                                type: 'integer',
+                                                example: 10,
+                                            ),
+                                            new OA\Property(
+                                                property: 'duration',
+                                                description: 'Duration in minutes',
+                                                type: 'integer',
+                                                example: 424,
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                                new OA\Property(
+                                    property: 'time',
+                                    description: 'Shows the daily travel volume',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(
+                                                property: 'date',
+                                                type: 'string',
+                                                example: '2021-01-01T00:00:00.000Z',
+                                            ),
+                                            new OA\Property(
+                                                property: 'count',
+                                                type: 'integer',
+                                                example: 10,
+                                            ),
+                                            new OA\Property(
+                                                property: 'duration',
+                                                description: 'Duration in minutes',
+                                                type: 'integer',
+                                                example: 424,
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                            ],
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+        ],
+    )]
     public function getPersonalStatistics(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -312,108 +336,95 @@ class StatisticsController extends Controller
         return $this->sendResponse(data: $returnData, additional: $additionalData);
     }
 
-    /**
-     * @OA\Get(
-     *      path="/statistics/daily/{date}",
-     *      operationId="getDailyStatistics",
-     *      tags={"Statistics"},
-     *      summary="Get statistics and statuses of one day",
-     *      description="Returns all statuses and statistics for the requested day",
-     *
-     *      @OA\Parameter(
-     *          name="date",
-     *          in="path",
-     *          description="Date for the statistics in Format `YYYY-MM-DD`",
-     *          example="2024-04-09",
-     *          required=true,
-     *
-     *          @OA\Schema(type="string")
-     *       ),
-     *
-     *      @OA\Parameter (
-     *          name="timezone",
-     *          in="query",
-     *          description="Timezone for the date. If not set, the user's timezone will be used.",
-     *          example="Europe/Berlin",
-     *
-     *          @OA\Schema(type="string")
-     *      ),
-     *
-     *      @OA\Parameter (
-     *          name="withPolylines",
-     *          in="query",
-     *          description="If this parameter is set, the polylines will be returned as well. Otherwise attribute is
-     *          null.",
-     *
-     *          @OA\Schema(type="boolean")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property (
-     *                  property="data",
-     *                  type="object",
-     *                  @OA\Property (
-     *                      property="statuses", type="array",
-     *
-     *                      @OA\Items (
-     *                          ref="#/components/schemas/StatusResource"
-     *                      ),
-     *                  ),
-     *
-     *                  @OA\Property (
-     *                      property="polylines", type="array",
-     *
-     *                      @OA\Items (
-     *                          ref="#/components/schemas/FeatureCollection"
-     *                      ),
-     *                  ),
-     *
-     *                  @OA\Property(
-     *                      property="totalDistance",
-     *                      example="74026",
-     *                      type="integer"
-     *                  ),
-     *                  @OA\Property(
-     *                      property="totalDuration",
-     *                      example="4711",
-     *                      type="integer"
-     *                  ),
-     *                  @OA\Property(
-     *                      property="totalPoints",
-     *                      example="42",
-     *                      type="integer"
-     *                  ),
-     *                  @OA\Property(
-     *                      property="prevDate",
-     *                      example="2024-04-07",
-     *                      type="string",
-     *                      nullable=true,
-     *                      description="Nearest earlier date with check-ins (YYYY-MM-DD), or null."
-     *                  ),
-     *                  @OA\Property(
-     *                      property="nextDate",
-     *                      example="2024-04-11",
-     *                      type="string",
-     *                      nullable=true,
-     *                      description="Nearest later date with check-ins (YYYY-MM-DD), or null."
-     *                  ),
-     *              )
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=401, description="Unauthorized"),
-     *       @OA\Response(response=403, description="User not authorized to access this"),
-     *       security={
-     *           {"passport": {"read-statistics"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/statistics/daily/{date}',
+        operationId: 'getDailyStatistics',
+        description: 'Returns all statuses and statistics for the requested day',
+        summary: 'Get statistics and statuses of one day',
+        security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Statistics'],
+        parameters: [
+            new OA\Parameter(
+                name: 'date',
+                description: 'Date for the statistics in Format `YYYY-MM-DD`',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'string'),
+                example: '2024-04-09',
+            ),
+            new OA\Parameter(
+                name: 'timezone',
+                description: 'Timezone for the date. If not set, the user\'s timezone will be used.',
+                in: 'query',
+                schema: new OA\Schema(type: 'string'),
+                example: 'Europe/Berlin',
+            ),
+            new OA\Parameter(
+                name: 'withPolylines',
+                description: 'If this parameter is set, the polylines will be returned as well. Otherwise attribute is null.',
+                in: 'query',
+                schema: new OA\Schema(type: 'boolean'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            properties: [
+                                new OA\Property(
+                                    property: 'statuses',
+                                    type: 'array',
+                                    items: new OA\Items(ref: '#/components/schemas/StatusResource'),
+                                ),
+                                new OA\Property(
+                                    property: 'polylines',
+                                    type: 'array',
+                                    items: new OA\Items(ref: '#/components/schemas/FeatureCollection'),
+                                ),
+                                new OA\Property(
+                                    property: 'totalDistance',
+                                    type: 'integer',
+                                    example: '74026',
+                                ),
+                                new OA\Property(
+                                    property: 'totalDuration',
+                                    type: 'integer',
+                                    example: '4711',
+                                ),
+                                new OA\Property(
+                                    property: 'totalPoints',
+                                    type: 'integer',
+                                    example: '42',
+                                ),
+                                new OA\Property(
+                                    property: 'prevDate',
+                                    description: 'Nearest earlier date with check-ins (YYYY-MM-DD), or null.',
+                                    type: 'string',
+                                    example: '2024-04-07',
+                                    nullable: true,
+                                ),
+                                new OA\Property(
+                                    property: 'nextDate',
+                                    description: 'Nearest later date with check-ins (YYYY-MM-DD), or null.',
+                                    type: 'string',
+                                    example: '2024-04-11',
+                                    nullable: true,
+                                ),
+                            ],
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 403, description: 'User not authorized to access this'),
+        ],
+    )]
     public function getPersonalDailyStatistics(Request $request, string $dateString): JsonResponse
     {
         $validated = $request->validate([
@@ -450,37 +461,42 @@ class StatisticsController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/statistics/global",
-     *     operationId="getGlobalStatistics",
-     *     tags={"Statistics"},
-     *     summary="Get global statistics of the last 4 weeks",
-     *
-     *     @OA\Response(
-     *         response=200,
-     *         description="successful operation",
-     *
-     *         @OA\JsonContent(
-     *
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 ref="#/components/schemas/StatisticsGlobalData"
-     *            ),
-     *           @OA\Property(
-     *               property="meta",
-     *               type="object",
-     *               @OA\Property(property="from", example="2021-01-01T00:00:00.000000Z"),
-     *               @OA\Property(property="until", example="2021-02-01T00:00:00.000000Z"),
-     *           ),
-     *        ),
-     *     ),
-     *     security={
-     *        {"passport": {"read-statistics"}}, {"token": {}}
-     *     }
-     *   )
-     */
+    #[OA\Get(
+        path: '/statistics/global',
+        operationId: 'getGlobalStatistics',
+        summary: 'Get global statistics of the last 4 weeks',
+        security: [['passport' => ['read-statistics']], ['token' => []]],
+        tags: ['Statistics'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            ref: '#/components/schemas/StatisticsGlobalData',
+                            type: 'object',
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            properties: [
+                                new OA\Property(
+                                    property: 'from',
+                                    example: '2021-01-01T00:00:00.000000Z',
+                                ),
+                                new OA\Property(
+                                    property: 'until',
+                                    example: '2021-02-01T00:00:00.000000Z',
+                                ),
+                            ],
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
+        ],
+    )]
     public function getGlobalStatistics(): JsonResponse
     {
         $from = Carbon::now()->subWeeks(4);

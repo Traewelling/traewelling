@@ -18,46 +18,41 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
 class UserController extends Controller
 {
-    /**
-     * @OA\Delete(
-     *     path="/settings/account",
-     *     operationId="deleteUserAccount",
-     *     tags={"Settings"},
-     *     summary="Delete User Account",
-     *     description="Deletes the Account for the user and all posts created by it",
-     *
-     *     @OA\RequestBody(
-     *          required=true,
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property (
-     *                  property="confirmation",
-     *                  title="confirmation",
-     *                  description="Username of the to be deleted account (needs to match the currently logged in
-     *                  user)", example="Gertrud123"
-     *              )
-     *          )
-     *     ),
-     *
-     * @OA\Response(
-     *          response=200,
-     *          description="successful operation"
-     *     ),
-     * @OA\Response(response=409, description="Conflict. This should not happen but it tries to prevent a 500."),
-     * @OA\Response(response=400, description="Bad request"),
-     * @OA\Response(response=401, description="Not logged in"),
-     * @OA\Response(response=403, description="User not authorized to do this action"),
-     *       security={
-     *           {"passport": {"extra-delete"}}, {"token": {}}
-     *
-     *       }
-     * )
-     */
+    #[OA\Delete(
+        path: '/settings/account',
+        operationId: 'deleteUserAccount',
+        description: 'Deletes the Account for the user and all posts created by it',
+        summary: 'Delete User Account',
+        security: [['passport' => ['extra-delete']], ['token' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(
+                        property: 'confirmation',
+                        title: 'confirmation',
+                        description: 'Username of the to be deleted account (needs to match the currently logged in user)',
+                        example: 'Gertrud123',
+                    ),
+                ],
+            ),
+        ),
+        tags: ['Settings'],
+        responses: [
+            new OA\Response(response: 200, description: 'successful operation'),
+            new OA\Response(
+                response: 409,
+                description: 'Conflict. This should not happen but it tries to prevent a 500.',
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 401, description: 'Not logged in'),
+            new OA\Response(response: 403, description: 'User not authorized to do this action'),
+        ],
+    )]
     public function deleteAccount(Request $request): JsonResponse
     {
         $request->validate(['confirmation' => ['required', Rule::in([auth()->user()->username])]]);
@@ -69,59 +64,51 @@ class UserController extends Controller
         return $this->sendResponse(true);
     }
 
-    /**
-     * @OA\Get(
-     *      path="/user/{username}/statuses",
-     *      operationId="getStatusesForUser",
-     *      tags={"User", "Status"},
-     *      summary="[Auth optional] Get paginated statuses for single user",
-     *      description="Returns paginated statuses of a single user specified by the username",
-     *
-     *      @OA\Parameter (
-     *           name="username",
-     *           in="path",
-     *           description="username",
-     *           example="Gertrud123",
-     *      ),
-     *      @OA\Parameter (
-     *          name="page",
-     *          description="Page of pagination",
-     *          required=false,
-     *          in="query",
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/StatusResource"
-     *                  )
-     *              ),
-     *
-     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
-     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       security={
-     *           {"passport": {}}, {"token": {}}
-     *       },
-     *       @OA\Response(response=403, description="Forbidden, User is blocked"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     *
-     * Returns paginated statuses for user
-     */
+    #[OA\Get(
+        path: '/user/{username}/statuses',
+        operationId: 'getStatusesForUser',
+        description: 'Returns paginated statuses of a single user specified by the username',
+        summary: '[Auth optional] Get paginated statuses for single user',
+        security: [['passport' => []], ['token' => []], ['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['User', 'Status'],
+        parameters: [
+            new OA\Parameter(
+                name: 'username',
+                description: 'username',
+                in: 'path',
+                example: 'Gertrud123',
+            ),
+            new OA\Parameter(
+                name: 'page',
+                description: 'Page of pagination',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/StatusResource'),
+                        ),
+                        new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
+                        new OA\Property(
+                            property: 'meta',
+                            ref: '#/components/schemas/PaginationMeta',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 403, description: 'Forbidden, User is blocked'),
+        ],
+    )]
     public function statuses(Request $request, string $username): AnonymousResourceCollection
     {
         $user = User::where('username', 'like', $username)->firstOrFail();
@@ -141,63 +128,61 @@ class UserController extends Controller
     }
 
     /**
-     * @OA\Get(
-     *      path="/user/{username}",
-     *      operationId="showUser",
-     *      tags={"User"},
-     *      summary="[Auth optional] Get information for single user",
-     *      description="Returns general information, metadata and statistics for a user",
-     *
-     *      @OA\Parameter (
-     *           name="username",
-     *           in="path",
-     *           description="username",
-     *           example="Gertrud123",
-     *      ),
-     *      @OA\Parameter (
-     *          name="page",
-     *          description="Page of pagination",
-     *          required=false,
-     *          in="query",
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data",
-     *                      ref="#/components/schemas/UserResource"
-     *              ),
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(
-     *           response=403,
-     *           description="Forbidden, User is blocked",
-     *
-     *           @OA\JsonContent(
-     *               required={"message"},
-     *
-     *               @OA\Property(property="message", type="string", example="User not accessible."),
-     *               @OA\Property(property="reason", ref="#/components/schemas/ViewUserForbiddenReason"),
-     *               @OA\Property(property="user", ref="#/components/schemas/UserResource")
-     *           )
-     *       ),
-     *
-     *       @OA\Response(response=404, description="User not found"),
-     *       security={
-     *           {"passport": {"read-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     * Returns Model of user
-     *
      * @todo Maybe put this into another method?
      */
+    #[OA\Get(
+        path: '/user/{username}',
+        operationId: 'showUser',
+        description: 'Returns general information, metadata and statistics for a user',
+        summary: '[Auth optional] Get information for single user',
+        security: [['passport' => ['read-statuses']], ['token' => []]],
+        tags: ['User'],
+        parameters: [
+            new OA\Parameter(
+                name: 'username',
+                description: 'username',
+                in: 'path',
+                example: 'Gertrud123',
+            ),
+            new OA\Parameter(
+                name: 'page',
+                description: 'Page of pagination',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/UserResource')],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(
+                response: 403,
+                description: 'Forbidden, User is blocked',
+                content: new OA\JsonContent(
+                    required: ['message'],
+                    properties: [
+                        new OA\Property(
+                            property: 'message',
+                            type: 'string',
+                            example: 'User not accessible.',
+                        ),
+                        new OA\Property(
+                            property: 'reason',
+                            ref: '#/components/schemas/ViewUserForbiddenReason',
+                        ),
+                        new OA\Property(property: 'user', ref: '#/components/schemas/UserResource'),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 404, description: 'User not found'),
+        ],
+    )]
     public function show(string $username): UserResource
     {
         $user = User::where('username', 'like', $username)->firstOrFail();
@@ -219,45 +204,37 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
-    /**
-     * @OA\Post(
-     *      path="/user/{id}/block",
-     *      operationId="createBlock",
-     *      tags={"User/Hide and Block"},
-     *      summary="Block a user",
-     *      description="Block a specific user. That user will not be able to see your statuses or profile information,
-     *      and cannot send you follow requests. Public statuses are still visible through the incognito mode.",
-     *
-     *      @OA\Parameter (
-     *            name="id",
-     *            in="path",
-     *            description="User-ID",
-     *            example=1337,
-     *
-     *            @OA\Schema(type="integer")
-     *        ),
-     *
-     *      @OA\Response(
-     *          response=201,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", ref="#/components/schemas/UserResource")
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=401, description="Not logged in"),
-     *       @OA\Response(response=403, description="User not authorized"),
-     *       @OA\Response(response=404, description="User not found"),
-     *       @OA\Response(response=409, description="User is already blocked"),
-     *       security={
-     *           {"passport": {"write-block"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     */
+    #[OA\Post(
+        path: '/user/{id}/block',
+        operationId: 'createBlock',
+        description: 'Block a specific user. That user will not be able to see your statuses or profile information, and cannot send you follow requests. Public statuses are still visible through the incognito mode.',
+        summary: 'Block a user',
+        security: [['passport' => ['write-block']], ['token' => []]],
+        tags: ['User/Hide and Block'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'User-ID',
+                in: 'path',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1337,
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/UserResource')],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 401, description: 'Not logged in'),
+            new OA\Response(response: 403, description: 'User not authorized'),
+            new OA\Response(response: 404, description: 'User not found'),
+            new OA\Response(response: 409, description: 'User is already blocked'),
+        ],
+    )]
     public function createBlock(int $userId): JsonResponse
     {
         try {
@@ -281,45 +258,37 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * @OA\Delete(
-     *      path="/user/{id}/block",
-     *      operationId="destroyBlock",
-     *      tags={"User/Hide and Block"},
-     *      summary="Unmute a user",
-     *      description="Unblock a specific user. They are now able to see your statuses and profile information again,
-     *      and send you follow requests.",
-     *
-     *      @OA\Parameter (
-     *              name="id",
-     *              in="path",
-     *              description="User-ID",
-     *              example=1337,
-     *
-     *              @OA\Schema(type="integer")
-     *          ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", ref="#/components/schemas/UserResource")
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=401, description="Not logged in"),
-     *       @OA\Response(response=403, description="User not authorized"),
-     *       @OA\Response(response=404, description="User not found"),
-     *       @OA\Response(response=409, description="User is not blocked"),
-     *       security={
-     *           {"passport": {"write-block"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     */
+    #[OA\Delete(
+        path: '/user/{id}/block',
+        operationId: 'destroyBlock',
+        description: 'Unblock a specific user. They are now able to see your statuses and profile information again, and send you follow requests.',
+        summary: 'Unmute a user',
+        security: [['passport' => ['write-block']], ['token' => []]],
+        tags: ['User/Hide and Block'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'User-ID',
+                in: 'path',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1337,
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/UserResource')],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 401, description: 'Not logged in'),
+            new OA\Response(response: 403, description: 'User not authorized'),
+            new OA\Response(response: 404, description: 'User not found'),
+            new OA\Response(response: 409, description: 'User is not blocked'),
+        ],
+    )]
     public function destroyBlock(int $userId): JsonResponse
     {
         try {
@@ -343,44 +312,36 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * @OA\Post(
-     *      path="/user/{id}/mute",
-     *      operationId="createMute",
-     *      tags={"User/Hide and Block"},
-     *      summary="Mute a user",
-     *      description="Mute a specific user. That way they will not be shown on your dashboard and in the active
-     *      journeys tab",
-     *
-     *      @OA\Parameter (
-     *          name="id",
-     *          in="path",
-     *          description="User-ID",
-     *          example=1337,
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=201,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", ref="#/components/schemas/UserResource")
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=401, description="Not logged in"),
-     *       @OA\Response(response=409, description="User is already muted"),
-     *       @OA\Response(response=403, description="User not authorized"),
-     *       security={
-     *           {"passport": {"write-block"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     */
+    #[OA\Post(
+        path: '/user/{id}/mute',
+        operationId: 'createMute',
+        description: 'Mute a specific user. That way they will not be shown on your dashboard and in the active journeys tab',
+        summary: 'Mute a user',
+        security: [['passport' => ['write-block']], ['token' => []]],
+        tags: ['User/Hide and Block'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'User-ID',
+                in: 'path',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1337,
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/UserResource')],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 401, description: 'Not logged in'),
+            new OA\Response(response: 409, description: 'User is already muted'),
+            new OA\Response(response: 403, description: 'User not authorized'),
+        ],
+    )]
     public function createMute(int $userId): JsonResponse
     {
         try {
@@ -404,44 +365,36 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * @OA\Delete(
-     *      path="/user/{id}/mute",
-     *      operationId="destroyMute",
-     *      tags={"User/Hide and Block"},
-     *      summary="Unmute a user",
-     *      description="Unmute a specific user. That way they will be shown on your dashboard and in the active
-     *      journeys tab again",
-     *
-     *      @OA\Parameter (
-     *          name="id",
-     *          in="path",
-     *          description="User-ID",
-     *          example=1337,
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", ref="#/components/schemas/UserResource")
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=401, description="Not logged in"),
-     *       @OA\Response(response=409, description="User is not muted"),
-     *       @OA\Response(response=403, description="User not authorized"),
-     *       security={
-     *           {"passport": {"write-block"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     */
+    #[OA\Delete(
+        path: '/user/{id}/mute',
+        operationId: 'destroyMute',
+        description: 'Unmute a specific user. That way they will be shown on your dashboard and in the active journeys tab again',
+        summary: 'Unmute a user',
+        security: [['passport' => ['write-block']], ['token' => []]],
+        tags: ['User/Hide and Block'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'User-ID',
+                in: 'path',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1337,
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/UserResource')],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 401, description: 'Not logged in'),
+            new OA\Response(response: 409, description: 'User is not muted'),
+            new OA\Response(response: 403, description: 'User not authorized'),
+        ],
+    )]
     public function destroyMute(int $userId): JsonResponse
     {
         try {
@@ -465,53 +418,50 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * @OA\Get(
-     *      path="/user/search/{query}",
-     *      operationId="searchUsers",
-     *      tags={"User"},
-     *      summary="Get paginated search results for combined search on username and (display)name",
-     *      description="Returns paginated search results for a user based on the given query.",
-     *
-     *      @OA\Parameter (
-     *           name="query",
-     *           in="path",
-     *           description="If this is given, the search will be performed on the username and (display)name (or-search)",
-     *           example="Gertrud123",
-     *      ),
-     *      @OA\Parameter (
-     *          name="page",
-     *          description="Page of pagination",
-     *          required=false,
-     *          in="query",
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/UserResource"
-     *                  )
-     *              ),
-     *
-     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
-     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       security={
-     *           {"passport": {"read-search"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/user/search/{query}',
+        operationId: 'searchUsers',
+        description: 'Returns paginated search results for a user based on the given query.',
+        summary: 'Get paginated search results for combined search on username and (display)name',
+        security: [['passport' => ['read-search']], ['token' => []]],
+        tags: ['User'],
+        parameters: [
+            new OA\Parameter(
+                name: 'query',
+                description: 'If this is given, the search will be performed on the username and (display)name (or-search)',
+                in: 'path',
+                example: 'Gertrud123',
+            ),
+            new OA\Parameter(
+                name: 'page',
+                description: 'Page of pagination',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/UserResource'),
+                        ),
+                        new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
+                        new OA\Property(
+                            property: 'meta',
+                            ref: '#/components/schemas/PaginationMeta',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+        ],
+    )]
     public function search(string $query): AnonymousResourceCollection|JsonResponse
     {
         try {
@@ -521,60 +471,56 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * @OA\Get(
-     *      path="/user/search",
-     *      operationId="searchUsersByParameters",
-     *      tags={"User"},
-     *      summary="Get paginated search results for users by either username or (display)name",
-     *      description="Returns paginated search results for users based on the given parameters.",
-     *
-     *      @OA\Parameter (
-     *          name="page",
-     *          description="Page of pagination",
-     *          required=false,
-     *          in="query",
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Parameter (
-     *          name="username",
-     *          in="query",
-     *          required=false,
-     *          description="Search for parts username",
-     *      ),
-     *      @OA\Parameter (
-     *          name="name",
-     *          in="query",
-     *          required=false,
-     *          description="Search for parts of users (display)name",
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/UserResource"
-     *                  )
-     *              ),
-     *
-     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
-     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       security={
-     *           {"passport": {"read-search"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/user/search',
+        operationId: 'searchUsersByParameters',
+        description: 'Returns paginated search results for users based on the given parameters.',
+        summary: 'Get paginated search results for users by either username or (display)name',
+        security: [['passport' => ['read-search']], ['token' => []]],
+        tags: ['User'],
+        parameters: [
+            new OA\Parameter(
+                name: 'page',
+                description: 'Page of pagination',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'integer'),
+            ),
+            new OA\Parameter(
+                name: 'username',
+                description: 'Search for parts username',
+                in: 'query',
+                required: false,
+            ),
+            new OA\Parameter(
+                name: 'name',
+                description: 'Search for parts of users (display)name',
+                in: 'query',
+                required: false,
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/UserResource'),
+                        ),
+                        new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
+                        new OA\Property(
+                            property: 'meta',
+                            ref: '#/components/schemas/PaginationMeta',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+        ],
+    )]
     public function searchByParameters(Request $request): AnonymousResourceCollection|JsonResponse
     {
         try {

@@ -4,18 +4,22 @@ namespace App\Http\Resources;
 
 use App\Models\Operator;
 use Illuminate\Http\Resources\Json\JsonResource;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *     schema="OperatorResource",
- *     required={"id", "identifier", "name"},
- *
- *     @OA\Property(property="id", type="integer", example=1),
- *     @OA\Property(property="identifier", type="string", example="db-regio-ag-nord", nullable=true),
- *     @OA\Property(property="name", type="string", example="DB Regio AG Nord")
- * )
- */
+#[OA\Schema(
+    schema: 'OperatorResource',
+    required: ['id', 'identifier', 'name'],
+    properties: [
+        new OA\Property(property: 'id', type: 'integer', example: 1),
+        new OA\Property(
+            property: 'identifier',
+            type: 'string',
+            example: 'db-regio-ag-nord',
+            nullable: true,
+        ),
+        new OA\Property(property: 'name', type: 'string', example: 'DB Regio AG Nord'),
+    ],
+)]
 class OperatorResource extends JsonResource
 {
     public function toArray($request)

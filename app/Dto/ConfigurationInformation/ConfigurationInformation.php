@@ -7,47 +7,47 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     schema: 'ConfigurationInformation',
-    type: 'object',
+    description: 'Holds configuration information about the application.',
+    required: ['appName', 'appDebug', 'appUrl', 'features', 'languages', 'version'],
     properties: [
         new OA\Property(
             property: 'appName',
+            description: 'The name of the application.',
             type: 'string',
-            example: 'Träwelling',
-            description: 'The name of the application.'
+            example: 'Träwelling'
         ),
         new OA\Property(
             property: 'appDebug',
+            description: 'Indicates whether the application is in debug mode.',
             type: 'boolean',
-            example: false,
-            description: 'Indicates whether the application is in debug mode.'
+            example: false
         ),
         new OA\Property(
             property: 'appUrl',
+            description: 'The base URL of the application.',
             type: 'string',
-            example: 'https://traewelling.de',
-            description: 'The base URL of the application.'
+            example: 'https://traewelling.de'
         ),
         new OA\Property(
             property: 'version',
+            description: 'The current version of the application.',
             type: 'string',
-            example: '1.0.0',
-            description: 'The current version of the application.'
+            example: '1.0.0'
         ),
         new OA\Property(
             property: 'features',
-            type: 'array',
             description: 'A list of configuration features available in the application.',
+            type: 'array',
             items: new OA\Items(ref: ConfigurationFeature::class)
         ),
         new OA\Property(
             property: 'languages',
-            type: 'array',
             description: 'A list of supported languages in the application.',
+            type: 'array',
             items: new OA\Items(ref: Language::class)
         ),
     ],
-    required: ['appName', 'appDebug', 'appUrl', 'features', 'languages', 'version'],
-    description: 'Holds configuration information about the application.'
+    type: 'object'
 )]
 readonly class ConfigurationInformation implements \JsonSerializable
 {

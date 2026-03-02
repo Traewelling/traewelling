@@ -6,55 +6,62 @@ use App\Exceptions\AlreadyAcceptedException;
 use App\Http\Resources\PrivacyPolicyResource;
 use App\Services\PrivacyPolicyService;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Attributes as OA;
 
 class PrivacyPolicyController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/static/privacy",
-     *     tags={"Settings"},
-     *     summary="Get the current privacy policy",
-     *     description="Get the current privacy policy",
-     *
-     *     @OA\Response(
-     *          response=200,
-     *          description="Success",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(
-     *                  property="data",
-     *                  type="object",
-     *                  @OA\Property(property="validFrom", example="2022-01-05T16:26:14.000000Z"),
-     *                  @OA\Property(property="en", example="This is the english privacy policy"),
-     *                  @OA\Property(property="de", example="Dies ist die deutsche Datenschutzerklärung"),
-     *              )
-     *         )
-     *     )
-     * )
-     */
+    #[OA\Get(
+        path: '/static/privacy',
+        description: 'Get the current privacy policy',
+        summary: 'Get the current privacy policy',
+        tags: ['Settings'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Success',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            properties: [
+                                new OA\Property(
+                                    property: 'validFrom',
+                                    example: '2022-01-05T16:26:14.000000Z',
+                                ),
+                                new OA\Property(
+                                    property: 'en',
+                                    example: 'This is the english privacy policy',
+                                ),
+                                new OA\Property(
+                                    property: 'de',
+                                    example: 'Dies ist die deutsche Datenschutzerklärung',
+                                ),
+                            ],
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
+        ],
+    )]
     public function getPrivacyPolicy(): PrivacyPolicyResource
     {
         return new PrivacyPolicyResource(PrivacyPolicyService::getCurrentPrivacyPolicy());
     }
 
-    /**
-     * @OA\Post(
-     *     path="/settings/acceptPrivacy",
-     *     operationId="acceptPrivacyPolicy",
-     *     tags={"Settings"},
-     *     summary="Accept the current privacy policy",
-     *     description="Accept the current privacy policy",
-     *
-     *     @OA\Response(response=204, description="Success"),
-     *     @OA\Response(response=400, description="Already accepted"),
-     *     @OA\Response(response=401, description="Unauthorized"),
-     *     security={
-     *           {"passport": {}}, {"token": {}}
-     *
-     *     }
-     * )
-     */
+    #[OA\Post(
+        path: '/settings/acceptPrivacy',
+        operationId: 'acceptPrivacyPolicy',
+        description: 'Accept the current privacy policy',
+        summary: 'Accept the current privacy policy',
+        security: [['passport' => []], ['token' => []]],
+        tags: ['Settings'],
+        responses: [
+            new OA\Response(response: 204, description: 'Success'),
+            new OA\Response(response: 400, description: 'Already accepted'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+        ],
+    )]
     public function acceptPrivacyPolicy(): JsonResponse
     {
         try {

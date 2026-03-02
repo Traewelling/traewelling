@@ -15,28 +15,30 @@ use OpenApi\Attributes as OA;
 
 class SettingsController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/settings/profile",
-     *     operationId="getProfileSettings",
-     *     tags={"Settings"},
-     *     summary="Get the current user's profile settings",
-     *     description="Get the current user's profile settings",
-     *
-     *     @OA\Response(
-     *          response=200,
-     *          description="Success",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="object", ref="#/components/schemas/UserProfileSettingsResource")
-     *          )
-     *     ),
-     *
-     *     @OA\Response(response=401, description="Unauthorized"),
-     *     security={{"passport": {"read-settings"}}, {"token": {}}}
-     * )
-     */
+    #[OA\Get(
+        path: '/settings/profile',
+        operationId: 'getProfileSettings',
+        description: 'Get the current user\'s profile settings',
+        summary: 'Get the current user\'s profile settings',
+        security: [['passport' => ['read-settings']], ['token' => []]],
+        tags: ['Settings'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Success',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            ref: '#/components/schemas/UserProfileSettingsResource',
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+        ],
+    )]
     public function getProfileSettings(): UserProfileSettingsResource
     {
         return new UserProfileSettingsResource(auth()->user());
@@ -116,38 +118,36 @@ class SettingsController extends Controller
         }
     }
 
-    /**
-     * @OA\Put(
-     *     path="/settings/profile",
-     *     operationId="updateProfileSettings",
-     *     tags={"Settings"},
-     *     summary="Update the current user's profile settings",
-     *     description="Update the current user's profile settings",
-     *
-     *     @OA\RequestBody(
-     *         required=true,
-     *
-     *         @OA\JsonContent(ref="#/components/schemas/UpdateProfileInformationRequest")
-     *    ),
-     *
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success",
-     *
-     *         @OA\JsonContent(
-     *
-     *             @OA\Property(property="data", type="object", ref="#/components/schemas/UserProfileSettingsResource")
-     *         )
-     *     ),
-     *
-     *     @OA\Response(response=401, description="Unauthorized"),
-     *     @OA\Response(response=422, description="Unprocessable Entity"),
-     *     @OA\Response(response=400, description="Bad Request"),
-     *     security={
-     *          {"passport": {"write-settings"}}, {"token": {}}
-     *     }
-     *     )
-     */
+    #[OA\Put(
+        path: '/settings/profile',
+        operationId: 'updateProfileSettings',
+        description: 'Update the current user\'s profile settings',
+        summary: 'Update the current user\'s profile settings',
+        security: [['passport' => ['write-settings']], ['token' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/UpdateProfileInformationRequest'),
+        ),
+        tags: ['Settings'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Success',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            ref: '#/components/schemas/UserProfileSettingsResource',
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 422, description: 'Unprocessable Entity'),
+            new OA\Response(response: 400, description: 'Bad Request'),
+        ],
+    )]
     public function updateSettings(UpdateProfileInformationRequest $request): UserProfileSettingsResource|JsonResponse
     {
         try {

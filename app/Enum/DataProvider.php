@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-/**
- * @OA\Schema(
- *     title="DataProvider",
- *     description="What type of data provider did the user specify? (users need to be in closed-beta for this to take effect)",
- *     type="string",
- *     enum={"default","transitous"},
- *     example="cargo",
- * )
- */
+use OpenApi\Attributes as OA;
+
+#[OA\Schema(
+    title: 'DataProvider',
+    description: 'What type of data provider did the user specify? (users need to be in closed-beta for this to take effect)',
+    type: 'string',
+    example: 'cargo',
+    enum: ['default', 'transitous'],
+)]
 enum DataProvider: string
 {
     case DEFAULT = 'default';

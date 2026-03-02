@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
+use OpenApi\Attributes as OA;
+
 /**
  * When adding a new travel type, make sure to add it to the translation file as well.
  *
  * @todo Mit HafasTravelType abgleichen - warum wird dieses Enum hier für HAFAS Requests genutzt und nicht das HafasTravelType?
- *
- * @OA\Schema(
- *      title="travelType",
- *      type="string",
- *      enum={"express", "regional", "suburban", "bus", "ferry", "subway", "tram", "taxi", "plane"},
- *      example="suburban"
- *  )
  */
+#[OA\Schema(
+    title: 'travelType',
+    type: 'string',
+    example: 'suburban',
+    enum: ['express', 'regional', 'suburban', 'bus', 'ferry', 'subway', 'tram', 'taxi', 'plane'],
+)]
 enum TravelType: string
 {
     case EXPRESS = 'express';

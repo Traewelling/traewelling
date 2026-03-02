@@ -9,22 +9,31 @@ use App\Models\AlertTranslation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
+use OpenApi\Attributes as OA;
 
 class AlertController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/alerts",
-     *     summary="Get all active alerts",
-     *     operationId="getActiveAlerts",
-     *     tags={"Notifications"},
-     *
-     *     @OA\Response(response=200, description="List of active alerts",@OA\JsonContent(
-     *
-     *         @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/AlertResource"),)
-     *     ))
-     * )
-     */
+    #[OA\Get(
+        path: '/alerts',
+        operationId: 'getActiveAlerts',
+        summary: 'Get all active alerts',
+        tags: ['Notifications'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'List of active alerts',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/AlertResource'),
+                        ),
+                    ],
+                ),
+            ),
+        ],
+    )]
     public function index(): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Alert::class);

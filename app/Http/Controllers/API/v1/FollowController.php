@@ -17,43 +17,44 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
+use OpenApi\Attributes as OA;
 
 class FollowController extends Controller
 {
-    /**
-     * @OA\Post(
-     *      path="/user/{id}/follow",
-     *      operationId="createFollow",
-     *      tags={"User/Follow"},
-     *      summary="Follow a user",
-     *
-     *      @OA\Parameter (
-     *          name="id",
-     *          in="path",
-     *          description="User-ID",
-     *          example=1337,
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=201,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="object", ref="#/components/schemas/UserResource")
-     *         )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=409, description="Already following"),
-     *       @OA\Response(response=403, description="User is blocked"),
-     *       security={
-     *           {"passport": {"write-follows"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Post(
+        path: '/user/{id}/follow',
+        operationId: 'createFollow',
+        summary: 'Follow a user',
+        security: [['passport' => ['write-follows']], ['token' => []]],
+        tags: ['User/Follow'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'User-ID',
+                in: 'path',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1337,
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            ref: '#/components/schemas/UserResource',
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 409, description: 'Already following'),
+            new OA\Response(response: 403, description: 'User is blocked'),
+        ],
+    )]
     public function createFollow(int $userId): JsonResponse
     {
         try {
@@ -73,40 +74,40 @@ class FollowController extends Controller
         }
     }
 
-    /**
-     * @OA\Delete(
-     *      path="/user/{id}/follow",
-     *      operationId="destroyFollow",
-     *      tags={"User/Follow"},
-     *      summary="Unfollow a user",
-     *
-     *      @OA\Parameter (
-     *          name="id",
-     *          in="path",
-     *          description="User-ID",
-     *          example=1337,
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="object", ref="#/components/schemas/UserResource")
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=404, description="User not found"),
-     *       @OA\Response(response=409, description="Already following"),
-     *       security={
-     *           {"passport": {"write-follows"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Delete(
+        path: '/user/{id}/follow',
+        operationId: 'destroyFollow',
+        summary: 'Unfollow a user',
+        security: [['passport' => ['write-follows']], ['token' => []]],
+        tags: ['User/Follow'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'User-ID',
+                in: 'path',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1337,
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            ref: '#/components/schemas/UserResource',
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 404, description: 'User not found'),
+            new OA\Response(response: 409, description: 'Already following'),
+        ],
+    )]
     public function destroyFollow(int $userId): JsonResponse
     {
         try {
@@ -125,106 +126,99 @@ class FollowController extends Controller
         }
     }
 
-    /**
-     * @OA\Get(
-     *      path="/user/self/followers",
-     *      operationId="getFollowers",
-     *      tags={"User/Follow", "Settings"},
-     *      summary="List all followers",
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/UserResource"
-     *                  )
-     *              ),
-     *
-     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
-     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=409, description="Already following"),
-     *       security={
-     *           {"passport": {"read-settings-followers"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/user/self/followers',
+        operationId: 'getFollowers',
+        summary: 'List all followers',
+        security: [['passport' => ['read-settings-followers']], ['token' => []]],
+        tags: ['User/Follow', 'Settings'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/UserResource'),
+                        ),
+                        new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
+                        new OA\Property(
+                            property: 'meta',
+                            ref: '#/components/schemas/PaginationMeta',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 409, description: 'Already following'),
+        ],
+    )]
     public function getFollowers(): AnonymousResourceCollection
     {
         return UserResource::collection(FollowBackend::getFollowers(user: auth()->user()));
     }
 
-    /**
-     * @OA\Get(
-     *      path="/user/self/follow-requests",
-     *      operationId="getFollowRequests",
-     *      tags={"User/Follow", "Settings"},
-     *      summary="List all followers",
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/UserResource"
-     *                  )
-     *              ),
-     *
-     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
-     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
-     *          )
-     *       ),
-     *       security={
-     *           {"passport": {"read-settings-followers"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/user/self/follow-requests',
+        operationId: 'getFollowRequests',
+        summary: 'List all followers',
+        security: [['passport' => ['read-settings-followers']], ['token' => []]],
+        tags: ['User/Follow', 'Settings'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/UserResource'),
+                        ),
+                        new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
+                        new OA\Property(
+                            property: 'meta',
+                            ref: '#/components/schemas/PaginationMeta',
+                        ),
+                    ],
+                ),
+            ),
+        ],
+    )]
     public function getFollowRequests(): AnonymousResourceCollection
     {
         return UserResource::collection(FollowBackend::getFollowRequests(user: auth()->user()));
     }
 
-    /**
-     * @OA\Get(
-     *      path="/user/self/followings",
-     *      operationId="getFollowings",
-     *      tags={"User/Follow", "Settings"},
-     *      summary="List all users the current user is following",
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/UserResource"
-     *                  )
-     *              ),
-     *
-     *              @OA\Property(property="links", ref="#/components/schemas/Links"),
-     *              @OA\Property(property="meta", ref="#/components/schemas/PaginationMeta"),
-     *          )
-     *       ),
-     *       security={
-     *           {"passport": {"read-settings-followers"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/user/self/followings',
+        operationId: 'getFollowings',
+        summary: 'List all users the current user is following',
+        security: [['passport' => ['read-settings-followers']], ['token' => []]],
+        tags: ['User/Follow', 'Settings'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/UserResource'),
+                        ),
+                        new OA\Property(property: 'links', ref: '#/components/schemas/Links'),
+                        new OA\Property(
+                            property: 'meta',
+                            ref: '#/components/schemas/PaginationMeta',
+                        ),
+                    ],
+                ),
+            ),
+        ],
+    )]
     public function getFollowings(): AnonymousResourceCollection
     {
         return UserResource::collection(FollowBackend::getFollowings(user: auth()->user()));
@@ -235,35 +229,30 @@ class FollowController extends Controller
      *
      * @todo paths should use kebab-case
      * @todo paths should not use verbs
-     *
-     * @OA\Delete(
-     *      path="/user/self/followers/{userId}",
-     *      operationId="removeFollower",
-     *      tags={"User/Follow"},
-     *      summary="Remove a follower",
-     *
-     *      @OA\Parameter (
-     *          name="userId",
-     *          in="path",
-     *          description="User-ID",
-     *          example=1337,
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *       ),
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=403, description="Permission denied"),
-     *       @OA\Response(response=404, description="Follow not found"),
-     *       @OA\Response(response=500, description="Unknown error"),
-     *       security={
-     *           {"passport": {"write-followers"}}, {"token": {}}
-     *       }
-     *     )
      */
+    #[OA\Delete(
+        path: '/user/self/followers/{userId}',
+        operationId: 'removeFollower',
+        summary: 'Remove a follower',
+        security: [['passport' => ['write-followers']], ['token' => []]],
+        tags: ['User/Follow'],
+        parameters: [
+            new OA\Parameter(
+                name: 'userId',
+                description: 'User-ID',
+                in: 'path',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1337,
+            ),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'successful operation'),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 403, description: 'Permission denied'),
+            new OA\Response(response: 404, description: 'Follow not found'),
+            new OA\Response(response: 500, description: 'Unknown error'),
+        ],
+    )]
     public function removeFollowerByUserId(int $userId): JsonResponse
     {
         try {
@@ -287,35 +276,29 @@ class FollowController extends Controller
 
     /**
      * @param  Request  $request
-     *
-     * @OA\Put(
-     *     path="/user/self/follow-requests/{userId}",
-     *     operationId="acceptFollowRequest",
-     *     tags={"User/Follow"},
-     *     summary="Accept a follow request",
-     *
-     *     @OA\Parameter (
-     *           name="userId",
-     *           in="path",
-     *           description="User-ID",
-     *           example=1337,
-     *
-     *           @OA\Schema(type="integer")
-     *       ),
-     *
-     *       @OA\Response(
-     *           response=200,
-     *           description="successful operation",
-     *        ),
-     *        @OA\Response(response=400, description="Bad request"),
-     *        @OA\Response(response=403, description="Permission denied"),
-     *        @OA\Response(response=404, description="Request not found"),
-     *        security={
-     *            {"passport": {"write-followers"}}, {"token": {}}
-     *
-     *        }
-     *      )
      */
+    #[OA\Put(
+        path: '/user/self/follow-requests/{userId}',
+        operationId: 'acceptFollowRequest',
+        summary: 'Accept a follow request',
+        security: [['passport' => ['write-followers']], ['token' => []]],
+        tags: ['User/Follow'],
+        parameters: [
+            new OA\Parameter(
+                name: 'userId',
+                description: 'User-ID',
+                in: 'path',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1337,
+            ),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'successful operation'),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 403, description: 'Permission denied'),
+            new OA\Response(response: 404, description: 'Request not found'),
+        ],
+    )]
     public function approveFollowRequestByUserId(int $userId): JsonResponse
     {
         try {
@@ -336,35 +319,29 @@ class FollowController extends Controller
      *
      * @todo paths should use kebab-case
      * @todo paths should not use verbs
-     *
-     * @OA\Delete(
-     *      path="/user/self/follow-requests/{userId}",
-     *      operationId="rejectFollowRequest",
-     *      tags={"User/Follow"},
-     *      summary="Reject a follow request",
-     *
-     *      @OA\Parameter (
-     *          name="userId",
-     *          in="path",
-     *          description="User-ID",
-     *          example=1337,
-     *
-     *          @OA\Schema(type="integer")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *       ),
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=403, description="Permission denied"),
-     *       @OA\Response(response=404, description="Request not found"),
-     *       security={
-     *           {"passport": {"write-followers"}}, {"token": {}}
-     *
-     *       }
-     *     )
      */
+    #[OA\Delete(
+        path: '/user/self/follow-requests/{userId}',
+        operationId: 'rejectFollowRequest',
+        summary: 'Reject a follow request',
+        security: [['passport' => ['write-followers']], ['token' => []]],
+        tags: ['User/Follow'],
+        parameters: [
+            new OA\Parameter(
+                name: 'userId',
+                description: 'User-ID',
+                in: 'path',
+                schema: new OA\Schema(type: 'integer'),
+                example: 1337,
+            ),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'successful operation'),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 403, description: 'Permission denied'),
+            new OA\Response(response: 404, description: 'Request not found'),
+        ],
+    )]
     public function rejectFollowRequestByUserId(int $userId): JsonResponse
     {
         try {

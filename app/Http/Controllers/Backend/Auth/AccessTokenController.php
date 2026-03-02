@@ -3,29 +3,30 @@
 namespace App\Http\Controllers\Backend\Auth;
 
 use App\Http\Controllers\Backend\WebhookController;
+use GuzzleHttp\Psr7\Utils as Psr7Utils;
 use Laravel\Passport\Exceptions\OAuthServerException;
 use Laravel\Passport\Http\Controllers\AccessTokenController as PassportAccessTokenController;
-use Nyholm\Psr7\Response as Psr7Response;
-use Nyholm\Psr7\Stream;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\Response;
 
 class AccessTokenController extends PassportAccessTokenController
 {
     /**
      * @throws OAuthServerException
      */
-    public function issueToken(ServerRequestInterface $requestInterface)
+    public function issueToken(ServerRequestInterface $requestInterface, ResponseInterface $psrResponse): Response
     {
-        return $this->withErrorHandling(function () use ($requestInterface) {
+        return $this->withErrorHandling(function () use ($requestInterface, $psrResponse) {
             return $this->extendResponseWithWebhookData(
                 $requestInterface,
-                $this->server->respondToAccessTokenRequest($requestInterface, new Psr7Response())
+                $this->server->respondToAccessTokenRequest($requestInterface, $psrResponse)
             );
         });
     }
 
-    protected function extendResponseWithWebhookData(ServerRequestInterface $requestInterface, Psr7Response $response): Psr7Response
+    protected function extendResponseWithWebhookData(ServerRequestInterface $requestInterface, ResponseInterface $response): ResponseInterface
     {
         // Skip webhook stuff on error
         if ($response->getStatusCode() > 299 || $response->getStatusCode() < 200) {
@@ -57,6 +58,6 @@ class AccessTokenController extends PassportAccessTokenController
             'url' => $webhook->url,
         ];
 
-        return $response->withBody(Stream::create(json_encode($data)));
+        return $response->withBody(Psr7Utils::streamFor((string) json_encode($data)));
     }
 }

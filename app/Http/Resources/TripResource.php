@@ -5,29 +5,31 @@ namespace App\Http\Resources;
 use App\Models\Trip;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *     title="TripResource",
- *
- *     @OA\Property(property="id", type="int", example=1),
- *     @OA\Property(property="category", ref="#/components/schemas/HafasTravelType"),
- *     @OA\Property(property="mode", ref="#/components/schemas/MotisCategory", nullable=true),
- *     @OA\Property(property="number", type="string", example="4-a6s4-4"),
- *     @OA\Property(property="lineName", type="string", example="S 4"),
- *     @OA\Property(property="journeyNumber", type="int", example="34427"),
- *     @OA\Property(property="origin", ref="#/components/schemas/Station"),
- *     @OA\Property(property="destination", ref="#/components/schemas/Station"),
- *     @OA\Property(property="stopovers", type="array",
- *
- *         @OA\Items(
- *             ref="#/components/schemas/StopoverResource"
- *         )
- *     ),
- *
- *     @OA\Property(property="dataSource", ref="#/components/schemas/DataSourceResource", nullable=true),
- *  )
- */
+#[OA\Schema(
+    title: 'TripResource',
+    properties: [
+        new OA\Property(property: 'id', type: 'int', example: 1),
+        new OA\Property(property: 'category', ref: '#/components/schemas/HafasTravelType'),
+        new OA\Property(property: 'mode', ref: '#/components/schemas/MotisCategory', nullable: true),
+        new OA\Property(property: 'number', type: 'string', example: '4-a6s4-4'),
+        new OA\Property(property: 'lineName', type: 'string', example: 'S 4'),
+        new OA\Property(property: 'journeyNumber', type: 'int', example: '34427'),
+        new OA\Property(property: 'origin', ref: '#/components/schemas/Station'),
+        new OA\Property(property: 'destination', ref: '#/components/schemas/Station'),
+        new OA\Property(
+            property: 'stopovers',
+            type: 'array',
+            items: new OA\Items(ref: '#/components/schemas/StopoverResource'),
+        ),
+        new OA\Property(
+            property: 'dataSource',
+            ref: '#/components/schemas/DataSourceResource',
+            nullable: true,
+        ),
+    ],
+)]
 class TripResource extends JsonResource
 {
     /**

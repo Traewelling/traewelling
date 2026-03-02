@@ -4,36 +4,149 @@ namespace App\Http\Resources;
 
 use App\Models\Stopover;
 use Illuminate\Http\Resources\Json\JsonResource;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *     title="StopoverResource",
- *     required={"id", "name", "rilIdentifier", "evaIdentifier", "arrival", "arrivalPlanned", "arrivalReal",
- *     "arrivalPlatformPlanned", "arrivalPlatformReal", "departure", "departurePlanned", "departureReal",
- *     "departurePlatformPlanned", "departurePlatformReal", "platform", "isArrivalDelayed", "isDepartureDelayed",
- *     "cancelled"},
- *
- *     @OA\Property(property="id", type="integer", example=12345),
- *     @OA\Property(property="name", type="string", example="Karlsruhe Hbf", description="name of the station"),
- *     @OA\Property(property="rilIdentifier", type="string", example="RK", nullable=true, description="Identifier specified in 'Richtline 100' of the Deutsche Bahn"),
- *     @OA\Property(property="evaIdentifier", type="string", example="8000191", nullable=true, description="IBNR identifier of Deutsche Bahn"),
- *     @OA\Property(property="arrival", type="string", format="date-time", example="2022-07-17T13:37:00+02:00", nullable=true, description="currently known arrival time. Equal to arrivalReal if known. Else equal to arrivalPlanned."),
- *     @OA\Property(property="arrivalPlanned", type="string", format="date-time", example="2022-07-17T13:37:00+02:00", nullable=true, description="planned arrival according to timetable records"),
- *     @OA\Property(property="arrivalReal", type="string", format="date-time", example="2022-07-17T13:37:00+02:00", nullable=true, description="real arrival according to live data"),
- *     @OA\Property(property="arrivalPlatformPlanned", type="string", example="5", nullable=true, description="planned arrival platform according to timetable records"),
- *     @OA\Property(property="arrivalPlatformReal", type="string", example="5 A-F", nullable=true, description="real arrival platform according to live data"),
- *     @OA\Property(property="departure", type="string", format="date-time", example="2022-07-17T13:37:00+02:00", nullable=true, description="currently known departure time. Equal to departureReal if known. Else equal to departurePlanned."),
- *     @OA\Property(property="departurePlanned", type="string", format="date-time", example="2022-07-17T13:37:00+02:00", nullable=true, description="planned departure according to timetable records"),
- *     @OA\Property(property="departureReal", type="string", format="date-time", example="2022-07-17T13:37:00+02:00", nullable=true, description="real departure according to live data"),
- *     @OA\Property(property="departurePlatformPlanned", type="string", example="5", nullable=true, description="planned departure platform according to timetable records"),
- *     @OA\Property(property="departurePlatformReal", type="string", example="5 A-F", nullable=true, description="real departure platform according to live data"),
- *     @OA\Property(property="platform", type="string", example="5 A-F", nullable=true),
- *     @OA\Property(property="isArrivalDelayed", type="boolean", example=false, description="Is there a delay in the arrival time?"),
- *     @OA\Property(property="isDepartureDelayed", type="boolean", example=false, description="Is there a delay in the departure time?"),
- *     @OA\Property(property="cancelled", type="boolean", example=false, description="is this stopover cancelled?"),
- * )
- */
+#[OA\Schema(
+    title: 'StopoverResource',
+    required: [
+        'id',
+        'name',
+        'rilIdentifier',
+        'evaIdentifier',
+        'arrival',
+        'arrivalPlanned',
+        'arrivalReal',
+        'arrivalPlatformPlanned',
+        'arrivalPlatformReal',
+        'departure',
+        'departurePlanned',
+        'departureReal',
+        'departurePlatformPlanned',
+        'departurePlatformReal',
+        'platform',
+        'isArrivalDelayed',
+        'isDepartureDelayed',
+        'cancelled',
+    ],
+    properties: [
+        new OA\Property(property: 'id', type: 'integer', example: 12345),
+        new OA\Property(
+            property: 'name',
+            description: 'name of the station',
+            type: 'string',
+            example: 'Karlsruhe Hbf',
+        ),
+        new OA\Property(
+            property: 'rilIdentifier',
+            description: 'Identifier specified in \'Richtline 100\' of the Deutsche Bahn',
+            type: 'string',
+            example: 'RK',
+            nullable: true,
+        ),
+        new OA\Property(
+            property: 'evaIdentifier',
+            description: 'IBNR identifier of Deutsche Bahn',
+            type: 'string',
+            example: '8000191',
+            nullable: true,
+        ),
+        new OA\Property(
+            property: 'arrival',
+            description: 'currently known arrival time. Equal to arrivalReal if known. Else equal to arrivalPlanned.',
+            type: 'string',
+            format: 'date-time',
+            example: '2022-07-17T13:37:00+02:00',
+            nullable: true,
+        ),
+        new OA\Property(
+            property: 'arrivalPlanned',
+            description: 'planned arrival according to timetable records',
+            type: 'string',
+            format: 'date-time',
+            example: '2022-07-17T13:37:00+02:00',
+            nullable: true,
+        ),
+        new OA\Property(
+            property: 'arrivalReal',
+            description: 'real arrival according to live data',
+            type: 'string',
+            format: 'date-time',
+            example: '2022-07-17T13:37:00+02:00',
+            nullable: true,
+        ),
+        new OA\Property(
+            property: 'arrivalPlatformPlanned',
+            description: 'planned arrival platform according to timetable records',
+            type: 'string',
+            example: '5',
+            nullable: true,
+        ),
+        new OA\Property(
+            property: 'arrivalPlatformReal',
+            description: 'real arrival platform according to live data',
+            type: 'string',
+            example: '5 A-F',
+            nullable: true,
+        ),
+        new OA\Property(
+            property: 'departure',
+            description: 'currently known departure time. Equal to departureReal if known. Else equal to departurePlanned.',
+            type: 'string',
+            format: 'date-time',
+            example: '2022-07-17T13:37:00+02:00',
+            nullable: true,
+        ),
+        new OA\Property(
+            property: 'departurePlanned',
+            description: 'planned departure according to timetable records',
+            type: 'string',
+            format: 'date-time',
+            example: '2022-07-17T13:37:00+02:00',
+            nullable: true,
+        ),
+        new OA\Property(
+            property: 'departureReal',
+            description: 'real departure according to live data',
+            type: 'string',
+            format: 'date-time',
+            example: '2022-07-17T13:37:00+02:00',
+            nullable: true,
+        ),
+        new OA\Property(
+            property: 'departurePlatformPlanned',
+            description: 'planned departure platform according to timetable records',
+            type: 'string',
+            example: '5',
+            nullable: true,
+        ),
+        new OA\Property(
+            property: 'departurePlatformReal',
+            description: 'real departure platform according to live data',
+            type: 'string',
+            example: '5 A-F',
+            nullable: true,
+        ),
+        new OA\Property(property: 'platform', type: 'string', example: '5 A-F', nullable: true),
+        new OA\Property(
+            property: 'isArrivalDelayed',
+            description: 'Is there a delay in the arrival time?',
+            type: 'boolean',
+            example: false,
+        ),
+        new OA\Property(
+            property: 'isDepartureDelayed',
+            description: 'Is there a delay in the departure time?',
+            type: 'boolean',
+            example: false,
+        ),
+        new OA\Property(
+            property: 'cancelled',
+            description: 'is this stopover cancelled?',
+            type: 'boolean',
+            example: false,
+        ),
+    ],
+)]
 class StopoverResource extends JsonResource
 {
     public function toArray($request): array

@@ -7,23 +7,32 @@ use App\Models\MastodonServer;
 use App\Models\SocialLoginProfile;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Attributes as OA;
 
 /**
- * @OA\Schema(
- *      title="LightUser",
- *      description="User model with just basic information",
- *      required={"id", "displayName", "username", "profilePicture", "preventIndex"},
- *
- *      @OA\Property(property="id", type="integer", example=1),
- *      @OA\Property(property="displayName", type="string", example="Gertrud"),
- *      @OA\Property(property="username", type="string", example="Gertrud123"),
- *      @OA\Property(property="profilePicture", type="string", example="https://traewelling.de/@Gertrud123/picture"),
- *      @OA\Property(property="mastodon", type="object", example={"server": "mastodon.social", "user_id": 1234567}),
- *      @OA\Property(property="preventIndex", type="boolean", example=false)
- * )
- *
  * @mixin User
  */
+#[OA\Schema(
+    title: 'LightUser',
+    description: 'User model with just basic information',
+    required: ['id', 'displayName', 'username', 'profilePicture', 'preventIndex'],
+    properties: [
+        new OA\Property(property: 'id', type: 'integer', example: 1),
+        new OA\Property(property: 'displayName', type: 'string', example: 'Gertrud'),
+        new OA\Property(property: 'username', type: 'string', example: 'Gertrud123'),
+        new OA\Property(
+            property: 'profilePicture',
+            type: 'string',
+            example: 'https://traewelling.de/@Gertrud123/picture',
+        ),
+        new OA\Property(
+            property: 'mastodon',
+            type: 'object',
+            example: ['server' => 'mastodon.social', 'user_id' => 1234567],
+        ),
+        new OA\Property(property: 'preventIndex', type: 'boolean', example: false),
+    ],
+)]
 class LightUserResource extends JsonResource
 {
     public function toArray($request): array

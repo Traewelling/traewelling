@@ -4,21 +4,19 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *     title="mode",
- *     description="Mode of transport",
- *     type="string",
- *     enum={
- *         "WALK", "BIKE", "RENTAL", "CAR", "CAR_PARKING", "CAR_DROPOFF", "ODM", "RIDE_SHARING", "FLEX", "TRANSIT",
- *  "TRAM", "SUBWAY", "FERRY", "AIRPLANE", "SUBURBAN", "BUS", "COACH", "RAIL", "HIGHSPEED_RAIL", "LONG_DISTANCE", "NIGHT_RAIL",
- *  "REGIONAL_FAST_RAIL", "REGIONAL_RAIL", "CABLE_CAR", "FUNICULAR", "AERIAL_LIFT", "OTHER", "AREAL_LIFT", "METRO"
- *     },
- *     example="suburban"
- * )
- */
+#[OA\Schema(
+    title: 'mode',
+    description: 'Mode of transport',
+    type: 'string',
+    example: 'suburban',
+    enum: [
+        'WALK', 'BIKE', 'RENTAL', 'CAR', 'CAR_PARKING', 'CAR_DROPOFF', 'ODM', 'RIDE_SHARING', 'FLEX', 'TRANSIT',
+        'TRAM', 'SUBWAY', 'FERRY', 'AIRPLANE', 'SUBURBAN', 'BUS', 'COACH', 'RAIL', 'HIGHSPEED_RAIL', 'LONG_DISTANCE', 'NIGHT_RAIL',
+        'REGIONAL_FAST_RAIL', 'REGIONAL_RAIL', 'CABLE_CAR', 'FUNICULAR', 'AERIAL_LIFT', 'OTHER', 'AREAL_LIFT', 'METRO',
+    ],
+)]
 enum MotisCategory: string
 {
     /**

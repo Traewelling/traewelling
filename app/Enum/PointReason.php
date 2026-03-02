@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-/**
- * @OA\Schema(
- *     title="PointsReason",
- *     description="What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points, 4=manual trip => no points, 5=points disabled)",
- *     type="integer",
- *     enum={0,1,2,3,4,5},
- *     example=1
- * )
- */
+use OpenApi\Attributes as OA;
+
+#[OA\Schema(
+    title: 'PointsReason',
+    description: 'What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points, 4=manual trip => no points, 5=points disabled)',
+    type: 'integer',
+    example: 1,
+    enum: [0, 1, 2, 3, 4, 5],
+)]
 enum PointReason: int
 {
     case IN_TIME = 0;

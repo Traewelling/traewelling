@@ -7,14 +7,14 @@ use OpenApi\Attributes as OA;
 
 #[OA\Schema(
     title: 'LeaderboardUserResource',
+    required: ['user', 'totalDuration', 'totalDistance', 'points'],
     properties: [
         new OA\Property(property: 'user', ref: '#/components/schemas/LightUserResource'),
-        new OA\Property(property: 'totalDuration', type: 'integer', description: 'duration travelled in minutes', example: 6),
-        new OA\Property(property: 'totalDistance', type: 'integer', description: 'distance travelled in meters', example: 12345),
-        new OA\Property(property: 'points', type: 'integer', description: 'points of user'),
+        new OA\Property(property: 'totalDuration', description: 'duration travelled in minutes', type: 'integer', example: 6),
+        new OA\Property(property: 'totalDistance', description: 'distance travelled in meters', type: 'integer', example: 12345),
+        new OA\Property(property: 'points', description: 'points of user', type: 'integer'),
     ],
-    type: 'object',
-    required: ['user', 'totalDuration', 'totalDistance', 'points']
+    type: 'object'
 )]
 class LeaderboardUserResource extends JsonResource
 {

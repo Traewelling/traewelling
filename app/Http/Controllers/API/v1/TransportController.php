@@ -36,8 +36,31 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Enum;
+use OpenApi\Attributes as OA;
 use Throwable;
 
+#[OA\Schema(
+    schema: 'CheckinRequestBody',
+    title: 'CheckinRequestBody',
+    description: 'Fields for creating a transit checkin',
+    properties: [
+        new OA\Property(property: 'body', type: 'string', example: 'Meine erste Fahrt nach Knuffingen!', nullable: true, maxLength: 280),
+        new OA\Property(property: 'business', ref: '#/components/schemas/Business'),
+        new OA\Property(property: 'visibility', ref: '#/components/schemas/StatusVisibility'),
+        new OA\Property(property: 'eventId', description: 'Id of an event the status should be connected to', type: 'integer', example: 1, nullable: true),
+        new OA\Property(property: 'toot', description: 'Should this status be posted to mastodon?', type: 'boolean', example: false, nullable: true),
+        new OA\Property(property: 'chainPost', description: 'Should this status be posted to mastodon as a chained post?', type: 'boolean', example: false, nullable: true),
+        new OA\Property(property: 'ibnr', description: 'If true, `start` and `destination` can be supplied as IBNR. Otherwise Träwelling-ID. Default: false.', type: 'boolean', example: true, nullable: true),
+        new OA\Property(property: 'tripId', description: 'The tripId for the trip to check into', type: 'string', example: 'b37ff515-22e1-463c-94de-3ad7964b5cb8', nullable: true),
+        new OA\Property(property: 'lineName', description: 'The line name for the trip to check into', type: 'string', example: 'S 4', nullable: true),
+        new OA\Property(property: 'start', description: 'Station-ID of the starting point (see `ibnr`)', type: 'integer', example: 8000191),
+        new OA\Property(property: 'destination', description: 'Station-ID of the destination (see `ibnr`)', type: 'integer', example: 8000192),
+        new OA\Property(property: 'departure', description: 'Timestamp of the departure', type: 'string', format: 'date-time', example: '2022-12-19T20:41:00+01:00'),
+        new OA\Property(property: 'arrival', description: 'Timestamp of the arrival', type: 'string', format: 'date-time', example: '2022-12-19T20:42:00+01:00'),
+        new OA\Property(property: 'force', description: 'If true, the checkin is created even on collision. No points awarded.', type: 'boolean', example: false, nullable: true),
+        new OA\Property(property: 'with', description: 'Also check in these user IDs (max. 10). Requires mutual follow.', type: 'array', items: new OA\Items(type: 'integer', example: 1), nullable: true),
+    ],
+)]
 class TransportController extends Controller
 {
     private StationRepository $stationRepository;
@@ -50,143 +73,208 @@ class TransportController extends Controller
 
     /**
      * @todo: This endpoint needs to be restructured to use own Resources! Currently we just throw the raw db-rest response.
-     *
-     * @OA\Get(
-     *      path="/station/{id}/departures",
-     *      operationId="getDepartures",
-     *      tags={"Checkin"},
-     *      summary="Get departures from a station",
-     *      description="Get departures from a station.",
-     *
-     *      @OA\Parameter(
-     *          name="id",
-     *          in="path",
-     *          description="Träwelling-ID of the station (you can look this up with [trainStationAutocomplete](#/Checkin/trainStationAutocomplete))", required=true,
-     *      ),
-     *      @OA\Parameter(
-     *          name="when",
-     *          in="query",
-     *          description="When to get the departures (default: now). If you omit the timezone, the datetime is interpreted as localtime. This is especially helpful when träwelling abroad.",
-     *          required=false,
-     *
-     *          @OA\Schema(
-     *              type="string",
-     *              format="date-time",
-     *              example="2020-01-01T12:00:00.000Z"
-     *          )
-     *      ),
-     *
-     *      @OA\Parameter(
-     *          name="travelType",
-     *          in="query",
-     *          description="Means of transport (default: all)",
-     *          required=false,
-     *
-     *          @OA\Schema(
-     *              ref="#/components/schemas/TravelType"
-     *          )
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation",
-     *
-     *          @OA\JsonContent(
-     *              type="object",
-     *
-     *              @OA\Property(
-     *                  property="data",
-     *                  type="array",
-     *
-     *                  @OA\Items(
-     *                      externalDocs="https://v5.db.transport.rest/api.html#get-stopsiddepartures",
-     *                      description="HAFAS Train model. This model might be subject to unexpected changes. See also external documentation at [https://v5.db.transport.rest/api.html#get-stopsiddepartures](https://v5.db.transport.rest/api.html#get-stopsiddepartures).",
-     *                      example={
-     *                          "tripId": "1|200513|0|81|6012023", "stop": { "type": "stop", "id": "8000191",
-     *                          "name": "Karlsruhe Hbf", "location": { "type": "location", "id": "8000191", "latitude":
-     *                          48.99353, "longitude": 8.401939 }, "products": { "nationalExpress": true, "national": true,
-     *                          "regionalExp": true, "regional": true, "suburban": true, "bus": true, "ferry": false,
-     *                          "subway": false, "tram": true, "taxi": true } }, "when": "2023-01-06T13:49:00+01:00",
-     *                          "plannedWhen": "2023-01-06T13:49:00+01:00", "delay": null, "platform": "2",
-     *                          "plannedPlatform": "2", "direction": "Zürich HB", "provenance": null, "line": { "type":
-     *                          "line", "id": "ec-9", "fahrtNr": "9", "name": "EC 9", "public": true, "adminCode": "80____",
-     *                          "productName": "EC", "mode": "train", "product": "national", "operator": { "type":
-     *                          "operator", "id": "db-fernverkehr-ag", "name": "DB Fernverkehr AG" } }, "remarks": null,
-     *                          "origin": null, "destination": { "type": "stop", "id": "8503000", "name": "Zürich HB",
-     *                          "location": { "type": "location", "id": "8503000", "latitude": 47.378177, "longitude":
-     *                          8.540211 }, "products": { "nationalExpress": true, "national": true, "regionalExp": true,
-     *                          "regional": true, "suburban": true, "bus": true, "ferry": false, "subway": false, "tram":
-     *                          true, "taxi": false } }, "currentTripPosition": { "type": "location", "latitude": 48.725382,
-     *                          "longitude": 8.142888 }, "loadFactor": "high", "station": { "id": 5181, "ibnr": 8000191,
-     *                          "rilIdentifier": "RK", "name": "Karlsruhe Hbf", "latitude": "48.993530", "longitude":
-     *                          "8.401939" }
-     *                      }
-     *                 )
-     *              ),
-     *
-     *              @OA\Property(
-     *                  property="meta",
-     *                  type="object",
-     *                  @OA\Property(
-     *                      property="station",
-     *                      ref="#/components/schemas/Station"
-     *                  ),
-     *                  @OA\Property(
-     *                      property="times",
-     *                      type="object",
-     *                          @OA\Property(
-     *                              property="now",
-     *                              type="string",
-     *                              format="date-time",
-     *                              example="2020-01-01T12:00:00.000Z"
-     *                          ),
-     *                          @OA\Property(
-     *                              property="prev",
-     *                              type="string",
-     *                              format="date-time",
-     *                              example="2020-01-01T11:45:00.000Z"
-     *                          ),
-     *                          @OA\Property(
-     *                              property="next",
-     *                              type="string",
-     *                              format="date-time",
-     *                              example="2020-01-01T12:15:00.000Z"
-     *                          )
-     *                  ),
-     *                  @OA\Property(
-     *                      description="List of licenses that were filtered out",
-     *                      property="removedLicenses",
-     *                      type="array",
-     *
-     *                      @OA\Items(
-     *                          oneOf={
-     *
-     *                              @OA\Schema(
-     *                                  type="string",
-     *                                  example="FR: fr_horaires-sncf.gtfs",
-     *                              ),
-     *                              @OA\Schema(ref="#/components/schemas/LicenseDto"),
-     *                          }
-     *                      ),
-     *                  ),
-     *
-     *                  @OA\Property(
-     *                      description="Number of removed entries due to license filtering",
-     *                      property="removedCount",
-     *                      type="integer",
-     *                      example=2,
-     *                   )
-     *              )
-     *          )
-     *      ),
-     *
-     *      @OA\Response(response=401, description="Unauthorized"),
-     *      @OA\Response(response=404, description="Station not found"),
-     *      @OA\Response(response=422, description="Invalid input"),
-     *      @OA\Response(response=502, description="Error with our data provider"),
-     *      security={{"passport": {"create-statuses"}}, {"token": {}}}
-     * )
      */
+    #[OA\Get(
+        path: '/station/{id}/departures',
+        operationId: 'getDepartures',
+        description: 'Get departures from a station.',
+        summary: 'Get departures from a station',
+        security: [['passport' => ['create-statuses']], ['token' => []]],
+        tags: ['Checkin'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'Träwelling-ID of the station (you can look this up with [trainStationAutocomplete](#/Checkin/trainStationAutocomplete))',
+                in: 'path',
+                required: true,
+            ),
+            new OA\Parameter(
+                name: 'when',
+                description: 'When to get the departures (default: now). If you omit the timezone, the datetime is interpreted as localtime. This is especially helpful when träwelling abroad.',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(
+                    type: 'string',
+                    format: 'date-time',
+                    example: '2020-01-01T12:00:00.000Z',
+                ),
+            ),
+            new OA\Parameter(
+                name: 'travelType',
+                description: 'Means of transport (default: all)',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(ref: '#/components/schemas/TravelType'),
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(
+                                description: 'HAFAS Train model. This model might be subject to unexpected changes. See also external documentation at [https://v5.db.transport.rest/api.html#get-stopsiddepartures](https://v5.db.transport.rest/api.html#get-stopsiddepartures).',
+                                externalDocs: new OA\ExternalDocumentation(
+                                    url: 'https://v5.db.transport.rest/api.html#get-stopsiddepartures',
+                                ),
+                                example: [
+                                    'tripId' => '1|200513|0|81|6012023',
+                                    'stop' => [
+                                        'type' => 'stop',
+                                        'id' => '8000191',
+                                        'name' => 'Karlsruhe Hbf',
+                                        'location' => [
+                                            'type' => 'location',
+                                            'id' => '8000191',
+                                            'latitude' => 48.99353,
+                                            'longitude' => 8.401939,
+                                        ],
+                                        'products' => [
+                                            'nationalExpress' => true,
+                                            'national' => true,
+                                            'regionalExp' => true,
+                                            'regional' => true,
+                                            'suburban' => true,
+                                            'bus' => true,
+                                            'ferry' => false,
+                                            'subway' => false,
+                                            'tram' => true,
+                                            'taxi' => true,
+                                        ],
+                                    ],
+                                    'when' => '2023-01-06T13:49:00+01:00',
+                                    'plannedWhen' => '2023-01-06T13:49:00+01:00',
+                                    'delay' => null,
+                                    'platform' => '2',
+                                    'plannedPlatform' => '2',
+                                    'direction' => 'Zürich HB',
+                                    'provenance' => null,
+                                    'line' => [
+                                        'type' => 'line',
+                                        'id' => 'ec-9',
+                                        'fahrtNr' => '9',
+                                        'name' => 'EC 9',
+                                        'public' => true,
+                                        'adminCode' => '80____',
+                                        'productName' => 'EC',
+                                        'mode' => 'train',
+                                        'product' => 'national',
+                                        'operator' => [
+                                            'type' => 'operator',
+                                            'id' => 'db-fernverkehr-ag',
+                                            'name' => 'DB Fernverkehr AG',
+                                        ],
+                                    ],
+                                    'remarks' => null,
+                                    'origin' => null,
+                                    'destination' => [
+                                        'type' => 'stop',
+                                        'id' => '8503000',
+                                        'name' => 'Zürich HB',
+                                        'location' => [
+                                            'type' => 'location',
+                                            'id' => '8503000',
+                                            'latitude' => 47.378177,
+                                            'longitude' => 8.540211,
+                                        ],
+                                        'products' => [
+                                            'nationalExpress' => true,
+                                            'national' => true,
+                                            'regionalExp' => true,
+                                            'regional' => true,
+                                            'suburban' => true,
+                                            'bus' => true,
+                                            'ferry' => false,
+                                            'subway' => false,
+                                            'tram' => true,
+                                            'taxi' => false,
+                                        ],
+                                    ],
+                                    'currentTripPosition' => [
+                                        'type' => 'location',
+                                        'latitude' => 48.725382,
+                                        'longitude' => 8.142888,
+                                    ],
+                                    'loadFactor' => 'high',
+                                    'station' => [
+                                        'id' => 5181,
+                                        'ibnr' => 8000191,
+                                        'rilIdentifier' => 'RK',
+                                        'name' => 'Karlsruhe Hbf',
+                                        'latitude' => '48.993530',
+                                        'longitude' => '8.401939',
+                                    ],
+                                ],
+                            ),
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            properties: [
+                                new OA\Property(
+                                    property: 'station',
+                                    ref: '#/components/schemas/Station',
+                                ),
+                                new OA\Property(
+                                    property: 'times',
+                                    properties: [
+                                        new OA\Property(
+                                            property: 'now',
+                                            type: 'string',
+                                            format: 'date-time',
+                                            example: '2020-01-01T12:00:00.000Z',
+                                        ),
+                                        new OA\Property(
+                                            property: 'prev',
+                                            type: 'string',
+                                            format: 'date-time',
+                                            example: '2020-01-01T11:45:00.000Z',
+                                        ),
+                                        new OA\Property(
+                                            property: 'next',
+                                            type: 'string',
+                                            format: 'date-time',
+                                            example: '2020-01-01T12:15:00.000Z',
+                                        ),
+                                    ],
+                                    type: 'object',
+                                ),
+                                new OA\Property(
+                                    property: 'removedLicenses',
+                                    description: 'List of licenses that were filtered out',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        oneOf: [
+                                            new OA\Schema(
+                                                type: 'string',
+                                                example: 'FR: fr_horaires-sncf.gtfs',
+                                            ),
+                                            new OA\Schema(ref: '#/components/schemas/LicenseDto'),
+                                        ],
+                                    ),
+                                ),
+                                new OA\Property(
+                                    property: 'removedCount',
+                                    description: 'Number of removed entries due to license filtering',
+                                    type: 'integer',
+                                    example: 2,
+                                ),
+                            ],
+                            type: 'object',
+                        ),
+                    ],
+                    type: 'object',
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 404, description: 'Station not found'),
+            new OA\Response(response: 422, description: 'Invalid input'),
+            new OA\Response(response: 502, description: 'Error with our data provider'),
+        ],
+    )]
     public function getDepartures(Request $request, int $stationId): JsonResponse
     {
         $validated = $request->validate([
@@ -239,52 +327,51 @@ class TransportController extends Controller
         }
     }
 
-    /**
-     * @OA\Get(
-     *      path="/trains/trip",
-     *      operationId="getTrainTrip",
-     *      tags={"Checkin"},
-     *      summary="Get the stopovers and trip information for a given train",
-     *
-     *      @OA\Parameter(
-     *          name="hafasTripId",
-     *          in="query",
-     *          description="HAFAS trip ID (fetched from departures)",
-     *          example="1|323306|1|80|17072022",
-     *          required=true
-     *     ),
-     *     @OA\Parameter(
-     *          name="lineName",
-     *          in="query",
-     *          description="line name for that train",
-     *          example="S 4",
-     *          required=true
-     *     ),
-     *
-     *     @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/TripResource"
-     *                  )
-     *              )
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=401, description="Unauthorized"),
-     *       @OA\Response(response=404, description="No station found"),
-     *       @OA\Response(response=503, description="There has been an error with our data provider"),
-     *       security={
-     *          {"passport": {"create-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/trains/trip',
+        operationId: 'getTrainTrip',
+        summary: 'Get the stopovers and trip information for a given train',
+        security: [['passport' => ['create-statuses']], ['token' => []]],
+        tags: ['Checkin'],
+        parameters: [
+            new OA\Parameter(
+                name: 'hafasTripId',
+                description: 'HAFAS trip ID (fetched from departures)',
+                in: 'query',
+                required: true,
+                example: '1|323306|1|80|17072022',
+            ),
+            new OA\Parameter(
+                name: 'lineName',
+                description: 'line name for that train',
+                in: 'query',
+                required: true,
+                example: 'S 4',
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/TripResource'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 404, description: 'No station found'),
+            new OA\Response(
+                response: 503,
+                description: 'There has been an error with our data provider',
+            ),
+        ],
+    )]
     public function getTrip(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -308,54 +395,52 @@ class TransportController extends Controller
         }
     }
 
-    /**
-     * @OA\Get(
-     *      path="/trains/station/nearby",
-     *      operationId="trainStationsNearby",
-     *      tags={"Checkin"},
-     *      summary="Location based search for stations",
-     *      description="Returns the nearest station to the given coordinates",
-     *
-     *      @OA\Parameter(
-     *          name="latitude",
-     *          in="query",
-     *          description="latitude",
-     *          example=48.991,
-     *          required=true
-     *     ),
-     *     @OA\Parameter(
-     *          name="longitude",
-     *          in="query",
-     *          description="longitude",
-     *          example=8.4005,
-     *          required=true
-     *     ),
-     *
-     *     @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/Station"
-     *                  )
-     *              )
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=401, description="Unauthorized"),
-     *       @OA\Response(response=404, description="No station found"),
-     *       @OA\Response(response=503, description="There has been an error with our data provider"),
-     *       security={
-     *          {"passport": {"create-statuses"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/trains/station/nearby',
+        operationId: 'trainStationsNearby',
+        description: 'Returns the nearest station to the given coordinates',
+        summary: 'Location based search for stations',
+        security: [['passport' => ['create-statuses']], ['token' => []]],
+        tags: ['Checkin'],
+        parameters: [
+            new OA\Parameter(
+                name: 'latitude',
+                description: 'latitude',
+                in: 'query',
+                required: true,
+                example: 48.991,
+            ),
+            new OA\Parameter(
+                name: 'longitude',
+                description: 'longitude',
+                in: 'query',
+                required: true,
+                example: 8.4005,
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/Station'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 404, description: 'No station found'),
+            new OA\Response(
+                response: 503,
+                description: 'There has been an error with our data provider',
+            ),
+        ],
+    )]
     public function getNextStationByCoordinates(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -386,35 +471,43 @@ class TransportController extends Controller
         return $this->sendResponse(new StationResource($nearestStation));
     }
 
-    /**
-     * @OA\Post(
-     *      path="/trains/checkin",
-     *      operationId="createCheckin",
-     *      tags={"Checkin"},
-     *      summary="Check in to a trip.",
-     *
-     *      @OA\RequestBody(
-     *          required=true,
-     *
-     *          @OA\JsonContent(ref="#/components/schemas/CheckinRequestBody")
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=201,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(ref="#/components/schemas/CheckinSuccessResource")
-     *       ),
-     *
-     *       @OA\Response(response=400, description="Bad request"),
-     *       @OA\Response(response=401, description="Unauthorized"),
-     *       @OA\Response(response=403, description="Forbidden", @OA\JsonContent(ref="#/components/schemas/CheckinForbiddenWithUsersResponse")),
-     *       @OA\Response(response=409, description="Checkin collision"),
-     *       security={
-     *           {"passport": {"create-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Post(
+        path: '/trains/checkin',
+        operationId: 'createCheckin',
+        summary: 'Check in to a trip.',
+        security: [['passport' => ['create-statuses']], ['token' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/CheckinRequestBody'),
+        ),
+        tags: ['Checkin'],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'successful operation',
+                content: new OA\JsonContent(ref: '#/components/schemas/CheckinSuccessResource'),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(
+                response: 403,
+                description: 'Forbidden — one or more users in `with` cannot be checked in',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'You are not allowed to check in the following users: 1'),
+                        new OA\Property(
+                            property: 'meta',
+                            properties: [
+                                new OA\Property(property: 'invalidUsers', type: 'array', items: new OA\Items(type: 'integer', example: 1)),
+                            ],
+                            type: 'object',
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 409, description: 'Checkin collision'),
+        ],
+    )]
     public function create(Request $request): JsonResponse
     {
         $this->authorize('create', Status::class);
@@ -487,39 +580,36 @@ class TransportController extends Controller
         }
     }
 
-    /**
-     * @OA\Put(
-     *     path="/station/{id}/home",
-     *     operationId="setHomeStation",
-     *     tags={"Checkin"},
-     *     summary="Set a station as home station",
-     *
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="Träwelling-ID of the station",
-     *         required=true,
-     *         example=1234,
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=200,
-     *         description="successful operation",
-     *
-     *         @OA\JsonContent(
-     *             type="object",
-     *
-     *             @OA\Property(property="data", ref="#/components/schemas/Station")
-     *         ),
-     *     ),
-     *
-     *     @OA\Response(response=400, description="Bad request"),
-     *     @OA\Response(response=401, description="Unauthorized"),
-     *     @OA\Response(response=404, description="Station not found"),
-     *     @OA\Response(response=500, description="Unknown error"),
-     *     security={{"passport": {"create-statuses"}}, {"token": {}}}
-     * )
-     */
+    #[OA\Put(
+        path: '/station/{id}/home',
+        operationId: 'setHomeStation',
+        summary: 'Set a station as home station',
+        security: [['passport' => ['create-statuses']], ['token' => []]],
+        tags: ['Checkin'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                description: 'Träwelling-ID of the station',
+                in: 'path',
+                required: true,
+                example: 1234,
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [new OA\Property(property: 'data', ref: '#/components/schemas/Station')],
+                    type: 'object',
+                ),
+            ),
+            new OA\Response(response: 400, description: 'Bad request'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 404, description: 'Station not found'),
+            new OA\Response(response: 500, description: 'Unknown error'),
+        ],
+    )]
     public function setHome(int $stationId): JsonResponse
     {
         try {
@@ -541,45 +631,42 @@ class TransportController extends Controller
         }
     }
 
-    /**
-     * @OA\Get(
-     *      path="/trains/station/autocomplete/{query}",
-     *      operationId="trainStationAutocomplete",
-     *      tags={"Checkin"},
-     *      summary="Autocomplete for stations",
-     *      description="This request returns an array of max. 10 station objects matching the query. **CAUTION:** All
-     *      slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)",
-     *
-     * @OA\Parameter(
-     *          name="query",
-     *          in="path",
-     *          description="station query",
-     *          example="Karls"
-     *     ),
-     *
-     * @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/StationResource"
-     *                  )
-     *              )
-     *          )
-     *       ),
-     *
-     * @OA\Response(response=401, description="Unauthorized"),
-     * @OA\Response(response=503, description="There has been an error with our data provider"),
-     *       security={
-     *          {"passport": {"create-statuses"}}, {"token": {}}
-     *
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/trains/station/autocomplete/{query}',
+        operationId: 'trainStationAutocomplete',
+        description: 'This request returns an array of max. 10 station objects matching the query. **CAUTION:** All slashes (as well as encoded to %2F) in {query} need to be replaced, preferrably by a space (%20)',
+        summary: 'Autocomplete for stations',
+        security: [['passport' => ['create-statuses']], ['token' => []]],
+        tags: ['Checkin'],
+        parameters: [
+            new OA\Parameter(
+                name: 'query',
+                description: 'station query',
+                in: 'path',
+                example: 'Karls',
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/StationResource'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(
+                response: 503,
+                description: 'There has been an error with our data provider',
+            ),
+        ],
+    )]
     public function getTrainStationAutocomplete(string $query): JsonResponse
     {
         try {
@@ -597,36 +684,30 @@ class TransportController extends Controller
         }
     }
 
-    /**
-     * @OA\Get(
-     *      path="/trains/station/history",
-     *      operationId="trainStationHistory",
-     *      tags={"Checkin"},
-     *      summary="History for stations",
-     *      description="This request returns an array of max. 10 most recent station objects that the user has arrived
-     *      at.",
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="data", type="array",
-     *
-     *                  @OA\Items(
-     *                      ref="#/components/schemas/Station"
-     *                  )
-     *              )
-     *          )
-     *       ),
-     *
-     *       @OA\Response(response=401, description="Unauthorized"),
-     *       security={
-     *          {"passport": {"create-statuses"}}, {"token": {}}
-     *       }
-     *     )
-     */
+    #[OA\Get(
+        path: '/trains/station/history',
+        operationId: 'trainStationHistory',
+        description: 'This request returns an array of max. 10 most recent station objects that the user has arrived at.',
+        summary: 'History for stations',
+        security: [['passport' => ['create-statuses']], ['token' => []]],
+        tags: ['Checkin'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'successful operation',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/Station'),
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+        ],
+    )]
     public function getTrainStationHistory(): AnonymousResourceCollection
     {
         $latestArrivals = $this->stationRepository->getLatestArrivalsForUser(\auth()->user(), 10);

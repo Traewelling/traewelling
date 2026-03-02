@@ -7,21 +7,41 @@ namespace App\Http\Resources\Contribution;
 use App\Models\User;
 use App\Services\Contribution\ContributionLevelService;
 use Illuminate\Http\Resources\Json\JsonResource;
-use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Schema(
- *      schema="CommunityProfile",
- *      title="CommunityProfile",
- *      description="Community contribution profile data",
- *      required={"xp", "level", "nextLevelXP", "progressPercent"},
- *
- *      @OA\Property(property="xp", type="integer", example=75, description="Total contribution XP earned"),
- *      @OA\Property(property="level", type="integer", example=1, description="Current contribution level"),
- *      @OA\Property(property="nextLevelXP", type="integer", example=150, description="XP required for next level"),
- *      @OA\Property(property="progressPercent", type="number", format="float", example=25.0, description="Progress percentage to next level")
- * )
- */
+#[OA\Schema(
+    schema: 'CommunityProfile',
+    title: 'CommunityProfile',
+    description: 'Community contribution profile data',
+    required: ['xp', 'level', 'nextLevelXP', 'progressPercent'],
+    properties: [
+        new OA\Property(
+            property: 'xp',
+            description: 'Total contribution XP earned',
+            type: 'integer',
+            example: 75,
+        ),
+        new OA\Property(
+            property: 'level',
+            description: 'Current contribution level',
+            type: 'integer',
+            example: 1,
+        ),
+        new OA\Property(
+            property: 'nextLevelXP',
+            description: 'XP required for next level',
+            type: 'integer',
+            example: 150,
+        ),
+        new OA\Property(
+            property: 'progressPercent',
+            description: 'Progress percentage to next level',
+            type: 'number',
+            format: 'float',
+            example: 25.0,
+        ),
+    ],
+)]
 class CommunityProfileResource extends JsonResource
 {
     public function toArray($request): array
