@@ -1496,12 +1496,12 @@
                                 "properties": {
                                     "subjectType": {
                                         "type": "string",
+                                        "example": "Status",
                                         "enum": [
                                             "Event",
                                             "Status",
                                             "User"
-                                        ],
-                                        "example": "Status"
+                                        ]
                                     },
                                     "subjectId": {
                                         "type": "integer",
@@ -1509,14 +1509,14 @@
                                     },
                                     "reason": {
                                         "type": "string",
+                                        "example": "inappropriate",
                                         "enum": [
                                             "inappropriate",
                                             "implausible",
                                             "spam",
                                             "illegal",
                                             "other"
-                                        ],
-                                        "example": "inappropriate"
+                                        ]
                                     },
                                     "description": {
                                         "type": "string",
@@ -5392,12 +5392,12 @@
                 "title": "Business",
                 "description": "What type of travel (0=private, 1=business, 2=commute) did the user specify?",
                 "type": "integer",
+                "example": 0,
                 "enum": [
                     0,
                     1,
                     2
-                ],
-                "example": 0
+                ]
             },
             "ConfigurationFeatureEnum": {
                 "description": "Enumeration of configuration features available in the application.",
@@ -5411,16 +5411,17 @@
                 "title": "DataProvider",
                 "description": "What type of data provider did the user specify? (users need to be in closed-beta for this to take effect)",
                 "type": "string",
+                "example": "cargo",
                 "enum": [
                     "default",
                     "transitous"
-                ],
-                "example": "cargo"
+                ]
             },
             "HafasTravelType": {
                 "title": "category",
-                "description": "Category of transport. ",
+                "description": "Category of transport.",
                 "type": "string",
+                "example": "suburban",
                 "enum": [
                     "nationalExpress",
                     "national",
@@ -5433,35 +5434,35 @@
                     "tram",
                     "taxi",
                     "plane"
-                ],
-                "example": "suburban"
+                ]
             },
             "MapProvider": {
                 "title": "MapProvider",
                 "description": "What type of map provider (cargo, open-railway-map) did the user specify?",
                 "type": "string",
+                "example": "cargo",
                 "enum": [
                     "cargo",
                     "open-railway-map"
-                ],
-                "example": "cargo"
+                ]
             },
             "MastodonVisibility": {
                 "title": "visibility",
-                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for\n *     future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private) did the user specify for future posts to Mastodon? Some instances such as chaos.social discourage bot posts on public timelines.",
                 "type": "integer",
+                "example": 1,
                 "enum": [
                     0,
                     1,
                     2,
                     3
-                ],
-                "example": 1
+                ]
             },
             "MotisCategory": {
                 "title": "mode",
                 "description": "Mode of transport",
                 "type": "string",
+                "example": "suburban",
                 "enum": [
                     "WALK",
                     "BIKE",
@@ -5492,13 +5493,13 @@
                     "OTHER",
                     "AERAL_LIFT",
                     "METRO"
-                ],
-                "example": "suburban"
+                ]
             },
             "PointReason": {
                 "title": "PointsReason",
                 "description": "What is the reason for the points calculation factor? (0=in time => 100%, 1=good enough => 25%, 2=not sufficient (1 point), 3=forced => no points, 4=manual trip => no points, 5=points disabled)",
                 "type": "integer",
+                "example": 1,
                 "enum": [
                     0,
                     1,
@@ -5506,13 +5507,13 @@
                     3,
                     4,
                     5
-                ],
-                "example": 1
+                ]
             },
             "StatusVisibility": {
                 "title": "visibility",
-                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the\n *      user specify?",
+                "description": "What type of visibility (0=public, 1=unlisted, 2=followers, 3=private, 4=authenticated, 5=trusted) did the user specify?",
                 "type": "integer",
+                "example": 0,
                 "enum": [
                     0,
                     1,
@@ -5520,13 +5521,13 @@
                     3,
                     4,
                     5
-                ],
-                "example": 0
+                ]
             },
             "TravelType": {
                 "title": "travelType",
                 "description": "When adding a new travel type, make sure to add it to the translation file as well.",
                 "type": "string",
+                "example": "suburban",
                 "enum": [
                     "express",
                     "regional",
@@ -5537,29 +5538,28 @@
                     "tram",
                     "taxi",
                     "plane"
-                ],
-                "example": "suburban"
+                ]
             },
             "FriendCheckinSetting": {
                 "title": "FriendCheckinSetting",
                 "type": "string",
+                "example": "forbidden",
                 "enum": [
                     "forbidden",
                     "friends",
                     "list"
-                ],
-                "example": "forbidden"
+                ]
             },
             "ViewUserForbiddenReason": {
                 "title": "ViewUserForbiddenReason",
                 "type": "string",
+                "example": "PRIVATE_PROFILE",
                 "enum": [
                     "PRIVATE_PROFILE",
                     "USER_MUTED",
                     "YOU_ARE_BLOCKED",
                     "USER_BLOCKED"
-                ],
-                "example": "PRIVATE_PROFILE"
+                ]
             },
             "UpdateProfileInformationRequest": {
                 "title": "UpdateProfileInformationRequest",
@@ -5567,13 +5567,13 @@
                 "properties": {
                     "username": {
                         "type": "string",
-                        "maxLength": 25,
-                        "example": "gertrud123"
+                        "example": "gertrud123",
+                        "maxLength": 25
                     },
                     "displayName": {
                         "type": "string",
-                        "maxLength": 50,
-                        "example": "Gertrud"
+                        "example": "Gertrud",
+                        "maxLength": 50
                     },
                     "privateProfile": {
                         "type": "boolean",
@@ -5634,9 +5634,9 @@
                     },
                     "bio": {
                         "type": "string",
-                        "maxLength": 500,
                         "example": "Hi there! I am Gertrud!",
-                        "nullable": true
+                        "nullable": true,
+                        "maxLength": 500
                     },
                     "experimental": {
                         "description": "Experimental features enabled",
@@ -5673,13 +5673,13 @@
                     },
                     "type": {
                         "type": "enum",
+                        "example": "info",
                         "enum": [
                             "info",
                             "warning",
                             "danger",
                             "success"
-                        ],
-                        "example": "info"
+                        ]
                     },
                     "active_from": {
                         "type": "string",
@@ -6089,6 +6089,7 @@
                 "properties": {
                     "name": {
                         "type": "enum",
+                        "example": "website",
                         "enum": [
                             "website",
                             "instagram",
@@ -6097,8 +6098,7 @@
                             "mastodon",
                             "tiktok",
                             "github"
-                        ],
-                        "example": "website"
+                        ]
                     },
                     "url": {
                         "type": "string",
@@ -7011,9 +7011,9 @@
                 "properties": {
                     "body": {
                         "type": "string",
-                        "maxLength": 280,
                         "example": "Meine erste Fahrt nach Knuffingen!",
-                        "nullable": true
+                        "nullable": true,
+                        "maxLength": 280
                     },
                     "business": {
                         "$ref": "#/components/schemas/Business"
@@ -7106,8 +7106,8 @@
                         "title": "name",
                         "description": "name of the event",
                         "type": "string",
-                        "maxLength": 255,
-                        "example": "Eröffnung der Nebenbahn in Knuffingen"
+                        "example": "Eröffnung der Nebenbahn in Knuffingen",
+                        "maxLength": 255
                     },
                     "host": {
                         "title": "host",
@@ -7119,37 +7119,39 @@
                     "begin": {
                         "title": "begin",
                         "description": "Timestamp for the start of the event",
+                        "type": "string",
                         "example": "2022-06-01T00:00:00+02:00"
                     },
                     "end": {
                         "title": "end",
                         "description": "Timestamp for the end of the event",
+                        "type": "string",
                         "example": "2022-08-31T23:59:00+02:00"
                     },
                     "url": {
                         "title": "url",
                         "description": "external URL for this event",
                         "type": "string",
-                        "maxLength": 255,
                         "example": "https://www.bundesregierung.de/breg-de/aktuelles/faq-9-euro-ticket-2028756",
-                        "nullable": true
+                        "nullable": true,
+                        "maxLength": 255
                     },
                     "hashtag": {
                         "title": "hashtag",
                         "description": "hashtag for this event",
                         "type": "string",
-                        "maxLength": 40,
                         "example": "gpn21",
-                        "nullable": true
+                        "nullable": true,
+                        "maxLength": 40
                     },
                     "nearestStation": {
                         "title": "nearestStation",
                         "description": "Query string for the nearest station to this event. Deprecated: use nearestStationId instead.",
                         "type": "string",
-                        "maxLength": 255,
                         "example": "Berlin Hbf",
                         "nullable": true,
-                        "deprecated": true
+                        "deprecated": true,
+                        "maxLength": 255
                     },
                     "nearestStationId": {
                         "title": "nearestStationId",
@@ -7405,10 +7407,14 @@
                     "distance": {
                         "title": "distance",
                         "description": "Points for the travelled distance",
+                        "type": "number",
+                        "format": "float",
                         "example": 0.25
                     },
                     "factor": {
                         "title": "factor",
+                        "type": "number",
+                        "format": "float",
                         "example": 0.25
                     },
                     "reason": {
@@ -7432,6 +7438,7 @@
                     "geometry": {
                         "properties": {
                             "type": {
+                                "type": "string",
                                 "example": "LineString"
                             },
                             "coordinates": {
@@ -7462,6 +7469,7 @@
                 "title": "CheckinForbiddenWithUsersResponse",
                 "properties": {
                     "message": {
+                        "type": "string",
                         "example": "You are not allowed to check in the following users: 1"
                     },
                     "meta": {
@@ -7548,6 +7556,7 @@
                     "url": {
                         "title": "url",
                         "description": "URL where the webhook gets sent to",
+                        "type": "string",
                         "example": "https://example.com/webhook"
                     },
                     "createdAt": {
@@ -7575,9 +7584,10 @@
                 "properties": {
                     "body": {
                         "description": "Status-Text to be displayed alongside the checkin",
-                        "maxLength": 280,
+                        "type": "string",
                         "example": "Wow. This train is extremely crowded!",
-                        "nullable": true
+                        "nullable": true,
+                        "maxLength": 280
                     },
                     "business": {
                         "$ref": "#/components/schemas/Business"
@@ -7587,28 +7597,33 @@
                     },
                     "eventId": {
                         "description": "The ID of the event this status is related to - or null",
+                        "type": "string",
                         "example": "1",
                         "nullable": true
                     },
                     "manualDeparture": {
                         "description": "Manual departure time set by the user",
+                        "type": "string",
                         "format": "date",
                         "example": "2020-01-01 12:00:00",
                         "nullable": true
                     },
                     "manualArrival": {
                         "description": "Manual arrival time set by the user",
+                        "type": "string",
                         "format": "date",
                         "example": "2020-01-01 13:00:00",
                         "nullable": true
                     },
                     "destinationId": {
                         "description": "Destination station id",
+                        "type": "string",
                         "example": "1",
                         "nullable": true
                     },
                     "destinationArrivalPlanned": {
                         "description": "Destination arrival time",
+                        "type": "string",
                         "format": "date",
                         "example": "2020-01-01 13:00:00",
                         "nullable": true
